@@ -20,6 +20,13 @@
 	</div>
 
 	<div class="row">
+		<?php echo $form->label($model,'gender'); ?>
+		<?php echo $form->radioButtonList($model,'gender',array('M'=>'M','F'=>'F'),array(
+			'template'=>'{input} {label}', 'separator' => ' &nbsp; ', 'labelOptions'=>array('style'=>'display:inline;float:none;')
+		)); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->label($model,'hos_num'); ?>
 		<?php echo $form->textField($model,'hos_num',array('size'=>40,'maxlength'=>40)); ?>
 	</div>
