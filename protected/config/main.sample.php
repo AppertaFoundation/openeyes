@@ -24,6 +24,7 @@ return array(
 		'gii'=>array(
 			'class'=>'system.gii.GiiModule',
 			'password'=>'Enter Your Password Here',
+			'generatorPaths'=>array('ext.mpgii'), // use multi-activerecord
 		),
 		*/
 	),
