@@ -13,5 +13,9 @@ return CMap::mergeArray(
 			),
 			*/
 		),
+		'params'=>array(
+			// Currently test BASIC only.
+			'auth_source' => 'BASIC', // Options are BASIC or LDAP.
+		)
 	)
 );
