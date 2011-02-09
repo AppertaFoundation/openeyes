@@ -123,6 +123,8 @@ class PAS_Patient extends MultiActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'names'=>array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
+			'numbers'=>array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO')
 		);
 	}
 

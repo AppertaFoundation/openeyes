@@ -1,9 +1,9 @@
 <div class="wide form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
-	'action'=>Yii::app()->createUrl($this->route),
+	'action'=>Yii::app()->createUrl('patient/results'),
 	'method'=>'post',
-)); ?>
+));?>
 	<div class="row">
 		<?php echo $form->label($model,'first_name'); ?>
 		<?php echo $form->textField($model,'first_name',array('size'=>40,'maxlength'=>40)); ?>
