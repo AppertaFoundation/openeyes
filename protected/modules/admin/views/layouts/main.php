@@ -22,14 +22,19 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> ADMIN PAGE</div>
 	</div><!-- header -->
 
 	<div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'User', 'url'=>array('/admin/user')),
+				array('label'=>'Users', 'url'=>array('/admin/user')),
+				array('label'=>'Firms', 'url'=>array('/admin/firm')),
+				array('label'=>'Exam Phrases', 'url'=>array('/admin/examphrase')),
+				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase')),
+				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate')),
+				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
