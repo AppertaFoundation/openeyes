@@ -4,5 +4,5 @@
 /protected/config/main.php
 /protected/config/test.php
 /protected/runtime/*
-/assets/
+/assets/*
 .*swp
