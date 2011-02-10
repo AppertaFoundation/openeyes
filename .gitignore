@@ -5,3 +5,4 @@
 /protected/config/test.php
 /protected/runtime/*
 /assets/
+.*swp
