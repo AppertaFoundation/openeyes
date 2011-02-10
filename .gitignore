@@ -3,6 +3,4 @@
 /protected/config/params.php
 /protected/config/main.php
 /protected/config/test.php
-/protected/runtime/*
-/assets/*
 .*swp
