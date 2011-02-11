@@ -136,15 +136,4 @@ class UserTest extends CDbTestCase
 		$this->assertEquals($user->getActiveText(), 'No');
 	}
 
-	public function testLdapLogin()
-	{
-		Yii::app()->params['auth_source'] = 'LDAP';
-
-		$identity=new UserIdentity(
-			'JoeBloggs',
-			'password'
-		);
-
-		$this->assertTrue($identity->authenticate());
-	}
 }
