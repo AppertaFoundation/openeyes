@@ -23,7 +23,7 @@ class LetterphraseTest extends CDbTestCase
 	public function testSectionText()
 	{
 		$letterphrase = Letterphrase::model()->findByPk(1);
-
+		$this->assertExists($letterphrase);
 		$this->assertEquals($letterphrase->getSectionText(), 'Introduction');
 	}
 }
