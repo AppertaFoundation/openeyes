@@ -29,12 +29,12 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'Users', 'url'=>array('/admin/user')),
-				array('label'=>'Firms', 'url'=>array('/admin/firm')),
-				array('label'=>'Exam Phrases', 'url'=>array('/admin/examphrase')),
-				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase')),
-				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate')),
-				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype')),
+				array('label'=>'Users', 'url'=>array('/admin/user/index')),
+				array('label'=>'Firms', 'url'=>array('/admin/firm/index')),
+				array('label'=>'Exam Phrases', 'url'=>array('/admin/examphrase/index')),
+				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase/index')),
+				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate/index')),
+				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype/index')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
