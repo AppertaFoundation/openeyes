@@ -27,7 +27,7 @@ class ExamphraseTest extends CDbTestCase
 			'phrase = :phrase', array(':phrase' => 'Test examphrase 1')
 		);
 
-		$this->assertExists($examphrase);
+		$this->assertNotNull($examphrase);
 		$this->assertEquals($examphrase->getPartText(), 'History');
 	}
 }

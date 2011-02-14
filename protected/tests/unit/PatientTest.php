@@ -15,7 +15,6 @@ class PatientTest extends CDbTestCase
 			array(array('first_name' => 'Katherine', 'gender' => 'M'), 0, array()),
 		);
 	}
-
 	/**
 	 * @dataProvider dataProvider_Search
 	 */

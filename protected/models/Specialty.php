@@ -26,7 +26,7 @@ class Specialty extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'specialty';
+		return 'Specialty';
 	}
 
 	/**

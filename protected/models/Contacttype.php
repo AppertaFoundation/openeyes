@@ -27,7 +27,7 @@ class Contacttype extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contacttype';
+		return 'Contacttype';
 	}
 
 	/**

@@ -26,7 +26,7 @@ class Service extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'service';
+		return 'Service';
 	}
 
 	/**

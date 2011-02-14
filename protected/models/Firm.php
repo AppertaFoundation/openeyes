@@ -32,7 +32,7 @@ class Firm extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'firm';
+		return 'Firm';
 	}
 
 	/**

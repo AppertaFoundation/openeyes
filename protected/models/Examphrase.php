@@ -39,7 +39,7 @@ class Examphrase extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'examphrase';
+		return 'Examphrase';
 	}
 
 	/**

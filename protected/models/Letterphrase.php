@@ -37,7 +37,7 @@ class Letterphrase extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'letterphrase';
+		return 'Letterphrase';
 	}
 
 	/**

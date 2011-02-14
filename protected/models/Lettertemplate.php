@@ -31,7 +31,7 @@ class Lettertemplate extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'lettertemplate';
+		return 'Lettertemplate';
 	}
 
 	/**
