@@ -30,7 +30,7 @@ class Patient extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'patient';
+		return 'Patient';
 	}
 
 	/**
