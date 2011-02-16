@@ -21,17 +21,13 @@ $this->menu=array(
 		'id',
 		array(
 			'name' => 'service_id',
-			'value' => CHtml::encode($model->service->name)
+			'value' => CHtml::encode($model->getServiceText())
 		),
 		array(
 			'name' => 'specialty_id',
-			'value' => CHtml::encode($model->specialty->name)
+			'value' => CHtml::encode($model->getSpecialtyText())
 		),
 		'pas_code',
 		'name',
-		array(
-			'name' => 'contact_id',
-			'value' => CHtml::encode($model->contact->nick_name)
-		),
 	),
 )); ?>

@@ -1,33 +1,25 @@
 <?php
 
 /**
- * This is the model class for table "examphrase".
+ * This is the model class for table "letter_template".
  *
- * The followings are the available columns in table 'examphrase':
+ * The followings are the available columns in table 'letter_template':
  * @property string $id
  * @property string $specialty_id
- * @property integer $part
- * @property string $phrase
- * @property string $order
+ * @property string $name
+ * @property string $contact_type_id
+ * @property string $text
+ * @property string $cc
  *
  * The followings are the available model relations:
+ * @property ContactType $contactType
  * @property Specialty $specialty
  */
-class Examphrase extends CActiveRecord
+class LetterTemplate extends CActiveRecord
 {
-	const PART_HISTORY = 0;
-	const PART_PMH = 1;
-	const PART_POH = 2;
-	const PART_DRUGS = 3;
-	const PART_ALLERGIES = 4;
-	const PART_ANTSEG = 5;
-	const PART_POSTSEG = 6;
-	const PART_CONCLUSION = 7;
-	const PART_TREATMENT = 8;
-
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Examphrase the static model class
+	 * @return LetterTemplate the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -39,7 +31,7 @@ class Examphrase extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'examphrase';
+		return 'letter_template';
 	}
 
 	/**
@@ -50,13 +42,14 @@ class Examphrase extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('specialty_id, phrase', 'required'),
-			array('part', 'numerical', 'integerOnly'=>true),
-			array('specialty_id, order', 'length', 'max'=>10),
-			array('phrase', 'length', 'max'=>80),
+			array('specialty_id, contact_type_id', 'required'),
+			array('specialty_id, contact_type_id', 'length', 'max'=>10),
+			array('name', 'length', 'max'=>64),
+			array('cc', 'length', 'max'=>128),
+			array('text', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, specialty_id, part, phrase, order', 'safe', 'on'=>'search'),
+			array('id, specialty_id, name, contact_type_id, text, cc', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -68,6 +61,7 @@ class Examphrase extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'contactType' => array(self::BELONGS_TO, 'ContactType', 'contact_type_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
@@ -80,9 +74,10 @@ class Examphrase extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'specialty_id' => 'Specialty',
-			'part' => 'Part',
-			'phrase' => 'Phrase',
-			'order' => 'Order',
+			'name' => 'Name',
+			'contact_type_id' => 'Contact Type',
+			'text' => 'Text',
+			'cc' => 'Cc',
 		);
 	}
 
@@ -99,9 +94,10 @@ class Examphrase extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('specialty_id',$this->specialty_id,true);
-		$criteria->compare('part',$this->part);
-		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('order',$this->order,true);
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('contact_type_id',$this->contact_type_id,true);
+		$criteria->compare('text',$this->text,true);
+		$criteria->compare('cc',$this->cc,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -113,25 +109,8 @@ class Examphrase extends CActiveRecord
 		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
 	}
 
-	public function getPartOptions()
+	public function getContactTypeOptions()
 	{
-		return array(
-			self::PART_HISTORY => 'History',
-			self::PART_PMH => 'PMH',
-			self::PART_POH => 'POH',
-			self::PART_DRUGS => 'Drugs',
-			self::PART_ALLERGIES => 'Allergies',
-			self::PART_ANTSEG => 'Antseg',
-			self::PART_POSTSEG => 'Postseg',
-			self::PART_CONCLUSION => 'Conclusion',
-			self::PART_TREATMENT => 'Treatment'
-		);
-	}
-
-	public function getPartText()
-	{
-		$partOptions = $this->getPartOptions();
-
-		return $partOptions[$this->part];
+		return CHtml::listData(ContactType::Model()->findAll(), 'id', 'name');
 	}
 }

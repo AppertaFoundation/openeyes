@@ -3,7 +3,7 @@ class LettertemplateTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'specialties' => 'Specialty',
-		'contacttypses' => 'Contacttype',
+		'contacttypses' => 'ContactType',
 	);
 
 	public function testGetSpecialtyOptions()

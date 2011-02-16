@@ -6,12 +6,6 @@
  * data can identity the user.
  */
 
-/**
- * Required for LDAP authentication
- */
-Yii::import('application.vendors.*');
-require_once('Zend/Ldap.php');
-
 class UserIdentity extends CUserIdentity
 {
 	private $_id;
@@ -29,7 +23,7 @@ class UserIdentity extends CUserIdentity
 	 * config file.
 	 *
 	 * @return boolean whether authentication succeeds.
-	 * @throws 
+	 * @throws
 	 */
 	public function authenticate()
 	{
@@ -49,6 +43,12 @@ class UserIdentity extends CUserIdentity
 		 * Here we diverge depending on the authentication source.
 		 */
 		if (Yii::app()->params['auth_source'] == 'LDAP') {
+			/**
+			 * Required for LDAP authentication
+			 */
+			Yii::import('application.vendors.*');
+			require_once('Zend/Ldap.php');
+
 			/**
 			 * Check with LDAP for authentication
 			 */
@@ -110,6 +110,22 @@ class UserIdentity extends CUserIdentity
 		$this->_id = $user->id;
 		$this->username = $user->username;
 		$this->errorCode = self::ERROR_NONE;
+
+		// Get all the user's firms and put them in a session
+		$app = Yii::app();
+
+		$firms = array();
+
+		foreach ($user->firms as $firm) {
+			$firms[$firm->id] = $firm->name .
+								' (' . $firm->pas_code . ') (' .
+								$firm->serviceSpecialtyAssignment->service->name .')';
+
+			// @todo - decide how to select the default firm, this is surely wrong!
+			$app->session['selected_firm_id'] = $firm->id;
+		}
+
+		$app->session['firms'] = $firms;
 
 		return true;
 	}

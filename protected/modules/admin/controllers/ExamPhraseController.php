@@ -1,6 +1,6 @@
 <?php
 
-class LettertemplateController extends Controller
+class ExamPhraseController extends Controller
 {
 	public $layout='column2';
 
@@ -31,14 +31,14 @@ class LettertemplateController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Lettertemplate;
+		$model=new ExamPhrase;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Lettertemplate']))
+		if(isset($_POST['ExamPhrase']))
 		{
-			$model->attributes=$_POST['Lettertemplate'];
+			$model->attributes=$_POST['ExamPhrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class LettertemplateController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Lettertemplate']))
+		if(isset($_POST['ExamPhrase']))
 		{
-			$model->attributes=$_POST['Lettertemplate'];
+			$model->attributes=$_POST['ExamPhrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -97,7 +97,7 @@ class LettertemplateController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Lettertemplate');
+		$dataProvider=new CActiveDataProvider('ExamPhrase');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -108,10 +108,10 @@ class LettertemplateController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Lettertemplate('search');
+		$model=new ExamPhrase('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Lettertemplate']))
-			$model->attributes=$_GET['Lettertemplate'];
+		if(isset($_GET['ExamPhrase']))
+			$model->attributes=$_GET['ExamPhrase'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -125,7 +125,7 @@ class LettertemplateController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Lettertemplate::model()->findByPk((int)$id);
+		$model=ExamPhrase::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -137,7 +137,7 @@ class LettertemplateController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='lettertemplate-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='ExamPhrase-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

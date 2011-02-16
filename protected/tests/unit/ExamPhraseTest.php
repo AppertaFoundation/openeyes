@@ -1,29 +1,29 @@
 <?php
-class ExamphraseTest extends CDbTestCase
+class ExamPhraseTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'specialties' => 'Specialty',
 		'firms' => 'Firm',
-		'examphrase' => 'Examphrase',
+		'examphrase' => 'ExamPhrase',
 	);
 
 	public function testGetSpecialtyOptions()
 	{
-		$specialties = Examphrase::model()->getSpecialtyOptions();
+		$specialties = ExamPhrase::model()->getSpecialtyOptions();
 		$this->assertTrue(is_array($specialties));
 		$this->assertEquals(16, count($specialties));
 	}
 
 	public function testGetPartOptions()
 	{
-		$parts = Examphrase::model()->getPartOptions();
+		$parts = ExamPhrase::model()->getPartOptions();
 		$this->assertTrue(is_array($parts));
 		$this->assertEquals(9, count($parts));
 	}
 
 	public function testPartText()
 	{
-		$examphrase = Examphrase::model()->find(
+		$examphrase = ExamPhrase::model()->find(
 			'phrase = :phrase', array(':phrase' => 'Test examphrase 1')
 		);
 

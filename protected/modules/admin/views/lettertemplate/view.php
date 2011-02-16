@@ -25,8 +25,8 @@ $this->menu=array(
 		),
 		'name',
 		array(
-			'name' => 'conttacttype_id',
-			'value' => CHtml::encode($model->contacttype->name)
+			'name' => 'contact_type_id',
+			'value' => CHtml::encode($model->contactType->name)
 		),
 		'text',
 		'cc',

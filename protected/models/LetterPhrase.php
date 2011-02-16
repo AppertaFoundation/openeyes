@@ -1,25 +1,31 @@
 <?php
 
 /**
- * This is the model class for table "lettertemplate".
+ * This is the model class for table "letter_phrase".
  *
- * The followings are the available columns in table 'lettertemplate':
+ * The followings are the available columns in table 'letter_phrase':
  * @property string $id
- * @property string $specialty_id
+ * @property string $firm_id
  * @property string $name
- * @property string $contacttype_id
- * @property string $text
- * @property string $cc
+ * @property string $phrase
+ * @property string $order
+ * @property integer $section
  *
  * The followings are the available model relations:
- * @property Specialty $specialty
- * @property Contacttype $contacttype
+ * @property Firm $firm
  */
-class Lettertemplate extends CActiveRecord
+class LetterPhrase extends CActiveRecord
 {
+	const SECTION_INTRODUCTION = 0;
+	const SECTION_FINDINGS = 1;
+	const SECTION_DIAGNOSIS = 2;
+	const SECTION_MANAGEMENT = 3;
+	const SECTION_DRUGS = 4;
+	const SECTION_OUTCOME = 5;
+
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Lettertemplate the static model class
+	 * @return LetterPhrase the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -31,7 +37,7 @@ class Lettertemplate extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'lettertemplate';
+		return 'letter_phrase';
 	}
 
 	/**
@@ -42,14 +48,14 @@ class Lettertemplate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('specialty_id, contacttype_id', 'required'),
-			array('specialty_id, contacttype_id', 'length', 'max'=>10),
+			array('firm_id', 'required'),
+			array('section', 'numerical', 'integerOnly'=>true),
+			array('firm_id, order', 'length', 'max'=>10),
 			array('name', 'length', 'max'=>64),
-			array('cc', 'length', 'max'=>128),
-			array('text', 'safe'),
+			array('phrase', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, specialty_id, name, contacttype_id, text, cc', 'safe', 'on'=>'search'),
+			array('id, firm_id, name, phrase, order, section', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,8 +67,7 @@ class Lettertemplate extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
-			'contacttype' => array(self::BELONGS_TO, 'Contacttype', 'contacttype_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 		);
 	}
 
@@ -73,11 +78,11 @@ class Lettertemplate extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'specialty_id' => 'Specialty',
+			'firm_id' => 'Firm',
 			'name' => 'Name',
-			'contacttype_id' => 'Contacttype',
-			'text' => 'Text',
-			'cc' => 'Cc',
+			'phrase' => 'Phrase',
+			'order' => 'Order',
+			'section' => 'Section',
 		);
 	}
 
@@ -93,24 +98,38 @@ class Lettertemplate extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('firm_id',$this->firm_id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('contacttype_id',$this->contacttype_id,true);
-		$criteria->compare('text',$this->text,true);
-		$criteria->compare('cc',$this->cc,true);
+		$criteria->compare('phrase',$this->phrase,true);
+		$criteria->compare('order',$this->order,true);
+		$criteria->compare('section',$this->section);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public function getSpecialtyOptions()
+	public function getFirmOptions()
 	{
-		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
+		return CHtml::listData(Firm::Model()->findAll(), 'id', 'name');
 	}
 
-	public function getContacttypeOptions()
+	public function getSectionOptions()
 	{
-		return CHtml::listData(Contacttype::Model()->findAll(), 'id', 'name');
+		return array(
+			self::SECTION_INTRODUCTION => 'Introduction',
+			self::SECTION_FINDINGS => 'Findings',
+			self::SECTION_DIAGNOSIS => 'Diagnosis',
+			self::SECTION_MANAGEMENT => 'Management',
+			self::SECTION_DRUGS => 'Drugs',
+			self::SECTION_OUTCOME => 'Outcome'
+		);
+	}
+
+	public function getSectionText()
+	{
+		$sectionOptions = $this->getSectionOptions();
+
+		return $sectionOptions[$this->section];
 	}
 }

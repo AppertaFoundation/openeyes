@@ -1,20 +1,18 @@
 <?php
 
 /**
- * This is the model class for table "service".
+ * This is the model class for table "contact_type".
  *
- * The followings are the available columns in table 'service':
+ * The followings are the available columns in table 'contact_type':
  * @property string $id
  * @property string $name
- *
- * The followings are the available model relations:
- * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
+ * @property integer $macro_only
  */
-class Service extends CActiveRecord
+class ContactType extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Service the static model class
+	 * @return ContactType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -26,7 +24,7 @@ class Service extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'service';
+		return 'contact_type';
 	}
 
 	/**
@@ -34,8 +32,6 @@ class Service extends CActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
 			array('name', 'required'),
 			array('name', 'length', 'max'=>40),
@@ -53,7 +49,6 @@ class Service extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'service_id'),
 		);
 	}
 
@@ -65,6 +60,7 @@ class Service extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'macro_only' => 'Macro Only',
 		);
 	}
 
@@ -81,6 +77,7 @@ class Service extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('macro_only', 0);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

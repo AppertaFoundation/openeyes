@@ -12,12 +12,12 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'specialty_id'); ?>
-		<?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->dropDownList($model,'specialty_id',$model->getSpecialtyOptions()); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->label($model,'part'); ?>
-		<?php echo $form->textField($model,'part'); ?>
+		<?php echo $form->dropDownList($model,'part',$model->getPartOptions()); ?>
 	</div>
 
 	<div class="row">

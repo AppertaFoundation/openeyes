@@ -3,26 +3,26 @@ class LetterphraseTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'firms' => 'Firm',
-		'letterphrases' => 'Letterphrase',
+		'letterphrases' => 'LetterPhrase',
 	);
 
 	public function testGetFirmOptions()
 	{
-		$firms = Letterphrase::model()->getFirmOptions();
+		$firms = LetterPhrase::model()->getFirmOptions();
 		$this->assertTrue(is_array($firms));
 		$this->assertEquals(3, count($firms));
 	}
 
 	public function testGetSectionOptions()
 	{
-		$sections = Letterphrase::model()->getSectionOptions();
+		$sections = LetterPhrase::model()->getSectionOptions();
 		$this->assertTrue(is_array($sections));
 		$this->assertEquals(6, count($sections));
 	}
 
 	public function testSectionText()
 	{
-		$letterphrase = Letterphrase::model()->findByPk(1);
+		$letterphrase = LetterPhrase::model()->findByPk(1);
 
 		$this->assertEquals($letterphrase->getSectionText(), 'Introduction');
 	}

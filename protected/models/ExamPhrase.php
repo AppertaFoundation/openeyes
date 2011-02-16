@@ -1,31 +1,33 @@
 <?php
 
 /**
- * This is the model class for table "letterphrase".
+ * This is the model class for table "exam_phrase".
  *
- * The followings are the available columns in table 'letterphrase':
+ * The followings are the available columns in table 'exam_phrase':
  * @property string $id
- * @property string $firm_id
- * @property string $name
+ * @property string $specialty_id
+ * @property integer $part
  * @property string $phrase
- * @property integer $section
  * @property string $order
  *
  * The followings are the available model relations:
- * @property Firm $firm
+ * @property Specialty $specialty
  */
-class Letterphrase extends CActiveRecord
+class ExamPhrase extends CActiveRecord
 {
-	const SECTION_INTRODUCTION = 0;
-	const SECTION_FINDINGS = 1;
-	const SECTION_DIAGNOSIS = 2;
-	const SECTION_MANAGEMENT = 3;
-	const SECTION_DRUGS = 4;
-	const SECTION_OUTCOME = 5;
+	const PART_HISTORY = 0;
+	const PART_PMH = 1;
+	const PART_POH = 2;
+	const PART_DRUGS = 3;
+	const PART_ALLERGIES = 4;
+	const PART_ANTSEG = 5;
+	const PART_POSTSEG = 6;
+	const PART_CONCLUSION = 7;
+	const PART_TREATMENT = 8;
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Letterphrase the static model class
+	 * @return ExamPhrase the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -37,7 +39,7 @@ class Letterphrase extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'letterphrase';
+		return 'exam_phrase';
 	}
 
 	/**
@@ -48,14 +50,13 @@ class Letterphrase extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('firm_id', 'required'),
-			array('section', 'numerical', 'integerOnly'=>true),
-			array('firm_id, order', 'length', 'max'=>10),
-			array('name', 'length', 'max'=>64),
-			array('phrase', 'length', 'max'=>255),
+			array('specialty_id, phrase', 'required'),
+			array('part', 'numerical', 'integerOnly'=>true),
+			array('specialty_id, order', 'length', 'max'=>10),
+			array('phrase', 'length', 'max'=>80),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, firm_id, name, phrase, section, order', 'safe', 'on'=>'search'),
+			array('id, specialty_id, part, phrase, order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -67,7 +68,7 @@ class Letterphrase extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
 
@@ -78,10 +79,9 @@ class Letterphrase extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'firm_id' => 'Firm',
-			'name' => 'Name',
+			'specialty_id' => 'Specialty',
+			'part' => 'Part',
 			'phrase' => 'Phrase',
-			'section' => 'Section',
 			'order' => 'Order',
 		);
 	}
@@ -98,10 +98,9 @@ class Letterphrase extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('firm_id',$this->firm_id,true);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('part',$this->part);
 		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('section',$this->section);
 		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -109,27 +108,30 @@ class Letterphrase extends CActiveRecord
 		));
 	}
 
-	public function getFirmOptions()
+	public function getSpecialtyOptions()
 	{
-		return CHtml::listData(Firm::Model()->findAll(), 'id', 'name');
+		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
 	}
 
-	public function getSectionOptions()
+	public function getPartOptions()
 	{
 		return array(
-			self::SECTION_INTRODUCTION => 'Introduction',
-			self::SECTION_FINDINGS => 'Findings',
-			self::SECTION_DIAGNOSIS => 'Diagnosis',
-			self::SECTION_MANAGEMENT => 'Management',
-			self::SECTION_DRUGS => 'Drugs',
-			self::SECTION_OUTCOME => 'Outcome'
+			self::PART_HISTORY => 'History',
+			self::PART_PMH => 'PMH',
+			self::PART_POH => 'POH',
+			self::PART_DRUGS => 'Drugs',
+			self::PART_ALLERGIES => 'Allergies',
+			self::PART_ANTSEG => 'Antseg',
+			self::PART_POSTSEG => 'Postseg',
+			self::PART_CONCLUSION => 'Conclusion',
+			self::PART_TREATMENT => 'Treatment'
 		);
 	}
 
-	public function getSectionText()
+	public function getPartText()
 	{
-		$sectionOptions = $this->getSectionOptions();
+		$partOptions = $this->getPartOptions();
 
-		return $sectionOptions[$this->section];
+		return $partOptions[$this->part];
 	}
 }

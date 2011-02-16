@@ -2,29 +2,28 @@
 class FirmTest extends CDbTestCase
 {
 	public $fixtures = array(
-		'services' => 'Service',
-		'specialties' => 'Specialty',
-		'contacts' => 'Contact'
+		'Services' => 'Service',
+		'Specialties' => 'Specialty',
+		'ServiceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
+		'Firms' => 'Firm',
 	);
 
-	public function testGetContactOptions()
+	public function testGetServicespecialtyOptions()
 	{
-		$users = Firm::model()->getContactOptions();
-		$this->assertTrue(is_array($users));
-		$this->assertEquals(3, count($users));
+		$serviceSpecialties = Firm::model()->getServiceSpecialtyOptions();
+		$this->assertTrue(is_array($serviceSpecialties));
+		$this->assertEquals(6, count($serviceSpecialties));
 	}
 
-	public function testGetSpecialtyOptions()
+	public function testGetServiceText()
 	{
-		$specialties = Firm::model()->getSpecialtyOptions();
-		$this->assertTrue(is_array($specialties));
-		$this->assertEquals(16, count($specialties));
+		$firm = Firm::model()->findByPk(1);
+		$this->assertEquals($firm->getServiceText(), 'Accident and Emergency Service');
 	}
 
-	public function testGetServiceOptions()
+	public function testGetSpecialtyText()
 	{
-		$services = Firm::model()->getServiceOptions();
-		$this->assertTrue(is_array($services));
-		$this->assertEquals(11, count($services));
+		$firm = Firm::model()->findByPk(1);
+		$this->assertEquals($firm->getSpecialtyText(), 'Accident & Emergency');
 	}
 }

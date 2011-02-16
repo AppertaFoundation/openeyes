@@ -5,16 +5,14 @@
  *
  * The followings are the available columns in table 'firm':
  * @property string $id
- * @property string $service_id
- * @property string $specialty_id
+ * @property string $service_specialty_assignment_id
  * @property string $pas_code
  * @property string $name
- * @property string $contact_id
  *
  * The followings are the available model relations:
- * @property Service $service
- * @property Specialty $specialty
- * @property Contact $contact
+ * @property ServiceSpecialtyAssignment $serviceSpecialtyAssignment
+ * @property FirmUserAssignment[] $firmUserAssignments
+ * @property LetterPhrase[] $letterPhrases
  */
 class Firm extends CActiveRecord
 {
@@ -43,13 +41,13 @@ class Firm extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_id, specialty_id, name, contact_id', 'required'),
-			array('service_id, specialty_id, contact_id', 'length', 'max'=>10),
+			array('service_specialty_assignment_id, name', 'required'),
+			array('service_specialty_assignment_id', 'length', 'max'=>10),
 			array('pas_code', 'length', 'max'=>4),
 			array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, service_id, specialty_id, pas_code, name, contact_id', 'safe', 'on'=>'search'),
+			array('id, service_specialty_assignment_id, pas_code, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,9 +59,9 @@ class Firm extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'serviceSpecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSpecialtyAssignment', 'service_specialty_assignment_id'),
+			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
+			'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
 		);
 	}
 
@@ -74,11 +72,9 @@ class Firm extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'service_id' => 'Service',
-			'specialty_id' => 'Specialty',
+			'service_specialty_assignment_id' => 'Service Specialty Assignment',
 			'pas_code' => 'Pas Code',
 			'name' => 'Name',
-			'contact_id' => 'Contact',
 		);
 	}
 
@@ -94,29 +90,57 @@ class Firm extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('service_id',$this->service_id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('service_specialty_assignment_id',$this->service_specialty_assignment_id,true);
 		$criteria->compare('pas_code',$this->pas_code,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('contact_id',$this->contact_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public function getContactOptions()
+	/**
+	 * Returns an array of the service_specialty names - the service name plus the specialty name.
+	 */
+	public function getServiceSpecialtyOptions()
 	{
-		return CHtml::listData(Contact::Model()->findAll(), 'id', 'nick_name');
+		$sql = 'SELECT
+					service_specialty_assignment.id,
+					service.name AS service_name,
+					specialty.name AS specialty_name
+				FROM
+					service,
+					specialty,
+					service_specialty_assignment
+				WHERE
+					service.id = service_specialty_assignment.service_id
+				AND
+					specialty.id = service_specialty_assignment.specialty_id
+				ORDER BY
+					service.name,
+					specialty.name
+				';
+
+		$connection = Yii::app()->db;
+		$command = $connection->createCommand($sql);
+		$results = $command->queryAll();
+
+		$select = array();
+
+		foreach ($results as $result) {
+			$select[$result['id']] = $result['service_name'] . ' - ' . $result['specialty_name'];
+		}
+
+		return $select;
 	}
 
-	public function getSpecialtyOptions()
+	public function getServiceText()
 	{
-		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
+		return $this->serviceSpecialtyAssignment->service->name;
 	}
 
-	public function getServiceOptions()
+	public function getSpecialtyText()
 	{
-		return CHtml::listData(Service::Model()->findAll(), 'id', 'name');
+		return $this->serviceSpecialtyAssignment->specialty->name;
 	}
 }

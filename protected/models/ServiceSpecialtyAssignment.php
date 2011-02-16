@@ -1,21 +1,23 @@
 <?php
 
 /**
- * This is the model class for table "contacttype".
+ * This is the model class for table "service_specialty_assignment".
  *
- * The followings are the available columns in table 'contacttype':
+ * The followings are the available columns in table 'service_specialty_assignment':
  * @property string $id
- * @property string $name
- * @property integer $macro_only
+ * @property string $service_id
+ * @property string $specialty_id
  *
  * The followings are the available model relations:
- * @property Lettertemplate[] $lettertemplates
+ * @property Firm[] $firms
+ * @property Service $service
+ * @property Specialty $specialty
  */
-class Contacttype extends CActiveRecord
+class ServiceSpecialtyAssignment extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Contacttype the static model class
+	 * @return ServiceSpecialtyAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -27,7 +29,7 @@ class Contacttype extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contacttype';
+		return 'service_specialty_assignment';
 	}
 
 	/**
@@ -38,11 +40,11 @@ class Contacttype extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			array('name', 'length', 'max'=>40),
+			array('service_id, specialty_id', 'required'),
+			array('service_id, specialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, service_id, specialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -54,7 +56,9 @@ class Contacttype extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'lettertemplates' => array(self::HAS_MANY, 'Lettertemplate', 'contacttype_id'),
+			'firms' => array(self::HAS_MANY, 'Firm', 'service_specialty_assignment_id'),
+			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
+			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
 
@@ -65,8 +69,8 @@ class Contacttype extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'macro_only' => 'Macro Only',
+			'service_id' => 'Service',
+			'specialty_id' => 'Specialty',
 		);
 	}
 
@@ -82,8 +86,8 @@ class Contacttype extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('macro_only', 0);
+		$criteria->compare('service_id',$this->service_id,true);
+		$criteria->compare('specialty_id',$this->specialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
