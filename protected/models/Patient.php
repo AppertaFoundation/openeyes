@@ -94,8 +94,8 @@ class Patient extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('first_name',$this->first_name,true);
-		$criteria->compare('last_name',$this->last_name,true);
+		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),true);
+		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),true);
 		$criteria->compare('dob',$this->dob,false);
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);

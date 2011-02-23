@@ -9,6 +9,7 @@ class PatientTest extends CDbTestCase
 	{
 		return array(
 			array(array('first_name' => 'Katherine'), 1, array('patient3')),
+			array(array('last_name' => 'jones'), 1, array('patient2')),  /* case insensitivity test */
 			array(array('hos_num' => 12345), 1, array('patient1')),
 			array(array('first_name' => 'John'), 2, array('patient1', 'patient2')),
 			array(array('hos_num' => 'invalid'), 0, null),

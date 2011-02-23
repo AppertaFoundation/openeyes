@@ -116,16 +116,16 @@ class PAS_PatientSurname extends MultiActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO);
-		$criteria->compare('SURNAME_TYPE',$this->SURNAME_TYPE,true);
-		$criteria->compare('SURNAME_ID',$this->SURNAME_ID,true);
-		$criteria->compare('NAME1',$this->NAME1,true);
-		$criteria->compare('NAME2',$this->NAME2,true);
-		$criteria->compare('TITLE',$this->TITLE,true);
-		$criteria->compare('SURNAME_ID_SOUNDEX',$this->SURNAME_ID_SOUNDEX,true);
-		$criteria->compare('NAME1_SOUNDEX',$this->NAME1_SOUNDEX,true);
-		$criteria->compare('NAME2_SOUNDEX',$this->NAME2_SOUNDEX,true);
+		$criteria->compare('LOWER(SURNAME_TYPE)',strtolower($this->SURNAME_TYPE),true);
+		$criteria->compare('LOWER(SURNAME_ID)',strtolower($this->SURNAME_ID),true);
+		$criteria->compare('LOWER(NAME1)',strtolower($this->NAME1),true);
+		$criteria->compare('LOWER(NAME2)',strtolower($this->NAME2),true);
+		$criteria->compare('LOWER(TITLE)',strtolower($this->TITLE),true);
+		$criteria->compare('LOWER(SURNAME_ID_SOUNDEX)',strtolower($this->SURNAME_ID_SOUNDEX),true);
+		$criteria->compare('LOWER(NAME1_SOUNDEX)',strtolower($this->NAME1_SOUNDEX),true);
+		$criteria->compare('LOWER(NAME2_SOUNDEX)',strtolower($this->NAME2_SOUNDEX),true);
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
-		$criteria->compare('NAME3',$this->NAME3,true);
+		$criteria->compare('LOWER(NAME3)',strtolower($this->NAME3),true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

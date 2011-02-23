@@ -197,8 +197,8 @@ class PAS_Patient extends MultiActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO);
-		$criteria->compare('DATE_OF_BIRTH',$this->DATE_OF_BIRTH,true);
+		// $criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO);
+		// $criteria->compare('DATE_OF_BIRTH',$this->DATE_OF_BIRTH,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

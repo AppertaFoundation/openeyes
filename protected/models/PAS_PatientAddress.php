@@ -133,18 +133,18 @@ class PAS_PatientAddress extends MultiActiveRecord
 		$criteria->compare('ADDR_TYPE',$this->ADDR_TYPE,true);
 		$criteria->compare('DATE_START',$this->DATE_START,true);
 		$criteria->compare('ADDR_FORMAT',$this->ADDR_FORMAT,true);
-		$criteria->compare('PROPERTY_NAME',$this->PROPERTY_NAME,true);
+		$criteria->compare('LOWER(PROPERTY_NAME)',strtolower($this->PROPERTY_NAME),true);
 		$criteria->compare('PROPERTY_NO',$this->PROPERTY_NO,true);
-		$criteria->compare('ADDR1',$this->ADDR1,true);
-		$criteria->compare('ADDR2',$this->ADDR2,true);
-		$criteria->compare('ADDR3',$this->ADDR3,true);
-		$criteria->compare('ADDR4',$this->ADDR4,true);
-		$criteria->compare('ADDR5',$this->ADDR5,true);
-		$criteria->compare('POSTCODE',$this->POSTCODE,true);
-		$criteria->compare('HA_CODE',$this->HA_CODE,true);
+		$criteria->compare('LOWER(ADDR1)',strtolower($this->ADDR1),true);
+		$criteria->compare('LOWER(ADDR2)',strtolower($this->ADDR2),true);
+		$criteria->compare('LOWER(ADDR3)',strtolower($this->ADDR3),true);
+		$criteria->compare('LOWER(ADDR4)',strtolower($this->ADDR4),true);
+		$criteria->compare('LOWER(ADDR5)',strtolower($this->ADDR5),true);
+		$criteria->compare('LOWER(POSTCODE)',strtolower($this->POSTCODE),true);
+		$criteria->compare('LOWER(HA_CODE)',strtolower($this->HA_CODE),true);
 		$criteria->compare('TEL_NO',$this->TEL_NO,true);
-		$criteria->compare('DWELLING_TYPE',$this->DWELLING_TYPE,true);
-		$criteria->compare('SHARING_ACCOM',$this->SHARING_ACCOM,true);
+		$criteria->compare('LOWER(DWELLING_TYPE)',strtolower($this->DWELLING_TYPE),true);
+		$criteria->compare('LOWER(SHARING_ACCOM)',strtolower($this->SHARING_ACCOM),true);
 		$criteria->compare('DATE_END',$this->DATE_END,true);
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
 

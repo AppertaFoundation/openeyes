@@ -37,36 +37,26 @@ class PatientService
 			$value = strtoupper($value);
 		}
 
-		$params = array();
+	$params = array();
 		$criteria=new CDbCriteria;
-		$criteria->select = '"t".RM_PATIENT_NO, "t".SEX, 
-			TO_CHAR("t".DATE_OF_BIRTH, \'YYYY-MM-DD\') AS DATE_OF_BIRTH,
-			SILVER.SURNAME_IDS.*, SILVER.NUMBER_IDS.*';
-		$criteria->join = 'LEFT OUTER JOIN SILVER.SURNAME_IDS ON
-			"t".RM_PATIENT_NO = SILVER.SURNAME_IDS.RM_PATIENT_NO
-			LEFT OUTER JOIN SILVER.NUMBER_IDS ON
-			"t".RM_PATIENT_NO = SILVER.NUMBER_IDS.RM_PATIENT_NO';
-
+		$criteria->select = '"t".RM_PATIENT_NO, "t".SEX, TO_CHAR("t".DATE_OF_BIRTH, \'YYYY-MM-DD\') AS DATE_OF_BIRTH, SILVER.SURNAME_IDS.*, SILVER.NUMBER_IDS.*';
+		$criteria->join = 'LEFT OUTER JOIN SILVER.SURNAME_IDS ON "t".RM_PATIENT_NO = SILVER.SURNAME_IDS.RM_PATIENT_NO LEFT OUTER JOIN SILVER.NUMBER_IDS ON ("t".RM_PATIENT_NO = SILVER.NUMBER_IDS.RM_PATIENT_NO)';
 		if (!empty($data['dob'])) {
 			$criteria->addCondition("TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = :dob");
 			$params[':dob'] = $data['dob'];
 		}
 		if (!empty($data['first_name'])) {
-			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND
-				(Name1 LIKE :first_name OR Name2 LIKE :first_name))");
-			$params[':sn_type'] = 'NO';
+			$criteria->addCondition("RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND (Name1 LIKE :first_name OR Name2 LIKE :first_name))");
 			$params[':first_name'] = "%{$data['first_name']}%";
 		}
 		if (!empty($data['last_name'])) {
-			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND
-				Surname_ID LIKE :last_name)");
+			$criteria->addCondition("RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND Surname_ID LIKE :last_name)");
 			$params[':sn_type'] = 'NO';
 			$params[':last_name'] = "%{$data['last_name']}%";
 		}
 		if (!empty($data['gender'])) {
 			$criteria->compare('SEX',$data['gender']);
+			$params[':ycp0'] = $data['gender'];
 		}
 		if (!empty($data['hos_num'])) {
 			// add tweaks in for hospital number jiggering
