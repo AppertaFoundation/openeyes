@@ -16,6 +16,7 @@ return CMap::mergeArray(
 		'import'=>array(
 			'application.models.*',
 			'application.components.*',
+			'application.services.*'
 		),
 
 		'modules'=>array(
@@ -32,6 +33,9 @@ return CMap::mergeArray(
 			'user'=>array(
 				// enable cookie-based authentication
 				'allowAutoLogin'=>true,
+			),
+			'fixture'=>array(
+				'class'=>'system.test.CDbFixtureManager',
 			),
 			// uncomment the following to enable URLs in path-format
 			/*
@@ -51,9 +55,16 @@ return CMap::mergeArray(
 			),
 			*/
 			'db'=>array(
-				'connectionString' => 'mysql:host=;dbname=',
+				'connectionString' => 'mysql:host=localhost;dbname=openeyes',
 				'emulatePrepare' => true,
-				'username' => '',
+				'username' => 'root',
+				'password' => '',
+				'charset' => 'utf8',
+			),
+			'db_pas'=>array(
+				'connectionString' => 'mysql:host=localhost;dbname=openeyes',
+				'emulatePrepare' => true,
+				'username' => 'root',
 				'password' => '',
 				'charset' => 'utf8',
 			),

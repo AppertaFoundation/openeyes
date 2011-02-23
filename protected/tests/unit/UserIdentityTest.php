@@ -87,11 +87,7 @@ class UserIdentityTest extends CDbTestCase
 	{
 		Yii::app()->params['auth_source'] = 'LDAP';
 
-       # $ZendLdapStub = $this->getMockBuilder('Zend_Ldap')
-       #              ->disableOriginalConstructor()
-       #              ->getMock();
-
-	$ZendLdapStub = $this->getMock('Zend_Ldap');
+	$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
 
         $ZendLdapStub->expects($this->any())
              ->method('bind')
@@ -105,11 +101,6 @@ class UserIdentityTest extends CDbTestCase
 				 'mail' => array('stub@stub.com')
 			 )));
 
-#		$userIdentity = $this->getMockBuilder('UserIdentity')
-#					->setConstructorArgs(array('JoeBloggs', 'password'))
-#					->setMethods(array('getLdap'))
-#                    ->getMock();
-
 		$userIdentity = $this->getMock('UserIdentity', array('getLdap'),array('JoeBloggs', 'password'));
 		$userIdentity->expects($this->any())
                 ->method('getLdap')
@@ -122,11 +113,7 @@ class UserIdentityTest extends CDbTestCase
 	{
 		Yii::app()->params['auth_source'] = 'LDAP';
 
-#        $ZendLdapStub = $this->getMockBuilder('Zend_Ldap')
-#                     ->disableOriginalConstructor()
-#                     ->getMock();
-
-	$ZendLdapStub = $this->getMock('Zend_Ldap');
+	$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
         $ZendLdapStub->expects($this->any())
              ->method('bind')
              ->will($this->throwException(new Exception));
@@ -138,11 +125,6 @@ class UserIdentityTest extends CDbTestCase
 				 'sn' => array('stub'),
 				 'mail' => array('stub@stub.com')
 			 )));
-
-#		$userIdentity = $this->getMockBuilder('UserIdentity')
-#					->setConstructorArgs(array('JoeBloggs', 'password'))
-#					->setMethods(array('getLdap'))
-#                    ->getMock();
 
 		$userIdentity = $this->getMock('UserIdentity',array('getLdap'), array('JoeBloggs', 'password'));
 		$userIdentity->expects($this->any())
