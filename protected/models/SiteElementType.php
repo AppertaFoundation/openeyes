@@ -1,24 +1,25 @@
 <?php
 
 /**
- * This is the model class for table "specialty".
+ * This is the model class for table "site_element_type".
  *
- * The followings are the available columns in table 'specialty':
+ * The followings are the available columns in table 'site_element_type':
  * @property string $id
- * @property string $name
- * @property string $class_name
+ * @property string $possible_element_type_id
+ * @property string $specialty_id
+ * @property integer $default
+ * @property integer $view_number
+ * @property integer $first_in_episode
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSpecialtyAssignment[] $eventTypeElementTypeAssignmentSpecialtyAssignments
- * @property ExamPhrase[] $examPhrases
- * @property LetterTemplate[] $letterTemplates
- * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
+ * @property EventTypeElementTypeAssignment $eventTypeElementTypeAssignment
+ * @property Specialty $specialty
  */
-class Specialty extends CActiveRecord
+class SiteElementType extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Specialty the static model class
+	 * @return SiteElementType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -30,7 +31,7 @@ class Specialty extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'specialty';
+		return 'site_element_type';
 	}
 
 	/**
@@ -41,11 +42,12 @@ class Specialty extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, class_name', 'required'),
-			array('name, class_name', 'length', 'max'=>40),
+			array('possible_element_type_id, specialty_id', 'required'),
+			array('first_in_episode', 'numerical', 'integerOnly'=>true),
+			array('possible_element_type_id, specialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, class_name', 'safe', 'on'=>'search'),
+			array('id, possible_element_type_id, specialty_id, first_in_episode', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,11 +59,8 @@ class Specialty extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSpecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSpecialtyAssignment', 'specialty_id'),
-			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'specialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'specialty_id'),
-			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'specialty_id'),
-			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'specialty_id'),
+			'possibleElementType' => array(self::BELONGS_TO, 'possibleElementType', 'possible_element_type_id'),
+			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
 
@@ -72,8 +71,9 @@ class Specialty extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'class_name' => 'Class Name',
+			'possible_element_type_id' => 'Event Type Element Type Assignment',
+			'specialty_id' => 'Specialty',
+			'first_in_episode' => 'First In Episode',
 		);
 	}
 
@@ -89,8 +89,9 @@ class Specialty extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('class_name',$this->class_name,true);
+		$criteria->compare('possible_element_type_id',$this->possible_element_type_id,true);
+		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('first_in_episode',$this->first_in_episode);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

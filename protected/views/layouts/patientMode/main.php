@@ -22,7 +22,7 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> PATIENT MODE</div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
@@ -31,13 +31,15 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'Admin', 'url'=>array('/admin')),
 				array('label'=>'Search Patients', 'url'=>array('/patient/admin')),
+				array('label'=>'Clinical', 'url'=>array('/clinical')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
 		)); ?>
 	</div><!-- mainmenu -->
+
+	Patient: <?php echo($this->patientName) ?>
 
 	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
 		'links'=>$this->breadcrumbs,

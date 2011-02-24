@@ -1,24 +1,25 @@
 <?php
 
 /**
- * This is the model class for table "specialty".
+ * This is the model class for table "event".
  *
- * The followings are the available columns in table 'specialty':
+ * The followings are the available columns in table 'event':
  * @property string $id
- * @property string $name
- * @property string $class_name
+ * @property string $episode_id
+ * @property string $user_id
+ * @property string $event_type_id
+ * @property string $datetime
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSpecialtyAssignment[] $eventTypeElementTypeAssignmentSpecialtyAssignments
- * @property ExamPhrase[] $examPhrases
- * @property LetterTemplate[] $letterTemplates
- * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
+ * @property Episode $episode
+ * @property User $user
+ * @property EventType $eventType
  */
-class Specialty extends CActiveRecord
+class Event extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Specialty the static model class
+	 * @return Event the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -30,7 +31,7 @@ class Specialty extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'specialty';
+		return 'event';
 	}
 
 	/**
@@ -41,11 +42,11 @@ class Specialty extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, class_name', 'required'),
-			array('name, class_name', 'length', 'max'=>40),
+			array('episode_id, user_id, event_type_id', 'required'),
+			array('episode_id, user_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, class_name', 'safe', 'on'=>'search'),
+			array('id, episode_id, user_id, event_type_id, datetime', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,11 +58,9 @@ class Specialty extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSpecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSpecialtyAssignment', 'specialty_id'),
-			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'specialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'specialty_id'),
-			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'specialty_id'),
-			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'specialty_id'),
+			'episode' => array(self::BELONGS_TO, 'Episode', 'episode_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 		);
 	}
 
@@ -72,8 +71,10 @@ class Specialty extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'class_name' => 'Class Name',
+			'episode_id' => 'Episode',
+			'user_id' => 'User',
+			'event_type_id' => 'Event Type',
+			'datetime' => 'Datetime',
 		);
 	}
 
@@ -89,8 +90,10 @@ class Specialty extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('class_name',$this->class_name,true);
+		$criteria->compare('episode_id',$this->episode_id,true);
+		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('event_type_id',$this->event_type_id,true);
+		$criteria->compare('datetime',$this->datetime,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

@@ -1,48 +1,19 @@
 <?php
 
-class PatientController extends Controller
-{
+Yii::import('application.controllers.*');
 
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
+class PatientController extends BaseController
+{
 	public $layout = '//layouts/column2';
 
-	/**
-	 * @return array action filters
-	 */
-	public function filters()
+	protected function beforeAction(CAction $action)
 	{
-		return array(
-			'accessControl', // perform access control for CRUD operations
-		);
-	}
+		// Sample code to be used when RBAC is fully implemented.
+//		if (!Yii::app()->user->checkAccess('admin')) {
+//			throw new CHttpException(403, 'You are not authorised to perform this action.');
+//		}
 
-	/**
-	 * Specifies the access control rules.
-	 * This method is used by the 'accessControl' filter.
-	 * @return array access control rules
-	 */
-	public function accessRules()
-	{
-		return array(
-			array('allow', // allow all users to perform 'index', 'search', and 'view' actions
-				'actions' => array('index', 'view', 'search', 'results'),
-				'users' => array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions' => array('create', 'update'),
-				'users' => array('@'),
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions' => array('admin', 'delete'),
-				'users' => array('admin'),
-			),
-			array('deny', // deny all users
-				'users' => array('*'),
-			),
-		);
+		return parent::beforeAction($action);
 	}
 
 	/**
@@ -51,73 +22,17 @@ class PatientController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$patient = $this->loadModel($id);
+
+		$this->layout = '//layouts/patientMode/column2';
+
+		$app = Yii::app();
+		$app->session['patient_id'] = $patient->id;
+		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
+
 		$this->render('view', array(
-			'model' => $this->loadModel($id),
+			'model' => $patient
 		));
-	}
-
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionCreate()
-	{
-		$model = new Patient;
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if (isset($_POST['Patient'])) {
-			$model->attributes = $_POST['Patient'];
-			if ($model->save())
-				$this->redirect(array('view', 'id' => $model->id));
-		}
-
-		$this->render('create', array(
-			'model' => $model,
-		));
-	}
-
-	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
-	public function actionUpdate($id)
-	{
-		$model = $this->loadModel($id);
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if (isset($_POST['Patient'])) {
-			$model->attributes = $_POST['Patient'];
-			if ($model->save())
-				$this->redirect(array('view', 'id' => $model->id));
-		}
-
-		$this->render('update', array(
-			'model' => $model,
-		));
-	}
-
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
-	public function actionDelete($id)
-	{
-		if (Yii::app()->request->isPostRequest) {
-			// we only allow deletion via POST request
-			$this->loadModel($id)->delete();
-
-			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if (!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
-			throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
 	}
 
 	/**

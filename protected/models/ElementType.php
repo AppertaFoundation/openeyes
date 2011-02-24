@@ -1,24 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "specialty".
+ * This is the model class for table "element_type".
  *
- * The followings are the available columns in table 'specialty':
+ * The followings are the available columns in table 'element_type':
  * @property string $id
  * @property string $name
  * @property string $class_name
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSpecialtyAssignment[] $eventTypeElementTypeAssignmentSpecialtyAssignments
- * @property ExamPhrase[] $examPhrases
- * @property LetterTemplate[] $letterTemplates
- * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
+ * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
-class Specialty extends CActiveRecord
+class ElementType extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Specialty the static model class
+	 * @return ElementType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -30,7 +27,7 @@ class Specialty extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'specialty';
+		return 'element_type';
 	}
 
 	/**
@@ -42,7 +39,7 @@ class Specialty extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name, class_name', 'required'),
-			array('name, class_name', 'length', 'max'=>40),
+			array('name, class_name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name, class_name', 'safe', 'on'=>'search'),
@@ -57,11 +54,7 @@ class Specialty extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSpecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSpecialtyAssignment', 'specialty_id'),
-			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'specialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'specialty_id'),
-			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'specialty_id'),
-			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'specialty_id'),
+			'possibleElementTypes' => array(self::HAS_MANY, 'PossibleElementTypes', 'element_type_id'),
 		);
 	}
 

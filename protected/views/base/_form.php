@@ -5,6 +5,7 @@ if ($this->showForm) {
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'base-form',
 	'enableAjaxValidation'=>false,
+	'action' => Yii::app()->createUrl('site')
 )); ?>
 
 	<?php echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms); ?>
