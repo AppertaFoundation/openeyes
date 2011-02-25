@@ -59,7 +59,7 @@ class SiteElementType extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'possibleElementType' => array(self::BELONGS_TO, 'possibleElementType', 'possible_element_type_id'),
+			'possibleElementType' => array(self::BELONGS_TO, 'PossibleElementType', 'possible_element_type_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}

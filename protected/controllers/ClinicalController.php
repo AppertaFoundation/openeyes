@@ -95,7 +95,7 @@ class ClinicalController extends BaseController
 
 		$siteElementTypeObjects = $this->getSiteElementTypeObjects($eventType->id);
 
-		if($_POST['action'] == 'create')
+		if($_POST and $_POST['action'] == 'create')
 		{
 			/**
 			 * Loop through all site element types. If it's a default site element type,
@@ -104,14 +104,19 @@ class ClinicalController extends BaseController
 			$valid = true;
 
 			foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-				$elementClassName = new $siteElementTypeObject->possibleElementType->elementType->class_name;
+				# $elementClassName = new $siteElementTypeObject->possibleElementType->elementType->class_name;
+				$elementClassName = $siteElementTypeObject->possibleElementType->elementType->class_name;
 
 				if (
 					$siteElementTypeObject->default ||
-					isset($_POST[$element])
+					isset($_POST[$elementClassName])
 				) {
+					# var_dump($elementClassName); exit;
+					# echo $elementClassName; exit;
 					$element = new $elementClassName;
 					$element->attributes = $_POST[$elementClassName];
+					# $element_class_name = get_class($element);
+					# $element->attributes = $_POST[$element_class_name];
 
 					if (!$element->validate()) {
 						$valid = false;
@@ -221,7 +226,8 @@ class ClinicalController extends BaseController
 		}
 
 		// Loop through the elements and save them if need be
-		if ($_POST['action'] == 'update') {
+		if($_POST and $_POST['action'] == 'update') {
+		# if ($_POST['action'] == 'update') {
 			$saveError = false;
 
 			foreach ($elements as $element) {
@@ -291,7 +297,7 @@ class ClinicalController extends BaseController
 	 */
 	public function getSiteElementTypeObjects($eventTypeId) {
 		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-
+		// echo $specialty->id; exit;
 		// Get an array of all element types for this specialty and event type
 		$siteElementTypeObjects = array();
 
@@ -310,9 +316,12 @@ class ClinicalController extends BaseController
 					possible_element_type.order
 				';
 
+
+
 		$connection = Yii::app()->db;
 		$command = $connection->createCommand($sql);
-		$command->bindParam('specialty_id', $specialty->id);
+		// echo $specialty->id; exit;
+		$command->bindValue('specialty_id', $specialty->id);
 		$command->bindParam('event_type_id', $eventTypeId);
 		$results = $command->queryAll();
 
