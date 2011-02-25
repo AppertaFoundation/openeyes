@@ -4,6 +4,7 @@
 Yii::import('application.controllers.*');
 Yii::import('application.models.*');
 Yii::import('application.models.elements.*');
+Yii::import('application.services.*');
 
 class ClinicalController extends BaseController
 {
@@ -49,7 +50,10 @@ class ClinicalController extends BaseController
 
 		// Get all the elements for this event
 		// First get all the site elements for this event's event type, in order
-		$siteElementTypes = $this->getSiteElementTypeObjects($event->event_type_id);
+		$siteElementTypes = ClinicalService::getSiteElementTypeObjects(
+				$event->event_type_id,
+				$this->firm
+		);
 
 		$elements = array();
 
@@ -93,7 +97,10 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
-		$siteElementTypeObjects = $this->getSiteElementTypeObjects($eventType->id);
+		$siteElementTypeObjects = ClinicalService::getSiteElementTypeObjects(
+				$eventType->id,
+				$this->firm
+		);
 
 		if($_POST and $_POST['action'] == 'create')
 		{
@@ -201,7 +208,10 @@ class ClinicalController extends BaseController
 		}
 
 		// Get an array of all the site elements for this event type
-		$siteElementTypeObjects = $this->getSiteElementTypeObjects($event->event_type_id);
+		$siteElementTypeObjects = ClinicalService::getSiteElementTypeObjects(
+				$event->event_type_id,
+				$this->firm
+		);
 
 		$elements = array();
 
@@ -288,37 +298,6 @@ class ClinicalController extends BaseController
 		// @todo - change to only list event types that have at least one element defined?
 		$this->eventTypes = EventType::Model()->findAll();
 	}
-
-	/**
-	 * Returns an array of siteElementType objects for a given element type id.
-	 *
-	 * @param int $eventTypeId
-	 * @return array Object
-	 */
-	public function getSiteElementTypeObjects($eventTypeId) {
-		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-		// echo $specialty->id; exit;
-		// Get an array of all element types for this specialty and event type
-		$siteElementTypeObjects = array();
-
-		$sql = 'SELECT
-					site_element_type.id
-				FROM
-					site_element_type,
-					possible_element_type
-				WHERE
-					specialty_id = :specialty_id
-				AND
-					event_type_id = :event_type_id
-				AND
-					site_element_type.possible_element_type_id = possible_element_type.id
-				ORDER BY
-					possible_element_type.order
-				';
-
-
-
-		$connection = Yii::app()->db;
 		$command = $connection->createCommand($sql);
 		// echo $specialty->id; exit;
 		$command->bindValue('specialty_id', $specialty->id);
