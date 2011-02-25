@@ -5,9 +5,6 @@ class SpecialtyTest extends CDbTestCase
 		'specialties' => 'Specialty'
 	);
 
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
 	public function testGetDefaultElementTypeIds()
 	{
 	}

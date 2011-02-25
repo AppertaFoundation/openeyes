@@ -11,11 +11,11 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class History extends CActiveRecord
+class ElementHistory extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return History the static model class
+	 * @return ElementHistory the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

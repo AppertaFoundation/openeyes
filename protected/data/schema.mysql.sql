@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 24, 2011 at 02:49 PM
+-- Generation Time: Feb 25, 2011 at 10:21 AM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
@@ -418,9 +418,8 @@ CREATE TABLE IF NOT EXISTS `element_history` (
   `description` text COLLATE utf8_bin,
   PRIMARY KEY (`id`),
   UNIQUE KEY `event_id` (`event_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=15 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
 
--- --------------------------------------------------------
 
 --
 -- Table structure for table `element_type`
@@ -439,22 +438,22 @@ CREATE TABLE IF NOT EXISTS `element_type` (
 --
 
 INSERT INTO `element_type` (`id`, `name`, `class_name`) VALUES
-(1, 'History', 'History'),
-(2, 'Past History', 'PastHistory'),
-(3, 'Visual function', 'VisualFunction'),
-(4, 'Visual acuity', 'VisualAcuity'),
-(5, 'Mini-refraction', 'MiniRefraction'),
-(6, 'Visual fields', 'VisualFields'),
-(7, 'Extraocular movements', 'ExtraocularMovements'),
-(8, 'Cranial nervers', 'CranialNervers'),
-(9, 'Orbital examination', 'OrbitalExamination'),
-(10, 'Anterior segment', 'AnteriorSegment'),
-(11, 'Anterior segment drawing', 'AnteriorSegmentDrawing'),
-(12, 'Gonioscopy', 'Gonioscopy'),
-(13, 'intraocular pressure', 'IntraocularPressure'),
-(14, 'Posterior segment', 'PosteriorSegment'),
-(15, 'Posterior segment drawing', 'PosteriorSegmentDrawing'),
-(16, 'Conclusion', 'Conclusion');
+(1, 'History', 'ElementHistory'),
+(2, 'Past History', 'ElementPastHistory'),
+(3, 'Visual function', 'ElementVisualFunction'),
+(4, 'Visual acuity', 'ElementVisualAcuity'),
+(5, 'Mini-refraction', 'ElementMiniRefraction'),
+(6, 'Visual fields', 'ElementVisualFields'),
+(7, 'Extraocular movements', 'ElementExtraocularMovements'),
+(8, 'Cranial nervers', 'ElementCranialNervers'),
+(9, 'Orbital examination', 'ElementOrbitalExamination'),
+(10, 'Anterior segment', 'ElementAnteriorSegment'),
+(11, 'Anterior segment drawing', 'ElementAnteriorSegmentDrawing'),
+(12, 'Gonioscopy', 'ElementGonioscopy'),
+(13, 'intraocular pressure', 'ElementIntraocularPressure'),
+(14, 'Posterior segment', 'ElementPosteriorSegment'),
+(15, 'Posterior segment drawing', 'ElementPosteriorSegmentDrawing'),
+(16, 'Conclusion', 'ElementConclusion');
 
 -- --------------------------------------------------------
 
@@ -473,6 +472,7 @@ CREATE TABLE IF NOT EXISTS `episode` (
   KEY `episode_2` (`firm_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `event`
@@ -488,7 +488,9 @@ CREATE TABLE IF NOT EXISTS `event` (
   KEY `event_1` (`episode_id`),
   KEY `event_2` (`user_id`),
   KEY `event_3` (`event_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `event_type`
@@ -620,6 +622,15 @@ CREATE TABLE IF NOT EXISTS `letter_phrase` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
 
 --
+-- Dumping data for table `letter_phrase`
+--
+
+INSERT INTO `letter_phrase` (`id`, `firm_id`, `name`, `phrase`, `order`, `section`) VALUES
+(1, 9, 'test', 'test', 0, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `letter_template`
 --
 
@@ -634,6 +645,16 @@ CREATE TABLE IF NOT EXISTS `letter_template` (
   KEY `specialty_id` (`specialty_id`),
   KEY `contact_type_id` (`contact_type_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `letter_template`
+--
+
+INSERT INTO `letter_template` (`id`, `specialty_id`, `name`, `contact_type_id`, `text`, `cc`) VALUES
+(1, 9, '1233', 7, '1233', '2344'),
+(2, 2, 'asdf', 4, 'asdfasd', 'sdfgsdf');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `patient`
