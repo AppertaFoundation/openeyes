@@ -298,16 +298,4 @@ class ClinicalController extends BaseController
 		// @todo - change to only list event types that have at least one element defined?
 		$this->eventTypes = EventType::Model()->findAll();
 	}
-		$command = $connection->createCommand($sql);
-		// echo $specialty->id; exit;
-		$command->bindValue('specialty_id', $specialty->id);
-		$command->bindParam('event_type_id', $eventTypeId);
-		$results = $command->queryAll();
-
-		foreach ($results as $result) {
-			$siteElementTypeObjects[] = SiteElementType::Model()->findByPk($result['id']);
-		}
-
-		return $siteElementTypeObjects;
-	}
 }
