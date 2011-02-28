@@ -1,7 +1,14 @@
 <?php
-class ClincalServiceTest extends CDbTestCase
+
+Yii::import('application.services.*');
+
+class ClinicalServiceTest extends CDbTestCase
 {
 	public $fixtures = array(
+		'services' => ':service',
+		'specialties' => ':specialty',
+		'serviceSpecialtyAssignment' => ':service_specialty_assignment',
+		'firms' => ':firm',
 		'eventTypes' => ':event_type',
 		'elementTypes' => ':element_type',
 		'possibleElementTypes' => ':possible_element_type',
@@ -10,6 +17,14 @@ class ClincalServiceTest extends CDbTestCase
 
 	public function testgetSiteElementTypeObjects()
 	{
-		$this->assertTrue(true);
+		$firm = Firm::Model()->findByPk(1);
+
+		$siteElementTypes = ClinicalService::getSiteElementTypeObjects(
+				1,
+				$firm
+		);
+
+		$this->assertEquals(count($siteElementTypes), 1);
+		$this->assertEquals(get_class($siteElementTypes[0]), 'SiteElementType');
 	}
 }
