@@ -36,7 +36,7 @@ class ClinicalService
 
 		$connection = Yii::app()->db;
 		$command = $connection->createCommand($sql);
-		$command->bindParam('specialty_id', $specialty->id);
+		$command->bindValue('specialty_id', $specialty->id);
 		$command->bindParam('event_type_id', $eventTypeId);
 		$results = $command->queryAll();
 

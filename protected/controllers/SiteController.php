@@ -13,7 +13,9 @@ class SiteController extends BaseController
 	protected function beforeAction(CAction $action)
 	{
 		if (
-			$this->action->id == 'index' &&
+			$this->action->id == 'index' && 
+			$_POST && 
+			array_key_exists('selected_firm_id', $_POST) && 
 			$_POST['selected_firm_id']
 		) {
 			$app = Yii::app();
