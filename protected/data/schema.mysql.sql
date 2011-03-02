@@ -913,7 +913,7 @@ CREATE TABLE IF NOT EXISTS `site_element_type` (
 -- Dumping data for table `site_element_type`
 --
 
-INSERT INTO `site_element_type` (`id`, `possible_element_type_id`, `specialty_id`, `view_number`, `default`, `first_in_episode`) VALUES
+INSERT INTO `site_element_type` (`id`, `possible_element_type_id`, `specialty_id`, `view_number`, `required`, `first_in_episode`) VALUES
 (1, 1, 1, 2, 1, 1),
 (2, 1, 2, 1, 1, 1),
 (3, 1, 3, 1, 1, 1),
