@@ -505,18 +505,18 @@ CREATE TABLE IF NOT EXISTS `element_type` (
 
 INSERT INTO `element_type` (`id`, `name`, `class_name`) VALUES
 (1, 'History', 'ElementHistory'),
-(2, 'Past History', 'ElementPastHistory'),
+(2, 'Past history', 'ElementPastHistory'),
 (3, 'Visual function', 'ElementVisualFunction'),
 (4, 'Visual acuity', 'ElementVisualAcuity'),
 (5, 'Mini-refraction', 'ElementMiniRefraction'),
 (6, 'Visual fields', 'ElementVisualFields'),
 (7, 'Extraocular movements', 'ElementExtraocularMovements'),
-(8, 'Cranial nervers', 'ElementCranialNervers'),
+(8, 'Cranial nervers', 'ElementCranialNerves'),
 (9, 'Orbital examination', 'ElementOrbitalExamination'),
 (10, 'Anterior segment', 'ElementAnteriorSegment'),
 (11, 'Anterior segment drawing', 'ElementAnteriorSegmentDrawing'),
 (12, 'Gonioscopy', 'ElementGonioscopy'),
-(13, 'intraocular pressure', 'ElementIntraocularPressure'),
+(13, 'Intraocular pressure', 'ElementIntraocularPressure'),
 (14, 'Posterior segment', 'ElementPosteriorSegment'),
 (15, 'Posterior segment drawing', 'ElementPosteriorSegmentDrawing'),
 (16, 'Conclusion', 'ElementConclusion');
@@ -598,10 +598,11 @@ INSERT INTO `event` (`id`, `episode_id`, `user_id`, `event_type_id`, `datetime`)
 --
 
 CREATE TABLE IF NOT EXISTS `event_type` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(40) COLLATE utf8_bin NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
+	`id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+	`name` varchar(40) COLLATE utf8_bin NOT NULL,
+	`first_in_episode_possible` tinyint(1) unsigned NOT NULL DEFAULT '0',
+	PRIMARY KEY (`id`),
+	UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=24 ;
 
 --
@@ -819,7 +820,22 @@ CREATE TABLE IF NOT EXISTS `possible_element_type` (
 --
 
 INSERT INTO `possible_element_type` (`id`, `event_type_id`, `element_type_id`, `num_views`, `order`) VALUES
-(1, 1, 1, 1, 1);
+(1, 1, 1, 1, 1),
+(2, 1, 2, 1, 2),
+(2, 1, 3, 1, 3),
+(2, 1, 4, 1, 4),
+(2, 1, 5, 1, 5),
+(2, 1, 6, 1, 6),
+(2, 1, 7, 1, 7),
+(2, 1, 8, 1, 8),
+(2, 1, 9, 1, 9),
+(2, 1, 10, 1, 10),
+(2, 1, 11, 1, 11),
+(2, 1, 12, 1, 12),
+(2, 1, 13, 1, 13),
+(2, 1, 14, 1, 14),
+(2, 1, 15, 1, 15),
+(2, 1, 16, 1, 16);
 
 -- --------------------------------------------------------
 
@@ -886,7 +902,7 @@ CREATE TABLE IF NOT EXISTS `site_element_type` (
   `possible_element_type_id` int(10) unsigned NOT NULL,
   `specialty_id` int(10) unsigned NOT NULL,
   `view_number` int(10) unsigned NOT NULL,
-  `default` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `required` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `first_in_episode` tinyint(1) unsigned DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `possible_element_type_id` (`possible_element_type_id`),
@@ -928,7 +944,7 @@ INSERT INTO `specialty` (`id`, `name`) VALUES
 (6, 'External'),
 (7, 'Glaucoma'),
 (8, 'Medical Retina'),
-(9, 'Neuroophthalmology'),
+(9, 'Neuro-ophthalmology'),
 (10, 'Oncology'),
 (11, 'Paediatrics'),
 (12, 'Primary Care'),
