@@ -13,7 +13,7 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 	public function run($args)
 	{
 		$this->add_new($args);
-		$this->remove_old($args);
+		// $this->remove_old($args);
 	}
 
 	public function add_new($args) {
@@ -36,9 +36,10 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 				}
 
 				// if it's possible for the first in episode to be different:
-				if ($pet->eventType->first_in_episode_possible == true) {
+				// echo "FIEP: " . $pet->eventType->name ."=".$pet->eventType->first_in_episode_possible."\n";
+				if ($pet->eventType->first_in_episode_possible == 1) {
 					// if there's not an existing record, where first_in_episode is true, make one
-					if (!$existing_site_element_type = SiteElementType::Model()->findAllByAttributes(array('possible_element_type_id' => $pet->id, 'specialty_id' => $specialty->id, 'first_in_episode' => false))) {
+					if (!$existing_site_element_type = SiteElementType::Model()->findAllByAttributes(array('possible_element_type_id' => $pet->id, 'specialty_id' => $specialty->id, 'first_in_episode' => true))) {
 					echo "\tCreating first-in-episode site_element_type entry for: possible_element_type id: " . $pet->id . " specialty: " . $specialty->name . " (event type is: " . $pet->eventType->name . ")\n";
 						$new_site_element_type = new SiteElementType;
 						$new_site_element_type->possible_element_type_id = $pet->id;	

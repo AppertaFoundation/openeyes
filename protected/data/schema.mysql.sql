@@ -449,8 +449,216 @@ CREATE TABLE IF NOT EXISTS `disorder` (
 -- Dumping data for table `disorder`
 --
 
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_visual_function`
+--
+
+CREATE TABLE IF NOT EXISTS `element_visual_function` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
 
 -- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_visual_acuity`
+--
+
+CREATE TABLE IF NOT EXISTS `element_visual_acuity` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_mini_refraction`
+--
+
+CREATE TABLE IF NOT EXISTS `element_mini_refraction` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_visual_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `element_visual_fields` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_extraocular_movements`
+--
+
+CREATE TABLE IF NOT EXISTS `element_extraocular_movements` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_cranial_nerves`
+--
+
+CREATE TABLE IF NOT EXISTS `element_cranial_nerves` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_orbital_examination`
+--
+
+CREATE TABLE IF NOT EXISTS `element_orbital_examination` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_anterior_segment`
+--
+
+CREATE TABLE IF NOT EXISTS `element_anterior_segment` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_anterior_segment_drawing`
+--
+
+CREATE TABLE IF NOT EXISTS `element_anterior_segment_drawing` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_gonioscopy`
+--
+
+CREATE TABLE IF NOT EXISTS `element_gonioscopy` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_intraocular_pressure`
+--
+
+CREATE TABLE IF NOT EXISTS `element_intraocular_pressure` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_posterior_segment`
+--
+
+CREATE TABLE IF NOT EXISTS `element_posterior_segment` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_posterior_segment_drawing`
+--
+
+CREATE TABLE IF NOT EXISTS `element_posterior_segment_drawing` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_conclusion`
+--
+
+CREATE TABLE IF NOT EXISTS `element_conclusion` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
+-- --------------------------------------------------------
+
+
+--
+-- Table structure for table `element_past_history`
+--
+
+CREATE TABLE IF NOT EXISTS `element_past_history` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `event_id` int(10) unsigned NOT NULL
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `event_id` (`event_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=16 ;
+
 
 --
 -- Table structure for table `element_history`

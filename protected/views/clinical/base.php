@@ -29,7 +29,6 @@ foreach ($this->episodes as $episode) {
 
 	// @todo - this shouldn't be here
 	$firm = Firm::Model()->findByPk($this->selectedFirmId);
-
 	if ($firm->serviceSpecialtyAssignment->specialty_id == $episode->firm->serviceSpecialtyAssignment->specialty_id) {
 		echo('<b>' . $episodeString . '</b>');
 	} else {
