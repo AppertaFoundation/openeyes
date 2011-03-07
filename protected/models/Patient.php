@@ -105,4 +105,52 @@ class Patient extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function beforeSave() 
+	{
+		foreach (array('first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2') as $property) {
+			if ($randomised = $this->randomdata($property)) {
+				$this->$property = $randomised;
+			}
+		}
+		return parent::beforeSave();
+	}
+
+	private function randomdata($field) 
+	{
+		if (Yii::app()->params['pseudonymise_patient_details'] == 'no') {
+			return false;
+		}
+
+		// exceptions come first
+		if ($field == 'dob') {
+			return $this->randomdate();
+		}
+		if ($field == 'title') {
+			// gender neutral
+			return 'Dr';
+		}
+
+		$key_in_datafile = $field; 
+		if ( ($field == 'address1') or ($field == 'address2') ) {
+			$key_in_datafile = 'address';
+		}
+
+		// the following cases are based on a random data source.  address has to cover the 'address1' and 'address2' fields
+		$randomsource_field_order = array('first_name','last_name','address','city','postcode','telephone','mobile','email');
+
+		if (!in_array(strtolower($key_in_datafile), $randomsource_field_order)) {
+			return false;
+		}
+
+		$randomsource = file('protected/data/randomdata.csv');
+		$randomentry_array = explode(",", trim($randomsource[array_rand($randomsource)]));
+
+		return $randomentry_array[array_search($key_in_datafile, $randomsource_field_order)];
+	}
+
+	private function randomdate($startDate='1931-01-01',$endDate='2010-12-12') 
+	{
+		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
+	}
 }
