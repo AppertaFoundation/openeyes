@@ -7,7 +7,7 @@
  * @property string $id
  * @property string $possible_element_type_id
  * @property string $specialty_id
- * @property integer $default
+ * @property integer $required
  * @property integer $view_number
  * @property integer $first_in_episode
  *

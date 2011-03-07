@@ -28,4 +28,13 @@ return array(
 		'salt' => '4d36f32441',
 		'password' => '9c68f2134349243584ef9b6b21ca503e'
 	),
+	'admin' => array(
+		'username' => 'admin',
+		'first_name' => 'Admin',
+		'last_name' => 'User',
+		'email' => 'admin@mail.com',
+		'active' => 1,
+		'salt' => 'FbYJis0YG3',
+		'password' => 'd45409ef1eaa57f5041bf3a1b510097b'
+	),
 );

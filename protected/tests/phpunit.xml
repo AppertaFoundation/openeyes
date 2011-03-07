@@ -1,13 +1,19 @@
 <phpunit bootstrap="bootstrap.php"
-		colors="false"
+		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
-		stopOnFailure="false">
+		stopOnFailure="false"
+		verbose="true">
+
+	<filter>
+		<blacklist>
+			<directory suffix=".php">../../../yii/</directory>
+		</blacklist>
+	</filter>
 
 	<selenium>
 		<browser name="Internet Explorer" browser="*iexplore" />
 		<browser name="Firefox" browser="*firefox" />
 	</selenium>
-
 </phpunit>

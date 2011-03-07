@@ -531,8 +531,8 @@ CREATE TABLE IF NOT EXISTS `episode` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `patient_id` int(10) unsigned NOT NULL,
   `firm_id` int(10) unsigned DEFAULT NULL,
-  `startdate` datetime NOT NULL,
-  `enddate` datetime DEFAULT NULL,
+  `start_date` datetime NOT NULL,
+  `end_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `episode_1` (`patient_id`),
   KEY `episode_2` (`firm_id`)
@@ -542,7 +542,7 @@ CREATE TABLE IF NOT EXISTS `episode` (
 -- Dumping data for table `episode`
 --
 
-INSERT INTO `episode` (`id`, `patient_id`, `firm_id`, `startdate`, `enddate`) VALUES
+INSERT INTO `episode` (`id`, `patient_id`, `firm_id`, `start_date`, `end_date`) VALUES
 (1, 1, 7, '0000-00-00 00:00:00', NULL),
 (2, 1, 8, '0000-00-00 00:00:00', NULL),
 (3, 1, 9, '0000-00-00 00:00:00', '2011-02-23 18:11:39'),
@@ -886,7 +886,7 @@ CREATE TABLE IF NOT EXISTS `site_element_type` (
   `possible_element_type_id` int(10) unsigned NOT NULL,
   `specialty_id` int(10) unsigned NOT NULL,
   `view_number` int(10) unsigned NOT NULL,
-  `default` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `required` tinyint(1) unsigned NOT NULL DEFAULT '0',
   `first_in_episode` tinyint(1) unsigned DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `possible_element_type_id` (`possible_element_type_id`),

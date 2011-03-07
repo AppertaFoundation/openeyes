@@ -94,7 +94,7 @@ class UserTest extends CDbTestCase
 			return;
 		}
 
-		fail('Failed to throw exception when using invalid auth_source.');
+		$this->fail('Failed to throw exception when using invalid auth_source.');
 	}
 
 	public function testUpdate()
@@ -134,5 +134,6 @@ class UserTest extends CDbTestCase
 		);
 
 		$this->assertEquals($user->getActiveText(), 'No');
+		$this->assertEquals($this->users('user3'), $user);
 	}
 }

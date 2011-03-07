@@ -7,8 +7,8 @@
  * @property string $id
  * @property string $patient_id
  * @property string $firm_id
- * @property string $startdate
- * @property string $enddate
+ * @property string $start_date
+ * @property string $end_date
  *
  * The followings are the available model relations:
  * @property Patient $patient
@@ -74,8 +74,8 @@ class Episode extends CActiveRecord
 			'id' => 'ID',
 			'patient_id' => 'Patient',
 			'firm_id' => 'Firm',
-			'startdate' => 'Startdate',
-			'enddate' => 'Enddate',
+			'start_date' => 'Start Date',
+			'end_date' => 'End Date',
 		);
 	}
 
@@ -93,8 +93,8 @@ class Episode extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('patient_id',$this->patient_id,true);
 		$criteria->compare('firm_id',$this->firm_id,true);
-		$criteria->compare('startdate',$this->startdate,true);
-		$criteria->compare('enddate',$this->enddate,true);
+		$criteria->compare('start_date',$this->startdate,true);
+		$criteria->compare('end_date',$this->enddate,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -121,7 +121,7 @@ class Episode extends CActiveRecord
 				AND
 					specialty_id = :specialty_id
 				AND
-					enddate IS NULL
+					end_date IS NULL
 				';
 
 		$connection = Yii::app()->db;

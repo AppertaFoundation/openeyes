@@ -1,11 +1,5 @@
 <?php
 
-// @todo - surely there is a better way of doing this? Some sort of autoloading? Bootstrap?
-Yii::import('application.controllers.*');
-Yii::import('application.models.*');
-Yii::import('application.models.elements.*');
-Yii::import('application.services.*');
-
 class ClinicalController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';
@@ -29,7 +23,7 @@ class ClinicalController extends BaseController
 		$beforeActionResult = parent::beforeAction($action);
 
 		// Get the firm currently associated with this user
-		// @todo - user shouldn't be able to reach this user if they haven't selected a firm
+		// @todo - user shouldn't be able to reach this page if they haven't selected a firm
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
 
 		return $beforeActionResult;
@@ -44,15 +38,14 @@ class ClinicalController extends BaseController
 		$event = Event::model()->findByPk($id);
 
 		if (!isset($event)) {
-			// Invalid event id, exit
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
 		// Get all the elements for this event
 		// First get all the site elements for this event's event type, in order
 		$siteElementTypes = ClinicalService::getSiteElementTypeObjects(
-				$event->event_type_id,
-				$this->firm
+			$event->event_type_id,
+			$this->firm
 		);
 
 		$elements = array();
@@ -60,7 +53,6 @@ class ClinicalController extends BaseController
 		// Get all elements that actually exist for this event
 		foreach ($siteElementTypes as $siteElementType) {
 			$elementClassName = $siteElementType->possibleElementType->elementType->class_name;
-
 			$element = $elementClassName::model()->find('event_id = ?', array($event->id));
 
 			if ($element) {
@@ -86,7 +78,6 @@ class ClinicalController extends BaseController
 	public function actionCreate()
 	{
 		// @todo - check that this event type is permitted for this specialty
-
 		if (!isset($_GET['event_type_id'])) {
 			throw new CHttpException(403, 'No event_type_id specified.');
 		}
@@ -102,28 +93,21 @@ class ClinicalController extends BaseController
 				$this->firm
 		);
 
-		if($_POST and $_POST['action'] == 'create')
+		if ($_POST && $_POST['action'] == 'create')
 		{
 			/**
-			 * Loop through all site element types. If it's a default site element type,
+			 * Loop through all site element types. If it's a required site element type,
 			 * validate it. If it's not, check for its presence then validate if present.
 			 */
 			$valid = true;
 
 			foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-				# $elementClassName = new $siteElementTypeObject->possibleElementType->elementType->class_name;
 				$elementClassName = $siteElementTypeObject->possibleElementType->elementType->class_name;
 
-				if (
-					$siteElementTypeObject->default ||
-					isset($_POST[$elementClassName])
-				) {
-					# var_dump($elementClassName); exit;
-					# echo $elementClassName; exit;
+				if ($siteElementTypeObject->required ||
+					isset($_POST[$elementClassName])) {
 					$element = new $elementClassName;
 					$element->attributes = $_POST[$elementClassName];
-					# $element_class_name = get_class($element);
-					# $element->attributes = $_POST[$element_class_name];
 
 					if (!$element->validate()) {
 						$valid = false;
@@ -151,7 +135,7 @@ class ClinicalController extends BaseController
 					$episode->patient_id = $this->patientId;
 					$episode->firm_id = $this->firm->id;
 					// @todo - this might not be DB independent
-					$episode->startdate = date("Y-m-d H:i:s");
+					$episode->start_date = date("Y-m-d H:i:s");
 
 					if (!$episode->save()) {
 						// @todo - what to do with error?
@@ -160,19 +144,17 @@ class ClinicalController extends BaseController
 				}
 
 				$event = new Event();
-
 				$event->episode_id = $episode->id;
 				$event->user_id = Yii::app()->user->id;
 				$event->event_type_id = $_GET['event_type_id'];
 				$event->datetime = date("Y-m-d H:i:s");
-
 				$event->save();
 
 				// Create elements for the event
 				foreach ($elements as $element) {
 					$element->event_id = $event->id;
 
-					if(!$element->save()) {
+					if (!$element->save()) {
 						// @todo - what to do here? This shouldn't happen as the element
 						// has already been validated.
 						exit('Unable to create element (??)');
@@ -209,8 +191,8 @@ class ClinicalController extends BaseController
 
 		// Get an array of all the site elements for this event type
 		$siteElementTypeObjects = ClinicalService::getSiteElementTypeObjects(
-				$event->event_type_id,
-				$this->firm
+			$event->event_type_id,
+			$this->firm
 		);
 
 		$elements = array();
@@ -236,8 +218,7 @@ class ClinicalController extends BaseController
 		}
 
 		// Loop through the elements and save them if need be
-		if($_POST and $_POST['action'] == 'update') {
-		# if ($_POST['action'] == 'update') {
+		if ($_POST && $_POST['action'] == 'update') {
 			$saveError = false;
 
 			foreach ($elements as $element) {
@@ -279,7 +260,7 @@ class ClinicalController extends BaseController
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='episode-form')
+		if (isset($_POST['ajax']) && $_POST['ajax']==='episode-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

@@ -24,7 +24,7 @@ class UserIdentityTest extends CDbTestCase
 			return;
 		}
 
-		fail('Failed to recognise invalid auth_source.');
+		$this->fail('Failed to recognise invalid auth_source.');
 	}
 
 	public function testInvalidUser()
