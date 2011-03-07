@@ -143,7 +143,7 @@ class Patient extends CActiveRecord
 			return false;
 		}
 
-		$randomsource = file('protected/data/randomdata.csv');
+		$randomsource = file(Yii::app()->basePath . '/data/randomdata.csv');
 		$randomentry_array = explode(",", trim($randomsource[array_rand($randomsource)]));
 
 		return $randomentry_array[array_search($key_in_datafile, $randomsource_field_order)];
