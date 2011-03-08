@@ -16,7 +16,8 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 		// $this->remove_old($args);
 	}
 
-	public function add_new($args) {
+	public function add_new($args) 
+	{
 		$specialties = Specialty::Model()->findAll();
 		$possible_element_types = PossibleElementType::Model()->with('eventType')->findAll();
 
