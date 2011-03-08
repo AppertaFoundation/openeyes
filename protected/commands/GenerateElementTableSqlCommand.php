@@ -12,17 +12,17 @@ class GenerateElementTableSqlCommand extends CConsoleCommand
 
 	public function run($args)
 	{
-		$element_tables = ElementType::Model()->findAll();
+		$elementTables = ElementType::Model()->findAll();
 		echo "-- --------------------------------------------------------\n";
-		foreach ($element_tables as $table) {
-			$classname = $this->from_camel_case($table->class_name);
+		foreach ($elementTables as $table) {
+			$className = $this->fromCamelCase($table->class_name);
 echo "
 
 --
--- Table structure for table `$classname`
+-- Table structure for table `$className`
 --
 
-CREATE TABLE IF NOT EXISTS `$classname` (
+CREATE TABLE IF NOT EXISTS `$className` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `event_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `$classname` (
 		}
 	}
 
-	public function from_camel_case($str) {
+	public function fromCamelCase($str) {
 		$str[0] = strtolower($str[0]);
 		$func = create_function('$c', 'return "_" . strtolower($c[1]);');
 		return preg_replace_callback('/([A-Z])/', $func, $str);
