@@ -109,14 +109,14 @@ class Patient extends CActiveRecord
 	public function beforeSave() 
 	{
 		foreach (array('first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2') as $property) {
-			if ($randomised = $this->randomdata($property)) {
+			if ($randomised = $this->randomData($property)) {
 				$this->$property = $randomised;
 			}
 		}
 		return parent::beforeSave();
 	}
 
-	private function randomdata($field) 
+	private function randomData($field) 
 	{
 		if (Yii::app()->params['pseudonymise_patient_details'] == 'no') {
 			return false;
@@ -124,32 +124,32 @@ class Patient extends CActiveRecord
 
 		// exceptions come first
 		if ($field == 'dob') {
-			return $this->randomdate();
+			return $this->randomDate();
 		}
 		if ($field == 'title') {
 			// gender neutral
 			return 'Dr';
 		}
 
-		$key_in_datafile = $field; 
+		$keyInDatafile = $field; 
 		if ( ($field == 'address1') or ($field == 'address2') ) {
-			$key_in_datafile = 'address';
+			$keyInDatafile = 'address';
 		}
 
 		// the following cases are based on a random data source.  address has to cover the 'address1' and 'address2' fields
-		$randomsource_field_order = array('first_name','last_name','address','city','postcode','telephone','mobile','email');
+		$randomSourceFieldOrder = array('first_name','last_name','address','city','postcode','telephone','mobile','email');
 
-		if (!in_array(strtolower($key_in_datafile), $randomsource_field_order)) {
+		if (!in_array(strtolower($keyInDatafile), $randomSourceFieldOrder)) {
 			return false;
 		}
 
-		$randomsource = file(Yii::app()->basePath . '/data/randomdata.csv');
-		$randomentry_array = explode(",", trim($randomsource[array_rand($randomsource)]));
+		$randomSource = file(Yii::app()->basePath . '/data/randomdata.csv');
+		$randomEntryArray = explode(",", trim($randomSource[array_rand($randomSource)]));
 
-		return $randomentry_array[array_search($key_in_datafile, $randomsource_field_order)];
+		return $randomEntryArray[array_search($keyInDatafile, $randomSourceFieldOrder)];
 	}
 
-	private function randomdate($startDate='1931-01-01',$endDate='2010-12-12') 
+	private function randomDate($startDate='1931-01-01',$endDate='2010-12-12') 
 	{
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
