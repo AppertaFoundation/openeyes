@@ -137,4 +137,16 @@ class Episode extends CActiveRecord
 
 		return false;
 	}
+	/**
+	 * Returns true if an event of the given type exists within this episode
+	 */
+	public function hasEventOfType($eventTypeId)
+	{
+		foreach ($this->events as $event) {
+			if ($event->event_type_id == $eventTypeId) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

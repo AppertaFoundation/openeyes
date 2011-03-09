@@ -115,7 +115,7 @@ class ClinicalController extends BaseController
 				$elementClassName = $siteElementTypeObject->possibleElementType->elementType->class_name;
 
 				if (
-					$siteElementTypeObject->default ||
+					$siteElementTypeObject->required ||
 					isset($_POST[$elementClassName])
 				) {
 					# var_dump($elementClassName); exit;
@@ -139,13 +139,7 @@ class ClinicalController extends BaseController
 				 * specialty for this patient. If so, add the new event to it. If not, create an
 				 * episode and add it to that.
 				 */
-				$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-
-				$episode = Episode::modelBySpecialtyIdAndPatientId(
-					$specialty->id,
-					$this->patientId
-				);
-
+				$episode = $this->getEpisode();
 				if (!$episode) {
 					$episode = new Episode();
 					$episode->patient_id = $this->patientId;
@@ -182,12 +176,36 @@ class ClinicalController extends BaseController
 				$this->redirect(array('view', 'id' => $event->id));
 			}
 		}
-
+		$episode = Episode::model()->findByPk(7);
+		# echo $episode->hasEventOfType(1); exit;
+		$dedupedSiteElementTypeObjects = $this->dedupeSiteElementTypeObjects($siteElementTypeObjects, $_REQUEST['event_type_id']);
 		$this->render('create', array(
 				'siteElementTypeObjects' => $siteElementTypeObjects,
 				'eventTypeId' => $_REQUEST['event_type_id']
 			)
 		);
+	}
+
+	private function dedupeSiteElementTypeObjects($siteElementTypeObjects, $event_type_id) 
+	{
+		$episode = $this->getEpisode();
+		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
+			# if there's no episode, first in episode is possible, and this /is/ the first in episode object, render it
+			# if there's no episode, first in episode is possible, and this /is not/ the first in episode object, ignore it
+			# if there's no episode, first in episode is impossible, and this is /is/ not/ a first in episode object, render it
+
+			# if there's an episode, first in episode is possible, this /is/ the first in episode, and this /is/ the first in episode object, render it
+			# ...other cases...
+			# if there's an episode, first in episode is possible, and this /is not/ the first in episode object, ignore it
+			# if there's an episode, first in episode is impossible, and this is /is/ not/ a first in episode object, render it
+			if (!$episode && $siteElementTypeObject->first_in_episode ==1) {
+
+			} else {
+				if ( ($episode->hasEventOfType()) && ('test') ) {
+					# test
+				}
+			}
+		}
 	}
 
 	/**
@@ -286,6 +304,19 @@ class ClinicalController extends BaseController
 		}
 	}
 
+	/**
+	 * Returns the relevant episode based on the session, or null if one hasn't been started yet
+	 */
+	protected function getEpisode()
+	{
+		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+		$episode = Episode::modelBySpecialtyIdAndPatientId(
+			$specialty->id,
+			$this->patientId
+		);
+		return $episode;
+	}
+	
 	/**
 	 * Sets arrays of episodes and eventTypes for use by the clinical base.php view.
 	 */
