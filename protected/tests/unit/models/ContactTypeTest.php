@@ -1,5 +1,5 @@
 <?php
-class ContacttypeTest extends CDbTestCase
+class ContactTypeTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'contacttypes' => 'Contacttype'

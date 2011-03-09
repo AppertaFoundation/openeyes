@@ -6,6 +6,7 @@ class ClinicalController extends BaseController
 	public $episodes;
 	public $eventTypes;
 	public $firm;
+	public $service;
 
 	protected function beforeAction(CAction $action)
 	{
@@ -26,6 +27,8 @@ class ClinicalController extends BaseController
 		// @todo - user shouldn't be able to reach this page if they haven't selected a firm
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
 
+		$this->service = new ClinicalService;
+
 		return $beforeActionResult;
 	}
 
@@ -41,28 +44,11 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		// Get all the elements for this event
-		// First get all the site elements for this event's event type, in order
-		$siteElementTypes = ClinicalService::getSiteElementTypeObjects(
-			$event->event_type_id,
-			$this->firm
-		);
+		// Get all the site elements for this event's event type, in order
+		$siteElementTypes = $this->service->getSiteElementTypeObjects(
+			$event->event_type_id, $this->firm);
 
-		$elements = array();
-
-		// Get all elements that actually exist for this event
-		foreach ($siteElementTypes as $siteElementType) {
-			$elementClassName = $siteElementType->possibleElementType->elementType->class_name;
-			$element = $elementClassName::model()->find('event_id = ?', array($event->id));
-
-			if ($element) {
-				// Element exists, add it to the array
-				$elements[] = array(
-					'element' => $element,
-					'siteElementType' => $siteElementType
-				);
-			}
-		}
+		$elements = $this->service->getEventElementTypes($siteElementTypes, $event->id);
 
 		$this->render('view', array('elements' => $elements));
 	}
@@ -88,34 +74,14 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
-		$siteElementTypeObjects = ClinicalService::getSiteElementTypeObjects(
-				$eventType->id,
-				$this->firm
-		);
+		$siteElementTypes = $this->service->getSiteElementTypeObjects(
+			$eventType->id, $this->firm);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
-			/**
-			 * Loop through all site element types. If it's a required site element type,
-			 * validate it. If it's not, check for its presence then validate if present.
-			 */
-			$valid = true;
-
-			foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-				$elementClassName = $siteElementTypeObject->possibleElementType->elementType->class_name;
-
-				if ($siteElementTypeObject->required ||
-					isset($_POST[$elementClassName])) {
-					$element = new $elementClassName;
-					$element->attributes = $_POST[$elementClassName];
-
-					if (!$element->validate()) {
-						$valid = false;
-					} else {
-						$elements[] = $element;
-					}
-				}
-			}
+			$results = $this->service->validateElements($siteElementTypes, $_POST);
+			$valid = $results['valid'];
+			$elements = $results['elements'];
 
 			if ($valid) {
 				/**
@@ -270,7 +236,7 @@ class ClinicalController extends BaseController
 	/**
 	 * Sets arrays of episodes and eventTypes for use by the clinical base.php view.
 	 */
-	private function listEpisodesAndEventTypes()
+	protected function listEpisodesAndEventTypes()
 	{
 		$patient = Patient::Model()->findByPk($this->patientId);
 

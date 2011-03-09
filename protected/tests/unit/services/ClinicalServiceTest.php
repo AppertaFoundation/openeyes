@@ -1,7 +1,5 @@
 <?php
 
-Yii::import('application.services.*');
-
 class ClinicalServiceTest extends CDbTestCase
 {
 	public $fixtures = array(
@@ -20,8 +18,8 @@ class ClinicalServiceTest extends CDbTestCase
 		$firm = Firm::Model()->findByPk(1);
 
 		$siteElementTypes = ClinicalService::getSiteElementTypeObjects(
-				1,
-				$firm
+			1,
+			$firm
 		);
 
 		$this->assertEquals(count($siteElementTypes), 1);

@@ -1,5 +1,5 @@
 <?php
-class LetterphraseTest extends CDbTestCase
+class LetterPhraseTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'firms' => 'Firm',
