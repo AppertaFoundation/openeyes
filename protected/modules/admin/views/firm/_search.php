@@ -11,13 +11,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'service_id'); ?>
-		<?php echo $form->textField($model,'service_id',array('size'=>10,'maxlength'=>10)); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'specialty_id'); ?>
-		<?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->label($model,'service_specialty_id'); ?>
+		<?php echo $form->dropDownList($model,'service_specialty_assignment_id',$model->getServiceSpecialtyOptions()); ?>
 	</div>
 
 	<div class="row">
@@ -28,11 +23,6 @@
 	<div class="row">
 		<?php echo $form->label($model,'name'); ?>
 		<?php echo $form->textField($model,'name',array('size'=>40,'maxlength'=>40)); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->label($model,'contact_id'); ?>
-		<?php echo $form->textField($model,'contact_id',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
 	<div class="row buttons">

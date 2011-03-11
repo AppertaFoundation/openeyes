@@ -36,9 +36,9 @@ class ContacttypeController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Contacttype']))
+		if(isset($_POST['ContactType']))
 		{
-			$model->attributes=$_POST['Contacttype'];
+			$model->attributes=$_POST['ContactType'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class ContacttypeController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Contacttype']))
+		if(isset($_POST['ContactType']))
 		{
-			$model->attributes=$_POST['Contacttype'];
+			$model->attributes=$_POST['ContactType'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -107,7 +107,7 @@ class ContacttypeController extends Controller
 			'dataProvider'=>$dataProvider,
 		));
 	}
- 
+
 	/**
 	 * Manages all models.
 	 */
@@ -115,8 +115,8 @@ class ContacttypeController extends Controller
 	{
 		$model=new Contacttype('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Contacttype']))
-			$model->attributes=$_GET['Contacttype'];
+		if(isset($_GET['ContactType']))
+			$model->attributes=$_GET['ContactType'];
 
 		$this->render('admin',array(
 			'model'=>$model,

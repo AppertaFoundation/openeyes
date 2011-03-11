@@ -36,9 +36,9 @@ class ExamphraseController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Examphrase']))
+		if(isset($_POST['ExamPhrase']))
 		{
-			$model->attributes=$_POST['Examphrase'];
+			$model->attributes=$_POST['ExamPhrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class ExamphraseController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Examphrase']))
+		if(isset($_POST['ExamPhrase']))
 		{
-			$model->attributes=$_POST['Examphrase'];
+			$model->attributes=$_POST['ExamPhrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -110,8 +110,8 @@ class ExamphraseController extends Controller
 	{
 		$model=new Examphrase('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Examphrase']))
-			$model->attributes=$_GET['Examphrase'];
+		if(isset($_GET['ExamPhrase']))
+			$model->attributes=$_GET['ExamPhrase'];
 
 		$this->render('admin',array(
 			'model'=>$model,

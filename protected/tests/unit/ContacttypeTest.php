@@ -2,7 +2,7 @@
 class ContacttypeTest extends CDbTestCase
 {
 	public $fixtures = array(
-		'contacttypes' => 'Contacttype'
+		'contacttypes' => ':contact_type'
 	);
 
 	public function testNoContacttypes()

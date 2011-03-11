@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "contacttype".
+ * This is the model class for table "contact_type".
  *
- * The followings are the available columns in table 'contacttype':
+ * The followings are the available columns in table 'contact_type':
  * @property string $id
  * @property string $name
  * @property integer $macro_only
@@ -11,11 +11,11 @@
  * The followings are the available model relations:
  * @property Lettertemplate[] $lettertemplates
  */
-class Contacttype extends CActiveRecord
+class ContactType extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Contacttype the static model class
+	 * @return ContactType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -27,7 +27,7 @@ class Contacttype extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Contacttype';
+		return 'contact_type';
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Contacttype extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'lettertemplates' => array(self::HAS_MANY, 'Lettertemplate', 'contacttype_id'),
+			'lettertemplates' => array(self::HAS_MANY, 'Lettertemplate', 'contact_type_id'),
 		);
 	}
 

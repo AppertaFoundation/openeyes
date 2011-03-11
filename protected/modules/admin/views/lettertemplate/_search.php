@@ -21,8 +21,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'contacttype_id'); ?>
-		<?php echo $form->textField($model,'contacttype_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->label($model,'contact_type_id'); ?>
+		<?php echo $form->textField($model,'contact_type_id',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
 	<div class="row">

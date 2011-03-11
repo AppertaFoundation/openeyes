@@ -1,13 +1,13 @@
 <?php
 
 /**
- * This is the model class for table "lettertemplate".
+ * This is the model class for table "letter_template".
  *
- * The followings are the available columns in table 'lettertemplate':
+ * The followings are the available columns in table 'letter_template':
  * @property string $id
  * @property string $specialty_id
  * @property string $name
- * @property string $contacttype_id
+ * @property string $contact_type_id
  * @property string $text
  * @property string $cc
  *
@@ -15,11 +15,11 @@
  * @property Specialty $specialty
  * @property Contacttype $contacttype
  */
-class Lettertemplate extends CActiveRecord
+class LetterTemplate extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Lettertemplate the static model class
+	 * @return LetterTemplate the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -31,7 +31,7 @@ class Lettertemplate extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Lettertemplate';
+		return 'letter_template';
 	}
 
 	/**
@@ -42,14 +42,14 @@ class Lettertemplate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('specialty_id, contacttype_id', 'required'),
-			array('specialty_id, contacttype_id', 'length', 'max'=>10),
+			array('specialty_id, contact_type_id', 'required'),
+			array('specialty_id, contact_type_id', 'length', 'max'=>10),
 			array('name', 'length', 'max'=>64),
 			array('cc', 'length', 'max'=>128),
 			array('text', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, specialty_id, name, contacttype_id, text, cc', 'safe', 'on'=>'search'),
+			array('id, specialty_id, name, contact_type_id, text, cc', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -62,7 +62,7 @@ class Lettertemplate extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
-			'contacttype' => array(self::BELONGS_TO, 'Contacttype', 'contacttype_id'),
+			'contacttype' => array(self::BELONGS_TO, 'Contacttype', 'contact_type_id'),
 		);
 	}
 
@@ -75,7 +75,7 @@ class Lettertemplate extends CActiveRecord
 			'id' => 'ID',
 			'specialty_id' => 'Specialty',
 			'name' => 'Name',
-			'contacttype_id' => 'Contacttype',
+			'contact_type_id' => 'Contacttype',
 			'text' => 'Text',
 			'cc' => 'Cc',
 		);
@@ -95,7 +95,7 @@ class Lettertemplate extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('specialty_id',$this->specialty_id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('contacttype_id',$this->contacttype_id,true);
+		$criteria->compare('contact_type_id',$this->contact_type_id,true);
 		$criteria->compare('text',$this->text,true);
 		$criteria->compare('cc',$this->cc,true);
 
@@ -109,8 +109,8 @@ class Lettertemplate extends CActiveRecord
 		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
 	}
 
-	public function getContacttypeOptions()
+	public function getContactTypeOptions()
 	{
-		return CHtml::listData(Contacttype::Model()->findAll(), 'id', 'name');
+		return CHtml::listData(ContactType::Model()->findAll(), 'id', 'name');
 	}
 }

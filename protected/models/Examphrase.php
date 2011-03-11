@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "examphrase".
+ * This is the model class for table "exam_phrase".
  *
- * The followings are the available columns in table 'examphrase':
+ * The followings are the available columns in table 'exam_phrase':
  * @property string $id
  * @property string $specialty_id
  * @property integer $part
@@ -13,7 +13,7 @@
  * The followings are the available model relations:
  * @property Specialty $specialty
  */
-class Examphrase extends CActiveRecord
+class ExamPhrase extends CActiveRecord
 {
 	const PART_HISTORY = 0;
 	const PART_PMH = 1;
@@ -27,7 +27,7 @@ class Examphrase extends CActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Examphrase the static model class
+	 * @return ExamPhrase the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -39,7 +39,7 @@ class Examphrase extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Examphrase';
+		return 'exam_phrase';
 	}
 
 	/**
