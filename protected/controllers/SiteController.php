@@ -1,24 +1,31 @@
 <?php
 
-class SiteController extends Controller
+// @todo - surely there is a better way of doing this? Some sort of autoloading? Bootstrap?
+Yii::import('application.controllers.*');
+require_once('BaseController.php');
+
+class SiteController extends BaseController
 {
 	/**
-	 * Declares class-based actions.
+	 * Updates the selected firm if need be.
+	 * Calls the BaseController beforeAction method to set up displaying the firm form if need be.
 	 */
-	public function actions()
+	protected function beforeAction(CAction $action)
 	{
-		return array(
-			// captcha action renders the CAPTCHA image displayed on the contact page
-			'captcha'=>array(
-				'class'=>'CCaptchaAction',
-				'backColor'=>0xFFFFFF,
-			),
-			// page action renders "static" pages stored under 'protected/views/site/pages'
-			// They can be accessed via: index.php?r=site/page&view=FileName
-			'page'=>array(
-				'class'=>'CViewAction',
-			),
-		);
+		if (
+			$this->action->id == 'index' &&
+			$_POST['selected_firm_id']
+		) {
+			$app = Yii::app();
+
+			$firms = $app->session['firms'];
+
+			if ($firms[intval($_POST['selected_firm_id'])]) {
+				$app->session['selected_firm_id'] = intval($_POST['selected_firm_id']);
+			}
+		}
+
+		return parent::beforeAction($action);
 	}
 
 	/**

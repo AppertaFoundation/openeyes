@@ -43,7 +43,11 @@ class BaseController extends Controller
 			$this->patientId = $app->session['patient_id'];
 			$this->patientName = $app->session['patient_name'];
 		} else {
-			throw new CHttpException(403, 'You are not authorised to perform this action.');
+// @todo - TAKE THIS OUT! It's only here so diagnosis works until merge with clinical.
+			$this->patientId = 1;
+			$this->patientName = 'Test patient, id 1';
+
+//			throw new CHttpException(403, 'You are not authorised to perform this action.');
 		}
 	}
 }

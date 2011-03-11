@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * Required for LDAP authentication
+ */
+Yii::import('application.vendors.*');
+require_once('Zend/Ldap.php');
+
 class UserIdentityTest extends CDbTestCase
 {
 	public $fixtures = array(
@@ -87,7 +94,7 @@ class UserIdentityTest extends CDbTestCase
 	{
 		Yii::app()->params['auth_source'] = 'LDAP';
 
-	$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
+		$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
 
         $ZendLdapStub->expects($this->any())
              ->method('bind')

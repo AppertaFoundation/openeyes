@@ -22,7 +22,9 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> PATIENT MODE</div>
+
+		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
 	<div id="mainmenu">
