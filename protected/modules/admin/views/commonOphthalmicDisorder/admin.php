@@ -1,12 +1,12 @@
 <?php
 $this->breadcrumbs=array(
-	'Firms'=>array('index'),
+	'Common Ophthalmic Disorders'=>array('index'),
 	'Manage',
 );
 
 $this->menu=array(
-	array('label'=>'List Firm', 'url'=>array('index')),
-	array('label'=>'Create Firm', 'url'=>array('create')),
+	array('label'=>'List CommonOphthalmicDisorder', 'url'=>array('index')),
+	array('label'=>'Create CommonOphthalmicDisorder', 'url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -15,7 +15,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('firm-grid', {
+	$.fn.yiiGridView.update('common-ophthalmic-disorder-grid', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -23,7 +23,7 @@ $('.search-form form').submit(function(){
 ");
 ?>
 
-<h1>Manage Firms</h1>
+<h1>Manage Common Ophthalmic Disorders</h1>
 
 <p>
 You may optionally enter a comparison operator (<b>&lt;</b>, <b>&lt;=</b>, <b>&gt;</b>, <b>&gt;=</b>, <b>&lt;&gt;</b>
@@ -38,14 +38,13 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'firm-grid',
+	'id'=>'common-ophthalmic-disorder-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
-		'service_specialty_assignment_id',
-		'pas_code',
-		'name',
+		'disorder_id',
+		'specialty_id',
 		array(
 			'class'=>'CButtonColumn',
 		),

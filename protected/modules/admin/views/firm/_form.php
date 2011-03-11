@@ -10,15 +10,9 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'service_id'); ?>
-		<?php echo $form->dropDownList($model,'service_id',$model->getServiceOptions()); ?>
-		<?php echo $form->error($model,'service_id'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'specialty_id'); ?>
-		<?php echo $form->dropDownList($model,'specialty_id',$model->getSpecialtyOptions()); ?>
-		<?php echo $form->error($model,'specialty_id'); ?>
+		<?php echo $form->labelEx($model,'service_specialty_assignment_id'); ?>
+		<?php echo $form->dropDownList($model,'service_specialty_assignment_id',$model->getServiceSpecialtyOptions()); ?>
+		<?php echo $form->error($model,'service_specialty_assignment_id'); ?>
 	</div>
 
 	<div class="row">
@@ -31,12 +25,6 @@
 		<?php echo $form->labelEx($model,'name'); ?>
 		<?php echo $form->textField($model,'name',array('size'=>40,'maxlength'=>40)); ?>
 		<?php echo $form->error($model,'name'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'contact_id'); ?>
-		<?php echo $form->dropDownList($model,'contact_id',$model->getContactOptions()); ?>
-		<?php echo $form->error($model,'contact_id'); ?>
 	</div>
 
 	<div class="row buttons">

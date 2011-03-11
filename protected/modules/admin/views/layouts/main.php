@@ -35,6 +35,8 @@
 				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase/index')),
 				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate/index')),
 				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype/index')),
+				array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/commonophthalmicdisorder/index')),
+				array('label'=>'Systemic Disorders', 'url'=>array('/admin/commonsystemicdisorder/index')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
@@ -48,9 +50,7 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-		All Rights Reserved.<br/>
-		<?php echo Yii::powered(); ?>
+		Released under GPL version 3 by the Moorfields Eye Hospital NHS Foundation Trust.<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->
