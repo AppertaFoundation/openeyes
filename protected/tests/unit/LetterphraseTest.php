@@ -3,7 +3,7 @@ class LetterphraseTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'firms' => 'Firm',
-		'letterphrases' => 'Letterphrase',
+		'letterphrases' => ':letter_phrase',
 	);
 
 	public function testGetFirmOptions()

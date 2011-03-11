@@ -22,9 +22,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'contacttype_id'); ?>
-		<?php echo $form->dropDownList($model,'contacttype_id',$model->getContacttypeOptions()); ?>
-		<?php echo $form->error($model,'contacttype_id'); ?>
+		<?php echo $form->labelEx($model,'contact_type_id'); ?>
+		<?php echo $form->dropDownList($model,'contact_type_id',$model->getContacttypeOptions()); ?>
+		<?php echo $form->error($model,'contact_type_id'); ?>
 	</div>
 
 	<div class="row">

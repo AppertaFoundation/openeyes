@@ -45,7 +45,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'id',
 		'specialty_id',
 		'name',
-		'contacttype_id',
+		'contact_type_id',
 		'text',
 		'cc',
 		array(

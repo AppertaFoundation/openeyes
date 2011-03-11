@@ -12,7 +12,7 @@
 	<?php echo CHtml::encode($data->name); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('contacttype_id')); ?>:</b>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('contact_type_id')); ?>:</b>
 	<?php echo CHtml::encode($data->contacttype->name); ?>
 	<br />
 

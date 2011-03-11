@@ -36,9 +36,9 @@ class LettertemplateController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Lettertemplate']))
+		if(isset($_POST['LetterTemplate']))
 		{
-			$model->attributes=$_POST['Lettertemplate'];
+			$model->attributes=$_POST['LetterTemplate'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class LettertemplateController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Lettertemplate']))
+		if(isset($_POST['LetterTemplate']))
 		{
-			$model->attributes=$_POST['Lettertemplate'];
+			$model->attributes=$_POST['LetterTemplate'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -110,8 +110,8 @@ class LettertemplateController extends Controller
 	{
 		$model=new Lettertemplate('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Lettertemplate']))
-			$model->attributes=$_GET['Lettertemplate'];
+		if(isset($_GET['LetterTemplate']))
+			$model->attributes=$_GET['LetterTemplate'];
 
 		$this->render('admin',array(
 			'model'=>$model,

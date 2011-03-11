@@ -36,9 +36,9 @@ class LetterphraseController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Letterphrase']))
+		if(isset($_POST['LetterPhrase']))
 		{
-			$model->attributes=$_POST['Letterphrase'];
+			$model->attributes=$_POST['LetterPhrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class LetterphraseController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Letterphrase']))
+		if(isset($_POST['LetterPhrase']))
 		{
-			$model->attributes=$_POST['Letterphrase'];
+			$model->attributes=$_POST['LetterPhrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -110,8 +110,8 @@ class LetterphraseController extends Controller
 	{
 		$model=new Letterphrase('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Letterphrase']))
-			$model->attributes=$_GET['Letterphrase'];
+		if(isset($_GET['LetterPhrase']))
+			$model->attributes=$_GET['LetterPhrase'];
 
 		$this->render('admin',array(
 			'model'=>$model,

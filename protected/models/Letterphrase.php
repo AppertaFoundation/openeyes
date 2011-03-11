@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "letterphrase".
+ * This is the model class for table "letter_phrase".
  *
- * The followings are the available columns in table 'letterphrase':
+ * The followings are the available columns in table 'letter_phrase':
  * @property string $id
  * @property string $firm_id
  * @property string $name
@@ -14,7 +14,7 @@
  * The followings are the available model relations:
  * @property Firm $firm
  */
-class Letterphrase extends CActiveRecord
+class LetterPhrase extends CActiveRecord
 {
 	const SECTION_INTRODUCTION = 0;
 	const SECTION_FINDINGS = 1;
@@ -25,7 +25,7 @@ class Letterphrase extends CActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Letterphrase the static model class
+	 * @return LetterPhrase the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -37,7 +37,7 @@ class Letterphrase extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Letterphrase';
+		return 'letter_phrase';
 	}
 
 	/**
