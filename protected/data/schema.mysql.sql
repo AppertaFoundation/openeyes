@@ -1,28 +1,112 @@
-CREATE TABLE tbl_user (
-    id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    username VARCHAR(128) NOT NULL,
-    password VARCHAR(128) NOT NULL,
-    email VARCHAR(128) NOT NULL
-);
+CREATE TABLE IF NOT EXISTS `disorder` (
+  `id` int(10) unsigned NOT NULL,
+  `fully_specified_name` char(255) CHARACTER SET latin1 NOT NULL,
+  `term` char(255) CHARACTER SET latin1 NOT NULL,
+  `systemic` tinyint(1) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `term` (`term`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-INSERT INTO tbl_user (username, password, email) VALUES ('test1', 'pass1', 'test1@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test2', 'pass2', 'test2@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test3', 'pass3', 'test3@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test4', 'pass4', 'test4@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test5', 'pass5', 'test5@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test6', 'pass6', 'test6@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test7', 'pass7', 'test7@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test8', 'pass8', 'test8@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test9', 'pass9', 'test9@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test10', 'pass10', 'test10@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test11', 'pass11', 'test11@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test12', 'pass12', 'test12@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test13', 'pass13', 'test13@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test14', 'pass14', 'test14@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test15', 'pass15', 'test15@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test16', 'pass16', 'test16@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test17', 'pass17', 'test17@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test18', 'pass18', 'test18example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test19', 'pass19', 'test19example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test20', 'pass20', 'test20@example.com');
-INSERT INTO tbl_user (username, password, email) VALUES ('test21', 'pass21', 'test21@example.com');
+--
+-- Dumping data for table `disorder`
+--
+
+INSERT INTO `disorder` (`id`, `fully_specified_name`, `term`, `systemic`) VALUES
+(1, 'Myopia (disorder)', 'Myopia', 0),
+(2, 'Retinal lattice degeneration (disorder)', 'Retinal lattice degeneration', 0),
+(3, 'Posterior vitreous detachment (disorder)', 'Posterior vitreous detachment', 0),
+(4, 'Vitreous hemorrhage (disorder)', 'Vitreous haemorrhage', 0),
+(5, 'Essential hypertension (disorder)', 'Essential hypertension', 1),
+(6, 'Diabetes mellitus type 1 (disorder)', 'Diabetes mellitus type 1', 1),
+(7, 'Diabetes mellitus type 2 (disorder)', 'Diabetes mellitus type 2', 1),
+(8, 'Myocardial infarction (disorder)', 'Myocardial infarction', 1);
+
+
+CREATE TABLE IF NOT EXISTS `diagnosis` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `patient_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  `disorder_id` int(10) unsigned NOT NULL,
+  `created_on` datetime NOT NULL,
+  `location` tinyint(1) unsigned DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `patient_id` (`patient_id`),
+  KEY `user_id` (`user_id`),
+  KEY `disorder_id` (`disorder_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `diagnosis`
+--
+
+INSERT INTO `diagnosis` (`id`, `patient_id`, `user_id`, `disorder_id`, `created_on`, `location`) VALUES
+(1, 1, 1, 1, '0000-00-00 00:00:00', 0),
+(2, 1, 1, 2, '0000-00-00 00:00:00', 1),
+(3, 1, 1, 3, '0000-00-00 00:00:00', 2);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `diagnosis`
+--
+ALTER TABLE `diagnosis`
+  ADD CONSTRAINT `diagnosis_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`id`),
+  ADD CONSTRAINT `diagnosis_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
+  ADD CONSTRAINT `diagnosis_ibfk_3` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`);
+  
+CREATE TABLE IF NOT EXISTS `common_ophthalmic_disorder` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `disorder_id` int(10) unsigned NOT NULL,
+  `specialty_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `disorder_id` (`disorder_id`),
+  KEY `specialty_id` (`specialty_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `common_ophthalmic_disorder`
+--
+
+INSERT INTO `common_ophthalmic_disorder` (`id`, `disorder_id`, `specialty_id`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `common_ophthalmic_disorder`
+--
+ALTER TABLE `common_ophthalmic_disorder`
+  ADD CONSTRAINT `common_ophthalmic_disorder_ibfk_1` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`),
+  ADD CONSTRAINT `common_ophthalmic_disorder_ibfk_2` FOREIGN KEY (`specialty_id`) REFERENCES `specialty` (`id`);
+
+CREATE TABLE IF NOT EXISTS `common_systemic_disorder` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `disorder_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `disorder_id` (`disorder_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `common_systemic_disorder`
+--
+
+INSERT INTO `common_systemic_disorder` (`id`, `disorder_id`) VALUES
+(1, 5),
+(2, 6),
+(3, 7);
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `common_systemic_disorder`
+--
+ALTER TABLE `common_systemic_disorder`
+  ADD CONSTRAINT `common_systemic_disorder_ibfk_1` FOREIGN KEY (`disorder_id`) REFERENCES `disorder` (`id`);
