@@ -126,38 +126,41 @@ class ClinicalController extends BaseController
 				$this->redirect(array('view', 'id' => $event->id));
 			}
 		}
-		$episode = Episode::model()->findByPk(7);
-		# echo $episode->hasEventOfType(1); exit;
-		$dedupedSiteElementTypeObjects = $this->dedupeSiteElementTypeObjects($siteElementTypeObjects, $_REQUEST['event_type_id']);
+
+		$dedupedSiteElementTypeObjects = $this->dedupeSiteElementTypeObjects($siteElementTypeObjects, EventType::model()->findByPk($_REQUEST['event_type_id']),$this->getEpisode());
 		$this->render('create', array(
-				'siteElementTypeObjects' => $siteElementTypeObjects,
+				'siteElementTypeObjects' => $dedupedSiteElementTypeObjects,
 				'eventTypeId' => $_REQUEST['event_type_id']
 			)
 		);
 	}
 
-	private function dedupeSiteElementTypeObjects($siteElementTypeObjects, $event_type_id) 
+	/**
+	 * Given a set of site element type dataobjects, an eventtype object, and an episode object, prunes and returns a smaller array of site element type dataobjects 
+	 * relevant to the given eventtype and episode
+	 */
+	private function dedupeSiteElementTypeObjects($siteElementTypeObjects, $eventType, $episode)
 	{
 		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
 		$episode = $this->service->getEpisodeBySpecialtyAndPatient(
 			$specialty->id, $this->patientId);
+		$dedupedElementTypeObjects = array();
 		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-			# if there's no episode, first in episode is possible, and this /is/ the first in episode object, render it
-			# if there's no episode, first in episode is possible, and this /is not/ the first in episode object, ignore it
-			# if there's no episode, first in episode is impossible, and this is /is/ not/ a first in episode object, render it
-
-			# if there's an episode, first in episode is possible, this /is/ the first in episode, and this /is/ the first in episode object, render it
-			# ...other cases...
-			# if there's an episode, first in episode is possible, and this /is not/ the first in episode object, ignore it
-			# if there's an episode, first in episode is impossible, and this is /is/ not/ a first in episode object, render it
-			if (!$episode && $siteElementTypeObject->first_in_episode ==1) {
-
-			} else {
-				if ( ($episode->hasEventOfType()) && ('test') ) {
-					# test
+			if ($eventType->first_in_episode_possible == false) {
+				// Render everything;
+				$dedupedElementTypeObjects[] = $siteElementTypeObject;
+			} elseif ($episode && $episode->hasEventOfType($eventType->id)) {
+				// event is not first of this event type for this episode
+				// Render all where first_in_episode == false;
+				if ($siteElementTypeObject->first_in_episode == false) {
+					$dedupedElementTypeObjects[] = $siteElementTypeObject;
 				}
+			} elseif ($siteElementTypeObject->first_in_episode == true) {
+				// Render all where first_in_episode == true;
+				$dedupedElementTypeObjects[] = $siteElementTypeObject;
 			}
 		}
+		return $dedupedElementTypeObjects;
 	}
 
 	/**
@@ -172,7 +175,8 @@ class ClinicalController extends BaseController
 
 		// Check the user's firm is of the correct specialty to have the
 		// rights to update this event
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id != $event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
 			// User's firm's specialty id doesn't match the specialty id for this event, they shouldn't be here!
 			throw new CHttpException(403, 'The firm you are using is not associated with the specialty for this event.');
 		}
