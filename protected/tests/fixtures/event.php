@@ -10,4 +10,10 @@ return array(
 		'event_type_id' => 1,
 		'datetime' => date('Y-m-d H:i:s')
 	),
+	'event2' => array(
+		'episode_id' => $episodes['episode2']['id'],
+		'user_id' => $users['user1']['id'],
+		'event_type_id' => 1,
+		'datetime' => date('Y-m-d H:i:s')
+	)
 );

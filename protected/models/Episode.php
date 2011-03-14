@@ -100,41 +100,17 @@ class Episode extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-
+	
 	/**
-	 * Returns the episode for a patient and specialty if there is one.
+	 * Returns true if an event of the given type exists within this episode
 	 */
-	public static function modelBySpecialtyIdAndPatientId($specialtyId, $patientId)
+	public function hasEventOfType($eventTypeId)
 	{
-		$sql = 'SELECT
-					episode.id AS id
-				FROM
-					episode,
-					firm,
-					service_specialty_assignment
-				WHERE
-					patient_id = :patient_id
-				AND
-					firm_id = firm.id
-				AND
-					service_specialty_assignment_id = service_specialty_assignment.id
-				AND
-					specialty_id = :specialty_id
-				AND
-					end_date IS NULL
-				';
-
-		$connection = Yii::app()->db;
-		$command = $connection->createCommand($sql);
-		$command->bindParam(':patient_id', $patientId);
-		$command->bindParam(':specialty_id', $specialtyId);
-
-		$results = $command->queryAll();
-
-		if (count($results)) {
-			return Episode::model()->findByPk($results[0]['id']);
+		foreach ($this->events as $event) {
+			if ($event->event_type_id == $eventTypeId) {
+				return true;
+			}
 		}
-
 		return false;
 	}
 }

@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "element_history".
+ * This is the model class for table "element_visual_acuity".
  *
- * The followings are the available columns in table 'element_history':
+ * The followings are the available columns in table 'element_visual_acuity':
  * @property string $id
  * @property string $event_id
  * @property string $description
@@ -15,7 +15,7 @@ class ElementVisualAcuity extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ElementPastHistory the static model class
+	 * @return the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

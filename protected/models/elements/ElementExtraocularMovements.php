@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "element_history".
+ * This is the model class for table "element_extraocular_movements".
  *
- * The followings are the available columns in table 'element_history':
+ * The followings are the available columns in table 'element_extraocular_movements':
  * @property string $id
  * @property string $event_id
  * @property string $description

@@ -90,12 +90,8 @@ class ClinicalController extends BaseController
 				 * episode and add it to that.
 				 */
 				$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-
-				$episode = Episode::modelBySpecialtyIdAndPatientId(
-					$specialty->id,
-					$this->patientId
-				);
-
+				$episode = $this->service->getEpisodeBySpecialtyAndPatient(
+					$specialty->id, $this->patientId);
 				if (!$episode) {
 					$episode = new Episode();
 					$episode->patient_id = $this->patientId;
@@ -130,12 +126,38 @@ class ClinicalController extends BaseController
 				$this->redirect(array('view', 'id' => $event->id));
 			}
 		}
-
+		$episode = Episode::model()->findByPk(7);
+		# echo $episode->hasEventOfType(1); exit;
+		$dedupedSiteElementTypeObjects = $this->dedupeSiteElementTypeObjects($siteElementTypeObjects, $_REQUEST['event_type_id']);
 		$this->render('create', array(
 				'siteElementTypeObjects' => $siteElementTypeObjects,
 				'eventTypeId' => $_REQUEST['event_type_id']
 			)
 		);
+	}
+
+	private function dedupeSiteElementTypeObjects($siteElementTypeObjects, $event_type_id) 
+	{
+		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+		$episode = $this->service->getEpisodeBySpecialtyAndPatient(
+			$specialty->id, $this->patientId);
+		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
+			# if there's no episode, first in episode is possible, and this /is/ the first in episode object, render it
+			# if there's no episode, first in episode is possible, and this /is not/ the first in episode object, ignore it
+			# if there's no episode, first in episode is impossible, and this is /is/ not/ a first in episode object, render it
+
+			# if there's an episode, first in episode is possible, this /is/ the first in episode, and this /is/ the first in episode object, render it
+			# ...other cases...
+			# if there's an episode, first in episode is possible, and this /is not/ the first in episode object, ignore it
+			# if there's an episode, first in episode is impossible, and this is /is/ not/ a first in episode object, render it
+			if (!$episode && $siteElementTypeObject->first_in_episode ==1) {
+
+			} else {
+				if ( ($episode->hasEventOfType()) && ('test') ) {
+					# test
+				}
+			}
+		}
 	}
 
 	/**
@@ -156,58 +178,18 @@ class ClinicalController extends BaseController
 		}
 
 		// Get an array of all the site elements for this event type
-		$siteElementTypeObjects = ClinicalService::getSiteElementTypeObjects(
+		$siteElementTypes = $this->service->getSiteElementTypeObjects(
 			$event->event_type_id,
 			$this->firm
 		);
 
-		$elements = array();
-
-		// Get all elements that actually exist for this event
-		foreach ($siteElementTypeObjects as $siteElementType) {
-			$elementClassName = $siteElementType->possibleElementType->elementType->class_name;
-
-			$element = $elementClassName::model()->find('event_id = ?', array($event->id));
-
-			$preExisting = true;
-
-			if (!$element) {
-				$element = new $elementClassName;
-				$preExisting = false;
-			}
-
-			$elements[] = array(
-				'element' => $element,
-				'siteElementType' => $siteElementType,
-				'preExisting' => $preExisting,
-			);
-		}
+		$elements = $this->service->getEventElementTypes($siteElementTypes, $event->id, true);
 
 		// Loop through the elements and save them if need be
 		if ($_POST && $_POST['action'] == 'update') {
-			$saveError = false;
+			$success = $this->service->updateElements($elements, $_POST, $event->id);
 
-			foreach ($elements as $element) {
-				$elementClassName = get_class($element['element']);
-
-				if ($_POST[$elementClassName]) {
-					// The user has entered information for this element
-					// Check if it's a pre-existing element
-					if (!$element['preExisting']) {
-						// It's not pre-existing so give it an event id
-						$element['element']->event_id = $event->id;
-					}
-
-					// @todo - is there a risk they could change the event id here?
-					$element['element']->attributes = $_POST[$elementClassName];
-				}
-
-				if (!$element['element']->save()) {
-					$saveError = true;
-				}
-			}
-
-			if (!$saveError) {
+			if ($success) {
 				// Nothing has gone wrong with saving elements, go to the view page
 				$this->redirect(array('view', 'id' => $event->id));
 			}
@@ -232,17 +214,17 @@ class ClinicalController extends BaseController
 			Yii::app()->end();
 		}
 	}
-
+	
 	/**
 	 * Sets arrays of episodes and eventTypes for use by the clinical base.php view.
 	 */
-	protected function listEpisodesAndEventTypes()
+	public function listEpisodesAndEventTypes()
 	{
-		$patient = Patient::Model()->findByPk($this->patientId);
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		$this->episodes = $patient->episodes;
 
 		// @todo - change to only list event types that have at least one element defined?
-		$this->eventTypes = EventType::Model()->findAll();
+		$this->eventTypes = EventType::model()->findAll();
 	}
 }
