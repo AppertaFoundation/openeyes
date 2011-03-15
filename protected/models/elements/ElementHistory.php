@@ -38,6 +38,9 @@ class ElementHistory extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('description', 'required'),
+			array('description', 'filter', 'filter' => 'trim'),
+			array('description', 'length', 'allowEmpty' => false),
 			array('description', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.

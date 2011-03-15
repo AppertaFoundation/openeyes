@@ -158,7 +158,9 @@ class ClinicalService
 				$element['element']->attributes = $data[$elementClassName];
 			}
 
-			if (!$element['element']->save()) {
+			try {
+				$element['element']->save();
+			} catch (Exception $e) {
 				$success = false;
 			}
 		}

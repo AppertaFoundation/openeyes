@@ -171,7 +171,7 @@ class ClinicalServiceTest extends CDbTestCase
 	public function testValidateElements_ValidParameters_ReturnsCorrectData()
 	{
 		$siteElementTypes = SiteElementType::model()->findAll();
-		$data = array('ElementHistory' => $this->elementHistories('elementHistory1'));
+		$data = array('ElementHistory' => $this->elementHistories['elementHistory1']);
 
 		$element = new ElementHistory;
 		$element->attributes = $data['ElementHistory'];
@@ -188,7 +188,6 @@ class ClinicalServiceTest extends CDbTestCase
 
 	public function testValidateElements_InvalidElementData_ReturnsCorrectData()
 	{
-		$this->markTestSkipped('need a validator for element history first');
 		$siteElementTypes = SiteElementType::model()->findAll();
 		$data = array('ElementHistory' => $this->elementHistories('elementHistory1'));
 
@@ -197,13 +196,10 @@ class ClinicalServiceTest extends CDbTestCase
 		$element->description = '  ';
 		$element->validate();
 		$expected = array();
-		foreach ($this->siteElementTypes as $name => $values) {
-			$expected[] = $element;
-		}
 
 		$results = $this->service->validateElements($siteElementTypes, $data);
 		$this->assertFalse($results['valid']);
-		$this->assertEquals($expected, $results['elements']);
+		$this->assertEquals(count($expected), count($results['elements']));
 	}
 
 	public function testUpdateElements_EmptyElementList_ReturnsValidData()
@@ -268,8 +264,8 @@ class ClinicalServiceTest extends CDbTestCase
 		}
 
 		$this->assertEquals('ElementHistory', get_class($elements[0]['element']));
-		$this->setExpectedException('CDbException');
 		$result = $this->service->updateElements($elements, $data, 'test');
+		$this->assertFalse($result);
 	}
 
 	public function testUpdateElements_ValidFormData_NotPreExisting_ReturnsValidData()
