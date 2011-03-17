@@ -1,13 +1,24 @@
 <?php
 $this->breadcrumbs=array(
 	'Patients'=>array('index'),
-	'Search',
+	'Search'=>array('search'),
+	'Results',
 );
 ?>
 
 <h1>Search Results</h1>
-<?php $this->widget('zii.widgets.CListView', array(
+<?php $this->widget('zii.widgets.grid.CGridView', array(
+	'id'=>'patient-grid',
     'dataProvider'=>$dataProvider,
-    'itemView'=>'_view',
     'template'=>"{items}\n{pager}",
+	'columns'=>array(
+		'pas_key',
+		'title',
+		'first_name',
+		'last_name',
+		'dob',
+		'gender',
+		'hos_num',
+		'nhs_num'
+	)
 )); ?>

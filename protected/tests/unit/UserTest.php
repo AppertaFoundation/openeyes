@@ -10,6 +10,7 @@ class UserTest extends CDbTestCase
 		return array(
 			array(array('username' => 'Joe'), 1, array('user1')),
 			array(array('username' => 'Jane'), 1, array('user2')),
+			array(array('last_name' => 'bloggs'), 2, array('user1','user2')),  /* case insensitivity test */
 			array(array('username' => 'no-one'), 0, array()),
 		);
 	}
@@ -135,4 +136,5 @@ class UserTest extends CDbTestCase
 
 		$this->assertEquals($user->getActiveText(), 'No');
 	}
+
 }

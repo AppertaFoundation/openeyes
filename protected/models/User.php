@@ -115,10 +115,10 @@ class User extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('username',$this->username,true);
-		$criteria->compare('first_name',$this->first_name,true);
-		$criteria->compare('last_name',$this->last_name,true);
-		$criteria->compare('email',$this->email,true);
+		$criteria->compare('LOWER(username)',strtolower($this->username),true);
+		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),true);
+		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),true);
+		$criteria->compare('LOWER(email)',strtolower($this->email),true);
 		$criteria->compare('active',$this->active);
 
 		return new CActiveDataProvider(get_class($this), array(
