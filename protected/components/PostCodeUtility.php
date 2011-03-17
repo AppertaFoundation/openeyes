@@ -1,50 +1,10 @@
 <?php
-/**
- * OEPostCodeUtilityClass.inc.php
- * 
- * Utility class to clean address data
- * 
- * OpenEyes is licensed by Moorfields Eye Hospital NHS Foundation Trust (the �Licensor�) under version 3 of 
- * the GNU General Public Licence (GPL), and version 1 of the Open Eyes Proprietary Licence (OEPL).
- * 
- * You can choose the licence that most suits your intended use of OpenEyes. If you wish to contribute to the OpenEyes open source project
- * or incorporate OpenEyes into your own open source project, version 3 of the GNU General Public Licence or any later version shall apply.
- * If you wish to use OpenEyes for commercial purposes, the terms of the OpenEyes Proprietary Licence shall apply; 
- * 
- * A plain text version of the OpenEyes Proprietary Licence is distributed with this software. The Licensor reserves the right to publish
- * revised and/or new versions of the OpenEyes Proprietary Licence from time to time. Each version will be given a distinguishing version number.
- * 
- * When using OpenEyes in your commercial application, or open source application you are required to distribute your chosen 
- * licence (GPLv3 or OEPLv1) with your application and ensure the following acknowledgement is contained within both the program 
- * and in any user�s manual.
- * 
- * 		"This software uses elements of OpenEyes open source software (see http://www.openeyes.org.uk) Open Eyes is used and may only be 
- * 		used under the [GPL/OEPL] version [insert version number]"
- * 
- * @author Bill Aylward <bill.aylward@mac.com>
- * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
- * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
- * @version 1.0
- * Modification date: 7th October 2010
- * @copyright Copyright (c) 2010 OpenEyes
- * @package Base
- */
-/**
- * Utility class to clean address data
- *
- * @package Base
- * @link http://www.danielgibbs.net/journal/free-uk-postcode-towns-counties-database
- * @property array $this->towns UK towns by outer postcode
- * @property array $this->counties UK counties
- */
+
 class PostCodeUtility
 {
 	public $towns;
 	public $counties;
 
-	/**
-	 * Constructor
-	 */
 	public function __construct()
 	{
 		$this->towns = array(
@@ -5710,10 +5670,8 @@ class PostCodeUtility
 		// Regular expression to identify and split postcode into parts
 		$regex = '/^([A-Z]{1,2})([0-9][0-9A-Z]?)\s*([0-9])([A-Z]{2})$/';
 		
-		if(preg_match($regex, $string, $part))
-		{
-			return array
-			(
+		if (preg_match($regex, $string, $part)) {
+			return array(
 				'full' => $part[1].$part[2].' '.$part[3].$part[4],
 				'area' => $part[1],
 				'district' => $part[2],
@@ -5722,9 +5680,7 @@ class PostCodeUtility
 				'walk' => $part[4],
 				'inner' => $part[3] . $part[4]
 			);	
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
@@ -5773,4 +5729,3 @@ class PostCodeUtility
 		return in_array(strtolower($_string), array_map('strtolower', $this->counties));
 	}
 }
-?>

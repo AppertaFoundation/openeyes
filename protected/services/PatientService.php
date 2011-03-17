@@ -157,7 +157,9 @@ class PatientService
 		$patient->last_name  = $patientData->names[0]->SURNAME_ID;
 		$patient->dob        = $patientData->DATE_OF_BIRTH;
 		$patient->gender     = $patientData->SEX;
-		$patient->primary_phone = $addressData->TEL_NO;
+		if ($addressData->TEL_NO != 'NONE') {
+			$patient->primary_phone = $addressData->TEL_NO;
+		}
 
 		$address = $this->updateAddress($address, $addressData);
 		$address->save();
