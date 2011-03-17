@@ -4,15 +4,17 @@
  * This is the model class for table "patient".
  *
  * The followings are the available columns in table 'patient':
- * @property string $id
- * @property string $pas_key
- * @property string $title
- * @property string $first_name
- * @property string $last_name
- * @property string $dob
- * @property string $gender
- * @property string $hos_num
- * @property string $nhs_num
+ * @property string  $id
+ * @property string  $pas_key
+ * @property string  $title
+ * @property string  $first_name
+ * @property string  $last_name
+ * @property string  $dob
+ * @property string  $gender
+ * @property string  $hos_num
+ * @property string  $nhs_num
+ * @property integer $address_id
+ * @property string  $primary_phone
  */
 class Patient extends CActiveRecord
 {
@@ -46,6 +48,9 @@ class Patient extends CActiveRecord
 			array('title', 'length', 'max'=>8),
 			array('first_name, last_name, hos_num, nhs_num', 'length', 'max'=>40),
 			array('gender', 'length', 'max'=>1),
+			array('primary_phone', 'length', 'max'=>20),
+			array('gender', 'length', 'max'=>1),
+			array('address_id', 'numerical'),
 			array('dob', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -61,7 +66,9 @@ class Patient extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'pasinfo' => array(self::BELONGS_TO, 'PAS_Patient', 'pas_key')
+			'pasinfo' => array(self::BELONGS_TO, 'PAS_Patient', 'pas_key'),
+            'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+			'address' => array(self::BELONGS_TO, 'Address', 'address_id'),
 		);
 	}
 
