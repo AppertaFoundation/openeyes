@@ -22,7 +22,9 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> PATIENT MODE</div>
+
+		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
 	<div id="mainmenu">
@@ -43,9 +45,7 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-		All Rights Reserved.<br/>
-		<?php echo Yii::powered(); ?>
+		Released under GPL by OpenEyes.<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->

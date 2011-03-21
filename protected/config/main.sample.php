@@ -1,10 +1,8 @@
 <?php
 
-// uncomment the following to define a path alias
-// Yii::setPathOfAlias('local','path/to/local-folder');
-
-// This is the main Web application configuration. Any writable
-// CWebApplication properties can be configured here.
+/**
+ * Merges with the various parameters set in the params.php file.
+ */
 return CMap::mergeArray(
 	require(dirname(__FILE__).'/params.php'),
 	array(
@@ -25,13 +23,10 @@ return CMap::mergeArray(
 
 		'modules'=>array(
 			// uncomment the following to enable the Gii tool
-			/*
 			'gii'=>array(
 				'class'=>'system.gii.GiiModule',
-				'password'=>'Enter Your Password Here',
-				'generatorPaths'=>array('ext.mpgii'), // use multi-activerecord
+				'password'=>'',
 			),
-			*/
 			'admin',
 		),
 
@@ -53,6 +48,12 @@ return CMap::mergeArray(
 					'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 					'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 				),
+			),
+			*/
+			// uncomment the following line to use a sqlite database
+			/*
+			'db'=>array(
+				'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
 			),
 			*/
 			'db'=>array(

@@ -3,17 +3,11 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 02, 2011 at 12:07 PM
+-- Generation Time: Mar 11, 2011 at 12:07 PM
 -- Server version: 5.1.41
 -- PHP Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `openeyes`
@@ -105,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `common_ophthalmic_disorder` (
   PRIMARY KEY (`id`),
   KEY `disorder_id` (`disorder_id`),
   KEY `specialty_id` (`specialty_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=46 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=78 ;
 
 --
 -- Dumping data for table `common_ophthalmic_disorder`
@@ -114,7 +108,18 @@ CREATE TABLE IF NOT EXISTS `common_ophthalmic_disorder` (
 INSERT INTO `common_ophthalmic_disorder` (`id`, `disorder_id`, `specialty_id`) VALUES
 (22, 57190000, 1),
 (23, 3577000, 1),
-(24, 247081001, 1);
+(24, 247081001, 1),
+(67, 57190000, 2),
+(68, 3577000, 2),
+(69, 247081001, 2),
+(70, 57190000, 3),
+(71, 3577000, 3),
+(72, 247081001, 3),
+(73, 22298006, 4),
+(74, 3577000, 4),
+(75, 247081001, 4),
+(76, 44054006, 1),
+(77, 44054006, 1);
 
 -- --------------------------------------------------------
 
@@ -127,17 +132,20 @@ CREATE TABLE IF NOT EXISTS `common_systemic_disorder` (
   `disorder_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `disorder_id` (`disorder_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `common_systemic_disorder`
 --
 
 INSERT INTO `common_systemic_disorder` (`id`, `disorder_id`) VALUES
-(4, 22298006),
-(3, 44054006),
+(6, 22298006),
+(8, 44054006),
+(9, 44054006),
 (2, 46635009),
-(1, 59621000);
+(4, 46635009),
+(5, 46635009),
+(7, 46635009);
 
 -- --------------------------------------------------------
 
@@ -174,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `contact_type` (
   `macro_only` tinyint(1) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `contact_type`
@@ -470,18 +478,21 @@ CREATE TABLE IF NOT EXISTS `diagnosis` (
   `patient_id` int(10) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `disorder_id` int(10) unsigned NOT NULL,
-  `datetime` datetime NOT NULL,
-  `site` tinyint(1) unsigned DEFAULT '0',
+  `created_on` datetime NOT NULL,
+  `location` tinyint(1) unsigned DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `patient_id` (`patient_id`),
   KEY `user_id` (`user_id`),
   KEY `disorder_id` (`disorder_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=17 ;
 
 --
 -- Dumping data for table `diagnosis`
 --
 
+INSERT INTO `diagnosis` (`id`, `patient_id`, `user_id`, `disorder_id`, `created_on`, `location`) VALUES
+(13, 1, 1, 44054006, '2011-03-08 15:01:04', 0),
+(15, 1, 1, 44054006, '2011-03-11 11:51:06', 0);
 
 -- --------------------------------------------------------
 
@@ -787,7 +798,7 @@ CREATE TABLE IF NOT EXISTS `letter_phrase` (
   `section` int(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `firm_id` (`firm_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `letter_phrase`
@@ -812,7 +823,7 @@ CREATE TABLE IF NOT EXISTS `letter_template` (
   PRIMARY KEY (`id`),
   KEY `specialty_id` (`specialty_id`),
   KEY `contact_type_id` (`contact_type_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `letter_template`
@@ -820,7 +831,8 @@ CREATE TABLE IF NOT EXISTS `letter_template` (
 
 INSERT INTO `letter_template` (`id`, `specialty_id`, `name`, `contact_type_id`, `text`, `cc`) VALUES
 (1, 9, '1233', 7, '1233', '2344'),
-(2, 2, 'asdf', 4, 'asdfasd', 'sdfgsdf');
+(2, 2, 'asdf', 4, 'asdfasd', 'sdfgsdf'),
+(4, 1, '', 1, '', '');
 
 -- --------------------------------------------------------
 
@@ -1160,7 +1172,3 @@ ALTER TABLE `site_element_type`
 ALTER TABLE `user_contact_assignment`
   ADD CONSTRAINT `user_contact_assignment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
   ADD CONSTRAINT `user_contact_assignment_ibfk_2` FOREIGN KEY (`contact_id`) REFERENCES `contact` (`id`);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

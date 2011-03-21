@@ -22,14 +22,21 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> ADMIN PAGE</div>
 	</div><!-- header -->
 
 	<div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'User', 'url'=>array('/admin/user')),
+				array('label'=>'Users', 'url'=>array('/admin/user/index')),
+				array('label'=>'Firms', 'url'=>array('/admin/firm/index')),
+				array('label'=>'Exam Phrases', 'url'=>array('/admin/examphrase/index')),
+				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase/index')),
+				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate/index')),
+				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype/index')),
+				array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/commonophthalmicdisorder/index')),
+				array('label'=>'Systemic Disorders', 'url'=>array('/admin/commonsystemicdisorder/index')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
@@ -43,9 +50,7 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> by My Company.<br/>
-		All Rights Reserved.<br/>
-		<?php echo Yii::powered(); ?>
+		Released under GPL version 3 by the Moorfields Eye Hospital NHS Foundation Trust.<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->

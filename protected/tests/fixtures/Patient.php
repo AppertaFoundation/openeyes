@@ -2,14 +2,14 @@
 
 return array(
 	'patient1' => array(
-		'pas_key' => '123',
+		'pas_key' => 123,
 		'title' => 'Mr.',
 		'first_name' => 'John',
 		'last_name' => 'Smith',
 		'dob' => '1970-01-01',
 		'gender' => 'M',
-		'hos_num' => 12345,
-		'nhs_num' => 54321,
+		'hos_num' => '12345',
+		'nhs_num' => '54321',
 		'address1' => 'Flat 1A',
 		'address2' => '23 Main St',
 		'city' => 'London',
@@ -24,15 +24,16 @@ return array(
 		'drugs' => '',
 		'allergies' => ''
 	),
+
 	'patient2' => array(
-		'pas_key' => '456',
+		'pas_key' => 456,
 		'title' => 'Mr.',
 		'first_name' => 'John',
 		'last_name' => 'Jones',
 		'dob' => '1972-01-01',
 		'gender' => 'M',
-		'hos_num' => 23456,
-		'nhs_num' => 65432,
+		'hos_num' => '23456',
+		'nhs_num' => '65432',
 		'address1' => 'Flat 2B',
 		'address2' => '23 Center St',
 		'city' => 'London',
@@ -48,14 +49,14 @@ return array(
 		'allergies' => ''
 	),
 	'patient3' => array(
-		'pas_key' => '789',
+		'pas_key' => 789,
 		'title' => 'Mrs.',
 		'first_name' => 'Katherine',
 		'last_name' => 'Smith',
 		'dob' => '1960-01-01',
 		'gender' => 'F',
-		'hos_num' => 34567,
-		'nhs_num' => 76543,
+		'hos_num' => '34567',
+		'nhs_num' => '76543',
 		'address1' => 'Flat 3',
 		'address2' => '23 Southern St',
 		'city' => 'London',

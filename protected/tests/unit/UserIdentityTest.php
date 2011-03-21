@@ -1,4 +1,11 @@
 <?php
+
+/**
+ * Required for LDAP authentication
+ */
+Yii::import('application.vendors.*');
+require_once('Zend/Ldap.php');
+
 class UserIdentityTest extends CDbTestCase
 {
 	public $fixtures = array(
@@ -87,7 +94,7 @@ class UserIdentityTest extends CDbTestCase
 	{
 		Yii::app()->params['auth_source'] = 'LDAP';
 
-	$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
+		$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
 
         $ZendLdapStub->expects($this->any())
              ->method('bind')
@@ -101,8 +108,7 @@ class UserIdentityTest extends CDbTestCase
 				 'mail' => array('stub@stub.com')
 			 )));
 
-		$userIdentity = $this->getMock('UserIdentity',array('getLdap'), array('JoeBloggs', 'password'));
-
+		$userIdentity = $this->getMock('UserIdentity', array('getLdap'),array('JoeBloggs', 'password'));
 		$userIdentity->expects($this->any())
                 ->method('getLdap')
                 ->will($this->returnValue($ZendLdapStub));
@@ -115,7 +121,6 @@ class UserIdentityTest extends CDbTestCase
 		Yii::app()->params['auth_source'] = 'LDAP';
 
 	$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
-
         $ZendLdapStub->expects($this->any())
              ->method('bind')
              ->will($this->throwException(new Exception));
@@ -129,7 +134,6 @@ class UserIdentityTest extends CDbTestCase
 			 )));
 
 		$userIdentity = $this->getMock('UserIdentity',array('getLdap'), array('JoeBloggs', 'password'));
-
 		$userIdentity->expects($this->any())
                 ->method('getLdap')
                 ->will($this->returnValue($ZendLdapStub));
