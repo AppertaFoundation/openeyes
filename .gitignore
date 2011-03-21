@@ -1,7 +1,12 @@
+/index.php
+.gitignore
 /protected/tests/test_results/
 /protected/config/console.php
 /protected/config/params.php
 /protected/config/main.php
 /protected/config/test.php
-/index.php
+/protected/runtime/
+/assets/
 .*swp
+nbproject/*
+protected/tests/report
