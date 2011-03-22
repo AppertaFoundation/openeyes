@@ -46,9 +46,7 @@ class ClinicalController extends BaseController
 		}
 
 		// Get all the site elements for this event's event type, in order
-		$siteElementTypes = $this->service->getSiteElementTypeObjects(
-			$event->event_type_id, $this->firm);
-
+		$siteElementTypes = SiteElementType::model()->getAllPossible($event->event_type_id, $this->firm->id);
 		$elements = $this->service->getEventElementTypes($siteElementTypes, $event->id);
 
 		$this->render('view', array('elements' => $elements));
