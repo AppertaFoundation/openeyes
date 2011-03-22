@@ -11,7 +11,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementPosteriorSegment extends CActiveRecord
+class ElementPosteriorSegment extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.

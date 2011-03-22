@@ -89,4 +89,23 @@ class EventType extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 * Retrieves dataobjects for all EventTypes that PossibleElementType/SiteElementType suggest are possible
+	 */
+	public function getAllPossible($specialtyId)
+	{
+		$criteria = new CDbCriteria;
+
+		$criteria->distinct=true;
+		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType ON possibleElementType.event_type_id = t.id INNER JOIN site_element_type ON site_element_type.possible_element_type_id=possibleElementType.id';
+		$criteria->addCondition('site_element_type.specialty_id = :specialty_id');
+		$criteria->order = 't.id';
+		$criteria->params = array(
+			':specialty_id' => $specialtyId
+		);
+
+		$eventTypeObjects = EventType::model()->findAll($criteria);
+		return $eventTypeObjects;
+	}
 }

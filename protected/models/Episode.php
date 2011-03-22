@@ -47,7 +47,7 @@ class Episode extends CActiveRecord
 			array('enddate', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, patient_id, firm_id, startdate, enddate', 'safe', 'on'=>'search'),
+			array('id, patient_id, firm_id, start_date, end_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,8 +93,8 @@ class Episode extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('patient_id',$this->patient_id,true);
 		$criteria->compare('firm_id',$this->firm_id,true);
-		$criteria->compare('start_date',$this->startdate,true);
-		$criteria->compare('end_date',$this->enddate,true);
+		$criteria->compare('start_date',$this->start_date,true);
+		$criteria->compare('end_date',$this->end_date,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -112,5 +112,33 @@ class Episode extends CActiveRecord
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the episode for a patient and specialty if there is one.
+	 *
+	 * @param integer $specialtyId	    id of the specialty
+	 * @param integer $patientId	    id of the patient
+	 *
+	 * @return object $episode if found, null otherwise
+	 */
+	public function getBySpecialtyAndPatient($specialtyId, $patientId, $onlyReturnOpen = true)
+	{
+		$criteria = new CDbCriteria;
+		$criteria->join = 'LEFT JOIN firm ON t.firm_id = firm.id 
+			LEFT JOIN service_specialty_assignment serviceSpecialtyAssignment ON 
+				serviceSpecialtyAssignment.id = firm.service_specialty_assignment_id 
+			LEFT JOIN patient ON t.patient_id = patient.id';
+		$criteria->addCondition('serviceSpecialtyAssignment.specialty_id = :specialty_id');
+		$criteria->addCondition('patient.id = :patient_id');
+		if ($onlyReturnOpen) {
+			$criteria->addCondition('t.end_date IS NULL');
+		}
+		$criteria->params = array(
+			':specialty_id' => $specialtyId,
+			':patient_id' => $patientId
+		);
+
+		return Episode::model()->find($criteria);
 	}
 }

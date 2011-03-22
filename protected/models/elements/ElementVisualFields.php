@@ -11,7 +11,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementVisualFields extends CActiveRecord
+class ElementVisualFields extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.

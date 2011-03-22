@@ -11,7 +11,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementMiniRefraction extends CActiveRecord
+class ElementMiniRefraction extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.

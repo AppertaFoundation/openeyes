@@ -33,6 +33,13 @@ class ClinicalControllerTest extends CDbTestCase
 		);
 	}
 
+	public function dataProvider_EventTypesForAccidentAndEmergencySpecialty()
+	{
+		return array(
+			array('1','9'),
+		);
+	}
+
 	public function testActionIndex_RendersIndexView()
 	{
 		$mockController = $this->getMock('ClinicalController', array('render'),
@@ -190,21 +197,42 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->actionUpdate($eventId);
 	}
 
-	public function testListEpisodesAndEventTypes()
+	public function testListEpisodes()
 	{
 		$patient = $this->patients('patient1');
-		$eventTypes = EventType::model()->findAll();
-		$mockController = $this->getMock('ClinicalController',
-			array('checkPatientId'), array('ClinicalController'));
-		$mockController->expects($this->any())
-			->method('checkPatientId');
+		$mockController = $this->getMock('ClinicalController', array('checkPatientId'), array('ClinicalController'));
+		$mockController->expects($this->any())->method('checkPatientId');
 		$mockController->patientId = $patient->id;
 
 		$this->assertNull($mockController->episodes);
-		$this->assertNull($mockController->eventTypes);
 		$mockController->listEpisodesAndEventTypes();
 		$this->assertEquals($patient->episodes, $mockController->episodes);
-		$this->assertEquals($eventTypes, $mockController->eventTypes);
+	}
+
+	/**
+	 * @dataProvider dataProvider_EventTypesForAccidentAndEmergencySpecialty
+	 */
+	public function testListEventTypes($eventTypesArray)
+	{
+		// test that $mockController->eventTypes equals the eventtypes for the given firm's specialty
+		// we should have 1 and 9 for firm/specialty 1
+		$patient = $this->patients('patient1');
+		$app->session['selected_firm_id'] = 1;
+		$mockController = $this->getMock('ClinicalController', array('checkPatientId'), array('ClinicalController'));
+		$mockController->expects($this->any())->method('checkPatientId');
+		$mockController->patientId = $patient->id;
+
+		$this->assertNull($mockController->eventTypes);
+		$firm = $this->firms('firm1');
+		$mockController->firm = Firm::model()->findByPk(1);
+		$mockController->listEpisodesAndEventTypes();
+
+		$count = 0;
+		foreach ($mockController->eventTypes as $eventType) {
+			$this->assertEquals($eventTypesArray[$count], $eventType->id);
+			$count++;
+		}
+		# $this->assertEquals($eventTypes, $mockController->eventTypes);
 	}
 	
 	public function testGetEpisode()

@@ -35,41 +35,6 @@ class ClinicalServiceTest extends CDbTestCase
 		);
 	}
 
-	public function testGetSiteElementTypeObjects_ValidParameters_ReturnsCorrectData()
-	{
-		$firm = $this->firms('firm1');
-		$results = $this->service->getSiteElementTypeObjects(1, $firm);
-
-		$expected = array($this->siteElementTypes('siteElementType1'));
-
-		$this->assertEquals(count($results), 1);
-		$this->assertEquals(get_class($results[0]), 'SiteElementType');
-		$this->assertEquals($expected, $results);
-	}
-
-	public function testGetEpisodeBySpecialtyAndPatient_InvalidParameters_ReturnsFalse()
-	{
-		$specialtyId = 9278589128;
-		$patientId = 2859290852;
-
-		$result = $this->service->getEpisodeBySpecialtyAndPatient($specialtyId, $patientId);
-
-		$this->assertNull($result);
-	}
-
-	public function testGetEpisodeBySpecialtyAndPatient_ValidParameters_ReturnsCorrectData()
-	{
-		$specialty = $this->specialties('specialty1');
-		$patient = $this->patients('patient1');
-
-		$expected = $this->episodes('episode1');
-
-		$result = $this->service->getEpisodeBySpecialtyAndPatient($specialty->id, $patient->id);
-
-		$this->assertEquals(get_class($result), 'Episode');
-		$this->assertEquals($expected, $result);
-	}
-
 	/**
 	 * @dataProvider dataProvider_InvalidEventElementTypeParameters
 	 */

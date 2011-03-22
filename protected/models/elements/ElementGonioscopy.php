@@ -11,7 +11,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementGonioscopy extends CActiveRecord
+class ElementGonioscopy extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.

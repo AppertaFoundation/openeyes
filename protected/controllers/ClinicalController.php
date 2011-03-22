@@ -11,23 +11,24 @@ class ClinicalController extends BaseController
 	protected function beforeAction(CAction $action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
-//		if (!Yii::app()->user->checkAccess('admin')) {
-//			throw new CHttpException(403, 'You are not authorised to perform this action.');
-//		}
+		// if (!Yii::app()->user->checkAccess('admin')) {
+		// 	throw new CHttpException(403, 'You are not authorised to perform this action.');
+		// }
 
 		$this->checkPatientId();
 
-		// Displays the list of episodes and events for this patient
-		$this->listEpisodesAndEventTypes();
-
 		// @todo - this needs tidying
 		$beforeActionResult = parent::beforeAction($action);
+
 
 		// Get the firm currently associated with this user
 		// @todo - user shouldn't be able to reach this page if they haven't selected a firm
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
 
 		$this->service = new ClinicalService;
+
+		// Displays the list of episodes and events for this patient
+		$this->listEpisodesAndEventTypes();
 
 		return $beforeActionResult;
 	}
@@ -74,8 +75,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
-		$siteElementTypes = $this->service->getSiteElementTypeObjects(
-			$eventType->id, $this->firm);
+		$siteElementTypes = SiteElementType::model()->getAllPossible($eventType->id, $this->firm->id);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -89,9 +89,8 @@ class ClinicalController extends BaseController
 				 * specialty for this patient. If so, add the new event to it. If not, create an
 				 * episode and add it to that.
 				 */
-				$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-				$episode = $this->service->getEpisodeBySpecialtyAndPatient(
-					$specialty->id, $this->patientId);
+				$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty->id;
+				$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $this->patientId);
 				if (!$episode) {
 					$episode = new Episode();
 					$episode->patient_id = $this->patientId;
@@ -115,7 +114,8 @@ class ClinicalController extends BaseController
 				// Create elements for the event
 				foreach ($elements as $element) {
 					$element->event_id = $event->id;
-
+					// $element->userFirm = $this->firm;
+					// $element->patientId = $this->patientId;
 					if (!$element->save()) {
 						// @todo - what to do here? This shouldn't happen as the element
 						// has already been validated.
@@ -126,41 +126,16 @@ class ClinicalController extends BaseController
 				$this->redirect(array('view', 'id' => $event->id));
 			}
 		}
+		
+		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty->id;
+		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $this->patientId);
+		if (!$episode) {$episodeId = 0;}
 
-		$dedupedSiteElementTypeObjects = $this->dedupeSiteElementTypeObjects($siteElementTypeObjects, EventType::model()->findByPk($_REQUEST['event_type_id']),$this->getEpisode());
 		$this->render('create', array(
-				'siteElementTypeObjects' => $dedupedSiteElementTypeObjects,
+				'siteElementTypeObjects' => SiteElementType::model()->getAllPossible($_REQUEST['event_type_id'], $specialtyId, $episodeId),
 				'eventTypeId' => $_REQUEST['event_type_id']
 			)
 		);
-	}
-
-	/**
-	 * Given a set of site element type dataobjects, an eventtype object, and an episode object, prunes and returns a smaller array of site element type dataobjects 
-	 * relevant to the given eventtype and episode
-	 */
-	private function dedupeSiteElementTypeObjects($siteElementTypeObjects, $eventType, $episode)
-	{
-		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-		$episode = $this->service->getEpisodeBySpecialtyAndPatient(
-			$specialty->id, $this->patientId);
-		$dedupedElementTypeObjects = array();
-		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-			if ($eventType->first_in_episode_possible == false) {
-				// Render everything;
-				$dedupedElementTypeObjects[] = $siteElementTypeObject;
-			} elseif ($episode && $episode->hasEventOfType($eventType->id)) {
-				// event is not first of this event type for this episode
-				// Render all where first_in_episode == false;
-				if ($siteElementTypeObject->first_in_episode == false) {
-					$dedupedElementTypeObjects[] = $siteElementTypeObject;
-				}
-			} elseif ($siteElementTypeObject->first_in_episode == true) {
-				// Render all where first_in_episode == true;
-				$dedupedElementTypeObjects[] = $siteElementTypeObject;
-			}
-		}
-		return $dedupedElementTypeObjects;
 	}
 
 	/**
@@ -224,11 +199,12 @@ class ClinicalController extends BaseController
 	 */
 	public function listEpisodesAndEventTypes()
 	{
+		$this->service = new ClinicalService;
 		$patient = Patient::model()->findByPk($this->patientId);
 
 		$this->episodes = $patient->episodes;
 
-		// @todo - change to only list event types that have at least one element defined?
-		$this->eventTypes = EventType::model()->findAll();
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+		$this->eventTypes = EventType::model()->getAllPossible($this->firm->serviceSpecialtyAssignment->specialty_id);
 	}
 }
