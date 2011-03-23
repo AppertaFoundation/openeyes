@@ -79,8 +79,12 @@ class ClinicalController extends BaseController
 
 		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty->id;
 		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $this->patientId);
-		if (!$episode) {$episodeId = 0;}
-		$siteElementTypes = SiteElementType::model()->getAllPossible($eventType->id, $specialtyId, $episode);
+		if (isset($episode)) {
+			$episodeId = $episode->id;
+		} else {
+			$episodeId = null;
+		}
+		$siteElementTypes = SiteElementType::model()->getAllPossible($eventType->id, $specialtyId, $episodeId);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{

@@ -123,30 +123,23 @@ class SiteElementType extends CActiveRecord
 
 		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
 
-		// @todo - the absence of an episode does not necessarily mean we should return
-		//	all elements. The lack of an episode for first_in_episode_possible event types
-		//	means only first_in_episode site_element_types should be returned.
-		if (!is_int($episodeId)) {
-			return $siteElementTypeObjects;
-		} else {
-			$eventType = EventType::model()->findByPk($eventTypeId);
-			$dedupedElementTypeObjects = array();
-			foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-				if ($eventType->first_in_episode_possible == false) {
-					// Render everything;
-					$dedupedElementTypeObjects[] = $siteElementTypeObject;
-				} elseif ($episodeId > 0 && $episode->hasEventOfType($eventType->id)) {
-					// event is not first of this event type for this episode
-					// Render all where first_in_episode == false;
-					if ($siteElementTypeObject->first_in_episode == false) {
-						$dedupedElementTypeObjects[] = $siteElementTypeObject;
-					}
-				} elseif ($siteElementTypeObject->first_in_episode == true) {
-					// Render all where first_in_episode == true;
+		$eventType = EventType::model()->findByPk($eventTypeId);
+		$dedupedElementTypeObjects = array();
+		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
+			if ($eventType->first_in_episode_possible == false) {
+				// Render everything;
+				$dedupedElementTypeObjects[] = $siteElementTypeObject;
+			} elseif (!isset($episodeId) || !Episode::Model()->findByPk($episodeId)->hasEventOfType($eventType->id)) {
+				// event is first of this event type for this episode
+				// Render all where first_in_episode == false;
+				if ($siteElementTypeObject->first_in_episode == true) {
 					$dedupedElementTypeObjects[] = $siteElementTypeObject;
 				}
+			} elseif ($siteElementTypeObject->first_in_episode == false) {
+				// Render all where first_in_episode == true;
+				$dedupedElementTypeObjects[] = $siteElementTypeObject;
 			}
-			return $dedupedElementTypeObjects;
 		}
+		return $dedupedElementTypeObjects;
 	}
 }

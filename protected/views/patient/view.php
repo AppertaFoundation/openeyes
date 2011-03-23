@@ -27,6 +27,7 @@ $this->menu=array(
 		'gender',
 		'hos_num',
 		'nhs_num',
+/*
 		'address1',
 		'address2',
 		'city',
@@ -40,5 +41,6 @@ $this->menu=array(
 		'poh',
 		'drugs',
 		'allergies',
+*/
 	),
 )); ?>

@@ -221,6 +221,15 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
+		$this->createTable('element_poh', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
 		$this->createTable('episode', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'patient_id' => 'int(10) unsigned NOT NULL',
@@ -460,6 +469,9 @@ class m110314_165212_create_initial_setup extends CDbMigration
 			'user_contact_assignment_ibfk_1','user_contact_assignment','user_id','user','id');
 		$this->addForeignKey(
 			'user_contact_assignment_ibfk_2','user_contact_assignment','contact_id','contact','id');
+
+		$this->addForeignKey(
+			'element_poh_1','element_poh','event_id','event','id');
 	}
 
 	public function down()
@@ -503,6 +515,8 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropForeignKey('user_contact_assignment_ibfk_1','user_contact_assignment');
 		$this->dropForeignKey('user_contact_assignment_ibfk_2','user_contact_assignment');
 
+		$this->dropForeignKey('element_poh_1','element_poh');
+
 		$this->dropTable('authassignment');
 		$this->dropTable('authitem');
 		$this->dropTable('authitemchild');
@@ -528,6 +542,7 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropTable('element_visual_acuity');
 		$this->dropTable('element_visual_fields');
 		$this->dropTable('element_visual_function');
+		$this->dropTable('element_poh');
 		$this->dropTable('episode');
 		$this->dropTable('event');
 		$this->dropTable('event_type');
