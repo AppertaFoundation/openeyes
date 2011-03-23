@@ -125,11 +125,16 @@ class SiteElementType extends CActiveRecord
 
 		$eventType = EventType::model()->findByPk($eventTypeId);
 		$dedupedElementTypeObjects = array();
+
+		if ($eventType->first_in_episode_possible && isset($episodeId)) {
+			$hasEventOfType = Episode::Model()->findByPk($episodeId)->hasEventOfType($eventType->id);
+		}
+
 		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
 			if ($eventType->first_in_episode_possible == false) {
 				// Render everything;
 				$dedupedElementTypeObjects[] = $siteElementTypeObject;
-			} elseif (!isset($episodeId) || !Episode::Model()->findByPk($episodeId)->hasEventOfType($eventType->id)) {
+			} elseif (!isset($episodeId) || !$hasEventOfType) {
 				// event is first of this event type for this episode
 				// Render all where first_in_episode == false;
 				if ($siteElementTypeObject->first_in_episode == true) {
