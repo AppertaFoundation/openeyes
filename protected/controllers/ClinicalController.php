@@ -46,7 +46,11 @@ class ClinicalController extends BaseController
 		}
 
 		// Get all the site elements for this event's event type, in order
-		$siteElementTypes = SiteElementType::model()->getAllPossible($event->event_type_id, $this->firm->id);
+		$siteElementTypes = SiteElementType::model()->getAllPossible(
+			$event->event_type_id,
+			$this->firm->serviceSpecialtyAssignment->specialty_id,
+			$event->episode_id
+		);
 		$elements = $this->service->getEventElementTypes($siteElementTypes, $event->id);
 
 		$this->render('view', array('elements' => $elements));
@@ -73,7 +77,10 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
-		$siteElementTypes = SiteElementType::model()->getAllPossible($eventType->id, $this->firm->id);
+		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty->id;
+		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $this->patientId);
+		if (!$episode) {$episodeId = 0;}
+		$siteElementTypes = SiteElementType::model()->getAllPossible($eventType->id, $specialtyId, $episode);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -114,7 +121,10 @@ class ClinicalController extends BaseController
 					$element->event_id = $event->id;
 					// $element->userFirm = $this->firm;
 					// $element->patientId = $this->patientId;
-					if (!$element->save()) {
+					// @todo - for some reason Yii likes to try and update here instead of create.
+					//	Find out why.
+					$element->setIsNewRecord(true);
+					if (!$element->save(false)) { // No need to validate
 						// @todo - what to do here? This shouldn't happen as the element
 						// has already been validated.
 						exit('Unable to create element (??)');
@@ -124,13 +134,10 @@ class ClinicalController extends BaseController
 				$this->redirect(array('view', 'id' => $event->id));
 			}
 		}
-		
-		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty->id;
-		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $this->patientId);
-		if (!$episode) {$episodeId = 0;}
 
 		$this->render('create', array(
-				'siteElementTypeObjects' => SiteElementType::model()->getAllPossible($_REQUEST['event_type_id'], $specialtyId, $episodeId),
+//				'siteElementTypeObjects' => SiteElementType::model()->getAllPossible($_REQUEST['event_type_id'], $specialtyId, $episodeId),
+				'siteElementTypeObjects' => $siteElementTypes,
 				'eventTypeId' => $_REQUEST['event_type_id']
 			)
 		);
@@ -155,9 +162,9 @@ class ClinicalController extends BaseController
 		}
 
 		// Get an array of all the site elements for this event type
-		$siteElementTypes = $this->service->getSiteElementTypeObjects(
+		$siteElementTypes = SiteElementType::model()->getAllPossible(
 			$event->event_type_id,
-			$this->firm
+			$this->firm->serviceSpecialtyAssignment->specialty_id
 		);
 
 		$elements = $this->service->getEventElementTypes($siteElementTypes, $event->id, true);
@@ -191,7 +198,7 @@ class ClinicalController extends BaseController
 			Yii::app()->end();
 		}
 	}
-	
+
 	/**
 	 * Sets arrays of episodes and eventTypes for use by the clinical base.php view.
 	 */

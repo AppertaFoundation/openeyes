@@ -122,6 +122,10 @@ class SiteElementType extends CActiveRecord
 		);
 
 		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
+
+		// @todo - the absence of an episode does not necessarily mean we should return
+		//	all elements. The lack of an episode for first_in_episode_possible event types
+		//	means only first_in_episode site_element_types should be returned.
 		if (!is_int($episodeId)) {
 			return $siteElementTypeObjects;
 		} else {

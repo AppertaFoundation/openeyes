@@ -16,7 +16,7 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
 foreach ($siteElementTypeObjects as $siteElementType) {
 	$className = $siteElementType->possibleElementType->elementType->class_name;
 	// @todo - this shouldn't be here
-	$element = new $className;
+	$element = new $className(Yii::app()->user->id, $this->firm);
 
 	echo $this->renderPartial(
 		'/elements/' .
