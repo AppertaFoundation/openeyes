@@ -230,6 +230,51 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
+		$this->createTable('element_foh', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
+		$this->createTable('element_pmh', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
+		$this->createTable('element_allergies', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
+		$this->createTable('element_social_history', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
+		$this->createTable('element_medication', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
 		$this->createTable('episode', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'patient_id' => 'int(10) unsigned NOT NULL',
@@ -472,6 +517,16 @@ class m110314_165212_create_initial_setup extends CDbMigration
 
 		$this->addForeignKey(
 			'element_poh_1','element_poh','event_id','event','id');
+		$this->addForeignKey(
+			'element_foh_1','element_foh','event_id','event','id');
+		$this->addForeignKey(
+			'element_pmh_1','element_pmh','event_id','event','id');
+		$this->addForeignKey(
+			'element_allergies_1','element_allergies','event_id','event','id');
+		$this->addForeignKey(
+			'element_social_history_1','element_social_history','event_id','event','id');
+		$this->addForeignKey(
+			'element_medication_1','element_medication','event_id','event','id');
 	}
 
 	public function down()
@@ -516,6 +571,11 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropForeignKey('user_contact_assignment_ibfk_2','user_contact_assignment');
 
 		$this->dropForeignKey('element_poh_1','element_poh');
+		$this->dropForeignKey('element_foh_1','element_foh');
+		$this->dropForeignKey('element_pmh_1','element_pmh');
+		$this->dropForeignKey('element_allergies_1','element_allergies');
+		$this->dropForeignKey('element_social_history_1','element_social_history');
+		$this->dropForeignKey('element_medication_1','element_medication');
 
 		$this->dropTable('authassignment');
 		$this->dropTable('authitem');
@@ -543,6 +603,11 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropTable('element_visual_fields');
 		$this->dropTable('element_visual_function');
 		$this->dropTable('element_poh');
+		$this->dropTable('element_foh');
+		$this->dropTable('element_pmh');
+		$this->dropTable('element_allergies');
+		$this->dropTable('element_social_history');
+		$this->dropTable('element_medication');
 		$this->dropTable('episode');
 		$this->dropTable('event');
 		$this->dropTable('event_type');

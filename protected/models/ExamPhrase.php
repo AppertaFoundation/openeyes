@@ -18,12 +18,13 @@ class ExamPhrase extends CActiveRecord
 	const PART_HISTORY = 0;
 	const PART_PMH = 1;
 	const PART_POH = 2;
-	const PART_DRUGS = 3;
+	const PART_MEDICATION = 3;
 	const PART_ALLERGIES = 4;
 	const PART_ANTSEG = 5;
 	const PART_POSTSEG = 6;
 	const PART_CONCLUSION = 7;
 	const PART_TREATMENT = 8;
+	const PART_SOCIAL_HISTORY = 9;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -119,12 +120,13 @@ class ExamPhrase extends CActiveRecord
 			self::PART_HISTORY => 'History',
 			self::PART_PMH => 'PMH',
 			self::PART_POH => 'POH',
-			self::PART_DRUGS => 'Drugs',
+			self::PART_MEDICATION => 'Medication',
 			self::PART_ALLERGIES => 'Allergies',
 			self::PART_ANTSEG => 'Antseg',
 			self::PART_POSTSEG => 'Postseg',
 			self::PART_CONCLUSION => 'Conclusion',
-			self::PART_TREATMENT => 'Treatment'
+			self::PART_TREATMENT => 'Treatment',
+			self::PART_SOCIAL_HISTORY => 'Social History'
 		);
 	}
 
