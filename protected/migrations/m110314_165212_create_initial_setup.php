@@ -201,6 +201,16 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->createTable('element_visual_acuity', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
+			'rva_ua' => 'TINYINT DEFAULT 0',
+			'lva_ua' => 'TINYINT DEFAULT 0',
+			'rva_cr' => 'TINYINT DEFAULT 0',
+			'lva_cr' => 'TINYINT DEFAULT 0',
+			'rva_ph' => 'TINYINT DEFAULT 0',
+			'lva_ph' => 'TINYINT DEFAULT 0',
+			'aid' => 'TINYINT(1) DEFAULT 0',
+			'format' => 'TINYINT(1) DEFAULT 0',
+			'distance' => 'INT DEFAULT 0',
+			'type' => 'TINYINT(1) DEFAULT 0',
 			'PRIMARY KEY (`id`)',
 			'UNIQUE KEY `event_id` (`event_id`)'
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
@@ -525,6 +535,8 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->addForeignKey(
 			'user_contact_assignment_ibfk_2','user_contact_assignment','contact_id','contact','id');
 
+		$this->addForeignKey(
+			'element_visual_acuity_1','element_visual_acuity','event_id','event','id');
 		$this->addForeignKey(
 			'element_poh_1','element_poh','event_id','event','id');
 		$this->addForeignKey(

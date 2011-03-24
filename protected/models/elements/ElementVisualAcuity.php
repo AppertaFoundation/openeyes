@@ -6,16 +6,13 @@
  * The followings are the available columns in table 'element_visual_acuity':
  * @property string $id
  * @property string $event_id
- * @property string $description
- *
- * The followings are the available model relations:
- * @property Event $event
+ * @property string $value
  */
 class ElementVisualAcuity extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return the static model class
+	 * @return ElementVisualAcuity the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -38,10 +35,10 @@ class ElementVisualAcuity extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('safe'),
+			array('value', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id', 'safe', 'on'=>'search'),
+			array('id, event_id, value', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,7 +50,6 @@ class ElementVisualAcuity extends BaseElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 		);
 	}
 
@@ -64,7 +60,8 @@ class ElementVisualAcuity extends BaseElement
 	{
 		return array(
 			'id' => 'ID',
-			'event_id' => 'Event'
+			'event_id' => 'Event',
+			'value' => 'Value',
 		);
 	}
 
@@ -81,6 +78,7 @@ class ElementVisualAcuity extends BaseElement
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('event_id',$this->event_id,true);
+		$criteria->compare('value',$this->value,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
