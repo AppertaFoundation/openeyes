@@ -135,14 +135,14 @@ class ExamPhrase extends CActiveRecord
 			self::PART_CONCLUSION => 'Conclusion',
 			self::PART_TREATMENT => 'Treatment',
 			self::PART_SOCIAL_HISTORY => 'Social History',
-			self::PART_SOCIAL_HPC => 'History of Presenting Complaint',
+			self::PART_HPC => 'History of Presenting Complaint',
 			self::PART_FOH => 'Family Ophthalmic History',
 			self::PART_OUTCOME => 'Outcome',
 			self::PART_TIMING => 'Timing',
 			self::PART_SEVERITY => 'Severity',
 			self::PART_ONSET => 'Onset',
 			self::PART_DURATION => 'Duration',
-			self::PART_DURATION => 'Site',
+			self::PART_SITE => 'Site',
 		);
 	}
 

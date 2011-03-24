@@ -18,7 +18,7 @@ class ExamPhraseTest extends CDbTestCase
 	{
 		$parts = ExamPhrase::model()->getPartOptions();
 		$this->assertTrue(is_array($parts));
-		$this->assertEquals(9, count($parts));
+		$this->assertEquals(18, count($parts));
 	}
 
 	public function testPartText()
