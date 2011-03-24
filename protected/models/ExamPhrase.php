@@ -25,6 +25,14 @@ class ExamPhrase extends CActiveRecord
 	const PART_CONCLUSION = 7;
 	const PART_TREATMENT = 8;
 	const PART_SOCIAL_HISTORY = 9;
+	const PART_HPC = 10;
+	const PART_FOH = 11;
+	const PART_OUTCOME = 12;
+	const PART_TIMING = 13;
+	const PART_SEVERITY = 14;
+	const PART_ONSET = 15;
+	const PART_DURATION = 16;
+	const PART_SITE = 17;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -126,7 +134,15 @@ class ExamPhrase extends CActiveRecord
 			self::PART_POSTSEG => 'Postseg',
 			self::PART_CONCLUSION => 'Conclusion',
 			self::PART_TREATMENT => 'Treatment',
-			self::PART_SOCIAL_HISTORY => 'Social History'
+			self::PART_SOCIAL_HISTORY => 'Social History',
+			self::PART_SOCIAL_HPC => 'History of Presenting Complaint',
+			self::PART_FOH => 'Family Ophthalmic History',
+			self::PART_OUTCOME => 'Outcome',
+			self::PART_TIMING => 'Timing',
+			self::PART_SEVERITY => 'Severity',
+			self::PART_ONSET => 'Onset',
+			self::PART_DURATION => 'Duration',
+			self::PART_DURATION => 'Site',
 		);
 	}
 

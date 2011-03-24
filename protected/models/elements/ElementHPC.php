@@ -1,18 +1,18 @@
 <?php
 
 /**
- * This is the model class for table "element_conclusion".
+ * This is the model class for table "element_hpc".
  *
- * The followings are the available columns in table 'element_conclusion':
+ * The followings are the available columns in table 'element_hpc':
  * @property string $id
  * @property string $event_id
  * @property string $value
  */
-class ElementConclusion extends BaseElement
+class ElementHPC extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ElementConclusion the static model class
+	 * @return ElementHPC the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -24,7 +24,7 @@ class ElementConclusion extends BaseElement
 	 */
 	public function tableName()
 	{
-		return 'element_conclusion';
+		return 'element_hpc';
 	}
 
 	/**
