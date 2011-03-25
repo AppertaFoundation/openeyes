@@ -111,7 +111,7 @@ class ExamPhrase extends CActiveRecord
 
 	public function getSpecialtyOptions()
 	{
-		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
+		return $model->getSpecialtyOptions();
 	}
 
 	public function getPartOptions()

@@ -35,6 +35,7 @@
 				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase')),
 				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate')),
 				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype')),
+				array('label'=>'Site Element Types', 'url'=>array('/admin/SiteElementType')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),

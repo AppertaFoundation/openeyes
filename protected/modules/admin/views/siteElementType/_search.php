@@ -26,8 +26,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'default'); ?>
-		<?php echo $form->textField($model,'default'); ?>
+		<?php echo $form->label($model,'required'); ?>
+		<?php echo $form->textField($model,'required'); ?>
 	</div>
 
 	<div class="row">

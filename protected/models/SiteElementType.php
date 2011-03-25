@@ -47,7 +47,9 @@ class SiteElementType extends CActiveRecord
 			array('possible_element_type_id, specialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, possible_element_type_id, specialty_id, first_in_episode', 'safe', 'on'=>'search'),
+			array('required', 'safe'),
+			array('view_number', 'safe'),
+			array('id, possible_element_type_id, specialty_id, first_in_episode, required, view_number', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,9 +73,11 @@ class SiteElementType extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'possible_element_type_id' => 'Event Type Element Type Assignment',
+			'possible_element_type_id' => 'Possible element type',
 			'specialty_id' => 'Specialty',
 			'first_in_episode' => 'First In Episode',
+			'view_number' => 'View number',
+			'required' => 'Required'
 		);
 	}
 
@@ -146,5 +150,14 @@ class SiteElementType extends CActiveRecord
 			}
 		}
 		return $dedupedElementTypeObjects;
+	}
+
+	public function getNumViewsArray()
+	{
+		$viewsList = array();
+		for ($counter=0;$counter<$this->possibleElementType->num_views;$counter++) {
+			$viewsList[$counter+1] = $counter+1;
+		}
+		return $viewsList;
 	}
 }
