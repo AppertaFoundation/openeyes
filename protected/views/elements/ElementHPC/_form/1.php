@@ -1,28 +1,33 @@
 HPC: <br />
 
 	<div class="row">
-		<label for="ElementPOH_value">History:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_HISTORY)); ?>
+		<label for="ElementHPC_value">History:</label>
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_HISTORY),
+			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
-		<label for="ElementPOH_value">Severity:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_SEVERITY)); ?>
+		<label for="ElementHPC_value">Severity:</label>
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_SEVERITY),
+			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
-		<label for="ElementPOH_value">Onset:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_ONSET)); ?>
+		<label for="ElementHPC_value">Onset:</label>
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_ONSET),
+			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
-		<label for="ElementPOH_value">Site:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_SITE)); ?>
+		<label for="ElementHPC_value">Site:</label>
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_SITE),
+			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
-		<label for="ElementPOH_value">Duration:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_DURATION)); ?>
+		<label for="ElementHPC_value">Duration:</label>
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_DURATION),
+			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">

@@ -1,8 +1,9 @@
 Allergies: <br />
 
 	<div class="row">
-		<label for="ElementPOH_value">Phrase:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_ALLERGIES)); ?>
+		<label for="ElementAllergies_value">Phrase:</label>
+		<?php echo CHtml::dropDownList('ElementAllergies[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_ALLERGIES),
+			array('onChange' => 'appendText($(this), $("#ElementAllergies_value"));')); ?>
 	</div>
 
 	<div class="row">
