@@ -1,4 +1,8 @@
 <?php
+$baseUrl = Yii::app()->baseUrl;
+$cs = Yii::app()->getClientScript();
+$cs->registerScriptFile($baseUrl.'/js/phrase.js');
+Yii::app()->clientScript->registerCoreScript('jquery');
 
 $this->renderPartial('base');
 

@@ -1,8 +1,9 @@
 PMH: <br />
 
 	<div class="row">
-		<label for="ElementPOH_value">Phrase:</label>
-		<?php echo CHtml::dropDownList('null', '', $model->getExamPhraseOptions(ExamPhrase::PART_PMH)); ?>
+		<label for="ElementPMH_value">Phrase:</label>
+		<?php echo CHtml::dropDownList('ElementPMH[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_PMH),
+			array('onChange' => 'appendText($(this), $("#ElementPMH_value"));')); ?>
 	</div>
 
 	<div class="row">

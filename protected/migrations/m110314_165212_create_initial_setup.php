@@ -102,6 +102,7 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->createTable('element_conclusion', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
 			'PRIMARY KEY (`id`)',
 			'UNIQUE KEY `event_id` (`event_id`)'
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
@@ -200,6 +201,16 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->createTable('element_visual_acuity', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
+			'rva_ua' => 'TINYINT DEFAULT 0',
+			'lva_ua' => 'TINYINT DEFAULT 0',
+			'rva_cr' => 'TINYINT DEFAULT 0',
+			'lva_cr' => 'TINYINT DEFAULT 0',
+			'rva_ph' => 'TINYINT DEFAULT 0',
+			'lva_ph' => 'TINYINT DEFAULT 0',
+			'aid' => 'TINYINT(1) DEFAULT 0',
+			'format' => 'TINYINT(1) DEFAULT 0',
+			'distance' => 'INT DEFAULT 0',
+			'type' => 'TINYINT(1) DEFAULT 0',
 			'PRIMARY KEY (`id`)',
 			'UNIQUE KEY `event_id` (`event_id`)'
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
@@ -267,6 +278,15 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		);
 
 		$this->createTable('element_medication', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'event_id' => 'int(10) unsigned NOT NULL',
+			'value' => 'text',
+			'PRIMARY KEY (`id`)',
+			'UNIQUE KEY `event_id` (`event_id`)'
+		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
+
+		$this->createTable('element_hpc', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
 			'value' => 'text',
@@ -516,6 +536,8 @@ class m110314_165212_create_initial_setup extends CDbMigration
 			'user_contact_assignment_ibfk_2','user_contact_assignment','contact_id','contact','id');
 
 		$this->addForeignKey(
+			'element_visual_acuity_1','element_visual_acuity','event_id','event','id');
+		$this->addForeignKey(
 			'element_poh_1','element_poh','event_id','event','id');
 		$this->addForeignKey(
 			'element_foh_1','element_foh','event_id','event','id');
@@ -527,6 +549,10 @@ class m110314_165212_create_initial_setup extends CDbMigration
 			'element_social_history_1','element_social_history','event_id','event','id');
 		$this->addForeignKey(
 			'element_medication_1','element_medication','event_id','event','id');
+		$this->addForeignKey(
+			'element_hpc_1','element_hpc','event_id','event','id');
+		$this->addForeignKey(
+			'element_conclusion_1','element_conclusion','event_id','event','id');
 	}
 
 	public function down()
@@ -576,6 +602,7 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropForeignKey('element_allergies_1','element_allergies');
 		$this->dropForeignKey('element_social_history_1','element_social_history');
 		$this->dropForeignKey('element_medication_1','element_medication');
+		$this->dropForeignKey('element_hpc_1','element_medication');
 
 		$this->dropTable('authassignment');
 		$this->dropTable('authitem');
@@ -608,6 +635,7 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropTable('element_allergies');
 		$this->dropTable('element_social_history');
 		$this->dropTable('element_medication');
+		$this->dropTable('element_hpc');
 		$this->dropTable('episode');
 		$this->dropTable('event');
 		$this->dropTable('event_type');
