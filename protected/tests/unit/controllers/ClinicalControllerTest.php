@@ -7,8 +7,8 @@ class ClinicalControllerTest extends CDbTestCase
 		'episodes' => 'Episode',
 		'eventTypes' => 'EventType',
 		'events' => 'Event',
-		'firms' => 'Firm',
 		'serviceSpecialtyAssignments' => 'ServiceSpecialtyAssignment',
+		'firms' => 'Firm',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
 		'siteElementTypes' => 'SiteElementType',
@@ -203,9 +203,12 @@ class ClinicalControllerTest extends CDbTestCase
 	public function testListEpisodes()
 	{
 		$patient = $this->patients('patient1');
+		$firm = $this->firms('firm1');
 		$mockController = $this->getMock('ClinicalController', array('checkPatientId'), array('ClinicalController'));
 		$mockController->expects($this->any())->method('checkPatientId');
 		$mockController->patientId = $patient->id;
+		$mockController->selectedFirmId = $firm->id;
+		$mockController->firm = $firm;
 
 		$this->assertNull($mockController->episodes);
 		$mockController->listEpisodesAndEventTypes();
@@ -220,14 +223,15 @@ class ClinicalControllerTest extends CDbTestCase
 		// test that $mockController->eventTypes equals the eventtypes for the given firm's specialty
 		// we should have 1 and 9 for firm/specialty 1
 		$patient = $this->patients('patient1');
-		$app->session['selected_firm_id'] = 1;
+		$firm = $this->firms('firm1');
+		$app->session['selected_firm_id'] = $firm->id;
 		$mockController = $this->getMock('ClinicalController', array('checkPatientId'), array('ClinicalController'));
 		$mockController->expects($this->any())->method('checkPatientId');
 		$mockController->patientId = $patient->id;
 
 		$this->assertNull($mockController->eventTypes);
-		$firm = $this->firms('firm1');
-		$mockController->firm = Firm::model()->findByPk(1);
+		$mockController->selectedFirmId = $firm->id;
+		$mockController->firm = $firm;
 		$mockController->listEpisodesAndEventTypes();
 
 		$count = 0;
@@ -235,20 +239,5 @@ class ClinicalControllerTest extends CDbTestCase
 			$this->assertEquals($eventTypesArray[$count], $eventType->id);
 			$count++;
 		}
-		# $this->assertEquals($eventTypes, $mockController->eventTypes);
 	}
-
-	public function testGetEpisode()
-	{
-
-	}
-
-	/*
-	 * 		$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-		$episode = Episode::modelBySpecialtyIdAndPatientId(
-			$specialty->id,
-			$this->patientId
-		);
-		return $episode;
-	 */
 }

@@ -2,11 +2,11 @@
 class ContactTypeTest extends CDbTestCase
 {
 	public $fixtures = array(
-		'contacttypes' => 'Contacttype'
+		'contacttypes' => 'ContactType'
 	);
 
-	public function testNoContacttypes()
+	public function testNoContactTypes()
 	{
-		$this->assertEquals(8, count(Contacttype::model()->findAll()));
+		$this->assertEquals(8, count(ContactType::model()->findAll()));
 	}
 }

@@ -141,7 +141,8 @@ class ClinicalController extends BaseController
 
 		$this->render('create', array(
 				'siteElementTypeObjects' => $siteElementTypes,
-				'eventTypeId' => $_REQUEST['event_type_id']
+				'eventTypeId' => $_REQUEST['event_type_id'],
+				'iopValues' => $this->getIopValues(),
 			)
 		);
 	}
@@ -184,7 +185,8 @@ class ClinicalController extends BaseController
 
 		$this->render('update', array(
 				'id' => $id,
-				'elements' => $elements
+				'elements' => $elements,
+				'iopValues' => $this->getIopValues(),
 			)
 		);
 	}
@@ -213,6 +215,17 @@ class ClinicalController extends BaseController
 		$this->episodes = $patient->episodes;
 
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-		$this->eventTypes = EventType::model()->getAllPossible($this->firm->serviceSpecialtyAssignment->specialty_id);
+		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty_id;
+		$this->eventTypes = EventType::model()->getAllPossible($specialtyId);
+	}
+
+	protected function getIopValues()
+	{
+		$iopValues = array();
+		for ($i = 0; $i < 81; $i++) {
+			$iopValues[$i] = $i;
+		}
+
+		return $iopValues;
 	}
 }
