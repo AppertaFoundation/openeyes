@@ -90,6 +90,8 @@ class ClinicalController extends BaseController
 		{
 			$results = $this->service->validateElements($siteElementTypes, $_POST);
 			$valid = $results['valid'];
+			// @todo - elements aren't displayed on failure of validation. Find a way of
+			//	displaying them.
 			$elements = $results['elements'];
 
 			if ($valid) {
@@ -123,8 +125,6 @@ class ClinicalController extends BaseController
 				// Create elements for the event
 				foreach ($elements as $element) {
 					$element->event_id = $event->id;
-					// $element->userFirm = $this->firm;
-					// $element->patientId = $this->patientId;
 					// @todo - for some reason Yii likes to try and update here instead of create.
 					//	Find out why.
 					$element->setIsNewRecord(true);
@@ -140,7 +140,6 @@ class ClinicalController extends BaseController
 		}
 
 		$this->render('create', array(
-//				'siteElementTypeObjects' => SiteElementType::model()->getAllPossible($_REQUEST['event_type_id'], $specialtyId, $episodeId),
 				'siteElementTypeObjects' => $siteElementTypes,
 				'eventTypeId' => $_REQUEST['event_type_id']
 			)
