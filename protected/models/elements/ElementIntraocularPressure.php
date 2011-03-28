@@ -6,16 +6,14 @@
  * The followings are the available columns in table 'element_intraocular_pressure':
  * @property string $id
  * @property string $event_id
- * @property string $description
- *
- * The followings are the available model relations:
- * @property Event $event
+ * @property integer $right_iop
+ * @property integer $left_iop
  */
 class ElementIntraocularPressure extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return the static model class
+	 * @return ElementIntraocularPressure the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -38,10 +36,10 @@ class ElementIntraocularPressure extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('safe'),
+			array('right_iop, left_iop', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id', 'safe', 'on'=>'search'),
+			array('id, event_id, right_iop, left_iop', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,7 +62,9 @@ class ElementIntraocularPressure extends BaseElement
 	{
 		return array(
 			'id' => 'ID',
-			'event_id' => 'Event'
+			'event_id' => 'Event',
+			'right_iop' => 'Right Eye',
+			'left_iop' => 'Left Eye',
 		);
 	}
 
@@ -81,6 +81,8 @@ class ElementIntraocularPressure extends BaseElement
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('event_id',$this->event_id,true);
+		$criteria->compare('right_iop',$this->right_iop);
+		$criteria->compare('left_iop',$this->left_iop);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

@@ -3,16 +3,20 @@ class BaseElementTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'users' => 'User',
-		'serviceSpecialtyAssignment' => ':service_specialty_assignment',
+		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'firms' => 'Firm',
-		'examphrase' => ':exam_phrase',
+		'examphrase' => 'ExamPhrase',
+		'patients' => 'Patient',
+		'episodes' => 'Episode',
+		'eventTypes' => 'EventType',
+		'events' => 'Event',
 	);
 
-	public function testGetSpecialtyId()
+	public function testGetSpecialtyId_WithUserFirm_CorrectlySetsSpecialtyId()
 	{
 		$firm = $this->firms('firm1');
 		$baseElement = new BaseElement(1, $firm);
-		$this->assertEquals($baseElement->getSpecialtyId(), 1);
+		$this->assertEquals(1, $baseElement->getSpecialtyId());
 	}
 
 	public function testGetExamPhraseOptions()
@@ -22,6 +26,6 @@ class BaseElementTest extends CDbTestCase
 		$examPhrases = $baseElement->getExamPhraseOptions(ExamPhrase::PART_HISTORY);
 		$this->assertTrue(is_array($examPhrases));
 		// N.B. there should be one more examphrase than is defined in the fixture
-		$this->assertEquals(count($examPhrases), 2);
+		$this->assertEquals(2, count($examPhrases));
 	}
 }

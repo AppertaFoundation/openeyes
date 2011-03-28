@@ -13,10 +13,10 @@ class LetterTemplateTest extends CDbTestCase
 		$this->assertEquals(16, count($specialties));
 	}
 
-	public function testGetContacttypeOptions()
+	public function testGetContactTypeOptions()
 	{
-		$contacttypes = LetterTemplate::model()->getContacttypeOptions();
-		$this->assertTrue(is_array($contacttypes));
-		$this->assertEquals(8, count($contacttypes));
+		$contactTypes = LetterTemplate::model()->getContactTypeOptions();
+		$this->assertTrue(is_array($contactTypes));
+		$this->assertEquals(8, count($contactTypes));
 	}
 }
