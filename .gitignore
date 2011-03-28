@@ -1,3 +1,4 @@
+nbproject/*
 /protected/tests/test_results/
 /protected/config/console.php
 /protected/config/params.php
