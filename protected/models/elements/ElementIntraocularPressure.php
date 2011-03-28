@@ -88,4 +88,18 @@ class ElementIntraocularPressure extends BaseElement
 			'criteria'=>$criteria,
 		));
 	}
+
+	/**
+	 * Get an array of the valid select box options for IOP
+	 * @return array
+	 */
+	public function getSelectOptions()
+	{
+		$iopValues = array();
+		for ($i = 0; $i < 81; $i++) {
+			$iopValues[$i] = $i;
+		}
+
+		return $iopValues;
+	}
 }

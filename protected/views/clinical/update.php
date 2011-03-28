@@ -15,17 +15,11 @@ echo CHtml::hiddenField('event_id', $id);
  */
 foreach ($elements as $element) {
 	$className = get_class($element['element']);
-	$partialParams = array('model' => $element['element'], 'form' => $form);
-	if ('ElementIntraocularPressure' == $className) {
-		$partialParams['values'] = $iopValues;
-		$partialParams['right_iop'] = $element['element']->right_iop;
-		$partialParams['left_iop'] = $element['element']->left_iop;
-	}
 
 	echo $this->renderPartial(
 		'/elements/' . $className . '/_form/' .
 			$element['siteElementType']->view_number,
-		$partialParams
+		array('model' => $element['element'], 'form' => $form)
 	);
 }
 
