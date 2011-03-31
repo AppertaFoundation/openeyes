@@ -52,7 +52,7 @@ class m110324_115041_insert_exam_phrases extends CDbMigration
 			"(8, 13, '1 year or more', 6)",
 		);
 
-		$command = Yii::app()->db->createCommand('SET foreign_key_checks = 0;');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
 		$command->execute();
 
 		$sql = "INSERT INTO `exam_phrase` (`specialty_id`, `part`, `phrase`, `order`) VALUES\n";
@@ -63,12 +63,12 @@ class m110324_115041_insert_exam_phrases extends CDbMigration
 			}
 			$sql .= "\n";
 		}
-		$command = Yii::app()->db->createCommand($sql);
+		$command = $this->dbConnection->createCommand($sql);
 		echo "inserting into exam_phrase\n";
 		$command->execute();
 
 
-		$command = Yii::app()->db->createCommand('SET foreign_key_checks = 1;');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
 		$command->execute();
     }
 

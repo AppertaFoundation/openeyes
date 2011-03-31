@@ -602,7 +602,7 @@ class m110314_165212_create_initial_setup extends CDbMigration
 		$this->dropForeignKey('element_allergies_1','element_allergies');
 		$this->dropForeignKey('element_social_history_1','element_social_history');
 		$this->dropForeignKey('element_medication_1','element_medication');
-		$this->dropForeignKey('element_hpc_1','element_medication');
+		$this->dropForeignKey('element_hpc_1','element_hpc');
 
 		$this->dropTable('authassignment');
 		$this->dropTable('authitem');
