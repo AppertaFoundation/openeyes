@@ -20,7 +20,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementVisualAcuity extends CActiveRecord
+class ElementVisualAcuity extends BaseElement
 {
 	const SNELLEN_METRE = 0;
 	const SNELLEN_FOOT = 1;

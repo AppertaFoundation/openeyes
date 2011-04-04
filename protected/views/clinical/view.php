@@ -5,11 +5,14 @@ $this->renderPartial('base');
 /**
  * Loop through all the element types completed for this event
  */
-foreach ($elements as $no => $element) {
-	$view = $element['siteElementType']->view_number;
+foreach ($elements as $element) {
+	// Only display elements that have been completed, i.e. they have an event id
+	if ($element->event_id) {
+		$viewNumber = $element->viewNumber;
 
-	echo $this->renderPartial(
-		'/elements/' . get_class($element['element']) . '/_view/' . $view,
-		array('data' => $element['element'])
-	);
+		echo $this->renderPartial(
+			'/elements/' . get_class($element) . '/_view/' . $viewNumber,
+			array('data' => $element)
+		);
+	}
 }

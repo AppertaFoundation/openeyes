@@ -7,6 +7,13 @@ return array(
 		'element_type_id' => 1,
 		'num_views' => 1,
 		'order' => 1
+	),
+	'possibleElementType2' => array(
+		'id' => 2,
+		'event_type_id' => 1,
+		'element_type_id' => 17,
+		'num_views' => 1,
+		'order' => 2
 	)
 );
 

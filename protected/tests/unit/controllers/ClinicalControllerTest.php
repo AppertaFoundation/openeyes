@@ -13,6 +13,7 @@ class ClinicalControllerTest extends CDbTestCase
 		'specialties' => 'Specialty',
 		'siteElementTypes' => 'SiteElementType',
 		'elementHistories' => 'ElementHistory',
+		'elementPOHs' => 'ElementPOH',
 	);
 
 	protected $controller;
@@ -21,16 +22,6 @@ class ClinicalControllerTest extends CDbTestCase
 	{
 		$this->controller = new ClinicalController('ClinicalController');
 		parent::setUp();
-	}
-
-	public function dataProvider_InvalidCreatePostData()
-	{
-		return array(
-			array(null),
-			array('action' => 'index'),
-			array('action' => 'edit'),
-			array('action' => 'view'),
-		);
 	}
 
 	public function dataProvider_EventTypesForAccidentAndEmergencySpecialty()
@@ -60,37 +51,40 @@ class ClinicalControllerTest extends CDbTestCase
 
 	public function testActionView_ValidElement_RendersViewView()
 	{
-		$this->markTestSkipped('The methods tested here have changed, rewrite test.');
-		$eventId = $this->events['event1']['id'];
-		$eventTypeId = $this->eventTypes['eventType1']['id'];
-		$firm = $this->firms('firm1');
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$expectedElements = array();
+		$event = $this->events('event1');
 
-		$mockController = $this->getMock('ClinicalController', array('render'), array('ClinicalController'));
+		$elementHistory = $this->elementHistories('elementHistory1');
+		$elementPOH = $this->elementPOHs('elementPOH1');
+
+		$expectedElements = array($elementHistory, $elementPOH);
+
+		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
+
 		$mockService = $this->getMock('ClinicalService',
-			array('getSiteElementTypeObjects', 'getEventElementTypes'));
+			array('getElements'));
 
 		$mockService->expects($this->once())
-			->method('getSiteElementTypeObjects')
-			->with($this->events['event1']['event_type_id'], $firm)
-			->will($this->returnValue($siteElementTypes));
-		$mockService->expects($this->once())
-			->method('getEventElementTypes')
-			->with($siteElementTypes, $eventId)
+			->method('getElements')
+			->with(null, null, null, 1, $event)
 			->will($this->returnValue($expectedElements));
 
-		$mockController->firm = $firm;
 		$mockController->service = $mockService;
+
 		$mockController->expects($this->any())
 			->method('render')
 			->with('view', array('elements' => $expectedElements));
-		$mockController->actionView($eventId);
+
+		$mockController->expects($this->once())
+			->method('getUserId')
+			->will($this->returnValue(1));
+
+		$mockController->actionView($event->id);
 	}
 
+/*
+// Currently there is no way of testing beforeAction.
 	public function testBeforeAction()
 	{
-		$this->markTestSkipped('figure out how to test beforeAction');
 		$mockController = $this->getMock('ClinicalController',
 			array('checkPatientId', 'listEpisodesAndEventTypes'),
 			array('ClinicalController'), 'Mock_ClinicalController', false);
@@ -103,7 +97,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->beforeAction('index');
 	}
-
+*/
 	public function testActionCreate_MissingEventTypeId_ThrowsException()
 	{
 		$this->setExpectedException('CHttpException', 'No event_type_id specified.');
@@ -118,6 +112,96 @@ class ClinicalControllerTest extends CDbTestCase
 		$this->controller->actionCreate();
 	}
 
+	public function testActionView_ValidElement_RendersCreateView()
+	{
+		$patientId = 1;
+		$eventTypeId = 1;
+		$_GET['event_type_id'] = $eventTypeId;
+
+		$event = $this->events('event1');
+		$eventType = $this->eventTypes('eventType1');
+		$firm = $this->firms('firm1');
+
+		$elementHistory = $this->elementHistories('elementHistory1');
+		$elementPOH = $this->elementPOHs('elementPOH1');
+
+		$expectedElements = array($elementHistory, $elementPOH);
+
+		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
+		$mockController->patientId = $patientId;
+		$mockController->firm = $firm;
+
+		$mockService = $this->getMock('ClinicalService',
+			array('getElements'));
+
+		$mockService->expects($this->once())
+			->method('getElements')
+			->with($eventType, $firm, $patientId, 1)
+			->will($this->returnValue($expectedElements));
+
+		$mockController->service = $mockService;
+
+		$mockController->expects($this->any())
+			->method('render')
+			->with('create', array(
+				'elements' => $expectedElements,
+				'eventTypeId' => $eventTypeId
+			));
+
+		$mockController->expects($this->once())
+			->method('getUserId')
+			->will($this->returnValue(1));
+
+		$mockController->actionCreate($event->id);
+	}
+
+	public function testActionCreate_ValidPostData_RendersViewView()
+	{
+		$_POST['elementPOH'] = $this->elementPOHs['elementPOH1'];
+		$_POST['elementHistory'] = $this->elementHistories['elementHistory1'];
+		$_POST['action'] = 'create';
+		$_GET['event_type_id'] = 1;
+
+		$event = $this->events('event1');
+		$firm = $this->firms('firm1');
+		$eventType = $this->eventTypes('eventType1');
+		$patientId = 1;
+
+		$elementHistory = $this->elementHistories('elementHistory1');
+		$elementPOH = $this->elementPOHs('elementPOH1');
+
+		$expectedElements = array($elementHistory, $elementPOH);
+
+		$mockController = $this->getMock('ClinicalController',
+			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
+
+		$mockController->expects($this->once())
+			->method('redirect')
+			->with(array('view', 'id' => $event->id));
+
+		$mockController->expects($this->any())
+			->method('getUserId')
+			->will($this->returnValue(1));
+
+		$mockService = $this->getMock('ClinicalService',
+			array('getElements', 'createElements'));
+
+		$mockService->expects($this->once())
+			->method('getElements')
+			->with($eventType, $firm, $patientId, 1)
+			->will($this->returnValue($expectedElements));
+
+		$mockService->expects($this->once())
+			->method('createElements')
+			->with($expectedElements, $_POST, $firm, $patientId, 1, $eventType->id)
+			->will($this->returnValue(1));
+
+		$mockController->firm = $firm;
+		$mockController->service = $mockService;
+		$mockController->patientId = $patientId;
+		$mockController->actionCreate($event->id);
+	}
+
 	public function testActionUpdate_InvalidFirmSelected_ThrowsException()
 	{
 		$event = $this->events('event1');
@@ -127,83 +211,87 @@ class ClinicalControllerTest extends CDbTestCase
 		$this->controller->actionUpdate($event->id);
 	}
 
-	/**
-	 * @dataProvider dataProvider_InvalidCreatePostData
-	 */
-	public function testActionUpdate_InvalidPostData_RendersUpdateView($data)
+	public function testActionUpdate_InvalidData_RendersUpdateView()
 	{
-		$this->markTestSkipped('The methods tested here have changed, rewrite test.');
-		$_POST = $data;
-		$eventId = $this->events['event1']['id'];
+		$event = $this->events('event1');
 		$firm = $this->firms('firm1');
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$expectedElements = $siteElementTypes;
+		$userId = 1;
 
-		$mockController = $this->getMock('ClinicalController', array('render'), array('ClinicalController'));
-		$mockController->expects($this->any())
-			->method('render')
-			->with('update', array(
-				'id' => $eventId,
-				'elements' => $siteElementTypes,
-			));
+		$this->populateObjects($event, $firm);
+
+		$elementHistory = $this->elementHistories('elementHistory1');
+		$elementPOH = $this->elementPOHs('elementPOH1');
+
+		$expectedElements = array($elementHistory, $elementPOH);
+
+		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService',
-			array('getSiteElementTypeObjects', 'getEventElementTypes'));
+			array('getElements'));
 
 		$mockService->expects($this->once())
-			->method('getSiteElementTypeObjects')
-			->with($this->events['event1']['event_type_id'], $firm)
-			->will($this->returnValue($siteElementTypes));
-		$mockService->expects($this->once())
-			->method('getEventElementTypes')
-			->with($siteElementTypes, $eventId, true)
+			->method('getElements')
+			->with(null, null, null, $userId, $event)
 			->will($this->returnValue($expectedElements));
-		$mockController->firm = $firm;
+
 		$mockController->service = $mockService;
-		$mockController->actionUpdate($eventId);
+		$mockController->firm = $firm;
+
+		$mockController->expects($this->any())
+			->method('render')
+			->with('update', array('id' => $event->id, 'elements' => $expectedElements));
+
+		$mockController->expects($this->once())
+			->method('getUserId')
+			->will($this->returnValue($userId));
+
+		$mockController->actionUpdate($event->id);
 	}
 
 	public function testActionUpdate_ValidPostData_RendersViewView()
 	{
-		$this->markTestSkipped('The methods tested here have changed, rewrite test.');
 		$_POST = $this->events['event1'];
 		$_POST['action'] = 'update';
-		$eventId = $this->events['event1']['id'];
+
+		$event = $this->events('event1');
 		$firm = $this->firms('firm1');
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$expectedElements = $siteElementTypes;
+
+		$this->populateObjects($event, $firm);
+
+		$elementHistory = $this->elementHistories('elementHistory1');
+		$elementPOH = $this->elementPOHs('elementPOH1');
+
+		$expectedElements = array($elementHistory, $elementPOH);
 
 		$mockController = $this->getMock('ClinicalController',
 			array('render', 'redirect'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('view', 'id' => $eventId));
+			->with(array('view', 'id' => $event->id));
 
 		$mockService = $this->getMock('ClinicalService',
-			array('getSiteElementTypeObjects', 'getEventElementTypes',
-				  'updateElements'));
+			array('getElements', 'updateElements'));
 
 		$mockService->expects($this->once())
-			->method('getSiteElementTypeObjects')
-			->with($this->events['event1']['event_type_id'], $firm)
-			->will($this->returnValue($siteElementTypes));
-		$mockService->expects($this->once())
-			->method('getEventElementTypes')
-			->with($siteElementTypes, $eventId, true)
+			->method('getElements')
+			->with(null, null, null, $userId, $event)
 			->will($this->returnValue($expectedElements));
+
 		$mockService->expects($this->once())
 			->method('updateElements')
-			->with($expectedElements, $_POST)
+			->with($expectedElements, $_POST, $event)
 			->will($this->returnValue(true));
+
 		$mockController->firm = $firm;
 		$mockController->service = $mockService;
-		$mockController->actionUpdate($eventId);
+		$mockController->actionUpdate($event->id);
 	}
 
 	public function testListEpisodes()
 	{
 		$patient = $this->patients('patient1');
 		$firm = $this->firms('firm1');
+
 		$mockController = $this->getMock('ClinicalController', array('checkPatientId'), array('ClinicalController'));
 		$mockController->expects($this->any())->method('checkPatientId');
 		$mockController->patientId = $patient->id;
@@ -218,6 +306,8 @@ class ClinicalControllerTest extends CDbTestCase
 	/**
 	 * @dataProvider dataProvider_EventTypesForAccidentAndEmergencySpecialty
 	 */
+/*
+// This test should be in BaseControllerTest.php. Also, it doesn't work.
 	public function testListEventTypes($eventTypesArray)
 	{
 		// test that $mockController->eventTypes equals the eventtypes for the given firm's specialty
@@ -239,5 +329,21 @@ class ClinicalControllerTest extends CDbTestCase
 			$this->assertEquals($eventTypesArray[$count], $eventType->id);
 			$count++;
 		}
+	}
+*/
+
+	/**
+	 * These two stupid bits of code are here to ensure that the event and firm objects
+	 * match properly, else the test fails on the
+	 *		//	'The firm you are using is not associated with the specialty for this event.'
+	 *		// test.
+	 *
+	 * @param object $event
+	 * @param object $firm
+	 */
+	public function populateObjects($event, $firm)
+	{
+		$foo = $event->episode->firm->serviceSpecialtyAssignment->specialty_id;
+		$bar = $firm->serviceSpecialtyAssignment->specialty_id;
 	}
 }

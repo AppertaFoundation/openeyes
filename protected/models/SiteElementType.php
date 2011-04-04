@@ -102,56 +102,6 @@ class SiteElementType extends CActiveRecord
 		));
 	}
 
-	/**
-	 * Returns an array of siteElementType objects for a given element type and specialty, adhering to the constraints imposed by the possible_element_type table
-	 * It optionally further limits it's results by what is relevant to a given episode based on the 'first in episode' logic
-	 *
-	 * @param int $eventTypeId
-	 * @param object $firm
-	 *
-	 * @return array Object
-	 */
-
-	public function getAllPossible($eventTypeId, $specialtyId, $episodeId = null)
-	{
-		$criteria = new CDbCriteria;
-		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType
-			ON t.possible_element_type_id = possibleElementType.id';
-		$criteria->addCondition('t.specialty_id = :specialty_id');
-		$criteria->addCondition('possibleElementType.event_type_id = :event_type_id');
-		$criteria->order = 'possibleElementType.order';
-		$criteria->params = array(
-			':specialty_id' => $specialtyId,
-			':event_type_id' => $eventTypeId
-		);
-
-		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
-
-		$eventType = EventType::model()->findByPk($eventTypeId);
-		$dedupedElementTypeObjects = array();
-
-		if ($eventType->first_in_episode_possible && isset($episodeId)) {
-			$hasEventOfType = Episode::Model()->findByPk($episodeId)->hasEventOfType($eventType->id);
-		}
-
-		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-			if ($eventType->first_in_episode_possible == false) {
-				// Render everything;
-				$dedupedElementTypeObjects[] = $siteElementTypeObject;
-			} elseif (!isset($episodeId) || !$hasEventOfType) {
-				// event is first of this event type for this episode
-				// Render all where first_in_episode == false;
-				if ($siteElementTypeObject->first_in_episode == true) {
-					$dedupedElementTypeObjects[] = $siteElementTypeObject;
-				}
-			} elseif ($siteElementTypeObject->first_in_episode == false) {
-				// Render all where first_in_episode == true;
-				$dedupedElementTypeObjects[] = $siteElementTypeObject;
-			}
-		}
-		return $dedupedElementTypeObjects;
-	}
-
 	public function getNumViewsArray()
 	{
 		$viewsList = array();

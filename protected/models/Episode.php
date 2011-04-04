@@ -100,15 +100,17 @@ class Episode extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	/**
 	 * Returns true if an event of the given type exists within this episode
 	 */
-	public function hasEventOfType($eventTypeId)
+	public function hasEventOfType($eventTypeId, $currentEvent = null)
 	{
 		foreach ($this->events as $event) {
 			if ($event->event_type_id == $eventTypeId) {
-				return true;
+				if (!$currentEvent || $currentEvent->id != $event->id) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -125,9 +127,9 @@ class Episode extends CActiveRecord
 	public function getBySpecialtyAndPatient($specialtyId, $patientId, $onlyReturnOpen = true)
 	{
 		$criteria = new CDbCriteria;
-		$criteria->join = 'LEFT JOIN firm ON t.firm_id = firm.id 
-			LEFT JOIN service_specialty_assignment serviceSpecialtyAssignment ON 
-				serviceSpecialtyAssignment.id = firm.service_specialty_assignment_id 
+		$criteria->join = 'LEFT JOIN firm ON t.firm_id = firm.id
+			LEFT JOIN service_specialty_assignment serviceSpecialtyAssignment ON
+				serviceSpecialtyAssignment.id = firm.service_specialty_assignment_id
 			LEFT JOIN patient ON t.patient_id = patient.id';
 		$criteria->addCondition('serviceSpecialtyAssignment.specialty_id = :specialty_id');
 		$criteria->addCondition('patient.id = :patient_id');

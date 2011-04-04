@@ -37,6 +37,7 @@ class ElementFOH extends BaseElement
 		return array(
 			array('value', 'safe'),
 			// The following rule is used by search().
+			array('value', 'required'),
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, value', 'safe', 'on'=>'search'),
 		);
