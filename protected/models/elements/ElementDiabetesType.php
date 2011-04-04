@@ -8,7 +8,7 @@
  * @property string $event_id
  * @property integer $type
  */
-class ElementDiabetesType extends CActiveRecord
+class ElementDiabetesType extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
