@@ -386,16 +386,16 @@ class m110316_143452_insert_initial_data extends CDbMigration
 "
 		);
 
-		$command = Yii::app()->db->createCommand('SET foreign_key_checks = 0;');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
 		$command->execute();
 
 		foreach ($queries as $table => $query) {
 			echo "insert into {$table}\n";
-			$command = Yii::app()->db->createCommand($query);
+			$command = $this->dbConnection->createCommand($query);
 			$command->execute();
 		}
 
-		$command = Yii::app()->db->createCommand('SET foreign_key_checks = 1;');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
 		$command->execute();
     }
 
@@ -408,14 +408,14 @@ class m110316_143452_insert_initial_data extends CDbMigration
 			'specialty','user','site_element_type'
 		);
 
-		$command = Yii::app()->db->createCommand('SET foreign_key_checks = 0;');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
 		$command->execute();
 
 		foreach ($tables as $table) {
 			$this->truncateTable($table);
 		}
 
-		$command = Yii::app()->db->createCommand('SET foreign_key_checks = 1;');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
 		$command->execute();
     }
 }
