@@ -14,7 +14,8 @@ class ClinicalServiceTest extends CDbTestCase
 		'patients' => 'Patient',
 		'episodes' => 'Episode',
 		'events' => 'Event',
-		'elementHistories' => 'ElementHistory'
+		'elementHistories' => 'ElementHistory',
+		'elementPOHs' => 'ElementPOH'
 	);
 
 	protected $service;
@@ -25,285 +26,209 @@ class ClinicalServiceTest extends CDbTestCase
 		parent::setUp();
 	}
 
-	public function dataProvider_InvalidEventElementTypeParameters()
+	public function testGetElements_InvalidParameters_ReturnsEmptyArray()
 	{
-		$eventId = 82758934902;
-
-		return array(
-			array(array(), $eventId, true),
-			array(array(), $eventId, false)
-		);
-	}
-
-	/**
-	 * @dataProvider dataProvider_InvalidEventElementTypeParameters
-	 */
-	public function testGetEventElementTypes_InvalidParameters_ReturnsEmptyArray($siteElementTypes, $eventId, $createElement)
-	{
-		$results = $this->service->getEventElementTypes($siteElementTypes, $eventId, $createElement);
+		$firm = $this->firms('firm1');
+		$results = $this->service->getElements(100, $firm, 1, 1);
 
 		$this->assertEquals(array(), $results);
 	}
 
-	public function testGetEventElementTypes_ValidParameters_CreateElementFalse_ReturnsCorrectData()
+	public function testGetElements_ValidParameters_FromEvent_ReturnsCorrectData()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
 		$event = $this->events('event1');
 
-		$results = $this->service->getEventElementTypes($siteElementTypes, $event->id, false);
+		$results = $this->service->getElements(null, null, null, 1, $event);
 
-		$expected = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$expected[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-			);
-		}
+		$expected = array(
+			$this->elementHistories('elementHistory1'),
+			$this->elementPOHs('elementPOH1')
+		);
 
-		$this->assertEquals($expected, $results);
+		$this->assertTrue(is_array($results));
+		$this->assertEquals(2, count($results));
+		$this->assertEquals(get_class($expected[0]), get_class($results[0]));
+		$this->assertEquals(get_class($expected[1]), get_class($results[1]));
+		$this->assertEquals(1, $results[0]->userId);
+		$this->assertEquals(1, $results[0]->patientId);
+		$this->assertEquals(1, $results[1]->userId);
+		$this->assertEquals(1, $results[1]->patientId);
 	}
 
-	public function testGetEventElementTypes_ValidParameters_CreateElementMissing_ReturnsCorrectData()
+	public function testGetElements_ValidParameters_ReturnsCorrectData()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$event = $this->events('event1');
+		$firm = $this->firms('firm1');
+		$eventType = $this->eventTypes('eventType1');
 
-		$results = $this->service->getEventElementTypes($siteElementTypes, $event->id);
+		$results = $this->service->getElements($eventType, $firm, 1, 1);
 
-		$expected = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$expected[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-			);
-		}
+		$expected = array(
+			$this->elementHistories('elementHistory1'),
+			$this->elementPOHs('elementPOH1')
+		);
 
-		$this->assertEquals($expected, $results);
+		$this->assertTrue(is_array($results));
+		$this->assertEquals(2, count($results));
+		$this->assertEquals(get_class($expected[0]), get_class($results[0]));
+		$this->assertEquals(get_class($expected[1]), get_class($results[1]));
+		$this->assertEquals(1, $results[0]->userId);
+		$this->assertEquals(1, $results[0]->patientId);
+		$this->assertEquals(1, $results[1]->userId);
+		$this->assertEquals(1, $results[1]->patientId);
 	}
 
-	public function testGetEventElementTypes_ValidParameters_CreateElementTrue_PreExistingEvent_ReturnsCorrectData()
+	public function testCreateElements_EmptySiteElementList_ReturnsCorrectData()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$event = $this->events('event1');
-
-		$results = $this->service->getEventElementTypes($siteElementTypes, $event->id, true);
-
-		$expected = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$expected[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-				'preExisting' => true
-			);
-		}
-
-		$this->assertEquals($expected, $results);
-	}
-
-	public function testGetEventElementTypes_ValidParameters_CreateElementTrue_NoPreExistingEvent_ReturnsCorrectData()
-	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$event = $this->events('event2');
-
-		$results = $this->service->getEventElementTypes($siteElementTypes, $event->id, true);
-
-		$expected = array();
-		$elementHistory = new ElementHistory;
-		foreach ($this->siteElementTypes as $name => $values) {
-			$expected[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-				'preExisting' => false
-			);
-		}
-
-		$this->assertEquals($expected, $results);
-	}
-
-	public function testValidateElements_EmptySiteElementList_ReturnsCorrectData()
-	{
-		$siteElementTypes = array();
+		$elements = array();
 		$data = array();
+		$firm = $this->firms('firm1');
 
-		$results = $this->service->validateElements($siteElementTypes, $data);
-		$this->assertTrue($results['valid']);
-		$this->assertEquals(array(), $results['elements']);
+		$result = $this->service->createElements($elements, $data, $firm, 1, 1, 1);
+		$this->assertEquals(3, $result);
 	}
 
-	public function testValidateElements_ValidParameters_ReturnsCorrectData()
+	public function testCreateElements_ValidParameters_ReturnsCorrectData()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
 		$data = array('ElementHistory' => $this->elementHistories['elementHistory1']);
 
 		$element = new ElementHistory;
 		$element->attributes = $data['ElementHistory'];
 		$element->validate();
-		$expected = array();
-		foreach ($this->siteElementTypes as $name => $values) {
-			$expected[] = $element;
-		}
+		$expected = array($element);
 
-		$results = $this->service->validateElements($siteElementTypes, $data);
-		$this->assertTrue($results['valid']);
-		$this->assertEquals($expected, $results['elements']);
+		$firm = $this->firms('firm1');
+		$result = $this->service->createElements(array($element), $data, $firm, 1, 1, 1);
+		$this->assertEquals(3, $result);
 	}
 
-	public function testValidateElements_InvalidElementData_ReturnsCorrectData()
+	public function testCreateElements_ValidParameters_NewEpisode_ReturnsCorrectData()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
+		$data = array('ElementHistory' => $this->elementHistories['elementHistory1']);
+
+		$element = new ElementHistory;
+		$element->attributes = $data['ElementHistory'];
+		$element->validate();
+		$expected = array($element);
+
+		$firm = $this->firms('firm1');
+		$result = $this->service->createElements(array($element), $data, $firm, 2, 1, 1);
+		$this->assertEquals(3, $result);
+	}
+
+	public function testCreateElements_InvalidElementData_ReturnsCorrectData()
+	{
 		$data = array('ElementHistory' => $this->elementHistories('elementHistory1'));
+		$firm = $this->firms('firm1');
 
 		$element = new ElementHistory;
 		$element->attributes = $data['ElementHistory'];
 		$element->description = '  ';
 		$element->validate();
-		$expected = array();
+		$expected = array($element);
 
-		$results = $this->service->validateElements($siteElementTypes, $data);
-		$this->assertFalse($results['valid']);
-		$this->assertEquals(count($expected), count($results['elements']));
+		$result = $this->service->createElements(array($element), $data, $firm, 1, 1, 1);
+		$this->assertFalse($result);
+	}
+
+    /**
+     * @expectedException Exception
+     */
+	public function testCreateElements_InvalidPatientId_NewEpisode_ReturnsCorrectData()
+	{
+		$data = array('ElementHistory' => $this->elementHistories['elementHistory1']);
+
+		$element = new ElementHistory;
+
+		$firm = $this->firms('firm1');
+		$result = $this->service->createElements(array($element), $data, $firm, 1000, 1, 1);
+	}
+
+    /**
+     * @expectedException Exception
+     */
+	public function testCreateElements_InvalidUserId_NewEpisode_ReturnsCorrectData()
+	{
+		$data = array('ElementHistory' => $this->elementHistories['elementHistory1']);
+
+		$element = new ElementHistory;
+
+		$firm = $this->firms('firm1');
+		$result = $this->service->createElements(array($element), $data, $firm, 1, 1000, 1);
 	}
 
 	public function testUpdateElements_EmptyElementList_ReturnsValidData()
 	{
-		$siteElementTypes = array();
+		$elements = array();
 		$data = array();
 
-		$result = $this->service->updateElements($siteElementTypes, $data, 1);
-		$this->assertTrue($result);
-	}
-
-	public function testUpdateElements_EmptyFormData_NotPreExisting_ReturnsValidData()
-	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$data = array('ElementHistory' => array('foo'));
-
-		$elements = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$elements[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-			);
-		}
-
 		$result = $this->service->updateElements($elements, $data, 1);
 		$this->assertTrue($result);
 	}
 
-	public function testUpdateElements_EmptyFormData_PreExisting_ReturnsValidData()
+	public function testUpdateElements_FormDataInvalid_PreExisting_ReturnsFail()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$data = array('ElementHistory' => array('foo'));
+		$data = array('ElementHistory' => array());
 
-		$elements = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$elements[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-				'preExisting' => true
-			);
-		}
+		$event = $this->events('event1');
+		// Need to use getElements here to ensure that 'required' is populated in the element
+		$elements = $this->service->getElements(null, null, null, 1, $event);
 
-		$this->assertEquals('ElementHistory', get_class($elements[0]['element']));
-		$result = $this->service->updateElements($elements, $data, 1);
-		$this->assertTrue($result);
-	}
-
-	public function testUpdateElements_InvalidEventId_ReturnsValidData()
-	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$data = array('ElementHistory' => array('foo'));
-
-		$elements = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$elements[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name)
-			);
-		}
-
-		$this->assertEquals('ElementHistory', get_class($elements[0]['element']));
-		$result = $this->service->updateElements($elements, $data, 'test');
+		$result = $this->service->updateElements($elements, $data, $event);
 		$this->assertFalse($result);
+	}
+
+	public function testUpdateElements_FormDataAbsent_PreExisting_ReturnsFail()
+	{
+		$data = array('ElementHistory' => array('description' => null));
+
+		$event = $this->events('event1');
+		// Need to use getElements here to ensure that 'required' is populated in the element
+		$elements = $this->service->getElements(null, null, null, 1, $event);
+
+		$result = $this->service->updateElements($elements, $data, $event);
+		$this->assertFalse($result);
+	}
+
+	public function testUpdateElements_EmptyFormData_PreExisting_ReturnsFail()
+	{
+		$data = array();
+
+		$event = $this->events('event1');
+		// Need to use getElements here to ensure that 'required' is populated in the element
+		$elements = $this->service->getElements(null, null, null, 1, $event);
+
+		$result = $this->service->updateElements($elements, $data, $event);
+		$this->assertFalse($result);
+	}
+
+	public function testUpdateElements_Delete_UnrequiredPreExisting_ReturnsFail()
+	{
+		$data = array(
+			'ElementHistory' => array('description' => 'foo')
+		);
+
+		$event = $this->events('event1');
+		// Need to use getElements here to ensure that 'required' is populated in the element
+		$elements = $this->service->getElements(null, null, null, 1, $event);
+
+		$result = $this->service->updateElements($elements, $data, $event);
+		$this->assertTrue($result);
 	}
 
 	public function testUpdateElements_ValidFormData_NotPreExisting_ReturnsValidData()
 	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$data = array('ElementHistory' => array('description' => 'foo'));
+		$data = array(
+			'ElementHistory' => array('description' => 'foo'),
+			'ElementPOH' => array('value' => 'bar')
+		);
 
-		$elements = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$elements[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-			);
-		}
+		$event = $this->events('event1');
+		// Need to use getElements here to ensure that 'required' is populated in the element
+		$elements = $this->service->getElements(null, null, null, 1, $event);
 
-		$result = $this->service->updateElements($elements, $data, 1);
+		$result = $this->service->updateElements($elements, $data, $event);
 		$this->assertTrue($result);
-		foreach ($elements as $element) {
-			$this->assertEquals($data['ElementHistory']['description'], $element['element']->description);
-		}
+		$this->assertEquals($data['ElementHistory']['description'], $elements[0]->description);
+		$this->assertEquals($data['ElementPOH']['value'], $elements[1]->value);
 	}
-
-	public function testUpdateElements_ValidFormData_PreExisting_ReturnsValidData()
-	{
-		$siteElementTypes = SiteElementType::model()->findAll();
-		$data = array('ElementHistory' => array('description' => 'foo'));
-
-		$elements = array();
-		$elementHistory = $this->elementHistories('elementHistory1');
-		foreach ($this->siteElementTypes as $name => $values) {
-			$elements[] = array(
-				'element' => $elementHistory,
-				'siteElementType' => $this->siteElementTypes($name),
-				'preExisting' => true
-			);
-		}
-
-		$this->assertEquals('ElementHistory', get_class($elements[0]['element']));
-		$result = $this->service->updateElements($elements, $data, 1);
-		$this->assertTrue($result);
-		foreach ($elements as $element) {
-			$this->assertEquals($data['ElementHistory']['description'], $element['element']->description);
-		}
-	}
-
-	/*
-	 *
-	public function updateElements($elements, $data)
-	{
-		$success = true;
-
-		foreach ($elements as $element) {
-			$elementClassName = get_class($element['element']);
-
-			if ($data[$elementClassName]) {
-				// The user has entered information for this element
-				// Check if it's a pre-existing element
-				if (!$element['preExisting']) {
-					// It's not pre-existing so give it an event id
-					$element['element']->event_id = $event->id;
-				}
-
-				// @todo - is there a risk they could change the event id here?
-				$element['element']->attributes = $data[$elementClassName];
-			}
-
-			if (!$element['element']->save()) {
-				$success = true;
-			}
-		}
-
-		return $success;
-	}
-	 */
 }

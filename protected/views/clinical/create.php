@@ -18,15 +18,14 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
  * Loop through all the possible element types and display
  */
 
-foreach ($siteElementTypeObjects as $siteElementType) {
-	$className = $siteElementType->possibleElementType->elementType->class_name;
-	$element = new $className(Yii::app()->user->id, $this->firm);
+foreach ($elements as $element) {
+	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
 		'/elements/' .
-		$siteElementType->possibleElementType->elementType->class_name .
-		'/_form/' .
-		$siteElementType->view_number,
+			$elementClassName .
+			'/_form/' .
+			$element->viewNumber,
 		array('model' => $element, 'form' => $form)
 	);
 

@@ -1,4 +1,8 @@
 <?php
+$baseUrl = Yii::app()->baseUrl;
+$cs = Yii::app()->getClientScript();
+$cs->registerScriptFile($baseUrl.'/js/phrase.js');
+Yii::app()->clientScript->registerCoreScript('jquery');
 
 $this->renderPartial('base');
 
@@ -14,12 +18,12 @@ echo CHtml::hiddenField('event_id', $id);
  * Loop through all the possible element types and display
  */
 foreach ($elements as $element) {
-	$className = get_class($element['element']);
+	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
-		'/elements/' . $className . '/_form/' .
-			$element['siteElementType']->view_number,
-		array('model' => $element['element'], 'form' => $form)
+		'/elements/' . $elementClassName . '/_form/' .
+			$element->viewNumber,
+		array('model' => $element, 'form' => $form)
 	);
 }
 

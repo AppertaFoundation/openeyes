@@ -4,7 +4,7 @@ class ElementVisualAcuityTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'events' => 'Event',
-		'elements' => ':element_visual_acuity',
+		'elements' => 'ElementVisualAcuity',
 	);
 
 	public function testGetVisualAcuityOptions()

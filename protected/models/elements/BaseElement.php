@@ -5,22 +5,41 @@
  */
 class BaseElement extends CActiveRecord
 {
-	public $userFirm;
+	public $firm;
 	public $userId;
 	public $patientId;
 	public $event;
 
-	public function __construct($userId = null, $firm = null, $patientId = null)
+	// Used to display the view number set in site_element_type for any particular
+	// instance of this element
+	public $viewNumber;
+
+	// Used during creation and updating of elements
+	public $required;
+
+	/**
+	 * Here we need to provide default options for when the element is instantiated
+	 * by findByPk in ClinicalService->getElements().
+	 *
+	 * @param object $firm
+	 * @param int $patientId
+	 * @param int $userId
+	 * @param int viewNumber
+	 * @param boolean $required
+	 */
+	public function __construct($firm = null, $patientId = null, $userId = null, $viewNumber = null, $required = false)
 	{
-		$this->userId = $userId;
-		$this->userFirm = $firm;
+		$this->firm = $firm;
 		$this->patientId = $patientId;
+		$this->userId = $userId;
+		$this->viewNumber = $viewNumber;
+		$this->required = $required;
 	}
 
 	public function getSpecialtyId()
 	{
-		if (isset($this->userFirm)) {
-			return $this->userFirm->serviceSpecialtyAssignment->specialty_id;
+		if (isset($this->firm)) {
+			return $this->firm->serviceSpecialtyAssignment->specialty_id;
 		} elseif (isset($this->event_id)) {
 			$event = $this->getEvent();
 			return $event->episode->firm->serviceSpecialtyAssignment->specialty_id;
@@ -29,6 +48,10 @@ class BaseElement extends CActiveRecord
 			throw new Exception('Unable to return specialty_id.');
 		}
 	}
+
+	// @todo - should there be getPatientId and getUserId methods too?
+	// There's nothing to fetch userId from so it's hard to imagine that one...
+	// patientId can be fetched from the event.
 
 	public function getEvent()
 	{

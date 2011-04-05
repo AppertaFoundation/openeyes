@@ -64,5 +64,9 @@ return array(
 	'elementType16' => array(
 		'name' => 'Conclusion',
 		'class_name' => 'ElementConclusion'
+	),
+	'elementType17' => array(
+		'name' => 'POH',
+		'class_name' => 'ElementPOH'
 	)
 );
