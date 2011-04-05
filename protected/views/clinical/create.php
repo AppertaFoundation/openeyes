@@ -17,20 +17,24 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
 /**
  * Loop through all the possible element types and display
  */
+
 foreach ($siteElementTypeObjects as $siteElementType) {
 	$className = $siteElementType->possibleElementType->elementType->class_name;
-	// @todo - this shouldn't be here
 	$element = new $className(Yii::app()->user->id, $this->firm);
 
 	echo $this->renderPartial(
 		'/elements/' .
-			$siteElementType->possibleElementType->elementType->class_name .
-			'/_form/' .
-			$siteElementType->view_number,
+		$siteElementType->possibleElementType->elementType->class_name .
+		'/_form/' .
+		$siteElementType->view_number,
 		array('model' => $element, 'form' => $form)
 	);
-}
 
-echo CHtml::submitButton('Create event');
+}
+if (EyeDrawService::getActive()) {
+	echo CHtml::submitButton('Create event', array('onClick' => 'eyedraw_submit();'));
+} else {
+	echo CHtml::submitButton('Create event');
+}
 
 $this->endWidget();

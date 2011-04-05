@@ -23,6 +23,10 @@ foreach ($elements as $element) {
 	);
 }
 
-echo CHtml::submitButton('Update event');
+if (EyeDrawService::getActive()) {
+        echo CHtml::submitButton('Update event', array('onClick' => 'eyedraw_submit();'));
+} else {
+        echo CHtml::submitButton('Update event');
+}
 
 $this->endWidget();
