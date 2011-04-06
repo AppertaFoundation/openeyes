@@ -16,34 +16,39 @@ class m110331_113735_create_diabetes_type extends CDbMigration
 			'name' => 'Diabetes type',
 			'class_name' => 'ElementDiabetesType'
 		));
-		$elementType = ElementType::model()->findByAttributes(array(
-			'name' => 'Diabetes type',
-			'class_name' => 'ElementDiabetesType'
-		));
+		$elementType = $this->dbConnection->createCommand()
+			->select('id')
+			->from('element_type')
+			->where('name=:name AND class_name=:class', 
+				array(':name'=>'Diabetes type', ':class'=>'ElementDiabetesType'))
+			->queryRow();
 
 		$this->insert('possible_element_type', array(
 			'event_type_id' => 1,
-			'element_type_id' => $elementType->id,
+			'element_type_id' => $elementType['id'],
 			'num_views' => 1,
 			'order' => 12
 		));
 
-		$possibleElement = PossibleElementType::model()->findByAttributes(array(
-			'event_type_id' => 1,
-			'element_type_id' => $elementType->id,
-			'num_views' => 1,
-			'order' => 12
-		));
+		$possibleElement = $this->dbConnection->createCommand()
+			->select('id')
+			->from('possible_element_type')
+			->where('event_type_id=:eventType AND 
+				element_type_id=:elementType AND num_views=:num AND 
+				`order`=:order',
+				array(':eventType'=>1,':elementType'=>$elementType['id'],
+					':num'=>1,':order'=>12))
+			->queryRow();
 
 		$this->insert('site_element_type', array(
-			'possible_element_type_id' => $possibleElement->id,
+			'possible_element_type_id' => $possibleElement['id'],
 			'specialty_id' => 8, // Medical retina
 			'view_number' => 1,
 			'required' => 1,
 			'first_in_episode' => 1
 		));
 		$this->insert('site_element_type', array(
-			'possible_element_type_id' => $possibleElement->id,
+			'possible_element_type_id' => $possibleElement['id'],
 			'specialty_id' => 8, // Medical retina
 			'view_number' => 1,
 			'required' => 1,
@@ -53,24 +58,29 @@ class m110331_113735_create_diabetes_type extends CDbMigration
 
     public function down()
     {
-		$elementType = ElementType::model()->findByAttributes(array(
-			'name' => 'Diabetes type',
-			'class_name' => 'ElementDiabetesType'
-		));
+		$elementType = $this->dbConnection->createCommand()
+			->select('id')
+			->from('element_type')
+			->where('name=:name AND class_name=:class', 
+				array(':name'=>'Diabetes type', ':class'=>'ElementDiabetesType'))
+			->queryRow();
 
 		if (!empty($elementType)) {
-			$possibleElement = PossibleElementType::model()->findByAttributes(array(
-				'event_type_id' => 1,
-				'element_type_id' => $elementType->id,
-				'num_views' => 1,
-				'order' => 12
-			));
+			$possibleElement = $this->dbConnection->createCommand()
+				->select('id')
+				->from('possible_element_type')
+				->where('event_type_id=:eventType AND 
+					element_type_id=:elementType AND num_views=:num AND 
+					`order`=:order',
+					array(':eventType'=>1,':elementType'=>$elementType['id'],
+						':num'=>1,':order'=>12))
+				->queryRow();
 			$this->delete('site_element_type', 'possible_element_type_id = :id',
-				array(':id' => $possibleElement->id)
+				array(':id' => $possibleElement['id'])
 			);
 
 			$this->delete('possible_element_type', 'element_type_id = :id',
-				array(':id' => $elementType->id)
+				array(':id' => $elementType['id'])
 			);
 		}
 
