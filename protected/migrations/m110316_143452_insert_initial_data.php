@@ -390,7 +390,7 @@ class m110316_143452_insert_initial_data extends CDbMigration
 		$command->execute();
 
 		foreach ($queries as $table => $query) {
-			echo "insert into {$table}\n";
+			echo "    > insert into {$table}\n";
 			$command = $this->dbConnection->createCommand($query);
 			$command->execute();
 		}

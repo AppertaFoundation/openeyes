@@ -64,7 +64,7 @@ class m110324_115041_insert_exam_phrases extends CDbMigration
 			$sql .= "\n";
 		}
 		$command = $this->dbConnection->createCommand($sql);
-		echo "inserting into exam_phrase\n";
+		echo "    > inserting into exam_phrase\n";
 		$command->execute();
 
 
