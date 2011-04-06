@@ -141,10 +141,10 @@ class ElementVisualAcuity extends BaseElement
 	 *
 	 * @return boolean
 	 */
-	public function save()
+	public function save($runValidation=true,$attributes=null)
 	{
 		$this->type = 1;
-		return parent::save();
+		return parent::save($runValidation, $attributes);
 	}
 
 	/**

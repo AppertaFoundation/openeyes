@@ -8,7 +8,7 @@ class ClinicalController extends BaseController
 	public $service;
 	public $firm;
 
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
 		// if (!Yii::app()->user->checkAccess('admin')) {
@@ -62,12 +62,12 @@ class ClinicalController extends BaseController
 	 */
 	public function actionCreate()
 	{
-		$eventTypeId = $_GET['event_type_id'];
-
 		// @todo - check that this event type is permitted for this specialty
-		if (!isset($eventTypeId)) {
+		if (!isset($_GET['event_type_id'])) {
 			throw new CHttpException(403, 'No event_type_id specified.');
 		}
+
+		$eventTypeId = $_GET['event_type_id'];
 
 		$eventType = EventType::model()->findByPk($eventTypeId);
 

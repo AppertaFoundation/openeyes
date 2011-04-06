@@ -13,7 +13,7 @@ class BaseController extends Controller
 	public $patientId;
 	public $patientName;
 
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		$app = Yii::app();
 

@@ -134,7 +134,7 @@ class User extends CActiveRecord
 	 *
 	 * @return boolean
 	 */
-	public function save()
+	public function save($runValidation = true, $attributes = null)
 	{
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
 			/**
@@ -152,7 +152,7 @@ class User extends CActiveRecord
 			}
 		}
 
-		return parent::save();
+		return parent::save($runValidation, $attributes);
 	}
 
 	/**
