@@ -252,6 +252,7 @@ class ClinicalControllerTest extends CDbTestCase
 	{
 		$_POST = $this->events['event1'];
 		$_POST['action'] = 'update';
+		$userId = 1;
 
 		$event = $this->events('event1');
 		$firm = $this->firms('firm1');
@@ -264,7 +265,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$expectedElements = array($elementHistory, $elementPOH);
 
 		$mockController = $this->getMock('ClinicalController',
-			array('render', 'redirect'), array('ClinicalController'));
+			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
 			->with(array('view', 'id' => $event->id));
@@ -281,6 +282,10 @@ class ClinicalControllerTest extends CDbTestCase
 			->method('updateElements')
 			->with($expectedElements, $_POST, $event)
 			->will($this->returnValue(true));
+
+		$mockController->expects($this->once())
+			->method('getUserId')
+			->will($this->returnValue($userId));
 
 		$mockController->firm = $firm;
 		$mockController->service = $mockService;

@@ -1,21 +1,17 @@
 <?php
 
-// @todo - surely there is a better way of doing this? Some sort of autoloading? Bootstrap?
-Yii::import('application.controllers.*');
-require_once('BaseController.php');
-
 class SiteController extends BaseController
 {
 	/**
 	 * Updates the selected firm if need be.
 	 * Calls the BaseController beforeAction method to set up displaying the firm form if need be.
 	 */
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		if (
-			$this->action->id == 'index' && 
-			$_POST && 
-			array_key_exists('selected_firm_id', $_POST) && 
+			$this->action->id == 'index' &&
+			$_POST &&
+			array_key_exists('selected_firm_id', $_POST) &&
 			$_POST['selected_firm_id']
 		) {
 			$app = Yii::app();
