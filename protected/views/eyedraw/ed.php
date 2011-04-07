@@ -21,13 +21,13 @@
                                                 <button id="uTear<?php echo get_class($model)?>_<?php echo $side?>" title="U tear" onclick="drawing<?php echo get_class($model)?>_<?php echo $side?>.addDoodle('UTear'); return false;" ><img src="/img/eyedraw/uTear.gif" /></button>
                                                 <button id="roundHole<?php echo get_class($model)?>_<?php echo $side?>" title="Round hole" onclick="drawing<?php echo get_class($model)?>_<?php echo $side?>.addDoodle('RoundHole'); return false;" ><img src="/img/eyedraw/roundHole.gif" /></button>
                                                 <br />
-						<?}?>
+						<?php } ?>
                                                 <!-- add tabindex="1" to canvas after testing and remove highlighted border with css -->
                                                 <canvas class="ed_canvas" id="canvas<?php echo get_class($model)?>_<?php echo $side?>" width="501" height="501"></canvas>
                                                 <br />
 						<?php if ($writeable) {?>
                                                 <button title="Report" onclick="report<?php echo get_class($model)?>_<?php echo $side?>(); return false;">Report</button><br />
-						<?}?>
+						<?php } ?>
                                         </span>
                                 </div>
                 </div>

@@ -8,7 +8,7 @@
 			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>= <?php echo $model->$property?>;
 		<?} else {?>
 			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>=doodleSetDefault;
-		<?}?>
+		<?php } ?>
 
 	// Variables assigned to each drawing on this page
 	var drawing<?php echo get_class($model)?>_<?php echo $side?>;
@@ -70,7 +70,7 @@
 
 			//canvasRPS.addEventListener('keydown',keyDownRPS,true);
 			canvas<?php echo get_class($model)?>_<?php echo $side?>.focus();
-		<?}?>
+		<?php } ?>
 
 		// Load doodleSet
 		drawing<?php echo get_class($model)?>_<?php echo $side?>.load(doodleSet<?php echo get_class($model)?>_<?php echo $side?>);
@@ -78,7 +78,7 @@
 		<?php if ($writeable) {?>
 		// Use fundus as template (for new drawings)
 		drawing<?php echo get_class($model)?>_<?php echo $side?>.addDoodle('Fundus');
-		<?}?>
+		<?php } ?>
 
 		// Draw doodles
 		drawing<?php echo get_class($model)?>_<?php echo $side?>.drawAllDoodles();
@@ -115,7 +115,7 @@
 		event.stopPropagation();
 		event.preventDefault();
 	}
-	<?}?>
+	<?php } ?>
 
 	// Returns true if browser is firefox
 	function isFirefox()
