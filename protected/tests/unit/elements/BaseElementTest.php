@@ -15,14 +15,14 @@ class BaseElementTest extends CDbTestCase
 	public function testGetSpecialtyId_WithUserFirm_CorrectlySetsSpecialtyId()
 	{
 		$firm = $this->firms('firm1');
-		$baseElement = new BaseElement($firm, 1);
-		$this->assertEquals(1, $baseElement->getSpecialtyId());
+		$baseElement = new BaseElement($firm);
+		$this->assertEquals(1, $baseElement->firm->serviceSpecialtyAssignment->specialty_id);
 	}
 
 	public function testGetExamPhraseOptions()
 	{
 		$firm = $this->firms('firm1');
-		$baseElement = new BaseElement($firm, 1);
+		$baseElement = new BaseElement($firm);
 		$examPhrases = $baseElement->getExamPhraseOptions(ExamPhrase::PART_HISTORY);
 		$this->assertTrue(is_array($examPhrases));
 		// N.B. there should be one more examphrase than is defined in the fixture
