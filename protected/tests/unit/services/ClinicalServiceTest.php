@@ -26,10 +26,12 @@ class ClinicalServiceTest extends CDbTestCase
 		parent::setUp();
 	}
 
-	public function testGetElements_InvalidParameters_ReturnsEmptyArray()
+	public function testGetElements_EventTypeWithNoElements_ReturnsEmptyArray()
 	{
 		$firm = $this->firms('firm1');
-		$results = $this->service->getElements(100, $firm, 1, 1);
+		$eventType = $this->eventTypes('eventType10');
+
+		$results = $this->service->getElements($eventType, $firm, 1, 1);
 
 		$this->assertEquals(array(), $results);
 	}
@@ -167,10 +169,10 @@ class ClinicalServiceTest extends CDbTestCase
 
 	public function testUpdateElements_FormDataInvalid_PreExisting_ReturnsFail()
 	{
-		$data = array('ElementHistory' => array());
+		// Note we do not provide a data array for ElementHistory, which is required
+		$data = array('ElementPOH' => array());
 
 		$event = $this->events('event1');
-		// Need to use getElements here to ensure that 'required' is populated in the element
 		$elements = $this->service->getElements(null, null, null, 1, $event);
 
 		$result = $this->service->updateElements($elements, $data, $event);

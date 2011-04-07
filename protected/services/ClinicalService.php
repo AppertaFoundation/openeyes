@@ -81,7 +81,7 @@ class ClinicalService
 			$elementClassName = get_class($element);
 			$needsValidation = false;
 
-			if ($data[$elementClassName]) {
+			if (isset($data[$elementClassName])) {
 				$element->attributes = $data[$elementClassName];
 
 				$toUpdate[] = $element;
@@ -146,9 +146,10 @@ class ClinicalService
 			$eventType = $event->eventType;
 			$firm = $event->episode->firm;
 			$patientId = $event->episode->patient_id;
+			$criteria = $this->getCriteria($eventType, $firm, $patientId, $event);
+		} else {
+			$criteria = $this->getCriteria($eventType, $firm, $patientId);
 		}
-
-		$criteria = $this->getCriteria($eventType, $firm, $patientId, $event);
 
 		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
 
@@ -265,7 +266,7 @@ class ClinicalService
 
 		// If this event_type has first_in_episode_possible set to 1 we have to add an extra criterion
 		if ($eventType->first_in_episode_possible) {
-			if (!$episode || !$episode->hasEventOfType($eventType->id, $event)) {
+			if (!isset($episode) || !$episode->hasEventOfType($eventType->id, $event)) {
 				// It's the first of this event type in an episode or a new episode, get site_element_types
 				// that have first_in_episode set to true
 				$criteria->addCondition('first_in_episode = 1');
