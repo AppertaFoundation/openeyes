@@ -142,7 +142,7 @@ class ClinicalService
 	 */
 	public function getElements($eventType, $firm, $patientId, $userId, $event = null)
 	{
-		if ($event) {
+		if (isset($event)) {
 			$eventType = $event->eventType;
 			$firm = $event->episode->firm;
 			$patientId = $event->episode->patient_id;

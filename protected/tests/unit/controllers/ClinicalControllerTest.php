@@ -250,6 +250,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 	public function testActionUpdate_ValidPostData_RendersViewView()
 	{
+		$userId = 1;
 		$_POST = $this->events['event1'];
 		$_POST['action'] = 'update';
 
@@ -264,10 +265,14 @@ class ClinicalControllerTest extends CDbTestCase
 		$expectedElements = array($elementHistory, $elementPOH);
 
 		$mockController = $this->getMock('ClinicalController',
-			array('render', 'redirect'), array('ClinicalController'));
+			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
 			->with(array('view', 'id' => $event->id));
+
+		$mockController->expects($this->once())
+			->method('getUserId')
+			->will($this->returnValue($userId));
 
 		$mockService = $this->getMock('ClinicalService',
 			array('getElements', 'updateElements'));
