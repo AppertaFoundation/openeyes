@@ -66,6 +66,7 @@ class ClinicalController extends BaseController
 		if (!isset($_GET['event_type_id'])) {
 			throw new CHttpException(403, 'No event_type_id specified.');
 		}
+		$eventTypeId = $_GET['event_type_id'];
 
 		$eventTypeId = $_GET['event_type_id'];
 

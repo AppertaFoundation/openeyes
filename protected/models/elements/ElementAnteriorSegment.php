@@ -6,16 +6,13 @@
  * The followings are the available columns in table 'element_anterior_segment':
  * @property string $id
  * @property string $event_id
- * @property string $description
- *
- * The followings are the available model relations:
- * @property Event $event
+ * @property string $value
  */
 class ElementAnteriorSegment extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ElementAnteriorSegment the static model class
+	 * @return ElementHPC the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -38,10 +35,10 @@ class ElementAnteriorSegment extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('safe'),
+			array('id, event_id, description_left, description_right, image_string_left, image_string_right', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id', 'safe', 'on'=>'search'),
+			array('id, event_id, description_left, description_right, image_string_left, image_string_right', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,7 +50,6 @@ class ElementAnteriorSegment extends BaseElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 		);
 	}
 
@@ -64,7 +60,11 @@ class ElementAnteriorSegment extends BaseElement
 	{
 		return array(
 			'id' => 'ID',
-			'event_id' => 'Event'
+			'event_id' => 'Event',
+			'description_left' => 'Description (left)',
+			'description_right' => 'Description (right)',
+			'image_string_left' => 'EyeDraw (left)',
+			'image_string_right' => 'EyeDraw (right)'
 		);
 	}
 
@@ -81,6 +81,10 @@ class ElementAnteriorSegment extends BaseElement
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('event_id',$this->event_id,true);
+		$criteria->compare('description_left',$this->description_left,true);
+		$criteria->compare('description_right',$this->description_right,true);
+		$criteria->compare('image_string_left',$this->image_string_left,true);
+		$criteria->compare('image_string_right',$this->image_string_right,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

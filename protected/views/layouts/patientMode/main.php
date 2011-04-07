@@ -17,7 +17,7 @@
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 
-<body>
+<body onload="eyedraw_init();">
 
 <div class="container" id="page">
 
@@ -54,6 +54,6 @@
 	</div><!-- footer -->
 
 </div><!-- page -->
-
+<?php echo EyeDrawService::activeEyeDrawInit();?>
 </body>
 </html>

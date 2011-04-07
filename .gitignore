@@ -7,3 +7,6 @@ nbproject/*
 /protected/runtime/
 /assets/
 .*swp
+/protected/models/ElementExample.php
+/protected/models/elements/ElementExample.php
+/protected/views/elements/ElementExample/
