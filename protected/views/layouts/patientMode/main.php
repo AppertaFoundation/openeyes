@@ -54,6 +54,6 @@
 	</div><!-- footer -->
 
 </div><!-- page -->
-<?= EyeDrawService::activeEyeDrawInit();?>
+<?php echo EyeDrawService::activeEyeDrawInit();?>
 </body>
 </html>

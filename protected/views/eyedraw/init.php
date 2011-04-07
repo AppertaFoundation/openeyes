@@ -1,11 +1,11 @@
 <script language="JavaScript">
 	function eyedraw_init() 
 	{
-        	<?= $init?>
+        	<?php echo $init?>
 	}
 	function eyedraw_submit()
 	{
-		<?= $submit?>
+		<?php echo $submit?>
 	}
 </script>
 

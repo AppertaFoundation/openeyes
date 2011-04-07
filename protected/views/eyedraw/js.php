@@ -7,22 +7,22 @@
 			{subclass: "UTear", originX: "-212", originY: "-320", apexX: "0", apexY: "-22", scaleX: "1", scaleY: "1", arc: "0", rotation: "327", order: "2"}
 		];
 		<?$property = 'image_string_'.$side; if ($side and $model->$property) {?>
-			var doodleSet<?=get_class($model)?>_<?= $side?>= <?=$model->$property?>;
+			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>= <?php echo $model->$property?>;
 		<?} else {?>
-			var doodleSet<?=get_class($model)?>_<?= $side?>=doodleSetDefault;
+			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>=doodleSetDefault;
 		<?}?>
 
 	// Variables assigned to each drawing on this page
-	var drawing<?=get_class($model)?>_<?= $side?>;
+	var drawing<?php echo get_class($model)?>_<?php echo $side?>;
 
-	function report<?=get_class($model)?>_<?= $side?>()
+	function report<?php echo get_class($model)?>_<?php echo $side?>()
 	{
-		report = drawing<?=get_class($model)?>_<?= $side?>.report();
+		report = drawing<?php echo get_class($model)?>_<?php echo $side?>.report();
 		report = report.replace(/^\s+/, '');
 		// ignore the empty selector
 		if ('' != report) {
 			// grab the text
-			appendValue = document.getElementById('<?=get_class($model)?>_description_<?= $side?>').value;
+			appendValue = document.getElementById('<?php echo get_class($model)?>_description_<?php echo $side?>').value;
 			// if we're adding onto existing text, add a comma
 			if (appendValue && '' != appendValue) {
 				report = report.charAt(0).toUpperCase() + report.slice(1);
@@ -33,83 +33,83 @@
 				report = report.charAt(0).toUpperCase() + report.slice(1);
 			}
 			// add it to the textarea
-			document.getElementById('<?=get_class($model)?>_description_<?= $side?>').value=report;
+			document.getElementById('<?php echo get_class($model)?>_description_<?php echo $side?>').value=report;
 		}
 		return false;
 	}	
-	function submit<?=get_class($model)?>_<?= $side?>()
+	function submit<?php echo get_class($model)?>_<?php echo $side?>()
 	{
 		
-		document.getElementById('<?=get_class($model)?>_image_string_<?= $side?>').value=drawing<?=get_class($model)?>_<?= $side?>.jsonString();
+		document.getElementById('<?php echo get_class($model)?>_image_string_<?php echo $side?>').value=drawing<?php echo get_class($model)?>_<?php echo $side?>.jsonString();
 	}
 
-	function init<?=get_class($model)?>_<?= $side?>()
+	function init<?php echo get_class($model)?>_<?php echo $side?>()
 	{
 		// initialise doodlesets
-		var canvas<?=get_class($model)?>_<?= $side?> = document.getElementById('canvas<?=get_class($model)?>_<?=$side?>');
+		var canvas<?php echo get_class($model)?>_<?php echo $side?> = document.getElementById('canvas<?php echo get_class($model)?>_<?php echo $side?>');
 
 		// Create blank posterior segment drawing
-		drawing<?=get_class($model)?>_<?= $side?> = new ED.Drawing(canvas<?=get_class($model)?>_<?= $side?>, Eye.<?= ucfirst($side)?>, '<?=get_class($model)?>_<?= $side?>');
+		drawing<?php echo get_class($model)?>_<?php echo $side?> = new ED.Drawing(canvas<?php echo get_class($model)?>_<?php echo $side?>, Eye.<?php echo  ucfirst($side)?>, '<?php echo get_class($model)?>_<?php echo $side?>');
 
-		<?if ($writeable) {?>
+		<?php if ($writeable) {?>
 			// Stop browser stealing double click to select text (TODO Test this in browsers other than Safari)
-			canvas<?=get_class($model)?>_<?= $side?>.onselectstart = function () { return false; }
+			canvas<?php echo get_class($model)?>_<?php echo $side?>.onselectstart = function () { return false; }
 			// Event listeners
-			canvas<?=get_class($model)?>_<?= $side?>.addEventListener('mousedown', function(e) {
-				var point = new ED.Point(e.pageX - canvas<?=get_class($model)?>_<?= $side?>.offsetLeft, e.pageY - canvas<?=get_class($model)?>_<?= $side?>.offsetTop);
-				drawing<?=get_class($model)?>_<?= $side?>.mousedown(point);
+			canvas<?php echo get_class($model)?>_<?php echo $side?>.addEventListener('mousedown', function(e) {
+				var point = new ED.Point(e.pageX - canvas<?php echo get_class($model)?>_<?php echo $side?>.offsetLeft, e.pageY - canvas<?php echo get_class($model)?>_<?php echo $side?>.offsetTop);
+				drawing<?php echo get_class($model)?>_<?php echo $side?>.mousedown(point);
 			}, false);
 
-			canvas<?=get_class($model)?>_<?= $side?>.addEventListener('mouseup', function(e) {
-				var point = new ED.Point(e.pageX - canvas<?=get_class($model)?>_<?= $side?>.offsetLeft, e.pageY - canvas<?=get_class($model)?>_<?= $side?>.offsetTop);
-				drawing<?=get_class($model)?>_<?= $side?>.mouseup(point);
+			canvas<?php echo get_class($model)?>_<?php echo $side?>.addEventListener('mouseup', function(e) {
+				var point = new ED.Point(e.pageX - canvas<?php echo get_class($model)?>_<?php echo $side?>.offsetLeft, e.pageY - canvas<?php echo get_class($model)?>_<?php echo $side?>.offsetTop);
+				drawing<?php echo get_class($model)?>_<?php echo $side?>.mouseup(point);
 			}, false);
 
-			canvas<?=get_class($model)?>_<?= $side?>.addEventListener('mousemove', function(e) {
-				var point = new ED.Point(e.pageX - canvas<?=get_class($model)?>_<?= $side?>.offsetLeft, e.pageY - canvas<?=get_class($model)?>_<?= $side?>.offsetTop);
-				drawing<?=get_class($model)?>_<?= $side?>.mousemove(point);
+			canvas<?php echo get_class($model)?>_<?php echo $side?>.addEventListener('mousemove', function(e) {
+				var point = new ED.Point(e.pageX - canvas<?php echo get_class($model)?>_<?php echo $side?>.offsetLeft, e.pageY - canvas<?php echo get_class($model)?>_<?php echo $side?>.offsetTop);
+				drawing<?php echo get_class($model)?>_<?php echo $side?>.mousemove(point);
 			}, false);
 
 			//canvasRPS.addEventListener('keydown',keyDownRPS,true);
-			canvas<?=get_class($model)?>_<?= $side?>.focus();
+			canvas<?php echo get_class($model)?>_<?php echo $side?>.focus();
 		<?}?>
 
 		// Load doodleSet
-		drawing<?=get_class($model)?>_<?= $side?>.load(doodleSet<?=get_class($model)?>_<?= $side?>);
+		drawing<?php echo get_class($model)?>_<?php echo $side?>.load(doodleSet<?php echo get_class($model)?>_<?php echo $side?>);
 
-		<?if ($writeable) {?>
+		<?php if ($writeable) {?>
 		// Use fundus as template (for new drawings)
-		drawing<?=get_class($model)?>_<?= $side?>.addDoodle('Fundus');
+		drawing<?php echo get_class($model)?>_<?php echo $side?>.addDoodle('Fundus');
 		<?}?>
 
 		// Draw doodles
-		drawing<?=get_class($model)?>_<?= $side?>.drawAllDoodles();
+		drawing<?php echo get_class($model)?>_<?php echo $side?>.drawAllDoodles();
 	}
 
-	<?if ($writeable) {?>
+	<?php if ($writeable) {?>
 	// Mousedown handler for each drawing canvas
-	function mousedown<?=get_class($model)?>_<?= $side?>(e)
+	function mousedown<?php echo get_class($model)?>_<?php echo $side?>(e)
 	{
 		var point = new ED.Point(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-		drawing<?=get_class($model)?>_<?= $side?>.mousedown(point);
+		drawing<?php echo get_class($model)?>_<?php echo $side?>.mousedown(point);
 	}
 
 	// Mouseup handler for each drawing canvas
-	function mouseup<?=get_class($model)?>_<?= $side?>(e)
+	function mouseup<?php echo get_class($model)?>_<?php echo $side?>(e)
 	{
 		var point = new ED.Point(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-		drawing<?=get_class($model)?>_<?= $side?>.mouseup(point);
+		drawing<?php echo get_class($model)?>_<?php echo $side?>.mouseup(point);
 	}
 
 	// Mousedown handler for each drawing canvas
-	function mousemove<?=get_class($model)?>_<?= $side?>(e)
+	function mousemove<?php echo get_class($model)?>_<?php echo $side?>(e)
 	{
 		var point = new ED.Point(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-		drawing<?=get_class($model)?>_<?= $side?>.mousemove(point);
+		drawing<?php echo get_class($model)?>_<?php echo $side?>.mousemove(point);
 	}
 
 	// Key press handler
-	function keyDown<?=get_class($model)?>_<?= $side?>(event)
+	function keyDown<?php echo get_class($model)?>_<?php echo $side?>(event)
 	{
 		alert(event.keyCode);
 
