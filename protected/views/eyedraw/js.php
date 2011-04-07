@@ -4,11 +4,19 @@
 		[
 			{subclass: "Fundus", originX: "0", originY: "0", apexX: "0", apexY: "0", scaleX: "1", scaleY: "1", arc: "0", rotation: "0", order: "0"},
 		];
-		<?$property = 'image_string_'.$side; if ($side and $model->$property) {?>
+		<?php
+			$property = 'image_string_'.$side;
+
+			if ($side and $model->$property) {
+		?>
 			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>= <?php echo $model->$property?>;
-		<?} else {?>
+		<?php
+			} else {
+		?>
 			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>=doodleSetDefault;
-		<?}?>
+		<?php
+			}
+		?>
 
 	// Variables assigned to each drawing on this page
 	var drawing<?php echo get_class($model)?>_<?php echo $side?>;
@@ -34,10 +42,10 @@
 			document.getElementById('<?php echo get_class($model)?>_description_<?php echo $side?>').value=report;
 		}
 		return false;
-	}	
+	}
 	function submit<?php echo get_class($model)?>_<?php echo $side?>()
 	{
-		
+
 		document.getElementById('<?php echo get_class($model)?>_image_string_<?php echo $side?>').value=drawing<?php echo get_class($model)?>_<?php echo $side?>.jsonString();
 	}
 
@@ -49,7 +57,9 @@
 		// Create blank posterior segment drawing
 		drawing<?php echo get_class($model)?>_<?php echo $side?> = new ED.Drawing(canvas<?php echo get_class($model)?>_<?php echo $side?>, Eye.<?php echo  ucfirst($side)?>, '<?php echo get_class($model)?>_<?php echo $side?>');
 
-		<?php if ($writeable) {?>
+		<?php
+			if ($writeable) {
+		?>
 			// Stop browser stealing double click to select text (TODO Test this in browsers other than Safari)
 			canvas<?php echo get_class($model)?>_<?php echo $side?>.onselectstart = function () { return false; }
 			// Event listeners
@@ -70,21 +80,29 @@
 
 			//canvasRPS.addEventListener('keydown',keyDownRPS,true);
 			canvas<?php echo get_class($model)?>_<?php echo $side?>.focus();
-		<?}?>
+		<?php
+			}
+		?>
 
 		// Load doodleSet
 		drawing<?php echo get_class($model)?>_<?php echo $side?>.load(doodleSet<?php echo get_class($model)?>_<?php echo $side?>);
 
-		<?php if ($writeable) {?>
+		<?php
+			if ($writeable) {
+		?>
 		// Use fundus as template (for new drawings)
 		drawing<?php echo get_class($model)?>_<?php echo $side?>.addDoodle('Fundus');
-		<?}?>
+		<?php
+			}
+		?>
 
 		// Draw doodles
 		drawing<?php echo get_class($model)?>_<?php echo $side?>.drawAllDoodles();
 	}
 
-	<?php if ($writeable) {?>
+	<?php
+		if ($writeable) {
+	?>
 	// Mousedown handler for each drawing canvas
 	function mousedown<?php echo get_class($model)?>_<?php echo $side?>(e)
 	{
@@ -115,7 +133,9 @@
 		event.stopPropagation();
 		event.preventDefault();
 	}
-	<?}?>
+	<?php
+		}
+	?>
 
 	// Returns true if browser is firefox
 	function isFirefox()
