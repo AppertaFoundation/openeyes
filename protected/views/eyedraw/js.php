@@ -3,8 +3,6 @@
 	var doodleSetDefault =
 		[
 			{subclass: "Fundus", originX: "0", originY: "0", apexX: "0", apexY: "0", scaleX: "1", scaleY: "1", arc: "0", rotation: "0", order: "0"},
-			{subclass: "RRD", originX: "0", originY: "0", apexX: "0", apexY: "105", scaleX: "1", scaleY: "1", arc: "160", rotation: "330", order: "1"},
-			{subclass: "UTear", originX: "-212", originY: "-320", apexX: "0", apexY: "-22", scaleX: "1", scaleY: "1", arc: "0", rotation: "327", order: "2"}
 		];
 		<?$property = 'image_string_'.$side; if ($side and $model->$property) {?>
 			var doodleSet<?php echo get_class($model)?>_<?php echo $side?>= <?php echo $model->$property?>;
