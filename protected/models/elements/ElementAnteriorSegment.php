@@ -6,7 +6,10 @@
  * The followings are the available columns in table 'element_anterior_segment':
  * @property string $id
  * @property string $event_id
- * @property string $value
+ * @property string $description_left
+ * @property string $description_right
+ * @property string $image_string_left
+ * @property string $image_string_right
  */
 class ElementAnteriorSegment extends BaseElement
 {

@@ -2,19 +2,20 @@
 
 class EyeDrawService
 {
+	public $identifiers = Array();
+	public $active = '';
+
 	/**
 	 * Returns HTML for an EyeDraw field
 	 *
+	 * @param object  $controller	the controller calling this
 	 * @param object  $model		the element model
 	 * @param integer $side			usually 'left' or 'right' - the eye we're rendering a field for
 	 * @param boolean $writeable		whether the field should be writeable
 	 *
 	 * @return array
 	 */
-	public $identifiers = Array();
-	public $active = '';
-
-	public function activeEyeDrawField($model, $side, $writeable = true)
+	public static function activeEyeDrawField($controller, $model, $side, $writeable = true)
 	{
 		global $active;
 		global $identifiers;
@@ -27,14 +28,20 @@ class EyeDrawService
 		// create hidden form field to contain the EyeDraw data string
 		// $html .= CHtml::activeHiddenField($model, $side);
 		// eyedraw javascript
-		$html .= CController::renderPartial('/eyedraw/js',array('model' => $model, 'side' => $side, 'writeable' => $writeable),true);
+		$html .= $controller->renderPartial('/eyedraw/js',array('model' => $model, 'side' => $side, 'writeable' => $writeable),true);
 
 		// eyedraw html
-		$html .= CController::renderPartial('/eyedraw/ed',array('model' => $model, 'side' => $side, 'writeable' => $writeable),true);
+		$html .= $controller->renderPartial('/eyedraw/ed',array('model' => $model, 'side' => $side, 'writeable' => $writeable),true);
 
 		return $html;
 	}
-	public function activeEyeDrawInit()
+
+	/**
+	 * Initialises EyeDraw.
+	 *
+	 * @param object $controller
+	 */
+	public static function activeEyeDrawInit($controller)
 	{
 		$init = ''; $submit = '';
 		global $identifiers;
@@ -44,13 +51,15 @@ class EyeDrawService
 				$init .= 'init' . $identifier . '();';
 				$submit .= 'submit' . $identifier . '();';
 			}
-			$return = CController::renderPartial('/eyedraw/init',array('init' => $init, 'submit' => $submit),true);
+
+			$return = $controller->renderPartial('/eyedraw/init',array('init' => $init, 'submit' => $submit),true);
 			return $return;
 		} else {
 			return '<script type="text/javascript">function eyedraw_init() {return true;}</script>';
 		}
 	}
-	public function getActive()
+
+	public static function getActive()
 	{
 		global $active;
 		return $active;

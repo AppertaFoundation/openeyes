@@ -75,7 +75,7 @@ class ClinicalService
 	{
 		$success = true;
 		$toDelete = array();
-		$toUpdate = array();
+		$toSave = array();
 
 		foreach ($elements as $element) {
 			$elementClassName = get_class($element);
@@ -84,7 +84,7 @@ class ClinicalService
 			if (isset($data[$elementClassName])) {
 				$element->attributes = $data[$elementClassName];
 
-				$toUpdate[] = $element;
+				$toSave[] = $element;
 
 				$needsValidation = true;
 			} elseif ($element->required) {
@@ -115,9 +115,12 @@ class ClinicalService
 			return false;
 		}
 
-		foreach ($toUpdate as $element) {
-			// Set here for new elements, makes no difference to pre-existing elements
-			$element->event_id = $event->id;
+		foreach ($toSave as $element) {
+			if (!isset($element->event_id)) {
+				// @todo - another example of Yii getting confused about save vs update
+				$element->setIsNewRecord(true);
+				$element->event_id = $event->id;
+			}
 
 			$element->save();
 		}
