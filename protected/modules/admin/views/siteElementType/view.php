@@ -28,7 +28,7 @@ $this->menu=array(
                                 <td>Specialty</td><td><?php echo $model->specialty->name;?></td>
                         </tr>
                         <tr>
-                                <td>First in episode</td><td><?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';}?></td>
+                                <td>First in episode</td><td><?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';} ?></td>
                         </tr>
                 </table>
 </div>
