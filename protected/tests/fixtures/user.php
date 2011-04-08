@@ -8,7 +8,7 @@ return array(
 		'email' => 'joe@bloggs.com',
 		'active' => 1,
 		'salt' => 'qWQJaOT4Kz',
-		'password' => '2876f1d868a82575cb5b8fd4deb12134'
+		'password' => '4a3de11333d5814d90270c27116f1bdc' // pw: secret
 	),
 	'user2' => array(
 		'username' => 'JaneBloggs',
@@ -17,7 +17,7 @@ return array(
 		'email' => 'jane@bloggs.com',
 		'active' => 1,
 		'salt' => '4d36ed1c4a',
-		'password' => '083547d2393364ae2ecf2fd6f3862851'
+		'password' => '3f3819bcd2ed9d433e2dc26c5da82ae9' // pw: password
 	),
 	'user3' => array(
 		'username' => 'icabod',
@@ -26,7 +26,7 @@ return array(
 		'email' => 'icabod@icabod.com',
 		'active' => 0,
 		'salt' => '4d36f32441',
-		'password' => '9c68f2134349243584ef9b6b21ca503e'
+		'password' => '19187c5d5985482d352a9d6ffa1d6759' // pw: 12345
 	),
 	'admin' => array(
 		'username' => 'admin',
@@ -35,6 +35,6 @@ return array(
 		'email' => 'admin@mail.com',
 		'active' => 1,
 		'salt' => 'FbYJis0YG3',
-		'password' => 'd45409ef1eaa57f5041bf3a1b510097b'
+		'password' => '44e327c6e513ecd64d050e29678bf8a6' // pw: 54321
 	),
 );

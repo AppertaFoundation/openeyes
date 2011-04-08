@@ -15,7 +15,7 @@ class BaseController extends Controller
 
 	protected function beforeAction($action)
 	{
-		$this->storeSessionData();
+		$this->storeData();
 		
 		return parent::beforeAction($action);
 	}
@@ -33,7 +33,7 @@ class BaseController extends Controller
 		}
 	}
 	
-	public function storeSessionData()
+	public function storeData()
 	{
 		$app = Yii::app();
 

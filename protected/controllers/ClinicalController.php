@@ -15,21 +15,7 @@ class ClinicalController extends BaseController
 		// 	throw new CHttpException(403, 'You are not authorised to perform this action.');
 		// }
 
-		$this->checkPatientId();
-
-		// @todo - this needs tidying
-		$beforeActionResult = parent::beforeAction($action);
-
-		// Get the firm currently associated with this user
-		// @todo - user shouldn't be able to reach this page if they haven't selected a firm
-		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-
-		$this->service = new ClinicalService;
-
-		// Displays the list of episodes and events for this patient
-		$this->listEpisodesAndEventTypes();
-
-		return $beforeActionResult;
+		return parent::beforeAction($action);
 	}
 
 	/**
@@ -168,5 +154,21 @@ class ClinicalController extends BaseController
 	public function getUserId()
 	{
 		return Yii::app()->user->id;
+	}
+	
+	public function storeData()
+	{
+		$this->checkPatientId();
+
+		// Get the firm currently associated with this user
+		// @todo - user shouldn't be able to reach this page if they haven't selected a firm
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		$this->service = new ClinicalService;
+
+		// Displays the list of episodes and events for this patient
+		$this->listEpisodesAndEventTypes();
+		
+		parent::storeData();
 	}
 }

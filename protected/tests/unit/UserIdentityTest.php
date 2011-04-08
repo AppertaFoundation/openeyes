@@ -81,7 +81,7 @@ class UserIdentityTest extends CDbTestCase
 
 		$userIdentity = new UserIdentity(
 			'JoeBloggs',
-			'password'
+			'secret'
 		);
 
 		$this->assertTrue($userIdentity->authenticate());
@@ -161,7 +161,7 @@ class UserIdentityTest extends CDbTestCase
 
 		$userIdentity = new UserIdentity(
 			'JoeBloggs',
-			'password'
+			'secret'
 		);
 
 		$this->assertTrue($userIdentity->authenticate());

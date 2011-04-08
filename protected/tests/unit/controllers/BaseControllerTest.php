@@ -37,13 +37,13 @@ class BaseControllerTest extends CDbTestCase
 		$this->assertEquals($patientName, $this->controller->patientName, 'Patient Name should be set after the function call.');
 	}
 
-	public function testStoreSessionData_EmptySession_StoresNothing()
+	public function testStoreData_EmptySession_StoresNothing()
 	{
 		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
 		$this->assertNull($this->controller->firms, 'Firms should default to null.');
 		$this->assertNull($this->controller->selectedFirmId, 'Selected Firm Id should default to null.');
 		$this->assertNull($this->controller->patientName, 'Patient Name should default to null.');
-		$this->assertNull($this->controller->storeSessionData(), 'This function should have no return.');
+		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
 
 		$this->assertFalse($this->controller->showForm, 'showForm should still be false.');
 		$this->assertNull($this->controller->firms, 'Firms should still be null.');
@@ -51,7 +51,7 @@ class BaseControllerTest extends CDbTestCase
 		$this->assertNull($this->controller->patientName, 'Patient Name should still be null.');
 	}
 	
-	public function testStoreSessionData_FirmDataInSession_StoresFirms()
+	public function testStoreData_FirmDataInSession_StoresFirms()
 	{
 		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
 		$this->assertNull($this->controller->firms, 'Firms should default to null.');
@@ -66,7 +66,7 @@ class BaseControllerTest extends CDbTestCase
 		}
 		
 		Yii::app()->session['firms'] = $firms;
-		$this->assertNull($this->controller->storeSessionData(), 'This function should have no return.');
+		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
 
 		$this->assertTrue($this->controller->showForm, 'showForm should now be true.');
 		$this->assertEquals($firms, $this->controller->firms, 'Firms should now match session data.');
@@ -74,7 +74,7 @@ class BaseControllerTest extends CDbTestCase
 		$this->assertNull($this->controller->patientName, 'Patient Name should still be null.');
 	}
 	
-	public function testStoreSessionData_FirmIdInSession_StoresFirmId()
+	public function testStoreData_FirmIdInSession_StoresFirmId()
 	{
 		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
 		$this->assertNull($this->controller->firms, 'Firms should default to null.');
@@ -91,7 +91,7 @@ class BaseControllerTest extends CDbTestCase
 		
 		Yii::app()->session['firms'] = $firms;
 		Yii::app()->session['selected_firm_id'] = $firmId;
-		$this->assertNull($this->controller->storeSessionData(), 'This function should have no return.');
+		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
 
 		$this->assertTrue($this->controller->showForm, 'showForm should now be true.');
 		$this->assertEquals($firms, $this->controller->firms, 'Firms should now match session data.');
@@ -99,7 +99,7 @@ class BaseControllerTest extends CDbTestCase
 		$this->assertNull($this->controller->patientName, 'Patient Name should still be null.');
 	}
 	
-	public function testStoreSessionData_PatientNameInSession_StoresPatientName()
+	public function testStoreData_PatientNameInSession_StoresPatientName()
 	{
 		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
 		$this->assertNull($this->controller->firms, 'Firms should default to null.');
@@ -109,7 +109,7 @@ class BaseControllerTest extends CDbTestCase
 		$patientName = "{$this->patients['patient1']['first_name']} {$this->patients['patient1']['last_name']}";
 		
 		Yii::app()->session['patient_name'] = $patientName;
-		$this->assertNull($this->controller->storeSessionData(), 'This function should have no return.');
+		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
 
 		$this->assertFalse($this->controller->showForm, 'showForm should still be false.');
 		$this->assertNull($this->controller->firms, 'Firms should still be null.');
@@ -117,7 +117,7 @@ class BaseControllerTest extends CDbTestCase
 		$this->assertEquals($patientName, $this->controller->patientName, 'Patient Name should now match session data.');
 	}
 	
-	public function testStoreSessionData_FirmAndPatientInSession_StoresAllData()
+	public function testStoreData_FirmAndPatientInSession_StoresAllData()
 	{
 		$this->assertFalse($this->controller->showForm, 'showForm should default to false.');
 		$this->assertNull($this->controller->firms, 'Firms should default to null.');
@@ -137,7 +137,7 @@ class BaseControllerTest extends CDbTestCase
 		Yii::app()->session['firms'] = $firms;
 		Yii::app()->session['selected_firm_id'] = $firmId;
 		Yii::app()->session['patient_name'] = $patientName;
-		$this->assertNull($this->controller->storeSessionData(), 'This function should have no return.');
+		$this->assertNull($this->controller->storeData(), 'This function should have no return.');
 
 		$this->assertTrue($this->controller->showForm, 'showForm should now be true.');
 		$this->assertEquals($firms, $this->controller->firms, 'Firms should now match session data.');

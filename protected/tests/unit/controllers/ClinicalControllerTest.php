@@ -81,23 +81,6 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->actionView($event->id);
 	}
 
-/*
-// Currently there is no way of testing beforeAction.
-	public function testBeforeAction()
-	{
-		$mockController = $this->getMock('ClinicalController',
-			array('checkPatientId', 'listEpisodesAndEventTypes'),
-			array('ClinicalController'), 'Mock_ClinicalController', false);
-
-		$mockController->selectedFirmId = $this->firms['firm1']['id'];
-		$mockController->expects($this->once())
-			->method('checkPatientId');
-		$mockController->expects($this->once())
-			->method('listEpisodesAndEventTypes');
-
-		$mockController->beforeAction('index');
-	}
-*/
 	public function testActionCreate_MissingEventTypeId_ThrowsException()
 	{
 		$this->setExpectedException('CHttpException', 'No event_type_id specified.');
@@ -312,35 +295,22 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->listEpisodesAndEventTypes();
 		$this->assertEquals($patient->episodes, $mockController->episodes);
 	}
-
-	/**
-	 * @dataProvider dataProvider_EventTypesForAccidentAndEmergencySpecialty
-	 */
-/*
-// This test should be in BaseControllerTest.php. Also, it doesn't work.
-	public function testListEventTypes($eventTypesArray)
+	
+	public function testGetUserId_NoUserIdSet_ReturnsNull()
 	{
-		// test that $mockController->eventTypes equals the eventtypes for the given firm's specialty
-		// we should have 1 and 9 for firm/specialty 1
-		$patient = $this->patients('patient1');
-		$firm = $this->firms('firm1');
-		$app->session['selected_firm_id'] = $firm->id;
-		$mockController = $this->getMock('ClinicalController', array('checkPatientId'), array('ClinicalController'));
-		$mockController->expects($this->any())->method('checkPatientId');
-		$mockController->patientId = $patient->id;
-
-		$this->assertNull($mockController->eventTypes);
-		$mockController->selectedFirmId = $firm->id;
-		$mockController->firm = $firm;
-		$mockController->listEpisodesAndEventTypes();
-
-		$count = 0;
-		foreach ($mockController->eventTypes as $eventType) {
-			$this->assertEquals($eventTypesArray[$count], $eventType->id);
-			$count++;
-		}
+		$this->assertNull($this->controller->getUserId());
 	}
-*/
+	
+	public function testGetUserId_UserIdSet_ReturnsCorrectData()
+	{
+		$userInfo = $this->users['user1'];
+		$identity = new UserIdentity('JoeBloggs', 'secret');
+		$identity->authenticate();
+		Yii::app()->user->login($identity);		
+		
+		$userId = $this->users['user1']['id'];
+		$this->assertEquals($userId, $this->controller->getUserId(), 'Should return the correct user id');
+	}
 
 	/**
 	 * These two stupid bits of code are here to ensure that the event and firm objects
@@ -355,5 +325,25 @@ class ClinicalControllerTest extends CDbTestCase
 	{
 		$foo = $event->episode->firm->serviceSpecialtyAssignment->specialty_id;
 		$bar = $firm->serviceSpecialtyAssignment->specialty_id;
+	}
+	
+	public function testStoreData_StoresValidData()
+	{
+		$mockController = $this->getMock('ClinicalController',
+			array('checkPatientId', 'listEpisodesAndEventTypes'),
+			array('ClinicalController'), 'Mock_ClinicalController', false);
+		
+		$firmId = $this->firms['firm1']['id'];
+		$service = new ClinicalService;
+
+		$mockController->selectedFirmId = $firmId;
+		$mockController->expects($this->once())
+			->method('checkPatientId');
+		$mockController->expects($this->once())
+			->method('listEpisodesAndEventTypes');
+
+		$mockController->storeData();
+		$this->assertEquals($this->firms('firm1'), $mockController->firm, 'Firm should be loaded.');
+		$this->assertEquals($service, $mockController->service, 'Service should be created.');
 	}
 }
