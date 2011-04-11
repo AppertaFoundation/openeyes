@@ -9,20 +9,7 @@ return array(
 		'dob' => '1970-01-01',
 		'gender' => 'M',
 		'hos_num' => 12345,
-		'nhs_num' => 54321,
-		'address1' => 'Flat 1A',
-		'address2' => '23 Main St',
-		'city' => 'London',
-		'postcode' => 'N1 1AB',
-		'country' => 'UK',
-		'telephone' => '02071 234567',
-		'mobile' => '07012 345678',
-		'email' => 'jsmith@gmail.com',
-		'comments' => '',
-		'pmh' => '',
-		'poh' => '',
-		'drugs' => '',
-		'allergies' => ''
+		'nhs_num' => 54321
 	),
 	'patient2' => array(
 		'pas_key' => '456',
@@ -32,20 +19,7 @@ return array(
 		'dob' => '1972-01-01',
 		'gender' => 'M',
 		'hos_num' => 23456,
-		'nhs_num' => 65432,
-		'address1' => 'Flat 2B',
-		'address2' => '23 Center St',
-		'city' => 'London',
-		'postcode' => 'EC1 1AB',
-		'country' => 'UK',
-		'telephone' => '02072 345678',
-		'mobile' => '07023 456789',
-		'email' => 'jones@gmail.com',
-		'comments' => '',
-		'pmh' => '',
-		'poh' => '',
-		'drugs' => '',
-		'allergies' => ''
+		'nhs_num' => 65432
 	),
 	'patient3' => array(
 		'pas_key' => '789',
@@ -55,20 +29,7 @@ return array(
 		'dob' => '1960-01-01',
 		'gender' => 'F',
 		'hos_num' => 34567,
-		'nhs_num' => 76543,
-		'address1' => 'Flat 3',
-		'address2' => '23 Southern St',
-		'city' => 'London',
-		'postcode' => 'SW1 1AB',
-		'country' => 'UK',
-		'telephone' => '02073 456789',
-		'mobile' => '07013 456789',
-		'email' => 'ksmith@gmail.com',
-		'comments' => '',
-		'pmh' => '',
-		'poh' => '',
-		'drugs' => '',
-		'allergies' => ''
+		'nhs_num' => 76543
 	),
 );
 ?>

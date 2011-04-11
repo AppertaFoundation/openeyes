@@ -65,10 +65,7 @@ class PatientController extends BaseController
 	 */
 	public function actionResults()
 	{
-		$model = new Patient;
-		$model->attributes = $_POST['Patient'];
-		$dataProvider = $model->search();
-
+		$dataProvider = $this->getSearch($_POST['Patient']);
 		$this->render('results', array(
 			'dataProvider'=>$dataProvider
 		));
@@ -114,4 +111,17 @@ class PatientController extends BaseController
 		}
 	}
 
+	/**
+	 * Perform a search on a model and return the results
+	 * (separate function for unit testing)
+	 * 
+	 * @param array $data   form data of search terms
+	 * @return dataProvider
+	 */
+	public function getSearch($data)
+	{
+		$model = new Patient;
+		$model->attributes = $data;
+		return $model->search();
+	}
 }
