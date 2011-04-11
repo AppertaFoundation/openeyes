@@ -8,20 +8,7 @@ class SiteController extends BaseController
 	 */
 	protected function beforeAction($action)
 	{
-		if (
-			$this->action->id == 'index' &&
-			$_POST &&
-			array_key_exists('selected_firm_id', $_POST) &&
-			$_POST['selected_firm_id']
-		) {
-			$app = Yii::app();
-
-			$firms = $app->session['firms'];
-
-			if ($firms[intval($_POST['selected_firm_id'])]) {
-				$app->session['selected_firm_id'] = intval($_POST['selected_firm_id']);
-			}
-		}
+		$this->storeData();
 
 		return parent::beforeAction($action);
 	}
@@ -98,5 +85,25 @@ class SiteController extends BaseController
 	{
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
+	}
+
+	/*
+	 * Store session data based on what action we're performing
+	 */
+	public function storeData()
+	{
+		$action = $this->getAction();
+		if ($action->getId() == 'index' && !empty($_POST['selected_firm_id'])) {
+			$session = Yii::app()->session;
+
+			$firms = $session['firms'];
+			$firmId = intval($_POST['selected_firm_id']);
+
+			if ($firms[$firmId]) {
+				$session['selected_firm_id'] = $firmId;
+			}
+		}
+
+		parent::storeData();
 	}
 }
