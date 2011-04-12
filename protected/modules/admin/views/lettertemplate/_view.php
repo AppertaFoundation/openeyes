@@ -13,7 +13,7 @@
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('contact_type_id')); ?>:</b>
-	<?php echo CHtml::encode($data->contacttype->name); ?>
+	<?php echo CHtml::encode($data->contactType->name); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('text')); ?>:</b>

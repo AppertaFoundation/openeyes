@@ -6,9 +6,13 @@
  * The followings are the available columns in table 'specialty':
  * @property string $id
  * @property string $name
+ * @property string $class_name
  *
  * The followings are the available model relations:
- * @property Firm[] $firms
+ * @property EventTypeElementTypeAssignmentSpecialtyAssignment[] $eventTypeElementTypeAssignmentSpecialtyAssignments
+ * @property ExamPhrase[] $examPhrases
+ * @property LetterTemplate[] $letterTemplates
+ * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
  */
 class Specialty extends CActiveRecord
 {
@@ -37,11 +41,11 @@ class Specialty extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			array('name', 'length', 'max'=>20),
+			array('name, class_name', 'required'),
+			array('name, class_name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, class_name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,7 +57,11 @@ class Specialty extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firms' => array(self::HAS_MANY, 'Firm', 'specialty_id'),
+//			'eventTypeElementTypeAssignmentSpecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSpecialtyAssignment', 'specialty_id'),
+			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'specialty_id'),
+			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'specialty_id'),
+			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'specialty_id'),
+			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'specialty_id'),
 		);
 	}
 
@@ -65,6 +73,7 @@ class Specialty extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'class_name' => 'Class Name',
 		);
 	}
 
@@ -81,6 +90,7 @@ class Specialty extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('class_name',$this->class_name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

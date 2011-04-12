@@ -1,13 +1,27 @@
 <phpunit bootstrap="bootstrap.php"
-		colors="false"
+		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
 		convertWarningsToExceptions="true"
-		stopOnFailure="false">
+		stopOnFailure="false"
+		verbose="true">
+
+	<filter>
+		<blacklist>
+			<directory suffix=".php">../../../yii/</directory>
+		</blacklist>
+		<whitelist>
+			<directory suffix=".php">../components</directory>
+			<directory suffix=".php">../controllers</directory>
+			<directory suffix=".php">../models</directory>
+			<directory suffix=".php">../models/elements</directory>
+			<directory suffix=".php">../services</directory>
+			<directory suffix=".php">../vendors</directory>
+		</whitelist>
+	</filter>
 
 	<selenium>
 		<browser name="Internet Explorer" browser="*iexplore" />
 		<browser name="Firefox" browser="*firefox" />
 	</selenium>
-
 </phpunit>

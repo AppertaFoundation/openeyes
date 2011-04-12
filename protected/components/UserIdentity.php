@@ -126,6 +126,7 @@ class UserIdentity extends CUserIdentity
 		}
 
 		$app->session['firms'] = $firms;
+
 		return true;
 	}
 

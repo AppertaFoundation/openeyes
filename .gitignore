@@ -1,5 +1,6 @@
 /index.php
 .gitignore
+nbproject/*
 /protected/tests/test_results/
 /protected/config/console.php
 /protected/config/params.php
@@ -8,5 +9,6 @@
 /protected/runtime/
 /assets/
 .*swp
-nbproject/*
-protected/tests/report
+/protected/models/ElementExample.php
+/protected/models/elements/ElementExample.php
+/protected/views/elements/ElementExample/

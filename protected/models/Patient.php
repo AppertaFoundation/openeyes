@@ -32,7 +32,7 @@ class Patient extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Patient';
+		return 'patient';
 	}
 
 	/**
@@ -48,9 +48,7 @@ class Patient extends CActiveRecord
 			array('title', 'length', 'max'=>8),
 			array('first_name, last_name, hos_num, nhs_num', 'length', 'max'=>40),
 			array('gender', 'length', 'max'=>1),
-			array('primary_phone', 'length', 'max'=>20),
-			array('gender', 'length', 'max'=>1),
-			array('address_id', 'numerical'),
+			array('email', 'length', 'max'=>60),
 			array('dob', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -66,9 +64,7 @@ class Patient extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'pasinfo' => array(self::BELONGS_TO, 'PAS_Patient', 'pas_key'),
             'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
-			'address' => array(self::BELONGS_TO, 'Address', 'address_id'),
 		);
 	}
 

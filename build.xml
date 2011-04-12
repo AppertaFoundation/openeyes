@@ -13,7 +13,7 @@
 
     <target name="phpcs">
         <exec dir="${basedir}" executable="phpcs" failonerror="false" output="/dev/null">
-            <arg line="--extensions=php --ignore=build/*,tests/* --standard=Zend --tab-width=4 --report=checksty
+            <arg line="--extensions=php --ignore=build/*,tests/* --standard=Zend --tab-width=4 --report=checkstyle --report-file=${basedir}/build/logs/checkstyle.xml ." />
         </exec>
     </target>
 
@@ -30,7 +30,7 @@
                        --exclude=tests
                        ." />
         </exec>
-        <exec dir="${basedir}/build/logs" executable="xsltproc" failonerror="false" output="${basedir}/build/cpd
+        <exec dir="${basedir}/build/logs" executable="xsltproc" failonerror="false" output="${basedir}/build/cpd/index.html">
             <arg line="cpd.xsl ${basedir}/build/logs/pmd-cpd.xml" />
         </exec>
     </target>

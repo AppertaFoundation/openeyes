@@ -12,7 +12,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'specialty_id'); ?>
-		<?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->dropDownList($model,'specialty_id',$model->getSpecialtyOptions()); ?>
 	</div>
 
 	<div class="row">
@@ -22,7 +22,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'contact_type_id'); ?>
-		<?php echo $form->textField($model,'contact_type_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->dropDownList($model,'contact_type_id',$model->getContacttypeOptions()); ?>
 	</div>
 
 	<div class="row">

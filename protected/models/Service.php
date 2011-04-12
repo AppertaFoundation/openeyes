@@ -8,7 +8,7 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property Firm[] $firms
+ * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
  */
 class Service extends CActiveRecord
 {
@@ -53,7 +53,7 @@ class Service extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firms' => array(self::HAS_MANY, 'Firm', 'service_id'),
+			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'service_id'),
 		);
 	}
 

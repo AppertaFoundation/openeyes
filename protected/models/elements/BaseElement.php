@@ -5,13 +5,45 @@
  */
 class BaseElement extends CActiveRecord
 {
-	// Some elements need access to the firm specialty
-	public $userFirm;
+	public $firm;
+	public $userId;
+	public $patientId;
 
-	public function construct($userFirm)
+	// Used to display the view number set in site_element_type for any particular
+	// instance of this element
+	public $viewNumber;
+
+	// Used during creation and updating of elements
+	public $required;
+
+	/**
+	 * Here we need to provide default options for when the element is instantiated
+	 * by findByPk in ClinicalService->getElements().
+	 *
+	 * @param object $firm
+	 * @param int $patientId
+	 * @param int $userId
+	 * @param int $viewNumber
+	 * @param boolean $required
+	 */
+	public function __construct($firm = null, $patientId = null, $userId = null, $viewNumber = null, $required = false)
 	{
-		$this->userFirm = $userFirm;
+		$this->firm = $firm;
+		$this->patientId = $patientId;
+		$this->userId = $userId;
+		$this->viewNumber = $viewNumber;
+		$this->required = $required;
+	}
 
-		parent::construct();
+	/**
+	 * Returns a list of Exam Phrases to be used by the element form.
+	 *
+	 * @return array
+	 */
+	public function getExamPhraseOptions($part)
+	{
+		return array_merge(array('-' => '-'), CHtml::listData(ExamPhrase::Model()->findAll(
+			'specialty_id = ? AND part = ?', array($this->firm->serviceSpecialtyAssignment->specialty_id, $part)
+		), 'id', 'phrase'));
 	}
 }

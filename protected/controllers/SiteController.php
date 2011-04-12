@@ -1,31 +1,30 @@
 <?php
 
-// @todo - surely there is a better way of doing this? Some sort of autoloading? Bootstrap?
-Yii::import('application.controllers.*');
-require_once('BaseController.php');
-
 class SiteController extends BaseController
 {
 	/**
 	 * Updates the selected firm if need be.
 	 * Calls the BaseController beforeAction method to set up displaying the firm form if need be.
 	 */
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
-		if (
-			$this->action->id == 'index' &&
-			$_POST['selected_firm_id']
-		) {
-			$app = Yii::app();
-
-			$firms = $app->session['firms'];
-
-			if ($firms[intval($_POST['selected_firm_id'])]) {
-				$app->session['selected_firm_id'] = intval($_POST['selected_firm_id']);
-			}
-		}
+		$this->storeData();
 
 		return parent::beforeAction($action);
+	}
+
+	/**
+	 * Declares class-based actions.
+	 */
+	protected function beforeAction(CAction $action)
+	{
+		return array(
+			// page action renders "static" pages stored under 'protected/views/site/pages'
+			// They can be accessed via: index.php?r=site/page&view=FileName
+			'page'=>array(
+				'class'=>'CViewAction',
+			),
+		);
 	}
 
 	/**
@@ -51,26 +50,6 @@ class SiteController extends BaseController
 	    	else
 	        	$this->render('error', $error);
 	    }
-	}
-
-	/**
-	 * Displays the contact page
-	 */
-	public function actionContact()
-	{
-		$model=new ContactForm;
-		if(isset($_POST['ContactForm']))
-		{
-			$model->attributes=$_POST['ContactForm'];
-			if($model->validate())
-			{
-				$headers="From: {$model->email}\r\nReply-To: {$model->email}";
-				mail(Yii::app()->params['adminEmail'],$model->subject,$model->body,$headers);
-				Yii::app()->user->setFlash('contact','Thank you for contacting us. We will respond to you as soon as possible.');
-				$this->refresh();
-			}
-		}
-		$this->render('contact',array('model'=>$model));
 	}
 
 	/**
@@ -106,5 +85,25 @@ class SiteController extends BaseController
 	{
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
+	}
+
+	/*
+	 * Store session data based on what action we're performing
+	 */
+	public function storeData()
+	{
+		$action = $this->getAction();
+		if ($action->getId() == 'index' && !empty($_POST['selected_firm_id'])) {
+			$session = Yii::app()->session;
+
+			$firms = $session['firms'];
+			$firmId = intval($_POST['selected_firm_id']);
+
+			if ($firms[$firmId]) {
+				$session['selected_firm_id'] = $firmId;
+			}
+		}
+
+		parent::storeData();
 	}
 }

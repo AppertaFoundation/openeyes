@@ -4,7 +4,7 @@ class FirmController extends Controller
 {
 	public $layout='column2';
 
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {

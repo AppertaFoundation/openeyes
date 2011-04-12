@@ -37,6 +37,7 @@
 				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype/index')),
 				array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/commonophthalmicdisorder/index')),
 				array('label'=>'Systemic Disorders', 'url'=>array('/admin/commonsystemicdisorder/index')),
+				array('label'=>'Site Element Types', 'url'=>array('/admin/SiteElementType')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),

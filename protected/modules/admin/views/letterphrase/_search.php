@@ -12,7 +12,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'firm_id'); ?>
-		<?php echo $form->textField($model,'firm_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->dropDownList($model,'firm_id',$model->getFirmOptions()); ?>
 	</div>
 
 	<div class="row">
@@ -27,7 +27,7 @@
 
 	<div class="row">
 		<?php echo $form->label($model,'section'); ?>
-		<?php echo $form->textField($model,'section'); ?>
+		<?php echo $form->dropDownList($model,'section',$model->getSectionOptions()); ?>
 	</div>
 
 	<div class="row">
