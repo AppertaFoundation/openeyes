@@ -13,19 +13,6 @@
  * @property string $gender
  * @property string $hos_num
  * @property string $nhs_num
- * @property string $address1
- * @property string $address2
- * @property string $city
- * @property string $postcode
- * @property string $country
- * @property string $telephone
- * @property string $mobile
- * @property string $email
- * @property string $comments
- * @property string $pmh
- * @property string $poh
- * @property string $drugs
- * @property string $allergies
  */
 class Patient extends CActiveRecord
 {
@@ -57,11 +44,10 @@ class Patient extends CActiveRecord
 			array('first_name, last_name', 'required'),
 			array('pas_key, postcode', 'length', 'max'=>10),
 			array('title', 'length', 'max'=>8),
-			array('first_name, last_name, hos_num, nhs_num, address1, address2, city, country', 'length', 'max'=>40),
+			array('first_name, last_name, hos_num, nhs_num', 'length', 'max'=>40),
 			array('gender', 'length', 'max'=>1),
-			array('telephone, mobile', 'length', 'max'=>24),
 			array('email', 'length', 'max'=>60),
-			array('dob, comments, pmh, poh, drugs, allergies', 'safe'),
+			array('dob', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('first_name, last_name, dob, hos_num, nhs_num', 'safe', 'on'=>'search'),
@@ -95,19 +81,6 @@ class Patient extends CActiveRecord
 			'gender' => 'Gender',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
-			'address1' => 'Address1',
-			'address2' => 'Address2',
-			'city' => 'City',
-			'postcode' => 'Post Code',
-			'country' => 'Country',
-			'telephone' => 'Telephone',
-			'mobile' => 'Mobile',
-			'email' => 'Email',
-			'comments' => 'Comments',
-			'pmh' => 'PMH',
-			'poh' => 'POH',
-			'drugs' => 'Drugs',
-			'allergies' => 'Allergies',
 		);
 	}
 
