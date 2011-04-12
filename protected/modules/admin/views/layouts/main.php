@@ -51,7 +51,7 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Released under GPL version 3 by the Moorfields Eye Hospital NHS Foundation Trust.<br/>
+		Copyright OpenEyes Foundation 2011<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->
