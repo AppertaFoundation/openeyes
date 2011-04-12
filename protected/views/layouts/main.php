@@ -46,7 +46,7 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Released under GPL by OpenEyes.<br/>
+		Copyright OpenEyes Foundation 2011<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->

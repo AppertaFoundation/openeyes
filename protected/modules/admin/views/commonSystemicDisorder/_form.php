@@ -12,9 +12,15 @@
 	<div class="row">
 		<?php echo $form->labelEx($model, 'disorder_id'); ?>
 <?php
+if (isset($model->disorder)) {
+	$term = $model->disorder->term;
+} else {
+	$term = '';
+}
+
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'term',
-    'value' => $model->disorder->term,
+    'value' => $term,
     'sourceUrl'=>array('//disorder/disorders'),
     'options'=>array(
         'minLength'=>'4',

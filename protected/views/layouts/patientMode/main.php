@@ -33,6 +33,7 @@
 				array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>'Search Patients', 'url'=>array('/patient/admin')),
 				array('label'=>'Clinical', 'url'=>array('/clinical')),
+				array('label'=>'Diagnoses', 'url'=>array('/diagnosis')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
@@ -48,7 +49,7 @@
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Released under GPL version 3 by the Moorfields Eye Hospital NHS Foundation Trust.<br/>
+		Copyright OpenEyes Foundation 2011<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->

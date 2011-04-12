@@ -8,7 +8,7 @@ class DiagnosisController extends BaseController
 
 	public $firm;
 
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
 //		if (!Yii::app()->user->checkAccess('admin')) {
