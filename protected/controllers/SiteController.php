@@ -16,7 +16,7 @@ class SiteController extends BaseController
 	/**
 	 * Declares class-based actions.
 	 */
-	protected function beforeAction(CAction $action)
+	public function actions()
 	{
 		return array(
 			// page action renders "static" pages stored under 'protected/views/site/pages'

@@ -14,6 +14,7 @@ class ClinicalController extends BaseController
 		// if (!Yii::app()->user->checkAccess('admin')) {
 		// 	throw new CHttpException(403, 'You are not authorised to perform this action.');
 		// }
+		$this->storeData();
 
 		return parent::beforeAction($action);
 	}
