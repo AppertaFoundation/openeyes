@@ -6,9 +6,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List SiteElementType', 'url'=>array('index')),
-	array('label'=>'Create SiteElementType', 'url'=>array('create')),
 	array('label'=>'Update SiteElementType', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete SiteElementType', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 	array('label'=>'Manage SiteElementType', 'url'=>array('admin')),
 );
 ?>

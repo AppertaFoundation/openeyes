@@ -7,7 +7,6 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List SiteElementType', 'url'=>array('index')),
-	array('label'=>'Create SiteElementType', 'url'=>array('create')),
 	array('label'=>'View SiteElementType', 'url'=>array('view', 'id'=>$model->id)),
 	array('label'=>'Manage SiteElementType', 'url'=>array('admin')),
 );

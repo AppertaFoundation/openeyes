@@ -4,7 +4,6 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Create SiteElementType', 'url'=>array('create')),
 	array('label'=>'Manage SiteElementType', 'url'=>array('admin')),
 );
 ?>
