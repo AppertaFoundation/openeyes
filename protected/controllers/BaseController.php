@@ -34,7 +34,7 @@ class BaseController extends Controller
 		return parent::beforeAction($action);
 	}
 
-	protected function checkPatientId()
+	public function checkPatientId()
 	{
 		$app = Yii::app();
 

@@ -46,13 +46,12 @@ class Patient extends CActiveRecord
 			array('first_name, last_name', 'required'),
 			array('pas_key', 'length', 'max'=>10),
 			array('title', 'length', 'max'=>8),
-			array('first_name, last_name, hos_num, nhs_num', 'length', 'max'=>40),
+			array('first_name, last_name, hos_num, nhs_num, primary_phone', 'length', 'max'=>40),
 			array('gender', 'length', 'max'=>1),
-			array('email', 'length', 'max'=>60),
-			array('dob', 'safe'),
+			array('dob, primary_phone', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('first_name, last_name, dob, hos_num, nhs_num', 'safe', 'on'=>'search'),
+			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -83,6 +82,7 @@ class Patient extends CActiveRecord
 			'gender' => 'Gender',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
+			'primary_phone' => 'Primary Phone'
 		);
 	}
 
@@ -111,7 +111,7 @@ class Patient extends CActiveRecord
 
 	public function beforeSave() 
 	{
-		foreach (array('first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2') as $property) {
+		foreach (array('first_name', 'last_name', 'dob', 'title', 'primary_phone') as $property) {
 			if ($randomised = $this->randomData($property)) {
 				$this->$property = $randomised;
 			}
@@ -140,7 +140,7 @@ class Patient extends CActiveRecord
 		}
 
 		// the following cases are based on a random data source.  address has to cover the 'address1' and 'address2' fields
-		$randomSourceFieldOrder = array('first_name','last_name','address','city','postcode','telephone','mobile','email');
+		$randomSourceFieldOrder = array('first_name','last_name','address','city','postcode','primary_phone');
 
 		if (!in_array(strtolower($keyInDatafile), $randomSourceFieldOrder)) {
 			return false;

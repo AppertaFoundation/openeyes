@@ -21,9 +21,9 @@ class PatientTest extends CDbTestCase
 	public function dataProvider_Pseudo()
 	{
 		return array(
-			array(array('hos_num' => 5550101, 'first_name' => 'Rod', 'last_name' => 'Flange', 'dob' => '1979-09-08', 'title' => 'MR', 'city' => 'London', 'postcode' => 'EC1V 0DX', 'telephone' => '0208 1111111', 'mobile' => '0208 0101010101', 'email' => 'me@my.com', 'address1' => '1 Fish Plaice', 'address2' => 'Fishington')),
-			array(array('hos_num' => 5550101, 'first_name' => 'Jane', 'last_name' => 'Hinge', 'dob' => '2000-01-02', 'title' => 'Ms.', 'city' => 'Hull', 'postcode' => 'NW10 9LN', 'telephone' => '0207 1111111', 'mobile' => '0208 0202020202', 'email' => 'me@their.com', 'address1' => '32 Chip Crescent', 'address2' => 'Mashley')),
-			array(array('hos_num' => 5550101, 'first_name' => 'Freddy', 'last_name' => 'Globular', 'dob' => '1943-04-05', 'title' => 'WC', 'city' => 'Rome', 'postcode' => 'AR1 2AR', 'telephone' => '0845 11111111', 'mobile' => '0208 03030303', 'email' => 'me@our.com', 'address1' => '104 Pea Avenue', 'address2' => 'Peasley')),
+			array(array('hos_num' => 5550101, 'first_name' => 'Rod', 'last_name' => 'Flange', 'dob' => '1979-09-08', 'title' => 'MR', 'primary_phone' => '0208 1111111')),
+			array(array('hos_num' => 5550101, 'first_name' => 'Jane', 'last_name' => 'Hinge', 'dob' => '2000-01-02', 'title' => 'Ms.', 'primary_phone' => '0207 1111111')),
+			array(array('hos_num' => 5550101, 'first_name' => 'Freddy', 'last_name' => 'Globular', 'dob' => '1943-04-05', 'title' => 'WC', 'primary_phone' => '0845 11111111')),
 
 		);
 	}
@@ -59,8 +59,8 @@ class PatientTest extends CDbTestCase
 		$patient->setAttributes($data);
 		$patient->save();
 
-		foreach (array('first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2') as $field) {
-			$this->assertNotNull($patient->$field, 'Patient does not have anticipated field testing pseudonymous data');
+		foreach (array('first_name', 'last_name', 'dob', 'title', 'primary_phone') as $field) {
+			$this->assertNotNull($patient->$field, "Patient does not have anticipated field testing pseudonymous data [{$field}]");
 			// this is the important one - patient data now in the model shouldn't match the source data
 			$this->assertNotEquals($patient->$field, $data[$field]);
 		}

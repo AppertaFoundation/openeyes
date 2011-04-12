@@ -5,12 +5,12 @@ class DiagnosisTest extends CDbTestCase
 	public $fixtures = array(
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => ':service_specialty_assignment',
 		'firms' => 'Firm',
+		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'disorders' => 'Disorder',
 		'diagnoses' => 'Diagnosis',
-		'commonOphthalmicDisorders' => ':common_ophthalmic_disorder',
-		'commonSystemicDisorders' => ':common_systemic_disorder',
+		'commonOphthalmicDisorders' => 'CommonOphthalmicDisorder',
+		'commonSystemicDisorders' => 'CommonSystemicDisorder',
 	);
 
 	public function testGetLocationOptions()
@@ -39,7 +39,7 @@ class DiagnosisTest extends CDbTestCase
 		$disorders = $diagnosis->getCommonOphthalmicDisorderOptions($firm);
 
 		$this->assertTrue(is_array($disorders));
-		$this->assertEquals(4, count($disorders));
+		$this->assertEquals(count($this->commonOphthalmicDisorders), count($disorders));
 	}
 
 	public function testGetCommonSystemicDisorderOptions()

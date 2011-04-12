@@ -131,30 +131,20 @@ class Diagnosis extends CActiveRecord
 
 	public function getCommonOphthalmicDisorderOptions($firm)
 	{
-		$sql = 'SELECT
-					disorder.id AS did,
-					term
-				FROM
-					disorder,
-					common_ophthalmic_disorder
-				WHERE
-					specialty_id = :specialty_id
-				AND
-					disorder_id = disorder.id
-				';
+		$options = Yii::app()->db->createCommand()
+			->select('t.id AS did, t.term')
+			->from('disorder t')
+			->join('common_ophthalmic_disorder', 't.id = common_ophthalmic_disorder.disorder_id')
+			->where('common_ophthalmic_disorder.specialty_id = :specialty_id', 
+				array(':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id))
+			->queryAll();
 
-		$connection = Yii::app()->db;
-		$command = $connection->createCommand($sql);
-		$command->bindParam('specialty_id', $firm->serviceSpecialtyAssignment->specialty_id);
-		$results = $command->queryAll();
-
-		$select = array('');
-
-		foreach ($results as $result) {
-			$select[$result['did']] = $result['term'];
+		$result = array();
+		foreach ($options as $key => $value) {
+			$result[$key] = $value;
 		}
-
-		return $select;
+		
+		return $result;
 	}
 
 	public function getCommonSystemicDisorderOptions()
