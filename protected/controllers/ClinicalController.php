@@ -155,9 +155,11 @@ class ClinicalController extends BaseController
 	{
 		return Yii::app()->user->id;
 	}
-	
+
 	public function storeData()
 	{
+		parent::storeData();
+
 		$this->checkPatientId();
 
 		// Get the firm currently associated with this user
@@ -168,7 +170,5 @@ class ClinicalController extends BaseController
 
 		// Displays the list of episodes and events for this patient
 		$this->listEpisodesAndEventTypes();
-		
-		parent::storeData();
 	}
 }

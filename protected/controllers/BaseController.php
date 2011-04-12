@@ -16,7 +16,7 @@ class BaseController extends Controller
 	protected function beforeAction($action)
 	{
 		$this->storeData();
-		
+
 		return parent::beforeAction($action);
 	}
 
@@ -32,7 +32,7 @@ class BaseController extends Controller
 			throw new CHttpException(403, 'You are not authorised to perform this action.');
 		}
 	}
-	
+
 	public function storeData()
 	{
 		$app = Yii::app();
