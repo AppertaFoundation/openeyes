@@ -3,7 +3,6 @@
 /**
  * Required for LDAP authentication
  */
-Yii::import('application.vendors.*');
 require_once('Zend/Ldap.php');
 
 class UserIdentityTest extends CDbTestCase
