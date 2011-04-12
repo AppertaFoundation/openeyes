@@ -3,6 +3,9 @@
 return CMap::mergeArray(
 	require(dirname(__FILE__).'/main.php'),
 	array(
+		'import'=>array(
+			'application.vendors.*'
+		),
 		'components'=>array(
 			'fixture'=>array(
 				'class'=>'system.test.CDbFixtureManager',
