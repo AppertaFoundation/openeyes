@@ -36,11 +36,10 @@ class CommonOphthalmicDisorderController extends Controller
 		if(isset($_POST['CommonOphthalmicDisorder']))
 		{
 			if (isset($_POST['term'])) {
-				$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
-
 				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
+					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
 				}
 
 				if($model->save())
@@ -67,12 +66,11 @@ class CommonOphthalmicDisorderController extends Controller
 			$model->disorder_id = '';
 
 			if (isset($_POST['term'])) {
-				$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
-
 				// Look up the term's id from the disorder table, if any
 				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
+					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
 				}
 				// @todo - display error correctly here and in sytemicDisorder admin controller,
 				// diagnosisController
