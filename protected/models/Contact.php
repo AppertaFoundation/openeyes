@@ -26,7 +26,7 @@ class Contact extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'Contact';
+		return 'contact';
 	}
 
 	/**
