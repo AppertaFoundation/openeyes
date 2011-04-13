@@ -27,9 +27,7 @@ foreach ($this->eventTypes as $eventType) {
 foreach ($this->episodes as $episode) {
 	$episodeString = "episode: " . $episode->firm->serviceSpecialtyAssignment->specialty->name;
 
-	// @todo - this shouldn't be here
-	$firm = Firm::Model()->findByPk($this->selectedFirmId);
-	if ($firm->serviceSpecialtyAssignment->specialty_id == $episode->firm->serviceSpecialtyAssignment->specialty_id) {
+	if ($this->firm->serviceSpecialtyAssignment->specialty_id == $episode->firm->serviceSpecialtyAssignment->specialty_id) {
 		echo('<b>' . $episodeString . '</b>');
 	} else {
 		echo($episodeString);

@@ -1,7 +1,5 @@
 <?php
 
-Yii::import('application.controllers.*');
-
 class DiagnosisController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';
@@ -15,15 +13,9 @@ class DiagnosisController extends BaseController
 //			throw new CHttpException(403, 'You are not authorised to perform this action.');
 //		}
 
-		$this->checkPatientId();
+		$this->storeData();
 
-		// @todo - this needs tidying
-		$beforeActionResult = parent::beforeAction($action);
-
-		// Get the firm currently associated with this user
-		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-
-		return $beforeActionResult;
+		return parent::beforeAction($action);
 	}
 
 	/**
@@ -124,6 +116,21 @@ class DiagnosisController extends BaseController
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
+		}
+	}
+
+	public function storeData()
+	{
+		parent::storeData();
+
+		$this->checkPatientId();
+
+		// Get the firm currently associated with this user
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		if (!isset($this->firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 	}
 }
