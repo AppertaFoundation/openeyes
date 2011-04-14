@@ -98,7 +98,7 @@ class ElementNSCGradeTest extends CDbTestCase
 	{
 		$element = $this->elements('element1');
 
-		$element->retinopathy_grade_id = 3;
+		$element->retinopathy_grade_id = 2;
 
 		$this->assertTrue($element->save(true));
 	}
