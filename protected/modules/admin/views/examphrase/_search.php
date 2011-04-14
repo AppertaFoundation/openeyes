@@ -26,8 +26,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'order'); ?>
-		<?php echo $form->textField($model,'order',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->label($model,'display_order'); ?>
+		<?php echo $form->textField($model,'display_order',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
 	<div class="row buttons">

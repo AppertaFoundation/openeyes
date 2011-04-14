@@ -263,7 +263,7 @@ class ClinicalService
 			ON t.possible_element_type_id = possibleElementType.id';
 		$criteria->addCondition('t.specialty_id = :specialty_id');
 		$criteria->addCondition('possibleElementType.event_type_id = :event_type_id');
-		$criteria->order = 'possibleElementType.order';
+		$criteria->order = 'possibleElementType.display_order';
 		$criteria->params = array(
 			':specialty_id' => $specialtyId,
 			':event_type_id' => $eventType->id

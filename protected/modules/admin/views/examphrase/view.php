@@ -28,6 +28,6 @@ $this->menu=array(
 			'value' => CHtml::encode($model->getPartText())
 		),
 		'phrase',
-		'order',
+		'display_order',
 	),
 )); ?>

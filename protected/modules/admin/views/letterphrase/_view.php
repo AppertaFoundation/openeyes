@@ -20,8 +20,8 @@
 	<?php echo CHtml::encode($data->getSectionText()); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('order')); ?>:</b>
-	<?php echo CHtml::encode($data->order); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('display_order')); ?>:</b>
+	<?php echo CHtml::encode($data->display_order); ?>
 	<br />
 
 
