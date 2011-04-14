@@ -121,7 +121,7 @@ class UserIdentity extends CUserIdentity
 								' (' . $firm->pas_code . ') (' .
 								$firm->serviceSpecialtyAssignment->service->name .')';
 
-			// @todo - decide how to select the default firm, this is surely wrong!
+			// @todo - decide how to select the default firm
 			$app->session['selected_firm_id'] = $firm->id;
 		}
 

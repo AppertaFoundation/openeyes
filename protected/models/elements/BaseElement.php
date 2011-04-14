@@ -3,7 +3,7 @@
 /**
  * A class that all clinical elements should extend from.
  */
-class BaseElement extends CActiveRecord
+class BaseElement extends BaseActiveRecord
 {
 	public $firm;
 	public $userId;
