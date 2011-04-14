@@ -51,7 +51,8 @@ class m110413_114850_create_phrase_tables extends CDbMigration
 	{
 		$this->dropTable('phrase_by_firm');
 		$this->dropTable('phrase_by_specialty');
-		$this->dropTable('section');
+		$this->dropTable('section_by_firm');
+		$this->dropTable('section_by_specialty');
 	}
 
 	/*
