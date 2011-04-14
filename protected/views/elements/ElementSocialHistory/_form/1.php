@@ -2,7 +2,7 @@ SOCIAL HISTORY: <br />
 
 	<div class="row">
 		<label for="ElementSocialHistory_value">Phrase:</label>
-		<?php echo CHtml::dropDownList('ElementSocialHistory[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_SOCIAL_HISTORY),
+		<?php echo CHtml::dropDownList('ElementSocialHistory[phrase]', '', $model->getPhraseBySpecialtyOptions('Social history'),
 			array('onChange' => 'appendText($(this), $("#ElementSocialHistory_value"));')); ?>
 	</div>
 
