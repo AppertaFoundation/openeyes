@@ -135,15 +135,15 @@ class Diagnosis extends CActiveRecord
 			->select('t.id AS did, t.term')
 			->from('disorder t')
 			->join('common_ophthalmic_disorder', 't.id = common_ophthalmic_disorder.disorder_id')
-			->where('common_ophthalmic_disorder.specialty_id = :specialty_id', 
+			->where('common_ophthalmic_disorder.specialty_id = :specialty_id',
 				array(':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id))
 			->queryAll();
 
-		$result = array();
+		$result = array('' => '');
 		foreach ($options as $key => $value) {
-			$result[$key] = $value;
+			$result[$value['did']] = $value['term'];
 		}
-		
+
 		return $result;
 	}
 

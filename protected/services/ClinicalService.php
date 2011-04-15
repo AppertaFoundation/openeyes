@@ -24,7 +24,9 @@ class ClinicalService
 			$elementClassName = get_class($element);
 
 			if ($element->required || isset($data[$elementClassName])) {
-				$element->attributes = $data[$elementClassName];
+				if (isset($data[$elementClassName])) {
+					$element->attributes = $data[$elementClassName];
+				}
 
 				if (!$element->validate()) {
 					$valid = false;
@@ -92,7 +94,7 @@ class ClinicalService
 				// This isn't supposed to happen - a required element should at least have the
 				// $data[$elementClassName] present, even if there's nothing in it.
 
-				// @todo - this behaviour is ill defined. As the form this element hasn't been
+				// @todo - this behaviour is ill defined. As the form for this element hasn't been
 				// displayed, presumably it won't be again, so running validate() to display
 				// the errors is pointless?
 				$success = false;
@@ -262,7 +264,7 @@ class ClinicalService
 			ON t.possible_element_type_id = possibleElementType.id';
 		$criteria->addCondition('t.specialty_id = :specialty_id');
 		$criteria->addCondition('possibleElementType.event_type_id = :event_type_id');
-		$criteria->order = 'possibleElementType.order';
+		$criteria->order = 'possibleElementType.display_order';
 		$criteria->params = array(
 			':specialty_id' => $specialtyId,
 			':event_type_id' => $eventType->id

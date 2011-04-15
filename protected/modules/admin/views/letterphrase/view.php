@@ -29,6 +29,6 @@ $this->menu=array(
 			'name' => 'section',
 			'value' => CHtml::encode($model->getSectionText())
 		),
-		'order',
+		'display_order',
 	),
 )); ?>
