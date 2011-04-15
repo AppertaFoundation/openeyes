@@ -183,6 +183,7 @@ class ClinicalService
 					$siteElementTypeObject->view_number,
 					$siteElementTypeObject->required
 				);
+				$element->setDefaultOptions();
 			}
 
 			$elements[] = $element;

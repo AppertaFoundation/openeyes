@@ -46,4 +46,13 @@ class BaseElement extends CActiveRecord
 			'specialty_id = ? AND part = ?', array($this->firm->serviceSpecialtyAssignment->specialty_id, $part)
 		), 'id', 'phrase'));
 	}
+	
+	/**
+	 * Stubbed method to set default options
+	 * Used by child objects to set defaults for forms on create
+	 */
+	public function setDefaultOptions()
+	{
+		return null;
+	}
 }
