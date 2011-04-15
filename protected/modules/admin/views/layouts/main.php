@@ -29,14 +29,14 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'Users', 'url'=>array('/admin/user/index')),
-				array('label'=>'Firms', 'url'=>array('/admin/firm/index')),
-				array('label'=>'Exam Phrases', 'url'=>array('/admin/examphrase/index')),
-				array('label'=>'Letter Phrases', 'url'=>array('/admin/letterphrase/index')),
-				array('label'=>'Letter Templates', 'url'=>array('/admin/lettertemplate/index')),
-				array('label'=>'Contact Types', 'url'=>array('/admin/contacttype/index')),
-				array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/commonophthalmicdisorder/index')),
-				array('label'=>'Systemic Disorders', 'url'=>array('/admin/commonsystemicdisorder/index')),
+				array('label'=>'Users', 'url'=>array('/admin/User/index')),
+				array('label'=>'Firms', 'url'=>array('/admin/Firm/index')),
+				array('label'=>'Phrases by specialty', 'url'=>array('/admin/phraseBySpecialty/index')),
+				array('label'=>'Phrases by firm', 'url'=>array('/admin/phrasebyfirm/index')),
+				array('label'=>'Letter Templates', 'url'=>array('/admin/letterTemplate/index')),
+				array('label'=>'Contact Types', 'url'=>array('/admin/contactType/index')),
+				array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/commonOphthalmicDisorder/index')),
+				array('label'=>'Systemic Disorders', 'url'=>array('/admin/commonSystemicDisorder/index')),
 				array('label'=>'Site Element Types', 'url'=>array('/admin/SiteElementType')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
