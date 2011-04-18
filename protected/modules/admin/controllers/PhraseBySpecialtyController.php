@@ -25,9 +25,12 @@ class PhraseBySpecialtyController extends Controller
 	 */
 	public function accessRules()
 	{
+		# nobody can change sections
+		# anyone can add, edit, delete phrases within a section
+		# phrases by firm is the one that also wants to be on the user side
 		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+			array('allow',	// allow all users to perform 'index' and 'view' actions
+				'actions'=>array('index','sectionindex', 'view', 'phraseindex'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -66,12 +69,10 @@ class PhraseBySpecialtyController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseBySpecialty']))
-		{
+		if(isset($_POST['PhraseBySpecialty'])) {
 			$model->attributes=$_POST['PhraseBySpecialty'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
-		}
+			if($model->save()) $this->redirect(array('view','id'=>$model->id));
+		} 
 
 		$this->render('create',array(
 			'model'=>$model,
@@ -123,15 +124,40 @@ class PhraseBySpecialtyController extends Controller
 	}
 
 	/**
-	 * Lists all models.
+	 * Lists all section models.
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('PhraseBySpecialty');
+		$dataProvider=new CActiveDataProvider('SectionBySpecialty');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
+
+	/**
+	 * List all models for the given section
+	 *
+	 */
+	public function actionPhraseIndex()
+	{
+		$sectionId = $_GET['section_id'];
+		$sectionName = SectionBySpecialty::model()->findByPk($sectionId)->name;
+
+                $criteria=new CDbCriteria;
+               	$criteria->compare('section_by_specialty_id',$sectionId,false);
+	
+	
+		$dataProvider=new CActiveDataProvider('PhraseBySpecialty', array(
+                        'criteria'=>$criteria,
+                ));
+
+		$this->render('phraseindex',array(
+			'dataProvider'=>$dataProvider,
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName
+		));
+	}
+
 
 	/**
 	 * Manages all models.

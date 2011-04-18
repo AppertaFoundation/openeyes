@@ -74,7 +74,7 @@ class PhraseBySpecialty extends CActiveRecord
 			'id' => 'ID',
 			'name' => 'Name',
 			'phrase' => 'Phrase',
-			'section_by_specialty_id' => 'Section By Specialty',
+			'section_by_specialty_id' => 'Section',
 			'display_order' => 'Display Order',
 			'specialty_id' => 'Specialty',
 		);

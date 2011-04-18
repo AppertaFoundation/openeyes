@@ -1,9 +1,15 @@
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php 
+$form=$this->beginWidget('CActiveForm', array(
 	'id'=>'phrase-by-specialty-form',
 	'enableAjaxValidation'=>false,
-)); ?>
+)); 
+
+if (isset($_GET['section_id'])) {
+	$model->section_by_specialty_id = $_GET['section_id'];
+}
+?>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
@@ -23,7 +29,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'section_by_specialty_id'); ?>
-		<?php echo $form->textField($model,'section_by_specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->dropDownList($model,'section_by_specialty_id',CHtml::listData(SectionBySpecialty::Model()->findAll(), 'id', 'name')); ?>
 		<?php echo $form->error($model,'section_by_specialty_id'); ?>
 	</div>
 
@@ -35,7 +41,7 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'specialty_id'); ?>
-		<?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->dropDownList($model,'specialty_id',CHtml::listData(Specialty::Model()->findAll(), 'id', 'name')); ?>
 		<?php echo $form->error($model,'specialty_id'); ?>
 	</div>
 

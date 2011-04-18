@@ -4,14 +4,14 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Create PhraseBySpecialty', 'url'=>array('create')),
-	array('label'=>'Manage PhraseBySpecialty', 'url'=>array('admin')),
 );
 ?>
 
 <h1>Phrase By Specialties</h1>
 
+<h2>Sections</h2>
+
 <?php $this->widget('zii.widgets.CListView', array(
 	'dataProvider'=>$dataProvider,
-	'itemView'=>'_view',
+	'itemView'=>'_sectionview',
 )); ?>
