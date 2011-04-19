@@ -109,7 +109,7 @@ class Patient extends CActiveRecord
 		));
 	}
 
-	public function beforeSave() 
+	public function beforeSave()
 	{
 		foreach (array('first_name', 'last_name', 'dob', 'title', 'primary_phone') as $property) {
 			if ($randomised = $this->randomData($property)) {
@@ -119,7 +119,7 @@ class Patient extends CActiveRecord
 		return parent::beforeSave();
 	}
 
-	private function randomData($field) 
+	private function randomData($field)
 	{
 		if (Yii::app()->params['pseudonymise_patient_details'] == 'no') {
 			return false;
@@ -134,7 +134,7 @@ class Patient extends CActiveRecord
 			return 'Dr';
 		}
 
-		$keyInDatafile = $field; 
+		$keyInDatafile = $field;
 		if ( ($field == 'address1') or ($field == 'address2') ) {
 			$keyInDatafile = 'address';
 		}
@@ -152,7 +152,7 @@ class Patient extends CActiveRecord
 		return $randomEntryArray[array_search($keyInDatafile, $randomSourceFieldOrder)];
 	}
 
-	private function randomDate($startDate='1931-01-01',$endDate='2010-12-12') 
+	private function randomDate($startDate='1931-01-01',$endDate='2010-12-12')
 	{
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
