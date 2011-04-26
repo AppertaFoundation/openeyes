@@ -17,8 +17,12 @@ class BaseActiveRecord extends CActiveRecord
 	 */
 	public function save($runValidation=true,$attributes=null)
 	{
+		$primaryKey = $this->tableSchema->primaryKey;
 		foreach ($this->attributes as $name => $value) {
-			$this->$name = strip_tags($value);
+			if ($primaryKey !== $name || 
+				(is_array($primaryKey) && !in_array($name, $primaryKey))) {
+				$this->$name = strip_tags($value);
+			}
 		}
 
 		return parent::save($runValidation, $attributes);

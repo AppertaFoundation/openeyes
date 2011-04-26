@@ -11,12 +11,12 @@
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'ophthalmic'); ?>
-		<?php echo $form->dropDownList($model,'common_ophthalmic_disorder_id',$model->getCommonOphthalmicDisorderOptions($this->firm)); ?>
+		<?php echo $form->dropDownList($model,'common_ophthalmic_disorder_id',$model->getCommonOphthalmicDisorderOptions($this->firm), array('empty'=>'')); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model, 'systemic'); ?>
-		<?php echo $form->dropDownList($model,'common_systemic_disorder_id',$model->getCommonSystemicDisorderOptions()); ?>
+		<?php echo $form->dropDownList($model,'common_systemic_disorder_id',$model->getCommonSystemicDisorderOptions(), array('empty'=>'')); ?>
 	</div>
 
 	<div class="row">

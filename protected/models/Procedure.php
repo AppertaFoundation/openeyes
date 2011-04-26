@@ -102,23 +102,42 @@ class Procedure extends CActiveRecord
 		));
 	}
 
+	/**
+	 * Get a list of procedures
+	 * Store extra data for the session
+	 * 
+	 * @param string  $term          term to search by
+	 * 
+	 * @return array
+	 */
 	public static function getList($term)
 	{
 		$search = "{$term}%";
 		
+		$select = 'term, short_format, id, default_duration';
+		
 		$procedures = Yii::app()->db->createCommand()
-			->select('term, short_format')
+			->select($select)
 			->from('procedure')
 			->where('term LIKE :term OR short_format LIKE :format', 
 				array(':term'=>$search, ':format'=>$search))
 			->queryAll();
 
 		$data = array();
+		$session = Yii::app()->session['Procedures'];
 
 		foreach ($procedures as $procedure) {
 			$data[] = "{$procedure['term']} - {$procedure['short_format']}";
+			$id = $procedure['id'];
+			$session[$id] = array(
+				'term' => $procedure['term'],
+				'short_format' => $procedure['short_format'],
+				'duration' => $procedure['default_duration'],
+			);
 		}
-
+		
+		Yii::app()->session['Procedures'] = $session;
+		
 		return $data;
 	}
 }

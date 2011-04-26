@@ -103,14 +103,26 @@ class Disorder extends CActiveRecord
 		));
 	}
 
+	/**
+	 * Fetch a list of disorders whose term matches a provided value (with wildcards)
+	 * 
+	 * @param string $term
+	 * 
+	 * @return array
+	 */
 	public static function getDisorderOptions($term)
 	{
-		$disorders = Disorder::Model()->findAll("term LIKE ?", array('%' . $term . '%'));
+		$disorders = Yii::app()->db->createCommand()
+			->select('term')
+			->from('disorder')
+			->where('term LIKE :term', 
+				array(':term'=>"%{$term}%"))
+			->queryAll();
 
 		$data = array();
 
 		foreach ($disorders as $disorder) {
-			$data[] = $disorder->term;
+			$data[] = $disorder['term'];
 		}
 
 		return $data;

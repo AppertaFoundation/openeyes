@@ -76,7 +76,7 @@ class ElementOperation extends BaseElement
 		// class name for the relations automatically generated below.
 		return array(
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)'),
+			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)', 'order' => 'display_order ASC'),
 		);
 	}
 
@@ -88,7 +88,7 @@ class ElementOperation extends BaseElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'eye' => 'Eye',
+			'eye' => 'Eye(s)',
 			'comments' => 'Comments',
 			'total_duration' => 'Total Duration',
 			'consultant_required' => 'Consultant Required',
@@ -132,9 +132,9 @@ class ElementOperation extends BaseElement
 	public function setDefaultOptions()
 	{
 		$this->consultant_required = self::CONSULTANT_REQUIRED;
-		$this->anaesthetist_required = self::CONSULTANT_NOT_REQUIRED;
 		$this->anaesthetic_type = self::ANAESTHETIC_TOPICAL;
 		$this->overnight_stay = 0;
+		$this->total_duration = 0;
 	}
 	
 	/**
@@ -150,6 +150,25 @@ class ElementOperation extends BaseElement
 		);
 	}
 	
+	public function getEyeText() {
+		switch ($this->eye) {
+			case self::EYE_LEFT:
+				$text = 'Left';
+				break;
+			case self::EYE_RIGHT:
+				$text = 'Right';
+				break;
+			case self::EYE_BOTH:
+				$text = 'Both';
+				break;
+			default:
+				$text = 'Unknown';
+				break;
+		}
+		
+		return $text;
+	}
+	
 	/**
 	 * Return list of options for consultant
 	 * @return array 
@@ -160,6 +179,19 @@ class ElementOperation extends BaseElement
 			self::CONSULTANT_REQUIRED => 'Yes',
 			self::CONSULTANT_NOT_REQUIRED => 'No',
 		);
+	}
+	
+	public function getBooleanText($field) {
+		switch ($this->$field) {
+			case 1:
+				$text = 'Yes';
+				break;
+			default:
+				$text = 'No';
+				break;
+		}
+		
+		return $text;
 	}
 	
 	/**
@@ -177,6 +209,31 @@ class ElementOperation extends BaseElement
 		);
 	}
 	
+	public function getAnaestheticText() {
+		switch ($this->anaesthetic_type) {
+			case self::ANAESTHETIC_TOPICAL:
+				$text = 'Topical';
+				break;
+			case self::ANAESTHETIC_LOCAL:
+				$text = 'Local';
+				break;
+			case self::ANAESTHETIC_LOCAL_WITH_COVER:
+				$text = 'Local with cover';
+				break;
+			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
+				$text = 'Local with sedation';
+				break;
+			case self::ANAESTHETIC_GENERAL:
+				$text = 'General';
+				break;
+			default:
+				$text = 'Unknown';
+				break;
+		}
+		
+		return $text;
+	}
+	
 	/**
 	 * Return list of options for overnight stay
 	 * @return array 
@@ -187,5 +244,42 @@ class ElementOperation extends BaseElement
 			1 => 'Yes',
 			0 => 'No',
 		);
+	}
+	
+	protected function beforeSave()
+	{
+		$anaesthetistRequired = array(
+			self::ANAESTHETIC_LOCAL_WITH_COVER, self::ANAESTHETIC_LOCAL_WITH_SEDATION,
+			self::ANAESTHETIC_GENERAL
+		);
+		$this->anaesthetist_required = in_array($this->anaesthetic_type, $anaesthetistRequired);
+
+		return parent::beforeSave();
+	}
+	
+	protected function afterSave()
+	{
+		parent::afterSave();
+		
+		$operationId = $this->id;
+		// first wipe out any existing procedures so we start from scratch
+		OperationProcedureAssignment::model()->deleteAll('operation_id = :id', 
+			array(':id' => $operationId));
+		
+		$order = 1;
+		
+		if (!empty($_POST['Procedures'])) {
+			foreach ($_POST['Procedures'] as $id) {
+				$procedure = new OperationProcedureAssignment;
+				$procedure->operation_id = $operationId;
+				$procedure->procedure_id = $id;
+				$procedure->display_order = $order;
+				if (!$procedure->save()) {
+					throw new Exception('Unable to save procedure');
+				}
+
+				$order++;
+			}
+		}
 	}
 }

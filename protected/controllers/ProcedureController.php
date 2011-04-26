@@ -21,4 +21,21 @@ class ProcedureController extends Controller
 	{
 		echo CJavaScript::jsonEncode(Procedure::getList($_GET['term']));
 	}
+	
+	public function actionDetails()
+	{
+		$list = Yii::app()->session['Procedures'];
+		if (!empty($list)) {
+			foreach ($list as $id => $procedure) {
+				$match = "{$procedure['term']} - {$procedure['short_format']}";
+				if ($match == $_GET['name']) {
+					$data = $procedure;
+					$data['id'] = $id;
+					
+					$this->renderPartial('_ajaxProcedure', array('data' => $data), false, true);
+					break;
+				}
+			}
+		}
+	}
 }

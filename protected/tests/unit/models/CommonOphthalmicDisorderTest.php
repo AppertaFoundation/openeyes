@@ -1,5 +1,5 @@
 <?php
-class CommonophthalmicdisorderTest extends CDbTestCase
+class CommonOphthalmicDisorderTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'specialties' => 'Specialty',

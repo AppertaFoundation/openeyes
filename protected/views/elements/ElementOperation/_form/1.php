@@ -1,4 +1,5 @@
 <strong>Book Operation</strong>
+
 <div class="row">
 	<label for="ElementOperation_value">Eye(s) to be operated on:</label>
 	<?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
@@ -12,7 +13,33 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'sourceUrl'=>array('procedure/autocomplete'),
     'options'=>array(
         'minLength'=>'2',
-		'select'=>"js:function() { alert('hi'); }"
+		'select'=>"js:function(event, ui) {
+			$.ajax({
+				'url': 'index.php?r=procedure/details',
+				'type': 'GET',
+				'data': {'name': ui.item.value},
+				'success': function(data) {
+					// append selection onto procedure list
+					$('#procedure_list tbody').append(data);
+					$('#procedure_list').show();
+					
+					// update total duration
+					var totalDuration = 0;
+					$('#procedure_list tbody').children().children('td:odd').each(function() {
+						duration = Number($(this).text());
+						console.log(duration);
+						totalDuration += duration;
+					});
+					var thisDuration = Number($('#procedure_list tbody').children().children(':last').text());
+					var operationDuration = Number($('#ElementOperation_total_duration').val());
+					$('#projected_duration').text(totalDuration);
+					$('#ElementOperation_total_duration').val(operationDuration + thisDuration);
+					
+					// clear out text field
+					$('#procedure_id').val('');
+				}
+			});
+		}",
     ),
     'htmlOptions'=>array(
         'style'=>'height:20px;width:200px;'
@@ -22,25 +49,41 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 </div>
 <div>
 	<div>
-		<span>Procedures Added</span>
-		<span>Duration</span>
-	</div>
-	<div>
-<?php
-$this->widget('zii.widgets.jui.CJuiSortable', array(
-	'id'=>'procedure_list',
-    'items'=>array(
-        'id1'=>'<div class="ui-widget-content">Item 1</div><div class="ui-widget-content">30</div>',
-        'id2'=>'<div class="ui-widget-content">Item 2</div><div class="ui-widget-content">30</div>',
-        'id3'=>'<div class="ui-widget-content">Item 3</div><div class="ui-widget-content">30</div>',
-    ),
-	'itemTemplate'=>'<li id="{id}" class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>{content}</li>',
-	'options'=>array(
-		'placeholder'=>'ui-state-highlight',
-		'cursor'=>'move'
-	)
-));
-?>
+		<table id="procedure_list" class="grid"<?php 
+	if ($model->isNewRecord) { ?> style="display:none;"<?php 
+	} ?> title="Procedure List">
+			<thead>
+				<tr>
+					<th>Procedures Added</th>
+					<th>Duration</th>
+				</tr>
+			</thead>
+			<tbody>
+<?php 
+	$totalDuration = 0;
+	if (!empty($model->procedures)) {
+		foreach ($model->procedures as $procedure) {
+			$display = $procedure['term'] . ' - ' . $procedure['short_format'];
+			$totalDuration += $procedure['default_duration']; ?>
+				<tr>
+					<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
+					<td><?php echo $display; ?></td>
+					<td><?php echo $procedure['default_duration']; ?></td>
+				</tr>
+<?php	}
+	} ?>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>Estimated Duration of Procedures:</td>
+					<td id="projected_duration"><?php echo $totalDuration; ?></td>
+				</tr>
+				<tr>
+					<td>Your Estimated Total:</td>
+					<td><?php echo CHtml::activeTextField($model, 'total_duration'); ?></td>
+				</tr>
+			</tfoot>
+		</table>
 	</div>
 </div>
 <p>or browse procedures for all services</p>
@@ -59,3 +102,21 @@ $this->widget('zii.widgets.jui.CJuiSortable', array(
 	<?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
 		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?>
 </div>
+<script type="text/javascript">
+	$(function() {
+		$("#procedure_list tbody").sortable({
+			 cursor: 'move',
+			 helper: function(e, tr)
+			 {
+				 var $originals = tr.children();
+				 var $helper = tr.clone();
+				 $helper.children().each(function(index)
+				 {
+					 // Set helper cell sizes to match the original sizes
+					 $(this).width($originals.eq(index).width())
+				 });
+				 return $helper;
+			 }
+		}).disableSelection();
+	})
+</script>
