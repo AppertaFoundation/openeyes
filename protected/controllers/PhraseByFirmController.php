@@ -54,7 +54,7 @@ class PhraseByFirmController extends BaseController
 
 		$criteria=new CDbCriteria;
 		$criteria->compare('section_by_firm_id',$sectionId,false);
-		// $criteria->compare('firm_id',Firm::Model()->findByPk($this->selectedFirmId)->id,false);
+		$criteria->compare('firm_id',Firm::Model()->findByPk($this->selectedFirmId)->id,false);
 
 		$dataProvider=new CActiveDataProvider('PhraseByFirm', array(
 			'criteria'=>$criteria,

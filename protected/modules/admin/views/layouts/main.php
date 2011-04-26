@@ -32,7 +32,7 @@
 				array('label'=>'Users', 'url'=>array('/admin/User/index')),
 				array('label'=>'Firms', 'url'=>array('/admin/Firm/index')),
 				array('label'=>'Phrases by specialty', 'url'=>array('/admin/phraseBySpecialty/index')),
-				array('label'=>'Phrases by firm', 'url'=>array('/admin/phrasebyfirm/index')),
+				array('label'=>'Phrases by firm', 'url'=>array('/admin/phraseByFirm/index')),
 				array('label'=>'Letter Templates', 'url'=>array('/admin/letterTemplate/index')),
 				array('label'=>'Contact Types', 'url'=>array('/admin/contactType/index')),
 				array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/commonOphthalmicDisorder/index')),
