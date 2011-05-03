@@ -102,6 +102,27 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	<?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
 		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?>
 </div>
+<div class="row">
+	<label for="ElementOperation_value">Add comments:</label><br />
+	<?php echo CHtml::activeTextArea($model, 'comments', 
+		array('rows' => 6, 'cols' => 60)); ?>
+</div>
+<div class="row">
+	<label for="ElementOperation_value">Schedule Operation:</label><br />
+	<?php 
+	$timeframe1 = $model->schedule_timeframe == ElementOperation::SCHEDULE_IMMEDIATELY ? 0 : 1;
+	if ($model->schedule_timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
+		$timeframe2 = $model->schedule_timeframe;
+		$options = array();
+	} else {
+		$timeframe2 = 0;
+		$options = array('disabled' => true);
+	}
+	echo CHtml::radioButtonList('schedule_timeframe1', $timeframe1,
+		$model->getScheduleOptions(), array('separator' => '<br />'));
+	echo CHtml::dropDownList('schedule_timeframe2', $timeframe2, 
+			$model->getScheduleDelayOptions(), $options); ?>
+</div>
 <script type="text/javascript">
 	$(function() {
 		$("#procedure_list tbody").sortable({
@@ -118,5 +139,14 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				 return $helper;
 			 }
 		}).disableSelection();
+		$('input[name=schedule_timeframe1]').change(function() {
+			var select = $('input[name=schedule_timeframe1]:checked').val();
+			
+			if (select == 1) {
+				$('select[name=schedule_timeframe2]').attr('disabled', false);
+			} else {
+				$('select[name=schedule_timeframe2]').attr('disabled', true);
+			}
+		});
 	})
 </script>

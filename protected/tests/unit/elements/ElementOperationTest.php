@@ -74,6 +74,17 @@ class ElementOperationTest extends CDbTestCase
 			array(2847405, 'Unknown'),
 		);
 	}
+	
+	public function dataProvider_ScheduleText()
+	{
+		return array(
+			array(ElementOperation::SCHEDULE_IMMEDIATELY, 'Immediately'),
+			array(ElementOperation::SCHEDULE_AFTER_1MO, 'After 1 month'),
+			array(ElementOperation::SCHEDULE_AFTER_2MO, 'After 2 months'),
+			array(ElementOperation::SCHEDULE_AFTER_3MO, 'After 3 months'),
+			array(2847405, 'Unknown')
+		);
+	}
 
 	/**
 	 * @dataProvider dataProvider_Search
@@ -96,13 +107,26 @@ class ElementOperationTest extends CDbTestCase
 		$this->assertEquals($expectedResults, $data);
 	}
 
-	public function testBasicCreate_NoProcedures_SavesElement()
+	public function testBasicCreate_NoTimeframe_SavesElement()
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
 		));
+
+		$this->assertTrue($element->save(true));
+	}
+
+	public function testBasicCreate_WithTimeframe_SavesElement()
+	{
+		$element = $this->element;
+		$element->setAttributes(array(
+			'event_id' => '1',
+			'eye' => ElementOperation::EYE_LEFT,
+		));
+		
+		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
 
 		$this->assertTrue($element->save(true));
 	}
@@ -228,5 +252,36 @@ class ElementOperationTest extends CDbTestCase
 		);
 		
 		$this->assertEquals($expected, $this->element->getOvernightOptions());
+	}
+	
+	public function testGetScheduleOptions_ReturnsCorrectData()
+	{
+		$expected = array(
+			0 => 'As soon as possible',
+			1 => 'Within timeframe specified by patient',
+		);
+		
+		$this->assertEquals($expected, $this->element->getScheduleOptions());
+	}
+	
+	public function testGetScheduleDelayOptions_ReturnsCorrectData()
+	{
+		$expected = array(
+			ElementOperation::SCHEDULE_AFTER_1MO => 'After 1 Month',
+			ElementOperation::SCHEDULE_AFTER_2MO => 'After 2 Months',
+			ElementOperation::SCHEDULE_AFTER_3MO => 'After 3 Months',
+		);
+		
+		$this->assertEquals($expected, $this->element->getScheduleDelayOptions());
+	}
+	
+	/**
+	 * @dataProvider dataProvider_ScheduleText
+	 */
+	public function testGetScheduleText_ReturnsCorrectData($timeframe, $text)
+	{
+		$this->element->schedule_timeframe = $timeframe;
+		
+		$this->assertEquals($text, $this->element->getScheduleText());
 	}
 }

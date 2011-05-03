@@ -51,7 +51,17 @@
 	<br />
 </div>
 <div class="view">
+	<b><?php echo CHtml::encode($data->getAttributeLabel('comments')); ?>:</b>
+	<?php echo nl2br(CHtml::encode($data->comments)); ?>
+	<br />
+</div>
+<div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('overnight_stay')); ?>:</b>
 	<?php echo CHtml::encode($data->getBooleanText('overnight_stay')); ?>
+	<br />
+</div>
+<div class="view">
+	<b><?php echo CHtml::encode($data->getAttributeLabel('schedule_timeframe')); ?>:</b>
+	<?php echo CHtml::encode($data->getScheduleText()); ?>
 	<br />
 </div>

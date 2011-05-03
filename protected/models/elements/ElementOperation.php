@@ -34,6 +34,11 @@ class ElementOperation extends BaseElement
 	const ANAESTHETIC_LOCAL_WITH_SEDATION = 3;
 	const ANAESTHETIC_GENERAL = 4;
 	
+	const SCHEDULE_IMMEDIATELY = 0;
+	const SCHEDULE_AFTER_1MO = 1;
+	const SCHEDULE_AFTER_2MO = 2;
+	const SCHEDULE_AFTER_3MO = 3;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -135,6 +140,7 @@ class ElementOperation extends BaseElement
 		$this->anaesthetic_type = self::ANAESTHETIC_TOPICAL;
 		$this->overnight_stay = 0;
 		$this->total_duration = 0;
+		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 	}
 	
 	/**
@@ -235,6 +241,53 @@ class ElementOperation extends BaseElement
 	}
 	
 	/**
+	 * Return list of options for schedule
+	 * @return array
+	 */
+	public function getScheduleOptions()
+	{
+		return array(
+			self::SCHEDULE_IMMEDIATELY => 'As soon as possible',
+			1 => 'Within timeframe specified by patient'
+		);
+	}
+	
+	/**
+	 * Return list of options for schedule timeframe
+	 * @return array 
+	 */
+	public function getScheduleDelayOptions()
+	{
+		return array(
+			self::SCHEDULE_AFTER_1MO => 'After 1 Month',
+			self::SCHEDULE_AFTER_2MO => 'After 2 Months',
+			self::SCHEDULE_AFTER_3MO => 'After 3 Months',
+		);
+	}
+	
+	public function getScheduleText() {
+		switch ($this->schedule_timeframe) {
+			case self::SCHEDULE_IMMEDIATELY:
+				$text = 'Immediately';
+				break;
+			case self::SCHEDULE_AFTER_1MO:
+				$text = 'After 1 month';
+				break;
+			case self::SCHEDULE_AFTER_2MO:
+				$text = 'After 2 months';
+				break;
+			case self::SCHEDULE_AFTER_3MO:
+				$text = 'After 3 months';
+				break;
+			default:
+				$text = 'Unknown';
+				break;
+		}
+		
+		return $text;
+	}
+	
+	/**
 	 * Return list of options for overnight stay
 	 * @return array 
 	 */
@@ -253,6 +306,12 @@ class ElementOperation extends BaseElement
 			self::ANAESTHETIC_GENERAL
 		);
 		$this->anaesthetist_required = in_array($this->anaesthetic_type, $anaesthetistRequired);
+		
+		if (!empty($_POST['schedule_timeframe2'])) {
+			$this->schedule_timeframe = $_POST['schedule_timeframe2'];
+		} else {
+			$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
+		}
 
 		return parent::beforeSave();
 	}
