@@ -3,6 +3,8 @@ class ProcedureControllerTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'procedures' => 'Procedure',
+		'services' => 'Service',
+		'subsections' => 'ServiceSubsection'
 	);
 
 	protected $controller;
@@ -36,12 +38,35 @@ class ProcedureControllerTest extends CDbTestCase
 		}
 		Yii::app()->session['Procedures'] = $session;
 		
-		$_GET['name'] = 'Bar Procedure';
+		$_GET['name'] = 'Bar Procedure - BZ1';
 		
 		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
 			array('ProcedureController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
+		$mockController->actionDetails();
+	}
+	
+	public function testActionDetails_NoSessionData_TermInDb_RendersAjaxPartial()
+	{
+		$session = array();
+		Yii::app()->session['Procedures'] = $session;
+		
+		$procedure = $this->procedures['procedure1'];
+		$_GET['name'] = "{$procedure['term']} - {$procedure['short_format']}";
+		
+		$data = array(
+			'term' => $procedure['term'],
+			'short_format' => $procedure['short_format'],
+			'duration' => $procedure['default_duration'],
+			'id' => $procedure['id'],
+		);
+		
+		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
+			array('ProcedureController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('_ajaxProcedure', array('data' => $data), false, false);
 		$mockController->actionDetails();
 	}
 	
@@ -71,28 +96,61 @@ class ProcedureControllerTest extends CDbTestCase
 			array('ProcedureController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('_ajaxProcedure', array('data' => $data), false, true);
+			->with('_ajaxProcedure', array('data' => $data), false, false);
 		$mockController->actionDetails();
 	}
 	
-	/*
-	 * 
-	
-	public function actionDetails()
+	public function testActionSubsection_MissingService_RendersNothing()
 	{
-		$list = Yii::app()->session['Procedures'];
-		if (!empty($list)) {
-			foreach ($list as $id => $procedure) {
-				$match = "{$procedure['term']} - {$procedure['short_format']}";
-				if ($match == $_GET['name']) {
-					$data = $procedure;
-					$data['id'] = $id;
-					
-					$this->renderPartial('_ajaxProcedure', array('data' => $data), false, true);
-					break;
-				}
-			}
-		}
+		$_GET = array();
+		
+		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
+			array('ProcedureController'));
+		$mockController->expects($this->never())
+			->method('renderPartial');
+		$mockController->actionSubsection();
 	}
-	 */
+	
+	public function testActionSubsection_ValidService_RendersAjaxPartial()
+	{
+		$serviceId = $this->services['service1']['id'];
+		$_GET['service'] = $serviceId;
+		
+		$subsections = ServiceSubsection::model()->findAllByAttributes(
+			array('service_id' => $serviceId));
+		
+		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
+			array('ProcedureController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('_subsectionOptions', array('subsections' => $subsections), false, false);
+		$mockController->actionSubsection();
+	}
+	
+	public function testActionList_MissingSubsection_RendersNothing()
+	{
+		$_GET = array();
+		
+		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
+			array('ProcedureController'));
+		$mockController->expects($this->never())
+			->method('renderPartial');
+		$mockController->actionList();
+	}
+	
+	public function testActionList_ValidSubsection_RendersAjaxPartial()
+	{
+		$sectionId = $this->subsections['section1']['id'];
+		$_GET['subsection'] = $sectionId;
+		
+		$procedures = Procedure::model()->findAllByAttributes(
+			array('service_subsection_id' => $sectionId));
+		
+		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
+			array('ProcedureController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('_procedureOptions', array('procedures' => $procedures), false, false);
+		$mockController->actionList();
+	}
 }

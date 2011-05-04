@@ -69,6 +69,8 @@ class ClinicalController extends BaseController
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
+		
+		$specialties = Specialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -89,6 +91,7 @@ class ClinicalController extends BaseController
 		$this->render('create', array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
+				'specialties' => $specialties
 			)
 		);
 	}
@@ -120,6 +123,8 @@ class ClinicalController extends BaseController
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
+		
+		$specialties = Specialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'update') {
 			// The user has submitted the form to update the event
@@ -138,6 +143,7 @@ class ClinicalController extends BaseController
 		$this->render('update', array(
 				'id' => $id,
 				'elements' => $elements,
+				'specialties' => $specialties
 			)
 		);
 	}

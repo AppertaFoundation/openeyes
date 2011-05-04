@@ -27,7 +27,6 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					var totalDuration = 0;
 					$('#procedure_list tbody').children().children('td:odd').each(function() {
 						duration = Number($(this).text());
-						console.log(duration);
 						totalDuration += duration;
 					});
 					var thisDuration = Number($('#procedure_list tbody').children().children(':last').text());
@@ -86,7 +85,19 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		</table>
 	</div>
 </div>
-<p>or browse procedures for all services</p>
+<?php
+$this->widget('zii.widgets.jui.CJuiAccordion', array(
+    'panels'=>array(
+        'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
+			array('specialties' => $specialties),true),
+    ),
+    // additional javascript options for the accordion plugin
+    'options'=>array(
+		'active'=>false,
+        'animated'=>'bounceslide',
+		'collapsible'=>true,
+    ),
+)); ?>
 <div class="row">
 	<label for="ElementOperation_value">Consultant required?</label>
 	<?php echo CHtml::activeRadioButtonList($model, 'consultant_required', 
@@ -148,5 +159,21 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				$('select[name=schedule_timeframe2]').attr('disabled', true);
 			}
 		});
-	})
+	});
+	function removeProcedure(row) {
+		var duration = $(row).parent().siblings('td').text();
+		var projectedDuration = Number($('#projected_duration').text()) - duration;
+		var totalDuration = Number($('#ElementOperation_total_duration').val()) - duration;
+		
+		if (projectedDuration < 0) {
+			projectedDuration = 0;
+		}
+		if (totalDuration < 0) {
+			totalDuration = 0;
+		}
+		$('#projected_duration').text(projectedDuration);
+		$('#ElementOperation_total_duration').val(totalDuration);
+
+		$(row).parents('tr').remove();
+	};
 </script>

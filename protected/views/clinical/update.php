@@ -23,7 +23,7 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' . $elementClassName . '/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
 	);
 }
 
