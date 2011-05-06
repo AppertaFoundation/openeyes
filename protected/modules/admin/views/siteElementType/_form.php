@@ -4,7 +4,7 @@
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'site-element-type-form',
 	'enableAjaxValidation'=>false,
-)); 
+));
 
 ?>
 
@@ -31,7 +31,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	</div>
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
-			<p><b>Display order: </b><?php echo $model->possibleElementType->order;?></p>
+			<p><b>Display order: </b><?php echo $model->possibleElementType->display_order;?></p>
 	<div class="row">
 		<?php echo $form->labelEx($model,'view_number'); ?>
 		<?php echo $form->dropDownList($model,'view_number',$model->getNumViewsArray()); ?>

@@ -15,7 +15,7 @@ class DiagnosisTest extends CDbTestCase
 
 	public function testGetLocationOptions()
 	{
-		$locations = Diagnosis::Model()->getLocationOptions();
+		$locations = Diagnosis::model()->getLocationOptions();
 		$this->assertTrue(is_array($locations));
 		$this->assertEquals(3, count($locations));
 	}
@@ -49,13 +49,13 @@ class DiagnosisTest extends CDbTestCase
 		$disorders = $diagnosis->getCommonSystemicDisorderOptions();
 
 		$this->assertTrue(is_array($disorders));
-		$this->assertEquals(4, count($disorders));
+		$this->assertEquals(count($this->commonSystemicDisorders), count($disorders));
 	}
 
-	public function getGetDisorderTerm()
+	public function testGetGetDisorderTerm()
 	{
-		$diagnosis = Diagnosis::Model()->findByPk(1);
+		$diagnosis = $this->diagnoses('diagnosis1');
 
-		$this->assertEquals($diagnosis->getDisorderTerm(), 'Myopia (disorder)');
+		$this->assertEquals('Myopia', $diagnosis->getDisorderTerm());
 	}
 }

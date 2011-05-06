@@ -28,9 +28,9 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'order'); ?>
-		<?php echo $form->textField($model,'order',array('size'=>10,'maxlength'=>10)); ?>
-		<?php echo $form->error($model,'order'); ?>
+		<?php echo $form->labelEx($model,'display_order'); ?>
+		<?php echo $form->textField($model,'display_order',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->error($model,'display_order'); ?>
 	</div>
 
 	<div class="row buttons">

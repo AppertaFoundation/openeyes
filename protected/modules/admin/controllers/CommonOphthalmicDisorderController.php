@@ -4,7 +4,7 @@ class CommonOphthalmicDisorderController extends Controller
 {
 	public $layout='column2';
 
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {
@@ -40,10 +40,13 @@ class CommonOphthalmicDisorderController extends Controller
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
 					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
-				}
 
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
+					if($model->save()) {
+						$this->redirect(array('view','id'=>$model->id));
+					}
+				} else {
+					$model->addError('disorder_id', 'There is no disorder of that name.');
+				}
 			}
 		}
 
@@ -71,12 +74,13 @@ class CommonOphthalmicDisorderController extends Controller
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
 					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
-				}
-				// @todo - display error correctly here and in sytemicDisorder admin controller,
-				// diagnosisController
 
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
+					if($model->save()) {
+						$this->redirect(array('view','id'=>$model->id));
+					}
+				} else {
+					$model->addError('disorder_id', 'There is no disorder of that name.');
+				}
 			}
 		}
 

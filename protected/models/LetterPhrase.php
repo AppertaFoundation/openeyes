@@ -8,7 +8,7 @@
  * @property string $firm_id
  * @property string $name
  * @property string $phrase
- * @property string $order
+ * @property string $display_order
  * @property integer $section
  *
  * The followings are the available model relations:
@@ -50,12 +50,12 @@ class LetterPhrase extends CActiveRecord
 		return array(
 			array('firm_id', 'required'),
 			array('section', 'numerical', 'integerOnly'=>true),
-			array('firm_id, order', 'length', 'max'=>10),
+			array('firm_id, display_order', 'length', 'max'=>10),
 			array('name', 'length', 'max'=>64),
 			array('phrase', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, firm_id, name, phrase, order, section', 'safe', 'on'=>'search'),
+			array('id, firm_id, name, phrase, display_order, section', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -81,7 +81,7 @@ class LetterPhrase extends CActiveRecord
 			'firm_id' => 'Firm',
 			'name' => 'Name',
 			'phrase' => 'Phrase',
-			'order' => 'Order',
+			'display_order' => 'Display order',
 			'section' => 'Section',
 		);
 	}
@@ -101,7 +101,7 @@ class LetterPhrase extends CActiveRecord
 		$criteria->compare('firm_id',$this->firm_id,true);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('order',$this->order,true);
+		$criteria->compare('display_order',$this->display_order,true);
 		$criteria->compare('section',$this->section);
 
 		return new CActiveDataProvider(get_class($this), array(

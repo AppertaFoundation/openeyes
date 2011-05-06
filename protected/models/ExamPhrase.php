@@ -8,7 +8,7 @@
  * @property string $specialty_id
  * @property integer $part
  * @property string $phrase
- * @property string $order
+ * @property string $display_order
  *
  * The followings are the available model relations:
  * @property Specialty $specialty
@@ -61,11 +61,11 @@ class ExamPhrase extends CActiveRecord
 		return array(
 			array('specialty_id, phrase', 'required'),
 			array('part', 'numerical', 'integerOnly'=>true),
-			array('specialty_id, order', 'length', 'max'=>10),
+			array('specialty_id, display_order', 'length', 'max'=>10),
 			array('phrase', 'length', 'max'=>80),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, specialty_id, part, phrase, order', 'safe', 'on'=>'search'),
+			array('id, specialty_id, part, phrase, display_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,7 +91,7 @@ class ExamPhrase extends CActiveRecord
 			'specialty_id' => 'Specialty',
 			'part' => 'Part',
 			'phrase' => 'Phrase',
-			'order' => 'Order',
+			'display_order' => 'Display order',
 		);
 	}
 
@@ -110,7 +110,7 @@ class ExamPhrase extends CActiveRecord
 		$criteria->compare('specialty_id',$this->specialty_id,true);
 		$criteria->compare('part',$this->part);
 		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('order',$this->order,true);
+		$criteria->compare('display_order',$this->display_order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

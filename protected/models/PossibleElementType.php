@@ -8,7 +8,7 @@
  * @property string $event_type_id
  * @property string $element_type_id
  * @property string $view_number
- * @property integer $order
+ * @property integer $display_order
  *
  * The followings are the available model relations:
  * @property DefaultElementType[] $defaultElementTypes
@@ -43,12 +43,12 @@ class PossibleElementType extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_type_id, element_type_id, view_number, order', 'required'),
-			array('order', 'numerical', 'integerOnly'=>true),
+			array('event_type_id, element_type_id, view_number, display_order', 'required'),
+			array('display_order', 'numerical', 'integerOnly'=>true),
 			array('event_type_id, element_type_id, view_number', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_type_id, element_type_id, view_number, order', 'safe', 'on'=>'search'),
+			array('id, event_type_id, element_type_id, view_number, display_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -77,7 +77,7 @@ class PossibleElementType extends CActiveRecord
 			'event_type_id' => 'Event Type',
 			'element_type_id' => 'Element Type',
 			'view_number' => 'View Number',
-			'order' => 'Order',
+			'display_order' => 'Display order',
 		);
 	}
 
@@ -96,7 +96,7 @@ class PossibleElementType extends CActiveRecord
 		$criteria->compare('event_type_id',$this->event_type_id,true);
 		$criteria->compare('element_type_id',$this->element_type_id,true);
 		$criteria->compare('view_number',$this->view_number,true);
-		$criteria->compare('order',$this->order);
+		$criteria->compare('display_order',$this->display_order);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

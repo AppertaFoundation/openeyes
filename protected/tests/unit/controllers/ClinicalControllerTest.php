@@ -109,6 +109,8 @@ class ClinicalControllerTest extends CDbTestCase
 		$elementPOH = $this->elementPOHs('elementPOH1');
 
 		$expectedElements = array($elementHistory, $elementPOH);
+		
+		$specialties = Specialty::model()->findAll();
 
 		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
 		$mockController->patientId = $patientId;
@@ -128,7 +130,8 @@ class ClinicalControllerTest extends CDbTestCase
 			->method('render')
 			->with('create', array(
 				'elements' => $expectedElements,
-				'eventTypeId' => $eventTypeId
+				'eventTypeId' => $eventTypeId,
+				'specialties' => $specialties
 			));
 
 		$mockController->expects($this->once())
@@ -206,6 +209,8 @@ class ClinicalControllerTest extends CDbTestCase
 		$elementPOH = $this->elementPOHs('elementPOH1');
 
 		$expectedElements = array($elementHistory, $elementPOH);
+		
+		$specialties = Specialty::model()->findAll();
 
 		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
 
@@ -222,7 +227,9 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->any())
 			->method('render')
-			->with('update', array('id' => $event->id, 'elements' => $expectedElements));
+			->with('update', 
+				array('id' => $event->id, 'elements' => $expectedElements, 
+					'specialties' => $specialties));
 
 		$mockController->expects($this->once())
 			->method('getUserId')

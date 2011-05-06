@@ -4,7 +4,7 @@ class CommonSystemicDisorderController extends Controller
 {
 	public $layout='column2';
 
-	protected function beforeAction(CAction $action)
+	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {
@@ -40,10 +40,13 @@ class CommonSystemicDisorderController extends Controller
 			$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 			if (isset($disorder)) {
 				$model->disorder_id = $disorder->id;
-			}
 
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				if($model->save()) {
+					$this->redirect(array('view','id'=>$model->id));
+				}
+			} else {
+				$model->addError('disorder_id', 'There is no disorder of that name.');
+			}
 		}
 
 
@@ -67,10 +70,13 @@ class CommonSystemicDisorderController extends Controller
 			$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 			if (isset($disorder)) {
 				$model->disorder_id = $disorder->id;
-			}
 
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				if($model->save()) {
+					$this->redirect(array('view','id'=>$model->id));
+				}
+			} else {
+				$model->addError('disorder_id', 'There is no disorder of that name.');
+			}
 		}
 
 

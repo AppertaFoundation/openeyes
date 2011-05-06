@@ -26,7 +26,7 @@ foreach ($elements as $element) {
 			$elementClassName .
 			'/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
 	);
 
 }
