@@ -126,18 +126,20 @@ class PhraseBySpecialtyController extends Controller
 	/**
 	 * Lists all section models.
 	 */
-        public function actionIndex()
-        {
-                $sectionType = SectionType::model()->findByAttributes(array('name' => 'Exam'));
+	public function actionIndex()
+	{
+		$criteria = new CDbCriteria;
+		$relevantSections = PhraseBySpecialty::model()->relevantSections();
+		foreach ($relevantSections as $relevantSection) {
+			$sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
+			$criteria->compare('section_type_id',$sectionType->id,false,'OR');
+		}
 
-                $criteria = new CDbCriteria;
-                $criteria->compare('section_type_id',$sectionType->id,false);
-
-                $dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
-                $this->render('index',array(
-                        'dataProvider'=>$dataProvider,
-                ));
-        }
+		$dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
+		$this->render('index',array(
+			'dataProvider'=>$dataProvider,
+		));
+	}
 
 	/**
 	 * List all models for the given section
@@ -148,13 +150,13 @@ class PhraseBySpecialtyController extends Controller
 		$sectionId = $_GET['section_id'];
 		$sectionName = Section::model()->findByPk($sectionId)->name;
 
-                $criteria=new CDbCriteria;
-               	$criteria->compare('section_id',$sectionId,false);
+		$criteria=new CDbCriteria;
+		$criteria->compare('section_id',$sectionId,false);
 	
 	
 		$dataProvider=new CActiveDataProvider('PhraseBySpecialty', array(
-                        'criteria'=>$criteria,
-                ));
+			'criteria'=>$criteria,
+		));
 
 		$this->render('phraseindex',array(
 			'dataProvider'=>$dataProvider,

@@ -1,6 +1,6 @@
 <?php
 
-class PhraseByFirmController extends BaseController
+class PhraseController extends BaseController
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -54,9 +54,8 @@ class PhraseByFirmController extends BaseController
 
 		$criteria=new CDbCriteria;
 		$criteria->compare('section_id',$sectionId,false);
-		// $criteria->compare('firm_id',Firm::Model()->findByPk($this->selectedFirmId)->id,false);
 
-		$dataProvider=new CActiveDataProvider('PhraseByFirm', array(
+		$dataProvider=new CActiveDataProvider('Phrase', array(
 			'criteria'=>$criteria,
 		));
 
@@ -84,14 +83,14 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function actionCreate()
 	{
-		$model=new PhraseByFirm;
+		$model=new Phrase;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseByFirm']))
+		if(isset($_POST['Phrase']))
 		{
-			$model->attributes=$_POST['PhraseByFirm'];
+			$model->attributes=$_POST['Phrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -113,9 +112,9 @@ class PhraseByFirmController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseByFirm']))
+		if(isset($_POST['Phrase']))
 		{
-			$model->attributes=$_POST['PhraseByFirm'];
+			$model->attributes=$_POST['Phrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -148,14 +147,16 @@ class PhraseByFirmController extends BaseController
 	/**
 	 * Lists all models.
 	 */
+
 	public function actionIndex()
 	{
-		$criteria = new CDbCriteria;
-		$relevantSections = PhraseByFirm::model()->relevantSections();
-		foreach ($relevantSections as $relevantSection) {
-			$sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
-			$criteria->compare('section_type_id',$sectionType->id,false,'OR');
-		}
+
+                $criteria = new CDbCriteria;
+                $relevantSections = Phrase::model()->relevantSections();
+                foreach ($relevantSections as $relevantSection) {
+                        $sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
+                        $criteria->compare('section_type_id',$sectionType->id,false,'OR');
+                }
 
 		$dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
 		$this->render('index',array(
@@ -168,10 +169,10 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function actionAdmin()
 	{
-		$model=new PhraseByFirm('search');
+		$model=new Phrase('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['PhraseByFirm']))
-			$model->attributes=$_GET['PhraseByFirm'];
+		if(isset($_GET['Phrase']))
+			$model->attributes=$_GET['Phrase'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -185,7 +186,7 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function loadModel($id)
 	{
-		$model=PhraseByFirm::model()->findByPk((int)$id);
+		$model=Phrase::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -197,7 +198,7 @@ class PhraseByFirmController extends BaseController
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='phrase-by-firm-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='phrase-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

@@ -31,6 +31,7 @@
 				array('label'=>'Home', 'url'=>array('/site/index')),
 				array('label'=>'Users', 'url'=>array('/admin/User/index')),
 				array('label'=>'Firms', 'url'=>array('/admin/Firm/index')),
+				array('label'=>'Global phrases', 'url'=>array('/admin/phrase/index')),
 				array('label'=>'Phrases by specialty', 'url'=>array('/admin/phraseBySpecialty/index')),
 				array('label'=>'Phrases by firm', 'url'=>array('/admin/phraseByFirm/index')),
 				array('label'=>'Letter Templates', 'url'=>array('/admin/letterTemplate/index')),

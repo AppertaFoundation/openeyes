@@ -34,6 +34,11 @@ class PhraseByFirm extends CActiveRecord
 		return 'phrase_by_firm';
 	}
 
+        public function relevantSections()
+        {
+                return array('Letter');
+        }
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
