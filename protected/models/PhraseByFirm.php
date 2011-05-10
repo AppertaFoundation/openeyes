@@ -7,13 +7,13 @@
  * @property string $id
  * @property string $name
  * @property string $phrase
- * @property string $section_by_firm_id
+ * @property string $section_id
  * @property string $display_order
  * @property string $firm_id
  *
  * The followings are the available model relations:
  * @property Firm $firm
- * @property SectionByFirm $sectionByFirm
+ * @property Section $section
  */
 class PhraseByFirm extends CActiveRecord
 {
@@ -42,13 +42,13 @@ class PhraseByFirm extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('section_by_firm_id, firm_id', 'required'),
+			array('section_id, firm_id', 'required'),
 			array('name', 'length', 'max'=>255),
-			array('section_by_firm_id, display_order, firm_id', 'length', 'max'=>10),
+			array('section_id, display_order, firm_id', 'length', 'max'=>10),
 			array('phrase', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, phrase, section_by_firm_id, display_order, firm_id', 'safe', 'on'=>'search'),
+			array('id, name, phrase, section_id, display_order, firm_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,7 +61,7 @@ class PhraseByFirm extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'sectionByFirm' => array(self::BELONGS_TO, 'SectionByFirm', 'section_by_firm_id'),
+			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
 		);
 	}
 
@@ -74,7 +74,7 @@ class PhraseByFirm extends CActiveRecord
 			'id' => 'ID',
 			'name' => 'Name',
 			'phrase' => 'Phrase',
-			'section_by_firm_id' => 'Section By Firm',
+			'section_id' => 'Section',
 			'display_order' => 'Display Order',
 			'firm_id' => 'Firm',
 		);
@@ -94,7 +94,7 @@ class PhraseByFirm extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('section_by_firm_id',$this->section_by_firm_id,true);
+		$criteria->compare('section_id',$this->section_id,true);
 		$criteria->compare('display_order',$this->display_order,true);
 		$criteria->compare('firm_id',$this->firm_id,true);
 

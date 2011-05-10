@@ -50,10 +50,10 @@ class PhraseByFirmController extends BaseController
 	public function actionPhraseIndex()
 	{
 		$sectionId = $_GET['section_id'];
-		$sectionName = SectionByFirm::model()->findByPk($sectionId)->name;
+		$sectionName = Section::model()->findByPk($sectionId)->name;
 
 		$criteria=new CDbCriteria;
-		$criteria->compare('section_by_firm_id',$sectionId,false);
+		$criteria->compare('section_id',$sectionId,false);
 		// $criteria->compare('firm_id',Firm::Model()->findByPk($this->selectedFirmId)->id,false);
 
 		$dataProvider=new CActiveDataProvider('PhraseByFirm', array(
@@ -150,7 +150,12 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('SectionByFirm');
+		$sectionType = SectionType::model()->findByAttributes(array('name' => 'Letter'));
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('section_type_id',$sectionType->id,false);
+
+		$dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));

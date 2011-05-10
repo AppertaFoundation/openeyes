@@ -126,13 +126,18 @@ class PhraseBySpecialtyController extends Controller
 	/**
 	 * Lists all section models.
 	 */
-	public function actionIndex()
-	{
-		$dataProvider=new CActiveDataProvider('SectionBySpecialty');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
+        public function actionIndex()
+        {
+                $sectionType = SectionType::model()->findByAttributes(array('name' => 'Exam'));
+
+                $criteria = new CDbCriteria;
+                $criteria->compare('section_type_id',$sectionType->id,false);
+
+                $dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
+                $this->render('index',array(
+                        'dataProvider'=>$dataProvider,
+                ));
+        }
 
 	/**
 	 * List all models for the given section
@@ -141,10 +146,10 @@ class PhraseBySpecialtyController extends Controller
 	public function actionPhraseIndex()
 	{
 		$sectionId = $_GET['section_id'];
-		$sectionName = SectionBySpecialty::model()->findByPk($sectionId)->name;
+		$sectionName = Section::model()->findByPk($sectionId)->name;
 
                 $criteria=new CDbCriteria;
-               	$criteria->compare('section_by_specialty_id',$sectionId,false);
+               	$criteria->compare('section_id',$sectionId,false);
 	
 	
 		$dataProvider=new CActiveDataProvider('PhraseBySpecialty', array(

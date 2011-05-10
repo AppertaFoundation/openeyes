@@ -43,9 +43,9 @@ class BaseElement extends CActiveRecord
 	public function getPhraseBySpecialtyOptions($section)
 	{
 		// todo: fix this line
-		$section = SectionBySpecialty::Model()->findByAttributes(array('name' => $section));
+		// $section = Section::Model()->getAllByType('Exam', $section->name);
 		return array_merge(array('-' => '-'), CHtml::listData(PhraseBySpecialty::Model()->findAll(
-			'specialty_id = ? AND section_by_specialty_id = ?', array($this->firm->serviceSpecialtyAssignment->specialty_id, $section->id)
+			'specialty_id = ? AND section_id = ?', array($this->firm->serviceSpecialtyAssignment->specialty_id, $section->id)
 		), 'id', 'phrase'));
 	}
 }

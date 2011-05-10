@@ -7,7 +7,7 @@ $form=$this->beginWidget('CActiveForm', array(
 )); 
 
 if (isset($_GET['section_id'])) {
-	$model->section_by_specialty_id = $_GET['section_id'];
+	$model->section_id = $_GET['section_id'];
 }
 ?>
 
@@ -28,9 +28,9 @@ if (isset($_GET['section_id'])) {
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'section_by_specialty_id'); ?>
-		<?php echo $form->dropDownList($model,'section_by_specialty_id',CHtml::listData(SectionBySpecialty::Model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model,'section_by_specialty_id'); ?>
+		<?php echo $form->labelEx($model,'section_id'); ?>
+		<?php echo $form->dropDownList($model,'section_id',CHtml::listData(Section::Model()->getAllByType('Exam'), 'id', 'name')); ?>
+		<?php echo $form->error($model,'section_id'); ?>
 	</div>
 
 	<div class="row">

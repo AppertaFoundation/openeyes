@@ -7,13 +7,13 @@
  * @property string $id
  * @property string $name
  * @property string $phrase
- * @property string $section_by_specialty_id
+ * @property string $section_id
  * @property string $display_order
  * @property string $specialty_id
  *
  * The followings are the available model relations:
  * @property Specialty $specialty
- * @property SectionBySpecialty $sectionBySpecialty
+ * @property Section $section
  */
 class PhraseBySpecialty extends CActiveRecord
 {
@@ -42,13 +42,13 @@ class PhraseBySpecialty extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('section_by_specialty_id, specialty_id', 'required'),
+			array('section_id, specialty_id', 'required'),
 			array('name', 'length', 'max'=>255),
-			array('section_by_specialty_id, display_order, specialty_id', 'length', 'max'=>10),
+			array('section_id, display_order, specialty_id', 'length', 'max'=>10),
 			array('phrase', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, phrase, section_by_specialty_id, display_order, specialty_id', 'safe', 'on'=>'search'),
+			array('id, name, phrase, section_id, display_order, specialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,7 +61,7 @@ class PhraseBySpecialty extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
-			'sectionBySpecialty' => array(self::BELONGS_TO, 'SectionBySpecialty', 'section_by_specialty_id'),
+			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
 		);
 	}
 
@@ -74,7 +74,7 @@ class PhraseBySpecialty extends CActiveRecord
 			'id' => 'ID',
 			'name' => 'Name',
 			'phrase' => 'Phrase',
-			'section_by_specialty_id' => 'Section',
+			'section_id' => 'Section',
 			'display_order' => 'Display Order',
 			'specialty_id' => 'Specialty',
 		);
@@ -94,7 +94,7 @@ class PhraseBySpecialty extends CActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('section_by_specialty_id',$this->section_by_specialty_id,true);
+		$criteria->compare('section_id',$this->section_id,true);
 		$criteria->compare('display_order',$this->display_order,true);
 		$criteria->compare('specialty_id',$this->specialty_id,true);
 
