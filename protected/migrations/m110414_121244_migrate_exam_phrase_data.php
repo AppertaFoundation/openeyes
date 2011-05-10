@@ -9,12 +9,15 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 			'Social history', 'HPC', 'FOH', 'Outcome', 'Timing', 'Severity', 'Onset', 'Duration', 'Site'
 		);
 
+		$section_type_letter = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name'=> 'Letter'))->queryRow();
+		$section_type_exam = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name'=> 'Exam'))->queryRow();
+
 		// create section_by_specialty entries
 		$partsAndIds = Array();
 		foreach ($parts as $part) {
-			$this->insert('section_by_specialty', array('name' => $part));
+			$this->insert('section', array('name' => $part, 'section_type_id' => $section_type_exam['id']));
 			
-			$pullback = $this->dbConnection->createCommand()->select()->from('section_by_specialty')->where('name=:name', array(':name'=> $part))->queryRow();
+			$pullback = $this->dbConnection->createCommand()->select()->from('section')->where('name=:name', array(':name'=> $part))->queryRow();
 			$partsAndIds[$pullback['id']] = $pullback['name'];
 		}
 
@@ -36,7 +39,7 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 			$this->insert('phrase_by_specialty', array(
 				'name' => $examPhrase['phrase'],
 				'phrase' => $examPhrase['phrase'],
-				'section_by_specialty_id' => $partId,
+				'section_id' => $partId,
 				'display_order' => $examPhrase['display_order'],
 				'specialty_id' => $examPhrase['specialty_id']
 			));
@@ -53,8 +56,7 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 	{
 		$this->truncateTable('phrase_by_specialty');
 		$this->truncateTable('phrase_by_firm');
-		$this->truncateTable('section_by_specialty');
-		$this->truncateTable('section_by_firm');
+		$this->truncateTable('section');
 
                 $this->createTable('letter_phrase', array(
                         'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
