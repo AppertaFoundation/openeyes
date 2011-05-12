@@ -95,7 +95,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$this->controller->actionCreate();
 	}
 
-	public function testActionView_ValidElement_RendersCreateView()
+	public function testActionCreate_ValidElement_RendersCreateView()
 	{
 		$patientId = 1;
 		$eventTypeId = 1;
