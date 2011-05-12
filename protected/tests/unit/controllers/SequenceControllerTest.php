@@ -92,7 +92,7 @@ class SequenceControllerTest extends CDbTestCase
 		$requiredFields = array('end_time', 'frequency', 'start_date', 'start_time', 'theatre_id');
 		
 		$this->assertEquals(array(), array_diff($requiredFields, array_keys($sequence->getErrors())));
-		$this->assertEquals(array(), array_diff(array('firm_id'), array_keys($firmAssignment->getErrors())));
+		$this->assertEquals(array(), $firmAssignment->getErrors());
 	}
 
 	public function testActionCreate_ValidPostData_RendersViewView()
@@ -118,7 +118,7 @@ class SequenceControllerTest extends CDbTestCase
 	public function testActionUpdate_NoPostData_RendersCreateView()
 	{
 		$sequence = $this->sequences('sequence1');
-		$sequence->firmAssignment;
+		$sequence->sequenceFirmAssignment;
 		$firm = $this->sequenceFirmAssignments('sfa1');
 
 		$mockController = $this->getMock('SequenceController', array('render'), array('SequenceController'));
@@ -140,9 +140,9 @@ class SequenceControllerTest extends CDbTestCase
 		$_POST['action'] = 'update';
 
 		$sequence = $this->sequences('sequence1');
-		$firmAssignment = $sequence->firmAssignment;
+		$firmAssignment = $sequence->sequenceFirmAssignment;
 		$sequence->validate();
-		$firmAssignment->validate();
+//		$firmAssignment->validate();
 
 		$mockController = $this->getMock('SequenceController',
 			array('render', 'redirect'), array('SequenceController'));

@@ -8,9 +8,5 @@ return array(
 	'sfa2' => array(
 		'sequence_id' => 2,
 		'firm_id' => 1,
-	),
-	'sfa3' => array(
-		'sequence_id' => 3,
-		'firm_id' => 1,
-	),
+	)
 );
