@@ -15,22 +15,24 @@ if (isset($_GET['section_id'])) {
 
 	<?php echo $form->errorSummary($model); ?>
 
+	<?php if (!$model->id) {?>
 	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'name'); ?>
+		<?php echo $form->labelEx($model,'phrase_name_id'); ?>
+		<?php echo $form->dropDownList($model,'phrase_name_id',CHtml::listData(PhraseName::Model()->findAll(), 'id', 'name')); ?>
+		<?php echo $form->error($model,'phrase_name_id'); ?>
 	</div>
+	<?} else {?>
+	<div class="row">
+		<?php echo $form->labelEx($model,'phrase_name_id'); ?>
+		<?php echo $model->name->name; ?>
+		<?php echo $form->error($model,'phrase_name_id'); ?>
+	</div>
+	<?}?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'phrase'); ?>
 		<?php echo $form->textArea($model,'phrase',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'phrase'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'section_id'); ?>
-		<?php echo $form->dropDownList($model,'section_id',CHtml::listData(Section::Model()->getAllByType('Exam'), 'id', 'name')); ?>
-		<?php echo $form->error($model,'section_id'); ?>
 	</div>
 
 	<div class="row">
@@ -40,10 +42,15 @@ if (isset($_GET['section_id'])) {
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'specialty_id'); ?>
-		<?php echo $form->dropDownList($model,'specialty_id',CHtml::listData(Specialty::Model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model,'specialty_id'); ?>
+		<?php echo $form->labelEx($model,'section_id'); ?>
+		<?php echo Section::Model()->findByPk($model->section_id)->name; ?>
 	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'specialty_id'); ?>
+		<?php echo Specialty::Model()->findByPk($model->specialty_id)->name; ?>
+	</div>
+
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>

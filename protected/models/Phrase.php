@@ -64,6 +64,7 @@ class Phrase extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
+			'name' => array(self::BELONGS_TO, 'PhraseName', 'phrase_name_id')
 		);
 	}
 
@@ -74,10 +75,10 @@ class Phrase extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
 			'phrase' => 'Phrase',
 			'section_id' => 'Section',
 			'display_order' => 'Display Order',
+			'phrase_name_id' => 'Name',
 		);
 	}
 

@@ -53,8 +53,8 @@ class Section extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'phrase' => array(self::HAS_MANY, 'Phrase', 'section_id'),
-			'section_type' => array(self::HAS_ONE, 'SectionType', 'section_type_id')
+			// 'phrase' => array(self::HAS_MANY, 'Phrase', 'section_id'),
+			'section_type' => array(self::BELONGS_TO, 'SectionType', 'section_type_id')
 		);
 	}
 
@@ -94,7 +94,7 @@ class Section extends CActiveRecord
 	 */
 	public function getAllByType($type, $name = null) 
 	{
-		$type_obj = SectionType::findByAttributes(array('name' => $type)); 
+		$type_obj = SectionType::model()->findByAttributes(array('name' => $type)); 
 
 		if (!$name) {
 			return Section::model()->findAllByAttributes(array('section_type_id' => $type_obj->id)); 

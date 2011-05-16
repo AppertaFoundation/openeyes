@@ -1,7 +1,9 @@
 <?php
 $this->breadcrumbs=array(
 	'Phrase By Specialties'=>array('index'),
-	$model->name=>array('view','id'=>$model->id),
+        $model->section->name => array('specialtyIndex', 'section_id'=>$model->section->id),
+        $specialtyName => array('phraseIndex', 'specialty_id'=>$_GET['specialty_id'], 'section_id'=>$_GET['section_id']),
+	$model->name->name=>array('view','id'=>$model->id, 'specialty_id'=>$_GET['specialty_id'], 'section_id'=>$_GET['section_id']),
 	'Update',
 );
 

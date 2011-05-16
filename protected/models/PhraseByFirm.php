@@ -67,6 +67,7 @@ class PhraseByFirm extends CActiveRecord
 		return array(
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
+			'name' => array(self::BELONGS_TO, 'PhraseName', 'phrase_name_id')
 		);
 	}
 
@@ -77,11 +78,11 @@ class PhraseByFirm extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
 			'phrase' => 'Phrase',
 			'section_id' => 'Section',
 			'display_order' => 'Display Order',
 			'firm_id' => 'Firm',
+			'phrase_name_id' => 'Name',
 		);
 	}
 

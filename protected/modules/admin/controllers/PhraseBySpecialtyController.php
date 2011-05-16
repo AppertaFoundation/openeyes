@@ -30,7 +30,7 @@ class PhraseBySpecialtyController extends Controller
 		# phrases by firm is the one that also wants to be on the user side
 		return array(
 			array('allow',	// allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','sectionindex', 'view', 'phraseindex'),
+				'actions'=>array('index','sectionindex', 'view', 'phraseindex', 'specialtyIndex'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -53,8 +53,17 @@ class PhraseBySpecialtyController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$sectionId = $_GET['section_id'];
+		$specialtyId = $_GET['specialty_id'];
+		$sectionName = Section::model()->findByPk($sectionId)->name;
+		$specialtyName = Specialty::model()->findByPk($specialtyId)->name;
+
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName,
+			'specialtyId'=>$specialtyId,
+			'specialtyName'=>$specialtyName,
 		));
 	}
 
@@ -87,6 +96,10 @@ class PhraseBySpecialtyController extends Controller
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
+		$sectionId = $_GET['section_id'];
+		$specialtyId = $_GET['specialty_id'];
+		$sectionName = Section::model()->findByPk($sectionId)->name;
+		$specialtyName = Specialty::model()->findByPk($specialtyId)->name;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -100,6 +113,10 @@ class PhraseBySpecialtyController extends Controller
 
 		$this->render('update',array(
 			'model'=>$model,
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName,
+			'specialtyId'=>$specialtyId,
+			'specialtyName'=>$specialtyName,
 		));
 	}
 
@@ -142,16 +159,19 @@ class PhraseBySpecialtyController extends Controller
 	}
 
 	/**
-	 * List all models for the given section
+	 * List all models for the given section + specialty
 	 *
 	 */
 	public function actionPhraseIndex()
 	{
 		$sectionId = $_GET['section_id'];
+		$specialtyId = $_GET['specialty_id'];
 		$sectionName = Section::model()->findByPk($sectionId)->name;
+		$specialtyName = Specialty::model()->findByPk($specialtyId)->name;
 
 		$criteria=new CDbCriteria;
 		$criteria->compare('section_id',$sectionId,false);
+		$criteria->compare('specialty_id',$specialtyId,false);
 	
 	
 		$dataProvider=new CActiveDataProvider('PhraseBySpecialty', array(
@@ -161,10 +181,29 @@ class PhraseBySpecialtyController extends Controller
 		$this->render('phraseindex',array(
 			'dataProvider'=>$dataProvider,
 			'sectionId'=>$sectionId,
-			'sectionName'=>$sectionName
+			'sectionName'=>$sectionName,
+			'specialtyId'=>$specialtyId,
+			'specialtyName'=>$specialtyName,
 		));
 	}
 
+	/**
+	 * List all specialties for the given section
+	 *
+	 */
+	public function actionSpecialtyIndex()
+	{
+		$sectionId = $_GET['section_id'];
+		$sectionName = Section::model()->findByPk($sectionId)->name;
+
+		$dataProvider=new CActiveDataProvider('Specialty', array());
+
+		$this->render('specialtyindex',array(
+			'dataProvider'=>$dataProvider,
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName,
+		));
+	}
 
 	/**
 	 * Manages all models.
