@@ -37,6 +37,7 @@ class BaseElement extends BaseActiveRecord
 
 	/**
 	 * Returns a list of Exam Phrases to be used by the element form.
+	 * // @todo - should this be removed from here and turned into a widget?
 	 *
 	 * @return array
 	 */
@@ -46,7 +47,7 @@ class BaseElement extends BaseActiveRecord
 			'specialty_id = ? AND part = ?', array($this->firm->serviceSpecialtyAssignment->specialty_id, $part)
 		), 'id', 'phrase'));
 	}
-	
+
 	/**
 	 * Stubbed method to set default options
 	 * Used by child objects to set defaults for forms on create

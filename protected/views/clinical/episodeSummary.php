@@ -22,19 +22,14 @@ Principal eye: ? Where will this be fetched from ?
 Principal diagnosis: ? Where will this be fetched from ?
 
 <br />
-VIEW SUMMARIES:
-<br />
 
 <?php
 
-foreach ($summaries as $summary) {
-	echo CHtml::link(
-		'View summary \'' . $summary->name . '\'',
-		Yii::app()->createUrl('clinical/summary', array(
-			'id' => $episode->id,
-			'summary_id' => $summary->id,
-		))
+try {
+	echo $this->renderPartial(
+		'/clinical/EpisodeSummaries/' . $episode->firm->serviceSpecialtyAssignment->specialty_id,
+		array('episode' => $episode)
 	);
-
-	echo('&nbsp;');
+} catch (Exception $e) {
+	// If there is no extra episode summary detail page for this specialty we don't care
 }

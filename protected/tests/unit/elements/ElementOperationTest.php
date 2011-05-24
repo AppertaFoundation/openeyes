@@ -47,7 +47,7 @@ class ElementOperationTest extends CDbTestCase
 			array(549813, 'Unknown'),
 		);
 	}
-	
+
 	public function dataProvider_BooleanFields()
 	{
 		return array(
@@ -62,7 +62,7 @@ class ElementOperationTest extends CDbTestCase
 			array('overnight_stay', 5),
 		);
 	}
-	
+
 	public function dataProvider_AnaesteticText()
 	{
 		return array(
@@ -74,7 +74,7 @@ class ElementOperationTest extends CDbTestCase
 			array(2847405, 'Unknown'),
 		);
 	}
-	
+
 	public function dataProvider_ScheduleText()
 	{
 		return array(
@@ -125,7 +125,7 @@ class ElementOperationTest extends CDbTestCase
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
 		));
-		
+
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
 
 		$this->assertTrue($element->save(true));
@@ -178,49 +178,49 @@ class ElementOperationTest extends CDbTestCase
 	 */
 	public function testGetEyeText($newEye, $expectedText)
 	{
-		$element = $this->element;
+		$element = $this->elements('element1');
 		$element->eye = $newEye;
 		$element->save();
 
 		$this->assertEquals($expectedText, $element->getEyeText());
 	}
-	
+
 	public function testSetDefaultOptions_SetsCorrectOptions()
 	{
 		$this->element->consultant_required = ElementOperation::CONSULTANT_NOT_REQUIRED;
 		$this->element->anaesthetic_type = ElementOperation::ANAESTHETIC_GENERAL;
 		$this->element->overnight_stay = true;
 		$this->element->total_duration = 10;
-		
+
 		$this->element->setDefaultOptions();
 		$this->assertEquals(ElementOperation::CONSULTANT_REQUIRED, $this->element->consultant_required);
 		$this->assertEquals(ElementOperation::ANAESTHETIC_TOPICAL, $this->element->anaesthetic_type);
 		$this->assertEquals(0, $this->element->overnight_stay);
 		$this->assertEquals(0, $this->element->total_duration);
 	}
-	
+
 	public function testGetConsultantOptions_ReturnsCorrectData()
 	{
 		$expected = array(
 			ElementOperation::CONSULTANT_REQUIRED => 'Yes',
 			ElementOperation::CONSULTANT_NOT_REQUIRED => 'No',
 		);
-		
+
 		$this->assertEquals($expected, $this->element->getConsultantOptions());
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_BooleanFields
 	 */
 	public function testGetBooleanText_ValidInput_ReturnsCorrectData($field, $value)
 	{
 		$this->element->$field = $value;
-		
+
 		$expected = ($value == 1) ? 'Yes' : 'No';
-		
+
 		$this->assertEquals($expected, $this->element->getBooleanText($field));
 	}
-	
+
 	public function testgetAnaestheticOptions_ReturnsValidData()
 	{
 		$expected = array(
@@ -230,40 +230,40 @@ class ElementOperationTest extends CDbTestCase
 			ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION => 'Local with sedation',
 			ElementOperation::ANAESTHETIC_GENERAL => 'General'
 		);
-		
+
 		$this->assertEquals($expected, $this->element->getAnaestheticOptions());
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_AnaesteticText
 	 */
 	public function testGetAnaestheticText_ReturnsCorrectData($type, $text)
 	{
 		$this->element->anaesthetic_type = $type;
-		
+
 		$this->assertEquals($text, $this->element->getAnaestheticText());
 	}
-	
+
 	public function testGetOvernightOptions_ReturnsCorrectData()
 	{
 		$expected = array(
 			1 => 'Yes',
 			0 => 'No',
 		);
-		
+
 		$this->assertEquals($expected, $this->element->getOvernightOptions());
 	}
-	
+
 	public function testGetScheduleOptions_ReturnsCorrectData()
 	{
 		$expected = array(
 			0 => 'As soon as possible',
 			1 => 'Within timeframe specified by patient',
 		);
-		
+
 		$this->assertEquals($expected, $this->element->getScheduleOptions());
 	}
-	
+
 	public function testGetScheduleDelayOptions_ReturnsCorrectData()
 	{
 		$expected = array(
@@ -271,17 +271,17 @@ class ElementOperationTest extends CDbTestCase
 			ElementOperation::SCHEDULE_AFTER_2MO => 'After 2 Months',
 			ElementOperation::SCHEDULE_AFTER_3MO => 'After 3 Months',
 		);
-		
+
 		$this->assertEquals($expected, $this->element->getScheduleDelayOptions());
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_ScheduleText
 	 */
 	public function testGetScheduleText_ReturnsCorrectData($timeframe, $text)
 	{
 		$this->element->schedule_timeframe = $timeframe;
-		
+
 		$this->assertEquals($text, $this->element->getScheduleText());
 	}
 }

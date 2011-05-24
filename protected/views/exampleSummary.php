@@ -1,1 +1,0 @@
-This is the example summary view.

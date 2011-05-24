@@ -150,43 +150,33 @@ class ClinicalController extends BaseController
 
 	public function actionEpisodeSummary($id)
 	{
-		$episode = Episode::Model()->findByPk($id);
+		$episode = Episode::model()->findByPk($id);
 
 		if (!isset($episode)) {
-			throw new Exception('There is no episode with that id.');
+			throw new CHttpException(403, 'Invalid episode id.');
 		}
-
-		// @todo - limit by specialty_id for this episode
-		$summaries = Summary::Model()->findAll();
 
 		$this->render('episodeSummary', array(
 				'episode' => $episode,
-				'summaries' => $summaries
 			)
 		);
 	}
 
 	public function actionSummary($id)
 	{
-		$episode = Episode::Model()->findByPk($id);
+		$episode = Episode::model()->findByPk($id);
 
 		if (!isset($episode)) {
-			throw new Exception('There is no episode with that id.');
+			throw new CHttpException(403, 'Invalid episode id.');
 		}
 
-		if (!isset($_GET['summary_id'])) {
-			throw new Exception('No summary_id provided.');
-		}
-
-		$summary = Summary::Model()->findByPk($_GET['summary_id']);
-
-		if (!isset($summary)) {
-			throw new Exception('There is no summary with that id.');
+		if (!isset($_GET['summary'])) {
+			throw new CHttpException(403, 'No summary.');
 		}
 
 		$this->render('summary', array(
 				'episode' => $episode,
-				'summary' => $summary
+				'summary' => $_GET['summary']
 			)
 		);
 	}
