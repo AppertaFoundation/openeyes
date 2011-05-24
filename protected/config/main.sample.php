@@ -16,6 +16,7 @@ return CMap::mergeArray(
 		'import'=>array(
 			'application.models.*',
 			'application.components.*',
+			'application.components.summaryWidgets.*',
 			'application.controllers.*',
 			'application.models.elements.*',
 			'application.models.summaries.*',
