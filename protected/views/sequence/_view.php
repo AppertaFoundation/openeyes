@@ -28,8 +28,8 @@
 	<?php echo CHtml::encode($data->end_date); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('frequency')); ?>:</b>
-	<?php echo CHtml::encode($data->frequency); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('repeat_interval')); ?>:</b>
+	<?php echo CHtml::encode($data->repeat_interval); ?>
 	<br />
 
 

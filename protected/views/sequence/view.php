@@ -31,6 +31,6 @@ $this->menu=array(
 		'start_time',
 		'end_time',
 		'end_date',
-		'frequency',
+		'repeat_interval',
 	),
 )); ?>

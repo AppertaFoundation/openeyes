@@ -341,4 +341,16 @@ class ElementOperation extends BaseElement
 			}
 		}
 	}
+	
+	public function getMinDate()
+	{
+		$date = strtotime($this->event->datetime);
+		
+		if ($this->schedule_timeframe != self::SCHEDULE_IMMEDIATELY) {
+			$interval = str_replace('After ', '+', $this->getScheduleText());
+			$date += strtotime($interval);
+		}
+		
+		return $date;
+	}
 }

@@ -89,7 +89,7 @@ class SequenceControllerTest extends CDbTestCase
 
 		$mockController->actionCreate();
 		
-		$requiredFields = array('end_time', 'frequency', 'start_date', 'start_time', 'theatre_id');
+		$requiredFields = array('end_time', 'repeat_interval', 'start_date', 'start_time', 'theatre_id');
 		
 		$this->assertEquals(array(), array_diff($requiredFields, array_keys($sequence->getErrors())));
 		$this->assertEquals(array(), $firmAssignment->getErrors());

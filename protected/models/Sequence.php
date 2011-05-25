@@ -10,7 +10,9 @@
  * @property string $start_time
  * @property string $end_time
  * @property string $end_date
- * @property integer $frequency
+ * @property integer $repeat_interval
+ * @property integer $weekday
+ * @property integer $week_selection
  *
  * The followings are the available model relations:
  * @property Theatre $theatre
@@ -24,6 +26,12 @@ class Sequence extends CActiveRecord
 	const FREQUENCY_2WEEKS = 2;
 	const FREQUENCY_3WEEKS = 3;
 	const FREQUENCY_4WEEKS = 4;
+	
+	const SELECT_1STWEEK = 1;
+	const SELECT_2NDWEEK = 2;
+	const SELECT_3RDWEEK = 4;
+	const SELECT_4THWEEK = 8;
+	const SELECT_5THWEEK = 16;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -50,10 +58,10 @@ class Sequence extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('theatre_id, start_date, start_time, end_time, frequency', 'required'),
-			array('frequency', 'numerical', 'integerOnly'=>true),
+			array('theatre_id, start_date, start_time, end_time, repeat_interval', 'required'),
+			array('repeat_interval', 'numerical', 'integerOnly'=>true),
 			array('theatre_id', 'length', 'max'=>10),
-			array('end_date', 'safe'),
+			array('end_date, week_selection', 'safe'),
 			array('start_date', 'date', 'format'=>'yyyy-MM-dd'),
 			array('start_time', 'date', 'format'=>array('H:mm', 'H:mm:ss')),
 			array('end_time', 'date', 'format'=>array('H:mm', 'H:mm:ss')),
@@ -61,7 +69,7 @@ class Sequence extends CActiveRecord
 			array('end_time', 'checkTimes'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, theatre_id, start_date, start_time, end_time, end_date, frequency', 'safe', 'on'=>'search'),
+			array('id, theatre_id, start_date, start_time, end_time, end_date, repeat_interval, weekday, week_selection', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,7 +99,7 @@ class Sequence extends CActiveRecord
 			'start_time' => 'Start Time (HH:MM or HH:MM:SS)',
 			'end_time' => 'End Time (HH:MM or HH:MM:SS)',
 			'end_date' => 'End Date',
-			'frequency' => 'Frequency',
+			'repeat_interval' => 'Repeat',
 		);
 	}
 
@@ -112,7 +120,9 @@ class Sequence extends CActiveRecord
 		$criteria->compare('start_time',$this->start_time,true);
 		$criteria->compare('end_time',$this->end_time,true);
 		$criteria->compare('end_date',$this->end_date,true);
-		$criteria->compare('frequency',$this->frequency);
+		$criteria->compare('repeat_interval',$this->repeat_interval);
+		$criteria->compare('weekday',$this->weekday);
+		$criteria->compare('week_selection',$this->week_selection);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -146,13 +156,37 @@ class Sequence extends CActiveRecord
 		);
 	}
 	
+	public function getWeekSelectionOptions()
+	{
+		return array(
+			self::SELECT_1STWEEK => '1st in month',
+			self::SELECT_2NDWEEK => '2nd in month',
+			self::SELECT_3RDWEEK => '3rd in month',
+			self::SELECT_4THWEEK => '4th in month',
+			self::SELECT_5THWEEK => '5th in month',
+		);
+	}
+	
 	protected function beforeSave()
 	{
-		$this->start_date = date('Y-m-d', strtotime($this->start_date));
+		$startTime = strtotime($this->start_date);
+		$this->start_date = date('Y-m-d', $startTime);
+		$this->weekday = date('N', $startTime);
 		if (empty($this->end_date)) {
 			$this->setAttribute('end_date', null);
 		} else {
 			$this->end_date = date('Y-m-d', strtotime($this->end_date));
+		}
+		
+		if (!empty($_POST['Sequence']['week_selection'])) {
+			$selection = 0;
+			foreach ($_POST['Sequence']['week_selection'] as $value) {
+				$selection += $value;
+			}
+			$this->week_selection = $selection;
+			$this->repeat_interval = 0;
+		} else {
+			$this->week_selection = 0;
 		}
 		
 		return parent::beforeSave();
@@ -190,16 +224,20 @@ class Sequence extends CActiveRecord
 		$startTime = date('H:i:s', strtotime($this->start_time));
 		$endTime = date('H:i:s', strtotime($this->end_time));
 		
-		$endTimeLimit = strtotime('+12 weeks');
+		$weekday = date('N', $startTimestamp);
+		$endTimeLimit = strtotime('+12 weeks', $startTimestamp);
 		
-		$interval = $this->getFrequencyInteger($this->frequency, $endTimestamp);
-		
-		$dateList = array();
-		for ($i = $startTimestamp; $i <= $endTimestamp && $i <= $endTimeLimit; $i += $interval) {
-			$dateList[] = date('Y-m-d H:i:s', $i);
+		if (empty($this->week_selection)) {
+			$interval = $this->getFrequencyInteger($this->repeat_interval, $endTimestamp);
+
+			$dateList = array();
+			for ($i = $startTimestamp; $i <= $endTimestamp && $i <= $endTimeLimit; $i += $interval) {
+				$dateList[] = date('Y-m-d H:i:s', $i);
+			}
+		} else {
+			$dateList = $this->getWeekOccurrences($weekday, $this->week_selection, $startTimestamp, $endTimestamp, $startDate, $endDate);
 		}
 		
-		$weekday = (date('N', $startTimestamp) - 1);
 		$bookedList = $this->getBookedList($this->theatre_id, $weekday, $startDate, $endDate, $startTime, $endTime, $startTimestamp, $endTimestamp, $endTimeLimit);
 		
 		$conflicts = array_intersect($bookedList, $dateList);
@@ -220,7 +258,7 @@ class Sequence extends CActiveRecord
 			->select('*')
 			->from('sequence s')
 			->where('theatre_id = :tid AND start_date <= :end_date AND 
-				id != :sequence_id AND WEEKDAY(start_date) = :weekday AND 
+				id != :sequence_id AND weekday = :weekday AND 
 				(end_date >= :start_date OR end_date IS NULL) AND 
 				(start_time <= :end_time AND end_time >= :start_time)', 
 				array(
@@ -243,14 +281,52 @@ class Sequence extends CActiveRecord
 			if ($endTimestamp > $endTimeLimit) {
 				$endTimestamp = $endTimeLimit;
 			}
-			$interval = $this->getFrequencyInteger($value['frequency'], $endTimestamp);
-			
-			for ($i = $startTimestamp; $i <= $endTimestamp; $i += $interval) {
-				$bookedList[] = date('Y-m-d H:i:s', $i);
+			// if we're doing every X weeks
+			if (empty($value['week_selection'])) {
+				$interval = $this->getFrequencyInteger($value['repeat_interval'], $endTimestamp);
+
+				for ($i = $startTimestamp; $i <= $endTimestamp; $i += $interval) {
+					$bookedList[] = date('Y-m-d H:i:s', $i);
+				}
+			// otherwise we're using specific weeks in every month
+			} else {
+				$bookedList = $this->getWeekOccurrences($value['weekday'], $value['week_selection'], $startTimestamp, $endTimestamp, $startDate, $endDate);
 			}
 		}
 		
 		return $bookedList;
+	}
+	
+	protected function getWeekOccurrences($weekday, $weekSelection, $startTimestamp, $endTimestamp, $startDate, $endDate)
+	{
+		$dates = array();
+		$monthLength = 60 * 60 * 24 * 30;
+
+		// PHP is a moron and if $i = $startTimestamp is in the for loop 
+		// below, it assigns it some other random number instead
+		// with the assignation happening here, that doesn't happen
+		$i = $startTimestamp;
+		for ($i; $i <= $endTimestamp; $i += $monthLength) {
+			$firstWeekday = strtotime(date('Y-m-01', $i));
+			while ($weekday != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+
+			// now check the 1st-5th instances of the weekday
+			for ($j = self::SELECT_1STWEEK; $j <= self::SELECT_5THWEEK; $j *= 2) {
+				$weekInUse = $weekSelection & $j;
+
+				if ($weekInUse != 0) {
+					$selectedDay = date('Y-m-d', $firstWeekday + (($j - 1) * 7));
+					if ($selectedDay >= $startDate || 
+						(empty($endDate) || $selectedDay <= $endDate)) {
+						$dates[] = $selectedDay;
+					}
+				}
+			}
+		}
+		
+		return array_unique($dates);
 	}
 	
 	public function getFrequencyInteger($frequency, $endTimestamp)

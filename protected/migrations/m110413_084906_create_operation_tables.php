@@ -215,7 +215,10 @@ class m110413_084906_create_operation_tables extends CDbMigration
 		
 		$this->dropForeignKey('element_operation_ibfk_1','element_operation');
 
-		$this->dropForeignKey('element_appointment_ibfk_1','element_appointment');
+		if ($this->dbConnection->schema->getTable('{{element_appointment}}')) {
+			$this->dropForeignKey('element_appointment_ibfk_1','element_appointment');
+			$this->dropTable('element_appointment');
+		}
 		
 		$this->dropTable('opcs_code');
 		
@@ -228,8 +231,6 @@ class m110413_084906_create_operation_tables extends CDbMigration
 		$this->dropTable('operation_procedure_assignment');
 		
 		$this->dropTable('element_operation');
-		
-		$this->dropTable('element_appointment');
 		
 		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
 		$command->execute();

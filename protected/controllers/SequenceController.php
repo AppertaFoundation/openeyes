@@ -76,10 +76,11 @@ class SequenceController extends BaseController
 			$firmValid = $firmAssociation->validate();
 			if ($modelValid && $firmValid) {
 				if ($model->save()) {
-					$firmAssociation->sequence_id = $model->id;
-					if ($firmAssociation->save()) {
-						$this->redirect(array('view','id'=>$model->id));
+					if (!empty($firmAssociation->firm_id)) {
+						$firmAssociation->sequence_id = $model->id;
+						$firmAssociation->save();
 					}
+					$this->redirect(array('view','id'=>$model->id));
 				}
 			}
 		}

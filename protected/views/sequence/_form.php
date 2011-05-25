@@ -77,9 +77,16 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'frequency'); ?>
-		<?php echo $form->dropDownList($model,'frequency',$model->getFrequencyOptions()); ?>
-		<?php echo $form->error($model,'frequency'); ?>
+		<?php echo $form->labelEx($model,'repeat_interval'); ?>
+		<?php echo $form->dropDownList($model,'repeat_interval',$model->getFrequencyOptions()); ?>
+		<?php echo $form->error($model,'repeat_interval'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'week_selection'); ?>
+		<?php echo $form->checkBoxList($model,'week_selection',$model->getWeekSelectionOptions(), 
+			array('separator'=>' &nbsp; ', 'template'=>'{input} {label}')); ?>
+		<?php echo $form->error($model,'week_selection'); ?>
 	</div>
 
 	<div class="row buttons">
