@@ -9,6 +9,14 @@ class m110524_095728_alter_sequence_table extends CDbMigration
 		$this->addColumn('sequence', 'weekday', 'tinyint(1)');
 		
 		$this->addColumn('sequence', 'week_selection', 'tinyint(1)');
+		
+		$sequences = Sequence::model()->findAll();
+		
+		foreach ($sequences as $sequence) {
+			$sequence->weekday = date('N', strtotime($sequence->start_date));
+			$sequence->week_selection = 0;
+			$sequence->save();
+		}
 	}
 
 	public function down()

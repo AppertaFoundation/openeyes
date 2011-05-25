@@ -207,8 +207,8 @@ class SequenceTest extends CDbTestCase
 				'end_time' => '13:00',
 				'end_date' => date('Y-m-d', strtotime('+15 weeks')),
 				'repeat_interval' => 0,
-				'week_selection' => Sequence::SELECT_1STWEEK), true,
-				'Overlapping week selections'
+				'week_selection' => Sequence::SELECT_1STWEEK), false,
+				'Different week selections'
 			),
 			// weekday mis-match
 			array(array(

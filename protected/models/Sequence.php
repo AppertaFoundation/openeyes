@@ -297,7 +297,7 @@ class Sequence extends CActiveRecord
 		return $bookedList;
 	}
 	
-	protected function getWeekOccurrences($weekday, $weekSelection, $startTimestamp, $endTimestamp, $startDate, $endDate)
+	public function getWeekOccurrences($weekday, $weekSelection, $startTimestamp, $endTimestamp, $startDate, $endDate)
 	{
 		$dates = array();
 		$monthLength = 60 * 60 * 24 * 30;
@@ -308,21 +308,26 @@ class Sequence extends CActiveRecord
 		$i = $startTimestamp;
 		for ($i; $i <= $endTimestamp; $i += $monthLength) {
 			$firstWeekday = strtotime(date('Y-m-01', $i));
+			$lastMonthday = strtotime(date('Y-m-t', $i));
 			while ($weekday != date('N', $firstWeekday)) {
 				$firstWeekday += 60 * 60 * 24;
 			}
 
 			// now check the 1st-5th instances of the weekday
+			$weekCounter = 1;
 			for ($j = self::SELECT_1STWEEK; $j <= self::SELECT_5THWEEK; $j *= 2) {
 				$weekInUse = $weekSelection & $j;
 
 				if ($weekInUse != 0) {
-					$selectedDay = date('Y-m-d', $firstWeekday + (($j - 1) * 7));
-					if ($selectedDay >= $startDate || 
+					$addDays = ($weekCounter - 1) * 7;
+					$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+					if (strtotime($selectedDay) <= $lastMonthday && 
+						$selectedDay >= $startDate && 
 						(empty($endDate) || $selectedDay <= $endDate)) {
 						$dates[] = $selectedDay;
 					}
 				}
+				$weekCounter++;
 			}
 		}
 		
