@@ -69,7 +69,7 @@ class ClinicalController extends BaseController
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
-		
+
 		$specialties = Specialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create')
@@ -123,7 +123,7 @@ class ClinicalController extends BaseController
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
-		
+
 		$specialties = Specialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'update') {
@@ -144,6 +144,39 @@ class ClinicalController extends BaseController
 				'id' => $id,
 				'elements' => $elements,
 				'specialties' => $specialties
+			)
+		);
+	}
+
+	public function actionEpisodeSummary($id)
+	{
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		$this->render('episodeSummary', array(
+				'episode' => $episode,
+			)
+		);
+	}
+
+	public function actionSummary($id)
+	{
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		if (!isset($_GET['summary'])) {
+			throw new CHttpException(403, 'No summary.');
+		}
+
+		$this->render('summary', array(
+				'episode' => $episode,
+				'summary' => $_GET['summary']
 			)
 		);
 	}

@@ -28,10 +28,15 @@ foreach ($this->episodes as $episode) {
 	$episodeString = "episode: " . $episode->firm->serviceSpecialtyAssignment->specialty->name;
 
 	if ($this->firm->serviceSpecialtyAssignment->specialty_id == $episode->firm->serviceSpecialtyAssignment->specialty_id) {
-		echo('<b>' . $episodeString . '</b>');
-	} else {
-		echo($episodeString);
+		$episodeString = '<b>' . $episodeString . '</b>';
 	}
+
+	echo CHtml::link(
+                $episodeString,
+                Yii::app()->createUrl('clinical/episodeSummary', array(
+					'id' => $episode->id
+                ))
+            );
 
 	echo("<br />\n");
 

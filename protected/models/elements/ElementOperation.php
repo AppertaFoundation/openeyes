@@ -24,21 +24,21 @@ class ElementOperation extends BaseElement
 	const EYE_LEFT = 0;
 	const EYE_RIGHT = 1;
 	const EYE_BOTH = 2;
-	
+
 	const CONSULTANT_NOT_REQUIRED = 0;
 	const CONSULTANT_REQUIRED = 1;
-	
+
 	const ANAESTHETIC_TOPICAL = 0;
 	const ANAESTHETIC_LOCAL_WITH_COVER = 1;
 	const ANAESTHETIC_LOCAL = 2;
 	const ANAESTHETIC_LOCAL_WITH_SEDATION = 3;
 	const ANAESTHETIC_GENERAL = 4;
-	
+
 	const SCHEDULE_IMMEDIATELY = 0;
 	const SCHEDULE_AFTER_1MO = 1;
 	const SCHEDULE_AFTER_2MO = 2;
 	const SCHEDULE_AFTER_3MO = 3;
-	
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -65,7 +65,7 @@ class ElementOperation extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
-			array('comments', 'safe'),
+			array('eye, event_id, comments', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, eye, comments, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
@@ -130,7 +130,7 @@ class ElementOperation extends BaseElement
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	/**
 	 * Set default values for forms on create
 	 */
@@ -142,10 +142,10 @@ class ElementOperation extends BaseElement
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 	}
-	
+
 	/**
 	 * Return list of options for eye
-	 * @return array 
+	 * @return array
 	 */
 	public function getEyeOptions()
 	{
@@ -155,7 +155,7 @@ class ElementOperation extends BaseElement
 			self::EYE_BOTH => 'Both',
 		);
 	}
-	
+
 	public function getEyeText() {
 		switch ($this->eye) {
 			case self::EYE_LEFT:
@@ -171,13 +171,13 @@ class ElementOperation extends BaseElement
 				$text = 'Unknown';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for consultant
-	 * @return array 
+	 * @return array
 	 */
 	public function getConsultantOptions()
 	{
@@ -186,7 +186,7 @@ class ElementOperation extends BaseElement
 			self::CONSULTANT_NOT_REQUIRED => 'No',
 		);
 	}
-	
+
 	public function getBooleanText($field) {
 		switch ($this->$field) {
 			case 1:
@@ -196,13 +196,13 @@ class ElementOperation extends BaseElement
 				$text = 'No';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for anaesthetic type
-	 * @return array 
+	 * @return array
 	 */
 	public function getAnaestheticOptions()
 	{
@@ -214,7 +214,7 @@ class ElementOperation extends BaseElement
 			self::ANAESTHETIC_GENERAL => 'General'
 		);
 	}
-	
+
 	public function getAnaestheticText() {
 		switch ($this->anaesthetic_type) {
 			case self::ANAESTHETIC_TOPICAL:
@@ -236,10 +236,10 @@ class ElementOperation extends BaseElement
 				$text = 'Unknown';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for schedule
 	 * @return array
@@ -251,10 +251,10 @@ class ElementOperation extends BaseElement
 			1 => 'Within timeframe specified by patient'
 		);
 	}
-	
+
 	/**
 	 * Return list of options for schedule timeframe
-	 * @return array 
+	 * @return array
 	 */
 	public function getScheduleDelayOptions()
 	{
@@ -264,7 +264,7 @@ class ElementOperation extends BaseElement
 			self::SCHEDULE_AFTER_3MO => 'After 3 Months',
 		);
 	}
-	
+
 	public function getScheduleText() {
 		switch ($this->schedule_timeframe) {
 			case self::SCHEDULE_IMMEDIATELY:
@@ -283,13 +283,13 @@ class ElementOperation extends BaseElement
 				$text = 'Unknown';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for overnight stay
-	 * @return array 
+	 * @return array
 	 */
 	public function getOvernightOptions()
 	{
@@ -298,7 +298,7 @@ class ElementOperation extends BaseElement
 			0 => 'No',
 		);
 	}
-	
+
 	protected function beforeSave()
 	{
 		$anaesthetistRequired = array(
@@ -306,7 +306,7 @@ class ElementOperation extends BaseElement
 			self::ANAESTHETIC_GENERAL
 		);
 		$this->anaesthetist_required = in_array($this->anaesthetic_type, $anaesthetistRequired);
-		
+
 		if (!empty($_POST['schedule_timeframe2'])) {
 			$this->schedule_timeframe = $_POST['schedule_timeframe2'];
 		} else {
@@ -315,18 +315,18 @@ class ElementOperation extends BaseElement
 
 		return parent::beforeSave();
 	}
-	
+
 	protected function afterSave()
 	{
 		parent::afterSave();
-		
+
 		$operationId = $this->id;
 		// first wipe out any existing procedures so we start from scratch
-		OperationProcedureAssignment::model()->deleteAll('operation_id = :id', 
+		OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
 			array(':id' => $operationId));
-		
+
 		$order = 1;
-		
+
 		if (!empty($_POST['Procedures'])) {
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
