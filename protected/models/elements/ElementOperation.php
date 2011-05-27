@@ -353,4 +353,117 @@ class ElementOperation extends BaseElement
 		
 		return $date;
 	}
+	
+	public function getSessions()
+	{
+		$minDate = $this->getMinDate();
+		
+		$monthStart = empty($_GET['date']) ? date('Y-m-01', $minDate) : $_GET['date'];
+		
+		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		
+		$service = $this->getBookingService();
+		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
+		
+		$results = array();
+		$prevWeekday = -1;
+		foreach ($sessions as $session) {
+			$date = $session['date'];
+			$weekday = date('N', strtotime($date));
+			$text = $this->getWeekdayText($weekday);
+			
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			unset($session['session_duration'], $session['date']);
+			
+			$results[$text][$date]['sessions'][] = $session;
+		}
+		
+		foreach ($results as $weekday => $dates) {
+			$timestamp = strtotime($monthStart);
+			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
+			$dateList = array_keys($dates);
+			while (date('N', strtotime($dateList[0])) != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+			
+			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+				$addDays = ($weekCounter - 1) * 7;
+				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				if (in_array($selectedDay, $dateList)) {
+					foreach ($dates as $date => $sessions) {
+						$totalSessions = count($sessions['sessions']);
+						$status = $totalSessions;
+
+						$open = $full = 0;
+
+						foreach ($sessions['sessions'] as $session) {
+							if ($session['time_available'] >= $this->total_duration) {
+								$open++;
+							} else {
+								$full++;
+							}
+						}
+						if ($full == $totalSessions) {
+							$status = 'full';
+						} elseif ($full > 0 && $open > 0) {
+							$status = 'limited';
+						} elseif ($open == $totalSessions) {
+							$status = 'open';
+						}
+					}
+				} else {
+					$status = 'closed';
+				}
+				$results[$weekday][$selectedDay]['status'] = $status;
+			}
+		}
+		
+		foreach ($results as $weekday => &$dates) {
+			$dateSort = array();
+			foreach ($dates as $date => $info) {
+				$dateSort[] = $date;
+			}
+			
+			array_multisort($dateSort, SORT_ASC, $dates);
+		}
+		
+		return $results;
+	}
+	
+	public function getBookingService()
+	{
+		return new BookingService;
+	}
+	
+	public function getWeekdayText($index)
+	{
+		switch($index) {
+			case 1:
+				$text = 'Monday';
+				break;
+			case 2:
+				$text = 'Tuesday';
+				break;
+			case 3:
+				$text = 'Wednesday';
+				break;
+			case 4:
+				$text = 'Thursday';
+				break;
+			case 5:
+				$text = 'Friday';
+				break;
+			case 6:
+				$text = 'Saturday';
+				break;
+			case 7:
+				$text = 'Sunday';
+				break;
+		}
+
+		return $text;
+	}
 }

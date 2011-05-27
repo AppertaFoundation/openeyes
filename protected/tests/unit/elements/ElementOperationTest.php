@@ -15,9 +15,14 @@ class ElementOperationTest extends CDbTestCase
 		'events' => 'Event',
 		'procedures' => 'Procedure',
 		'services' => 'Service',
-		'subsections' => ':service_subsection',
+		'subsections' => 'ServiceSubsection',
 		'elements' => 'ElementOperation',
-		'operationProcedures' => 'OperationProcedureAssignment'
+		'operationProcedures' => 'OperationProcedureAssignment',
+		'sequences' => 'Sequence',
+		'sequenceFirmAssignments' => 'SequenceFirmAssignment',
+		'sessions' => 'Session',
+		'operations' => 'ElementOperation',
+		'appointments' => 'Appointment',
 	);
 
 	public function setUp()
@@ -83,6 +88,19 @@ class ElementOperationTest extends CDbTestCase
 			array(ElementOperation::SCHEDULE_AFTER_2MO, 'After 2 months'),
 			array(ElementOperation::SCHEDULE_AFTER_3MO, 'After 3 months'),
 			array(2847405, 'Unknown')
+		);
+	}
+	
+	public function dataProvider_Weekdays()
+	{
+		return array(
+			array(1, 'Monday'),
+			array(2, 'Tuesday'),
+			array(3, 'Wednesday'),
+			array(4, 'Thursday'),
+			array(5, 'Friday'),
+			array(6, 'Saturday'),
+			array(7, 'Sunday')
 		);
 	}
 
@@ -283,5 +301,448 @@ class ElementOperationTest extends CDbTestCase
 		$this->element->schedule_timeframe = $timeframe;
 
 		$this->assertEquals($text, $this->element->getScheduleText());
+	}
+	
+	/**
+	 * @dataProvider dataProvider_ScheduleText
+	 */
+	public function testGetMinDate_DifferentScheduleTimeframes_SelectsCorrectDate($timeframe, $text)
+	{
+		$element = $this->elements('element1');
+		$element->schedule_timeframe = $timeframe;
+		
+		$date = strtotime($element->event->datetime);
+		if ($timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
+			$interval = str_replace('After ', '+', $text);
+			$date += strtotime($interval);
+		}
+		
+		$this->assertEquals($date, $element->getMinDate());
+	}
+	
+	public function testGetSessions_NoDateSet_ReturnsCorrectData()
+	{
+		$firm = $this->firms('firm1');
+		$element = $this->elements('element1');
+		$patientId = $element->event->episode->patient_id;
+		$userId = $this->users['user1']['id'];
+		$viewNumber = 1;
+		
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+			array($firm, $patientId, $userId, $viewNumber));
+		$mockElement->setAttributes($this->elements['element1']);
+		
+		$timestamp = strtotime($element->event->datetime);
+		$monthStart = date('Y-m-01', $timestamp);
+		$monthEnd = date('Y-m-t', $timestamp);
+		$minDate = date('Y-m-d', $timestamp);
+		
+		$sessions = array();
+		foreach ($this->sessions as $name => $session) {
+			if ($session['date'] >= $monthStart) {
+				if ($session['date'] > $monthEnd) {
+					break;
+				}
+				$endTime = strtotime($session['end_time']);
+				$startTime = strtotime($session['start_time']);
+				$session['session_duration'] = '04:30:00';
+				$session['appointments_duration'] = 0;
+				$session['time_available'] = 270;
+				$sessions[] = $session;
+			}
+		}
+		
+		$expected = array();
+		foreach ($sessions as $session) {
+			$weekdayIndex = date('N', strtotime($session['date']));
+			$weekday = $this->getWeekday($weekdayIndex);
+			$expected[$weekday] = array();
+			
+			$timestamp = strtotime($monthStart);
+			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
+			while ($weekdayIndex != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+			
+			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+				$addDays = ($weekCounter - 1) * 7;
+				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				if ($selectedDay == $session['date']) {
+					if ($session['time_available'] >= $mockElement->total_duration) {
+						$status = 'open';
+					} else {
+						$status = 'full';
+					}
+					$newSessionData = $session;
+					unset($newSessionData['date'], $newSessionData['session_duration']);
+					$newSessionData['duration'] = 270;
+					$expected[$weekday][$selectedDay]['sessions'][] = $newSessionData;
+				} else {
+					$status = 'closed';
+				}
+				$expected[$weekday][$selectedDay]['status'] = $status;
+			}
+		}
+		
+		$service = $this->getMock('BookingService', array('findSessions'));
+		$service->expects($this->once())
+			->method('findSessions')
+			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
+			->will($this->returnValue($sessions));
+		
+		$mockElement->expects($this->once())
+			->method('getBookingService')
+			->will($this->returnValue($service));
+		
+		$result = $mockElement->getSessions();
+		
+		$this->assertEquals($expected, $result);
+	}
+	
+	public function testGetSessions_DateSet_ReturnsCorrectData()
+	{
+		$nextMonth = date('Y-m-01', strtotime('+1 month'));
+		$_GET['date'] = $nextMonth;
+		
+		$firm = $this->firms('firm1');
+		$element = $this->elements('element1');
+		$patientId = $element->event->episode->patient_id;
+		$userId = $this->users['user1']['id'];
+		$viewNumber = 1;
+		
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+			array($firm, $patientId, $userId, $viewNumber));
+		$mockElement->setAttributes($this->elements['element1']);
+		
+		$timestamp = strtotime($nextMonth);
+		$monthStart = date('Y-m-01', $timestamp);
+		$monthEnd = date('Y-m-t', $timestamp);
+		$minDate = date('Y-m-d', strtotime($element->event->datetime));
+		
+		$sessions = array();
+		$dates = array();
+		$fullSession = false;
+		foreach ($this->sessions as $name => $session) {
+			if ($session['date'] >= $monthStart) {
+				if ($session['date'] > $monthEnd) {
+					break;
+				}
+				$endTime = strtotime($session['end_time']);
+				$startTime = strtotime($session['start_time']);
+				$session['session_duration'] = '04:30:00';
+				if (!$fullSession) {
+					$session['appointments_duration'] = 270;
+					$session['time_available'] = 0;
+					$fullSession = true;
+				} else {
+					$session['appointments_duration'] = 0;
+					$session['time_available'] = 270;
+				}
+				$sessions[] = $session;
+				$dates[] = $session['date'];
+			}
+		}
+		
+		$expected = array();
+		foreach ($sessions as $session) {
+			$weekdayIndex = date('N', strtotime($session['date']));
+			$weekday = $this->getWeekday($weekdayIndex);
+			$expected[$weekday] = array();
+			
+			$timestamp = strtotime($monthStart);
+			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
+			while ($weekdayIndex != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+			
+			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+				$addDays = ($weekCounter - 1) * 7;
+				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				if (false !== $sessionIndex = array_search($selectedDay, $dates)) {
+					$thisSession = $sessions[$sessionIndex];
+					if ($session['time_available'] >= $mockElement->total_duration) {
+						$status = 'open';
+					} else {
+						$status = 'full';
+					}
+					$newSessionData = $thisSession;
+					unset($newSessionData['date'], $newSessionData['session_duration']);
+					$newSessionData['duration'] = 270;
+					$expected[$weekday][$selectedDay]['sessions'][] = $newSessionData;
+				} else {
+					$status = 'closed';
+				}
+				$expected[$weekday][$selectedDay]['status'] = $status;
+			}
+		}
+		
+		$service = $this->getMock('BookingService', array('findSessions'));
+		$service->expects($this->once())
+			->method('findSessions')
+			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
+			->will($this->returnValue($sessions));
+		
+		$mockElement->expects($this->once())
+			->method('getBookingService')
+			->will($this->returnValue($service));
+		
+		$result = $mockElement->getSessions();
+		
+		$this->assertEquals($expected, $result);
+	}
+	
+	public function testGetSessions_LimitedSessionAvailable_ReturnsCorrectData()
+	{
+		$firm = $this->firms('firm1');
+		$element = $this->elements('element1');
+		$patientId = $element->event->episode->patient_id;
+		$userId = $this->users['user1']['id'];
+		$viewNumber = 1;
+		
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+			array($firm, $patientId, $userId, $viewNumber));
+		$mockElement->setAttributes($this->elements['element1']);
+		
+		$timestamp = strtotime($element->event->datetime);
+		$monthStart = date('Y-m-01', $timestamp);
+		$monthEnd = date('Y-m-t', $timestamp);
+		$minDate = date('Y-m-d', $timestamp);
+		
+		$sessions = array();
+		$fullSession = false;
+		$dates = array();
+		foreach ($this->sessions as $name => $session) {
+			if ($session['date'] >= $monthStart) {
+				if ($session['date'] > $monthEnd) {
+					break;
+				}
+				$endTime = strtotime($session['end_time']);
+				$startTime = strtotime($session['start_time']);
+				$session['session_duration'] = '04:30:00';
+				if (!$fullSession) {
+					$session['appointments_duration'] = 270;
+					$session['time_available'] = 0;
+					
+					$extraSession = $session;
+					$extraSession['appointments_duration'] = 0;
+					$extraSession['time_available'] = 270;
+					$sessions[] = $extraSession;
+					$fullSession = $session['date'];
+					$dates[] = $session['date'];
+				} else {
+					$session['appointments_duration'] = 0;
+					$session['time_available'] = 270;
+				}
+				$sessions[] = $session;
+				$dates[] = $session['date'];
+			}
+		}
+		
+		$expected = array();
+		foreach ($sessions as $session) {
+			$weekdayIndex = date('N', strtotime($session['date']));
+			$weekday = $this->getWeekday($weekdayIndex);
+			$expected[$weekday] = array();
+			
+			$timestamp = strtotime($monthStart);
+			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
+			while ($weekdayIndex != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+			
+			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+				$addDays = ($weekCounter - 1) * 7;
+				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				if ($selectedDay == $fullSession) {
+					$status = 'limited';
+					$sessionIndexes = array_keys($dates, $selectedDay);
+					
+					foreach ($sessionIndexes as $index) {
+						$newSessionData = $sessions[$index];
+						unset($newSessionData['date'], $newSessionData['session_duration']);
+						$newSessionData['duration'] = 270;
+						$expected[$weekday][$selectedDay]['sessions'][] = $newSessionData;
+					}
+				} elseif ($selectedDay == $session['date']) {
+					if ($session['time_available'] >= $mockElement->total_duration) {
+						$status = 'open';
+					} else {
+						$status = 'full';
+					}
+					$newSessionData = $session;
+					unset($newSessionData['date'], $newSessionData['session_duration']);
+					$newSessionData['duration'] = 270;
+					$expected[$weekday][$selectedDay]['sessions'][] = $newSessionData;
+				} else {
+					$status = 'closed';
+				}
+				$expected[$weekday][$selectedDay]['status'] = $status;
+			}
+		}
+		
+		$service = $this->getMock('BookingService', array('findSessions'));
+		$service->expects($this->once())
+			->method('findSessions')
+			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
+			->will($this->returnValue($sessions));
+		
+		$mockElement->expects($this->once())
+			->method('getBookingService')
+			->will($this->returnValue($service));
+		
+		$result = $mockElement->getSessions();
+		
+		$this->assertEquals($expected, $result);
+	}
+	
+	public function testGetSessions_OpenSessionAvailable_ReturnsCorrectData()
+	{
+		$firm = $this->firms('firm1');
+		$element = $this->elements('element1');
+		$patientId = $element->event->episode->patient_id;
+		$userId = $this->users['user1']['id'];
+		$viewNumber = 1;
+		
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+			array($firm, $patientId, $userId, $viewNumber));
+		$mockElement->setAttributes($this->elements['element1']);
+		
+		$timestamp = strtotime($element->event->datetime);
+		$monthStart = date('Y-m-01', $timestamp);
+		$monthEnd = date('Y-m-t', $timestamp);
+		$minDate = date('Y-m-d', $timestamp);
+		
+		$sessions = array();
+		$openSession = false;
+		$dates = array();
+		foreach ($this->sessions as $name => $session) {
+			if ($session['date'] >= $monthStart) {
+				if ($session['date'] > $monthEnd) {
+					break;
+				}
+				$endTime = strtotime($session['end_time']);
+				$startTime = strtotime($session['start_time']);
+				$session['session_duration'] = '04:30:00';
+				if (!$openSession) {
+					$session['appointments_duration'] = 0;
+					$session['time_available'] = 270;
+					
+					$extraSession = $session;
+					$extraSession['appointments_duration'] = 0;
+					$extraSession['time_available'] = 270;
+					$sessions[] = $extraSession;
+					$openSession = $session['date'];
+					$dates[] = $session['date'];
+				} else {
+					$session['appointments_duration'] = 270;
+					$session['time_available'] = 0;
+				}
+				$sessions[] = $session;
+				$dates[] = $session['date'];
+			}
+		}
+		
+		$expected = array();
+		foreach ($sessions as $session) {
+			$weekdayIndex = date('N', strtotime($session['date']));
+			$weekday = $this->getWeekday($weekdayIndex);
+			$expected[$weekday] = array();
+			
+			$timestamp = strtotime($monthStart);
+			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
+			while ($weekdayIndex != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+			
+			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+				$addDays = ($weekCounter - 1) * 7;
+				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				if ($selectedDay == $openSession) {
+					$status = 'open';
+					$sessionIndexes = array_keys($dates, $selectedDay);
+					
+					foreach ($sessionIndexes as $index) {
+						$newSessionData = $sessions[$index];
+						unset($newSessionData['date'], $newSessionData['session_duration']);
+						$newSessionData['duration'] = 270;
+						$expected[$weekday][$selectedDay]['sessions'][] = $newSessionData;
+					}
+				} elseif ($selectedDay == $session['date']) {
+					if ($session['time_available'] >= $mockElement->total_duration) {
+						$status = 'open';
+					} else {
+						$status = 'full';
+					}
+					$newSessionData = $session;
+					unset($newSessionData['date'], $newSessionData['session_duration']);
+					$newSessionData['duration'] = 270;
+					$expected[$weekday][$selectedDay]['sessions'][] = $newSessionData;
+				} else {
+					$status = 'closed';
+				}
+				$expected[$weekday][$selectedDay]['status'] = $status;
+			}
+		}
+		
+		$service = $this->getMock('BookingService', array('findSessions'));
+		$service->expects($this->once())
+			->method('findSessions')
+			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
+			->will($this->returnValue($sessions));
+		
+		$mockElement->expects($this->once())
+			->method('getBookingService')
+			->will($this->returnValue($service));
+		
+		$result = $mockElement->getSessions();
+		
+		$this->assertEquals($expected, $result);
+	}
+	
+	public function testGetBookingService_ReturnsNewInstance()
+	{
+		$service = new BookingService;
+		
+		$this->assertEquals($service, $this->element->getBookingService());
+	}
+	
+	/**
+	 * @dataProvider dataProvider_Weekdays
+	 */
+	public function testGetWeekdayText($index, $weekday)
+	{
+		$this->assertEquals($weekday, $this->element->getWeekdayText($index));
+	}
+	
+	protected function getWeekday($index)
+	{
+		switch($index) {
+			case 1:
+				$weekday = 'Monday';
+				break;
+			case 2:
+				$weekday = 'Tuesday';
+				break;
+			case 3:
+				$weekday = 'Wednesday';
+				break;
+			case 4:
+				$weekday = 'Thursday';
+				break;
+			case 5:
+				$weekday = 'Friday';
+				break;
+			case 6:
+				$weekday = 'Saturday';
+				break;
+			case 7:
+				$weekday = 'Sunday';
+				break;
+		}
+		return $weekday;
 	}
 }
