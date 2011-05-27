@@ -9,7 +9,6 @@ $this->menu=array(
 	array('label'=>'List Phrase', 'url'=>array('index')),
 	array('label'=>'Create Phrase', 'url'=>array('create')),
 	array('label'=>'View Phrase', 'url'=>array('view', 'id'=>$model->id)),
-	array('label'=>'Manage Phrase', 'url'=>array('admin')),
 );
 ?>
 

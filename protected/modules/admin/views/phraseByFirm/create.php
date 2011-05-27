@@ -1,7 +1,9 @@
 <?php
 $this->breadcrumbs=array(
-	'Phrase By Firm'=>array('index'),
-	'Create',
+        'Phrase By Specialties' => array('/admin/phraseBySpecialty/index'),
+        $sectionName => array('specialtyIndex', 'section_id'=>$sectionId),
+        $firmName => array('phraseIndex', 'section_id'=>$sectionId, 'firm_id'=>$_GET['firm_id']),
+	'Create'
 );
 
 $this->menu=array(

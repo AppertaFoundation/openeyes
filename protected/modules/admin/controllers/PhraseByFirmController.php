@@ -27,7 +27,7 @@ class PhraseByFirmController extends BaseController
 	{
 		return array(
 			array('allow',	// allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','sectionindex', 'view', 'phraseindex'),
+				'actions'=>array('index','sectionindex', 'view', 'phraseindex', 'firmindex'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -51,9 +51,12 @@ class PhraseByFirmController extends BaseController
 	{
 		$sectionId = $_GET['section_id'];
 		$sectionName = Section::model()->findByPk($sectionId)->name;
+		$firmId = $_GET['firm_id'];
+		$firmName = Firm::model()->findByPk($firmId)->name;
 
 		$criteria=new CDbCriteria;
 		$criteria->compare('section_id',$sectionId,false);
+		$criteria->compare('firm_id',Firm::Model()->findByPk($_GET['firm_id'])->id,false);
 		// $criteria->compare('firm_id',Firm::Model()->findByPk($this->selectedFirmId)->id,false);
 
 		$dataProvider=new CActiveDataProvider('PhraseByFirm', array(
@@ -63,7 +66,28 @@ class PhraseByFirmController extends BaseController
 		$this->render('phraseindex',array(
 			'dataProvider'=>$dataProvider,
 			'sectionId'=>$sectionId,
-			'sectionName'=>$sectionName
+			'sectionName'=>$sectionName,
+			'firmId'=>$firmId,
+			'firmName'=>$firmName
+		));
+	}
+
+
+	/**
+	 * List all firms for the given section
+	 *
+	 */
+	public function actionFirmIndex()
+	{
+		$sectionId = $_GET['section_id'];
+		$sectionName = Section::model()->findByPk($sectionId)->name;
+
+		$dataProvider=new CActiveDataProvider('Firm', array());
+
+		$this->render('firmindex',array(
+			'dataProvider'=>$dataProvider,
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName,
 		));
 	}
 
@@ -84,20 +108,43 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function actionCreate()
 	{
+		$sectionId = $_GET['section_id'];
+		$sectionName = Section::model()->findByPk($sectionId)->name;
+		$firmId = $_GET['firm_id'];
+		$firmName = Firm::model()->findByPk($firmId)->name;
+
 		$model=new PhraseByFirm;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseByFirm']))
-		{
+		if(isset($_POST['PhraseByFirm'])) {
 			$model->attributes=$_POST['PhraseByFirm'];
+			if ($model->attributes['phrase_name_id']) {
+				// We are overriding an existing phrase name - so as long as it hasn't been overridden already we should just save it
+				// Standard validation will handle checking that
+			} else {
+				// We are creating a new phrase name - so we need to check if it already exists, if so create a reference to it, and if not create it and then the reference
+				// manually check whether a phrase of this name already exists
+				if ($phraseName = PhraseName::model()->findByAttributes(array('name' => $_POST['PhraseName']))) {
+					$model->phrase_name_id = $phraseName->id;
+				} else {
+					$newPhraseName = new PhraseName;
+					$newPhraseName->name = $_POST['PhraseName'];
+					$newPhraseName->save();
+					$model->phrase_name_id = PhraseName::model()->findByAttributes(array('name' => $_POST['PhraseName']))->id;
+				}
+			}
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('create',array(
 			'model'=>$model,
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName,
+			'firmId'=>$firmId,
+			'firmName'=>$firmName
 		));
 	}
 
@@ -113,8 +160,7 @@ class PhraseByFirmController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseByFirm']))
-		{
+		if(isset($_POST['PhraseByFirm'])) {
 			$model->attributes=$_POST['PhraseByFirm'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
@@ -139,7 +185,8 @@ class PhraseByFirmController extends BaseController
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				// $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('phraseIndex', 'section_id'=>$_REQUEST['section_id'], 'firm_id'=>$_REQUEST['firm_id']));
 		}
 		else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');

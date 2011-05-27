@@ -46,12 +46,11 @@ class Phrase extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('section_id', 'required'),
-			array('name', 'length', 'max'=>255),
 			array('section_id, display_order', 'length', 'max'=>10),
-			array('phrase', 'safe'),
+			array('phrase, phrase_name_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, phrase, section_id, display_order', 'safe', 'on'=>'search'),
+			array('id, name, phrase, phrase_name_id, section_id, display_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,5 +101,14 @@ class Phrase extends CActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	/**
+	 * Retrieves a list of models that can be overridden by a user
+	 */
+	public function getOverrideableNames()
+	{
+		// no phrase names can be overridden for global phrases at this time
+		return false;
 	}
 }

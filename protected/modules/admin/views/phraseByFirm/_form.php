@@ -15,22 +15,34 @@ if (isset($_GET['section_id'])) {
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<div class="row">
-		<?php echo $form->labelEx($model,'name'); ?>
-		<?php echo $form->textField($model,'name',array('size'=>60,'maxlength'=>255)); ?>
-		<?php echo $form->error($model,'name'); ?>
-	</div>
+        <?php if (!$model->id) {?>
+        <div class="row">
+                <?php
+                        if ($overrideableNames = PhraseByFirm::Model()->getOverrideableNames($_GET['section_id'], $_GET['firm_id'])) {
+                                echo $form->labelEx($model,'phrase_name_id');
+                                echo $form->dropDownList($model,'phrase_name_id',CHtml::listData($overrideableNames, 'id', 'name'),array('prompt' => 'Override a global phrase name'));
+                                echo $form->error($model,'phrase_name_id');
+                        }
+                ?>
+
+		<?php
+			echo CHtml::label('New phrase name', 'name');
+			echo CHtml::textField('PhraseName','');
+		?>	
+
+        </div>
+        <?} else {?>
+        <div class="row">
+                <?php echo $form->labelEx($model,'phrase_name_id'); ?>
+                <?php echo $model->name->name; ?>
+                <?php echo $form->error($model,'phrase_name_id'); ?>
+        </div>
+        <?}?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'phrase'); ?>
 		<?php echo $form->textArea($model,'phrase',array('rows'=>6, 'cols'=>50)); ?>
 		<?php echo $form->error($model,'phrase'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'section_id'); ?>
-		<?php echo $form->dropDownList($model,'section_id',CHtml::listData(Section::Model()->getAllByType('Letter'), 'id', 'name')); ?>
-		<?php echo $form->error($model,'section_id'); ?>
 	</div>
 
 	<div class="row">
@@ -40,9 +52,26 @@ if (isset($_GET['section_id'])) {
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'section_id'); ?>
+		<?php if (!$model->id) { ?>
+ 			<?php echo Section::Model()->findByPk($_GET['section_id'])->name; ?>
+			<?php echo CHtml::activeHiddenField($model,'section_id',array('value'=>$_GET['section_id'])); ?>
+		<?php } else { ?>
+ 			<?php echo Section::Model()->findByPk($model->section_id)->name; ?>
+			<?php echo CHtml::activeHiddenField($model,'section_id',array('value'=>$model->section_id)); ?>
+		<?php } ?>
+	</div>
+
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'firm_id'); ?>
-		<?php echo $form->dropDownList($model,'firm_id',CHtml::listData(Firm::Model()->findAll(), 'id', 'name')); ?>
-		<?php echo $form->error($model,'firm_id'); ?>
+		<?php if (!$model->id) { ?>
+ 			<?php echo Firm::Model()->findByPk($_GET['firm_id'])->name; ?>
+			<?php echo CHtml::activeHiddenField($model,'firm_id',array('value'=>$_GET['firm_id'])); ?>
+		<?php } else { ?>
+ 			<?php echo Firm::Model()->findByPk($model->firm_id)->name; ?>
+			<?php echo CHtml::activeHiddenField($model,'firm_id',array('value'=>$model->firm_id)); ?>
+		<?php } ?>
 	</div>
 
 	<div class="row buttons">

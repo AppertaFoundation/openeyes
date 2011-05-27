@@ -5,7 +5,7 @@ $this->breadcrumbs=array(
 	$specialtyName
 );
 $this->menu=array(
-	array('label'=>'Create a phrase in section ' . $sectionName . ' for ' . $specialtyName . ' specialty', 'url'=> array('create', 'section_id'=>$sectionId)),
+	array('label'=>'Create a phrase in section ' . $sectionName . ' for ' . $specialtyName . ' specialty', 'url'=> array('create', 'section_id'=>$sectionId, 'specialty_id'=>$specialtyId)),
 	array('label'=>'Manage phrases in this section', 'url'=>array('admin', 'section_id'=>$sectionId)),
 );
 ?>

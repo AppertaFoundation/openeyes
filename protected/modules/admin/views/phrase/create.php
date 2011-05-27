@@ -6,7 +6,6 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Phrase', 'url'=>array('index')),
-	array('label'=>'Manage Phrase', 'url'=>array('admin')),
 );
 ?>
 

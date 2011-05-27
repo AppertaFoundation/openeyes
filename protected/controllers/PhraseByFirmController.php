@@ -92,6 +92,21 @@ class PhraseByFirmController extends BaseController
 		if(isset($_POST['PhraseByFirm']))
 		{
 			$model->attributes=$_POST['PhraseByFirm'];
+			if ($model->attributes['phrase_name_id']) {
+				// We are overriding an existing phrase name - so as long as it hasn't been overridden already we should just save it
+				// Standard validation will handle checking that
+			} else {
+				// We are creating a new phrase name - so we need to check if it already exists, if so create a reference to it, and if not create it and then the reference
+				// manually check whether a phrase of this name already exists
+				if ($phraseName = PhraseName::model()->findByAttributes(array('name' => $_POST['PhraseName']))) {
+					$model->phrase_name_id = $phraseName->id;
+				} else {
+					$newPhraseName = new PhraseName;
+					$newPhraseName->name = $_POST['PhraseName'];
+					$newPhraseName->save();
+					$model->phrase_name_id = PhraseName::model()->findByAttributes(array('name' => $_POST['PhraseName']))->id;
+				}
+			}
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -135,11 +150,12 @@ class PhraseByFirmController extends BaseController
 		if(Yii::app()->request->isPostRequest)
 		{
 			// we only allow deletion via POST request
+			$model = $this->loadModel($id);
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
-				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('phraseIndex', 'section_id'=>$model->section_id, 'firm_id'=>Firm::Model()->findByPk($this->selectedFirmId)->id));
 		}
 		else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');

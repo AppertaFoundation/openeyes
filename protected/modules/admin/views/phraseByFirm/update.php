@@ -1,8 +1,10 @@
 <?php
 $this->breadcrumbs=array(
-	'Phrase By Firm'=>array('index'),
-	$model->name=>array('view','id'=>$model->id),
-	'Update',
+        'Phrase By Firm'=>array('index'),
+        $model->section->name => array('firmIndex', 'section_id'=>$model->section->id),
+        $model->firm->name => array('phraseIndex', 'firm_id'=>$model->firm->id, 'section_id'=>$model->section->id),
+        $model->name->name=>array('view','id'=>$model->id),
+        'Update',
 );
 
 $this->menu=array(
