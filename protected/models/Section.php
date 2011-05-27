@@ -102,4 +102,18 @@ class Section extends CActiveRecord
 			return Section::model()->findAllByAttributes(array('section_type_id' => $type_obj->id, 'name' => $name)); 
 		}
 	}
+
+	/**
+	 * Given the plaintext name of a section type, returns all sections of that type by looking up the section type id then filtering sections based on it
+	 */
+	public function getByType($type, $name = null) 
+	{
+		$type_obj = SectionType::model()->findByAttributes(array('name' => $type)); 
+
+		if (!$name) {
+			return Section::model()->findByAttributes(array('section_type_id' => $type_obj->id)); 
+		} else {
+			return Section::model()->findByAttributes(array('section_type_id' => $type_obj->id, 'name' => $name)); 
+		}
+	}
 }
