@@ -7,45 +7,45 @@
 // | specialty_id            | int(10) unsigned | NO   | MUL | NULL    |                |
 
 return array(
-	'phrasebyspecialty1' => array(
-		'name' => 'drug use',
+	'phraseBySpecialty1' => array(
+		'phrase_name_id' => 7,
 		'phrase' => 'drug use',
-		'section_by_specialty_id' => 10,
+		'section_id' => 10,
 		'display_order' => 0,
 		'specialty_id' => 8,
 	),
-	'phrasebyspecialty2' => array(
-		'name' => 'alcoholism',
+	'phraseBySpecialty2' => array(
+		'phrase_name_id' => 8,
 		'phrase' => 'alcoholism',
-		'section_by_specialty_id' => 10,
+		'section_id' => 10,
 		'display_order' => 0,
 		'specialty_id' => 8,
 	),
-	'phrasebyspecialty3' => array(
-		'name' => 'Loss of vision',
+	'phraseBySpecialty3' => array(
+		'phrase_name_id' => 9,
 		'phrase' => 'Loss of vision',
-		'section_by_specialty_id' => 1,
+		'section_id' => 1,
 		'display_order' => 0,
 		'specialty_id' => 8,
 	),
-	'phrasebyspecialty4' => array(
-		'name' => 'Peripheral field loss',
+	'phraseBySpecialty4' => array(
+		'phrase_name_id' => 10,
 		'phrase' => 'Peripheral field loss',
-		'section_by_specialty_id' => 1,
+		'section_id' => 1,
 		'display_order' => 1,
 		'specialty_id' => 8,
 	),
-	'phrasebyspecialty5' => array(
-		'name' => 'Distortion of vision',
+	'phraseBySpecialty5' => array(
+		'phrase_name_id' => 11,
 		'phrase' => 'Distortion of vision',
-		'section_by_specialty_id' => 1,
+		'section_id' => 1,
 		'display_order' => 2,
 		'specialty_id' => 8,
 	),
-	'phrasebyspecialty6' => array(
-		'name' => 'Central vision disturbance',
+	'phraseBySpecialty6' => array(
+		'phrase_name_id' => 12,
 		'phrase' => 'Central vision disturbance',
-		'section_by_specialty_id' => 1,
+		'section_id' => 1,
 		'display_order' => 3,
 		'specialty_id' => 8,
 	),

@@ -1,6 +1,6 @@
 <?php
 
-class PhraseByFirmController extends BaseController
+class AdminPhraseByFirmController extends BaseController
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning

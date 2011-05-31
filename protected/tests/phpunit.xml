@@ -13,6 +13,7 @@
 		<whitelist>
 			<directory suffix=".php">../components</directory>
 			<directory suffix=".php">../controllers</directory>
+			<directory suffix=".php">../modules/admin/controllers</directory>
 			<directory suffix=".php">../models</directory>
 			<directory suffix=".php">../models/elements</directory>
 			<directory suffix=".php">../services</directory>
