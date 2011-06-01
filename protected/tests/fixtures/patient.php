@@ -10,7 +10,8 @@ return array(
 		'gender' => 'M',
 		'hos_num' => 12345,
 		'nhs_num' => 54321,
-		'primary_phone' => '0207 123456'
+		'primary_phone' => '0207 123456',
+		'address_id' => 1
 	),
 	'patient2' => array(
 		'pas_key' => '456',
@@ -21,7 +22,8 @@ return array(
 		'gender' => 'M',
 		'hos_num' => 23456,
 		'nhs_num' => 65432,
-		'primary_phone' => '0207 123457'
+		'primary_phone' => '0207 123457',
+		'address_id' => 2
 	),
 	'patient3' => array(
 		'pas_key' => '789',
@@ -32,7 +34,8 @@ return array(
 		'gender' => 'F',
 		'hos_num' => 34567,
 		'nhs_num' => 76543,
-		'primary_phone' => '0207 123458'
+		'primary_phone' => '0207 123458',
+		'address_id' => 3
 	),
 );
 ?>

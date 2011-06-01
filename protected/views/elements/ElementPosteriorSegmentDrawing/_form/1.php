@@ -1,3 +1,0 @@
-(ElementPosteriorSegmentDrawing)
-<br />
-

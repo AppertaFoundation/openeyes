@@ -2,7 +2,7 @@ Allergies: <br />
 
 	<div class="row">
 		<label for="ElementAllergies_value">Phrase:</label>
-		<?php echo CHtml::dropDownList('ElementAllergies[phrase]', '', $model->getExamPhraseOptions(ExamPhrase::PART_ALLERGIES),
+		<?php echo CHtml::dropDownList('ElementAllergies[phrase]', '', $model->getPhraseBySpecialtyOptions('Allergies'),
 			array('onChange' => 'appendText($(this), $("#ElementAllergies_value"));')); ?>
 	</div>
 
