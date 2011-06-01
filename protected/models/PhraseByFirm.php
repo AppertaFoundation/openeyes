@@ -130,12 +130,9 @@ class PhraseByFirm extends CActiveRecord
 	public function getOverrideableNames($sectionId, $firmId)
 	{
 		// we want the overrideable global phrase names plus the overrideable by-specialty phrase names together but then you shouldnt be able to override something that is already overridden which is why we want to subtract them
-
 		$firm = Firm::model()->findByPk($firmId);
 		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
 	
-		# debug data: $specialtyId=1; $sectionId=19; $firmId=1;
-
 		$params[':sectionid'] = $sectionId;
 		$params[':specialtyid'] = $specialtyId;
 		$params[':firmid'] = $firmId;

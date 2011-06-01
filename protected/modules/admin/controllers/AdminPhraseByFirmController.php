@@ -38,7 +38,7 @@ class AdminPhraseByFirmController extends BaseController
 				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
-			array('deny',  // deny all users
+			array('deny', // deny all users
 				'users'=>array('*'),
 			),
 		);
@@ -216,7 +216,7 @@ class AdminPhraseByFirmController extends BaseController
 	public function actionAdmin()
 	{
 		$model=new PhraseByFirm('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes(); // clear any default values
 		if(isset($_GET['PhraseByFirm']))
 			$model->attributes=$_GET['PhraseByFirm'];
 

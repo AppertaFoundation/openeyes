@@ -16,7 +16,6 @@ class PhraseBySpecialtyTest extends CDbTestCase
 		'phraseNames'	=> 'PhraseName'
 	);
 
-
 	public function testGet_InvalidParameters_ReturnsFalse()
 	{
 		$fakeId = 9999;
@@ -85,6 +84,6 @@ class PhraseBySpecialtyTest extends CDbTestCase
 		foreach ($overrideable as $o) {
 			$this->assertEquals($expected[$count], $o->name);
 			$count++;
-		}	
+		}
 	}
 }

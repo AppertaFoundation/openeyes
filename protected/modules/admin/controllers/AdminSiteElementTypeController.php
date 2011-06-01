@@ -29,7 +29,7 @@ class AdminSiteElementTypeController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-        /* commented out as we don't want people to be able to do this at all
+ 	/* commented out as we don't want people to be able to do this at all
 	public function actionCreate()
 	{
 		$model=new SiteElementType;
@@ -48,7 +48,7 @@ class AdminSiteElementTypeController extends Controller
 			'model'=>$model,
 		));
 	}
-        */
+	*/
 
 	/**
 	 * Updates a particular model.

@@ -38,7 +38,7 @@ class AdminPhraseController extends BaseController
 				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
-			array('deny',  // deny all users
+			array('deny', // deny all users
 				'users'=>array('*'),
 			),
 		);
@@ -151,12 +151,12 @@ class AdminPhraseController extends BaseController
 	public function actionIndex()
 	{
 
-                $criteria = new CDbCriteria;
-                $relevantSectionTypes = Phrase::model()->relevantSectionTypes();
-                foreach ($relevantSectionTypes as $relevantSection) {
-                        $sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
-                        $criteria->compare('section_type_id',$sectionType->id,false,'OR');
-                }
+		$criteria = new CDbCriteria;
+		$relevantSectionTypes = Phrase::model()->relevantSectionTypes();
+		foreach ($relevantSectionTypes as $relevantSection) {
+			$sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
+			$criteria->compare('section_type_id',$sectionType->id,false,'OR');
+		}
 
 		$dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
 		$this->render('index',array(

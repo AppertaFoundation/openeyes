@@ -100,7 +100,7 @@ class AdminContactTypeController extends Controller
 		$dataProvider=new CActiveDataProvider('ContactType', array(
 			'criteria'=>array(
 				'condition'=>'macro_only = 0'
-		    ),
+		),
 		));
 
 		$this->render('index',array(

@@ -38,7 +38,7 @@ class PhraseByFirmController extends BaseController
 				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
-			array('deny',  // deny all users
+			array('deny', // deny all users
 				'users'=>array('*'),
 			),
 		);
@@ -54,7 +54,6 @@ class PhraseByFirmController extends BaseController
 
 		$criteria=new CDbCriteria;
 		$criteria->compare('section_id',$sectionId,false);
-		// $criteria->compare('firm_id',Firm::Model()->findByPk($this->selectedFirmId)->id,false);
 		$criteria->compare('firm_id',$this->selectedFirmId,false);
 
 		$dataProvider=new CActiveDataProvider('PhraseByFirm', array(
@@ -184,7 +183,7 @@ class PhraseByFirmController extends BaseController
 	public function actionAdmin()
 	{
 		$model=new PhraseByFirm('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes(); // clear any default values
 		if(isset($_GET['PhraseByFirm']))
 			$model->attributes=$_GET['PhraseByFirm'];
 

@@ -127,7 +127,6 @@ class PhraseBySpecialty extends CActiveRecord
 	public function getOverrideableNames($sectionId, $specialtyId)
 	{
 		// we want the overrideable global phrase names minus those already defined for the given specialty and section
-		# debug data: $specialtyId=1; $sectionId=19;
 
 		$params[':sectionid'] = $sectionId;
 		$params[':specialtyid'] = $specialtyId;

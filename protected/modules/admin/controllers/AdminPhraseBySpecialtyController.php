@@ -25,9 +25,9 @@ class AdminPhraseBySpecialtyController extends Controller
 	 */
 	public function accessRules()
 	{
-		# nobody can change sections
-		# anyone can add, edit, delete phrases within a section
-		# phrases by firm is the one that also wants to be on the user side
+		// nobody can change sections
+		// anyone can add, edit, delete phrases within a section
+		// phrases by firm is the one that also wants to be on the user side
 		return array(
 			array('allow',	// allow all users to perform 'index' and 'view' actions
 				'actions'=>array('index','sectionindex', 'view', 'phraseindex', 'specialtyIndex'),
@@ -41,7 +41,7 @@ class AdminPhraseBySpecialtyController extends Controller
 				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
-			array('deny',  // deny all users
+			array('deny', // deny all users
 				'users'=>array('*'),
 			),
 		);
@@ -220,7 +220,7 @@ class AdminPhraseBySpecialtyController extends Controller
 	public function actionAdmin()
 	{
 		$model=new PhraseBySpecialty('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes(); // clear any default values
 		if(isset($_GET['PhraseBySpecialty']))
 			$model->attributes=$_GET['PhraseBySpecialty'];
 

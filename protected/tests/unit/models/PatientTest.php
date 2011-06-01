@@ -18,7 +18,7 @@ class PatientTest extends CDbTestCase
 		);
 	}
 
-	# 'first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2'
+	// 'first_name', 'last_name', 'dob', 'title', 'city', 'postcode', 'telephone', 'mobile', 'email', 'address1', 'address2'
 	public function dataProvider_Pseudo()
 	{
 		return array(
