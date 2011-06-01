@@ -1,6 +1,6 @@
 <?php
 
-class EventTypeController extends Controller
+class AdminPhraseController extends BaseController
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -8,14 +8,62 @@ class EventTypeController extends Controller
 	 */
 	public $layout='column2';
 
-	protected function beforeAction($action)
+	/**
+	 * @return array action filters
+	 */
+	public function filters()
 	{
-		// Sample code to be used when RBAC is fully implemented.
-		if (!Yii::app()->user->checkAccess('admin')) {
-			throw new CHttpException(403, 'You are not authorised to perform this action.');
-		}
+		return array(
+			'accessControl', // perform access control for CRUD operations
+		);
+	}
 
-		return parent::beforeAction($action);
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
+	public function accessRules()
+	{
+		return array(
+			array('allow',	// allow all users to perform 'index' and 'view' actions
+				'actions'=>array('index','sectionindex', 'view', 'phraseindex'),
+				'users'=>array('*'),
+			),
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('create','update'),
+				'users'=>array('@'),
+			),
+			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+				'actions'=>array('admin','delete'),
+				'users'=>array('admin'),
+			),
+			array('deny',  // deny all users
+				'users'=>array('*'),
+			),
+		);
+	}
+	/**
+	 * List all models for the given section
+	 *
+	 */
+	public function actionPhraseIndex()
+	{
+		$sectionId = $_GET['section_id'];
+		$sectionName = Section::model()->findByPk($sectionId)->name;
+
+		$criteria=new CDbCriteria;
+		$criteria->compare('section_id',$sectionId,false);
+
+		$dataProvider=new CActiveDataProvider('Phrase', array(
+			'criteria'=>$criteria,
+		));
+
+		$this->render('phraseindex',array(
+			'dataProvider'=>$dataProvider,
+			'sectionId'=>$sectionId,
+			'sectionName'=>$sectionName
+		));
 	}
 
 	/**
@@ -35,14 +83,14 @@ class EventTypeController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new EventType;
+		$model=new Phrase;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['EventType']))
+		if(isset($_POST['Phrase']))
 		{
-			$model->attributes=$_POST['EventType'];
+			$model->attributes=$_POST['Phrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -64,9 +112,9 @@ class EventTypeController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['EventType']))
+		if(isset($_POST['Phrase']))
 		{
-			$model->attributes=$_POST['EventType'];
+			$model->attributes=$_POST['Phrase'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -78,7 +126,7 @@ class EventTypeController extends Controller
 
 	/**
 	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
 	public function actionDelete($id)
@@ -99,9 +147,18 @@ class EventTypeController extends Controller
 	/**
 	 * Lists all models.
 	 */
+
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('EventType');
+
+                $criteria = new CDbCriteria;
+                $relevantSectionTypes = Phrase::model()->relevantSectionTypes();
+                foreach ($relevantSectionTypes as $relevantSection) {
+                        $sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
+                        $criteria->compare('section_type_id',$sectionType->id,false,'OR');
+                }
+
+		$dataProvider=new CActiveDataProvider('Section', array('criteria'=>$criteria));
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -112,10 +169,10 @@ class EventTypeController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new EventType('search');
+		$model=new Phrase('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['EventType']))
-			$model->attributes=$_GET['EventType'];
+		if(isset($_GET['Phrase']))
+			$model->attributes=$_GET['Phrase'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -129,7 +186,7 @@ class EventTypeController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=EventType::model()->findByPk((int)$id);
+		$model=Phrase::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -141,7 +198,7 @@ class EventTypeController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='event-type-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='phrase-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

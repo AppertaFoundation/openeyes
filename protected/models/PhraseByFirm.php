@@ -34,7 +34,7 @@ class PhraseByFirm extends CActiveRecord
 		return 'phrase_by_firm';
 	}
 
-	public function relevantSections()
+	public function relevantSectionTypes()
 	{
 		return array('Letter');
 	}

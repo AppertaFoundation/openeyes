@@ -32,7 +32,7 @@ class Phrase extends CActiveRecord
 		return 'phrase';
 	}
 
-	public function relevantSections()
+	public function relevantSectionTypes()
 	{
 		return array('Letter');
 	}

@@ -1,6 +1,6 @@
 <?php
 
-class FirmController extends Controller
+class AdminCommonOphthalmicDisorderController extends Controller
 {
 	public $layout='column2';
 
@@ -31,16 +31,20 @@ class FirmController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Firm;
+		$model=new CommonOphthalmicDisorder;
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Firm']))
+		if(isset($_POST['CommonOphthalmicDisorder']))
 		{
-			$model->attributes=$_POST['Firm'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if (isset($_POST['term'])) {
+				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
+				if (isset($disorder)) {
+					$model->disorder_id = $disorder->id;
+					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
+				}
+
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}
 		}
 
 		$this->render('create',array(
@@ -57,14 +61,23 @@ class FirmController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
-
-		if(isset($_POST['Firm']))
+		if(isset($_POST['CommonOphthalmicDisorder']))
 		{
-			$model->attributes=$_POST['Firm'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			$model->disorder_id = '';
+
+			if (isset($_POST['term'])) {
+				// Look up the term's id from the disorder table, if any
+				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
+				if (isset($disorder)) {
+					$model->disorder_id = $disorder->id;
+					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
+				}
+				// @todo - display error correctly here and in sytemicDisorder admin controller,
+				// diagnosisController
+
+				if($model->save())
+					$this->redirect(array('view','id'=>$model->id));
+			}
 		}
 
 		$this->render('update',array(
@@ -97,7 +110,7 @@ class FirmController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Firm');
+		$dataProvider=new CActiveDataProvider('CommonOphthalmicDisorder');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -108,10 +121,10 @@ class FirmController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new Firm('search');
+		$model=new CommonOphthalmicDisorder('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Firm']))
-			$model->attributes=$_GET['Firm'];
+		if(isset($_GET['CommonOphthalmicDisorder']))
+			$model->attributes=$_GET['CommonOphthalmicDisorder'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -125,7 +138,7 @@ class FirmController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=Firm::model()->findByPk((int)$id);
+		$model=CommonOphthalmicDisorder::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -137,7 +150,7 @@ class FirmController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='firm-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='common-ophthalmic-disorder-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

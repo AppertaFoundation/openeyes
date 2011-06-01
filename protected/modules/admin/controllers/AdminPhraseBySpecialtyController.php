@@ -1,6 +1,6 @@
 <?php
 
-class PhraseBySpecialtyController extends Controller
+class AdminPhraseBySpecialtyController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -155,8 +155,8 @@ class PhraseBySpecialtyController extends Controller
 	public function actionIndex()
 	{
 		$criteria = new CDbCriteria;
-		$relevantSections = PhraseBySpecialty::model()->relevantSections();
-		foreach ($relevantSections as $relevantSection) {
+		$relevantSectionTypes = PhraseBySpecialty::model()->relevantSectionTypes();
+		foreach ($relevantSectionTypes as $relevantSection) {
 			$sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
 			$criteria->compare('section_type_id',$sectionType->id,false,'OR');
 		}

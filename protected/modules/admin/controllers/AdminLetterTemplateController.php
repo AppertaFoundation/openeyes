@@ -1,6 +1,6 @@
 <?php
 
-class ContactTypeController extends Controller
+class AdminLetterTemplateController extends Controller
 {
 	public $layout='column2';
 
@@ -31,14 +31,14 @@ class ContactTypeController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new ContactType;
+		$model=new LetterTemplate;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['ContactType']))
+		if(isset($_POST['LetterTemplate']))
 		{
-			$model->attributes=$_POST['ContactType'];
+			$model->attributes=$_POST['LetterTemplate'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class ContactTypeController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['ContactType']))
+		if(isset($_POST['LetterTemplate']))
 		{
-			$model->attributes=$_POST['ContactType'];
+			$model->attributes=$_POST['LetterTemplate'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -97,12 +97,7 @@ class ContactTypeController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('ContactType', array(
-			'criteria'=>array(
-				'condition'=>'macro_only = 0'
-		    ),
-		));
-
+		$dataProvider=new CActiveDataProvider('LetterTemplate');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -113,10 +108,10 @@ class ContactTypeController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new ContactType('search');
+		$model=new LetterTemplate('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ContactType']))
-			$model->attributes=$_GET['ContactType'];
+		if(isset($_GET['LetterTemplate']))
+			$model->attributes=$_GET['LetterTemplate'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -130,7 +125,7 @@ class ContactTypeController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=ContactType::model()->findByPk((int)$id);
+		$model=LetterTemplate::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -142,7 +137,7 @@ class ContactTypeController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='contact-type-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='LetterTemplate-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

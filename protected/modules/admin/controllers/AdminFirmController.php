@@ -1,6 +1,6 @@
 <?php
 
-class LetterTemplateController extends Controller
+class AdminFirmController extends Controller
 {
 	public $layout='column2';
 
@@ -31,14 +31,14 @@ class LetterTemplateController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new LetterTemplate;
+		$model=new Firm;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['LetterTemplate']))
+		if(isset($_POST['Firm']))
 		{
-			$model->attributes=$_POST['LetterTemplate'];
+			$model->attributes=$_POST['Firm'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class LetterTemplateController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['LetterTemplate']))
+		if(isset($_POST['Firm']))
 		{
-			$model->attributes=$_POST['LetterTemplate'];
+			$model->attributes=$_POST['Firm'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -97,7 +97,7 @@ class LetterTemplateController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('LetterTemplate');
+		$dataProvider=new CActiveDataProvider('Firm');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -108,10 +108,10 @@ class LetterTemplateController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new LetterTemplate('search');
+		$model=new Firm('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['LetterTemplate']))
-			$model->attributes=$_GET['LetterTemplate'];
+		if(isset($_GET['Firm']))
+			$model->attributes=$_GET['Firm'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -125,7 +125,7 @@ class LetterTemplateController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=LetterTemplate::model()->findByPk((int)$id);
+		$model=Firm::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -137,7 +137,7 @@ class LetterTemplateController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='LetterTemplate-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='firm-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

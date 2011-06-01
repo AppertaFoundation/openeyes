@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	'Phrase By Specialties' => array('/admin/phraseBySpecialty/index'), 
+	'Phrase By Specialties' => array('/admin/adminPhraseBySpecialty/index'), 
 	$sectionName => array('specialtyIndex', 'section_id'=>$sectionId),
 	$specialtyName
 );

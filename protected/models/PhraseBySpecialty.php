@@ -34,7 +34,7 @@ class PhraseBySpecialty extends CActiveRecord
 		return 'phrase_by_specialty';
 	}
 
-	public function relevantSections()
+	public function relevantSectionTypes()
 	{
 		return array('Letter', 'Exam');
 	}

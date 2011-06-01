@@ -1,6 +1,6 @@
 <?php
 
-class LetterPhraseController extends Controller
+class AdminContactTypeController extends Controller
 {
 	public $layout='column2';
 
@@ -31,14 +31,14 @@ class LetterPhraseController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new LetterPhrase;
+		$model=new ContactType;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['LetterPhrase']))
+		if(isset($_POST['ContactType']))
 		{
-			$model->attributes=$_POST['LetterPhrase'];
+			$model->attributes=$_POST['ContactType'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -60,9 +60,9 @@ class LetterPhraseController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['LetterPhrase']))
+		if(isset($_POST['ContactType']))
 		{
-			$model->attributes=$_POST['LetterPhrase'];
+			$model->attributes=$_POST['ContactType'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -97,7 +97,12 @@ class LetterPhraseController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('LetterPhrase');
+		$dataProvider=new CActiveDataProvider('ContactType', array(
+			'criteria'=>array(
+				'condition'=>'macro_only = 0'
+		    ),
+		));
+
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -108,10 +113,10 @@ class LetterPhraseController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new LetterPhrase('search');
+		$model=new ContactType('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['LetterPhrase']))
-			$model->attributes=$_GET['LetterPhrase'];
+		if(isset($_GET['ContactType']))
+			$model->attributes=$_GET['ContactType'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -125,7 +130,7 @@ class LetterPhraseController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=LetterPhrase::model()->findByPk((int)$id);
+		$model=ContactType::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -137,7 +142,7 @@ class LetterPhraseController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='LetterPhrase-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='contact-type-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

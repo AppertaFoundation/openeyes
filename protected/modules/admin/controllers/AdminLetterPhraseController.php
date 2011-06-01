@@ -1,10 +1,6 @@
 <?php
 
-// @todo - permit user deletion for users that have done nothing?
-//	this might have to wait until we have a comprehensive list of all things
-//	users might be associated with.
-
-class UserController extends Controller
+class AdminLetterPhraseController extends Controller
 {
 	public $layout='column2';
 
@@ -35,26 +31,17 @@ class UserController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new User;
+		$model=new LetterPhrase;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
+		if(isset($_POST['LetterPhrase']))
 		{
-			$model->attributes=$_POST['User'];
-
-			if($model->save()) {
-				// Add their RBAC role
-				// @todo - this will need to be changed to a more basic role
-				// once RBAC is properly implemented
-				Yii::app()->authManager->assign('admin', $model->id);
-
+			$model->attributes=$_POST['LetterPhrase'];
+			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
-			}
 		}
-
-		$this->_clearPasswords($model);
 
 		$this->render('create',array(
 			'model'=>$model,
@@ -73,16 +60,12 @@ class UserController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
+		if(isset($_POST['LetterPhrase']))
 		{
-			$model->attributes=$_POST['User'];
-
-			if($model->save()) {
+			$model->attributes=$_POST['LetterPhrase'];
+			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
-			}
 		}
-
-		$this->_clearPasswords($model);
 
 		$this->render('update',array(
 			'model'=>$model,
@@ -96,7 +79,8 @@ class UserController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest) {
+		if(Yii::app()->request->isPostRequest)
+		{
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
@@ -104,9 +88,8 @@ class UserController extends Controller
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
-		else {
+		else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
-		}
 	}
 
 	/**
@@ -114,7 +97,7 @@ class UserController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('User');
+		$dataProvider=new CActiveDataProvider('LetterPhrase');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -125,10 +108,10 @@ class UserController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new User('search');
+		$model=new LetterPhrase('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['User']))
-			$model->attributes=$_GET['User'];
+		if(isset($_GET['LetterPhrase']))
+			$model->attributes=$_GET['LetterPhrase'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -142,11 +125,9 @@ class UserController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=User::model()->findByPk((int)$id);
-		if($model===null) {
+		$model=LetterPhrase::model()->findByPk((int)$id);
+		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
-		}
-
 		return $model;
 	}
 
@@ -156,21 +137,10 @@ class UserController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='LetterPhrase-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
-	}
-
-	/*
-	 * Prevents the password being redisplayed on update or creation error.
-	 *
-	 * @param CModel $model
-	 */
-	private function _clearPasswords($model)
-	{
-		$model->password = '';
-		$model->password_repeat = '';
 	}
 }

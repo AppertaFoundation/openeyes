@@ -1,6 +1,6 @@
 <?php
 
-class SiteElementTypeController extends Controller
+class AdminCommonSystemicDisorderController extends Controller
 {
 	public $layout='column2';
 
@@ -29,26 +29,28 @@ class SiteElementTypeController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-        /* commented out as we don't want people to be able to do this at all
 	public function actionCreate()
 	{
-		$model=new SiteElementType;
+		$model=new CommonSystemicDisorder;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['SiteElementType']))
-		{
-			$model->attributes=$_POST['SiteElementType'];
+		if (isset($_POST['term'])) {
+			$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
+			if (isset($disorder)) {
+				$model->disorder_id = $disorder->id;
+			}
+
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
+
 
 		$this->render('create',array(
 			'model'=>$model,
 		));
 	}
-        */
 
 	/**
 	 * Updates a particular model.
@@ -59,18 +61,21 @@ class SiteElementTypeController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		if (isset($_POST['term'])) {
+			$model->disorder_id = '';
 
-		if(isset($_POST['SiteElementType']))
-		{
-			$model->attributes=$_POST['SiteElementType'];
+			$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
+			if (isset($disorder)) {
+				$model->disorder_id = $disorder->id;
+			}
+
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
 
+
 		$this->render('update',array(
-			'model'=>$model,
+			'model'=>$model
 		));
 	}
 
@@ -99,7 +104,7 @@ class SiteElementTypeController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('SiteElementType');
+		$dataProvider=new CActiveDataProvider('CommonSystemicDisorder');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -110,10 +115,10 @@ class SiteElementTypeController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new SiteElementType('search');
+		$model=new CommonSystemicDisorder('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['SiteElementType']))
-			$model->attributes=$_GET['SiteElementType'];
+		if(isset($_GET['CommonSystemicDisorder']))
+			$model->attributes=$_GET['CommonSystemicDisorder'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -127,7 +132,7 @@ class SiteElementTypeController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=SiteElementType::model()->findByPk((int)$id);
+		$model=CommonSystemicDisorder::model()->findByPk((int)$id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -139,7 +144,7 @@ class SiteElementTypeController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='site-element-type-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='common-systemic-disorder-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

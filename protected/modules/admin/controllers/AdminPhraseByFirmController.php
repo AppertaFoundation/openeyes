@@ -198,8 +198,8 @@ class AdminPhraseByFirmController extends BaseController
 	public function actionIndex()
 	{
 		$criteria = new CDbCriteria;
-		$relevantSections = PhraseByFirm::model()->relevantSections();
-		foreach ($relevantSections as $relevantSection) {
+		$relevantSectionTypes = PhraseByFirm::model()->relevantSectionTypes();
+		foreach ($relevantSectionTypes as $relevantSection) {
 			$sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSection));
 			$criteria->compare('section_type_id',$sectionType->id,false,'OR');
 		}

@@ -1,6 +1,10 @@
 <?php
 
-class CommonOphthalmicDisorderController extends Controller
+// @todo - permit user deletion for users that have done nothing?
+//	this might have to wait until we have a comprehensive list of all things
+//	users might be associated with.
+
+class AdminUserController extends Controller
 {
 	public $layout='column2';
 
@@ -31,21 +35,26 @@ class CommonOphthalmicDisorderController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new CommonOphthalmicDisorder;
+		$model = new User;
 
-		if(isset($_POST['CommonOphthalmicDisorder']))
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['User']))
 		{
-			if (isset($_POST['term'])) {
-				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
-				if (isset($disorder)) {
-					$model->disorder_id = $disorder->id;
-					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
-				}
+			$model->attributes=$_POST['User'];
 
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
+			if($model->save()) {
+				// Add their RBAC role
+				// @todo - this will need to be changed to a more basic role
+				// once RBAC is properly implemented
+				Yii::app()->authManager->assign('admin', $model->id);
+
+				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
+
+		$this->_clearPasswords($model);
 
 		$this->render('create',array(
 			'model'=>$model,
@@ -61,24 +70,19 @@ class CommonOphthalmicDisorderController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		if(isset($_POST['CommonOphthalmicDisorder']))
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['User']))
 		{
-			$model->disorder_id = '';
+			$model->attributes=$_POST['User'];
 
-			if (isset($_POST['term'])) {
-				// Look up the term's id from the disorder table, if any
-				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
-				if (isset($disorder)) {
-					$model->disorder_id = $disorder->id;
-					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
-				}
-				// @todo - display error correctly here and in sytemicDisorder admin controller,
-				// diagnosisController
-
-				if($model->save())
-					$this->redirect(array('view','id'=>$model->id));
+			if($model->save()) {
+				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
+
+		$this->_clearPasswords($model);
 
 		$this->render('update',array(
 			'model'=>$model,
@@ -92,8 +96,7 @@ class CommonOphthalmicDisorderController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
+		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
@@ -101,8 +104,9 @@ class CommonOphthalmicDisorderController extends Controller
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 		}
-		else
+		else {
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		}
 	}
 
 	/**
@@ -110,7 +114,7 @@ class CommonOphthalmicDisorderController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('CommonOphthalmicDisorder');
+		$dataProvider=new CActiveDataProvider('User');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -121,10 +125,10 @@ class CommonOphthalmicDisorderController extends Controller
 	 */
 	public function actionAdmin()
 	{
-		$model=new CommonOphthalmicDisorder('search');
+		$model=new User('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['CommonOphthalmicDisorder']))
-			$model->attributes=$_GET['CommonOphthalmicDisorder'];
+		if(isset($_GET['User']))
+			$model->attributes=$_GET['User'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -138,9 +142,11 @@ class CommonOphthalmicDisorderController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=CommonOphthalmicDisorder::model()->findByPk((int)$id);
-		if($model===null)
+		$model=User::model()->findByPk((int)$id);
+		if($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
+		}
+
 		return $model;
 	}
 
@@ -150,10 +156,21 @@ class CommonOphthalmicDisorderController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='common-ophthalmic-disorder-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+
+	/*
+	 * Prevents the password being redisplayed on update or creation error.
+	 *
+	 * @param CModel $model
+	 */
+	private function _clearPasswords($model)
+	{
+		$model->password = '';
+		$model->password_repeat = '';
 	}
 }
