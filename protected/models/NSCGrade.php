@@ -60,7 +60,7 @@ class NSCGrade extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'retinopathyElements' => array(self::HAS_MANY, 'ElementNSCGrade', 'retinopathy_grade_id'),
-			'maculopathyElements' => array(self::HAS_MANY, 'ElementNSCGrade', 'maculopathy_grade_id'),			
+			'maculopathyElements' => array(self::HAS_MANY, 'ElementNSCGrade', 'maculopathy_grade_id'),
 		);
 	}
 

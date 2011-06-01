@@ -39,7 +39,7 @@ class DiagnosisTest extends CDbTestCase
 		$disorders = $diagnosis->getCommonOphthalmicDisorderOptions($firm);
 
 		$this->assertTrue(is_array($disorders));
-		$this->assertEquals(count($this->commonOphthalmicDisorders), count($disorders));
+		$this->assertEquals(count($this->commonOphthalmicDisorders) + 1, count($disorders));
 	}
 
 	public function testGetCommonSystemicDisorderOptions()
@@ -49,7 +49,7 @@ class DiagnosisTest extends CDbTestCase
 		$disorders = $diagnosis->getCommonSystemicDisorderOptions();
 
 		$this->assertTrue(is_array($disorders));
-		$this->assertEquals(4, count($disorders));
+		$this->assertEquals(count($this->commonSystemicDisorders) + 1, count($disorders));
 	}
 
 	public function getGetDisorderTerm()

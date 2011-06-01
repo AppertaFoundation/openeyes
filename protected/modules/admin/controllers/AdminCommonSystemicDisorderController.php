@@ -40,10 +40,13 @@ class AdminCommonSystemicDisorderController extends Controller
 			$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 			if (isset($disorder)) {
 				$model->disorder_id = $disorder->id;
-			}
 
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				if($model->save()) {
+					$this->redirect(array('view','id'=>$model->id));
+				}
+			} else {
+				$model->addError('disorder_id', 'There is no disorder of that name.');
+			}
 		}
 
 
@@ -67,10 +70,13 @@ class AdminCommonSystemicDisorderController extends Controller
 			$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 			if (isset($disorder)) {
 				$model->disorder_id = $disorder->id;
-			}
 
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+				if($model->save()) {
+					$this->redirect(array('view','id'=>$model->id));
+				}
+			} else {
+				$model->addError('disorder_id', 'There is no disorder of that name.');
+			}
 		}
 
 

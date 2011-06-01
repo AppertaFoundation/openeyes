@@ -14,6 +14,7 @@ class ClinicalController extends BaseController
 		// if (!Yii::app()->user->checkAccess('admin')) {
 		// 	throw new CHttpException(403, 'You are not authorised to perform this action.');
 		// }
+
 		$this->storeData();
 
 		return parent::beforeAction($action);
@@ -49,11 +50,9 @@ class ClinicalController extends BaseController
 	 */
 	public function actionCreate()
 	{
-		// @todo - check that this event type is permitted for this specialty
 		if (!isset($_GET['event_type_id'])) {
 			throw new CHttpException(403, 'No event_type_id specified.');
 		}
-		$eventTypeId = $_GET['event_type_id'];
 
 		$eventTypeId = $_GET['event_type_id'];
 
@@ -66,6 +65,10 @@ class ClinicalController extends BaseController
 		$elements = $this->service->getElements(
 			$eventType, $this->firm, $this->patientId, $this->getUserId()
 		);
+
+		if (!count($elements)) {
+			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
+		}
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -100,9 +103,12 @@ class ClinicalController extends BaseController
 	{
 		$event = Event::model()->findByPk($id);
 
+		if (!isset($event)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
 		// Check the user's firm is of the correct specialty to have the
 		// rights to update this event
-
 		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
 			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
 			throw new CHttpException(403, 'The firm you are using is not associated with the specialty for this event.');
@@ -110,6 +116,10 @@ class ClinicalController extends BaseController
 
 		// eventType, firm and patientId are fetched from the event object.
 		$elements = $this->service->getElements(null, null, null, $this->getUserId(), $event);
+
+		if (!count($elements)) {
+			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
+		}
 
 		if ($_POST && $_POST['action'] == 'update') {
 			// The user has submitted the form to update the event
@@ -142,7 +152,6 @@ class ClinicalController extends BaseController
 
 		$this->episodes = $patient->episodes;
 
-		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
 		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty_id;
 		$this->eventTypes = EventType::model()->getAllPossible($specialtyId);
 	}
@@ -164,8 +173,12 @@ class ClinicalController extends BaseController
 		$this->checkPatientId();
 
 		// Get the firm currently associated with this user
-		// @todo - user shouldn't be able to reach this page if they haven't selected a firm
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		if (!isset($this->firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+		}
 
 		$this->service = new ClinicalService;
 

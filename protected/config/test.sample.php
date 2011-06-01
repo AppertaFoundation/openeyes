@@ -10,15 +10,10 @@ return CMap::mergeArray(
 			'fixture'=>array(
 				'class'=>'system.test.CDbFixtureManager',
 			),
-			/* uncomment the following to provide test database connection
 			'db'=>array(
-				'connectionString'=>'DSN for test database',
+				'class' => 'CDbConnection',
+				'connectionString' => 'mysql:host=localhost;dbname=openeyestest;',
 			),
-			*/
 		),
-		'params'=>array(
-			// Currently test BASIC only.
-			'auth_source' => 'BASIC', // Options are BASIC or LDAP.
-		)
 	)
 );

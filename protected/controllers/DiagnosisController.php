@@ -1,7 +1,5 @@
 <?php
 
-Yii::import('application.controllers.*');
-
 class DiagnosisController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';
@@ -15,15 +13,9 @@ class DiagnosisController extends BaseController
 //			throw new CHttpException(403, 'You are not authorised to perform this action.');
 //		}
 
-		$this->checkPatientId();
+		$this->storeData();
 
-		// @todo - this needs tidying
-		$beforeActionResult = parent::beforeAction($action);
-
-		// Get the firm currently associated with this user
-		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
-
-		return $beforeActionResult;
+		return parent::beforeAction($action);
 	}
 
 	/**
@@ -44,14 +36,14 @@ class DiagnosisController extends BaseController
 			$model->user_id = Yii::app()->user->id;
 			$model->created_on = date("Y-m-d H:i:s");
 
-			// @todo - this is by no means the best way of doing the ajax autocompletion but
-			// we will wait until UX is complete to change it.
-			if (isset($_POST['term'])) {
+			if (!empty($_POST['term'])) {
 				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
-			}
 
-			if (isset($disorder)) {
-				$model->disorder_id = $disorder->id;
+				if (isset($disorder)) {
+					$model->disorder_id = $disorder->id;
+				} else {
+					$model->addError('disorder_id', 'There is no disorder of that name.');
+				}
 			} elseif (
 				isset($_POST['Diagnosis']['common_ophthalmic_disorder_id']) &&
 				$_POST['Diagnosis']['common_ophthalmic_disorder_id'] > 1
@@ -64,8 +56,9 @@ class DiagnosisController extends BaseController
 				$model->disorder_id = $_POST['Diagnosis']['common_systemic_disorder_id'];
 			}
 
-			if($model->save())
+			if(!$model->hasErrors() && $model->save()) {
 				$this->redirect(array('index'));
+			}
 		}
 
 		$this->render('create',array(
@@ -124,6 +117,21 @@ class DiagnosisController extends BaseController
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
+		}
+	}
+
+	public function storeData()
+	{
+		parent::storeData();
+
+		$this->checkPatientId();
+
+		// Get the firm currently associated with this user
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		if (!isset($this->firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 	}
 }
