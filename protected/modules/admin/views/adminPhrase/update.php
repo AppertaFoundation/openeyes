@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
 	'Global phrases'=>array('index'),
-	 $model->id => array('view','id'=>$model->id),
+	 $model->name->name => array('view','id'=>$model->id),
 	'Update',
 );
 
