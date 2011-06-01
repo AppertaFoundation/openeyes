@@ -115,8 +115,7 @@ class AdminPhraseController extends BaseController
 		if(isset($_POST['Phrase']))
 		{
 			$model->attributes=$_POST['Phrase'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+			if($model->save()) $this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('update',array(
