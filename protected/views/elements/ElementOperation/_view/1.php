@@ -1,3 +1,6 @@
+<?php
+Yii::app()->clientScript->registerCoreScript('jquery');
+Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?>
 <strong>Operation Details</strong>
 <div class="view">
 	<strong><?php echo $data->getAttributeLabel('eye'); ?></strong>
@@ -65,3 +68,21 @@
 	<?php echo CHtml::encode($data->getScheduleText()); ?>
 	<br />
 </div>
+<div class="view">
+	<?php echo CHtml::link("Schedule Now",
+		array('appointment/schedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false)); ?>
+</div>
+<?php
+if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
+	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
+}
+$this->widget('application.extensions.fancybox.EFancyBox', array(
+    'target'=>'a#inline',
+    'config'=>array(),
+    )
+); ?>
+<script type="text/javascript">
+	$('#cancel').live('click', function() {
+		$.fancybox.close();
+	});
+</script>

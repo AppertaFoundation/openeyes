@@ -357,6 +357,10 @@ class ElementOperation extends BaseElement
 	public function getSessions()
 	{
 		$minDate = $this->getMinDate();
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		if ($minDate < $thisMonth) {
+			$minDate = $thisMonth;
+		}
 		
 		$monthStart = empty($_GET['date']) ? date('Y-m-01', $minDate) : $_GET['date'];
 		
@@ -393,13 +397,13 @@ class ElementOperation extends BaseElement
 				$addDays = ($weekCounter - 1) * 7;
 				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
 				if (in_array($selectedDay, $dateList)) {
-					foreach ($dates as $date => $sessions) {
-						$totalSessions = count($sessions['sessions']);
+					foreach ($dates[$selectedDay] as $sessions) {
+						$totalSessions = count($sessions);
 						$status = $totalSessions;
 
 						$open = $full = 0;
 
-						foreach ($sessions['sessions'] as $session) {
+						foreach ($sessions as $session) {
 							if ($session['time_available'] >= $this->total_duration) {
 								$open++;
 							} else {
@@ -411,7 +415,7 @@ class ElementOperation extends BaseElement
 						} elseif ($full > 0 && $open > 0) {
 							$status = 'limited';
 						} elseif ($open == $totalSessions) {
-							$status = 'open';
+							$status = 'available';
 						}
 					}
 				} else {
@@ -431,6 +435,71 @@ class ElementOperation extends BaseElement
 		}
 		
 		return $results;
+	}
+	
+	public function getTheatres($date)
+	{
+		if (empty($date)) {
+			throw new Exception('Date is required.');
+		}
+		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		
+		$service = $this->getBookingService();
+		$sessions = $service->findTheatres($date, $firmId);
+		
+		$results = array();
+		$names = array();
+		foreach ($sessions as $session) {
+			$name = $session['name'];
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['id'] = $session['session_id'];
+			unset($session['session_duration'], $session['date'], $session['name']);
+			
+			if ($session['time_available'] <= 0) {
+				$status = 'full';
+			} else {
+				$status = 'available';
+			}
+			$session['status'] = $status;
+			
+			$results[$name][] = $session;
+			$names[] = $name;
+		}
+		
+		array_multisort($names, SORT_ASC, $results);
+		
+		return $results;
+	}
+	
+	public function getSession($sessionId)
+	{
+		if (empty($sessionId)) {
+			throw new Exception('Session id is invalid.');
+		}
+		$service = $this->getBookingService();
+		$results = $service->findSession($sessionId);
+		
+		$session = $results->read();
+		if (!empty($session['name'])) {
+			$name = $session['name'];
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			unset($session['session_duration'], $session['name']);
+			
+			if ($session['time_available'] <= 0) {
+				$status = 'full';
+			} else {
+				$status = 'available';
+			}
+			$session['status'] = $status;
+		} else {
+			$session = false;
+		}
+		
+		return $session;
 	}
 	
 	public function getBookingService()

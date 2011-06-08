@@ -1,0 +1,65 @@
+table {
+	border-collapse:collapse;
+}
+table,th, td
+{
+	border: 1px solid black;
+}
+#calendar .unavailable {
+	background: #CCCCCC;
+}
+#calendar .available {
+	background: #CCFFCC;
+}
+#calendar .limited {
+	background: #FFCC99;
+}
+#calendar .full {
+	background: #FFCCCC;
+}
+#theatres span.full, #theatres span.limited {
+	font-color: #FFCCCC;
+/*	background: #FFFFFF;*/
+}
+#theatres span.available {
+	font-color: #CCFFCC;
+/*	background: #FFFFFF;*/
+}
+.closed {
+	
+}
+.invalid {
+	background: #DDDDDD;
+}
+.selected_date {
+	border: 2px solid red;
+}
+#key span {
+	padding: 5px;
+}
+#current_month {
+	font-weight: bold;
+}
+#calendar table td.available, #calendar table td.limited, 
+#calendar table td.full, #calendar table td.closed {
+	height: 30px;
+	width: 90px;
+	text-align: center;
+}
+#theatres button {
+	height: 40px;
+	width: 185px;
+	text-align: center;
+}
+#theatres button #session_id {
+	display: none;
+}
+#appointments table {
+	width: 100%;
+}
+#appointments table thead th {
+	border: 0;
+}
+#appointments table tfoot td {
+	text-align: center;
+}

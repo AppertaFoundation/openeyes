@@ -34,11 +34,9 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 </div>
 <script type="text/javascript">
 	$(function() {
-		$('#previous_month').click(function() {
+		$('#previous_month').live('click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
-			console.log(month);
-			console.log(operation);
 			$.ajax({
 				'url': 'index.php?r=appointment/sessions',
 				'type': 'GET',
@@ -49,11 +47,9 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			});
 			return false;
 		});
-		$('#next_month').click(function() {
+		$('#next_month').live('click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
-			console.log(month);
-			console.log(operation);
 			$.ajax({
 				'url': 'index.php?r=appointment/sessions',
 				'type': 'GET',
@@ -63,6 +59,49 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				}
 			});
 			return false;
+		});
+		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full').live('click', function() {
+			$('.selected_date').removeClass('selected_date');
+			$(this).addClass('selected_date');
+			var day = $(this).text();
+			var month = $('#current_month').text();
+			var operation = $('input[id=operation]').val();
+			$.ajax({
+				'url': 'index.php?r=appointment/theatres',
+				'type': 'GET',
+				'data': {'operation': operation, 'month': month, 'day': day},
+				'success': function(data) {
+					if ($('#theatres').length == 0) {
+						$('#operation').append(data);
+					} else {
+						$('#theatres').replaceWith(data);
+					}
+					$( "#theatres" ).tabs();
+				}
+			});
+		});
+		$('#theatres button').live('click', function() {
+			var session = $('#session_id').text();
+			var month = $('#current_month').text();
+			var operation = $('input[id=operation]').val();
+			var day = $('.selected_date').text();
+			$.ajax({
+				'url': 'index.php?r=appointment/list',
+				'type': 'GET',
+				'data': {
+					'operation': operation,
+					'month': month,
+					'day': day,
+					'session': session,
+				},
+				'success': function(data) {
+					if ($('#appointments').length == 0) {
+						$('#operation').append(data);
+					} else {
+						$('#appointments').replaceWith(data);
+					}
+				}
+			});
 		});
 	});
 </script>

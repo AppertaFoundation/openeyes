@@ -1,20 +1,26 @@
 		<span style="width: 100%">
-<?php	$lastMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)-1, date('d', $date), date('Y', $date)));
-		$nextMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)+1, date('d', $date), date('Y', $date)));
-		echo CHtml::form(array('appointment/sessions', 
+<?php	$today = date('Y-m-d');
+		$thisMonth = date('Y-m-d', $date);
+		$lastMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)-1, 1, date('Y', $date)));
+		$nextMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)+1, 1, date('Y', $date)));
+		$nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
+		echo CHtml::form(array('appointment/sessions',
 			'operation'=>$operation->id, 'date'=>$lastMonth),
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('pmonth', $lastMonth);
-		echo CHtml::submitButton('< Previous Month', array('id' => 'previous_month'));
+		echo CHtml::submitButton('< Previous Month', 
+			array('id' => 'previous_month', 'disabled' => ($today > $thisMonth)));
 		echo CHtml::closeTag('form'); ?>
-		<strong><?php echo date('F Y', $date); ?></strong>
-<?php	echo CHtml::form(array('appointment/sessions', 
+		<span id="current_month"><?php echo date('F Y', $date); ?></span>
+<?php
+		echo CHtml::form(array('appointment/sessions',
 			'operation'=>$operation->id, 'date'=>$nextMonth),
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('nmonth', $nextMonth);
-		echo CHtml::submitButton('Next Month >', array('id' => 'next_month'));
+		echo CHtml::submitButton('Next Month >', 
+			array('id' => 'next_month', 'disabled' => ($nextMonth > $nextYear)));
 		echo CHtml::closeTag('form'); ?>
 		</span><br />
 		<table>
