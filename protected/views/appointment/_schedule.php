@@ -3,8 +3,8 @@ Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
-<p>Patient: <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-<p>Operation Details</p>
+<p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
+<p><strong>Operation Details</strong></p>
 <div id="operation">
 	<h1>Schedule operation > Select theatre slot</h1><br />
 <?php
@@ -14,20 +14,21 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 </div>
 <?php 
 } ?>
-	<strong>Currently selected date:</strong> Date Here<br />
-	<strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes<br />
+	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
 	<strong>Select a session date:</strong><br />
 	<div id="calendar">
+		<div id="session_dates">
 		<div id="details">
 <?php	echo $this->renderPartial('_calendar', 
 			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions), false, true); ?>
 		</div>
-		<div id="key">
-			KEY: <span class="available">Slots Available</span>
-			<span class="limited">Limited Slots</span>
-			<span class="full">Full</span>
-			<span class="closed">Theatre Closed</span>
-			<span class="selected_date">Selected Date</span>
+		<div id="key"><span>KEY:</span>
+			<div id="available" class="container"><div class="color_box"></div><div class="label">Slots Available</div></div>
+			<div id="limited" class="container"><div class="color_box"></div><div class="label">Limited Slots</div></div>
+			<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>
+			<div id="closed" class="container"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
+			<div id="selected_date" class="container"><div class="color_box"></div><div class="label">Selected Date</div></div>
+		</div>
 		</div>
 	</div>
 </div>
@@ -43,6 +44,12 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				'data': {'operation': operation, 'date': month},
 				'success': function(data) {
 					$('#details').html(data);
+					if ($('#theatres').length > 0) {
+						$('#theatres').remove();
+					}
+					if ($('#appointments').length > 0) {
+						$('#appointments').remove();
+					}
 				}
 			});
 			return false;
@@ -56,6 +63,12 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				'data': {'operation': operation, 'date': month},
 				'success': function(data) {
 					$('#details').html(data);
+					if ($('#theatres').length > 0) {
+						$('#theatres').remove();
+					}
+					if ($('#appointments').length > 0) {
+						$('#appointments').remove();
+					}
 				}
 			});
 			return false;
@@ -75,6 +88,9 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 						$('#operation').append(data);
 					} else {
 						$('#theatres').replaceWith(data);
+					}
+					if ($('#appointments').length > 0) {
+						$('#appointments').remove();
 					}
 					$( "#theatres" ).tabs();
 				}

@@ -5,6 +5,20 @@ table,th, td
 {
 	border: 1px solid black;
 }
+#operation {
+	border: 1px solid #CCCCCC;
+	padding: 5px;
+}
+#operation h1 {
+	font-size: large;
+	top: 0px;
+	height: 20px;
+	width: 100%;
+	background-color: #CCCCCC;
+	border-bottom: groove black 1px;
+	padding: 3px 5px 2px 5px;
+	margin: -5px;
+}
 #calendar .unavailable {
 	background: #CCCCCC;
 }
@@ -19,14 +33,13 @@ table,th, td
 }
 #theatres span.full, #theatres span.limited {
 	font-color: #FFCCCC;
-/*	background: #FFFFFF;*/
 }
 #theatres span.available {
 	font-color: #CCFFCC;
-/*	background: #FFFFFF;*/
 }
 .closed {
-	
+	background-image: url('/images/theatre_closed_big.png');
+	background-size: 100%;
 }
 .invalid {
 	background: #DDDDDD;
@@ -34,11 +47,53 @@ table,th, td
 .selected_date {
 	border: 2px solid red;
 }
+#key {
+	margin-top: 5px;
+}
 #key span {
-	padding: 5px;
+	float: left;
+}
+#key .container {
+	line-height: 20px;
+	margin: 5px 10px;
+	display: inline;
+}
+#key .color_box {
+	width: 20px;
+	height: 20px;
+	margin-left: 10px;
+	margin-right: 10px;
+	float: left;
+}
+#key .label {
+	float: left;
+}
+#unavailable .color_box {
+	background: #CCCCCC;
+}
+#available .color_box {
+	background: #CCFFCC;
+}
+#limited .color_box {
+	background: #FFCC99;
+}
+#full .color_box {
+	background: #FFCCCC;
+}
+#closed .color_box {
+	background: url('/images/theatre_closed.png');
+}
+#selected_date .color_box {
+	border: 2px solid red;
+	padding: -2px;
 }
 #current_month {
 	font-weight: bold;
+}
+#calendar table {
+	clear: both;
+	background: #EEEEEE;
+	border: 1px solid;
 }
 #calendar table td.available, #calendar table td.limited, 
 #calendar table td.full, #calendar table td.closed {
@@ -61,5 +116,36 @@ table,th, td
 	border: 0;
 }
 #appointments table tfoot td {
+	text-align: center;
+}
+#session_dates {
+	background: #CCCCCC;
+	margin: 5px;
+	margin-bottom: 35px;
+}
+#dates {
+	padding: 0 200px;
+}
+#dates form {
+	padding: 0;
+	margin: 0;
+}
+#dates .column {
+	float: left;
+	position: relative;
+}
+#month_back {
+	width: 200px;
+	right: 200px;
+	margin-left: -100%;
+}
+#month_forward {
+	width: 200px;
+	margin-right: -200px;
+	margin-top: -15px;
+	text-align: right;
+}
+#current_month {
+	width: 100%;
 	text-align: center;
 }

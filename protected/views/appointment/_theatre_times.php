@@ -18,6 +18,11 @@ $this->widget('zii.widgets.jui.CJuiTabs', array(
     // additional javascript options for the tabs plugin
     'options'=>array(
         'collapsible'=>true,
+		'select'=>"js:function(event, ui) {
+			if ($('#appointments').length > 0) {
+				$('#appointments').remove();
+			}
+		}",
     ),
 ));
 ?>

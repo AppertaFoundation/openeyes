@@ -27,6 +27,6 @@
 	echo ' currently scheduled'; ?></td>
 	</tfoot>
 </table>
-<input type="button" id="cancel" value="Cancel operation" />
+<button id="cancel">Cancel operation</button>
 <button id="confirm">Confirm slot</button>
 </div>

@@ -315,7 +315,7 @@ class ElementOperationTest extends CDbTestCase
 		$date = strtotime($element->event->datetime);
 		if ($timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
 			$interval = str_replace('After ', '+', $text);
-			$date += strtotime($interval);
+			$date = strtotime($interval, $date);
 		}
 		
 		$this->assertEquals($date, $element->getMinDate());

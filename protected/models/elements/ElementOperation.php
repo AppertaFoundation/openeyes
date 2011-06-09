@@ -348,7 +348,7 @@ class ElementOperation extends BaseElement
 		
 		if ($this->schedule_timeframe != self::SCHEDULE_IMMEDIATELY) {
 			$interval = str_replace('After ', '+', $this->getScheduleText());
-			$date += strtotime($interval);
+			$date = strtotime($interval, $date);
 		}
 		
 		return $date;
