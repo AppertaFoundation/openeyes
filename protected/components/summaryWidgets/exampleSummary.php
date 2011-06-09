@@ -1,6 +1,6 @@
 <?php
 
-class exampleSummary extends CWidget {
+class ExampleSummary extends CWidget {
 	public $episode_id;
 	public $noEvents;
 
