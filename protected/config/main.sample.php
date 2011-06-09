@@ -19,7 +19,6 @@ return CMap::mergeArray(
 			'application.components.summaryWidgets.*',
 			'application.controllers.*',
 			'application.models.elements.*',
-			'application.models.summaries.*',
 			'application.services.*'
 		),
 
