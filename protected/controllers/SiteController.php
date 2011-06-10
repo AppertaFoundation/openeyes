@@ -71,11 +71,26 @@ class SiteController extends BaseController
 		{
 			$model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
+			if($model->validate() && $model->login()) {
+				// Set the site cookie
+				Yii::app()->request->cookies['site_id'] = new CHttpCookie('site_id', $model->siteId);
+
 				$this->redirect(Yii::app()->user->returnUrl);
+			}
+		} else {
+			// Get the site id currently stored in the cookie, if any
+			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : '';
 		}
+
+		$sites = Site::model()->findAll();
+
 		// display the login form
-		$this->render('login',array('model'=>$model));
+		$this->render('login',
+			array(
+				'model'=>$model,
+				'sites' => CHtml::listData($sites, 'id', 'name')
+			)
+		);
 	}
 
 	/**

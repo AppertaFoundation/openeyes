@@ -61,7 +61,7 @@ class PatientService
 		if (!empty($data['hos_num'])) {
 			// add tweaks in for hospital number jiggering
 			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS 
+				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS
 				WHERE NUM_ID_TYPE != :number_type AND NUMBER_ID = :hos_number)");
 			$params[':number_type'] = 'NHS';
 			$params[':hos_number'] = $this->formatHospitalNumberForPas($data['hos_num']);
@@ -69,7 +69,7 @@ class PatientService
 		if (!empty($data['nhs_num'])) {
 			// add tweaks in for hospital number jiggering
 			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS 
+				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS
 				WHERE NUM_ID_TYPE = :number_type AND
 				NUMBER_ID = :nhs_number)");
 			$params[':number_type'] = 'NHS';
@@ -138,7 +138,7 @@ class PatientService
 	 * Update its info with the latest info from PAS
 	 *
 	 * @param array $data   Data from PAS to store in the patient model
-	 * 
+	 *
 	 * @return Patient
 	 */
 	protected function updatePatient($patientData, $addressData)

@@ -66,7 +66,27 @@ class PatientController extends BaseController
 	 */
 	public function actionResults()
 	{
-		$dataProvider = $this->getSearch($_POST['Patient']);
+		if (empty($_POST['Patient'])) {
+			unset($_POST);
+			$this->forward('search');
+		}
+		if (!isset($_GET['Patient_page'])) {
+			$page = 1;
+		} else {
+			$page = $_GET['Patient_page'];
+		}
+
+		$model = new Patient;
+		$service = new PatientService;
+		$criteria = $service->search($_POST['Patient']);
+
+		$pages = new CPagination($model->count($criteria));
+		$pages->applyLimit($criteria);
+
+		$dataProvider = new CActiveDataProvider('Patient', array(
+			'criteria' => $criteria,
+			'pagination' => $pages));
+
 		$this->render('results', array(
 			'dataProvider' => $dataProvider
 		));
@@ -112,17 +132,4 @@ class PatientController extends BaseController
 		}
 	}
 
-	/**
-	 * Perform a search on a model and return the results
-	 * (separate function for unit testing)
-	 * 
-	 * @param array $data   form data of search terms
-	 * @return dataProvider
-	 */
-	public function getSearch($data)
-	{
-		$model = new Patient;
-		$model->attributes = $data;
-		return $model->search();
-	}
 }
