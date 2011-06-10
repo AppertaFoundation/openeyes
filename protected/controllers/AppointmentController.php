@@ -69,10 +69,20 @@ class AppointmentController extends BaseController
 		if (empty($session)) {
 			throw new Exception('Session id is invalid.');
 		}
-		$appointments = Appointment::model()->findAllByAttributes(
-			array('session_id'=>$sessionId));
+		
+		$criteria = new CDbCriteria;
+		$criteria->compare('session_id', $sessionId);
+		$criteria->order = 'display_order ASC';
+		$appointments = Appointment::model()->findAll($criteria);
+		
+		if ($session['time_available'] >= 0) {
+			$minutesStatus = 'available';
+		} else {
+			$minutesStatus = 'overbooked';
+		}
 		
 		$this->renderPartial('/appointment/_list', 
-	array('operation'=>$operation, 'session'=>$session, 'appointments'=>$appointments), false, true);
+			array('operation'=>$operation, 'session'=>$session, 
+				'appointments'=>$appointments, 'minutesStatus'=>$minutesStatus), false, true);
 	}
 }

@@ -465,10 +465,14 @@ class ElementOperation extends BaseElement
 			$session['status'] = $status;
 			
 			$results[$name][] = $session;
-			$names[] = $name;
+			if (!in_array($name, $names)) {
+				$names[] = $name;
+			}
 		}
 		
-		array_multisort($names, SORT_ASC, $results);
+		if (count($results) > 1) {
+			array_multisort($names, SORT_ASC, $results);
+		}
 		
 		return $results;
 	}

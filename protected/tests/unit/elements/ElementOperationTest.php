@@ -911,6 +911,96 @@ class ElementOperationTest extends CDbTestCase
 		$this->assertEquals($expected, $result);
 	}
 	
+	public function testGetTheatres_MultipleTheatres_ReturnsCorrectData()
+	{
+		$date = date('Y-m-d', strtotime('+1 day'));
+		
+		$firm = $this->firms('firm1');
+		$element = $this->elements('element1');
+		$patientId = $element->event->episode->patient_id;
+		$userId = $this->users['user1']['id'];
+		$viewNumber = 1;
+		
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+			array($firm, $patientId, $userId, $viewNumber));
+		$mockElement->setAttributes($this->elements['element1']);
+		
+		$sessionList = Session::model()->findAllByAttributes(array('date' => $date));
+		
+		$theatre = $this->theatres['theatre1'];
+		$theatre2 = new Theatre;
+		$theatre2->name = $theatre['name'] . ' v2';
+		$theatre2->site_id = $theatre['site_id'];
+		$theatre2->save();
+
+		$sessions = array();
+		foreach ($sessionList as $session) {
+			$appointments = Appointment::model()->findAllByAttributes(
+				array('session_id' => $session['id']));
+			$appointmentCount = $appointmentTime = 0;
+			foreach ($appointments as $appt) {
+				$appointmentCount++;
+				$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
+				$appointmentTime += $operation->total_duration;
+			}
+			$sessions[] = array(
+				'id' => $theatre['id'],
+				'name' => $theatre['name'],
+				'site_id' => $theatre['site_id'],
+				'start_time' => $session['start_time'],
+				'end_time' => $session['end_time'],
+				'session_id' => $session['id'],
+				'session_duration' => '04:30:00',
+				'appointments' => $appointmentCount,
+				'appointments_duration' => $appointmentTime,
+			);
+			$sessions[] = array(
+				'id' => $theatre2['id'],
+				'name' => $theatre2['name'],
+				'site_id' => $theatre2['site_id'],
+				'start_time' => $session['start_time'],
+				'end_time' => $session['end_time'],
+				'session_id' => $session['id'],
+				'session_duration' => '04:30:00',
+				'appointments' => $appointmentCount,
+				'appointments_duration' => $appointmentTime,
+			);
+		}
+		
+		foreach ($sessions as $session) {
+			$name = $session['name'];
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['id'] = $session['session_id'];
+			unset($session['session_duration'], $session['date'], $session['name']);
+			
+			if ($session['time_available'] <= 0) {
+				$status = 'full';
+			} else {
+				$status = 'available';
+			}
+			$session['status'] = $status;
+			
+			$expected[$name][] = $session;
+			$names[] = $name;
+		}
+		
+		$service = $this->getMock('BookingService', array('findTheatres'));
+		$service->expects($this->once())
+			->method('findTheatres')
+			->with($date, $element->event->episode->firm_id)
+			->will($this->returnValue($sessions));
+		
+		$mockElement->expects($this->once())
+			->method('getBookingService')
+			->will($this->returnValue($service));
+		
+		$result = $mockElement->getTheatres($date);
+		
+		$this->assertEquals($expected, $result);
+	}
+	
 	public function testGetTheatres_Full_ReturnsCorrectData()
 	{
 		$date = date('Y-m-d', strtotime('+1 day'));

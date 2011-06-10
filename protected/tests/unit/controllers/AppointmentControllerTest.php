@@ -207,7 +207,7 @@ class AppointmentControllerTest extends CDbTestCase
 		$mockController->actionList();
 	}
 	
-	public function testActionList_ValidInputs_RendersPartial()
+	public function testActionList_ValidInputs_Available_RendersPartial()
 	{
 		$operationId = $this->operations['element1']['id'];
 		$operation = ElementOperation::model()->findByPk($operationId);
@@ -227,6 +227,7 @@ class AppointmentControllerTest extends CDbTestCase
 			'time_available' => 150,
 			'status' => 'available',
 		);
+		$status = 'available';
 		
 		$_GET['operation'] = $operationId;
 		$_GET['session'] = $sessionId;
@@ -241,7 +242,53 @@ class AppointmentControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/appointment/_list', 
-				array('operation'=>$operation, 'session'=>$session, 'appointments'=>$appointments));
+				array('operation'=>$operation, 'session'=>$session, 
+					'appointments'=>$appointments, 'minutesStatus' => $status));
+		
+		$mockController->actionList();
+	}
+	
+	public function testActionList_ValidInputs_Overbooked_RendersPartial()
+	{
+		$operationId = $this->operations['element1']['id'];
+		$operation = ElementOperation::model()->findByPk($operationId);
+		$minDate = $operation->getMinDate();
+		$sessionData = $this->sessions[0];
+		$sessionId = $sessionData['id'];
+		$theatre = $this->theatres['theatre1'];
+		
+		$operation->total_duration = 260;
+		$operation->save();
+		
+		$session = array(
+			'id' => $theatre['id'],
+			'site_id' => $theatre['site_id'],
+			'start_time' => $sessionData['start_time'],
+			'end_time' => $sessionData['end_time'],
+			'date' => $sessionData['date'],
+			'appointments' => 1,
+			'appointments_duration' => 260,
+			'duration' => 240,
+			'time_available' => -20,
+			'status' => 'full',
+		);
+		$status = 'overbooked';
+		
+		$_GET['operation'] = $operationId;
+		$_GET['session'] = $sessionId;
+		
+		$appointments = Appointment::model()->findAllByAttributes(
+			array('session_id'=>$sessionId));
+		
+		$operation = $this->operations('element1');
+		
+		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
+			array('AppointmentController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('/appointment/_list', 
+				array('operation'=>$operation, 'session'=>$session, 
+					'appointments'=>$appointments, 'minutesStatus' => $status));
 		
 		$mockController->actionList();
 	}

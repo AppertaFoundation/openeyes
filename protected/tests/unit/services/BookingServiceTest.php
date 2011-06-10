@@ -29,28 +29,86 @@ class BookingServiceTest extends CDbTestCase
 		$this->service->findSessions($monthStart, $minDate, $firmId);
 	}
 
+	// @todo: do this in a better way than just re-running the query
 	public function testFindSessions_MonthStartEqualsMinDate_ReturnsCorrectData()
 	{
 		$firmId = $this->firms['firm1']['id'];
 		$monthStart = date('Y-m-01');
 		$minDate = $monthStart;
+		$monthEnd = date('Y-m-t');
+		
+		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
+				COUNT(a.id) AS appointments, 
+				SUM(o.total_duration) AS appointments_duration
+			FROM `session` `s` 
+			JOIN `sequence` `q` ON s.sequence_id = q.id
+			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			WHERE s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
+				CAST('" . $monthEnd . "' AS DATE) AND 
+				(f.firm_id = " . $firmId . " OR f.id IS NULL)
+			GROUP BY s.id 
+		UNION 
+			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
+				0 AS appointments, 0 AS appointments_duration
+			FROM `session` `s` 
+			JOIN `sequence` `q` ON s.sequence_id = q.id
+			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM appointment) AND 
+				s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
+				CAST('" . $monthEnd . "' AS DATE) AND 
+				(f.firm_id = " . $firmId . " OR f.id IS NULL)
+		ORDER BY WEEKDAY( DATE ) ASC";
+		
+		$command = Yii::app()->db->createCommand($sql);
+		$reader = $command->query();
 		
 		$result = $this->service->findSessions($monthStart, $minDate, $firmId);
 		
 		$this->assertEquals('CDbDataReader', get_class($result));
-		$this->assertEquals(6, $result->count());
+		$this->assertEquals($reader->rowCount, $result->count());
 	}
 
+	// @todo: do this in a better way than just re-running the query
 	public function testFindSessions_MonthStartBeforeMinDate_ReturnsCorrectData()
 	{
 		$firmId = $this->firms['firm1']['id'];
 		$monthStart = date('Y-m-01');
 		$minDate = date('Y-m-01', strtotime('+1 month'));
+		$monthEnd = date('Y-m-t');
+		
+		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
+				COUNT(a.id) AS appointments, 
+				SUM(o.total_duration) AS appointments_duration
+			FROM `session` `s` 
+			JOIN `sequence` `q` ON s.sequence_id = q.id
+			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			WHERE s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
+				CAST('" . $monthEnd . "' AS DATE) AND 
+				(f.firm_id = " . $firmId . " OR f.id IS NULL)
+			GROUP BY s.id 
+		UNION 
+			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
+				0 AS appointments, 0 AS appointments_duration
+			FROM `session` `s` 
+			JOIN `sequence` `q` ON s.sequence_id = q.id
+			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM appointment) AND 
+				s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
+				CAST('" . $monthEnd . "' AS DATE) AND 
+				(f.firm_id = " . $firmId . " OR f.id IS NULL)
+		ORDER BY WEEKDAY( DATE ) ASC";
+		
+		$command = Yii::app()->db->createCommand($sql);
+		$reader = $command->query();
 		
 		$result = $this->service->findSessions($monthStart, $minDate, $firmId);
 		
 		$this->assertEquals('CDbDataReader', get_class($result));
-		$this->assertEquals(6, $result->count());
+		$this->assertEquals($reader->rowCount, $result->count());
 	}
 	
 	public function testFindTheatres_InvalidFirmId_ThrowsException()

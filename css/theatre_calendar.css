@@ -106,7 +106,7 @@ table,th, td
 	width: 185px;
 	text-align: center;
 }
-#theatres button #session_id {
+#theatres button .session_id {
 	display: none;
 }
 #appointments table {
@@ -117,6 +117,9 @@ table,th, td
 }
 #appointments table tfoot td {
 	text-align: center;
+}
+#appointments .overbooked {
+	font-color: red;
 }
 #session_dates {
 	background: #CCCCCC;

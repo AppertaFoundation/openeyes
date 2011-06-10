@@ -97,7 +97,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			});
 		});
 		$('#theatres button').live('click', function() {
-			var session = $('#session_id').text();
+			var session = $(this).children('.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
 			var day = $('.selected_date').text();

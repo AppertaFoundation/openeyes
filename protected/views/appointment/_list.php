@@ -1,6 +1,6 @@
 <div id="appointments">
 <strong>View other operations in this session:</strong>
-<span><?php echo $session['time_available']; ?> min available</span>
+<span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
 <table>
 	<thead>
 		<th>Operation list overview</th>
@@ -11,10 +11,20 @@
 	<tbody>
 <?php
 	$counter = 1;
-	foreach ($appointments as $appointment) { ?>
-		<td><?php echo $counter . '. Patient name'; ?></td>
-		<td><?php echo 'Procedure list'; ?></td>
-		<td><?php echo 'Duration'; ?></td>
+	foreach ($appointments as $appointment) {
+		$operation = $appointment->elementOperation;
+		$patient = $operation->event->episode->patient;
+		$procedures = $operation->procedures;
+		$procedureNames = array();
+		foreach ($procedures as $procedure) {
+			$procedureNames[] = $procedure->term;
+		}
+		$procedureList = implode(', ', $procedureNames); ?>
+		<tr>
+			<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
+			<td><?php echo $procedureList; ?></td>
+			<td><?php echo "{$operation->total_duration} minutes"; ?></td>
+		</tr>
 <?php
 		$counter++;
 	} ?>
