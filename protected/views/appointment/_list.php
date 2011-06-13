@@ -37,6 +37,7 @@
 	echo ' currently scheduled'; ?></td>
 	</tfoot>
 </table>
+<input type="hidden" name="session_id" value="<?php echo $session['id']; ?>" />
 <button id="cancel">Cancel operation</button>
 <button id="confirm">Confirm slot</button>
 </div>

@@ -119,5 +119,33 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				}
 			});
 		});
+		$('#confirm').live('click', function() {
+			var operation = $('input[id=operation]').val();
+			var session = $('input[name=session_id]').val();
+			console.log('operation');
+			console.log(operation);
+			console.log('session');
+			console.log(session);
+			$.ajax({
+				'url': 'index.php?r=appointment/create',
+				'type': 'POST',
+				'data': {
+					'Appointment': {
+						'element_operation_id': operation,
+						'session_id': session
+					}
+				},
+				'success': function(data) {
+					$('#appointments').append(data);
+				}
+			});
+			
+			/*
+			 *  * @property string $id
+ * @property string $element_operation_id
+ * @property string $session_id
+ * @property integer $display_order
+			 */
+		});
 	});
 </script>

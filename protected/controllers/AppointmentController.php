@@ -69,6 +69,7 @@ class AppointmentController extends BaseController
 		if (empty($session)) {
 			throw new Exception('Session id is invalid.');
 		}
+		$session['id'] = $sessionId;
 		
 		$criteria = new CDbCriteria;
 		$criteria->compare('session_id', $sessionId);
@@ -84,5 +85,55 @@ class AppointmentController extends BaseController
 		$this->renderPartial('/appointment/_list', 
 			array('operation'=>$operation, 'session'=>$session, 
 				'appointments'=>$appointments, 'minutesStatus'=>$minutesStatus), false, true);
+	}
+	
+	public function actionCreate()
+	{
+		$model=new Appointment;
+
+		// Uncomment the following line if AJAX validation is needed
+		// $this->performAjaxValidation($model);
+
+		if(isset($_POST['Appointment']))
+		{
+			$model->attributes=$_POST['Appointment'];
+			
+			// figure out the max display_id
+			if (!empty($_POST['Appointment']['session_id'])) {
+				$criteria = new CDbCriteria;
+				$criteria->condition='session_id = :id';
+				$criteria->params = array(':id' => $_POST['Appointment']['session_id']);
+				$criteria->order = 'display_order DESC';
+				$criteria->limit = 1;
+				$appointment = Appointment::model()->find($criteria);
+			} else {
+				$appointment = false;
+			}
+			
+			$displayOrder = empty($appointment) ? 1 : $appointment->display_order + 1;
+			$model->display_order = $displayOrder;
+			
+			if ($model->save()) {
+//				$this->redirect(array('view','id'=>$model->id));
+			}
+		}
+
+//		$this->render('create',array(
+//			'model'=>$model,
+//			'firm'=>$firmAssociation
+//		));
+	}
+	
+	public function actionUpdate()
+	{
+		$model = new Appointment;
+		
+		if (isset($_POST['Appointment'])) {
+			$model->attributes = $_POST['Appointment'];
+			
+			if ($model->save()) {
+//				$this->redirect(array('view','id'=>$model->id));
+			}
+		}
 	}
 }

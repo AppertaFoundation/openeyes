@@ -292,4 +292,73 @@ class AppointmentControllerTest extends CDbTestCase
 		
 		$mockController->actionList();
 	}
+	
+	public function dataProvider_AppointmentData()
+	{
+		return array(
+			array(array()),
+			array(array('Appointment' => array('foo')))
+		);
+	}
+	
+	/**
+	 * @dataProvider dataProvider_AppointmentData
+	 */
+	public function testActionCreate_InvalidPostData_DoesNothing($data)
+	{
+		$_POST = $data;
+		
+		$this->assertNull($this->controller->actionCreate());
+	}
+	
+	public function testActionCreate_ValidPostData_CreatesAppointment()
+	{
+		$appointmentCount = count($this->appointments);
+		
+		$_POST['Appointment'] = array(
+			'element_operation_id' => $this->operations['element1']['id'],
+			'session_id' => $this->sessions[0]['id'],
+		);
+		
+		$this->assertNull($this->controller->actionCreate());
+		
+		$newAppointmentCount = Appointment::model()->count();
+		$this->assertEquals($appointmentCount + 1, $newAppointmentCount);
+	}
+	
+	/**
+	 * @dataProvider dataProvider_AppointmentData
+	 */
+	public function testActionUpdate_InvalidPostData_DoesNothing($data)
+	{
+		$_POST = $data;
+		
+		$this->assertNull($this->controller->actionUpdate());
+	}
+	
+	public function testActionUpdate_ValidPostData_UpdatessAppointment()
+	{
+		$appointmentCount = count($this->appointments);
+		
+		$appointment = new Appointment;
+		$appointment->attributes = $this->appointments[0];
+		
+		$sessionId = $this->sessions[1]['id'];
+		
+		$_POST['Appointment'] = array(
+			'id' => $appointment->id,
+			'element_operation_id' => $this->operations['element1']['id'],
+			'session_id' => $sessionId,
+			'display_order' => $appointment->display_order,
+		);
+		
+		$this->assertNotEquals($sessionId, $appointment->session_id);
+		
+		$this->assertNull($this->controller->actionUpdate());
+		
+		$this->assertEquals($sessionId, $appointment->session_id);
+		
+		$newAppointmentCount = Appointment::model()->count();
+		$this->assertEquals($appointmentCount, $newAppointmentCount);
+	}
 }

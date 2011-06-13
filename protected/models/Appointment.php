@@ -40,7 +40,7 @@ class Appointment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('element_operation_id, session_id, display_order', 'required'),
+			array('element_operation_id, session_id', 'required'),
 			array('display_order', 'numerical', 'integerOnly'=>true),
 			array('element_operation_id, session_id', 'length', 'max'=>10),
 			// The following rule is used by search().
