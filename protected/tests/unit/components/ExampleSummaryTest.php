@@ -39,7 +39,7 @@ class ExampleSummaryTest extends CDbTestCase
 
 		$mockWidget->expects($this->any())
 			->method('render')
-			->with('exampleSummary');
+			->with('ExampleSummary');
 
 		$mockWidget->run();
 	}

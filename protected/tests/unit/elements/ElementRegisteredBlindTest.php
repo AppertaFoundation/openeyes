@@ -68,7 +68,7 @@ class ElementRegisteredBlindTest extends CDbTestCase
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
-			'event_id' => '1',
+			'event_id' => 3,
 			'status' => ElementRegisteredBlind::NOT_REGISTERED,
 		));
 
@@ -116,6 +116,7 @@ class ElementRegisteredBlindTest extends CDbTestCase
 	public function testGetStatusText($newStatus, $expectedText)
 	{
 		$element = $this->element;
+		$element->event_id = 3;
 		$element->status = $newStatus;
 		$element->save();
 

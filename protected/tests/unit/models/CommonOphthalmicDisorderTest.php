@@ -7,7 +7,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 
 	public function testGetSpecialtyOptions()
 	{
-		$specialties = ExamPhrase::model()->getSpecialtyOptions();
+		$specialties = CommonOphthalmicDisorder::model()->getSpecialtyOptions();
 		$this->assertTrue(is_array($specialties));
 		$this->assertEquals(16, count($specialties));
 	}

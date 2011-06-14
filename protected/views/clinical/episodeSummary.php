@@ -27,7 +27,7 @@ Principal diagnosis: ? Where will this be fetched from ?
 
 try {
 	echo $this->renderPartial(
-		'/clinical/EpisodeSummaries/' . $episode->firm->serviceSpecialtyAssignment->specialty_id,
+		'/clinical/episodeSummaries/' . $episode->firm->serviceSpecialtyAssignment->specialty_id,
 		array('episode' => $episode)
 	);
 } catch (Exception $e) {

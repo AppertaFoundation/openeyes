@@ -16,6 +16,6 @@ echo CHtml::link(
 	'exampleSummary',
 	Yii::app()->createUrl('clinical/summary', array(
 		'id' => $episode->id,
-		'summary' => 'exampleSummary'
+		'summary' => 'ExampleSummary'
 	))
 );
