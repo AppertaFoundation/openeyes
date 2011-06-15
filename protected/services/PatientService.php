@@ -315,12 +315,18 @@ class PatientService
 
 		// Store data
 		$unitedKingdom = Country::model()->findByAttributes(array('name' => 'United Kingdom'));
-		$address->address1 = $address1;
-		$address->address2 = $address2;
-		$address->city = $town;
-		$address->county = $county;
+		if (isset($address1)) {
+			$address->address1 = $address1;
+		}
+		if (isset($address2)) {
+			$address->address2 = $address2;
+		}
+		if (isset($town)) {
+			$address->city = $town;
+		}
+		# $address->county = $county;
 		$address->country_id = $unitedKingdom->id;
-		$address->postcode = $postcode;
+		# $address->postcode = $postcode;
 
 		return $address;
 	}

@@ -4,6 +4,7 @@ return CMap::mergeArray(
 	require(dirname(__FILE__).'/main.php'),
 	array(
 		'import'=>array(
+			'application.modules.admin.controllers.*',
 			'application.vendors.*'
 		),
 		'components'=>array(
