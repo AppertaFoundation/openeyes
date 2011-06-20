@@ -1,4 +1,4 @@
-<div id="appointments">
+<div id="bookings">
 <strong>View other operations in this session:</strong>
 <span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
 <table>
@@ -11,8 +11,8 @@
 	<tbody>
 <?php
 	$counter = 1;
-	foreach ($appointments as $appointment) {
-		$operation = $appointment->elementOperation;
+	foreach ($bookings as $booking) {
+		$operation = $booking->elementOperation;
 		$patient = $operation->event->episode->patient;
 		$procedures = $operation->procedures;
 		$procedureNames = array();
@@ -30,7 +30,7 @@
 	} ?>
 	</tbody>
 	<tfoot>
-		<td colspan="3"><?php echo ($counter - 1) . ' appointment';
+		<td colspan="3"><?php echo ($counter - 1) . ' booking';
 	if (($counter - 1) != 1) {
 		echo 's';
 	}

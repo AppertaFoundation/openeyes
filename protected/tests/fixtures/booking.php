@@ -5,7 +5,7 @@ $sessions = $this->getRows('sessions');
 
 $monthStart = date('Y-m-01');
 
-$appointments = array();
+$bookings = array();
 
 if (!empty($operations)) {
 	$sessionId = -1;
@@ -17,7 +17,7 @@ if (!empty($operations)) {
 					break;
 				}
 			}
-			$appointments[] = array(
+			$bookings[] = array(
 				'element_operation_id' => $operation['id'],
 				'session_id' => $sessionId,
 				'display_order' => 1
@@ -27,4 +27,4 @@ if (!empty($operations)) {
 	}
 }
 
-return $appointments;
+return $bookings;

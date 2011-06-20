@@ -11,7 +11,7 @@
  * @property string $end_time
  *
  * The followings are the available model relations:
- * @property Appointment[] $appointments
+ * @property Booking[] $bookings
  * @property Sequence $sequence
  */
 class Session extends CActiveRecord
@@ -57,7 +57,7 @@ class Session extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'appointments' => array(self::HAS_MANY, 'Appointment', 'session_id'),
+			'bookings' => array(self::HAS_MANY, 'Booking', 'session_id'),
 			'sequence' => array(self::BELONGS_TO, 'Sequence', 'sequence_id'),
 		);
 	}

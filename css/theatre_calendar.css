@@ -109,16 +109,16 @@ table,th, td
 #theatres button .session_id {
 	display: none;
 }
-#appointments table {
+#bookings table {
 	width: 100%;
 }
-#appointments table thead th {
+#bookings table thead th {
 	border: 0;
 }
-#appointments table tfoot td {
+#bookings table tfoot td {
 	text-align: center;
 }
-#appointments .overbooked {
+#bookings .overbooked {
 	font-color: red;
 }
 #session_dates {

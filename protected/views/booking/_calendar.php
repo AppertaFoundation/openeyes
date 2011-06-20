@@ -6,7 +6,7 @@
 		$nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1)); ?>
 			<div id="current_month" class="column"><?php echo date('F Y', $date); ?></div>
 			<div id="month_back" class="column">
-<?php	echo CHtml::form(array('appointment/sessions',
+<?php	echo CHtml::form(array('booking/sessions',
 			'operation'=>$operation->id, 'date'=>$lastMonth),
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
@@ -16,7 +16,7 @@
 		echo CHtml::closeTag('form'); ?>
 			</div>
 			<div id="month_forward" class="column">
-<?php	echo CHtml::form(array('appointment/sessions',
+<?php	echo CHtml::form(array('booking/sessions',
 			'operation'=>$operation->id, 'date'=>$nextMonth),
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);

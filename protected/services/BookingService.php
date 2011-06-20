@@ -3,7 +3,7 @@
 class BookingService
 {
 	/**
-	 * Search sequences that match appointment requirements, and figure out how 
+	 * Search sequences that match booking requirements, and figure out how 
 	 * full the respective sessions would be
 	 *
 	 * @return eventId => int || false
@@ -24,12 +24,12 @@ class BookingService
 		
 		// @todo: Figure out a nice Yii way of doing the union of these two queries
 		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS appointments, 
-				SUM(o.total_duration) AS appointments_duration
+				COUNT(a.id) AS bookings, 
+				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND 
 				CAST('" . $monthEnd . "' AS DATE) AND 
@@ -37,11 +37,11 @@ class BookingService
 			GROUP BY s.id 
 		UNION 
 			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				0 AS appointments, 0 AS appointments_duration
+				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM appointment) AND 
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
 				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND 
 				CAST('" . $monthEnd . "' AS DATE) AND 
 				(f.firm_id = " . $firmId . " OR f.id IS NULL)
@@ -62,12 +62,12 @@ class BookingService
 		// @todo: Figure out a nice Yii way of doing the union of these two queries
 		$sql = "SELECT t.*, s.start_time, s.end_time, s.id AS session_id, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS appointments, 
-				SUM(o.total_duration) AS appointments_duration 
+				COUNT(a.id) AS bookings, 
+				SUM(o.total_duration) AS bookings_duration 
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id 
 			JOIN `theatre` `t` ON q.theatre_id = t.id 
 			WHERE s.date = '" . $date . "' AND 
@@ -76,12 +76,12 @@ class BookingService
 		UNION 
 			SELECT t.*, s.start_time, s.end_time, s.id AS session_id, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				0 AS appointments, 0 AS appointments_duration
+				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id 
 			JOIN `theatre` `t` ON q.theatre_id = t.id 
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM appointment) AND 
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
 				s.date = '" . $date . "' AND 
 				(f.firm_id = " . $firmId . " OR f.id IS NULL)";
 		
@@ -95,11 +95,11 @@ class BookingService
 	{
 		$sql = "SELECT t.*, s.start_time, s.end_time, s.date, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS appointments, 
-				SUM(o.total_duration) AS appointments_duration 
+				COUNT(a.id) AS bookings, 
+				SUM(o.total_duration) AS bookings_duration 
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
-			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id 
 			JOIN `theatre` `t` ON q.theatre_id = t.id 
 			WHERE s.id = '" . $sessionId . "'";

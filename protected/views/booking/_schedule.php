@@ -39,7 +39,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
-				'url': 'index.php?r=appointment/sessions',
+				'url': 'index.php?r=booking/sessions',
 				'type': 'GET',
 				'data': {'operation': operation, 'date': month},
 				'success': function(data) {
@@ -47,8 +47,8 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 					if ($('#theatres').length > 0) {
 						$('#theatres').remove();
 					}
-					if ($('#appointments').length > 0) {
-						$('#appointments').remove();
+					if ($('#bookings').length > 0) {
+						$('#bookings').remove();
 					}
 				}
 			});
@@ -58,7 +58,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
-				'url': 'index.php?r=appointment/sessions',
+				'url': 'index.php?r=booking/sessions',
 				'type': 'GET',
 				'data': {'operation': operation, 'date': month},
 				'success': function(data) {
@@ -66,8 +66,8 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 					if ($('#theatres').length > 0) {
 						$('#theatres').remove();
 					}
-					if ($('#appointments').length > 0) {
-						$('#appointments').remove();
+					if ($('#bookings').length > 0) {
+						$('#bookings').remove();
 					}
 				}
 			});
@@ -80,7 +80,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
-				'url': 'index.php?r=appointment/theatres',
+				'url': 'index.php?r=booking/theatres',
 				'type': 'GET',
 				'data': {'operation': operation, 'month': month, 'day': day},
 				'success': function(data) {
@@ -89,8 +89,8 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 					} else {
 						$('#theatres').replaceWith(data);
 					}
-					if ($('#appointments').length > 0) {
-						$('#appointments').remove();
+					if ($('#bookings').length > 0) {
+						$('#bookings').remove();
 					}
 					$( "#theatres" ).tabs();
 				}
@@ -102,7 +102,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			var operation = $('input[id=operation]').val();
 			var day = $('.selected_date').text();
 			$.ajax({
-				'url': 'index.php?r=appointment/list',
+				'url': 'index.php?r=booking/list',
 				'type': 'GET',
 				'data': {
 					'operation': operation,
@@ -111,10 +111,10 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 					'session': session,
 				},
 				'success': function(data) {
-					if ($('#appointments').length == 0) {
+					if ($('#bookings').length == 0) {
 						$('#operation').append(data);
 					} else {
-						$('#appointments').replaceWith(data);
+						$('#bookings').replaceWith(data);
 					}
 				}
 			});
@@ -127,25 +127,18 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			console.log('session');
 			console.log(session);
 			$.ajax({
-				'url': 'index.php?r=appointment/create',
+				'url': 'index.php?r=booking/create',
 				'type': 'POST',
 				'data': {
-					'Appointment': {
+					'Booking': {
 						'element_operation_id': operation,
 						'session_id': session
 					}
 				},
 				'success': function(data) {
-					$('#appointments').append(data);
+					$('#bookings').append(data);
 				}
 			});
-			
-			/*
-			 *  * @property string $id
- * @property string $element_operation_id
- * @property string $session_id
- * @property integer $display_order
-			 */
 		});
 	});
 </script>

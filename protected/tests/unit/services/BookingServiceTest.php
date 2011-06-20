@@ -8,7 +8,7 @@ class BookingServiceTest extends CDbTestCase
 		'sequenceFirmAssignments' => 'SequenceFirmAssignment',
 		'sessions' => 'Session',
 		'operations' => 'ElementOperation',
-		'appointments' => 'Appointment',
+		'bookings' => 'Booking',
 	);
 
 	protected $service;
@@ -38,12 +38,12 @@ class BookingServiceTest extends CDbTestCase
 		$monthEnd = date('Y-m-t');
 		
 		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS appointments, 
-				SUM(o.total_duration) AS appointments_duration
+				COUNT(a.id) AS bookings, 
+				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
 				CAST('" . $monthEnd . "' AS DATE) AND 
@@ -51,11 +51,11 @@ class BookingServiceTest extends CDbTestCase
 			GROUP BY s.id 
 		UNION 
 			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				0 AS appointments, 0 AS appointments_duration
+				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM appointment) AND 
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
 				s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
 				CAST('" . $monthEnd . "' AS DATE) AND 
 				(f.firm_id = " . $firmId . " OR f.id IS NULL)
@@ -79,12 +79,12 @@ class BookingServiceTest extends CDbTestCase
 		$monthEnd = date('Y-m-t');
 		
 		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS appointments, 
-				SUM(o.total_duration) AS appointments_duration
+				COUNT(a.id) AS bookings, 
+				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `appointment` `a` ON s.id = a.session_id
+			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
 				CAST('" . $monthEnd . "' AS DATE) AND 
@@ -92,11 +92,11 @@ class BookingServiceTest extends CDbTestCase
 			GROUP BY s.id 
 		UNION 
 			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				0 AS appointments, 0 AS appointments_duration
+				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM appointment) AND 
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
 				s.date BETWEEN CAST('" . $monthStart . "' AS DATE) AND 
 				CAST('" . $monthEnd . "' AS DATE) AND 
 				(f.firm_id = " . $firmId . " OR f.id IS NULL)
@@ -150,8 +150,8 @@ class BookingServiceTest extends CDbTestCase
 			'start_time' => null,
 			'end_time' => null,
 			'session_duration' => null,
-			'appointments' => 0,
-			'appointments_duration' => null,
+			'bookings' => 0,
+			'bookings_duration' => null,
 		);
 		$this->assertEquals($expected, $session);
 	}

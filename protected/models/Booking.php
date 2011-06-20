@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "appointment".
+ * This is the model class for table "booking".
  *
- * The followings are the available columns in table 'appointment':
+ * The followings are the available columns in table 'booking':
  * @property string $id
  * @property string $element_operation_id
  * @property string $session_id
@@ -13,11 +13,11 @@
  * @property ElementOperation $elementOperation
  * @property Session $session
  */
-class Appointment extends CActiveRecord
+class Booking extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Appointment the static model class
+	 * @return Booking the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -29,7 +29,7 @@ class Appointment extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'appointment';
+		return 'booking';
 	}
 
 	/**
@@ -43,6 +43,7 @@ class Appointment extends CActiveRecord
 			array('element_operation_id, session_id', 'required'),
 			array('display_order', 'numerical', 'integerOnly'=>true),
 			array('element_operation_id, session_id', 'length', 'max'=>10),
+			array('element_operation_id, session_id, display_order', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, element_operation_id, session_id, display_order', 'safe', 'on'=>'search'),

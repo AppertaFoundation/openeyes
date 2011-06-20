@@ -378,7 +378,7 @@ class ElementOperation extends BaseElement
 			
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
-			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			unset($session['session_duration'], $session['date']);
 			
 			$results[$text][$date]['sessions'][] = $session;
@@ -453,7 +453,7 @@ class ElementOperation extends BaseElement
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
-			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
 			
@@ -490,7 +490,7 @@ class ElementOperation extends BaseElement
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
-			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			unset($session['session_duration'], $session['name']);
 			
 			if ($session['time_available'] <= 0) {

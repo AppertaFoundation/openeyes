@@ -1,6 +1,6 @@
 <?php
 
-class AppointmentController extends BaseController
+class BookingController extends BaseController
 {
 	public function actionSchedule()
 	{
@@ -16,7 +16,7 @@ class AppointmentController extends BaseController
 		}
 		$sessions = $operation->getSessions();
 		
-		$this->renderPartial('/appointment/_schedule', 
+		$this->renderPartial('/booking/_schedule', 
 	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
@@ -30,7 +30,7 @@ class AppointmentController extends BaseController
 		$minDate = !empty($_GET['date']) ? strtotime($_GET['date']) : $operation->getMinDate();
 		$sessions = $operation->getSessions();
 		
-		$this->renderPartial('/appointment/_calendar', 
+		$this->renderPartial('/booking/_calendar', 
 	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
@@ -53,7 +53,7 @@ class AppointmentController extends BaseController
 		$date = date('Y-m-d', mktime(0,0,0,date('m', $time), $day, date('Y', $time)));
 		$theatres = $operation->getTheatres($date);
 		
-		$this->renderPartial('/appointment/_theatre_times', 
+		$this->renderPartial('/booking/_theatre_times', 
 	array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
 	}
 	
@@ -74,7 +74,7 @@ class AppointmentController extends BaseController
 		$criteria = new CDbCriteria;
 		$criteria->compare('session_id', $sessionId);
 		$criteria->order = 'display_order ASC';
-		$appointments = Appointment::model()->findAll($criteria);
+		$bookings = Booking::model()->findAll($criteria);
 		
 		if ($session['time_available'] >= 0) {
 			$minutesStatus = 'available';
@@ -82,35 +82,35 @@ class AppointmentController extends BaseController
 			$minutesStatus = 'overbooked';
 		}
 		
-		$this->renderPartial('/appointment/_list', 
+		$this->renderPartial('/booking/_list', 
 			array('operation'=>$operation, 'session'=>$session, 
-				'appointments'=>$appointments, 'minutesStatus'=>$minutesStatus), false, true);
+				'bookings'=>$bookings, 'minutesStatus'=>$minutesStatus), false, true);
 	}
 	
 	public function actionCreate()
 	{
-		$model=new Appointment;
+		$model=new Booking;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Appointment']))
+		if(isset($_POST['Booking']))
 		{
-			$model->attributes=$_POST['Appointment'];
+			$model->attributes=$_POST['Booking'];
 			
 			// figure out the max display_id
-			if (!empty($_POST['Appointment']['session_id'])) {
+			if (!empty($_POST['Booking']['session_id'])) {
 				$criteria = new CDbCriteria;
 				$criteria->condition='session_id = :id';
-				$criteria->params = array(':id' => $_POST['Appointment']['session_id']);
+				$criteria->params = array(':id' => $_POST['Booking']['session_id']);
 				$criteria->order = 'display_order DESC';
 				$criteria->limit = 1;
-				$appointment = Appointment::model()->find($criteria);
+				$booking = Booking::model()->find($criteria);
 			} else {
-				$appointment = false;
+				$booking = false;
 			}
 			
-			$displayOrder = empty($appointment) ? 1 : $appointment->display_order + 1;
+			$displayOrder = empty($booking) ? 1 : $booking->display_order + 1;
 			$model->display_order = $displayOrder;
 			
 			if ($model->save()) {
@@ -126,10 +126,9 @@ class AppointmentController extends BaseController
 	
 	public function actionUpdate()
 	{
-		$model = new Appointment;
-		
-		if (isset($_POST['Appointment'])) {
-			$model->attributes = $_POST['Appointment'];
+		if (isset($_POST['Booking']) && isset($_POST['Booking']['id'])) {
+			$model = Booking::model()->findByPk($_POST['Booking']['id']);
+			$model->attributes = $_POST['Booking'];
 			
 			if ($model->save()) {
 //				$this->redirect(array('view','id'=>$model->id));

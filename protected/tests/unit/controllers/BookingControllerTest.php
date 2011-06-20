@@ -1,5 +1,5 @@
 <?php
-class AppointmentControllerTest extends CDbTestCase
+class BookingControllerTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'firms' => 'Firm',
@@ -8,7 +8,7 @@ class AppointmentControllerTest extends CDbTestCase
 		'sessions' => 'Session',
 		'events' => 'Event',
 		'operations' => 'ElementOperation',
-		'appointments' => 'Appointment',
+		'bookings' => 'Booking',
 		'theatres' => 'Theatre'
 	);
 
@@ -16,14 +16,14 @@ class AppointmentControllerTest extends CDbTestCase
 
 	protected function setUp()
 	{
-		$this->controller = new AppointmentController('AppointmentController');
+		$this->controller = new BookingController('BookingController');
 		parent::setUp();
 	}
 	
 	public function testActionSchedule_InvalidOperationId_ThrowsException()
 	{
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -47,11 +47,11 @@ class AppointmentControllerTest extends CDbTestCase
 		
 		$_GET['operation'] = $operation->id;
 		
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('/appointment/_schedule', 
+			->with('/booking/_schedule', 
 				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions));
 		
 		$mockController->actionSchedule();
@@ -65,11 +65,11 @@ class AppointmentControllerTest extends CDbTestCase
 		
 		$_GET['operation'] = $operation->id;
 		
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('/appointment/_schedule', 
+			->with('/booking/_schedule', 
 				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions));
 		
 		$mockController->actionSchedule();
@@ -77,8 +77,8 @@ class AppointmentControllerTest extends CDbTestCase
 	
 	public function testActionSessions_InvalidOperationId_ThrowsException()
 	{
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -94,11 +94,11 @@ class AppointmentControllerTest extends CDbTestCase
 		
 		$_GET['operation'] = $operation->id;
 		
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('/appointment/_calendar', 
+			->with('/booking/_calendar', 
 				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions));
 		
 		$mockController->actionSessions();
@@ -106,8 +106,8 @@ class AppointmentControllerTest extends CDbTestCase
 	
 	public function testActionTheatres_InvalidOperationId_ThrowsExceptioN()
 	{
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -118,8 +118,8 @@ class AppointmentControllerTest extends CDbTestCase
 	public function testActionTheatres_InvalidMonth_ThrowsException()
 	{
 		$operation = $this->operations('element1');
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -132,8 +132,8 @@ class AppointmentControllerTest extends CDbTestCase
 	public function testActionTheatres_InvalidDay_ThrowsException()
 	{
 		$operation = $this->operations('element1');
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -157,11 +157,11 @@ class AppointmentControllerTest extends CDbTestCase
 		
 		$theatres = $operation->getTheatres($date);
 		
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('/appointment/_theatre_times', 
+			->with('/booking/_theatre_times', 
 				array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres));
 		
 		$mockController->actionTheatres();
@@ -169,8 +169,8 @@ class AppointmentControllerTest extends CDbTestCase
 	
 	public function testActionList_InvalidOperationId_ThrowsExceptioN()
 	{
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -181,8 +181,8 @@ class AppointmentControllerTest extends CDbTestCase
 	public function testActionList_InvalidSession_ThrowsException()
 	{
 		$operation = $this->operations('element1');
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -196,8 +196,8 @@ class AppointmentControllerTest extends CDbTestCase
 	public function testActionList_MissingSession_ThrowsException()
 	{
 		$operation = $this->operations('element1');
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->never())
 			->method('renderPartial');
 		
@@ -221,8 +221,8 @@ class AppointmentControllerTest extends CDbTestCase
 			'start_time' => $sessionData['start_time'],
 			'end_time' => $sessionData['end_time'],
 			'date' => $sessionData['date'],
-			'appointments' => 1,
-			'appointments_duration' => 90,
+			'bookings' => 1,
+			'bookings_duration' => 90,
 			'duration' => 240,
 			'time_available' => 150,
 			'status' => 'available',
@@ -232,18 +232,18 @@ class AppointmentControllerTest extends CDbTestCase
 		$_GET['operation'] = $operationId;
 		$_GET['session'] = $sessionId;
 		
-		$appointments = Appointment::model()->findAllByAttributes(
+		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id'=>$sessionId));
 		
 		$operation = $this->operations('element1');
 		
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('/appointment/_list', 
+			->with('/booking/_list', 
 				array('operation'=>$operation, 'session'=>$session, 
-					'appointments'=>$appointments, 'minutesStatus' => $status));
+					'bookings'=>$bookings, 'minutesStatus' => $status));
 		
 		$mockController->actionList();
 	}
@@ -266,8 +266,8 @@ class AppointmentControllerTest extends CDbTestCase
 			'start_time' => $sessionData['start_time'],
 			'end_time' => $sessionData['end_time'],
 			'date' => $sessionData['date'],
-			'appointments' => 1,
-			'appointments_duration' => 260,
+			'bookings' => 1,
+			'bookings_duration' => 260,
 			'duration' => 240,
 			'time_available' => -20,
 			'status' => 'full',
@@ -277,32 +277,32 @@ class AppointmentControllerTest extends CDbTestCase
 		$_GET['operation'] = $operationId;
 		$_GET['session'] = $sessionId;
 		
-		$appointments = Appointment::model()->findAllByAttributes(
+		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id'=>$sessionId));
 		
 		$operation = $this->operations('element1');
 		
-		$mockController = $this->getMock('AppointmentController', array('renderPartial'),
-			array('AppointmentController'));
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('/appointment/_list', 
+			->with('/booking/_list', 
 				array('operation'=>$operation, 'session'=>$session, 
-					'appointments'=>$appointments, 'minutesStatus' => $status));
+					'bookings'=>$bookings, 'minutesStatus' => $status));
 		
 		$mockController->actionList();
 	}
 	
-	public function dataProvider_AppointmentData()
+	public function dataProvider_BookingData()
 	{
 		return array(
 			array(array()),
-			array(array('Appointment' => array('foo')))
+			array(array('Booking' => array('foo')))
 		);
 	}
 	
 	/**
-	 * @dataProvider dataProvider_AppointmentData
+	 * @dataProvider dataProvider_BookingData
 	 */
 	public function testActionCreate_InvalidPostData_DoesNothing($data)
 	{
@@ -311,23 +311,23 @@ class AppointmentControllerTest extends CDbTestCase
 		$this->assertNull($this->controller->actionCreate());
 	}
 	
-	public function testActionCreate_ValidPostData_CreatesAppointment()
+	public function testActionCreate_ValidPostData_CreatesBooking()
 	{
-		$appointmentCount = count($this->appointments);
+		$bookingCount = count($this->bookings);
 		
-		$_POST['Appointment'] = array(
+		$_POST['Booking'] = array(
 			'element_operation_id' => $this->operations['element1']['id'],
 			'session_id' => $this->sessions[0]['id'],
 		);
 		
 		$this->assertNull($this->controller->actionCreate());
 		
-		$newAppointmentCount = Appointment::model()->count();
-		$this->assertEquals($appointmentCount + 1, $newAppointmentCount);
+		$newBookingCount = Booking::model()->count();
+		$this->assertEquals($bookingCount + 1, $newBookingCount);
 	}
 	
 	/**
-	 * @dataProvider dataProvider_AppointmentData
+	 * @dataProvider dataProvider_BookingData
 	 */
 	public function testActionUpdate_InvalidPostData_DoesNothing($data)
 	{
@@ -336,29 +336,32 @@ class AppointmentControllerTest extends CDbTestCase
 		$this->assertNull($this->controller->actionUpdate());
 	}
 	
-	public function testActionUpdate_ValidPostData_UpdatessAppointment()
+	public function testActionUpdate_ValidPostData_UpdatessBooking()
 	{
-		$appointmentCount = count($this->appointments);
+		$bookingCount = count($this->bookings);
 		
-		$appointment = new Appointment;
-		$appointment->attributes = $this->appointments[0];
+		$booking = $this->bookings('0');
 		
 		$sessionId = $this->sessions[1]['id'];
 		
-		$_POST['Appointment'] = array(
-			'id' => $appointment->id,
+		$bookingId = $booking->id;
+		
+		$_POST['Booking'] = array(
+			'id' => $bookingId,
 			'element_operation_id' => $this->operations['element1']['id'],
 			'session_id' => $sessionId,
-			'display_order' => $appointment->display_order,
+			'display_order' => $booking->display_order,
 		);
 		
-		$this->assertNotEquals($sessionId, $appointment->session_id);
+		$this->assertNotEquals($sessionId, $booking->session_id);
 		
 		$this->assertNull($this->controller->actionUpdate());
 		
-		$this->assertEquals($sessionId, $appointment->session_id);
+		$booking = Booking::model()->findByPk($bookingId);
 		
-		$newAppointmentCount = Appointment::model()->count();
-		$this->assertEquals($appointmentCount, $newAppointmentCount);
+		$this->assertEquals($sessionId, $booking->session_id);
+		
+		$newBookingCount = Booking::model()->count();
+		$this->assertEquals($bookingCount, $newBookingCount, 'Number of bookings should not have changed.');
 	}
 }

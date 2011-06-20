@@ -21,8 +21,8 @@ $this->widget('zii.widgets.jui.CJuiTabs', array(
     'options'=>array(
         'collapsible'=>true,
 		'select'=>"js:function(event, ui) {
-			if ($('#appointments').length > 0) {
-				$('#appointments').remove();
+			if ($('#bookings').length > 0) {
+				$('#bookings').remove();
 			}
 		}",
     ),

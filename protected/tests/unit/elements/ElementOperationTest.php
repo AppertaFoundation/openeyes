@@ -22,7 +22,7 @@ class ElementOperationTest extends CDbTestCase
 		'sequenceFirmAssignments' => 'SequenceFirmAssignment',
 		'sessions' => 'Session',
 		'operations' => 'ElementOperation',
-		'appointments' => 'Appointment',
+		'bookings' => 'Booking',
 		'theatres' => 'Theatre'
 	);
 
@@ -347,7 +347,7 @@ class ElementOperationTest extends CDbTestCase
 				$endTime = strtotime($session['end_time']);
 				$startTime = strtotime($session['start_time']);
 				$session['session_duration'] = '04:30:00';
-				$session['appointments_duration'] = 0;
+				$session['bookings_duration'] = 0;
 				$session['time_available'] = 270;
 				$sessions[] = $session;
 				$dates[] = $session['date'];
@@ -448,7 +448,7 @@ class ElementOperationTest extends CDbTestCase
 				$endTime = strtotime($session['end_time']);
 				$startTime = strtotime($session['start_time']);
 				$session['session_duration'] = '04:30:00';
-				$session['appointments_duration'] = 0;
+				$session['bookings_duration'] = 0;
 				$session['time_available'] = 270;
 				$sessions[] = $session;
 				$dates[] = $session['date'];
@@ -548,11 +548,11 @@ class ElementOperationTest extends CDbTestCase
 				$startTime = strtotime($session['start_time']);
 				$session['session_duration'] = '04:30:00';
 				if (!$fullSession) {
-					$session['appointments_duration'] = 270;
+					$session['bookings_duration'] = 270;
 					$session['time_available'] = 0;
 					$fullSession = $session['date'];
 				} else {
-					$session['appointments_duration'] = 0;
+					$session['bookings_duration'] = 0;
 					$session['time_available'] = 270;
 				}
 				$sessions[] = $session;
@@ -650,17 +650,17 @@ class ElementOperationTest extends CDbTestCase
 				$startTime = strtotime($session['start_time']);
 				$session['session_duration'] = '04:30:00';
 				if (!$fullSession) {
-					$session['appointments_duration'] = 270;
+					$session['bookings_duration'] = 270;
 					$session['time_available'] = 0;
 					
 					$extraSession = $session;
-					$extraSession['appointments_duration'] = 0;
+					$extraSession['bookings_duration'] = 0;
 					$extraSession['time_available'] = 270;
 					$sessions[] = $extraSession;
 					$fullSession = $session['date'];
 					$dates[] = $session['date'];
 				} else {
-					$session['appointments_duration'] = 0;
+					$session['bookings_duration'] = 0;
 					$session['time_available'] = 270;
 				}
 				$sessions[] = $session;
@@ -758,11 +758,11 @@ class ElementOperationTest extends CDbTestCase
 				$startTime = strtotime($session['start_time']);
 				$session['session_duration'] = '04:30:00';
 				if (!$openSession) {
-					$session['appointments_duration'] = 0;
+					$session['bookings_duration'] = 0;
 					$session['time_available'] = 270;
 					$openSession = $session['date'];
 				} else {
-					$session['appointments_duration'] = 270;
+					$session['bookings_duration'] = 270;
 					$session['time_available'] = 0;
 				}
 				$sessions[] = $session;
@@ -856,13 +856,13 @@ class ElementOperationTest extends CDbTestCase
 		$theatre = $this->theatres['theatre1'];
 		$sessions = array();
 		foreach ($sessionList as $session) {
-			$appointments = Appointment::model()->findAllByAttributes(
+			$bookings = Booking::model()->findAllByAttributes(
 				array('session_id' => $session['id']));
-			$appointmentCount = $appointmentTime = 0;
-			foreach ($appointments as $appt) {
-				$appointmentCount++;
+			$bookingCount = $bookingTime = 0;
+			foreach ($bookings as $appt) {
+				$bookingCount++;
 				$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
-				$appointmentTime += $operation->total_duration;
+				$bookingTime += $operation->total_duration;
 			}
 			$sessions[] = array(
 				'id' => $theatre['id'],
@@ -872,8 +872,8 @@ class ElementOperationTest extends CDbTestCase
 				'end_time' => $session['end_time'],
 				'session_id' => $session['id'],
 				'session_duration' => '04:30:00',
-				'appointments' => $appointmentCount,
-				'appointments_duration' => $appointmentTime,
+				'bookings' => $bookingCount,
+				'bookings_duration' => $bookingTime,
 			);
 		}
 		
@@ -881,7 +881,7 @@ class ElementOperationTest extends CDbTestCase
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
-			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
 			
@@ -935,13 +935,13 @@ class ElementOperationTest extends CDbTestCase
 
 		$sessions = array();
 		foreach ($sessionList as $session) {
-			$appointments = Appointment::model()->findAllByAttributes(
+			$bookings = Booking::model()->findAllByAttributes(
 				array('session_id' => $session['id']));
-			$appointmentCount = $appointmentTime = 0;
-			foreach ($appointments as $appt) {
-				$appointmentCount++;
+			$bookingCount = $bookingTime = 0;
+			foreach ($bookings as $appt) {
+				$bookingCount++;
 				$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
-				$appointmentTime += $operation->total_duration;
+				$bookingTime += $operation->total_duration;
 			}
 			$sessions[] = array(
 				'id' => $theatre['id'],
@@ -951,8 +951,8 @@ class ElementOperationTest extends CDbTestCase
 				'end_time' => $session['end_time'],
 				'session_id' => $session['id'],
 				'session_duration' => '04:30:00',
-				'appointments' => $appointmentCount,
-				'appointments_duration' => $appointmentTime,
+				'bookings' => $bookingCount,
+				'bookings_duration' => $bookingTime,
 			);
 			$sessions[] = array(
 				'id' => $theatre2['id'],
@@ -962,8 +962,8 @@ class ElementOperationTest extends CDbTestCase
 				'end_time' => $session['end_time'],
 				'session_id' => $session['id'],
 				'session_duration' => '04:30:00',
-				'appointments' => $appointmentCount,
-				'appointments_duration' => $appointmentTime,
+				'bookings' => $bookingCount,
+				'bookings_duration' => $bookingTime,
 			);
 		}
 		
@@ -971,7 +971,7 @@ class ElementOperationTest extends CDbTestCase
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
-			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
 			
@@ -1028,8 +1028,8 @@ class ElementOperationTest extends CDbTestCase
 				'end_time' => $session['end_time'],
 				'session_id' => $session['id'],
 				'session_duration' => '04:30:00',
-				'appointments' => 1,
-				'appointments_duration' => 270,
+				'bookings' => 1,
+				'bookings_duration' => 270,
 			);
 		}
 		
@@ -1037,7 +1037,7 @@ class ElementOperationTest extends CDbTestCase
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
-			$session['time_available'] = $session['duration'] - $session['appointments_duration'];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
 			
@@ -1085,18 +1085,18 @@ class ElementOperationTest extends CDbTestCase
 		
 		$result = $this->element->getSession($session['id']);
 		
-		$appointments = Appointment::model()->findAllByAttributes(
+		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id' => $session['id']));
-		$appointmentCount = $appointmentTime = 0;
-		foreach ($appointments as $appt) {
-			$appointmentCount++;
+		$bookingCount = $bookingTime = 0;
+		foreach ($bookings as $appt) {
+			$bookingCount++;
 			$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
-			$appointmentTime += $operation->total_duration;
+			$bookingTime += $operation->total_duration;
 		}
 		
 		$expected = array(
-			'appointments' => $appointmentCount,
-			'appointments_duration' => $appointmentTime,
+			'bookings' => $bookingCount,
+			'bookings_duration' => $bookingTime,
 			'date' => $session['date'],
 			'duration' => 240,
 			'start_time' => $session['start_time'],
@@ -1115,20 +1115,20 @@ class ElementOperationTest extends CDbTestCase
 		$session = $this->sessions[0];
 		$theatre = $this->theatres['theatre1'];
 		
-		$appointments = Appointment::model()->findAllByAttributes(
+		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id' => $session['id']));
-		$appointmentCount = $appointmentTime = 0;
-		foreach ($appointments as $appt) {
-			$appointmentCount++;
+		$bookingCount = $bookingTime = 0;
+		foreach ($bookings as $appt) {
+			$bookingCount++;
 			$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
 			$operation->total_duration = 240;
 			$operation->save();
-			$appointmentTime += $operation->total_duration;
+			$bookingTime += $operation->total_duration;
 		}
 		
 		$expected = array(
-			'appointments' => $appointmentCount,
-			'appointments_duration' => $appointmentTime,
+			'bookings' => $bookingCount,
+			'bookings_duration' => $bookingTime,
 			'date' => $session['date'],
 			'duration' => 240,
 			'start_time' => $session['start_time'],

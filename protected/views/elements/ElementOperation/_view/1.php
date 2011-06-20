@@ -70,7 +70,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 </div>
 <div class="view">
 	<?php echo CHtml::link("Schedule Now",
-		array('appointment/schedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false)); ?>
+		array('booking/schedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false)); ?>
 </div>
 <?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
