@@ -15,6 +15,31 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 <?php 
 } ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
+	<?php
+$this->widget('zii.widgets.jui.CJuiAccordion', array(
+    'panels'=>array(
+        'Operation details'=>$this->renderPartial('_operation',
+			array('operation' => $operation),true),
+    ),
+    // additional javascript options for the accordion plugin
+    'options'=>array(
+		'active'=>false,
+        'animated'=>'bounceslide',
+		'collapsible'=>true,
+    ),
+));
+$this->widget('zii.widgets.jui.CJuiAccordion', array(
+    'panels'=>array(
+        'Clinic details'=>$this->renderPartial('_clinic',
+			array('operation' => $operation),true),
+    ),
+    // additional javascript options for the accordion plugin
+    'options'=>array(
+		'active'=>false,
+        'animated'=>'bounceslide',
+		'collapsible'=>true,
+    ),
+));?>
 	<strong>Select a session date:</strong><br />
 	<div id="calendar">
 		<div id="session_dates">
