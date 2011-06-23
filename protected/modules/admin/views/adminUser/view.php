@@ -9,6 +9,7 @@ $this->menu=array(
 	array('label'=>'Create User', 'url'=>array('create')),
 	array('label'=>'Update User', 'url'=>array('update', 'id'=>$model->id)),
 	array('label'=>'Manage User', 'url'=>array('admin')),
+	array('label'=>'User Rights', 'url'=>array('rights', 'id'=>$model->id)),
 );
 ?>
 
@@ -26,5 +27,9 @@ $this->menu=array(
 			'name' => 'active',
 			'value' => CHtml::encode($model->getActiveText())
 		),
+                array(
+                        'name' => 'global_firm_rights',
+                        'value' => CHtml::encode($model->getGlobalFirmRightsText())
+                ),
 	),
 )); ?>

@@ -6,6 +6,8 @@ class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
 
+// @todo - this controller doesn't seem to care if you're not logged in! Check this and all other controllers.
+
 	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
