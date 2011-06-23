@@ -4,9 +4,9 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 <p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-<p><strong>Operation Details</strong></p>
 <div id="operation">
-	<h1>Schedule operation > Select theatre slot</h1><br />
+	<input type="hidden" id="booking" value="<?php echo $operation->booking->id; ?>" />
+	<h1>Re-schedule operation</h1><br />
 <?php
 if (Yii::app()->user->hasFlash('info')) { ?>
 <div class="flash-error">
@@ -15,32 +15,9 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 <?php 
 } ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
-	<?php
-$this->widget('zii.widgets.jui.CJuiAccordion', array(
-    'panels'=>array(
-        'Operation details'=>$this->renderPartial('_operation',
-			array('operation' => $operation),true),
-    ),
-    // additional javascript options for the accordion plugin
-    'options'=>array(
-		'active'=>false,
-        'animated'=>'bounceslide',
-		'collapsible'=>true,
-    ),
-));
-$this->widget('zii.widgets.jui.CJuiAccordion', array(
-    'panels'=>array(
-        'Clinic details'=>$this->renderPartial('_clinic',
-			array('operation' => $operation),true),
-    ),
-    // additional javascript options for the accordion plugin
-    'options'=>array(
-		'active'=>false,
-        'animated'=>'bounceslide',
-		'collapsible'=>true,
-    ),
-));?>
-	<strong>Select a session date:</strong><br />
+	<p><strong>Current schedule:</strong></p>
+<?php $this->renderPartial('_session', array('operation' => $operation)); ?><br />
+	<p><strong>Select a session date:</strong></p>
 	<div id="calendar">
 		<div id="session_dates">
 		<div id="details">

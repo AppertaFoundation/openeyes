@@ -68,21 +68,71 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 	<?php echo CHtml::encode($data->getScheduleText()); ?>
 	<br />
 </div>
+<?php
+if (empty($data->booking)) { ?>
 <div class="view">
 	<?php echo CHtml::link("Schedule Now",
 		array('booking/schedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false)); ?>
 </div>
 <?php
+	$confirmJs = "js:function() {
+			$('#confirm').live('click', function() {
+				var operation = $('input[id=operation]').val();
+				var session = $('input[name=session_id]').val();
+				$.post('index.php?r=booking/create', {
+					'Booking': {
+						'element_operation_id': operation,
+						'session_id': session
+					}
+				});
+				$.fancybox.close();
+			});
+		}";
+} else { ?>
+<div class="view">
+<?php
+	$this->renderPartial('/booking/_session',array('operation' => $data));
+	$this->widget('zii.widgets.jui.CJuiAccordion', array(
+		'panels'=>array(
+			'Clinic details'=>$this->renderPartial('/booking/_clinic',
+				array('operation' => $data),true),
+		),
+		// additional javascript options for the accordion plugin
+		'options'=>array(
+			'active'=>false,
+			'animated'=>'bounceslide',
+			'collapsible'=>true,
+		),
+	));
+	echo CHtml::link("Re-Schedule",
+		array('booking/reschedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false));
+	
+	$confirmJs = "js:function() {
+			$('#confirm').live('click', function() {
+				var booking = $('input[id=booking]').val();
+				var operation = $('input[id=operation]').val();
+				var session = $('input[name=session_id]').val();
+				$.post('index.php?r=booking/update', {
+					'Booking': {
+						'id': booking,
+						'element_operation_id': operation,
+						'session_id': session
+					}
+				});
+				$.fancybox.close();
+			});
+		}";
+	?></div>
+<?php
+}
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 }
 $this->widget('application.extensions.fancybox.EFancyBox', array(
-    'target'=>'a#inline',
-    'config'=>array(),
-    )
-); ?>
-<script type="text/javascript">
-	$('#cancel').live('click', function() {
-		$.fancybox.close();
-	});
-</script>
+	'target'=>'a#inline',
+	'config'=>array(
+		'onComplete' => $confirmJs,
+	),
+	)
+);
+?>

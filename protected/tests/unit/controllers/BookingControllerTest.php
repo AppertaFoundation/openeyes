@@ -20,6 +20,14 @@ class BookingControllerTest extends CDbTestCase
 		parent::setUp();
 	}
 	
+	public function dataProvider_BookingData()
+	{
+		return array(
+			array(array()),
+			array(array('Booking' => array('foo')))
+		);
+	}
+	
 	public function testActionSchedule_InvalidOperationId_ThrowsException()
 	{
 		$mockController = $this->getMock('BookingController', array('renderPartial'),
@@ -73,6 +81,61 @@ class BookingControllerTest extends CDbTestCase
 				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions));
 		
 		$mockController->actionSchedule();
+	}
+	
+	public function testActionReschedule_InvalidOperationId_ThrowsException()
+	{
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
+		$mockController->expects($this->never())
+			->method('renderPartial');
+		
+		$this->setExpectedException('Exception', 'Operation id is invalid.');
+		$mockController->actionReschedule();
+	}
+	
+	public function testActionReschedule_DateCheck_RendersPartial()
+	{
+		$lastTime = strtotime('-5 weeks');
+		
+		$event = $this->events('event1');
+		$event->datetime = date('Y-m-d', $lastTime);
+		$event->save();
+		
+		$operation = $this->operations('element1');
+		$minDate = $operation->getMinDate();
+		$sessions = $operation->getSessions();
+		
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		
+		$_GET['operation'] = $operation->id;
+		
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('/booking/_reschedule', 
+				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions));
+		
+		$mockController->actionReschedule();
+	}
+	
+	public function testActionReschedule_ValidOperationId_RendersPartial()
+	{
+		$operation = $this->operations('element1');
+		$minDate = $operation->getMinDate();
+		$sessions = $operation->getSessions();
+		
+		$_GET['operation'] = $operation->id;
+		
+		$mockController = $this->getMock('BookingController', array('renderPartial'),
+			array('BookingController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('/booking/_reschedule', 
+				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions));
+		
+		$mockController->actionReschedule();
 	}
 	
 	public function testActionSessions_InvalidOperationId_ThrowsException()
@@ -293,14 +356,6 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->actionList();
 	}
 	
-	public function dataProvider_BookingData()
-	{
-		return array(
-			array(array()),
-			array(array('Booking' => array('foo')))
-		);
-	}
-	
 	/**
 	 * @dataProvider dataProvider_BookingData
 	 */
@@ -308,7 +363,13 @@ class BookingControllerTest extends CDbTestCase
 	{
 		$_POST = $data;
 		
-		$this->assertNull($this->controller->actionCreate());
+		$mockController = $this->getMock('BookingController',
+			array('redirect'), array('BookingController'));
+
+		$mockController->expects($this->never())
+			->method('redirect');
+		
+		$mockController->actionCreate();
 	}
 	
 	public function testActionCreate_ValidPostData_CreatesBooking()
@@ -320,7 +381,13 @@ class BookingControllerTest extends CDbTestCase
 			'session_id' => $this->sessions[0]['id'],
 		);
 		
-		$this->assertNull($this->controller->actionCreate());
+		$mockController = $this->getMock('BookingController',
+			array('redirect'), array('BookingController'));
+
+		$mockController->expects($this->once())
+			->method('redirect');
+		
+		$mockController->actionCreate();
 		
 		$newBookingCount = Booking::model()->count();
 		$this->assertEquals($bookingCount + 1, $newBookingCount);
@@ -333,7 +400,13 @@ class BookingControllerTest extends CDbTestCase
 	{
 		$_POST = $data;
 		
-		$this->assertNull($this->controller->actionUpdate());
+		$mockController = $this->getMock('BookingController',
+			array('redirect'), array('BookingController'));
+
+		$mockController->expects($this->never())
+			->method('redirect');
+		
+		$mockController->actionUpdate();
 	}
 	
 	public function testActionUpdate_ValidPostData_UpdatessBooking()
@@ -355,7 +428,13 @@ class BookingControllerTest extends CDbTestCase
 		
 		$this->assertNotEquals($sessionId, $booking->session_id);
 		
-		$this->assertNull($this->controller->actionUpdate());
+		$mockController = $this->getMock('BookingController',
+			array('redirect'), array('BookingController'));
+
+		$mockController->expects($this->once())
+			->method('redirect');
+		
+		$mockController->actionUpdate();
 		
 		$booking = Booking::model()->findByPk($bookingId);
 		

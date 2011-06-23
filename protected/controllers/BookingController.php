@@ -20,6 +20,24 @@ class BookingController extends BaseController
 	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
+	public function actionReschedule()
+	{
+		$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
+		$operation = ElementOperation::model()->findByPk($operationId);
+		if (empty($operation)) {
+			throw new Exception('Operation id is invalid.');
+		}
+		$minDate = $operation->getMinDate();
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		if ($minDate < $thisMonth) {
+			$minDate = $thisMonth;
+		}
+		$sessions = $operation->getSessions();
+		
+		$this->renderPartial('/booking/_reschedule', 
+	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+	}
+	
 	public function actionSessions()
 	{
 		$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
@@ -114,14 +132,10 @@ class BookingController extends BaseController
 			$model->display_order = $displayOrder;
 			
 			if ($model->save()) {
-//				$this->redirect(array('view','id'=>$model->id));
+				Yii::app()->user->setFlash('success','Booking saved.');
+				$this->redirect(array('clinical/view','id'=>$model->elementOperation->id));
 			}
 		}
-
-//		$this->render('create',array(
-//			'model'=>$model,
-//			'firm'=>$firmAssociation
-//		));
 	}
 	
 	public function actionUpdate()
@@ -131,7 +145,8 @@ class BookingController extends BaseController
 			$model->attributes = $_POST['Booking'];
 			
 			if ($model->save()) {
-//				$this->redirect(array('view','id'=>$model->id));
+				Yii::app()->user->setFlash('success','Booking saved.');
+				$this->redirect(array('clinical/view','id'=>$model->elementOperation->id));
 			}
 		}
 	}

@@ -8,6 +8,16 @@ $firm = $operation->event->episode->firm; ?>
 	<strong>Firm:</strong>
 	<?php echo CHtml::encode($firm->name); ?>
 </div>
+<?php
+if (!empty($operation->booking)) {
+	$theatre = $operation->booking->session->sequence->theatre; ?>
+<div class="view">
+	<strong>Location:</strong>
+	<?php echo CHtml::encode($theatre->site->name) . ' - ' . 
+		CHtml::encode($theatre->name); ?>
+</div>
+<?php	
+} ?>
 <div class="view">
 	<strong>Referral date:</strong>
 </div>
