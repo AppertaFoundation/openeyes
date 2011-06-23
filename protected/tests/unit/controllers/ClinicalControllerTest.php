@@ -14,6 +14,8 @@ class ClinicalControllerTest extends CDbTestCase
 		'siteElementTypes' => 'SiteElementType',
 		'elementHistories' => 'ElementHistory',
 		'elementPOHs' => 'ElementPOH',
+		'referrals' => 'Referral',
+		'referralEpisodeAssignments' => 'ReferralEpisodeAssignment'
 	);
 
 	protected $controller;
@@ -29,6 +31,60 @@ class ClinicalControllerTest extends CDbTestCase
 		return array(
 			array('1','9'),
 		);
+	}
+
+	public function testActionChooseReferral_InvalidReferral_ThrowsException()
+	{
+		$fakeId = 12345;
+
+		$this->setExpectedException('CHttpException', 'Invalid referral episode assignment id.');
+		$this->controller->actionChooseReferral($fakeId);
+	}
+
+	public function testActionChooseReferral_RendersChooseReferralView()
+	{
+		$id = 1;
+		$patientId = 1;
+
+		$mockController = $this->getMock('ClinicalController', array('render'),
+			array('ClinicalController'));
+
+		$mockController->patientId = $patientId;
+
+		$referrals = array(
+			'referral1' => $this->referrals['referral1'],
+			'referral2' => $this->referrals['referral2']
+		);
+
+		$mockController->expects($this->any())
+			->method('render')
+			->with('chooseReferral', array(
+				'id' => $id,
+				'referrals' => CHtml::listData($referrals, 'id', 'refno')
+			)
+		);
+
+		$mockController->actionChooseReferral($id);
+	}
+
+	public function testActionChooseReferral_ValidPostData_RendersViewView()
+	{
+		$id = 1;
+		$patientId = 1;
+
+		$_POST['action'] = 'chooseReferral';
+		$_POST['referral_id'] = 1;
+
+		$mockController = $this->getMock('ClinicalController',
+			array('redirect'), array('ClinicalController'));
+
+		$mockController->patientId = $patientId;
+
+		$mockController->expects($this->once())
+			->method('redirect')
+			->with(array('view', 'id' => 1));
+
+		$mockController->actionChooseReferral($id);
 	}
 
 	public function testActionIndex_RendersIndexView()

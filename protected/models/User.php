@@ -12,6 +12,7 @@
  * @property integer $active
  * @property string $password
  * @property string $salt
+ * @property integer $global_firm_rights
  */
 class User extends CActiveRecord
 {
@@ -46,7 +47,7 @@ class User extends CActiveRecord
 		$commonRules = array(
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
-			array('id, username, first_name, last_name, email, active', 'safe', 'on'=>'search'),
+			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
 		);
 
 		// @todo - sort out rules for minimum username, first_name etc. length for BASIC, and for LDAP for that matter
@@ -55,7 +56,7 @@ class User extends CActiveRecord
 				$commonRules,
 				array(
 					array('username', 'match', 'pattern' => '/^[\w|_]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
-					array('username, password, password_repeat, email, first_name, last_name, active', 'required'),
+					array('username, password, password_repeat, email, first_name, last_name, active, global_firm_rights', 'required'),
 					array('username, password, first_name, last_name', 'length', 'max' => 40),
 					array('password', 'length', 'min' => 6, 'message' => 'Passwords must be at least 6 characters long.'),
 					array('email', 'length', 'max' => 80),
@@ -70,7 +71,7 @@ class User extends CActiveRecord
 			return array_merge(
 				$commonRules,
 				array(
-					array('username, active', 'required'),
+					array('username, active, global_firm_rights', 'required'),
 					array('username', 'length', 'max' => 40)
 				)
 			);
@@ -88,7 +89,9 @@ class User extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
-			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)')
+			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)'),
+			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
+			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)')
 		);
 	}
 
@@ -105,6 +108,7 @@ class User extends CActiveRecord
 			'email' => 'Email',
 			'active' => 'Active',
 			'password' => 'Password',
+			'global_firm_rights' => 'Global firm rights'
 		);
 	}
 
@@ -122,6 +126,7 @@ class User extends CActiveRecord
 		$criteria->compare('last_name',$this->last_name,true);
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('active',$this->active);
+		$criteria->compare('global_firm_rights',$this->global_firm_rights);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -202,4 +207,17 @@ class User extends CActiveRecord
 			return 'No';
 		}
 	}
+
+        /**
+         * Displays a string indicating whether the user account is active
+         * @return String
+         */
+        public function getGlobalFirmRightsText()
+        {
+                if ($this->global_firm_rights) {
+                        return 'Yes';
+                } else {
+                        return 'No';
+                }
+        }
 }

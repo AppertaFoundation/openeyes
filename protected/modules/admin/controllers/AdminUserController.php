@@ -68,6 +68,7 @@ class AdminUserController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
+// @todo - should 'User Rights' be on the same page as 'Create User' and 'Update User'
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -132,6 +133,37 @@ class AdminUserController extends Controller
 
 		$this->render('admin',array(
 			'model'=>$model,
+		));
+	}
+
+	/**
+	 * Updates the rights a user has to use firms and firms associated with services
+	 *
+	 * @param int $id
+	 */
+	public function actionRights($id)
+	{
+		$model = $this->loadModel($id);
+
+		if (!isset($model)) {
+			throw new CHttpException(403, 'Invalid user id.');
+		}
+
+		$service = new RightsService($model->id);
+// @todo - change to a service?
+		$rights = $service->loadRights();
+
+		if(isset($_POST['Rights']))
+		{
+// @todo - change tables names to singular
+			$service->saveRights();
+
+			$this->redirect(array('view','id'=>$model->id));
+		}
+
+		$this->render('rights',array(
+			'model'=>$model,
+			'rights' => $rights,
 		));
 	}
 

@@ -22,6 +22,10 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('active')); ?>:</b>
 	<?php echo CHtml::encode($data->getActiveText()); ?>
+
+        <b><?php echo CHtml::encode($data->getAttributeLabel('global_firm_rights')); ?>:</b>
+        <?php echo CHtml::encode($data->getGlobalFirmRightsText()); ?>
+
  	<br />
 
 </div>

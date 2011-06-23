@@ -56,6 +56,12 @@
 		<?php echo $form->error($model,'active'); ?>
 	</div>
 
+        <div class="row">
+                <?php echo $form->labelEx($model,'global_firm_rights'); ?>
+                <?php echo $form->checkBox($model,'global_firm_rights'); ?>
+                <?php echo $form->error($model,'global_firm_rights'); ?>
+        </div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
