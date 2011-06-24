@@ -35,7 +35,7 @@ class m110620_144038_create_firm_authorisation_tables extends CDbMigration
 
         public function down()
         {
-		$this->dropColumn('referral', 'date_closed');
+		$this->dropColumn('referral', 'closed');
 
 		$this->dropColumn('user', 'global_firm_rights');
 
