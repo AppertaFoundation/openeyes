@@ -266,3 +266,34 @@ button img {
         height: 32px;
 }
 
+#login {
+	margin: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	top: 170px;
+	width: 440px;
+	height: 160px;
+	overflow: visible;
+	border: 1px solid;
+	padding: 30px 0;
+}
+
+#login img {
+	height: 30px;
+	width: 40px;
+}
+
+#heading {
+	margin: auto;
+	width: 100%;
+	text-align: center;
+}
+
+#heading h1 {
+	display: inline;
+	vertical-align: top;
+}
+
+#login .form {
+	text-align: center;
+}
