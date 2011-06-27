@@ -18,7 +18,7 @@ body
 #header
 {
 	margin: 0;
-	padding: 0;
+	padding: 10px 20px;
 	border-top: 3px solid #C9E0ED;
 }
 
@@ -43,8 +43,14 @@ body
 
 #logo
 {
-	padding: 10px 20px;
+	padding: 0;
 	font-size: 200%;
+	float: left;
+}
+
+#logo img {
+	height: 30px;
+	width: 40px;
 }
 
 #mainmenu
@@ -296,4 +302,40 @@ button img {
 
 #login .form {
 	text-align: center;
+}
+
+#user_info {
+	float: right;
+}
+
+#user_info form {
+	display: inline;
+}
+
+ul#navlist {
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	display: inline;
+	padding-left: 8px;
+}
+
+#navlist li {
+	list-style-type: none;
+	padding: 4px 0;
+	margin: 0;
+	display: inline;
+}
+
+#navlist a, #navlist span {
+	padding: 0 8px;
+	border-left: 1px solid #999;
+}
+
+.clear {
+	clear: both;
+}
+
+#patient_search {
+	
 }
