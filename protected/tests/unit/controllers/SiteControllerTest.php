@@ -125,13 +125,29 @@ class SiteControllerTest extends CDbTestCase
 		$this->assertEquals($expected, $this->controller->actions());
 	}
 	
-	public function testActionIndex_RendersIndexView()
+	public function testActionIndex_NotLoggedIn_RedirectsToLogin()
 	{
 		$mockController = $this->getMock('SiteController', array('render'),
 			array('SiteController'));
 		$mockController->expects($this->any())
+			->method('render');
+		$mockController->actionIndex();
+	}
+	
+	public function testActionIndex_LoggedIn_RendersIndexView()
+	{
+		$userInfo = $this->users['user1'];
+		$identity = new UserIdentity('JoeBloggs', 'secret');
+		$identity->authenticate();
+		Yii::app()->user->login($identity);	
+		
+		$mockController = $this->getMock('SiteController', array('render', 'redirect'),
+			array('SiteController'));
+		$mockController->expects($this->once())
 			->method('render')
 			->with('index');
+		$mockController->expects($this->never())
+			->method('redirect');
 		$mockController->actionIndex();
 	}
 	

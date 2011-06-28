@@ -2,6 +2,24 @@
 
 class BookingController extends BaseController
 {
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny', 
+				'users'=>array('?')
+			),
+		);
+	}
+	
 	public function actionSchedule()
 	{
 		$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;

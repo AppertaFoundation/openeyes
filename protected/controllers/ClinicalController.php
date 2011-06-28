@@ -7,6 +7,24 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny', 
+				'users'=>array('?')
+			),
+		);
+	}
 
 	protected function beforeAction($action)
 	{
