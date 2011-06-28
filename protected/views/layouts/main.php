@@ -51,5 +51,20 @@
 
 </div><!-- page -->
 
+<script type="text/javascript">
+	$('select[id=selected_firm_id]').live('change', function() {
+		var firmId = $('select[id=selected_firm_id]').val();
+		$.ajax({
+			type: 'post',
+			url: '<?php echo Yii::app()->createUrl('site'); ?>',
+			data: {'selected_firm_id': firmId },
+			success: function(data) {
+				console.log(data);
+				window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
+			}
+		});
+	});
+</script>
+
 </body>
 </html>
