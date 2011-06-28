@@ -64,7 +64,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
-				'url': 'index.php?r=booking/sessions',
+				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
 				'data': {'operation': operation, 'date': month},
 				'success': function(data) {
@@ -83,7 +83,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
-				'url': 'index.php?r=booking/sessions',
+				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
 				'data': {'operation': operation, 'date': month},
 				'success': function(data) {
@@ -105,7 +105,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
-				'url': 'index.php?r=booking/theatres',
+				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
 				'data': {'operation': operation, 'month': month, 'day': day},
 				'success': function(data) {
@@ -127,7 +127,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			var operation = $('input[id=operation]').val();
 			var day = $('.selected_date').text();
 			$.ajax({
-				'url': 'index.php?r=booking/list',
+				'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
 				'type': 'GET',
 				'data': {
 					'operation': operation,

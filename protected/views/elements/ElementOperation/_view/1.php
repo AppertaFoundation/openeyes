@@ -79,7 +79,7 @@ if (empty($data->booking)) { ?>
 			$('#confirm').live('click', function() {
 				var operation = $('input[id=operation]').val();
 				var session = $('input[name=session_id]').val();
-				$.post('index.php?r=booking/create', {
+				$.post('" . Yii::app()->createUrl('booking/create') . "', {
 					'Booking': {
 						'element_operation_id': operation,
 						'session_id': session
@@ -112,7 +112,7 @@ if (empty($data->booking)) { ?>
 				var booking = $('input[id=booking]').val();
 				var operation = $('input[id=operation]').val();
 				var session = $('input[name=session_id]').val();
-				$.post('index.php?r=booking/update', {
+				$.post('" . Yii::app()->createUrl('booking/update') . "', {
 					'Booking': {
 						'id': booking,
 						'element_operation_id': operation,

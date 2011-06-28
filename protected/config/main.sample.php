@@ -41,16 +41,16 @@ return CMap::mergeArray(
 				'class'=>'system.test.CDbFixtureManager',
 			),
 			// uncomment the following to enable URLs in path-format
-			/*
 			'urlManager'=>array(
 				'urlFormat'=>'path',
+				'showScriptName'=>false,
 				'rules'=>array(
+					'' => 'site/index', // default action
 					'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 					'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 					'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 				),
 			),
-			*/
 			// uncomment the following line to use a sqlite database
 			/*
 			'db'=>array(
