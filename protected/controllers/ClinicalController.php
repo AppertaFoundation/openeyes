@@ -37,12 +37,14 @@ class ClinicalController extends BaseController
 			null, null, null, $this->getUserId(), $event
 		);
 
+		$this->logActivity('viewed event');
+
 		$this->render('view', array('elements' => $elements));
 	}
 
 	public function actionIndex()
 	{
-		$this->render('index');
+		$this->logActivity('viewed patient index');
 
 		if (Yii::app()->params['use_pas']) {
 			// @todo - this is here until we decide where the best place to put it is.
@@ -50,6 +52,8 @@ class ClinicalController extends BaseController
 			$referralService = new ReferralService;
 			$referralService->search($patient->pas_key);
 		}
+
+		$this->render('index');	
 	}
 
 	/**
@@ -88,6 +92,8 @@ class ClinicalController extends BaseController
 			);
 
 			if ($eventId) {
+				$this->logActivity('created event.');
+
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} else {
@@ -148,6 +154,8 @@ class ClinicalController extends BaseController
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} else {
+					$this->logActivity('updated event');
+
 					// Nothing has gone wrong with updating elements, go to the view page
 					$this->redirect(array('view', 'id' => $event->id));
 				}
@@ -193,6 +201,8 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'No summary.');
 		}
 
+		$this->logActivity('viewed patient summary');
+
 		$this->render('summary', array(
 				'episode' => $episode,
 				'summary' => $_GET['summary']
@@ -225,6 +235,8 @@ class ClinicalController extends BaseController
 				$referralEpisode->referral_id = $_POST['referral_id'];
 
 				if ($referralEpisode->save()) {
+					$this->logActivity('chose a referral');
+
 					$this->redirect(array('view', 'id' => $id));
 					return;
 				}

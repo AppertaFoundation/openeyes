@@ -32,6 +32,8 @@ class PatientController extends BaseController
 		$app->session['patient_id'] = $patient->id;
 		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
 
+		$this->logActivity('viewed patient');
+
 		$this->render('view', array(
 			'model' => $patient
 		));
