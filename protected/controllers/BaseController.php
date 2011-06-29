@@ -58,4 +58,11 @@ class BaseController extends Controller
 			$this->patientName = $app->session['patient_name'];
 		}
 	}
+
+	public function logActivity($message)
+	{
+		$addr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
+
+		Yii::log($message . ' from ' . $addr, "user", "userActivity");
+	}
 }

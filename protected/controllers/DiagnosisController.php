@@ -1,5 +1,7 @@
 <?php
 
+// @todo - as diagnosis is now an element type this controller and any attendant model can probably be deleted along with DisorderController.php.
+
 class DiagnosisController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';
