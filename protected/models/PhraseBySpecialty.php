@@ -15,7 +15,7 @@
  * @property Specialty $specialty
  * @property Section $section
  */
-class PhraseBySpecialty extends CActiveRecord
+class PhraseBySpecialty extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

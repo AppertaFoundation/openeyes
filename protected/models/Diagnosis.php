@@ -16,7 +16,7 @@
  * @property User $user
  * @property Disorder $disorder
  */
-class Diagnosis extends CActiveRecord
+class Diagnosis extends BaseActiveRecord
 {
 	public $common_ophthalmic_disorder_id;
 	public $common_systemic_disorder_id;

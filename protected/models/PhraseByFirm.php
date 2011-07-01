@@ -15,7 +15,7 @@
  * @property Firm $firm
  * @property Section $section
  */
-class PhraseByFirm extends CActiveRecord
+class PhraseByFirm extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

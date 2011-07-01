@@ -13,7 +13,7 @@
  * @property integer $country_id
  * @property string $email
  */
-class Address extends CActiveRecord
+class Address extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

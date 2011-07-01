@@ -15,7 +15,7 @@
  * @property Firm $firm
  * @property Event[] $events
  */
-class Episode extends CActiveRecord
+class Episode extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

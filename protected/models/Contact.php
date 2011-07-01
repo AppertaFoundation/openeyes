@@ -10,7 +10,7 @@
  * The followings are the available model relations:
  * @property Firm[] $firms
  */
-class Contact extends CActiveRecord
+class Contact extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

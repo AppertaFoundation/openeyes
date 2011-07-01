@@ -10,7 +10,7 @@
  * The followings are the available model relations:
  * @property Disorder $disorder
  */
-class CommonSystemicDisorder extends CActiveRecord
+class CommonSystemicDisorder extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

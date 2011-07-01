@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A class that all OpenEyes classes should extend.
+ * A class that all OpenEyes active record classes should extend.
  *
  * Currently its only purpose is to remove all html tags to
  * prevent XSS.

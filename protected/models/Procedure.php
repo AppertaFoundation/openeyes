@@ -15,7 +15,7 @@
  * @property ServiceSubsection $serviceSubsection
  * @property OpcsCode[] $opcsCodes
  */
-class Procedure extends CActiveRecord
+class Procedure extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -16,7 +16,7 @@
  * @property integer $address_id
  * @property string  $primary_phone
  */
-class Patient extends CActiveRecord
+class Patient extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

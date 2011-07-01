@@ -8,7 +8,7 @@
  * @property string $name
  * @property integer $macro_only
  */
-class ContactType extends CActiveRecord
+class ContactType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

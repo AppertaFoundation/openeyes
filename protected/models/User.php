@@ -13,7 +13,7 @@
  * @property string $password
  * @property string $salt
  */
-class User extends CActiveRecord
+class User extends BaseActiveRecord
 {
 	/**
 	 * Used to check password and password confirmation match

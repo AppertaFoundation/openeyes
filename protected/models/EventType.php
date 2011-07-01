@@ -11,7 +11,7 @@
  * @property Event[] $events
  * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
-class EventType extends CActiveRecord
+class EventType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

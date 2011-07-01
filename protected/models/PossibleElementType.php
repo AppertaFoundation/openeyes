@@ -16,7 +16,7 @@
  * @property ElementType $elementType
  * @property PossibleElementTypeSpecialtyAssignment[] $PossibleElementTypeSpecialtyAssignments
  */
-class PossibleElementType extends CActiveRecord
+class PossibleElementType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
