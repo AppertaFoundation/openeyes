@@ -44,7 +44,8 @@ class m110421_103008_phrase_by_firm_data extends CDbMigration
 
 	public function down()
 	{
-		$this->delete('section', 'section_type_id=:section_type_id', array(':section_type_id' => $section_type_letter['id']));
+		$section_type_letter = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name'=> 'Letter'))->queryRow();
 		$this->truncateTable('phrase_by_firm');
+		$this->delete('section', 'section_type_id=:section_type_id', array(':section_type_id' => $section_type_letter['id']));
 	}
 }

@@ -14,7 +14,7 @@
  * @property string $salt
  * @property integer $global_firm_rights
  */
-class User extends CActiveRecord
+class User extends BaseActiveRecord
 {
 	/**
 	 * Used to check password and password confirmation match

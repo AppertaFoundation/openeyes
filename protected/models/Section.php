@@ -11,7 +11,7 @@
  * The followings are the available model relations:
  * @property Phrase[] $phrases
  */
-class Section extends CActiveRecord
+class Section extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

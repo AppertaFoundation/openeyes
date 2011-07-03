@@ -11,7 +11,7 @@
  * The followings are the available model relations:
  * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
-class ElementType extends CActiveRecord
+class ElementType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

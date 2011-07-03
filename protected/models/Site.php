@@ -11,7 +11,7 @@
  * @property Theatre[] $theatres
  * @property Ward[] $wards
  */
-class Site extends CActiveRecord
+class Site extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

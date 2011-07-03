@@ -266,3 +266,29 @@ button img {
         height: 32px;
 }
 
+
+/* element_letterout */
+
+.element_letterout_left {
+	width:20%;
+	float:left;
+}
+
+.element_letterout_right {
+	width:70%;
+	float:left
+}
+
+.row_element_letterout {
+	clear:both;
+	border-top:1px dashed #ccc;
+}
+
+h2.element_letterout {
+	font-size:1.8em;
+	padding-top:15px;
+}
+
+h3.element_letterout {
+	font-size:1.2em;
+}

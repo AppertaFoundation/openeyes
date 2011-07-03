@@ -10,7 +10,7 @@
  * The followings are the available model relations:
  * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
  */
-class Service extends CActiveRecord
+class Service extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

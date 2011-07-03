@@ -14,7 +14,7 @@
  * @property LetterTemplate[] $letterTemplates
  * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
  */
-class Specialty extends CActiveRecord
+class Specialty extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

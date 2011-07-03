@@ -1,18 +1,18 @@
 <?php
 
 /**
- * This is the model class for table "contact_type".
+ * This is the model class for table "element_letterout".
  *
- * The followings are the available columns in table 'contact_type':
+ * The followings are the available columns in table 'element_letterout':
  * @property string $id
- * @property string $name
- * @property integer $macro_only
+ * @property string $event_id
+ * @property string $value
  */
-class ContactType extends BaseActiveRecord
+class ElementLetterOut extends BaseElement
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContactType the static model class
+	 * @return ElementLetterOut the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -24,7 +24,7 @@ class ContactType extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contact_type';
+		return 'element_letterout';
 	}
 
 	/**
@@ -32,12 +32,13 @@ class ContactType extends BaseActiveRecord
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			array('name', 'length', 'max'=>40),
+			array('value, event_id, from_address, date, dear, re, to_address', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, event_id, from_address, date, dear, re, value, to_address', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -59,8 +60,13 @@ class ContactType extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'macro_only' => 'Macro Only',
+			'event_id' => 'Event',
+			'from_address' => 'From',
+			'date' => 'Date',
+			'dear' => 'Dear...',
+			're' => 'RE',
+			'value' => 'Text',
+			'to_address' => 'To'
 		);
 	}
 
@@ -76,8 +82,8 @@ class ContactType extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('macro_only', 0);
+		$criteria->compare('event_id',$this->event_id,true);
+		$criteria->compare('value',$this->value,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

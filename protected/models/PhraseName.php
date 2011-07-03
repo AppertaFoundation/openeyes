@@ -10,7 +10,7 @@
  * The followings are the available model relations:
  * @property Section $section
  */
-class PhraseName extends CActiveRecord
+class PhraseName extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

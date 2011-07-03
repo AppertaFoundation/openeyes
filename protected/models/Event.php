@@ -15,7 +15,7 @@
  * @property User $user
  * @property EventType $eventType
  */
-class Event extends CActiveRecord
+class Event extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

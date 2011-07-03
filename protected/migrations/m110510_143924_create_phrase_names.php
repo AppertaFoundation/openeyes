@@ -67,6 +67,5 @@ class m110510_143924_create_phrase_names extends CDbMigration
 	public function down()
 	{
 		echo "m110510_143924_create_phrase_names does not support migration down.\n";
-		return false;
 	}
 }

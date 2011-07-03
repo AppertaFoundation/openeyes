@@ -15,7 +15,7 @@
  * @property ContactType $contactType
  * @property Specialty $specialty
  */
-class LetterTemplate extends CActiveRecord
+class LetterTemplate extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -7,7 +7,7 @@
  * @property string $id
  * @property string $name
  */
-class SectionType extends CActiveRecord
+class SectionType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

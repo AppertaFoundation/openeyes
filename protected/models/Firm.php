@@ -14,7 +14,7 @@
  * @property FirmUserAssignment[] $firmUserAssignments
  * @property LetterPhrase[] $letterPhrases
  */
-class Firm extends CActiveRecord
+class Firm extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

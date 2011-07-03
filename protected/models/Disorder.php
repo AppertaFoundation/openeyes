@@ -14,7 +14,7 @@
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
  * @property Diagnosis[] $diagnosises
  */
-class Disorder extends CActiveRecord
+class Disorder extends BaseActiveRecord
 {
 	const SITE_LEFT = 0;
 	const SITE_RIGHT = 1;

@@ -10,7 +10,7 @@
  * @property string $medical_phrase
  * @property string $layman_phrase
  */
-class NSCGrade extends CActiveRecord
+class NSCGrade extends BaseActiveRecord
 {
 	const RETINOPATHY = 1;
 	const MACULOPATHY = 2;
