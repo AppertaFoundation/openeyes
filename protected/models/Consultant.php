@@ -1,23 +1,22 @@
 <?php
 
 /**
- * This is the model class for table "address".
+ * This is the model class for table "consultant".
  *
- * The followings are the available columns in table 'address':
+ * The followings are the available columns in table 'consultant':
  * @property string $id
- * @property string $address1
- * @property string $address2
- * @property string $city
- * @property string $postcode
- * @property string $county
- * @property integer $country_id
- * @property string $email
+ * @property string $obj_prof
+ * @property string $nat_id
+ * @property string $contact_id
+ *
+ * The followings are the available model relations:
+ * @property Contact $contact
  */
-class Address extends CActiveRecord
+class Consultant extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Address the static model class
+	 * @return Consultant the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -29,7 +28,7 @@ class Address extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'address';
+		return 'consultant';
 	}
 
 	/**
@@ -40,12 +39,12 @@ class Address extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('address1, address2, city, county', 'length', 'max'=>255),
-			array('postcode', 'length', 'max'=>10),
-			array('email', 'length', 'max'=>255),
+			array('obj_prof, nat_id, contact_id', 'required'),
+			array('obj_prof, nat_id', 'length', 'max'=>20),
+			array('contact_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, address1, address2, city, postcode, county, email', 'safe', 'on'=>'search'),
+			array('id, obj_prof, nat_id, contact_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -57,9 +56,7 @@ class Address extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contacts' => array(self::HAS_MANY, 'Contact', 'address_id'),
-			'patients' => array(self::HAS_MANY, 'Patient', 'address_id'),
-			'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 
@@ -70,13 +67,9 @@ class Address extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'address1' => 'Address1',
-			'address2' => 'Address2',
-			'city' => 'City',
-			'postcode' => 'Postcode',
-			'county' => 'County',
-			'country_id' => 'Country',
-			'email' => 'Email',
+			'obj_prof' => 'Obj Prof',
+			'nat_id' => 'Nat',
+			'contact_id' => 'Contact',
 		);
 	}
 
@@ -92,13 +85,9 @@ class Address extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('address1',$this->address1,true);
-		$criteria->compare('address2',$this->address2,true);
-		$criteria->compare('city',$this->city,true);
-		$criteria->compare('postcode',$this->postcode,true);
-		$criteria->compare('county',$this->county,true);
-		$criteria->compare('country_id',$this->country_id,true);
-		$criteria->compare('email',$this->email,true);
+		$criteria->compare('obj_prof',$this->obj_prof,true);
+		$criteria->compare('nat_id',$this->nat_id,true);
+		$criteria->compare('contact_id',$this->contact_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

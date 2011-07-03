@@ -87,11 +87,16 @@ class User extends CActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
+
+// @todo - check that the various HAS_MANY and MANY_MANY relationships shouldn't actually be one-to-one, e.g.
+//	user_contact_assignment - in other words, users only have one contact and vice versa.
+//	add multiple unique keys to db tables as well.
 		return array(
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
 			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)'),
 			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
-			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)')
+			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
+			'userContactAssignments' => array(self::HAS_ONE, 'UserContactAssignment', 'user_id'),
 		);
 	}
 
@@ -208,16 +213,36 @@ class User extends CActiveRecord
 		}
 	}
 
-        /**
-         * Displays a string indicating whether the user account is active
-         * @return String
-         */
-        public function getGlobalFirmRightsText()
-        {
-                if ($this->global_firm_rights) {
-                        return 'Yes';
-                } else {
-                        return 'No';
-                }
-        }
+	/**
+	 * Displays a string indicating whether the user account has global firm rights
+	 *
+	 * @return String
+	 */
+	public function getGlobalFirmRightsText()
+	{
+		if ($this->global_firm_rights) {
+			return 'Yes';
+		} else {
+			return 'No';
+		}
+	}
+
+	/**
+	 * Returns whether this user has a contact entry and a consultant entry
+	 *      i.e. they are a consultant for the centre.
+	 *
+	 * @return boolean
+	 */
+	// @todo - is this the best place for this method?
+	public static function isConsultant()
+	{
+		$user = User::model()->findByPk(Yii::app()->id);
+
+		// Set whether they are an internal consultant or not. This gives them the ability to edit macros.
+		if (isset($user->userContactAssignments->contact->consultant)) {
+			return true;
+		}
+
+		return false;
+	}
 }

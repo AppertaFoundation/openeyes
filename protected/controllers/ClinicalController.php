@@ -1,5 +1,8 @@
 <?php
 
+// @todo - add logging for deletion on an event in the admin area
+// @todo - for that matter create an admin script for deleting events!
+
 class ClinicalController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';

@@ -1,5 +1,8 @@
 <?php
 
+// @todo - this shouldn't exist. It is not down to users to alter the contact_types. It is down to the systems
+//	administrator or no one. Delete this and all its views.
+
 class AdminContactTypeController extends Controller
 {
 	public $layout='column2';
@@ -99,7 +102,7 @@ class AdminContactTypeController extends Controller
 	{
 		$dataProvider=new CActiveDataProvider('ContactType', array(
 			'criteria'=>array(
-				'condition'=>'macro_only = 0'
+				'condition'=>'letter_template_only = 0'
 		),
 		));
 

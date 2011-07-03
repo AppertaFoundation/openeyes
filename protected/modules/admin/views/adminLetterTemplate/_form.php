@@ -22,20 +22,20 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'contact_type_id'); ?>
-		<?php echo $form->dropDownList($model,'contact_type_id',$model->getContacttypeOptions()); ?>
-		<?php echo $form->error($model,'contact_type_id'); ?>
+		<?php echo $form->labelEx($model,'to'); ?>
+		<?php echo $form->dropDownList($model,'to',$model->getContactTypeOptions()); ?>
+		<?php echo $form->error($model,'to'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'text'); ?>
-		<?php echo $form->textArea($model,'text',array('rows'=>6, 'cols'=>50)); ?>
-		<?php echo $form->error($model,'text'); ?>
+		<?php echo $form->labelEx($model,'phrase'); ?>
+		<?php echo $form->textArea($model,'phrase',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->error($model,'phrase'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'cc'); ?>
-		<?php echo $form->textField($model,'cc',array('size'=>60,'maxlength'=>128)); ?>
+		<?php echo $form->dropDownList($model,'cc',$model->getContactTypeOptions()); ?>
 		<?php echo $form->error($model,'cc'); ?>
 	</div>
 

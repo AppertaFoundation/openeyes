@@ -45,8 +45,8 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'id',
 		'specialty_id',
 		'name',
-		'contact_type_id',
-		'text',
+		'to',
+		'phrase',
 		'cc',
 		array(
 			'class'=>'CButtonColumn',

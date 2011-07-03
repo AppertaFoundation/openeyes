@@ -21,13 +21,13 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'contact_type_id'); ?>
-		<?php echo $form->dropDownList($model,'contact_type_id',$model->getContacttypeOptions()); ?>
+		<?php echo $form->label($model,'to'); ?>
+		<?php echo $form->dropDownList($model,'to',$model->getContactTypeOptions()); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'text'); ?>
-		<?php echo $form->textArea($model,'text',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->label($model,'phrase'); ?>
+		<?php echo $form->textArea($model,'phrase',array('rows'=>6, 'cols'=>50)); ?>
 	</div>
 
 	<div class="row">
