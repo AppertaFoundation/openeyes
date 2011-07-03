@@ -29,6 +29,8 @@ class m110628_150554_tidy_records extends CDbMigration
 			'code' => 'ABCD',
                         'site_id' => 1
                 ));
+
+
 	}
 
 	public function down()

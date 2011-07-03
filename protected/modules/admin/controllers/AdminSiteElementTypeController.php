@@ -1,5 +1,7 @@
 <?php
 
+// This probably shouldn't be in the admin area. It's a site administrator specifict thing.
+
 class AdminSiteElementTypeController extends Controller
 {
 	public $layout='column2';

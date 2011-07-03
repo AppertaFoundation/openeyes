@@ -21,14 +21,17 @@ $this->menu=array(
 		'id',
 		array(
 			'name' => 'specialty_id',
-			'value' => CHtml::encode($model->specialty->name)
+			'value' => CHtml::encode($model->getSpecialtyText())
 		),
 		'name',
 		array(
-			'name' => 'contact_type_id',
-			'value' => CHtml::encode($model->contactType->name)
+			'name' => 'to',
+			'value' => CHtml::encode($model->getToText())
 		),
-		'text',
-		'cc',
+		'phrase',
+                array(
+                        'name' => 'cc',
+                        'value' => CHtml::encode($model->getCcText())
+                ),
 	),
 )); ?>

@@ -55,8 +55,8 @@ class UserIdentity extends CUserIdentity
 			$options = array(
 				'host'				=> Yii::app()->params['ldap_server'],
 				'port'				=> Yii::app()->params['ldap_port'],
-				'username'			=>	Yii::app()->params['ldap_admin_dn'],
-				'password'			=>	Yii::app()->params['ldap_password'],
+				'username'			=> Yii::app()->params['ldap_admin_dn'],
+				'password'			=> Yii::app()->params['ldap_password'],
 				'baseDn'			=> Yii::app()->params['ldap_admin_dn'],
 				'useStartTls'		=> false,
 			);

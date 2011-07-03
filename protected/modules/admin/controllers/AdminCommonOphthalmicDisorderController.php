@@ -1,5 +1,9 @@
 <?php
 
+// @todo - this probably won't be needed any more. As we will probably be using an autopopulating text fields instead
+//	of a select box of common disorders it will be reduundant. Delete after 0.9 launch along with its views, model
+//	and db table.
+
 class AdminCommonOphthalmicDisorderController extends Controller
 {
 	public $layout='column2';
