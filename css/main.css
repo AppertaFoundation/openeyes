@@ -336,6 +336,74 @@ ul#navlist {
 	clear: both;
 }
 
-#patient_search {
-	
+.details {
+	width: 100%;
+	border: 1px solid;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+
+.data_row {
+	clear: both;
+	width: 100%;
+	padding: 3px 0;
+}
+
+.data_label {
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	float: left;
+	width: 250px;
+}
+
+.data_value {
+	text-align: left;
+	width: 250px;
+	padding-left: 280px;
+}
+
+#episodes_sidebar {
+	width: 320px;
+	float: left;
+}
+
+#episodes_details {
+	padding-left: 340px;
+}
+
+.episode {
+	border: 1px solid;
+	position: relative;
+}
+
+.episode .title {
+	font-weight: bold;
+	width: 320px;
+	float: left;
+	padding: 4px;
+}
+
+.episode .date {
+	text-transform: uppercase;
+}
+
+.rounded-corners {
+     -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    behavior: url(/images/border-radius.htc);
+}
+
+ul.events li {
+	list-style-type: none;
+}
+
+ul.events li a {
+	text-decoration: none;
+}
+
+ul.events li a span.date {
+	font-style: italic;
 }

@@ -55,12 +55,7 @@ class ClinicalController extends BaseController
 			null, null, null, $this->getUserId(), $event
 		);
 
-		$this->render('view', array('elements' => $elements));
-	}
-
-	public function actionIndex()
-	{
-		$this->render('index');
+		$this->renderPartial('view', array('elements' => $elements), false, true);
 	}
 
 	/**
@@ -174,10 +169,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid episode id.');
 		}
 
-		$this->render('episodeSummary', array(
-				'episode' => $episode,
-			)
-		);
+		$this->renderPartial('episodeSummary', array('episode' => $episode), false, true);
 	}
 
 	public function actionSummary($id)
