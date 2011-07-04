@@ -188,7 +188,7 @@ class SiteControllerTest extends CDbTestCase
 			array('SiteController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(Yii::app()->homeUrl);
+			->with(Yii::app()->user->returnUrl);
 		$mockController->expects($this->once())
 			->method('render')
 			->with('login', array('model' => $model));

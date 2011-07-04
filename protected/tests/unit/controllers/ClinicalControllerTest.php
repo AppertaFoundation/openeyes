@@ -31,16 +31,6 @@ class ClinicalControllerTest extends CDbTestCase
 		);
 	}
 
-	public function testActionIndex_RendersIndexView()
-	{
-		$mockController = $this->getMock('ClinicalController', array('render'),
-			array('ClinicalController'));
-		$mockController->expects($this->any())
-			->method('render')
-			->with('index');
-		$mockController->actionIndex();
-	}
-
 	public function testActionView_InvalidEvent_ThrowsException()
 	{
 		$fakeId = 5829;
@@ -58,7 +48,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$expectedElements = array($elementHistory, $elementPOH);
 
-		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
+		$mockController = $this->getMock('ClinicalController', array('renderPartial', 'getUserId'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService',
 			array('getElements'));
@@ -71,8 +61,8 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->service = $mockService;
 
 		$mockController->expects($this->any())
-			->method('render')
-			->with('view', array('elements' => $expectedElements));
+			->method('renderPartial')
+			->with('view', array('elements' => $expectedElements), false, true);
 
 		$mockController->expects($this->once())
 			->method('getUserId')
@@ -299,16 +289,16 @@ class ClinicalControllerTest extends CDbTestCase
 	{
 		$episode = $this->episodes('episode1');
 
-		$mockController = $this->getMock('ClinicalController', array('render'), array('ClinicalController'));
+		$mockController = $this->getMock('ClinicalController', array('renderPartial'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService');
 		$mockController->service = $mockService;
 
 		$mockController->expects($this->any())
-			->method('render')
+			->method('renderPartial')
 			->with('episodeSummary', array(
 				'episode' => $episode
-			));
+			), false, true);
 
 		$mockController->actionEpisodeSummary($episode->id);
 	}

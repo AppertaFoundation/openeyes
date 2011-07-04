@@ -306,7 +306,8 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_list', 
 				array('operation'=>$operation, 'session'=>$session, 
-					'bookings'=>$bookings, 'minutesStatus' => $status));
+					'bookings'=>$bookings, 'minutesStatus' => $status, 
+					'reschedule'=>false));
 		
 		$mockController->actionList();
 	}
@@ -351,7 +352,8 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_list', 
 				array('operation'=>$operation, 'session'=>$session, 
-					'bookings'=>$bookings, 'minutesStatus' => $status));
+					'bookings'=>$bookings, 'minutesStatus' => $status, 
+					'reschedule'=>false));
 		
 		$mockController->actionList();
 	}
