@@ -19,6 +19,16 @@ class BookingController extends BaseController
 			),
 		);
 	}
+
+	protected function beforeAction($action)
+	{
+		// Sample code to be used when RBAC is fully implemented.
+//		if (!Yii::app()->user->checkAccess('admin')) {
+//			throw new CHttpException(403, 'You are not authorised to perform this action.');
+//		}
+
+		return parent::beforeAction($action);
+	}
 	
 	public function actionSchedule()
 	{
@@ -53,6 +63,24 @@ class BookingController extends BaseController
 		$sessions = $operation->getSessions();
 		
 		$this->renderPartial('/booking/_reschedule', 
+	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+	}
+	
+	public function actionRescheduleLater()
+	{
+		$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
+		$operation = ElementOperation::model()->findByPk($operationId);
+		if (empty($operation)) {
+			throw new Exception('Operation id is invalid.');
+		}
+		$minDate = $operation->getMinDate();
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		if ($minDate < $thisMonth) {
+			$minDate = $thisMonth;
+		}
+		$sessions = $operation->getSessions();
+		
+		$this->renderPartial('/booking/_reschedule_later', 
 	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
@@ -118,9 +146,12 @@ class BookingController extends BaseController
 			$minutesStatus = 'overbooked';
 		}
 		
+		$reschedule = !empty($_GET['reschedule']);
+		
 		$this->renderPartial('/booking/_list', 
 			array('operation'=>$operation, 'session'=>$session, 
-				'bookings'=>$bookings, 'minutesStatus'=>$minutesStatus), false, true);
+				'bookings'=>$bookings, 'minutesStatus'=>$minutesStatus, 
+				'reschedule'=>$reschedule), false, true);
 	}
 	
 	public function actionCreate()
@@ -151,20 +182,42 @@ class BookingController extends BaseController
 			
 			if ($model->save()) {
 				Yii::app()->user->setFlash('success','Booking saved.');
-				$this->redirect(array('clinical/view','id'=>$model->elementOperation->id));
+				$patientId = $model->elementOperation->event->episode->patient->id;
+				$this->redirect(array('patient/view','id'=>$patientId));
 			}
 		}
 	}
 	
 	public function actionUpdate()
 	{
-		if (isset($_POST['Booking']) && isset($_POST['Booking']['id'])) {
-			$model = Booking::model()->findByPk($_POST['Booking']['id']);
-			$model->attributes = $_POST['Booking'];
+		if (isset($_POST['booking_id'])) {
+			$model = Booking::model()->findByPk($_POST['booking_id']);
 			
-			if ($model->save()) {
-				Yii::app()->user->setFlash('success','Booking saved.');
-				$this->redirect(array('clinical/view','id'=>$model->elementOperation->id));
+			$operationId = $model->elementOperation->id;
+			
+			$reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
+			
+			$cancellation = new CancelledBooking;
+			$cancellation->element_operation_id = $operationId;
+			$cancellation->date = $model->session->date;
+			$cancellation->start_time = $model->session->start_time;
+			$cancellation->end_time = $model->session->end_time;
+			$cancellation->theatre_id = $model->session->sequence->theatre_id;
+			$cancellation->cancelled_date = date('Y-m-d H:i:s');
+			$cancellation->user_id = Yii::app()->user->id;
+			$cancellation->cancelled_reason_id = $reason->id;
+			
+			if ($cancellation->save()) {
+				if (!empty($_POST['Booking'])) {
+					$model->attributes = $_POST['Booking'];
+					$model->save();
+				} else {
+					$model->delete();
+				}
+				
+				Yii::app()->user->setFlash('success','Booking updated.');
+				$patientId = $model->elementOperation->event->episode->patient->id;
+				$this->redirect(array('patient/view','id'=>$patientId));
 			}
 		}
 	}

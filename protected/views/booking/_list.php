@@ -37,7 +37,23 @@
 	echo ' currently scheduled'; ?></td>
 	</tfoot>
 </table>
-<input type="hidden" name="session_id" value="<?php echo $session['id']; ?>" />
-<button id="cancel">Cancel operation</button>
-<button id="confirm">Confirm slot</button>
+<?php 
+if (!$reschedule) {
+	echo CHtml::form(array('booking/create'));
+	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
+	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
+} else {
+	echo CHtml::form(array('booking/update'));
+	echo CHtml::hiddenField('booking_id', $operation->booking->id);
+	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
+	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
+}
+if (!empty($reschedule)) {
+	echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+	echo CHtml::dropDownList('cancellation_reason', '', 
+		CancellationReason::getReasonsByListNumber(2)
+	);
+}
+echo CHtml::submitButton('Confirm slot');
+echo CHtml::endForm(); ?>
 </div>

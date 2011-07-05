@@ -111,6 +111,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 					'month': month,
 					'day': day,
 					'session': session,
+					'reschedule': true
 				},
 				'success': function(data) {
 					if ($('#bookings').length == 0) {
