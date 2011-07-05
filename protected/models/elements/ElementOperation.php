@@ -38,6 +38,12 @@ class ElementOperation extends BaseElement
 	const SCHEDULE_AFTER_1MO = 1;
 	const SCHEDULE_AFTER_2MO = 2;
 	const SCHEDULE_AFTER_3MO = 3;
+	
+	const STATUS_PENDING = 0;
+	const STATUS_SCHEDULED = 1;
+	const STATUS_NEEDS_RESCHEDULING = 2;
+	const STATUS_RESCHEDULED = 3;
+	const STATUS_CANCELLED = 4;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -142,6 +148,7 @@ class ElementOperation extends BaseElement
 		$this->overnight_stay = 0;
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
+		$this->status = self::STATUS_PENDING;
 	}
 
 	/**

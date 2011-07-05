@@ -68,13 +68,11 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 	<?php echo CHtml::encode($data->getScheduleText()); ?>
 	<br />
 </div>
-<?php
-if (empty($data->booking)) { ?>
 <div class="view">
-	<?php echo CHtml::link("Schedule Now",
-		array('booking/schedule', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false)); ?>
-</div>
 <?php
+if (empty($data->booking)) {
+	echo CHtml::link("Schedule Now",
+		array('booking/schedule', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));
 //	$confirmJs = "js:function() {
 //			$('#confirm').live('click', function() {
 //				var operation = $('input[id=operation]').val();
@@ -89,9 +87,7 @@ if (empty($data->booking)) { ?>
 //				//parent.$.fancybox.close();
 //			});
 //		}";
-} else { ?>
-<div class="view">
-<?php
+} else {
 	$this->renderPartial('/booking/_session',array('operation' => $data));
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'panels'=>array(
@@ -128,9 +124,12 @@ if (empty($data->booking)) { ?>
 //				//parent.$.fancybox.close(); 
 //			});
 //		}";
-	?></div>
-<?php
 }
+echo '<p/>';
+echo CHtml::link("Cancel Operation",
+	array('booking/cancelOperation', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));?>
+</div>
+<?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 }

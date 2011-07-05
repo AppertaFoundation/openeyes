@@ -84,6 +84,43 @@ class BookingController extends BaseController
 	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
+	public function actionCancelOperation()
+	{
+		if (isset($_POST['cancellation_reason'])) {
+			$operationId = $_POST['operation_id'];
+			
+			$cancel = new CancelledOperation;
+			$cancel->element_operation_id = $operationId;
+			$cancel->cancelled_date = date('Y-m-d H:i:s');
+			$cancel->cancelled_reason_id = $_POST['cancellation_reason'];
+			$cancel->user_id = Yii::app()->user->id;
+			
+			$operation = ElementOperation::model()->findByPk($operationId);
+			$operation->status = ElementOperation::STATUS_CANCELLED;
+			
+			Booking::model()->deleteAll('element_operation_id = :id', array(':id'=>$operationId));
+			
+			if ($cancel->save() && $operation->save()) {
+				$patientId = $operation->event->episode->patient->id;
+				$this->redirect(array('patient/view', 'id'=>$patientId));
+			}
+		} else {
+			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
+			$operation = ElementOperation::model()->findByPk($operationId);
+			if (empty($operation)) {
+				throw new Exception('Operation id is invalid.');
+			}
+			$minDate = $operation->getMinDate();
+			$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+			if ($minDate < $thisMonth) {
+				$minDate = $thisMonth;
+			}
+		}
+		
+		$this->renderPartial('/booking/_cancel_operation', 
+	array('operation'=>$operation, 'date'=>$minDate), false, true);
+	}
+	
 	public function actionSessions()
 	{
 		$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
@@ -181,6 +218,14 @@ class BookingController extends BaseController
 			$model->display_order = $displayOrder;
 			
 			if ($model->save()) {
+				$operation = ElementOperation::model()->findByPk($model->element_operation_id);
+				if ($operation->status == ElementOperation::STATUS_NEEDS_RESCHEDULING) {
+					$operation->status = ElementOperation::STATUS_RESCHEDULED;
+				} else {
+					$operation->status = ElementOperation::STATUS_SCHEDULED;
+				}
+				$operation->save();
+					
 				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
 				$this->redirect(array('patient/view','id'=>$patientId));
@@ -211,8 +256,16 @@ class BookingController extends BaseController
 				if (!empty($_POST['Booking'])) {
 					$model->attributes = $_POST['Booking'];
 					$model->save();
+					
+					$operation = ElementOperation::model()->findByPk($operationId);
+					$operation->status = ElementOperation::STATUS_RESCHEDULED;
+					$operation->save();
 				} else {
 					$model->delete();
+					
+					$operation = ElementOperation::model()->findByPk($operationId);
+					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
+					$operation->save();
 				}
 				
 				Yii::app()->user->setFlash('success','Booking updated.');

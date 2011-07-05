@@ -24,8 +24,13 @@ echo CHtml::form(array('booking/update'));
 echo CHtml::hiddenField('booking_id', $operation->booking->id);
 
 echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
+	$listIndex = 3;
+} else {
+	$listIndex = 2;
+}
 echo CHtml::dropDownList('cancellation_reason', '', 
-	CancellationReason::getReasonsByListNumber(2)
+	CancellationReason::getReasonsByListNumber($listIndex)
 );
-echo CHtml::submitButton('Confirm slot');
+echo CHtml::submitButton('Cancel booking');
 echo CHtml::endForm(); ?>

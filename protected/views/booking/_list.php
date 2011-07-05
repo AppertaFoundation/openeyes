@@ -12,9 +12,9 @@
 <?php
 	$counter = 1;
 	foreach ($bookings as $booking) {
-		$operation = $booking->elementOperation;
-		$patient = $operation->event->episode->patient;
-		$procedures = $operation->procedures;
+		$thisOperation = $booking->elementOperation;
+		$patient = $thisOperation->event->episode->patient;
+		$procedures = $thisOperation->procedures;
 		$procedureNames = array();
 		foreach ($procedures as $procedure) {
 			$procedureNames[] = $procedure->term;
@@ -23,7 +23,7 @@
 		<tr>
 			<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
 			<td><?php echo $procedureList; ?></td>
-			<td><?php echo "{$operation->total_duration} minutes"; ?></td>
+			<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
 		</tr>
 <?php
 		$counter++;
@@ -50,8 +50,13 @@ if (!$reschedule) {
 }
 if (!empty($reschedule)) {
 	echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+	if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
+		$listIndex = 3;
+	} else {
+		$listIndex = 2;
+	}
 	echo CHtml::dropDownList('cancellation_reason', '', 
-		CancellationReason::getReasonsByListNumber(2)
+		CancellationReason::getReasonsByListNumber($listIndex)
 	);
 }
 echo CHtml::submitButton('Confirm slot');
