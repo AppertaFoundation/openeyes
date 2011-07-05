@@ -33,7 +33,11 @@
 				<tr>
 					<th><?php echo $weekday; ?></th>
 <?php	foreach ($list as $date => $data) { ?>
-					<td class="<?php echo $list[$date]['status']; ?>"><?php echo date('j', strtotime($date)); ?></td>
+					<td class="<?php echo $list[$date]['status'];
+			if (!empty($operation->booking) && 
+				$operation->booking->session->date == $date) {
+				echo ' selected_date';
+			} ?>"><?php echo date('j', strtotime($date)); ?></td>
 <?php	} ?>					
 				</tr>
 <?php

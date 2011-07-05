@@ -72,22 +72,23 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 if (empty($data->booking)) { ?>
 <div class="view">
 	<?php echo CHtml::link("Schedule Now",
-		array('booking/schedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false)); ?>
+		array('booking/schedule', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false)); ?>
 </div>
 <?php
-	$confirmJs = "js:function() {
-			$('#confirm').live('click', function() {
-				var operation = $('input[id=operation]').val();
-				var session = $('input[name=session_id]').val();
-				$.post('" . Yii::app()->createUrl('booking/create') . "', {
-					'Booking': {
-						'element_operation_id': operation,
-						'session_id': session
-					}
-				});
-				$.fancybox.close();
-			});
-		}";
+//	$confirmJs = "js:function() {
+//			$('#confirm').live('click', function() {
+//				var operation = $('input[id=operation]').val();
+//				var session = $('input[name=session_id]').val();
+//				$.post('" . Yii::app()->createUrl('booking/create') . "', {
+//					'Booking': {
+//						'element_operation_id': operation,
+//						'session_id': session
+//					}
+//				});
+//				//$.fancybox.close();
+//				//parent.$.fancybox.close();
+//			});
+//		}";
 } else { ?>
 <div class="view">
 <?php
@@ -104,24 +105,29 @@ if (empty($data->booking)) { ?>
 			'collapsible'=>true,
 		),
 	));
-	echo CHtml::link("Re-Schedule",
-		array('booking/reschedule', 'operation'=>$data->id), array('id'=>'inline', 'encode'=>false));
+	echo '<br/>';
+	echo CHtml::link("Re-Schedule Now",
+		array('booking/reschedule', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));
+	echo '<p/>';
+	echo CHtml::link("Re-Schedule Later",
+		array('booking/rescheduleLater', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));
 	
-	$confirmJs = "js:function() {
-			$('#confirm').live('click', function() {
-				var booking = $('input[id=booking]').val();
-				var operation = $('input[id=operation]').val();
-				var session = $('input[name=session_id]').val();
-				$.post('" . Yii::app()->createUrl('booking/update') . "', {
-					'Booking': {
-						'id': booking,
-						'element_operation_id': operation,
-						'session_id': session
-					}
-				});
-				$.fancybox.close();
-			});
-		}";
+//	$confirmJs = "js:function() {
+//			$('#confirm').live('click', function() {
+//				var booking = $('input[id=booking]').val();
+//				var operation = $('input[id=operation]').val();
+//				var session = $('input[name=session_id]').val();Ω
+//				$.post('" . Yii::app()->createUrl('booking/update') . "', {
+//					'Booking': {
+//						'id': booking,
+//						'element_operation_id': operation,
+//						'session_id': session
+//					},
+//					'cancellation_reason': $('select[name=cancellation_reason]').val()
+//				});
+//				//parent.$.fancybox.close(); 
+//			});
+//		}";
 	?></div>
 <?php
 }
@@ -129,10 +135,8 @@ if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 }
 $this->widget('application.extensions.fancybox.EFancyBox', array(
-	'target'=>'a#inline',
-	'config'=>array(
-		'onComplete' => $confirmJs,
-	),
+	'target'=>'a.fancybox',
+	'config'=>array()
 	)
 );
 ?>

@@ -4,8 +4,6 @@ $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
-$this->renderPartial('base');
-
 $form = $this->beginWidget('CActiveForm', array(
     'id'=>'clinical-create',
     'enableAjaxValidation'=>false,

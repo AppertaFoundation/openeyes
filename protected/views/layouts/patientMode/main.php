@@ -22,13 +22,15 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> PATIENT MODE</div>
+		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
-	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
+	<?php $this->widget('application.components.MyBreadcrumbs', array(
+		'homeLink'=>CHtml::link('OpenEyes', array('/')),
 		'links'=>$this->breadcrumbs,
+		'prefixText'=>'You are here: &nbsp; ',
 	)); ?><!-- breadcrumbs -->
 
 	<?php echo $content; ?>

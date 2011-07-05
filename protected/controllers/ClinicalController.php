@@ -94,18 +94,18 @@ class ClinicalController extends BaseController
 			);
 
 			if ($eventId) {
-				$this->redirect(array('view', 'id' => $eventId));
+				$this->redirect(array('patient/view', 'id' => $this->patientId));
 			}
 
 			// If we get here element validation and failed and the array of elements will
 			// be displayed again in the call below
 		}
 
-		$this->render('create', array(
+		$this->renderPartial('create', array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
 				'specialties' => $specialties
-			)
+			), false, true
 		);
 	}
 

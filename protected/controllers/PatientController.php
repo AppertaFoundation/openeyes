@@ -126,8 +126,24 @@ class PatientController extends BaseController
 	{
 		$patient = $this->loadModel($_GET['id']);
 		
+		$firm = Firm::model()->findByPk($this->selectedFirmId);
+		
+		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
+		$eventTypes = EventType::model()->getAllPossible($specialtyId);
+		
+		$typeGroups = $this->getEventTypeGrouping();
+		
+		foreach ($eventTypes as $eventType) {
+			foreach ($typeGroups as $name => $group) {
+				if (in_array($eventType->name, $group)) {
+					$typeList[$name][] = $eventType;
+				}
+			}
+		}
+		
 		$this->renderPartial('_episodes', 
-			array('model'=>$patient, 'episodes'=>$patient->episodes));
+			array('model'=>$patient, 'episodes'=>$patient->episodes, 
+				'eventTypeGroups'=>$typeList));
 	}
 	
 	public function actionContacts()
@@ -165,6 +181,16 @@ class PatientController extends BaseController
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+	
+	protected function getEventTypeGrouping()
+	{
+		return array(
+			'Examination' => array('visual fields', 'examination', 'question', 'outcome'),
+			'Imaging & Surgery' => array('oct', 'laser', 'operation'),
+			'Correspondence' => array('letterin', 'letterout'),
+			'Consent Forms' => array(''),
+		);
 	}
 
 	/**

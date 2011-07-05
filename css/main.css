@@ -364,12 +364,54 @@ ul#navlist {
 }
 
 #episodes_sidebar {
-	width: 320px;
+	width: 270px;
 	float: left;
+	font: bold 13pt Arial;
+	color: #05488A;
 }
 
 #episodes_details {
-	padding-left: 340px;
+	padding-left: 290px;
+	padding-top: 30px;
+}
+
+#episodes_title {
+	width: 350px;
+	float: left;
+	font: bold 16pt arial;
+	color: #333;
+}
+
+#add_episode {
+	width: 350px;
+	font: bold 13pt arial;
+	color: #05488A;
+	position: absolute;
+	top: 60px;
+	left: 600px;
+	z-index: 100;
+}
+
+#add_episode li {
+	list-style: none;
+}
+
+#add_episode li.header {
+	color: #000;
+}
+
+#add_episode li a {
+	text-decoration: none;
+	padding-left: 5px;
+	vertical-align: top;
+}
+
+#episode_types {
+	display: none;
+}
+
+.ui-tabs-panel {
+	min-height: 100px;
 }
 
 .episode {
@@ -396,14 +438,29 @@ ul#navlist {
     behavior: url(/images/border-radius.htc);
 }
 
+ul.events {
+	padding-left: 20px;
+}
+
 ul.events li {
 	list-style-type: none;
+	font: bold 12pt Arial;
 }
 
 ul.events li a {
 	text-decoration: none;
+	color: #333;
 }
 
 ul.events li a span.date {
 	font-style: italic;
+}
+
+.breadcrumbs {
+	font: 12pt Arial;
+	color: #333;
+}
+
+.breadcrumbs a {
+	text-decoration: underline;
 }

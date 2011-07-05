@@ -7,7 +7,7 @@ return CMap::mergeArray(
 	require(dirname(__FILE__).'/params.php'),
 	array(
 		'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-		'name'=>'Open Eyes',
+		'name'=>'OpenEyes',
 
 		// preloading 'log' component
 		'preload'=>array('log'),
