@@ -13,7 +13,7 @@ class m110510_143924_create_phrase_names extends CDbMigration
 		);
 
 		// copy name values from phrase, phrase_by_firm, phrase_by_specialty into phrase_name
-		
+
 		$phrases = $this->dbConnection->createCommand()->select()->from('phrase')->queryAll();
 		foreach ($phrases as $phrase) {
 			$this->insert('phrase_name', array('name' => $phrase['name']));
@@ -26,7 +26,7 @@ class m110510_143924_create_phrase_names extends CDbMigration
 		foreach ($phrases as $phrase) {
 			$this->insert('phrase_name', array('name' => $phrase['name']));
 		}
-	
+
 		// create phrase_name_id column on phrase, phrase_by_firm, phrase_by_specialty
 		$this->addColumn('phrase', 'phrase_name_id', 'int(10) unsigned');
 		$this->addColumn('phrase_by_specialty', 'phrase_name_id', 'int(10) unsigned');
@@ -35,18 +35,18 @@ class m110510_143924_create_phrase_names extends CDbMigration
 		// for phrase, phrase_by_firm, phrase_by_specialty, look up each name in phrase_name and put the id into phrase_name_id
 		$phrases = $this->dbConnection->createCommand()->select()->from('phrase')->queryAll();
 		foreach ($phrases as $phrase) {
-			$phraseName = $this->dbConnection->createCommand()->select('id')->from('phrase_name')->where('name=:name', array(':name'=>$phrase['name']))->queryRow();
-			$this->update('phrase', array('phrase_name_id'=>$phraseName['id']), "id=" . $phrase['id']);
+			$phraseName = $this->dbConnection->createCommand()->select('id')->from('phrase_name')->where('name=:name', array(':name' => $phrase['name']))->queryRow();
+			$this->update('phrase', array('phrase_name_id' => $phraseName['id']), "id=" . $phrase['id']);
 		}
 		$phrases = $this->dbConnection->createCommand()->select()->from('phrase_by_firm')->queryAll();
 		foreach ($phrases as $phrase) {
-			$phraseName = $this->dbConnection->createCommand()->select('id')->from('phrase_name')->where('name=:name', array(':name'=>$phrase['name']))->queryRow();
-			$this->update('phrase_by_firm', array('phrase_name_id'=>$phraseName['id']), "id=" . $phrase['id']);
+			$phraseName = $this->dbConnection->createCommand()->select('id')->from('phrase_name')->where('name=:name', array(':name' => $phrase['name']))->queryRow();
+			$this->update('phrase_by_firm', array('phrase_name_id' => $phraseName['id']), "id=" . $phrase['id']);
 		}
 		$phrases = $this->dbConnection->createCommand()->select()->from('phrase_by_specialty')->queryAll();
 		foreach ($phrases as $phrase) {
-			$phraseName = $this->dbConnection->createCommand()->select('id')->from('phrase_name')->where('name=:name', array(':name'=>$phrase['name']))->queryRow();
-			$this->update('phrase_by_specialty', array('phrase_name_id'=>$phraseName['id']), "id=" . $phrase['id']);
+			$phraseName = $this->dbConnection->createCommand()->select('id')->from('phrase_name')->where('name=:name', array(':name' => $phrase['name']))->queryRow();
+			$this->update('phrase_by_specialty', array('phrase_name_id' => $phraseName['id']), "id=" . $phrase['id']);
 		}
 
 		// add the constraints now we've populated the new fields
@@ -66,6 +66,18 @@ class m110510_143924_create_phrase_names extends CDbMigration
 
 	public function down()
 	{
-		echo "m110510_143924_create_phrase_names does not support migration down.\n";
+		$this->addColumn('phrase', 'name', 'varchar(255) COLLATE utf8_bin DEFAULT NULL');
+		$this->addColumn('phrase_by_firm', 'name', 'varchar(255) COLLATE utf8_bin DEFAULT NULL');
+		$this->addColumn('phrase_by_specialty', 'name', 'varchar(255) COLLATE utf8_bin DEFAULT NULL');
+
+		$this->dropForeignKey('phrase_phrase_name_id_fk', 'phrase');
+		$this->dropForeignKey('phrase_by_specialty_phrase_name_id_fk', 'phrase_by_specialty');
+		$this->dropForeignKey('phrase_by_firm_phrase_name_id_fk', 'phrase_by_firm');
+
+		$this->dropColumn('phrase', 'phrase_name_id');
+		$this->dropColumn('phrase_by_specialty', 'phrase_name_id');
+		$this->dropColumn('phrase_by_firm', 'phrase_name_id');
+
+		$this->dropTable('phrase_name');
 	}
 }

@@ -9,15 +9,15 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 			'Social history', 'HPC', 'FOH', 'Outcome', 'Timing', 'Severity', 'Onset', 'Duration', 'Site'
 		);
 
-		$section_type_letter = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name'=> 'Letter'))->queryRow();
-		$section_type_exam = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name'=> 'Exam'))->queryRow();
+		$section_type_letter = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name' => 'Letter'))->queryRow();
+		$section_type_exam = $this->dbConnection->createCommand()->select()->from('section_type')->where('name=:name', array(':name' => 'Exam'))->queryRow();
 
 		// create section_by_specialty entries
 		$partsAndIds = Array();
 		foreach ($parts as $part) {
 			$this->insert('section', array('name' => $part, 'section_type_id' => $section_type_exam['id']));
-			
-			$pullback = $this->dbConnection->createCommand()->select()->from('section')->where('name=:name', array(':name'=> $part))->queryRow();
+
+			$pullback = $this->dbConnection->createCommand()->select()->from('section')->where('name=:name', array(':name' => $part))->queryRow();
 			$partsAndIds[$pullback['id']] = $pullback['name'];
 		}
 
@@ -28,7 +28,6 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 		foreach ($examPhrases as $examPhrase) {
 			// old exam_phrase table: id, specialty_id, part, phrase, display_order
 			// new phrase_by_specialty table: id, name, phrase, section_by_specialty_id, display_order, specialty_id
-
 			// extract the part name from the number - we need to do this gymnastics so we don't have to rely on the table being empty
 			$partName = $parts[$examPhrase['part']];
 
@@ -54,21 +53,27 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 
 	public function down()
 	{
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
+		$command->execute();
+
 		$this->truncateTable('phrase_by_specialty');
 		$this->truncateTable('phrase_by_firm');
 		$this->truncateTable('section');
 
-                $this->createTable('letter_phrase', array(
-                        'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
-                        'firm_id' => 'int(10) unsigned NOT NULL',
-                        'name' => 'varchar(64) COLLATE utf8_bin DEFAULT NULL',
-                        'phrase' => 'varchar(255) COLLATE utf8_bin DEFAULT NULL',
-                        'display_order' => "int(10) unsigned DEFAULT '0'",
-                        'section' => 'int(10) DEFAULT NULL',
-                        'PRIMARY KEY (`id`)',
-                        'KEY `firm_id` (`firm_id`)'
-                ), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
-                );
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
+		$command->execute();
+
+		$this->createTable('letter_phrase', array(
+			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+			'firm_id' => 'int(10) unsigned NOT NULL',
+			'name' => 'varchar(64) COLLATE utf8_bin DEFAULT NULL',
+			'phrase' => 'varchar(255) COLLATE utf8_bin DEFAULT NULL',
+			'display_order' => "int(10) unsigned DEFAULT '0'",
+			'section' => 'int(10) DEFAULT NULL',
+			'PRIMARY KEY (`id`)',
+			'KEY `firm_id` (`firm_id`)'
+			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+		);
 		$this->addForeignKey('letter_phrase_ibfk_1', 'letter_phrase', 'firm_id', 'firm', 'id');
 
 		$this->createTable('exam_phrase', array(
@@ -78,7 +83,7 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 			'phrase' => 'varchar(80)',
 			'display_order' => 'int(10) unsigned NOT NULL',
 			'PRIMARY KEY (`id`)'
-		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
+			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 		$this->addForeignKey('specialty_id', 'exam_phrase', 'specialty_id', 'specialty', 'id');
 
@@ -142,22 +147,21 @@ class m110414_121244_migrate_exam_phrase_data extends CDbMigration
 			$sql .= "\n";
 		}
 		$command = $this->dbConnection->createCommand($sql);
-		echo "	  > inserting into exam_phrase\n";
+		echo "   > inserting into exam_phrase\n";
 		$command->execute();
 
 
 		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
 		$command->execute();
 	}
-
 	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
+	  // Use safeUp/safeDown to do migration with transaction
+	  public function safeUp()
+	  {
+	  }
 
-	public function safeDown()
-	{
-	}
-	*/
+	  public function safeDown()
+	  {
+	  }
+	 */
 }
