@@ -22,7 +22,7 @@
 		echo '<br />';
 		echo $address->county;
 		echo '<br />';
-		echo $address->postcode;
+		echo strtoupper($address->postcode);
 	} else {
 		echo 'Unknonwn';
 	} ?>

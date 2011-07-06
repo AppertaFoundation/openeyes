@@ -9,7 +9,9 @@ class BookingControllerTest extends CDbTestCase
 		'events' => 'Event',
 		'operations' => 'ElementOperation',
 		'bookings' => 'Booking',
-		'theatres' => 'Theatre'
+		'theatres' => 'Theatre',
+		'cancellationReasons' => 'CancellationReason',
+		'users' => 'User',
 	);
 
 	protected $controller;
@@ -289,6 +291,7 @@ class BookingControllerTest extends CDbTestCase
 			'duration' => 240,
 			'time_available' => 150,
 			'status' => 'available',
+			'code' => '',
 		);
 		$status = 'available';
 		
@@ -335,6 +338,7 @@ class BookingControllerTest extends CDbTestCase
 			'duration' => 240,
 			'time_available' => -20,
 			'status' => 'full',
+			'code' => '',
 		);
 		$status = 'overbooked';
 		
@@ -411,8 +415,15 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->actionUpdate();
 	}
 	
-	public function testActionUpdate_ValidPostData_UpdatessBooking()
+	public function testActionUpdate_ValidPostData_UpdatesBooking()
 	{
+		CancelledBooking::model()->deleteAll();
+		
+		$userInfo = $this->users['user1'];
+		$identity = new UserIdentity('JoeBloggs', 'secret');
+		$identity->authenticate();
+		Yii::app()->user->login($identity);	
+		
 		$bookingCount = count($this->bookings);
 		
 		$booking = $this->bookings('0');
@@ -421,14 +432,16 @@ class BookingControllerTest extends CDbTestCase
 		
 		$bookingId = $booking->id;
 		
+		$_POST['booking_id'] = $bookingId;
+		$_POST['cancellation_reason'] = $this->cancellationReasons['reason1']['id'];
 		$_POST['Booking'] = array(
-			'id' => $bookingId,
 			'element_operation_id' => $this->operations['element1']['id'],
 			'session_id' => $sessionId,
 			'display_order' => $booking->display_order,
 		);
 		
 		$this->assertNotEquals($sessionId, $booking->session_id);
+		$this->assertEquals(0, CancelledBooking::model()->count(), 'Should not be any cancelled bookings yet.');
 		
 		$mockController = $this->getMock('BookingController',
 			array('redirect'), array('BookingController'));
@@ -444,5 +457,6 @@ class BookingControllerTest extends CDbTestCase
 		
 		$newBookingCount = Booking::model()->count();
 		$this->assertEquals($bookingCount, $newBookingCount, 'Number of bookings should not have changed.');
+		$this->assertEquals(1, CancelledBooking::model()->count(), 'Should now be a cancelled booking.');
 	}
 }

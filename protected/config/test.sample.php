@@ -5,14 +5,14 @@ return CMap::mergeArray(
 	array(
 		'import'=>array(
 			'application.modules.admin.controllers.*',
-			'application.vendors.*'
-                        'application.models.*',
-                        'application.models.elements.*',
-                        'application.components.*',
-                        'application.services.*',
-                        'application.controllers.*',
-                        'application.modules.*',
-                        'application.commands.shell.*'
+			'application.vendors.*',
+			'application.models.*',
+			'application.models.elements.*',
+			'application.components.*',
+			'application.services.*',
+			'application.controllers.*',
+			'application.modules.*',
+			'application.commands.shell.*'
 		),
 		'components'=>array(
 			'fixture'=>array(
