@@ -10,6 +10,8 @@
  */
 class ElementLetterOut extends BaseElement
 {
+	public $service;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementLetterOut the static model class
@@ -88,5 +90,14 @@ class ElementLetterOut extends BaseElement
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getService()
+	{
+		if (empty($this->service)) {
+			$this->service = new LetterOutService();
+		}
+
+		return $this->service;
 	}
 }
