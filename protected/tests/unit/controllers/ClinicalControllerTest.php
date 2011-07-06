@@ -31,16 +31,6 @@ class ClinicalControllerTest extends CDbTestCase
 		);
 	}
 
-	public function testActionIndex_RendersIndexView()
-	{
-		$mockController = $this->getMock('ClinicalController', array('render'),
-			array('ClinicalController'));
-		$mockController->expects($this->any())
-			->method('render')
-			->with('index');
-		$mockController->actionIndex();
-	}
-
 	public function testActionView_InvalidEvent_ThrowsException()
 	{
 		$fakeId = 5829;
@@ -58,7 +48,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$expectedElements = array($elementHistory, $elementPOH);
 
-		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
+		$mockController = $this->getMock('ClinicalController', array('renderPartial', 'getUserId'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService',
 			array('getElements'));
@@ -71,8 +61,8 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->service = $mockService;
 
 		$mockController->expects($this->any())
-			->method('render')
-			->with('view', array('elements' => $expectedElements));
+			->method('renderPartial')
+			->with('view', array('elements' => $expectedElements), false, true);
 
 		$mockController->expects($this->once())
 			->method('getUserId')
@@ -95,7 +85,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$this->controller->actionCreate();
 	}
 
-	public function testActionView_ValidElement_RendersCreateView()
+	public function testActionCreate_ValidElement_RendersCreateView()
 	{
 		$patientId = 1;
 		$eventTypeId = 1;
@@ -109,7 +99,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$elementPOH = $this->elementPOHs('elementPOH1');
 
 		$expectedElements = array($elementHistory, $elementPOH);
-		
+
 		$specialties = Specialty::model()->findAll();
 
 		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
@@ -209,7 +199,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$elementPOH = $this->elementPOHs('elementPOH1');
 
 		$expectedElements = array($elementHistory, $elementPOH);
-		
+
 		$specialties = Specialty::model()->findAll();
 
 		$mockController = $this->getMock('ClinicalController', array('render', 'getUserId'), array('ClinicalController'));
@@ -227,8 +217,8 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->any())
 			->method('render')
-			->with('update', 
-				array('id' => $event->id, 'elements' => $expectedElements, 
+			->with('update',
+				array('id' => $event->id, 'elements' => $expectedElements,
 					'specialties' => $specialties));
 
 		$mockController->expects($this->once())
@@ -287,6 +277,70 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->actionUpdate($event->id);
 	}
 
+	public function testActionEpisodeSummary_InvalidEpisode_ThrowsException()
+	{
+		$fakeId = 5829;
+
+		$this->setExpectedException('CHttpException', 'Invalid episode id.');
+		$this->controller->actionEpisodeSummary($fakeId);
+	}
+
+	public function testActionEpisodeSummary_ValidEpisode_RendersEpisodeSummaryView()
+	{
+		$episode = $this->episodes('episode1');
+
+		$mockController = $this->getMock('ClinicalController', array('renderPartial'), array('ClinicalController'));
+
+		$mockService = $this->getMock('ClinicalService');
+		$mockController->service = $mockService;
+
+		$mockController->expects($this->any())
+			->method('renderPartial')
+			->with('episodeSummary', array(
+				'episode' => $episode
+			), false, true);
+
+		$mockController->actionEpisodeSummary($episode->id);
+	}
+
+	public function testActionSummary_InvalidEpisode_ThrowsException()
+	{
+		$fakeId = 5829;
+
+		$this->setExpectedException('CHttpException', 'Invalid episode id.');
+		$this->controller->actionSummary($fakeId);
+	}
+
+	public function testActionSummary_NoSummary_ThrowsException()
+	{
+		$episode = $this->episodes('episode1');
+
+		$this->setExpectedException('CHttpException', 'No summary.');
+
+		$this->controller->actionSummary($episode->id);
+	}
+
+	public function testActionSummary_ValidElement_RendersSummaryView()
+	{
+		$episode = $this->episodes('episode1');
+		$summaryName = 'episodeSummary';
+
+		$mockController = $this->getMock('ClinicalController', array('render'), array('ClinicalController'));
+
+		$mockService = $this->getMock('ClinicalService');
+		$mockController->service = $mockService;
+
+		$mockController->expects($this->any())
+			->method('render')
+			->with('summary', array(
+				'episode' => $episode,
+				'summary' => $summaryName
+			));
+
+		$_GET['summary'] = $summaryName;
+		$mockController->actionSummary($episode->id);
+	}
+
 	public function testListEpisodes()
 	{
 		$patient = $this->patients('patient1');
@@ -302,19 +356,19 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->listEpisodesAndEventTypes();
 		$this->assertEquals($patient->episodes, $mockController->episodes);
 	}
-	
+
 	public function testGetUserId_NoUserIdSet_ReturnsNull()
 	{
 		$this->assertNull($this->controller->getUserId());
 	}
-	
+
 	public function testGetUserId_UserIdSet_ReturnsCorrectData()
 	{
 		$userInfo = $this->users['user1'];
 		$identity = new UserIdentity('JoeBloggs', 'secret');
 		$identity->authenticate();
-		Yii::app()->user->login($identity);		
-		
+		Yii::app()->user->login($identity);
+
 		$userId = $this->users['user1']['id'];
 		$this->assertEquals($userId, $this->controller->getUserId(), 'Should return the correct user id');
 	}
@@ -333,13 +387,13 @@ class ClinicalControllerTest extends CDbTestCase
 		$foo = $event->episode->firm->serviceSpecialtyAssignment->specialty_id;
 		$bar = $firm->serviceSpecialtyAssignment->specialty_id;
 	}
-	
+
 	public function testStoreData_StoresValidData()
 	{
 		$mockController = $this->getMock('ClinicalController',
 			array('checkPatientId', 'listEpisodesAndEventTypes'),
 			array('ClinicalController'), 'Mock_ClinicalController', false);
-		
+
 		$firmId = $this->firms['firm1']['id'];
 		$service = new ClinicalService;
 

@@ -15,7 +15,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
         'minLength'=>'2',
 		'select'=>"js:function(event, ui) {
 			$.ajax({
-				'url': 'index.php?r=procedure/details',
+				'url': '" . Yii::app()->createUrl('procedure/details') . "',
 				'type': 'GET',
 				'data': {'name': ui.item.value},
 				'success': function(data) {

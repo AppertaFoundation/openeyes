@@ -1,3 +1,6 @@
+<?php
+Yii::app()->clientScript->registerCoreScript('jquery');
+Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?>
 <strong>Operation Details</strong>
 <div class="view">
 	<strong><?php echo $data->getAttributeLabel('eye'); ?></strong>
@@ -65,3 +68,74 @@
 	<?php echo CHtml::encode($data->getScheduleText()); ?>
 	<br />
 </div>
+<div class="view">
+<?php
+if (empty($data->booking)) {
+	echo CHtml::link("Schedule Now",
+		array('booking/schedule', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));
+//	$confirmJs = "js:function() {
+//			$('#confirm').live('click', function() {
+//				var operation = $('input[id=operation]').val();
+//				var session = $('input[name=session_id]').val();
+//				$.post('" . Yii::app()->createUrl('booking/create') . "', {
+//					'Booking': {
+//						'element_operation_id': operation,
+//						'session_id': session
+//					}
+//				});
+//				//$.fancybox.close();
+//				//parent.$.fancybox.close();
+//			});
+//		}";
+} else {
+	$this->renderPartial('/booking/_session',array('operation' => $data));
+	$this->widget('zii.widgets.jui.CJuiAccordion', array(
+		'panels'=>array(
+			'Clinic details'=>$this->renderPartial('/booking/_clinic',
+				array('operation' => $data),true),
+		),
+		// additional javascript options for the accordion plugin
+		'options'=>array(
+			'active'=>false,
+			'animated'=>'bounceslide',
+			'collapsible'=>true,
+		),
+	));
+	echo '<br/>';
+	echo CHtml::link("Re-Schedule Now",
+		array('booking/reschedule', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));
+	echo '<p/>';
+	echo CHtml::link("Re-Schedule Later",
+		array('booking/rescheduleLater', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));
+	
+//	$confirmJs = "js:function() {
+//			$('#confirm').live('click', function() {
+//				var booking = $('input[id=booking]').val();
+//				var operation = $('input[id=operation]').val();
+//				var session = $('input[name=session_id]').val();Ω
+//				$.post('" . Yii::app()->createUrl('booking/update') . "', {
+//					'Booking': {
+//						'id': booking,
+//						'element_operation_id': operation,
+//						'session_id': session
+//					},
+//					'cancellation_reason': $('select[name=cancellation_reason]').val()
+//				});
+//				//parent.$.fancybox.close(); 
+//			});
+//		}";
+}
+echo '<p/>';
+echo CHtml::link("Cancel Operation",
+	array('booking/cancelOperation', 'operation'=>$data->id), array('class'=>'fancybox', 'encode'=>false));?>
+</div>
+<?php
+if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
+	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
+}
+$this->widget('application.extensions.fancybox.EFancyBox', array(
+	'target'=>'a.fancybox',
+	'config'=>array()
+	)
+);
+?>

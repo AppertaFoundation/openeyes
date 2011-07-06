@@ -12,6 +12,25 @@ class BaseController extends Controller
 	public $showForm = false;
 	public $patientId;
 	public $patientName;
+	
+	/**
+	 * Default all access rule filters to a deny-basis to prevent accidental 
+	 * allowing of actions that don't have access rules defined yet
+	 * 
+	 * @param $filterChain
+	 * @return type 
+	 */
+	public function filterAccessControl($filterChain)
+	{
+		$rules = $this->accessRules();
+		
+		// default deny
+		$rules[] = array('deny', 'users'=>array('?'));
+		
+		$filter = new CAccessControlFilter;
+		$filter->setRules($rules);
+		$filter->filter($filterChain);
+	}
 
 	protected function beforeAction($action)
 	{

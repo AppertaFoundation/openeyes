@@ -63,7 +63,7 @@ class Patient extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+            'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id')
 		);
 	}
 

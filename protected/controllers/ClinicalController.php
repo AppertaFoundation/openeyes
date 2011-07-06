@@ -7,6 +7,24 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny', 
+				'users'=>array('?')
+			),
+		);
+	}
 
 	protected function beforeAction($action)
 	{
@@ -37,12 +55,7 @@ class ClinicalController extends BaseController
 			null, null, null, $this->getUserId(), $event
 		);
 
-		$this->render('view', array('elements' => $elements));
-	}
-
-	public function actionIndex()
-	{
-		$this->render('index');
+		$this->renderPartial('view', array('elements' => $elements), false, true);
 	}
 
 	/**
@@ -69,7 +82,7 @@ class ClinicalController extends BaseController
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
-		
+
 		$specialties = Specialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create')
@@ -81,18 +94,18 @@ class ClinicalController extends BaseController
 			);
 
 			if ($eventId) {
-				$this->redirect(array('view', 'id' => $eventId));
+				$this->redirect(array('patient/view', 'id' => $this->patientId));
 			}
 
 			// If we get here element validation and failed and the array of elements will
 			// be displayed again in the call below
 		}
 
-		$this->render('create', array(
+		$this->renderPartial('create', array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
 				'specialties' => $specialties
-			)
+			), false, true
 		);
 	}
 
@@ -123,7 +136,7 @@ class ClinicalController extends BaseController
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
-		
+
 		$specialties = Specialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'update') {
@@ -144,6 +157,36 @@ class ClinicalController extends BaseController
 				'id' => $id,
 				'elements' => $elements,
 				'specialties' => $specialties
+			)
+		);
+	}
+
+	public function actionEpisodeSummary($id)
+	{
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		$this->renderPartial('episodeSummary', array('episode' => $episode), false, true);
+	}
+
+	public function actionSummary($id)
+	{
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		if (!isset($_GET['summary'])) {
+			throw new CHttpException(403, 'No summary.');
+		}
+
+		$this->render('summary', array(
+				'episode' => $episode,
+				'summary' => $_GET['summary']
 			)
 		);
 	}

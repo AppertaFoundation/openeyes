@@ -24,21 +24,27 @@ class ElementOperation extends BaseElement
 	const EYE_LEFT = 0;
 	const EYE_RIGHT = 1;
 	const EYE_BOTH = 2;
-	
+
 	const CONSULTANT_NOT_REQUIRED = 0;
 	const CONSULTANT_REQUIRED = 1;
-	
+
 	const ANAESTHETIC_TOPICAL = 0;
 	const ANAESTHETIC_LOCAL_WITH_COVER = 1;
 	const ANAESTHETIC_LOCAL = 2;
 	const ANAESTHETIC_LOCAL_WITH_SEDATION = 3;
 	const ANAESTHETIC_GENERAL = 4;
-	
+
 	const SCHEDULE_IMMEDIATELY = 0;
 	const SCHEDULE_AFTER_1MO = 1;
 	const SCHEDULE_AFTER_2MO = 2;
 	const SCHEDULE_AFTER_3MO = 3;
 	
+	const STATUS_PENDING = 0;
+	const STATUS_SCHEDULED = 1;
+	const STATUS_NEEDS_RESCHEDULING = 2;
+	const STATUS_RESCHEDULED = 3;
+	const STATUS_CANCELLED = 4;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -65,7 +71,7 @@ class ElementOperation extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
-			array('comments', 'safe'),
+			array('eye, event_id, comments', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, eye, comments, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
@@ -82,6 +88,7 @@ class ElementOperation extends BaseElement
 		return array(
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)', 'order' => 'display_order ASC'),
+			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id')
 		);
 	}
 
@@ -130,7 +137,7 @@ class ElementOperation extends BaseElement
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	/**
 	 * Set default values for forms on create
 	 */
@@ -141,11 +148,12 @@ class ElementOperation extends BaseElement
 		$this->overnight_stay = 0;
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
+		$this->status = self::STATUS_PENDING;
 	}
-	
+
 	/**
 	 * Return list of options for eye
-	 * @return array 
+	 * @return array
 	 */
 	public function getEyeOptions()
 	{
@@ -155,7 +163,7 @@ class ElementOperation extends BaseElement
 			self::EYE_BOTH => 'Both',
 		);
 	}
-	
+
 	public function getEyeText() {
 		switch ($this->eye) {
 			case self::EYE_LEFT:
@@ -171,13 +179,13 @@ class ElementOperation extends BaseElement
 				$text = 'Unknown';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for consultant
-	 * @return array 
+	 * @return array
 	 */
 	public function getConsultantOptions()
 	{
@@ -186,7 +194,7 @@ class ElementOperation extends BaseElement
 			self::CONSULTANT_NOT_REQUIRED => 'No',
 		);
 	}
-	
+
 	public function getBooleanText($field) {
 		switch ($this->$field) {
 			case 1:
@@ -196,13 +204,13 @@ class ElementOperation extends BaseElement
 				$text = 'No';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for anaesthetic type
-	 * @return array 
+	 * @return array
 	 */
 	public function getAnaestheticOptions()
 	{
@@ -214,7 +222,7 @@ class ElementOperation extends BaseElement
 			self::ANAESTHETIC_GENERAL => 'General'
 		);
 	}
-	
+
 	public function getAnaestheticText() {
 		switch ($this->anaesthetic_type) {
 			case self::ANAESTHETIC_TOPICAL:
@@ -236,10 +244,10 @@ class ElementOperation extends BaseElement
 				$text = 'Unknown';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for schedule
 	 * @return array
@@ -251,10 +259,10 @@ class ElementOperation extends BaseElement
 			1 => 'Within timeframe specified by patient'
 		);
 	}
-	
+
 	/**
 	 * Return list of options for schedule timeframe
-	 * @return array 
+	 * @return array
 	 */
 	public function getScheduleDelayOptions()
 	{
@@ -264,7 +272,7 @@ class ElementOperation extends BaseElement
 			self::SCHEDULE_AFTER_3MO => 'After 3 Months',
 		);
 	}
-	
+
 	public function getScheduleText() {
 		switch ($this->schedule_timeframe) {
 			case self::SCHEDULE_IMMEDIATELY:
@@ -283,13 +291,13 @@ class ElementOperation extends BaseElement
 				$text = 'Unknown';
 				break;
 		}
-		
+
 		return $text;
 	}
-	
+
 	/**
 	 * Return list of options for overnight stay
-	 * @return array 
+	 * @return array
 	 */
 	public function getOvernightOptions()
 	{
@@ -298,7 +306,7 @@ class ElementOperation extends BaseElement
 			0 => 'No',
 		);
 	}
-	
+
 	protected function beforeSave()
 	{
 		$anaesthetistRequired = array(
@@ -306,7 +314,7 @@ class ElementOperation extends BaseElement
 			self::ANAESTHETIC_GENERAL
 		);
 		$this->anaesthetist_required = in_array($this->anaesthetic_type, $anaesthetistRequired);
-		
+
 		if (!empty($_POST['schedule_timeframe2'])) {
 			$this->schedule_timeframe = $_POST['schedule_timeframe2'];
 		} else {
@@ -315,18 +323,18 @@ class ElementOperation extends BaseElement
 
 		return parent::beforeSave();
 	}
-	
+
 	protected function afterSave()
 	{
 		parent::afterSave();
-		
+
 		$operationId = $this->id;
 		// first wipe out any existing procedures so we start from scratch
-		OperationProcedureAssignment::model()->deleteAll('operation_id = :id', 
+		OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
 			array(':id' => $operationId));
-		
+
 		$order = 1;
-		
+
 		if (!empty($_POST['Procedures'])) {
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
@@ -340,5 +348,203 @@ class ElementOperation extends BaseElement
 				$order++;
 			}
 		}
+	}
+	
+	public function getMinDate()
+	{
+		$date = strtotime($this->event->datetime);
+		
+		if ($this->schedule_timeframe != self::SCHEDULE_IMMEDIATELY) {
+			$interval = str_replace('After ', '+', $this->getScheduleText());
+			$date = strtotime($interval, $date);
+		}
+		
+		return $date;
+	}
+	
+	public function getSessions()
+	{
+		$minDate = $this->getMinDate();
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		if ($minDate < $thisMonth) {
+			$minDate = $thisMonth;
+		}
+		
+		$monthStart = empty($_GET['date']) ? date('Y-m-01', $minDate) : $_GET['date'];
+		
+		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		
+		$service = $this->getBookingService();
+		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
+		
+		$results = array();
+		$prevWeekday = -1;
+		foreach ($sessions as $session) {
+			$date = $session['date'];
+			$weekday = date('N', strtotime($date));
+			$text = $this->getWeekdayText($weekday);
+			
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
+			unset($session['session_duration'], $session['date']);
+			
+			$results[$text][$date]['sessions'][] = $session;
+		}
+		
+		foreach ($results as $weekday => $dates) {
+			$timestamp = strtotime($monthStart);
+			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
+			$dateList = array_keys($dates);
+			while (date('N', strtotime($dateList[0])) != date('N', $firstWeekday)) {
+				$firstWeekday += 60 * 60 * 24;
+			}
+			
+			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+				$addDays = ($weekCounter - 1) * 7;
+				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				if (in_array($selectedDay, $dateList)) {
+					foreach ($dates[$selectedDay] as $sessions) {
+						$totalSessions = count($sessions);
+						$status = $totalSessions;
+
+						$open = $full = 0;
+
+						foreach ($sessions as $session) {
+							if ($session['time_available'] >= $this->total_duration) {
+								$open++;
+							} else {
+								$full++;
+							}
+						}
+						if ($full == $totalSessions) {
+							$status = 'full';
+						} elseif ($full > 0 && $open > 0) {
+							$status = 'limited';
+						} elseif ($open == $totalSessions) {
+							$status = 'available';
+						}
+					}
+				} else {
+					$status = 'closed';
+				}
+				$results[$weekday][$selectedDay]['status'] = $status;
+			}
+		}
+		
+		foreach ($results as $weekday => &$dates) {
+			$dateSort = array();
+			foreach ($dates as $date => $info) {
+				$dateSort[] = $date;
+			}
+			
+			array_multisort($dateSort, SORT_ASC, $dates);
+		}
+		
+		return $results;
+	}
+	
+	public function getTheatres($date)
+	{
+		if (empty($date)) {
+			throw new Exception('Date is required.');
+		}
+		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		
+		$service = $this->getBookingService();
+		$sessions = $service->findTheatres($date, $firmId);
+		
+		$results = array();
+		$names = array();
+		foreach ($sessions as $session) {
+			$name = $session['name'];
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
+			$session['id'] = $session['session_id'];
+			unset($session['session_duration'], $session['date'], $session['name']);
+			
+			if ($session['time_available'] <= 0) {
+				$status = 'full';
+			} else {
+				$status = 'available';
+			}
+			$session['status'] = $status;
+			
+			$results[$name][] = $session;
+			if (!in_array($name, $names)) {
+				$names[] = $name;
+			}
+		}
+		
+		if (count($results) > 1) {
+			array_multisort($names, SORT_ASC, $results);
+		}
+		
+		return $results;
+	}
+	
+	public function getSession($sessionId)
+	{
+		if (empty($sessionId)) {
+			throw new Exception('Session id is invalid.');
+		}
+		$service = $this->getBookingService();
+		$results = $service->findSession($sessionId);
+		
+		$session = $results->read();
+		if (!empty($session['name'])) {
+			$name = $session['name'];
+			$sessionTime = explode(':', $session['session_duration']);
+			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
+			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
+			unset($session['session_duration'], $session['name']);
+			
+			if ($session['time_available'] <= 0) {
+				$status = 'full';
+			} else {
+				$status = 'available';
+			}
+			$session['status'] = $status;
+		} else {
+			$session = false;
+		}
+		
+		return $session;
+	}
+	
+	public function getBookingService()
+	{
+		return new BookingService;
+	}
+	
+	public function getWeekdayText($index)
+	{
+		switch($index) {
+			case 1:
+				$text = 'Monday';
+				break;
+			case 2:
+				$text = 'Tuesday';
+				break;
+			case 3:
+				$text = 'Wednesday';
+				break;
+			case 4:
+				$text = 'Thursday';
+				break;
+			case 5:
+				$text = 'Friday';
+				break;
+			case 6:
+				$text = 'Saturday';
+				break;
+			case 7:
+				$text = 'Sunday';
+				break;
+		}
+
+		return $text;
 	}
 }

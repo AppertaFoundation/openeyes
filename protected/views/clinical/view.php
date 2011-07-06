@@ -1,7 +1,5 @@
 <?php
 
-$this->renderPartial('base');
-
 /**
  * Loop through all the element types completed for this event
  */

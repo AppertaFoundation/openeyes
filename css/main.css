@@ -18,7 +18,7 @@ body
 #header
 {
 	margin: 0;
-	padding: 0;
+	padding: 10px 20px;
 	border-top: 3px solid #C9E0ED;
 }
 
@@ -43,8 +43,14 @@ body
 
 #logo
 {
-	padding: 10px 20px;
+	padding: 0;
 	font-size: 200%;
+	float: left;
+}
+
+#logo img {
+	height: 30px;
+	width: 40px;
 }
 
 #mainmenu
@@ -266,3 +272,195 @@ button img {
         height: 32px;
 }
 
+#login {
+	margin: auto;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	top: 170px;
+	width: 440px;
+	height: 160px;
+	overflow: visible;
+	border: 1px solid;
+	padding: 30px 0;
+}
+
+#login img {
+	height: 30px;
+	width: 40px;
+}
+
+#heading {
+	margin: auto;
+	width: 100%;
+	text-align: center;
+}
+
+#heading h1 {
+	display: inline;
+	vertical-align: top;
+}
+
+#login .form {
+	text-align: center;
+}
+
+#user_info {
+	float: right;
+}
+
+#user_info form {
+	display: inline;
+}
+
+ul#navlist {
+	margin: 0;
+	padding: 0;
+	white-space: nowrap;
+	display: inline;
+	padding-left: 8px;
+}
+
+#navlist li {
+	list-style-type: none;
+	padding: 4px 0;
+	margin: 0;
+	display: inline;
+}
+
+#navlist a, #navlist span {
+	padding: 0 8px;
+	border-left: 1px solid #999;
+}
+
+.clear {
+	clear: both;
+}
+
+.details {
+	width: 100%;
+	border: 1px solid;
+	padding: 5px;
+	margin-bottom: 20px;
+}
+
+.data_row {
+	clear: both;
+	width: 100%;
+	padding: 3px 0;
+}
+
+.data_label {
+	font-weight: bold;
+	text-align: right;
+	vertical-align: top;
+	float: left;
+	width: 250px;
+}
+
+.data_value {
+	text-align: left;
+	width: 250px;
+	padding-left: 280px;
+}
+
+#episodes_sidebar {
+	width: 270px;
+	float: left;
+	font: bold 13pt Arial;
+	color: #05488A;
+}
+
+#episodes_details {
+	padding-left: 290px;
+	padding-top: 30px;
+}
+
+#episodes_title {
+	width: 350px;
+	float: left;
+	font: bold 16pt arial;
+	color: #333;
+}
+
+#add_episode {
+	width: 350px;
+	font: bold 13pt arial;
+	color: #05488A;
+	position: absolute;
+	top: 60px;
+	left: 600px;
+	z-index: 100;
+}
+
+#add_episode li {
+	list-style: none;
+}
+
+#add_episode li.header {
+	color: #000;
+}
+
+#add_episode li a {
+	text-decoration: none;
+	padding-left: 5px;
+	vertical-align: top;
+}
+
+#episode_types {
+	display: none;
+}
+
+.ui-tabs-panel {
+	min-height: 100px;
+}
+
+.episode {
+	border: 1px solid;
+	position: relative;
+}
+
+.episode .title {
+	font-weight: bold;
+	width: 320px;
+	float: left;
+	padding: 4px;
+}
+
+.episode .date {
+	text-transform: uppercase;
+}
+
+.rounded-corners {
+     -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    behavior: url(/images/border-radius.htc);
+}
+
+ul.events {
+	padding-left: 20px;
+}
+
+ul.events li {
+	list-style-type: none;
+	font: bold 12pt Arial;
+}
+
+ul.events li a {
+	text-decoration: none;
+	color: #333;
+}
+
+ul.events li a span.date {
+	font-style: italic;
+}
+
+.breadcrumbs {
+	font: 12pt Arial;
+	color: #333;
+}
+
+.breadcrumbs a {
+	text-decoration: underline;
+}

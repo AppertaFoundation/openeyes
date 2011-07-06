@@ -22,7 +22,7 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><img src="/images/logo.png" alt="OpenEyes Logo" /><?php echo CHtml::encode(Yii::app()->name); ?></div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
@@ -50,6 +50,21 @@
 	</div><!-- footer -->
 
 </div><!-- page -->
+
+<script type="text/javascript">
+	$('select[id=selected_firm_id]').live('change', function() {
+		var firmId = $('select[id=selected_firm_id]').val();
+		$.ajax({
+			type: 'post',
+			url: '<?php echo Yii::app()->createUrl('site'); ?>',
+			data: {'selected_firm_id': firmId },
+			success: function(data) {
+				console.log(data);
+				window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
+			}
+		});
+	});
+</script>
 
 </body>
 </html>

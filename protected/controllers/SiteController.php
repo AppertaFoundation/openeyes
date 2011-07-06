@@ -26,6 +26,37 @@ class SiteController extends BaseController
 			),
 		);
 	}
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			// non-logged in can't view index or logout
+			array('deny', 
+				'actions'=>array('index', 'logout'),
+				'users'=>array('?')
+			),
+			// everyone can view errors
+			array('allow',
+				'actions'=>array('error'),
+				'users'=>array('*')
+			),
+			// non-logged in can view login
+			array('allow',
+				'actions'=>array('login'),
+				'users'=>array('?')
+			),
+			// logged in can view logout
+			array('allow',
+				'actions'=>array('logout'),
+				'users'=>array('@')
+			),
+		);
+	}
 
 	/**
 	 * This is the default 'index' action that is invoked

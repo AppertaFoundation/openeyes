@@ -34,7 +34,7 @@ foreach ($specialties as $specialty) {
 		$('select[name=service]').change(function() {
 			var select = $('select[name=service]').val();
 			$.ajax({
-				'url': 'index.php?r=procedure/subsection',
+				'url': '<?php echo Yii::app()->createUrl('procedure/subsection'); ?>',
 				'type': 'GET',
 				'data': {'service': select},
 				'success': function(data) {
@@ -46,7 +46,7 @@ foreach ($specialties as $specialty) {
 		$('select[name=subsection]').change(function() {
 			var select = $('select[name=subsection]').val();
 			$.ajax({
-				'url': 'index.php?r=procedure/list',
+				'url': '<?php echo Yii::app()->createUrl('procedure/list'); ?>',
 				'type': 'GET',
 				'data': {'subsection': select},
 				'success': function(data) {
@@ -57,7 +57,7 @@ foreach ($specialties as $specialty) {
 		$('#add_procedure').click(function() {
 			var procedure = $('select[name=procedure] option:selected').text();
 			$.ajax({
-				'url': 'index.php?r=procedure/details',
+				'url': '<?php echo Yii::app()->createUrl('procedure/details'); ?>',
 				'type': 'GET',
 				'data': {'name': procedure},
 				'success': function(data) {

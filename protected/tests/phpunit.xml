@@ -1,10 +1,10 @@
 <phpunit bootstrap="bootstrap.php"
-		colors="true"
-		convertErrorsToExceptions="true"
-		convertNoticesToExceptions="true"
-		convertWarningsToExceptions="true"
-		stopOnFailure="false"
-		verbose="true">
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	stopOnFailure="false"
+	verbose="true">
 
 	<filter>
 		<blacklist>
@@ -16,6 +16,9 @@
 			<directory suffix=".php">../models</directory>
 			<directory suffix=".php">../models/elements</directory>
 			<directory suffix=".php">../services</directory>
+			<exclude>
+				<directory suffix=".php">../components/summaryWidgets/views</directory>
+			</exclude>
 		</whitelist>
 	</filter>
 

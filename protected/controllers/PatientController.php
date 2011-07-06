@@ -5,6 +5,24 @@ Yii::import('application.controllers.*');
 class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny', 
+				'users'=>array('?')
+			),
+		);
+	}
 
 	protected function beforeAction($action)
 	{
@@ -24,12 +42,12 @@ class PatientController extends BaseController
 	{
 		$patient = $this->loadModel($id);
 
-		$this->layout = '//layouts/patientMode/column2';
+		$this->layout = '//layouts/patientMode/main';
 
 		$app = Yii::app();
 		$app->session['patient_id'] = $patient->id;
 		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
-
+		
 		$this->render('view', array(
 			'model' => $patient
 		));
@@ -86,6 +104,59 @@ class PatientController extends BaseController
 			'model' => $model,
 		));
 	}
+	
+	public function actionSummary()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$address = Address::model()->findByPk($patient->address_id);
+		
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $patient->id);
+		$criteria->order = 'start_date DESC';
+		$criteria->limit = 5;
+
+		$dataProvider = new CActiveDataProvider('Episode', array(
+			'criteria'=>$criteria));
+		
+		$this->renderPartial('_summary', 
+			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
+	}
+	
+	public function actionEpisodes()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		
+		$firm = Firm::model()->findByPk($this->selectedFirmId);
+		
+		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
+		$eventTypes = EventType::model()->getAllPossible($specialtyId);
+		
+		$typeGroups = $this->getEventTypeGrouping();
+		
+		foreach ($eventTypes as $eventType) {
+			foreach ($typeGroups as $name => $group) {
+				if (in_array($eventType->name, $group)) {
+					$typeList[$name][] = $eventType;
+				}
+			}
+		}
+		
+		$this->renderPartial('_episodes', 
+			array('model'=>$patient, 'episodes'=>$patient->episodes, 
+				'eventTypeGroups'=>$typeList));
+	}
+	
+	public function actionContacts()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$this->renderPartial('_contacts', array('model'=>$patient));
+	}
+	
+	public function actionCorrespondence()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$this->renderPartial('_correspondence', array('model'=>$patient));
+	}
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
@@ -110,6 +181,16 @@ class PatientController extends BaseController
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+	
+	protected function getEventTypeGrouping()
+	{
+		return array(
+			'Examination' => array('visual fields', 'examination', 'question', 'outcome'),
+			'Imaging & Surgery' => array('oct', 'laser', 'operation'),
+			'Correspondence' => array('letterin', 'letterout'),
+			'Consent Forms' => array(''),
+		);
 	}
 
 	/**

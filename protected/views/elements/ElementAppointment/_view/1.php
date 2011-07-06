@@ -1,1 +1,0 @@
-<p>ElementAppointment View</p>

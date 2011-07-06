@@ -1,32 +1,37 @@
 <?php
-if ($this->showForm) {
-?>
+if (!Yii::app()->user->isGuest) {
+	if (!empty(Yii::app()->session['user'])) {
+		$user = Yii::app()->session['user'];
+	} else {
+		$user = User::model()->findByPk(Yii::app()->user->id);
+		Yii::app()->session['user'] = $user;
+	} ?>
+<div id="user_info">
+You are logged in as: <strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'base-form',
-	'enableAjaxValidation'=>false,
-	'action' => Yii::app()->createUrl('site')
+<?php $this->widget('zii.widgets.CMenu',array(
+	'items'=>array(
+		array('label'=>'Account Settings', 'url'=>array('#'), 'visible'=>!Yii::app()->user->isGuest),
+		array('label'=>'Dashboard', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
+		array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+		array('label'=>'Logout', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+	),
+	'id' => 'navlist',
 )); ?>
-
-	<?php echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms); ?>
-
-	<?php echo CHtml::submitButton('Change Firm'); ?>
+<br />
 <?php
-}
-?>
-
-<?php
-	if (!Yii::app()->user->isGuest) {
-?>
-	Name: <b><?php echo Yii::app()->user->name ?></b>
-<?php
-}
-
 if ($this->showForm) {
+	echo 'Selected firm: ';
+	$form=$this->beginWidget('CActiveForm', array(
+		'id'=>'base-form',
+		'enableAjaxValidation'=>false,
+		'action' => Yii::app()->createUrl('site')
+	));
+	echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms);
+	$this->endWidget();
+}
 ?>
-	Selected firm: <b><?php echo($this->firms[$this->selectedFirmId]) ?></b>
-
-<?php $this->endWidget(); ?>
-
+</div>
+<div class="clear"></div>
 <?php
 }
