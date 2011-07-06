@@ -144,11 +144,16 @@
 			dear = contact[2];
 
 			if (contact[3] == '') {
-				// No nickname
-				$('#use_nickname').val(0);
-			} else if ($('#use_nickname').val()) {
-				// A mickname is available and the use_nickname box is checked
-				dear = contact[3];
+				// No nickname, grey out use_nickname box
+				$("#use_nickname").attr("disabled", "disabled");	
+			} else {
+				// Ungrey use_nickname box
+				$("#use_nickname").removeAttr("disabled");
+
+				if ($('#use_nickname').attr('checked')) {
+					// A mickname is available and the use_nickname box is checked
+					dear = contact[3];
+				}
 			}
 
 			$('#ElementLetterOut_dear').val('Dear ' + dear);

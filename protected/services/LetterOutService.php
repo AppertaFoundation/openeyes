@@ -92,6 +92,11 @@ class LetterOutService
 		return $options;
 	}
 
+	public function getFromOptions()
+	{
+
+	}
+	
 	public function populateOptions(&$options, $results)
 	{
 		foreach ($results as $result) {
