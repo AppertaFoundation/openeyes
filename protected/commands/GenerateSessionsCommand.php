@@ -16,7 +16,7 @@ Optional parameter to specify the end date for the script.\n";
 	public function run($args)
 	{
 		$today = date('Y-m-d');
-		$endDate = empty($args) ? strtotime('+1 year') : strtotime($args[0]);
+		$endDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
 		$sequences = Sequence::model()->findAll(
 			'start_date <= :end_date AND end_date IS NULL or end_date > :today', 
 			array(':end_date'=>date('Y-m-d', $endDate), ':today'=>$today));
