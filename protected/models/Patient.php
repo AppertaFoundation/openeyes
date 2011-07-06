@@ -16,7 +16,7 @@
  * @property integer $address_id
  * @property string  $primary_phone
  */
-class Patient extends CActiveRecord
+class Patient extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -48,7 +48,7 @@ class Patient extends CActiveRecord
 			array('title', 'length', 'max'=>8),
 			array('first_name, last_name, hos_num, nhs_num, primary_phone', 'length', 'max'=>40),
 			array('gender', 'length', 'max'=>1),
-			array('dob, primary_phone', 'safe'),
+			array('dob, primary_phone, address_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone', 'safe', 'on'=>'search'),
@@ -82,7 +82,8 @@ class Patient extends CActiveRecord
 			'gender' => 'Gender',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
-			'primary_phone' => 'Primary Phone'
+			'primary_phone' => 'Primary Phone',
+			'address_id' => 'Address'
 		);
 	}
 

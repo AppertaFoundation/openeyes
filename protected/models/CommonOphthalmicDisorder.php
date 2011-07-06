@@ -12,7 +12,7 @@
  * @property Disorder $disorder
  * @property Specialty $specialty
  */
-class CommonOphthalmicDisorder extends CActiveRecord
+class CommonOphthalmicDisorder extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

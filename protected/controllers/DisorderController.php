@@ -1,5 +1,7 @@
 <?php
 
+// @todo - this should probably be changed to a widget.
+
 class DisorderController extends Controller
 {
 	public $layout='column2';

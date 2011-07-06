@@ -16,9 +16,9 @@ return CMap::mergeArray(
 		'import'=>array(
 			'application.models.*',
 			'application.components.*',
+			'application.components.summaryWidgets.*',
 			'application.controllers.*',
 			'application.models.elements.*',
-			'application.models.summaries.*',
 			'application.services.*'
 		),
 
@@ -86,6 +86,18 @@ return CMap::mergeArray(
 						'class'=>'CFileLogRoute',
 						'levels'=>'error, warning',
 					),
+                                        array(
+                                                'class'=>'CFileLogRoute',
+                                                'levels'=>'user',
+                                                'logfile'=>'userActivity.log',
+                                                'filter' => array(
+                                                        'class' => 'CLogFilter',
+                                                        'prefixSession' => False,
+                                                        'prefixUser' => true,
+                                                        'logUser' => true,
+                                                        'logVars' => array('_GET','_POST'),
+                                                ),
+                                        ),
 					// uncomment the following to show log messages on web pages
 					/*
 					array(

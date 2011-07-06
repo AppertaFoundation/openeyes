@@ -61,7 +61,7 @@ class PatientService
 		if (!empty($data['hos_num'])) {
 			// add tweaks in for hospital number jiggering
 			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS 
+				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS
 				WHERE NUM_ID_TYPE != :number_type AND NUMBER_ID = :hos_number)");
 			$params[':number_type'] = 'NHS';
 			$params[':hos_number'] = $this->formatHospitalNumberForPas($data['hos_num']);
@@ -69,7 +69,7 @@ class PatientService
 		if (!empty($data['nhs_num'])) {
 			// add tweaks in for hospital number jiggering
 			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS 
+				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS
 				WHERE NUM_ID_TYPE = :number_type AND
 				NUMBER_ID = :nhs_number)");
 			$params[':number_type'] = 'NHS';
@@ -138,7 +138,7 @@ class PatientService
 	 * Update its info with the latest info from PAS
 	 *
 	 * @param array $data   Data from PAS to store in the patient model
-	 * 
+	 *
 	 * @return Patient
 	 */
 	protected function updatePatient($patientData, $addressData)
@@ -315,12 +315,18 @@ class PatientService
 
 		// Store data
 		$unitedKingdom = Country::model()->findByAttributes(array('name' => 'United Kingdom'));
-		$address->address1 = $address1;
-		$address->address2 = $address2;
-		$address->city = $town;
-		$address->county = $county;
+		if (isset($address1)) {
+			$address->address1 = $address1;
+		}
+		if (isset($address2)) {
+			$address->address2 = $address2;
+		}
+		if (isset($town)) {
+			$address->city = $town;
+		}
+		# $address->county = $county;
 		$address->country_id = $unitedKingdom->id;
-		$address->postcode = $postcode;
+		# $address->postcode = $postcode;
 
 		return $address;
 	}

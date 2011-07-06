@@ -59,7 +59,7 @@ class ElementIntraocularPressureTest extends CDbTestCase
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
-			'event_id' => '1',
+			'event_id' => 3,
 			'right_iop' => '20',
 			'left_iop' => '10',
 		));

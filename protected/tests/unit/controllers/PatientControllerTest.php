@@ -82,7 +82,7 @@ class PatientControllerTest extends CDbTestCase
 		
 		$mockController->actionSearch();
 	}
-	
+/*
 	public function testActionResults_RendersResultsView()
 	{
 		$_POST = array();
@@ -103,7 +103,7 @@ class PatientControllerTest extends CDbTestCase
 		
 		$mockController->actionResults();
 	}
-	
+*/	
 	public function testGetSearch_ReturnsCorrectData()
 	{
 		$_POST['Patient'] = $this->patients['patient1'];

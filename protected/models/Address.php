@@ -13,7 +13,7 @@
  * @property integer $country_id
  * @property string $email
  */
-class Address extends CActiveRecord
+class Address extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -40,9 +40,9 @@ class Address extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('address1, address2, city, county', 'length', 'max'=>40),
+			array('address1, address2, city, county', 'length', 'max'=>255),
 			array('postcode', 'length', 'max'=>10),
-			array('email', 'length', 'max'=>60),
+			array('email', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, address1, address2, city, postcode, county, email', 'safe', 'on'=>'search'),

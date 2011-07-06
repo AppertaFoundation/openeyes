@@ -138,4 +138,22 @@ class UserTest extends CDbTestCase
 		$this->assertEquals($user->getActiveText(), 'No');
 		$this->assertEquals($this->users('user3'), $user);
 	}
+
+        public function testGlobalFirmRightsTextYes()
+        {
+                $user = User::model()->find(
+                        'username = :username', array(':username' => 'icabod')
+                );
+
+                $this->assertEquals($user->getGlobalFirmRightsText(), 'Yes');
+        }
+
+        public function testGetGlobalFirmRightsTextNo()
+        {
+                $user = User::model()->find(
+                        'username = :username', array(':username' => 'admin')
+                );
+
+                $this->assertEquals($user->getGlobalFirmRightsText(), 'No');
+        }
 }

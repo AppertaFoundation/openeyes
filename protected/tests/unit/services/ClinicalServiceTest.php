@@ -86,7 +86,7 @@ class ClinicalServiceTest extends CDbTestCase
 		$firm = $this->firms('firm1');
 
 		$result = $this->service->createElements($elements, $data, $firm, 1, 1, 1);
-		$this->assertEquals(3, $result);
+		$this->assertEquals(6, $result);
 	}
 
 	public function testCreateElements_ValidParameters_ReturnsCorrectData()
@@ -100,7 +100,7 @@ class ClinicalServiceTest extends CDbTestCase
 
 		$firm = $this->firms('firm1');
 		$result = $this->service->createElements(array($element), $data, $firm, 1, 1, 1);
-		$this->assertEquals(3, $result);
+		$this->assertEquals(6, $result);
 	}
 
 	public function testCreateElements_ValidParameters_NewEpisode_ReturnsCorrectData()
@@ -114,7 +114,7 @@ class ClinicalServiceTest extends CDbTestCase
 
 		$firm = $this->firms('firm1');
 		$result = $this->service->createElements(array($element), $data, $firm, 2, 1, 1);
-		$this->assertEquals(3, $result);
+		$this->assertEquals(6, $result);
 	}
 
 	public function testCreateElements_InvalidElementData_ReturnsCorrectData()

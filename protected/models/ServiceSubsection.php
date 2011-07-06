@@ -12,7 +12,7 @@
  * @property Procedure[] $procedures
  * @property Service $service
  */
-class ServiceSubsection extends CActiveRecord
+class ServiceSubsection extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

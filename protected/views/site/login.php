@@ -26,6 +26,12 @@ $this->layout = 'simple';
 			<?php echo $form->error($model,'password'); ?>
 		</div>
 
+		<div class="row">
+			<?php echo $form->labelEx($model,'siteId'); ?>
+			<?php echo $form->dropDownList($model, 'siteId', $sites); ?>
+			<?php echo $form->error($model,'siteId'); ?>
+		</div>
+
 		<div class="row buttons">
 			<?php echo CHtml::submitButton('Login'); ?>
 		</div>

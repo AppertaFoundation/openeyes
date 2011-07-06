@@ -10,7 +10,7 @@
  * The followings are the available model relations:
  * @property Firm[] $firms
  */
-class Contact extends CActiveRecord
+class Contact extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -53,6 +53,8 @@ class Contact extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'firms' => array(self::HAS_MANY, 'Firm', 'contact_id'),
+			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
+			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id')
 		);
 	}
 

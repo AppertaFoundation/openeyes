@@ -8,7 +8,7 @@
  * @property string $procedure_id
  * @property integer $display_order
  */
-class OperationProcedureAssignment extends CActiveRecord
+class OperationProcedureAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

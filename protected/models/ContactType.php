@@ -6,9 +6,9 @@
  * The followings are the available columns in table 'contact_type':
  * @property string $id
  * @property string $name
- * @property integer $macro_only
+ * @property integer $letter_template_only
  */
-class ContactType extends CActiveRecord
+class ContactType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -60,7 +60,7 @@ class ContactType extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-			'macro_only' => 'Macro Only',
+			'letter_template_only' => 'Letter Template Only',
 		);
 	}
 
@@ -77,7 +77,7 @@ class ContactType extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('macro_only', 0);
+		$criteria->compare('letter_template_only', 0);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

@@ -5,17 +5,18 @@
  *
  * The followings are the available columns in table 'letter_template':
  * @property string $id
- * @property string $specialty_id
  * @property string $name
- * @property string $contact_type_id
- * @property string $text
+ * @property string $phrase
+ * @property string $specialty_id
+ * @property string $to
  * @property string $cc
  *
  * The followings are the available model relations:
- * @property ContactType $contactType
+ * @property ContactType $cc0
  * @property Specialty $specialty
+ * @property ContactType $to0
  */
-class LetterTemplate extends CActiveRecord
+class LetterTemplate extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -42,14 +43,13 @@ class LetterTemplate extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('specialty_id, contact_type_id', 'required'),
-			array('specialty_id, contact_type_id', 'length', 'max'=>10),
-			array('name', 'length', 'max'=>64),
-			array('cc', 'length', 'max'=>128),
-			array('text', 'safe'),
+			array('name, phrase, specialty_id, to, cc', 'required'),
+			array('name', 'length', 'max'=>255),
+			array('phrase', 'length', 'max'=>2047),
+			array('specialty_id, to, cc', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, specialty_id, name, contact_type_id, text, cc', 'safe', 'on'=>'search'),
+			array('id, name, phrase, specialty_id, to, cc', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -61,8 +61,9 @@ class LetterTemplate extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contactType' => array(self::BELONGS_TO, 'ContactType', 'contact_type_id'),
+			'cc0' => array(self::BELONGS_TO, 'ContactType', 'cc'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+			'to0' => array(self::BELONGS_TO, 'ContactType', 'to'),
 		);
 	}
 
@@ -73,10 +74,10 @@ class LetterTemplate extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'specialty_id' => 'Specialty',
 			'name' => 'Name',
-			'contact_type_id' => 'Contact Type',
-			'text' => 'Text',
+			'phrase' => 'Phrase',
+			'specialty_id' => 'Specialty',
+			'to' => 'To',
 			'cc' => 'Cc',
 		);
 	}
@@ -93,15 +94,30 @@ class LetterTemplate extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('contact_type_id',$this->contact_type_id,true);
-		$criteria->compare('text',$this->text,true);
+		$criteria->compare('phrase',$this->phrase,true);
+		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('to',$this->to,true);
 		$criteria->compare('cc',$this->cc,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getSpecialtyText()
+	{
+		return $this->specialty->name;
+	}
+
+	public function getToText()
+	{
+		return $this->to0->name;
+	}
+
+	public function getCcText()
+	{
+		return $this->cc0->name;
 	}
 
 	public function getSpecialtyOptions()

@@ -13,7 +13,7 @@
  * @property Service $service
  * @property Specialty $specialty
  */
-class ServiceSpecialtyAssignment extends CActiveRecord
+class ServiceSpecialtyAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

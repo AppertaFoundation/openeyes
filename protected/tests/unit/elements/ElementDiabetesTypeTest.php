@@ -58,8 +58,8 @@ class ElementDiabetesTypeTest extends CDbTestCase
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
-			'event_id' => '1',
-			'type' => 1,
+			'event_id' => 1,
+			'type' => 1
 		));
 
 		$this->assertTrue($element->save(true));

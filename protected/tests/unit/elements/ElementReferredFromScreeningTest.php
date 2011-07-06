@@ -57,7 +57,7 @@ class ElementReferredFromScreeningTest extends CDbTestCase
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
-			'event_id' => '1',
+			'event_id' => '3',
 			'referred' => '0',
 		));
 		$this->assertTrue($element->save(true));

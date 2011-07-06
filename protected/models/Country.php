@@ -8,7 +8,7 @@
  * @property string $code
  * @property string $name
  */
-class Country extends CActiveRecord
+class Country extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

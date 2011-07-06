@@ -36,7 +36,7 @@ class ElementIntraocularPressure extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('right_iop, left_iop', 'numerical', 'integerOnly'=>true),
+			array('right_iop, left_iop, event_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, right_iop, left_iop', 'safe', 'on'=>'search'),

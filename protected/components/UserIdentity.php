@@ -55,8 +55,8 @@ class UserIdentity extends CUserIdentity
 			$options = array(
 				'host'				=> Yii::app()->params['ldap_server'],
 				'port'				=> Yii::app()->params['ldap_port'],
-				'username'			=>	Yii::app()->params['ldap_admin_dn'],
-				'password'			=>	Yii::app()->params['ldap_password'],
+				'username'			=> Yii::app()->params['ldap_admin_dn'],
+				'password'			=> Yii::app()->params['ldap_password'],
 				'baseDn'			=> Yii::app()->params['ldap_admin_dn'],
 				'useStartTls'		=> false,
 			);
@@ -116,19 +116,49 @@ class UserIdentity extends CUserIdentity
 
 		$firms = array();
 
-		foreach ($user->firms as $firm) {
-			$firms[$firm->id] = $firm->name .
-								' (' . $firm->pas_code . ') (' .
-								$firm->serviceSpecialtyAssignment->service->name .')';
+		if ($user->global_firm_rights) {
+			foreach(Firm::model()->findAll() as $firm) {
+				$firms[$firm->id] = $this->firmString($firm);
+			}
+		} else {
+			foreach ($user->firms as $firm) {
+				$firms[$firm->id] = $this->firmString($firm);
+			}
 
-			// @todo - decide how to select the default firm
-			$app->session['selected_firm_id'] = $firm->id;
+			// Get arbitrarily selected firms
+			foreach ($user->firmRights as $firm) {
+				$firms[$firm->id] = $this->firmString($firm);
+			}
+
+			// Get firns associated with services
+			// @todo - tidy this up, it doesn't need three loops
+			foreach ($user->serviceRights as $service) {
+				foreach ($service->serviceSpecialtyAssignments as $ssa) {
+					foreach (Firm::model()->findAll(
+						'service_specialty_assignment_id = ?', array(
+							$ssa->id
+						)
+					) as $firm) {
+						$firms[$firm->id] = $this->firmString($firm);
+					}
+				}
+			}
 		}
 
 		$app->session['user'] = $user;
 		$app->session['firms'] = $firms;
 
+		reset($firms);
+		$app->session['selected_firm_id'] = key($firms);
+
 		return true;
+	}
+
+	public function firmString($firm)
+	{
+		return $firm->name .
+			' (' . $firm->pas_code . ') (' .
+			$firm->serviceSpecialtyAssignment->service->name .')';
 	}
 
 	public function getId()

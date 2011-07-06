@@ -1,7 +1,7 @@
 <?php
 
 /**
- * A class that all OpenEyes classes should extend.
+ * A class that all OpenEyes active record classes should extend.
  *
  * Currently its only purpose is to remove all html tags to
  * prevent XSS.
@@ -19,8 +19,10 @@ class BaseActiveRecord extends CActiveRecord
 	{
 		$primaryKey = $this->tableSchema->primaryKey;
 		foreach ($this->attributes as $name => $value) {
-			if ($primaryKey !== $name || 
-				(is_array($primaryKey) && !in_array($name, $primaryKey))) {
+// @todo - there is a lot going on here, make sure it does exactly what it should! The '!empty' check is
+// to prevent it populating NULL values, e.g. episode.end_date was changing from NULL to 0000-00-00 00:00:00.
+			if (!empty($value) && ($primaryKey !== $name || 
+				(is_array($primaryKey) && !in_array($name, $primaryKey)))) {
 				$this->$name = strip_tags($value);
 			}
 		}

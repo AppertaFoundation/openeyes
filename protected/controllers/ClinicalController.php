@@ -1,5 +1,8 @@
 <?php
 
+// @todo - add logging for deletion on an event in the admin area
+// @todo - for that matter create an admin script for deleting events!
+
 class ClinicalController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';
@@ -55,7 +58,23 @@ class ClinicalController extends BaseController
 			null, null, null, $this->getUserId(), $event
 		);
 
+		$this->logActivity('viewed event');
+
 		$this->renderPartial('view', array('elements' => $elements), false, true);
+	}
+
+	public function actionIndex()
+	{
+		$this->logActivity('viewed patient index');
+
+		if (Yii::app()->params['use_pas']) {
+			// @todo - this is here until we decide where the best place to put it is.
+			$patient = Patient::model()->findByPk($this->patientId);
+			$referralService = new ReferralService;
+			$referralService->search($patient->pas_key);
+		}
+
+		$this->render('index');	
 	}
 
 	/**
@@ -94,7 +113,15 @@ class ClinicalController extends BaseController
 			);
 
 			if ($eventId) {
-				$this->redirect(array('patient/view', 'id' => $this->patientId));
+				$this->logActivity('created event.');
+
+				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
+					$this->redirect(array('chooseReferral', 'id' => $eraId));
+				} else {
+					$this->redirect(array('patient/view', 'id' => $this->patientId));
+				}
+
+				return;
 			}
 
 			// If we get here element validation and failed and the array of elements will
@@ -145,8 +172,16 @@ class ClinicalController extends BaseController
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {
-				// Nothing has gone wrong with updating elements, go to the view page
-				$this->redirect(array('view', 'id' => $event->id));
+				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
+					$this->redirect(array('chooseReferral', 'id' => $eraId));
+				} else {
+					$this->logActivity('updated event');
+
+					// Nothing has gone wrong with updating elements, go to the view page
+					$this->redirect(array('view', 'id' => $event->id));
+				}
+
+				return;
 			}
 
 			// If we get this far element validation has failed, so we render them again.
@@ -184,11 +219,81 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'No summary.');
 		}
 
+		$this->logActivity('viewed patient summary');
+
 		$this->render('summary', array(
 				'episode' => $episode,
 				'summary' => $_GET['summary']
 			)
 		);
+	}
+
+	public function actionChooseReferral($id)
+	{
+		$referralEpisode = ReferralEpisodeAssignment::model()->findByPk($id);
+
+		if (!isset($referralEpisode)) {
+			throw new CHttpException(403, 'Invalid referral episode assignment id.');
+		}
+
+		// @todo - check they have access to this episode and that the episode doesn't have
+		// a referral already?
+
+		$referrals = Referral::model()->findAll(array(
+			'order' => 'refno DESC',
+			'condition' => 'patient_id = :p AND closed = 0',
+			'params' => array(':p' => $this->patientId)
+			)
+		);
+
+		if ($_POST && $_POST['action'] == 'chooseReferral')
+		{
+			if (isset($_POST['referral_id'])) {
+// @todo - check referral_id is in list of referrals
+				$referralEpisode->referral_id = $_POST['referral_id'];
+
+				if ($referralEpisode->save()) {
+					$this->logActivity('chose a referral');
+
+					$this->redirect(array('view', 'id' => $id));
+					return;
+				}
+			}
+		}
+
+		// @todo - decide what to display in the drop down list. Referral id alone isn't very informative.
+		$this->render('chooseReferral', array(
+				'id' => $id,
+				'referrals' => CHtml::listData($referrals, 'id', 'refno')
+			)
+		);
+	}
+
+	/**
+	 * Checks is the user is required to enter a referral manually.
+	 *
+	 * @param int $eventId
+	 * @return boolean
+	 */
+	public function checkForReferral($eventId)
+	{
+	    if (Yii::app()->params['use_pas']) {
+			// If there is no referral for this episode, be it new or not, and at least one
+			// referral exists for this patient, either automatically associate it with
+			// the episode (if possible) or choose one by default then ask the user to select
+			// the appropriate episode.
+
+			// First check if this episode has any referrals
+			$referralService = new ReferralService;
+
+			// Attempt to automatically choose a referral
+
+			// If not false, No open referral for this specialty available but there are open
+			// referrals available. One of these will have been chosen automatically
+			// as a default but the system will forward to the referral selection page so the user
+			// can choose one manually.
+			return $referralService->manualReferralNeeded($eventId);
+		}
 	}
 
 	/**

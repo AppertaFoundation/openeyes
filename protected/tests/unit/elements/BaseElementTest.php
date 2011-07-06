@@ -5,7 +5,6 @@ class BaseElementTest extends CDbTestCase
 		'users' => 'User',
 		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'firms' => 'Firm',
-		'examphrase' => 'ExamPhrase',
 		'patients' => 'Patient',
 		'episodes' => 'Episode',
 		'eventTypes' => 'EventType',
@@ -19,6 +18,7 @@ class BaseElementTest extends CDbTestCase
 		$this->assertEquals(1, $baseElement->firm->serviceSpecialtyAssignment->specialty_id);
 	}
 
+	/* - exam phrases have been removed, but the requirements for their replacement are as yet unclear
 	public function testGetExamPhraseOptions()
 	{
 		$firm = $this->firms('firm1');
@@ -28,4 +28,5 @@ class BaseElementTest extends CDbTestCase
 		// N.B. there should be one more examphrase than is defined in the fixture
 		$this->assertEquals(2, count($examPhrases));
 	}
+	*/
 }

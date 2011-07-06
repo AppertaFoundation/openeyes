@@ -15,7 +15,7 @@
  * @property EventTypeElementTypeAssignment $eventTypeElementTypeAssignment
  * @property Specialty $specialty
  */
-class SiteElementType extends CActiveRecord
+class SiteElementType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

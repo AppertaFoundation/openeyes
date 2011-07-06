@@ -35,7 +35,7 @@ class ElementDiabetesType extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('type', 'numerical', 'integerOnly'=>true),
+			array('type, event_id', 'numerical', 'integerOnly'=>true),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, type', 'safe', 'on'=>'search'),
