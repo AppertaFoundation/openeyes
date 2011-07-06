@@ -17,6 +17,17 @@ class BaseController extends Controller
 	{
 		$app = Yii::app();
 
+		if (Yii::app()->params['ab_testing'] == 'yes') {
+			if (Yii::app()->user->isGuest) {
+				$identity=new UserIdentity('admin', 'admin');
+				$identity->authenticate();
+				Yii::app()->user->login($identity,0);
+				$this->selectedFirmId = 1;
+				$app->session['patient_id'] = 1;
+				$app->session['patient_name'] = 'John Smith';
+			}
+		}
+
 		if (isset($app->session['firms']) && count($app->session['firms'])) {
 			$this->showForm = true;
 
@@ -34,6 +45,19 @@ class BaseController extends Controller
 	public function checkPatientId()
 	{
 		$app = Yii::app();
+
+		if (Yii::app()->params['ab_testing'] == 'yes') {
+			if (Yii::app()->user->isGuest) {
+				$identity=new UserIdentity('admin', 'admin');
+				$identity->authenticate();
+				Yii::app()->user->login($identity,0);
+				$this->selectedFirmId = 1;
+				$app->session['patient_id'] = 1;
+				$app->session['patient_name'] = 'John Smith';
+			}
+			$app->session['patient_id'] = 1;
+			$app->session['patient_name'] = 'John Smith';
+		}
 
 		if (isset($app->session['patient_id'])) {
 			$this->patientId = $app->session['patient_id'];
