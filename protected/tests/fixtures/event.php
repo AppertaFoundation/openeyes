@@ -21,7 +21,7 @@ return array(
 	),
 	'event4' => array(
 		'episode_id' => 3,
-		'user_id' => 1
+		'user_id' => 1,
 		'event_type_id' => 1,
 		'datetime' => date('Y-m-d 00:00:00')
 	),

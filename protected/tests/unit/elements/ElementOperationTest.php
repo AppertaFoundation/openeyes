@@ -1104,7 +1104,8 @@ class ElementOperationTest extends CDbTestCase
 			'id' => $theatre['id'],
 			'site_id' => $theatre['site_id'],
 			'time_available' => 150,
-			'status' => 'available'
+			'status' => 'available',
+			'code' => '',
 		);
 		
 		$this->assertEquals($expected, $result);
@@ -1136,7 +1137,8 @@ class ElementOperationTest extends CDbTestCase
 			'id' => $theatre['id'],
 			'site_id' => $theatre['site_id'],
 			'time_available' => 0,
-			'status' => 'full'
+			'status' => 'full',
+			'code' => ''
 		);		
 		
 		$result = $this->element->getSession($session['id']);

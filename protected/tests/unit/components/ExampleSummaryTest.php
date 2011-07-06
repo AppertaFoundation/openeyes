@@ -10,7 +10,7 @@ class ExampleSummaryTest extends CDbTestCase
 
 	protected function setUp()
 	{
-		$this->widget = new exampleSummary('exampleSummary');
+		$this->widget = new ExampleSummary('ExampleSummary');
 		parent::setUp();
 	}
 
