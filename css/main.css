@@ -35,6 +35,8 @@ body
 	margin: 0 4px;
 	background: url('/images/background_content.png') no-repeat #ccdded;
 	min-height: 356px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 #sidebar
@@ -333,13 +335,16 @@ h3.element_letterout {
 
 #login .text {
 	margin-top: 30px;
+}
+
+.text {
 	color: #FFF;
 	font-weight: bold;
 	font-size: 16px;
 }
 
 #login input {
-	background: #FFF url('/images/input_gradient.png') no-repeat top left;
+	background: transparent url('/images/input_gradient.png') no-repeat top left;
 	width: 204px;
 	height: 24px;
 	border: 0;
@@ -371,11 +376,50 @@ h3.element_letterout {
 }
 
 #user_info {
+	margin-top: 20px;
+	margin-right: 10px;
 	float: right;
 }
 
 #user_info form {
 	display: inline;
+}
+
+#patient-search {
+/*	background: #fff;*/
+	width: 589px;
+}
+
+#patient-search form {
+	padding: 0;
+	margin: 0;
+}
+
+#patient-search input {
+	background: url('/images/input_gradient.png') no-repeat top left;
+	width: 204px;
+	height: 24px;
+	border: 0;
+	padding-left: 0.5em;
+}
+
+#patient-search input[name=dob_day], #patient-search input[name=dob_month] {
+	background: url('/images/input_gradient_sm.png') no-repeat top left;
+	width: 37px;
+}
+
+#patient-search input[name=dob_year] {
+	background: url('/images/input_gradient_med.png') no-repeat top left;
+	width: 54px;
+}
+
+#patient-search input[type=submit] {
+	background: url('/images/button_clear.png') no-repeat top left;
+	width: 115px;
+	height: 33px;
+	font-weight: bold;
+	font-size: 10pt;
+	color: #164674;
 }
 
 #heading {
@@ -540,4 +584,12 @@ ul.events li a span.date {
 
 .breadcrumbs a {
 	text-decoration: underline;
+}
+
+.title_bar {
+	background: url('/images/blue_title_bar.png') no-repeat top left;
+	width: 569px;
+	font-weight: bold;
+	padding: 10px;
+	padding-bottom: 0;
 }
