@@ -32,7 +32,24 @@ $this->layout = 'main'; ?>
 	));
 	$this->endWidget(); ?>
 </div>
+<div id="sidebox">
+	<h3>Do you need help with OpenEyes?</h3>
+	<strong>Before you contact the helpdesk...</strong><br />
+	<ul>
+		<li>Is there a "Super User" in your office available?</li>
+		<li>Have you checked the <a href="#">Quick Reference Guide</a>?</li>
+	</ul>
+	<em>Still need help?</em> Contact us:
+	<div class="blue_highlight">
+		Telephone: <span class="number">ext. 0000</span><br />
+		Email: <span class="number">helpdesk@openeyes.org.uk</span>
+	</div>
+</div>
 <script type="text/javascript">
+	$.watermark.options = {
+		className: 'watermark',
+		useNative: false
+	};
 	$('input[id=hospital_number]').watermark('enter hospital number');
 	$('input[id=first_name]').watermark('enter first name');
 	$('input[id=last_name]').watermark('enter last name');
