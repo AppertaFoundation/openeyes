@@ -2,25 +2,58 @@
 
 <?php $allPhraseOptions = $service->getAllPhraseOptions() ?>
 
-<script type="text/javascript">
-        var contactData = new Array();
-
 <?php
-	$patientContactOptions = array();
 
-        foreach ($service->getContactData() as $key => $data) {
+$templateOptions = array();
 
-		$patientContactOptions[$key] = $data['identifier'];
+$templates = $service->getLetterTemplates();
+
+foreach ($templates as $key => $template) {
+	$templateOptions[$key] = $template['name'];
+}
+
 ?>
-        contactData['<?= $key ?>'] = new Array(
-                '<?php echo $data['address'] ?>',
-                '<?php echo $data['full_name'] ?>',
-                '<?php echo $data['dear_name'] ?>',
-                '<?php if (!empty($data['nick_name'])) { echo $data['nick_name']; } ?>'
-        );
+<script type="text/javascript">
+	var contactData = new Array();
 
 <?php
-        }
+
+$patientContactOptions = array();
+
+foreach ($service->getContactData() as $key => $data) {
+
+	$patientContactOptions[$key] = $data['identifier'];
+?>
+	contactData['<?= $key ?>'] = new Array(
+		'<?php echo $data['address'] ?>',
+		'<?php echo $data['full_name'] ?>',
+		'<?php echo $data['dear_name'] ?>',
+		'<?php if (!empty($data['nick_name'])) { echo $data['nick_name']; } ?>'
+	);
+
+<?php
+}
+?>
+
+	templates = new Array();
+<?php
+
+$templateOptions = array();
+
+$templates = $service->getLetterTemplates();
+
+foreach ($templates as $key => $template) {
+
+	$templateOptions[$key] = $template['name'];
+?>
+	templates['<?= $key ?>'] = new Array(
+		'<?php echo $template['phrase'] ?>',
+		'<?php echo $template['send_to'] ?>',
+		'<?php echo $template['cc'] ?>'
+	);
+<?php
+}
+
 ?>
 </script>
 
@@ -30,6 +63,7 @@
 	<h3 class="element_letterout"><?php echo $form->labelEx($model,'to_address'); ?></h3 class="element_letterout">
 	<span class="element_letterout_left">
 	<?php echo CHtml::dropDownList('to', '', $patientContactOptions, array('empty'=>'To')); ?>
+	<?php echo CHtml::dropDownList('template', '', $templateOptions, array('empty'=>'Template')); ?>
 	</span>
 	<span class="element_letterout_right">
 		<?php echo $form->textArea($model,'to_address',array('rows'=>6, 'cols'=>50)); ?>
@@ -91,15 +125,15 @@
 	<span class="element_letterout_left">
 	<?php echo CHtml::dropDownList('Introduction', '', $allPhraseOptions['Introduction'], array('empty'=>'Introduction')); ?>
 	<br />
-        <?php echo CHtml::dropDownList('Findings', '', $allPhraseOptions['Findings'], array('empty'=>'Findings')); ?>
-        <br />
-        <?php echo CHtml::dropDownList('Diagnosis', '', $allPhraseOptions['Diagnosis'], array('empty'=>'Diagnosis')); ?>
-        <br />
-        <?php echo CHtml::dropDownList('Management', '', $allPhraseOptions['Management'], array('empty'=>'Management')); ?>
-        <br />
-        <?php echo CHtml::dropDownList('Drugs', '', $allPhraseOptions['Drugs'], array('empty'=>'Drugs')); ?>
-        <br />
-        <?php echo CHtml::dropDownList('Outcome', '', $allPhraseOptions['Outcome'], array('empty'=>'Outcome')); ?>
+	<?php echo CHtml::dropDownList('Findings', '', $allPhraseOptions['Findings'], array('empty'=>'Findings')); ?>
+	<br />
+	<?php echo CHtml::dropDownList('Diagnosis', '', $allPhraseOptions['Diagnosis'], array('empty'=>'Diagnosis')); ?>
+	<br />
+	<?php echo CHtml::dropDownList('Management', '', $allPhraseOptions['Management'], array('empty'=>'Management')); ?>
+	<br />
+	<?php echo CHtml::dropDownList('Drugs', '', $allPhraseOptions['Drugs'], array('empty'=>'Drugs')); ?>
+	<br />
+	<?php echo CHtml::dropDownList('Outcome', '', $allPhraseOptions['Outcome'], array('empty'=>'Outcome')); ?>
 	</span>
 	<span class="element_letterout_right">
 		<?php echo $form->textArea($model,'value',array('rows'=>6, 'cols'=>50)); ?>
@@ -110,7 +144,7 @@
 <div class="row_element_letterout">
 	<h3 class="element_letterout"><?php echo $form->labelEx($model,'from_address'); ?></h3 class="element_letterout">
 	<span class="element_letterout_left">
-	<?php echo CHtml::dropDownList('from', '', $patientContactOptions, array('empty'=>'From')); ?>
+	<?php echo CHtml::dropDownList('from', '', $service->getFromOptions(), array('empty'=>'From')); ?>
 	</span>
 	<span class="element_letterout_right">
 		<?php echo $form->textArea($model,'from_address',array('rows'=>6, 'cols'=>50)); ?>
@@ -136,70 +170,88 @@
 				return;
 			}
 
-			contact = contactData[$('#to').val()];
-
-			$('#ElementLetterOut_to_address').val(formatAddress(contact[0]));
-
-			// The non-nickname is the default
-			dear = contact[2];
-
-			if (contact[3] == '') {
-				// No nickname, grey out use_nickname box
-				$("#use_nickname").attr("disabled", "disabled");	
-			} else {
-				// Ungrey use_nickname box
-				$("#use_nickname").removeAttr("disabled");
-
-				if ($('#use_nickname').attr('checked')) {
-					// A mickname is available and the use_nickname box is checked
-					dear = contact[3];
-				}
-			}
-
-			$('#ElementLetterOut_dear').val('Dear ' + dear);
+			populateToAndContact($('#to').val());
 		});
 	});
 
 	$(function() {
 		$('#cc').change(function() {
-                        if (!$('#cc').val()) {
-                                return;
-                        }
+			if (!$('#cc').val()) {
+				return;
+			}
 
 			$('#ElementLetterOut_cc').append('cc: ' + contactData[$('#cc').val()][0] + "\n");
 		});
 	});
 
 	$(function() {
-                $('#Introduction').change(function() {
+		$('#Introduction').change(function() {
 			populateValue('Introduction');
 		});
 	});
-        $(function() {
-                $('#Findings').change(function() {
-                        populateValue('Findings');
-                });
-        });
-        $(function() {
-                $('#Diagnosis').change(function() {
-                        populateValue('Diagnosis');
-                });
-        });
-        $(function() {
-                $('#Management').change(function() {
-                        populateValue('Management');
-                });
-        });
-        $(function() {
-                $('#Drugs').change(function() {
-                        populateValue('Drugs');
-                });
-        });
-        $(function() {
-                $('#Outcome').change(function() {
-                        populateValue('Outcome');
-                });
-        });
+	$(function() {
+		$('#Findings').change(function() {
+			populateValue('Findings');
+		});
+	});
+	$(function() {
+		$('#Diagnosis').change(function() {
+			populateValue('Diagnosis');
+		});
+	});
+	$(function() {
+		$('#Management').change(function() {
+			populateValue('Management');
+		});
+	});
+	$(function() {
+		$('#Drugs').change(function() {
+			populateValue('Drugs');
+		});
+	});
+	$(function() {
+		$('#Outcome').change(function() {
+			populateValue('Outcome');
+		});
+	});
+
+	$(function() {
+		$('#template').change(function() {
+			if ($('#template').val()) {
+				template = templates[$('#template').val()];
+
+				$('#ElementLetterOut_value').val(template[0]);
+
+				populateToAndContact(template[1]);
+
+				$('#ElementLetterOut_cc').val('cc: ' + contactData[template[2]][0]);
+			}
+		});
+	});
+
+	function populateToAndContact(id) {
+		contact = contactData[id];
+
+		$('#ElementLetterOut_to_address').val(formatAddress(contact[0]));
+
+		// The non-nickname is the default
+		dear = contact[2];
+
+		if (contact[3] == '') {
+			// No nickname, grey out use_nickname box
+			$("#use_nickname").attr("disabled", "disabled");	
+		} else {
+			// Ungrey use_nickname box
+			$("#use_nickname").removeAttr("disabled");
+
+			if ($('#use_nickname').attr('checked')) {
+				// A mickname is available and the use_nickname box is checked
+				dear = contact[3];
+			}
+		}
+
+		$('#ElementLetterOut_dear').val('Dear ' + dear);
+	}
 
 	function populateValue(phrase) {
 		if ($('#' + phrase).val()) {

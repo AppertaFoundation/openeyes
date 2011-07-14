@@ -1,7 +1,9 @@
 <?php
+
 class LetterOutService
 {
 	public $patient;
+	public $substitutions;
 
 	public function __construct()
 	{
@@ -29,6 +31,45 @@ class LetterOutService
 		return $re;
 	}
 
+	public function getLetterTemplates()
+	{
+		$letterTemplates = array();
+
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		foreach(LetterTemplate::model()->findAll(
+			'specialty_id = ?' , $firm->serviceSpecialtyAssignment->specialty_id
+		) as $letterTemplate) {
+			$sendTo = Contact::model()->findByPk($letterTemplate['send_to']);
+			$cc = Contact::model()->findByPk($letterTemplate['cc']);
+
+			if (isset($sentTo->gp)) {
+				$sendToKey = 'gp_' . $sendTo->id;
+			} elseif (isset($cc->consultant)) {
+				$sendToKey = 'c_' . $sendTo->id;
+			} else {
+				$sendToKey = $sendTo->id;
+			}
+
+			if (isset($cc->gp)) {
+				$ccKey = 'gp_' . $cc->id;
+			} elseif (isset($cc->consultant)) {
+				$ccKey = 'c_' . $cc->id;
+			} else {
+				$ccKey = $cc->id;
+			}
+
+			$letterTemplates[$letterTemplate['id']] = array(
+				'name' => $letterTemplate['name'],
+				'phrase' => $this->applySubstitutions($letterTemplate['phrase']),
+				'send_to' => $sendToKey,
+				'cc' => $ccKey
+			);
+		}
+
+		return $letterTemplates;
+	}
+
 	public function getAllPhraseOptions()
 	{
 		$allPhraseOptions = array();
@@ -50,57 +91,112 @@ class LetterOutService
 
 		$firm = Firm::model()->findByPk($firmId);
 
-                $results = Yii::app()->db->createCommand()
-                        ->select('phrase, pn.name AS pn_name')
-                        ->from('phrase')
-                        ->join('phrase_name pn', 'phrase.phrase_name_id = pn.id')
+		$results = Yii::app()->db->createCommand()
+			->select('phrase, pn.name AS pn_name')
+			->from('phrase')
+			->join('phrase_name pn', 'phrase.phrase_name_id = pn.id')
 			->join('section s', 'phrase.section_id = s.id')
 			->where('s.name = :s_name AND section_type_id = 1', array(':s_name' => $phrase))
-                        ->order('pn.name')
-                        ->queryAll();
+			->order('pn.name')
+			->queryAll();
 
 		$this->populateOptions($options, $results);
 
-                $results = Yii::app()->db->createCommand()
-                        ->select('phrase, pn.name AS pn_name')
-                        ->from('phrase_by_specialty p_b_s')
-                        ->join('phrase_name pn', 'p_b_s.phrase_name_id = pn.id')
-                        ->join('section s', 'p_b_s.section_id = s.id')
-                        ->where('s.name = :s_name AND section_type_id = 1 AND specialty_id = :s_id', array(
+		$results = Yii::app()->db->createCommand()
+			->select('phrase, pn.name AS pn_name')
+			->from('phrase_by_specialty p_b_s')
+			->join('phrase_name pn', 'p_b_s.phrase_name_id = pn.id')
+			->join('section s', 'p_b_s.section_id = s.id')
+			->where('s.name = :s_name AND section_type_id = 1 AND specialty_id = :s_id', array(
 				':s_name' => $phrase,
 				':s_id' => $firm->serviceSpecialtyAssignment->specialty_id
 			))
-                        ->order('pn.name')
-                        ->queryAll();
+			->order('pn.name')
+			->queryAll();
 
 		$this->populateOptions($options, $results);
 
-                $results = Yii::app()->db->createCommand()
-                        ->select('phrase, pn.name AS pn_name')
-                        ->from('phrase_by_firm p_b_f')
-                        ->join('phrase_name pn', 'p_b_f.phrase_name_id = pn.id')
-                        ->join('section s', 'p_b_f.section_id = s.id')
-                        ->where('s.name = :s_name AND section_type_id = 1 AND firm_id = :f_id', array(
-                                ':s_name' => $phrase,
-                                ':f_id' => $firmId
-                        ))
-                        ->order('pn.name')
-                        ->queryAll();
+		$results = Yii::app()->db->createCommand()
+			->select('phrase, pn.name AS pn_name')
+			->from('phrase_by_firm p_b_f')
+			->join('phrase_name pn', 'p_b_f.phrase_name_id = pn.id')
+			->join('section s', 'p_b_f.section_id = s.id')
+			->where('s.name = :s_name AND section_type_id = 1 AND firm_id = :f_id', array(
+				':s_name' => $phrase,
+				':f_id' => $firmId
+			))
+			->order('pn.name')
+			->queryAll();
 
-                $this->populateOptions($options, $results);
+		$this->populateOptions($options, $results);
 
 		return $options;
 	}
 
+	/**
+	 * Gets details for all the users associated with all the firms associated with the user
+	 *
+	 * N.B. ideally this would be by role - not all users are eligible to have correspondence sent from
+	 *
+	 * @return array
+	 */
 	public function getFromOptions()
 	{
+		$firmIds = array();
 
+		$results = Yii::app()->db->createCommand()
+			->select('f.id AS fid')
+			->from('firm f')
+			->join('firm_user_assignment f_u_a', 'f_u_a.firm_id = f.id')
+			->where('f_u_a.user_id = :u_id', array(':u_id' => Yii::app()->user->id))
+			->queryAll();
+
+		foreach ($results as $result) {
+			if (!in_array($result['fid'], $firmIds)) {
+				$firmIds[] = $result['fid'];
+			}
+		}
+
+		$results = Yii::app()->db->createCommand()
+			->select('f.id AS fid')
+			->from('firm f')
+			->join('user_firm_rights u_f_r', 'u_f_r.firm_id = f.id')
+			->where('u_f_r.user_id = :u_id', array(':u_id' => Yii::app()->user->id))
+			->queryAll();
+
+		foreach ($results as $result) {
+			if (!in_array($result['fid'], $firmIds)) {
+				$firmIds[] = $result['fid'];
+			}
+		}
+
+// @todo - add user_firm_rights and user_service_rights?
+
+		$users = array();
+
+		foreach ($firmIds as $firmId) {
+			$results2 = Yii::app()->db->createCommand()
+				->select('title, first_name, last_name, role, qualifications')
+				->from('user')
+				->join('firm_user_assignment f_u_a', 'f_u_a.user_id = user.id')
+				->where('f_u_a.firm_id = :f_id AND f_u_a.user_id != :u_id', array(
+					':f_id' => $firmId, ':u_id' =>Yii::app()->user->id)
+				)
+				->queryAll();
+
+			foreach ($results2 as $result2) {
+				$user[$result2['qualifications'] . ', ' . $result2['role']] = 
+					$result2['title'] . ' ' . $result2['first_name'] . ' ' . $result2['last_name'];
+			}
+		}
+
+		return $users;
 	}
-	
+
 	public function populateOptions(&$options, $results)
 	{
 		foreach ($results as $result) {
-			$options[$result['phrase']] = $this->stripNewlines($result['pn_name']);
+			$options[$this->applySubstitutions($result['phrase'])] = $this->stripNewlines($result['pn_name']);
 		}
 	}
 
@@ -162,6 +258,69 @@ class LetterOutService
 		return $contactData;
 	}
 
+	public function applySubstitutions($phrase)
+	{
+		if (empty($this->substitutions)) {
+			$age = floor((time() - strtotime($this->patient->dob)) / 60 / 60 / 24 / 365);
+
+			$this->substitutions['age'] = $age;
+
+			if ($this->patient->gender == 'M') {
+				$this->substitutions['obj'] = 'him';
+				$this->substitutions['pos'] = 'his';
+				$this->substitutions['pro'] = 'he';
+
+// @todo - are minors under 16?
+				if ($age < 16) {
+					$this->substitutions['sub'] = 'boy';
+				} else {
+					$this->substitutions['sub'] = 'man';
+				}
+			} else {
+				$this->substitutions['obj'] = 'her';
+				$this->substitutions['pos'] = 'her';
+				$this->substitutions['pro'] = 'she';
+
+				if ($age < 16) {
+					$this->substitutions['sub'] = 'girl';
+				} else {
+					$this->substitutions['sub'] = 'woman';
+				}
+			}
+
+			// Get the most recent operation for this patient
+		}
+
+		foreach($this->substitutions as $key => $sub) {
+			$phrase = preg_replace('/\[' . $key . '\]/', $sub, $phrase);
+
+			$sub = ucfirst($sub);
+
+			$phrase = preg_replace('/\[\^' . $key . '\]/', $sub, $phrase);
+		}
+
+		return $phrase;
+/**
+ * Field substitution notes:
+
+FIELDS WE CAN DO:
+
+adm - admission date - not sure yet how we get this one
+age  - age of patient in years - calculate from patient.dob
+epd - principal diagnosis for episode - probably from element_diagnosis->disorder.name
+eps - principal side for episode - probably element_diagnosis.location
+obj - patient as object - from patient.gender
+pos - patient possessive - from patient.gender
+pro - patient pronoun - from patient.gender
+sub - patient as subject - from patient.gender and patient.dob
+
+FIELDS WE MIGHT BE ABLE TO DO:
+
+opl - operations listed for - source unknown
+
+*/
+	}
+	
 	public function getFirmId()
 	{
 		return Yii::app()->session['selected_firm_id'];

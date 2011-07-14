@@ -12,7 +12,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
     'sourceUrl'=>array('procedure/autocomplete'),
     'options'=>array(
-        'minLength'=>'2',
+	'minLength'=>'2',
 		'select'=>"js:function(event, ui) {
 			$.ajax({
 				'url': 'index.php?r=procedure/details',
@@ -41,7 +41,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		}",
     ),
     'htmlOptions'=>array(
-        'style'=>'height:20px;width:200px;'
+	'style'=>'height:20px;width:200px;'
     ),
 ));
 ?>
@@ -88,13 +88,13 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 <?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
     'panels'=>array(
-        'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
+	'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
 			array('specialties' => $specialties),true),
     ),
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,
-        'animated'=>'bounceslide',
+	'animated'=>'bounceslide',
 		'collapsible'=>true,
     ),
 )); ?>
@@ -112,6 +112,57 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	<label for="ElementOperation_value">Overnight Stay required?</label>
 	<?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
 		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?>
+</div>
+<div class="row">
+	<label for="ElementOperation_value">Decision date</label>
+<?php
+	if (empty($model->decision_date)) {
+		// No decision date, set to today
+		$day = date('j');
+		$month = date('n');
+		$year = date('Y');
+	} else {
+		$dates = explode('-', $model->decision_date);
+
+		$year = $dates[0];
+		$month = $dates[1];
+		$day = $dates[2];
+	}
+
+	$days = array();
+	$months = array(
+		'01'	=>	'January',
+		'02'	=>	'February',
+		'03'	=>	'March',
+		'04'	=>	'April',
+		'05'	=>	'May',
+		'06'	=>	'June',
+		'07'	=>	'July',
+		'08'	=>	'August',
+		'09'	=>	'September',
+		'10'	=>	'October',
+		'11'	=>	'November',
+		'12'	=>	'December'
+	);
+	$years = array();
+
+	for ($i = 1; $i <= 31; $i++) {
+		if ($i < 10) {
+			$id = "0$i";
+		} else {
+			$id = $i;
+		}
+
+		$days[$id] = $id;
+	}
+	for ($i = $year - 1; $i <= date('Y'); $i++) {
+		$years[$i] = $i;
+	}
+
+ 	echo CHtml::dropDownList('decision_date_day', $day, $days);
+	echo CHtml::dropDownList('decision_date_month', $month, $months);
+	echo CHtml::dropDownList('decision_date_year', $year, $years);
+?>
 </div>
 <div class="row">
 	<label for="ElementOperation_value">Add comments:</label><br />

@@ -143,4 +143,30 @@ class Episode extends BaseActiveRecord
 
 		return Episode::model()->find($criteria);
 	}
+
+	/**
+	 * Return the eye of the most recent diagnosis for the episode
+	 *
+	 * return @string
+	 */
+	public function getPrincipalDiagnosis()
+	{
+		$result = Yii::app()->db->createCommand()
+			->select('ed.id AS id')
+			->from('element_diagnosis ed')
+			->join('event ev', 'ed.event_id = ev.id')
+			->join('episode ep', 'ev.episode_id = ep.id')
+			->where('ep.id = :ep_id', array(
+				':ep_id' => $this->id
+			))
+			->order('ed.id DESC')
+			->queryRow();
+
+		if (empty($result)) {
+			return null;
+		} else {
+			return ElementDiagnosis::model()->findByPk($result['id']);
+		}
+	}
 }
+

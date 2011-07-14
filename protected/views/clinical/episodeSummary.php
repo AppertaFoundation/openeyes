@@ -7,8 +7,16 @@ $this->renderPartial('base');
 
 Start date: <?php echo $episode->start_date ?>
 <br />
-End date: <?php echo $episode->end_date ?>
-(still open)
+End date: <?php 
+
+if (empty($episode->end_date)) {
+	echo 'still open';
+} else {
+	echo $episode->end_date;
+}
+
+?>
+<br />
 
 Specialty: <?php echo $episode->firm->serviceSpecialtyAssignment->specialty->name ?>
 <br />
@@ -16,10 +24,24 @@ Specialty: <?php echo $episode->firm->serviceSpecialtyAssignment->specialty->nam
 Consultant firm: <?php echo $episode->firm->name ?>
 <br />
 
-Principal eye: ? Where will this be fetched from ?
+<?php
+
+$diagnosis = $episode->getPrincipalDiagnosis();
+
+if (empty($diagnosis)) {
+	$eye = 'No diagnosis';
+	$text = 'No diagnosis';
+} else {
+	$eye = $diagnosis->getEyeText();
+	$text = $diagnosis->disorder->term . ' - ' . $diagnosis->disorder->fully_specified_name;
+}
+
+?>
+
+Principal eye: <?php echo $eye ?>
 <br />
 
-Principal diagnosis: ? Where will this be fetched from ?
+Principal diagnosis: <?php echo $text ?>
 
 <br />
 

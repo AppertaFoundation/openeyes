@@ -38,6 +38,11 @@
 	</table>
 </div>
 <div class="view">
+        <b><?php echo CHtml::encode($data->getAttributeLabel('decision_date')); ?>:</b>
+        <?php echo CHtml::encode($data->decision_date); ?>
+        <br />
+</div>
+<div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('consultant_required')); ?>:</b>
 	<?php echo CHtml::encode($data->getBooleanText('consultant_required')); ?>
 	<br />

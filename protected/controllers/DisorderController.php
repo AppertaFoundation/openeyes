@@ -1,7 +1,5 @@
 <?php
 
-// @todo - this should probably be changed to a widget.
-
 class DisorderController extends Controller
 {
 	public $layout='column2';
@@ -19,10 +17,53 @@ class DisorderController extends Controller
 	/**
 	 * Lists all disorders for a given search term.
 	 */
-	public function actionDisorders()
+	public function actionAutocomplete()
 	{
-		echo CJavaScript::jsonEncode(
-			Disorder::getDisorderOptions($_GET['term'])
-		);
+		echo CJavaScript::jsonEncode(Disorder::getList($_GET['term']));
+	}
+	
+	public function actionDetails()
+	{
+		$list = Yii::app()->session['Disorders'];
+		$found = false;
+		if (!empty($_GET['name'])) {
+			if (!empty($list)) {
+				foreach ($list as $id => $disorder) {
+					$match = "{$disorder['term']} - {$disorder['fully_specified_name']}";
+					if ($match == $_GET['name']) {
+						$data = $disorder;
+						$data['id'] = $id;
+
+						$found = true;
+						$this->renderPartial('_ajaxDisorder', array('data' => $data), false, false);
+						break;
+					}
+				}
+			}
+
+			// if not in the session, check in the db
+			if (!$found) {
+				$search = explode(' - ', $_GET['name']);
+				$disorder = Yii::app()->db->createCommand()
+					->select('*')
+					->from('disorder')
+					->where('term=:term AND fully_specified_name=:fqn', 
+						array(':term'=>$search[0], ':fqn'=>$search[1]))
+					->queryRow();
+				if (!empty($disorder)) {
+					$data = array(
+						'term' => $disorder['term'],
+						'fully_specified_name' => $disorder['fully_specified_name']
+					);
+					$list[$disorder['id']] = $data;
+
+					$data['id'] = $disorder['id'];
+
+					Yii::app()->session['Disorders'] = $list;
+
+					$this->renderPartial('_ajaxDisorder', array('data' => $data), false, false);
+				}
+			}
+		}
 	}
 }

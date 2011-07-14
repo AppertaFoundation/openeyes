@@ -65,10 +65,10 @@ class ElementOperation extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
-			array('eye, event_id, comments', 'safe'),
+			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
+			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -297,6 +297,24 @@ class ElementOperation extends BaseElement
 			1 => 'Yes',
 			0 => 'No',
 		);
+	}
+
+	/**
+	 * As the disoder is provided as a string we need to convert it into a disorder id
+	 *
+	 * @return boolean
+	 */
+	public function beforeValidate()
+	{
+		if (
+			!empty($_POST['decision_date_day']) &&
+			!empty($_POST['decision_date_month']) &&
+			!empty($_POST['decision_date_year'])
+		) {
+			$this->decision_date = $_POST['decision_date_year'] . '-' . $_POST['decision_date_month'] . '-' . $_POST['decision_date_day'];
+		}
+
+		return parent::beforeValidate();
 	}
 
 	protected function beforeSave()
