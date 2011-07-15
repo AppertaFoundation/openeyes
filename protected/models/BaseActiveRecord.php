@@ -19,8 +19,8 @@ class BaseActiveRecord extends CActiveRecord
 	{
 		$primaryKey = $this->tableSchema->primaryKey;
 		foreach ($this->attributes as $name => $value) {
-			if ($primaryKey !== $name || 
-				(is_array($primaryKey) && !in_array($name, $primaryKey))) {
+			if (!empty($value) && ($primaryKey !== $name || 
+				(is_array($primaryKey) && !in_array($name, $primaryKey)))) {
 				$this->$name = strip_tags($value);
 			}
 		}

@@ -99,10 +99,21 @@ function enableElements() {
 
 <?php
 
-if (!empty($model->disorder)) {
-	$value = $model->disorder->term . ' - ' . $model->disorder->fully_specified_name;
+if (empty($model->event_id)) {
+	// It's a new event so fetch the most recent element_diagnosis
+	$diagnosis = $model->getNewestDiagnosis();
+
+	if (empty($diagnosis->disorder)) {
+		// There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)
+		$value = '';
+		$diagnosis = $model;
+	} else {
+		// There is a diagnosis for this episode
+		$value = $diagnosis->disorder->term . ' - ' . $diagnosis->disorder->fully_specified_name;
+	}
 } else {
-	$value = '';
+	$value = $model->disorder->term . ' - ' . $model->disorder->fully_specified_name;
+	$diagnosis = $model;
 }
 
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -118,7 +129,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 <div class="row">
 <label for="ElementDiagnosis_eye">Eye(s) diagnosed:</label>
-<?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(),
+<?php echo CHtml::activeRadioButtonList($diagnosis, 'eye', $model->getEyeOptions(),
 	array('separator' => ' &nbsp; ')); ?>
 </div>
 <br />

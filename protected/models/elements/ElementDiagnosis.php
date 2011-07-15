@@ -15,9 +15,9 @@
  */
 class ElementDiagnosis extends BaseElement
 {
-        const EYE_LEFT = 0;
-        const EYE_RIGHT = 1;
-        const EYE_BOTH = 2;
+	const EYE_LEFT = 0;
+	const EYE_RIGHT = 1;
+	const EYE_BOTH = 2;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -126,35 +126,98 @@ class ElementDiagnosis extends BaseElement
 		return parent::beforeValidate();
 	}
 
-        /**
-         * Return list of options for eye
-         * @return array
-         */
-        public function getEyeOptions()
-        {
-                return array(
-                        self::EYE_LEFT => 'Left',
-                        self::EYE_RIGHT => 'Right',
-                        self::EYE_BOTH => 'Both',
-                );
-        }
+	/**
+	 * Return list of options for eye
+	 * @return array
+	 */
+	public function getEyeOptions()
+	{
+		return array(
+			self::EYE_LEFT => 'Left',
+			self::EYE_RIGHT => 'Right',
+			self::EYE_BOTH => 'Both',
+		);
+	}
 
-        public function getEyeText() {
-                switch ($this->eye) {
-                        case self::EYE_LEFT:
-                                $text = 'Left';
-                                break;
-                        case self::EYE_RIGHT:
-                                $text = 'Right';
-                                break;
-                        case self::EYE_BOTH:
-                                $text = 'Both';
-                                break;
-                        default:
-                                $text = 'Unknown';
-                                break;
-                }
+	public function getEyeText() {
+		switch ($this->eye) {
+			case self::EYE_LEFT:
+				$text = 'Left';
+				break;
+			case self::EYE_RIGHT:
+				$text = 'Right';
+				break;
+			case self::EYE_BOTH:
+				$text = 'Both';
+				break;
+			default:
+				$text = 'Unknown';
+				break;
+		}
 
-                return $text;
-        }
+		return $text;
+	}
+
+	/**
+	 * Returns the disorder if there is one. If not, it returns the most recent disorder for this episode.
+	 *
+	 * @return object
+	 */
+	public function getNewestDiagnosis()
+	{
+		if (!empty($model->disorder)) {
+			return $model->disorder;
+		} else {
+			$firmId = Yii::app()->session['selected_firm_id'];
+
+			if (empty($firmId)) {
+				return null;
+			}
+
+			$firm = Firm::model()->findByPk($firmId);
+
+			$patientId = Yii::app()->session['patient_id'];
+
+			if (empty($patientId)) {
+				return null;
+			}
+
+			// @todo - make Yiiish
+			$sql = '
+				SELECT
+					ed.*
+				FROM
+					element_diagnosis ed,
+					event ev,
+					episode ep,
+					firm f,
+					service_specialty_assignment ssa
+				WHERE
+					ed.event_id = ev.id
+				AND
+					ev.episode_id = ep.id
+				AND
+					ep.firm_id = f.id
+				AND
+					ep.end_date IS NULL
+				AND
+					f.service_specialty_assignment_id = ssa.id
+				AND
+					ssa.specialty_id = :specialty_id
+				AND
+					ep.patient_id = :patient_id
+				ORDER BY
+					ed.id
+				DESC
+				LIMIT 1
+			';
+
+			$diagnosis = ElementDiagnosis::model()->findBySql($sql, array(
+				'specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id,
+				'patient_id' => $patientId
+			));
+
+			return $diagnosis;
+		}
+	}
 }
