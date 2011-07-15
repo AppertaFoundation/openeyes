@@ -1,6 +1,8 @@
+<div id="box_gradient_top"></div>
+<div id="box_gradient_bottom">
 <h3>Summary</h3>
-<div class="details">
-	<h3>Personal Details</h3>
+<div class="details" id="personal_details">
+	<h3>Personal Details:</h3>
 	<div class="data_row">
 		<div class="data_label">First name(s):</div>
 		<div class="data_value"><?php echo $model->first_name; ?></div>
@@ -9,20 +11,24 @@
 		<div class="data_label">Last name:</div>
 		<div class="data_value"><?php echo $model->last_name; ?></div>
 	</div>
-	<div class="data_row">
+	<div class="data_row address">
 		<div class="data_label">Address:</div>
 		<div class="data_value">
 <?php 
 	if (!empty($address)) {
-		echo $address->address1;
-		echo '<br />';
-		echo $address->address2;
-		echo '<br />';
-		echo $address->city;
-		echo '<br />';
-		echo $address->county;
-		echo '<br />';
-		echo strtoupper($address->postcode);
+		$fields = $address->getAttributes();
+		unset($fields['id'], $fields['country_id']);
+		$addressList = array_filter($fields, 'filter_nulls');
+
+		foreach ($addressList as $name => $string) {
+			if ($name === 'postcode') {
+				$string = strtoupper($string);
+			}
+			echo $string;
+			if ($string != end($addressList)) {
+				echo '<br />';
+			}
+		}
 	} else {
 		echo 'Unknonwn';
 	} ?>
@@ -37,29 +43,31 @@
 		echo ' (Age ' . $age  . ')';
 		?></div>
 	</div>
-	<div class="data_row">
+	<div class="data_row row_buffer">
 		<div class="data_label">Gender:</div>
 		<div class="data_value"><?php echo $model->gender == 'F' ? 'Female' : 'Male'; ?></div>
 	</div>
 </div>
-<div class="details">
-	<h3>Contact Details</h3>
-	<div class="data_row">
+<div class="details" id="contact_details">
+	<h3>Contact Details:</h3>
+	<div class="data_row telephone">
 		<div class="data_label">Telephone:</div>
-		<div class="data_value"><?php echo $model->primary_phone; ?></div>
+		<div class="data_value"><?php echo !empty($model->primary_phone) 
+			? $model->primary_phone : 'Unknown'; ?></div>
 	</div>
-	<div class="data_row">
+	<div class="data_row row_buffer">
 		<div class="data_label">Email:</div>
-		<div class="data_value"> &nbsp; </div>
+		<div class="data_value">Unknown</div>
 		
 	</div>
-	<div class="data_row">
+	<div class="data_row row_buffer">
 		<div class="data_label">Next of Kin:</div>
-		<div class="data_value"> &nbsp; </div>
+		<div class="data_value">Unknown</div>
 	</div>
 </div>
-<div class="details">
-	<h3>Recent Episodes</h3>
+<div class="details" id="recent_episodes">
+	<h3>Recent Episodes:</h3>
+	<div id="view_all"></div>
 <?php
 	$this->widget('zii.widgets.grid.CGridView', array(
 		'dataProvider'=>$episodes,
@@ -87,3 +95,8 @@
 		'emptyText'=>'No episodes found.'
 	)); ?>
 </div>
+</div>
+<?php
+function filter_nulls($data) {
+	return $data !== null;
+}

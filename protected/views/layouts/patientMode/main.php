@@ -27,13 +27,17 @@
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
-	<?php $this->widget('application.components.MyBreadcrumbs', array(
-		'homeLink'=>CHtml::link('OpenEyes', array('/')),
-		'links'=>$this->breadcrumbs,
-		'prefixText'=>'You are here: &nbsp; ',
-	)); ?><!-- breadcrumbs -->
+	<div id="outer_content">
+		<div id="content">
+			<?php $this->widget('application.components.MyBreadcrumbs', array(
+				'homeLink'=>CHtml::link('OpenEyes', array('/')),
+				'links'=>$this->breadcrumbs,
+				'prefixText'=>'You are here: &nbsp; ',
+			)); ?><!-- breadcrumbs -->
 
-	<?php echo $content; ?>
+			<?php echo $content; ?>
+		</div>
+	</div>
 
 	<div id="footer">
 		Copyright OpenEyes Foundation 2011<br/>

@@ -159,13 +159,23 @@ div.view
 
 div.breadcrumbs
 {
-    font-size: 0.9em;
     padding: 5px 20px;
+    margin-top: -40px;
+    margin-bottom: 15px;
+    font: 12pt Arial;
+    color: #333;
+    background: url('/images/background_breadcrumb.png');
+    width: 854px;
+    height: 15px;
 }
 
 div.breadcrumbs span
 {
     font-weight: bold;
+}
+
+div.breadcrumbs a {
+    text-decoration: underline;
 }
 
 div.search-form
@@ -528,13 +538,6 @@ ul#navlist {
     clear: both;
 }
 
-.details {
-    width: 100%;
-    border: 1px solid;
-    padding: 5px;
-    margin-bottom: 20px;
-}
-
 .data_row {
     clear: both;
     width: 100%;
@@ -646,15 +649,6 @@ ul.events li a {
 
 ul.events li a span.date {
     font-style: italic;
-}
-
-.breadcrumbs {
-    font: 12pt Arial;
-    color: #333;
-}
-
-.breadcrumbs a {
-    text-decoration: underline;
 }
 
 .title_bar {

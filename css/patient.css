@@ -1,0 +1,166 @@
+.ui-tabs-nav li {
+    display: inline;
+    padding: 0;
+    margin: 0;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    background-image: none;
+    border: 0;
+}
+
+li.ui-state-default {
+    background: transparent url('/images/tab_unselected_right.png') no-repeat scroll top right !important;
+    display: block;
+    text-decoration: none;
+    float: left;
+    padding-right: 20px !important;
+    border: 0 !important;
+}
+
+li.ui-state-default a {
+    background: transparent url('/images/tab_unselected_left.png') no-repeat !important;
+    display: block;
+    padding: 10px 0 3px 20px !important;
+}
+
+li.ui-tabs-selected {
+    background: transparent url('/images/tab_selected_right.png') no-repeat scroll top right !important;
+    display: block;
+    text-decoration: none;
+    padding-right: 18px !important;
+    border: 0 !important;
+}
+
+li.ui-tabs-selected a {
+    background: transparent url('/images/tab_selected_left.png') no-repeat !important;
+    display: block;
+    padding: 8px 0 6px 18px !important;
+}
+
+div.ui-tabs * {
+    background: transparent;
+}
+
+div.ui-widget-content {
+    background: transparent;
+    border: 0;
+}
+
+ul.ui-widget-header {
+    border: 0;
+    float: right;
+    margin-right: 20px;
+}
+
+ul.ui-tabs-nav {
+/*    height: 36px;*/
+}
+
+ul.ui-tabs-nav * {
+    background: transparent;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#box_gradient_top {
+    background: transparent url('/images/box_blue_gradient_top.png') top left no-repeat;
+    min-height: 15px;
+    width: 890px;
+    clear: both;
+}
+
+#box_gradient_bottom {
+    background: #FFF url('/images/box_blue_gradient_bottom.png') bottom left no-repeat;
+    min-height: 676px;
+    width: 860px;
+    padding: 15px;
+    padding-top: 0;
+}
+
+#box_gradient_bottom h3 {
+    font: bold 14pt Arial;
+}
+
+#box_gradient_bottom div h3 {
+    color: #003399;
+    font: bold 11pt Arial;
+}
+
+#patientHeader {
+    color: #fff;
+    font: 14pt Arial;
+    float: left;
+    padding-top: 10px;
+}
+
+.details {
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#personal_details {
+    background: url('/images/box_blue_centre_244.png');
+    height: 224px;
+    width: 505px;
+}
+
+#contact_details {
+    background: url('/images/box_blue_centre_163.png');
+    height: 143px;
+    width: 505px;
+}
+
+#recent_episodes {
+    background: url('/images/box_blue_centre_wide_180.png');
+    height: 160px;
+    width: 840px;
+}
+
+#recent_episodes h3 {
+    float: left;
+}
+
+#recent_episodes th, #recent_episodes td {
+    font: 10pt Arial;
+}
+
+#recent_episodes th {
+    background: url('/images/table_header_blue_gradient.png') top left repeat-x;
+    height: 25px;
+    padding: 0px 10px 0px 5px;
+}
+
+#recent_episodes #view_all {
+    background: url('/images/button_view_episodes.png') top left no-repeat;
+    height: 33px;
+    width: 153px;
+    float: right;
+}
+
+.data_label {
+    width: 100px;
+    font: bold 10pt Arial;
+}
+
+.data_value {
+    text-align: left;
+    width: 250px;
+    padding-left: 115px;
+    font: 10pt Arial;
+}
+
+.address {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    min-height: 4em;
+}
+
+.telephone {
+    min-height: 2em;
+}
+
+.row_buffer {
+    padding-top: 1em;
+}
