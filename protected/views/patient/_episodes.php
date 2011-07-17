@@ -1,6 +1,8 @@
-<div id="episodes_title">All Episodes</div>
+<div id="box_gradient_top"></div>
+<div id="box_gradient_bottom">
+<h3>All Episodes</h3>
 <div id="add_episode">
-	Click here to add an event to an episode
+	<img src="/images/add_event_button.png" alt="Add an event to this episode" />
 	<ul id="episode_types">
 <?php
 	foreach ($eventTypeGroups as $group => $eventTypes) { ?>
@@ -27,12 +29,12 @@
 	); ?>
 </div>
 <div id="episodes_details">
-	<?php 
-	foreach ($episodes as $episode) {
-		$this->renderPartial('/clinical/episodeSummary', 
-			array('episode' => $episode)
-		);
-	} ?>
+<?php
+	$episode = end($episodes);
+	$this->renderPartial('/clinical/episodeSummary',
+		array('episode' => $episode)
+	); ?>
+</div>
 </div>
 <script type="text/javascript">
 	$('#add_episode').hover(
@@ -45,6 +47,27 @@
 	$('#episode_types li[class!=header]').click(function() {
 		$.ajax({
 			url: $(this).children('a').attr('href'),
+			success: function(data) {
+				$('#episodes_details').html(data);
+			}
+		});
+		return false;
+	});
+	$('ul.events li a').live('click', function() {
+		$.ajax({
+			url: $(this).attr('href'),
+			success: function(data) {
+				$('#episodes_details').html(data);
+			}
+		});
+		return false;
+	});
+	$('.episode div.title').live('click', function() {
+		var id = $(this).children('input').val();
+		$.ajax({
+			url: '<?php echo Yii::app()->createUrl('clinical/episodeSummary'); ?>',
+			type: 'GET',
+			data: {'id': id},
 			success: function(data) {
 				$('#episodes_details').html(data);
 			}

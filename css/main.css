@@ -54,6 +54,7 @@ a {
     text-align: center;
     background: url('/images/background_footer.png');
     min-height: 120px;
+    padding-top: 10px;
 }
 
 #logo
@@ -387,6 +388,7 @@ h3.element_letterout {
     height: 31px;
     width: 84px;
     border: 0px;
+    cursor: pointer; cursor: hand;
 }
 
 #user_info {
@@ -539,7 +541,6 @@ ul#navlist {
 }
 
 .data_row {
-    clear: both;
     width: 100%;
     padding: 3px 0;
 }
@@ -558,71 +559,8 @@ ul#navlist {
     padding-left: 280px;
 }
 
-#episodes_sidebar {
-    width: 270px;
-    float: left;
-    font: bold 13pt Arial;
-    color: #05488A;
-}
-
-#episodes_details {
-    padding-left: 290px;
-    padding-top: 30px;
-}
-
-#episodes_title {
-    width: 350px;
-    float: left;
-    font: bold 16pt arial;
-    color: #333;
-}
-
-#add_episode {
-    width: 350px;
-    font: bold 13pt arial;
-    color: #05488A;
-    position: absolute;
-    top: 60px;
-    left: 600px;
-    z-index: 100;
-}
-
-#add_episode li {
-    list-style: none;
-}
-
-#add_episode li.header {
-    color: #333;
-}
-
-#add_episode li a {
-    text-decoration: none;
-    padding-left: 5px;
-    vertical-align: top;
-}
-
-#episode_types {
-    display: none;
-}
-
 .ui-tabs-panel {
     min-height: 100px;
-}
-
-.episode {
-    border: 1px solid;
-    position: relative;
-}
-
-.episode .title {
-    font-weight: bold;
-    width: 320px;
-    float: left;
-    padding: 4px;
-}
-
-.episode .date {
-    text-transform: uppercase;
 }
 
 .rounded-corners {
@@ -631,24 +569,6 @@ ul#navlist {
     -khtml-border-radius: 10px;
     border-radius: 10px;
     behavior: url(/images/border-radius.htc);
-}
-
-ul.events {
-    padding-left: 20px;
-}
-
-ul.events li {
-    list-style-type: none;
-    font: bold 12pt Arial;
-}
-
-ul.events li a {
-    text-decoration: none;
-    color: #333;
-}
-
-ul.events li a span.date {
-    font-style: italic;
 }
 
 .title_bar {

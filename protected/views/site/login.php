@@ -45,5 +45,4 @@ $this->layout = 'simple';
 <script type="text/javascript">
 	$('input[id=LoginForm_username]').watermark('enter username');
 	$('input[id=LoginForm_password]').watermark('enter password');
-	$('input[type=submit]').css('cursor', 'pointer');
 </script>

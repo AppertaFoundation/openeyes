@@ -47,6 +47,10 @@ div.ui-widget-content {
     border: 0;
 }
 
+div.ui-tabs-hide {
+    display: none !important
+}
+
 ul.ui-widget-header {
     border: 0;
     float: right;
@@ -163,4 +167,128 @@ ul.ui-tabs-nav * {
 
 .row_buffer {
     padding-top: 1em;
+}
+
+#episodes_sidebar {
+    width: 210px;
+    float: left;
+    font: bold 13pt Arial;
+    color: #05488A;
+}
+
+#episodes_details {
+    margin-left: 225px;
+    padding: 10px;
+    border: 1px solid #000;
+}
+
+#episodes_title {
+    width: 350px;
+    float: left;
+    font: bold 16pt arial;
+    color: #333;
+}
+
+#add_episode {
+    width: 350px;
+    font: bold 13pt arial;
+    color: #05488A;
+    position: absolute;
+    top: 170px;
+    right: 400px;
+    z-index: 100;
+    cursor: pointer;
+}
+
+#add_episode li {
+    list-style: none;
+}
+
+#add_episode li.header {
+    color: #333;
+}
+
+#add_episode li a {
+    text-decoration: none;
+    padding-left: 5px;
+    vertical-align: top;
+}
+
+#episode_types {
+    display: none;
+    margin: 0;
+    padding: 0;
+    padding-left: 20px;
+    padding-bottom: 25px;
+    width: 285px;
+    background: #eef5fc url('/images/add_episode_footer.png') bottom left no-repeat;
+    min-height: 42px;
+}
+
+.episode {
+    position: relative;
+}
+
+.episode .title {
+    font: bold 10pt Arial;
+    width: 200px;
+    height: 26px;
+    float: left;
+    padding: 6px 4px 0px 6px;
+    background: url('/images/episode_title_bar.png') top left no-repeat;
+    cursor: pointer;
+}
+
+.episode .date {
+    text-transform: uppercase;
+}
+
+.episode .footer {
+    background: url('/images/episode_footer_bar.png') top left no-repeat;
+    width: 200px;
+    height: 22px;
+    padding: 0 4px 0px 6px;
+    margin: 0;
+}
+
+ul.events {
+    clear: both;
+    width: 182px;
+    margin-left: 2px;
+    margin-bottom: 0;
+    padding-left: 20px;
+    padding-bottom: 5px;
+    border: 2px solid #e3e7e8;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+ul.events li {
+    list-style-type: none;
+    font: bold 12pt Arial;
+}
+
+ul.events li a {
+    text-decoration: none;
+    color: #333;
+}
+
+ul.events li a span.date {
+    font-style: italic;
+    font-weight: normal;
+}
+
+.col_left {
+    float: left;
+    width: 250px;
+}
+
+.col_right {
+    width: 250px;
+    padding-left: 280px;
+    padding-bottom: 10px;
+}
+
+.col_left span, .col_right span {
+    font-weight: bold;
 }
