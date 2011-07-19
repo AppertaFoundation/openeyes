@@ -291,6 +291,16 @@ class LetterOutService
 			// Get the most recent operation for this patient
 		}
 
+/*
+adm - admission date - not sure yet how we get this one
+epd - principal diagnosis for episode - probably from element_diagnosis->disorder.name
+eps - principal side for episode - probably element_diagnosis.location
+
+FIELDS WE MIGHT BE ABLE TO DO:
+
+opl - operations listed for - source unknown
+*/
+
 		foreach($this->substitutions as $key => $sub) {
 			$phrase = preg_replace('/\[' . $key . '\]/', $sub, $phrase);
 

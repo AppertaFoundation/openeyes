@@ -1,5 +1,10 @@
 <?php
 
+// @todo - there is javascript in the 1.php view for this element that operations on the 1.php view for
+//	element_operation. Eventually this element will be used in other places (e.g. in the examination
+//	event_type) and this javascript will no longer be appropriate. What to do? Create some sort of
+//	functionality that includes files only if a certain combination of elements is present?
+
 /**
  * This is the model class for table "element_diagnosis".
  *

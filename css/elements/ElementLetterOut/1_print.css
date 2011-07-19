@@ -1,0 +1,68 @@
+/* Zero margins and padding */
+* {
+	margin:0;
+	padding:0;
+}
+
+/* Turn off all hyperlinks */
+a {
+	display: none;
+}
+
+/* Div in which letter elements are printed */
+#layout {
+
+/* Border for testing */
+/*
+	border-style: solid;
+	border-width: 1px;
+*/
+	margin-left: 10px;
+	margin-top: -120px;
+	
+
+
+	background-image:url(/img/Letterhead.png);
+	background-repeat: no-repeat;
+	width:1000px;
+	
+/* 	height:1414px; */
+}
+
+#layout > p {
+	color: #191919;
+	font-size: 14pt;
+	font-family: sans-serif, Helvetica, Verdana, Arial;
+	margin-left: 60px;
+	margin-right: 60px;
+}
+
+p.to {
+	padding-top: 140px;
+}
+
+p.date {
+	padding-top: 3em;
+}
+
+p.dear {
+	padding-top: 2em;
+}
+
+p.re {
+	padding-top: 1.2em;
+	font-weight: bold;
+}
+
+p.text {
+	padding-top: 1.2em;
+}
+
+p.from {
+	padding-top: 1.4em;
+}
+
+p.cc {
+	padding-top: 2em;
+}
+

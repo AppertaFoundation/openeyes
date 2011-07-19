@@ -42,6 +42,8 @@ class ClinicalController extends BaseController
 
 		$this->logActivity('viewed event');
 
+		$this->addElementCss($elements);
+
 		$this->render('view', array('elements' => $elements));
 	}
 
@@ -110,6 +112,8 @@ class ClinicalController extends BaseController
 			// be displayed again in the call below
 		}
 
+		$this->addElementCss($elements);
+
 		$this->render('create', array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
@@ -169,6 +173,8 @@ class ClinicalController extends BaseController
 			// If we get this far element validation has failed, so we render them again.
 			// The validation process will have populated and error messages.
 		}
+
+		$this->addElementCss($elements);
 
 		$this->render('update', array(
 				'id' => $id,
@@ -323,5 +329,30 @@ class ClinicalController extends BaseController
 
 		// Displays the list of episodes and events for this patient
 		$this->listEpisodesAndEventTypes();
+	}
+
+	public function addElementCss($elements)
+	{
+		$basePath = Yii::app()->basePath . DIRECTORY_SEPARATOR . '..';
+
+		// @todo - this might be very slow
+		foreach ($elements as $element) {
+			$cssPath = DIRECTORY_SEPARATOR . 'css' . DIRECTORY_SEPARATOR . 'elements' . DIRECTORY_SEPARATOR . 
+				get_class($element) . DIRECTORY_SEPARATOR . $element->viewNumber;
+
+			if (file_exists($basePath . $cssPath . '.css')) {
+				Yii::app()->clientScript->registerCssFile(
+					$cssPath . '.css',
+					'screen, projection'
+				);
+			}
+
+                        if (file_exists($basePath . $cssPath . '_print.css')) {
+                                Yii::app()->clientScript->registerCssFile(
+                                        $cssPath . '_print.css',
+                                        'print'
+                                );
+                        }
+		}
 	}
 }

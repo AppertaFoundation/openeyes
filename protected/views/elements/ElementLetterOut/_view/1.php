@@ -1,33 +1,21 @@
-Letter out:<br />
+<div id="layout">
+	<br />
+	<p class="to"><?php echo nl2br(CHtml::encode($data->to_address)); ?></p>
 
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('from_address')); ?>:</b>
-	<?php echo CHtml::encode($data->from_address); ?>
-	<br />
-</div>
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('date')); ?>:</b>
-	<?php echo CHtml::encode($data->date); ?>
-	<br />
-</div>
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('dear')); ?>:</b>
-	<?php echo CHtml::encode($data->dear); ?>
-	<br />
-</div>
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('re')); ?>:</b>
-	<?php echo CHtml::encode($data->re); ?>
-	<br />
-</div>
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('value')); ?>:</b>
-	<?php echo CHtml::encode($data->value); ?>
-	<br />
-</div>
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('to_address')); ?>:</b>
-	<?php echo CHtml::encode($data->to_address); ?>
-	<br />
-</div>
+	<p class="date"><?php echo CHtml::encode($data->date); ?></p>
 
+	<p class="dear"><?php echo CHtml::encode($data->dear); ?></p>
+
+	<p class="re"><?php echo CHtml::encode($data->re); ?></p>
+
+	<p class="text"><?php echo nl2br(CHtml::encode($data->value)); ?>
+
+	<p class="from">Yours sincerely
+	<br />
+	<br />
+	<br />
+	<br />
+	<?php echo nl2br(CHtml::encode($data->from_address)) ?></p>
+
+	<p class="cc"><?php echo nl2br(CHtml::encode($data->cc)); ?></p>
+</div>
