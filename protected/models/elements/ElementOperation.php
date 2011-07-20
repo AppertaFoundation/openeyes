@@ -164,6 +164,19 @@ class ElementOperation extends BaseElement
 		);
 	}
 
+	public function getEyeLabelText() {
+		switch ($this->eye) {
+			case self::EYE_BOTH:
+				$text = 'Eyes:';
+				break;
+			default:
+				$text = 'Eye:';
+				break;
+		}
+
+		return $text;
+	}
+
 	public function getEyeText() {
 		switch ($this->eye) {
 			case self::EYE_LEFT:

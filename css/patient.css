@@ -42,23 +42,26 @@ div.ui-tabs * {
     background: transparent;
 }
 
+div.ui-tabs, div.ui-tabs-panel {
+	padding: 0px !important;
+}
+
 div.ui-widget-content {
     background: transparent;
     border: 0;
 }
 
 div.ui-tabs-hide {
-    display: none !important
+    display: none;
 }
 
 ul.ui-widget-header {
-    border: 0;
+    border: 0 !important;
     float: right;
-    margin-right: 20px;
-}
-
-ul.ui-tabs-nav {
-/*    height: 36px;*/
+    margin: 0 !important;
+    padding: 0 !important;
+    margin-right: 20px !important;
+	background: transparent !important;
 }
 
 ul.ui-tabs-nav * {
@@ -76,11 +79,12 @@ ul.ui-tabs-nav * {
 }
 
 #box_gradient_bottom {
-    background: #FFF url('/images/box_blue_gradient_bottom.png') bottom left no-repeat;
+    background: #fbfbfc url('/images/box_blue_gradient_bottom.png') bottom left no-repeat;
     min-height: 676px;
     width: 860px;
     padding: 15px;
     padding-top: 0;
+	position: relative;
 }
 
 #box_gradient_bottom h3 {
@@ -177,9 +181,10 @@ ul.ui-tabs-nav * {
 }
 
 #episodes_details {
+	margin-top: 20px;
     margin-left: 225px;
     padding: 10px;
-    border: 1px solid #000;
+    border: 1px solid #3293c6;
 }
 
 #episodes_title {
@@ -190,14 +195,20 @@ ul.ui-tabs-nav * {
 }
 
 #add_episode {
-    width: 350px;
+	float: right;
+    width: 305px;
     font: bold 13pt arial;
     color: #05488A;
-    position: absolute;
-    top: 170px;
-    right: 400px;
+	position: absolute;
+    top: 0px;
+    right: 15px;
     z-index: 100;
     cursor: pointer;
+}
+
+#add_episode ul {
+	margin-top: -3px;
+	padding-top: 3px;
 }
 
 #add_episode li {
@@ -291,4 +302,29 @@ ul.events li a span.date {
 
 .col_left span, .col_right span {
     font-weight: bold;
+}
+
+select[id="service"], select[id="subsection"], select[id="procedure"],
+select[id="service"] option, select[id="subsection"] option, select[id="procedure"] option {
+	font: normal 9pt Arial !important;
+}
+
+select[id="service"] {
+	width: 150px;
+}
+
+select[id="subsection"] {
+	width: 100px;
+}
+
+select[id="procedure"] {
+	width: 250px;
+}
+
+div.view {
+	border: 0px;
+}
+
+#procedure_list th, #procedure_list td {
+	border-color: #3293c6;
 }

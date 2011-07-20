@@ -48,6 +48,7 @@
 		$.ajax({
 			url: $(this).children('a').attr('href'),
 			success: function(data) {
+				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
 		});
@@ -57,6 +58,7 @@
 		$.ajax({
 			url: $(this).attr('href'),
 			success: function(data) {
+				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
 		});
@@ -69,6 +71,7 @@
 			type: 'GET',
 			data: {'id': id},
 			success: function(data) {
+				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
 		});

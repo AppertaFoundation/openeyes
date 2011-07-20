@@ -1,9 +1,9 @@
 <?php
 Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?>
-<strong>Operation Details</strong>
+<h3>Operation Details</h3>
 <div class="view">
-	<strong><?php echo $data->getAttributeLabel('eye'); ?></strong>
+	<strong><?php echo $data->getEyeLabelText(); ?></strong>
 	<?php echo $data->getEyeText(); ?>
 </div>
 <div class="view">

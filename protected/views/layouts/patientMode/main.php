@@ -30,7 +30,7 @@
 	<div id="outer_content">
 		<div id="content">
 			<?php $this->widget('application.components.MyBreadcrumbs', array(
-				'homeLink'=>CHtml::link('OpenEyes', array('/')),
+				'homeLink'=>CHtml::link('OpenEyes', array('site/index')),
 				'links'=>$this->breadcrumbs,
 				'prefixText'=>'You are here: &nbsp; ',
 			)); ?><!-- breadcrumbs -->

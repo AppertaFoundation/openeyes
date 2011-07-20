@@ -91,6 +91,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
         'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
 			array('specialties' => $specialties),true),
     ),
+	'id'=>'procedure_selects',
+	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
+	'theme'=>'theme',
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,

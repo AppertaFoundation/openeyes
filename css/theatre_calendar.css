@@ -3,7 +3,7 @@ table {
 }
 table,th, td
 {
-	border: 1px solid black;
+	border: 1px solid;
 }
 #operation {
 	border: 1px solid #CCCCCC;
