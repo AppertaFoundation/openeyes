@@ -407,14 +407,14 @@ class ElementOperation extends BaseElement
 		
 		foreach ($results as $weekday => $dates) {
 			$timestamp = strtotime($monthStart);
-			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$firstWeekday = strtotime(date('Y-m-t', $timestamp - (60 * 60 * 24)));
 			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
 			$dateList = array_keys($dates);
 			while (date('N', strtotime($dateList[0])) != date('N', $firstWeekday)) {
-				$firstWeekday += 60 * 60 * 24;
+				$firstWeekday -= 60 * 60 * 24;
 			}
 			
-			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+			for ($weekCounter = 1; $weekCounter < 8; $weekCounter++) {
 				$addDays = ($weekCounter - 1) * 7;
 				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
 				if (in_array($selectedDay, $dateList)) {

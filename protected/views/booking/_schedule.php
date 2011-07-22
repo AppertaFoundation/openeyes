@@ -4,7 +4,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 <p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-<p><strong>Operation Details</strong></p>
+<h3>Operation details</h3>
 <div id="operation">
 	<h1>Schedule operation > Select theatre slot</h1><br />
 <?php
@@ -21,6 +21,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
         'Operation details'=>$this->renderPartial('_operation',
 			array('operation' => $operation),true),
     ),
+	'id'=>'operation-details',
+	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
+	'theme'=>'theme',
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,
@@ -33,6 +36,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
         'Clinic details'=>$this->renderPartial('_clinic',
 			array('operation' => $operation),true),
     ),
+	'id'=>'clinic-details',
+	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
+	'theme'=>'theme',
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,
@@ -46,13 +52,6 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		<div id="details">
 <?php	echo $this->renderPartial('_calendar', 
 			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions), false, true); ?>
-		</div>
-		<div id="key"><span>KEY:</span>
-			<div id="available" class="container"><div class="color_box"></div><div class="label">Slots Available</div></div>
-			<div id="limited" class="container"><div class="color_box"></div><div class="label">Limited Slots</div></div>
-			<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>
-			<div id="closed" class="container"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
-			<div id="selected_date" class="container"><div class="color_box"></div><div class="label">Selected Date</div></div>
 		</div>
 		</div>
 	</div>

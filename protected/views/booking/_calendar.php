@@ -11,8 +11,10 @@
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('pmonth', $lastMonth);
+		echo '<span class="button">';
 		echo CHtml::submitButton('< Previous Month', 
-			array('id' => 'previous_month', 'disabled' => ($today > $thisMonth)));
+			array('id' => 'previous_month', 'class'=>'form_button', 'disabled' => ($today > $thisMonth)));
+		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
 			</div>
 			<div id="month_forward" class="column">
@@ -21,8 +23,10 @@
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('nmonth', $nextMonth);
+		echo '<span class="button">';
 		echo CHtml::submitButton('Next Month >', 
-			array('id' => 'next_month', 'disabled' => ($nextMonth > $nextYear)));
+			array('id' => 'next_month', 'class'=>'form_button', 'disabled' => ($nextMonth > $nextYear)));
+		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
 			</div>
 		</div>
@@ -31,8 +35,12 @@
 <?php
 	foreach ($sessions as $weekday => $list) { ?>
 				<tr>
-					<th><?php echo $weekday; ?></th>
-<?php	foreach ($list as $date => $data) { ?>
+					<th><?php echo substr($weekday, 0, 3); ?></th>
+<?php	foreach ($list as $date => $data) {
+			// check if date is outside this month
+			if (date('m', strtotime($date)) !== date('m', strtotime($thisMonth))) {
+				$list[$date]['status'] = 'invalid';
+			} ?>
 					<td class="<?php echo $list[$date]['status'];
 			if (!empty($operation->booking) && 
 				$operation->booking->session->date == $date) {
@@ -43,4 +51,18 @@
 <?php
 	} ?>
 			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="8" align="right">
+						<div id="key">
+						<span>KEY:</span>
+							<div id="available" class="container"><div class="color_box"></div><div class="label">Slots Available</div></div>
+							<div id="limited" class="container"><div class="color_box"></div><div class="label">Limited Slots</div></div>
+							<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>
+							<div id="closed" class="container"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
+							<div id="selected_date" class="container"><div class="color_box"></div><div class="label">Selected Date</div></div>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
 		</table>

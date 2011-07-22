@@ -38,10 +38,6 @@ li.ui-tabs-selected a {
     padding: 8px 0 6px 18px !important;
 }
 
-div.ui-tabs * {
-    background: transparent;
-}
-
 div.ui-tabs, div.ui-tabs-panel {
 	padding: 0px !important;
 }
@@ -327,4 +323,16 @@ div.view {
 
 #procedure_list th, #procedure_list td {
 	border-color: #3293c6;
+}
+
+.buttonlist {
+	float: right;
+}
+
+div.header {
+	color: #05488a;
+}
+
+div.header span.emphasize {
+	font-weight: bold;
 }
