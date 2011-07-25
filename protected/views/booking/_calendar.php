@@ -53,9 +53,9 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="8" align="right">
+					<td colspan="8">
 						<div id="key">
-						<span>KEY:</span>
+						<span>Key:</span>
 							<div id="available" class="container"><div class="color_box"></div><div class="label">Slots Available</div></div>
 							<div id="limited" class="container"><div class="color_box"></div><div class="label">Limited Slots</div></div>
 							<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>

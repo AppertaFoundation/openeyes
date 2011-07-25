@@ -45,6 +45,7 @@
 			$('#episode_types').hide();
 	});
 	$('#episode_types li[class!=header]').click(function() {
+		$('ul.events li.shown').removeClass('shown');
 		$.ajax({
 			url: $(this).children('a').attr('href'),
 			success: function(data) {
@@ -55,6 +56,8 @@
 		return false;
 	});
 	$('ul.events li a').live('click', function() {
+		$('ul.events li.shown').removeClass('shown');
+		$(this).parent().addClass('shown');
 		$.ajax({
 			url: $(this).attr('href'),
 			success: function(data) {
@@ -66,6 +69,7 @@
 	});
 	$('.episode div.title').live('click', function() {
 		var id = $(this).children('input').val();
+		$('ul.events li.shown').removeClass('shown');
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('clinical/episodeSummary'); ?>',
 			type: 'GET',

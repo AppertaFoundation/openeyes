@@ -275,6 +275,16 @@ ul.events li {
     font: bold 12pt Arial;
 }
 
+ul.events li.shown {
+	background: url('/images/list_item_blue.png') top left no-repeat;
+	margin-left: -20px;
+	padding-left: 20px;
+}
+
+ul.events li.shown a {
+	color: #fff;
+}
+
 ul.events li a {
     text-decoration: none;
     color: #333;

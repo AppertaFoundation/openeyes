@@ -1,7 +1,8 @@
 <div id="bookings">
 <strong>View other operations in this session:</strong>
 <span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
-<table>
+<p/>
+<table id="appointment_list">
 	<thead>
 		<th>Operation list overview</th>
 		<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
@@ -19,7 +20,10 @@
 		foreach ($procedures as $procedure) {
 			$procedureNames[] = $procedure->term;
 		}
-		$procedureList = implode(', ', $procedureNames); ?>
+		$procedureList = implode(', ', $procedureNames);
+		if (empty($procedureList)) {
+			$procedureList = 'No procedures';
+		} ?>
 		<tr>
 			<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
 			<td><?php echo $procedureList; ?></td>
@@ -59,6 +63,7 @@ if (!empty($reschedule)) {
 		CancellationReason::getReasonsByListNumber($listIndex)
 	);
 }
-echo CHtml::submitButton('Confirm slot');
+?>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
 </div>

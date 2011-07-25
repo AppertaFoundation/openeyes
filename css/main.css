@@ -616,7 +616,32 @@ a.shinybutton.highlighted span {
 	background: transparent url('/images/button_blue_highlight_right.png') no-repeat top right;
 }
 
-.buttonwrapper { /* Container you can use to surround a CSS button to clear float */
-	overflow: hidden; /*See: http://www.quirksmode.org/css/clearing.html */
-	width: 100%;
+button.shinybutton {
+	background: transparent url('/images/button_blue_left.png') no-repeat top left;
+	display: block;
+	float: left;
+	font: normal 10pt Arial;
+	line-height: 21px; /* This value + (top and bottom padding of SPAN) must equal height of button background */
+	height: 33px; /* Height of button background height */
+	padding-left: 10px; /* Width of left menu image */
+	text-decoration: none;
+	margin: 0;
+	color: #164674;
+}
+
+button.shinybutton span {
+	position: relative;
+	background: transparent url('/images/button_blue_right.png') no-repeat top right;
+	display: block;
+	padding: 6px 10px 6px 0;
+	font-weight: bold;
+	font-family: Arial;
+}
+
+button.shinybutton.highlighted {
+	background: transparent url('/images/button_blue_highlight_left.png') no-repeat top left;
+}
+
+button.shinybutton.highlighted span {
+	background: transparent url('/images/button_blue_highlight_right.png') no-repeat top right;
 }

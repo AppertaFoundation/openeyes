@@ -5,21 +5,12 @@ $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 <p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
 <h3>Operation details</h3>
-<div id="operation">
-	<h1>Schedule operation > Select theatre slot</h1><br />
-<?php
-if (Yii::app()->user->hasFlash('info')) { ?>
-<div class="flash-error">
-    <?php echo Yii::app()->user->getFlash('info'); ?>
-</div>
-<?php 
-} ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
 	<?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
     'panels'=>array(
         'Operation details'=>$this->renderPartial('_operation',
-			array('operation' => $operation),true),
+			array('operation'=>$operation),true),
     ),
 	'id'=>'operation-details',
 	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
@@ -34,7 +25,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
     'panels'=>array(
         'Clinic details'=>$this->renderPartial('_clinic',
-			array('operation' => $operation),true),
+			array('operation'=>$operation),true),
     ),
 	'id'=>'clinic-details',
 	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
@@ -46,6 +37,15 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'collapsible'=>true,
     ),
 ));?>
+<div id="operation">
+	<h1>Schedule operation > Select theatre slot</h1><br />
+<?php
+if (Yii::app()->user->hasFlash('info')) { ?>
+<div class="flash-error">
+    <?php echo Yii::app()->user->getFlash('info'); ?>
+</div>
+<?php 
+} ?>
 	<strong>Select a session date:</strong><br />
 	<div id="calendar">
 		<div id="session_dates">
@@ -116,15 +116,17 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 					if ($('#bookings').length > 0) {
 						$('#bookings').remove();
 					}
-					$( "#theatres" ).tabs();
+					//$("#theatres").tabs();
 				}
 			});
 		});
-		$('#theatres button').live('click', function() {
-			var session = $(this).children('.session_id').text();
+		$('#theatres div.shinybutton').live('click', function() {
+			var session = $(this).children().children('span.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
 			var day = $('.selected_date').text();
+			$(this).siblings().removeClass('highlighted');
+			$(this).addClass('highlighted');
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
 				'type': 'GET',

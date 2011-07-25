@@ -40,12 +40,6 @@ h3 {
 #calendar .full {
 	background: #ff9999;
 }
-#theatres span.full, #theatres span.limited {
-	font-color: #FFCCCC;
-}
-#theatres span.available {
-	font-color: #CCFFCC;
-}
 .closed {
 	background-image: url('/images/theatre_closed_big.png');
 	background-size: 100%;
@@ -56,9 +50,13 @@ h3 {
 #key {
 	font-style: normal;
 	float: right;
+	border: 1px solid #000;
+	padding: 5px;
+	margin-top: 10px;
 }
 #key span {
 	float: left;
+	text-transform: uppercase;
 }
 #key .container {
 	line-height: 20px;
@@ -237,4 +235,123 @@ input.form_button[type="submit"]:focus, input.form_button[type="button"]:focus{
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e8f0f8'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e8f0f8)); /* for webkit browsers */
 	background: -moz-linear-gradient(top,  #ffffff,  #e8f0f8); /* for firefox 3.6+ */ 
+}
+
+#box_grey_gradient_top {
+    background: transparent url('/images/box_grey_gradient_top.png') top left no-repeat;
+    min-height: 13px;
+    width: 713px;
+    clear: both;
+}
+
+#box_grey_gradient_bottom {
+    background: #f9fbfd url('/images/box_grey_gradient_bottom.png') bottom left no-repeat;
+    min-height: 53px;
+    width: 693px;
+    padding: 0 10px;
+    padding-top: 0;
+	position: relative;
+}
+
+#theatres div.ui-widget-content {
+	margin-left: -20px;
+}
+
+div.shinybutton {
+	background: transparent url('/images/button_blue_big_left.png') no-repeat top left;
+	display: block;
+	float: right;
+	font: normal 10pt Arial;
+	line-height: 10px; /* This value + (top and bottom padding of DIV) must equal height of button background */
+	height: 43px; /* Height of button background height */
+	padding-left: 10px; /* Width of left menu image */
+	margin-right: 10px;
+	text-decoration: none;
+	margin: 0;
+	cursor: pointer;
+}
+
+div.shinybutton div {
+	background: transparent url('/images/button_blue_big_right.png') no-repeat top right;
+	display: block;
+	padding: 10px 10px 10px 0;
+	min-width: 200px;
+	margin-right: 8px;
+	font-weight: bold;
+	font-family: Arial;
+	text-align: center;
+	cursor: pointer;
+}
+
+div.shinybutton.highlighted {
+	background: transparent url('/images/button_blue_big_highlight_left.png') no-repeat top left;
+}
+
+div.shinybutton.highlighted div {
+	background: transparent url('/images/button_blue_big_highlight_right.png') no-repeat top right;
+}
+
+div.shinybutton span {
+	font-weight: normal;
+	font-style: italic;
+	line-height: 13px;
+	cursor: pointer;
+}
+
+div.shinybutton span.available {
+	color: #77bb79;
+}
+
+div.shinybutton span.full, div.shinybutton span.limited {
+	color: #d84748;
+}
+
+div.shinybutton .session_id {
+	display: none;
+}
+
+#appointment_list #appointment_list tr, #appointment_list td {
+	border: 1px solid #3293c6 !important;
+}
+
+#appointment_list * {
+	background: transparent;
+}
+
+button { 
+	position: relative;
+	border: 0; 
+	padding: 0;
+	cursor: pointer;
+	overflow: visible; /* removes extra side padding in IE */
+}
+
+button:hover {
+	border: 0;
+}
+ 
+button::-moz-focus-inner {
+	border: none;  /* overrides extra padding in Firefox */
+}
+ 
+button span { 
+	position: relative;
+	display: block; 
+	white-space: nowrap;	
+}
+
+button.shinybutton span {
+	min-width: 100px;
+}
+ 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	/* Safari and Google Chrome only - fix margins */
+	button span {
+		margin-top: -1px;
+	}
+}
+
+#bookings form {
+	float: right;
+	margin-right: 100px;
 }
