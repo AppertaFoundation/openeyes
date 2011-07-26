@@ -347,3 +347,7 @@ div.header {
 div.header span.emphasize {
 	font-weight: bold;
 }
+
+a#editlink {
+	float: right;
+}

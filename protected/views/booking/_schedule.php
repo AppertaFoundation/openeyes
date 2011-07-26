@@ -4,44 +4,12 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 <p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-<h3>Operation details</h3>
-	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
-	<?php
-$this->widget('zii.widgets.jui.CJuiAccordion', array(
-    'panels'=>array(
-        'Operation details'=>$this->renderPartial('_operation',
-			array('operation'=>$operation),true),
-    ),
-	'id'=>'operation-details',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
-    // additional javascript options for the accordion plugin
-    'options'=>array(
-		'active'=>false,
-        'animated'=>'bounceslide',
-		'collapsible'=>true,
-    ),
-));
-$this->widget('zii.widgets.jui.CJuiAccordion', array(
-    'panels'=>array(
-        'Clinic details'=>$this->renderPartial('_clinic',
-			array('operation'=>$operation),true),
-    ),
-	'id'=>'clinic-details',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
-    // additional javascript options for the accordion plugin
-    'options'=>array(
-		'active'=>false,
-        'animated'=>'bounceslide',
-		'collapsible'=>true,
-    ),
-));?>
+<h3>Schedule Operation</h3>
 <div id="operation">
-	<h1>Schedule operation > Select theatre slot</h1><br />
+	<h1>Select theatre slot</h1><br />
 <?php
 if (Yii::app()->user->hasFlash('info')) { ?>
-<div class="flash-error">
+<div class="flash-notice">
     <?php echo Yii::app()->user->getFlash('info'); ?>
 </div>
 <?php 

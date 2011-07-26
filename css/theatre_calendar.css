@@ -310,12 +310,30 @@ div.shinybutton .session_id {
 	display: none;
 }
 
+#appointment_list {
+	padding: 20px 0;
+}
+
+#appointment_list .head {
+	color: #fff;
+	height: 39px;
+	vertical-align: middle;
+	background: url('/images/blue_table_header.png') top no-repeat;
+}
+
 #appointment_list #appointment_list tr, #appointment_list td {
 	border: 1px solid #3293c6 !important;
 }
 
 #appointment_list * {
 	background: transparent;
+}
+
+#appointment_list tfoot {
+	font-style: normal;
+	padding: 5px;
+	margin: 10px auto;
+	border: 1px solid #999 !important;
 }
 
 button { 
@@ -353,5 +371,9 @@ button.shinybutton span {
 
 #bookings form, #operation button {
 	float: right;
-	margin-right: 70px;
+	margin-right: 40px;
+}
+
+#theatres ul.ui-widget-header {
+	margin-right: 0px !important;
 }

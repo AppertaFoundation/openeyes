@@ -178,7 +178,7 @@ class ClinicalController extends BaseController
 					$this->logActivity('updated event');
 
 					// Nothing has gone wrong with updating elements, go to the view page
-					$this->redirect(array('view', 'id' => $event->id));
+					$this->redirect(array('patient/view', 'id' => $this->patientId));
 				}
 
 				return;
@@ -188,12 +188,11 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		$this->render('update', array(
+		$this->renderPartial('update', array(
 				'id' => $id,
 				'elements' => $elements,
 				'specialties' => $specialties
-			)
-		);
+			), false, true);
 	}
 
 	public function actionEpisodeSummary($id)

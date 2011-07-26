@@ -1,10 +1,14 @@
 <?php
 Yii::app()->clientScript->registerCoreScript('jquery');
-Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?>
+Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
+if ($data->status != $data::STATUS_CANCELLED) {
+	echo CHtml::link('<span>Edit Operation</span>',
+		array('clinical/update', 'id'=>$data->id), array('id'=>'editlink','class'=>'fancybox shinybutton', 'encode'=>false));
+} ?>
 <h3>Operation Details</h3>
 <?php
 if ($data->status == $data::STATUS_CANCELLED) { ?>
-<div class="flash-error">
+<div class="flash-notice">
 <?php 
 	$cancellation = $data->cancellation;
 	// todo: move this to a nicer place

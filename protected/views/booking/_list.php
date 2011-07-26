@@ -4,10 +4,12 @@
 <p/>
 <table id="appointment_list">
 	<thead>
-		<th>Operation list overview</th>
-		<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
-		<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - ' 
-			. substr($session['end_time'], 0, 5); ?></th>
+		<tr class="head">
+			<th>Operation list overview</th>
+			<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
+			<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - ' 
+				. substr($session['end_time'], 0, 5); ?></th>
+		</tr>
 	</thead>
 	<tbody>
 <?php
@@ -33,12 +35,14 @@
 		$counter++;
 	} ?>
 	</tbody>
-	<tfoot>
-		<td colspan="3"><?php echo ($counter - 1) . ' booking';
+	<tfoot class="rounded_corners">
+		<tr>
+			<td colspan="3"><?php echo ($counter - 1) . ' booking';
 	if (($counter - 1) != 1) {
 		echo 's';
 	}
 	echo ' currently scheduled'; ?></td>
+		</tr>
 	</tfoot>
 </table>
 <?php 
@@ -66,4 +70,18 @@ if (!empty($reschedule)) {
 ?>
 <button type="submit" value="submit" class="shinybutton highlighted"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
+<button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="float: right; margin-right: 80px;"><span>Cancel operation</span></button>
 </div>
+<script type="text/javascript">
+	$('button#cancel_operation').live('click', function() {
+		$.ajax({
+			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',
+			type: 'GET',
+			data: {'operation': <?php echo $operation->id; ?>},
+			success: function(data) {
+				$('div#schedule').parent().html(data);
+			}
+		});
+		return false;
+	});
+</script>

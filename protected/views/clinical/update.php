@@ -4,10 +4,8 @@ $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
-$this->renderPartial('base');
-
 $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'clinical-create',
+    'id'=>'clinical-update',
     'enableAjaxValidation'=>false,
 ));
 
@@ -28,9 +26,9 @@ foreach ($elements as $element) {
 }
 
 if (EyeDrawService::getActive()) {
-        echo CHtml::submitButton('Update event', array('onClick' => 'eyedraw_submit();'));
+	echo CHtml::submitButton('Update event', array('onClick' => 'eyedraw_submit();'));
 } else {
-        echo CHtml::submitButton('Update event');
+	echo CHtml::submitButton('Update event');
 }
 
 $this->endWidget();

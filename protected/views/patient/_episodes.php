@@ -1,3 +1,5 @@
+<?php
+Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
 <h3>All Episodes</h3>
@@ -7,15 +9,12 @@
 <?php
 	foreach ($eventTypeGroups as $group => $eventTypes) { ?>
 		<li class="header"><?php echo $group; ?></li>
-<?php	foreach ($eventTypes as $type) { ?>
+<?php	foreach ($eventTypes as $type) {
+			$name = ucfirst($type->name); ?>
 		<li><img src="/images/icon_<?php echo $type->name; ?>.png" alt="<?php 
-		echo ucfirst($type->name); ?>" /><?php
-			echo CHtml::link(
-				ucfirst($type->name),
-				Yii::app()->createUrl('clinical/create', array(
-					'event_type_id' => $type->id
-					))
-				); ?></li>
+		echo $name; ?>" /><?php
+		echo CHtml::link($name, array('clinical/create', 'event_type_id'=>$type->id), 
+			array('class'=>'fancybox', 'encode'=>false)); ?></li>
 <?php
 		}
 	} ?>
@@ -44,16 +43,8 @@
 		function() {
 			$('#episode_types').hide();
 	});
-	$('#episode_types li[class!=header]').click(function() {
+	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
-		$.ajax({
-			url: $(this).children('a').attr('href'),
-			success: function(data) {
-				$('#episodes_details').show();
-				$('#episodes_details').html(data);
-			}
-		});
-		return false;
 	});
 	$('ul.events li a').live('click', function() {
 		$('ul.events li.shown').removeClass('shown');
@@ -82,3 +73,12 @@
 		return false;
 	});
 </script>
+<?php
+$this->widget('application.extensions.fancybox.EFancyBox', array(
+	'target'=>'a.fancybox',
+	'config'=>array(
+		'onStart'=>"js:function() { $('ul.events li.shown').removeClass('shown'); }",
+	)
+	)
+);
+?>

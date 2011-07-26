@@ -4,7 +4,7 @@ if (!empty($episode)) { ?>
 <div class="col_left">Start date:<br/>
 <span><?php echo date('jS F, Y', strtotime($episode->start_date)); ?></span>
 </div>
-<div class="col_right">Principle eye:<br/>
+<div class="col_right">Principal eye:<br/>
 <span>Where will this be fetched from?</span>
 </div>
 <div class="col_left">End date:<br/>

@@ -62,7 +62,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	$totalDuration = 0;
 	if (!empty($model->procedures)) {
 		foreach ($model->procedures as $procedure) {
-			$display = $procedure['term'] . ' - ' . $procedure['short_format'];
+			$display = $procedure['term'] . ' - ' . $procedure['short_format'] . 
+				' ' . CHtml::link('remove', '#', array('onClick' => "js:removeProcedure(this);"));
 			$totalDuration += $procedure['default_duration']; ?>
 				<tr>
 					<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
@@ -107,7 +108,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?>
 </div>
 <div class="row">
-	<label for="ElementOperation_value">Anaesthetic required:</label>
+	<label for="ElementOperation_value">Anaesthetic type:</label>
 	<?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type', 
 		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?>
 </div>
