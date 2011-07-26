@@ -68,6 +68,7 @@
 <div class="details" id="recent_episodes">
 	<h3>Recent Episodes:</h3>
 	<div id="view_all"></div>
+	<div class="clear"></div>
 <?php
 	$this->widget('zii.widgets.grid.CGridView', array(
 		'dataProvider'=>$episodes,

@@ -351,3 +351,74 @@ div.header span.emphasize {
 a#editlink {
 	float: right;
 }
+
+.box_grey_big_gradient_top {
+	margin-top: 5px;
+    background: transparent url('/images/box_grey_big_gradient_top.png') top left no-repeat;
+    min-height: 13px;
+    width: 700px;
+    clear: both;
+}
+
+.box_grey_big_gradient_bottom {
+    background: #fbfbfc url('/images/box_grey_big_gradient_bottom.png') bottom left no-repeat;
+    min-height: 67px;
+    width: 670px;
+    padding: 15px;
+	position: relative;
+}
+
+.box_grey_bigger_gradient_top {
+	margin-top: 5px;
+    background: transparent url('/images/box_grey_bigger_gradient_top.png') top left no-repeat;
+    min-height: 13px;
+    width: 700px;
+    clear: both;
+}
+
+.box_grey_bigger_gradient_bottom {
+    background: #ffffff url('/images/box_grey_bigger_gradient_bottom.png') bottom left no-repeat;
+    min-height: 420px;
+    width: 670px;
+    padding: 15px;
+	position: relative;
+}
+
+div.cleartall {
+	clear: both;
+	min-height: 13px;
+}
+
+.box_grey_big_gradient_bottom div.label, .box_grey_bigger_gradient_bottom div.label {
+	font-weight: bold;
+	float: left;
+	width: 200px;
+}
+
+.box_grey_big_gradient_bottom div.data, .box_grey_bigger_gradient_bottom div.data {
+	font-weight: normal;
+	margin-left: 200px;
+}
+
+.heading {
+	margin-top: 15px;
+	color: #05488a;
+}
+
+input.gradient {
+    background: url('/images/input_gradient.png') no-repeat top left;
+    width: 204px;
+    height: 24px !important;
+    border: 0;
+    padding-left: 0.5em;
+    margin-left: 5px;
+    font: 8pt Arial;
+}
+
+textarea[name="ElementOperation[comments]"] {
+	background: url('/images/textarea_gradient.png') top left no-repeat;
+	height: 68px;
+	max-height: 68px;
+	width: 440px;
+	max-width: 440px;
+}

@@ -1,13 +1,32 @@
-<strong>Book Operation</strong>
-
-<div class="row">
-	<label for="ElementOperation_value">Eye(s) to be operated on:</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
-		array('separator' => ' &nbsp; ')); ?>
+<p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
+<div class="heading">
+<strong>Book Operation:</strong> Select diagnosis
 </div>
-<div class="row">
-	<label for="ElementOperation_value">Add procedure:</label>
-<?php
+
+<div class="box_grey_big_gradient_top"></div>
+<div class="box_grey_big_gradient_bottom">
+	<div class="label">Select eye(s):</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
+		array('separator' => ' &nbsp; ')); ?>
+	</div>
+	<div class="cleartall"></div>
+	<div class="label">Enter diagnosis:</div>
+	<div class="data">blah</div>
+</div>
+
+<div class="heading">
+<strong>Book Operation:</strong> Operation details
+</div>
+
+<div class="box_grey_bigger_gradient_top"></div>
+<div class="box_grey_bigger_gradient_bottom">
+	<div class="label">Select eye(s):</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
+		array('separator' => ' &nbsp; ')); ?>
+	</div>
+	<div class="cleartall"></div>
+	<div class="label">Add procedure:</div>
+	<div class="data"><?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
     'sourceUrl'=>array('procedure/autocomplete'),
@@ -41,12 +60,13 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		}",
     ),
     'htmlOptions'=>array(
-        'style'=>'height:20px;width:200px;'
+        'style'=>'height:20px;width:200px;',
+		'class'=>'gradient'
     ),
 ));
 ?>
-</div>
-<div>
+	</div>
+	<div class="cleartall"></div>
 	<div>
 		<table id="procedure_list" class="grid"<?php 
 	if ($model->isNewRecord) { ?> style="display:none;"<?php 
@@ -85,7 +105,6 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tfoot>
 		</table>
 	</div>
-</div>
 <?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
     'panels'=>array(
@@ -102,28 +121,27 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'collapsible'=>true,
     ),
 )); ?>
-<div class="row">
-	<label for="ElementOperation_value">Consultant required?</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'consultant_required', 
-		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?>
+	<div class="cleartall"></div>
+	<div class="label">Consultant required?</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'consultant_required', 
+		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Anaesthetic type:</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type', 
+		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Overnight Stay required?</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
+		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Add comments:</div>
+	<div class="data"><?php echo CHtml::activeTextArea($model, 'comments'); ?></div>
 </div>
-<div class="row">
-	<label for="ElementOperation_value">Anaesthetic type:</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type', 
-		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Overnight Stay required?</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
-		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Add comments:</label><br />
-	<?php echo CHtml::activeTextArea($model, 'comments', 
-		array('rows' => 6, 'cols' => 60)); ?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Schedule Operation:</label><br />
+
+<div class="box_grey_big_gradient_top"></div>
+<div class="box_grey_big_gradient_bottom">
+	<div class="label">Schedule Operation:</div>
+	<div class="data">
 	<?php 
 	$timeframe1 = $model->schedule_timeframe == ElementOperation::SCHEDULE_IMMEDIATELY ? 0 : 1;
 	if ($model->schedule_timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
@@ -136,7 +154,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	echo CHtml::radioButtonList('schedule_timeframe1', $timeframe1,
 		$model->getScheduleOptions(), array('separator' => '<br />'));
 	echo CHtml::dropDownList('schedule_timeframe2', $timeframe2, 
-			$model->getScheduleDelayOptions(), $options); ?>
+			$model->getScheduleDelayOptions(), $options); ?></div>
 </div>
 <script type="text/javascript">
 	$(function() {

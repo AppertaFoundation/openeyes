@@ -21,14 +21,18 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' . $elementClassName . '/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
+			'patient' => $patient)
 	);
-}
-
-if (EyeDrawService::getActive()) {
-	echo CHtml::submitButton('Update event', array('onClick' => 'eyedraw_submit();'));
-} else {
-	echo CHtml::submitButton('Update event');
+} ?>
+<div class="cleartall"></div>
+<?php
+if (EyeDrawService::getActive()) { ?>
+<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;" onClick="javascript: eyedraw_submit();"><span>Update</span></button>
+<?php
+} else { ?>
+<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;"><span>Update</span></button>
+<?php
 }
 
 $this->endWidget();

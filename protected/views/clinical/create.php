@@ -24,14 +24,19 @@ foreach ($elements as $element) {
 			$elementClassName .
 			'/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
+			'patient' => $patient)
 	);
 
-}
-if (EyeDrawService::getActive()) {
-	echo CHtml::submitButton('Create event', array('onClick' => 'eyedraw_submit();'));
-} else {
-	echo CHtml::submitButton('Create event');
+} ?>
+<div class="cleartall"></div>
+<?php
+if (EyeDrawService::getActive()) { ?>
+<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;" onClick="javascript: eyedraw_submit();"><span>Create</span></button>
+<?php
+} else { ?>
+<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;"><span>Create</span></button>
+<?php
 }
 
 $this->endWidget();

@@ -103,6 +103,8 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
+		
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -131,7 +133,8 @@ class ClinicalController extends BaseController
 		$this->renderPartial('create', array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
-				'specialties' => $specialties
+				'specialties' => $specialties,
+				'patient' => $patient
 			), false, true
 		);
 	}
@@ -165,6 +168,8 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
+		
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'update') {
 			// The user has submitted the form to update the event
@@ -191,7 +196,8 @@ class ClinicalController extends BaseController
 		$this->renderPartial('update', array(
 				'id' => $id,
 				'elements' => $elements,
-				'specialties' => $specialties
+				'specialties' => $specialties,
+				'patient' => $patient
 			), false, true);
 	}
 
