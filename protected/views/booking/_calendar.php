@@ -13,7 +13,7 @@
 		echo CHtml::hiddenField('pmonth', $lastMonth);
 		echo '<span class="button">';
 		echo CHtml::submitButton('< Previous Month', 
-			array('id' => 'previous_month', 'class'=>'form_button', 'disabled' => ($today > $thisMonth)));
+			array('id' => 'previous_month', 'class'=>'form_button', 'disabled' => (date('Ym') >= date('Ym', $date))));
 		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
 			</div>

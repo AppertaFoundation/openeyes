@@ -116,7 +116,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 					if ($('#bookings').length > 0) {
 						$('#bookings').remove();
 					}
-					//$("#theatres").tabs();
+					$("#theatres").tabs();
 				}
 			});
 		});

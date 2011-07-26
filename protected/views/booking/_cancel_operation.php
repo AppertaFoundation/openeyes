@@ -13,8 +13,9 @@ echo CHtml::hiddenField('operation_id', $operation->id);
 echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
 echo CHtml::dropDownList('cancellation_reason', '', 
 	CancellationReason::getReasonsByListNumber(1)
-);
-echo CHtml::submitButton('Cancel operation');
+); ?>
+<div class="clear"></div>
+<button type="submit" value="submit" class="shinybutton highlighted" style="float: right;"><span>Cancel operation</span></button><?php
 echo CHtml::endForm(); ?>
 </div>
 </div>

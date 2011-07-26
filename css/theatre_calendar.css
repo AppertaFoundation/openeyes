@@ -20,7 +20,7 @@ h3 {
 #operation h1 {
 	background: url('/images/blue_title_bar_wide.png') top left no-repeat;
 	width: 825px;
-	height: 33px;
+	height: 17px;
 	top: 0px;
 	width: 100%;
 	padding: 8px;
@@ -254,7 +254,7 @@ input.form_button[type="submit"]:focus, input.form_button[type="button"]:focus{
 }
 
 #theatres div.ui-widget-content {
-	margin-left: -20px;
+/*	margin-left: -20px;*/
 }
 
 div.shinybutton {
@@ -351,7 +351,7 @@ button.shinybutton span {
 	}
 }
 
-#bookings form {
+#bookings form, #operation button {
 	float: right;
-	margin-right: 100px;
+	margin-right: 70px;
 }

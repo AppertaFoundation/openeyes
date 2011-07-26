@@ -234,6 +234,7 @@ ul.ui-tabs-nav * {
 
 .episode {
     position: relative;
+	margin-bottom: 10px;
 }
 
 .episode .title {
