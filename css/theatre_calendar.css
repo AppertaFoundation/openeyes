@@ -361,19 +361,8 @@ button span {
 button.shinybutton span {
 	min-width: 100px;
 }
- 
-@media screen and (-webkit-min-device-pixel-ratio:0) {
-	/* Safari and Google Chrome only - fix margins */
-	button span {
-		margin-top: -1px;
-	}
-}
 
 #bookings form, #operation button {
 	float: right;
 	margin-right: 40px;
-}
-
-#theatres ul.ui-widget-header {
-	margin-right: 0px !important;
 }

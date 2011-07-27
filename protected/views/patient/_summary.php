@@ -97,6 +97,11 @@
 	)); ?>
 </div>
 </div>
+<script type="text/javascript">
+	$('#view_all').live('click', function() {
+		$('#patient-tabs').tabs('select', 1);
+	});
+</script>
 <?php
 function filter_nulls($data) {
 	return $data !== null;

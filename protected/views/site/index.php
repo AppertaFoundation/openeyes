@@ -13,7 +13,7 @@ $this->layout = 'main'; ?>
 	)); ?>
 	<div class="title_bar"><?php
 	echo CHtml::label('Search by hospital number:', 'hospital_number');
-	echo CHtml::textField('hospital_number');
+	echo CHtml::textField('hospital_number', '', array('style'=>'width: 204px;'));
 	echo CHtml::submitButton('Find Patient'); ?></div><?php
 	
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(

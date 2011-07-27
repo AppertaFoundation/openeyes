@@ -87,8 +87,8 @@ if ($data->status == $data::STATUS_CANCELLED) { ?>
 	<br />
 </div>
 <?php
-if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking)) {
-	$this->renderPartial('/booking/_session',array('operation' => $data));
+if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking)) { ?>
+<div class="view"><?php $this->renderPartial('/booking/_session',array('operation' => $data));
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'panels'=>array(
 			'Clinic details'=>$this->renderPartial('/booking/_clinic',
@@ -105,6 +105,7 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 		),
 	));
 } ?>
+</div>
 <div class="buttonlist">
 <?php
 if ($data->status != ElementOperation::STATUS_CANCELLED) {

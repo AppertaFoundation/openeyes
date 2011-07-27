@@ -141,6 +141,7 @@ ul.ui-tabs-nav * {
     height: 33px;
     width: 153px;
     float: right;
+	cursor: pointer;
 }
 
 .data_label {

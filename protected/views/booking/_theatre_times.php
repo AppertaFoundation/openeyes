@@ -1,6 +1,5 @@
 <div id="theatres">
 <strong>Select a session time:</strong>
-<ul>
 <?php
 $tabs = array();
 foreach ($theatres as $name => $sessions) {

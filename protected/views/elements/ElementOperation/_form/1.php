@@ -26,7 +26,7 @@
 	</div>
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
-	<div class="data"><?php
+	<div class="data"><span></span><?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
     'sourceUrl'=>array('procedure/autocomplete'),
@@ -59,13 +59,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			});
 		}",
     ),
-    'htmlOptions'=>array(
-        'style'=>'height:20px;width:200px;',
-		'class'=>'gradient'
-    ),
-));
-?>
-	</div>
+)); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
 	<div class="cleartall"></div>
 	<div>
 		<table id="procedure_list" class="grid"<?php 
@@ -100,7 +94,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				</tr>
 				<tr>
 					<td>Your Estimated Total:</td>
-					<td><?php echo CHtml::activeTextField($model, 'total_duration'); ?></td>
+					<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
 				</tr>
 			</tfoot>
 		</table>
@@ -133,6 +127,19 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	<div class="label">Overnight Stay required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
 		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Decision Date:</div>
+	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+			'name'=>'decisionDate',
+			'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
+			'theme'=>'theme',
+			// additional javascript options for the date picker plugin
+			'options'=>array(
+				'showAnim'=>'fold',
+				'dateFormat'=>'yy-mm-dd',
+			),
+			'htmlOptions'=>array('style'=>'width: 110px;')
+		)); ?></div>
 	<div class="cleartall"></div>
 	<div class="label">Add comments:</div>
 	<div class="data"><?php echo CHtml::activeTextArea($model, 'comments'); ?></div>

@@ -7,6 +7,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
 $form = $this->beginWidget('CActiveForm', array(
     'id'=>'clinical-create',
     'enableAjaxValidation'=>false,
+	'htmlOptions' => array('class'=>'sliding')
 ));
 
 echo CHtml::hiddenField('action', 'create');

@@ -359,8 +359,8 @@ h3.element_letterout {
 }
 
 #login input {
-    background: transparent url('/images/input_gradient.png') no-repeat top left;
-    width: 204px;
+    background: transparent url('/images/input_gradient_150.png') no-repeat top left;
+    width: 150px;
     height: 24px;
     border: 0;
     padding-left: 0.5em;
@@ -452,8 +452,8 @@ h3.element_letterout {
 }
 
 #patient-search input[type=text] {
-    background: url('/images/input_gradient.png') no-repeat top left;
-    width: 204px;
+    background: url('/images/input_gradient_150.png') no-repeat top left;
+    width: 150px;
     height: 24px;
     border: 0;
     padding-left: 0.5em;
@@ -593,7 +593,7 @@ a.shinybutton {
 	height: 33px; /* Height of button background height */
 	padding-left: 10px; /* Width of left menu image */
 	text-decoration: none;
-	margin: 0;
+	margin: 0 0 0 10px;
 }
 
 a:link.shinybutton, a:visited.shinybutton, a:active.shinybutton {
@@ -644,4 +644,56 @@ button.shinybutton.highlighted {
 
 button.shinybutton.highlighted span {
 	background: transparent url('/images/button_blue_highlight_right.png') no-repeat top right;
+}
+
+form.sliding input[type="text"], form.sliding input[type="password"] {
+	background: transparent url('/images/input_gradient.png') no-repeat top right;
+	float:left;
+	font-size: 12pt;
+	width: 150px;
+	height:24px;
+	padding-top:3px;
+	padding-right:5px;
+	border: 0;
+	outline:0;
+	margin: 0;
+}
+
+form.sliding div.data span, form.sliding td span, form.sliding div.row span {
+	background: transparent url('/images/input_gradient.png') no-repeat top left;
+	float:left;
+	height: 24px;
+	width: 5px;
+	margin: 0;
+}
+
+.tooltip {
+	margin-left: 10px !important;
+	background: transparent !important;
+	position: relative;
+	text-decoration: none;
+}
+
+.tooltip a {
+	text-decoration: none;
+}
+
+.tooltip a span {
+	background: transparent;
+	display: none;
+}
+
+.tooltip a:hover span {
+	display: block;
+	position: absolute;
+	width: 203px;
+	background: transparent url('/images/tooltip_background.png') top left no-repeat;
+	height: 85px;
+	left: 40px;
+	top: -40px;
+	color: #333;
+	font-size: 8pt;
+	padding: 15px;
+	padding-left: 45px;
+	text-decoration: none;
 }
