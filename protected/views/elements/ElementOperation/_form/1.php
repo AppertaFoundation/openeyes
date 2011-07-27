@@ -166,7 +166,6 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 <script type="text/javascript">
 	$(function() {
 		$("#procedure_list tbody").sortable({
-			 cursor: 'move',
 			 helper: function(e, tr)
 			 {
 				 var $originals = tr.children();

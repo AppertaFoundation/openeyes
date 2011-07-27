@@ -337,6 +337,10 @@ div.view {
 	border-color: #3293c6;
 }
 
+#procedure_list tbody {
+	cursor: move;
+}
+
 .buttonlist {
 	float: right;
 }
