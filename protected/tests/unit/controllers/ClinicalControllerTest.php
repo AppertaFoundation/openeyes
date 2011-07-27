@@ -156,6 +156,8 @@ class ClinicalControllerTest extends CDbTestCase
 		$patientId = 1;
 		$eventTypeId = 1;
 		$_GET['event_type_id'] = $eventTypeId;
+		
+		$patient = $this->patients('patient1');
 
 		$event = $this->events('event1');
 		$eventType = $this->eventTypes('eventType1');
@@ -187,7 +189,8 @@ class ClinicalControllerTest extends CDbTestCase
 			->with('create', array(
 				'elements' => $expectedElements,
 				'eventTypeId' => $eventTypeId,
-				'specialties' => $specialties
+				'specialties' => $specialties,
+				'patient' => $patient
 			), false, true);
 
 		$mockController->expects($this->once())
@@ -219,7 +222,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => $patientId));
+			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1));
 
 		$mockController->expects($this->any())
 			->method('getUserId')
@@ -267,7 +270,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$expectedElements = array($elementHistory, $elementPOH);
 
 		$specialties = Specialty::model()->findAll();
-
+		
 		$mockController = $this->getMock('ClinicalController', array('renderPartial', 'getUserId'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService',
@@ -285,7 +288,7 @@ class ClinicalControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('update',
 				array('id' => $event->id, 'elements' => $expectedElements,
-					'specialties' => $specialties), false, true);
+					'specialties' => $specialties, 'patient' => null), false, true);
 
 		$mockController->expects($this->once())
 			->method('getUserId')
@@ -315,7 +318,7 @@ class ClinicalControllerTest extends CDbTestCase
 			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => null)); // Id is from $controller->patientId, but it's not stored in the mock
+			->with(array('patient/view', 'id' => null, 'tabId' => 1)); // Id is from $controller->patientId, but it's not stored in the mock
 
 		$mockController->expects($this->once())
 			->method('getUserId')
