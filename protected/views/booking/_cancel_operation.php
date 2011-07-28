@@ -15,7 +15,7 @@ echo CHtml::dropDownList('cancellation_reason', '',
 	CancellationReason::getReasonsByListNumber(1)
 ); ?>
 <div class="buttonwrapper">
-<button type="submit" value="submit" class="shinybutton highlighted" style="margin-right: 70px;"><span>Cancel operation</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel operation</span></button>
 </div><?php
 echo CHtml::endForm(); ?>
 </div>

@@ -262,7 +262,7 @@ div.search-form
 }
 
 /* eyedraw */
-
+/*
 canvas {
     border: 1px solid black;
 }
@@ -297,7 +297,7 @@ button img {
     border: none;
     width: 32px;
     height: 32px;
-}
+}*/
 
 
 /* element_letterout */
@@ -617,22 +617,31 @@ a.shinybutton.highlighted span {
 }
 
 button.shinybutton {
+	position: relative;
 	background: transparent url('/images/button_blue_left.png') no-repeat top left;
 	display: block;
-	float: left;
 	font: normal 10pt Arial;
 	line-height: 21px; /* This value + (top and bottom padding of SPAN) must equal height of button background */
 	height: 33px; /* Height of button background height */
-	padding-left: 10px; /* Width of left menu image */
+	padding: 0 0 0 10px; /* Width of left menu image */
 	text-decoration: none;
-	margin: 0;
+	margin: 0 0 0 10px;
+	border: 0;
 	color: #164674;
+	cursor: pointer;
+	overflow: visible; /* removes extra side padding in IE */
+	float: right;
+}
+
+button.shinybutton:hover {
+	border: 0;
 }
 
 button.shinybutton span {
 	position: relative;
+	display: block; 
+	white-space: nowrap;
 	background: transparent url('/images/button_blue_right.png') no-repeat top right;
-	display: block;
 	padding: 6px 10px 6px 0;
 	font-weight: bold;
 	font-family: Arial;

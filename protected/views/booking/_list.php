@@ -72,7 +72,7 @@ if (!empty($reschedule)) {
 <div class="buttonwrapper">
 <button type="submit" value="submit" class="shinybutton highlighted"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
-<button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="float: right; margin-right: 80px;"><span>Cancel operation</span></button>
+<button type="submit" value="submit" class="shinybutton" id="cancel_operation"><span>Cancel operation</span></button>
 </div>
 </div>
 <script type="text/javascript">

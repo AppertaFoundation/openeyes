@@ -33,10 +33,10 @@ foreach ($elements as $element) {
 <div class="cleartall"></div>
 <?php
 if (EyeDrawService::getActive()) { ?>
-<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;" onClick="javascript: eyedraw_submit();"><span>Create</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted" onClick="javascript: eyedraw_submit();"><span>Create</span></button>
 <?php
 } else { ?>
-<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;"><span>Create</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Create</span></button>
 <?php
 }
 

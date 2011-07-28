@@ -256,10 +256,6 @@ input.form_button[type="submit"]:focus, input.form_button[type="button"]:focus{
 	position: relative;
 }
 
-#theatres div.ui-widget-content {
-/*	margin-left: -20px;*/
-}
-
 div.shinybutton {
 	background: transparent url('/images/button_blue_big_left.png') no-repeat top left;
 	display: block;
@@ -339,33 +335,10 @@ div.shinybutton .session_id {
 	border: 1px solid #999 !important;
 }
 
-button { 
-	position: relative;
-	border: 0; 
-	padding: 0;
-	cursor: pointer;
-	overflow: visible; /* removes extra side padding in IE */
-}
-
-button:hover {
-	border: 0;
-}
- 
-button::-moz-focus-inner {
-	border: none;  /* overrides extra padding in Firefox */
-}
- 
-button span { 
-	position: relative;
-	display: block; 
-	white-space: nowrap;	
-}
-
 button.shinybutton span {
 	min-width: 100px;
 }
 
 #bookings form, #operation button {
 	float: right;
-	margin-right: 40px;
 }

@@ -31,7 +31,7 @@ echo CHtml::dropDownList('cancellation_reason', '',
 	CancellationReason::getReasonsByListNumber($listIndex)
 ); ?>
 <div class="clear"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" style="float: right; margin-right: 70px;"><span>Cancel booking</span></button><?php
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel booking</span></button><?php
 echo CHtml::endForm(); ?>
 </div>
 </div>
