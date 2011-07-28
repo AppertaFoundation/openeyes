@@ -33,6 +33,7 @@
 		<table>
 			<tbody>
 <?php
+	$rttDate = strtotime('+11 weeks', strtotime($operation->event->datetime));
 	foreach ($sessions as $weekday => $list) { ?>
 				<tr>
 					<th><?php echo substr($weekday, 0, 3); ?></th>
@@ -40,6 +41,8 @@
 			// check if date is outside this month
 			if (date('m', strtotime($date)) !== date('m', strtotime($thisMonth))) {
 				$list[$date]['status'] = 'invalid';
+			} elseif (date('Y-m-d', strtotime($date)) >= date('Y-m-d', $rttDate)) {
+				$list[$date]['status'] .= ' outside_rtt';
 			} ?>
 					<td class="<?php echo $list[$date]['status'];
 			if (!empty($operation->booking) && 

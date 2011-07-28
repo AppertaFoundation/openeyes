@@ -47,6 +47,9 @@ h3 {
 .invalid {
 	background: #DDDDDD;
 }
+.outside_rtt {
+	font-weight: bold;
+}
 #key {
 	font-style: normal;
 	float: right;
