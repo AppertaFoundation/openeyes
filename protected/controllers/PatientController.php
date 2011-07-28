@@ -167,7 +167,7 @@ class PatientController extends BaseController
 		
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList));
+				'eventTypeGroups'=>$typeList), false, true);
 	}
 	
 	public function actionContacts()
