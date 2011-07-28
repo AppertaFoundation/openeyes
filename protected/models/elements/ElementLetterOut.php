@@ -37,10 +37,10 @@ class ElementLetterOut extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('value, event_id, from_address, date, dear, re, to_address, cc', 'safe'),
+			array('value, event_id, from_address, date, dear, re, to_address', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, from_address, date, dear, re, value, to_address, cc', 'safe', 'on'=>'search'),
+			array('id, event_id, from_address, date, dear, re, value, to_address', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,7 +65,7 @@ class ElementLetterOut extends BaseElement
 			'event_id' => 'Event',
 			'from_address' => 'From',
 			'date' => 'Date',
-			'dear' => 'Dear',
+			'dear' => 'Dear...',
 			're' => 'RE',
 			'value' => 'Text',
 			'to_address' => 'To'

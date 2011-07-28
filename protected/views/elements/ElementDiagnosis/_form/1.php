@@ -89,15 +89,6 @@ function enableElements() {
 		$('#' + elements[i]).removeAttr("disabled");
 	}
 
-	// This decides whether to disable an element in the 'element_operation' view
-	var select = $('input[name=schedule_timeframe1]:checked').val();
-			
-	if (select == 1) {
-		$('select[name=schedule_timeframe2]').attr('disabled', false);
-	} else {
-		$('select[name=schedule_timeframe2]').attr('disabled', true);
-	}
-
 	$('input[name=yt1]').removeAttr('disabled');
 }
 
