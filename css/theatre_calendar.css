@@ -338,7 +338,3 @@ div.shinybutton .session_id {
 button.shinybutton span {
 	min-width: 100px;
 }
-
-#bookings form, #operation button {
-	float: right;
-}
