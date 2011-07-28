@@ -143,7 +143,7 @@ class PatientController extends BaseController
 			'criteria'=>$criteria));
 		
 		$this->renderPartial('_summary', 
-			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider), false, true);
+			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
 	}
 	
 	public function actionEpisodes()
@@ -167,19 +167,19 @@ class PatientController extends BaseController
 		
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList), false, true);
+				'eventTypeGroups'=>$typeList));
 	}
 	
 	public function actionContacts()
 	{
 		$patient = $this->loadModel($_GET['id']);
-		$this->renderPartial('_contacts', array('model'=>$patient), false, true);
+		$this->renderPartial('_contacts', array('model'=>$patient));
 	}
 	
 	public function actionCorrespondence()
 	{
 		$patient = $this->loadModel($_GET['id']);
-		$this->renderPartial('_correspondence', array('model'=>$patient), false, true);
+		$this->renderPartial('_correspondence', array('model'=>$patient));
 	}
 
 	/**

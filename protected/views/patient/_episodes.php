@@ -14,7 +14,7 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 		<li><img src="/images/icon_<?php echo $type->name; ?>.png" alt="<?php 
 		echo $name; ?>" /><?php
 		echo CHtml::link($name, array('clinical/create', 'event_type_id'=>$type->id), 
-			array('class'=>'fancybox2', 'encode'=>false)); ?></li>
+			array('class'=>'fancybox', 'encode'=>false)); ?></li>
 <?php
 		}
 	} ?>
@@ -46,20 +46,12 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
 	});
-	var destroyFancybox = function() {
-		$('#fancybox-tmp').remove();
-		$('#fancybox-loading').remove();
-		$('#fancybox-overlay').remove();
-		$('#fancybox-wrap').remove();
-	}
-	destroyFancybox();
 	$('ul.events li a').live('click', function() {
 		$('ul.events li.shown').removeClass('shown');
 		$(this).parent().addClass('shown');
 		$.ajax({
 			url: $(this).attr('href'),
 			success: function(data) {
-				destroyFancybox();
 				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
@@ -74,22 +66,19 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 			type: 'GET',
 			data: {'id': id},
 			success: function(data) {
-				destroyFancybox();
 				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
 		});
 		return false;
 	});
-	
 </script>
 <?php
 $this->widget('application.extensions.fancybox.EFancyBox', array(
-	'target'=>'a.fancybox2',
+	'target'=>'a.fancybox',
 	'config'=>array(
 		'onStart'=>"js:function() { $('ul.events li.shown').removeClass('shown'); }",
 	)
 	)
 );
-
 ?>
