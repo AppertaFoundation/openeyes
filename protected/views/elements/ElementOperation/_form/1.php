@@ -29,7 +29,33 @@
 	<div class="data"><span></span><?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
-    'sourceUrl'=>array('procedure/autocomplete'),
+	'source'=>"js:function(request, response) {
+		var existingProcedures = [];
+		$('#procedure_list tbody').children().each(function () {
+			var text = $(this).children('td:first').text();
+			existingProcedures.push(text.replace(/ remove$/i, ''));
+		});
+			
+		$.ajax({
+			'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
+			'type':'GET',
+			'data':{'term': request.term},
+			'success':function(data) {
+				data = $.parseJSON(data);
+		
+				var result = [];
+				
+				for (var i = 0; i < data.length; i++) {
+					var index = $.inArray(data[i], existingProcedures);
+					if (index == -1) {
+						result.push(data[i]);
+					}
+				}
+				
+				response(result);
+			}
+		});
+	}",
     'options'=>array(
         'minLength'=>'2',
 		'select'=>"js:function(event, ui) {
