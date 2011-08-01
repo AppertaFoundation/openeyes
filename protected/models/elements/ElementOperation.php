@@ -248,6 +248,31 @@ class ElementOperation extends BaseElement
 		return $text;
 	}
 
+	public function getAnaestheticAbbreviation() {
+		switch ($this->anaesthetic_type) {
+			case self::ANAESTHETIC_TOPICAL:
+				$text = 'TOP';
+				break;
+			case self::ANAESTHETIC_LOCAL:
+				$text = 'LOC';
+				break;
+			case self::ANAESTHETIC_LOCAL_WITH_COVER:
+				$text = 'LWC';
+				break;
+			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
+				$text = 'LWS';
+				break;
+			case self::ANAESTHETIC_GENERAL:
+				$text = 'GA';
+				break;
+			default:
+				$text = 'Unknown';
+				break;
+		}
+
+		return $text;
+	}
+
 	/**
 	 * Return list of options for schedule
 	 * @return array

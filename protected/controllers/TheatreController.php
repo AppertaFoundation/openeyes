@@ -31,24 +31,86 @@ class TheatreController extends BaseController
 	 */
 	public function actionIndex()
 	{
+		$operation = new ElementOperation;
+		
 		$theatres = array();
 		if (!empty($_POST)) {
-			$date = '2011-07-27';
+			switch($_POST['date-filter']) {
+				case 'custom':
+					$startDate = $_POST['date-start'];
+					$endDate = $_POST['date-end'];
+					break;
+				case 'month':
+					$startDate = date('Y-m-01');
+					$endDate = date('Y-m-t');
+					break;
+				case 'week':
+					$thisWeekday = date('N');
+					$addDays = $thisWeekday - 1; // 1 == Monday
+					$startDate = date('Y-m-d', strtotime("-{$addDays} days"));
+					$addDays = 7 - $thisWeekday; // 7 == Sunday
+					$endDate = date('Y-m-d', strtotime("+{$addDays} days"));
+					break;
+				case 'today':
+				default:
+					// show today
+					$startDate = date('Y-m-d');
+					$endDate = date('Y-m-d');
+					break;
+			}
+			var_dump($startDate, $endDate);
 			$service = new BookingService;
-			$data = $service->findTheatresAndSessions($date, $date);
+			$data = $service->findTheatresAndSessions($startDate, $endDate);
 			
 			foreach ($data as $values) {
 				$sessionTime = explode(':', $values['session_duration']);
 				$sessionDuration = ($sessionTime[0] * 60) + $sessionTime[1];
+				
+				$operation->eye = $values['eye'];
+				$operation->anaesthetic_type = $values['anaesthetic_type'];
+				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
+				
+				$procedures = Yii::app()->db->createCommand()
+					->select("GROUP_CONCAT(p.term SEPARATOR ', ')")
+					->from('procedure p')
+					->join('operation_procedure_assignment opa', 'opa.procedure_id = p.id')
+					->where('opa.operation_id = :id', 
+						array(':id'=>$values['operation_id']))
+					->group('opa.operation_id')
+					->order('opa.display_order ASC')
+					->queryRow();
 
 				$theatres[$values['name']][$values['date']][] = array(
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
 					'sessionId' => $values['session_id'],
 					'sessionDuration' => $sessionDuration,
-					'timeAvailable' => $sessionDuration - $values['bookings_duration'],
+					'operationDuration' => $values['operation_duration'],
+					'operationComments' => $values['comments'],
+					'timeAvailable' => $sessionDuration - 0,
+					'eye' => substr($operation->getEyeText(), 0, 1),
+					'anaesthetic' => $operation->getAnaestheticAbbreviation(),
+					'procedures' => $procedures,
+					'patientName' => $values['first_name'] . ' ' . $values['last_name'],
+					'patientAge' => $age,
+					'patientGender' => $values['gender'],
 					'displayOrder' => $values['display_order']
 				);
+				
+				if (empty($theatreTotals[$values['name']][$values['date']])) {
+					$theatreTotals[$values['name']][$values['date']] = $values['operation_duration'];
+				} else {
+					$theatreTotals[$values['name']][$values['date']] += $values['operation_duration'];
+				}
+			}
+			foreach ($theatres as $name => &$dates) {
+				foreach ($dates as $date => &$sessions) {
+					$totalBookings = $theatreTotals[$name][$date];
+					
+					foreach ($sessions as &$session) {
+						$session['timeAvailable'] = $session['sessionDuration'] - $totalBookings;
+					}
+				}
 			}
 		}
 		$this->render('index', array('theatres'=>$theatres));

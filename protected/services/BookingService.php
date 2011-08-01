@@ -139,15 +139,21 @@ class BookingService
 		$command = Yii::app()->db->createCommand()
 			->select('t.id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				SUM(o.total_duration) AS bookings_duration, 
+				o.eye, o.anaesthetic_type, o.comments, 
+				o.total_duration AS operation_duration, p.first_name, 
+				p.last_name, p.dob, p.gender, o.id AS operation_id, 
 				a.display_order')
 			->from('session s')
 			->join('sequence q', 's.sequence_id = q.id')
 			->join('theatre t', 't.id = q.theatre_id')
 			->join('booking a', 'a.session_id = s.id')
 			->join('element_operation o', 'o.id = a.element_operation_id')
+			->join('event e', 'e.id = o.event_id')
+			->join('episode ep', 'ep.id = e.episode_id')
+			->join('patient p', 'p.id = ep.patient_id')
 			->where("s.date BETWEEN :start AND :end", 
-				array(':start'=>$startDate, ':end'=>$endDate));
+				array(':start'=>$startDate, ':end'=>$endDate))
+			->order('t.name ASC, s.date ASC, a.display_order ASC');
 		
 		return $command->queryAll();
 	}

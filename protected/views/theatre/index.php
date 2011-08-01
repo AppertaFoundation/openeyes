@@ -43,8 +43,33 @@
 	<input type="radio" name="date-filter" value="week" /> This week
 	<input type="radio" name="date-filter" value="month" /> This month
 	<input type="radio" name="date-filter" value="custom" /> or from 
-	<input type="text" name="date-start" size="10" /> to 
-	<input type="text" name="date-end" size="10" />
+<?php
+$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+    'name'=>'date-start',
+    // additional javascript options for the date picker plugin
+    'options'=>array(
+        'showAnim'=>'fold',
+		'dateFormat'=>'yy-mm-dd',
+		'onClose'=>"js:function(dateText, inst) {
+			if (dateText != '') {
+				$('input[name=date-filter]
+			}
+		}"
+    ),
+	'htmlOptions'=>array('size'=>10),
+));
+?> to 
+<?php
+$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+    'name'=>'date-end',
+    // additional javascript options for the date picker plugin
+    'options'=>array(
+        'showAnim'=>'fold',
+		'dateFormat'=>'yy-mm-dd'
+    ),
+	'htmlOptions'=>array('size'=>10),
+));
+?>
 </div>
 <button type="submit" value="submit" class="shinybutton highlighted">Search</button>
 <?php $this->endWidget();
@@ -70,8 +95,8 @@ if (!empty($theatres)) {
 		echo ">{$session['timeAvailable']}"; ?>min</span></th>
 </tr>
 <tr>
-	<th>Patient</th>
-	<th>Operation</th>
+	<th>Patient (Age)</th>
+	<th>[Eye] Operation</th>
 	<th>Duration</th>
 	<th>Ward</th>
 	<th>Anaesthetic</th>
@@ -81,12 +106,12 @@ if (!empty($theatres)) {
 					$sessionHeader = true;
 				} ?>
 <tr>
-	<td>Name (Age)</td>
-	<td>Procedure List</td>
-	<td>Time</td>
+	<td><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+	<td>[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
+	<td><?php echo $session['operationDuration']; ?></td>
 	<td>Ward</td>
-	<td>Anaesthesia</td>
-	<td>Comments / Gender</td>
+	<td><?php echo $session['anaesthetic']; ?></td>
+	<td><?php echo $session['operationComments']; ?> / <?php echo $session['patientGender']; ?></td>
 </tr>
 <?php
 			}
