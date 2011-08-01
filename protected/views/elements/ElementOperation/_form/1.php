@@ -27,6 +27,8 @@
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
 	<div class="data"><span></span><?php
+	YII::app()->clientScript->scriptMap['jquery.js'] = false;
+
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
 	'source'=>"js:function(request, response) {
@@ -125,6 +127,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tfoot>
 		</table>
 	</div>
+	
 <?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
     'panels'=>array(
@@ -139,6 +142,8 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'active'=>false,
         'animated'=>'bounceslide',
 		'collapsible'=>true,
+		'autoHeight'=>false,
+		'clearStyle'=>true
     ),
 )); ?>
 	<div class="cleartall"></div>

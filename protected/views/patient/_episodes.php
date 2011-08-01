@@ -1,5 +1,4 @@
-<?php
-Yii::app()->clientScript->registerCoreScript('jquery'); ?>
+
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
 <h3>All Episodes</h3>
@@ -36,13 +35,6 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 </div>
 </div>
 <script type="text/javascript">
-    var destroyFancybox = function() {
-        $('#fancybox-tmp').remove();
-        $('#fancybox-loading').remove();
-        $('#fancybox-overlay').remove();
-        $('#fancybox-wrap').remove();
-    }
-    destroyFancybox();
 	
 	$('#add_episode').hover(
 		function() {
@@ -60,7 +52,6 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 		$.ajax({
 			url: $(this).attr('href'),
 			success: function(data) {
-			    destroyFancybox();
 				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
@@ -75,20 +66,11 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 			type: 'GET',
 			data: {'id': id},
 			success: function(data) {
-			    destroyFancybox();
 				$('#episodes_details').show();
 				$('#episodes_details').html(data);
 			}
 		});
 		return false;
 	});
+	$('a.fancybox2').fancybox({'onStart':function() { $('ul.events li.shown').removeClass('shown'); }});
 </script>
-<?php
-$this->widget('application.extensions.fancybox.EFancyBox', array(
-	'target'=>'a.fancybox2',
-	'config'=>array(
-		'onStart'=>"js:function() { $('ul.events li.shown').removeClass('shown'); }",
-	)
-	)
-);
-?>

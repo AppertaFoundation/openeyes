@@ -1,5 +1,4 @@
 <?php
-Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 if ($data->status != $data::STATUS_CANCELLED) {
 	echo CHtml::link('<span>Edit Operation</span>',
@@ -162,9 +161,8 @@ if ($data->status != ElementOperation::STATUS_CANCELLED) {
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 }
-$this->widget('application.extensions.fancybox.EFancyBox', array(
-	'target'=>'a.fancybox',
-	'config'=>array()
-	)
-);
 ?>
+
+<script type="text/javascript">
+	$('a.fancybox').fancybox([]);
+</script>
