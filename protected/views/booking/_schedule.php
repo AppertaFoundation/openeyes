@@ -1,5 +1,4 @@
 <?php
-Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">

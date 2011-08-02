@@ -4,6 +4,11 @@ $this->breadcrumbs=array(
 	"{$patientName} ({$model->hos_num})",
 );
 Yii::app()->clientScript->registerCssFile('/css/patient.css', 'screen, projection');
+$this->widget('application.extensions.fancybox.EFancyBox', array(
+	'target'=>'a.fancybox',
+	'config'=>array()
+	));
+
 ?>
 <div id="patientHeader">
 	<strong>Patient:</strong> <?php echo $patientName;
