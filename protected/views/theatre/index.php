@@ -1,3 +1,6 @@
+<?php
+Yii::app()->clientScript->registerCSSFile('/css/theatre.css', 'all');
+$this->layout = 'main'; ?>
 <h3>Theatre Schedule</h3>
 <?php $form=$this->beginWidget('CActiveForm', array(
     'id'=>'theatre-filter',
@@ -117,7 +120,7 @@ if (!empty($theatres)) {
 	foreach ($theatres as $name => $dates) {?>
 <h3><?php echo $name; ?></h3>
 <?php	foreach ($dates as $date => $sessions) { ?>
-<table style="border: 1px solid #000; margin: 0; padding: 0;" width="100%">
+<table class="theatreList">
 <tr>
 	<th colspan="6"><?php echo $date; ?></th>
 </tr>
@@ -151,12 +154,38 @@ if (!empty($theatres)) {
 	<td><?php echo $session['operationDuration']; ?></td>
 	<td>Ward</td>
 	<td><?php echo $session['anaesthetic']; ?></td>
-	<td><?php echo $session['operationComments']; ?> / <?php echo $session['patientGender']; ?></td>
+	<td><div class="alert gender invisible <?php echo $session['patientGender']; ?>"></div><?php
+		if (!empty($session['operationComments'])) { ?><div class="alert comments invisble"><img class="invisible" src="/images/icon_comments.gif" alt="comments" title="<?php echo $session['operationComments']; ?>" /></div><?php
+		} ?></td>
 </tr>
 <?php
 			}
 		} ?>
 </table>
 <?php
-	}
+	} ?>
+<div id="alertOptions">
+	<input type="checkbox" name="theatre_alerts" value="comments" /> Comments<br />
+	<input type="checkbox" name="theatre_alerts" value="gender" /> Gender
+</div>
+<div class="clear"></div>
+<script type="text/javascript">
+	$('input[name=theatre_alerts][value=comments]').click(function() {
+		if ($(this).is(':checked')) {
+			$('.comments').removeClass('invisible');
+			$('.comments img').removeClass('invisible');
+		} else {
+			$('.comments').addClass('invisible');
+			$('.comments img').addClass('invisible');
+		}
+	});
+	$('input[name=theatre_alerts][value=gender]').click(function() {
+		if ($(this).is(':checked')) {
+			$('.gender').removeClass('invisible');
+		} else {
+			$('.gender').addClass('invisible');
+		}
+	});
+</script>
+<?php
 }

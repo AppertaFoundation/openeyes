@@ -1,0 +1,45 @@
+.invisible {
+	visibility: hidden;
+}
+
+#alertOptions {
+	margin-left: 720px;
+	width: 100px;
+	border: 1px solid #000;
+}
+
+.theatreList {
+	float: left;
+	border: 1px solid #000;
+	margin: 0;
+	padding: 0;
+	width: 700px;
+}
+
+.alert {
+	float: right;
+}
+
+.gender {
+	width: 15px;
+	height: 19px;
+	min-width: 15px;
+	min-height: 19px;
+	margin-left: 5px;
+}
+
+.M {
+	background: url('/images/icon_male.png') top left no-repeat;
+}
+
+.F {
+	background: url('/images/icon_female.png') top left no-repeat;
+}
+
+.comments {
+	width: 10px;
+	height: 10px;
+	min-width: 10px;
+	min-height: 10px;
+	margin-left: 5px;
+}
