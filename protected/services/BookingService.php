@@ -135,7 +135,31 @@ class BookingService
 	 */
 	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $serviceId = null, $firmId = null)
 	{
-		// @todo: add in filter for site, theatre, service, and firm
+		if (empty($startDate) || empty($endDate) || 
+			(strtotime($endDate) < strtotime($startDate))) {
+			throw new Exception('Invalid start and end dates.');
+		}
+		
+		$whereSql = 's.date BETWEEN :start AND :end';
+		$whereParams = array(':start' => $startDate, ':end' => $endDate);
+		
+		if (!empty($siteId)) {
+			$whereSql .= ' AND t.site_id = :siteId';
+			$whereParams[':siteId'] = $siteId;
+		}
+		if (!empty($theatreId)) {
+			$whereSql .= ' AND t.id = :theatreId';
+			$whereParams[':theatreId'] = $theatreId;
+		}
+		if (!empty($serviceId)) {
+			$whereSql .= ' AND ser.id = :serviceId';
+			$whereParams[':serviceId'] = $serviceId;
+		}
+		if (!empty($firmId)) {
+			$whereSql .= ' AND f.id = :firmId';
+			$whereParams[':firmId'] = $firmId;
+		}
+		
 		$command = Yii::app()->db->createCommand()
 			->select('t.id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
@@ -151,8 +175,11 @@ class BookingService
 			->join('event e', 'e.id = o.event_id')
 			->join('episode ep', 'ep.id = e.episode_id')
 			->join('patient p', 'p.id = ep.patient_id')
-			->where("s.date BETWEEN :start AND :end", 
-				array(':start'=>$startDate, ':end'=>$endDate))
+			->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
+			->join('firm f', 'f.id = sfa.firm_id')
+			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
+			->join('service ser', 'ser.id = ssa.service_id')
+			->where($whereSql, $whereParams)
 			->order('t.name ASC, s.date ASC, a.display_order ASC');
 		
 		return $command->queryAll();

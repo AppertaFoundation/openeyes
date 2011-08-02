@@ -33,9 +33,31 @@ class TheatreController extends BaseController
 	{
 		$operation = new ElementOperation;
 		
-		$theatres = array();
+		$theatres = $theatreList = $firmList = array();
+		$siteId = $serviceId = $firmId = $theatreId = $filter = null;
 		if (!empty($_POST)) {
-			switch($_POST['date-filter']) {
+			$siteId = !empty($_POST['site-id']) ? $_POST['site-id'] : null;
+			$serviceId = !empty($_POST['service-id']) ? $_POST['service-id'] : null;
+			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
+			$theatreId = !empty($_POST['theatre-id']) ? $_POST['theatre-id'] : null;
+			
+			if (!empty($siteId)) {
+				$theatreList = $this->getFilteredTheatres($siteId);
+			} else {
+				$theatreList = array();
+			}
+			
+			if (!empty($serviceId)) {
+				$firmList = $this->getFilteredFirms($serviceId);
+			} else {
+				$firmList = array();
+			}
+			
+			if (!empty($_POST['date-start']) && !empty($_POST['date-end'])) {
+				$_POST['date-filter'] = 'custom';
+			}
+			$filter = !empty($_POST['date-filter']) ? $_POST['date-filter'] : null;
+			switch($filter) {
 				case 'custom':
 					$startDate = $_POST['date-start'];
 					$endDate = $_POST['date-end'];
@@ -58,9 +80,8 @@ class TheatreController extends BaseController
 					$endDate = date('Y-m-d');
 					break;
 			}
-			var_dump($startDate, $endDate);
 			$service = new BookingService;
-			$data = $service->findTheatresAndSessions($startDate, $endDate);
+			$data = $service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $serviceId, $firmId);
 			
 			foreach ($data as $values) {
 				$sessionTime = explode(':', $values['session_duration']);
@@ -71,7 +92,7 @@ class TheatreController extends BaseController
 				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
 				
 				$procedures = Yii::app()->db->createCommand()
-					->select("GROUP_CONCAT(p.term SEPARATOR ', ')")
+					->select("GROUP_CONCAT(p.term SEPARATOR ', ') AS List")
 					->from('procedure p')
 					->join('operation_procedure_assignment opa', 'opa.procedure_id = p.id')
 					->where('opa.operation_id = :id', 
@@ -113,7 +134,18 @@ class TheatreController extends BaseController
 				}
 			}
 		}
-		$this->render('index', array('theatres'=>$theatres));
+		$this->render('index', array(
+			'theatres'=>$theatres,
+			'siteId' => $siteId,
+			'serviceId' => $serviceId,
+			'firmId' => $firmId,
+			'theatreId' => $theatreId,
+			'dateFilter' => $filter,
+			'theatreList' => $theatreList,
+			'firmList' => $firmList,
+			'dateStart' => ($filter == 'custom') ? $startDate : null,
+			'dateEnd' => ($filter == 'custom') ? $endDate : null,
+		));
 	}
 	
 	/**
@@ -125,18 +157,11 @@ class TheatreController extends BaseController
 		echo CHtml::tag('option', array('value'=>''), 
 			CHtml::encode('All firms'), true);
 		if (!empty($_POST['service_id'])) {
-			$firms = Yii::app()->db->createCommand()
-				->select('f.id, f.name')
-				->from('firm f')
-				->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
-				->join('service s', 'ssa.service_id = s.id')
-				->where('ssa.service_id=:id', 
-					array(':id'=>$_POST['service_id']))
-				->queryAll();
+			$firms = $this->getFilteredFirms($_POST['service_id']);
 			
-			foreach ($firms as $values) {
-				echo CHtml::tag('option', array('value'=>$values['id']), 
-					CHtml::encode($values['name']), true);
+			foreach ($firms as $id => $name) {
+				echo CHtml::tag('option', array('value'=>$id), 
+					CHtml::encode($name), true);
 			}
 		}
 	}
@@ -150,17 +175,62 @@ class TheatreController extends BaseController
 		echo CHtml::tag('option', array('value'=>''), 
 			CHtml::encode('All theatres'), true);
 		if (!empty($_POST['site_id'])) {
-			$theatres = Yii::app()->db->createCommand()
-				->select('t.id, t.name')
-				->from('theatre t')
-				->where('t.site_id = :id', 
-					array(':id'=>$_POST['site_id']))
-				->queryAll();
+			$theatres = $this->getFilteredTheatres($_POST['site_id']);
 			
-			foreach ($theatres as $values) {
-				echo CHtml::tag('option', array('value'=>$values['id']), 
-					CHtml::encode($values['name']), true);
+			foreach ($theatres as $id => $name) {
+				echo CHtml::tag('option', array('value'=>$id), 
+					CHtml::encode($name), true);
 			}
 		}
+	}
+	
+	/**
+	 * Helper method to fetch firms by service ID
+	 * 
+	 * @param integer $serviceId
+	 * 
+	 * @return array 
+	 */
+	protected function getFilteredFirms($serviceId)
+	{
+		$data = Yii::app()->db->createCommand()
+			->select('f.id, f.name')
+			->from('firm f')
+			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
+			->join('service s', 'ssa.service_id = s.id')
+			->where('ssa.service_id=:id', 
+				array(':id'=>$serviceId))
+			->queryAll();
+		
+		$firms = array();
+		foreach ($data as $values) {
+			$firms[$values['id']] = $values['name'];
+		}
+		
+		return $firms;
+	}
+	
+	/**
+	 * Helper method to fetch theatres by site ID
+	 * 
+	 * @param integer $siteId
+	 * 
+	 * @return array 
+	 */
+	protected function getFilteredTheatres($siteId)
+	{
+		$data = Yii::app()->db->createCommand()
+			->select('t.id, t.name')
+			->from('theatre t')
+			->where('t.site_id = :id', 
+				array(':id'=>$siteId))
+			->queryAll();
+		
+		$theatres = array();
+		foreach ($data as $values) {
+			$theatres[$values['id']] = $values['name'];
+		}
+		
+		return $theatres;
 	}
 }

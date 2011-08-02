@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'servicespecialty1' => array(
+	'servicespecialtyassignment1' => array(
 		'service_id' => 1,
 		'specialty_id' => 1
 	),

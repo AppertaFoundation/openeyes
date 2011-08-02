@@ -8,6 +8,7 @@ return array(
 		'anaesthetist_required' => false,
 		'anaesthetic_type' => ElementOperation::ANAESTHETIC_TOPICAL,
 		'overnight_stay' => false,
+		'comments' => 'foo',
 	),
 	'element2' => array(
 		'event_id' => 2,
@@ -17,5 +18,6 @@ return array(
 		'anaesthetist_required' => false,
 		'anaesthetic_type' => ElementOperation::ANAESTHETIC_TOPICAL,
 		'overnight_stay' => false,
+		'comments' => 'bar',
 	)
 );
