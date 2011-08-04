@@ -152,7 +152,7 @@ if (!empty($theatres)) {
 	<td><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 	<td>[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
 	<td><?php echo $session['operationDuration']; ?></td>
-	<td>Ward</td>
+	<td><?php echo $session['ward']; ?></td>
 	<td><?php echo $session['anaesthetic']; ?></td>
 	<td><div class="alert gender invisible <?php echo $session['patientGender']; ?>"></div><?php
 		if (!empty($session['operationComments'])) { ?><div class="alert comments invisble"><img class="invisible" src="/images/icon_comments.gif" alt="comments" title="<?php echo $session['operationComments']; ?>" /></div><?php

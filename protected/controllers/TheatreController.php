@@ -115,6 +115,7 @@ class TheatreController extends BaseController
 					'patientName' => $values['first_name'] . ' ' . $values['last_name'],
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
+					'ward' => $values['ward'],
 					'displayOrder' => $values['display_order']
 				);
 				

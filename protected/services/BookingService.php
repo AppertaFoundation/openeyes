@@ -165,13 +165,13 @@ class BookingService
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
 				o.eye, o.anaesthetic_type, o.comments, 
 				o.total_duration AS operation_duration, p.first_name, 
-				p.last_name, p.dob, p.gender, o.id AS operation_id, 
-				a.display_order')
+				p.last_name, p.dob, p.gender, o.id AS operation_id, w.name AS ward,
+				b.display_order')
 			->from('session s')
 			->join('sequence q', 's.sequence_id = q.id')
 			->join('theatre t', 't.id = q.theatre_id')
-			->join('booking a', 'a.session_id = s.id')
-			->join('element_operation o', 'o.id = a.element_operation_id')
+			->join('booking b', 'b.session_id = s.id')
+			->join('element_operation o', 'o.id = b.element_operation_id')
 			->join('event e', 'e.id = o.event_id')
 			->join('episode ep', 'ep.id = e.episode_id')
 			->join('patient p', 'p.id = ep.patient_id')
@@ -179,8 +179,9 @@ class BookingService
 			->join('firm f', 'f.id = sfa.firm_id')
 			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
 			->join('service ser', 'ser.id = ssa.service_id')
+			->join('ward w', 'w.id = b.ward_id')
 			->where($whereSql, $whereParams)
-			->order('t.name ASC, s.date ASC, a.display_order ASC');
+			->order('t.name ASC, s.date ASC, b.display_order ASC');
 		
 		return $command->queryAll();
 	}
