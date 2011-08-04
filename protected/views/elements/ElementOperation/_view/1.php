@@ -10,7 +10,7 @@ if ($data->status == $data::STATUS_CANCELLED) { ?>
 <div class="flash-notice">
 <?php 
 	$cancellation = $data->cancellation;
-	// todo: move this to a nicer place
+	// todo: move this text generation to a nicer place
 	$text = "Operation Cancelled: By " . $cancellation->user->first_name . 
 		' ' . $cancellation->user->last_name . ' on ' . date('F j, Y', strtotime($cancellation->cancelled_date));
 	$text .= ' [' . $cancellation->cancelledReason->text . ']';	
@@ -113,20 +113,6 @@ if ($data->status != ElementOperation::STATUS_CANCELLED) {
 			array('booking/cancelOperation', 'operation'=>$data->id), array('class'=>'fancybox shinybutton', 'encode'=>false));
 		echo CHtml::link("<span>Schedule Now</span>",
 			array('booking/schedule', 'operation'=>$data->id), array('class'=>'fancybox shinybutton highlighted', 'encode'=>false));
-//	$confirmJs = "js:function() {
-//			$('#confirm').live('click', function() {
-//				var operation = $('input[id=operation]').val();
-//				var session = $('input[name=session_id]').val();
-//				$.post('" . Yii::app()->createUrl('booking/create') . "', {
-//					'Booking': {
-//						'element_operation_id': operation,
-//						'session_id': session
-//					}
-//				});
-//				//$.fancybox.close();
-//				//parent.$.fancybox.close();
-//			});
-//		}";
 	} else {
 		echo '<p/>';
 		echo CHtml::link('<span>Cancel Operation</span>',
@@ -135,34 +121,15 @@ if ($data->status != ElementOperation::STATUS_CANCELLED) {
 			array('booking/rescheduleLater', 'operation'=>$data->id), array('class'=>'fancybox shinybutton', 'encode'=>false));
 		echo CHtml::link('<span>Re-Schedule Now</span>',
 			array('booking/reschedule', 'operation'=>$data->id), array('class'=>'fancybox shinybutton highlighted', 'encode'=>false));
-		echo '<p/>';
-	
-//	$confirmJs = "js:function() {
-//			$('#confirm').live('click', function() {
-//				var booking = $('input[id=booking]').val();
-//				var operation = $('input[id=operation]').val();
-//				var session = $('input[name=session_id]').val();Ω
-//				$.post('" . Yii::app()->createUrl('booking/update') . "', {
-//					'Booking': {
-//						'id': booking,
-//						'element_operation_id': operation,
-//						'session_id': session
-//					},
-//					'cancellation_reason': $('select[name=cancellation_reason]').val()
-//				});
-//				//parent.$.fancybox.close(); 
-//			});
-//		}";
 	}
 }?>
 </div>
-<div class="clear"><p/></div>
+<div class="cleartall"></div>
 <?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 }
 ?>
-
 <script type="text/javascript">
 	$('a.fancybox').fancybox([]);
 </script>
