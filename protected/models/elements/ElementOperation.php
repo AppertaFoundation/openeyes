@@ -343,13 +343,13 @@ class ElementOperation extends BaseElement
 		parent::afterSave();
 
 		$operationId = $this->id;
-		// first wipe out any existing procedures so we start from scratch
-		OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
-			array(':id' => $operationId));
-
 		$order = 1;
 
 		if (!empty($_POST['Procedures'])) {
+			// first wipe out any existing procedures so we start from scratch
+			OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
+				array(':id' => $operationId));
+			
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
 				$procedure->operation_id = $operationId;
