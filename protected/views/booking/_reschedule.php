@@ -24,13 +24,6 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 <?php	echo $this->renderPartial('_calendar', 
 			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions), false, true); ?>
 		</div>
-		<div id="key"><span>KEY:</span>
-			<div id="available" class="container"><div class="color_box"></div><div class="label">Slots Available</div></div>
-			<div id="limited" class="container"><div class="color_box"></div><div class="label">Limited Slots</div></div>
-			<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>
-			<div id="closed" class="container"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
-			<div id="selected_date" class="container"><div class="color_box"></div><div class="label">Selected Date</div></div>
-		</div>
 		</div>
 	</div>
 </div>
@@ -98,11 +91,13 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				}
 			});
 		});
-		$('#theatres button').live('click', function() {
-			var session = $(this).children('.session_id').text();
+		$('#theatres div.shinybutton').live('click', function() {
+			var session = $(this).children().children('span.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
 			var day = $('.selected_date').text();
+			$(this).siblings().removeClass('highlighted');
+			$(this).addClass('highlighted');
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
 				'type': 'GET',

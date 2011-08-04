@@ -22,7 +22,7 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><img src="/images/logo.png" alt="OpenEyes Logo" /><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><img src="/images/logo_colour.png" alt="OpenEyes Logo" /></div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
@@ -40,11 +40,16 @@
 		)); ?>
 	</div><!-- mainmenu -->
 
-	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-		'links'=>$this->breadcrumbs,
-	)); ?><!-- breadcrumbs -->
+	<div id="outer_content">
+		<div id="content">
 
-	<?php echo $content; ?>
+		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
+			'links'=>$this->breadcrumbs,
+		)); ?><!-- breadcrumbs -->
+	
+		<?php echo $content; ?>
+		</div>
+	</div>
 
 	<div id="footer">
 		Copyright OpenEyes Foundation 2011<br/>

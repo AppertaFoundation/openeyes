@@ -9,7 +9,7 @@ return array(
 		'active' => 1,
 		'salt' => 'qWQJaOT4Kz',
 		'password' => '4a3de11333d5814d90270c27116f1bdc', // pw: secret,
-		'global_firm_rights' > 1
+		'global_firm_rights' => 1
 	),
 	'user2' => array(
 		'username' => 'JaneBloggs',

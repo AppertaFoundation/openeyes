@@ -109,12 +109,13 @@ class BookingService
 		$sql = "SELECT t.*, s.start_time, s.end_time, s.date, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
 				COUNT(a.id) AS bookings, 
-				SUM(o.total_duration) AS bookings_duration 
+				SUM(o.total_duration) AS bookings_duration, site.id AS site_id 
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id 
 			JOIN `theatre` `t` ON q.theatre_id = t.id 
+			JOIN `site` ON site.id = t.site_id
 			WHERE s.id = '" . $sessionId . "'";
 		
 		$sessions = Yii::app()->db->createCommand($sql)->query();

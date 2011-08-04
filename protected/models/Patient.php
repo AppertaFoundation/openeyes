@@ -119,6 +119,12 @@ class Patient extends BaseActiveRecord
 		}
 		return parent::beforeSave();
 	}
+	
+	public function getAge()
+	{
+		$dobTime = strtotime($this->dob);
+		return floor((time() - $dobTime) / 60 / 60 / 24 / 365);
+	}
 
 	private function randomData($field)
 	{
@@ -127,16 +133,16 @@ class Patient extends BaseActiveRecord
 		}
 
 		// exceptions come first
-		if ($field == 'dob') {
+		if ('dob' == $field) {
 			return $this->randomDate();
 		}
-		if ($field == 'title') {
+		if ('title' == $field) {
 			// gender neutral
 			return 'Dr';
 		}
 
 		$keyInDatafile = $field;
-		if ( ($field == 'address1') or ($field == 'address2') ) {
+		if (('address1' == $field) || ('address2' == $field)) {
 			$keyInDatafile = 'address';
 		}
 
