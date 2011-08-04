@@ -95,7 +95,7 @@ class ElementLetterOut extends BaseElement
 	public function getService()
 	{
 		if (empty($this->service)) {
-			$this->service = new LetterOutService();
+			$this->service = new LetterOutService($this->firm);
 		}
 
 		return $this->service;

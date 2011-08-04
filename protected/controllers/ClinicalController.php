@@ -89,19 +89,16 @@ class ClinicalController extends BaseController
 		if ($_POST && $_POST['action'] == 'create')
 		{
 			// The user has submitted the form to create the event
-
 			$eventId = $this->service->createElements(
 				$elements, $_POST, $this->firm, $this->patientId, $this->getUserId(), $eventType->id
 			);
 
 			if ($eventId) {
+				$this->assignReferralIfRequired($eventId, $this->firm, $this->patientId);
+
 				$this->logActivity('created event.');
 
-				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
-					$this->redirect(array('chooseReferral', 'id' => $eraId));
-				} else {
-					$this->redirect(array('view', 'id' => $eventId));
-				}
+				$this->redirect(array('view', 'id' => $eventId));
 
 				return;
 			}
@@ -110,10 +107,21 @@ class ClinicalController extends BaseController
 			// be displayed again in the call below
 		}
 
-		$this->render('create', array(
+		// Check to see if they need to choose a referral
+		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
+
+		// Check to see if there is a create event type template for this event type.
+		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . 'create' . DIRECTORY_SEPARATOR . $eventTypeId;
+
+		if (!file_exists($this->getTemplateDir() . $template . '.php')) {
+			$template = 'create';
+		}
+
+		$this->render($template, array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
-				'specialties' => $specialties
+				'specialties' => $specialties,
+				'referrals' => $referrals
 			)
 		);
 	}
@@ -154,14 +162,14 @@ class ClinicalController extends BaseController
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {
-				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
-					$this->redirect(array('chooseReferral', 'id' => $eraId));
-				} else {
+//				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
+//					$this->redirect(array('chooseReferral', 'id' => $eraId));
+//				} else {
 					$this->logActivity('updated event');
 
 					// Nothing has gone wrong with updating elements, go to the view page
 					$this->redirect(array('view', 'id' => $event->id));
-				}
+//				}
 
 				return;
 			}
@@ -170,7 +178,14 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		$this->render('update', array(
+		// Check to see if there is an update event type template for this event type.
+		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . 'create' . DIRECTORY_SEPARATOR . $eventTypeId;
+
+		if (!file_exists($this->getTemplateDir() . $template . '.php')) {
+			$template = 'update';
+		}
+
+		$this->render($template, array(
 				'id' => $id,
 				'elements' => $elements,
 				'specialties' => $specialties
@@ -255,30 +270,50 @@ class ClinicalController extends BaseController
 	}
 
 	/**
-	 * Checks is the user is required to enter a referral manually.
+	 * Checks to see if there the user needs to select a referral.
 	 *
-	 * @param int $eventId
-	 * @return boolean
+	 * This is calculated as follows:
+	 *
+	 * Check for an open episode for this patient and this firm's specialty
+	 * If there is an open episode and it has a referral, no action required so return false
+	 * If no episode or the episode has no referral, check to see if a referral can be chosen automatically
+	 * If it can, it will be dealt with when creating or updating the event so no action required here, return false
+	 * If it can't, return an array of referrals for the user to choose from
+	 *
+	 * @param $firm object
+	 * @param $patientId id
+	 *
+	 * @return array
 	 */
-	public function checkForReferral($eventId)
+	public function checkForReferrals($firm, $patientId)
 	{
-	    if (Yii::app()->params['use_pas']) {
-			// If there is no referral for this episode, be it new or not, and at least one
-			// referral exists for this patient, either automatically associate it with
-			// the episode (if possible) or choose one by default then ask the user to select
-			// the appropriate episode.
-
-			// First check if this episode has any referrals
-			$referralService = new ReferralService;
-
-			// Attempt to automatically choose a referral
-
-			// If not false, No open referral for this specialty available but there are open
-			// referrals available. One of these will have been chosen automatically
-			// as a default but the system will forward to the referral selection page so the user
-			// can choose one manually.
-			return $referralService->manualReferralNeeded($eventId);
+		// If pas isn't in use there can't be any referrals
+		if (!Yii::app()->params['use_pas']) {
+			return false;
 		}
+
+		$referralService = new ReferralService;
+
+		return $referralService->getReferralsList($firm, $patientId);
+	}
+
+	/**
+	 * Assigns the referral provided, if any, to the episode if one is required.
+	 *
+	 * @param $eventId int
+	 * @param $firm object
+	 * @param $patientId int
+	 */
+	public function assignReferralIfRequired($eventId, $firm, $patientId)
+	{
+		if (!Yii::app()->params['use_pas']) {
+			// Not using referrals, do nothing
+			return;
+		}
+
+		$referralService = new ReferralService;
+
+		$referralService->assignReferral($eventId, $firm, $patientId);
 	}
 
 	/**
@@ -323,5 +358,10 @@ class ClinicalController extends BaseController
 
 		// Displays the list of episodes and events for this patient
 		$this->listEpisodesAndEventTypes();
+	}
+
+	public function getTemplateDir()
+	{
+		return Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR;
 	}
 }

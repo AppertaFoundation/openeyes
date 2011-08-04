@@ -33,21 +33,21 @@ foreach ($elements as $element) {
 
 // Display referral select box if required
 if (isset($referrals) && is_array($referrals)) {
-	// There is at least on referral, so include it/them
-	if (count($referrals) > 1) {
-		// Display a list of referrals for the user to choose from
+        // There is at least on referral, so include it/them
+        if (count($referrals) > 1) {
+                // Display a list of referrals for the user to choose from
 ?>
 <br />
         <div class="row">
                 <label for="referral_id">Please choose a referral:</label>
 <?php
-		echo CHtml::dropDownList('referral_id', '', CHtml::listData($referrals, 'id', 'id'));
+                echo CHtml::dropDownList('referral_id', '', CHtml::listData($referrals, 'id', 'id'));
 ?>
 </div>
 <?php
-	}
+        }
 }
 
-echo CHtml::submitButton('Create event');
+echo CHtml::submitButton('Create operation');
 
 $this->endWidget();

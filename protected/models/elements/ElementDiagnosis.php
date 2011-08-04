@@ -165,6 +165,7 @@ class ElementDiagnosis extends BaseElement
 	 */
 	public function getNewestDiagnosis()
 	{
+// @todo - should this be a static method?
 		if (!empty($model->disorder)) {
 			return $model->disorder;
 		} else {

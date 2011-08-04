@@ -3,10 +3,13 @@
 class LetterOutService
 {
 	public $patient;
+	public $firm;
 	public $substitutions;
 
-	public function __construct()
+	public function __construct($firm)
 	{
+		$this->firm = $firm;
+
 		if (isset(Yii::app()->session['patient_id'])) {
 			$this->patient = Patient::model()->findByPk(Yii::app()->session['patient_id']);
 		} else {
@@ -143,50 +146,78 @@ class LetterOutService
 	public function getFromOptions()
 	{
 		$firmIds = array();
-
-		$results = Yii::app()->db->createCommand()
-			->select('f.id AS fid')
-			->from('firm f')
-			->join('firm_user_assignment f_u_a', 'f_u_a.firm_id = f.id')
-			->where('f_u_a.user_id = :u_id', array(':u_id' => Yii::app()->user->id))
-			->queryAll();
-
-		foreach ($results as $result) {
-			if (!in_array($result['fid'], $firmIds)) {
-				$firmIds[] = $result['fid'];
-			}
-		}
-
-		$results = Yii::app()->db->createCommand()
-			->select('f.id AS fid')
-			->from('firm f')
-			->join('user_firm_rights u_f_r', 'u_f_r.firm_id = f.id')
-			->where('u_f_r.user_id = :u_id', array(':u_id' => Yii::app()->user->id))
-			->queryAll();
-
-		foreach ($results as $result) {
-			if (!in_array($result['fid'], $firmIds)) {
-				$firmIds[] = $result['fid'];
-			}
-		}
-
-// @todo - add user_firm_rights and user_service_rights?
-
 		$users = array();
 
-		foreach ($firmIds as $firmId) {
-			$results2 = Yii::app()->db->createCommand()
-				->select('title, first_name, last_name, role, qualifications')
-				->from('user')
-				->join('firm_user_assignment f_u_a', 'f_u_a.user_id = user.id')
-				->where('f_u_a.firm_id = :f_id AND f_u_a.user_id != :u_id', array(
-					':f_id' => $firmId, ':u_id' =>Yii::app()->user->id)
-				)
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		// Add this user
+		$users[$user->title . ' ' . $user->first_name . ' ' . $user->last_name . ' ' . $user->qualifications . ', ' . $user->role] =
+                                        $user->title . ' ' . $user->first_name . ' ' . $user->last_name;	
+
+		// If the user has global firm rights they can see all firms and all users
+		if ($user->global_firm_rights) {
+			// @todo - is every user necessarilty associated with a firm? Does it matter?
+			$allUsers = User::model()->findAll();
+
+			foreach ($allUsers as $au) {
+				$users[$au->title . ' ' . $au->first_name . ' ' . $au->last_name . ' ' . $au->qualifications . ', ' . $au->role] =
+					$au->title . ' ' . $au->first_name . ' ' . $au->last_name;
+			}
+		} else {
+			// @todo - turn this into a UNION or somesuch?
+			$results = Yii::app()->db->createCommand()
+				->select('f.id AS fid')
+				->from('firm f')
+				->join('firm_user_assignment f_u_a', 'f_u_a.firm_id = f.id')
+				->where('f_u_a.user_id = :u_id', array(':u_id' => $user->id))
 				->queryAll();
 
-			foreach ($results2 as $result2) {
-				$user[$result2['qualifications'] . ', ' . $result2['role']] = 
-					$result2['title'] . ' ' . $result2['first_name'] . ' ' . $result2['last_name'];
+			foreach ($results as $result) {
+				if (!in_array($result['fid'], $firmIds)) {
+					$firmIds[] = $result['fid'];
+				}
+			}
+
+			$results = Yii::app()->db->createCommand()
+				->select('f.id AS fid')
+				->from('firm f')
+				->join('user_firm_rights u_f_r', 'u_f_r.firm_id = f.id')
+				->where('u_f_r.user_id = :u_id', array(':u_id' => $user->id))
+				->queryAll();
+
+			foreach ($results as $result) {
+				if (!in_array($result['fid'], $firmIds)) {
+					$firmIds[] = $result['fid'];
+				}
+			}
+
+			// Get all firms the user is directly associated with
+			$results = Yii::app()->db->createCommand()
+                                ->select('firm_id AS fid')
+                                ->from('firm_user_assignment f_u_a')
+                                ->where('f_u_a.user_id = :u_id', array(':u_id' => $user->id))
+                                ->queryAll();
+
+                        foreach ($results as $result) {
+                                if (!in_array($result['fid'], $firmIds)) {
+                                        $firmIds[] = $result['fid'];
+                                }
+                        }
+
+			foreach ($firmIds as $firmId) {
+				$results2 = Yii::app()->db->createCommand()
+					->select('title, first_name, last_name, role, qualifications')
+					->from('user')
+					->join('firm_user_assignment f_u_a', 'f_u_a.user_id = user.id')
+					->where('f_u_a.firm_id = :f_id AND f_u_a.user_id != :u_id', array(
+						':f_id' => $firmId, ':u_id' =>Yii::app()->user->id)
+					)
+					->queryAll();
+
+				foreach ($results2 as $result2) {
+					$user[$results2['title'] . ' ' . $results2['first_name'] . ' ' . $results['last_name'] . ' ' . $result2['qualifications'] . ', ' . $result2['role']] = 
+						$result2['title'] . ' ' . $result2['first_name'] . ' ' . $result2['last_name'];
+				}
 			}
 		}
 
@@ -288,8 +319,29 @@ class LetterOutService
 				}
 			}
 
-			// Get the most recent operation for this patient
+			// Find most recent episode, if any
+			$episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm);
+
+			if (isset($episode)) {
+				// Get most recent diagnosis for this patient
+				// @todo - this method can be consolidated with the ElementDiagnosis->getNewestDiagnosis method
+				$diagnosis = $episode->getPrincipalDiagnosis();
+
+				$this->substitutions['epd'] = $diagnosis->disorder->term;
+				$this->substitutions['eps'] = $diagnosis->getEyeText();
+
+				// Get the most recent operation for this patient
+				// @todo - complete after mergin branch with booking. Refer to email 'Correspondence questions'.
+			}
 		}
+
+/*
+adm - admission date - not sure yet how we get this one
+
+FIELDS WE MIGHT BE ABLE TO DO:
+
+opl - operations listed for - source unknown
+*/
 
 		foreach($this->substitutions as $key => $sub) {
 			$phrase = preg_replace('/\[' . $key . '\]/', $sub, $phrase);
@@ -300,25 +352,6 @@ class LetterOutService
 		}
 
 		return $phrase;
-/**
- * Field substitution notes:
-
-FIELDS WE CAN DO:
-
-adm - admission date - not sure yet how we get this one
-age  - age of patient in years - calculate from patient.dob
-epd - principal diagnosis for episode - probably from element_diagnosis->disorder.name
-eps - principal side for episode - probably element_diagnosis.location
-obj - patient as object - from patient.gender
-pos - patient possessive - from patient.gender
-pro - patient pronoun - from patient.gender
-sub - patient as subject - from patient.gender and patient.dob
-
-FIELDS WE MIGHT BE ABLE TO DO:
-
-opl - operations listed for - source unknown
-
-*/
 	}
 	
 	public function getFirmId()

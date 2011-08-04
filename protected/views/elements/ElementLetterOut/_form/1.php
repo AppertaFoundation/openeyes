@@ -78,7 +78,7 @@ foreach ($templates as $key => $template) {
 	<span class="element_letterout_right">
 		<?php
 			if (empty($model->date)) {
-				echo CHtml::textField('date', date("Y-m-d"));
+				echo CHtml::textField('ElementLetterOut[date]', date("Y-m-d"));
 			} else {
 				echo $form->textField($model, 'date');
 			}
@@ -112,7 +112,7 @@ foreach ($templates as $key => $template) {
 		<?php 
 			if (empty($model->re)) {
 				// The user is creating a new letterout, display default re: value for patient
-				echo CHtml::textField('re', $service->getDefaultRe(), array('size' => 100));
+				echo CHtml::textField('ElementLetterOut[re]', $service->getDefaultRe(), array('size' => 100));
 			} else {
 				echo $form->textField($model, 're', array('size' => 100));
 			}
@@ -155,7 +155,7 @@ foreach ($templates as $key => $template) {
 <div class="row_element_letterout">
 	<h3 class="element_letterout"><?php echo $form->labelEx($model,'cc'); ?></h3 class="element_letterout">
 	<span class="element_letterout_left">
-	<?php echo CHtml::dropDownList('cc', '', $patientContactOptions, array('empty'=>'CC')); ?>
+	<?php echo CHtml::dropDownList('cc_list', '', $patientContactOptions, array('empty'=>'CC')); ?>
 	</span>
 	<span class="element_letterout_right">
 		<?php echo $form->textArea($model,'cc',array('rows'=>6, 'cols'=>50)); ?>
@@ -175,12 +175,12 @@ foreach ($templates as $key => $template) {
 	});
 
 	$(function() {
-		$('#cc').change(function() {
-			if (!$('#cc').val()) {
+		$('#cc_list').change(function() {
+			if (!$('#cc_list').val()) {
 				return;
 			}
 
-			$('#ElementLetterOut_cc').append('cc: ' + contactData[$('#cc').val()][0] + "\n");
+			$('#ElementLetterOut_cc').append('cc: ' + contactData[$('#cc_list').val()][0] + "\n");
 		});
 	});
 
@@ -228,6 +228,14 @@ foreach ($templates as $key => $template) {
 			}
 		});
 	});
+
+        $(function() {
+                $('#from').change(function() {
+                        if ($('#from').val()) {
+				$('#ElementLetterOut_from_address').val('Yours sincerely\n\n\n\n\n' + formatAddress($('#from').val()));
+                        }
+                });
+        });
 
 	function populateToAndContact(id) {
 		contact = contactData[id];

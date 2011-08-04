@@ -102,6 +102,14 @@ class m110707_144059_modify_letter_template extends CDbMigration
 		}
 
 		$this->addColumn('element_operation', 'decision_date', 'DATE NOT NULL');
+
+		$this->update('user', array('qualifications' => 'admin qualification', 'role' => 'admin role', 'title' => 'Mr'),
+			'id = :id', array(':id' => 1));
+
+		$this->addColumn('consultant', 'pas_code', 'char(4)');
+
+		$this->update('phrase_by_firm', array('phrase' => 'His principal diagnosis is [epd] in eye [eps]'),
+			'id = :id', array(':id' => 3));
 	}
 
 	public function down()
@@ -143,18 +151,18 @@ class m110707_144059_modify_letter_template extends CDbMigration
 		$this->addForeignKey(
 			'disorder_fk','diagnosis','disorder_id','disorder','id');
 
-                // extract element type
-                $elementType = $this->dbConnection->createCommand()
-                        ->select('id')
-                        ->from('element_type')
-                        ->where('name=\'Diagnosis\'')
-                        ->queryRow();
+		// extract element type
+		$elementType = $this->dbConnection->createCommand()
+			->select('id')
+			->from('element_type')
+			->where('name=\'Diagnosis\'')
+			->queryRow();
 
-                $eventType = $this->dbConnection->createCommand()
-                        ->select('id')
-                        ->from('event_type')
-                        ->where('name=\'operation\'')
-                        ->queryRow();
+		$eventType = $this->dbConnection->createCommand()
+			->select('id')
+			->from('event_type')
+			->where('name=\'operation\'')
+			->queryRow();
 
 		$possibleElementType = $this->dbConnection->createCommand()
 			->select('id')
@@ -176,5 +184,7 @@ class m110707_144059_modify_letter_template extends CDbMigration
 		$this->delete('element_type', 'name=\'Diagnosis\'');
 
 		$this->dropColumn('element_operation', 'decision_date');
+
+		$this->dropColumn('consultant', 'pas_code');
 	}
 }

@@ -151,6 +151,7 @@ class Episode extends BaseActiveRecord
 	 */
 	public function getPrincipalDiagnosis()
 	{
+		// @todo - convert to find diagnosis object directly
 		$result = Yii::app()->db->createCommand()
 			->select('ed.id AS id')
 			->from('element_diagnosis ed')
@@ -167,6 +168,28 @@ class Episode extends BaseActiveRecord
 		} else {
 			return ElementDiagnosis::model()->findByPk($result['id']);
 		}
+	}
+
+	public static function getCurrentEpisodeByFirm($patientId, $firm)
+	{
+		// Check for an open episode for this patient and firm's service with a referral
+		// @todo - tidy this to just get the episode object directly
+		$episode = Yii::app()->db->createCommand()
+			->select('e.id AS eid')
+			->from('episode e')
+			->join('firm f', 'e.firm_id = f.id')
+			->join('service_specialty_assignment s_s_a', 'f.service_specialty_assignment_id = s_s_a.id')
+			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.specialty_id = :specialty_id', array(
+				':patient_id' => $patientId, ':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id
+			))
+			->queryRow();
+
+		if (!$episode['eid']) {
+			// There is an open episode and it has a referral, no action required
+			return null;
+		}
+
+		return Episode::model()->findByPk($episode['eid']);
 	}
 }
 
