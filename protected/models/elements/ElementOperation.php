@@ -561,4 +561,14 @@ class ElementOperation extends BaseElement
 
 		return $text;
 	}
+
+	public function getDefaultWard()
+	{
+		return 1;
+	}
+
+	public function getWardOptions()
+	{
+		return array();
+	}
 }

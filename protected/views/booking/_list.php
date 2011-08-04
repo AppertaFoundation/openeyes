@@ -1,4 +1,9 @@
 <div id="bookings">
+<div class="cleartall"></div>
+<div class="label">Ward:</div>
+<div class="data"><?php echo CHtml::dropDownList('ward_id',
+	$operation->getDefaultWard(), $operation->getWardOptions()); ?></div>
+<div class="cleartall"></div>
 <strong>View other operations in this session:</strong>
 <span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
 <p/>
