@@ -111,7 +111,7 @@ class TheatreController extends BaseController
 					'timeAvailable' => $sessionDuration - 0,
 					'eye' => substr($operation->getEyeText(), 0, 1),
 					'anaesthetic' => $operation->getAnaestheticAbbreviation(),
-					'procedures' => $procedures,
+					'procedures' => $procedures['List'],
 					'patientName' => $values['first_name'] . ' ' . $values['last_name'],
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
