@@ -1,6 +1,7 @@
 <?php
-Yii::app()->clientScript->registerCSSFile('/css/theatre.css', 'all');
-$this->layout = 'main'; ?>
+Yii::app()->clientScript->registerCSSFile('/css/theatre.css', 'all'); ?>
+<div id="box_gradient_top"></div>
+<div id="box_gradient_bottom">
 <h3>Theatre Schedule</h3>
 <?php $form=$this->beginWidget('CActiveForm', array(
     'id'=>'theatre-filter',
@@ -114,9 +115,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 ));
 ?>
 </div>
-<button type="submit" value="submit" class="shinybutton highlighted">Search</button>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Search</span></button>
 <?php $this->endWidget();
-if (!empty($theatres)) {
+if (!empty($theatres)) { ?>
+<div class="cleartall"></div>
+<?php
 	foreach ($theatres as $name => $dates) {?>
 <h3><?php echo $name; ?></h3>
 <?php	foreach ($dates as $date => $sessions) { ?>
@@ -188,4 +191,13 @@ if (!empty($theatres)) {
 	});
 </script>
 <?php
-}
+} ?>
+</div>
+<script type="text/javascript">
+	$('input[name=date-filter]').change(function() {
+		if ($(this).val() != 'custom') {
+			$('input[id=date-start]').val('');
+			$('input[id=date-end]').val('');
+		}
+	});
+</script>

@@ -540,6 +540,11 @@ ul#navlist {
     clear: both;
 }
 
+div.cleartall {
+	clear: both;
+	min-height: 13px;
+}
+
 .data_row {
     width: 100%;
     padding: 3px 0;
@@ -705,4 +710,24 @@ form.sliding div.data span, form.sliding td span, form.sliding div.row span {
 	padding: 15px;
 	padding-left: 45px;
 	text-decoration: none;
+}
+
+#box_gradient_top {
+    background: transparent url('/images/box_blue_gradient_top.png') top left no-repeat;
+    min-height: 15px;
+    width: 890px;
+    clear: both;
+}
+
+#box_gradient_bottom {
+    background: #fbfbfc url('/images/box_blue_gradient_bottom.png') bottom left no-repeat;
+    min-height: 676px;
+    width: 860px;
+    padding: 15px;
+    padding-top: 0;
+	position: relative;
+}
+
+#box_gradient_bottom h3 {
+    font: bold 14pt Arial;
 }
