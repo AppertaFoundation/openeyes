@@ -11,8 +11,10 @@
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('pmonth', $lastMonth);
+		echo '<span class="button">';
 		echo CHtml::submitButton('< Previous Month', 
-			array('id' => 'previous_month', 'disabled' => ($today > $thisMonth)));
+			array('id' => 'previous_month', 'class'=>'form_button', 'disabled' => (date('Ym') >= date('Ym', $date))));
+		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
 			</div>
 			<div id="month_forward" class="column">
@@ -21,18 +23,27 @@
 			'post');
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('nmonth', $nextMonth);
+		echo '<span class="button">';
 		echo CHtml::submitButton('Next Month >', 
-			array('id' => 'next_month', 'disabled' => ($nextMonth > $nextYear)));
+			array('id' => 'next_month', 'class'=>'form_button', 'disabled' => ($nextMonth > $nextYear)));
+		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
 			</div>
 		</div>
 		<table>
 			<tbody>
 <?php
+	$rttDate = strtotime('+11 weeks', strtotime($operation->event->datetime));
 	foreach ($sessions as $weekday => $list) { ?>
 				<tr>
-					<th><?php echo $weekday; ?></th>
-<?php	foreach ($list as $date => $data) { ?>
+					<th><?php echo substr($weekday, 0, 3); ?></th>
+<?php	foreach ($list as $date => $data) {
+			// check if date is outside this month
+			if (date('m', strtotime($date)) !== date('m', strtotime($thisMonth))) {
+				$list[$date]['status'] = 'invalid';
+			} elseif (date('Y-m-d', strtotime($date)) >= date('Y-m-d', $rttDate)) {
+				$list[$date]['status'] .= ' outside_rtt';
+			} ?>
 					<td class="<?php echo $list[$date]['status'];
 			if (!empty($operation->booking) && 
 				$operation->booking->session->date == $date) {
@@ -43,4 +54,18 @@
 <?php
 	} ?>
 			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="8">
+						<div id="key">
+						<span>Key:</span>
+							<div id="available" class="container"><div class="color_box"></div><div class="label">Slots Available</div></div>
+							<div id="limited" class="container"><div class="color_box"></div><div class="label">Limited Slots</div></div>
+							<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>
+							<div id="closed" class="container"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
+							<div id="selected_date" class="container"><div class="color_box"></div><div class="label">Selected Date</div></div>
+						</div>
+					</td>
+				</tr>
+			</tfoot>
 		</table>

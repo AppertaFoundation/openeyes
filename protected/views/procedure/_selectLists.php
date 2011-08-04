@@ -8,20 +8,19 @@ foreach ($specialties as $specialty) {
 <td>
 <div class="row">
 	<label for="ElementOperation_value">Service:</label><br />
-	<?php echo CHtml::listBox('service', '',
-		$data, array('style' => 'width: 200px;')); ?>
+	<?php echo CHtml::listBox('service', '', $data); ?>
 </div>
 </td>
 <td>
 <div class="row">
 	<label for="ElementOperation_value">Subsection:</label><br />
-	<?php echo CHtml::listBox('subsection', '', array(), array('style' => 'width: 150px;')); ?>
+	<?php echo CHtml::listBox('subsection', '', array()); ?>
 </div>
 </td>
 <td>
 <div class="row">
 	<label for="ElementOperation_value">Procedure:</label><br />
-	<?php echo CHtml::listBox('procedure', '', array(), array('style' => 'width: 250px;')); ?>
+	<?php echo CHtml::listBox('procedure', '', array()); ?>
 </div>
 </td>
 </tr>

@@ -103,6 +103,8 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
+		
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -118,7 +120,7 @@ class ClinicalController extends BaseController
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} else {
-					$this->redirect(array('patient/view', 'id' => $this->patientId));
+					$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
 				}
 
 				return;
@@ -131,7 +133,8 @@ class ClinicalController extends BaseController
 		$this->renderPartial('create', array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
-				'specialties' => $specialties
+				'specialties' => $specialties,
+				'patient' => $patient
 			), false, true
 		);
 	}
@@ -165,6 +168,8 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
+		
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'update') {
 			// The user has submitted the form to update the event
@@ -178,7 +183,7 @@ class ClinicalController extends BaseController
 					$this->logActivity('updated event');
 
 					// Nothing has gone wrong with updating elements, go to the view page
-					$this->redirect(array('view', 'id' => $event->id));
+					$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
 				}
 
 				return;
@@ -188,12 +193,12 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		$this->render('update', array(
+		$this->renderPartial('update', array(
 				'id' => $id,
 				'elements' => $elements,
-				'specialties' => $specialties
-			)
-		);
+				'specialties' => $specialties,
+				'patient' => $patient
+			), false, true);
 	}
 
 	public function actionEpisodeSummary($id)

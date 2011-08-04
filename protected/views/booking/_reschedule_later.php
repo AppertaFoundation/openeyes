@@ -17,12 +17,10 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
 	<p><strong>Current schedule:</strong></p>
 <?php $this->renderPartial('_session', array('operation' => $operation)); ?><br />
-</div>
-</div>
 <?php 
 echo CHtml::form(array('booking/update'));
 echo CHtml::hiddenField('booking_id', $operation->booking->id);
-
+echo '<p/>';
 echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
 if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
 	$listIndex = 3;
@@ -31,6 +29,9 @@ if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date)
 }
 echo CHtml::dropDownList('cancellation_reason', '', 
 	CancellationReason::getReasonsByListNumber($listIndex)
-);
-echo CHtml::submitButton('Cancel booking');
+); ?>
+<div class="clear"></div>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel booking</span></button><?php
 echo CHtml::endForm(); ?>
+</div>
+</div>
