@@ -228,7 +228,7 @@ class BookingController extends BaseController
 					
 				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId));
+				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1));
 			}
 		}
 	}
@@ -270,7 +270,7 @@ class BookingController extends BaseController
 				
 				Yii::app()->user->setFlash('success','Booking updated.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId));
+				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1));
 			}
 		}
 	}

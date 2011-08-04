@@ -12,3 +12,4 @@ nbproject/*
 /protected/models/ElementExample.php
 /protected/models/elements/ElementExample.php
 /protected/views/elements/ElementExample/
+.DS_Store

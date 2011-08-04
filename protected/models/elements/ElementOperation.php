@@ -88,7 +88,8 @@ class ElementOperation extends BaseElement
 		return array(
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)', 'order' => 'display_order ASC'),
-			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id')
+			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id'),
+			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id')
 		);
 	}
 
@@ -162,6 +163,19 @@ class ElementOperation extends BaseElement
 			self::EYE_RIGHT => 'Right',
 			self::EYE_BOTH => 'Both',
 		);
+	}
+
+	public function getEyeLabelText() {
+		switch ($this->eye) {
+			case self::EYE_BOTH:
+				$text = 'Eyes:';
+				break;
+			default:
+				$text = 'Eye:';
+				break;
+		}
+
+		return $text;
 	}
 
 	public function getEyeText() {
@@ -329,13 +343,13 @@ class ElementOperation extends BaseElement
 		parent::afterSave();
 
 		$operationId = $this->id;
-		// first wipe out any existing procedures so we start from scratch
-		OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
-			array(':id' => $operationId));
-
 		$order = 1;
 
 		if (!empty($_POST['Procedures'])) {
+			// first wipe out any existing procedures so we start from scratch
+			OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
+				array(':id' => $operationId));
+			
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
 				$procedure->operation_id = $operationId;
@@ -394,14 +408,14 @@ class ElementOperation extends BaseElement
 		
 		foreach ($results as $weekday => $dates) {
 			$timestamp = strtotime($monthStart);
-			$firstWeekday = strtotime(date('Y-m-01', $timestamp));
+			$firstWeekday = strtotime(date('Y-m-t', $timestamp - (60 * 60 * 24)));
 			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
 			$dateList = array_keys($dates);
 			while (date('N', strtotime($dateList[0])) != date('N', $firstWeekday)) {
-				$firstWeekday += 60 * 60 * 24;
+				$firstWeekday -= 60 * 60 * 24;
 			}
 			
-			for ($weekCounter = 1; $weekCounter < 6; $weekCounter++) {
+			for ($weekCounter = 1; $weekCounter < 8; $weekCounter++) {
 				$addDays = ($weekCounter - 1) * 7;
 				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
 				if (in_array($selectedDay, $dateList)) {
@@ -546,5 +560,42 @@ class ElementOperation extends BaseElement
 		}
 
 		return $text;
+	}
+
+	public function getWardOptions($siteId)
+	{
+		if (empty($siteId)) {
+			throw new Exception('Site id is required.');
+		}
+		$patient = $this->event->episode->patient;
+		
+		$genderRestrict = $ageRestrict = 0;
+		$genderRestrict = ('M' == $patient->gender) 
+			? Ward::RESTRICTION_MALE : Ward::RESTRICTION_FEMALE;
+		$ageRestrict = ($patient->getAge() < 16)
+			? Ward::RESTRICTION_UNDER_16 : Ward::RESTRICTION_ATLEAST_16;
+		
+		$whereSql = 's.id = :id AND 
+			(w.restriction & :r1 > 0) AND (w.restriction & :r2 > 0)';
+		$whereParams = array(
+			':id' => $siteId,
+			':r1' => $genderRestrict,
+			':r2' => $ageRestrict
+		);
+		
+		$wards = Yii::app()->db->createCommand()
+			->select('w.id, w.name')
+			->from('ward w')
+			->join('site s', 's.id = w.site_id')
+			->where($whereSql, $whereParams)
+			->queryAll();
+		
+		$results = array();
+		
+		foreach ($wards as $ward) {
+			$results[$ward['id']] = $ward['name'];
+		}
+		
+		return $results;
 	}
 }

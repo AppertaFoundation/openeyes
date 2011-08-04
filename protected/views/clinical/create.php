@@ -7,6 +7,7 @@ Yii::app()->clientScript->registerCoreScript('jquery');
 $form = $this->beginWidget('CActiveForm', array(
     'id'=>'clinical-create',
     'enableAjaxValidation'=>false,
+	'htmlOptions' => array('class'=>'sliding')
 ));
 
 echo CHtml::hiddenField('action', 'create');
@@ -24,14 +25,19 @@ foreach ($elements as $element) {
 			$elementClassName .
 			'/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
+			'patient' => $patient)
 	);
 
-}
-if (EyeDrawService::getActive()) {
-	echo CHtml::submitButton('Create event', array('onClick' => 'eyedraw_submit();'));
-} else {
-	echo CHtml::submitButton('Create event');
+} ?>
+<div class="cleartall"></div>
+<?php
+if (EyeDrawService::getActive()) { ?>
+<button type="submit" value="submit" class="shinybutton highlighted" onClick="javascript: eyedraw_submit();"><span>Create</span></button>
+<?php
+} else { ?>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Create</span></button>
+<?php
 }
 
 $this->endWidget();

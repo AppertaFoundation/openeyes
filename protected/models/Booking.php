@@ -8,6 +8,7 @@
  * @property string $element_operation_id
  * @property string $session_id
  * @property integer $display_order
+ * @property integer $ward_id
  *
  * The followings are the available model relations:
  * @property ElementOperation $elementOperation
@@ -42,11 +43,12 @@ class Booking extends CActiveRecord
 		return array(
 			array('element_operation_id, session_id', 'required'),
 			array('display_order', 'numerical', 'integerOnly'=>true),
+			array('ward_id', 'numerical', 'integerOnly'=>true),
 			array('element_operation_id, session_id', 'length', 'max'=>10),
-			array('element_operation_id, session_id, display_order', 'safe'),
+			array('element_operation_id, session_id, display_order, ward_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, element_operation_id, session_id, display_order', 'safe', 'on'=>'search'),
+			array('id, element_operation_id, session_id, display_order, ward_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,6 +62,7 @@ class Booking extends CActiveRecord
 		return array(
 			'elementOperation' => array(self::BELONGS_TO, 'ElementOperation', 'element_operation_id'),
 			'session' => array(self::BELONGS_TO, 'Session', 'session_id'),
+			'ward' => array(self::BELONGS_TO, 'Ward', 'ward_id')
 		);
 	}
 
@@ -73,6 +76,7 @@ class Booking extends CActiveRecord
 			'element_operation_id' => 'Element Operation',
 			'session_id' => 'Session',
 			'display_order' => 'Display Order',
+			'ward_id' => 'Ward',
 		);
 	}
 
@@ -91,6 +95,7 @@ class Booking extends CActiveRecord
 		$criteria->compare('element_operation_id',$this->element_operation_id,true);
 		$criteria->compare('session_id',$this->session_id,true);
 		$criteria->compare('display_order',$this->display_order);
+		$criteria->compare('ward_id',$this->ward_id);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

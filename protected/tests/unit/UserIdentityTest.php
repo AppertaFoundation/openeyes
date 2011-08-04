@@ -77,7 +77,7 @@ class UserIdentityTest extends CDbTestCase
 		);
 	}
 
-	public function testBasicLogin()
+	public function testBasicLogin_WithGlobalFirmRights()
 	{
 		Yii::app()->params['auth_source'] = 'BASIC';
 
@@ -85,6 +85,26 @@ class UserIdentityTest extends CDbTestCase
 			'JoeBloggs',
 			'secret'
 		);
+		
+		$this->assertTrue((bool)$this->users['user1']['global_firm_rights']);
+
+		$this->assertTrue($userIdentity->authenticate());
+	}
+
+	public function testBasicLogin_WithoutGlobalFirmRights()
+	{
+		Yii::app()->params['auth_source'] = 'BASIC';
+
+		$user = $this->users('user1');
+		$user->global_firm_rights = false;
+		$user->save(false);
+		
+		$userIdentity = new UserIdentity(
+			'JoeBloggs',
+			'secret'
+		);
+		
+		$this->assertFalse((bool)$user->global_firm_rights);
 
 		$this->assertTrue($userIdentity->authenticate());
 	}
@@ -119,7 +139,7 @@ class UserIdentityTest extends CDbTestCase
 	{
 		Yii::app()->params['auth_source'] = 'LDAP';
 
-	$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
+		$ZendLdapStub = $this->getMock('Zend_Ldap', array(), array(), '', FALSE);
         $ZendLdapStub->expects($this->any())
              ->method('bind')
              ->will($this->throwException(new Exception));
@@ -154,6 +174,6 @@ class UserIdentityTest extends CDbTestCase
 		);
 
 		$this->assertTrue($userIdentity->authenticate());
-		$this->assertEquals($userIdentity->getId(), 1);
+		$this->assertEquals($this->users['user1']['id'], $userIdentity->getId());
 	}
 }

@@ -59,6 +59,7 @@ class CancelledOperation extends CActiveRecord
 		return array(
 			'elementOperation' => array(self::BELONGS_TO, 'ElementOperation', 'element_operation_id'),
 			'cancelledReason' => array(self::BELONGS_TO, 'CancellationReason', 'cancelled_reason_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id')
 		);
 	}
 
