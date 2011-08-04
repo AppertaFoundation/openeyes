@@ -41,8 +41,7 @@ Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 		<div class="data_value"><?php 
 		$dobTime = strtotime($model->dob);
 		echo date('jS F, Y', $dobTime);
-		$age = floor((time() - $dobTime) / 60 / 60 / 24 / 365);
-		echo ' (Age ' . $age  . ')';
+		echo ' (Age ' . $model->getAge()  . ')';
 		?></div>
 	</div>
 	<div class="data_row row_buffer">

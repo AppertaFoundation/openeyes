@@ -1,8 +1,14 @@
 <div id="bookings">
 <div class="cleartall"></div>
+<?php
+if (!$reschedule) {
+	echo CHtml::form(array('booking/create'));
+} else {
+	echo CHtml::form(array('booking/update'));
+} ?>
 <div class="label">Ward:</div>
-<div class="data"><?php echo CHtml::dropDownList('ward_id',
-	$operation->getDefaultWard(), $operation->getWardOptions()); ?></div>
+<div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '', 
+	$operation->getWardOptions($session['site_id'])); ?></div>
 <div class="cleartall"></div>
 <strong>View other operations in this session:</strong>
 <span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
@@ -52,11 +58,9 @@
 </table>
 <?php 
 if (!$reschedule) {
-	echo CHtml::form(array('booking/create'));
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 } else {
-	echo CHtml::form(array('booking/update'));
 	echo CHtml::hiddenField('booking_id', $operation->booking->id);
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);

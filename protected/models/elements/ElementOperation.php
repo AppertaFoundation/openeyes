@@ -562,13 +562,40 @@ class ElementOperation extends BaseElement
 		return $text;
 	}
 
-	public function getDefaultWard()
+	public function getWardOptions($siteId)
 	{
-		return 1;
-	}
-
-	public function getWardOptions()
-	{
-		return array();
+		if (empty($siteId)) {
+			throw new Exception('Site id is required.');
+		}
+		$patient = $this->event->episode->patient;
+		
+		$genderRestrict = $ageRestrict = 0;
+		$genderRestrict = ('M' == $patient->gender) 
+			? Ward::RESTRICTION_MALE : Ward::RESTRICTION_FEMALE;
+		$ageRestrict = ($patient->getAge() < 16)
+			? Ward::RESTRICTION_UNDER_16 : Ward::RESTRICTION_ATLEAST_16;
+		
+		$whereSql = 's.id = :id AND 
+			(w.restriction & :r1 > 0) AND (w.restriction & :r2 > 0)';
+		$whereParams = array(
+			':id' => $siteId,
+			':r1' => $genderRestrict,
+			':r2' => $ageRestrict
+		);
+		
+		$wards = Yii::app()->db->createCommand()
+			->select('w.id, w.name')
+			->from('ward w')
+			->join('site s', 's.id = w.site_id')
+			->where($whereSql, $whereParams)
+			->queryAll();
+		
+		$results = array();
+		
+		foreach ($wards as $ward) {
+			$results[$ward['id']] = $ward['name'];
+		}
+		
+		return $results;
 	}
 }
