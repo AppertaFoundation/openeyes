@@ -8,20 +8,19 @@ foreach ($specialties as $specialty) {
 <td>
 <div class="row">
 	<label for="ElementOperation_value">Service:</label><br />
-	<?php echo CHtml::listBox('service', '',
-		$data, array('style' => 'width: 200px;')); ?>
+	<?php echo CHtml::listBox('service', '', $data); ?>
 </div>
 </td>
 <td>
 <div class="row">
 	<label for="ElementOperation_value">Subsection:</label><br />
-	<?php echo CHtml::listBox('subsection', '', array(), array('style' => 'width: 150px;')); ?>
+	<?php echo CHtml::listBox('subsection', '', array()); ?>
 </div>
 </td>
 <td>
 <div class="row">
 	<label for="ElementOperation_value">Procedure:</label><br />
-	<?php echo CHtml::listBox('procedure', '', array(), array('style' => 'width: 250px;')); ?>
+	<?php echo CHtml::listBox('procedure', '', array()); ?>
 </div>
 </td>
 </tr>
@@ -34,7 +33,7 @@ foreach ($specialties as $specialty) {
 		$('select[name=service]').change(function() {
 			var select = $('select[name=service]').val();
 			$.ajax({
-				'url': 'index.php?r=procedure/subsection',
+				'url': '<?php echo Yii::app()->createUrl('procedure/subsection'); ?>',
 				'type': 'GET',
 				'data': {'service': select},
 				'success': function(data) {
@@ -46,7 +45,7 @@ foreach ($specialties as $specialty) {
 		$('select[name=subsection]').change(function() {
 			var select = $('select[name=subsection]').val();
 			$.ajax({
-				'url': 'index.php?r=procedure/list',
+				'url': '<?php echo Yii::app()->createUrl('procedure/list'); ?>',
 				'type': 'GET',
 				'data': {'subsection': select},
 				'success': function(data) {
@@ -57,7 +56,7 @@ foreach ($specialties as $specialty) {
 		$('#add_procedure').click(function() {
 			var procedure = $('select[name=procedure] option:selected').text();
 			$.ajax({
-				'url': 'index.php?r=procedure/details',
+				'url': '<?php echo Yii::app()->createUrl('procedure/details'); ?>',
 				'type': 'GET',
 				'data': {'name': procedure},
 				'success': function(data) {

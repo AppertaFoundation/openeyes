@@ -4,11 +4,10 @@ $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
-$this->renderPartial('base');
-
 $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'clinical-create',
+    'id'=>'clinical-update',
     'enableAjaxValidation'=>false,
+	'htmlOptions'=> array('class'=>'sliding')
 ));
 
 echo CHtml::hiddenField('action', 'update');
@@ -23,14 +22,35 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' . $elementClassName . '/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
+			'patient' => $patient)
 	);
 }
 
-if (EyeDrawService::getActive()) {
-        echo CHtml::submitButton('Update event', array('onClick' => 'eyedraw_submit();'));
-} else {
-        echo CHtml::submitButton('Update event');
+// Display referral select box if required
+if (isset($referrals) && is_array($referrals)) {
+        // There is at least on referral, so include it/them
+        if (count($referrals) > 1) {
+                // Display a list of referrals for the user to choose from
+?>
+<br />
+        <div class="row">
+                <label for="referral_id">Please choose a referral:</label>
+<?php
+                echo CHtml::dropDownList('referral_id', '', CHtml::listData($referrals, 'id', 'id'));
+?>
+</div>
+<?php
+        }
+} ?>
+<div class="cleartall"></div>
+<?php
+if (EyeDrawService::getActive()) { ?>
+<button type="submit" value="submit" class="shinybutton highlighted" onClick="javascript: eyedraw_submit();"><span>Update</span></button>
+<?php
+} else { ?>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Update</span></button>
+<?php
 }
 
 $this->endWidget();

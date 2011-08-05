@@ -63,7 +63,7 @@ class Patient extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            		'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+	    		'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
 			'address' => array(self::HAS_ONE, 'Address', 'id'),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
 		);
@@ -121,6 +121,12 @@ class Patient extends BaseActiveRecord
 		}
 		return parent::beforeSave();
 	}
+	
+	public function getAge()
+	{
+		$dobTime = strtotime($this->dob);
+		return floor((time() - $dobTime) / 60 / 60 / 24 / 365);
+	}
 
 	private function randomData($field)
 	{
@@ -129,16 +135,16 @@ class Patient extends BaseActiveRecord
 		}
 
 		// exceptions come first
-		if ($field == 'dob') {
+		if ('dob' == $field) {
 			return $this->randomDate();
 		}
-		if ($field == 'title') {
+		if ('title' == $field) {
 			// gender neutral
 			return 'Dr';
 		}
 
 		$keyInDatafile = $field;
-		if ( ($field == 'address1') or ($field == 'address2') ) {
+		if (('address1' == $field) || ('address2' == $field)) {
 			$keyInDatafile = 'address';
 		}
 

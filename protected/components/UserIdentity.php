@@ -145,6 +145,7 @@ class UserIdentity extends CUserIdentity
 			}
 		}
 
+		$app->session['user'] = $user;
 		$app->session['firms'] = $firms;
 
 		reset($firms);

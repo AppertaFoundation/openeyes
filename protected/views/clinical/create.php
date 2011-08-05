@@ -1,14 +1,15 @@
+<p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
+
 <?php
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
-$this->renderPartial('base');
-
 $form = $this->beginWidget('CActiveForm', array(
     'id'=>'clinical-create',
     'enableAjaxValidation'=>false,
+	'htmlOptions' => array('class'=>'sliding')
 ));
 
 echo CHtml::hiddenField('action', 'create');
@@ -26,9 +27,9 @@ foreach ($elements as $element) {
 			$elementClassName .
 			'/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties)
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
+			'patient' => $patient)
 	);
-
 }
 
 // Display referral select box if required
@@ -46,8 +47,8 @@ if (isset($referrals) && is_array($referrals)) {
 </div>
 <?php
 	}
-}
-
-echo CHtml::submitButton('Create event');
-
+} ?>
+<div class="cleartall"></div>
+<button type="submit" value="submit" class="shinybutton highlighted"><span>Create</span></button>
+<?php
 $this->endWidget();

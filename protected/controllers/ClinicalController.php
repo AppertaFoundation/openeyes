@@ -10,6 +10,24 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny', 
+				'users'=>array('?')
+			),
+		);
+	}
 
 	protected function beforeAction($action)
 	{
@@ -42,7 +60,7 @@ class ClinicalController extends BaseController
 
 		$this->logActivity('viewed event');
 
-		$this->render('view', array('elements' => $elements));
+		$this->renderPartial('view', array('elements' => $elements), false, true);
 	}
 
 	public function actionIndex()
@@ -85,6 +103,8 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
+		
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'create')
 		{
@@ -98,7 +118,8 @@ class ClinicalController extends BaseController
 
 				$this->logActivity('created event.');
 
-				$this->redirect(array('view', 'id' => $eventId));
+                                // Nothing has gone wrong with updating elements, go to the view page
+                                $this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
 
 				return;
 			}
@@ -117,12 +138,13 @@ class ClinicalController extends BaseController
 			$template = 'create';
 		}
 
-		$this->render($template, array(
+		$this->renderPartial($template, array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
 				'specialties' => $specialties,
+				'patient' => $patient,
 				'referrals' => $referrals
-			)
+			), false, true
 		);
 	}
 
@@ -155,6 +177,8 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
+		
+		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'update') {
 			// The user has submitted the form to update the event
@@ -162,14 +186,10 @@ class ClinicalController extends BaseController
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {
-//				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
-//					$this->redirect(array('chooseReferral', 'id' => $eraId));
-//				} else {
-					$this->logActivity('updated event');
+				$this->logActivity('updated event');
 
-					// Nothing has gone wrong with updating elements, go to the view page
-					$this->redirect(array('view', 'id' => $event->id));
-//				}
+				// Nothing has gone wrong with updating elements, go to the view page
+				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
 
 				return;
 			}
@@ -185,12 +205,13 @@ class ClinicalController extends BaseController
 			$template = 'update';
 		}
 
-		$this->render($template, array(
+// @todo - add all the referral stuff from actionCreate to this method
+		$this->renderPartial($template, array(
 				'id' => $id,
 				'elements' => $elements,
-				'specialties' => $specialties
-			)
-		);
+				'specialties' => $specialties,
+				'patient' => $patient
+			), false, true);
 	}
 
 	public function actionEpisodeSummary($id)
@@ -201,10 +222,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid episode id.');
 		}
 
-		$this->render('episodeSummary', array(
-				'episode' => $episode,
-			)
-		);
+		$this->renderPartial('episodeSummary', array('episode' => $episode), false, true);
 	}
 
 	public function actionSummary($id)
@@ -221,10 +239,10 @@ class ClinicalController extends BaseController
 
 		$this->logActivity('viewed patient summary');
 
-		$this->render('summary', array(
+		$this->renderPartial('summary', array(
 				'episode' => $episode,
 				'summary' => $_GET['summary']
-			)
+			), false, true
 		);
 	}
 

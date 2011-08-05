@@ -1,0 +1,13 @@
+Options +FollowSymLinks
+IndexIgnore */*
+
+RewriteEngine On
+
+# if a directory or a file exists, use it directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# otherwise forward it to index.php
+RewriteCond %{REQUEST_FILENAME} !favicon.ico$
+RewriteCond %{REQUEST_FILENAME} !robots.txt$
+RewriteRule ^.*$ /index.php [L]

@@ -131,8 +131,24 @@ class SiteControllerTest extends CDbTestCase
 		$mockController = $this->getMock('SiteController', array('render'),
 			array('SiteController'));
 		$mockController->expects($this->any())
+			->method('render');
+		$mockController->actionIndex();
+	}
+	
+	public function testActionIndex_LoggedIn_RendersIndexView()
+	{
+		$userInfo = $this->users['user1'];
+		$identity = new UserIdentity('JoeBloggs', 'secret');
+		$identity->authenticate();
+		Yii::app()->user->login($identity);	
+		
+		$mockController = $this->getMock('SiteController', array('render', 'redirect'),
+			array('SiteController'));
+		$mockController->expects($this->once())
 			->method('render')
 			->with('index');
+		$mockController->expects($this->never())
+			->method('redirect');
 		$mockController->actionIndex();
 	}
 
@@ -174,7 +190,7 @@ class SiteControllerTest extends CDbTestCase
 			array('SiteController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(Yii::app()->homeUrl);
+			->with(Yii::app()->user->returnUrl);
 		$mockController->expects($this->once())
 			->method('render')
 			->with('login', array(

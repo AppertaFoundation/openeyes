@@ -7,7 +7,7 @@ return CMap::mergeArray(
 	require(dirname(__FILE__).'/params.php'),
 	array(
 		'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-		'name'=>'Open Eyes',
+		'name'=>'OpenEyes',
 
 		// preloading 'log' component
 		'preload'=>array('log'),
@@ -19,7 +19,8 @@ return CMap::mergeArray(
 			'application.components.summaryWidgets.*',
 			'application.controllers.*',
 			'application.models.elements.*',
-			'application.services.*'
+			'application.services.*',
+			'application.modules.*'
 		),
 
 		'modules'=>array(
@@ -41,16 +42,16 @@ return CMap::mergeArray(
 				'class'=>'system.test.CDbFixtureManager',
 			),
 			// uncomment the following to enable URLs in path-format
-			/*
 			'urlManager'=>array(
 				'urlFormat'=>'path',
+				'showScriptName'=>false,
 				'rules'=>array(
+					'' => 'site/index', // default action
 					'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 					'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 					'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
 				),
 			),
-			*/
 			// uncomment the following line to use a sqlite database
 			/*
 			'db'=>array(

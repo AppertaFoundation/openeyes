@@ -5,8 +5,24 @@ Yii::import('application.controllers.*');
 class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
-
-// @todo - this controller doesn't seem to care if you're not logged in! Check this and all other controllers.
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+	
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny', 
+				'users'=>array('?')
+			),
+		);
+	}
 
 	protected function beforeAction($action)
 	{
@@ -24,9 +40,12 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+// @todo - do actionViewByHosHum and actionView need to be separate methods? Is this method used directly any more?
 		$patient = $this->loadModel($id);
+		
+		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
 
-		$this->layout = '//layouts/patientMode/column2';
+		$this->layout = '//layouts/patientMode/main';
 
 		$app = Yii::app();
 		$app->session['patient_id'] = $patient->id;
@@ -35,7 +54,7 @@ class PatientController extends BaseController
 		$this->logActivity('viewed patient');
 
 		$this->render('view', array(
-			'model' => $patient
+			'model' => $patient, 'tab' => $tabId
 		));
 	}
 
@@ -71,29 +90,45 @@ class PatientController extends BaseController
 	public function actionResults()
 	{
 		if (empty($_POST['Patient'])) {
-			unset($_POST);
-			$this->forward('search');
+			$this->redirect('site/index');
 		}
+
+		$model = new Patient;
+
 		if (!isset($_GET['Patient_page'])) {
 			$page = 1;
 		} else {
 			$page = $_GET['Patient_page'];
 		}
 
-		$model = new Patient;
-		$service = new PatientService;
-		$criteria = $service->search($_POST['Patient']);
+		if (Yii::app()->params['use_pas']) {
+			$service = new PatientService;
+			$criteria = $service->search($_POST['Patient']);
 
-		$pages = new CPagination($model->count($criteria));
-		$pages->applyLimit($criteria);
+			$pages = new CPagination($model->count($criteria));
+			$pages->applyLimit($criteria);
 
-		$dataProvider = new CActiveDataProvider('Patient', array(
-			'criteria' => $criteria,
-			'pagination' => $pages));
+	       		$dataProvider = new CActiveDataProvider('Patient', array(
+				'criteria' => $criteria
+			));
+		} else {
+			$model->attributes=$_REQUEST['Patient'];
+			$dataProvider = $model->search();
+		}
 
-		$this->render('results', array(
-			'dataProvider' => $dataProvider
-		));
+		$results = $dataProvider->getData();
+
+		if (count($results) == 0) {
+			$this->redirect('site/index');
+		} elseif (count($results) == 1) {
+			$this->actionView($results[0]->id);
+		} else {
+//			$dataProvider->setPagination($page);
+
+			$this->render('results', array(
+				'dataProvider' => $dataProvider
+			));
+		}
 	}
 
 	/**
@@ -109,6 +144,59 @@ class PatientController extends BaseController
 		$this->render('admin', array(
 			'model' => $model,
 		));
+	}
+	
+	public function actionSummary()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$address = Address::model()->findByPk($patient->address_id);
+		
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $patient->id);
+		$criteria->order = 'start_date DESC';
+		$criteria->limit = 5;
+
+		$dataProvider = new CActiveDataProvider('Episode', array(
+			'criteria'=>$criteria));
+		
+		$this->renderPartial('_summary', 
+			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
+	}
+	
+	public function actionEpisodes()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		
+		$firm = Firm::model()->findByPk($this->selectedFirmId);
+		
+		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
+		$eventTypes = EventType::model()->getAllPossible($specialtyId);
+		
+		$typeGroups = $this->getEventTypeGrouping();
+		
+		foreach ($eventTypes as $eventType) {
+			foreach ($typeGroups as $name => $group) {
+				if (in_array($eventType->name, $group)) {
+					$typeList[$name][] = $eventType;
+				}
+			}
+		}
+		
+		$this->renderPartial('_episodes', 
+			array('model'=>$patient, 'episodes'=>$patient->episodes, 
+				'eventTypeGroups'=>$typeList), false, true);
+	}
+	
+	public function actionContacts()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$this->renderPartial('_contacts', array('model'=>$patient));
+	}
+	
+	public function actionCorrespondence()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$this->renderPartial('_correspondence', array('model'=>$patient));
 	}
 
 	/**
@@ -134,6 +222,16 @@ class PatientController extends BaseController
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
+	}
+	
+	protected function getEventTypeGrouping()
+	{
+		return array(
+			'Examination' => array('visual fields', 'examination', 'question', 'outcome'),
+			'Imaging & Surgery' => array('oct', 'laser', 'operation'),
+			'Correspondence' => array('letterin', 'letterout'),
+			'Consent Forms' => array(''),
+		);
 	}
 
 	/**

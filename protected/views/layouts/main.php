@@ -22,12 +22,12 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?></div>
+		<div id="logo"><img src="/images/logo_colour.png" alt="OpenEyes Logo" /></div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
-	<div id="mainmenu">
+	<!--div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
@@ -38,19 +38,34 @@
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
 		)); ?>
-	</div><!-- mainmenu -->
+	</div--><!-- mainmenu -->
 
-	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-		'links'=>$this->breadcrumbs,
-	)); ?><!-- breadcrumbs -->
-
-	<?php echo $content; ?>
+	<div id="outer_content">
+		<div id="content">
+		<?php echo $content; ?>
+		</div>
+	</div>
 
 	<div id="footer">
 		Copyright OpenEyes Foundation 2011<br/>
 	</div><!-- footer -->
 
 </div><!-- page -->
+
+<script type="text/javascript">
+	$('select[id=selected_firm_id]').live('change', function() {
+		var firmId = $('select[id=selected_firm_id]').val();
+		$.ajax({
+			type: 'post',
+			url: '<?php echo Yii::app()->createUrl('site'); ?>',
+			data: {'selected_firm_id': firmId },
+			success: function(data) {
+				console.log(data);
+				window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
+			}
+		});
+	});
+</script>
 
 </body>
 </html>

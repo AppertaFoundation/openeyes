@@ -1,6 +1,8 @@
 <?php
 class PatientTest extends CDbTestCase
 {
+	public $model;
+	
 	public $fixtures = array(
 		'patients' => 'Patient',
 		'addresses' => 'Address'
@@ -28,6 +30,36 @@ class PatientTest extends CDbTestCase
 
 		);
 	}
+	
+	public function setUp()
+	{
+		parent::setUp();
+		$this->model = new Patient;
+	}
+	
+	public function testModel()
+	{
+		$this->assertEquals('Patient', get_class(Patient::model()), 'Class name should match model.');
+	}
+	
+	public function testAttributeLabels()
+	{
+		$expected = array(                                                                                                                         
+			'id' => 'ID',
+			'pas_key' => 'PAS Key',
+			'title' => 'Title',
+			'first_name' => 'First Name',
+			'last_name' => 'Last Name',
+			'dob' => 'Date of Birth',
+			'gender' => 'Gender',
+			'hos_num' => 'Hospital Number',
+			'nhs_num' => 'NHS Number',
+			'primary_phone' => 'Primary Phone',
+			'address_id' => 'Address'
+		);
+		
+		$this->assertEquals($expected, $this->model->attributeLabels());
+	}
 
 	/**
 	 * @dataProvider dataProvider_Search
@@ -54,8 +86,10 @@ class PatientTest extends CDbTestCase
 	/**
 	 * @dataProvider dataProvider_Pseudo
 	 */
-	public function testPseudoData($data)
+	public function testPseudoData_ParamSetOn_RandomizesData($data)
 	{
+		Yii::app()->params['pseudonymise_patient_details'] = 'yes';
+		
 		$patient = new Patient;
 		$patient->setAttributes($data);
 		$patient->save();
@@ -63,10 +97,53 @@ class PatientTest extends CDbTestCase
 		foreach (array('first_name', 'last_name', 'dob', 'title', 'primary_phone') as $field) {
 			$this->assertNotNull($patient->$field, "Patient does not have anticipated field testing pseudonymous data [{$field}]");
 			// this is the important one - patient data now in the model shouldn't match the source data
-			$this->assertNotEquals($patient->$field, $data[$field]);
+			$this->assertNotEquals($patient->$field, $data[$field], 'Data should be pseudonomized (unreliable)');
 		}
 		// some fields we don't mind being the same
 		$this->assertNotNull($patient->hos_num);
 		$this->assertEquals($patient->hos_num, $data['hos_num']);
+	}
+	
+	public function testRandomData_ParamSetOff_ReturnsFalse()
+	{
+		Yii::app()->params['pseudonymise_patient_details'] = 'no';
+		
+		$attributes = array(
+			'hos_num' => 5550101,
+			'first_name' => 'Rod',
+			'last_name' => 'Flange',
+			'dob' => '1979-09-08',
+			'title' => 'MR',
+			'primary_phone' => '0208 1111111',
+			'address_id' => 1);
+		
+		$patient = new Patient;
+		$patient->setAttributes($attributes);
+		$patient->save();
+		
+		$this->assertEquals($attributes['first_name'], $patient->first_name, 'Data should not have changed.');
+	}
+	
+	public function testGetAge_ReturnsCorrectValue()
+	{
+		$attributes = array(
+			'hos_num' => 5550101,
+			'first_name' => 'Rod',
+			'last_name' => 'Flange',
+			'dob' => '1979-09-08',
+			'title' => 'MR',
+			'primary_phone' => '0208 1111111',
+			'address_id' => 1);
+		
+		$patient = new Patient;
+		$patient->setAttributes($attributes);
+		$patient->save();
+		
+		$age = date('Y') - 1979;
+		if (date('md') < '0908') {
+			$age--; // have not had a birthday yet
+		}
+		
+		$this->assertEquals($age, $patient->getAge());
 	}
 }

@@ -12,10 +12,40 @@ class BaseController extends Controller
 	public $showForm = false;
 	public $patientId;
 	public $patientName;
+	
+	/**
+	 * Default all access rule filters to a deny-basis to prevent accidental 
+	 * allowing of actions that don't have access rules defined yet
+	 * 
+	 * @param $filterChain
+	 * @return type 
+	 */
+	public function filterAccessControl($filterChain)
+	{
+		$rules = $this->accessRules();
+		
+		// default deny
+		$rules[] = array('deny', 'users'=>array('?'));
+		
+		$filter = new CAccessControlFilter;
+		$filter->setRules($rules);
+		$filter->filter($filterChain);
+	}
 
 	protected function beforeAction($action)
 	{
 		$app = Yii::app();
+
+		if (Yii::app()->params['ab_testing'] == 'yes') {
+			if (Yii::app()->user->isGuest) {
+				$identity=new UserIdentity('admin', 'admin');
+				$identity->authenticate();
+				Yii::app()->user->login($identity,0);
+				$this->selectedFirmId = 1;
+				$app->session['patient_id'] = 1;
+				$app->session['patient_name'] = 'John Smith';
+			}
+		}
 
 		if (isset($app->session['firms']) && count($app->session['firms'])) {
 			$this->showForm = true;
@@ -34,6 +64,19 @@ class BaseController extends Controller
 	public function checkPatientId()
 	{
 		$app = Yii::app();
+
+		if (Yii::app()->params['ab_testing'] == 'yes') {
+			if (Yii::app()->user->isGuest) {
+				$identity=new UserIdentity('admin', 'admin');
+				$identity->authenticate();
+				Yii::app()->user->login($identity,0);
+				$this->selectedFirmId = 1;
+				$app->session['patient_id'] = 1;
+				$app->session['patient_name'] = 'John Smith';
+			}
+			$app->session['patient_id'] = 1;
+			$app->session['patient_name'] = 'John Smith';
+		}
 
 		if (isset($app->session['patient_id'])) {
 			$this->patientId = $app->session['patient_id'];

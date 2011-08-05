@@ -1,24 +1,56 @@
-<strong>Book Operation</strong>
-
-<div class="row">
-	<label for="ElementOperation_value">Eye(s) to be operated on:</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
-		array('separator' => ' &nbsp; ')); ?>
+<div class="heading">
+<strong>Book Operation:</strong> Operation details
 </div>
-<div class="row">
-	<label for="ElementOperation_value">Add procedure:</label>
-<?php
+
+<div class="box_grey_bigger_gradient_top"></div>
+<div class="box_grey_bigger_gradient_bottom">
+	<div class="label">Select eye(s):</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
+		array('separator' => ' &nbsp; ')); ?>
+	</div>
+	<div class="cleartall"></div>
+	<div class="label">Add procedure:</div>
+	<div class="data"><span></span><?php
+	YII::app()->clientScript->scriptMap['jquery.js'] = false;
+
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
-    'sourceUrl'=>array('procedure/autocomplete'),
+	'source'=>"js:function(request, response) {
+		var existingProcedures = [];
+		$('#procedure_list tbody').children().each(function () {
+			var text = $(this).children('td:first').text();
+			existingProcedures.push(text.replace(/ remove$/i, ''));
+		});
+			
+		$.ajax({
+			'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
+			'type':'GET',
+			'data':{'term': request.term},
+			'success':function(data) {
+				data = $.parseJSON(data);
+		
+				var result = [];
+				
+				for (var i = 0; i < data.length; i++) {
+					var index = $.inArray(data[i], existingProcedures);
+					if (index == -1) {
+						result.push(data[i]);
+					}
+				}
+				
+				response(result);
+			}
+		});
+	}",
     'options'=>array(
 	'minLength'=>'2',
 		'select'=>"js:function(event, ui) {
 			$.ajax({
-				'url': 'index.php?r=procedure/details',
+				'url': '" . Yii::app()->createUrl('procedure/details') . "',
 				'type': 'GET',
 				'data': {'name': ui.item.value},
 				'success': function(data) {
+					// @todo: if 'both' eyes are selected, then the duration should be x2
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
 					$('#procedure_list').show();
@@ -40,13 +72,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			});
 		}",
     ),
-    'htmlOptions'=>array(
-	'style'=>'height:20px;width:200px;'
-    ),
-));
-?>
-</div>
-<div>
+)); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
+	<div class="cleartall"></div>
 	<div>
 		<table id="procedure_list" class="grid"<?php 
 	if ($model->isNewRecord) { ?> style="display:none;"<?php 
@@ -62,7 +89,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	$totalDuration = 0;
 	if (!empty($model->procedures)) {
 		foreach ($model->procedures as $procedure) {
-			$display = $procedure['term'] . ' - ' . $procedure['short_format'];
+			$display = $procedure['term'] . ' - ' . $procedure['short_format'] . 
+				' ' . CHtml::link('remove', '#', array('onClick' => "js:removeProcedure(this);"));
 			$totalDuration += $procedure['default_duration']; ?>
 				<tr>
 					<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
@@ -79,98 +107,63 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				</tr>
 				<tr>
 					<td>Your Estimated Total:</td>
-					<td><?php echo CHtml::activeTextField($model, 'total_duration'); ?></td>
+					<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
 				</tr>
 			</tfoot>
 		</table>
 	</div>
-</div>
+	
 <?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
     'panels'=>array(
 	'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
 			array('specialties' => $specialties),true),
     ),
+	'id'=>'procedure_selects',
+	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
+	'theme'=>'theme',
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,
 	'animated'=>'bounceslide',
 		'collapsible'=>true,
+		'autoHeight'=>false,
+		'clearStyle'=>true
     ),
 )); ?>
-<div class="row">
-	<label for="ElementOperation_value">Consultant required?</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'consultant_required', 
-		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?>
+	<div class="cleartall"></div>
+	<div class="label">Consultant required?</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'consultant_required', 
+		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Anaesthetic type:</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type', 
+		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Overnight Stay required?</div>
+	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
+		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Decision Date:</div>
+	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+			'name'=>'decisionDate',
+			'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
+			'theme'=>'theme',
+			// additional javascript options for the date picker plugin
+			'options'=>array(
+				'showAnim'=>'fold',
+				'dateFormat'=>'yy-mm-dd',
+			),
+			'htmlOptions'=>array('style'=>'width: 110px;')
+		)); ?></div>
+	<div class="cleartall"></div>
+	<div class="label">Add comments:</div>
+	<div class="data"><?php echo CHtml::activeTextArea($model, 'comments'); ?></div>
 </div>
-<div class="row">
-	<label for="ElementOperation_value">Anaesthetic required:</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type', 
-		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Overnight Stay required?</label>
-	<?php echo CHtml::activeRadioButtonList($model, 'overnight_stay', 
-		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Decision date</label>
-<?php
-	if (empty($model->decision_date)) {
-		// No decision date, set to today
-		$day = date('j');
-		$month = date('n');
-		$year = date('Y');
-	} else {
-		$dates = explode('-', $model->decision_date);
-
-		$year = $dates[0];
-		$month = $dates[1];
-		$day = $dates[2];
-	}
-
-	$days = array();
-	$months = array(
-		'01'	=>	'January',
-		'02'	=>	'February',
-		'03'	=>	'March',
-		'04'	=>	'April',
-		'05'	=>	'May',
-		'06'	=>	'June',
-		'07'	=>	'July',
-		'08'	=>	'August',
-		'09'	=>	'September',
-		'10'	=>	'October',
-		'11'	=>	'November',
-		'12'	=>	'December'
-	);
-	$years = array();
-
-	for ($i = 1; $i <= 31; $i++) {
-		if ($i < 10) {
-			$id = "0$i";
-		} else {
-			$id = $i;
-		}
-
-		$days[$id] = $id;
-	}
-	for ($i = $year - 1; $i <= date('Y'); $i++) {
-		$years[$i] = $i;
-	}
-
- 	echo CHtml::dropDownList('decision_date_day', $day, $days);
-	echo CHtml::dropDownList('decision_date_month', $month, $months);
-	echo CHtml::dropDownList('decision_date_year', $year, $years);
-?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Add comments:</label><br />
-	<?php echo CHtml::activeTextArea($model, 'comments', 
-		array('rows' => 6, 'cols' => 60)); ?>
-</div>
-<div class="row">
-	<label for="ElementOperation_value">Schedule Operation:</label><br />
+<div class="box_grey_big_gradient_top"></div>
+<div class="box_grey_big_gradient_bottom">
+	<div class="label">Schedule Operation:</div>
+	<div class="data">
 	<?php 
 	$timeframe1 = $model->schedule_timeframe == ElementOperation::SCHEDULE_IMMEDIATELY ? 0 : 1;
 	if ($model->schedule_timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
@@ -183,12 +176,11 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	echo CHtml::radioButtonList('schedule_timeframe1', $timeframe1,
 		$model->getScheduleOptions(), array('separator' => '<br />'));
 	echo CHtml::dropDownList('schedule_timeframe2', $timeframe2, 
-			$model->getScheduleDelayOptions(), $options); ?>
+			$model->getScheduleDelayOptions(), $options); ?></div>
 </div>
 <script type="text/javascript">
 	$(function() {
 		$("#procedure_list tbody").sortable({
-			 cursor: 'move',
 			 helper: function(e, tr)
 			 {
 				 var $originals = tr.children();

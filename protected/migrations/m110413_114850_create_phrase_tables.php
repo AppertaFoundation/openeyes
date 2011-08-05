@@ -18,8 +18,8 @@ class m110413_114850_create_phrase_tables extends CDbMigration
 			'PRIMARY KEY (`id`)'
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
-                $this->insert('section_type', array('name' => 'Letter'));
-                $this->insert('section_type', array('name' => 'Exam'));
+		$this->insert('section_type', array('name' => 'Letter'));
+		$this->insert('section_type', array('name' => 'Exam'));
 
 		// phrase_by_specialty
 		$this->createTable('phrase_by_specialty', array(
@@ -65,6 +65,8 @@ class m110413_114850_create_phrase_tables extends CDbMigration
 	{
 		$this->dropTable('phrase_by_firm');
 		$this->dropTable('phrase_by_specialty');
+		$this->dropTable('phrase');
+		$this->dropTable('section_type');
 		$this->dropTable('section');
 	}
 }

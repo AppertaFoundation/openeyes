@@ -22,30 +22,21 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> PATIENT MODE</div>
+		<div id="logo"><img src="/images/logo_colour.png" alt="OpenEyes Logo" /></div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
-	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'Search Patients', 'url'=>array('/patient/admin')),
-				array('label'=>'Clinical', 'url'=>array('/clinical')),
-				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
-			),
-		)); ?>
-	</div><!-- mainmenu -->
-
-	Patient: <?php echo($this->patientName) ?>
-
-	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-		'links'=>$this->breadcrumbs,
-	)); ?><!-- breadcrumbs -->
-
-	<?php echo $content; ?>
+	<div id="outer_content">
+		<div id="content">
+			<?php $this->widget('application.components.MyBreadcrumbs', array(
+				'homeLink'=>CHtml::link('OpenEyes', array('site/index')),
+				'links'=>$this->breadcrumbs,
+				'prefixText'=>'You are here: &nbsp; ',
+			)); ?><!-- breadcrumbs -->
+			<?php echo $content; ?>
+		</div>
+	</div>
 
 	<div id="footer">
 		Copyright OpenEyes Foundation 2011<br/>
@@ -53,5 +44,20 @@
 
 </div><!-- page -->
 <?php echo EyeDrawService::activeEyeDrawInit($this); ?>
+
+<script type="text/javascript">
+	$('select[id=selected_firm_id]').live('change', function() {
+		var firmId = $('select[id=selected_firm_id]').val();
+		$.ajax({
+			type: 'post',
+			url: '<?php echo Yii::app()->createUrl('site'); ?>',
+			data: {'selected_firm_id': firmId },
+			success: function(data) {
+				console.log(data);
+				window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
+			}
+		});
+	});
+</script>
 </body>
 </html>

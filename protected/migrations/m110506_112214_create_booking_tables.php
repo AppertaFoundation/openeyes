@@ -119,8 +119,10 @@ class m110506_112214_create_booking_tables extends CDbMigration
 
 	public function down()
 	{
-		$this->dropForeignKey('appointment_1','appointment');
-		$this->dropForeignKey('appointment_2','appointment');
+		if ($this->dbConnection->schema->getTable('{{appointment}}')) {
+			$this->dropForeignKey('appointment_1','appointment');
+			$this->dropForeignKey('appointment_2','appointment');
+		}
 		
 		$this->dropForeignKey('sequence_firm_assignment_1','sequence_firm_assignment');
 		$this->dropForeignKey('sequence_firm_assignment_2','sequence_firm_assignment');

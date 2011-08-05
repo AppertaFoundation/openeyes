@@ -43,7 +43,7 @@ class PatientControllerTest extends CDbTestCase
 		$mockController = $this->getMock('PatientController', array('render'), array('PatientController'));
 		$mockController->expects($this->any())
 			->method('render')
-			->with('view', array('model' => $this->patients('patient1')));
+			->with('view', array('model' => $this->patients('patient1'), 'tab' => 0));
 		
 		$mockController->actionView($patientId);
 		$this->assertEquals($patientId, Yii::app()->session['patient_id'], 'Patient id should be stored in the session.');
