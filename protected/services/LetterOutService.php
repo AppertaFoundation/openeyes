@@ -319,20 +319,20 @@ class LetterOutService
 				}
 			}
 
-			// Find most recent episode, if any
-			$episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm);
+                        // Find most recent episode, if any
+                        $episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm);
 
-			if (isset($episode)) {
-				// Get most recent diagnosis for this patient
-				// @todo - this method can be consolidated with the ElementDiagnosis->getNewestDiagnosis method
-				$diagnosis = $episode->getPrincipalDiagnosis();
+                        $this->substitutions['epd'] = 'NO DATA';
+                        $this->substitutions['eps'] = 'NO DATA';
 
-				$this->substitutions['epd'] = $diagnosis->disorder->term;
-				$this->substitutions['eps'] = $diagnosis->getEyeText();
+                        if (isset($episode) && $episode) {
+                                $diagnosis = $episode->getPrincipalDiagnosis();
 
-				// Get the most recent operation for this patient
-				// @todo - complete after mergin branch with booking. Refer to email 'Correspondence questions'.
-			}
+                                if (isset($diagnosis) && $diagnosis) {
+                                        $this->substitutions['epd'] = $diagnosis->disorder->term;
+                                        $this->substitutions['eps'] = $diagnosis->getEyeText();
+                                }
+                        }
 		}
 
 /*
