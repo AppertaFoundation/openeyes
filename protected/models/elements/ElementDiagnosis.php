@@ -75,7 +75,7 @@ class ElementDiagnosis extends BaseElement
 			'id' => 'ID',
 			'event_id' => 'Event',
 			'disorder_id' => 'Disorder',
-			'eye' => 'eye',
+			'eye' => 'Eye',
 		);
 	}
 

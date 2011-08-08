@@ -58,9 +58,24 @@ class ClinicalController extends BaseController
 			null, null, null, $this->getUserId(), $event
 		);
 
+		// Decide whether to display the 'edit' button in the template
+                if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+                        $event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+                } else {
+			$editable = true;
+		}
+
 		$this->logActivity('viewed event');
 
-		$this->renderPartial('view', array('elements' => $elements), false, true);
+		$this->renderPartial(
+			$this->getTemplateName('view', $event->event_type_id),
+			array(
+				'elements' => $elements,
+				'eventId' => $id,
+				'editable' => $editable
+			),
+		false, true);
 	}
 
 	public function actionIndex()
@@ -118,8 +133,8 @@ class ClinicalController extends BaseController
 
 				$this->logActivity('created event.');
 
-                                // Nothing has gone wrong with updating elements, go to the view page
-                                $this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
+				// Nothing has gone wrong with updating elements, go to the view page
+				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
 
 				return;
 			}
@@ -131,14 +146,7 @@ class ClinicalController extends BaseController
 		// Check to see if they need to choose a referral
 		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
 
-		// Check to see if there is a create event type template for this event type.
-		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . 'create' . DIRECTORY_SEPARATOR . $eventTypeId;
-
-		if (!file_exists($this->getTemplateDir() . $template . '.php')) {
-			$template = 'create';
-		}
-
-		$this->renderPartial($template, array(
+		$this->renderPartial($this->getTemplateName('create', $eventTypeId), array(
 				'elements' => $elements,
 				'eventTypeId' => $eventTypeId,
 				'specialties' => $specialties,
@@ -198,15 +206,8 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		// Check to see if there is an update event type template for this event type.
-		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . 'create' . DIRECTORY_SEPARATOR . $eventTypeId;
-
-		if (!file_exists($this->getTemplateDir() . $template . '.php')) {
-			$template = 'update';
-		}
-
 // @todo - add all the referral stuff from actionCreate to this method
-		$this->renderPartial($template, array(
+		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
 				'id' => $id,
 				'elements' => $elements,
 				'specialties' => $specialties,
@@ -378,8 +379,14 @@ class ClinicalController extends BaseController
 		$this->listEpisodesAndEventTypes();
 	}
 
-	public function getTemplateDir()
+	public function getTemplateName($action, $eventTypeId)
 	{
-		return Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR;
+		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+
+		if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
+			$template = $action;
+		}
+
+		return $template;
 	}
 }

@@ -1,4 +1,5 @@
 <?php
+
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');

@@ -103,7 +103,7 @@ class PatientController extends BaseController
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
-			$criteria = $service->search($_POST['Patient']);
+			$criteria = $service->search($this->collatePostData());
 
 			$pages = new CPagination($model->count($criteria));
 			$pages->applyLimit($criteria);
@@ -112,14 +112,29 @@ class PatientController extends BaseController
 				'criteria' => $criteria
 			));
 		} else {
-			$model->attributes=$_REQUEST['Patient'];
+			$model->attributes = $this->collatePostData();
 			$dataProvider = $model->search();
 		}
 
 		$results = $dataProvider->getData();
 
 		if (count($results) == 0) {
-			$this->redirect('site/index');
+			// @todo - find some way of displaying error
+			$errorData = array(
+				'site/index',
+				'patientSearchError' => 1
+			);
+
+			foreach (array(
+				'Patient[hos_num]', 'Patient[first_name]', 'Patient[lasst_name]',
+				'dob_day', 'dob_month', 'dob_year', 'Patient[nhs_num]', 'Patient[gender]'
+			) as $field) {
+				if (isset($_POST[$field]) && $_POST[$field]) {
+					$errorData[$field] = $_POST[$field];
+				}
+			}
+
+			$this->redirect($errorData);
 		} elseif (count($results) == 1) {
 			$this->actionView($results[0]->id);
 		} else {
@@ -246,5 +261,21 @@ class PatientController extends BaseController
 		$model = new Patient;
 		$model->attributes = $data;
 		return $model->search();
+	}
+
+	/**
+	 * Returns the $_REQUIEST['Patient'] values plus the dob day, month and year appended together.
+	 *
+	 * @return array
+	 */
+	public function collatePostData()
+	{
+		$data = $_POST['Patient'];
+
+		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
+			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
+		}
+
+		return $data;
 	}
 }

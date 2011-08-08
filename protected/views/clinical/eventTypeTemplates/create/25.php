@@ -38,9 +38,10 @@ if (isset($referrals) && is_array($referrals)) {
 	if (count($referrals) > 1) {
 		// Display a list of referrals for the user to choose from
 ?>
-<br />
-        <div class="row">
-                <label for="referral_id">Please choose a referral:</label>
+<div class="box_grey_big_gradient_top"></div>
+<div class="box_grey_big_gradient_bottom">
+                <span class="referral_red">There is more than one open referral that could apply to this event.</span><p />
+                <label for="referral_id">Select the referral that applies to this event:</label>
 <?php
 		echo CHtml::dropDownList('referral_id', '', CHtml::listData($referrals, 'id', 'id'));
 ?>
