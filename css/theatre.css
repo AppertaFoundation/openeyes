@@ -25,7 +25,8 @@ h3.date a {
 
 #multiOpenAccordion .ui-widget-content {
 	border: 0;
-	padding: 0;
+	padding: 0 0 5px 0;
+	background: transparent;
 }
 
 .invisible {
@@ -61,6 +62,7 @@ h3.date a {
 #theatreList th.first {
 	background: url('/images/blue_table_header_light.png') top left no-repeat;
 	height: 34px;
+	border-left: 0px;
 }
 
 #theatreList th.repeat {
@@ -71,10 +73,11 @@ h3.date a {
 #theatreList th.last {
 	background: url('/images/blue_table_header_light.png') top right no-repeat;
 	height: 34px;
+	border-right: 0px;
 }
 
 #theatreList th.footer {
-	background: url('/images/grey_table_footer.png') top left no-repeat;
+	background: transparent url('/images/grey_table_footer.png') top left no-repeat;
 	height: 22px;
 	border-width: 0;
 	font: bold 10pt Arial;
@@ -84,16 +87,23 @@ h3.date a {
 	color: #c00;
 }
 
+#theatreList td {
+	text-align: center;
+	background: #fff;
+}
+
 #theatreList td.session {
 	width: 90px;
 }
 
 #theatreList td.patient {
 	width: 135px;
+	text-align: left;
 }
 
 #theatreList td.operation {
 	width: 195px;
+	text-align: left;
 }
 
 #theatreList td.duration {
