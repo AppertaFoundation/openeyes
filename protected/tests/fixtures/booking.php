@@ -20,7 +20,8 @@ if (!empty($operations)) {
 			$bookings[] = array(
 				'element_operation_id' => $operation['id'],
 				'session_id' => $sessionId,
-				'display_order' => 1
+				'display_order' => 1,
+				'ward_id' => 1
 			);
 		}
 		$sessionId++;

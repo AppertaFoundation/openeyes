@@ -162,12 +162,11 @@ class BookingService
 		}
 		
 		$command = Yii::app()->db->createCommand()
-			->select('t.id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, 
+			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
 				o.eye, o.anaesthetic_type, o.comments, 
 				o.total_duration AS operation_duration, p.first_name, 
-				p.last_name, p.dob, p.gender, o.id AS operation_id, w.name AS ward,
-				b.display_order')
+				p.last_name, p.dob, p.gender, w.name AS ward, b.display_order')
 			->from('session s')
 			->join('sequence q', 's.sequence_id = q.id')
 			->join('theatre t', 't.id = q.theatre_id')
@@ -182,7 +181,7 @@ class BookingService
 			->join('service ser', 'ser.id = ssa.service_id')
 			->join('ward w', 'w.id = b.ward_id')
 			->where($whereSql, $whereParams)
-			->order('t.name ASC, s.date ASC, b.display_order ASC');
+			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
 		
 		return $command->queryAll();
 	}

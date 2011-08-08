@@ -2,7 +2,8 @@
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerCSSFile('/css/theatre.css', 'all');
-Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
+$cs->registerCoreScript('jquery.ui');
+$cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
 $cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js');
 
 ?>
@@ -143,52 +144,58 @@ if (!empty($theatres)) { ?>
 <?php
 	$panels = array();
 	foreach ($theatres as $name => $dates) { ?>
-<h3><a href="#"><?php echo $name; ?></a></h3>
+<h2 class="theatre"><?php echo $name; ?></h2>
 <?php	foreach ($dates as $date => $sessions) { ?>
+<h3 class="date"><a href="#"><?php echo date('d F Y', strtotime($date)); ?></a></h3>
 <div>
-<table>
-<tr>
-	<th colspan="6"><?php echo $date; ?></th>
-</tr>
-<?php		$sessionHeader = false;
+	<table>
+	<tr>
+		<th class="first">Session</th>
+		<th class="repeat">Patient (Age)</th>
+		<th class="repeat">[Eye] Operation</th>
+		<th class="repeat">Duration</th>
+		<th class="repeat">Ward</th>
+		<th class="repeat">Anaesthetic</th>
+		<th class="last">Alerts</th>
+	</tr>
+<?php		$lastSession = $sessions[0];
 			foreach ($sessions as $session) {
-				if (!$sessionHeader) {?>
-<tr>
-	<th colspan="3" style="text-align: center;">Session: <?php echo substr($session['startTime'], 0, 5) .
-		' ' . substr($session['endTime'],0,5); ?></th>
-	<th colspan="3">Time unallocated: <?php
+				if ($session['sessionId'] != $lastSession['sessionId']) { ?>
+	<tr>
+		<th class="footer" colspan="7">Time unallocated: <?php
+					echo '<span';
+					if ($lastSession['timeAvailable'] < 0) {
+						echo ' class="full"';
+					}
+					echo ">{$lastSession['timeAvailable']}"; ?>min</span></th>
+	</tr>
+<?php				$lastSession = $session;
+				} ?>
+	<tr>
+		<td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
+		<td class="patient"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+		<td class="operation">[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
+		<td class="duration"><?php echo $session['operationDuration']; ?></td>
+		<td class="ward"><?php echo $session['ward']; ?></td>
+		<td class="anaesthetic"><?php echo $session['anaesthetic']; ?></td>
+		<td class="alerts"><div class="alert gender invisible <?php echo $session['patientGender']; ?>"></div><?php
+		if (!empty($session['operationComments'])) { ?><div class="alert comments invisble"><img class="invisible" src="/images/icon_comments.gif" alt="comments" title="<?php echo $session['operationComments']; ?>" /></div><?php
+		} ?></td>
+	</tr>
+<?php
+			} ?>
+	<tr>
+		<th class="footer" colspan="7">Time unallocated: <?php
 					echo '<span';
 					if ($session['timeAvailable'] < 0) {
 						echo ' class="full"';
 					}
 					echo ">{$session['timeAvailable']}"; ?>min</span></th>
-</tr>
-<tr>
-	<th>Patient (Age)</th>
-	<th>[Eye] Operation</th>
-	<th>Duration</th>
-	<th>Ward</th>
-	<th>Anaesthetic</th>
-	<th>Alerts</th>
-</tr>
-<?php
-					$sessionHeader = true;
-				} ?>
-<tr>
-	<td><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
-	<td>[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
-	<td><?php echo $session['operationDuration']; ?></td>
-	<td><?php echo $session['ward']; ?></td>
-	<td><?php echo $session['anaesthetic']; ?></td>
-	<td><div class="alert gender invisible <?php echo $session['patientGender']; ?>"></div><?php
-		if (!empty($session['operationComments'])) { ?><div class="alert comments invisble"><img class="invisible" src="/images/icon_comments.gif" alt="comments" title="<?php echo $session['operationComments']; ?>" /></div><?php
-		} ?></td>
-</tr>
-<?php
-			}
-		} ?>
-</table>
+	</tr>
+	</table>
 </div>
+<?php
+		} ?>
 <?php
 	}
 	?>
@@ -228,5 +235,15 @@ if (!empty($theatres)) { ?>
 			$('input[id=date-end]').val('');
 		}
 	});
-//	$('#theatreList').multiAccordion();
+	$('#multiOpenAccordion').multiOpenAccordion({
+		autoHeight: false,
+		clearStyle: true });
+	// if we've selected today, or a same-day custom date range, show expanded
+	if ('today' == $('input[name=date-filter]:checked').val() || 
+		($('input[name=date-filter]:checked').val() == 'custom' && 
+		$('input[id=date-start]').val() == $('input[id=date-end]').val())) {
+		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "all");
+	} else {
+		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "none");
+	}
 </script>

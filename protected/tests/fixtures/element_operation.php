@@ -9,6 +9,7 @@ return array(
 		'anaesthetic_type' => ElementOperation::ANAESTHETIC_TOPICAL,
 		'overnight_stay' => false,
 		'comments' => 'foo',
+		'status' => ElementOperation::STATUS_SCHEDULED
 	),
 	'element2' => array(
 		'event_id' => 2,
@@ -19,5 +20,6 @@ return array(
 		'anaesthetic_type' => ElementOperation::ANAESTHETIC_TOPICAL,
 		'overnight_stay' => false,
 		'comments' => 'bar',
+		'status' => ElementOperation::STATUS_SCHEDULED
 	)
 );

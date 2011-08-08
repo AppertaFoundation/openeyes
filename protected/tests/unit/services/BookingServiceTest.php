@@ -11,8 +11,12 @@ class BookingServiceTest extends CDbTestCase
 		'bookings' => 'Booking',
 		'theatres' => 'Theatre',
 		'sites' => 'Site',
+		'wards' => 'Ward',
 		'patients' => 'Patient',
-		'serviceSpecialtyAssignments' => 'ServiceSpecialtyAssignment'
+		'serviceSpecialtyAssignments' => 'ServiceSpecialtyAssignment',
+		'events' => 'Event',
+		'episodes' => 'Episode',
+		'services' => 'Service'
 	);
 
 	protected $service;
@@ -192,10 +196,11 @@ class BookingServiceTest extends CDbTestCase
 		$session2 = $this->sessions[2];
 		
 		$theatre = $this->theatres['theatre1'];
+		$ward = $this->wards['ward1'];
 		
 		$expected = array(
 			array(
-				'id' => $theatre['id'],
+				'operation_id' => $this->operations['element1']['id'],
 				'name' => $theatre['name'],
 				'date' => $session1['date'],
 				'start_time' => $session1['start_time'],
@@ -210,11 +215,11 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element1']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			),
 			array(
-				'id' => $theatre['id'],
+				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
 				'start_time' => $session2['start_time'],
@@ -229,7 +234,7 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element2']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			)
 		);
@@ -248,10 +253,11 @@ class BookingServiceTest extends CDbTestCase
 		$session2 = $this->sessions[2];
 		
 		$theatre = $this->theatres['theatre1'];
+		$ward = $this->wards['ward1'];
 		
 		$expected = array(
 			array(
-				'id' => $theatre['id'],
+				'operation_id' => $this->operations['element1']['id'],
 				'name' => $theatre['name'],
 				'date' => $session1['date'],
 				'start_time' => $session1['start_time'],
@@ -266,11 +272,11 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element1']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			),
 			array(
-				'id' => $theatre['id'],
+				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
 				'start_time' => $session2['start_time'],
@@ -285,7 +291,7 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element2']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			)
 		);
@@ -305,10 +311,11 @@ class BookingServiceTest extends CDbTestCase
 		
 		$theatre = $this->theatres['theatre1'];
 		$theatreId = $theatre['id'];
+		$ward = $this->wards['ward1'];
 		
 		$expected = array(
 			array(
-				'id' => $theatreId,
+				'operation_id' => $this->operations['element1']['id'],
 				'name' => $theatre['name'],
 				'date' => $session1['date'],
 				'start_time' => $session1['start_time'],
@@ -323,11 +330,11 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element1']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			),
 			array(
-				'id' => $theatreId,
+				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
 				'start_time' => $session2['start_time'],
@@ -342,7 +349,7 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element2']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			)
 		);
@@ -362,11 +369,11 @@ class BookingServiceTest extends CDbTestCase
 		$session2 = $this->sessions[2];
 		
 		$theatre = $this->theatres['theatre1'];
-		$theatreId = $theatre['id'];
+		$ward = $this->wards['ward1'];
 		
 		$expected = array(
 			array(
-				'id' => $theatreId,
+				'operation_id' => $this->operations['element1']['id'],
 				'name' => $theatre['name'],
 				'date' => $session1['date'],
 				'start_time' => $session1['start_time'],
@@ -381,11 +388,11 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element1']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			),
 			array(
-				'id' => $theatreId,
+				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
 				'start_time' => $session2['start_time'],
@@ -400,12 +407,12 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element2']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			)
 		);
 		
-		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $serviceId);
+		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatre['id'], $serviceId);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');
 	}
 	
@@ -421,11 +428,11 @@ class BookingServiceTest extends CDbTestCase
 		$session2 = $this->sessions[2];
 		
 		$theatre = $this->theatres['theatre1'];
-		$theatreId = $theatre['id'];
+		$ward = $this->wards['ward1'];
 		
 		$expected = array(
 			array(
-				'id' => $theatreId,
+				'operation_id' => $this->operations['element1']['id'],
 				'name' => $theatre['name'],
 				'date' => $session1['date'],
 				'start_time' => $session1['start_time'],
@@ -440,11 +447,11 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element1']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			),
 			array(
-				'id' => $theatreId,
+				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
 				'start_time' => $session2['start_time'],
@@ -459,12 +466,12 @@ class BookingServiceTest extends CDbTestCase
 				'last_name' => $this->patients['patient1']['last_name'],
 				'dob' => $this->patients['patient1']['dob'],
 				'gender' => $this->patients['patient1']['gender'],
-				'operation_id' => $this->operations['element2']['id'],
+				'ward' => $ward['name'],
 				'display_order' => 1,
 			)
 		);
 		
-		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $serviceId, $firmId);
+		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatre['id'], $serviceId, $firmId);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');
 	}
 }

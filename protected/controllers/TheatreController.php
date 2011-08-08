@@ -119,18 +119,17 @@ class TheatreController extends BaseController
 					'displayOrder' => $values['display_order']
 				);
 				
-				if (empty($theatreTotals[$values['name']][$values['date']])) {
-					$theatreTotals[$values['name']][$values['date']] = $values['operation_duration'];
+				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
+					$theatreTotals[$values['name']][$values['date']][$values['session_id']] = $values['operation_duration'];
 				} else {
-					$theatreTotals[$values['name']][$values['date']] += $values['operation_duration'];
+					$theatreTotals[$values['name']][$values['date']][$values['session_id']] += $values['operation_duration'];
 				}
 			}
 
 			foreach ($theatres as $name => &$dates) {
 				foreach ($dates as $date => &$sessions) {
-					$totalBookings = $theatreTotals[$name][$date];
-					
 					foreach ($sessions as &$session) {
+						$totalBookings = $theatreTotals[$name][$date][$session['sessionId']];
 						$session['timeAvailable'] = $session['sessionDuration'] - $totalBookings;
 					}
 				}

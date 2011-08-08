@@ -1,5 +1,31 @@
+h2.theatre {
+	color: #003366;
+	font: normal 14pt Arial;
+	margin-top: 15px;
+	margin-bottom: 5px;
+}
+
 h3.title {
     color: #fff;
+}
+
+h3.date {
+	background: url('/images/blue_table_header_big.png') top left no-repeat !important;
+	height: 16px;
+	width: 706px;
+	font: normal 12pt Arial;
+	padding: 7px;
+	border: 0;
+}
+
+h3.date a {
+	padding-top: 0 !important;
+	padding-bottom: 0 !important;
+}
+
+#multiOpenAccordion .ui-widget-content {
+	border: 0;
+	padding: 0;
 }
 
 .invisible {
@@ -8,12 +34,82 @@ h3.title {
 
 #theatreList {
     float: left;
-    width: 700px;
+    width: 720px;
 }
 
 #theatreList table {
-    margin: 0 0 10px 0;
+    margin: 0;
     padding: 0;
+}
+
+#theatreList td {
+	font: 10pt Arial;
+	border: 1px solid #cee7f8;
+	border-width: 0 1px 0 1px;
+	border-collapse: collapse;
+}
+
+#theatreList th {
+	text-align: center;
+	font: normal 11pt Arial;
+	padding: 0;
+	border: 1px solid #a0cce9;
+	border-width: 0 1px 0 1px;
+	border-collapse: collapse;
+}
+
+#theatreList th.first {
+	background: url('/images/blue_table_header_light.png') top left no-repeat;
+	height: 34px;
+}
+
+#theatreList th.repeat {
+	background: url('/images/blue_table_header_light_repeat.png') top left repeat-x;
+	height: 34px;
+}
+
+#theatreList th.last {
+	background: url('/images/blue_table_header_light.png') top right no-repeat;
+	height: 34px;
+}
+
+#theatreList th.footer {
+	background: url('/images/grey_table_footer.png') top left no-repeat;
+	height: 22px;
+	border-width: 0;
+	font: bold 10pt Arial;
+}
+
+#theatreList th.footer span.full {
+	color: #c00;
+}
+
+#theatreList td.session {
+	width: 90px;
+}
+
+#theatreList td.patient {
+	width: 135px;
+}
+
+#theatreList td.operation {
+	width: 195px;
+}
+
+#theatreList td.duration {
+	width: 70px;
+}
+
+#theatreList td.ward {
+	width: 75px;
+}
+
+#theatreList td.anaesthetic {
+	width: 80px;
+}
+
+#theatreList td.alerts {
+	width: 75px;
 }
 
 .alert {
@@ -74,7 +170,7 @@ h3.title {
 
 #alertOptions {
     background: url('/images/blue_highlight_small.png') top left no-repeat;
-    margin-left: 730px;
+	margin: 40px 0 0 730px;
     width: 144px;
     height: 99px;
     font-weight: bold;

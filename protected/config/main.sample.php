@@ -114,18 +114,14 @@ return CMap::mergeArray(
 						'themeUrl'=>'/css/jqueryui',
 						'theme'=>'theme'
 					),
-					'CJuiAutoComplete' => array(
-						'themeUrl'=>'/css/jqueryui',
-						'theme'=>'theme'
-					),
 					'CJuiButton' => array(
 						'themeUrl'=>'/css/jqueryui',
 						'theme'=>'theme'
 					),
-					'CJuiDatePicker' => array(
-						'themeUrl'=>'/css/jqueryui',
-						'theme'=>'theme'
-					),
+//					'CJuiDatePicker' => array(
+//						'themeUrl'=>'/css/jqueryui',
+//						'theme'=>'theme'
+//					),
 					'CJuiDialog' => array(
 						'themeUrl'=>'/css/jqueryui',
 						'theme'=>'theme'
