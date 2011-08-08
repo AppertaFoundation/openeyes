@@ -136,8 +136,6 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			array('specialties' => $specialties),true),
     ),
 	'id'=>'procedure_selects',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,

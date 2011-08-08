@@ -95,8 +95,6 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 				array('operation' => $data),true),
 		),
 		'id'=>'clinic-details',
-		'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-		'theme'=>'theme',
 		// additional javascript options for the accordion plugin
 		'options'=>array(
 			'active'=>false,

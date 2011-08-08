@@ -25,8 +25,6 @@ if ($tab == 1) {
 		'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
 	),
 	'id'=>'patient-tabs',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
     // additional javascript options for the tabs plugin
     'options'=>array(
         'collapsible'=>false,
