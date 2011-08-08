@@ -1,4 +1,5 @@
 <?php
+YII::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 if ($data->status != $data::STATUS_CANCELLED) {
 	echo CHtml::link('<span>Edit Operation</span>',

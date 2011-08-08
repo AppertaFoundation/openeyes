@@ -1,45 +1,86 @@
+h3.title {
+    color: #fff;
+}
+
 .invisible {
-	visibility: hidden;
+    visibility: hidden;
 }
 
-#alertOptions {
-	margin-left: 720px;
-	width: 100px;
-	border: 1px solid #000;
+#theatreList {
+    float: left;
+    width: 700px;
 }
 
-.theatreList {
-	float: left;
-	border: 1px solid #000;
-	margin: 0;
-	padding: 0;
-	width: 700px;
+#theatreList table {
+    margin: 0 0 10px 0;
+    padding: 0;
 }
 
 .alert {
-	float: right;
+    float: right;
 }
 
 .gender {
-	width: 15px;
-	height: 19px;
-	min-width: 15px;
-	min-height: 19px;
-	margin-left: 5px;
+    width: 15px;
+    height: 19px;
+    min-width: 15px;
+    min-height: 19px;
+    margin-left: 5px;
 }
 
 .M {
-	background: url('/images/icon_male.png') top left no-repeat;
+    background: url('/images/icon_male.png') top left no-repeat;
 }
 
 .F {
-	background: url('/images/icon_female.png') top left no-repeat;
+    background: url('/images/icon_female.png') top left no-repeat;
 }
 
 .comments {
-	width: 10px;
-	height: 10px;
-	min-width: 10px;
-	min-height: 10px;
-	margin-left: 5px;
+    width: 10px;
+    height: 10px;
+    min-width: 10px;
+    min-height: 10px;
+    margin-left: 5px;
+}
+
+#main-search {
+    background: url('/images/blue_highlight.png') top left no-repeat;
+    height: 71px;
+    width: 870px;
+    padding: 10px;
+}
+
+#main-search #title {
+    font: bold 14pt Arial;
+}
+
+#search-options {
+    background: url('/images/blue_gradient_highlight.png') bottom left no-repeat;
+}
+
+#extra-search {
+    margin-top: 10px;
+    padding: 0 10px 10px 10px;
+}
+
+#extra-search label {
+    margin-right: 20px;
+}
+
+#extra-search button {
+    margin-top: -5px;
+}
+
+#alertOptions {
+    background: url('/images/blue_highlight_small.png') top left no-repeat;
+    margin-left: 730px;
+    width: 144px;
+    height: 99px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#alertOptions input[type="checkbox"] {
+    margin-bottom: 10px;
 }

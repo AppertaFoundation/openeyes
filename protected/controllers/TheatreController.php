@@ -82,7 +82,7 @@ class TheatreController extends BaseController
 			}
 			$service = new BookingService;
 			$data = $service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $serviceId, $firmId);
-			
+
 			foreach ($data as $values) {
 				$sessionTime = explode(':', $values['session_duration']);
 				$sessionDuration = ($sessionTime[0] * 60) + $sessionTime[1];
@@ -125,6 +125,7 @@ class TheatreController extends BaseController
 					$theatreTotals[$values['name']][$values['date']] += $values['operation_duration'];
 				}
 			}
+
 			foreach ($theatres as $name => &$dates) {
 				foreach ($dates as $date => &$sessions) {
 					$totalBookings = $theatreTotals[$name][$date];
