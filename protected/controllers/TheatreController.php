@@ -33,18 +33,21 @@ class TheatreController extends BaseController
 	{
 		$operation = new ElementOperation;
 		
-		$theatres = $theatreList = $firmList = array();
-		$siteId = $serviceId = $firmId = $theatreId = $filter = null;
+		$theatres = $theatreList = $firmList = $wardList = array();
+		$siteId = $serviceId = $firmId = $theatreId = $wardId = $filter = null;
 		if (!empty($_POST)) {
 			$siteId = !empty($_POST['site-id']) ? $_POST['site-id'] : null;
 			$serviceId = !empty($_POST['service-id']) ? $_POST['service-id'] : null;
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$theatreId = !empty($_POST['theatre-id']) ? $_POST['theatre-id'] : null;
+			$wardId = !empty($_POST['ward-id']) ? $_POST['ward-id'] : null;
 			
 			if (!empty($siteId)) {
 				$theatreList = $this->getFilteredTheatres($siteId);
+				$wardList = $this->getFilteredWards($siteId);
 			} else {
 				$theatreList = array();
+				$wardList = array();
 			}
 			
 			if (!empty($serviceId)) {
@@ -74,14 +77,13 @@ class TheatreController extends BaseController
 					$endDate = date('Y-m-d', strtotime("+{$addDays} days"));
 					break;
 				case 'today':
-				default:
-					// show today
+				default: // show today
 					$startDate = date('Y-m-d');
 					$endDate = date('Y-m-d');
 					break;
 			}
 			$service = new BookingService;
-			$data = $service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $serviceId, $firmId);
+			$data = $service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $serviceId, $firmId, $wardId);
 
 			foreach ($data as $values) {
 				$sessionTime = explode(':', $values['session_duration']);
@@ -141,9 +143,11 @@ class TheatreController extends BaseController
 			'serviceId' => $serviceId,
 			'firmId' => $firmId,
 			'theatreId' => $theatreId,
+			'wardId' => $wardId,
 			'dateFilter' => $filter,
 			'theatreList' => $theatreList,
 			'firmList' => $firmList,
+			'wardList' => $wardList,
 			'dateStart' => ($filter == 'custom') ? $startDate : null,
 			'dateEnd' => ($filter == 'custom') ? $endDate : null,
 		));
@@ -179,6 +183,24 @@ class TheatreController extends BaseController
 			$theatres = $this->getFilteredTheatres($_POST['site_id']);
 			
 			foreach ($theatres as $id => $name) {
+				echo CHtml::tag('option', array('value'=>$id), 
+					CHtml::encode($name), true);
+			}
+		}
+	}
+	
+	/**
+	 * Generates a theatre list based on a site id provided via POST
+	 * echoes form option tags for display
+	 */
+	public function actionFilterWards()
+	{
+		echo CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All wards'), true);
+		if (!empty($_POST['site_id'])) {
+			$wards = $this->getFilteredWards($_POST['site_id']);
+			
+			foreach ($wards as $id => $name) {
 				echo CHtml::tag('option', array('value'=>$id), 
 					CHtml::encode($name), true);
 			}
@@ -233,5 +255,30 @@ class TheatreController extends BaseController
 		}
 		
 		return $theatres;
+	}
+	
+	/**
+	 * Helper method to fetch theatres by site ID
+	 * 
+	 * @param integer $siteId
+	 * 
+	 * @return array 
+	 */
+	protected function getFilteredWards($siteId)
+	{
+		$data = Yii::app()->db->createCommand()
+			->select('w.id, w.name')
+			->from('ward w')
+			->where('w.site_id = :id', 
+				array(':id'=>$siteId))
+			->order('w.name ASC')
+			->queryAll();
+		
+		$wards = array();
+		foreach ($data as $values) {
+			$wards[$values['id']] = $values['name'];
+		}
+		
+		return $wards;
 	}
 }

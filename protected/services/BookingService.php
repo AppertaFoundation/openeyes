@@ -132,9 +132,10 @@ class BookingService
 	 * @param integer $theatreId
 	 * @param integer $serviceId
 	 * @param integer $firmId 
+	 * @param integer $wardId
 	 * @return CDbReader
 	 */
-	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $serviceId = null, $firmId = null)
+	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $serviceId = null, $firmId = null, $wardId = null)
 	{
 		if (empty($startDate) || empty($endDate) || 
 			(strtotime($endDate) < strtotime($startDate))) {
@@ -159,6 +160,10 @@ class BookingService
 		if (!empty($firmId)) {
 			$whereSql .= ' AND f.id = :firmId';
 			$whereParams[':firmId'] = $firmId;
+		}
+		if (!empty($wardId)) {
+			$whereSql .= ' AND w.id = :wardId';
+			$whereParams[':wardId'] = $wardId;
 		}
 		
 		$command = Yii::app()->db->createCommand()

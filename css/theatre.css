@@ -53,7 +53,7 @@ h3.date a {
 #theatreList th {
 	text-align: center;
 	font: normal 11pt Arial;
-	padding: 0;
+	padding: 0 0 0 5px;
 	border: 1px solid #a0cce9;
 	border-width: 0 1px 0 1px;
 	border-collapse: collapse;
@@ -63,6 +63,10 @@ h3.date a {
 	background: url('/images/blue_table_header_light.png') top left no-repeat;
 	height: 34px;
 	border-left: 0px;
+}
+
+#theatreList .leftAlign {
+	text-align: left;
 }
 
 #theatreList th.repeat {
@@ -98,12 +102,10 @@ h3.date a {
 
 #theatreList td.patient {
 	width: 135px;
-	text-align: left;
 }
 
 #theatreList td.operation {
 	width: 195px;
-	text-align: left;
 }
 
 #theatreList td.duration {

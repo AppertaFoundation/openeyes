@@ -22,18 +22,12 @@ $cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js')
 		<th>Service:</th>
 		<th>Firm:</th>
 		<th>Theatre:</th>
+		<th>Ward:</th>
 	</tr>
 	<tr>
 		<td><?php
 	echo CHtml::dropDownList('site-id', $siteId, Site::model()->getList(),
-		array('empty'=>'All sites', 'ajax'=>array(
-			'type'=>'POST',
-			'data'=>array('site_id'=>'js:this.value'),
-			'url'=>Yii::app()->createUrl('theatre/filterTheatres'),
-			'success'=>"js:function(data) {
-				$('#theatre-id').html(data);
-			}",
-		))); ?></td>
+		array('empty'=>'All sites', 'onChange' => "js:loadTheatres(this.value); loadWards(this.value);")); ?></td>
 		<td><?php
 	echo CHtml::dropDownList('service-id', $serviceId, Service::model()->getList(),
 		array('empty'=>'All services', 'ajax'=>array(
@@ -51,6 +45,9 @@ $cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js')
 		<td><?php
 	echo CHtml::dropDownList('theatre-id', $theatreId, $theatreList,
 		array('empty'=>'All theatres')); ?></td>
+		<td><?php
+	echo CHtml::dropDownList('ward-id', $wardId, $wardList,
+		array('empty'=>'All wards')); ?></td>
 	</tr>
 	</table>
 	</div>
@@ -151,8 +148,8 @@ if (!empty($theatres)) { ?>
 	<table>
 	<tr>
 		<th class="first">Session</th>
-		<th class="repeat">Patient (Age)</th>
-		<th class="repeat">[Eye] Operation</th>
+		<th class="repeat leftAlign">Patient (Age)</th>
+		<th class="repeat leftAlign">[Eye] Operation</th>
 		<th class="repeat">Duration</th>
 		<th class="repeat">Ward</th>
 		<th class="repeat">Anaesthetic</th>
@@ -173,8 +170,8 @@ if (!empty($theatres)) { ?>
 				} ?>
 	<tr>
 		<td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
-		<td class="patient"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
-		<td class="operation">[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
+		<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+		<td class="operation leftAlign">[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
 		<td class="duration"><?php echo $session['operationDuration']; ?></td>
 		<td class="ward"><?php echo $session['ward']; ?></td>
 		<td class="anaesthetic"><?php echo $session['anaesthetic']; ?></td>
@@ -245,5 +242,25 @@ if (!empty($theatres)) { ?>
 		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "all");
 	} else {
 		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "none");
+	}
+	function loadTheatres(siteId) {
+		$.ajax({
+			'type': 'POST',
+			'data': {'site_id': siteId},
+			'url': '<?php echo Yii::app()->createUrl('theatre/filterTheatres'); ?>',
+			'success':function(data) {
+				$('#theatre-id').html(data);
+			}
+		});
+	}
+	function loadWards(siteId) {
+		$.ajax({
+			'type': 'POST',
+			'data': {'site_id': siteId},
+			'url': '<?php echo Yii::app()->createUrl('theatre/filterWards'); ?>',
+			'success':function(data) {
+				$('#ward-id').html(data);
+			}
+		});
 	}
 </script>
