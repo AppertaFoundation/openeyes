@@ -21,7 +21,7 @@ if (!empty($episode)) {
 <div class="col_left">End date:<br/>
 <span><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'; ?></span>
 </div>
-<div class="col_right">Principle eye:<br/>
+<div class="col_right">Principal eye:<br/>
 <span><?php echo $eye ?></span>
 </div>
 <div class="col_left">Specialty:<br/>
