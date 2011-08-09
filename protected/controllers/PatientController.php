@@ -53,9 +53,15 @@ class PatientController extends BaseController
 
 		$this->logActivity('viewed patient');
 
-		$this->render('view', array(
-			'model' => $patient, 'tab' => $tabId
-		));
+		$params = array(
+                        'model' => $patient, 'tab' => $tabId
+                );
+
+		if (isset($_REQUEST['eventId'])) {
+			$params['eventId'] = $_REQUEST['eventId'];
+		}
+
+		$this->render('view', $params);
 	}
 
 	/**
@@ -199,7 +205,7 @@ class PatientController extends BaseController
 		
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList), false, true);
+				'eventTypeGroups'=>$typeList, 'firm' => $firm), false, true);
 	}
 	
 	public function actionContacts()

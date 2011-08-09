@@ -1,5 +1,6 @@
 <?php
 
+// @todo - by default, show the most recent episode for the firm's specialty. not the most recent episode, even after adding a new event. FIX THIS SHARPISH!
 // @todo - add logging for deletion on an event in the admin area
 // @todo - for that matter create an admin script for deleting events!
 
@@ -134,7 +135,7 @@ class ClinicalController extends BaseController
 				$this->logActivity('created event.');
 
 				// Nothing has gone wrong with updating elements, go to the view page
-				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
+				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));
 
 				return;
 			}
@@ -197,7 +198,7 @@ class ClinicalController extends BaseController
 				$this->logActivity('updated event');
 
 				// Nothing has gone wrong with updating elements, go to the view page
-				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
+				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1, 'eventId' => $id));
 
 				return;
 			}

@@ -1,4 +1,3 @@
-
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
 <h3>All Episodes</h3>
@@ -29,6 +28,15 @@
 <div id="episodes_details">
 <?php
 	$episode = end($episodes);
+
+	// View the open episode for this firm's specialty, if any
+	foreach ($episodes as $ep) {
+		if ($ep->firm->serviceSpecialtyAssignment->specialty_id == $firm->serviceSpecialtyAssignment->specialty_id) {
+			// @todo - change to give priority to the open episode for the specialty
+			$episode = $ep;
+		}
+	}
+
 	$this->renderPartial('/clinical/episodeSummary',
 		array('episode' => $episode)
 	); ?>

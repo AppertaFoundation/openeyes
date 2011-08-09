@@ -118,7 +118,7 @@ class BookingController extends BaseController
 		}
 		
 		$this->renderPartial('/booking/_cancel_operation', 
-	array('operation'=>$operation, 'date'=>$minDate), false, true);
+			array('operation'=>$operation, 'date'=>$minDate), false, true);
 	}
 	
 	public function actionSessions()

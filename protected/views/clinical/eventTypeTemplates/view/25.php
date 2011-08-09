@@ -62,6 +62,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
         }
 }?>
 </div>
+<div class="cleartall"></div>
 <script type="text/javascript">
         $('a.fancybox').fancybox([]);
 </script>
