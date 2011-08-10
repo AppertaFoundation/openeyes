@@ -258,6 +258,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 	public function testActionUpdate_InvalidData_RendersUpdateView()
 	{
+		$patient = $this->patients('patient1');
 		$event = $this->events('event1');
 		$firm = $this->firms('firm1');
 		$userId = 1;
@@ -270,6 +271,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$expectedElements = array($elementHistory, $elementPOH);
 
 		$specialties = Specialty::model()->findAll();
+		
 		
 		$mockController = $this->getMock('ClinicalController', array('renderPartial', 'getUserId'), array('ClinicalController'));
 
@@ -288,7 +290,7 @@ class ClinicalControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('update',
 				array('id' => $event->id, 'elements' => $expectedElements,
-					'specialties' => $specialties, 'patient' => null), false, true);
+					'specialties' => $specialties, 'patient' => $patient), false, true);
 
 		$mockController->expects($this->once())
 			->method('getUserId')

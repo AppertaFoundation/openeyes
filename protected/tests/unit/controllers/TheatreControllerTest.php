@@ -20,6 +20,12 @@ class TheatreControllerTest extends CDbTestCase
 	{
 		$this->controller = new TheatreController('TheatreController');
 		parent::setUp();
+		ob_start();
+	}
+	
+	protected function tearDown()
+	{
+		ob_end_clean();
 	}
 
 	public function testActionIndex_NoPostData_RendersIndexView()
@@ -309,7 +315,14 @@ class TheatreControllerTest extends CDbTestCase
 		
 		$mockController->expects($this->never())
 			->method('getFilteredFirms');
+		
 		$this->assertNull($mockController->actionFilterFirms());
+		$results = ob_get_contents();
+		
+		$expected = CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All firms'), true);
+		
+		$this->assertEquals($expected, $results, 'Output should match.');
 	}
 	
 	public function testActionFilterFirms_ValidServiceId_ListsAllFirms()
@@ -326,6 +339,16 @@ class TheatreControllerTest extends CDbTestCase
 			->with($serviceId)
 			->will($this->returnValue($firmList));
 		$this->assertNull($mockController->actionFilterFirms());
+		$results = ob_get_contents();
+		
+		$expected = CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All firms'), true);
+		foreach ($firmList as $id => $name) {
+			$expected .= CHtml::tag('option', array('value'=>$id), 
+				CHtml::encode($name), true);
+		}
+		
+		$this->assertEquals($expected, $results, 'Output should match.');
 	}
 	
 	public function testActionFilterTheatres_NoPostData_ListsOneTheatre()
@@ -336,6 +359,12 @@ class TheatreControllerTest extends CDbTestCase
 		$mockController->expects($this->never())
 			->method('getFilteredTheatres');
 		$this->assertNull($mockController->actionFilterTheatres());
+		$results = ob_get_contents();
+		
+		$expected = CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All theatres'), true);
+		
+		$this->assertEquals($expected, $results, 'Output should match.');
 	}
 	
 	public function testActionFilterTheatres_ValidSiteId_ListsAllTheatres()
@@ -358,6 +387,16 @@ class TheatreControllerTest extends CDbTestCase
 			->with($_POST['site_id'])
 			->will($this->returnValue($theatreList));
 		$this->assertNull($mockController->actionFilterTheatres());
+		$results = ob_get_contents();
+		
+		$expected = CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All theatres'), true);
+		foreach ($theatreList as $id => $name) {
+			$expected .= CHtml::tag('option', array('value'=>$id), 
+				CHtml::encode($name), true);
+		}
+		
+		$this->assertEquals($expected, $results, 'Output should match.');
 	}
 	
 	public function testActionFilterWards_NoPostData_ListsOneWard()
@@ -368,6 +407,12 @@ class TheatreControllerTest extends CDbTestCase
 		$mockController->expects($this->never())
 			->method('getFilteredWards');
 		$this->assertNull($mockController->actionFilterWards());
+		$results = ob_get_contents();
+		
+		$expected = CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All wards'), true);
+		
+		$this->assertEquals($expected, $results, 'Output should match.');
 	}
 	
 	public function testActionFilterWards_ValidSiteId_ListsAllWards()
@@ -394,5 +439,15 @@ class TheatreControllerTest extends CDbTestCase
 			->with($_POST['site_id'])
 			->will($this->returnValue($wardList));
 		$this->assertNull($mockController->actionFilterWards());
+		$results = ob_get_contents();
+		
+		$expected = CHtml::tag('option', array('value'=>''), 
+			CHtml::encode('All wards'), true);
+		foreach ($wardList as $id => $name) {
+			$expected .= CHtml::tag('option', array('value'=>$id), 
+				CHtml::encode($name), true);
+		}
+		
+		$this->assertEquals($expected, $results, 'Output should match.');
 	}
 }

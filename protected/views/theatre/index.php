@@ -131,12 +131,15 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 <div class="search-options">
 </div>
 <div class="main-search">
-
 </div>
-<?php
-if (!empty($theatres)) { ?>
 <div class="cleartall"></div>
 <div id="theatreList">
+<?php
+if (empty($theatres)) { ?>
+<h2 class="theatre">No theatre schedules match your search criteria.</h2>
+</div>
+<?php
+} else { ?>
 	<div id="multiOpenAccordion">
 <?php
 	$panels = array();
@@ -146,7 +149,8 @@ if (!empty($theatres)) { ?>
 			$timestamp = strtotime($date); ?>
 <h3 class="date"><a href="#"><?php echo date('d ', $timestamp);
 			echo substr(date('F', $timestamp), 0, 3);
-			echo date(' Y', $timestamp); ?></a></h3>
+			echo date(' Y', $timestamp);
+			echo ' - ' . date('l', $timestamp); ?></a></h3>
 <div>
 	<table>
 	<tr>
