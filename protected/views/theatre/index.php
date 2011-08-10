@@ -142,8 +142,11 @@ if (!empty($theatres)) { ?>
 	$panels = array();
 	foreach ($theatres as $name => $dates) { ?>
 <h2 class="theatre"><?php echo $name; ?></h2>
-<?php	foreach ($dates as $date => $sessions) { ?>
-<h3 class="date"><a href="#"><?php echo date('d F Y', strtotime($date)); ?></a></h3>
+<?php	foreach ($dates as $date => $sessions) {
+			$timestamp = strtotime($date); ?>
+<h3 class="date"><a href="#"><?php echo date('d ', $timestamp);
+			echo substr(date('F', $timestamp), 0, 3);
+			echo date(' Y', $timestamp); ?></a></h3>
 <div>
 	<table>
 	<tr>
