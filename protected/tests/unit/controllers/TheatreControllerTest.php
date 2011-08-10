@@ -10,7 +10,8 @@ class TheatreControllerTest extends CDbTestCase
 		'serviceSpecialtyAssignments' => 'ServiceSpecialtyAssignment',
 		'operations' => 'ElementOperation',
 		'procedures' => 'Procedure',
-		'patients' => 'Patient'
+		'patients' => 'Patient',
+		'wards' => 'Ward'
 	);
 
 	protected $controller;
@@ -33,9 +34,11 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => null,
 				'firmId' => null,
 				'theatreId' => null,
+				'wardId' => null,
 				'dateFilter' => null,
 				'theatreList' => array(),
 				'firmList' => array(),
+				'wardList' => array(),
 				'dateStart' => null,
 				'dateEnd' => null,
 			));
@@ -54,6 +57,18 @@ class TheatreControllerTest extends CDbTestCase
 			$theatre2['id'] => $theatre2['name'],
 		);
 		
+		$ward1 = $this->wards['ward1'];
+		$ward2 = $this->wards['ward2'];
+		$ward3 = $this->wards['ward3'];
+		$ward4 = $this->wards['ward4'];
+		
+		$wardList = array(
+			$ward1['id'] => $ward1['name'],
+			$ward2['id'] => $ward2['name'],
+			$ward3['id'] => $ward3['name'],
+			$ward4['id'] => $ward4['name']
+		);
+		
 		$mockController = $this->getMock('TheatreController', array('render'),
 			array('TheatreController'));
 		$mockController->expects($this->any())
@@ -64,9 +79,11 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => null,
 				'firmId' => null,
 				'theatreId' => null,
+				'wardId' => null,
 				'dateFilter' => null,
 				'theatreList' => $theatreList,
 				'firmList' => array(),
+				'wardList' => $wardList,
 				'dateStart' => null,
 				'dateEnd' => null,
 			));
@@ -88,9 +105,11 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => null,
 				'firmId' => null,
 				'theatreId' => $theatreId,
+				'wardId' => null,
 				'dateFilter' => null,
 				'theatreList' => array(),
 				'firmList' => array(),
+				'wardList' => array(),
 				'dateStart' => null,
 				'dateEnd' => null,
 			));
@@ -114,9 +133,11 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => $serviceId,
 				'firmId' => null,
 				'theatreId' => null,
+				'wardId' => null,
 				'dateFilter' => null,
 				'theatreList' => array(),
 				'firmList' => $firmList,
+				'wardList' => array(),
 				'dateStart' => null,
 				'dateEnd' => null,
 			));
@@ -138,9 +159,37 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => null,
 				'firmId' => $firmId,
 				'theatreId' => null,
+				'wardId' => null,
 				'dateFilter' => null,
 				'theatreList' => array(),
 				'firmList' => array(),
+				'wardList' => array(),
+				'dateStart' => null,
+				'dateEnd' => null,
+			));
+		$this->assertNull($mockController->actionIndex());
+	}
+
+	public function testActionIndex_WithWardId_RendersIndexView()
+	{
+		$wardId = $this->wards['ward1']['id'];
+		$_POST['ward-id'] = $wardId;
+		
+		$mockController = $this->getMock('TheatreController', array('render'),
+			array('TheatreController'));
+		$mockController->expects($this->any())
+			->method('render')
+			->with('index', array(
+				'theatres'=>array(),
+				'siteId' => null,
+				'serviceId' => null,
+				'firmId' => null,
+				'theatreId' => null,
+				'wardId' => $wardId,
+				'dateFilter' => null,
+				'theatreList' => array(),
+				'firmList' => array(),
+				'wardList' => array(),
 				'dateStart' => null,
 				'dateEnd' => null,
 			));
@@ -162,9 +211,11 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => null,
 				'firmId' => null,
 				'theatreId' => null,
+				'wardId' => null,
 				'dateFilter' => $dateFilter,
 				'theatreList' => array(),
 				'firmList' => array(),
+				'wardList' => array(),
 				'dateStart' => null,
 				'dateEnd' => null,
 			));
@@ -186,8 +237,10 @@ class TheatreControllerTest extends CDbTestCase
 				'serviceId' => null,
 				'firmId' => null,
 				'theatreId' => null,
+				'wardId' => null,
 				'dateFilter' => $dateFilter,
 				'theatreList' => array(),
+				'wardList' => array(),
 				'firmList' => array(),
 				'dateStart' => null,
 				'dateEnd' => null,
@@ -305,5 +358,41 @@ class TheatreControllerTest extends CDbTestCase
 			->with($_POST['site_id'])
 			->will($this->returnValue($theatreList));
 		$this->assertNull($mockController->actionFilterTheatres());
+	}
+	
+	public function testActionFilterWards_NoPostData_ListsOneWard()
+	{
+		$mockController = $this->getMock('TheatreController', array('getFilteredWards'),
+			array('TheatreController'));
+		
+		$mockController->expects($this->never())
+			->method('getFilteredWards');
+		$this->assertNull($mockController->actionFilterWards());
+	}
+	
+	public function testActionFilterWards_ValidSiteId_ListsAllWards()
+	{
+		$_POST['site_id'] = $this->sites['site1']['id'];
+		
+		$ward1 = $this->wards['ward1'];
+		$ward2 = $this->wards['ward2'];
+		$ward3 = $this->wards['ward3'];
+		$ward4 = $this->wards['ward4'];
+		
+		$wardList = array(
+			$ward1['id'] => $ward1['name'],
+			$ward2['id'] => $ward2['name'],
+			$ward3['id'] => $ward3['name'],
+			$ward4['id'] => $ward4['name']
+		);
+		
+		$mockController = $this->getMock('TheatreController', array('getFilteredWards'),
+			array('TheatreController'));
+		
+		$mockController->expects($this->once())
+			->method('getFilteredWards')
+			->with($_POST['site_id'])
+			->will($this->returnValue($wardList));
+		$this->assertNull($mockController->actionFilterWards());
 	}
 }
