@@ -94,6 +94,12 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 
 	public function getSpecialtyOptions()
 	{
-		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
+		$specialties = Yii::app()->db->createCommand()
+			->select('s.id, s.name')
+			->from('specialty s')
+			->order('name ASC')
+			->queryAll();
+		
+		return CHtml::listData($specialties, 'id', 'name');
 	}
 }
