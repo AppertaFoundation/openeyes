@@ -84,6 +84,16 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					
 					// clear out text field
 					$('#procedure_id').val('');
+					
+					// remove selection from the filter box
+					if ($('select[name=procedure]').children().length > 0) {
+						var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
+						$('select[name=procedure] option').each(function () {
+							if ($(this).text() == name) {
+								$(this).remove();
+							}
+						});
+					}
 				}
 			});
 		}",

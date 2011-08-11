@@ -129,7 +129,7 @@ class ProcedureControllerTest extends CDbTestCase
 	
 	public function testActionList_MissingSubsection_RendersNothing()
 	{
-		$_GET = array();
+		$_POST = array();
 		
 		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
 			array('ProcedureController'));
@@ -138,13 +138,38 @@ class ProcedureControllerTest extends CDbTestCase
 		$mockController->actionList();
 	}
 	
-	public function testActionList_ValidSubsection_RendersAjaxPartial()
+	public function testActionList_ValidSubsection_NoExistingProcedures_RendersAjaxPartial()
 	{
 		$sectionId = $this->subsections['section1']['id'];
-		$_GET['subsection'] = $sectionId;
+		$_POST['subsection'] = $sectionId;
 		
-		$procedures = Procedure::model()->findAllByAttributes(
-			array('service_subsection_id' => $sectionId));
+		$criteria = new CDbCriteria;
+		$criteria->select = 'id, term, short_format';
+		$criteria->compare('service_subsection_id', $_POST['subsection']);
+		
+		$procedures = Procedure::model()->findAll($criteria);
+		
+		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
+			array('ProcedureController'));
+		$mockController->expects($this->once())
+			->method('renderPartial')
+			->with('_procedureOptions', array('procedures' => $procedures), false, false);
+		$mockController->actionList();
+	}
+	
+	public function testActionList_ValidSubsection_WithExistingProcedures_RendersAjaxPartial()
+	{
+		$sectionId = $this->subsections['section1']['id'];
+		$procedureName = "{$this->procedures['procedure1']['term']} - {$this->procedures['procedure1']['short_format']}";
+		$_POST['subsection'] = $sectionId;
+		$_POST['existing'] = array($procedureName);
+		
+		$criteria = new CDbCriteria;
+		$criteria->select = 'id, term, short_format';
+		$criteria->compare('service_subsection_id', $_POST['subsection']);
+		$criteria->addNotInCondition("CONCAT_WS(' - ', term, short_format)", array($procedureName));
+		
+		$procedures = Procedure::model()->findAll($criteria);
 		
 		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
 			array('ProcedureController'));
