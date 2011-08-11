@@ -20,20 +20,11 @@ class m110629_141805_alter_gp_contact_tables extends CDbMigration
 
 		$this->addForeignKey('gp_contact_id_fk_1', 'gp', 'contact_id', 'contact', 'id');
 
-		$this->dropColumn('address', 'address1');
-		$this->addColumn('address', 'address1', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'address2');
-		$this->addColumn('address', 'address2', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'city');
-		$this->addColumn('address', 'city', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'county');
-		$this->addColumn('address', 'county', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'email');
-		$this->addColumn('address', 'email', 'varchar(255) DEFAULT NULL');
+		$this->alterColumn('address', 'address1', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'address2', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'city', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'county', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'email', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
 
 		$this->createTable('consultant', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
