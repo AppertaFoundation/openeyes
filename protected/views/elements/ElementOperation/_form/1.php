@@ -27,7 +27,7 @@
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
 	<div class="data"><span></span><?php
-	YII::app()->clientScript->scriptMap['jquery.js'] = false;
+	Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
