@@ -102,7 +102,8 @@ class BookingController extends BaseController
 			
 			if ($cancel->save() && $operation->save()) {
 				$patientId = $operation->event->episode->patient->id;
-				$this->redirect(array('patient/view', 'id'=>$patientId));
+				$this->redirect(array('patient/view', 'id'=>$patientId, 'tabId'=>1,
+					'eventId'=>$operation->event->id));
 			}
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
@@ -198,7 +199,7 @@ class BookingController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Booking']))
+		if (isset($_POST['Booking']))
 		{
 			$model->attributes=$_POST['Booking'];
 			
@@ -228,7 +229,8 @@ class BookingController extends BaseController
 					
 				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1));
+				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1,
+					'eventId'=>$model->elementOperation->event->id));
 			}
 		}
 	}
@@ -270,7 +272,8 @@ class BookingController extends BaseController
 				
 				Yii::app()->user->setFlash('success','Booking updated.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1));
+				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1, 
+					'eventId'=>$model->elementOperation->event->id));
 			}
 		}
 	}

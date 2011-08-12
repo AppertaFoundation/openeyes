@@ -99,10 +99,16 @@ class ProcedureController extends Controller
 	
 	public function actionList()
 	{
-		if (!empty($_GET['subsection'])) {
-			$subsection = $_GET['subsection'];
-			$procedures = Procedure::model()->findAllByAttributes(
-				array('service_subsection_id' => $subsection));
+		if (!empty($_POST['subsection'])) {
+			$criteria = new CDbCriteria;
+			$criteria->select = 'id, term, short_format';
+			$criteria->compare('service_subsection_id', $_POST['subsection']);
+			
+			if (!empty($_POST['existing'])) {
+				$criteria->addNotInCondition("CONCAT_WS(' - ', term, short_format)", $_POST['existing']);
+			}
+
+			$procedures = Procedure::model()->findAll($criteria);
 			
 			$this->renderPartial('_procedureOptions', array('procedures' => $procedures), false, false);
 		}

@@ -1,5 +1,5 @@
 <?php
-Yii::app()->clientScript->registerCoreScript('jquery'); ?>
+Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
 <h3>Summary</h3>

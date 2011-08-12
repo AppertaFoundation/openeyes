@@ -1,7 +1,6 @@
-
 <script language="javascript">
 
-elements = new Array(
+var elements = new Array(
 	'procedure_id',
 	'ElementOperation_eye_0',
 	'ElementOperation_eye_1',
@@ -42,8 +41,8 @@ $(function() {
 
 		if ($('#ElementDiagnosis_eye_0').attr('checked')) {
 			$('#ElementOperation_eye_0').attr("checked", true);
-			$('#ElementOperation_eye_1').attr("disabled", "disabled");
-			$('#ElementOperation_eye_2').attr("disabled", "disabled");
+			$('#ElementOperation_eye_1').attr("disabled", true);
+			$('#ElementOperation_eye_2').attr("disabled", true);
 		}
 	});
 });
@@ -53,8 +52,8 @@ $(function() {
 
 		if ($('#ElementDiagnosis_eye_1').attr('checked')) {
 			$('#ElementOperation_eye_1').attr("checked", true);
-			$('#ElementOperation_eye_0').attr("disabled", "disabled");
-			$('#ElementOperation_eye_2').attr("disabled", "disabled");
+			$('#ElementOperation_eye_0').attr("disabled", true);
+			$('#ElementOperation_eye_2').attr("disabled", true);
 		}
 	});
 });
@@ -77,15 +76,17 @@ function checkDisable() {
 }
 
 function disableElements() {
-	for (i in elements) {
-		$('#' + elements[i]).attr("disabled", "disabled");
+	console.log('disable');
+	for (var i in elements) {
+		$('#' + elements[i]).attr("disabled", true);
 	}
 
-	$('input[name=yt1]').attr('disabled', 'disabled');
+	$('input[name=yt1]').attr('disabled', true);
 }
 
 function enableElements() {
-	for (i in elements) {
+	console.log('enable');
+	for (var i in elements) {
 		$('#' + elements[i]).removeAttr("disabled");
 	}
 
@@ -109,26 +110,26 @@ function enableElements() {
         <div class="label">Enter diagnosis:</div>
         <div class="data"><span></span>
 <?php
-
 if (empty($model->event_id)) {
-        // It's a new event so fetch the most recent element_diagnosis
-        $diagnosis = $model->getNewestDiagnosis();
-
-        if (empty($diagnosis->disorder)) {
-                // There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)
-                $value = '';
-                $diagnosis = $model;
-        } else {
-                // There is a diagnosis for this episode
-                $value = $diagnosis->disorder->term . ' - ' . $diagnosis->disorder->fully_specified_name;
-        }
+	// It's a new event so fetch the most recent element_diagnosis
+	$diagnosis = $model->getNewestDiagnosis();
+	
+	if (empty($diagnosis->disorder)) {
+		// There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)
+		$value = '';
+		$diagnosis = $model;
+	} else {
+		// There is a diagnosis for this episode
+		$value = $diagnosis->disorder->term . ' - ' . $diagnosis->disorder->fully_specified_name;
+	}
 } else {
-        $value = $model->disorder->term . ' - ' . $model->disorder->fully_specified_name;
-        $diagnosis = $model;
+	$value = $model->disorder->term . ' - ' . $model->disorder->fully_specified_name;
+	$diagnosis = $model;
 }
 
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'ElementDiagnosis[disorder_id]',
+	'id'=>'ElementDiagnosis_disorder_id_0',
     'value'=>$value,
     'sourceUrl'=>array('disorder/autocomplete'),
     'htmlOptions'=>array(

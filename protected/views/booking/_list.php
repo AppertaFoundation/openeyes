@@ -1,6 +1,7 @@
 <div id="bookings">
 <div class="cleartall"></div>
 <?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 if (!$reschedule) {
 	echo CHtml::form(array('booking/create'));
 } else {

@@ -67,26 +67,6 @@ ul.ui-tabs-nav * {
     padding: 0;
 }
 
-#box_gradient_top {
-    background: transparent url('/images/box_blue_gradient_top.png') top left no-repeat;
-    min-height: 15px;
-    width: 890px;
-    clear: both;
-}
-
-#box_gradient_bottom {
-    background: #fbfbfc url('/images/box_blue_gradient_bottom.png') bottom left no-repeat;
-    min-height: 676px;
-    width: 860px;
-    padding: 15px;
-    padding-top: 0;
-	position: relative;
-}
-
-#box_gradient_bottom h3 {
-    font: bold 14pt Arial;
-}
-
 #box_gradient_bottom div h3 {
     color: #003399;
     font: bold 11pt Arial;
@@ -387,11 +367,6 @@ a#editlink {
     width: 670px;
     padding: 15px;
 	position: relative;
-}
-
-div.cleartall {
-	clear: both;
-	min-height: 13px;
 }
 
 .box_grey_big_gradient_bottom div.label, .box_grey_bigger_gradient_bottom div.label {

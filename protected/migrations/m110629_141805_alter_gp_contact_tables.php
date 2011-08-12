@@ -20,20 +20,11 @@ class m110629_141805_alter_gp_contact_tables extends CDbMigration
 
 		$this->addForeignKey('gp_contact_id_fk_1', 'gp', 'contact_id', 'contact', 'id');
 
-		$this->dropColumn('address', 'address1');
-		$this->addColumn('address', 'address1', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'address2');
-		$this->addColumn('address', 'address2', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'city');
-		$this->addColumn('address', 'city', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'county');
-		$this->addColumn('address', 'county', 'varchar(255) DEFAULT NULL');
-
-		$this->dropColumn('address', 'email');
-		$this->addColumn('address', 'email', 'varchar(255) DEFAULT NULL');
+		$this->alterColumn('address', 'address1', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'address2', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'city', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'county', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
+		$this->alterColumn('address', 'email', 'varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL');
 
 		$this->createTable('consultant', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -121,60 +112,52 @@ class m110629_141805_alter_gp_contact_tables extends CDbMigration
 
 	public function down()
 	{
-		$this->dropColumn('contact', 'title');
-		$this->dropColumn('contact', 'first_name');
-		$this->dropColumn('contact', 'last_name');
-		$this->dropColumn('contact', 'qualifications');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
+		$command->execute();
 
-		$this->dropForeignKey('gp_contact_id_fk_1', 'gp');
+		$this->truncateTable('contact');
 
-		$this->dropTable('gp');
+		$this->delete('contact_type', 'name=:name', array(':name' => 'Consultant'));
 
-		$this->dropForeignKey('consultant_contact_id_fk_1', 'consultant');
+		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
+		$command->execute();
 
-		$this->dropTable('consultant');
-
-		$this->dropForeignKey('manual_contact_contact_id_fk_1', 'manual_contact');
-
-		$this->dropForeignKey('manual_contact_contact_type_id_fk_2', 'manual_contact');
-
-		$this->dropTable('manual_contact');
-
-		$this->dropForeignKey('letter_template_ibfk_2', 'letter_template');
-		$this->dropColumn('letter_template', 'to');
-		$this->addColumn('letter_template', 'contact_type_id', 'INT(10) UNSIGNED NOT NULL');
-		$this->addForeignKey('letter_template_ibfk_2', 'letter_template', 'contact_type_id', 'contact_type', 'id');
-		$this->dropColumn('letter_template', 'phrase');
-		$this->addColumn('letter_template', 'text', 'TEXT NOT NULL');
-		$this->dropForeignKey('letter_template_ibfk_3', 'letter_template');
-		$this->dropColumn('letter_template', 'cc');
-		$this->addColumn('letter_template', 'cc', 'VARCHAR(128) NOT NULL');
-
-		$user = $this->dbConnection->createCommand()->select('id')->from('user')->where('username=:username', array(':username' => 'admin'))->queryRow();
-
-		$address = $this->dbConnection->createCommand()->select('id')->from('address')->where('address1=:address1', array(':address1' => 'Example address line 1'))->queryRow();
-
-		$this->delete('user_contact_assignment', 'user_id=:user_id', array(':user_id' => $user['id']));
-		$this->delete('contact', 'address_id=:address_id', array(':address_id' => $address['id']));
-		$this->delete('address', 'id=:id', array(':id' => $address['id']));
+		$this->dropColumn('contact_type', 'letter_template_only');
+		$this->addColumn('contact_type', 'macro_only', 'TINYINT NOT NULL DEFAULT 0');
 
 		$this->addColumn('contact', 'consultant', 'TINYINT NOT NULL DEFAULT 0');
 		$this->addColumn('contact', 'contact_type_id', 'INT(10) UNSIGNED NOT NULL');
 
 		$this->addForeignKey('contact_type_fk', 'contact', 'contact_type_id', 'contact_type', 'id');
 
-		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 0;');
-		$command->execute();
-		
-		$this->truncateTable('contact');
+		$address = $this->dbConnection->createCommand()->select('id')->from('address')->where('address1=:address1', array(':address1' => 'Example address line 1'))->queryRow();
 
-		$command = $this->dbConnection->createCommand('SET foreign_key_checks = 1;');
-		$command->execute();
+		$user = $this->dbConnection->createCommand()->select('id')->from('user')->where('username=:username', array(':username' => 'admin'))->queryRow();
 
-		$this->delete('contact_type', 'name=:name', array(':name' => 'Consultant'));
+		$this->delete('address', 'id=:id', array(':id' => $address['id']));
+		$this->delete('contact', 'address_id=:address_id', array(':address_id' => $address['id']));
+		$this->delete('user_contact_assignment', 'user_id=:user_id', array(':user_id' => $user['id']));
 
-		$this->dropColumn('contact_type', 'letter_template_only');
-		$this->addColumn('contact_type', 'macro_only', 'TINYINT NOT NULL DEFAULT 0');
+		$this->dropColumn('letter_template', 'phrase');
+		$this->addColumn('letter_template', 'text', 'TEXT NOT NULL');
+		$this->dropForeignKey('letter_template_ibfk_3', 'letter_template');
+		$this->addColumn('letter_template', 'contact_type_id', 'INT(10) UNSIGNED NOT NULL');
+		$this->dropForeignKey('letter_template_ibfk_2', 'letter_template');
+		$this->dropIndex('letter_template_ibfk_2', 'letter_template');
+		$this->dropColumn('letter_template', 'cc');
+		$this->addColumn('letter_template', 'cc', 'VARCHAR(128) NOT NULL');
+		$this->dropColumn('letter_template', 'to');
+		$this->addForeignKey('letter_template_ibfk_2', 'letter_template', 'contact_type_id', 'contact_type', 'id');
+
+		$this->dropTable('manual_contact');
+
+		$this->dropTable('consultant');
+
+		$this->dropTable('gp');
+
+		$this->dropColumn('contact', 'qualifications');
+		$this->dropColumn('contact', 'last_name');
+		$this->dropColumn('contact', 'first_name');
+		$this->dropColumn('contact', 'title');
 	}
-
 }

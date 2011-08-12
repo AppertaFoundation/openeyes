@@ -44,6 +44,7 @@ class PatientController extends BaseController
 		$patient = $this->loadModel($id);
 		
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
+		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
 		$this->layout = '//layouts/patientMode/main';
 
@@ -53,15 +54,9 @@ class PatientController extends BaseController
 
 		$this->logActivity('viewed patient');
 
-		$params = array(
-                        'model' => $patient, 'tab' => $tabId
-                );
-
-		if (isset($_REQUEST['eventId'])) {
-			$params['eventId'] = $_REQUEST['eventId'];
-		}
-
-		$this->render('view', $params);
+		$this->render('view', array(
+			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 
+		));
 	}
 
 	/**
@@ -142,7 +137,7 @@ class PatientController extends BaseController
 
 			$this->redirect($errorData);
 		} elseif (count($results) == 1) {
-			$this->actionView($results[0]->id);
+			$this->redirect(array('view', 'id'=>$results[0]->id));
 		} else {
 //			$dataProvider->setPagination($page);
 
@@ -187,6 +182,7 @@ class PatientController extends BaseController
 	public function actionEpisodes()
 	{
 		$patient = $this->loadModel($_GET['id']);
+		$event = !empty($_GET['event']) ? $_GET['event'] : false;
 		
 		$firm = Firm::model()->findByPk($this->selectedFirmId);
 		
@@ -205,7 +201,7 @@ class PatientController extends BaseController
 		
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList, 'firm' => $firm), false, true);
+				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
 	}
 	
 	public function actionContacts()

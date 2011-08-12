@@ -63,7 +63,7 @@ class LetterTemplate extends BaseActiveRecord
 		return array(
 			'cc0' => array(self::BELONGS_TO, 'ContactType', 'cc'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
-			'send_to' => array(self::BELONGS_TO, 'ContactType', 'send_to'),
+			'sendTo' => array(self::BELONGS_TO, 'ContactType', 'send_to'),
 		);
 	}
 
@@ -112,7 +112,7 @@ class LetterTemplate extends BaseActiveRecord
 
 	public function getToText()
 	{
-		return $this->send_to->name;
+		return $this->sendTo->name;
 	}
 
 	public function getCcText()
@@ -122,11 +122,23 @@ class LetterTemplate extends BaseActiveRecord
 
 	public function getSpecialtyOptions()
 	{
-		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
+		$specialties = Yii::app()->db->createCommand()
+			->select('s.id, s.name')
+			->from('specialty s')
+			->order('name ASC')
+			->queryAll();
+		
+		return CHtml::listData($specialties, 'id', 'name');
 	}
 
 	public function getContactTypeOptions()
 	{
-		return CHtml::listData(ContactType::Model()->findAll(), 'id', 'name');
+		$contactTypes = Yii::app()->db->createCommand()
+			->select('c.id, c.name')
+			->from('contact_type c')
+			->order('name ASC')
+			->queryAll();	
+		
+		return CHtml::listData($contactTypes, 'id', 'name');
 	}
 }

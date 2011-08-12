@@ -88,4 +88,20 @@ class Site extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	/**
+	 * Fetch an array of site IDs and names
+	 * @return array
+	 */
+	public function getList()
+	{
+		$list = Site::model()->findAll();
+		$result = array();
+		
+		foreach ($list as $site) {
+			$result[$site->id] = $site->name;
+		}
+		
+		return $result;
+	}
 }

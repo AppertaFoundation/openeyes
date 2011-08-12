@@ -92,4 +92,14 @@ class Theatre extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public static function getDateFilterOptions()
+	{
+		return array(
+			'today' => 'Today',
+			'week' => 'This week',
+			'month' => 'This month',
+			'custom' => 'or from'
+		);
+	}
 }

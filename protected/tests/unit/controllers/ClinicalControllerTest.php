@@ -108,6 +108,7 @@ class ClinicalControllerTest extends CDbTestCase
 	public function testActionView_ValidElement_RendersViewView()
 	{
 		$event = $this->events('event1');
+		$firm = $this->firms('firm1');
 
 		$elementHistory = $this->elementHistories('elementHistory1');
 		$elementPOH = $this->elementPOHs('elementPOH1');
@@ -125,10 +126,14 @@ class ClinicalControllerTest extends CDbTestCase
 			->will($this->returnValue($expectedElements));
 
 		$mockController->service = $mockService;
+		$mockController->firm = $firm;
 
 		$mockController->expects($this->any())
 			->method('renderPartial')
-			->with('view', array('elements' => $expectedElements), false, true);
+			->with('view', array(
+				'elements' => $expectedElements,
+				'eventId' => $event->id,
+				'editable' => true), false, true);
 
 		$mockController->expects($this->once())
 			->method('getUserId')
@@ -183,14 +188,18 @@ class ClinicalControllerTest extends CDbTestCase
 			->will($this->returnValue($expectedElements));
 
 		$mockController->service = $mockService;
+		$mockController->firm = $firm;
+		
+		$referrals = $mockController->checkForReferrals($firm, $patient->id);
 
 		$mockController->expects($this->once())
 			->method('renderPartial')
-			->with('create', array(
+			->with($mockController->getTemplateName('create', $eventTypeId), array(
 				'elements' => $expectedElements,
 				'eventTypeId' => $eventTypeId,
 				'specialties' => $specialties,
-				'patient' => $patient
+				'patient' => $patient,
+				'referrals' => $referrals
 			), false, true);
 
 		$mockController->expects($this->once())
@@ -211,6 +220,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$firm = $this->firms('firm1');
 		$eventType = $this->eventTypes('eventType1');
 		$patientId = 1;
+		$expectedEventId = 1;
 
 		$elementHistory = $this->elementHistories('elementHistory1');
 		$elementPOH = $this->elementPOHs('elementPOH1');
@@ -222,7 +232,8 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1));
+			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1, 
+				'eventId' => $expectedEventId));
 
 		$mockController->expects($this->any())
 			->method('getUserId')
@@ -239,7 +250,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockService->expects($this->once())
 			->method('createElements')
 			->with($expectedElements, $_POST, $firm, $patientId, 1, $eventType->id)
-			->will($this->returnValue(1));
+			->will($this->returnValue($expectedEventId));
 
 		$mockController->firm = $firm;
 		$mockController->service = $mockService;
@@ -258,6 +269,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 	public function testActionUpdate_InvalidData_RendersUpdateView()
 	{
+		$patient = $this->patients('patient1');
 		$event = $this->events('event1');
 		$firm = $this->firms('firm1');
 		$userId = 1;
@@ -286,9 +298,9 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->any())
 			->method('renderPartial')
-			->with('update',
+			->with($mockController->getTemplateName('update', $event->event_type_id),
 				array('id' => $event->id, 'elements' => $expectedElements,
-					'specialties' => $specialties, 'patient' => null), false, true);
+					'specialties' => $specialties, 'patient' => $patient), false, true);
 
 		$mockController->expects($this->once())
 			->method('getUserId')
@@ -318,7 +330,8 @@ class ClinicalControllerTest extends CDbTestCase
 			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => null, 'tabId' => 1)); // Id is from $controller->patientId, but it's not stored in the mock
+			->with(array('patient/view', 'id' => null, 'tabId' => 1,  // Id is from $controller->patientId, but it's not stored in the mock
+				'eventId' => $event->id));
 
 		$mockController->expects($this->once())
 			->method('getUserId')
@@ -394,17 +407,16 @@ class ClinicalControllerTest extends CDbTestCase
 		$episode = $this->episodes('episode1');
 		$summaryName = 'episodeSummary';
 
-		$mockController = $this->getMock('ClinicalController', array('render'), array('ClinicalController'));
+		$mockController = $this->getMock('ClinicalController', array('renderPartial'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService');
 		$mockController->service = $mockService;
 
 		$mockController->expects($this->any())
-			->method('render')
+			->method('renderPartial')
 			->with('summary', array(
 				'episode' => $episode,
-				'summary' => $summaryName
-			));
+				'summary' => $summaryName), false, true);
 
 		$_GET['summary'] = $summaryName;
 		$mockController->actionSummary($episode->id);

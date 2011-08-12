@@ -1,3 +1,5 @@
+<?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
 <h3>All Episodes</h3>
@@ -25,25 +27,34 @@
 		array('episodes' => $episodes)
 	); ?>
 </div>
-<div id="episodes_details">
-<?php
-	$episode = end($episodes);
-
-	// View the open episode for this firm's specialty, if any
-	foreach ($episodes as $ep) {
-		if ($ep->firm->serviceSpecialtyAssignment->specialty_id == $firm->serviceSpecialtyAssignment->specialty_id) {
-			// @todo - change to give priority to the open episode for the specialty
-			$episode = $ep;
+<div id="episodes_details"><?php
+	if ($event === false) {
+		$episode = end($episodes);
+		// View the open episode for this firm's specialty, if any
+		foreach ($episodes as $ep) {
+			if ($ep->firm->serviceSpecialtyAssignment->specialty_id == $firm->serviceSpecialtyAssignment->specialty_id) {
+				$episode = $ep;
+			}
 		}
-	}
-
-	$this->renderPartial('/clinical/episodeSummary',
-		array('episode' => $episode)
-	); ?>
-</div>
+		$this->renderPartial('/clinical/episodeSummary',
+			array('episode' => $episode)
+		);
+	} ?></div>
 </div>
 <script type="text/javascript">
-	
+	$(function() {
+		if ($('#episodes_details').text() == '') {
+			var link = $('a[href="<?php echo Yii::app()->createUrl('clinical/view', array('id'=>$event)); ?>"]');
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('clinical/view', array('id'=>$event)); ?>',
+				success: function(data) {
+					link.parent().addClass('shown');
+					$('#episodes_details').show();
+					$('#episodes_details').html(data);
+				}
+			});
+		}
+	});
 	$('#add_episode').hover(
 		function() {
 			$('#episode_types').slideDown({'duration':75});
