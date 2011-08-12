@@ -211,6 +211,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$firm = $this->firms('firm1');
 		$eventType = $this->eventTypes('eventType1');
 		$patientId = 1;
+		$expectedEventId = 1;
 
 		$elementHistory = $this->elementHistories('elementHistory1');
 		$elementPOH = $this->elementPOHs('elementPOH1');
@@ -222,7 +223,8 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1));
+			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1, 
+				'eventId' => $expectedEventId));
 
 		$mockController->expects($this->any())
 			->method('getUserId')
@@ -239,7 +241,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockService->expects($this->once())
 			->method('createElements')
 			->with($expectedElements, $_POST, $firm, $patientId, 1, $eventType->id)
-			->will($this->returnValue(1));
+			->will($this->returnValue($expectedEventId));
 
 		$mockController->firm = $firm;
 		$mockController->service = $mockService;
@@ -320,7 +322,8 @@ class ClinicalControllerTest extends CDbTestCase
 			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => null, 'tabId' => 1)); // Id is from $controller->patientId, but it's not stored in the mock
+			->with(array('patient/view', 'id' => null, 'tabId' => 1,  // Id is from $controller->patientId, but it's not stored in the mock
+				'eventId' => $event->id));
 
 		$mockController->expects($this->once())
 			->method('getUserId')

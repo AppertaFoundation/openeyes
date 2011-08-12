@@ -120,7 +120,8 @@ class ClinicalController extends BaseController
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} else {
-					$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
+					$this->redirect(array('patient/view',
+						'id' => $this->patientId,'tabId' => 1,'eventId' => $eventId));
 				}
 
 				return;
@@ -183,7 +184,11 @@ class ClinicalController extends BaseController
 					$this->logActivity('updated event');
 
 					// Nothing has gone wrong with updating elements, go to the view page
-					$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1));
+					$this->redirect(array(
+						'patient/view',
+						'id' => $this->patientId,
+						'tabId' => 1,
+						'eventId' => $event->id));
 				}
 
 				return;
