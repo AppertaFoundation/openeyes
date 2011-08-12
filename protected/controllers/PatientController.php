@@ -43,6 +43,7 @@ class PatientController extends BaseController
 		$patient = $this->loadModel($id);
 		
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
+		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
 		$this->layout = '//layouts/patientMode/main';
 
@@ -53,7 +54,7 @@ class PatientController extends BaseController
 		$this->logActivity('viewed patient');
 
 		$this->render('view', array(
-			'model' => $patient, 'tab' => $tabId
+			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 
 		));
 	}
 
@@ -149,6 +150,7 @@ class PatientController extends BaseController
 	public function actionEpisodes()
 	{
 		$patient = $this->loadModel($_GET['id']);
+		$event = !empty($_GET['event']) ? $_GET['event'] : false;
 		
 		$firm = Firm::model()->findByPk($this->selectedFirmId);
 		
@@ -167,7 +169,7 @@ class PatientController extends BaseController
 		
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList), false, true);
+				'eventTypeGroups'=>$typeList, 'event'=>$event), false, true);
 	}
 	
 	public function actionContacts()

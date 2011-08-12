@@ -27,7 +27,7 @@
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
 	<div class="data"><span></span><?php
-	YII::app()->clientScript->scriptMap['jquery.js'] = false;
+	Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'procedure_id',
@@ -84,6 +84,16 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					
 					// clear out text field
 					$('#procedure_id').val('');
+					
+					// remove selection from the filter box
+					if ($('select[name=procedure]').children().length > 0) {
+						var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
+						$('select[name=procedure] option').each(function () {
+							if ($(this).text() == name) {
+								$(this).remove();
+							}
+						});
+					}
 				}
 			});
 		}",
@@ -136,8 +146,6 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			array('specialties' => $specialties),true),
     ),
 	'id'=>'procedure_selects',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
     // additional javascript options for the accordion plugin
     'options'=>array(
 		'active'=>false,

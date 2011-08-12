@@ -132,7 +132,7 @@ class User extends BaseActiveRecord
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('active',$this->active);
 		$criteria->compare('global_firm_rights',$this->global_firm_rights);
-
+		
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));

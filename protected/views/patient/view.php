@@ -20,13 +20,11 @@ if ($tab == 1) {
 	$this->widget('zii.widgets.jui.CJuiTabs', array(
     'tabs'=>array(
 		'Summary'=>array('ajax'=>array('patient/summary', 'id'=>$model->id)),
-		'View Episodes'=>array('ajax'=>array('patient/episodes', 'id'=>$model->id)),
+		'View Episodes'=>array('ajax'=>array('patient/episodes', 'id'=>$model->id, 'event'=>$event)),
 		'Contacts'=>array('ajax'=>array('patient/contacts', 'id'=>$model->id)),
 		'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
 	),
 	'id'=>'patient-tabs',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
     // additional javascript options for the tabs plugin
     'options'=>array(
         'collapsible'=>false,

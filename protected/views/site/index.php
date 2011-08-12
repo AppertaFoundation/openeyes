@@ -21,8 +21,6 @@ $this->layout = 'main'; ?>
 			'or search using patient details'=>$this->renderPartial('/patient/_advanced_search',
 				array(),true),
 		),
-		'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-		'theme'=>'theme',
 		// additional javascript options for the accordion plugin
 		'options'=>array(
 			'active'=>false,

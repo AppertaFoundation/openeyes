@@ -66,6 +66,7 @@ class BookingTest extends CDbTestCase
 	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
 	{
 		$booking = new Booking;
+		$searchTerms['ward_id'] = null; // ignore for search purposes
 		$booking->setAttributes($searchTerms);
 		$results = $booking->search();
 		$data = $results->getData();

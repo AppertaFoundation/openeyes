@@ -1,4 +1,5 @@
 <?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 if ($data->status != $data::STATUS_CANCELLED) {
 	echo CHtml::link('<span>Edit Operation</span>',
@@ -94,8 +95,6 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 				array('operation' => $data),true),
 		),
 		'id'=>'clinic-details',
-		'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-		'theme'=>'theme',
 		// additional javascript options for the accordion plugin
 		'options'=>array(
 			'active'=>false,

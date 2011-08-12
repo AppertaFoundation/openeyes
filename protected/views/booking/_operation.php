@@ -1,3 +1,5 @@
+<?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div class="view">
 	<strong>Eye(s) to be operated on:</strong>
 	<?php echo CHtml::encode($operation->getEyeText()); ?>
