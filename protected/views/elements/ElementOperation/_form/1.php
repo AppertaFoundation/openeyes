@@ -14,36 +14,36 @@
 	YII::app()->clientScript->scriptMap['jquery.js'] = false;
 
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-    'name'=>'procedure_id',
+	'name'=>'procedure_id',
 	'source'=>"js:function(request, response) {
 		var existingProcedures = [];
 		$('#procedure_list tbody').children().each(function () {
 			var text = $(this).children('td:first').text();
 			existingProcedures.push(text.replace(/ remove$/i, ''));
 		});
-			
+
 		$.ajax({
 			'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
 			'type':'GET',
 			'data':{'term': request.term},
 			'success':function(data) {
 				data = $.parseJSON(data);
-		
+
 				var result = [];
-				
+
 				for (var i = 0; i < data.length; i++) {
 					var index = $.inArray(data[i], existingProcedures);
 					if (index == -1) {
 						result.push(data[i]);
 					}
 				}
-				
+
 				response(result);
 			}
 		});
 	}",
-    'options'=>array(
-	'minLength'=>'2',
+	'options'=>array(
+		'minLength'=>'2',
 		'select'=>"js:function(event, ui) {
 			$.ajax({
 				'url': '" . Yii::app()->createUrl('procedure/details') . "',
@@ -71,7 +71,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				}
 			});
 		}",
-    ),
+	),
 )); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
 	<div class="cleartall"></div>
 	<div>
@@ -115,21 +115,21 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	
 <?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
-    'panels'=>array(
-	'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
+	'panels'=>array(
+		'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
 			array('specialties' => $specialties),true),
-    ),
+	),
 	'id'=>'procedure_selects',
 	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
 	'theme'=>'theme',
-    // additional javascript options for the accordion plugin
-    'options'=>array(
+	// additional javascript options for the accordion plugin
+	'options'=>array(
 		'active'=>false,
-	'animated'=>'bounceslide',
+		'animated'=>'bounceslide',
 		'collapsible'=>true,
 		'autoHeight'=>false,
 		'clearStyle'=>true
-    ),
+	),
 )); ?>
 	<div class="cleartall"></div>
 	<div class="label">Consultant required?</div>
@@ -154,6 +154,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 				'showAnim'=>'fold',
 				'dateFormat'=>'yy-mm-dd',
 			),
+			'value' => $model->decision_date,
 			'htmlOptions'=>array('style'=>'width: 110px;')
 		)); ?></div>
 	<div class="cleartall"></div>

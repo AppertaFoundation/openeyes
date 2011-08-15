@@ -39,7 +39,8 @@
 
 	$this->renderPartial('/clinical/episodeSummary',
 		array('episode' => $episode)
-	); ?>
+	);
+?>
 </div>
 </div>
 <script type="text/javascript">

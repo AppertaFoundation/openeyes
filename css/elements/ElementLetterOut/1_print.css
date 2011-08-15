@@ -66,3 +66,11 @@ p.cc {
 	padding-top: 2em;
 }
 
+div.ElementLetterOut_siteDetails {
+        position: absolute;
+        font-size: 14pt;
+        font-family: sans-serif, Helvetica, Verdana, Arial;
+        margin-left: 740px;
+        margin-top: 140px;
+        width: 200px;
+}

@@ -39,7 +39,26 @@ class DisorderController extends Controller
 	{
 		echo CJavaScript::jsonEncode(Disorder::getList($_GET['term']));
 	}
-	
+
+	public function actionDetails()
+	{
+		if (!isset($_REQUEST['name'])) {
+			echo CJavaScript::jsonEncode(false);
+			return;
+		}
+
+		$disorder = Disorder::model()->find('fully_specified_name = ?', array($_REQUEST['name']));
+
+		if (!isset($disorder)) {
+			echo CJavaScript::jsonEncode(false);
+			return;
+		}
+
+		echo $disorder->id;
+	}
+
+/*
+// @todo - not sure what this is for, doesn't seem to be needed any more?	
 	public function actionDetails()
 	{
 		$list = Yii::app()->session['Disorders'];
@@ -84,4 +103,5 @@ class DisorderController extends Controller
 			}
 		}
 	}
+*/
 }

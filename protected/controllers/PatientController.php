@@ -194,7 +194,7 @@ class PatientController extends BaseController
 		$eventTypes = EventType::model()->getAllPossible($specialtyId);
 		
 		$typeGroups = $this->getEventTypeGrouping();
-		
+	
 		foreach ($eventTypes as $eventType) {
 			foreach ($typeGroups as $name => $group) {
 				if (in_array($eventType->name, $group)) {
@@ -202,10 +202,12 @@ class PatientController extends BaseController
 				}
 			}
 		}
-		
+	
+		$eventId = isset($_REQUEST['eventId']) ? $_REQUEST['eventId'] : null;
+	
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList, 'firm' => $firm), false, true);
+				'eventTypeGroups'=>$typeList, 'firm' => $firm, 'eventId' => $eventId), false, true);
 	}
 	
 	public function actionContacts()
@@ -284,4 +286,15 @@ class PatientController extends BaseController
 
 		return $data;
 	}
+
+        public function getTemplateName($action, $eventTypeId)
+        {
+                $template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+
+                if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
+                        $template = $action;
+                }
+
+                return $template;
+        }
 }

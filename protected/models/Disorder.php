@@ -140,7 +140,7 @@ class Disorder extends BaseActiveRecord
         {
                 $search = "{$term}%";
 
-                $select = 'term, fully_specified_name, id';
+                $select = 'fully_specified_name, id';
 
                 $disorders = Yii::app()->db->createCommand()
                         ->select($select)
@@ -153,10 +153,9 @@ class Disorder extends BaseActiveRecord
                 $session = Yii::app()->session['Disorders'];
 
                 foreach ($disorders as $disorder) {
-                        $data[] = "{$disorder['term']} - {$disorder['fully_specified_name']}";
+                        $data[] = $disorder['fully_specified_name'];
                         $id = $disorder['id'];
                         $session[$id] = array(
-                                'term' => $disorder['term'],
                                 'fully_specified_name' => $disorder['fully_specified_name'],
                         );
                 }

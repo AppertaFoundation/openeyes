@@ -102,7 +102,7 @@ class BookingController extends BaseController
 			
 			if ($cancel->save() && $operation->save()) {
 				$patientId = $operation->event->episode->patient->id;
-				$this->redirect(array('patient/view', 'id'=>$patientId));
+				$this->redirect(array('patient/view', 'id'=>$patientId, 'tabId'=>1, 'eventId' => $operation->event->id));
 			}
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
@@ -132,7 +132,7 @@ class BookingController extends BaseController
 		$sessions = $operation->getSessions();
 		
 		$this->renderPartial('/booking/_calendar', 
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+			array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
 	public function actionTheatres()
@@ -155,7 +155,7 @@ class BookingController extends BaseController
 		$theatres = $operation->getTheatres($date);
 		
 		$this->renderPartial('/booking/_theatre_times', 
-	array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
+			array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
 	}
 	
 	public function actionList()
@@ -228,7 +228,7 @@ class BookingController extends BaseController
 					
 				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1));
+				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1, 'eventId' => $operation->event->id));
 			}
 		}
 	}
@@ -270,7 +270,7 @@ class BookingController extends BaseController
 				
 				Yii::app()->user->setFlash('success','Booking updated.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1));
+				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1, 'eventId' => $operation->event->id));
 			}
 		}
 	}

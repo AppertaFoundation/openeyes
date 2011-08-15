@@ -22,13 +22,12 @@ elements = new Array(
 	'ElementOperation_comments',
 	'schedule_timeframe1_0',
 	'schedule_timeframe1_1',
-	'schedule_timeframe2'
+	'schedule_timeframe2',
+	'submitButton'
 );
 
 $(document).ready(function() {
-	if (!$('#ElementDiagnosis_disorder_id').val() && !$('ElementDiagnosis_eye').val()) {
-		disableElements();
-	}
+	checkDisable();
 });
 
 $(function() {
@@ -99,42 +98,78 @@ function enableElements() {
 <strong>Book Operation:</strong> Select diagnosis
 </div>
 
+<?php
+
+// @todo - populate diagnosis eye with appropriate value
+$disorderId = '';
+$value = '';
+$eye = '';
+
+if (empty($model->event_id)) {
+	// It's a new event so fetch the most recent element_diagnosis
+	$diagnosis = $model->getNewestDiagnosis();
+
+	if (empty($diagnosis->disorder)) {
+		// There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)
+		$diagnosis = $model;
+	} else {
+		// There is a diagnosis for this episode
+		$value = $diagnosis->disorder->fully_specified_name;
+		$eye = $diagnosis->eye;
+		$disorderId = $diagnosis->disorder->id;
+	}
+} else {
+	if (isset($model->disorder)) {
+		$value = $model->disorder->fully_specified_name;
+		$eye = $model->eye;
+		$disorderId = $model->disorder->id;
+	}
+
+	$diagnosis = $model;
+}
+
+?>
 <div class="box_grey_big_gradient_top"></div>
 <div class="box_grey_big_gradient_bottom">
         <div class="label">Select eye(s):</div>
-        <div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(),
-                array('separator' => ' &nbsp; ')); ?>
-        </div>
+	<div class="data"><?php echo CHtml::radioButtonList('eye', $eye, $model->getEyeOptions(), array('separator' => ' &nbsp; ')); ?></div>
         <div class="cleartall"></div>
         <div class="label">Enter diagnosis:</div>
         <div class="data"><span></span>
 <?php
 
-if (empty($model->event_id)) {
-        // It's a new event so fetch the most recent element_diagnosis
-        $diagnosis = $model->getNewestDiagnosis();
-
-        if (empty($diagnosis->disorder)) {
-                // There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)
-                $value = '';
-                $diagnosis = $model;
-        } else {
-                // There is a diagnosis for this episode
-                $value = $diagnosis->disorder->term . ' - ' . $diagnosis->disorder->fully_specified_name;
-        }
-} else {
-        $value = $model->disorder->term . ' - ' . $model->disorder->fully_specified_name;
-        $diagnosis = $model;
-}
-
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-    'name'=>'ElementDiagnosis[disorder_id]',
-    'value'=>$value,
-    'sourceUrl'=>array('disorder/autocomplete'),
-    'htmlOptions'=>array(
-        'style'=>'height:20px;width:200px;'
-    ),
-));
+		'name'=>'disorder',
+		'id'=>'disorder',
+		'value'=>'',
+		'sourceUrl'=>array('disorder/autocomplete'),
+		'htmlOptions'=>array(
+			'style'=>'height:20px;width:200px;'
+		),
+		'options'=>array(
+			'select'=>"js:function(event, ui) {
+	                        $.ajax({
+                                	'url': '" . Yii::app()->createUrl('disorder/details') . "',
+                                	'type': 'GET',
+                                	'data': {'name': ui.item.value},
+					'success': function(data) {
+						$('#ElementDiagnosis_disorder_id').val(data);
+						$('#displayDisorder').html(ui.item.value);
+
+						$('#disorder').val('');
+					}
+				});
+			}"
+		),
+	)
+);
+
+echo CHtml::hiddenField('ElementDiagnosis[disorder_id]', $disorderId);
+
 ?>
-	</div>
+</div>
+<div class="cleartall"></div>
+<div class="label">Disorder:</div>
+<div class="data" id="displayDisorder"><?php echo $value ?></div>
+
 </div>

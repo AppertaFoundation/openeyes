@@ -50,6 +50,6 @@ if (isset($referrals) && is_array($referrals)) {
 	}
 } ?>
 <div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Create operation</span></button>
+<button type="submit" value="submit" id="submitButton" class="shinybutton highlighted"><span>Create operation</span></button>
 <?php
 $this->endWidget();

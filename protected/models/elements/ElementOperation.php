@@ -13,6 +13,7 @@
  * @property integer $anaesthetist_required
  * @property integer $anaesthetic_type
  * @property integer $overnight_stay
+ * @property data $decision_date
  * @property integer $schedule_timeframe
  *
  * The followings are the available model relations:
@@ -108,6 +109,7 @@ class ElementOperation extends BaseElement
 			'anaesthetist_required' => 'Anaesthetist Required',
 			'anaesthetic_type' => 'Anaesthetic Type',
 			'overnight_stay' => 'Overnight Stay',
+			'decision_date' => 'Decision Date',
 			'schedule_timeframe' => 'Schedule Timeframe',
 		);
 	}
@@ -132,6 +134,7 @@ class ElementOperation extends BaseElement
 		$criteria->compare('anaesthetist_required',$this->anaesthetist_required);
 		$criteria->compare('anaesthetic_type',$this->anaesthetic_type);
 		$criteria->compare('overnight_stay',$this->overnight_stay);
+		$critiria->compare('decision_date',$this->decision_date);
 		$criteria->compare('schedule_timeframe',$this->schedule_timeframe);
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -147,6 +150,7 @@ class ElementOperation extends BaseElement
 		$this->consultant_required = self::CONSULTANT_REQUIRED;
 		$this->anaesthetic_type = self::ANAESTHETIC_TOPICAL;
 		$this->overnight_stay = 0;
+		$this->decision_date = date('Y-m-d', time());
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;

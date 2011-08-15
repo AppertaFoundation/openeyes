@@ -17,10 +17,16 @@ $this->widget('application.extensions.fancybox.EFancyBox', array(
 <?php
 // @todo: figure out why 'selected'=>$tab breaks the display b/c Yii is stupid
 if ($tab == 1) {
+	$params = array('patient/episodes', 'id'=>$model->id);
+
+	if (isset($eventId)) {
+		$params['eventId'] = $eventId;
+	}
+
 	$this->widget('zii.widgets.jui.CJuiTabs', array(
 	'tabs'=>array(
 		'Summary'=>array('ajax'=>array('patient/summary', 'id'=>$model->id)),
-		'View Episodes'=>array('ajax'=>array('patient/episodes', 'id'=>$model->id)),
+		'View Episodes'=>array('ajax'=>$params),
 //		'Contacts'=>array('ajax'=>array('patient/contacts', 'id'=>$model->id)),
 //		'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
 	),
