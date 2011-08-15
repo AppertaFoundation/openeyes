@@ -70,6 +70,8 @@ class ElementOperation extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('eye', 'required', 'message' => 'Please select an eye option'),
+			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
 			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().

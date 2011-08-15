@@ -121,6 +121,23 @@ class ClinicalController extends BaseController
 		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'create') {
+			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+				$valid = true;
+				$elementList = array();
+				foreach ($elements as $element) {
+					$elementClassName = get_class($element);
+					$element->attributes = $_POST[$elementClassName];
+					$elementList[] = $element;
+					if (!$element->validate()) {
+						$valid = false;
+					}
+				}
+				if (!$valid) {
+					echo CActiveForm::validate($elementList);
+					Yii::app()->end();
+				}
+			}
+			
 			// The user has submitted the form to create the event
 			$eventId = $this->service->createElements(
 				$elements, $_POST, $this->firm, $this->patientId, $this->getUserId(), $eventType->id

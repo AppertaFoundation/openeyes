@@ -153,6 +153,7 @@ class ElementOperationTest extends CDbTestCase
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
+			'decision_date' => date('Y-m-d'),
 		));
 
 		$this->assertTrue($element->save(true));
@@ -164,6 +165,7 @@ class ElementOperationTest extends CDbTestCase
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
+			'decision_date' => date('Y-m-d'),
 		));
 
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;

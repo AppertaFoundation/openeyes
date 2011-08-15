@@ -1,9 +1,7 @@
 <div class="heading">
-<strong>Book Operation:</strong> Operation details
+<span class="emphasize">Book Operation:</span> Operation details
 </div>
-
-<div class="box_grey_bigger_gradient_top"></div>
-<div class="box_grey_bigger_gradient_bottom">
+<div class="box_grey rounded-corners">
 	<div class="label">Select eye(s):</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(), 
 		array('separator' => ' &nbsp; ')); ?>

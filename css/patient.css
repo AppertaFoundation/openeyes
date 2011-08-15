@@ -325,14 +325,6 @@ div.view {
 	float: right;
 }
 
-div.header {
-	color: #05488a;
-}
-
-div.header span.emphasize {
-	font-weight: bold;
-}
-
 a#editlink {
 	float: right;
 }
@@ -369,20 +361,34 @@ a#editlink {
 	position: relative;
 }
 
-.box_grey_big_gradient_bottom div.label, .box_grey_bigger_gradient_bottom div.label {
+.box_grey_big_gradient_bottom div.label, .box_grey div.label {
 	font-weight: bold;
 	float: left;
 	width: 200px;
 }
 
-.box_grey_big_gradient_bottom div.data, .box_grey_bigger_gradient_bottom div.data {
+.box_grey_big_gradient_bottom div.data, .box_grey div.data {
 	font-weight: normal;
 	margin-left: 200px;
+}
+
+.box_grey {
+	margin-top: 5px;
+    background: #fbfbfc;
+    min-height: 70px;
+    width: 670px;
+    padding: 15px;
+	position: relative;
+	border: #c7cdcb 1px solid;
 }
 
 .heading {
 	margin-top: 15px;
 	color: #05488a;
+}
+
+.heading span.emphasize {
+	font-weight: bold;
 }
 
 input.gradient {
