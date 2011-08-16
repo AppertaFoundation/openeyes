@@ -154,8 +154,6 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			'name'=>'ElementOperation[decision_date]',
 			'id'=>'ElementOperation_decision_date_0',
-			'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-			'theme'=>'theme',
 			// additional javascript options for the date picker plugin
 			'options'=>array(
 				'showAnim'=>'fold',
@@ -188,6 +186,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 </div>
 <script type="text/javascript">
 	$(function() {
+		$("#ElementOperation_decision_date_0").val('<?php echo date('Y-m-d'); ?>');
 		$("#procedure_list tbody").sortable({
 			 helper: function(e, tr)
 			 {

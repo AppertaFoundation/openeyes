@@ -133,6 +133,31 @@ class ElementDiagnosis extends BaseElement
 		return $text;
 	}
 
+	/**     
+	 * As the disoder is provided as a string we need to convert it into a disorder id
+	 *		      
+	 * @return boolean	      
+	 */				     
+	public function beforeValidate()	       
+	{						       
+		if (!empty($this->disorder_id)) {				       
+			$terms = explode(' - ', $this->disorder_id);						    
+
+			if (count($terms) == 2) {											       
+				$disorder = Disorder::model()->find('term = ? AND fully_specified_name = ?', $terms);								    
+				if (empty($disorder)) {
+					return false;
+				}		      
+
+				$this->disorder_id = $disorder->id;			    
+			} else {
+				return false;										  
+			}
+		}
+
+		return parent::beforeValidate();
+	}
+
 	/**
 	 * Returns the disorder if there is one. If not, it returns the most recent disorder for this episode.
 	 *
