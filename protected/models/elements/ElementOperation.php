@@ -348,24 +348,6 @@ class ElementOperation extends BaseElement
 		);
 	}
 
-	/**
-	 * As the disoder is provided as a string we need to convert it into a disorder id
-	 *
-	 * @return boolean
-	 */
-	public function beforeValidate()
-	{
-		if (
-			!empty($_POST['decision_date_day']) &&
-			!empty($_POST['decision_date_month']) &&
-			!empty($_POST['decision_date_year'])
-		) {
-			$this->decision_date = $_POST['decision_date_year'] . '-' . $_POST['decision_date_month'] . '-' . $_POST['decision_date_day'];
-		}
-
-		return parent::beforeValidate();
-	}
-
 	protected function beforeSave()
 	{
 		$anaesthetistRequired = array(
@@ -642,5 +624,18 @@ class ElementOperation extends BaseElement
 		}
 		
 		return $results;
+	}
+	
+	public function getCancellationText()
+	{
+		$text = '';
+		$cancellation = $this->cancellation;
+		if (!empty($cancellation)) {
+			$text = "Operation Cancelled: By " . $cancellation->user->first_name;
+			$text .= ' ' . $cancellation->user->last_name . ' on ' . date('F j, Y', strtotime($cancellation->cancelled_date));
+			$text .= ' [' . $cancellation->cancelledReason->text . ']';
+		}
+		
+		return $text;
 	}
 }
