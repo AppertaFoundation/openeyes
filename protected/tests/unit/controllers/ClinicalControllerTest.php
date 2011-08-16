@@ -311,7 +311,6 @@ class ClinicalControllerTest extends CDbTestCase
 
 	public function testActionUpdate_ValidPostData_RendersViewView()
 	{
-		$userId = 1;
 		$_POST = $this->events['event1'];
 		$_POST['action'] = 'update';
 		$userId = 1;
@@ -327,7 +326,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$expectedElements = array($elementHistory, $elementPOH);
 
 		$mockController = $this->getMock('ClinicalController',
-			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
+			array('renderPartial', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
 			->with(array('patient/view', 'id' => null, 'tabId' => 1,  // Id is from $controller->patientId, but it's not stored in the mock

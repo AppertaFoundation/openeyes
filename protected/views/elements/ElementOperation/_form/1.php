@@ -158,6 +158,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			'options'=>array(
 				'showAnim'=>'fold',
 				'dateFormat'=>'yy-mm-dd',
+				'maxDate'=>'today'
 			),
 			'value' => $model->decision_date,
 			'htmlOptions'=>array('style'=>'width: 110px;')
@@ -186,7 +187,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 </div>
 <script type="text/javascript">
 	$(function() {
-		$("#ElementOperation_decision_date_0").val('<?php echo date('Y-m-d'); ?>');
+		$("#ElementOperation_decision_date_0").val('<?php 
+			echo (empty($model->decision_date) || $model->decision_date == '0000-00-00')
+				? date('Y-m-d') : $model->decision_date; ?>');
 		$("#procedure_list tbody").sortable({
 			 helper: function(e, tr)
 			 {

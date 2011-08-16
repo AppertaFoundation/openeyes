@@ -214,8 +214,23 @@ class ClinicalController extends BaseController
 		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'update') {
-			// The user has submitted the form to update the event
-
+			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+				$valid = true;
+				$elementList = array();
+				foreach ($elements as $element) {
+					$elementClassName = get_class($element);
+					$element->attributes = $_POST[$elementClassName];
+					$elementList[] = $element;
+					if (!$element->validate()) {
+						$valid = false;
+					}
+				}
+				if (!$valid) {
+					echo CActiveForm::validate($elementList);
+					Yii::app()->end();
+				}
+			}
+			
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {
@@ -224,22 +239,21 @@ class ClinicalController extends BaseController
 				} else {
 					$this->logActivity('updated event');
 
-					// Nothing has gone wrong with updating elements, go to the view page
+					$eventTypeName = ucfirst($event->eventType->name);
+					Yii::app()->user->setFlash('success', "{$eventTypeName} updated successfully.");
 					$this->redirect(array(
 						'patient/view',
 						'id' => $this->patientId,
 						'tabId' => 1,
 						'eventId' => $event->id));
 				}
-
-				return;
 			}
 
 			// If we get this far element validation has failed, so we render them again.
 			// The validation process will have populated and error messages.
 		}
 
-// @todo - add all the referral stuff from actionCreate to this method
+		// @todo - add all the referral stuff from actionCreate to this method
 		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
 			'id' => $id,
 			'elements' => $elements,
