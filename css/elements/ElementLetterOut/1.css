@@ -1,8 +1,7 @@
 #ElementLetterOut_layout {
         background-color: white;
-        margin-left: 30px;
-        margin-top: 10px;
-        background-image:url(/img/elements/ElementLetterOut/Letterhead.png);
+        margin-left: 0px;
+        margin-top: 0px;
         background-repeat: no-repeat;
         width:1000px;
 }
@@ -49,7 +48,10 @@ div.ElementLetterOut_siteDetails {
         font-size: 14pt;
         font-family: sans-serif, Helvetica, Verdana, Arial;
         margin-left: 740px;
-        margin-top: 140px;
+        margin-top: 20px;
 	width: 200px;
 }
 
+span.page_break {
+	display: none;
+}

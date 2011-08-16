@@ -1,76 +1,72 @@
-/* Zero margins and padding */
-* {
-	margin:0;
-	padding:0;
+div.view {display:none;}
+a#editlink {display:none;}
+h3 {display:none;}
+div.buttonlist {display:none;}
+div.breadcrumbs {display:none;}
+div#header {display:none;}
+div#patientHeader {display:none;}
+div.episode {display:none;}
+div#add_episode {display:none;}
+div#footer {display:none;}
+li {display:none;}
+div#outer_content {border: 0px;}
+div#content {border: 0px;}
+div#patient-tabs {background:none;}
+
+#ElementLetterOut_layout {
+        background-color: white;
+        margin-left: 0px;
+        margin-top: 0px;
+        background-repeat: no-repeat;
+        width:1000px;
 }
 
-/* Turn off all hyperlinks */
-a {
-	display: none;
+#ElementLetterOut_layout > p {
+        color: #191919;
+        font-size: 14pt;
+        font-family: sans-serif, Helvetica, Verdana, Arial;
+        margin-left: 60px;
+        margin-right: 60px;
 }
 
-/* Div in which letter elements are printed */
-#layout {
-
-/* Border for testing */
-/*
-	border-style: solid;
-	border-width: 1px;
-*/
-	margin-left: 10px;
-	margin-top: -120px;
-	
-
-
-	background-image:url(/img/elements/ElementLetterOut/Letterhead.png);
-	background-repeat: no-repeat;
-	width:1000px;
-	
-/* 	height:1414px; */
+p.ElementLetterOut_to {
+        padding-top: 140px;
 }
 
-#layout > p {
-	color: #191919;
-	font-size: 14pt;
-	font-family: sans-serif, Helvetica, Verdana, Arial;
-	margin-left: 60px;
-	margin-right: 60px;
+p.ElementLetterOut_date {
+        padding-top: 3em;
 }
 
-p.to {
-	padding-top: 140px;
+p.ElementLetterOut_dear {
+        padding-top: 2em;
 }
 
-p.date {
-	padding-top: 3em;
+p.ElementLetterOut_re {
+        padding-top: 1.2em;
+        font-weight: bold;
 }
 
-p.dear {
-	padding-top: 2em;
+p.ElementLetterOut_text {
+        padding-top: 1.2em;
 }
 
-p.re {
-	padding-top: 1.2em;
-	font-weight: bold;
+p.ElementLetterOut_from {
+        padding-top: 1.4em;
 }
 
-p.text {
-	padding-top: 1.2em;
-}
-
-p.from {
-	padding-top: 1.4em;
-}
-
-p.cc {
-	padding-top: 2em;
+p.ElementLetterOut_cc {
+        padding-top: 2em;
 }
 
 div.ElementLetterOut_siteDetails {
-        position: absolute;
+	position: absolute;
         font-size: 14pt;
         font-family: sans-serif, Helvetica, Verdana, Arial;
         margin-left: 740px;
-        margin-top: 140px;
-        width: 200px;
+        margin-top: 20px;
+	width: 200px;
+}
+
+span.page_break {
+        page-break-before: always;
 }

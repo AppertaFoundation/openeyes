@@ -17,21 +17,21 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
-	
+
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	
+
 	public function accessRules()
 	{
 		return array(
 			array('allow',
-				'users'=>array('@')
+				'users' => array('@')
 			),
 			// non-logged in can't view anything
-			array('deny', 
-				'users'=>array('?')
+			array('deny',
+				'users' => array('?')
 			),
 		);
 	}
@@ -66,23 +66,21 @@ class ClinicalController extends BaseController
 		);
 
 		// Decide whether to display the 'edit' button in the template
-                if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-                        $event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
 			$editable = false;
-                } else {
+		} else {
 			$editable = true;
 		}
 
 		$this->logActivity('viewed event');
 
 		$this->renderPartial(
-			$this->getTemplateName('view', $event->event_type_id),
-			array(
-				'elements' => $elements,
-				'eventId' => $id,
-				'editable' => $editable
-			),
-		false, true);
+			$this->getTemplateName('view', $event->event_type_id), array(
+			'elements' => $elements,
+			'eventId' => $id,
+			'editable' => $editable
+			), false, true);
 	}
 
 	public function actionIndex()
@@ -96,7 +94,7 @@ class ClinicalController extends BaseController
 			$referralService->search($patient->pas_key);
 		}
 
-		$this->render('index');	
+		$this->render('index');
 	}
 
 	/**
@@ -125,11 +123,27 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
-		
+
 		$patient = Patient::model()->findByPk($this->patientId);
 
-		if ($_POST && $_POST['action'] == 'create')
-		{
+		if ($_POST && $_POST['action'] == 'create') {
+			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+				$valid = true;
+				$elementList = array();
+				foreach ($elements as $element) {
+					$elementClassName = get_class($element);
+					$element->attributes = $_POST[$elementClassName];
+					$elementList[] = $element;
+					if (!$element->validate()) {
+						$valid = false;
+					}
+				}
+				if (!$valid) {
+					echo CActiveForm::validate($elementList);
+					Yii::app()->end();
+				}
+			}
+			
 			// The user has submitted the form to create the event
 			$eventId = $this->service->createElements(
 				$elements, $_POST, $this->firm, $this->patientId, $this->getUserId(), $eventType->id
@@ -140,8 +154,12 @@ class ClinicalController extends BaseController
 
 				$this->logActivity('created event.');
 
-				// Nothing has gone wrong with updating elements, go to the view page
-				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));
+				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
+					$this->redirect(array('chooseReferral', 'id' => $eraId));
+				} else {
+					$this->redirect(array('patient/view',
+						'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));
+				}
 
 				return;
 			}
@@ -154,11 +172,11 @@ class ClinicalController extends BaseController
 		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
 
 		$this->renderPartial($this->getTemplateName('create', $eventTypeId), array(
-				'elements' => $elements,
-				'eventTypeId' => $eventTypeId,
-				'specialties' => $specialties,
-				'patient' => $patient,
-				'referrals' => $referrals
+			'elements' => $elements,
+			'eventTypeId' => $eventTypeId,
+			'specialties' => $specialties,
+			'patient' => $patient,
+			'referrals' => $referrals
 			), false, true
 		);
 	}
@@ -192,7 +210,7 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
-		
+
 		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'update') {
@@ -201,10 +219,18 @@ class ClinicalController extends BaseController
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {
-				$this->logActivity('updated event');
+				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
+					$this->redirect(array('chooseReferral', 'id' => $eraId));
+				} else {
+					$this->logActivity('updated event');
 
-				// Nothing has gone wrong with updating elements, go to the view page
-				$this->redirect(array('patient/view', 'id' => $this->patientId, 'tabId' => 1, 'eventId' => $id));
+					// Nothing has gone wrong with updating elements, go to the view page
+					$this->redirect(array(
+						'patient/view',
+						'id' => $this->patientId,
+						'tabId' => 1,
+						'eventId' => $event->id));
+				}
 
 				return;
 			}
@@ -215,10 +241,10 @@ class ClinicalController extends BaseController
 
 // @todo - add all the referral stuff from actionCreate to this method
 		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
-				'id' => $id,
-				'elements' => $elements,
-				'specialties' => $specialties,
-				'patient' => $patient
+			'id' => $id,
+			'elements' => $elements,
+			'specialties' => $specialties,
+			'patient' => $patient
 			), false, true);
 	}
 
@@ -248,8 +274,8 @@ class ClinicalController extends BaseController
 		$this->logActivity('viewed patient summary');
 
 		$this->renderPartial('summary', array(
-				'episode' => $episode,
-				'summary' => $_GET['summary']
+			'episode' => $episode,
+			'summary' => $_GET['summary']
 			), false, true
 		);
 	}
@@ -272,8 +298,7 @@ class ClinicalController extends BaseController
 			)
 		);
 
-		if ($_POST && $_POST['action'] == 'chooseReferral')
-		{
+		if ($_POST && $_POST['action'] == 'chooseReferral') {
 			if (isset($_POST['referral_id'])) {
 // @todo - check referral_id is in list of referrals
 				$referralEpisode->referral_id = $_POST['referral_id'];
@@ -289,8 +314,8 @@ class ClinicalController extends BaseController
 
 		// @todo - decide what to display in the drop down list. Referral id alone isn't very informative.
 		$this->render('chooseReferral', array(
-				'id' => $id,
-				'referrals' => CHtml::listData($referrals, 'id', 'refno')
+			'id' => $id,
+			'referrals' => CHtml::listData($referrals, 'id', 'refno')
 			)
 		);
 	}

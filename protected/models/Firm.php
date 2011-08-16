@@ -143,4 +143,20 @@ class Firm extends BaseActiveRecord
 	{
 		return $this->serviceSpecialtyAssignment->specialty->name;
 	}
+	
+	/**
+	 * Fetch an array of service IDs and names
+	 * @return array
+	 */
+	public function getList()
+	{
+		$list = Firm::model()->findAll();
+		$result = array();
+		
+		foreach ($list as $firm) {
+			$result[$firm->id] = $firm->name;
+		}
+		
+		return $result;
+	}
 }

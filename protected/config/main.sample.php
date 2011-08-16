@@ -107,6 +107,71 @@ return CMap::mergeArray(
 					*/
 				),
 			),
+			'widgetFactory' => array(
+				'class'=>'CWidgetFactory',
+				'widgets' => array(
+					'CJuiAccordion' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiButton' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+//					'CJuiDatePicker' => array(
+//						'themeUrl'=>'/css/jqueryui',
+//						'theme'=>'theme'
+//					),
+					'CJuiDialog' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiDraggable' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiDroppable' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiInputWidget' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiProgressBar' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiResizable' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiSelectable' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiSlider' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiSliderInput' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiSortable' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiTabs' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+					'CJuiWidget' => array(
+						'themeUrl'=>'/css/jqueryui',
+						'theme'=>'theme'
+					),
+				),
+			),
 		)
 	)
 );

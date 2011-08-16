@@ -100,4 +100,9 @@ class ElementLetterOut extends BaseElement
 
 		return $this->service;
 	}
+
+	public function getPhrase($name)
+	{
+		return $this->getService()->getPhrase('LetterOut', $name);
+	}
 }

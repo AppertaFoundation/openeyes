@@ -1,4 +1,6 @@
-		<div id="dates">
+<?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
+	<div id="dates">
 <?php	$today = date('Y-m-d');
 		$thisMonth = date('Y-m-d', $date);
 		$lastMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)-1, 1, date('Y', $date)));

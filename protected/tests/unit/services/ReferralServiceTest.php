@@ -20,47 +20,47 @@ class ReferralServiceTest extends CDbTestCase
 		parent::setUp();
 	}
 
-        public function testManualReferralNeeded_InvalidEventId_ThrowsException()
-        {
-                $fakeId = 12345;
-
-                $this->setExpectedException('Exception', 'No event of that id.');
-                $this->service->ManualReferralNeeded($fakeId);
-        }
-
-	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentExists_ReturnsFalse()
-	{
-		$id = 1;
-
-		$result = $this->service->manualReferralNeeded($id);
-
-		$this->assertFalse($result);
-	}
-
-        public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentNotExists_HasOpenEpisodesForService_ReturnsFalse()
-        {
-                $id = 2;
-
-                $result = $this->service->manualReferralNeeded($id);
-
-                $this->assertFalse($result);
-        }
-
-        public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentNotExists_HasOpenEpisodesForWrongService_ReturnsEraId()
-        {
-                $id = 4;
-
-                $result = $this->service->manualReferralNeeded($id);
-
-                $this->assertEquals($result, 2);
-        }
-
-	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentNotExists_HasOneOpenEpisodeForWrongService_ReturnsFalse()
-        {
-                $id = 5;
-
-                $result = $this->service->manualReferralNeeded($id);
-
-                $this->assertFalse($result);
-        }
+//	public function testManualReferralNeeded_InvalidEventId_ThrowsException()
+//	{
+//		$fakeId = 12345;
+//
+//		$this->setExpectedException('Exception', 'No event of that id.');
+//		$this->service->ManualReferralNeeded($fakeId);
+//	}
+//
+//	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentExists_ReturnsFalse()
+//	{
+//		$id = 1;
+//
+//		$result = $this->service->manualReferralNeeded($id);
+//
+//		$this->assertFalse($result);
+//	}
+//
+//	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentNotExists_HasOpenEpisodesForService_ReturnsFalse()
+//	{
+//		$id = 2;
+//
+//		$result = $this->service->manualReferralNeeded($id);
+//
+//		$this->assertFalse($result);
+//	}
+//
+//	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentNotExists_HasOpenEpisodesForWrongService_ReturnsEraId()
+//	{
+//		$id = 4;
+//
+//		$result = $this->service->manualReferralNeeded($id);
+//
+//		$this->assertEquals($result, 2);
+//	}
+//
+//	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentNotExists_HasOneOpenEpisodeForWrongService_ReturnsFalse()
+//	{
+//		$id = 5;
+//
+//		$result = $this->service->manualReferralNeeded($id);
+//
+//		$this->assertFalse($result);
+//	}
 }

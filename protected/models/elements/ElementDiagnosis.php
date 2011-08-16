@@ -44,7 +44,8 @@ class ElementDiagnosis extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id', 'required'),
+			array('eye', 'required', 'message' => 'Please select an eye option'),
+			array('disorder_id', 'required', 'message' => 'Please enter a valid disorder'),
 			array('eye', 'numerical', 'integerOnly'=>true),
 			array('disorder_id', 'length', 'max'=>10),
 			// The following rule is used by search().

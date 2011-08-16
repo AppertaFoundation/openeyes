@@ -44,10 +44,15 @@ foreach ($specialties as $specialty) {
 		});
 		$('select[name=subsection]').change(function() {
 			var select = $('select[name=subsection]').val();
+			var existingProcedures = [];
+			$('#procedure_list tbody').children().each(function () {
+				var text = $(this).children('td:first').text();
+				existingProcedures.push(text.replace(/ remove$/i, ''));
+			});
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('procedure/list'); ?>',
-				'type': 'GET',
-				'data': {'subsection': select},
+				'type': 'POST',
+				'data': {'subsection': select, 'existing': existingProcedures},
 				'success': function(data) {
 					$('select[name=procedure]').html(data);
 				}
@@ -60,6 +65,9 @@ foreach ($specialties as $specialty) {
 				'type': 'GET',
 				'data': {'name': procedure},
 				'success': function(data) {
+					// remove selection from the filter box
+					$('select[name=procedure] option:selected').remove();
+					
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
 					$('#procedure_list').show();

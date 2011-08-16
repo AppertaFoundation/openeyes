@@ -1,4 +1,5 @@
 <?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 $firm = $operation->event->episode->firm; ?>
 <div class="view">
 	<strong>Service:</strong>

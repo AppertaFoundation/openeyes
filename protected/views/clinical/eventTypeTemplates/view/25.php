@@ -1,16 +1,5 @@
 <?php
 
-// Add the invisible letter css
-Yii::app()->clientScript->registerCssFile(
-	'/css/elements/ElementLetterOut/1_invisible.css',
-	'screen, projection'
-);
-
-Yii::app()->clientScript->registerCssFile(
-	'/css/elements/ElementLetterOut/1_print.css',
-	'print'
-);
-
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 
 foreach ($elements as $element) {
@@ -70,20 +59,25 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			array('booking/rescheduleLater', 'operation'=>$operation->id), array('class'=>'fancybox shinybutton', 'encode'=>false));
 		echo CHtml::link('<span>Re-Schedule Now</span>',
 			array('booking/reschedule', 'operation'=>$operation->id), array('class'=>'fancybox shinybutton highlighted', 'encode'=>false));
-?>
-<a class="fancybox shinybutton highlighted" onClick="javascript:window.print()" href="#"><span>Print Letter</span></a>
-<div id="ElementLetterOut_layout">
-<?php
 
+// Add the invisible letter css
 Yii::app()->clientScript->registerCssFile(
         '/css/elements/ElementLetterOut/1.css',
         'screen, projection'
 );
 
+// Add the invisible letter css
 Yii::app()->clientScript->registerCssFile(
         '/css/elements/ElementLetterOut/1_print.css',
         'print'
 );
+
+?>
+<a class="shinybutton highlighted" onClick="javascript:window.print()" href="#"><span>Print Letter</span></a>
+</div>
+<div id="ElementLetterOut_layout">
+<img src="/img/elements/ElementLetterOut/Letterhead.png" alt="Moorfields logo" border="0" />
+<?php
 
 if ($siteId = Yii::app()->request->cookies['site_id']->value) {
         $site = Site::model()->findByPk($siteId);
@@ -95,10 +89,10 @@ if ($siteId = Yii::app()->request->cookies['site_id']->value) {
 
                 echo $site->name . "<br />\n";
                 echo $site->address1 . "<br />\n";
-                if (isset($site->address2)) {
+                if ($site->address2) {
                         echo $site->address2 . "<br />\n";
                 }
-                if (isset($site->address3)) {
+                if ($site->address3) {
                         echo $site->address3 . "<br />\n";
                 }
                 echo $site->postcode . "<br />\n";
@@ -111,6 +105,10 @@ if ($siteId = Yii::app()->request->cookies['site_id']->value) {
         }
 }
 
+$patient = $operation->event->episode->patient;
+
+$service = new LetterOutService($operation->event->episode->firm);
+
 ?>
         <br />
         <br />
@@ -118,22 +116,49 @@ if ($siteId = Yii::app()->request->cookies['site_id']->value) {
         <br />
         <br />
         <br />
-        <p class="ElementLetterOut_to">Patient Address</p>
+        <p class="ElementLetterOut_to">
+		<?php echo $patient->first_name ?> <?php echo $patient->last_name ?><br />
+		<?php echo $patient->address->address1 ?><br />
+		<?php if ($patient->address->address2) {
+			echo $patient->address->address2 . "<br />\n";
+		} ?>
+		<?php echo $patient->address->city; ?><br />
+		<?php echo $patient->address->postcode; ?><br />
+	</p>
 
-        <p class="ElementLetterOut_date">Automatically populate date</p>
+        <p class="ElementLetterOut_date"><?php echo date("Y-m-d") ?></p>
 
-        <p class="ElementLetterOut_dear">Dear Patient</p>
+	<p class="ElementLetterOut_re">
+		Hospital number reference: INP/A/<?php echo $patient->hos_num ?><br />
+		NHS number: <?php echo $patient->nhs_num ?>
+	</p>
 
-        <p class="ElementLetterOut_re">Hosnum and nhsnum</p>
+        <p class="ElementLetterOut_dear">Dear <?php echo $patient->first_name ?> <?php echo $patient->last_name ?>,</p>
 
-        <p class="ElementLetterOut_text">Text</p>
+        <p class="ElementLetterOut_text">
+I have been asked to arrange your admission for surgery under the care of
+<?php echo $operation->getPhrase('Consultant') ?>. This is currently anticipated to be a <?php
+	if ($operation->overnight_stay) {
+		echo 'Inpatient';
+	} else {
+		echo 'Day case';
+	}
+?> procedure
+STAYLENGTH in hospital.
+<br /><br />
+Please will you telephone <?php echo $operation->getPhrase('Contact Number') ?> within <?php echo $operation->getPhrase('Time Limit') ?> of the date of this letter to
+discuss and agree a convenient date for your operation. If there is no reply, please
+leave a message and contact number on the answer phone.
+<br /><br />
+Should you no longer require treatment, please let me know as soon as possible.
+	</p>
 
         <p>Yours sincerely,<br /><br /><br /><br />Admissions Officer</p>
+<span class="page_break"></span>
 </div>
 <?php
 	}
 }?>
-</div>
 <div class="cleartall"></div>
 <script type="text/javascript">
 	$('a.fancybox').fancybox([]);

@@ -20,5 +20,10 @@ return array(
 		'site_id' => 1,
 		'name' => 'Female Adult Ward',
 		'restriction' => Ward::RESTRICTION_FEMALE + Ward::RESTRICTION_ATLEAST_16
-	)
+	),
+	'ward5' => array(
+		'site_id' => 2,
+		'name' => 'Other Site Ward',
+		'restriction' => 0
+	),
 );

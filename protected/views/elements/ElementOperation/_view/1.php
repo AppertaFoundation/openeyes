@@ -1,9 +1,25 @@
-<h3>Operation Details</h3>
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
-?>
+if ($data->status != $data::STATUS_CANCELLED) {
+	echo CHtml::link('<span>Edit Operation</span>',
+		array('clinical/update', 'id'=>$data->id), array('id'=>'editlink','class'=>'fancybox shinybutton', 'encode'=>false));
+} ?>
+<h3>Operation Details</h3>
+<?php
+if ($data->status == $data::STATUS_CANCELLED) { ?>
+<div class="flash-notice">
+<?php 
+	$cancellation = $data->cancellation;
+	// todo: move this text generation to a nicer place
+	$text = "Operation Cancelled: By " . $cancellation->user->first_name . 
+		' ' . $cancellation->user->last_name . ' on ' . date('F j, Y', strtotime($cancellation->cancelled_date));
+	$text .= ' [' . $cancellation->cancelledReason->text . ']';	
+	
+	echo $text; ?>
+</div>
+<?php 
+} ?>
 <div class="view">
 	<strong><?php echo $data->getEyeLabelText(); ?></strong>
 	<?php echo $data->getEyeText(); ?>
@@ -84,8 +100,6 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 				array('operation' => $data),true),
 		),
 		'id'=>'clinic-details',
-		'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-		'theme'=>'theme',
 		// additional javascript options for the accordion plugin
 		'options'=>array(
 			'active'=>false,
@@ -95,8 +109,31 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 	));
 } ?>
 </div>
+<div class="buttonlist">
+<?php
+if ($data->status != ElementOperation::STATUS_CANCELLED) {
+	if (empty($data->booking)) {
+		echo CHtml::link('<span>Cancel Operation</span>',
+			array('booking/cancelOperation', 'operation'=>$data->id), array('class'=>'fancybox shinybutton', 'encode'=>false));
+		echo CHtml::link("<span>Schedule Now</span>",
+			array('booking/schedule', 'operation'=>$data->id), array('class'=>'fancybox shinybutton highlighted', 'encode'=>false));
+	} else {
+		echo '<p/>';
+		echo CHtml::link('<span>Cancel Operation</span>',
+			array('booking/cancelOperation', 'operation'=>$data->id), array('class'=>'fancybox shinybutton', 'encode'=>false));
+		echo CHtml::link("<span>Re-Schedule Later</span>",
+			array('booking/rescheduleLater', 'operation'=>$data->id), array('class'=>'fancybox shinybutton', 'encode'=>false));
+		echo CHtml::link('<span>Re-Schedule Now</span>',
+			array('booking/reschedule', 'operation'=>$data->id), array('class'=>'fancybox shinybutton highlighted', 'encode'=>false));
+	}
+}?>
+</div>
 <div class="cleartall"></div>
 <?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 }
+?>
+<script type="text/javascript">
+	$('a.fancybox').fancybox([]);
+</script>

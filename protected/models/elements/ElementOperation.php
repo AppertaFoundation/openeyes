@@ -46,6 +46,7 @@ class ElementOperation extends BaseElement
 	const STATUS_RESCHEDULED = 3;
 	const STATUS_CANCELLED = 4;
 
+	public $service;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -71,6 +72,8 @@ class ElementOperation extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('eye', 'required', 'message' => 'Please select an eye option'),
+			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
 			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().
@@ -257,6 +260,31 @@ class ElementOperation extends BaseElement
 				break;
 			case self::ANAESTHETIC_GENERAL:
 				$text = 'General';
+				break;
+			default:
+				$text = 'Unknown';
+				break;
+		}
+
+		return $text;
+	}
+
+	public function getAnaestheticAbbreviation() {
+		switch ($this->anaesthetic_type) {
+			case self::ANAESTHETIC_TOPICAL:
+				$text = 'TOP';
+				break;
+			case self::ANAESTHETIC_LOCAL:
+				$text = 'LOC';
+				break;
+			case self::ANAESTHETIC_LOCAL_WITH_COVER:
+				$text = 'LWC';
+				break;
+			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
+				$text = 'LWS';
+				break;
+			case self::ANAESTHETIC_GENERAL:
+				$text = 'GA';
 				break;
 			default:
 				$text = 'Unknown';
@@ -620,4 +648,19 @@ class ElementOperation extends BaseElement
 		
 		return $results;
 	}
+
+// @todo - not sure if these two methods should be here, but it's better than being in 25.php
+        public function getService()
+        {
+                if (empty($this->service)) {
+                        $this->service = new LetterOutService($this->event->episode->firm);
+                }
+
+                return $this->service;
+        }
+
+	public function getPhrase($name)
+        {
+                return $this->getService()->getPhrase('LetterOut', $name);
+        } 
 }

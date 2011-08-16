@@ -1,6 +1,7 @@
 <div id="theatres">
 <strong>Select a session time:</strong>
 <?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 $tabs = array();
 foreach ($theatres as $name => $sessions) {
 	$pretext = '<div id="box_grey_gradient_top"></div>
@@ -23,8 +24,6 @@ foreach ($theatres as $name => $sessions) {
 $this->widget('zii.widgets.jui.CJuiTabs', array(
     'tabs'=>$tabs,
 	'id'=>'theatre-times',
-	'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
-	'theme'=>'theme',
     // additional javascript options for the tabs plugin
     'options'=>array(
         'collapsible'=>false,

@@ -137,6 +137,50 @@ class LetterOutService
 	}
 
 	/**
+	 * Gets the phrase for a particular name and section
+	 */
+	public function getPhrase($sectionName, $phraseName)
+	{
+		$name = PhraseName::model()->find('name = ?', array($phraseName));
+
+		if (!isset($name)) {
+			return 'NO NAME';
+		}
+
+		$section = Section::model()->find('section_type_id = 1 AND name = ?', array($sectionName));
+
+		if (!isset($section)) {
+			return 'NO SECTION';
+		}
+
+		$phrase = PhraseByFirm::model()->find('firm_id = ? AND phrase_name_id = ? AND section_id = ?', array(
+			$this->firm->id, $name->id, $section->id
+		));
+
+		if (isset($phrase)) {
+			return $phrase->phrase;
+		}
+
+		$phrase = PhraseBySpecialty::model()->find('specialty_id = ? AND phrase_name_id = ? AND section_id = ?', array(
+			$this->firm->serviceSpecialtyAssignment->specialty_id, $name->id, $section->id
+		));
+
+		if (isset($phrase)) {
+			return $phrase->phrase;
+		}
+
+		$phrase = Phrase::model()->find('phrase_name_id = ? AND section_id = ?', array(
+			$name->id, $section->id
+		));
+
+		if (isset($phrase)) {
+			return $phrase->phrase;
+		}
+
+		return 'NO DATA';
+	}
+
+	/**
 	 * Gets details for all the users associated with all the firms associated with the user
 	 *
 	 * N.B. ideally this would be by role - not all users are eligible to have correspondence sent from
@@ -152,7 +196,7 @@ class LetterOutService
 
 		// Add this user
 		$users[$user->title . ' ' . $user->first_name . ' ' . $user->last_name . ' ' . $user->qualifications . ', ' . $user->role] =
-                                        $user->title . ' ' . $user->first_name . ' ' . $user->last_name;	
+					$user->title . ' ' . $user->first_name . ' ' . $user->last_name;	
 
 		// If the user has global firm rights they can see all firms and all users
 		if ($user->global_firm_rights) {
@@ -193,16 +237,16 @@ class LetterOutService
 
 			// Get all firms the user is directly associated with
 			$results = Yii::app()->db->createCommand()
-                                ->select('firm_id AS fid')
-                                ->from('firm_user_assignment f_u_a')
-                                ->where('f_u_a.user_id = :u_id', array(':u_id' => $user->id))
-                                ->queryAll();
+				->select('firm_id AS fid')
+				->from('firm_user_assignment f_u_a')
+				->where('f_u_a.user_id = :u_id', array(':u_id' => $user->id))
+				->queryAll();
 
-                        foreach ($results as $result) {
-                                if (!in_array($result['fid'], $firmIds)) {
-                                        $firmIds[] = $result['fid'];
-                                }
-                        }
+			foreach ($results as $result) {
+				if (!in_array($result['fid'], $firmIds)) {
+					$firmIds[] = $result['fid'];
+				}
+			}
 
 			foreach ($firmIds as $firmId) {
 				$results2 = Yii::app()->db->createCommand()
@@ -319,20 +363,20 @@ class LetterOutService
 				}
 			}
 
-                        // Find most recent episode, if any
-                        $episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm);
+			// Find most recent episode, if any
+			$episode = Episode::getCurrentEpisodeByFirm($this->patient->id, $this->firm);
 
-                        $this->substitutions['epd'] = 'NO DATA';
-                        $this->substitutions['eps'] = 'NO DATA';
+			$this->substitutions['epd'] = 'NO DATA';
+			$this->substitutions['eps'] = 'NO DATA';
 
-                        if (isset($episode) && $episode) {
-                                $diagnosis = $episode->getPrincipalDiagnosis();
+			if (isset($episode) && $episode) {
+				$diagnosis = $episode->getPrincipalDiagnosis();
 
-                                if (isset($diagnosis) && $diagnosis) {
-                                        $this->substitutions['epd'] = $diagnosis->disorder->term;
-                                        $this->substitutions['eps'] = $diagnosis->getEyeText();
-                                }
-                        }
+				if (isset($diagnosis) && $diagnosis) {
+					$this->substitutions['epd'] = $diagnosis->disorder->term;
+					$this->substitutions['eps'] = $diagnosis->getEyeText();
+				}
+			}
 		}
 
 /*

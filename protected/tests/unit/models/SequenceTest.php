@@ -277,10 +277,12 @@ class SequenceTest extends CDbTestCase
 	public function testGetTheatreOptions_ReturnsCorrectData()
 	{
 		$theatre = $this->theatres['theatre1'];
-		$site = $this->sites['site1'];
+		$site1 = $this->sites['site1'];
+		$site2 = $this->sites['site2'];
 		
 		$expected = array();
 		foreach ($this->theatres as $theatre) {
+			$site = $theatre['site_id'] == 1 ? $site1 : $site2;
 			$expected[$theatre['id']] = "{$site['name']} - {$theatre['name']}";
 		}
 		
