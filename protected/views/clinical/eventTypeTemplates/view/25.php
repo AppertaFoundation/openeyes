@@ -8,6 +8,13 @@ foreach ($elements as $element) {
 	}
 }
 
+if (Yii::app()->user->hasFlash('success')) { ?>
+<div class="flash-success">
+    <?php echo Yii::app()->user->getFlash('success'); ?>
+</div>
+<?php
+}
+
 if ($operation->status != $operation::STATUS_CANCELLED) {
 	if ($editable) {
 		echo CHtml::link('<span>Edit Operation</span>', array('clinical/update', 'id' => $eventId), array('id' => 'editlink', 'class' => 'fancybox shinybutton', 'encode' => false));
