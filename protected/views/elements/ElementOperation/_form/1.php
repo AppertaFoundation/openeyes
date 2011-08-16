@@ -158,6 +158,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 			'options'=>array(
 				'showAnim'=>'fold',
 				'dateFormat'=>'yy-mm-dd',
+				'maxDate'=>'today'
 			),
 			'htmlOptions'=>array('style'=>'width: 110px;')
 		)); ?></div>
