@@ -13,3 +13,4 @@ nbproject/*
 /protected/models/elements/ElementExample.php
 /protected/views/elements/ElementExample/
 .DS_Store
+/.idea/
