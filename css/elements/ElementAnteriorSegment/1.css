@@ -1,0 +1,36 @@
+canvas {
+    border: 1px solid black;
+}
+
+button {
+    width: 48px;
+    border: solid 1px;
+    background-color: #cccccc;
+    margin-right: 0px;
+    overflow: visible;
+    padding: 4px 4px 3px 4px;
+}
+
+button:hover {
+    background-color: #bbbbbb;
+    border: solid 1px;
+}
+
+button:active {
+    background-color: #888888;
+    border: solid 1px;
+}
+
+button:disabled {
+    background-color: #eeeeee;
+    border: solid 1px;
+}
+
+button img {
+    margin: 0 3px -3px 0 !important;
+    padding: 0;
+    border: none;
+    width: 32px;
+    height: 32px;
+}
+
