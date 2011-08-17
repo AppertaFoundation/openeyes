@@ -731,3 +731,19 @@ form.sliding div.data span, form.sliding td span, form.sliding div.row span {
 #box_gradient_bottom h3 {
     font: bold 14pt Arial;
 }
+
+div.errorSummary
+{
+    background:#FBE3E4;
+    color:#8a1f11;
+    border: 1px solid #FBC2C4;
+    padding: 5px;
+}
+
+div.errorSummary p {
+    margin: 0 0 0.5em 0;
+}
+
+div.errorSummary ul {
+    margin: 0 0 0.5em 0;
+}
