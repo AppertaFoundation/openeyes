@@ -8,10 +8,9 @@ class ReferralServiceTest extends CDbTestCase
 	public $fixtures = array(
 		'episodes' => 'Episode',
 		'events' => 'Event',
-                'referrals' => 'Referral',
-                'referralEpisodeAssignments' => 'ReferralEpisodeAssignment'
+		'referrals' => 'Referral',
+		'referralEpisodeAssignments' => 'ReferralEpisodeAssignment'
 	);
-
 	protected $service;
 
 	protected function setUp()
@@ -19,7 +18,6 @@ class ReferralServiceTest extends CDbTestCase
 		$this->service = new ReferralService;
 		parent::setUp();
 	}
-
 //	public function testManualReferralNeeded_InvalidEventId_ThrowsException()
 //	{
 //		$fakeId = 12345;
