@@ -1,4 +1,6 @@
 <?php
+
+// @todo - include the referral date below.
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 $firm = $operation->event->episode->firm; ?>
 <div class="view">
@@ -19,10 +21,10 @@ if (!empty($operation->booking)) {
 </div>
 <?php	
 } ?>
-<div class="view">
+<!--div class="view">
 	<strong>Referral date:</strong>
-</div>
-<div class="view">
+</div-->
+<!--div class="view">
 	<strong>Clinic date:</strong>
 </div>
 <div class="view">
@@ -30,4 +32,4 @@ if (!empty($operation->booking)) {
 </div>
 <div class="view">
 	<strong>Diagnosis:</strong>
-</div>
+</div-->

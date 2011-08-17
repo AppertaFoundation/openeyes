@@ -145,7 +145,7 @@ Should you no longer require treatment, please let me know as soon as possible.
 	</p>
 
         <p>Yours sincerely,<br /><br /><br /><br />Admissions Officer</p>
-<span class="page_break"></span>
+<!--span class="page_break"></span-->
 <?php
 }
 ?>

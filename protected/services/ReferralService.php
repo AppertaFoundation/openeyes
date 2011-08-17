@@ -14,7 +14,7 @@ class ReferralService
 			foreach ($results as $pasReferral) {
 				$patient = Patient::model()->find('pas_key = ?', array($pasReferral->X_CN));
 
-// @todo what's going on here?
+// @todo what's going on here? Specialties are not as they should be in PAS so findByPk(1) has been left here for now.
 				//$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REFSPEC));
 				$specialty = Specialty::model()->findByPk(1);
 
