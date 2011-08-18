@@ -148,6 +148,8 @@ class ClinicalController extends BaseController
 
 				$this->logActivity('created event.');
 
+				$eventTypeName = ucfirst($eventType->name);
+				Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} else {
@@ -234,7 +236,7 @@ class ClinicalController extends BaseController
 					$this->logActivity('updated event');
 
 					$eventTypeName = ucfirst($event->eventType->name);
-					Yii::app()->user->setFlash('success', "{$eventTypeName} updated successfully.");
+					Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
 					$this->redirect(array(
 						'patient/view',
 						'id' => $this->patientId,
