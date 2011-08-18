@@ -169,6 +169,8 @@ class ElementOperationTest extends CDbTestCase
 			'decision_date' => date('Y-m-d'),
 		));
 
+		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
+
 		$this->assertTrue($element->save(true));
 	}
 
@@ -181,9 +183,27 @@ class ElementOperationTest extends CDbTestCase
 			'decision_date' => date('Y-m-d'),
 		));
 
+		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
+
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
 
 		$this->assertTrue($element->save(true));
+	}
+
+	public function testBasicCreate_WithMismatchedDiagnosis_DoesNotSaveElement()
+	{
+		$element = $this->element;
+		$element->setAttributes(array(
+			'event_id' => '1',
+			'eye' => ElementOperation::EYE_LEFT,
+			'decision_date' => date('Y-m-d'),
+		));
+
+		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
+		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_RIGHT;
+		$_POST['ElementOperation']['eye'] = ElementDiagnosis::EYE_LEFT;
+
+		$this->assertFalse($element->save(true));
 	}
 
 	public function testAttributeLabels()

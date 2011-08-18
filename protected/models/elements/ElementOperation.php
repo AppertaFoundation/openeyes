@@ -73,6 +73,7 @@ class ElementOperation extends BaseElement
 		// will receive user inputs.
 		return array(
 			array('eye', 'required', 'message' => 'Please select an eye option'),
+			array('eye', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
 			array('eye, event_id, comments, decision_date', 'safe'),
@@ -351,6 +352,19 @@ class ElementOperation extends BaseElement
 			1 => 'Yes',
 			0 => 'No',
 		);
+	}
+
+	public function matchDiagnosisEye()
+	{
+		if (isset($_POST['ElementDiagnosis']['eye']) &&
+			isset($_POST['ElementOperation']['eye'])) {
+			$diagnosis = $_POST['ElementDiagnosis']['eye'];
+			$operation = $_POST['ElementOperation']['eye'];
+			if ($diagnosis != ElementDiagnosis::EYE_BOTH &&
+				$diagnosis != $operation) {
+				$this->addError('eye', 'Operation eye must match diagnosis eye!');
+			}
+		}
 	}
 
 	protected function beforeSave()
