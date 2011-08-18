@@ -25,7 +25,8 @@ class ElementOperationTest extends CDbTestCase
 		'bookings' => 'Booking',
 		'theatres' => 'Theatre',
 		'sites' => 'Site',
-		'wards' => 'Ward'
+		'wards' => 'Ward',
+		'reasons' => 'CancellationReason'
 	);
 
 	public function setUp()
@@ -79,6 +80,18 @@ class ElementOperationTest extends CDbTestCase
 			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'Local with cover'),
 			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'Local with sedation'),
 			array(ElementOperation::ANAESTHETIC_GENERAL, 'General'),
+			array(2847405, 'Unknown'),
+		);
+	}
+
+	public function dataProvider_AnaesteticAbbreviation()
+	{
+		return array(
+			array(ElementOperation::ANAESTHETIC_TOPICAL, 'TOP'),
+			array(ElementOperation::ANAESTHETIC_LOCAL, 'LOC'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'LWC'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'LWS'),
+			array(ElementOperation::ANAESTHETIC_GENERAL, 'GA'),
 			array(2847405, 'Unknown'),
 		);
 	}
@@ -153,7 +166,10 @@ class ElementOperationTest extends CDbTestCase
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
+			'decision_date' => date('Y-m-d'),
 		));
+
+		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
 
 		$this->assertTrue($element->save(true));
 	}
@@ -164,11 +180,30 @@ class ElementOperationTest extends CDbTestCase
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
+			'decision_date' => date('Y-m-d'),
 		));
+
+		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
 
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
 
 		$this->assertTrue($element->save(true));
+	}
+
+	public function testBasicCreate_WithMismatchedDiagnosis_DoesNotSaveElement()
+	{
+		$element = $this->element;
+		$element->setAttributes(array(
+			'event_id' => '1',
+			'eye' => ElementOperation::EYE_LEFT,
+			'decision_date' => date('Y-m-d'),
+		));
+
+		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
+		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_RIGHT;
+		$_POST['ElementOperation']['eye'] = ElementDiagnosis::EYE_LEFT;
+
+		$this->assertFalse($element->save(true));
 	}
 
 	public function testAttributeLabels()
@@ -180,6 +215,7 @@ class ElementOperationTest extends CDbTestCase
 			'comments' => 'Comments',
 			'total_duration' => 'Total Duration',
 			'consultant_required' => 'Consultant Required',
+			'decision_date' => 'Decision Date',
 			'anaesthetist_required' => 'Anaesthetist Required',
 			'anaesthetic_type' => 'Anaesthetic Type',
 			'overnight_stay' => 'Overnight Stay',
@@ -282,6 +318,16 @@ class ElementOperationTest extends CDbTestCase
 		$this->element->anaesthetic_type = $type;
 
 		$this->assertEquals($text, $this->element->getAnaestheticText());
+	}
+
+	/**
+	 * @dataProvider dataProvider_AnaesteticAbbreviation
+	 */
+	public function testGetAnaestheticAbbreviation_ReturnsCorrectData($type, $text)
+	{
+		$this->element->anaesthetic_type = $type;
+
+		$this->assertEquals($text, $this->element->getAnaestheticAbbreviation());
 	}
 
 	public function testGetOvernightOptions_ReturnsCorrectData()
@@ -1227,6 +1273,35 @@ class ElementOperationTest extends CDbTestCase
 		}
 		
 		$this->assertEquals($expected, $operation->getWardOptions($siteId));
+	}
+	
+	public function testGetCancellationText_NoCancellation_ReturnsEmptyString()
+	{
+		$operation = $this->elements('element1');
+		CancelledOperation::model()->deleteAll();
+		$this->assertEquals('', $operation->getCancellationText(), 'Cancellation text should be blank.');
+	}
+	
+	public function testGetCancellationText_ValidCancellation_ReturnsCorrectText()
+	{
+		$operation = $this->elements('element1');
+		$cancelledTime = strtotime('-1 day');
+		$cancelledDate = date('Y-m-d', $cancelledTime);
+		$user = $this->users['user1'];
+		$reason = $this->reasons['reason1'];
+		
+		$cancel = new CancelledOperation;
+		$cancel->element_operation_id = $operation->id;
+		$cancel->cancelled_date = $cancelledDate;
+		$cancel->user_id = $user['id'];
+		$cancel->cancelled_reason_id = $reason['id'];
+		$cancel->save();
+		
+		$expected = "Operation Cancelled: By {$user['first_name']} " .
+			"{$user['last_name']} on " . date('F j, Y', $cancelledTime) . 
+			" [{$reason['text']}]";
+		
+		$this->assertEquals($expected, $operation->getCancellationText(), 'Cancellation text should match.');
 	}
 	
 	protected function getWeekday($index)

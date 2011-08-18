@@ -1,12 +1,12 @@
 <?php
 echo '<div style="float: left;">';
 echo CHtml::label('First name:', 'first_name');
-echo CHtml::textField('first_name', '', array('style'=>'width: 150px;'));
+echo CHtml::textField('Patient[first_name]', '', array('style'=>'width: 150px;'));
 
 echo '<p/>';
 
 echo CHtml::label('Last name:', 'last_name');
-echo CHtml::textField('last_name', '', array('style'=>'width: 150px;'));
+echo CHtml::textField('Patient[last_name]', '', array('style'=>'width: 150px;'));
 
 echo '<p/>';
 
@@ -21,12 +21,12 @@ echo '</div>';
 
 echo '<div style="padding-left: 300px;">';
 echo CHtml::label('NHS #:', 'nhs_number');
-echo CHtml::textField('nhs_number', '', array('style' => 'width: 150px;'));
+echo CHtml::textField('Patient[nhs_num]', '', array('style' => 'width: 150px;'));
 
 echo '<div class="cleartall"></div>';
 
 echo CHtml::label('Gender:', 'gender');
-echo CHtml::radioButtonList('gender', '', array(0=>'Male',1=>'Female'), 
+echo CHtml::radioButtonList('Patient[gender]', '', array('M'=>'Male','F'=>'Female'), 
 	array('separator'=>' &nbsp; '));
 echo '</div>';
 ?>

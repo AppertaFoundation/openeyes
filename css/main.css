@@ -403,8 +403,10 @@ h3.element_letterout {
 
 #sidebox {
     background: url('/images/background_smallbox.png');
+    position: absolute;
     height: 198px;
     width: 270px;
+    margin-left: 604px;
     float: right;
     padding: 10px;
     font: 10pt Arial;
@@ -495,6 +497,29 @@ h3.element_letterout {
 #patient-search .ui-accordion-header {
     float: left;
     width: 584px;
+}
+
+#patient-list {
+    display:none;
+    background: #FFF;
+    width: 574px;
+    float: left;
+    font: 10pt Arial;
+    padding-left: 10px;
+    /*  padding-right: 20px;*/
+}
+
+#patient-search-error {
+    display:none;
+    background: #FFF;
+    width: 564px;
+    float: left;
+    font: 10pt Arial;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: #F00;
+    border: 2px solid #F00;
 }
 
 .ui-accordion-header span {
@@ -730,4 +755,20 @@ form.sliding div.data span, form.sliding td span, form.sliding div.row span {
 
 #box_gradient_bottom h3 {
     font: bold 14pt Arial;
+}
+
+div.errorSummary
+{
+    background:#FBE3E4;
+    color:#8a1f11;
+    border: 1px solid #FBC2C4;
+    padding: 5px;
+}
+
+div.errorSummary p {
+    margin: 0 0 0.5em 0;
+}
+
+div.errorSummary ul {
+    margin: 0 0 0.5em 0;
 }

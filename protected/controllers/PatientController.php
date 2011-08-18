@@ -40,6 +40,7 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+// @todo - do actionViewByHosHum and actionView need to be separate methods? Is this method used directly any more?
 		$patient = $this->loadModel($id);
 		
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
@@ -89,30 +90,30 @@ class PatientController extends BaseController
 	 */
 	public function actionResults()
 	{
-		if (empty($_POST['Patient'])) {
-			unset($_POST);
-			$this->forward('search');
-		}
-		if (!isset($_GET['Patient_page'])) {
-			$page = 1;
-		} else {
-			$page = $_GET['Patient_page'];
-		}
-
 		$model = new Patient;
-		$service = new PatientService;
-		$criteria = $service->search($_POST['Patient']);
 
-		$pages = new CPagination($model->count($criteria));
-		$pages->applyLimit($criteria);
+		if (Yii::app()->params['use_pas']) {
+			$service = new PatientService;
+			$criteria = $service->search($this->collatePostData());
 
-		$dataProvider = new CActiveDataProvider('Patient', array(
-			'criteria' => $criteria,
-			'pagination' => $pages));
+	       		$dataProvider = new CActiveDataProvider('Patient', array(
+				'criteria' => $criteria
+			));
+		} else {
+			$model->attributes = $this->collatePostData();
+			$dataProvider = $model->search();
+		}
 
-		$this->render('results', array(
-			'dataProvider' => $dataProvider
-		));
+		$results = $dataProvider->getData();
+
+		$output = array();
+
+		foreach ($results as $result) {
+			$output[] = array($result['id'], $result['first_name'], $result['last_name']);
+		}
+
+		//echo CJavaScript::jsonEncode($output);
+		echo CJavaScript::jsonEncode($results);
 	}
 
 	/**
@@ -158,7 +159,7 @@ class PatientController extends BaseController
 		$eventTypes = EventType::model()->getAllPossible($specialtyId);
 		
 		$typeGroups = $this->getEventTypeGrouping();
-		
+	
 		foreach ($eventTypes as $eventType) {
 			foreach ($typeGroups as $name => $group) {
 				if (in_array($eventType->name, $group)) {
@@ -166,10 +167,12 @@ class PatientController extends BaseController
 				}
 			}
 		}
-		
+	
+		$eventId = isset($_REQUEST['eventId']) ? $_REQUEST['eventId'] : null;
+	
 		$this->renderPartial('_episodes', 
 			array('model'=>$patient, 'episodes'=>$patient->episodes, 
-				'eventTypeGroups'=>$typeList, 'event'=>$event), false, true);
+				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
 	}
 	
 	public function actionContacts()
@@ -232,4 +235,31 @@ class PatientController extends BaseController
 		$model->attributes = $data;
 		return $model->search();
 	}
+
+	/**
+	 * Returns the $_REQUIEST['Patient'] values plus the dob day, month and year appended together.
+	 *
+	 * @return array
+	 */
+	public function collatePostData()
+	{
+		$data = $_POST['Patient'];
+
+		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
+			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
+		}
+
+		return $data;
+	}
+
+        public function getTemplateName($action, $eventTypeId)
+        {
+                $template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+
+                if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
+                        $template = $action;
+                }
+
+                return $template;
+        }
 }

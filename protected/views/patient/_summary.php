@@ -26,7 +26,9 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			if ($name === 'postcode') {
 				$string = strtoupper($string);
 			}
-			echo $string;
+			if ($name != 'email') {
+				echo $string;
+			}
 			if ($string != end($addressList)) {
 				echo '<br />';
 			}
@@ -58,7 +60,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	</div>
 	<div class="data_row row_buffer">
 		<div class="data_label">Email:</div>
-		<div class="data_value">Unknown</div>
+		<div class="data_value"><?php echo !empty($address->email) 
+                        ? $address->email : 'Unknown'; ?></div>
 		
 	</div>
 	<div class="data_row row_buffer">
@@ -78,8 +81,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			array('name'=>'End Date','value'=>'!empty($data->end_date) ? date("d/m/Y", strtotime($data->end_date)) : ""'),
 			array('name'=>'Firm', 'value'=>'$data->firm->name'),
 			array('name'=>'Service', 'value'=>'$data->firm->serviceSpecialtyAssignment->service->name'),
-			array('name'=>'Eye','value'=>''), // 'diagnosis.location',
-			array('name'=>'Diagnosis','value'=>''), // 'disorder.name'
+			array('name'=>'Eye','value'=>'$data->getPrincipalDiagnosisEyeText()'), // 'diagnosis.location',
+			array('name'=>'Diagnosis','value'=>'$data->getPrincipalDiagnosisDisorderTerm()'), // 'disorder.name'
 			// @todo: figure out how to get this to switch to the episodes tab and select the correct episode to view
 //			array('class'=>'CButtonColumn', 'buttons'=>array(
 //				'view'=>array(

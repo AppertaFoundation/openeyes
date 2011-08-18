@@ -37,6 +37,7 @@ return CMap::mergeArray(
 			'user'=>array(
 				// enable cookie-based authentication
 				'allowAutoLogin'=>true,
+				'autoUpdateFlash'=>false,
 			),
 			'fixture'=>array(
 				'class'=>'system.test.CDbFixtureManager',

@@ -143,4 +143,71 @@ class Episode extends BaseActiveRecord
 
 		return Episode::model()->find($criteria);
 	}
+
+	/**
+	 * Return the eye of the most recent diagnosis for the episode
+	 *
+	 * return @string
+	 */
+	public function getPrincipalDiagnosis()
+	{
+		// @todo - convert to find diagnosis object directly
+		$result = Yii::app()->db->createCommand()
+			->select('ed.id AS id')
+			->from('element_diagnosis ed')
+			->join('event ev', 'ed.event_id = ev.id')
+			->join('episode ep', 'ev.episode_id = ep.id')
+			->where('ep.id = :ep_id', array(
+				':ep_id' => $this->id
+			))
+			->order('ed.id DESC')
+			->queryRow();
+
+		if (empty($result)) {
+			return null;
+		} else {
+			return ElementDiagnosis::model()->findByPk($result['id']);
+		}
+	}
+
+	// @todo - these two functions are so the CGridView in the patient view doesn't get confused if there
+	// is a diagnosis for any of the disorders. They are inefficient as they hit the db twice. Optimise.
+	public function getPrincipalDiagnosisEyeText() {
+		if ($diagnosis = $this->getPrincipalDiagnosis()) {
+			return $diagnosis->getEyeText();
+		} else {
+			return 'none';
+		}
+	}
+
+        public function getPrincipalDiagnosisDisorderTerm() {
+                if ($diagnosis = $this->getPrincipalDiagnosis()) {
+                        return $diagnosis->disorder->term;
+                } else {
+                        return 'none';
+                }
+        }
+
+	public static function getCurrentEpisodeByFirm($patientId, $firm)
+	{
+		// Check for an open episode for this patient and firm's service with a referral
+		// @todo - tidy this to just get the episode object directly
+		$episode = Yii::app()->db->createCommand()
+			->select('e.id AS eid')
+			->from('episode e')
+			->join('firm f', 'e.firm_id = f.id')
+			->join('service_specialty_assignment s_s_a', 'f.service_specialty_assignment_id = s_s_a.id')
+			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.specialty_id = :specialty_id', array(
+				':patient_id' => $patientId, ':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id
+			))
+			->queryRow();
+
+		if (!$episode['eid']) {
+			// There is an open episode and it has a referral, no action required
+			return null;
+		}
+
+		return Episode::model()->findByPk($episode['eid']);
+	}
 }
+

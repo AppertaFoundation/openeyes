@@ -8,13 +8,13 @@
  * @property string $name
  * @property string $phrase
  * @property string $specialty_id
- * @property string $to
+ * @property string $send_to
  * @property string $cc
  *
  * The followings are the available model relations:
  * @property ContactType $cc0
  * @property Specialty $specialty
- * @property ContactType $to0
+ * @property ContactType $send_to
  */
 class LetterTemplate extends BaseActiveRecord
 {
@@ -43,13 +43,13 @@ class LetterTemplate extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, phrase, specialty_id, to, cc', 'required'),
+			array('name, phrase, specialty_id, send_to, cc', 'required'),
 			array('name', 'length', 'max'=>255),
 			array('phrase', 'length', 'max'=>2047),
-			array('specialty_id, to, cc', 'length', 'max'=>10),
+			array('specialty_id, send_to, cc', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, phrase, specialty_id, to, cc', 'safe', 'on'=>'search'),
+			array('id, name, phrase, specialty_id, send_to, cc', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -63,7 +63,7 @@ class LetterTemplate extends BaseActiveRecord
 		return array(
 			'cc0' => array(self::BELONGS_TO, 'ContactType', 'cc'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
-			'to0' => array(self::BELONGS_TO, 'ContactType', 'to'),
+			'sendTo' => array(self::BELONGS_TO, 'ContactType', 'send_to'),
 		);
 	}
 
@@ -77,7 +77,7 @@ class LetterTemplate extends BaseActiveRecord
 			'name' => 'Name',
 			'phrase' => 'Phrase',
 			'specialty_id' => 'Specialty',
-			'to' => 'To',
+			'send_to' => 'To',
 			'cc' => 'Cc',
 		);
 	}
@@ -97,7 +97,7 @@ class LetterTemplate extends BaseActiveRecord
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('phrase',$this->phrase,true);
 		$criteria->compare('specialty_id',$this->specialty_id,true);
-		$criteria->compare('to',$this->to,true);
+		$criteria->compare('send_to',$this->send_to,true);
 		$criteria->compare('cc',$this->cc,true);
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -112,7 +112,7 @@ class LetterTemplate extends BaseActiveRecord
 
 	public function getToText()
 	{
-		return $this->to0->name;
+		return $this->sendTo->name;
 	}
 
 	public function getCcText()
@@ -122,11 +122,23 @@ class LetterTemplate extends BaseActiveRecord
 
 	public function getSpecialtyOptions()
 	{
-		return CHtml::listData(Specialty::Model()->findAll(), 'id', 'name');
+		$specialties = Yii::app()->db->createCommand()
+			->select('s.id, s.name')
+			->from('specialty s')
+			->order('name ASC')
+			->queryAll();
+		
+		return CHtml::listData($specialties, 'id', 'name');
 	}
 
 	public function getContactTypeOptions()
 	{
-		return CHtml::listData(ContactType::Model()->findAll(), 'id', 'name');
+		$contactTypes = Yii::app()->db->createCommand()
+			->select('c.id, c.name')
+			->from('contact_type c')
+			->order('name ASC')
+			->queryAll();	
+		
+		return CHtml::listData($contactTypes, 'id', 'name');
 	}
 }

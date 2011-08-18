@@ -34,7 +34,6 @@
 				'links'=>$this->breadcrumbs,
 				'prefixText'=>'You are here: &nbsp; ',
 			)); ?><!-- breadcrumbs -->
-
 			<?php echo $content; ?>
 		</div>
 	</div>

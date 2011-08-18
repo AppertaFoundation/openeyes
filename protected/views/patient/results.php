@@ -1,16 +1,13 @@
 <?php
-$this->breadcrumbs=array(
-	'Patients'=>array('index'),
-	'Search'=>array('search'),
-	'Results',
-);
+
+// @todo - no longer needed, delete
+
 ?>
 
-<h1>Search Results</h1>
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'patient-grid',
-    'dataProvider'=>$dataProvider,
-    'template'=>"{items}\n{pager}",
+	'dataProvider'=>$dataProvider,
+	'template'=>"{items}\n{pager}",
 	'columns'=>array(
 		'pas_key',
 		'title',

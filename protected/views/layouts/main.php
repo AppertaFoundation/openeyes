@@ -27,7 +27,7 @@
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
 
-	<div id="mainmenu">
+	<!--div id="mainmenu">
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
@@ -38,15 +38,10 @@
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
 		)); ?>
-	</div><!-- mainmenu -->
+	</div--><!-- mainmenu -->
 
 	<div id="outer_content">
 		<div id="content">
-
-		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-			'links'=>$this->breadcrumbs,
-		)); ?><!-- breadcrumbs -->
-	
 		<?php echo $content; ?>
 		</div>
 	</div>

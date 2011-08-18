@@ -217,8 +217,10 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			),
-			array(
+			)
+		);
+		if ($session2['date'] <= $endDate) {
+			$expected[] = array(
 				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
@@ -236,8 +238,8 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			)
-		);
+			);
+		}
 		
 		$result = $this->service->findTheatresAndSessions($startDate, $endDate);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');
@@ -274,8 +276,10 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			),
-			array(
+			)
+		);
+		if ($session2['date'] <= $endDate) {
+			$expected[] = array(
 				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
@@ -293,8 +297,8 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			)
-		);
+			);
+		}
 		
 		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');
@@ -332,8 +336,10 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			),
-			array(
+			)
+		);
+		if ($session2['date'] <= $endDate) {
+			$expected[] = array(
 				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
@@ -351,8 +357,8 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			)
-		);
+			);
+		}
 		
 		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');
@@ -390,8 +396,10 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			),
-			array(
+			)
+		);
+		if ($session2['date'] <= $endDate) {
+			$expected[] = array(
 				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
@@ -409,8 +417,8 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			)
-		);
+			);
+		}
 		
 		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatre['id'], $serviceId);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');
@@ -450,7 +458,9 @@ class BookingServiceTest extends CDbTestCase
 				'ward' => $ward['name'],
 				'display_order' => 1,
 			),
-			array(
+		);
+		if ($session2['date'] <= $endDate) {
+			$expected[] = array(
 				'operation_id' => $this->operations['element2']['id'],
 				'name' => $theatre['name'],
 				'date' => $session2['date'],
@@ -468,8 +478,8 @@ class BookingServiceTest extends CDbTestCase
 				'gender' => $this->patients['patient1']['gender'],
 				'ward' => $ward['name'],
 				'display_order' => 1,
-			)
-		);
+			);
+		}
 		
 		$result = $this->service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatre['id'], $serviceId, $firmId);
 		$this->assertEquals($expected, $result, 'Query results should be correct.');

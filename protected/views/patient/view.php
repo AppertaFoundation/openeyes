@@ -17,27 +17,33 @@ $this->widget('application.extensions.fancybox.EFancyBox', array(
 <?php
 // @todo: figure out why 'selected'=>$tab breaks the display b/c Yii is stupid
 if ($tab == 1) {
+	$params = array('patient/episodes', 'id'=>$model->id);
+
+	if (isset($eventId)) {
+		$params['eventId'] = $eventId;
+	}
+
 	$this->widget('zii.widgets.jui.CJuiTabs', array(
-    'tabs'=>array(
+	'tabs'=>array(
 		'Summary'=>array('ajax'=>array('patient/summary', 'id'=>$model->id)),
 		'View Episodes'=>array('ajax'=>array('patient/episodes', 'id'=>$model->id, 'event'=>$event)),
-		'Contacts'=>array('ajax'=>array('patient/contacts', 'id'=>$model->id)),
-		'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
+//		'Contacts'=>array('ajax'=>array('patient/contacts', 'id'=>$model->id)),
+//		'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
 	),
 	'id'=>'patient-tabs',
     // additional javascript options for the tabs plugin
     'options'=>array(
         'collapsible'=>false,
 		'selected'=>1 // if we replace 1 with $tab, it breaks...WTF??
-    ),
+	),
 ));
 } else {
 	$this->widget('zii.widgets.jui.CJuiTabs', array(
 		'tabs'=>array(
 			'Summary'=>array('ajax'=>array('patient/summary', 'id'=>$model->id)),
 			'View Episodes'=>array('ajax'=>array('patient/episodes', 'id'=>$model->id)),
-			'Contacts'=>array('ajax'=>array('patient/contacts', 'id'=>$model->id)),
-			'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
+//			'Contacts'=>array('ajax'=>array('patient/contacts', 'id'=>$model->id)),
+//			'Correspondence'=>array('ajax'=>array('patient/correspondence', 'id'=>$model->id)),
 		),
 		'id'=>'patient-tabs',
 		'themeUrl'=>Yii::app()->baseUrl . '/css/jqueryui',
@@ -47,4 +53,4 @@ if ($tab == 1) {
 			'collapsible'=>false,
 		),
 	));
-}?>
+}

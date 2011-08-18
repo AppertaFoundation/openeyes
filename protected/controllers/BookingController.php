@@ -119,7 +119,7 @@ class BookingController extends BaseController
 		}
 		
 		$this->renderPartial('/booking/_cancel_operation', 
-	array('operation'=>$operation, 'date'=>$minDate), false, true);
+			array('operation'=>$operation, 'date'=>$minDate), false, true);
 	}
 	
 	public function actionSessions()
@@ -133,7 +133,7 @@ class BookingController extends BaseController
 		$sessions = $operation->getSessions();
 		
 		$this->renderPartial('/booking/_calendar', 
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+			array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
 	}
 	
 	public function actionTheatres()
@@ -156,7 +156,7 @@ class BookingController extends BaseController
 		$theatres = $operation->getTheatres($date);
 		
 		$this->renderPartial('/booking/_theatre_times', 
-	array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
+			array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
 	}
 	
 	public function actionList()

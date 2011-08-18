@@ -13,7 +13,7 @@ if (empty($episodes)) {
 		foreach ($episode->events as $event) { ?>
 		<li><?php
 		$text = '<span class="type">' . ucfirst($event->eventType->name) . 
-			'</span><span class="date"> - ' . date('d/m/Y', strtotime($event->datetime)) .
+			'</span><span class="date"> ' . date('d/m/Y', strtotime($event->datetime)) .
 			'</span>';
 		echo CHtml::link($text, array('clinical/view', 'id'=>$event->id));
 		} ?>

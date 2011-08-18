@@ -1,7 +1,14 @@
 <?php
 
+// @todo - by default, show the most recent episode for the firm's specialty. not the most recent episode, even after adding a new event. FIX THIS SHARPISH!
 // @todo - add logging for deletion on an event in the admin area
 // @todo - for that matter create an admin script for deleting events!
+// @todo - if an event isn't created or updated succsessfully it doesn't display the form correctly again - there is no layout. Fix.
+//	TEMPRORARILY - make diagnoses like procedures, in that only a valid diagnosis can be a diagnosis.
+// @todo - what are we to do about the fact that episodes can't be closed? Operations will be put in the same episode forever!
+// @todo - make fancyboxes appear a fixed distance from the top of the screeen? This will save having to scroll down when boxes expand,
+//	e.g. booking an operation.
+// @todo - login timeout can lead to the login screen being displayed within another. Fix this.
 
 class ClinicalController extends BaseController
 {
@@ -10,21 +17,21 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
-	
+
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	
+
 	public function accessRules()
 	{
 		return array(
 			array('allow',
-				'users'=>array('@')
+				'users' => array('@')
 			),
 			// non-logged in can't view anything
-			array('deny', 
-				'users'=>array('?')
+			array('deny',
+				'users' => array('?')
 			),
 		);
 	}
@@ -58,9 +65,22 @@ class ClinicalController extends BaseController
 			null, null, null, $this->getUserId(), $event
 		);
 
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
 		$this->logActivity('viewed event');
 
-		$this->renderPartial('view', array('elements' => $elements), false, true);
+		$this->renderPartial(
+			$this->getTemplateName('view', $event->event_type_id), array(
+			'elements' => $elements,
+			'eventId' => $id,
+			'editable' => $editable
+			), false, true);
 	}
 
 	public function actionIndex()
@@ -74,7 +94,7 @@ class ClinicalController extends BaseController
 			$referralService->search($patient->pas_key);
 		}
 
-		$this->render('index');	
+		$this->render('index');
 	}
 
 	/**
@@ -103,25 +123,44 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
-		
+
 		$patient = Patient::model()->findByPk($this->patientId);
 
-		if ($_POST && $_POST['action'] == 'create')
-		{
+		if ($_POST && $_POST['action'] == 'create') {
+			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+				$valid = true;
+				$elementList = array();
+				foreach ($elements as $element) {
+					$elementClassName = get_class($element);
+					$element->attributes = $_POST[$elementClassName];
+					$elementList[] = $element;
+					if (!$element->validate()) {
+						$valid = false;
+					}
+				}
+				if (!$valid) {
+					echo CActiveForm::validate($elementList);
+					Yii::app()->end();
+				}
+			}
+			
 			// The user has submitted the form to create the event
-
 			$eventId = $this->service->createElements(
 				$elements, $_POST, $this->firm, $this->patientId, $this->getUserId(), $eventType->id
 			);
 
 			if ($eventId) {
+				$this->assignReferralIfRequired($eventId, $this->firm, $this->patientId);
+
 				$this->logActivity('created event.');
 
+				$eventTypeName = ucfirst($eventType->name);
+				Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} else {
 					$this->redirect(array('patient/view',
-						'id' => $this->patientId,'tabId' => 1,'eventId' => $eventId));
+						'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));
 				}
 
 				return;
@@ -131,11 +170,15 @@ class ClinicalController extends BaseController
 			// be displayed again in the call below
 		}
 
-		$this->renderPartial('create', array(
-				'elements' => $elements,
-				'eventTypeId' => $eventTypeId,
-				'specialties' => $specialties,
-				'patient' => $patient
+		// Check to see if they need to choose a referral
+		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
+
+		$this->renderPartial($this->getTemplateName('create', $eventTypeId), array(
+			'elements' => $elements,
+			'eventTypeId' => $eventTypeId,
+			'specialties' => $specialties,
+			'patient' => $patient,
+			'referrals' => $referrals
 			), false, true
 		);
 	}
@@ -169,11 +212,26 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
-		
+
 		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'update') {
-			// The user has submitted the form to update the event
+			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+				$valid = true;
+				$elementList = array();
+				foreach ($elements as $element) {
+					$elementClassName = get_class($element);
+					$element->attributes = $_POST[$elementClassName];
+					$elementList[] = $element;
+					if (!$element->validate()) {
+						$valid = false;
+					}
+				}
+				if (!$valid) {
+					echo CActiveForm::validate($elementList);
+					Yii::app()->end();
+				}
+			}
 
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
@@ -184,25 +242,27 @@ class ClinicalController extends BaseController
 					$this->logActivity('updated event');
 
 					// Nothing has gone wrong with updating elements, go to the view page
+					$eventTypeName = ucfirst($event->eventType->name);
+					Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
+
 					$this->redirect(array(
 						'patient/view',
 						'id' => $this->patientId,
 						'tabId' => 1,
 						'eventId' => $event->id));
 				}
-
-				return;
 			}
 
 			// If we get this far element validation has failed, so we render them again.
 			// The validation process will have populated and error messages.
 		}
 
-		$this->renderPartial('update', array(
-				'id' => $id,
-				'elements' => $elements,
-				'specialties' => $specialties,
-				'patient' => $patient
+		// @todo - add all the referral stuff from actionCreate to this method
+		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
+			'id' => $id,
+			'elements' => $elements,
+			'specialties' => $specialties,
+			'patient' => $patient
 			), false, true);
 	}
 
@@ -231,10 +291,10 @@ class ClinicalController extends BaseController
 
 		$this->logActivity('viewed patient summary');
 
-		$this->render('summary', array(
-				'episode' => $episode,
-				'summary' => $_GET['summary']
-			)
+		$this->renderPartial('summary', array(
+			'episode' => $episode,
+			'summary' => $_GET['summary']
+			), false, true
 		);
 	}
 
@@ -256,8 +316,7 @@ class ClinicalController extends BaseController
 			)
 		);
 
-		if ($_POST && $_POST['action'] == 'chooseReferral')
-		{
+		if ($_POST && $_POST['action'] == 'chooseReferral') {
 			if (isset($_POST['referral_id'])) {
 // @todo - check referral_id is in list of referrals
 				$referralEpisode->referral_id = $_POST['referral_id'];
@@ -273,37 +332,57 @@ class ClinicalController extends BaseController
 
 		// @todo - decide what to display in the drop down list. Referral id alone isn't very informative.
 		$this->render('chooseReferral', array(
-				'id' => $id,
-				'referrals' => CHtml::listData($referrals, 'id', 'refno')
+			'id' => $id,
+			'referrals' => CHtml::listData($referrals, 'id', 'refno')
 			)
 		);
 	}
 
 	/**
-	 * Checks is the user is required to enter a referral manually.
+	 * Checks to see if there the user needs to select a referral.
 	 *
-	 * @param int $eventId
-	 * @return boolean
+	 * This is calculated as follows:
+	 *
+	 * Check for an open episode for this patient and this firm's specialty
+	 * If there is an open episode and it has a referral, no action required so return false
+	 * If no episode or the episode has no referral, check to see if a referral can be chosen automatically
+	 * If it can, it will be dealt with when creating or updating the event so no action required here, return false
+	 * If it can't, return an array of referrals for the user to choose from
+	 *
+	 * @param $firm object
+	 * @param $patientId id
+	 *
+	 * @return array
 	 */
-	public function checkForReferral($eventId)
+	public function checkForReferrals($firm, $patientId)
 	{
-	    if (Yii::app()->params['use_pas']) {
-			// If there is no referral for this episode, be it new or not, and at least one
-			// referral exists for this patient, either automatically associate it with
-			// the episode (if possible) or choose one by default then ask the user to select
-			// the appropriate episode.
-
-			// First check if this episode has any referrals
-			$referralService = new ReferralService;
-
-			// Attempt to automatically choose a referral
-
-			// If not false, No open referral for this specialty available but there are open
-			// referrals available. One of these will have been chosen automatically
-			// as a default but the system will forward to the referral selection page so the user
-			// can choose one manually.
-			return $referralService->manualReferralNeeded($eventId);
+		// If pas isn't in use there can't be any referrals
+		if (!Yii::app()->params['use_pas']) {
+			return false;
 		}
+
+		$referralService = new ReferralService;
+
+		return $referralService->getReferralsList($firm, $patientId);
+	}
+
+	/**
+	 * Assigns the referral provided, if any, to the episode if one is required.
+	 *
+	 * @param $eventId int
+	 * @param $firm object
+	 * @param $patientId int
+	 */
+	public function assignReferralIfRequired($eventId, $firm, $patientId)
+	{
+		if (!Yii::app()->params['use_pas']) {
+			// Not using referrals, do nothing
+			return;
+		}
+
+		$referralService = new ReferralService;
+
+		$referralService->assignReferral($eventId, $firm, $patientId);
 	}
 
 	/**
@@ -348,5 +427,16 @@ class ClinicalController extends BaseController
 
 		// Displays the list of episodes and events for this patient
 		$this->listEpisodesAndEventTypes();
+	}
+
+	public function getTemplateName($action, $eventTypeId)
+	{
+		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+
+		if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
+			$template = $action;
+		}
+
+		return $template;
 	}
 }

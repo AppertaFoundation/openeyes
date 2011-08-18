@@ -1,5 +1,7 @@
 <?php
 
+// @todo - CC isn't saving properly
+
 /**
  * This is the model class for table "element_letterout".
  *
@@ -10,6 +12,8 @@
  */
 class ElementLetterOut extends BaseElement
 {
+	public $service;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementLetterOut the static model class
@@ -88,5 +92,19 @@ class ElementLetterOut extends BaseElement
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getService()
+	{
+		if (empty($this->service)) {
+			$this->service = new LetterOutService($this->firm);
+		}
+
+		return $this->service;
+	}
+
+	public function getPhrase($name)
+	{
+		return $this->getService()->getPhrase('LetterOut', $name);
 	}
 }

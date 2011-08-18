@@ -30,6 +30,13 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div id="episodes_details"><?php
 	if ($event === false) {
 		$episode = end($episodes);
+
+		// View the open episode for this firm's specialty, if any
+		foreach ($episodes as $ep) {
+			if ($ep->firm->serviceSpecialtyAssignment->specialty_id == $firm->serviceSpecialtyAssignment->specialty_id) {
+				$episode = $ep;
+			}
+		}
 		$this->renderPartial('/clinical/episodeSummary',
 			array('episode' => $episode)
 		);

@@ -13,6 +13,7 @@
  * @property integer $anaesthetist_required
  * @property integer $anaesthetic_type
  * @property integer $overnight_stay
+ * @property data $decision_date
  * @property integer $schedule_timeframe
  *
  * The followings are the available model relations:
@@ -45,6 +46,7 @@ class ElementOperation extends BaseElement
 	const STATUS_RESCHEDULED = 3;
 	const STATUS_CANCELLED = 4;
 
+	public $service;
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -70,11 +72,14 @@ class ElementOperation extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('eye', 'required', 'message' => 'Please select an eye option'),
+			array('eye', 'matchDiagnosisEye'),
+			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
-			array('eye, event_id, comments', 'safe'),
+			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
+			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -108,6 +113,7 @@ class ElementOperation extends BaseElement
 			'anaesthetist_required' => 'Anaesthetist Required',
 			'anaesthetic_type' => 'Anaesthetic Type',
 			'overnight_stay' => 'Overnight Stay',
+			'decision_date' => 'Decision Date',
 			'schedule_timeframe' => 'Schedule Timeframe',
 		);
 	}
@@ -132,6 +138,7 @@ class ElementOperation extends BaseElement
 		$criteria->compare('anaesthetist_required',$this->anaesthetist_required);
 		$criteria->compare('anaesthetic_type',$this->anaesthetic_type);
 		$criteria->compare('overnight_stay',$this->overnight_stay);
+		$criteria->compare('decision_date',$this->decision_date);
 		$criteria->compare('schedule_timeframe',$this->schedule_timeframe);
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -147,6 +154,7 @@ class ElementOperation extends BaseElement
 		$this->consultant_required = self::CONSULTANT_REQUIRED;
 		$this->anaesthetic_type = self::ANAESTHETIC_TOPICAL;
 		$this->overnight_stay = 0;
+		$this->decision_date = date('Y-m-d', time());
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
@@ -344,6 +352,19 @@ class ElementOperation extends BaseElement
 			1 => 'Yes',
 			0 => 'No',
 		);
+	}
+
+	public function matchDiagnosisEye()
+	{
+		if (isset($_POST['ElementDiagnosis']['eye']) &&
+			isset($_POST['ElementOperation']['eye'])) {
+			$diagnosis = $_POST['ElementDiagnosis']['eye'];
+			$operation = $_POST['ElementOperation']['eye'];
+			if ($diagnosis != ElementDiagnosis::EYE_BOTH &&
+				$diagnosis != $operation) {
+				$this->addError('eye', 'Operation eye must match diagnosis eye!');
+			}
+		}
 	}
 
 	protected function beforeSave()
@@ -622,5 +643,33 @@ class ElementOperation extends BaseElement
 		}
 		
 		return $results;
+	}
+
+// @todo - not sure if these two methods should be here, but it's better than being in 25.php
+        public function getService()
+        {
+                if (empty($this->service)) {
+                        $this->service = new LetterOutService($this->event->episode->firm);
+                }
+
+                return $this->service;
+        }
+
+	public function getPhrase($name)
+        {
+                return $this->getService()->getPhrase('LetterOut', $name);
+        } 
+	
+	public function getCancellationText()
+	{
+		$text = '';
+		$cancellation = $this->cancellation;
+		if (!empty($cancellation)) {
+			$text = "Operation Cancelled: By " . $cancellation->user->first_name;
+			$text .= ' ' . $cancellation->user->last_name . ' on ' . date('F j, Y', strtotime($cancellation->cancelled_date));
+			$text .= ' [' . $cancellation->cancelledReason->text . ']';
+		}
+		
+		return $text;
 	}
 }

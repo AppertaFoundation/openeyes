@@ -1,25 +1,33 @@
 <?php
-if (!empty($episode)) { ?>
+
+if (!empty($episode)) {
+	$diagnosis = $episode->getPrincipalDiagnosis();
+
+	if (empty($diagnosis)) {
+        	$eye = 'No diagnosis';
+        	$text = 'No diagnosis';
+	} else {
+        	$eye = $diagnosis->getEyeText();
+        	$text = $diagnosis->disorder->term . ' - ' . $diagnosis->disorder->fully_specified_name;
+	}
+?>
 <h3>Episode Summary</h3>
 <div class="col_left">Start date:<br/>
 <span><?php echo date('jS F, Y', strtotime($episode->start_date)); ?></span>
 </div>
-<div class="col_right">Principal eye:<br/>
-<span>Where will this be fetched from?</span>
+<div class="col_right">Principal diagnosis:<br/>
+<span><?php echo $text ?></span>
 </div>
 <div class="col_left">End date:<br/>
 <span><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'; ?></span>
 </div>
-<div class="col_right">Principle diagnosis:<br/>
-<span>Where will this be fetched from?</span>
+<div class="col_right">Principal eye:<br/>
+<span><?php echo $eye ?></span>
 </div>
 <div class="col_left">Specialty:<br/>
 <span><?php echo $episode->firm->serviceSpecialtyAssignment->specialty->name; ?></span>
 </div>
-<div class="col_right">Care pathway:<br/>
-<span>Where will this be fetched from?</span>
-</div>
-<div class="col_left">Consultant firm:<br/>
+<div class="col_right">Consultant firm:<br/>
 <span><?php echo $episode->firm->name; ?></span>
 </div>
 <div class="col_right">&nbsp;<br/>&nbsp;</div>
@@ -39,4 +47,3 @@ if (!empty($episode)) { ?>
 </script>
 <?php
 }
-?>

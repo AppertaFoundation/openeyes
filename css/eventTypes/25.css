@@ -1,0 +1,21 @@
+#ElementLetterOut_layout {display:none;}
+
+#ElementLetterOut_layout > p {display:none;}
+
+p.ElementLetterOut_to {display:none;}
+
+p.ElementLetterOut_date {display:none;}
+
+p.ElementLetterOut_dear {display:none;}
+
+p.ElementLetterOut_re {display:none;}
+
+p.ElementLetterOut_text {display:none;}
+
+p.ElementLetterOut_from {display:none;}
+
+p.ElementLetterOut_cc {display:none;}
+
+div.ElementLetterOut_siteDetails {display:none;}
+
+span.page_break {display:none;}

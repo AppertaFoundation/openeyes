@@ -1,6 +1,8 @@
 <?php
+
 class ReferralService
 {
+
 	/**
 	 * Perform a search based on the patient pas key
 	 *
@@ -14,6 +16,7 @@ class ReferralService
 			foreach ($results as $pasReferral) {
 				$patient = Patient::model()->find('pas_key = ?', array($pasReferral->X_CN));
 
+// @todo what's going on here? Specialties are not as they should be in PAS so findByPk(1) has been left here for now.
 				//$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REFSPEC));
 				$specialty = Specialty::model()->findByPk(1);
 
@@ -38,60 +41,53 @@ class ReferralService
 	}
 
 	/**
-	 * Attempts to assign a referral to an episode.
+	 * Return the list of referrals to choose from for an episode, if any.
 	 *
-	 * If the episode already has a referral then no action is required. The function returns true.
+	 * @param $firm object
+	 * @param $patientId id
 	 *
-	 * If there are one or more open referral with the same specialty, the most recently created one is
-	 * associated with the episode and the function returns true.
-	 *
-	 * If there are one or more open episodes of the incorrect specialty the most recent is chosen by default and the
-	 * function returns false so that the user can choose one manually.
-	 *
-	 * If there are no open referrals none is associated with the episode and the function returns true.
-	 * One will have to be chosen later, e.g. when the next event for the episode is chosen (if any).
-	 *
-	 * @param int $eventId
-	 * @return boolean
+	 * @return array
 	 */
-	public function manualReferralNeeded($eventId)
+	public function getReferralsList($firm, $patientId)
 	{
-		$event = Event::model()->findByPk($eventId);
-
-		if (!isset($event)) {
-			// @todo - is this the correct exception type? This should never happen...
-			throw new Exception('No event of that id.');
+		if (!Yii::app()->params['use_pas']) {
+			return false;
 		}
 
-		$referralEpisode = ReferralEpisodeAssignment::model()->find('episode_id = ?', array($event->episode_id));
+		// Check for an open episode for this patient and firm's service with a referral
+		$episode = Yii::app()->db->createCommand()
+			->select('referral_id AS rid')
+			->from('referral_episode_assignment r_e_a')
+			->join('episode e', 'e.id = r_e_a.episode_id')
+			->join('firm f', 'e.firm_id = f.id')
+			->join('service_specialty_assignment s_s_a', 'f.service_specialty_assignment_id = s_s_a.id')
+			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.service_id = :service_id', array(
+				':patient_id' => $patientId, ':service_id' => $firm->serviceSpecialtyAssignment->service_id
+			))
+			->queryRow();
 
-		if (isset($referralEpisode)) {
-			// There is already at least one referral for this episode, return true
+		if (isset($episode['rid'])) {
+			// There is an open episode and it has a referral, no action required
 			return false;
 		}
 
 		// Look for open referrals of this specialty
-		// @todo - change this to just get the top one, ordered by refno DESC
+		// @todo - change this to just get the top one
 		// @todo - is refno DESC the correct way of determining the most recent referral?
-		$referrals = Referral::model()->findAll(			
+		$referrals = Referral::model()->findAll(
 			array(
 				'order' => 'refno DESC',
 				'condition' => 'patient_id = :p AND service_id = :s AND closed = 0',
 				'params' => array(
-					':p' => $event->episode->patient_id,
-					':s' => $event->episode->firm->serviceSpecialtyAssignment->service_id
+					':p' => $patientId,
+					':s' => $firm->serviceSpecialtyAssignment->service_id
 				)
 			)
 		);
 
 		if (count($referrals)) {
-			// There are referrals, use the newest one
-			$referralEpisode = new ReferralEpisodeAssignment;
-			$referralEpisode->episode_id = $event->episode_id;
-			$referralEpisode->referral_id = $referrals[0]->id;
-			$referralEpisode->save();
-		
-			return false;
+			// There is at least one open referral for this service, so return that.
+			return array($referrals[0]);
 		}
 
 		// There are no open referrals for this specialty, try and find open referrals for a different
@@ -100,27 +96,59 @@ class ReferralService
 			array(
 				'order' => 'refno DESC',
 				'condition' => 'patient_id = :p AND closed = 0',
-				'params' => array(':p' => $event->episode->patient_id)
+				'params' => array(':p' => $patientId)
 			)
 		);
 
 		if (count($referrals)) {
 			// There are referrals, use the newest one
-			$referralEpisode = new ReferralEpisodeAssignment;
-			$referralEpisode->episode_id = $event->episode_id;
-			$referralEpisode->referral_id = $referrals[0]->id;
-			$referralEpisode->save();
-
-			if (count($referrals) > 1) {
-				// There's more than one referral so return the chosen default id
-				return $referralEpisode->id;
-			}
+			return $referrals;
 		}
 
-		// Either there are no open referrals of any specialty or there is only one open
-		// referral of a specialty other than the one required. therefore the user is not
-		// required to choose a specialty
+		// There are no open referrals so no referral can be associated.
 		return false;
 	}
 
+	public function assignReferral($eventId, $firm, $patientId)
+	{
+		$referrals = $this->getReferralsList($firm, $patientId);
+
+		if (!isset($referrals) || !$referrals) {
+			// Either there is already a referral for the episode or there are no open referrals
+			// for this patient, so do nothing
+			return;
+		}
+
+		if (is_array($referrals)) {
+			// There is at least one referral - check to see if the referral_id provided by the user is in it.
+			// If not, assign the first referral to the episode.
+			if (isset($_REQUEST['referral_id'])) {
+				foreach ($referrals as $referral) {
+					if ($referral->id = $_REQUEST['referral_id']) {
+						$this->addReferral($eventId, $referral->id);
+						return;
+					}
+				}
+			}
+
+			// No referral_id provided, or doesn't match, so assign the first referral in the list to the episode
+			$this->addReferral($eventId, $referrals[0]->id);
+		}
+	}
+
+	public function addReferral($eventId, $referralId)
+	{
+		$event = Event::model()->findByPk($eventId);
+
+		if (!isset($event)) {
+			// @todo - what to do here?
+			return;
+		}
+
+		$rea = new ReferralEpisodeAssignment;
+
+		$rea->episode_id = $event->episode_id;
+		$rea->referral_id = $referralId;
+		$rea->save();
+	}
 }
