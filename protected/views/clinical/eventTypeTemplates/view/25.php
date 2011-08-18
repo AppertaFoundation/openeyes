@@ -55,13 +55,13 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 // Add the invisible letter css
 Yii::app()->clientScript->registerCssFile(
-        '/css/elements/ElementLetterOut/1.css',
+        '/css/eventTypes/25.css',
         'screen, projection'
 );
 
-// Add the invisible letter css
+// Add the print css that prints the letter html elements but nothing else
 Yii::app()->clientScript->registerCssFile(
-        '/css/elements/ElementLetterOut/1_print.css',
+        '/css/eventTypes/25_print.css',
         'print'
 );
 

@@ -137,7 +137,7 @@ class ElementOperation extends BaseElement
 		$criteria->compare('anaesthetist_required',$this->anaesthetist_required);
 		$criteria->compare('anaesthetic_type',$this->anaesthetic_type);
 		$criteria->compare('overnight_stay',$this->overnight_stay);
-		$critiria->compare('decision_date',$this->decision_date);
+		$criteria->compare('decision_date',$this->decision_date);
 		$criteria->compare('schedule_timeframe',$this->schedule_timeframe);
 
 		return new CActiveDataProvider(get_class($this), array(

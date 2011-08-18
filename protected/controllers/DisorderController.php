@@ -47,7 +47,7 @@ class DisorderController extends Controller
 			return;
 		}
 
-		$disorder = Disorder::model()->find('fully_specified_name = ?', array($_REQUEST['name']));
+		$disorder = Disorder::model()->find('fully_specified_name = ? OR term = ?', array($_REQUEST['name'], $_REQUEST['name']));
 
 		if (!isset($disorder)) {
 			echo CJavaScript::jsonEncode(false);

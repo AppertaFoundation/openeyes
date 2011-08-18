@@ -230,7 +230,7 @@ class ClinicalController extends BaseController
 					Yii::app()->end();
 				}
 			}
-			
+
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {

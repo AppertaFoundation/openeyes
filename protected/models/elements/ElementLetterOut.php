@@ -1,5 +1,7 @@
 <?php
 
+// @todo - CC isn't saving properly
+
 /**
  * This is the model class for table "element_letterout".
  *

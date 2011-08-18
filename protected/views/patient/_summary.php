@@ -26,7 +26,9 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			if ($name === 'postcode') {
 				$string = strtoupper($string);
 			}
-			echo $string;
+			if ($name != 'email') {
+				echo $string;
+			}
 			if ($string != end($addressList)) {
 				echo '<br />';
 			}
@@ -58,7 +60,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	</div>
 	<div class="data_row row_buffer">
 		<div class="data_label">Email:</div>
-		<div class="data_value">Unknown</div>
+		<div class="data_value"><?php echo !empty($address->email) 
+                        ? $address->email : 'Unknown'; ?></div>
 		
 	</div>
 	<div class="data_row row_buffer">

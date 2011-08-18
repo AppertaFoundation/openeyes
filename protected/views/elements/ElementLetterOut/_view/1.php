@@ -12,6 +12,7 @@ Yii::app()->clientScript->registerCssFile(
 
 ?>
 <div id="ElementLetterOut_layout">
+<img src="/img/elements/ElementLetterOut/Letterhead.png" alt="Moorfields logo" border="0" />
 <?php
 
 if ($siteId = Yii::app()->request->cookies['site_id']->value) {

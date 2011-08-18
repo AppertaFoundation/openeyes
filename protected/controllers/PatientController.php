@@ -90,24 +90,11 @@ class PatientController extends BaseController
 	 */
 	public function actionResults()
 	{
-		if (empty($_POST['Patient'])) {
-			$this->redirect('site/index');
-		}
-
 		$model = new Patient;
-
-		if (!isset($_GET['Patient_page'])) {
-			$page = 1;
-		} else {
-			$page = $_GET['Patient_page'];
-		}
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
 			$criteria = $service->search($this->collatePostData());
-
-			$pages = new CPagination($model->count($criteria));
-			$pages->applyLimit($criteria);
 
 	       		$dataProvider = new CActiveDataProvider('Patient', array(
 				'criteria' => $criteria
@@ -119,32 +106,14 @@ class PatientController extends BaseController
 
 		$results = $dataProvider->getData();
 
-		if (count($results) == 0) {
-			// @todo - find some way of displaying error
-			$errorData = array(
-				'site/index',
-				'patientSearchError' => 1
-			);
+		$output = array();
 
-			foreach (array(
-				'Patient[hos_num]', 'Patient[first_name]', 'Patient[lasst_name]',
-				'dob_day', 'dob_month', 'dob_year', 'Patient[nhs_num]', 'Patient[gender]'
-			) as $field) {
-				if (isset($_POST[$field]) && $_POST[$field]) {
-					$errorData[$field] = $_POST[$field];
-				}
-			}
-
-			$this->redirect($errorData);
-		} elseif (count($results) == 1) {
-			$this->redirect(array('view', 'id'=>$results[0]->id));
-		} else {
-//			$dataProvider->setPagination($page);
-
-			$this->render('results', array(
-				'dataProvider' => $dataProvider
-			));
+		foreach ($results as $result) {
+			$output[] = array($result['id'], $result['first_name'], $result['last_name']);
 		}
+
+		//echo CJavaScript::jsonEncode($output);
+		echo CJavaScript::jsonEncode($results);
 	}
 
 	/**

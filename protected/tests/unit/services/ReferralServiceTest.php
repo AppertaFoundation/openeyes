@@ -6,6 +6,8 @@
 class ReferralServiceTest extends CDbTestCase
 {
 	public $fixtures = array(
+		'firms' => 'Firm',
+		'patients' => 'Patient',
 		'episodes' => 'Episode',
 		'events' => 'Event',
 		'referrals' => 'Referral',
@@ -18,14 +20,15 @@ class ReferralServiceTest extends CDbTestCase
 		$this->service = new ReferralService;
 		parent::setUp();
 	}
-//	public function testManualReferralNeeded_InvalidEventId_ThrowsException()
-//	{
-//		$fakeId = 12345;
-//
-//		$this->setExpectedException('Exception', 'No event of that id.');
-//		$this->service->ManualReferralNeeded($fakeId);
-//	}
-//
+
+	public function testGetReferralList_ReferralPresent()
+	{
+		$firm = Firm::model()->findByPk($this->firms['firm1']['id']);
+		$patientId = $this->patients['patient1']['id'];
+
+		$this->assertFalse($this->service->getReferralsList($firm, $patientId));
+	}
+
 //	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentExists_ReturnsFalse()
 //	{
 //		$id = 1;

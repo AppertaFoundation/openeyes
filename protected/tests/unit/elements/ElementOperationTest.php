@@ -195,6 +195,7 @@ class ElementOperationTest extends CDbTestCase
 			'comments' => 'Comments',
 			'total_duration' => 'Total Duration',
 			'consultant_required' => 'Consultant Required',
+			'decision_date' => 'Decision Date',
 			'anaesthetist_required' => 'Anaesthetist Required',
 			'anaesthetic_type' => 'Anaesthetic Type',
 			'overnight_stay' => 'Overnight Stay',
