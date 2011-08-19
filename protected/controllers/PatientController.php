@@ -92,6 +92,11 @@ class PatientController extends BaseController
 	{
 		$model = new Patient;
 
+		// The user has to provide some minimal criteria
+		if (empty($_POST['Patient']['last_name']) && empty($_POST['Patient']['hos_num'])) {
+			return CJavaScript::jsonEncode(false);
+		}
+
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
 			$criteria = $service->search($this->collatePostData());

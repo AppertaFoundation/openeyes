@@ -43,6 +43,13 @@ No patients found.
 </div>
 <script type="text/javascript">
 	$('#findPatient').click(function() {
+		if (!$('#Patient_hos_num').val() && !$('#Patient_last_name').val()) {
+			$('#patient-search-error').html('Please enter either a hospital number or a surname.');
+			$('#patient-search-error').show();
+			$('#patient-list').hide();
+			return false;
+		}
+
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',
 			'type': 'POST',
@@ -83,11 +90,9 @@ No patients found.
 
 							$('#patient-search-error').hide();
 							$('#patient-list').show();
-						} else {
-							$('#patient-search-error').show();
-							$('#patient-list').hide();
 						}
 					} else {
+						$('#patient-search-error').html('There are no patients with those details.');
 						$('#patient-search-error').show();
 						$('#patient-list').hide();
 					}
