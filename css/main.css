@@ -453,6 +453,14 @@ h3.element_letterout {
     margin: 0;
 }
 
+#patient-search .topPadding {
+    margin-top: 15px;
+}
+
+#patient-search .topPaddingSmall {
+    margin-top: 5px;
+}
+
 #patient-search input[type=text] {
     background: url('/images/input_gradient_150.png') no-repeat top left;
     width: 150px;
@@ -478,14 +486,8 @@ h3.element_letterout {
     width: 150px;
 }
 
-#patient-search input[type=submit] {
-    background: url('/images/button_clear.png') no-repeat top left;
-    width: 115px;
-    height: 33px;
-    font-weight: bold;
-    font-size: 10pt;
-    color: #164674;
-    border: 0px;
+#patient-search button[type=submit], button[type=submit] span {
+    margin-top: -5px;
 }
 
 #patient-search .ui-accordion-content {
@@ -506,6 +508,7 @@ h3.element_letterout {
     float: left;
     font: 10pt Arial;
     padding-left: 10px;
+    margin-top: 20px;
     /*  padding-right: 20px;*/
 }
 
@@ -669,7 +672,7 @@ button.shinybutton:hover {
 
 button.shinybutton span {
 	position: relative;
-	display: block; 
+	display: block;
 	white-space: nowrap;
 	background: transparent url('/images/button_blue_right.png') no-repeat top right;
 	padding: 6px 10px 6px 0;

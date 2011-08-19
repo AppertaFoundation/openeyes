@@ -23,10 +23,9 @@ No patients found.
 	echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 ?>
 <button type="submit" value="submit" class="shinybutton highlighted" id="findPatient"><span>Find patient</span></button>
-<?php
-//	echo CHtml::submitButton('Find Patient'); ?></div><?php
-	
+</div><?php
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(
+		'id' => 'patient-adv-search',
 		'panels'=>array(
 			'or search using patient details'=>$this->renderPartial('/patient/_advanced_search',
 				array(),true),
@@ -34,7 +33,7 @@ No patients found.
 		// additional javascript options for the accordion plugin
 		'options'=>array(
 			'active'=>false,
-			'animated'=>'bounceslide',
+			'animated'=>false,
 			'collapsible'=>true,
 		),
 	));
@@ -58,13 +57,17 @@ No patients found.
 							// One result, forward to the patient summary page
 							patientViewUrl = patientViewUrl.replace(/patientId/, arr[0]['id']);
 
-							window.location.replace(patientViewUrl);	
+							window.location.replace(patientViewUrl);
 						} else if (arr.length > 1) {
-							// Nultiple results, populate list
+							// Multiple results, populate list
+							if ($('#patient-adv-search div.ui-accordion-content:visible').length > 0) {
+								// hide advanced search options, if visible
+								$('#patient-adv-search').accordion('activate', 0);
+							}
 
 							content = '<br /><strong>' + arr.length + " results found</strong><p />\n";
 							content += "<table><tr><th>Patient name</th><th>Date of Birth</th><th>Gender</th><th>NHS Number</th><th>Hospital Number</th></tr>\n";
-							
+
 							$.each(arr, function(index, value) {
 								if (value['gender'] == 'M') {
 									gender = 'Male';
@@ -114,6 +117,7 @@ No patients found.
 		Email: <span class="number">helpdesk@openeyes.org.uk</span>
 	</div>
 </div>
+<div class="clear"></div>
 <script type="text/javascript">
 	$.watermark.options = {
 		className: 'watermark',
