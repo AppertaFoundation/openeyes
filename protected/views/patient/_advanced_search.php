@@ -33,4 +33,3 @@ echo CHtml::label('Gender:', 'gender');
 echo CHtml::radioButtonList('Patient[gender]', '', array('M'=>'Male','F'=>'Female'),
 	array('separator'=>' &nbsp; ', 'class' => 'topPadding'));
 echo '</div>';
-?>

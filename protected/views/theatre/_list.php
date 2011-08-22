@@ -116,4 +116,4 @@ if (empty($theatres)) { ?>
 	}
 </script>
 <?php
-} ?>
+}

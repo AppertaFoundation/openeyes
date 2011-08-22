@@ -5,6 +5,5 @@ $this->breadcrumbs=array(
 	$this->module->id,
 );
 ?>
-
 	</div>
 </div>

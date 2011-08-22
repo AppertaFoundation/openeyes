@@ -38,4 +38,3 @@ return array(
 		'address_id' => 3
 	),
 );
-?>

@@ -40,4 +40,3 @@ CREATE TABLE IF NOT EXISTS `$className` (
 		return preg_replace_callback('/([A-Z])/', $func, $str);
 	}
 }
-?>
