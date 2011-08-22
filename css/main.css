@@ -468,7 +468,7 @@ h3.element_letterout {
     border: 0;
     padding-left: 0.5em;
     margin-left: 5px;
-    font: 8pt Arial;
+    font: 10pt Arial;
 }
 
 #patient-search input[name=dob_day], #patient-search input[name=dob_month] {

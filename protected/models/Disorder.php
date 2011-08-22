@@ -24,7 +24,7 @@ class Disorder extends BaseActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * @return Disorder the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -46,12 +46,12 @@ class Disorder extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('id, fully_specified_name, term', 'required'),
-			array('systemic', 'numerical', 'integerOnly'=>true),
-			array('id', 'length', 'max'=>10),
-			array('fully_specified_name, term', 'length', 'max'=>255),
+			array('systemic', 'numerical', 'integerOnly' => true),
+			array('id', 'length', 'max' => 10),
+			array('fully_specified_name, term', 'length', 'max' => 255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, fully_specified_name, term, systemic', 'safe', 'on'=>'search'),
+			array('id, fully_specified_name, term, systemic', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -91,23 +91,23 @@ class Disorder extends BaseActiveRecord
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('fully_specified_name',$this->fully_specified_name,true);
-		$criteria->compare('term',$this->term,true);
-		$criteria->compare('systemic',$this->systemic);
+		$criteria->compare('id', $this->id, true);
+		$criteria->compare('fully_specified_name', $this->fully_specified_name, true);
+		$criteria->compare('term', $this->term, true);
+		$criteria->compare('systemic', $this->systemic);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
+															  'criteria' => $criteria,
+														 ));
 	}
 
 	/**
 	 * Fetch a list of disorders whose term matches a provided value (with wildcards)
-	 * 
+	 *
 	 * @param string $term
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function getDisorderOptions($term)
@@ -115,8 +115,8 @@ class Disorder extends BaseActiveRecord
 		$disorders = Yii::app()->db->createCommand()
 			->select('term')
 			->from('disorder')
-			->where('term LIKE :term', 
-				array(':term'=>"%{$term}%"))
+			->where('term LIKE :term',
+					array(':term' => "%{$term}%"))
 			->queryAll();
 
 		$data = array();
@@ -128,41 +128,41 @@ class Disorder extends BaseActiveRecord
 		return $data;
 	}
 
-        /**
-         * Get a list of disorders
-         * Store extra data for the session
-         * 
-         * @param string  $term          term to search by
-         * 
-         * @return array
-         */
-        public static function getList($term)
-        {
-                $search = "{$term}%";
+	/**
+	 * Get a list of disorders
+	 * Store extra data for the session
+	 *
+	 * @param string  $term		  term to search by
+	 *
+	 * @return array
+	 */
+	public static function getList($term)
+	{
+		$search = "%{$term}%";
 
-                $select = 'term, fully_specified_name, id';
+		$select = 'term, fully_specified_name, id';
 
-                $disorders = Yii::app()->db->createCommand()
-                        ->select($select)
-                        ->from('disorder')
-                        ->where('(term LIKE :term OR fully_specified_name LIKE :format) AND systemic = 0',
-                                array(':term'=>$search, ':format'=>$search))
-                        ->queryAll();
+		$disorders = Yii::app()->db->createCommand()
+			->select($select)
+			->from('disorder')
+			->where('(term LIKE :term OR fully_specified_name LIKE :format) AND systemic = 0',
+					array(':term' => $search, ':format' => $search))
+			->queryAll();
 
-                $data = array();
-                $session = Yii::app()->session['Disorders'];
+		$data = array();
+		$session = Yii::app()->session['Disorders'];
 
-                foreach ($disorders as $disorder) {
+		foreach ($disorders as $disorder) {
 			$name = $disorder['term'] . ' - ' . $disorder['fully_specified_name'];
-                        $data[] = $name;
-                        $id = $disorder['id'];
-                        $session[$id] = array(
-                                'fully_specified_name' => $name
-                        );
-                }
+			$data[] = $name;
+			$id = $disorder['id'];
+			$session[$id] = array(
+				'fully_specified_name' => $name
+			);
+		}
 
-                Yii::app()->session['Disorders'] = $session;
+		Yii::app()->session['Disorders'] = $session;
 
-                return $data;
-        }
+		return $data;
+	}
 }

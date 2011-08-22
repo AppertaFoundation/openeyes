@@ -16,6 +16,7 @@ No patients found.
 	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'patient-search',
 		'enableAjaxValidation'=>true,
+		'focus'=>'#Patient_hos_num',
 		//'action' => Yii::app()->createUrl('patient/results')
 	)); ?>
 	<div class="title_bar"><?php

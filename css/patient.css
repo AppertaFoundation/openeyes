@@ -321,6 +321,10 @@ div.view {
 	cursor: move;
 }
 
+#procedure_list .topPadded {
+    padding-top: 15px;
+}
+
 .buttonlist {
 	float: right;
 }

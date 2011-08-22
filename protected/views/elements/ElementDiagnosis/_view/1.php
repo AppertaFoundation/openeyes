@@ -1,11 +1,9 @@
 <h3>Diagnosis</h3>
 
 <div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('disorder_id')); ?>:</b>
-	<?php echo CHtml::encode($data->disorder->term . ' - ' . $data->disorder->fully_specified_name); ?>
-	<br />
-
-	<b><?php echo $data->getAttributeLabel('eye'); ?></b>
+	<strong><?php echo $data->getAttributeLabel('eye'); ?></strong>
 		<?php echo $data->getEyeText(); ?>
-
+	<br />
+	<strong><?php echo CHtml::encode($data->getAttributeLabel('disorder_id')); ?>:</strong>
+	<?php echo CHtml::encode($data->disorder->term); ?>
 </div>

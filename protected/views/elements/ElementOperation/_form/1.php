@@ -110,11 +110,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tbody>
 			<tfoot>
 				<tr>
-					<td>Estimated Duration of Procedures:</td>
+					<td class="topPadded">Calculated Total Duration:</td>
 					<td id="projected_duration"><?php echo $totalDuration; ?></td>
 				</tr>
 				<tr>
-					<td>Your Estimated Total:</td>
+					<td>Estimated Total Duration:</td>
 					<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
 				</tr>
 			</tfoot>
