@@ -15,4 +15,3 @@ return array(
 		'list_no' => 1
 	),
 );
-?>

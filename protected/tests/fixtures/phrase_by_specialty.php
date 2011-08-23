@@ -50,4 +50,3 @@ return array(
 		'specialty_id' => 8,
 	),
 );
-?>

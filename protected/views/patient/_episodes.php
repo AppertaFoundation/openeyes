@@ -2,7 +2,7 @@
 Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
-<h3>All Episodes</h3>
+<div style="height: 20px; float: left;"></div>
 <div id="add_episode">
 	<img src="/images/add_event_button.png" alt="Add an event to this episode" />
 	<ul id="episode_types">
@@ -13,7 +13,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			$name = ucfirst($type->name); ?>
 		<li><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php 
 		echo $name; ?>" /><?php
-		echo CHtml::link($name, array('clinical/create', 'event_type_id'=>$type->id), 
+		echo CHtml::link($name, array('clinical/create', 'event_type_id'=>$type->id),
 			array('class'=>'fancybox2', 'encode'=>false)); ?></li>
 <?php
 		}
@@ -23,7 +23,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div class="clear"></div>
 <div id="episodes_sidebar">
 <?php
-	$this->renderPartial('/clinical/_episodeList', 
+	$this->renderPartial('/clinical/_episodeList',
 		array('episodes' => $episodes)
 	); ?>
 </div>

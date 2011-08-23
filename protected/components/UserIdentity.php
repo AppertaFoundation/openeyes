@@ -156,9 +156,7 @@ class UserIdentity extends CUserIdentity
 
 	public function firmString($firm)
 	{
-		return $firm->name .
-			' (' . $firm->pas_code . ') (' .
-			$firm->serviceSpecialtyAssignment->service->name .')';
+		return "{$firm->name} ({$firm->serviceSpecialtyAssignment->service->name})";
 	}
 
 	public function getId()

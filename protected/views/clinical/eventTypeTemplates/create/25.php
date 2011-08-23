@@ -9,7 +9,8 @@ Yii::app()->clientScript->registerCoreScript('jquery');
 $form = $this->beginWidget('CActiveForm', array(
     'id'=>'clinical-create',
     'enableAjaxValidation'=>true,
-	'htmlOptions' => array('class'=>'sliding')
+	'htmlOptions' => array('class'=>'sliding'),
+	'focus'=>'#procedure_id'
 ));
 
 echo CHtml::hiddenField('action', 'create');
@@ -29,7 +30,7 @@ foreach ($elements as $element) {
 			$elementClassName .
 			'/_form/' .
 			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 			'patient' => $patient)
 	);
 }

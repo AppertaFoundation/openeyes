@@ -106,7 +106,7 @@ class ElementOperationTest extends CDbTestCase
 			array(2847405, 'Unknown')
 		);
 	}
-	
+
 	public function dataProvider_Weekdays()
 	{
 		return array(
@@ -119,7 +119,7 @@ class ElementOperationTest extends CDbTestCase
 			array(7, 'Sunday')
 		);
 	}
-	
+
 	public function dataProvider_EyeLabels()
 	{
 		return array(
@@ -128,7 +128,7 @@ class ElementOperationTest extends CDbTestCase
 			array(ElementOperation::EYE_RIGHT, 'Eye:')
 		);
 	}
-	
+
 	public function dataProvider_WardOptions()
 	{
 		return array(
@@ -263,13 +263,13 @@ class ElementOperationTest extends CDbTestCase
 
 	public function testSetDefaultOptions_SetsCorrectOptions()
 	{
-		$this->element->consultant_required = ElementOperation::CONSULTANT_NOT_REQUIRED;
+		$this->element->consultant_required = ElementOperation::CONSULTANT_REQUIRED;
 		$this->element->anaesthetic_type = ElementOperation::ANAESTHETIC_GENERAL;
 		$this->element->overnight_stay = true;
 		$this->element->total_duration = 10;
 
 		$this->element->setDefaultOptions();
-		$this->assertEquals(ElementOperation::CONSULTANT_REQUIRED, $this->element->consultant_required);
+		$this->assertEquals(ElementOperation::CONSULTANT_NOT_REQUIRED, $this->element->consultant_required);
 		$this->assertEquals(ElementOperation::ANAESTHETIC_TOPICAL, $this->element->anaesthetic_type);
 		$this->assertEquals(0, $this->element->overnight_stay);
 		$this->assertEquals(0, $this->element->total_duration);
@@ -370,7 +370,7 @@ class ElementOperationTest extends CDbTestCase
 
 		$this->assertEquals($text, $this->element->getScheduleText());
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_ScheduleText
 	 */
@@ -378,16 +378,16 @@ class ElementOperationTest extends CDbTestCase
 	{
 		$element = $this->elements('element1');
 		$element->schedule_timeframe = $timeframe;
-		
+
 		$date = strtotime($element->event->datetime);
 		if ($timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
 			$interval = str_replace('After ', '+', $text);
 			$date = strtotime($interval, $date);
 		}
-		
+
 		$this->assertEquals($date, $element->getMinDate());
 	}
-	
+
 //	@todo: rewrite these to be reliable
 //	public function testGetSessions_NoDateSet_ReturnsCorrectData()
 //	{
@@ -396,16 +396,16 @@ class ElementOperationTest extends CDbTestCase
 //		$patientId = $element->event->episode->patient_id;
 //		$userId = $this->users['user1']['id'];
 //		$viewNumber = 1;
-//		
-//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+//
+//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 //			array($firm, $patientId, $userId, $viewNumber));
 //		$mockElement->setAttributes($this->elements['element1']);
-//		
+//
 //		$timestamp = strtotime($element->event->datetime);
 //		$monthStart = date('Y-m-01', $timestamp);
 //		$monthEnd = date('Y-m-t', $timestamp);
 //		$minDate = date('Y-m-d', $timestamp);
-//		
+//
 //		$sessions = $dates = array();
 //		foreach ($this->sessions as $name => $session) {
 //			if ($session['date'] >= $monthStart) {
@@ -421,7 +421,7 @@ class ElementOperationTest extends CDbTestCase
 //				$dates[] = $session['date'];
 //			}
 //		}
-//		
+//
 //		$expected = array();
 //		$weekdayIndex = date('N', strtotime($sessions[0]['date']));
 //		$weekday = $this->getWeekday($weekdayIndex);
@@ -443,7 +443,7 @@ class ElementOperationTest extends CDbTestCase
 //				foreach ($sessions as $session) {
 //					if ($session['date'] == $selectedDay) {
 //						$totalSessions++;
-//						
+//
 //						if ($session['time_available'] >= $mockElement->total_duration) {
 //							$open++;
 //						} else {
@@ -467,22 +467,22 @@ class ElementOperationTest extends CDbTestCase
 //			}
 //			$expected[$weekday][$selectedDay]['status'] = $status;
 //		}
-//		
+//
 //		$service = $this->getMock('BookingService', array('findSessions'));
 //		$service->expects($this->once())
 //			->method('findSessions')
 //			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
 //			->will($this->returnValue($sessions));
-//		
+//
 //		$mockElement->expects($this->once())
 //			->method('getBookingService')
 //			->will($this->returnValue($service));
-//		
+//
 //		$result = $mockElement->getSessions();
-//		
+//
 //		$this->assertEquals($expected, $result);
 //	}
-//	
+//
 //	@todo: rewrite these to be reliable
 //	public function testGetSessions_MinDateBeforeToday_ReturnsCorrectData()
 //	{
@@ -491,23 +491,23 @@ class ElementOperationTest extends CDbTestCase
 //		$patientId = $element->event->episode->patient_id;
 //		$userId = $this->users['user1']['id'];
 //		$viewNumber = 1;
-//		
-//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+//
+//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 //			array($firm, $patientId, $userId, $viewNumber));
 //		$mockElement->setAttributes($this->elements['element1']);
-//		
+//
 //		$previousDate = strtotime('-5 weeks');
 //		$thisMonth = date('Y-m-01');
-//		
+//
 //		$event = $this->events('event1');
 //		$event->datetime = date('Y-m-d', $previousDate);
 //		$event->save();
-//		
+//
 //		$timestamp = strtotime($element->event->datetime);
 //		$monthStart = date('Y-m-01', $timestamp);
 //		$monthEnd = date('Y-m-t', $timestamp);
 //		$minDate = date('Y-m-d', $timestamp);
-//		
+//
 //		$sessions = $dates = array();
 //		foreach ($this->sessions as $name => $session) {
 //			if ($session['date'] >= $monthStart) {
@@ -523,7 +523,7 @@ class ElementOperationTest extends CDbTestCase
 //				$dates[] = $session['date'];
 //			}
 //		}
-//		
+//
 //		$expected = array();
 //		$weekdayIndex = date('N', strtotime($sessions[0]['date']));
 //		$weekday = $this->getWeekday($weekdayIndex);
@@ -545,7 +545,7 @@ class ElementOperationTest extends CDbTestCase
 //				foreach ($sessions as $session) {
 //					if ($session['date'] == $selectedDay) {
 //						$totalSessions++;
-//						
+//
 //						if ($session['time_available'] >= $mockElement->total_duration) {
 //							$open++;
 //						} else {
@@ -569,43 +569,43 @@ class ElementOperationTest extends CDbTestCase
 //			}
 //			$expected[$weekday][$selectedDay]['status'] = $status;
 //		}
-//		
+//
 //		$service = $this->getMock('BookingService', array('findSessions'));
 //		$service->expects($this->once())
 //			->method('findSessions')
 //			->with($monthStart, strtotime($thisMonth), $element->event->episode->firm_id)
 //			->will($this->returnValue($sessions));
-//		
+//
 //		$mockElement->expects($this->once())
 //			->method('getBookingService')
 //			->will($this->returnValue($service));
-//		
+//
 //		$result = $mockElement->getSessions();
-//		
+//
 //		$this->assertEquals($expected, $result);
 //	}
-//	
+//
 //	@todo: rewrite these to be reliable
 //	public function testGetSessions_DateSet_ReturnsCorrectData()
 //	{
 //		$nextMonth = date('Y-m-01', strtotime('+1 month'));
 //		$_GET['date'] = $nextMonth;
-//		
+//
 //		$firm = $this->firms('firm1');
 //		$element = $this->elements('element1');
 //		$patientId = $element->event->episode->patient_id;
 //		$userId = $this->users['user1']['id'];
 //		$viewNumber = 1;
-//		
-//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+//
+//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 //			array($firm, $patientId, $userId, $viewNumber));
 //		$mockElement->setAttributes($this->elements['element1']);
-//		
+//
 //		$timestamp = strtotime($nextMonth);
 //		$monthStart = date('Y-m-01', $timestamp);
 //		$monthEnd = date('Y-m-t', $timestamp);
 //		$minDate = date('Y-m-d', strtotime($element->event->datetime));
-//		
+//
 //		$sessions = array();
 //		$dates = array();
 //		$fullSession = false;
@@ -629,7 +629,7 @@ class ElementOperationTest extends CDbTestCase
 //				$dates[] = $session['date'];
 //			}
 //		}
-//		
+//
 //		$expected = array();
 //		$weekdayIndex = date('N', strtotime($fullSession));
 //		$weekday = $this->getWeekday($weekdayIndex);
@@ -651,7 +651,7 @@ class ElementOperationTest extends CDbTestCase
 //				foreach ($sessions as $session) {
 //					if ($session['date'] == $selectedDay) {
 //						$totalSessions++;
-//						
+//
 //						if ($session['time_available'] >= $mockElement->total_duration) {
 //							$open++;
 //						} else {
@@ -675,22 +675,22 @@ class ElementOperationTest extends CDbTestCase
 //			}
 //			$expected[$weekday][$selectedDay]['status'] = $status;
 //		}
-//		
+//
 //		$service = $this->getMock('BookingService', array('findSessions'));
 //		$service->expects($this->once())
 //			->method('findSessions')
 //			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
 //			->will($this->returnValue($sessions));
-//		
+//
 //		$mockElement->expects($this->once())
 //			->method('getBookingService')
 //			->will($this->returnValue($service));
-//		
+//
 //		$result = $mockElement->getSessions();
-//		
+//
 //		$this->assertEquals($expected, $result);
 //	}
-//	
+//
 //	@todo: rewrite these to be reliable
 //	public function testGetSessions_LimitedSessionAvailable_ReturnsCorrectData()
 //	{
@@ -699,16 +699,16 @@ class ElementOperationTest extends CDbTestCase
 //		$patientId = $element->event->episode->patient_id;
 //		$userId = $this->users['user1']['id'];
 //		$viewNumber = 1;
-//		
-//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+//
+//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 //			array($firm, $patientId, $userId, $viewNumber));
 //		$mockElement->setAttributes($this->elements['element1']);
-//		
+//
 //		$timestamp = strtotime($element->event->datetime);
 //		$monthStart = date('Y-m-01', $timestamp);
 //		$monthEnd = date('Y-m-t', $timestamp);
 //		$minDate = date('Y-m-d', $timestamp);
-//		
+//
 //		$sessions = array();
 //		$fullSession = false;
 //		$dates = array();
@@ -723,7 +723,7 @@ class ElementOperationTest extends CDbTestCase
 //				if (!$fullSession) {
 //					$session['bookings_duration'] = 270;
 //					$session['time_available'] = 0;
-//					
+//
 //					$extraSession = $session;
 //					$extraSession['bookings_duration'] = 0;
 //					$extraSession['time_available'] = 270;
@@ -738,7 +738,7 @@ class ElementOperationTest extends CDbTestCase
 //				$dates[] = $session['date'];
 //			}
 //		}
-//		
+//
 //		$expected = array();
 //		$weekdayIndex = date('N', strtotime($fullSession));
 //		$weekday = $this->getWeekday($weekdayIndex);
@@ -760,7 +760,7 @@ class ElementOperationTest extends CDbTestCase
 //				foreach ($sessions as $session) {
 //					if ($session['date'] == $selectedDay) {
 //						$totalSessions++;
-//						
+//
 //						if ($session['time_available'] >= $mockElement->total_duration) {
 //							$open++;
 //						} else {
@@ -784,22 +784,22 @@ class ElementOperationTest extends CDbTestCase
 //			}
 //			$expected[$weekday][$selectedDay]['status'] = $status;
 //		}
-//		
+//
 //		$service = $this->getMock('BookingService', array('findSessions'));
 //		$service->expects($this->once())
 //			->method('findSessions')
 //			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
 //			->will($this->returnValue($sessions));
-//		
+//
 //		$mockElement->expects($this->once())
 //			->method('getBookingService')
 //			->will($this->returnValue($service));
-//		
+//
 //		$result = $mockElement->getSessions();
-//		
+//
 //		$this->assertEquals($expected, $result);
 //	}
-//	
+//
 //	@todo: rewrite these to be reliable
 //	public function testGetSessions_OpenSessionAvailable_ReturnsCorrectData()
 //	{
@@ -808,16 +808,16 @@ class ElementOperationTest extends CDbTestCase
 //		$patientId = $element->event->episode->patient_id;
 //		$userId = $this->users['user1']['id'];
 //		$viewNumber = 1;
-//		
-//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+//
+//		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 //			array($firm, $patientId, $userId, $viewNumber));
 //		$mockElement->setAttributes($this->elements['element1']);
-//		
+//
 //		$timestamp = strtotime($element->event->datetime);
 //		$monthStart = date('Y-m-01', $timestamp);
 //		$monthEnd = date('Y-m-t', $timestamp);
 //		$minDate = date('Y-m-d', $timestamp);
-//		
+//
 //		$sessions = array();
 //		$openSession = false;
 //		$dates = array();
@@ -841,7 +841,7 @@ class ElementOperationTest extends CDbTestCase
 //				$dates[] = $session['date'];
 //			}
 //		}
-//		
+//
 //		$expected = array();
 //		$weekdayIndex = date('N', strtotime($openSession));
 //		$weekday = $this->getWeekday($weekdayIndex);
@@ -863,7 +863,7 @@ class ElementOperationTest extends CDbTestCase
 //				foreach ($sessions as $session) {
 //					if ($session['date'] == $selectedDay) {
 //						$totalSessions++;
-//						
+//
 //						if ($session['time_available'] >= $mockElement->total_duration) {
 //							$open++;
 //						} else {
@@ -887,44 +887,44 @@ class ElementOperationTest extends CDbTestCase
 //			}
 //			$expected[$weekday][$selectedDay]['status'] = $status;
 //		}
-//		
+//
 //		$service = $this->getMock('BookingService', array('findSessions'));
 //		$service->expects($this->once())
 //			->method('findSessions')
 //			->with($monthStart, strtotime($minDate), $element->event->episode->firm_id)
 //			->will($this->returnValue($sessions));
-//		
+//
 //		$mockElement->expects($this->once())
 //			->method('getBookingService')
 //			->will($this->returnValue($service));
-//		
+//
 //		$result = $mockElement->getSessions();
-//		
+//
 //		$this->assertEquals($expected, $result);
 //	}
-	
+
 	public function testGetTheatres_EmptyDate_ThrowsException()
 	{
 		$this->setExpectedException('Exception', 'Date is required.');
 		$this->element->getTheatres(false);
 	}
-	
+
 	public function testGetTheatres_Available_ReturnsCorrectData()
 	{
 		$date = date('Y-m-d', strtotime('+1 day'));
-		
+
 		$firm = $this->firms('firm1');
 		$element = $this->elements('element1');
 		$patientId = $element->event->episode->patient_id;
 		$userId = $this->users['user1']['id'];
 		$viewNumber = 1;
-		
-		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 			array($firm, $patientId, $userId, $viewNumber));
 		$mockElement->setAttributes($this->elements['element1']);
-		
+
 		$sessionList = Session::model()->findAllByAttributes(array('date' => $date));
-		
+
 		$theatre = $this->theatres['theatre1'];
 		$sessions = array();
 		foreach ($sessionList as $session) {
@@ -948,7 +948,7 @@ class ElementOperationTest extends CDbTestCase
 				'bookings_duration' => $bookingTime,
 			);
 		}
-		
+
 		foreach ($sessions as $session) {
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
@@ -956,49 +956,49 @@ class ElementOperationTest extends CDbTestCase
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
-			
+
 			if ($session['time_available'] <= 0) {
 				$status = 'full';
 			} else {
 				$status = 'available';
 			}
 			$session['status'] = $status;
-			
+
 			$expected[$name][] = $session;
 			$names[] = $name;
 		}
-		
+
 		$service = $this->getMock('BookingService', array('findTheatres'));
 		$service->expects($this->once())
 			->method('findTheatres')
 			->with($date, $element->event->episode->firm_id)
 			->will($this->returnValue($sessions));
-		
+
 		$mockElement->expects($this->once())
 			->method('getBookingService')
 			->will($this->returnValue($service));
-		
+
 		$result = $mockElement->getTheatres($date);
-		
+
 		$this->assertEquals($expected, $result);
 	}
-	
+
 	public function testGetTheatres_MultipleTheatres_ReturnsCorrectData()
 	{
 		$date = date('Y-m-d', strtotime('+1 day'));
-		
+
 		$firm = $this->firms('firm1');
 		$element = $this->elements('element1');
 		$patientId = $element->event->episode->patient_id;
 		$userId = $this->users['user1']['id'];
 		$viewNumber = 1;
-		
-		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 			array($firm, $patientId, $userId, $viewNumber));
 		$mockElement->setAttributes($this->elements['element1']);
-		
+
 		$sessionList = Session::model()->findAllByAttributes(array('date' => $date));
-		
+
 		$theatre = $this->theatres['theatre1'];
 		$theatre2 = new Theatre;
 		$theatre2->name = $theatre['name'] . ' v2';
@@ -1038,7 +1038,7 @@ class ElementOperationTest extends CDbTestCase
 				'bookings_duration' => $bookingTime,
 			);
 		}
-		
+
 		foreach ($sessions as $session) {
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
@@ -1046,49 +1046,49 @@ class ElementOperationTest extends CDbTestCase
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
-			
+
 			if ($session['time_available'] <= 0) {
 				$status = 'full';
 			} else {
 				$status = 'available';
 			}
 			$session['status'] = $status;
-			
+
 			$expected[$name][] = $session;
 			$names[] = $name;
 		}
-		
+
 		$service = $this->getMock('BookingService', array('findTheatres'));
 		$service->expects($this->once())
 			->method('findTheatres')
 			->with($date, $element->event->episode->firm_id)
 			->will($this->returnValue($sessions));
-		
+
 		$mockElement->expects($this->once())
 			->method('getBookingService')
 			->will($this->returnValue($service));
-		
+
 		$result = $mockElement->getTheatres($date);
-		
+
 		$this->assertEquals($expected, $result);
 	}
-	
+
 	public function testGetTheatres_Full_ReturnsCorrectData()
 	{
 		$date = date('Y-m-d', strtotime('+1 day'));
-		
+
 		$firm = $this->firms('firm1');
 		$element = $this->elements('element1');
 		$patientId = $element->event->episode->patient_id;
 		$userId = $this->users['user1']['id'];
 		$viewNumber = 1;
-		
-		$mockElement = $this->getMock('ElementOperation', array('getBookingService'), 
+
+		$mockElement = $this->getMock('ElementOperation', array('getBookingService'),
 			array($firm, $patientId, $userId, $viewNumber));
 		$mockElement->setAttributes($this->elements['element1']);
-		
+
 		$sessionList = Session::model()->findAllByAttributes(array('date' => $date));
-		
+
 		$theatre = $this->theatres['theatre1'];
 		$sessions = array();
 		foreach ($sessionList as $session) {
@@ -1104,7 +1104,7 @@ class ElementOperationTest extends CDbTestCase
 				'bookings_duration' => 270,
 			);
 		}
-		
+
 		foreach ($sessions as $session) {
 			$name = $session['name'];
 			$sessionTime = explode(':', $session['session_duration']);
@@ -1112,51 +1112,51 @@ class ElementOperationTest extends CDbTestCase
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
-			
+
 			if ($session['time_available'] <= 0) {
 				$status = 'full';
 			} else {
 				$status = 'available';
 			}
 			$session['status'] = $status;
-			
+
 			$expected[$name][] = $session;
 			$names[] = $name;
 		}
-		
+
 		$service = $this->getMock('BookingService', array('findTheatres'));
 		$service->expects($this->once())
 			->method('findTheatres')
 			->with($date, $element->event->episode->firm_id)
 			->will($this->returnValue($sessions));
-		
+
 		$mockElement->expects($this->once())
 			->method('getBookingService')
 			->will($this->returnValue($service));
-		
+
 		$result = $mockElement->getTheatres($date);
-		
+
 		$this->assertEquals($expected, $result);
 	}
-	
+
 	public function testGetSession_MissingSessionId_ThrowsException()
 	{
 		$this->setExpectedException('Exception', 'Session id is invalid.');
 		$this->element->getSession(false);
 	}
-	
+
 	public function testGetSession_InvalidSessionId_ReturnsCorrectData()
 	{
 		$this->assertFalse($this->element->getSession(5725895672));
 	}
-	
+
 	public function testGetSession_Available_ReturnsCorrectData()
 	{
 		$session = $this->sessions[0];
 		$theatre = $this->theatres['theatre1'];
-		
+
 		$result = $this->element->getSession($session['id']);
-		
+
 		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id' => $session['id']));
 		$bookingCount = $bookingTime = 0;
@@ -1165,7 +1165,7 @@ class ElementOperationTest extends CDbTestCase
 			$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
 			$bookingTime += $operation->total_duration;
 		}
-		
+
 		$expected = array(
 			'bookings' => $bookingCount,
 			'bookings_duration' => $bookingTime,
@@ -1179,15 +1179,15 @@ class ElementOperationTest extends CDbTestCase
 			'status' => 'available',
 			'code' => '',
 		);
-		
+
 		$this->assertEquals($expected, $result);
 	}
-	
+
 	public function testGetSession_Full_ReturnsCorrectData()
 	{
 		$session = $this->sessions[0];
 		$theatre = $this->theatres['theatre1'];
-		
+
 		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id' => $session['id']));
 		$bookingCount = $bookingTime = 0;
@@ -1198,7 +1198,7 @@ class ElementOperationTest extends CDbTestCase
 			$operation->save();
 			$bookingTime += $operation->total_duration;
 		}
-		
+
 		$expected = array(
 			'bookings' => $bookingCount,
 			'bookings_duration' => $bookingTime,
@@ -1211,20 +1211,20 @@ class ElementOperationTest extends CDbTestCase
 			'time_available' => 0,
 			'status' => 'full',
 			'code' => ''
-		);		
-		
+		);
+
 		$result = $this->element->getSession($session['id']);
-		
+
 		$this->assertEquals($expected, $result);
 	}
-	
+
 	public function testGetBookingService_ReturnsNewInstance()
 	{
 		$service = new BookingService;
-		
+
 		$this->assertEquals($service, $this->element->getBookingService());
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_Weekdays
 	 */
@@ -1232,23 +1232,23 @@ class ElementOperationTest extends CDbTestCase
 	{
 		$this->assertEquals($weekday, $this->element->getWeekdayText($index));
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_EyeLabels
 	 */
 	public function testGetEyeLabelText($eye, $label)
 	{
 		$this->element->eye = $eye;
-		
+
 		$this->assertEquals($label, $this->element->getEyeLabelText());
 	}
-	
+
 	public function testGetWardOptions_MissingSiteId_ThrowsException()
 	{
 		$this->setExpectedException('Exception', 'Site id is required.');
 		$this->element->getWardOptions(null);
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_WardOptions
 	 */
@@ -1257,31 +1257,31 @@ class ElementOperationTest extends CDbTestCase
 		Yii::app()->params['pseudonymise_patient_details'] = false;
 		
 		$operation = $this->elements('element1');
-		
+
 		$patient = $this->patients('patient1');
 
 		$patient->dob = date('Y-m-d', strtotime("-{$patientAge} years"));
 		$patient->gender = $patientGender;
 		$patient->save(false);
-		
+
 		$siteId = 1;
-		
+
 		$expected = array();
 		foreach ($wardList as $wardKey) {
 			$ward = $this->wards($wardKey);
 			$expected[$ward->id] = $ward->name;
 		}
-		
+
 		$this->assertEquals($expected, $operation->getWardOptions($siteId));
 	}
-	
+
 	public function testGetCancellationText_NoCancellation_ReturnsEmptyString()
 	{
 		$operation = $this->elements('element1');
 		CancelledOperation::model()->deleteAll();
 		$this->assertEquals('', $operation->getCancellationText(), 'Cancellation text should be blank.');
 	}
-	
+
 	public function testGetCancellationText_ValidCancellation_ReturnsCorrectText()
 	{
 		$operation = $this->elements('element1');
@@ -1289,21 +1289,21 @@ class ElementOperationTest extends CDbTestCase
 		$cancelledDate = date('Y-m-d', $cancelledTime);
 		$user = $this->users['user1'];
 		$reason = $this->reasons['reason1'];
-		
+
 		$cancel = new CancelledOperation;
 		$cancel->element_operation_id = $operation->id;
 		$cancel->cancelled_date = $cancelledDate;
 		$cancel->user_id = $user['id'];
 		$cancel->cancelled_reason_id = $reason['id'];
 		$cancel->save();
-		
+
 		$expected = "Operation Cancelled: By {$user['first_name']} " .
-			"{$user['last_name']} on " . date('F j, Y', $cancelledTime) . 
+			"{$user['last_name']} on " . date('F j, Y', $cancelledTime) .
 			" [{$reason['text']}]";
-		
+
 		$this->assertEquals($expected, $operation->getCancellationText(), 'Cancellation text should match.');
 	}
-	
+
 	protected function getWeekday($index)
 	{
 		switch($index) {

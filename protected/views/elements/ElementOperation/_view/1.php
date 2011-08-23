@@ -1,10 +1,6 @@
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
-if ($data->status != $data::STATUS_CANCELLED) {
-	echo CHtml::link('<span>Edit Operation</span>',
-		array('clinical/update', 'id'=>$data->id), array('id'=>'editlink','class'=>'fancybox shinybutton', 'encode'=>false));
-} ?>
+Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?>
 <h3>Operation Details</h3>
 <div class="view">
 	<strong><?php echo $data->getEyeLabelText(); ?></strong>
@@ -19,7 +15,7 @@ if ($data->status != $data::STATUS_CANCELLED) {
 			</tr>
 		</thead>
 		<tbody>
-<?php 
+<?php
 	$totalDuration = 0;
 	if (!empty($data->procedures)) {
 		foreach ($data->procedures as $procedure) {
@@ -45,28 +41,37 @@ if ($data->status != $data::STATUS_CANCELLED) {
 	</table>
 </div>
 <div class="view">
-        <b><?php echo CHtml::encode($data->getAttributeLabel('decision_date')); ?>:</b>
-        <?php echo CHtml::encode($data->decision_date); ?>
-        <br />
-</div>
-<div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('consultant_required')); ?>:</b>
-	<?php echo CHtml::encode($data->getBooleanText('consultant_required')); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('decision_date')); ?>:</b>
+	<?php echo date('d/m/Y', strtotime($data->decision_date)); ?>
 	<br />
 </div>
+<?php
+	if ($data->consultant_required) { ?>
+<div class="view">
+	<strong>Consultant Required</strong>
+	<br />
+</div>
+<?php
+	} ?>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetic_type')); ?>:</b>
-	<?php echo CHtml::encode($data->getAnaestheticText()); ?>
+	<?php echo CHtml::encode($data->getAnaestheticText());
+
+	if ($data->anaesthetist_required) { ?>
 	<br />
-	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetist_required')); ?>:</b>
-	<?php echo CHtml::encode($data->getBooleanText('anaesthetist_required')); ?>
+	<strong>Anaesthetist Required</strong>
 	<br />
+<?php
+	} ?>
 </div>
+<?php if (!empty($data->comments)) { ?>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('comments')); ?>:</b>
 	<?php echo nl2br(CHtml::encode($data->comments)); ?>
 	<br />
 </div>
+<?php
+	} ?>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('overnight_stay')); ?>:</b>
 	<?php echo CHtml::encode($data->getBooleanText('overnight_stay')); ?>

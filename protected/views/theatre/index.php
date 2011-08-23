@@ -2,15 +2,11 @@
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerCSSFile('/css/theatre.css', 'all');
-$cs->registerCoreScript('jquery.ui');
-$cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
-$cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js');
-
 ?>
 <h3 class="title">Theatre Schedules</h3>
 <?php $form=$this->beginWidget('CActiveForm', array(
     'id'=>'theatre-filter',
-	'action'=>Yii::app()->createUrl('theatre'),
+	'action'=>Yii::app()->createUrl('theatre/search'),
     'enableAjaxValidation'=>false,
 )); ?>
 <div id="search-options">
@@ -26,10 +22,10 @@ $cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js')
 	</tr>
 	<tr>
 		<td><?php
-	echo CHtml::dropDownList('site-id', $siteId, Site::model()->getList(),
+	echo CHtml::dropDownList('site-id', '', Site::model()->getList(),
 		array('empty'=>'All sites', 'onChange' => "js:loadTheatres(this.value); loadWards(this.value);")); ?></td>
 		<td><?php
-	echo CHtml::dropDownList('service-id', $serviceId, Service::model()->getList(),
+	echo CHtml::dropDownList('service-id', '', Service::model()->getList(),
 		array('empty'=>'All services', 'ajax'=>array(
 			'type'=>'POST',
 			'data'=>array('service_id'=>'js:this.value'),
@@ -40,26 +36,25 @@ $cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js')
 			}",
 		))); ?></td>
 		<td><?php
-	echo CHtml::dropDownList('firm-id', $firmId, $firmList,
+	echo CHtml::dropDownList('firm-id', '', array(),
 		array('empty'=>'All firms', 'disabled'=>(empty($firmId)))); ?></td>
 		<td><?php
-	echo CHtml::dropDownList('theatre-id', $theatreId, $theatreList,
+	echo CHtml::dropDownList('theatre-id', '', array(),
 		array('empty'=>'All theatres')); ?></td>
 		<td><?php
-	echo CHtml::dropDownList('ward-id', $wardId, $wardList,
+	echo CHtml::dropDownList('ward-id', '', array(),
 		array('empty'=>'All wards')); ?></td>
 	</tr>
 	</table>
 	</div>
 	<div id="extra-search">
 <?php
-	echo CHtml::radioButtonList('date-filter', $dateFilter, Theatre::getDateFilterOptions(),
+	echo CHtml::radioButtonList('date-filter', '', Theatre::getDateFilterOptions(),
 		array('separator' => '&nbsp;')); ?>
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
     'name'=>'date-start',
 	'id'=>'date-start',
-	'value'=>$dateStart,
     // additional javascript options for the date picker plugin
     'options'=>array(
 		'changeMonth'=>true,
@@ -93,7 +88,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
     'name'=>'date-end',
 	'id'=>'date-end',
-	'value'=>$dateEnd,
     // additional javascript options for the date picker plugin
     'options'=>array(
 		'changeMonth'=>true,
@@ -133,123 +127,27 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 <div class="main-search">
 </div>
 <div class="cleartall"></div>
-<div id="theatreList">
-<?php
-if (empty($theatres)) { ?>
-<h2 class="theatre">No theatre schedules match your search criteria.</h2>
-</div>
-<?php
-} else { ?>
-	<div id="multiOpenAccordion">
-<?php
-	$panels = array();
-	foreach ($theatres as $name => $dates) { ?>
-<h2 class="theatre"><?php echo $name; ?></h2>
-<?php	foreach ($dates as $date => $sessions) {
-			$timestamp = strtotime($date); ?>
-<h3 class="date"><a href="#"><?php echo date('d ', $timestamp);
-			echo substr(date('F', $timestamp), 0, 3);
-			echo date(' Y', $timestamp);
-			echo ' - ' . date('l', $timestamp); ?></a></h3>
-<div>
-	<table>
-	<tr>
-		<th class="first">Session</th>
-		<th class="repeat leftAlign">Patient (Age)</th>
-		<th class="repeat leftAlign">[Eye] Operation</th>
-		<th class="repeat">Duration</th>
-		<th class="repeat">Ward</th>
-		<th class="repeat">Anaesthetic</th>
-		<th class="last">Alerts</th>
-	</tr>
-<?php		$lastSession = $sessions[0];
-			foreach ($sessions as $session) {
-				if ($session['sessionId'] != $lastSession['sessionId']) { ?>
-	<tr>
-		<th class="footer" colspan="7">Time unallocated: <?php
-					echo '<span';
-					if ($lastSession['timeAvailable'] < 0) {
-						echo ' class="full"';
-					}
-					echo ">{$lastSession['timeAvailable']}"; ?>min</span></th>
-	</tr>
-<?php				$lastSession = $session;
-				} ?>
-	<tr>
-		<td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
-		<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
-		<td class="operation leftAlign">[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
-		<td class="duration"><?php echo $session['operationDuration']; ?></td>
-		<td class="ward"><?php echo $session['ward']; ?></td>
-		<td class="anaesthetic"><?php echo $session['anaesthetic']; ?></td>
-		<td class="alerts"><div class="alert gender invisible <?php echo $session['patientGender']; ?>"></div><?php
-		if (!empty($session['operationComments'])) { ?><div class="alert comments invisble"><img class="invisible" src="/images/icon_comments.gif" alt="comments" title="<?php echo $session['operationComments']; ?>" /></div><?php
-		} ?></td>
-	</tr>
-<?php
-			} ?>
-	<tr>
-		<th class="footer" colspan="7">Time unallocated: <?php
-					echo '<span';
-					if ($session['timeAvailable'] < 0) {
-						echo ' class="full"';
-					}
-					echo ">{$session['timeAvailable']}"; ?>min</span></th>
-	</tr>
-	</table>
-</div>
-<?php
-		} ?>
-<?php
-	}
-	?>
-	</div>
-</div>
-<div id="alertOptions">
-	<input type="checkbox" name="theatre_alerts" value="comments" /> Comments<br />
-	<input type="checkbox" name="theatre_alerts" value="gender" /> Gender<br />
-	<input type="checkbox" name="theatre_alerts" value="latex" disabled="true" /> Latex allergy<br />
-	<input type="checkbox" name="theatre_alerts" value="consultant" disabled="true" /> Consultant required
-</div>
-<div class="clear"></div>
+<div id="searchResults"></div>
+<div class="cleartall"></div>
 <script type="text/javascript">
-	$('input[name=theatre_alerts][value=comments]').click(function() {
-		if ($(this).is(':checked')) {
-			$('.comments').removeClass('invisible');
-			$('.comments img').removeClass('invisible');
-		} else {
-			$('.comments').addClass('invisible');
-			$('.comments img').addClass('invisible');
-		}
+	$('#theatre-filter button[type="submit"]').click(function() {
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
+			'type': 'POST',
+			'data': $('#theatre-filter').serialize(),
+			'success': function(data) {
+				$('#searchResults').html(data);
+				return false;
+			}
+		});
+		return false;
 	});
-	$('input[name=theatre_alerts][value=gender]').click(function() {
-		if ($(this).is(':checked')) {
-			$('.gender').removeClass('invisible');
-		} else {
-			$('.gender').addClass('invisible');
-		}
-	});
-</script>
-<?php
-} ?>
-<script type="text/javascript">
 	$('input[name=date-filter]').change(function() {
 		if ($(this).val() != 'custom') {
 			$('input[id=date-start]').val('');
 			$('input[id=date-end]').val('');
 		}
 	});
-	$('#multiOpenAccordion').multiOpenAccordion({
-		autoHeight: false,
-		clearStyle: true });
-	// if we've selected today, or a same-day custom date range, show expanded
-	if ('today' == $('input[name=date-filter]:checked').val() || 
-		($('input[name=date-filter]:checked').val() == 'custom' && 
-		$('input[id=date-start]').val() == $('input[id=date-end]').val())) {
-		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "all");
-	} else {
-		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "none");
-	}
 	function loadTheatres(siteId) {
 		$.ajax({
 			'type': 'POST',

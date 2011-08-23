@@ -98,4 +98,4 @@ $('.form .row.model-class').toggle($('#{$class}_tableName').val().substring($('#
 		<?php echo $form->error($model,'connectionId'); ?>
 	</div>
 
-<?php $this->endWidget(); ?>
+<?php $this->endWidget();

@@ -28,4 +28,3 @@ return array(
 	'section23' => array('name' => 'Duration', 'section_type_id' => 2),
 	'section24' => array('name' => 'Site', 'section_type_id' => 2),
 );
-?>
