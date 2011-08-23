@@ -100,7 +100,7 @@ class ElementDiagnosis extends BaseElement
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	/**
 	 * Return list of options for eye
 	 * @return array
@@ -133,32 +133,30 @@ class ElementDiagnosis extends BaseElement
 		return $text;
 	}
 
-	/**     
+	/**
 	 * As the disoder is provided as a string we need to convert it into a disorder id
-	 *		      
-	 * @return boolean	      
-	 */				     
-	public function beforeValidate()	       
-	{						       
-		if (empty($this->disorder_id)) {
-			return false;
+	 *
+	 * @return boolean
+	 */
+	public function beforeValidate()
+	{
+		if (!empty($this->disorder_id)) {
+			$terms = explode(' - ', $this->disorder_id);
+
+			if (count($terms) != 2) {
+	// A hack because validate is called a second time on update by ClinicalService->update. Get rid of this method! Replace with an id fetched by ajax, like with procedures?
+				return parent::beforeValidate();
+			}
+
+			// @todo - make sure only non-systemic disorders apply
+			$disorder = Disorder::model()->find('term = ? AND fully_specified_name = ?', $terms);
+
+			if (empty($disorder)) {
+				return false;
+			}
+
+			$this->disorder_id = $disorder->id;
 		}
-
-		$terms = explode(' - ', $this->disorder_id);						    
-
-		if (count($terms) != 2) {
-// A hack because validate is called a second time on update by ClinicalService->update. Get rid of this method! Replace with an id fetched by ajax, like with procedures?
-			return parent::beforeValidate();
-		}
-
-// @todo - make sure only non-systemic disorders apply
-		$disorder = Disorder::model()->find('term = ? AND fully_specified_name = ?', $terms);								   
-
-		if (empty($disorder)) {
-			return false;
-		}		      
-
-		$this->disorder_id = $disorder->id;			    
 
 		return parent::beforeValidate();
 	}
