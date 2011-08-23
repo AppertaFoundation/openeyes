@@ -1254,7 +1254,7 @@ class ElementOperationTest extends CDbTestCase
 	 */
 	public function testGetWardOptions_ValidSiteId_ReturnsCorrectWard($patientAge, $patientGender, $wardList)
 	{
-		Yii::app()->params['pseudonymise_patient_details'] = 'no';
+		Yii::app()->params['pseudonymise_patient_details'] = false;
 		
 		$operation = $this->elements('element1');
 		

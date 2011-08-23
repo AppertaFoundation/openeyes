@@ -130,7 +130,7 @@ class Patient extends BaseActiveRecord
 
 	private function randomData($field)
 	{
-		if (Yii::app()->params['pseudonymise_patient_details'] == 'no') {
+		if (!Yii::app()->params['pseudonymise_patient_details']) {
 			return false;
 		}
 

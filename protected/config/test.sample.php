@@ -27,7 +27,7 @@ return CMap::mergeArray(
                         // Currently test BASIC only.
                         'auth_source' => 'BASIC', // Options are BASIC or LDAP.
                         'use_pas' => 0,
-			'pseudonymise_patient_details' => 'yes'
+			'pseudonymise_patient_details' => true
                 ),
 	)
 );

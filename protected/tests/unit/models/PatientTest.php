@@ -88,7 +88,7 @@ class PatientTest extends CDbTestCase
 	 */
 	public function testPseudoData_ParamSetOn_RandomizesData($data)
 	{
-		Yii::app()->params['pseudonymise_patient_details'] = 'yes';
+		Yii::app()->params['pseudonymise_patient_details'] = true;
 		
 		$patient = new Patient;
 		$patient->setAttributes($data);
@@ -106,7 +106,7 @@ class PatientTest extends CDbTestCase
 	
 	public function testRandomData_ParamSetOff_ReturnsFalse()
 	{
-		Yii::app()->params['pseudonymise_patient_details'] = 'no';
+		Yii::app()->params['pseudonymise_patient_details'] = false;
 		
 		$attributes = array(
 			'hos_num' => 5550101,
