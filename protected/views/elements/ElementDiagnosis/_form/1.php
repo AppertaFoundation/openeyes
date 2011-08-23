@@ -53,8 +53,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'value'=>$value,
     'sourceUrl'=>array('disorder/autocomplete'),
     'htmlOptions'=>array(
-        'style'=>'height:20px;width:200px;'
+        'style'=>'height:20px;width:400px;'
     ),
 ));
-?></div>
+?></div><!--<span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a disorder into the <strong>add disorder</strong> text box. When you see the required disorder displayed - <strong>click</strong> to select.</span></a></span>-->
 </div>

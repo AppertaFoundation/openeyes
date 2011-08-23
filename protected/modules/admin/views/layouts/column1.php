@@ -4,4 +4,4 @@
 		<?php echo $content; ?>
 	</div><!-- content -->
 </div>
-<?php $this->endContent(); ?>
+<?php $this->endContent();

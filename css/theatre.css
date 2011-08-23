@@ -5,6 +5,10 @@ h2.theatre {
 	margin-bottom: 5px;
 }
 
+h2.theatre.firstTheatre {
+	margin-top: 0;
+}
+
 h3.title {
     color: #fff;
 }

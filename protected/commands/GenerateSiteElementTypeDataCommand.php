@@ -16,7 +16,7 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 		// $this->removeOld($args);
 	}
 
-	public function addNew($args) 
+	public function addNew($args)
 	{
 		$specialties = Specialty::Model()->findAll();
 		$possibleElementTypes = PossibleElementType::Model()->with('eventType')->findAll();
@@ -28,12 +28,12 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 				if (!$existingSiteElementType = SiteElementType::Model()->findAllByAttributes(array('possible_element_type_id' => $pet->id, 'specialty_id' => $specialty->id, 'first_in_episode' => false))) {
 					echo "\tCreating non-first-in-episode site_element_type entry for: possible_element_type id: " . $pet->id . " specialty: " . $specialty->name . " (event type is: " . $pet->eventType->name . ")\n";
 					$newSiteElementType = new SiteElementType;
-					$newSiteElementType->possible_element_type_id = $pet->id;	
+					$newSiteElementType->possible_element_type_id = $pet->id;
 					$newSiteElementType->specialty_id = $specialty->id;
-					$newSiteElementType->view_number = 1;	
+					$newSiteElementType->view_number = 1;
 					$newSiteElementType->required = 0;
 					$newSiteElementType->first_in_episode = 0;
-					$newSiteElementType->save();	
+					$newSiteElementType->save();
 				}
 
 				// if it's possible for the first in episode to be different:
@@ -43,12 +43,12 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 					if (!$existingSiteElementType = SiteElementType::Model()->findAllByAttributes(array('possible_element_type_id' => $pet->id, 'specialty_id' => $specialty->id, 'first_in_episode' => true))) {
 					echo "\tCreating first-in-episode site_element_type entry for: possible_element_type id: " . $pet->id . " specialty: " . $specialty->name . " (event type is: " . $pet->eventType->name . ")\n";
 						$newSiteElementType = new SiteElementType;
-						$newSiteElementType->possible_element_type_id = $pet->id;	
+						$newSiteElementType->possible_element_type_id = $pet->id;
 						$newSiteElementType->specialty_id = $specialty->id;
-						$newSiteElementType->view_number = 1;	
+						$newSiteElementType->view_number = 1;
 						$newSiteElementType->required = 0;
 						$newSiteElementType->first_in_episode = 1;
-						$newSiteElementType->save();	
+						$newSiteElementType->save();
 					}
 				}
 			}
@@ -56,4 +56,3 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 		return true;
 	}
 }
-?>

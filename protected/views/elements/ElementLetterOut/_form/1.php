@@ -86,7 +86,7 @@ foreach ($templates as $key => $template) {
 		<?php echo $form->error($model,'date'); ?>
 	</span>
 </div>
-	
+
 <div class="row_element_letterout">
 	<h3 class="element_letterout"><?php echo $form->labelEx($model,'dear'); ?></h3 class="element_letterout">
 	<span class="element_letterout_left">...
@@ -99,7 +99,7 @@ foreach ($templates as $key => $template) {
 
 <div class="row_element_letterout">
 	<span class="element_letterout_right">
-		Nickname: 
+		Nickname:
 		<?php echo CHtml::checkBox('use_nickname', '', array()); ?>
 	</span>
 </div>
@@ -109,7 +109,7 @@ foreach ($templates as $key => $template) {
 	<span class="element_letterout_left">...
 	</span>
 	<span class="element_letterout_right">
-		<?php 
+		<?php
 			if (empty($model->re)) {
 				// The user is creating a new letterout, display default re: value for patient
 				echo CHtml::textField('ElementLetterOut[re]', $service->getDefaultRe(), array('size' => 100));
@@ -247,7 +247,7 @@ foreach ($templates as $key => $template) {
 
 		if (contact[3] == '') {
 			// No nickname, grey out use_nickname box
-			$("#use_nickname").attr("disabled", "disabled");	
+			$("#use_nickname").attr("disabled", "disabled");
 		} else {
 			// Ungrey use_nickname box
 			$("#use_nickname").removeAttr("disabled");
@@ -271,4 +271,3 @@ foreach ($templates as $key => $template) {
 		return address.split(', ').join(",\n");
 	}
 </script>
-
