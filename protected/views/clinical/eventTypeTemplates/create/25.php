@@ -51,10 +51,26 @@ if (isset($referrals) && is_array($referrals)) {
 	}
 } ?>
 <div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" id="scheduleLater"><span>Save and schedule later</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted" id="scheduleNow"><span>Save and schedule now</span></button>
+<button type="submit" value="submit" class="shinybutton" id="scheduleLater"><span>Save and schedule later</span></button>
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
+	$('#scheduleNow').click(function() {
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
+			'type': 'POST',
+			'data': $('#clinical-create').serialize() + '&scheduleNow=true',
+			'success': function(data) {
+				try {
+					displayErrors(data);
+				} catch (e) {
+					$('#fancybox-content').html(data);
+				}
+			}
+		});
+		return false;
+	});
 	$('#scheduleLater').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
@@ -62,22 +78,7 @@ $this->endWidget(); ?>
 			'data': $('#clinical-create').serialize(),
 			'success': function(data) {
 				try {
-					arr = $.parseJSON(data);
-					if (!$.isEmptyObject(arr)) {
-						$('#clinical-create_es_ ul').html('');
-
-						$.each(arr, function(index, value) {
-							element = index.replace('Element', '');
-							element = element.substr(0, element.indexOf('_'));
-							list = '<li>' + element + ': ' + value + '</li>';
-							$('#clinical-create_es_ ul').append(list);
-						});
-						$('#clinical-create_es_').show();
-						return false;
-					} else {
-						$('#clinical-create_es_ ul').html('');
-						$('#clinical-create_es_').hide();
-					}
+					displayErrors(data);
 				} catch (e) {
 					$.fancybox.close();
 					document.open();
@@ -88,4 +89,24 @@ $this->endWidget(); ?>
 		});
 		return false;
 	});
+
+	function displayErrors(data) {
+		arr = $.parseJSON(data);
+		if (!$.isEmptyObject(arr)) {
+			$('#clinical-create_es_ ul').html('');
+
+			$.each(arr, function(index, value) {
+				element = index.replace('Element', '');
+				element = element.substr(0, element.indexOf('_'));
+				list = '<li>' + element + ': ' + value + '</li>';
+				$('#clinical-create_es_ ul').append(list);
+			});
+			$('#clinical-create_es_').show();
+			return false;
+		} else {
+			$('#clinical-create_es_ ul').html('');
+			$('#clinical-create_es_').hide();
+		}
+
+	}
 </script>

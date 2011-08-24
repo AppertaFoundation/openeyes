@@ -143,7 +143,7 @@ class ClinicalController extends BaseController
 					Yii::app()->end();
 				}
 			}
-			
+
 			// The user has submitted the form to create the event
 			$eventId = $this->service->createElements(
 				$elements, $_POST, $this->firm, $this->patientId, $this->getUserId(), $eventType->id
@@ -158,6 +158,8 @@ class ClinicalController extends BaseController
 				Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
+				} elseif (!empty($_POST['scheduleNow'])) {
+					$this->redirect(array('booking/schedule', 'operation' => $eventId));
 				} else {
 					$this->redirect(array('patient/view',
 						'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));

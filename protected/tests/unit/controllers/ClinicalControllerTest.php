@@ -161,7 +161,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$patientId = 1;
 		$eventTypeId = 1;
 		$_GET['event_type_id'] = $eventTypeId;
-		
+
 		$patient = $this->patients('patient1');
 
 		$event = $this->events('event1');
@@ -189,7 +189,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->service = $mockService;
 		$mockController->firm = $firm;
-		
+
 		$referrals = $mockController->checkForReferrals($firm, $patient->id);
 
 		$mockController->expects($this->once())
@@ -209,7 +209,7 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->actionCreate($event->id);
 	}
 
-	public function testActionCreate_ValidPostData_RendersViewView()
+	public function testActionCreate_ValidPostData_NoScheduleNow_RendersViewView()
 	{
 		$_POST['elementPOH'] = $this->elementPOHs['elementPOH1'];
 		$_POST['elementHistory'] = $this->elementHistories['elementHistory1'];
@@ -232,8 +232,57 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1, 
+			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1,
 				'eventId' => $expectedEventId));
+
+		$mockController->expects($this->any())
+			->method('getUserId')
+			->will($this->returnValue(1));
+
+		$mockService = $this->getMock('ClinicalService',
+			array('getElements', 'createElements'));
+
+		$mockService->expects($this->once())
+			->method('getElements')
+			->with($eventType, $firm, $patientId, 1)
+			->will($this->returnValue($expectedElements));
+
+		$mockService->expects($this->once())
+			->method('createElements')
+			->with($expectedElements, $_POST, $firm, $patientId, 1, $eventType->id)
+			->will($this->returnValue($expectedEventId));
+
+		$mockController->firm = $firm;
+		$mockController->service = $mockService;
+		$mockController->patientId = $patientId;
+		$mockController->actionCreate($event->id);
+	}
+
+	public function testActionCreate_ValidPostData_WithScheduleNow_RendersViewView()
+	{
+		$_POST['elementPOH'] = $this->elementPOHs['elementPOH1'];
+		$_POST['elementHistory'] = $this->elementHistories['elementHistory1'];
+		$_POST['action'] = 'create';
+		$_POST['scheduleNow'] = true;
+		$_GET['event_type_id'] = 1;
+
+		$event = $this->events('event1');
+		$firm = $this->firms('firm1');
+		$eventType = $this->eventTypes('eventType1');
+		$patientId = 1;
+		$expectedEventId = 1;
+
+		$elementHistory = $this->elementHistories('elementHistory1');
+		$elementPOH = $this->elementPOHs('elementPOH1');
+
+		$expectedElements = array($elementHistory, $elementPOH);
+
+		$mockController = $this->getMock('ClinicalController',
+			array('render', 'redirect', 'getUserId'), array('ClinicalController'));
+
+		$mockController->expects($this->once())
+			->method('redirect')
+			->with(array('booking/schedule', 'operation' => $expectedEventId));
 
 		$mockController->expects($this->any())
 			->method('getUserId')
@@ -282,8 +331,8 @@ class ClinicalControllerTest extends CDbTestCase
 		$expectedElements = array($elementHistory, $elementPOH);
 
 		$specialties = Specialty::model()->findAll();
-		
-		
+
+
 		$mockController = $this->getMock('ClinicalController', array('renderPartial', 'getUserId'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService',
