@@ -23,7 +23,7 @@ You are logged in as: <strong><?php echo $user->first_name . ' ' . $user->last_n
 <br />
 <?php
 if ($this->showForm) {
-	echo 'Selected firm: ';
+	echo '<div id="selectedFirm">Selected firm: ';
 	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'base-form',
 		'enableAjaxValidation'=>false,
@@ -31,6 +31,7 @@ if ($this->showForm) {
 	));
 	echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms);
 	$this->endWidget();
+	echo '</div>';
 }
 ?>
 </div>

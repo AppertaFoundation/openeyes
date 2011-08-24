@@ -435,3 +435,8 @@ div#procedure_selects div.ui-accordion-content {
     display: none;
     margin-bottom: 20px;
 }
+
+a.removeLink {
+    margin-left: 10px;
+    font: 8pt Arial;
+}

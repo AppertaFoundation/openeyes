@@ -779,3 +779,7 @@ div.errorSummary ul {
 input:focus {
     outline: none;
 }
+
+div#selectedFirm {
+    margin-top: 10px;
+}
