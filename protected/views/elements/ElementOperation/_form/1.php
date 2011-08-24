@@ -83,9 +83,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	),
 )); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
 	<div class="cleartall"></div>
-	<div id="procedureDiv">
+	<div id="procedureDiv"<?php
+	if ($newRecord) { ?> style="display:none;"<?php
+	} ?>>
 		<table id="procedure_list" class="grid"<?php
-	if ($model->isNewRecord) { ?> style="display:none;"<?php
+	if ($newRecord) { ?> style="display:none;"<?php
 	} ?> title="Procedure List">
 			<thead>
 				<tr>

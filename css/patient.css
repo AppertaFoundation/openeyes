@@ -313,10 +313,6 @@ div.view {
 	border: 0px;
 }
 
-#procedure_list {
-    display: none;
-}
-
 #procedure_list th, #procedure_list td {
 	border-color: #3293c6;
 }
@@ -432,7 +428,6 @@ div#procedure_selects div.ui-accordion-content {
 
 #procedureDiv {
     border: 1px solid #666;
-    display: none;
     margin-bottom: 20px;
 }
 
