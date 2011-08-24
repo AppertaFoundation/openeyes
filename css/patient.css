@@ -84,6 +84,10 @@ ul.ui-tabs-nav * {
     margin-bottom: 20px;
 }
 
+.details h3 {
+    margin-bottom: 0.5em;
+}
+
 #personal_details {
     background: url('/images/box_blue_centre_244.png');
     height: 224px;
