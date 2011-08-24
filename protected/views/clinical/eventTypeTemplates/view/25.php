@@ -16,6 +16,12 @@ if (Yii::app()->user->hasFlash('success')) { ?>
 }
 
 if ($operation->status != $operation::STATUS_CANCELLED) {
+	if ($operation->status == $operation::STATUS_PENDING) { ?>
+<div class="flash-notice">This operation has not been scheduled.</div><?php
+	} elseif ($operation->status == $operation::STATUS_NEEDS_RESCHEDULING) { ?>
+<div class="flash-notice">This operation needs to be rescheduled.</div>
+<?php
+	}
 	if ($editable) {
 		echo CHtml::link('<span>Edit Operation</span>', array('clinical/update', 'id' => $eventId), array('id' => 'editlink', 'class' => 'fancybox shinybutton', 'encode' => false));
 	}
