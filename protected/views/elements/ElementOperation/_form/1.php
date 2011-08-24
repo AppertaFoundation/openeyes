@@ -52,6 +52,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
 					$('#procedure_list').show();
+					$('#procedureDiv').show();
 
 					// update total duration
 					var totalDuration = 0;
@@ -82,7 +83,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	),
 )); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
 	<div class="cleartall"></div>
-	<div>
+	<div id="procedureDiv">
 		<table id="procedure_list" class="grid"<?php
 	if ($model->isNewRecord) { ?> style="display:none;"<?php
 	} ?> title="Procedure List">
@@ -120,8 +121,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tfoot>
 		</table>
 	</div>
-
-<?php
+	<?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	'panels'=>array(
 		'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',

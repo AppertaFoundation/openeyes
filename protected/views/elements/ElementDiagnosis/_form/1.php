@@ -32,9 +32,6 @@ if (empty($model->event_id)) {
 	$diagnosis = $model;
 }
 
-//var_dump($eye);
-//exit;
-
 ?>
 <div class="box_grey_big_gradient_top"></div>
 <div class="box_grey_big_gradient_bottom">
