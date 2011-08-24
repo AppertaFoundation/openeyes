@@ -8,7 +8,7 @@ if (!$reschedule) {
 	echo CHtml::form(array('booking/update'));
 } ?>
 <div class="label">Ward:</div>
-<div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '', 
+<div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '',
 	$operation->getWardOptions($session['site_id'])); ?></div>
 <div class="cleartall"></div>
 <strong>View other operations in this session:</strong>
@@ -19,7 +19,7 @@ if (!$reschedule) {
 		<tr class="head">
 			<th>Operation list overview</th>
 			<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
-			<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - ' 
+			<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 		</tr>
 	</thead>
@@ -57,7 +57,7 @@ if (!$reschedule) {
 		</tr>
 	</tfoot>
 </table>
-<?php 
+<?php
 if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
@@ -73,16 +73,19 @@ if (!empty($reschedule)) {
 	} else {
 		$listIndex = 2;
 	}
-	echo CHtml::dropDownList('cancellation_reason', '', 
+	echo CHtml::dropDownList('cancellation_reason', '',
 		CancellationReason::getReasonsByListNumber($listIndex)
 	);
 }
 ?>
 <div class="cleartall"></div>
-<div class="buttonwrapper">
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Confirm slot</span></button><?php
+<div class="greyGradient">
+<div style="display: inline;">
+<span id="dateSelected">Date currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?></span></span><br/>
+<span id="timeSelected">Time currently selected: <span class="highlighted"><?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span></div>
+<button type="submit" value="submit" class="shinybutton highlighted" style="margin-top:-15px;"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
-<button type="submit" value="submit" class="shinybutton" id="cancel_operation"><span>Cancel operation</span></button>
+<button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="margin-top:-15px;"><span>Cancel operation</span></button>
 </div>
 </div>
 <script type="text/javascript">

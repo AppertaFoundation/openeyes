@@ -440,3 +440,16 @@ a.removeLink {
     margin-left: 10px;
     font: 8pt Arial;
 }
+
+div.greyGradient {
+    background: transparent url('/images/grey_gradient_background.png') top left no-repeat;
+    height: 33px;
+    width: 685px;
+    padding: 15px;
+}
+
+span#dateSelected span.highlighted, span#timeSelected span.highlighted {
+    color: #ff0000;
+    font-weight: bold;
+    text-transform: uppercase;
+}
