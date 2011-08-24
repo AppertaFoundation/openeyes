@@ -1,3 +1,5 @@
+<?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div class="heading">
 <span class="emphasize">Book Operation:</span> Operation details
 </div>
@@ -9,8 +11,6 @@
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
 	<div class="data"><span></span><?php
-	Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	'name'=>'procedure_id',
 	'source'=>"js:function(request, response) {
@@ -81,6 +81,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			});
 		}",
 	),
+	'htmlOptions'=>array('style'=>'width: 400px;')
 )); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
 	<div class="cleartall"></div>
 	<div id="procedureDiv"<?php
