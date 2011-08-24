@@ -102,7 +102,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	if (!empty($model->procedures)) {
 		foreach ($model->procedures as $procedure) {
 			$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
-				' ' . CHtml::link('remove', '#', array('onClick' => "js:removeProcedure(this);"));
+				' ' . CHtml::link('remove', '#',
+				array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
 			$totalDuration += $procedure['default_duration']; ?>
 				<tr>
 					<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
@@ -243,5 +244,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		$('#ElementOperation_total_duration').val(totalDuration);
 
 		$(row).parents('tr').remove();
+
+		return false;
 	};
 </script>
