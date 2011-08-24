@@ -412,3 +412,7 @@ textarea[name="ElementOperation[comments]"] {
 	width: 440px;
 	max-width: 440px;
 }
+
+.ui-datepicker table {
+    background: #6399CD;
+}

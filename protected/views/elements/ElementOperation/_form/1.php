@@ -143,12 +143,24 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?></div>
 	<div class="cleartall"></div>
 	<div class="label">Anaesthetic type:</div>
-	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type',
-		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="data"><?php
+		$i = 0;
+		foreach ($model->getAnaestheticOptions() as $id => $value) { ?>
+		<input id="ElementOperation_anaesthetic_type_<?php echo $i; ?>"<?php
+			if ($model->anaesthetic_type == $id) {
+				echo 'checked="checked"';
+			} ?>value="<?php echo $id; ?>" type="radio" name="ElementOperation[anaesthetic_type]">
+		<label for="ElementOperation_anaesthetic_type_<?php echo $i; ?>"><?php echo $value; ?></label>
+<?php		if ($i == 3) {
+				echo '<br />';
+			}
+			$i++;
+		}
+		?></div>
 	<div class="cleartall"></div>
 	<div class="label">Overnight Stay required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay',
-		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?></div>
+		$model->getOvernightOptions(), array('separator' => ' ')); ?></div>
 	<div class="cleartall"></div>
 	<div class="label">Decision Date:</div>
 	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
