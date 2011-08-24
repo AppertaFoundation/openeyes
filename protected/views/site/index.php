@@ -1,5 +1,4 @@
 <?php
-
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
@@ -7,7 +6,7 @@ $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
 $this->layout = 'main'; ?>
-<div class="text">Find a patient:</div>
+<div><span class="text">Find a patient:</span><span style="color: #fff;"> (hospital number and/or surname required)</span></div>
 <div id="patient-search-error" class="rounded-corners">
 No patients found.
 </div>
@@ -33,7 +32,7 @@ No patients found.
 		),
 		// additional javascript options for the accordion plugin
 		'options'=>array(
-			'active'=>false,
+			'active'=>0,
 			'animated'=>false,
 			'collapsible'=>true,
 		),
