@@ -3,9 +3,9 @@
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 if (!$reschedule) {
-	echo CHtml::form(array('booking/create'));
+	echo CHtml::form(array('booking/create'), 'post', array('id' => 'bookingForm'));
 } else {
-	echo CHtml::form(array('booking/update'));
+	echo CHtml::form(array('booking/update'), 'post', array('id' => 'bookingForm'));
 } ?>
 <div class="label">Ward:</div>
 <div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '',
@@ -67,14 +67,16 @@ if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 }
 if (!empty($reschedule)) {
-	echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+	echo '<div class="errorSummary" style="display:none"></div><p/>';
+	echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
 	if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
 		$listIndex = 3;
 	} else {
 		$listIndex = 2;
 	}
 	echo CHtml::dropDownList('cancellation_reason', '',
-		CancellationReason::getReasonsByListNumber($listIndex)
+		CancellationReason::getReasonsByListNumber($listIndex),
+		array('empty' => 'Select a reason')
 	);
 }
 ?>
@@ -89,6 +91,18 @@ echo CHtml::endForm(); ?>
 </div>
 </div>
 <script type="text/javascript">
+<?php
+	if (!empty($reschedule)) { ?>
+	$('#bookingForm button[type="submit"]').click(function () {
+		if ('' == $('#cancellation_reason option:selected').val()) {
+			$('div.errorSummary').html('Please select a cancellation reason');
+			$('div.errorSummary').show();
+			return false;
+		}
+	});
+<?php
+	}
+	?>
 	$('button#cancel_operation').live('click', function() {
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',
