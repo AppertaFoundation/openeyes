@@ -48,10 +48,10 @@ class m110412_134843_create_diagnosis_tables extends CDbMigration
 			'term' => 'Myocardial infarction',
 			'systemic' => 1
 		));
-		
+
 		$this->renameColumn('diagnosis', 'datetime', 'created_on');
 		$this->renameColumn('diagnosis', 'site', 'location');
-		
+
 		$this->insert('diagnosis', array(
 			'patient_id' => 1,
 			'user_id' => 1,
@@ -73,7 +73,7 @@ class m110412_134843_create_diagnosis_tables extends CDbMigration
 			'created_on' => '0000-00-00 00:00:00',
 			'location' => 2
 		));
-		
+
 		$this->createTable('common_ophthalmic_disorder', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'disorder_id' => 'int(10) unsigned NOT NULL',
@@ -92,12 +92,12 @@ class m110412_134843_create_diagnosis_tables extends CDbMigration
 		$this->insert('common_ophthalmic_disorder', array(
 			'disorder_id' => 3, 'specialty_id' => 1
 		));
-		
+
 		$this->addForeignKey(
 			'common_ophthalmic_disorder_ibfk_1','common_ophthalmic_disorder','disorder_id','disorder','id');
 		$this->addForeignKey(
 			'common_ophthalmic_disorder_ibfk_2','common_ophthalmic_disorder','specialty_id','specialty','id');
-		
+
 		$this->createTable('common_systemic_disorder', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'disorder_id' => 'int(10) unsigned NOT NULL',
@@ -108,7 +108,7 @@ class m110412_134843_create_diagnosis_tables extends CDbMigration
 		$this->insert('common_systemic_disorder', array('disorder_id' => 5));
 		$this->insert('common_systemic_disorder', array('disorder_id' => 6));
 		$this->insert('common_systemic_disorder', array('disorder_id' => 7));
-		
+
 		$this->addForeignKey(
 			'common_systemic_disorder_ibfk_1','common_systemic_disorder','disorder_id','disorder','id');
 	}
@@ -120,17 +120,14 @@ class m110412_134843_create_diagnosis_tables extends CDbMigration
 
 		$this->truncateTable('common_systemic_disorder');
 		$this->dropTable('common_systemic_disorder');
-		
+
 		$this->truncateTable('common_ophthalmic_disorder');
 		$this->dropTable('common_ophthalmic_disorder');
-		
+
 		$this->truncateTable('diagnosis');
-		
-		$this->renameColumn('diagnosis', 'created_on', 'datetime');
-		$this->renameColumn('diagnosis', 'location', 'site');		
-		
+
 		$this->truncateTable('disorder');
-		
+
 		$this->alterColumn('disorder', 'fully_specified_name', 'char(255) CHARACTER SET latin1 NOT NULL');
 		$this->alterColumn('disorder', 'term', 'char(255) CHARACTER SET latin1 NOT NULL');
 
