@@ -47,11 +47,12 @@ class ElementOperation extends BaseElement
 	const STATUS_CANCELLED = 4;
 
 	public $service;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -75,11 +76,11 @@ class ElementOperation extends BaseElement
 			array('eye', 'required', 'message' => 'Please select an eye option'),
 			array('eye', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
-			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly'=>true),
+			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly' => true),
 			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on'=>'search'),
+			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -127,23 +128,23 @@ class ElementOperation extends BaseElement
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('event_id',$this->event_id,true);
-		$criteria->compare('eye',$this->eye);
-		$criteria->compare('comments',$this->comments,true);
-		$criteria->compare('total_duration',$this->total_duration);
-		$criteria->compare('consultant_required',$this->consultant_required);
-		$criteria->compare('anaesthetist_required',$this->anaesthetist_required);
-		$criteria->compare('anaesthetic_type',$this->anaesthetic_type);
-		$criteria->compare('overnight_stay',$this->overnight_stay);
-		$criteria->compare('decision_date',$this->decision_date);
-		$criteria->compare('schedule_timeframe',$this->schedule_timeframe);
+		$criteria->compare('id', $this->id, true);
+		$criteria->compare('event_id', $this->event_id, true);
+		$criteria->compare('eye', $this->eye);
+		$criteria->compare('comments', $this->comments, true);
+		$criteria->compare('total_duration', $this->total_duration);
+		$criteria->compare('consultant_required', $this->consultant_required);
+		$criteria->compare('anaesthetist_required', $this->anaesthetist_required);
+		$criteria->compare('anaesthetic_type', $this->anaesthetic_type);
+		$criteria->compare('overnight_stay', $this->overnight_stay);
+		$criteria->compare('decision_date', $this->decision_date);
+		$criteria->compare('schedule_timeframe', $this->schedule_timeframe);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
+															  'criteria' => $criteria,
+														 ));
 	}
 
 	/**
@@ -173,7 +174,8 @@ class ElementOperation extends BaseElement
 		);
 	}
 
-	public function getEyeLabelText() {
+	public function getEyeLabelText()
+	{
 		switch ($this->eye) {
 			case self::EYE_BOTH:
 				$text = 'Eyes:';
@@ -186,7 +188,8 @@ class ElementOperation extends BaseElement
 		return $text;
 	}
 
-	public function getEyeText() {
+	public function getEyeText()
+	{
 		switch ($this->eye) {
 			case self::EYE_LEFT:
 				$text = 'Left';
@@ -217,7 +220,8 @@ class ElementOperation extends BaseElement
 		);
 	}
 
-	public function getBooleanText($field) {
+	public function getBooleanText($field)
+	{
 		switch ($this->$field) {
 			case 1:
 				$text = 'Yes';
@@ -245,7 +249,8 @@ class ElementOperation extends BaseElement
 		);
 	}
 
-	public function getAnaestheticText() {
+	public function getAnaestheticText()
+	{
 		switch ($this->anaesthetic_type) {
 			case self::ANAESTHETIC_TOPICAL:
 				$text = 'Topical';
@@ -270,7 +275,8 @@ class ElementOperation extends BaseElement
 		return $text;
 	}
 
-	public function getAnaestheticAbbreviation() {
+	public function getAnaestheticAbbreviation()
+	{
 		switch ($this->anaesthetic_type) {
 			case self::ANAESTHETIC_TOPICAL:
 				$text = 'TOP';
@@ -320,7 +326,8 @@ class ElementOperation extends BaseElement
 		);
 	}
 
-	public function getScheduleText() {
+	public function getScheduleText()
+	{
 		switch ($this->schedule_timeframe) {
 			case self::SCHEDULE_IMMEDIATELY:
 				$text = 'Immediately';
@@ -357,11 +364,13 @@ class ElementOperation extends BaseElement
 	public function matchDiagnosisEye()
 	{
 		if (isset($_POST['ElementDiagnosis']['eye']) &&
-			isset($_POST['ElementOperation']['eye'])) {
+			isset($_POST['ElementOperation']['eye'])
+		) {
 			$diagnosis = $_POST['ElementDiagnosis']['eye'];
 			$operation = $_POST['ElementOperation']['eye'];
 			if ($diagnosis != ElementDiagnosis::EYE_BOTH &&
-				$diagnosis != $operation) {
+				$diagnosis != $operation
+			) {
 				$this->addError('eye', 'Operation eye must match diagnosis eye!');
 			}
 		}
@@ -394,7 +403,7 @@ class ElementOperation extends BaseElement
 		if (!empty($_POST['Procedures'])) {
 			// first wipe out any existing procedures so we start from scratch
 			OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
-				array(':id' => $operationId));
+															 array(':id' => $operationId));
 
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
@@ -425,7 +434,7 @@ class ElementOperation extends BaseElement
 	public function getSessions()
 	{
 		$minDate = $this->getMinDate();
-		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		$thisMonth = mktime(0, 0, 0, date('m'), 1, date('Y'));
 		if ($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
@@ -463,7 +472,7 @@ class ElementOperation extends BaseElement
 
 			for ($weekCounter = 1; $weekCounter < 8; $weekCounter++) {
 				$addDays = ($weekCounter - 1) * 7;
-				$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
+				$selectedDay = date('Y-m-d', mktime(0, 0, 0, date('m', $firstWeekday), date('d', $firstWeekday) + $addDays, date('Y', $firstWeekday)));
 				if (in_array($selectedDay, $dateList)) {
 					foreach ($dates[$selectedDay] as $sessions) {
 						$totalSessions = count($sessions);
@@ -581,7 +590,7 @@ class ElementOperation extends BaseElement
 
 	public function getWeekdayText($index)
 	{
-		switch($index) {
+		switch ($index) {
 			case 1:
 				$text = 'Monday';
 				break;
@@ -645,20 +654,20 @@ class ElementOperation extends BaseElement
 		return $results;
 	}
 
-// @todo - not sure if these two methods should be here, but it's better than being in 25.php
-        public function getService()
-        {
-                if (empty($this->service)) {
-                        $this->service = new LetterOutService($this->event->episode->firm);
-                }
+	// @todo - not sure if these two methods should be here, but it's better than being in 25.php
+	public function getService()
+	{
+		if (empty($this->service)) {
+			$this->service = new LetterOutService($this->event->episode->firm);
+		}
 
-                return $this->service;
-        }
+		return $this->service;
+	}
 
 	public function getPhrase($name)
-        {
-                return $this->getService()->getPhrase('LetterOut', $name);
-        }
+	{
+		return $this->getService()->getPhrase('LetterOut', $name);
+	}
 
 	public function getCancellationText()
 	{
