@@ -1,5 +1,4 @@
 <?php
-Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
@@ -12,26 +11,39 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 <div class="flash-error">
     <?php echo Yii::app()->user->getFlash('info'); ?>
 </div>
-<?php 
+<?php
 } ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
 	<p><strong>Current schedule:</strong></p>
 <?php $this->renderPartial('_session', array('operation' => $operation)); ?><br />
-<?php 
-echo CHtml::form(array('booking/update'));
-echo CHtml::hiddenField('booking_id', $operation->booking->id);
-echo '<p/>';
-echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+<?php
+echo CHtml::form(array('booking/update'), 'post', array('id' => 'cancelForm'));
+echo CHtml::hiddenField('booking_id', $operation->booking->id); ?>
+<p/>
+<div class="errorSummary" style="display:none"></div>
+<p/>
+<?php
+echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
 if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
 	$listIndex = 3;
 } else {
 	$listIndex = 2;
 }
-echo CHtml::dropDownList('cancellation_reason', '', 
-	CancellationReason::getReasonsByListNumber($listIndex)
+echo CHtml::dropDownList('cancellation_reason', '',
+	CancellationReason::getReasonsByListNumber($listIndex),
+	array('empty'=>'Select a reason')
 ); ?>
 <div class="clear"></div>
 <button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel booking</span></button><?php
 echo CHtml::endForm(); ?>
 </div>
 </div>
+<script type="text/javascript">
+	$('#cancelForm button[type="submit"]').click(function () {
+		if ('' == $('#cancellation_reason option:selected').val()) {
+			$('div.errorSummary').html('Please select a cancellation reason');
+			$('div.errorSummary').show();
+			return false;
+		}
+	});
+</script>

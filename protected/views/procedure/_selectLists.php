@@ -67,11 +67,12 @@ foreach ($specialties as $specialty) {
 				'success': function(data) {
 					// remove selection from the filter box
 					$('select[name=procedure] option:selected').remove();
-					
+
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
 					$('#procedure_list').show();
-					
+					$('#procedureDiv').show();
+
 					// update total duration
 					var totalDuration = 0;
 					$('#procedure_list tbody').children().children('td:odd').each(function() {
@@ -82,7 +83,7 @@ foreach ($specialties as $specialty) {
 					var operationDuration = Number($('#ElementOperation_total_duration').val());
 					$('#projected_duration').text(totalDuration);
 					$('#ElementOperation_total_duration').val(operationDuration + thisDuration);
-					
+
 					// clear out text field
 					$('#procedure_id').val('');
 				}

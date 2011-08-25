@@ -1,6 +1,7 @@
 <?php
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
+$cs->registerCoreScript('jquery');
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 $this->pageTitle=Yii::app()->name . ' - Login';
 $this->layout = 'simple';
@@ -11,8 +12,9 @@ $this->layout = 'simple';
 	<div class="form">
 	<?php $form=$this->beginWidget('CActiveForm', array(
 		'id'=>'login-form',
-		'enableAjaxValidation'=>true,
+		'enableAjaxValidation'=>false,
 	));?>
+		<?php echo $form->error($model,'password'); ?>
 
 		<div class="row">
 			<?php echo CHtml::activeLabel($model,'username', array('label'=>'Username:')); ?>
@@ -22,7 +24,6 @@ $this->layout = 'simple';
 		<div class="row">
 			<?php echo CHtml::activeLabel($model,'password', array('label'=>'Password:')); ?>
 			<?php echo $form->passwordField($model,'password'); ?>
-			<?php echo $form->error($model,'password'); ?>
 		</div>
 
 		<div class="row">
@@ -37,7 +38,7 @@ $this->layout = 'simple';
 
 	<?php $this->endWidget(); ?>
 	</div><!-- form -->
-	
+
 	<div class="contact">Don't have a username and password? <span style="font-weight: normal;">Contact the helpdesk on:</span><br />
 		Telephone: <span class="number">ext. 0000</span> Email: <span class="number">helpdesk@openeyes.org.uk</span>
 	</div>

@@ -3,12 +3,12 @@
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 if (!$reschedule) {
-	echo CHtml::form(array('booking/create'));
+	echo CHtml::form(array('booking/create'), 'post', array('id' => 'bookingForm'));
 } else {
-	echo CHtml::form(array('booking/update'));
+	echo CHtml::form(array('booking/update'), 'post', array('id' => 'bookingForm'));
 } ?>
 <div class="label">Ward:</div>
-<div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '', 
+<div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '',
 	$operation->getWardOptions($session['site_id'])); ?></div>
 <div class="cleartall"></div>
 <strong>View other operations in this session:</strong>
@@ -19,7 +19,7 @@ if (!$reschedule) {
 		<tr class="head">
 			<th>Operation list overview</th>
 			<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
-			<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - ' 
+			<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 		</tr>
 	</thead>
@@ -57,7 +57,7 @@ if (!$reschedule) {
 		</tr>
 	</tfoot>
 </table>
-<?php 
+<?php
 if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
@@ -67,25 +67,42 @@ if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 }
 if (!empty($reschedule)) {
-	echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+	echo '<div class="errorSummary" style="display:none"></div><p/>';
+	echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
 	if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
 		$listIndex = 3;
 	} else {
 		$listIndex = 2;
 	}
-	echo CHtml::dropDownList('cancellation_reason', '', 
-		CancellationReason::getReasonsByListNumber($listIndex)
+	echo CHtml::dropDownList('cancellation_reason', '',
+		CancellationReason::getReasonsByListNumber($listIndex),
+		array('empty' => 'Select a reason')
 	);
 }
 ?>
 <div class="cleartall"></div>
-<div class="buttonwrapper">
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Confirm slot</span></button><?php
+<div class="greyGradient">
+<div style="display: inline;">
+<span id="dateSelected">Date currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?></span></span><br/>
+<span id="timeSelected">Time currently selected: <span class="highlighted"><?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span></div>
+<button type="submit" value="submit" class="shinybutton highlighted" style="margin-top:-15px;"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
-<button type="submit" value="submit" class="shinybutton" id="cancel_operation"><span>Cancel operation</span></button>
+<button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="margin-top:-15px;"><span>Cancel operation</span></button>
 </div>
 </div>
 <script type="text/javascript">
+<?php
+	if (!empty($reschedule)) { ?>
+	$('#bookingForm button[type="submit"]').click(function () {
+		if ('' == $('#cancellation_reason option:selected').val()) {
+			$('div.errorSummary').html('Please select a cancellation reason');
+			$('div.errorSummary').show();
+			return false;
+		}
+	});
+<?php
+	}
+	?>
 	$('button#cancel_operation').live('click', function() {
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',

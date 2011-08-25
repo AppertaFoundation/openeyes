@@ -775,3 +775,11 @@ div.errorSummary p {
 div.errorSummary ul {
     margin: 0 0 0.5em 0;
 }
+
+input:focus {
+    outline: none;
+}
+
+div#selectedFirm {
+    margin-top: 10px;
+}

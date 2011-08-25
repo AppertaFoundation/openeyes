@@ -104,4 +104,7 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 <?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
-}
+} ?>
+<script type="text/javascript">
+	$('#procedure_list').show();
+</script>

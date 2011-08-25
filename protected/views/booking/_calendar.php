@@ -14,7 +14,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('pmonth', $lastMonth);
 		echo '<span class="button">';
-		echo CHtml::submitButton('< Previous Month', 
+		echo CHtml::submitButton('< Previous Month',
 			array('id' => 'previous_month', 'class'=>'form_button', 'disabled' => (date('Ym') >= date('Ym', $date))));
 		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
@@ -26,7 +26,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		echo CHtml::hiddenField('operation', $operation->id);
 		echo CHtml::hiddenField('nmonth', $nextMonth);
 		echo '<span class="button">';
-		echo CHtml::submitButton('Next Month >', 
+		echo CHtml::submitButton('Next Month >',
 			array('id' => 'next_month', 'class'=>'form_button', 'disabled' => ($nextMonth > $nextYear)));
 		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
@@ -47,11 +47,11 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 				$list[$date]['status'] .= ' outside_rtt';
 			} ?>
 					<td class="<?php echo $list[$date]['status'];
-			if (!empty($operation->booking) && 
+			if (!empty($operation->booking) &&
 				$operation->booking->session->date == $date) {
 				echo ' selected_date';
 			} ?>"><?php echo date('j', strtotime($date)); ?></td>
-<?php	} ?>					
+<?php	} ?>
 				</tr>
 <?php
 	} ?>
@@ -66,6 +66,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 							<div id="full" class="container"><div class="color_box"></div><div class="label">Full</div></div>
 							<div id="closed" class="container"><div class="color_box"></div><div class="label">Theatre Closed</div></div>
 							<div id="selected_date" class="container"><div class="color_box"></div><div class="label">Selected Date</div></div>
+							<div id="outside_rtt" class="container"><div class="color_box"></div><div class="label">Outside RTT</div></div>
 						</div>
 					</td>
 				</tr>

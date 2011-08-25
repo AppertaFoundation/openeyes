@@ -29,27 +29,30 @@ h3 {
 }
 
 #calendar .unavailable {
-	background: #CCCCCC;
+	background-color: #CCCCCC;
 }
 #calendar .available {
-	background: #99ff99;
+	background-color: #99ff99;
 }
 #calendar .limited {
-	background: #ff9933;
+	background-color: #ff9933;
 }
 #calendar .full {
-	background: #ff9999;
+	background-color: #ff9999;
 }
 .closed {
 	background-image: url('/images/theatre_closed_big.png');
 	background-size: 100%;
 }
 .invalid {
-	background: #DDDDDD;
+	background-color: #DDDDDD;
 }
 .outside_rtt {
-	font-weight: bold;
+    background-image: url('/images/icon_rtt.gif');
+    background-position: 75px 4px;
+    background-repeat: no-repeat;
 }
+
 #key {
 	font-style: normal;
 	float: right;
@@ -91,6 +94,10 @@ h3 {
 #closed .color_box {
 	background: url('/images/theatre_closed.png');
 }
+
+#outside_rtt .color_box {
+    background: url('/images/icon_rtt.gif') top left no-repeat;
+}
 #selected_date .color_box {
 	border: 2px solid red;
 	padding: -2px;
@@ -101,8 +108,8 @@ h3 {
 #calendar table {
 	clear: both;
 }
-#calendar table td.available, #calendar table td.limited, 
-#calendar table td.full, #calendar table td.closed, 
+#calendar table td.available, #calendar table td.limited,
+#calendar table td.full, #calendar table td.closed,
 #calendar table td.invalid {
 	height: 30px;
 	width: 90px;
@@ -193,7 +200,7 @@ h3 {
 }
 
 span.button {
-	background: url('/images/button_blue_left.png') no-repeat top left; 
+	background: url('/images/button_blue_left.png') no-repeat top left;
 	display:inline-block;
 	padding-left: 10px; /* sliding doors padding */
 	cursor: pointer;
@@ -225,19 +232,19 @@ input.form_button[disabled] {
 	font-weight: normal;
 }
 
-input.form_button[type="submit"]::-moz-focus-inner, input.form_button[type="button"]::-moz-focus-inner {   
+input.form_button[type="submit"]::-moz-focus-inner, input.form_button[type="button"]::-moz-focus-inner {
 	border: 0px;
-} 
+}
 
-input.form_button[type="submit"]:focus, input.form_button[type="button"]:focus{     
-	outline: none; 
+input.form_button[type="submit"]:focus, input.form_button[type="button"]:focus{
+	outline: none;
 }
 
 #calendar {
 	background: #e8f0f8; /* for non-css3 browsers */
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e8f0f8'); /* for IE */
 	background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#e8f0f8)); /* for webkit browsers */
-	background: -moz-linear-gradient(top,  #ffffff,  #e8f0f8); /* for firefox 3.6+ */ 
+	background: -moz-linear-gradient(top,  #ffffff,  #e8f0f8); /* for firefox 3.6+ */
 }
 
 #box_grey_gradient_top {

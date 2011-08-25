@@ -32,9 +32,6 @@ if (empty($model->event_id)) {
 	$diagnosis = $model;
 }
 
-//var_dump($eye);
-//exit;
-
 ?>
 <div class="box_grey_big_gradient_top"></div>
 <div class="box_grey_big_gradient_bottom">
@@ -46,14 +43,13 @@ if (empty($model->event_id)) {
 	<div class="label">Enter diagnosis:</div>
 	<div class="data"><span></span>
 <?php
-
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
     'name'=>'ElementDiagnosis[disorder_id]',
     'id'=>'ElementDiagnosis_disorder_id_0',
     'value'=>$value,
     'sourceUrl'=>array('disorder/autocomplete'),
     'htmlOptions'=>array(
-        'style'=>'height:20px;width:400px;'
+        'style'=>'height:20px;width:400px;font:10pt Arial;'
     ),
 ));
 ?></div><!--<span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a disorder into the <strong>add disorder</strong> text box. When you see the required disorder displayed - <strong>click</strong> to select.</span></a></span>-->

@@ -1,3 +1,5 @@
+<?php
+Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div class="heading">
 <span class="emphasize">Book Operation:</span> Operation details
 </div>
@@ -9,8 +11,6 @@
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
 	<div class="data"><span></span><?php
-	Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	'name'=>'procedure_id',
 	'source'=>"js:function(request, response) {
@@ -52,6 +52,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
 					$('#procedure_list').show();
+					$('#procedureDiv').show();
 
 					// update total duration
 					var totalDuration = 0;
@@ -80,11 +81,14 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			});
 		}",
 	),
+	'htmlOptions'=>array('style'=>'width: 400px;')
 )); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
 	<div class="cleartall"></div>
-	<div>
+	<div id="procedureDiv"<?php
+	if ($newRecord) { ?> style="display:none;"<?php
+	} ?>>
 		<table id="procedure_list" class="grid"<?php
-	if ($model->isNewRecord) { ?> style="display:none;"<?php
+	if ($newRecord) { ?> style="display:none;"<?php
 	} ?> title="Procedure List">
 			<thead>
 				<tr>
@@ -98,7 +102,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	if (!empty($model->procedures)) {
 		foreach ($model->procedures as $procedure) {
 			$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
-				' ' . CHtml::link('remove', '#', array('onClick' => "js:removeProcedure(this);"));
+				' ' . CHtml::link('remove', '#',
+				array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
 			$totalDuration += $procedure['default_duration']; ?>
 				<tr>
 					<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
@@ -120,8 +125,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tfoot>
 		</table>
 	</div>
-
-<?php
+	<?php
 $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	'panels'=>array(
 		'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
@@ -143,12 +147,24 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?></div>
 	<div class="cleartall"></div>
 	<div class="label">Anaesthetic type:</div>
-	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'anaesthetic_type',
-		$model->getAnaestheticOptions(), array('separator' => ' &nbsp; ')); ?></div>
+	<div class="data"><?php
+		$i = 0;
+		foreach ($model->getAnaestheticOptions() as $id => $value) { ?>
+		<input id="ElementOperation_anaesthetic_type_<?php echo $i; ?>"<?php
+			if ($model->anaesthetic_type == $id) {
+				echo 'checked="checked"';
+			} ?>value="<?php echo $id; ?>" type="radio" name="ElementOperation[anaesthetic_type]">
+		<label for="ElementOperation_anaesthetic_type_<?php echo $i; ?>"><?php echo $value; ?></label>
+<?php		if ($i == 3) {
+				echo '<br />';
+			}
+			$i++;
+		}
+		?></div>
 	<div class="cleartall"></div>
 	<div class="label">Overnight Stay required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay',
-		$model->getOvernightOptions(), array('separator' => ' &nbsp; ')); ?></div>
+		$model->getOvernightOptions(), array('separator' => ' ')); ?></div>
 	<div class="cleartall"></div>
 	<div class="label">Decision Date:</div>
 	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -228,5 +244,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		$('#ElementOperation_total_duration').val(totalDuration);
 
 		$(row).parents('tr').remove();
+
+		return false;
 	};
 </script>

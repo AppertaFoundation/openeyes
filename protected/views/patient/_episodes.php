@@ -56,12 +56,12 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			});
 		}
 	});
-	$('#add_episode').hover(
-		function() {
-			$('#episode_types').slideDown({'duration':75});
-		},
-		function() {
+	$('#add_episode').click(function() {
+		if ($('#episode_types').is(':visible')) {
 			$('#episode_types').hide();
+		} else {
+			$('#episode_types').slideDown({'duration':75});
+		}
 	});
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
