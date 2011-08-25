@@ -30,7 +30,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 		</tbody>
 		<tfoot>
 			<tr>
-				<td>Estimated Duration of Procedures:</td>
+				<td class="topPadded">Estimated Duration of Procedures:</td>
 				<td id="projected_duration"><?php echo $totalDuration; ?></td>
 			</tr>
 			<tr>
