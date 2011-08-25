@@ -69,7 +69,7 @@
  * @property MUUIDNHSOrganisationNamesTable $mUUIDStaffNHSOrganisationName
  * @property MUUIDMoorfieldsSitesTable $mUUIDStaffMoorfieldsSite
  */
-class MUUIDStaffTable extends CActiveRecord
+class MUUIDStaffTable extends MultiActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
