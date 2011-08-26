@@ -70,8 +70,8 @@ foreach ($specialties as $specialty) {
 
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
-					$('#procedure_list').show();
 					$('#procedureDiv').show();
+					$('#procedure_list').show();
 
 					// update total duration
 					var totalDuration = 0;
