@@ -22,6 +22,7 @@ li.ui-state-default a {
     background: transparent url('/images/tab_unselected_left.png') no-repeat !important;
     display: block;
     padding: 10px 0 3px 20px !important;
+    color: #02172c !important;
 }
 
 li.ui-tabs-selected {
