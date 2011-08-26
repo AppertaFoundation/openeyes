@@ -77,6 +77,16 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 	<?php echo CHtml::encode($data->getBooleanText('overnight_stay')); ?>
 	<br />
 </div>
+<?php
+	if (!empty($data->booking)) { ?>
+<div class="view">
+	<b><?php echo CHtml::encode('Ward'); ?>:</b>
+	<?php echo CHtml::encode($data->booking->ward->name); ?>
+	<br />
+</div>
+<?php
+	}
+	?>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('schedule_timeframe')); ?>:</b>
 	<?php echo CHtml::encode($data->getScheduleText()); ?>
