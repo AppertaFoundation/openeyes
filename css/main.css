@@ -728,16 +728,17 @@ form.sliding div.data span, form.sliding td span, form.sliding div.row span {
 .tooltip a:hover span {
 	display: block;
 	position: absolute;
-	width: 203px;
+	width: 359px;
 	background: transparent url('/images/tooltip_background.png') top left no-repeat;
-	height: 85px;
-	left: 40px;
-	top: -40px;
+	height: 35px;
+	left: -330px;
+	top: 10px;
 	color: #333;
 	font-size: 8pt;
 	padding: 15px;
-	padding-left: 45px;
+    padding-top: 20px;
 	text-decoration: none;
+    z-index: 100;
 }
 
 #box_gradient_top {

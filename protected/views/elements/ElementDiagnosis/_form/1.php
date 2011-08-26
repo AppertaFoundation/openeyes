@@ -52,5 +52,5 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
         'style'=>'height:20px;width:400px;font:10pt Arial;'
     ),
 ));
-?></div><!--<span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a disorder into the <strong>add disorder</strong> text box. When you see the required disorder displayed - <strong>click</strong> to select.</span></a></span>-->
+?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a disorder into the <strong>enter diagnosis</strong> text box. When you see the required disorder displayed - <strong>click</strong> to select.</span></a></span>
 </div>
