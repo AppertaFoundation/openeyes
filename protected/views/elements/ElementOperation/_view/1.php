@@ -116,5 +116,6 @@ if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
 	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
 } ?>
 <script type="text/javascript">
+	$('#procedureDiv').show();
 	$('#procedure_list').show();
 </script>

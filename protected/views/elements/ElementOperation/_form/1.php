@@ -51,8 +51,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					// @todo: if 'both' eyes are selected, then the duration should be x2
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
-					$('#procedure_list').show();
 					$('#procedureDiv').show();
+					$('#procedure_list').show();
 
 					// update total duration
 					var totalDuration = 0;

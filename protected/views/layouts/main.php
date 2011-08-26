@@ -22,7 +22,7 @@
 <div class="container" id="page">
 
 	<div id="header">
-		<div id="logo"><img src="/images/logo_colour.png" alt="OpenEyes Logo" /></div>
+		<div id="logo"><a href="/site/index"><img src="/images/logo_colour.png" alt="OpenEyes Logo" /></a></div>
 
 		<?php echo $this->renderPartial('//base/_form', array()); ?>
 	</div><!-- header -->
