@@ -18,7 +18,8 @@ class Ward extends CActiveRecord
 	const RESTRICTION_FEMALE = 2;
 	const RESTRICTION_UNDER_16 = 4;
 	const RESTRICTION_ATLEAST_16 = 8;
-	
+	const RESTRICTION_OBSERVATION = 16;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Ward the static model class
