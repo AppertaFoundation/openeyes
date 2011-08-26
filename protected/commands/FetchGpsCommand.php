@@ -13,6 +13,11 @@ class FetchGpsCommand extends CConsoleCommand
 
 	public function run($args)
 	{
+		if (!Yii::app()->params['use_pas']) {
+			echo("For this script to run use_pas must be set to true in one of the config files, e.g. params.php\n");
+			exit;
+		}
+
 		echo "Fetching GPs from PAS...\n";
 
 		$service = new GpService;
