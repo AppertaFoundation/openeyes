@@ -453,3 +453,7 @@ span#dateSelected span.highlighted, span#timeSelected span.highlighted {
     font-weight: bold;
     text-transform: uppercase;
 }
+
+.ui-autocomplete li.ui-menu-item a {
+    font: 10pt Arial;
+}
