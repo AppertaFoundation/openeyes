@@ -501,6 +501,14 @@ h3.element_letterout {
     width: 584px;
 }
 
+#patient-adv-search label {
+    font: 11pt Arial;
+}
+
+#patient-adv-search .ui-accordion-content {
+    padding-bottom: 30px;
+}
+
 #patient-list {
     display:none;
     background: #FFF;
