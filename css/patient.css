@@ -199,11 +199,21 @@ ul.ui-tabs-nav * {
 
 #add_episode li.header {
     color: #333;
+    background: #ECECEC;
+    margin-left: -20px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    font: normal 11pt Arial;
 }
 
 #add_episode li a {
     text-decoration: none;
-    padding-left: 5px;
+    padding: 3px 5px;
+    font: bold 11pt Arial;
+}
+
+#add_episode li a span {
+    padding: 3px 5px;
     vertical-align: top;
 }
 
