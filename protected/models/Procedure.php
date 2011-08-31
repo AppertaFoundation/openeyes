@@ -105,22 +105,23 @@ class Procedure extends BaseActiveRecord
 	/**
 	 * Get a list of procedures
 	 * Store extra data for the session
-	 * 
+	 *
 	 * @param string  $term          term to search by
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function getList($term)
 	{
 		$search = "{$term}%";
-		
+
 		$select = 'term, short_format, id, default_duration';
-		
+
 		$procedures = Yii::app()->db->createCommand()
 			->select($select)
 			->from('procedure')
-			->where('term LIKE :term OR short_format LIKE :format', 
+			->where('term LIKE :term OR short_format LIKE :format',
 				array(':term'=>$search, ':format'=>$search))
+			->limit(5)
 			->queryAll();
 
 		$data = array();
@@ -135,9 +136,9 @@ class Procedure extends BaseActiveRecord
 				'duration' => $procedure['default_duration'],
 			);
 		}
-		
+
 		Yii::app()->session['Procedures'] = $session;
-		
+
 		return $data;
 	}
 }
