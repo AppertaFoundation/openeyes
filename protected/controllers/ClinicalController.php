@@ -159,7 +159,8 @@ class ClinicalController extends BaseController
 				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
 					$this->redirect(array('chooseReferral', 'id' => $eraId));
 				} elseif (!empty($_POST['scheduleNow'])) {
-					$this->redirect(array('booking/schedule', 'operation' => $eventId));
+					$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
+					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 				} else {
 					$this->redirect(array('patient/view',
 						'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));

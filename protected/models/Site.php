@@ -88,7 +88,7 @@ class Site extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	/**
 	 * Fetch an array of site IDs and names
 	 * @return array
@@ -97,11 +97,11 @@ class Site extends BaseActiveRecord
 	{
 		$list = Site::model()->findAll();
 		$result = array();
-		
+
 		foreach ($list as $site) {
-			$result[$site->id] = $site->name;
+			$result[$site->id] = $site->short_name;
 		}
-		
+
 		return $result;
 	}
 }
