@@ -3,8 +3,6 @@
 // @todo - by default, show the most recent episode for the firm's specialty. not the most recent episode, even after adding a new event. FIX THIS SHARPISH!
 // @todo - add logging for deletion on an event in the admin area
 // @todo - for that matter create an admin script for deleting events!
-// @todo - if an event isn't created or updated succsessfully it doesn't display the form correctly again - there is no layout. Fix.
-//	TEMPRORARILY - make diagnoses like procedures, in that only a valid diagnosis can be a diagnosis.
 // @todo - what are we to do about the fact that episodes can't be closed? Operations will be put in the same episode forever!
 // @todo - make fancyboxes appear a fixed distance from the top of the screeen? This will save having to scroll down when boxes expand,
 //	e.g. booking an operation.
