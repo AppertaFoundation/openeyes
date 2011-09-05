@@ -54,3 +54,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 ));
 ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a disorder into the <strong>enter diagnosis</strong> text box. When you see the required disorder displayed - <strong>click</strong> to select.</span></a></span>
 </div>
+<script type="text/javascript">
+	$('input[name="ElementDiagnosis[eye]"]').click(function() {
+		var disorder = $('input[name="ElementDiagnosis[disorder_id]"]').val();
+		if (disorder.length == 0) {
+			$('input[name="ElementDiagnosis[disorder_id]"]').focus();
+		}
+	});
+</script>

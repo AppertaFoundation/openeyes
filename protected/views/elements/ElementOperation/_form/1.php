@@ -247,4 +247,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 
 		return false;
 	};
+	$('input[name="ElementOperation[eye]"]').click(function() {
+		if ($('input[name="Procedures[]"]').length == 0) {
+			$('input[id="procedure_id"]').focus();
+		}
+	});
 </script>
