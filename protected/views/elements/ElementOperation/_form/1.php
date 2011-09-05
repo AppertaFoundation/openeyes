@@ -231,8 +231,8 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	});
 	function removeProcedure(row) {
 		var duration = $(row).parent().siblings('td').text();
-		var projectedDuration = Number($('#projected_duration').text()) - duration;
-		var totalDuration = Number($('#ElementOperation_total_duration').val()) - duration;
+		var projectedDuration = Number($('#fancybox-content #projected_duration').text()) - duration;
+		var totalDuration = Number($('#fancybox-content #ElementOperation_total_duration').val()) - duration;
 
 		if (projectedDuration < 0) {
 			projectedDuration = 0;
@@ -240,8 +240,8 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 		if (totalDuration < 0) {
 			totalDuration = 0;
 		}
-		$('#projected_duration').text(projectedDuration);
-		$('#ElementOperation_total_duration').val(totalDuration);
+		$('#fancybox-content #projected_duration').text(projectedDuration);
+		$('#fancybox-content #ElementOperation_total_duration').val(totalDuration);
 
 		$(row).parents('tr').remove();
 
