@@ -5,12 +5,12 @@ Yii::import('application.controllers.*');
 class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
-	
+
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	
+
 	public function accessRules()
 	{
 		return array(
@@ -18,7 +18,7 @@ class PatientController extends BaseController
 				'users'=>array('@')
 			),
 			// non-logged in can't view anything
-			array('deny', 
+			array('deny',
 				'users'=>array('?')
 			),
 		);
@@ -42,7 +42,7 @@ class PatientController extends BaseController
 	{
 // @todo - do actionViewByHosHum and actionView need to be separate methods? Is this method used directly any more?
 		$patient = $this->loadModel($id);
-		
+
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
@@ -55,7 +55,7 @@ class PatientController extends BaseController
 		$this->logActivity('viewed patient');
 
 		$this->render('view', array(
-			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 
+			'model' => $patient, 'tab' => $tabId, 'event' => $eventId,
 		));
 	}
 
@@ -135,12 +135,12 @@ class PatientController extends BaseController
 			'model' => $model,
 		));
 	}
-	
+
 	public function actionSummary()
 	{
 		$patient = $this->loadModel($_GET['id']);
 		$address = Address::model()->findByPk($patient->address_id);
-		
+
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $patient->id);
 		$criteria->order = 'start_date DESC';
@@ -148,23 +148,23 @@ class PatientController extends BaseController
 
 		$dataProvider = new CActiveDataProvider('Episode', array(
 			'criteria'=>$criteria));
-		
-		$this->renderPartial('_summary', 
+
+		$this->renderPartial('_summary',
 			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
 	}
-	
+
 	public function actionEpisodes()
 	{
 		$patient = $this->loadModel($_GET['id']);
 		$event = !empty($_GET['event']) ? $_GET['event'] : false;
-		
+
 		$firm = Firm::model()->findByPk($this->selectedFirmId);
-		
+
 		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
 		$eventTypes = EventType::model()->getAllPossible($specialtyId);
-		
+
 		$typeGroups = $this->getEventTypeGrouping();
-	
+
 		foreach ($eventTypes as $eventType) {
 			foreach ($typeGroups as $name => $group) {
 				if (in_array($eventType->name, $group)) {
@@ -172,20 +172,20 @@ class PatientController extends BaseController
 				}
 			}
 		}
-	
+
 		$eventId = isset($_REQUEST['eventId']) ? $_REQUEST['eventId'] : null;
-	
-		$this->renderPartial('_episodes', 
-			array('model'=>$patient, 'episodes'=>$patient->episodes, 
+
+		$this->renderPartial('_episodes',
+			array('model'=>$patient, 'episodes'=>$patient->episodes,
 				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
 	}
-	
+
 	public function actionContacts()
 	{
 		$patient = $this->loadModel($_GET['id']);
 		$this->renderPartial('_contacts', array('model'=>$patient));
 	}
-	
+
 	public function actionCorrespondence()
 	{
 		$patient = $this->loadModel($_GET['id']);
@@ -216,12 +216,12 @@ class PatientController extends BaseController
 			Yii::app()->end();
 		}
 	}
-	
+
 	protected function getEventTypeGrouping()
 	{
 		return array(
 			'Examination' => array('visual fields', 'examination', 'question', 'outcome'),
-			'Imaging & Surgery' => array('oct', 'laser', 'operation'),
+			'Treatments' => array('oct', 'laser', 'operation'),
 			'Correspondence' => array('letterin', 'letterout'),
 			'Consent Forms' => array(''),
 		);
@@ -230,7 +230,7 @@ class PatientController extends BaseController
 	/**
 	 * Perform a search on a model and return the results
 	 * (separate function for unit testing)
-	 * 
+	 *
 	 * @param array $data   form data of search terms
 	 * @return dataProvider
 	 */
