@@ -46,7 +46,7 @@ if (empty($theatres)) { ?>
                     if ($lastSession['timeAvailable'] < 0) {
                         echo ' class="full"';
                     }
-                    echo ">{$lastSession['timeAvailable']}"; ?>min</span></th>
+                    echo ">{$lastSession['timeAvailable']}"; ?> min</span></th>
     </tr>
 <?php                $lastSession = $session;
                 } ?>
@@ -69,7 +69,7 @@ if (empty($theatres)) { ?>
                     if ($session['timeAvailable'] < 0) {
                        echo ' class="full"';
                     }
-                    echo ">{$session['timeAvailable']}"; ?>min</span></th>
+                    echo ">{$session['timeAvailable']}"; ?> min</span></th>
     </tr>
     </table>
 </div>
