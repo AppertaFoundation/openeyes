@@ -2,7 +2,7 @@
 class PatientTest extends CDbTestCase
 {
 	public $model;
-	
+
 	public $fixtures = array(
 		'patients' => 'Patient',
 		'addresses' => 'Address'
@@ -30,21 +30,21 @@ class PatientTest extends CDbTestCase
 
 		);
 	}
-	
+
 	public function setUp()
 	{
 		parent::setUp();
 		$this->model = new Patient;
 	}
-	
+
 	public function testModel()
 	{
 		$this->assertEquals('Patient', get_class(Patient::model()), 'Class name should match model.');
 	}
-	
+
 	public function testAttributeLabels()
 	{
-		$expected = array(                                                                                                                         
+		$expected = array(
 			'id' => 'ID',
 			'pas_key' => 'PAS Key',
 			'title' => 'Title',
@@ -57,7 +57,7 @@ class PatientTest extends CDbTestCase
 			'primary_phone' => 'Primary Phone',
 			'address_id' => 'Address'
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
@@ -89,7 +89,7 @@ class PatientTest extends CDbTestCase
 	public function testPseudoData_ParamSetOn_RandomizesData($data)
 	{
 		Yii::app()->params['pseudonymise_patient_details'] = true;
-		
+
 		$patient = new Patient;
 		$patient->setAttributes($data);
 		$patient->save();
@@ -103,11 +103,11 @@ class PatientTest extends CDbTestCase
 		$this->assertNotNull($patient->hos_num);
 		$this->assertEquals($patient->hos_num, $data['hos_num']);
 	}
-	
+
 	public function testRandomData_ParamSetOff_ReturnsFalse()
 	{
 		Yii::app()->params['pseudonymise_patient_details'] = false;
-		
+
 		$attributes = array(
 			'hos_num' => 5550101,
 			'first_name' => 'Rod',
@@ -116,16 +116,18 @@ class PatientTest extends CDbTestCase
 			'title' => 'MR',
 			'primary_phone' => '0208 1111111',
 			'address_id' => 1);
-		
+
 		$patient = new Patient;
 		$patient->setAttributes($attributes);
 		$patient->save();
-		
+
 		$this->assertEquals($attributes['first_name'], $patient->first_name, 'Data should not have changed.');
 	}
-	
+
 	public function testGetAge_ReturnsCorrectValue()
 	{
+		Yii::app()->params['pseudonymise_patient_details'] = false;
+
 		$attributes = array(
 			'hos_num' => 5550101,
 			'first_name' => 'Rod',
@@ -134,16 +136,16 @@ class PatientTest extends CDbTestCase
 			'title' => 'MR',
 			'primary_phone' => '0208 1111111',
 			'address_id' => 1);
-		
+
 		$patient = new Patient;
 		$patient->setAttributes($attributes);
 		$patient->save();
-		
+
 		$age = date('Y') - 1979;
 		if (date('md') < '0908') {
 			$age--; // have not had a birthday yet
 		}
-		
+
 		$this->assertEquals($age, $patient->getAge());
 	}
 }
