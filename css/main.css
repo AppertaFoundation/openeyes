@@ -36,8 +36,8 @@ a {
     border-top: 0px;
     border-bottom: 0px;
     margin: 0 4px;
-    background: url('/images/background_content.png') no-repeat #ccdded;
-    min-height: 316px;
+    background: url('/images/background_content.png') top left no-repeat #dae6f2;
+    min-height: 336px;
     padding-top: 40px;
     padding-left: 20px;
     padding-right: 20px;
@@ -52,7 +52,7 @@ a {
 {
     font-size: 0.8em;
     text-align: center;
-    background: url('/images/background_footer.png');
+    background: url('/images/background_footer.png') top left no-repeat;
     min-height: 110px;
     padding-top: 10px;
 }
