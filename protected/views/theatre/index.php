@@ -31,8 +31,13 @@ $cs->registerCSSFile('/css/theatre.css', 'all');
 			'data'=>array('service_id'=>'js:this.value'),
 			'url'=>Yii::app()->createUrl('theatre/filterFirms'),
 			'success'=>"js:function(data) {
-				$('#firm-id').attr('disabled', false);
-				$('#firm-id').html(data);
+				if ($('#service-id').val() != '') {
+					$('#firm-id').attr('disabled', false);
+					$('#firm-id').html(data);
+				} else {
+					$('#firm-id').attr('disabled', true);
+					$('#firm-id').html(data);
+				}
 			}",
 		))); ?></td>
 		<td><?php
