@@ -2,7 +2,6 @@
 Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div id="box_gradient_top"></div>
 <div id="box_gradient_bottom">
-<h3>Summary</h3>
 <div class="details" id="personal_details">
 	<h3>Personal Details:</h3>
 	<div class="data_row">
