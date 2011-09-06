@@ -17,10 +17,15 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		<div class="data_value">
 <?php
 	if (!empty($address)) {
-		$fields = $address->getAttributes();
-		unset($fields['id'], $fields['country_id']);
+		$fields = array(
+			'address1' => $address->address1,
+			'address2' => $address->address2,
+			'city' => $address->city,
+			'county' => $address->county,
+			'postcode' => $address->postcode);
 		$addressList = array_filter($fields, 'filter_nulls');
 
+		$numLines = 1;
 		foreach ($addressList as $name => $string) {
 			if ($name === 'postcode') {
 				$string = strtoupper($string);
@@ -28,9 +33,14 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			if ($name != 'email') {
 				echo $string;
 			}
-			if ($string != end($addressList)) {
+			if (!empty($string) && $string != end($addressList)) {
 				echo '<br />';
 			}
+			$numLines++;
+		}
+		// display extra blank lines if needed for padding
+		for ($numLines; $numLines <= 5; $numLines++) {
+			echo '<br />';
 		}
 	} else {
 		echo 'Unknonwn';
