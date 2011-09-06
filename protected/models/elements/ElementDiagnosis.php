@@ -108,8 +108,8 @@ class ElementDiagnosis extends BaseElement
 	public function getEyeOptions()
 	{
 		return array(
-			self::EYE_LEFT => 'Left',
 			self::EYE_RIGHT => 'Right',
+			self::EYE_LEFT => 'Left',
 			self::EYE_BOTH => 'Both',
 		);
 	}

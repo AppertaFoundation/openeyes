@@ -242,8 +242,8 @@ class ElementOperationTest extends CDbTestCase
 	public function testGetEyeOptions()
 	{
 		$expected = array(
-			ElementOperation::EYE_LEFT => 'Left',
 			ElementOperation::EYE_RIGHT => 'Right',
+			ElementOperation::EYE_LEFT => 'Left',
 			ElementOperation::EYE_BOTH => 'Both',
 		);
 		$this->assertEquals($expected, $this->element->getEyeOptions());
@@ -1255,7 +1255,7 @@ class ElementOperationTest extends CDbTestCase
 	public function testGetWardOptions_ValidSiteId_ReturnsCorrectWard($patientAge, $patientGender, $wardList)
 	{
 		Yii::app()->params['pseudonymise_patient_details'] = false;
-		
+
 		$operation = $this->elements('element1');
 
 		$patient = $this->patients('patient1');

@@ -121,11 +121,15 @@ class Patient extends BaseActiveRecord
 		}
 		return parent::beforeSave();
 	}
-	
+
 	public function getAge()
 	{
-		$dobTime = strtotime($this->dob);
-		return floor((time() - $dobTime) / 60 / 60 / 24 / 365);
+		$age = date('Y') - substr($this->dob, 0, 4);
+		$birthDate = substr($this->dob, 5, 2) . substr($this->dob, 8, 2);
+		if (date('md') < $birthDate) {
+			$age--; // birthday hasn't happened yet this year
+		}
+		return $age;
 	}
 
 	private function randomData($field)

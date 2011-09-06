@@ -6,39 +6,20 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 	<strong><?php echo $data->getEyeLabelText(); ?></strong>
 	<?php echo $data->getEyeText(); ?>
 </div>
-<div class="view">
-	<table id="procedure_list" class="grid" title="Procedure List">
-		<thead>
-			<tr>
-				<th>Procedures</th>
-				<th>Duration</th>
-			</tr>
-		</thead>
-		<tbody>
+<div class="view"><strong>Procedures:</strong><br />
 <?php
 	$totalDuration = 0;
 	if (!empty($data->procedures)) {
 		foreach ($data->procedures as $procedure) {
 			$totalDuration += $procedure->default_duration;
-			$display = "{$procedure->term} - {$procedure['short_format']}"; ?>
-			<tr>
-				<td><?php echo $display; ?></td>
-				<td><?php echo $procedure->default_duration; ?></td>
-			</tr>
-<?php	}
+
+			echo "{$procedure->short_format} ({$procedure->default_duration} minutes)<br />";
+		} ?>
+	<p/>
+	<p>Calculated Total Duration: <?php echo $totalDuration; ?> min</p>
+	<p>Estimated Total Duration: <?php echo $data->total_duration; ?> min</p>
+<?php
 	} ?>
-		</tbody>
-		<tfoot>
-			<tr>
-				<td class="topPadded">Estimated Duration of Procedures:</td>
-				<td id="projected_duration"><?php echo $totalDuration; ?></td>
-			</tr>
-			<tr>
-				<td>Estimated Total:</td>
-				<td><?php echo $data->total_duration; ?></td>
-			</tr>
-		</tfoot>
-	</table>
 </div>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('decision_date')); ?>:</b>
