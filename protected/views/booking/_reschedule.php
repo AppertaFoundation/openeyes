@@ -12,7 +12,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 <div class="flash-error">
     <?php echo Yii::app()->user->getFlash('info'); ?>
 </div>
-<?php 
+<?php
 } ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
 	<p><strong>Current schedule:</strong></p>
@@ -21,7 +21,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 	<div id="calendar">
 		<div id="session_dates">
 		<div id="details">
-<?php	echo $this->renderPartial('_calendar', 
+<?php	echo $this->renderPartial('_calendar',
 			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions), false, true); ?>
 		</div>
 		</div>
@@ -88,6 +88,12 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 						$('#bookings').remove();
 					}
 					$( "#theatres" ).tabs();
+					if ($('#theatres div.shinybutton').length == 1) {
+						var button = $('#theatres div.shinybutton');
+						var session = button.children().children('span.session_id').text();
+						button.addClass('highlighted');
+						showTheatreList(operation, month, day, session);
+					}
 				}
 			});
 		});
@@ -98,24 +104,27 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			var day = $('.selected_date').text();
 			$(this).siblings().removeClass('highlighted');
 			$(this).addClass('highlighted');
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
-				'type': 'GET',
-				'data': {
-					'operation': operation,
-					'month': month,
-					'day': day,
-					'session': session,
-					'reschedule': true
-				},
-				'success': function(data) {
-					if ($('#bookings').length == 0) {
-						$('#operation').append(data);
-					} else {
-						$('#bookings').replaceWith(data);
-					}
-				}
-			});
+			showTheatreList(operation, month, day, session);
 		});
 	});
+
+	function showTheatreList(operation, month, day, session) {
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
+			'type': 'GET',
+			'data': {
+				'operation': operation,
+				'month': month,
+				'day': day,
+				'session': session,
+			},
+			'success': function(data) {
+				if ($('#bookings').length == 0) {
+					$('#operation').append(data);
+				} else {
+					$('#bookings').replaceWith(data);
+				}
+			}
+		});
+	}
 </script>
