@@ -26,17 +26,17 @@ class SiteController extends BaseController
 			),
 		);
 	}
-	
+
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	
+
 	public function accessRules()
 	{
 		return array(
 			// non-logged in can't view index or logout
-			array('deny', 
+			array('deny',
 				'actions'=>array('index', 'logout'),
 				'users'=>array('?')
 			),
@@ -117,7 +117,7 @@ class SiteController extends BaseController
 		$this->render('login',
 			array(
 				'model'=>$model,
-				'sites' => CHtml::listData($sites, 'id', 'name')
+				'sites' => CHtml::listData($sites, 'id', 'short_name')
 			)
 		);
 	}
