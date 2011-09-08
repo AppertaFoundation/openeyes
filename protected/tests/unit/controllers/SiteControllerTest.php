@@ -134,14 +134,14 @@ class SiteControllerTest extends CDbTestCase
 			->method('render');
 		$mockController->actionIndex();
 	}
-	
+
 	public function testActionIndex_LoggedIn_RendersIndexView()
 	{
 		$userInfo = $this->users['user1'];
 		$identity = new UserIdentity('JoeBloggs', 'secret');
 		$identity->authenticate();
-		Yii::app()->user->login($identity);	
-		
+		Yii::app()->user->login($identity);
+
 		$mockController = $this->getMock('SiteController', array('render', 'redirect'),
 			array('SiteController'));
 		$mockController->expects($this->once())
@@ -195,7 +195,7 @@ class SiteControllerTest extends CDbTestCase
 			->method('render')
 			->with('login', array(
 				'model' => $model,
-				'sites' => CHtml::listData($this->sites, 'id', 'name')
+				'sites' => CHtml::listData($this->sites, 'id', 'short_name')
 			)
 		);
 
