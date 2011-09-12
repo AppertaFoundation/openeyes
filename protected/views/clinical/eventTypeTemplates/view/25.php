@@ -72,7 +72,7 @@ if ($patient->getAge() < 16) {
 }
 
 if ($isAdult) {
-	$dear = "Dear " . $patient->first_name . " " . $patient->last_name . ",</p>";
+	$dear = "Dear " . $patient->title . " " . $patient->last_name . ",</p>";
 } else {
 	$dear = "Dear SUBSITUTE NAME OF GUARDIAN,</p>";
 }
@@ -122,10 +122,10 @@ leave a message and contact number on the answer phone.
 
 		if ($isAdult) {
 			// Adult letter
-			$details = "<br /><br /><b>Date of admission: " . $operation->booking->session->date . "<br />\n";
-			$details .= "Time to arrive: " . $operation->booking->session->start_time . "<br />\n";
-			$details .= "Date of surgery: " . $operation->booking->session->date . "<br />\n";
-			$details .= "Ward: " . $operation->booking->ward->name . "<br />\n";
+			$details = "<br /><br /><b>Date of admission: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
+			$details .= "Time to arrive: " . $this->convertTime($operation->booking->session->start_time) . "<br />\n";
+			$details .= "Date of surgery: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
+			$details .= "Ward: " . $operation->booking->ward->name . ", " . $operation->booking->ward->site->name . "<br />\n";
 			$details .= "Situation<br />\n";
 			$details .= "You will be discharged from hospital on the same day.</b><br /><br />\n";
 
@@ -140,10 +140,10 @@ leave a message and contact number on the answer phone.
 				$content .= $operation->getPhrase('Admission Department');
 				$content .= " on ";
 				$content .= $operation->getPhrase('Change Tel');
-				$content .= ".<br /><br />.";
+				$content .= ".<br /><br />";
 			} else {
 				// Non reschedule letter
-				$content .= "On behalf of ";
+				$content = "On behalf of ";
 				$content .= $operation->getPhrase('Consultant');
 				$content .= ", I am delighted to confirm the date of your operation. The details are:";
 				$content .= $details;
@@ -152,14 +152,14 @@ leave a message and contact number on the answer phone.
 				$content .= $operation->getPhrase('Change Contact Admission Coordinator');
 				$content .= " on ";
 				$content .= $operation->getPhrase('Change Tel');
-				$content .= ".<br /><br />.";
+				$content .= ".<br /><br />";
 			}
 
 			$content .= "Please let us know if you have any change in your general health that may affect your surgery.<br /><br />\n";
 			$content .= "If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.<br /><br />\n";
 			$content .= "To help ensure your admission proceeds smoothly, please follow these instructions:<br /><br />\n";
 			$content .= "<ul>\n";
-			$content .= "<li>Bring this letter with you on " . $operation->booking->session->date . "</li>\n";
+			$content .= "<li>Bring this letter with you on " . $this->convertDate($operation->booking->session->date) . "</li>\n";
 			$content .= "<li>Please complete the attached in-patient questionnaire and bring it with you.</li>\n";
 			$content .= "<li>Please go directly to " . $operation->booking->ward->name . " ward<li>\n";
 			$content .= "<li>Please bring with you any medication you are using</li>\n";
@@ -169,14 +169,14 @@ leave a message and contact number on the answer phone.
 		} else {
 			// Child letter
 			// @todo - deal with St George letters
-			$details = "<br /><br /><b>Date of admission: " . $operation->booking->session->date . "<br />\n";
-			$details .= "Time to arrive: " . $operation->booking->session->start_time . "<br />\n";
-			$details .= "Date of surgery: " . $operation->booking->session->date . "<br />\n";
+			$details = "<br /><br /><b>Date of admission: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
+			$details .= "Time to arrive: " . $this->convertTime($operation->booking->session->start_time) . "<br />\n";
+			$details .= "Date of surgery: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
 			if ($operation->booking->session->sequence->theatre_id == 1) {
 				// It's City Road
 				$details .= "Location: Richard Desmond's Children's Eye Centre (RDCEC)<br />\n";
 			} else {
-				$details .= "Ward: " . $operation->booking->ward->name . "<br />\n";
+				$details .= "Ward: " . $operation->booking->ward->name . ", " . $operation->booking->ward->site->name . "<br />\n";
 			}
 			$details .= "Situation<br />\n";
 			$details .= "You will be discharged from hospital on the same day.</b><br /><br />\n";
@@ -184,7 +184,7 @@ leave a message and contact number on the answer phone.
 			if ($operation->status == $operation::STATUS_RESCHEDULED) {
 				// It's a child reschedule letter
 				$content = "I am writing to inform you that the date for your child's eye operation has been changed from ";
-				$content .= $operation->cancelledBooking->date;
+				$content .= $this->convertDate($operation->cancelledBooking->date);
 				$content .= ". The details now are:";
 				$content .= $details;
 			} else {
@@ -196,7 +196,7 @@ leave a message and contact number on the answer phone.
 			$content .= "To ensure this admission proceeds smoothly, please follow these instructions.<br />\n";
 			$content .= "<ul>\n";
 			$content .= "<li><b>Please contact the Children's Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>\n";
-			$content .= "<li>Bring this letter with you on " . $operation->booking->session->date . "</li>\n";
+			$content .= "<li>Bring this letter with you on " . $this->convertDate($operation->booking->session->date) . "</li>\n";
 			$content .= "<li>Please complete the attached in-patient questionnaire and bring it with you</li>\n";
 			$content .= "<li>Please go directly to the Main Reception in the RDCEC at the time of your child's admission.<li>\n";
 			$content .= "</ul><br /><br />\n";
