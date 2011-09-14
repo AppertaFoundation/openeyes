@@ -42,8 +42,8 @@ No patients found.
 </div>
 <script type="text/javascript">
 	$('#findPatient').click(function() {
-		if (!$('#Patient_hos_num').val() && !$('#Patient_last_name').val()) {
-			$('#patient-search-error').html('Please enter either a hospital number or a surname.');
+		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
+			$('#patient-search-error').html('Please enter either a hospital number or a first name and surname.');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;

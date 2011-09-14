@@ -58,6 +58,7 @@ class Firm extends BaseActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
+		// @todo - how to express the link to the firm's one consultant
 		return array(
 			'serviceSpecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSpecialtyAssignment', 'service_specialty_assignment_id'),
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),

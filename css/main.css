@@ -694,6 +694,8 @@ button.shinybutton.highlighted {
 
 button.shinybutton.highlighted span {
 	background: transparent url('/images/button_blue_highlight_right.png') no-repeat top right;
+	margin-left: -3px;
+	margin-top: -2px;
 }
 
 form.sliding input[type="text"], form.sliding input[type="password"] {

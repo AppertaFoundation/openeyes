@@ -14,7 +14,8 @@ class GpService
 			exit("Unable to find GP contact type.\n");
 		}
 
-//		$results = PAS_Gp::model()->findAll(array('limit' => 10));
+// For testing - getting all the GPs is very slow.
+//		$results = PAS_Gp::model()->findAll(array('limit' => 100));
 		$results = PAS_Gp::model()->findAll();
 
 		if (!empty($results)) {
@@ -47,7 +48,7 @@ class GpService
 			
 					$contact = new Contact;
 
-					$contact->contact_type_id = $contactType->id;
+// @todo - remove the contact_type table? It may not be needed any more.
 					$contact->consultant = 0;
 					$contact->address_id = $address->id;
 

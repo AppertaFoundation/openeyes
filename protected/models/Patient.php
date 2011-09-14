@@ -100,8 +100,8 @@ class Patient extends BaseActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),true);
-		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),true);
+		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),false);
+		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),false);
 		$criteria->compare('dob',$this->dob,false);
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
@@ -109,6 +109,7 @@ class Patient extends BaseActiveRecord
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
+			'pagination' => array('pageSize' => PHP_INT_MAX)
 		));
 	}
 

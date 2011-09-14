@@ -440,4 +440,18 @@ class ClinicalController extends BaseController
 
 		return $template;
 	}
+
+	/**
+	 * Used by the booking event type template to format the date.
+	 */
+	// @todo - this is event type specific and shouldn't be here, move it somewhere else
+	public function convertDate($date)
+	{
+        	return date ('l jS F Y', strtotime($date));
+	}
+
+        public function convertTime($time)
+        {
+                return date ('G:i:s', strtotime( '-1 hour' , strtotime ($time)));
+        }
 }

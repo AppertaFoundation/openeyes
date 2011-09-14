@@ -61,7 +61,7 @@ class UserIdentity extends CUserIdentity
 				'useStartTls'		=> false,
 			);
 
-		    $ldap = $this->getLdap($options);
+			$ldap = $this->getLdap($options);
 
 			/**
 			 * Try and bind to the login details provided. This indicates if

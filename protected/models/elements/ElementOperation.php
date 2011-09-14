@@ -95,7 +95,8 @@ class ElementOperation extends BaseElement
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)', 'order' => 'display_order ASC'),
 			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id'),
-			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id')
+			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
+			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id')
 		);
 	}
 
