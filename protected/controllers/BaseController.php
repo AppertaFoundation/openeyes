@@ -23,10 +23,18 @@ class BaseController extends Controller
 	public function filterAccessControl($filterChain)
 	{
 		$rules = $this->accessRules();
-		
-		// default deny
-		$rules[] = array('deny', 'users'=>array('?'));
-		
+
+		if (Yii::app()->params['ab_testing']) {
+			$rules = array(
+				array('allow',
+					'users'=>array('@','?')
+				)
+			);
+		} else {
+			// default deny
+			$rules[] = array('deny', 'users'=>array('?'));
+		}
+
 		$filter = new CAccessControlFilter;
 		$filter->setRules($rules);
 		$filter->filter($filterChain);
@@ -36,7 +44,7 @@ class BaseController extends Controller
 	{
 		$app = Yii::app();
 
-		if (Yii::app()->params['ab_testing'] == 'yes') {
+		if (Yii::app()->params['ab_testing']) {
 			if (Yii::app()->user->isGuest) {
 				$identity=new UserIdentity('admin', 'admin');
 				$identity->authenticate();
@@ -65,7 +73,7 @@ class BaseController extends Controller
 	{
 		$app = Yii::app();
 
-		if (Yii::app()->params['ab_testing'] == 'yes') {
+		if (Yii::app()->params['ab_testing']) {
 			if (Yii::app()->user->isGuest) {
 				$identity=new UserIdentity('admin', 'admin');
 				$identity->authenticate();
