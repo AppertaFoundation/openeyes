@@ -100,8 +100,9 @@ class PatientController extends BaseController
 			$service = new PatientService;
 			$criteria = $service->search($this->collatePostData());
 
-	       		$dataProvider = new CActiveDataProvider('Patient', array(
-				'criteria' => $criteria
+			$dataProvider = new CActiveDataProvider('Patient', array(
+				'criteria' => $criteria,
+				'pagination' => array('pageSize' => PHP_INT_MAX)
 			));
 		} else {
 			$model->attributes = $this->collatePostData();

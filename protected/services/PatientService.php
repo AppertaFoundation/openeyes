@@ -45,14 +45,11 @@ class PatientService
 			$criteria->addCondition("TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = :dob");
 			$params[':dob'] = $data['dob'];
 		}
-		if (!empty($data['first_name'])) {
-			$criteria->addCondition("RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND (Name1 LIKE :first_name OR Name2 LIKE :first_name))");
-			$params[':first_name'] = "%{$data['first_name']}%";
-		}
-		if (!empty($data['last_name'])) {
-			$criteria->addCondition("RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND Surname_ID LIKE :last_name)");
+		if (!empty($data['first_name']) && !empty($data['last_name'])) {
+			$criteria->addCondition("RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND ((Name1 = :first_name OR Name2 = :first_name) AND Surname_ID = :last_name))");
 			$params[':sn_type'] = 'NO';
-			$params[':last_name'] = "%{$data['last_name']}%";
+			$params[':first_name'] = "{$data['first_name']}";
+			$params[':last_name'] = "{$data['last_name']}";
 		}
 		if (!empty($data['gender'])) {
 			$criteria->compare('SEX',$data['gender']);
