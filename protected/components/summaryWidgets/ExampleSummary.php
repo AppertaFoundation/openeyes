@@ -4,8 +4,8 @@ class ExampleSummary extends CWidget {
 	public $episode_id;
 	public $noEvents;
 
-    public function run()
-    {
+	public function run()
+	{
 		if (!isset($this->episode_id)) {
 			throw new CHttpException(403, 'No episode id provided.');
 		}
@@ -16,11 +16,14 @@ class ExampleSummary extends CWidget {
 			throw new CHttpException(403, 'There is no episode of that id.');
 		}
 
-		// @todo - change this to a count() query
-		$events = Event::model()->findAll('episode_id = ?', array($this->episode_id));
+	        $noEvents = Yii::app()->db->createCommand()
+                        ->select('count(*) AS c')
+                        ->from('event')
+                        ->where('episode_id = :epid', array(':epid'=>$this->episode_id))
+                        ->queryRow();
 
-		$this->noEvents = count($events);
+		$this->noEvents = $noEvents['c'];
 
-        $this->render('ExampleSummary');
-    }
+		$this->render('ExampleSummary');
+	}
 }

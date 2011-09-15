@@ -48,7 +48,6 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'type': 'GET',
 				'data': {'name': ui.item.value},
 				'success': function(data) {
-					// @todo: if 'both' eyes are selected, then the duration should be x2
 					// append selection onto procedure list
 					$('#procedure_list tbody').append(data);
 					$('#procedureDiv').show();

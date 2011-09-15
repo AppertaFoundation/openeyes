@@ -37,7 +37,6 @@ class BaseElement extends BaseActiveRecord
 
 	/**
 	 * Returns a list of Exam Phrases to be used by the element form.
-	 * // @todo - should this be removed from here and turned into a widget?
 	 *
 	 * @return array
 	 */

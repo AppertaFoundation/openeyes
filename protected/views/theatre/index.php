@@ -5,9 +5,9 @@ $cs->registerCSSFile('/css/theatre.css', 'all');
 ?>
 <h3 class="title">Theatre Schedules</h3>
 <?php $form=$this->beginWidget('CActiveForm', array(
-    'id'=>'theatre-filter',
+	'id'=>'theatre-filter',
 	'action'=>Yii::app()->createUrl('theatre/search'),
-    'enableAjaxValidation'=>false,
+	'enableAjaxValidation'=>false,
 )); ?>
 <div id="search-options">
 	<div id="main-search">
@@ -98,7 +98,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		'changeMonth'=>true,
 		'changeYear'=>true,
 		'showOtherMonths'=>true,
-        'showAnim'=>'fold',
+		'showAnim'=>'fold',
 		'dateFormat'=>'yy-mm-dd',
 		'onSelect'=>"js:function(selectedDate) {
 			var option = this.id == 'date-start' ? 'minDate' : 'maxDate',

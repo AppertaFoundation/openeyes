@@ -77,18 +77,23 @@ if ($isAdult) {
 	$dear = "Dear SUBSITUTE NAME OF GUARDIAN,</p>";
 }
 
+$isAdmissionLetter = false;
+
 if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	if (empty($operation->booking)) {
+		$isAdmissionLetter = true;
+
 		// The operation hasn't been booked yet
 		echo CHtml::link('<span>Cancel Operation</span>', array('booking/cancelOperation', 'operation' => $operation->id), array('class' => 'fancybox shinybutton', 'encode' => false));
 		echo CHtml::link("<span>Schedule Now</span>", array('booking/schedule', 'operation' => $operation->id), array('class' => 'fancybox shinybutton highlighted', 'encode' => false));
 
 		$midsection = ". This is currently anticipated to be a ";
 		if ($operation->overnight_stay) {
-			$midsection .= 'Inpatient';
+			$admissionCategory = 'Inpatient';
 		} else {
-			$midsection .= 'Day case';
+			$admissionCategory = 'Day case';
 		}
+		$midsection .= $admissionCategory;
 		$midsection .= " procedure STAYLENGTH in hospital. <br /><br />Please will you telephone ";
 		$midsection .= $operation->getPhrase('Contact Number');
 		$midsection .= " within ";
@@ -122,9 +127,9 @@ leave a message and contact number on the answer phone.
 
 		if ($isAdult) {
 			// Adult letter
-			$details = "<br /><br /><b>Date of admission: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
-			$details .= "Time to arrive: " . $this->convertTime($operation->booking->session->start_time) . "<br />\n";
-			$details .= "Date of surgery: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
+			$details = "<br /><br /><b>Date of admission: " . $operation->convertDate($operation->booking->session->date) . "<br />\n";
+			$details .= "Time to arrive: " . $operation->convertTime($operation->booking->session->start_time) . "<br />\n";
+			$details .= "Date of surgery: " . $operation->convertDate($operation->booking->session->date) . "<br />\n";
 			$details .= "Ward: " . $operation->booking->ward->name . ", " . $operation->booking->ward->site->name . "<br />\n";
 			$details .= "Situation<br />\n";
 			$details .= "You will be discharged from hospital on the same day.</b><br /><br />\n";
@@ -168,10 +173,9 @@ leave a message and contact number on the answer phone.
 			$content .= "</ul>\n";
 		} else {
 			// Child letter
-			// @todo - deal with St George letters
-			$details = "<br /><br /><b>Date of admission: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
-			$details .= "Time to arrive: " . $this->convertTime($operation->booking->session->start_time) . "<br />\n";
-			$details .= "Date of surgery: " . $this->convertDate($operation->booking->session->date) . "<br />\n";
+			$details = "<br /><br /><b>Date of admission: " . $operation->convertDate($operation->booking->session->date) . "<br />\n";
+			$details .= "Time to arrive: " . $operation->convertTime($operation->booking->session->start_time) . "<br />\n";
+			$details .= "Date of surgery: " . $operation->convertDate($operation->booking->session->date) . "<br />\n";
 			if ($operation->booking->session->sequence->theatre_id == 1) {
 				// It's City Road
 				$details .= "Location: Richard Desmond's Children's Eye Centre (RDCEC)<br />\n";
@@ -184,7 +188,7 @@ leave a message and contact number on the answer phone.
 			if ($operation->status == $operation::STATUS_RESCHEDULED) {
 				// It's a child reschedule letter
 				$content = "I am writing to inform you that the date for your child's eye operation has been changed from ";
-				$content .= $this->convertDate($operation->cancelledBooking->date);
+				$content .= $operation->convertDate($operation->cancelledBooking->date);
 				$content .= ". The details now are:";
 				$content .= $details;
 			} else {
@@ -196,7 +200,7 @@ leave a message and contact number on the answer phone.
 			$content .= "To ensure this admission proceeds smoothly, please follow these instructions.<br />\n";
 			$content .= "<ul>\n";
 			$content .= "<li><b>Please contact the Children's Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>\n";
-			$content .= "<li>Bring this letter with you on " . $this->convertDate($operation->booking->session->date) . "</li>\n";
+			$content .= "<li>Bring this letter with you on " . $operation->convertDate($operation->booking->session->date) . "</li>\n";
 			$content .= "<li>Please complete the attached in-patient questionnaire and bring it with you</li>\n";
 			$content .= "<li>Please go directly to the Main Reception in the RDCEC at the time of your child's admission.<li>\n";
 			$content .= "</ul><br /><br />\n";
@@ -213,7 +217,6 @@ leave a message and contact number on the answer phone.
 <?php
 } else {
 	// No letters to be printed for cancelled or uneditable letters
-	// @todo - shouldn't display any letter elements if not needed, remove
 	$content = '';
 }
 
@@ -266,7 +269,7 @@ if ($siteId = Yii::app()->request->cookies['site_id']->value) {
 		<?php echo $patient->address->postcode; ?><br />
 	</p>
 
-        <p class="ElementLetterOut_date"><?php echo date("Y-m-d") ?></p>
+        <p class="ElementLetterOut_date"><?php echo $operation->convertDate(date("Y-m-d")) ?></p>
 
 	<p class="ElementLetterOut_re">
 		Hospital number reference: INP/A/<?php echo $patient->hos_num ?><br />
@@ -280,6 +283,177 @@ if ($siteId = Yii::app()->request->cookies['site_id']->value) {
 		</p>
 
         <p>Yours sincerely,<br /><br /><br /><br />Admissions Officer</p>
+<!--span class="page_break"></span-->
+
+<?php
+if ($isAdmissionLetter) {
+?>
+<img src="/img/elements/ElementLetterOut/Letterhead.png" alt="Moorfields logo" border="0" /><br />
+<br />
+<hr />
+<br />
+<div class="admissionHeader">ADMISSION FORM</div>
+<br />
+
+<table class="admissionFormClear">
+<tr><td>
+Hospital Number
+</td><td>
+<?php echo $patient->hos_num ?>
+</td><td>
+Patient Name
+</td><td>
+<?php echo $patient->first_name ?> <?php echo $patient->last_name ?>
+</td></tr>
+<tr><td>
+DoB
+</td><td>
+<?php echo $operation->convertDate($patient->dob) ?>
+</td><td>
+Address
+</td><td>
+<?php echo $patient->address->address1 ?><br />
+<?php if ($patient->address->address2) {
+	echo $patient->address->address2 . "<br />\n";
+} ?>
+<?php echo $patient->address->city; ?><br />
+<?php echo $patient->address->postcode; ?><br />
+</td></tr>
+</table>
+
+<br />
+
+<table class="admissionFormBordered">
+<tr><td class="admissionFormDashed">
+<b>Admitting Consultant:</b>
+</td><td>
+CONSULTANT
+</td><td>
+<b>Decision to admit date (or today's date):</b>
+</td><td>
+<?php echo $operation->convertDate($operation->decision_date); ?>
+</td></tr>
+<tr><td>
+<b>Service:</b>
+</td><td>
+<?php echo $operation->event->episode->firm->serviceSpecialtyAssignment->service->name ?>
+</td><td>
+<b>Telephone:</b>
+</td><td>
+<?php echo $patient->primary_phone ?>
+</td></tr>
+<tr><td>
+<b>Site:</b>
+</td><td>
+<?php echo $site->name ?>
+</td><td>
+AlternatePhone WorkPhone MobilePhone
+</td></tr>
+<tr><td>
+<b>Person organising admission:</b>
+</td><td>
+DOCTOR
+</td><td>
+<b>Dates patient unavailable</b>
+</td><td>
+DATES CAN'T COME IN
+</td></tr>
+<tr><td>
+<b>Signature:</b>
+</td><td>
+&nbsp;
+</td><td>
+<b>Available at short notice:</b>
+</td><td>
+SHORT NOTICE
+</td></tr>
+</table>
+
+<br />
+
+<div class="admissionDetails">ADMISSION DETAILS</div>
+<table class="admissionFormBordered">
+<tr><td>
+<b>Urgency</b>
+</td><td>
+URGENCY
+</td><td>
+<b>Consultant to be present:</b>
+</td><td>
+CONSULTANT TO BE PRESENT
+</td></tr>
+<tr><td>
+<b>Admission category:</b>
+</td><td>
+<?php echo $admissionCategory ?>
+</td><td colspan="2" class="admissionFormNoDashed">
+&nbsp;
+</td></tr>
+<tr><td>
+<b>Diagnosis:</b>
+</td><td>
+<?php echo $operation->getDisorder() ?>
+</td><td colspan="2" class="admissionFormNoDashed">
+&nbsp;
+</td></tr>
+<tr><td>
+<b>Intended proceudre:</b>
+</td><td>
+OPERATION
+</td><td colspan="2" class="admissionFormNoDashed">
+&nbsp;
+</td></tr>
+<tr><td>
+<b>Eye:</b>
+</td><td>
+<?php echo $operation->getEyeText() ?>
+</td><td colspan="2" class="admissionFormNoDashed">
+&nbsp;
+</td></tr>
+<tr><td>
+<b>Total theatre time (mins):</b>
+</td><td>
+<?php echo $operation->total_duration ?>
+</td></tr>
+</table>
+
+<br />
+
+<div class="admissionDetails">PRE-OP ASSESSMENT INFORMATION</div>
+<table class="admissionFormBordered">
+<tr><td>
+<b>Anaesthesia:</b>
+</td><td>
+ANAESTHESIA
+</td><td>
+<b>Likely to need anaesthetist review:</b>
+</td><td>
+ANESTHETIST REVIEW
+</td></tr>
+<tr><td>
+<b>Anaesthesia is:</b>
+</td><td>
+ANAESTHESIA IS:
+</td><td>
+<b>Does the patient need to stop medication:</b>
+</td><td>
+STOP MEDICATION
+</td></tr>
+</table>
+
+<div class="admissionDetails">COMMENTS</div>
+<table class="admissionFormBordered">
+<tr><td colspan="2">
+Comments
+<br />
+<br />
+<br />
+</td></tr>
+</table>
+<?php
+}
+?>
+
 <!--span class="page_break"></span-->
 </div>
 <div class="cleartall"></div>

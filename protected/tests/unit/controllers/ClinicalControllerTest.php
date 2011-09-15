@@ -33,6 +33,9 @@ class ClinicalControllerTest extends CDbTestCase
 		);
 	}
 
+	/*
+// These are no longer used as the actionChooseReferral method no longer exists but they are kept here as they could be adapted for the new process
+//	for getting a referral.
 	public function testActionChooseReferral_InvalidReferral_ThrowsException()
 	{
 		$fakeId = 12345;
@@ -86,6 +89,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->actionChooseReferral($id);
 	}
+	*/
 
 	public function testActionIndex_RendersIndexView()
 	{

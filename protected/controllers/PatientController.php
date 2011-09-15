@@ -40,7 +40,6 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
-// @todo - do actionViewByHosHum and actionView need to be separate methods? Is this method used directly any more?
 		$patient = $this->loadModel($id);
 
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
