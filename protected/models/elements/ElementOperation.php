@@ -657,7 +657,6 @@ class ElementOperation extends BaseElement
 		return $results;
 	}
 
-	// @todo - not sure if these two methods should be here, but it's better than being in 25.php
 	public function getService()
 	{
 		if (empty($this->service)) {
@@ -684,4 +683,40 @@ class ElementOperation extends BaseElement
 
 		return $text;
 	}
+
+	/**
+	 * Get the diagnosis for this operation. Used by the booking event type template to create the admission form.
+	 *
+	 * @return string
+	 */
+	public function getDisorder()
+	{
+		$eventId = $this->event_id;
+
+		$elementDiagnosis = ElementDiagnosis::model()->find('event_id = ?', array($eventId));
+
+		return $elementDiagnosis->disorder->fully_specified_name;
+	}
+
+        /**
+         * Used by the booking event type template to format the date.
+         *
+         * @param string date
+         * @return string
+         */
+        public function convertDate($date)
+        {
+                return date ('l jS F Y', strtotime($date));
+        }
+
+	/**
+	 * Used by the booking event to display the admission time (session start time minus one hour)
+	 *
+	 * @param string $time
+	 * @return string
+	 */
+        public function convertTime($time)
+        {
+                return date ('G:i:s', strtotime( '-1 hour' , strtotime ($time)));
+        }
 }

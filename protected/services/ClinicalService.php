@@ -51,8 +51,7 @@ class ClinicalService
 		// Create elements for the event
 		foreach ($elementsToProcess as $element) {
 			$element->event_id = $event->id;
-			// @todo - for some reason Yii likes to try and update here instead of create.
-			//	Find out why.
+
 			$element->setIsNewRecord(true);
 
 			// No need to validate as it has already been validated and the event id was just generated.
@@ -93,10 +92,6 @@ class ClinicalService
 				// The form has failed to provide an array of data for a required element.
 				// This isn't supposed to happen - a required element should at least have the
 				// $data[$elementClassName] present, even if there's nothing in it.
-
-				// @todo - this behaviour is ill defined. As the form for this element hasn't been
-				// displayed, presumably it won't be again, so running validate() to display
-				// the errors is pointless?
 				$success = false;
 			} elseif ($element->event_id) {
 				// This element already exists, isn't required and has had its data deleted.
@@ -119,7 +114,6 @@ class ClinicalService
 
 		foreach ($toSave as $element) {
 			if (!isset($element->event_id)) {
-				// @todo - another example of Yii getting confused about save vs update
 				$element->setIsNewRecord(true);
 				$element->event_id = $event->id;
 			}
@@ -212,7 +206,6 @@ class ClinicalService
 			$episode = new Episode();
 			$episode->patient_id = $patientId;
 			$episode->firm_id = $firm->id;
-			// @todo - this might not be DB independent
 			$episode->start_date = date("Y-m-d H:i:s");
 
 			if (!$episode->save()) {

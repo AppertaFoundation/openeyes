@@ -1,7 +1,5 @@
 <?php
 
-// @todo - include the referral date below.
-
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 $firm = $operation->event->episode->firm; ?>
 <div class="view">

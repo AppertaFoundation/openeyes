@@ -1,20 +1,22 @@
 <?php
 
 /**
- * This is the model class for table "element_letterout".
+ * This is the model class for table "firm_user_assignment".
  *
- * The followings are the available columns in table 'element_letterout':
+ * The followings are the available columns in table 'firm_user_assignment':
  * @property string $id
- * @property string $event_id
- * @property string $value
+ * @property string $firm_id
+ * @property string $user_id
+ *
+ * The followings are the available model relations:
+ * @property User $user
+ * @property Firm $firm
  */
-class ElementLetterOut extends BaseElement
+class FirmUserAssignment extends CActiveRecord
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ElementLetterOut the static model class
+	 * @return FirmUserAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -26,7 +28,7 @@ class ElementLetterOut extends BaseElement
 	 */
 	public function tableName()
 	{
-		return 'element_letterout';
+		return 'firm_user_assignment';
 	}
 
 	/**
@@ -37,10 +39,11 @@ class ElementLetterOut extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('value, event_id, from_address, date, dear, re, to_address, cc', 'safe'),
+			array('firm_id, user_id', 'required'),
+			array('firm_id, user_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, from_address, date, dear, re, value, to_address, cc', 'safe', 'on'=>'search'),
+			array('id, firm_id, user_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,6 +55,8 @@ class ElementLetterOut extends BaseElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 		);
 	}
 
@@ -62,14 +67,8 @@ class ElementLetterOut extends BaseElement
 	{
 		return array(
 			'id' => 'ID',
-			'event_id' => 'Event',
-			'from_address' => 'From',
-			'date' => 'Date',
-			'dear' => 'Dear...',
-			're' => 'RE',
-			'value' => 'Text',
-			'to_address' => 'To',
-			'cc' => 'cc'
+			'firm_id' => 'Firm',
+			'user_id' => 'User',
 		);
 	}
 
@@ -85,24 +84,11 @@ class ElementLetterOut extends BaseElement
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('event_id',$this->event_id,true);
+		$criteria->compare('firm_id',$this->firm_id,true);
+		$criteria->compare('user_id',$this->user_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	public function getService()
-	{
-		if (empty($this->service)) {
-			$this->service = new LetterOutService($this->firm);
-		}
-
-		return $this->service;
-	}
-
-	public function getPhrase($name)
-	{
-		return $this->getService()->getPhrase('LetterOut', $name);
 	}
 }

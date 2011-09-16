@@ -1,13 +1,5 @@
 <?php
 
-// @todo - by default, show the most recent episode for the firm's specialty. not the most recent episode, even after adding a new event. FIX THIS SHARPISH!
-// @todo - add logging for deletion on an event in the admin area
-// @todo - for that matter create an admin script for deleting events!
-// @todo - what are we to do about the fact that episodes can't be closed? Operations will be put in the same episode forever!
-// @todo - make fancyboxes appear a fixed distance from the top of the screeen? This will save having to scroll down when boxes expand,
-//	e.g. booking an operation.
-// @todo - login timeout can lead to the login screen being displayed within another. Fix this.
-
 class ClinicalController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';
@@ -86,7 +78,6 @@ class ClinicalController extends BaseController
 		$this->logActivity('viewed patient index');
 
 		if (Yii::app()->params['use_pas']) {
-			// @todo - this is here until we decide where the best place to put it is.
 			$patient = Patient::model()->findByPk($this->patientId);
 			$referralService = new ReferralService;
 			$referralService->search($patient->pas_key);
@@ -258,7 +249,6 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		// @todo - add all the referral stuff from actionCreate to this method
 		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
 			'id' => $id,
 			'elements' => $elements,
@@ -296,46 +286,6 @@ class ClinicalController extends BaseController
 			'episode' => $episode,
 			'summary' => $_GET['summary']
 			), false, true
-		);
-	}
-
-	public function actionChooseReferral($id)
-	{
-		$referralEpisode = ReferralEpisodeAssignment::model()->findByPk($id);
-
-		if (!isset($referralEpisode)) {
-			throw new CHttpException(403, 'Invalid referral episode assignment id.');
-		}
-
-		// @todo - check they have access to this episode and that the episode doesn't have
-		// a referral already?
-
-		$referrals = Referral::model()->findAll(array(
-			'order' => 'refno DESC',
-			'condition' => 'patient_id = :p AND closed = 0',
-			'params' => array(':p' => $this->patientId)
-			)
-		);
-
-		if ($_POST && $_POST['action'] == 'chooseReferral') {
-			if (isset($_POST['referral_id'])) {
-// @todo - check referral_id is in list of referrals
-				$referralEpisode->referral_id = $_POST['referral_id'];
-
-				if ($referralEpisode->save()) {
-					$this->logActivity('chose a referral');
-
-					$this->redirect(array('view', 'id' => $id));
-					return;
-				}
-			}
-		}
-
-		// @todo - decide what to display in the drop down list. Referral id alone isn't very informative.
-		$this->render('chooseReferral', array(
-			'id' => $id,
-			'referrals' => CHtml::listData($referrals, 'id', 'refno')
-			)
 		);
 	}
 
@@ -440,18 +390,4 @@ class ClinicalController extends BaseController
 
 		return $template;
 	}
-
-	/**
-	 * Used by the booking event type template to format the date.
-	 */
-	// @todo - this is event type specific and shouldn't be here, move it somewhere else
-	public function convertDate($date)
-	{
-        	return date ('l jS F Y', strtotime($date));
-	}
-
-        public function convertTime($time)
-        {
-                return date ('G:i:s', strtotime( '-1 hour' , strtotime ($time)));
-        }
 }

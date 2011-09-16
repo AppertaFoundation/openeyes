@@ -21,7 +21,6 @@ class RightsService
 	 */
 	public function loadRights()
 	{
-		// @todo - make one query with outer join
 		$results = Yii::app()->db->createCommand()
 			->select('id, name')
 			->from('service')

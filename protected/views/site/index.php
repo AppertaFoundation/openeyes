@@ -100,7 +100,6 @@ No patients found.
 						$('#patient-list').hide();
 					}
 				} catch (e) {
-					// @todo - this can be indicative of a login timeout, redirect perhaps?
 				}
 			}
 		});

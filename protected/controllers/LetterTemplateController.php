@@ -1,11 +1,5 @@
 <?php
 
-// @todo - letterout events display the site currently logged in as, not the site the letterout was created under!
-// @todo - should the site at the top of booking letters be the site of the operation, not the site of the firm?
-
-// @todo - (largely unrelated to letter templates!) How to we prevent contact records having records in multiple other
-//	contact tables, e.g. both gp and consultant?
-
 class LetterTemplateController extends BaseController
 {
 	public $layout = '//layouts/patientMode/column2';

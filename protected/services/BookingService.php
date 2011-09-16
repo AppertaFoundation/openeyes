@@ -24,7 +24,6 @@ class BookingService
 		}
 		$monthEnd = substr($monthStart,0,8) . date('t', strtotime($monthStart));
 		
-		// @todo: Figure out a nice Yii way of doing the union of these two queries
 		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
 				COUNT(a.id) AS bookings, 
 				SUM(o.total_duration) AS bookings_duration
@@ -78,7 +77,6 @@ class BookingService
 			throw new Exception('Firm id is invalid.');
 		}
 		
-		// @todo: Figure out a nice Yii way of doing the union of these two queries
 		$sql = "SELECT t.*, s.start_time, s.end_time, s.id AS session_id, 
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
 				COUNT(a.id) AS bookings, 

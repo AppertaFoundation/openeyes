@@ -200,7 +200,6 @@ class LetterOutService
 
 		// If the user has global firm rights they can see all firms and all users
 		if ($user->global_firm_rights) {
-			// @todo - is every user necessarilty associated with a firm? Does it matter?
 			$allUsers = User::model()->findAll();
 
 			foreach ($allUsers as $au) {
@@ -208,7 +207,6 @@ class LetterOutService
 					$au->title . ' ' . $au->first_name . ' ' . $au->last_name;
 			}
 		} else {
-			// @todo - turn this into a UNION or somesuch?
 			$results = Yii::app()->db->createCommand()
 				->select('f.id AS fid')
 				->from('firm f')
@@ -293,7 +291,6 @@ class LetterOutService
 	 *
 	 * @return array
 	 */
-// @todo - consolidate with getPatientContactOptions
 	public function getContactData()
 	{
 		$contactData = array(
@@ -345,7 +342,6 @@ class LetterOutService
 				$this->substitutions['pos'] = 'his';
 				$this->substitutions['pro'] = 'he';
 
-// @todo - are minors under 16?
 				if ($age < 16) {
 					$this->substitutions['sub'] = 'boy';
 				} else {
