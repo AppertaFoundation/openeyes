@@ -18,7 +18,7 @@ if [ "$choice" == "y" ] ; then
 	cp /etc/mysql/my.cnf.master /etc/mysql/my.cnf
 	/etc/init.d/mysql restart 1>/dev/null 2>/dev/null
 	echo
-	echo "Assuming OpenEyes IP ($openeyes_ip) ... "
+	echo "Assuming OpenEyes IP ... "
 	echo
 	cp /etc/network/interfaces.openeyes /etc/network/interfaces
 	ifup eth0:0 1>/dev/null 2>/dev/null
