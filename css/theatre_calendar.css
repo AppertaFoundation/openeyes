@@ -344,3 +344,7 @@ div.shinybutton .session_id {
 button.shinybutton span {
 	min-width: 100px;
 }
+
+#firmSelect {
+	margin-bottom: 20px;
+}

@@ -10,9 +10,11 @@ class BookingService
 	 */
 	public function findSessions($monthStart, $minDate, $firmId)
 	{
-		$firm = Firm::model()->findByPk($firmId);
-		if (empty($firm)) {
-			throw new Exception('Firm id is invalid.');
+		if ($firmId !== null) {
+			$firm = Firm::model()->findByPk($firmId);
+			if (empty($firm)) {
+				throw new Exception('Firm id is invalid.');
+			}
 		}
 		
 		if (substr($minDate,0,8) == substr($monthStart,0,8)) {
@@ -27,24 +29,33 @@ class BookingService
 				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
-			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND 
-				CAST('" . $monthEnd . "' AS DATE) AND 
-				(f.firm_id = " . $firmId . " OR f.id IS NULL)
+				CAST('" . $monthEnd . "' AS DATE) AND ";
+		if ($firmId === null) {
+			$sql .= 'f.id IS NULL';
+		} else {
+			$sql .= "f.firm_id = $firmId";
+		}
+		$sql .= "
 			GROUP BY s.id 
 		UNION 
 			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
 				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s` 
 			JOIN `sequence` `q` ON s.sequence_id = q.id
-			JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
 				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND 
-				CAST('" . $monthEnd . "' AS DATE) AND 
-				(f.firm_id = " . $firmId . " OR f.id IS NULL)
-		ORDER BY WEEKDAY( DATE ) ASC";
+				CAST('" . $monthEnd . "' AS DATE) AND ";
+		if ($firmId === null) {
+			$sql .= 'f.id IS NULL';
+		} else {
+			$sql .= "f.firm_id = $firmId";
+		}
+		$sql .= " ORDER BY WEEKDAY(DATE) ASC";
 		
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 		

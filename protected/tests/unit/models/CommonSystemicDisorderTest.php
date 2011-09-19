@@ -57,4 +57,15 @@ class CommonSystemicDisorderTest extends CDbTestCase
 		$this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
 		$this->assertEquals($expectedResults, $data, 'Results list should match.');
 	}
+
+	public function testGetList_ReturnsCorrectResults()
+	{
+		$expected = array();
+		foreach ($this->disorders as $data) {
+			$disorder = Disorder::model()->findByPk($data['disorder_id']);
+			$expected[$disorder->id] = $disorder->term;
+		}
+
+		$this->assertEquals($expected, $this->model->getList(), 'List results should match.');
+	}
 }

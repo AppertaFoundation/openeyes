@@ -42,10 +42,26 @@ class BookingController extends BaseController
 		if ($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
-		$sessions = $operation->getSessions();
+		
+		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
+		if ($firmId != 'EMG') {
+			$_GET['firm'] = $firmId;
+			$firm = Firm::model()->findByPk($firmId);
+		} else {
+			$firm = new Firm;
+			$firm->name = 'Emergency List';
+		}
+		
+		$sessions = $operation->getSessions($firm->name == 'Emergency List');
+		
+		$criteria = new CDbCriteria;
+		$criteria->order = 'name ASC';
+		$firmList = Firm::model()->findAll($criteria);
 
 		$this->renderPartial('/booking/_schedule',
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+			array('operation'=>$operation, 'date'=>$minDate, 
+				'sessions'=>$sessions, 'firm' => $firm, 'firmList' => $firmList), 
+			false, true);
 	}
 
 	public function actionReschedule()

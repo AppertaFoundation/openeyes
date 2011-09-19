@@ -432,7 +432,7 @@ class ElementOperation extends BaseElement
 		return $date;
 	}
 
-	public function getSessions()
+	public function getSessions($emergency = false)
 	{
 		$minDate = $this->getMinDate();
 		$thisMonth = mktime(0, 0, 0, date('m'), 1, date('Y'));
@@ -442,13 +442,16 @@ class ElementOperation extends BaseElement
 
 		$monthStart = empty($_GET['date']) ? date('Y-m-01', $minDate) : $_GET['date'];
 
-		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
-
+		if (!$emergency) {
+			$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		} else {
+			$firmId = null;
+		}
+		
 		$service = $this->getBookingService();
 		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
 
 		$results = array();
-		$prevWeekday = -1;
 		foreach ($sessions as $session) {
 			$date = $session['date'];
 			$weekday = date('N', strtotime($date));
@@ -465,7 +468,6 @@ class ElementOperation extends BaseElement
 		foreach ($results as $weekday => $dates) {
 			$timestamp = strtotime($monthStart);
 			$firstWeekday = strtotime(date('Y-m-t', $timestamp - (60 * 60 * 24)));
-			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
 			$dateList = array_keys($dates);
 			while (date('N', strtotime($dateList[0])) != date('N', $firstWeekday)) {
 				$firstWeekday -= 60 * 60 * 24;

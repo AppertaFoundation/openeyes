@@ -87,11 +87,11 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		echo CHtml::link('<span>Cancel Operation</span>', array('booking/cancelOperation', 'operation' => $operation->id), array('class' => 'fancybox shinybutton', 'encode' => false));
 		echo CHtml::link("<span>Schedule Now</span>", array('booking/schedule', 'operation' => $operation->id), array('class' => 'fancybox shinybutton highlighted', 'encode' => false));
 
-		$midsection = ". This is currently anticipated to be a ";
+		$midsection = ". This is currently anticipated to be a";
 		if ($operation->overnight_stay) {
-			$admissionCategory = 'Inpatient';
+			$admissionCategory = 'n Inpatient';
 		} else {
-			$admissionCategory = 'Day case';
+			$admissionCategory = ' Day case';
 		}
 		$midsection .= $admissionCategory;
 		$midsection .= " procedure STAYLENGTH in hospital. <br /><br />Please will you telephone ";

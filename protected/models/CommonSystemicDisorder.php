@@ -86,4 +86,20 @@ class CommonSystemicDisorder extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getList()
+	{
+		$options = Yii::app()->db->createCommand()
+			->select('t.id AS did, t.term')
+			->from('disorder t')
+			->join('common_systemic_disorder', 't.id = common_systemic_disorder.disorder_id')
+			->queryAll();
+
+		$result = array();
+		foreach ($options as $value) {
+			$result[$value['did']] = $value['term'];
+		}
+
+		return $result;
+	}
 }
