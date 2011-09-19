@@ -25,6 +25,9 @@ if (empty($operations)) { ?>
     </tr>
 <?php
         foreach ($operations as $id => $operation) {
+		$eo = ElementOperation::model()->findByPk($operation['eoid']);
+		$consultant = $eo->event->episode->firm->getConsultant();
+		$user = $consultant->contact->userContactAssignment->user;
 ?>
     <tr>
         <td class="patient leftAlign">
@@ -43,13 +46,13 @@ if (empty($operations)) { ?>
 </td><td>
 <?php echo $operation['List'] ?>
 </td><td>
-<?php echo $operation['eye'] ?>
+<?php echo $eo->getEyeText() ?>
 </td><td>
-CONSULTANT
+<?php echo $user->title . ' ' . $user->first_name . ' ' . $user->last_name ?>
 </td><td>
-<?php echo $operation['decision_date'] ?>
+<?php echo $eo->convertDate($eo->decision_date) ?>
 </td><td>
-<?php echo $operation['status'] ?>
+<?php echo $eo->getStatusText() ?>
 </td></tr>
 <?php
         }

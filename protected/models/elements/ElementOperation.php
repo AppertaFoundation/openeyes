@@ -682,6 +682,31 @@ class ElementOperation extends BaseElement
 		return $text;
 	}
 
+	public function getStatusText()
+	{
+		switch($this->status) {
+			case self::STATUS_PENDING:
+				$status = 'Pending';
+				break;
+                        case self::STATUS_SCHEDULED:
+                                $status = 'Scheduled';
+                                break;
+                        case self::STATUS_NEEDS_RESCHEDULING:
+                                $status = 'Needs rescheduling';
+                                break;
+                        case self::STATUS_RESCHEDULED:
+                                $status = 'Rescheduled';
+                                break;
+                        case self::STATUS_CANCELLED:
+                                $status = 'Cancelled';
+                                break;
+			default:
+				$status = 'Unknown status';
+				break;
+		}
+
+		return $status;
+	}
 	/**
 	 * Get the diagnosis for this operation. Used by the booking event type template to create the admission form.
 	 *

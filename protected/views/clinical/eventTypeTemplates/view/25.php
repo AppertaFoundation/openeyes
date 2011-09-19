@@ -327,7 +327,12 @@ Address
 <tr><td class="admissionFormDashed">
 <b>Admitting Consultant:</b>
 </td><td>
-CONSULTANT
+<?php
+	$consultant = $operation->event->episode->firm->getConsultant();
+	$user = $consultant->contact->userContactAssignment->user;
+
+	echo($user->title . ' ' . $user->first_name . ' ' . $user->last_name);
+?>
 </td><td>
 <b>Decision to admit date (or today's date):</b>
 </td><td>
@@ -347,16 +352,16 @@ CONSULTANT
 </td><td>
 <?php echo $site->name ?>
 </td><td>
-AlternatePhone WorkPhone MobilePhone
+AlternatePhone WorkPhone MobilePhone TBA
 </td></tr>
 <tr><td>
 <b>Person organising admission:</b>
 </td><td>
-DOCTOR
+DOCTOR TBA
 </td><td>
 <b>Dates patient unavailable</b>
 </td><td>
-DATES CAN'T COME IN
+DATES CAN'T COME IN TBA
 </td></tr>
 <tr><td>
 <b>Signature:</b>

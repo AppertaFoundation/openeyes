@@ -55,7 +55,8 @@ class Contact extends BaseActiveRecord
 			'firms' => array(self::HAS_MANY, 'Firm', 'contact_id'),
 			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
 			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
-			'address' => array(self::BELONGS_TO, 'Address', 'address_id')
+			'address' => array(self::BELONGS_TO, 'Address', 'address_id'),
+			'userContactAssignment' => array(self::HAS_ONE, 'UserContactAssignment', 'contact_id')
 		);
 	}
 

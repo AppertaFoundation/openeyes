@@ -14,16 +14,14 @@ class WaitingListService
 
                 return Yii::app()->db->createCommand()
                                 ->select('
+					eo.id AS eoid,
 					ev.id AS evid,
 					ep.id AS epid,
 					pat.id AS pid,
 					pat.first_name,
 					pat.last_name,
 					pat.hos_num,
-					GROUP_CONCAT(p.term SEPARATOR ", ") AS List,
-					eo.eye,
-					eo.decision_date,
-					eo.status
+					GROUP_CONCAT(p.term SEPARATOR ", ") AS List
 				')
                                 ->from('element_operation eo')
                                 ->join('event ev', 'eo.event_id = ev.id')
