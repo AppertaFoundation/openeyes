@@ -328,10 +328,10 @@ Address
 <b>Admitting Consultant:</b>
 </td><td>
 <?php
-//	$consultant = $operation->event->episode->firm->getConsultant();
-//	$user = $consultant->contact->userContactAssignment->user;
+	$consultant = $operation->event->episode->firm->getConsultant();
+	$user = $consultant->contact->userContactAssignment->user;
 
-//	echo($user->title . ' ' . $user->first_name . ' ' . $user->last_name);
+	echo($user->title . ' ' . $user->first_name . ' ' . $user->last_name);
 ?>
 </td><td>
 <b>Decision to admit date (or today's date):</b>
