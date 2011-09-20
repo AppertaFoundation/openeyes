@@ -97,7 +97,7 @@ class SequenceFirmAssignment extends CActiveRecord
 			->select('t.id, t.name, s.name AS sname')
 			->from('firm t')
 			->join('service_specialty_assignment ssa', 'ssa.id = t.service_specialty_assignment_id')
-			->join('service s', 's.id = ssa.service_id')
+			->join('specialty s', 's.id = ssa.specialty_id')
 			->order('t.name')
 			->queryAll();
 
