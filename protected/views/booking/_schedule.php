@@ -21,10 +21,10 @@ if ($operation->event->episode->firm_id != $firm->id) {
 	You are viewing the schedule for <strong><?php echo $firm->name; ?></strong>.
 	<select id="firmId">
 		<option value="">Select a different firm</option>
-<?php	foreach ($firmList as $aFirm) { ?>
-		<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?></option>
-<?php	} ?>
 		<option value="EMG">Emergency List</option>
+<?php	foreach ($firmList as $aFirm) { ?>
+		<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
+<?php	} ?>
 	</select>
 </div>
 <div id="operation">
