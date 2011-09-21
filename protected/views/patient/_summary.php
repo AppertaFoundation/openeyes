@@ -92,7 +92,6 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			array('name'=>'Specialty', 'value'=>'$data->firm->serviceSpecialtyAssignment->specialty->name'),
 			array('name'=>'Eye','value'=>'$data->getPrincipalDiagnosisEyeText()'), // 'diagnosis.location',
 			array('name'=>'Diagnosis','value'=>'$data->getPrincipalDiagnosisDisorderTerm()'), // 'disorder.name'
-			// @todo: figure out how to get this to switch to the episodes tab and select the correct episode to view
 //			array('class'=>'CButtonColumn', 'buttons'=>array(
 //				'view'=>array(
 //					'label'=>'View',

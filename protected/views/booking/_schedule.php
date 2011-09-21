@@ -4,6 +4,29 @@ $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 <p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
 <h3>Schedule Operation</h3>
+<?php
+if ($operation->event->episode->firm_id != $firm->id) {
+	if ($firm->name == 'Emergency List') {
+		$class = 'flash-error';
+		$message = 'You are booking into the Emergency List.';
+	} else {
+		$class = 'flash-notice';
+		$message = 'You are booking into the list for ' . $firm->name . '.';
+	} ?>
+	<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
+<?php
+}
+	?>
+<div id="firmSelect" class="greyGradient">
+	You are viewing the schedule for <strong><?php echo $firm->name; ?></strong>.
+	<select id="firmId">
+		<option value="">Select a different firm</option>
+		<option value="EMG">Emergency List</option>
+<?php	foreach ($firmList as $aFirm) { ?>
+		<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
+<?php	} ?>
+	</select>
+</div>
 <div id="operation">
 	<h1>Select theatre slot</h1><br />
 <?php
@@ -100,6 +123,20 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			$(this).siblings().removeClass('highlighted');
 			$(this).addClass('highlighted');
 			showTheatreList(operation, month, day, session);
+		});
+		$('#firmSelect #firmId').live('change', function() {
+			var firmId = $(this).val();
+			var operation = $('input[id=operation]').val();
+			console.log('firm: ' + firmId);
+			
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('booking/schedule'); ?>',
+				'type': 'GET',
+				'data': {'operation': operation, 'firmId': firmId},
+				'success': function(data) {
+					$('#schedule').html(data);
+				}
+			});			
 		});
 	});
 

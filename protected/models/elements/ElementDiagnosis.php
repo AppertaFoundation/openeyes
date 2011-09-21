@@ -148,8 +148,11 @@ class ElementDiagnosis extends BaseElement
 				return parent::beforeValidate();
 			}
 
-			// @todo - make sure only non-systemic disorders apply
-			$disorder = Disorder::model()->find('term = ? AND fully_specified_name = ?', $terms);
+			$disorder = Disorder::model()->find('
+				term = ? AND
+				fully_specified_name = ? AND
+				systemic = 0
+			', $terms);
 
 			if (empty($disorder)) {
 				return false;
@@ -168,7 +171,6 @@ class ElementDiagnosis extends BaseElement
 	 */
 	public function getNewestDiagnosis()
 	{
-// @todo - should this be a static method?
 		if (!empty($model->disorder)) {
 			return $model->disorder;
 		} else {
@@ -186,7 +188,6 @@ class ElementDiagnosis extends BaseElement
 				return null;
 			}
 
-			// @todo - make Yiiish
 			$sql = '
 				SELECT
 					ed.*

@@ -432,7 +432,7 @@ class ElementOperation extends BaseElement
 		return $date;
 	}
 
-	public function getSessions()
+	public function getSessions($emergency = false)
 	{
 		$minDate = $this->getMinDate();
 		$thisMonth = mktime(0, 0, 0, date('m'), 1, date('Y'));
@@ -442,13 +442,16 @@ class ElementOperation extends BaseElement
 
 		$monthStart = empty($_GET['date']) ? date('Y-m-01', $minDate) : $_GET['date'];
 
-		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
-
+		if (!$emergency) {
+			$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		} else {
+			$firmId = null;
+		}
+		
 		$service = $this->getBookingService();
 		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
 
 		$results = array();
-		$prevWeekday = -1;
 		foreach ($sessions as $session) {
 			$date = $session['date'];
 			$weekday = date('N', strtotime($date));
@@ -465,7 +468,6 @@ class ElementOperation extends BaseElement
 		foreach ($results as $weekday => $dates) {
 			$timestamp = strtotime($monthStart);
 			$firstWeekday = strtotime(date('Y-m-t', $timestamp - (60 * 60 * 24)));
-			$lastMonthday = strtotime(date('Y-m-t', $timestamp));
 			$dateList = array_keys($dates);
 			while (date('N', strtotime($dateList[0])) != date('N', $firstWeekday)) {
 				$firstWeekday -= 60 * 60 * 24;
@@ -655,7 +657,6 @@ class ElementOperation extends BaseElement
 		return $results;
 	}
 
-	// @todo - not sure if these two methods should be here, but it's better than being in 25.php
 	public function getService()
 	{
 		if (empty($this->service)) {
@@ -682,4 +683,65 @@ class ElementOperation extends BaseElement
 
 		return $text;
 	}
+
+	public function getStatusText()
+	{
+		switch($this->status) {
+			case self::STATUS_PENDING:
+				$status = 'Pending';
+				break;
+                        case self::STATUS_SCHEDULED:
+                                $status = 'Scheduled';
+                                break;
+                        case self::STATUS_NEEDS_RESCHEDULING:
+                                $status = 'Needs rescheduling';
+                                break;
+                        case self::STATUS_RESCHEDULED:
+                                $status = 'Rescheduled';
+                                break;
+                        case self::STATUS_CANCELLED:
+                                $status = 'Cancelled';
+                                break;
+			default:
+				$status = 'Unknown status';
+				break;
+		}
+
+		return $status;
+	}
+	/**
+	 * Get the diagnosis for this operation. Used by the booking event type template to create the admission form.
+	 *
+	 * @return string
+	 */
+	public function getDisorder()
+	{
+		$eventId = $this->event_id;
+
+		$elementDiagnosis = ElementDiagnosis::model()->find('event_id = ?', array($eventId));
+
+		return $elementDiagnosis->disorder->fully_specified_name;
+	}
+
+        /**
+         * Used by the booking event type template to format the date.
+         *
+         * @param string date
+         * @return string
+         */
+        public function convertDate($date)
+        {
+                return date ('l jS F Y', strtotime($date));
+        }
+
+	/**
+	 * Used by the booking event to display the admission time (session start time minus one hour)
+	 *
+	 * @param string $time
+	 * @return string
+	 */
+        public function convertTime($time)
+        {
+                return date ('G:i:s', strtotime( '-1 hour' , strtotime ($time)));
+        }
 }

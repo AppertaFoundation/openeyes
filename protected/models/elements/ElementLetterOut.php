@@ -1,7 +1,5 @@
 <?php
 
-// @todo - CC isn't saving properly
-
 /**
  * This is the model class for table "element_letterout".
  *
@@ -39,10 +37,10 @@ class ElementLetterOut extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('value, event_id, from_address, date, dear, re, to_address', 'safe'),
+			array('value, event_id, from_address, date, dear, re, to_address, cc', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, from_address, date, dear, re, value, to_address', 'safe', 'on'=>'search'),
+			array('id, event_id, from_address, date, dear, re, value, to_address, cc', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,7 +68,8 @@ class ElementLetterOut extends BaseElement
 			'dear' => 'Dear...',
 			're' => 'RE',
 			'value' => 'Text',
-			'to_address' => 'To'
+			'to_address' => 'To',
+			'cc' => 'cc'
 		);
 	}
 
@@ -87,7 +86,6 @@ class ElementLetterOut extends BaseElement
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('event_id',$this->event_id,true);
-		$criteria->compare('value',$this->value,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

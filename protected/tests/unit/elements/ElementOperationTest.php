@@ -261,6 +261,13 @@ class ElementOperationTest extends CDbTestCase
 		$this->assertEquals($expectedText, $element->getEyeText());
 	}
 
+        public function testGetStatusText()
+        {
+                $element = $this->elements('element1');
+
+                $this->assertEquals($element->getStatusText(), 'Scheduled');
+        }
+
 	public function testSetDefaultOptions_SetsCorrectOptions()
 	{
 		$this->element->consultant_required = ElementOperation::CONSULTANT_REQUIRED;

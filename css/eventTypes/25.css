@@ -19,3 +19,39 @@ p.ElementLetterOut_cc {display:none;}
 div.ElementLetterOut_siteDetails {display:none;}
 
 span.page_break {display:none;}
+
+hr {
+        height: 5px;
+        width: 800px;
+}
+
+div.admissionHeader {
+        font-weight: bold;
+        font-size: large;
+}
+
+div.admissionDetails {
+        font-weight: bold;
+}
+
+table.admissionFormClear {
+        width: 800px;
+        padding: 5px;
+}
+
+table.admissionFormBordered {
+        border: 1px solid black;
+        width: 800px;
+        padding 5px;
+}
+
+table.admissionFormBordered td {
+        border: 1px dotted black;
+        vertical-align: top;
+        padding: 5px;
+}
+
+table.admissionFormBordered td.admissionFormNoDashed {
+        border: 0px;
+}
+

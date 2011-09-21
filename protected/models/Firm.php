@@ -58,7 +58,6 @@ class Firm extends BaseActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		// @todo - how to express the link to the firm's one consultant
 		return array(
 			'serviceSpecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSpecialtyAssignment', 'service_specialty_assignment_id'),
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
@@ -159,5 +158,32 @@ class Firm extends BaseActiveRecord
 		}
 		
 		return $result;
+	}
+
+	/**
+	 * Returns the consultant for the firm
+	 *
+	 * @return object
+	 */
+	public function getConsultant()
+	{
+                $result = Yii::app()->db->createCommand()
+                        ->select('cslt.id AS id')
+                        ->from('consultant cslt')
+                        ->join('contact c', 'cslt.contact_id = c.id')
+                        ->join('user_contact_assignment uca', 'uca.contact_id = c.id')
+			->join('user u', 'u.id = uca.user_id')
+			->join('firm_user_assignment fua', 'fua.user_id = u.id')
+			->join('firm f', 'f.id = fua.firm_id')
+                        ->where('f.id = :fid', array(
+                                ':fid' => $this->id
+                        ))
+                        ->queryRow();
+
+		if (empty($result)) {
+			return null;
+		} else {
+			return Consultant::model()->findByPk($result['id']);
+		}
 	}
 }

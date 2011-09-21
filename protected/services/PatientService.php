@@ -82,8 +82,6 @@ class PatientService
 			foreach ($results as $pasPatient) {
 				$address = PAS_PatientAddress::model()->findByPk($pasPatient->RM_PATIENT_NO);
 
-				// @todo - some patients (e.g. those of surname 'test') seem to lack an address record and cannot be put in the OE DB.
-				//	Therefore no attempt to do so is made. Is this acceptable behaviour?
 				if (isset($address)) {
 					$patient = $this->updatePatient($pasPatient, $address);
 					$patients[] = $patient;
@@ -336,8 +334,6 @@ class PatientService
 	/**
 	 * Import from Bill's original code
 	 * Expands short terms such as 'Cres'
-	 *
-	 * @todo many more to add to this
 	 *
 	 * @param string $_addr Address
 	 *

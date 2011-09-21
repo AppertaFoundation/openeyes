@@ -90,20 +90,23 @@ class SequenceFirmAssignment extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	public function getFirmOptions()
 	{
 		$options = Yii::app()->db->createCommand()
-			->select('t.id, t.name')
+			->select('t.id, t.name, s.name AS sname')
 			->from('firm t')
+			->join('service_specialty_assignment ssa', 'ssa.id = t.service_specialty_assignment_id')
+			->join('specialty s', 's.id = ssa.specialty_id')
+			->order('t.name')
 			->queryAll();
 
 		$result = array();
 		foreach ($options as $value) {
-			$result[$value['id']] = $value['name'];
+			$result[$value['id']] = $value['name'] . ' (' . $value['sname'] . ')';
 		}
 
 		return $result;
-		
+
 	}
 }

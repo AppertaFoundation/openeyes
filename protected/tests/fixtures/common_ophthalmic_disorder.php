@@ -11,6 +11,6 @@ return array(
 	),
 	'commonOphthalmicDisorder3' => array(
 		'disorder_id' => 3,
-		'specialty_id' => 1
+		'specialty_id' => 2
 	),
 );

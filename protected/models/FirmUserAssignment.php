@@ -1,20 +1,22 @@
 <?php
 
 /**
- * This is the model class for table "Contact".
+ * This is the model class for table "firm_user_assignment".
  *
- * The followings are the available columns in table 'Contact':
+ * The followings are the available columns in table 'firm_user_assignment':
  * @property string $id
- * @property string $nick_name
+ * @property string $firm_id
+ * @property string $user_id
  *
  * The followings are the available model relations:
- * @property Firm[] $firms
+ * @property User $user
+ * @property Firm $firm
  */
-class Contact extends BaseActiveRecord
+class FirmUserAssignment extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Contact the static model class
+	 * @return FirmUserAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -26,7 +28,7 @@ class Contact extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contact';
+		return 'firm_user_assignment';
 	}
 
 	/**
@@ -37,10 +39,11 @@ class Contact extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('nick_name', 'length', 'max'=>80),
+			array('firm_id, user_id', 'required'),
+			array('firm_id, user_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, nick_name', 'safe', 'on'=>'search'),
+			array('id, firm_id, user_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,11 +55,8 @@ class Contact extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firms' => array(self::HAS_MANY, 'Firm', 'contact_id'),
-			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
-			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
-			'address' => array(self::BELONGS_TO, 'Address', 'address_id'),
-			'userContactAssignment' => array(self::HAS_ONE, 'UserContactAssignment', 'contact_id')
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 		);
 	}
 
@@ -67,7 +67,8 @@ class Contact extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'nick_name' => 'Nick Name',
+			'firm_id' => 'Firm',
+			'user_id' => 'User',
 		);
 	}
 
@@ -83,7 +84,8 @@ class Contact extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('nick_name',$this->nick_name,true);
+		$criteria->compare('firm_id',$this->firm_id,true);
+		$criteria->compare('user_id',$this->user_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

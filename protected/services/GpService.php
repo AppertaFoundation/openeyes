@@ -48,7 +48,6 @@ class GpService
 			
 					$contact = new Contact;
 
-// @todo - remove the contact_type table? It may not be needed any more.
 					$contact->consultant = 0;
 					$contact->address_id = $address->id;
 

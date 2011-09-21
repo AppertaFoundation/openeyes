@@ -50,7 +50,6 @@ class User extends BaseActiveRecord
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
 		);
 
-		// @todo - sort out rules for minimum username, first_name etc. length for BASIC, and for LDAP for that matter
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
 			return array_merge(
 				$commonRules,
@@ -87,10 +86,6 @@ class User extends BaseActiveRecord
 	{
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-
-// @todo - check that the various HAS_MANY and MANY_MANY relationships shouldn't actually be one-to-one, e.g.
-//	user_contact_assignment - in other words, users only have one contact and vice versa.
-//	add multiple unique keys to db tables as well.
 		return array(
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'user_id'),
 			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)'),
@@ -233,7 +228,6 @@ class User extends BaseActiveRecord
 	 *
 	 * @return boolean
 	 */
-	// @todo - is this the best place for this method?
 	public static function isConsultant()
 	{
 		$user = User::model()->findByPk(Yii::app()->id);

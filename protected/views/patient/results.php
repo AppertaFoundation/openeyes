@@ -1,9 +1,3 @@
-<?php
-
-// @todo - no longer needed, delete
-
-?>
-
 <?php $this->widget('zii.widgets.grid.CGridView', array(
 	'id'=>'patient-grid',
 	'dataProvider'=>$dataProvider,
@@ -18,4 +12,4 @@
 		'hos_num',
 		'nhs_num'
 	)
-)); ?>
+));

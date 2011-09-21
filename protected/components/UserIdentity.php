@@ -117,7 +117,7 @@ class UserIdentity extends CUserIdentity
 		$firms = array();
 
 		if ($user->global_firm_rights) {
-			foreach(Firm::model()->findAll() as $firm) {
+			foreach(Firm::model()->findAll(array('order'=>'name')) as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 		} else {
@@ -130,8 +130,7 @@ class UserIdentity extends CUserIdentity
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 
-			// Get firns associated with services
-			// @todo - tidy this up, it doesn't need three loops
+			// Get firms associated with services
 			foreach ($user->serviceRights as $service) {
 				foreach ($service->serviceSpecialtyAssignments as $ssa) {
 					foreach (Firm::model()->findAll(
@@ -156,7 +155,7 @@ class UserIdentity extends CUserIdentity
 
 	public function firmString($firm)
 	{
-		return "{$firm->name} ({$firm->serviceSpecialtyAssignment->service->name})";
+		return "{$firm->name} ({$firm->serviceSpecialtyAssignment->specialty->name})";
 	}
 
 	public function getId()

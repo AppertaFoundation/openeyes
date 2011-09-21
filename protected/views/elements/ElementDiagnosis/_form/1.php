@@ -4,7 +4,6 @@
 
 <?php
 
-// @todo - populate diagnosis eye with appropriate value
 $disorderId = '';
 $value = '';
 $eye = '';

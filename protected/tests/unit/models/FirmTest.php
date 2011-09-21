@@ -6,6 +6,11 @@ class FirmTest extends CDbTestCase
 		'specialties' => 'Specialty',
 		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'firms' => 'Firm',
+		'FirmUserAssignments' => 'FirmUserAssignment',
+		'users' => 'User',
+		'userContactAssignment' => 'UserContactAssignment',
+		'contacts' => 'Contact',
+		'consultants' => 'Consultant'
 	);
 
 	public function testGetServicespecialtyOptions()
@@ -25,5 +30,14 @@ class FirmTest extends CDbTestCase
 	{
 		$firm = $this->firms('firm1');
 		$this->assertEquals($firm->getSpecialtyText(), 'Accident & Emergency');
+	}
+
+	public function testGetConsultant()
+	{
+		$firm = $this->firms('firm1');
+
+		$consultant = $firm->getConsultant();
+
+		$this->assertEquals($consultant->contact->nick_name, 'Aylward');
 	}
 }

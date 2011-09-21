@@ -16,7 +16,6 @@ class ReferralService
 			foreach ($results as $pasReferral) {
 				$patient = Patient::model()->find('pas_key = ?', array($pasReferral->X_CN));
 
-// @todo what's going on here? Specialties are not as they should be in PAS so findByPk(1) has been left here for now.
 				//$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REFSPEC));
 				$specialty = Specialty::model()->findByPk(1);
 
@@ -26,7 +25,6 @@ class ReferralService
 					$referral = new Referral;
 				}
 
-// @todo - does ref_spec refer to a specialty or service?
 				$referral->service_id = $specialty->id;
 				$referral->patient_id = $patient->id;
 				$referral->refno = $pasReferral->REFNO;
@@ -72,8 +70,6 @@ class ReferralService
 		}
 
 		// Look for open referrals of this specialty
-		// @todo - change this to just get the top one
-		// @todo - is refno DESC the correct way of determining the most recent referral?
 		$referrals = Referral::model()->findAll(
 			array(
 				'order' => 'refno DESC',
@@ -81,7 +77,8 @@ class ReferralService
 				'params' => array(
 					':p' => $patientId,
 					':s' => $firm->serviceSpecialtyAssignment->service_id
-				)
+				),
+				'limit' => 1
 			)
 		);
 
@@ -141,7 +138,6 @@ class ReferralService
 		$event = Event::model()->findByPk($eventId);
 
 		if (!isset($event)) {
-			// @todo - what to do here?
 			return;
 		}
 

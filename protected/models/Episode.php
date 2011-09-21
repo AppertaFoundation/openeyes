@@ -151,7 +151,6 @@ class Episode extends BaseActiveRecord
 	 */
 	public function getPrincipalDiagnosis()
 	{
-		// @todo - convert to find diagnosis object directly
 		$result = Yii::app()->db->createCommand()
 			->select('ed.id AS id')
 			->from('element_diagnosis ed')
@@ -170,8 +169,6 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
-	// @todo - these two functions are so the CGridView in the patient view doesn't get confused if there
-	// is a diagnosis for any of the disorders. They are inefficient as they hit the db twice. Optimise.
 	public function getPrincipalDiagnosisEyeText() {
 		if ($diagnosis = $this->getPrincipalDiagnosis()) {
 			return $diagnosis->getEyeText();
@@ -191,7 +188,6 @@ class Episode extends BaseActiveRecord
 	public static function getCurrentEpisodeByFirm($patientId, $firm)
 	{
 		// Check for an open episode for this patient and firm's service with a referral
-		// @todo - tidy this to just get the episode object directly
 		$episode = Yii::app()->db->createCommand()
 			->select('e.id AS eid')
 			->from('episode e')
