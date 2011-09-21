@@ -6,24 +6,28 @@ $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
 $this->layout = 'main'; ?>
-<div><span class="text">Find a patient:</span><span style="color: #fff;"> (hospital number and/or surname required)</span></div>
-<div id="patient-search-error" class="rounded-corners">
-No patients found.
-</div>
-<div id="patient_search">
-<?php
+<h2>Patient search</h2>
+<div class="centralColumn">
+	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
+	<div id="patient-search-error" class="rounded-corners">
+		No patients found.
+	</div>
+	<?php
 	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'patient-search',
 		'enableAjaxValidation'=>true,
 		'focus'=>'#Patient_hos_num',
 		//'action' => Yii::app()->createUrl('patient/results')
-	)); ?>
-	<div class="title_bar"><?php
-	echo CHtml::label('Search by hospital number:', 'hospital_number');
-	echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
-?>
-<button type="submit" value="submit" class="shinybutton highlighted" id="findPatient"><span>Find patient</span></button>
-</div><?php
+	));?>
+	<div id="search_patient_id" class="form_greyBox bigInput">
+		<?php
+			echo CHtml::label('Search by hospital number:', 'hospital_number');
+			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
+		?>
+		<button type="submit" value="submit" class="btn_findPatient ir" id="findPatient_id">Find patient</button>
+		<?php $this->endWidget();?>
+	</div>
+	<?php
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'id' => 'patient-adv-search',
 		'panels'=>array(
@@ -37,22 +41,37 @@ No patients found.
 			'collapsible'=>true,
 		),
 	));
-	$this->endWidget();
-?>
-</div>
+	?>
+	</form>
+</div><!-- .centralColumn -->
+<div id="search-form" class="">
+</div><!-- search-form -->
 <script type="text/javascript">
-	$('#findPatient').click(function() {
-		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
-			$('#patient-search-error').html('Please enter either a hospital number or a first name and surname.');
+	$('#findPatient_id').click(function() {
+		if (!$('#Patient_hos_num').val()) {
+			$('#patient-search-error').html('Please enter a hospital number.');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;
 		}
+		patient_search($('#patient-search').serialize());
+	});
 
+	$('#findPatient_details').click(function() {
+		if (!$('#Patient_last_name').val() || !$('#Patient_first_name').val()) {
+			$('#patient-search-error').html('Please enter at least a first name and surname.');
+			$('#patient-search-error').show();
+			$('#patient-list').hide();
+			return false;
+		}
+		patient_search($('#patient-adv-search-form').serialize());
+	});
+
+	function patient_search(postdata) {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',
 			'type': 'POST',
-			'data': $('#patient-search').serialize(),
+			'data': postdata,
 			'success': function(data) {
 				try {
 					arr = $.parseJSON(data);
@@ -104,34 +123,5 @@ No patients found.
 			}
 		});
 		return false;
-	});
-</script>
-<div id="patient-list" class="rounded-corners">
-</div>
-<div id="sidebox">
-	<h3>Do you need help with OpenEyes?</h3>
-	<strong>Before you contact the helpdesk...</strong><br />
-	<ul>
-		<li>Is there a "Super User" in your office available?</li>
-		<li>Have you checked the <a href="#">Quick Reference Guide</a>?</li>
-	</ul>
-	<em>Still need help?</em> Contact us:
-	<div class="blue_highlight">
-		Telephone: <span class="number">ext. 0000</span><br />
-		Email: <span class="number">helpdesk@openeyes.org.uk</span>
-	</div>
-</div>
-<div class="clear"></div>
-<script type="text/javascript">
-	$.watermark.options = {
-		className: 'watermark',
-		useNative: false
-	};
-	$('input[id=hospital_number]').watermark('enter hospital number');
-	$('input[id=first_name]').watermark('enter first name');
-	$('input[id=last_name]').watermark('enter last name');
-	$('input[id=nhs_number]').watermark('enter NHS number');
-	$('input[id=dob_day]').watermark('DD');
-	$('input[id=dob_month]').watermark('MM');
-	$('input[id=dob_year]').watermark('YYYY');
+	}
 </script>

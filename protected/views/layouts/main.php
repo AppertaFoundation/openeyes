@@ -18,29 +18,46 @@
 <body> 
  
 	<div id="container"> 
-	<div id="header" class="clearfix"> 
-		<div id="brand" class="ir"><h1>OpenEyes</h1></div> 
-		<?php echo $this->renderPartial('//base/_form', array()); ?>
-	</div> <!-- #header --> 
+		<div id="header" class="clearfix"> 
+			<div id="brand" class="ir"><h1>OpenEyes</h1></div> 
+			<?php echo $this->renderPartial('//base/_form', array()); ?>
+		</div> <!-- #header --> 
 
-	<!--div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Admin', 'url'=>array('/admin'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Search Patients', 'url'=>array('/patient/admin'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Phrases for this firm', 'url'=>array('/phraseByFirm/index'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
-			),
-		)); ?>
-	</div--><!-- mainmenu -->
+		<!--div id="mainmenu">
+			<?php $this->widget('zii.widgets.CMenu',array(
+				'items'=>array(
+					array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
+					array('label'=>'Admin', 'url'=>array('/admin'), 'visible'=>!Yii::app()->user->isGuest),
+					array('label'=>'Search Patients', 'url'=>array('/patient/admin'), 'visible'=>!Yii::app()->user->isGuest),
+					array('label'=>'Phrases for this firm', 'url'=>array('/phraseByFirm/index'), 'visible'=>!Yii::app()->user->isGuest),
+					array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
+					array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+				),
+			)); ?>
+		</div--><!-- mainmenu -->
 
-	<div id="content"> 
-		<?php echo $content; ?>
-	</div> <!-- #content --> 
-	<div id="help" class="clearfix"> 
-	</div> <!-- #help --> 
+		<div id="content"> 
+			<?php echo $content; ?>
+		</div> <!-- #content --> 
+		<div id="help" class="clearfix"> 
+			<div class="hint">
+				<p><strong>Do you need help with OpenEyes?</strong></p>
+				<p>Before you contact the helpdesk...</p>
+				<p>Is there a "Super User" in your office available? (A "Super User" is...)</p>
+				<p>Have you checked the <a href="#">Quick Reference Guide?</a></p>
+			</div>
+			<div class="hint">
+				<p><strong>Searching by patient details.</strong></p>
+				<p>Although the Last Name is required it doesn't have to be complete. For example if you search for "Smi", the results will include all last names starting with "Smi...". Any other information you can add will help narrow the search results.</p>
+			</div>
+
+			<div class="hint">
+				<p><strong>Still need help?</strong></p>
+				<p>Contact the helpdesk:</p>
+				<p>Telephone: 01234 12343567 ext. 0000</p>
+				<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
+			</div>
+		</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
 	
