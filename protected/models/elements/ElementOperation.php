@@ -144,8 +144,8 @@ class ElementOperation extends BaseElement
 		$criteria->compare('schedule_timeframe', $this->schedule_timeframe);
 
 		return new CActiveDataProvider(get_class($this), array(
-															  'criteria' => $criteria,
-														 ));
+				'criteria' => $criteria,
+			));
 	}
 
 	/**
@@ -403,8 +403,7 @@ class ElementOperation extends BaseElement
 
 		if (!empty($_POST['Procedures'])) {
 			// first wipe out any existing procedures so we start from scratch
-			OperationProcedureAssignment::model()->deleteAll('operation_id = :id',
-															 array(':id' => $operationId));
+			OperationProcedureAssignment::model()->deleteAll('operation_id = :id', array(':id' => $operationId));
 
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
@@ -447,7 +446,7 @@ class ElementOperation extends BaseElement
 		} else {
 			$firmId = null;
 		}
-		
+
 		$service = $this->getBookingService();
 		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
 
@@ -624,38 +623,54 @@ class ElementOperation extends BaseElement
 		return $text;
 	}
 
-	public function getWardOptions($siteId)
+	public function getWardOptions($siteId, $theatreId = null)
 	{
 		if (empty($siteId)) {
 			throw new Exception('Site id is required.');
 		}
-		$patient = $this->event->episode->patient;
-
-		$genderRestrict = $ageRestrict = 0;
-		$genderRestrict = ('M' == $patient->gender)
-			? Ward::RESTRICTION_MALE : Ward::RESTRICTION_FEMALE;
-		$ageRestrict = ($patient->getAge() < 16)
-			? Ward::RESTRICTION_UNDER_16 : Ward::RESTRICTION_ATLEAST_16;
-
-		$whereSql = 's.id = :id AND
-			(w.restriction & :r1 > 0) AND (w.restriction & :r2 > 0)';
-		$whereParams = array(
-			':id' => $siteId,
-			':r1' => $genderRestrict,
-			':r2' => $ageRestrict
-		);
-
-		$wards = Yii::app()->db->createCommand()
-			->select('w.id, w.name')
-			->from('ward w')
-			->join('site s', 's.id = w.site_id')
-			->where($whereSql, $whereParams)
-			->queryAll();
-
 		$results = array();
+		// if we have a theatre id, see if it has an associated ward
+		if (!empty($theatreId)) {
+			$ward = Yii::app()->db->createCommand()
+				->select('t.ward_id AS id, w.name')
+				->from('theatre_ward_assignment t')
+				->join('ward w', 't.ward_id = w.id')
+				->where('t.theatre_id = :id', array(':id' => $theatreId))
+				->queryRow();
+			
+			if (!empty($ward)) {
+				$results[$ward['id']] = $ward['name'];
+			}
+		}
+		
+		if (empty($results)) {
+			// otherwise select by site and patient age/gender
+			$patient = $this->event->episode->patient;
 
-		foreach ($wards as $ward) {
-			$results[$ward['id']] = $ward['name'];
+			$genderRestrict = $ageRestrict = 0;
+			$genderRestrict = ('M' == $patient->gender) ? Ward::RESTRICTION_MALE : Ward::RESTRICTION_FEMALE;
+			$ageRestrict = ($patient->getAge() < 16) ? Ward::RESTRICTION_UNDER_16 : Ward::RESTRICTION_ATLEAST_16;
+
+			$whereSql = 's.id = :id AND
+				(w.restriction & :r1 > 0) AND (w.restriction & :r2 > 0)';
+			$whereParams = array(
+				':id' => $siteId,
+				':r1' => $genderRestrict,
+				':r2' => $ageRestrict
+			);
+
+			$wards = Yii::app()->db->createCommand()
+				->select('w.id, w.name')
+				->from('ward w')
+				->join('site s', 's.id = w.site_id')
+				->where($whereSql, $whereParams)
+				->queryAll();
+
+			$results = array();
+
+			foreach ($wards as $ward) {
+				$results[$ward['id']] = $ward['name'];
+			}
 		}
 
 		return $results;
@@ -690,22 +705,22 @@ class ElementOperation extends BaseElement
 
 	public function getStatusText()
 	{
-		switch($this->status) {
+		switch ($this->status) {
 			case self::STATUS_PENDING:
 				$status = 'Pending';
 				break;
-                        case self::STATUS_SCHEDULED:
-                                $status = 'Scheduled';
-                                break;
-                        case self::STATUS_NEEDS_RESCHEDULING:
-                                $status = 'Needs rescheduling';
-                                break;
-                        case self::STATUS_RESCHEDULED:
-                                $status = 'Rescheduled';
-                                break;
-                        case self::STATUS_CANCELLED:
-                                $status = 'Cancelled';
-                                break;
+			case self::STATUS_SCHEDULED:
+				$status = 'Scheduled';
+				break;
+			case self::STATUS_NEEDS_RESCHEDULING:
+				$status = 'Needs rescheduling';
+				break;
+			case self::STATUS_RESCHEDULED:
+				$status = 'Rescheduled';
+				break;
+			case self::STATUS_CANCELLED:
+				$status = 'Cancelled';
+				break;
 			default:
 				$status = 'Unknown status';
 				break;
@@ -713,6 +728,7 @@ class ElementOperation extends BaseElement
 
 		return $status;
 	}
+
 	/**
 	 * Get the diagnosis for this operation. Used by the booking event type template to create the admission form.
 	 *
@@ -727,16 +743,16 @@ class ElementOperation extends BaseElement
 		return $elementDiagnosis->disorder->fully_specified_name;
 	}
 
-        /**
-         * Used by the booking event type template to format the date.
-         *
-         * @param string date
-         * @return string
-         */
-        public function convertDate($date)
-        {
-                return date ('l jS F Y', strtotime($date));
-        }
+	/**
+	 * Used by the booking event type template to format the date.
+	 *
+	 * @param string date
+	 * @return string
+	 */
+	public function convertDate($date)
+	{
+		return date('l jS F Y', strtotime($date));
+	}
 
 	/**
 	 * Used by the booking event to display the admission time (session start time minus one hour)
@@ -744,8 +760,8 @@ class ElementOperation extends BaseElement
 	 * @param string $time
 	 * @return string
 	 */
-        public function convertTime($time)
-        {
-                return date ('G:i:s', strtotime( '-1 hour' , strtotime ($time)));
-        }
+	public function convertTime($time)
+	{
+		return date('G:i:s', strtotime('-1 hour', strtotime($time)));
+	}
 }

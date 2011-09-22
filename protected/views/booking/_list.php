@@ -7,10 +7,6 @@ if (!$reschedule) {
 } else {
 	echo CHtml::form(array('booking/update'), 'post', array('id' => 'bookingForm'));
 } ?>
-<div class="label">Ward:</div>
-<div class="data"><?php echo CHtml::dropDownList('Booking[ward_id]', '',
-	$operation->getWardOptions($session['site_id'])); ?></div>
-<div class="cleartall"></div>
 <strong>View other operations in this session:</strong>
 <span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
 <p/>

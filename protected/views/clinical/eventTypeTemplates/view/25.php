@@ -164,7 +164,7 @@ leave a message and contact number on the answer phone.
 			$content .= "If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.<br /><br />\n";
 			$content .= "To help ensure your admission proceeds smoothly, please follow these instructions:<br /><br />\n";
 			$content .= "<ul>\n";
-			$content .= "<li>Bring this letter with you on " . $this->convertDate($operation->booking->session->date) . "</li>\n";
+			$content .= "<li>Bring this letter with you on " . $operation->convertDate($operation->booking->session->date) . "</li>\n";
 			$content .= "<li>Please complete the attached in-patient questionnaire and bring it with you.</li>\n";
 			$content .= "<li>Please go directly to " . $operation->booking->ward->name . " ward<li>\n";
 			$content .= "<li>Please bring with you any medication you are using</li>\n";
