@@ -42,7 +42,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 		<div id="session_dates">
 		<div id="details">
 <?php	echo $this->renderPartial('_calendar',
-			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions), false, true); ?>
+			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions, 'firmId' => $firm->id), false, true); ?>
 		</div>
 		</div>
 	</div>
@@ -53,10 +53,14 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 		$('#previous_month').live('click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
+			var firm = $('input[id=sessionFirm]').val();
+			if (firm == '') {
+				firm = 'EMG';
+			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month},
+				'data': {'operation': operation, 'date': month, 'firmId': firm},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -72,10 +76,14 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 		$('#next_month').live('click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
+			var firm = $('input[id=sessionFirm]').val();
+			if (firm == '') {
+				firm = 'EMG';
+			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month},
+				'data': {'operation': operation, 'date': month, 'firmId': firm},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -132,7 +140,6 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 		$('#firmSelect #firmId').live('change', function() {
 			var firmId = $(this).val();
 			var operation = $('input[id=operation]').val();
-			console.log('firm: ' + firmId);
 			
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/schedule'); ?>',

@@ -146,10 +146,20 @@ class BookingController extends BaseController
 			throw new Exception('Operation id is invalid.');
 		}
 		$minDate = !empty($_GET['date']) ? strtotime($_GET['date']) : $operation->getMinDate();
-		$sessions = $operation->getSessions();
+		
+		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
+		if ($firmId != 'EMG') {
+			$_GET['firm'] = $firmId;
+			$firm = Firm::model()->findByPk($firmId);
+		} else {
+			$firm = new Firm;
+			$firm->name = 'Emergency List';
+		}
+		
+		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
 		$this->renderPartial('/booking/_calendar',
-			array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+			array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>$firmId), false, true);
 	}
 
 	public function actionTheatres()

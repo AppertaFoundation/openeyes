@@ -173,13 +173,14 @@ class BookingControllerTest extends CDbTestCase
 		$sessions = $operation->getSessions();
 
 		$_GET['operation'] = $operation->id;
+		$firm = $this->firms('firm1');
 
 		$mockController = $this->getMock('BookingController', array('renderPartial'),
 			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_calendar',
-				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions));
+				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>$firm->id));
 
 		$mockController->actionSessions();
 	}
