@@ -159,6 +159,7 @@ class BookingController extends BaseController
 		if (empty($operation)) {
 			throw new Exception('Operation id is invalid.');
 		}
+		$firmId = empty($_GET['firm']) ? $operation->event->episode->firm_id : $_GET['firm'];
 		$month = !empty($_GET['month']) ? $_GET['month'] : null;
 		if (empty($month)) {
 			throw new Exception('Month is required.');
@@ -169,7 +170,7 @@ class BookingController extends BaseController
 		}
 		$time = strtotime($month);
 		$date = date('Y-m-d', mktime(0,0,0,date('m', $time), $day, date('Y', $time)));
-		$theatres = $operation->getTheatres($date);
+		$theatres = $operation->getTheatres($date, $firmId == 'EMG');
 
 		$this->renderPartial('/booking/_theatre_times',
 			array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);

@@ -517,12 +517,16 @@ class ElementOperation extends BaseElement
 		return $results;
 	}
 
-	public function getTheatres($date)
+	public function getTheatres($date, $emergency = false)
 	{
 		if (empty($date)) {
 			throw new Exception('Date is required.');
 		}
-		$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		if (!$emergency) {
+			$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
+		} else {
+			$firmId = null;
+		}
 
 		$service = $this->getBookingService();
 		$sessions = $service->findTheatres($date, $firmId);
