@@ -109,7 +109,10 @@ class PatientControllerTest extends CDbTestCase
 		$_POST['Patient'] = $this->patients['patient1'];
 		$patient = new Patient;
 		$patient->attributes = $_POST['Patient'];
-		$data = $patient->search();
+		$data = $patient->search(array(
+			'items_per_page' => PHP_INT_MAX,
+			'currentPage' => 0
+		));
 		
 		$expected = $data->getData();
 		$results = $this->controller->getSearch($_POST['Patient']);
