@@ -9,7 +9,7 @@ $this->layout = 'main'; ?>
 <h2>Patient search</h2>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
-	<div id="patient-search-error" class="rounded-corners">
+	<div id="patient-search-error" class="rounded-corners" style="display: none;">
 		No patients found.
 	</div>
 	<?php
@@ -17,7 +17,7 @@ $this->layout = 'main'; ?>
 		'id'=>'patient-search',
 		'enableAjaxValidation'=>true,
 		'focus'=>'#Patient_hos_num',
-		//'action' => Yii::app()->createUrl('patient/results')
+		'action' => Yii::app()->createUrl('patient/results')
 	));?>
 	<div id="search_patient_id" class="form_greyBox bigInput">
 		<?php
@@ -25,7 +25,7 @@ $this->layout = 'main'; ?>
 			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 		?>
 		<button type="submit" value="submit" class="btn_findPatient ir" id="findPatient_id">Find patient</button>
-		<?php $this->endWidget();?>
+		<?php //$this->endWidget();?>
 	</div>
 	<?php
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(
@@ -41,33 +41,49 @@ $this->layout = 'main'; ?>
 			'collapsible'=>true,
 		),
 	));
+	$this->endWidget();
 	?>
 	</form>
 </div><!-- .centralColumn -->
 <div id="search-form" class="">
 </div><!-- search-form -->
+<div id="patient-list"></div>
 <script type="text/javascript">
 	$('#findPatient_id').click(function() {
-		if (!$('#Patient_hos_num').val()) {
-			$('#patient-search-error').html('Please enter a hospital number.');
-			$('#patient-search-error').show();
-			$('#patient-list').hide();
-			return false;
-		}
-		patient_search($('#patient-search').serialize());
+		patient_search();
+		return false;
 	});
 
 	$('#findPatient_details').click(function() {
-		if (!$('#Patient_last_name').val() || !$('#Patient_first_name').val()) {
-			$('#patient-search-error').html('Please enter at least a first name and surname.');
+		patient_search();
+		return false;
+	});
+
+	function patient_search() {
+		/*if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
+			$('#patient-search-error').html('Please enter either a hospital number or a firstname and lastname.');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;
-		}
-		patient_search($('#patient-adv-search-form').serialize());
-	});
+		}*/
 
-	function patient_search(postdata) {
+		var dob_day_default = $('#dob_day').val() == 'DD';
+		var dob_month_default = $('#dob_month').val() == 'MM';
+		var dob_year_default = $('#dob_year').val() == 'YYYY';
+
+		if (dob_day_default) $('#dob_day').val('');
+		if (dob_month_default) $('#dob_month').val('');
+		if (dob_year_default) $('#dob_year').val('');
+
+		$('#patient-search').submit();
+		return false;
+
+		var postdata = $('#patient-search').serialize();
+
+		if (dob_day_default) $('#dob_day').val('DD');
+		if (dob_month_default) $('#dob_month').val('MM');
+		if (dob_year_default) $('#dob_year').val('YYYY');
+
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',
 			'type': 'POST',

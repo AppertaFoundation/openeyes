@@ -19,7 +19,9 @@
  
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
-		<div id="brand" class="ir"><h1>OpenEyes</h1></div> 
+		<a href="/site/index">
+			<div id="brand" class="ir"><h1>OpenEyes</h1></div> 
+		</a>
 	</div> <!-- #header --> 
 
 	<?php $this->widget('zii.widgets.CBreadcrumbs', array(

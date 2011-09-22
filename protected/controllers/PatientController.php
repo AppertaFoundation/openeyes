@@ -58,6 +58,12 @@ class PatientController extends BaseController
 		));
 	}
 
+	public function actionViewpas() {
+		$patient = Patient::model()->find('PAS_Key=:PAS_Key', array(':PAS_Key'=>(integer)$_GET['pas_key']));
+		header('Location: /patient/view/'.$patient->id);
+		exit;
+	}
+
 	/**
 	 * Lists all models.
 	 */
@@ -87,38 +93,76 @@ class PatientController extends BaseController
 	/**
 	 * Display results based on a search submission
 	 */
-	public function actionResults()
+	public function actionResults($page=false)
 	{
+		if (!empty($_POST)) {
+			$get_hos_num = (@$_POST['Patient']['hos_num'] ? $_POST['Patient']['hos_num'] : '0');
+			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
+			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
+			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? $_POST['Patient']['nhs_num'] : '0');
+			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
+			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
+			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
+			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
+
+			header("Location: /patient/results/$get_hos_num/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/$get_dob_day/$get_dob_month/$get_dob_year/1");
+			exit;
+		}
+
 		$model = new Patient;
 
-		// The user has to provide some minimal criteria
-		if (empty($_POST['Patient']['last_name']) && empty($_POST['Patient']['hos_num'])) {
-			return CJavaScript::jsonEncode(false);
-		}
+		$items_per_page = 10;
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
-			$criteria = $service->search($this->collatePostData());
+			$criteria = $service->search($this->collateGetData());
+
+			$nr = Patient::model()->count($criteria);
 
 			$dataProvider = new CActiveDataProvider('Patient', array(
 				'criteria' => $criteria,
-				'pagination' => array('pageSize' => PHP_INT_MAX)
+				'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
 			));
 		} else {
-			$model->attributes = $this->collatePostData();
-			$dataProvider = $model->search();
+			$model->attributes = $this->collateGetData();
+			$dataProvider = $model->search(array(
+				'currentPage' => (integer)@$_GET['page_num']-1,
+				'items_per_page' => $items_per_page
+			));
+
+			$nr = $model->search_nr();
 		}
 
-		$results = $dataProvider->getData();
-
-		$output = array();
-
-		foreach ($results as $result) {
-			$output[] = array($result['id'], $result['first_name'], $result['last_name']);
+		if ($nr == 1) {
+			foreach ($dataProvider->getData() as $item) {
+				header('Location: /patient/view/'.$item->id);
+				exit;
+			}
 		}
 
-		//echo CJavaScript::jsonEncode($output);
-		echo CJavaScript::jsonEncode($results);
+		$pages = ceil($nr/$items_per_page);
+
+		if (count($nr) == 0) {
+			$this->render('index', array(
+				'dataProvider' => $dataProvider
+			));
+		} else {
+			$this->render('results', array(
+				'dataProvider' => $dataProvider,
+				'pages' => $pages,
+				'items_per_page' => $items_per_page,
+				'total_items' => $nr,
+				'hos_num' => (integer)$_GET['hos_num'],
+				'first_name' => $_GET['first_name'],
+				'last_name' => $_GET['last_name'],
+				'nhs_num' => (integer)$_GET['nhs_num'],
+				'gender' => $_GET['gender'],
+				'dob_day' => (integer)$_GET['dob_day'],
+				'dob_month' => (integer)$_GET['dob_month'],
+				'dob_year' => (integer)$_GET['dob_year'],
+				'pagen' => (integer)$_GET['page_num']-1
+			));
+		}
 	}
 
 	/**
@@ -127,7 +171,7 @@ class PatientController extends BaseController
 	public function actionAdmin()
 	{
 		$model = new Patient('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if (isset($_GET['Patient']))
 			$model->attributes = $_GET['Patient'];
 
@@ -231,7 +275,7 @@ class PatientController extends BaseController
 	 * Perform a search on a model and return the results
 	 * (separate function for unit testing)
 	 *
-	 * @param array $data   form data of search terms
+	 * @param array $data		form data of search terms
 	 * @return dataProvider
 	 */
 	public function getSearch($data)
@@ -257,14 +301,31 @@ class PatientController extends BaseController
 		return $data;
 	}
 
-        public function getTemplateName($action, $eventTypeId)
-        {
-                $template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+	public function collateGetData()
+	{
+		$data = $_GET;
 
-                if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
-                        $template = $action;
-                }
+		if (isset($_GET['dob_day']) && isset($_GET['dob_month']) && isset($_GET['dob_year']) && $_GET['dob_day'] && $_GET['dob_month'] && $_GET['dob_year']) {
+			$data['dob'] = $_GET['dob_year'] . '-' . $_GET['dob_month'] . '-' . $_GET['dob_day'];
+		}
 
-                return $template;
-        }
+		foreach ($data as $key => $value) {
+			if ($value == '0') {
+				$data[$key] = '';
+			}
+		}
+
+		return $data;
+	}
+
+	public function getTemplateName($action, $eventTypeId)
+	{
+		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+
+		if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
+			$template = $action;
+		}
+
+		return $template;
+	}
 }

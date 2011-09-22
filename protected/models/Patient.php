@@ -63,7 +63,7 @@ class Patient extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-	    		'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+					'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
 			'address' => array(self::HAS_ONE, 'Address', 'id'),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
 		);
@@ -89,11 +89,25 @@ class Patient extends BaseActiveRecord
 		);
 	}
 
+	public function search_nr()
+	{
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),false);
+		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),false);
+		$criteria->compare('dob',$this->dob,false);
+		$criteria->compare('gender',$this->gender,false);
+		$criteria->compare('hos_num',$this->hos_num,false);
+		$criteria->compare('nhs_num',$this->nhs_num,false);
+
+		return Patient::model()->count($criteria);
+	}
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
+	public function search($params)
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
@@ -109,7 +123,7 @@ class Patient extends BaseActiveRecord
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
-			'pagination' => array('pageSize' => PHP_INT_MAX)
+			'pagination' => array('pageSize' => $params['items_per_page'], 'currentPage' => $params['currentPage'])
 		));
 	}
 
