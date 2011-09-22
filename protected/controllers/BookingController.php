@@ -159,6 +159,7 @@ class BookingController extends BaseController
 		if (empty($operation)) {
 			throw new Exception('Operation id is invalid.');
 		}
+		$firmId = empty($_GET['firm']) ? $operation->event->episode->firm_id : $_GET['firm'];
 		$month = !empty($_GET['month']) ? $_GET['month'] : null;
 		if (empty($month)) {
 			throw new Exception('Month is required.');
@@ -169,7 +170,7 @@ class BookingController extends BaseController
 		}
 		$time = strtotime($month);
 		$date = date('Y-m-d', mktime(0,0,0,date('m', $time), $day, date('Y', $time)));
-		$theatres = $operation->getTheatres($date);
+		$theatres = $operation->getTheatres($date, $firmId == 'EMG');
 
 		$this->renderPartial('/booking/_theatre_times',
 			array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
@@ -222,17 +223,22 @@ class BookingController extends BaseController
 			$session = Session::model()->findByPk($model->session_id);
 			$operation = ElementOperation::model()->findByPk($model->element_operation_id);
 			if (!empty($_POST['wardType'])) {
+				/* currently not in use, but if we want to allow a checkbox for 
+				 * booking into an observational ward, it would be handled here
+				 */
 				$observationWard = Ward::model()->findByAttributes(
 					array('site_id' => $session->sequence->theatre->site_id,
 						'restriction' => Ward::RESTRICTION_OBSERVATION));
 				if (!empty($observationWard)) {
 					$model->ward_id = $observationWard->id;
 				} else {
-					$wards = $operation->getWardOptions($session->sequence->theatre->site_id);
+					$wards = $operation->getWardOptions(
+						$session->sequence->theatre->site_id, $session->sequence->theatre->id);
 					$model->ward_id = key($wards);
 				}
 			} elseif (!empty($operation) && !empty($session)) {
-				$wards = $operation->getWardOptions($session->sequence->theatre->site_id);
+				$wards = $operation->getWardOptions(
+					$session->sequence->theatre->site_id, $session->sequence->theatre->id);
 				$model->ward_id = key($wards);
 			}
 

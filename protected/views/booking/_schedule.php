@@ -14,6 +14,7 @@ if ($operation->event->episode->firm_id != $firm->id) {
 		$message = 'You are booking into the list for ' . $firm->name . '.';
 	} ?>
 	<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
+	<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
 <?php
 }
 	?>
@@ -93,10 +94,14 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			var day = $(this).text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
+			var firm = $('input[id=sessionFirm]').val();
+			if (firm == '') {
+				firm = 'EMG';
+			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'month': month, 'day': day},
+				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm},
 				'success': function(data) {
 					if ($('#theatres').length == 0) {
 						$('#operation').append(data);
