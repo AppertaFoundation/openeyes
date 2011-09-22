@@ -57,9 +57,15 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					var totalDuration = 0;
 					$('#procedure_list tbody').children().children('td:odd').each(function() {
 						duration = Number($(this).text());
+						if ($('input[name=\"ElementOperation[eye]\"]:checked').val() == " . ElementOperation::EYE_BOTH . ") {
+							duration = duration * 2;
+						}
 						totalDuration += duration;
 					});
 					var thisDuration = Number($('#procedure_list tbody').children().children(':last').text());
+					if ($('input[name=\"ElementOperation[eye]\"]:checked').val() == " . ElementOperation::EYE_BOTH . ") {
+						thisDuration = thisDuration * 2;
+					}
 					var operationDuration = Number($('#ElementOperation_total_duration').val());
 					$('#projected_duration').text(totalDuration);
 					$('#ElementOperation_total_duration').val(operationDuration + thisDuration);
@@ -230,6 +236,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	});
 	function removeProcedure(row) {
 		var duration = $(row).parent().siblings('td').text();
+		if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
+			duration = duration * 2;
+		}		
 		var projectedDuration = Number($('#fancybox-content #projected_duration').text()) - duration;
 		var totalDuration = Number($('#fancybox-content #ElementOperation_total_duration').val()) - duration;
 
