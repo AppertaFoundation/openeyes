@@ -96,11 +96,11 @@ class PatientController extends BaseController
 	public function actionResults($page=false)
 	{
 		if (!empty($_POST)) {
-			/*if (!@$_POST['Patient']['hos_num'] && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
+			if (!@$_POST['Patient']['hos_num'] && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
 				header('Location: /patient/results/error');
 				setcookie('patient-search-minimum-criteria','1',0,'/');
 				exit;
-			}*/
+			}
 			$get_hos_num = (@$_POST['Patient']['hos_num'] ? $_POST['Patient']['hos_num'] : '0');
 			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
 			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
@@ -115,10 +115,10 @@ class PatientController extends BaseController
 			exit;
 		}
 
-		/*if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
+		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
 			header('Location: /patient/results/error');
 			exit;
-		}*/
+		}
 
 		$model = new Patient;
 
@@ -142,6 +142,11 @@ class PatientController extends BaseController
 			));
 
 			$nr = $model->search_nr();
+		}
+
+		if ($nr == 0) {
+			header('Location: /patient/no-results');
+			exit;
 		}
 
 		if ($nr == 1) {

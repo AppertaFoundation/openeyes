@@ -10,12 +10,15 @@ $this->layout = 'main'; ?>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
 	<?php if ($_SERVER['REQUEST_URI'] == '/patient/results/error') {?>
-		<div id="patient-search-error">
-			Please enter either a hospital number or a firstname and lastname.
+		<div id="patient-search-error" class="alertBox">
+			<h3>Please enter either a hospital number or a firstname and lastname.</h3>
+		</div>
+	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results') {?>
+		<div id="patient-search-error" class="alertBox">
+			<h3>Sorry, No patients found for that search.</h3>
 		</div>
 	<?php }else{?>
-		<div id="patient-search-error" class="rounded-corners" style="display: none;">
-			No patients found.
+		<div id="patient-search-error" class="alertBox" style="display: none;">
 		</div>
 	<?php }?>
 	<?php
@@ -34,19 +37,7 @@ $this->layout = 'main'; ?>
 		<?php //$this->endWidget();?>
 	</div>
 	<?php
-	$this->widget('zii.widgets.jui.CJuiAccordion', array(
-		'id' => 'patient-adv-search',
-		'panels'=>array(
-			''=>$this->renderPartial('/patient/_advanced_search',
-				array(),true),
-		),
-		// additional javascript options for the accordion plugin
-		'options'=>array(
-			'active'=>0,
-			'animated'=>false,
-			'collapsible'=>true,
-		),
-	));
+	$this->renderPartial('/patient/_advanced_search');
 	$this->endWidget();
 	?>
 	</form>
@@ -66,12 +57,12 @@ $this->layout = 'main'; ?>
 	});
 
 	function patient_search() {
-		/*if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
-			$('#patient-search-error').html('Please enter either a hospital number or a firstname and lastname.');
+		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
+			$('#patient-search-error').html('<h3>Please enter either a hospital number or a firstname and lastname.</h3>');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;
-		}*/
+		}
 
 		$('#patient-search').submit();
 		return false;

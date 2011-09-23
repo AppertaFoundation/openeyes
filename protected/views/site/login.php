@@ -40,15 +40,13 @@ $this->layout = 'simple';
 
 		<?php $this->endWidget(); ?>
 	</div><!-- #login-form -->
+	<script type="text/javascript">
+		$('input[id=LoginForm_username]').watermark('enter username');
+		$('input[id=LoginForm_password]').watermark('enter password');
 
-	</div> <!-- #content -->
-<script type="text/javascript">
-	$('input[id=LoginForm_username]').watermark('enter username');
-	$('input[id=LoginForm_password]').watermark('enter password');
-
-	if ($('#LoginForm_username').val() == '') {
-		$('#LoginForm_username').focus();
-	} else {
-		$('#LoginForm_password').select().focus();
-	}
-</script>
+		if ($('#LoginForm_username').val() == '') {
+			$('#LoginForm_username').focus();
+		} else {
+			$('#LoginForm_password').select().focus();
+		}
+	</script>

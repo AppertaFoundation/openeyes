@@ -51,8 +51,13 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 
 						<div class="resultsPagination">Viewing patients:
 							<?php for ($i=0; $i<$pages; $i++) {?>
-								<?php if ($i == $pagen) {?>
-									<span class="showingPage"><?php echo 1+($i*$items_per_page)?> - <?php echo ($i+1)*$items_per_page?></span>
+								<?php if ($i == $pagen) {
+									$to = ($i+1)*$items_per_page;
+									if ($to > $total_items) {
+										$to = $total_items;
+									}
+									?>
+									<span class="showingPage"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></span>
 								<?php }else{?>
 									<?php
 									$to = ($i+1)*$items_per_page;

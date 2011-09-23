@@ -48,6 +48,7 @@ return CMap::mergeArray(
 				'showScriptName'=>false,
 				'rules'=>array(
 					'patient/results/error'=>'site/index',
+					'patient/no-results'=>'site/index',
 					'patient/results/<hos_num:\d+>/<first_name:.*>/<last_name:.*>/<nhs_num:[\d-]+>/<gender:.*>/<dob_day:\d+>/<dob_month:\d+>/<dob_year:\d+>/<page_num:\d+>'=>'patient/results',
 					'patient/viewpas/<pas_key:\d+>'=>'patient/viewpas',
 					'' => 'site/index', // default action

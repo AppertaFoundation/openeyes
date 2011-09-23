@@ -83,41 +83,44 @@ body { width:1230px; margin:0 auto; }
 #brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
 #user_panel { width:500px; right:10px; }
-#patientID 	{ width:350px; right:520px; }
+#patientID 	{ width:220px; right:540px; }
 #eventType 	{ width:150px; left: 260px; }
 
 /* ====== CONTENT STRUCTURES ====== */
-#content .centralColumn { width:800px; 	margin: 20px auto 0 auto;}
-#content .wrapTwo 	{ width:1200px; margin: 20px auto 0 auto;}
-#content .wrapTwo > .narrowColumn 	{ width:360px; float:right;}
-#content .wrapTwo > .wideColumn		{ width:820px; float:left;}					
-
+#content .centralColumn { width:800px; 	margin: 20px auto 0 auto; }
+#content .wrapTwo 	{ width:1200px; margin: 20px auto 0 auto; }
+#content .wrapTwo > .narrowColumn 	{ width:360px; float:right; }
+#content .wrapTwo > .wideColumn		{ width:820px; float:left; }
+#content .wrapTwo > .halfColumnLeft		{ width:580px; float:left; }
+#content .wrapTwo > .halfColumnRight	{ width:600px; float:right; }
+					
 /* ====== GENERAL ====== */
+
 /* TYPOGRAPHY - BASIC */
 p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
-#content p, #content h3, #content h4, #content h5, #content .whiteBox { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#content p, #content .whiteBox { background: #fafafa; padding:10px; margin-bottom: 15px; }
-#content .whiteBox > p { background: none; padding:0; margin-bottom:8px;  }
+#content p, #content h3, #content h4, #content h5 { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content p { background: #fafafa; padding:10px; margin-bottom: 15px; }
 h3,h4,h5 { margin-bottom:15px; }
 h3 { font-size: 13pt; font-weight: normal; }
 h4 { font-size: 11pt; font-weight: normal; }
 h5 { font-size: 10pt; line-height:1.5; }
-/* H2 reserved for page headers */
+/* H2 reserved for page headers, H6 left for custom uses */
 h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/h2_edge.png) center left no-repeat; padding:5px 15px 3px 55px; 
 -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
 h2.alert { background-color:#ffe6b2; }
-
 em { font-style: italic; color:#333; }
 .small { font-size: 8pt; font-weight: normal; }
 .caps  { font-variant: small-caps; }
 
+/* ====== BOXES ====== */
+#content .whiteBox, #content .alertBox  { padding:10px; margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content .whiteBox > p, #content .alertBox > p  { background: none; padding:0; margin-bottom:8px;  }
+#content .whiteBox { background: #fafafa; }
+#content .alertBox { background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding-left:50px; }
 
 /* ====== A HREF ====== */
 a:hover, .aPush { border-bottom: thin dotted #002ec4; }
 a:hover .aPush	{ border-bottom: thin solid #002ec4; }
-
-/* ====== FOOTER ====== */
-#footer h6 { margin:14px 0 0 12px; font-size:7pt; font-weight: normal; color:#666; }
 
 /* ====== FORMS - GENERAL ====== */
 .form_greyBox { background: #e2dfdb url(../img/_elements/gradient_form_bg.jpg) top left repeat-x; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; border:2px solid #666; }
@@ -150,27 +153,63 @@ button.btn_findPatient:hover 	{ background-image: url(../img/_elements/btns/find
 button.btn_refineSearch 		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
 button.btn_refineSearch:hover 	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
 
-/* ====== TABLES ====== */
-table { border-collapse: collapse; }
-.rOdd 	{ background-color: #e1eef9; border-bottom: 1px solid #fff; }
-.rEven	{ background-color: #dae6f1; border-bottom: 1px solid #fff; }
-.rOdd:hover, .rEven:hover { background-color: #ffe6b2; border-bottom-color: #999;}
+/* ====== TABLES - GENERAL ====== */
+table 	{ border-collapse: collapse; }
+.odd 	{ background-color: #e1eef9; border-bottom: 1px solid #fff; }
+.even	{ background-color: #dae6f1; border-bottom: 1px solid #fff; }
+.odd:hover, .even:hover { background-color: #ffe6b2; border-bottom-color: #999;}
 
 /* SEARCH RESULTS */
-.searchResults { width:100%; } 
-.searchResults th { text-align: left; background:#ddd; color: #444; font-size: 8pt; padding:5px 10px; border-right:1px solid #bbb;   }
-.searchResults th:last-child { border-right: none; }
-.searchResults td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
-.searchResults th:last-child, .searchResults td:last-child { border-right: none; }
-
+#patient-grid table { width:100%; } 
+#patient-grid table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; padding:10px; border-right:1px solid #bbb;   }
+#patient-grid table th:last-child { border-right: none; }
+#patient-grid table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
+#patient-grid table th:last-child, .searchResults td:last-child { border-right: none; }
+/* make sure default pager is hidden! */
+#patient-grid .pager { display: none !important; visibility: hidden; }
+/* my pagination */
 .resultsPagination { text-align:right; background: #ddd; padding:10px;  }
 .resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
 
+/* ------------------------------------------------- HELP & FOOTER  */
 
+/* ====== HELP! ====== */
+div.hint { float:left; width:358px; margin:0 0 20px 25px; padding: 0 10px 0 15px;  border-left: 1px dotted #35b3ef; }
+div.hint > p { color:#4a616a; font-size: 8pt; line-height: 1.5;  }
+div.hint:last-child { border-right: none; }
+
+/* ====== FOOTER ====== */
+#footer h6 { margin:14px 0 0 12px; font-size:7pt; font-weight: normal; color:#666; }
+
+/* ------------------------------------------------- HEADER MODULES  */
+
+/* add border radius */
+#user_panel, ul#user_nav a, #patientID { -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
+
+/* ====== USER PANEL ====== */
+#user_panel { background: #dae6f1 url(../img/_elements/gradient_nav_bg.jpg) bottom left repeat-x; padding:0 10px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;   }
+#user_id	{ float:left; padding-top:10px; }
+/* nav in user panel */
+ul#user_nav	{ float:right; padding:0; margin:0; }
+ul#user_nav > li { display:inline-block; margin: 0 0 8px 4px;}
+ul#user_nav > li a 	 { display:inline-block; background: #cdd9e3; padding:10px 5px 3px 5px; border:none; }
+ul#user_nav > li a:hover { background: #fff; border:none; }
+ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
+
+/* ====== PATIENT ID ====== */
+#patientID { background: #ffcea6 url(../img/_elements/gradient_patient_bg.jpg) bottom left repeat-x; padding:0 10px; border-right:1px solid #999; border-bottom:1px solid #999; border-left:1px solid #999;   }
+#patientID > .patientReminder { padding-top:9px; }
+#patientID > .i_patient { position:absolute; right:0; bottom:0; }
+.patientReminder > .given 		{ display:inline-block; font-size: 11pt; font-weight: bold; }
+.patientReminder > .given:after { content:", "; color:#444; }
+.patientReminder > .surname 	{ display:inline-block; font-size: 11pt; }
+.patientReminder > .number 		{ display:block; font-size: 9pt; margin-top: 2px; }
+
+/* ------------------------------------------------- PAGE SPECIFIC  */
 
 /* ====== LOGIN ====== */
-#login-form 				{ width:350px; margin: 50px auto 0 auto; padding:30px; }
+#login-form 				{ width:350px; margin: 50px auto 0 auto; padding:40px 30px 25px 30px; }
 #login-form .loginRow 		{ position:relative; height:55px; margin-bottom: 20px; text-align: right;}
 #login-form .loginRow label { position:absolute; top:5px; left:10px; }
 #login-form .loginRow input { position:absolute; top:0; right:0; width:200px; margin:0 0 5px 0; }
@@ -178,24 +217,6 @@ table { border-collapse: collapse; }
 #login-form .row 			{ width:350px; text-align: right; margin-top:30px; }
 #login-form .row label		{ margin-right: 5px;  }
 #login-form .row select 	{ position: relative; top:-1px; width:180px; }
-
-
-/* ====== HELP! ====== */
-div.hint { float:left; width:358px; margin:0 0 20px 25px; padding: 0 10px 0 15px;  border-left: 1px dotted #35b3ef; }
-div.hint > p { color:#4a616a; font-size: 8pt; line-height: 1.5;  }
-div.hint:last-child { border-right: none; }
-
-
-/* ====== USER PANEL ====== */
-#user_panel { background: #dae6f1; padding:0 10px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;   }
-#user_id	{ float:left; padding-top:10px; }
-#user_panel, ul#user_nav a { -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
-/* NAV */
-ul#user_nav	{ float:right; padding:0; margin:0; }
-ul#user_nav > li { display:inline-block; margin: 0 0 8px 4px;}
-ul#user_nav > li a 	 { display:inline-block; background: #e4f8f9; padding:10px 5px 3px 5px; border:none; }
-ul#user_nav > li a:hover { background: #fff; border:none; }
-ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 
 /* ====== HOME - SEARCH ====== */
 /* id */
@@ -206,6 +227,10 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 #search_patient_details { padding:15px; margin-top: 10px; }
 /* refine details */
 #refine_patient_details { padding:10px; margin-bottom: 10px;  }
+/* search error */
+p#patient-search-error { background-color:#ffe6b2; }
+/* hide this! */
+#patient-adv-search { display:none; }
 
 
 
