@@ -396,7 +396,6 @@ class ElementOperation extends BaseElement
 
 	protected function afterSave()
 	{
-		parent::afterSave();
 
 		$operationId = $this->id;
 		$order = 1;
@@ -417,6 +416,16 @@ class ElementOperation extends BaseElement
 				$order++;
 			}
 		}
+		return parent::afterSave();
+	}
+	
+	protected function beforeValidate()
+	{
+		if (empty($_POST['Procedures'])) {
+			$this->addError('eye', 'At least one procedure must be entered');
+		}
+		
+		return parent::beforeValidate();
 	}
 
 	public function getMinDate()

@@ -106,6 +106,18 @@ class ElementOperationTest extends CDbTestCase
 			array(2847405, 'Unknown')
 		);
 	}
+	
+	public function dataProvider_StatusText()
+	{
+		return array(
+			array(ElementOperation::STATUS_PENDING, 'Pending'),
+			array(ElementOperation::STATUS_SCHEDULED, 'Scheduled'),
+			array(ElementOperation::STATUS_NEEDS_RESCHEDULING, 'Needs rescheduling'),
+			array(ElementOperation::STATUS_RESCHEDULED, 'Rescheduled'),
+			array(ElementOperation::STATUS_CANCELLED, 'Cancelled'),
+			array(4057828, 'Unknown status')
+		);
+	}
 
 	public function dataProvider_Weekdays()
 	{
@@ -163,6 +175,7 @@ class ElementOperationTest extends CDbTestCase
 	public function testBasicCreate_NoTimeframe_SavesElement()
 	{
 		$element = $this->element;
+		$element->isNewRecord = true;
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
@@ -170,6 +183,8 @@ class ElementOperationTest extends CDbTestCase
 		));
 
 		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
+		
+		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertTrue($element->save(true));
 	}
@@ -177,6 +192,7 @@ class ElementOperationTest extends CDbTestCase
 	public function testBasicCreate_WithTimeframe_SavesElement()
 	{
 		$element = $this->element;
+		$element->isNewRecord = true;
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
@@ -186,6 +202,8 @@ class ElementOperationTest extends CDbTestCase
 		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
 
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
+		
+		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertTrue($element->save(true));
 	}
@@ -193,6 +211,7 @@ class ElementOperationTest extends CDbTestCase
 	public function testBasicCreate_WithMismatchedDiagnosis_DoesNotSaveElement()
 	{
 		$element = $this->element;
+		$element->isNewRecord = true;
 		$element->setAttributes(array(
 			'event_id' => '1',
 			'eye' => ElementOperation::EYE_LEFT,
@@ -202,6 +221,8 @@ class ElementOperationTest extends CDbTestCase
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
 		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_RIGHT;
 		$_POST['ElementOperation']['eye'] = ElementDiagnosis::EYE_LEFT;
+		
+		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertFalse($element->save(true));
 	}
@@ -235,6 +256,7 @@ class ElementOperationTest extends CDbTestCase
 		$element = $this->elements('element1');
 
 		$element->eye = ElementOperation::EYE_RIGHT;
+		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertTrue($element->save(true));
 	}
@@ -304,7 +326,7 @@ class ElementOperationTest extends CDbTestCase
 		$this->assertEquals($expected, $this->element->getBooleanText($field));
 	}
 
-	public function testgetAnaestheticOptions_ReturnsValidData()
+	public function testGetAnaestheticOptions_ReturnsValidData()
 	{
 		$expected = array(
 			ElementOperation::ANAESTHETIC_TOPICAL => 'Topical',
@@ -376,6 +398,16 @@ class ElementOperationTest extends CDbTestCase
 		$this->element->schedule_timeframe = $timeframe;
 
 		$this->assertEquals($text, $this->element->getScheduleText());
+	}
+	
+	/**
+	 * @dataProvider dataProvider_StatusText
+	 */
+	public function testGetStatusText_ReturnsCorrectData($status, $text)
+	{
+		$this->element->status = $status;
+		
+		$this->assertEquals($text, $this->element->getStatusText());
 	}
 
 	/**
@@ -1201,6 +1233,7 @@ class ElementOperationTest extends CDbTestCase
 		foreach ($bookings as $appt) {
 			$bookingCount++;
 			$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
+			$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 			$operation->total_duration = 240;
 			$operation->save();
 			$bookingTime += $operation->total_duration;
@@ -1280,6 +1313,61 @@ class ElementOperationTest extends CDbTestCase
 		}
 
 		$this->assertEquals($expected, $operation->getWardOptions($siteId));
+	}
+	
+	/**
+	 * @dataProvider dataProvider_WardOptions
+	 */
+	public function testGetWardOptions_IncludeTheatreIdWithoutWard_ReturnsCorrectWard($patientAge, $patientGender, $wardList)
+	{
+		Yii::app()->params['pseudonymise_patient_details'] = false;
+
+		$operation = $this->elements('element1');
+
+		$patient = $this->patients('patient1');
+
+		$patient->dob = date('Y-m-d', strtotime("-{$patientAge} years"));
+		$patient->gender = $patientGender;
+		$patient->save(false);
+
+		$siteId = 1;
+		$theatreId = 1;
+		
+		TheatreWardAssignment::model()->deleteAll();
+
+		$expected = array();
+		foreach ($wardList as $wardKey) {
+			$ward = $this->wards($wardKey);
+			$expected[$ward->id] = $ward->name;
+		}
+
+		$this->assertEquals($expected, $operation->getWardOptions($siteId, $theatreId));
+	}
+	
+	public function testGetWardOptions_IncludeTheatreIdWithWard_ReturnsCorrectWard()
+	{
+		Yii::app()->params['pseudonymise_patient_details'] = false;
+
+		$operation = $this->elements('element1');
+
+		$patient = $this->patients('patient1');
+
+		$patient->dob = date('Y-m-d', strtotime("-20 years"));
+		$patient->gender = 'F';
+		$patient->save(false);
+
+		$siteId = 1;
+		$theatreId = 1;
+		$ward = $this->wards('ward1');
+		
+		$assignment = new TheatreWardAssignment;
+		$assignment->theatre_id = $theatreId;
+		$assignment->ward_id = $ward->id;
+		$assignment->save();
+
+		$expected = array($ward->id => $ward->name); // ordinarily would go in ward 4
+
+		$this->assertEquals($expected, $operation->getWardOptions($siteId, $theatreId));
 	}
 
 	public function testGetCancellationText_NoCancellation_ReturnsEmptyString()

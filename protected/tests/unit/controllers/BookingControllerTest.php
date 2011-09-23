@@ -7,6 +7,7 @@ class BookingControllerTest extends CDbTestCase
 		'sequenceFirmAssignments' => 'SequenceFirmAssignment',
 		'sessions' => 'Session',
 		'events' => 'Event',
+		'procedures' => 'Procedure',
 		'operations' => 'ElementOperation',
 		'bookings' => 'Booking',
 		'theatres' => 'Theatre',
@@ -340,6 +341,7 @@ class BookingControllerTest extends CDbTestCase
 		$sessionId = $sessionData['id'];
 		$theatre = $this->theatres['theatre1'];
 
+		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 		$operation->total_duration = 260;
 		$operation->save();
 
@@ -430,6 +432,8 @@ class BookingControllerTest extends CDbTestCase
 		);
 
 		$ward = $this->wards('ward3');
+		
+		TheatreWardAssignment::model()->deleteAll();
 
 		$mockController = $this->getMock('BookingController',
 			array('redirect'), array('BookingController'));
