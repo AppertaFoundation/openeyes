@@ -18,9 +18,9 @@ $form=$this->beginWidget('CActiveForm', array(
 			</div>
 			<div class="multiInputRight clearfix">
 				<?php echo CHtml::label('Date of birth:<span class="labelHint">dd / mm / yyyy</span>', 'dob');?>
-				<?php echo CHtml::textField('dob_day', 'DD', array('size'=>2, 'maxlength'=>2));?><strong style="margin:0 5px 0 8px;">&#47;</strong>
-				<?php echo CHtml::textField('dob_month', 'MM', array('size'=>2, 'maxlength'=>2));?><strong style="margin:0 5px 0 8px;">&#47;</strong>
-				<?php echo CHtml::textField('dob_year', 'YYYY', array('size'=>4, 'maxlength'=>4));?>
+				<?php echo CHtml::textField('dob_day', '', array('size'=>2, 'maxlength'=>2));?><strong style="margin:0 5px 0 8px;">&#47;</strong>
+				<?php echo CHtml::textField('dob_month', '', array('size'=>2, 'maxlength'=>2));?><strong style="margin:0 5px 0 8px;">&#47;</strong>
+				<?php echo CHtml::textField('dob_year', '', array('size'=>4, 'maxlength'=>4));?>
 			</div>
 		</div>
 		<div class="form_column">
@@ -40,34 +40,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	<?php $this->endWidget();?>
 </form>
 <script type="text/javascript">
-	$('#dob_day').focus(function() {
-		if ($('#dob_day').val() == 'DD') {
-			$('#dob_day').val('');
-		}
-	});
-	$('#dob_day').blur(function() {
-		if ($('#dob_day').val() == '') {
-			$('#dob_day').val('DD');
-		}
-	});
-	$('#dob_month').focus(function() {
-		if ($('#dob_month').val() == 'MM') {
-			$('#dob_month').val('');
-		}
-	});
-	$('#dob_month').blur(function() {
-		if ($('#dob_month').val() == '') {
-			$('#dob_month').val('MM');
-		}
-	});
-	$('#dob_year').focus(function() {
-		if ($('#dob_year').val() == 'YYYY') {
-			$('#dob_year').val('');
-		}
-	});
-	$('#dob_year').blur(function() {
-		if ($('#dob_year').val() == '') {
-			$('#dob_year').val('YYYY');
-		}
-	});
+	$('#dob_day').watermark('DD');
+	$('#dob_month').watermark('MM');
+	$('#dob_year').watermark('YYYY');
 </script>

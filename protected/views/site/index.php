@@ -73,22 +73,10 @@ $this->layout = 'main'; ?>
 			return false;
 		}*/
 
-		var dob_day_default = $('#dob_day').val() == 'DD';
-		var dob_month_default = $('#dob_month').val() == 'MM';
-		var dob_year_default = $('#dob_year').val() == 'YYYY';
-
-		if (dob_day_default) $('#dob_day').val('');
-		if (dob_month_default) $('#dob_month').val('');
-		if (dob_year_default) $('#dob_year').val('');
-
 		$('#patient-search').submit();
 		return false;
 
 		var postdata = $('#patient-search').serialize();
-
-		if (dob_day_default) $('#dob_day').val('DD');
-		if (dob_month_default) $('#dob_month').val('MM');
-		if (dob_year_default) $('#dob_year').val('YYYY');
 
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',

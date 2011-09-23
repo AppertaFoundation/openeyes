@@ -32,6 +32,18 @@
 		<?php echo $content; ?>
 	</div> <!-- #content --> 
 	<div id="help" class="clearfix"> 
+		<div class="hint">
+			<p><strong>Login Help</strong></p>
+			<p>User name and password are case sensitive: "A" is different to "a".</p>
+			<p>Ensure that CAPs LOCK is off.</p>
+		</div>
+
+		<div class="hint">
+			<p><strong>Do you require a username and password?</strong></p>
+			<p>Contact the helpdesk:</p>
+			<p>Telephone: 01234 12343567 ext. 0000</p>
+			<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
+		</div>
 	</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
