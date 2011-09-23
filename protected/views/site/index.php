@@ -37,7 +37,7 @@ $this->layout = 'main'; ?>
 	$this->widget('zii.widgets.jui.CJuiAccordion', array(
 		'id' => 'patient-adv-search',
 		'panels'=>array(
-			'or search using patient details'=>$this->renderPartial('/patient/_advanced_search',
+			''=>$this->renderPartial('/patient/_advanced_search',
 				array(),true),
 		),
 		// additional javascript options for the accordion plugin
