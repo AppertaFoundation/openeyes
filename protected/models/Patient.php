@@ -107,10 +107,17 @@ class Patient extends BaseActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search($params)
+	public function search($params=false)
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
+
+		if (!is_array($params)) {
+			$params = array(
+				'items_per_page' => PHP_INT_MAX,
+				'currentPage' => 0
+			);
+		}
 
 		$criteria=new CDbCriteria;
 

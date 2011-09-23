@@ -68,10 +68,7 @@ class PatientTest extends CDbTestCase
 	{
 		$patient = new Patient;
 		$patient->setAttributes($searchTerms);
-		$results = $patient->search(array(
-			 'currentPage' => 0,
-			 'items_per_page' => PHP_INT_MAX
-		));
+		$results = $patient->search();
 		$data = $results->getData();
 
 		$expectedResults = array();

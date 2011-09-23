@@ -282,10 +282,7 @@ class PatientController extends BaseController
 	{
 		$model = new Patient;
 		$model->attributes = $data;
-		return $model->search(array(
-			'items_per_page' => PHP_INT_MAX,
-			'currentPage' => 0
-		));
+		return $model->search();
 	}
 
 	/**
