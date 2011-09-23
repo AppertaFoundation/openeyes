@@ -1,7 +1,26 @@
-		<h2>Search Results</h2>
+<?php
+$based_on = '';
+
+if (@$_GET['first_name'] && $_GET['first_name'] != '0') {
+	$based_on = 'FIRST NAME: <strong>"'.$_GET['first_name'].'"</strong>';
+}
+if (@$_GET['last_name'] && $_GET['last_name'] != '0') {
+	if (@$based_on) {
+		$based_on .= ', ';
+	}
+	$based_on .= 'LAST NAME: <strong>"'.$_GET['last_name'].'"</strong>';
+}
+if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
+	if (@$based_on) {
+		$based_on .= ', ';
+	}
+	$based_on .= 'HOSPITAL NUMBER: <strong>'.$_GET['hos_num']."</strong>";
+}
+?>
+			<h2>Search Results</h2>
 			<div class="wrapTwo clearfix">
 				<div class="wideColumn">
-					<p><strong>27 patients found</strong>, based on LAST NAME: <strong>"Smith"</strong></p>
+					<p><strong><?php echo $total_items?> patients found</strong>, based on <?php echo $based_on?></p>
 					
 					<div class="whiteBox">
 						<?php

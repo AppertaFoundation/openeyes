@@ -96,6 +96,11 @@ class PatientController extends BaseController
 	public function actionResults($page=false)
 	{
 		if (!empty($_POST)) {
+			/*if (!@$_POST['Patient']['hos_num'] && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
+				header('Location: /patient/results/error');
+				setcookie('patient-search-minimum-criteria','1',0,'/');
+				exit;
+			}*/
 			$get_hos_num = (@$_POST['Patient']['hos_num'] ? $_POST['Patient']['hos_num'] : '0');
 			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
 			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
@@ -106,8 +111,14 @@ class PatientController extends BaseController
 			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
 
 			header("Location: /patient/results/$get_hos_num/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/$get_dob_day/$get_dob_month/$get_dob_year/1");
+			setcookie('patient-search-minimum-criteria','1',0,'/');
 			exit;
 		}
+
+		/*if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
+			header('Location: /patient/results/error');
+			exit;
+		}*/
 
 		$model = new Patient;
 

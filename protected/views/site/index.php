@@ -9,9 +9,15 @@ $this->layout = 'main'; ?>
 <h2>Patient search</h2>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
-	<div id="patient-search-error" class="rounded-corners" style="display: none;">
-		No patients found.
-	</div>
+	<?php if ($_SERVER['REQUEST_URI'] == '/patient/results/error') {?>
+		<div id="patient-search-error" class="rounded-corners">
+			Please enter either a hospital number or a firstname and lastname.
+		</div>
+	<?php }else{?>
+		<div id="patient-search-error" class="rounded-corners" style="display: none;">
+			No patients found.
+		</div>
+	<?php }?>
 	<?php
 	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'patient-search',
@@ -60,12 +66,12 @@ $this->layout = 'main'; ?>
 	});
 
 	function patient_search() {
-		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
+		/*if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
 			$('#patient-search-error').html('Please enter either a hospital number or a firstname and lastname.');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;
-		}
+		}*/
 
 		var dob_day_default = $('#dob_day').val() == 'DD';
 		var dob_month_default = $('#dob_month').val() == 'MM';
