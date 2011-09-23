@@ -10,7 +10,7 @@ $this->layout = 'main'; ?>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
 	<?php if ($_SERVER['REQUEST_URI'] == '/patient/results/error') {?>
-		<div id="patient-search-error" class="rounded-corners">
+		<div id="patient-search-error">
 			Please enter either a hospital number or a firstname and lastname.
 		</div>
 	<?php }else{?>
