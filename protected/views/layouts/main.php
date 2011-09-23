@@ -21,9 +21,9 @@
 		<div id="header" class="clearfix"> 
 			<a href="/site/index">
 				<div id="brand" class="ir"><h1>OpenEyes</h1></div> 
-					<?php echo $this->renderPartial('//base/_form', array()); ?>
-				</div> <!-- #header --> 
 			</a>
+			<?php echo $this->renderPartial('//base/_form', array()); ?>
+		</div> <!-- #header --> 
 		<!--div id="mainmenu">
 			<?php $this->widget('zii.widgets.CMenu',array(
 				'items'=>array(
