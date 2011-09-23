@@ -60,12 +60,12 @@ $this->layout = 'main'; ?>
 	});
 
 	function patient_search() {
-		/*if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
+		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
 			$('#patient-search-error').html('Please enter either a hospital number or a firstname and lastname.');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;
-		}*/
+		}
 
 		var dob_day_default = $('#dob_day').val() == 'DD';
 		var dob_month_default = $('#dob_month').val() == 'MM';
