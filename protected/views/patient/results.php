@@ -54,7 +54,13 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 								<?php if ($i == $pagen) {?>
 									<span class="showingPage"><?php echo 1+($i*$items_per_page)?> - <?php echo ($i+1)*$items_per_page?></span>
 								<?php }else{?>
-									<span class="otherPages"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo ($i+1)*$items_per_page?></a></span>
+									<?php
+									$to = ($i+1)*$items_per_page;
+									if ($to > $total_items) {
+										$to = $total_items;
+									}
+									?>
+									<span class="otherPages"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
 								<?php }?>
 							<?php }?>
 						</div>
