@@ -25,6 +25,7 @@ You are logged in as: <strong><?php echo $user->first_name . ' ' . $user->last_n
 <?php $this->widget('zii.widgets.CMenu',array(
 	'items'=>array(
 		array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
+		array('label'=>'Waiting List', 'url'=>array('/waitingList'), 'visible'=>!Yii::app()->user->isGuest),
 		array('label'=>'Theatre Management', 'url'=>array('/theatre'), 'visible'=>!Yii::app()->user->isGuest),
 		array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 		array('label'=>'Logout', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)

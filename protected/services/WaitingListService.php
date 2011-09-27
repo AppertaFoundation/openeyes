@@ -20,11 +20,45 @@ class WaitingListService
          * @param int $firmId
          * @return array
          */
-        public function getWaitingList($firmId)
+        public function getWaitingList($firmId, $serviceId, $status)
         {
-                $firm = Firm::model()->findByPk($firmId);
+		$whereSql = array('ep.end_date IS NULL', '(eo.status = :status1 OR eo.status = :status2)');
+		$whereParams = array(
+                                        'status1' => ElementOperation::STATUS_PENDING,
+                                        'status2' => ElementOperation::STATUS_NEEDS_RESCHEDULING
+                                );
 
-                return Yii::app()->db->createCommand()
+		if (!empty($firmId)) {
+			array_push($whereSql, 'AND f.id = :f_id');
+			$whereParams['f_id'] = $firmId;
+		} elseif (!empty($serviceId)) {
+			array_push($whereSql, 'AND ssa.service_id = :sr_id');
+			$whereParams['sr_id'] = $serviceId;
+		}
+
+		if (!empty($status)) {
+			switch ($status) {
+                                case ElementOperation::LETTER_INVITE:
+                                        array_push($whereSql, 'datetime >= (NOW() - interval 14 day)');
+                                        break;
+				case ElementOperation::LETTER_REMINDER_1:
+					array_push($whereSql, '(datetime < (NOW() - interval 14 day) AND datetime >= (NOW() - interval 28 day))');
+					break;
+                                case ElementOperation::LETTER_REMINDER_2:
+                                        array_push($whereSql, '(datetime < (NOW() - interval 28 day) AND datetime >= (NOW() - interval 42 day))');
+                                        break;
+                                case ElementOperation::LETTER_GP:
+                                        array_push($whereSql, '(datetime < (NOW() - interval 42 day) AND datetime >= (NOW() - interval 56 day))');
+                                        break;
+                                case ElementOperation::LETTER_REMOVAL:
+                                        array_push($whereSql, 'datetime < (NOW() - interval 56 day)');
+                                        break;
+				default:
+					break;
+			}
+		}
+
+                $waitingList =  Yii::app()->db->createCommand()
                                 ->select('
 					eo.id AS eoid,
 					ev.id AS evid,
@@ -43,12 +77,10 @@ class WaitingListService
                                 ->join('patient pat', 'ep.patient_id = pat.id')
 				->join('operation_procedure_assignment opa', 'opa.operation_id = eo.id')
 				->join('procedure p', 'opa.procedure_id = p.id')
-                                ->where('ssa.service_id = :ssa_id AND (eo.status = :status1 OR eo.status = :status2)', array(
-					'ssa_id' => $firm->serviceSpecialtyAssignment->service_id,
-					'status1' => ElementOperation::STATUS_PENDING,
-					'status2' => ElementOperation::STATUS_NEEDS_RESCHEDULING
-				))
+                                ->where(implode(' AND ', $whereSql), $whereParams)
 				->group('opa.operation_id')
                                 ->queryAll();
+
+		return $waitingList;
         }
 }

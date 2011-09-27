@@ -14,64 +14,71 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 
 Yii::app()->clientScript->registerCoreScript('jquery');
+$cs = Yii::app()->getClientScript();
+$cs->registerCSSFile('/css/waitingList.css', 'all');
 
 ?>
-<h3 class="title">Waiting list</h3>
-
-<div id="theatreList">
-<?php
-
-if (empty($operations)) { ?>
-<h2 class="theatre">The waiting list for this service is empty.</h2>
-<?php
-} else {
-?>
-    <table>
-    <tr>
-        <th class="repeat leftAlign">Patient</th>
-	<th class="repeat leftAlign">Hosnum</th>
-	<th class="repeat leftAlign">Procedures</th>
-	<th class="repeat leftAlign">Eye</th>
-	<th class="repeat leftAlign">Consultant</th>
-	<th class="repeat leftAlign">Decision Date</th>
-	<th class="repeat leftAlign">Book Status</th>
-    </tr>
-<?php
-        foreach ($operations as $id => $operation) {
-		$eo = ElementOperation::model()->findByPk($operation['eoid']);
-		$consultant = $eo->event->episode->firm->getConsultant();
-		$user = $consultant->contact->userContactAssignment->user;
-?>
-    <tr>
-        <td class="patient leftAlign">
-<?php
-        echo CHtml::link(
-                $operation['first_name'] . ' ' . $operation['last_name'],
-                Yii::app()->createUrl('patient/view', array(
-                                        'id' => $operation['pid'],
-					'tabId' => 1,
-					'eventId' => $operation['evid']
-                ))
-        );
-?>
-</td><td>
-<?php echo $operation['hos_num'] ?>
-</td><td>
-<?php echo $operation['List'] ?>
-</td><td>
-<?php echo $eo->getEyeText() ?>
-</td><td>
-<?php echo $user->title . ' ' . $user->first_name . ' ' . $user->last_name ?>
-</td><td>
-<?php echo $eo->convertDate($eo->decision_date) ?>
-</td><td>
-<?php echo $eo->getStatusText() ?>
-</td></tr>
-<?php
-        }
-?>
+<h3 class="title">Waiting List</h3>
+<?php $form=$this->beginWidget('CActiveForm', array(
+        'id'=>'waitingList-filter',
+        'action'=>Yii::app()->createUrl('waitingList/search'),
+        'enableAjaxValidation'=>false,
+)); ?>
+<div id="search-options">
+        <div id="main-search">
+        <table>
+        <tr>
+                <th>Service:</th>
+                <th>Firm:</th>
+                <th>Type:</th>
+		<th>&nbsp;</th>
+        </tr>
+        <tr>
+                <td><?php
+        echo CHtml::dropDownList('service-id', '', Service::model()->getList(),
+                array('empty'=>'All services', 'ajax'=>array(
+                        'type'=>'POST',
+                        'data'=>array('service_id'=>'js:this.value'),
+                        'url'=>Yii::app()->createUrl('waitingList/filterFirms'),
+                        'success'=>"js:function(data) {
+                                if ($('#service-id').val() != '') {
+                                        $('#firm-id').attr('disabled', false);
+                                        $('#firm-id').html(data);
+                                } else {
+                                        $('#firm-id').attr('disabled', true);
+                                        $('#firm-id').html(data);
+                                }
+                        }",
+                ))); ?></td>
+                <td><?php
+        echo CHtml::dropDownList('firm-id', '', array(),
+                array('empty'=>'All firms', 'disabled'=>(empty($firmId)))); ?></td>
+                <td><?php
+        echo CHtml::dropDownList('status', '', ElementOperation::getLetterOptions()) ?></td>
+	<td><button type="submit" value="submit" class="shinybutton highlighted"><span>Search</span></button></td>
+</tr>
 </table>
-<?php
-}
-?>
+<?php $this->endWidget(); ?>
+        </div>
 </div>
+<div class="search-options">
+</div>
+<div class="main-search">
+</div>
+<div class="cleartall"></div>
+<div id="searchResults"></div>
+<div class="cleartall"></div>
+<script type="text/javascript">
+        $('#waitingList-filter button[type="submit"]').click(function() {
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
+                        'type': 'POST',
+                        'data': $('#waitingList-filter').serialize(),
+                        'success': function(data) {
+                                $('#searchResults').html(data);
+                                return false;
+                        }
+                });
+                return false;
+        });
+</script>

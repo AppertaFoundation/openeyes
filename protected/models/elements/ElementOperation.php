@@ -58,6 +58,12 @@ class ElementOperation extends BaseElement
 	const STATUS_RESCHEDULED = 3;
 	const STATUS_CANCELLED = 4;
 
+	const LETTER_INVITE = 0;
+	const LETTER_REMINDER_1 = 1;
+	const LETTER_REMINDER_2 = 2;
+	const LETTER_GP = 3;
+	const LETTER_REMOVAL = 4;
+
 	public $service;
 
 	/**
@@ -748,6 +754,50 @@ class ElementOperation extends BaseElement
 		}
 
 		return $status;
+	}
+
+	public function getLetterStatus()
+	{
+		$datetime = strtotime($this->event->datetime);
+		$now = time();
+		$week = 86400 * 7;
+
+		if ($datetime >= ($now - 2 * $week)) {
+			$letterStatus = self::LETTER_INVITE;
+		} elseif (
+			$datetime >= ($now - 4 * $week) &&
+			$datetime < ($now - 2 * $week)
+		) {
+			$letterStatus = self::LETTER_REMINDER_1;
+		} elseif (
+                        $datetime >= ($now - 6 * $week) &&
+                        $datetime < ($now - 4 * $week)
+                ) {
+                        $letterStatus = self::LETTER_REMINDER_2;
+                } elseif (
+                        $datetime >= ($now - 8 * $week) &&
+                        $datetime < ($now - 6 * $week)
+                ) {
+                        $letterStatus = self::LETTER_GP;
+                } elseif (
+                        $datetime < ($now - 8 * $week)
+                ) {
+                        $letterStatus = self::LETTER_REMOVAL;
+                }
+
+		return $letterStatus;
+	}
+
+	public static function getLetterOptions()
+	{
+		return array(
+			'' => 'Any',
+			self::LETTER_INVITE => 'Invitation',
+			self::LETTER_REMINDER_1 => '1st Reminder',
+			self::LETTER_REMINDER_2 => '2nd Reminder',
+			self::LETTER_GP => 'Refer to GP',
+			self::LETTER_REMOVAL => 'To be removed'
+		);
 	}
 
 	/**
