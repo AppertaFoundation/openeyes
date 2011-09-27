@@ -153,18 +153,7 @@ class ElementDiagnosis extends BaseElement
 	public function beforeValidate()
 	{
 		if (!empty($this->disorder_id)) {
-			$terms = explode(' - ', $this->disorder_id);
-
-			if (count($terms) != 2) {
-	// A hack because validate is called a second time on update by ClinicalService->update. Get rid of this method! Replace with an id fetched by ajax, like with procedures?
-				return parent::beforeValidate();
-			}
-
-			$disorder = Disorder::model()->find('
-				term = ? AND
-				fully_specified_name = ? AND
-				systemic = 0
-			', $terms);
+			$disorder = Disorder::model()->find('term = ? AND systemic = 0', array($this->disorder_id));
 
 			if (empty($disorder)) {
 				return false;

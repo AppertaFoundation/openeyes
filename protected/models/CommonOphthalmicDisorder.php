@@ -115,7 +115,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		return CHtml::listData($specialties, 'id', 'name');
 	}
 
-	public function getList($firm)
+	public static function getList($firm)
 	{
 		if (empty($firm)) {
 			throw new Exception('Firm is required.');

@@ -19,6 +19,7 @@ $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
+$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 
 $form = $this->beginWidget('CActiveForm', array(
     'id'=>'clinical-create',
