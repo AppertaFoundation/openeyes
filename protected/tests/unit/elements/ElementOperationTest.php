@@ -89,10 +89,10 @@ class ElementOperationTest extends CDbTestCase
 	{
 		return array(
 			array(ElementOperation::ANAESTHETIC_TOPICAL, 'Topical'),
-			array(ElementOperation::ANAESTHETIC_LOCAL, 'Local'),
-			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'Local with cover'),
-			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'Local with sedation'),
-			array(ElementOperation::ANAESTHETIC_GENERAL, 'General'),
+			array(ElementOperation::ANAESTHETIC_LOCAL, 'LA'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'LA with cover'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'LAS'),
+			array(ElementOperation::ANAESTHETIC_GENERAL, 'GA'),
 			array(2847405, 'Unknown'),
 		);
 	}
@@ -343,10 +343,10 @@ class ElementOperationTest extends CDbTestCase
 	{
 		$expected = array(
 			ElementOperation::ANAESTHETIC_TOPICAL => 'Topical',
-			ElementOperation::ANAESTHETIC_LOCAL => 'Local',
-			ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER => 'Local with cover',
-			ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION => 'Local with sedation',
-			ElementOperation::ANAESTHETIC_GENERAL => 'General'
+			ElementOperation::ANAESTHETIC_LOCAL => 'LA',
+			ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER => 'LA with cover',
+			ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
+			ElementOperation::ANAESTHETIC_GENERAL => 'GA'
 		);
 
 		$this->assertEquals($expected, $this->element->getAnaestheticOptions());
