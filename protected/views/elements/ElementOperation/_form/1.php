@@ -173,12 +173,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 				echo 'checked="checked"';
 			} ?>value="<?php echo $id; ?>" type="radio" name="ElementOperation[anaesthetic_type]">
 		<label for="ElementOperation_anaesthetic_type_<?php echo $i; ?>"><?php echo $value; ?></label>
-<?php		if ($i == 3) {
-				echo '<br />';
-			}
-			$i++;
+	<?php
 		}
-		?></div>
+	?></div>
 	<div class="cleartall"></div>
 	<div class="label">Overnight Stay required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay',

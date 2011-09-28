@@ -261,10 +261,10 @@ class ElementOperation extends BaseElement
 	{
 		return array(
 			self::ANAESTHETIC_TOPICAL => 'Topical',
-			self::ANAESTHETIC_LOCAL => 'Local',
-			self::ANAESTHETIC_LOCAL_WITH_COVER => 'Local with cover',
-			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'Local with sedation',
-			self::ANAESTHETIC_GENERAL => 'General'
+			self::ANAESTHETIC_LOCAL => 'LA',
+			self::ANAESTHETIC_LOCAL_WITH_COVER => 'LA with cover',
+			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
+			self::ANAESTHETIC_GENERAL => 'GA'
 		);
 	}
 
@@ -275,16 +275,16 @@ class ElementOperation extends BaseElement
 				$text = 'Topical';
 				break;
 			case self::ANAESTHETIC_LOCAL:
-				$text = 'Local';
+				$text = 'LA';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'Local with cover';
+				$text = 'LA with cover';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'Local with sedation';
+				$text = 'LAS';
 				break;
 			case self::ANAESTHETIC_GENERAL:
-				$text = 'General';
+				$text = 'GA';
 				break;
 			default:
 				$text = 'Unknown';
@@ -756,9 +756,29 @@ class ElementOperation extends BaseElement
 		return $status;
 	}
 
+	/**
+	 * Returns the letter status for an operation.
+	 *
+	 * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
+	 *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
+  	 *
+	 * return int
+	 */
 	public function getLetterStatus()
 	{
-		$datetime = strtotime($this->event->datetime);
+		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
+			$criteria = new CDbCriteria;
+			$criteria->addCondition('element_operation_id = :eoid');
+			$criteria->params = array('eoid' => $this->id);
+			$criteria->order = 'id DESC';
+			$criteria->limit = 1;
+                	$cancelledBooking = CancelledBooking::model()->find($criteria);
+
+			$datetime = strtotime($cancelledBooking->cancelled_date);
+		} else {
+			$datetime = strtotime($this->event->datetime);
+		}
+
 		$now = time();
 		$week = 86400 * 7;
 
