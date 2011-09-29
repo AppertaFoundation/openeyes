@@ -436,13 +436,14 @@ class ElementOperation extends BaseElement
 		}
 		return parent::afterSave();
 	}
-	
+
 	protected function beforeValidate()
 	{
-		if (empty($_POST['Procedures'])) {
+		if (!empty($_POST['action']) && empty($_POST['Procedures'])) {
+//		if (empty($_POST['Procedures'])) {
 			$this->addError('eye', 'At least one procedure must be entered');
 		}
-		
+
 		return parent::beforeValidate();
 	}
 
@@ -664,12 +665,12 @@ class ElementOperation extends BaseElement
 				->join('ward w', 't.ward_id = w.id')
 				->where('t.theatre_id = :id', array(':id' => $theatreId))
 				->queryRow();
-			
+
 			if (!empty($ward)) {
 				$results[$ward['id']] = $ward['name'];
 			}
 		}
-		
+
 		if (empty($results)) {
 			// otherwise select by site and patient age/gender
 			$patient = $this->event->episode->patient;
