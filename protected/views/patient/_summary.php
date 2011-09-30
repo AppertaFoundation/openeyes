@@ -43,7 +43,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			echo '<br />';
 		}
 	} else {
-		echo 'Unknonwn';
+		echo 'Unknown';
 	} ?>
 		</div>
 	</div>

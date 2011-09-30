@@ -5,6 +5,7 @@ Yii::import('application.controllers.*');
 class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
+	public $model;
 
 	public function filters()
 	{
@@ -45,7 +46,10 @@ class PatientController extends BaseController
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
+		$episodes = $patient->episodes;
+
 		$this->layout = '//layouts/patientMode/main';
+		$this->model = $patient;
 
 		$app = Yii::app();
 		$app->session['patient_id'] = $patient->id;
@@ -53,8 +57,19 @@ class PatientController extends BaseController
 
 		$this->logActivity('viewed patient');
 
+		$episodes_open = 0;
+		$episodes_closed = 0;
+
+		foreach ($episodes as $episode) {
+			if ($episode->end_date === null) {
+				$episodes_open++;
+			} else {
+				$episodes_closed++;
+			}
+		}
+
 		$this->render('view', array(
-			'model' => $patient, 'tab' => $tabId, 'event' => $eventId,
+			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
 	}
 

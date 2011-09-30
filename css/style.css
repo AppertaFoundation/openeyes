@@ -61,10 +61,7 @@ input:invalid, textarea:invalid { background-color: #f0dddd; }
 table { border-collapse: collapse; border-spacing: 0; }
 td { vertical-align: top; }
 
-/* ==|== primary styles ================= */
-
-.myArea { background: #fff; border:1px solid red; padding:10px;}
-
+/* ======================================================================== primary styles ================= */
 
 html { background-color: #d4d1cd; }
 body { width:1230px; margin:0 auto; }
@@ -83,7 +80,7 @@ body { width:1230px; margin:0 auto; }
 #brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
 #user_panel { width:500px; right:10px; }
-#patientID 	{ width:220px; right:540px; }
+#patientID 	{ width:300px; right:540px; }
 #eventType 	{ width:150px; left: 260px; }
 
 /* ====== CONTENT STRUCTURES ====== */
@@ -98,32 +95,40 @@ body { width:1230px; margin:0 auto; }
 
 /* TYPOGRAPHY - BASIC */
 p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
-#content p, #content h3, #content h4, #content h5 { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content p { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #content p { background: #fafafa; padding:10px; margin-bottom: 15px; }
-h3,h4,h5 { margin-bottom:15px; }
-h3 { font-size: 13pt; font-weight: normal; }
+h3,h4,h5 { margin-bottom:10px; }
+/* base: font-size: 10pt; line-height: 1.231;  */
+h3 { font-size: 14pt; font-weight: normal; }
 h4 { font-size: 11pt; font-weight: normal; }
 h5 { font-size: 10pt; line-height:1.5; }
 /* H2 reserved for page headers, H6 left for custom uses */
-h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/h2_edge.png) center left no-repeat; padding:5px 15px 3px 55px; 
+h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/gradients/h2_edge.png) center left no-repeat; padding:5px 15px 3px 55px; 
 -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
 h2.alert { background-color:#ffe6b2; }
 em { font-style: italic; color:#333; }
-.small { font-size: 8pt; font-weight: normal; }
-.caps  { font-variant: small-caps; }
+.small 	{ font-size: 8pt; font-weight: normal; }
+.normal { font-size: 10pt; font-weight: normal;}
+.caps  	{ font-variant: small-caps; }
 
 /* ====== BOXES ====== */
-#content .whiteBox, #content .alertBox  { padding:10px; margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#content .whiteBox > p, #content .alertBox > p  { background: none; padding:0; margin-bottom:8px;  }
-#content .whiteBox { background: #fafafa; }
-#content .alertBox { background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding-left:50px; }
+#content .whiteBox, #content .alertBox, #content .blueBox, #content .patientBox  { padding:10px; margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content .whiteBox > p, #content .alertBox > p, #content .blueBox > p  { background: none; padding:0; margin-bottom:8px;  }
+#content .whiteBox 	{ background: #fafafa; }
+#content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding-left:50px; }
+#content .blueBox	{ background: #dae6f1; color:#4d5155; }
+/* specific content */
+#content .patientBox  { position: relative; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
+/* icons for boxes */
+#content .withIcon { padding-left: 40px; }
+#content .boxIcon { position: absolute; top:5px; left:0; }
 
 /* ====== A HREF ====== */
 a:hover, .aPush { border-bottom: thin dotted #002ec4; }
-a:hover .aPush	{ border-bottom: thin solid #002ec4; }
+a:hover .aPush	{ border-bottom: thin solid #3665ff; }
 
 /* ====== FORMS - GENERAL ====== */
-.form_greyBox { background: #e2dfdb url(../img/_elements/gradient_form_bg.jpg) top left repeat-x; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; border:2px solid #666; }
+.form_greyBox { background: #e2dfdb url(../img/_elements/gradients/bg_form.jpg) top left repeat-x; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; border:2px solid #666; }
 .form_column { display:block; width:45%; float:left; margin-right:2%; }
 .form_button { display:block; clear: both; width:inherit; text-align:right; margin-top: 15px; }
 /* defaults */
@@ -155,22 +160,35 @@ button.btn_refineSearch:hover 	{ background-image: url(../img/_elements/btns/ref
 
 /* ====== TABLES - GENERAL ====== */
 table 	{ border-collapse: collapse; }
-.odd 	{ background-color: #e1eef9; border-bottom: 1px solid #fff; }
-.even	{ background-color: #dae6f1; border-bottom: 1px solid #fff; }
-.odd:hover, .even:hover { background-color: #ffe6b2; border-bottom-color: #999;}
+.odd 	{ background-color: #edf4f9; border-bottom: 1px solid #ccd; }
+.even	{ background-color: #e1eef9; border-bottom: 1px solid #ccd; }
+.odd:hover, .even:hover { background-color: #ffe6b2; border-bottom-color: #999; }
+/* overwritten by if closed */
+.odd.closed { background-color: #c5cfdb; border-bottom: 1px solid #bbb; font-size:8pt; }
+.even.closed { background-color: #b9c3ce; border-bottom: 1px solid #bbb; font-size:8pt; }
+.odd.closed:hover, .even.closed:hover { background-color: #ffe8b7; border-bottom-color: #999; }
 
-/* SEARCH RESULTS */
-#patient-grid table { width:100%; } 
-#patient-grid table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; padding:10px; border-right:1px solid #bbb;   }
-#patient-grid table th:last-child { border-right: none; }
-#patient-grid table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
-#patient-grid table th:last-child, .searchResults td:last-child { border-right: none; }
+
+table tr:last-child { border-bottom: none; }
+.table_endRow{ background: #ddd; height:15px; }
+
+/* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
+.grid-view table { width:100%; } 
+.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; padding:10px; border-right:1px solid #bbb;   }
+.grid-view table th:last-child { border-right: none; }
+.grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
+.grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
+/* change properties for closed rows */
+.grid-view table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+
 /* make sure default pager is hidden! */
 #patient-grid .pager { display: none !important; visibility: hidden; }
 /* my pagination */
 .resultsPagination { text-align:right; background: #ddd; padding:10px;  }
 .resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
+
+
 
 /* ------------------------------------------------- HELP & FOOTER  */
 
@@ -188,7 +206,7 @@ div.hint:last-child { border-right: none; }
 #user_panel, ul#user_nav a, #patientID { -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
 
 /* ====== USER PANEL ====== */
-#user_panel { background: #dae6f1 url(../img/_elements/gradient_nav_bg.jpg) bottom left repeat-x; padding:0 10px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;   }
+#user_panel { background: #dae6f1 url(../img/_elements/gradients/bg_userpanel.jpg) bottom left repeat-x; padding:0 10px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;   }
 #user_id	{ float:left; padding-top:10px; }
 /* nav in user panel */
 ul#user_nav	{ float:right; padding:0; margin:0; }
@@ -198,12 +216,12 @@ ul#user_nav > li a:hover { background: #fff; border:none; }
 ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 
 /* ====== PATIENT ID ====== */
-#patientID { background: #ffcea6 url(../img/_elements/gradient_patient_bg.jpg) bottom left repeat-x; padding:0 10px; border-right:1px solid #999; border-bottom:1px solid #999; border-left:1px solid #999;   }
+#patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding:0 10px; border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212;   }
 #patientID > .patientReminder { padding-top:9px; }
 #patientID > .i_patient { position:absolute; right:0; bottom:0; }
-.patientReminder > .given 		{ display:inline-block; font-size: 11pt; font-weight: bold; }
+.patientReminder > .given 		{ display:inline-block; font-size: 12pt; font-weight: bold; }
 .patientReminder > .given:after { content:", "; color:#444; }
-.patientReminder > .surname 	{ display:inline-block; font-size: 11pt; }
+.patientReminder > .surname 	{ display:inline-block; font-size: 12pt; }
 .patientReminder > .number 		{ display:block; font-size: 9pt; margin-top: 2px; }
 
 /* ------------------------------------------------- PAGE SPECIFIC  */
@@ -227,10 +245,16 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 #search_patient_details { padding:15px; margin-top: 10px; }
 /* refine details */
 #refine_patient_details { padding:10px; margin-bottom: 10px;  }
-/* search error */
-p#patient-search-error { background-color:#ffe6b2; }
 /* hide this! */
 #patient-adv-search { display:none; }
+
+
+/* ====== PATIENT - SUMMARY ====== */ 
+#personal_details h4, #contact_details h4 { padding:3px 0 8px 0; font-size:9pt; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
+.data_row  {  background:inherit;  border-bottom:1px dotted #ccc; padding:10px 0; }
+.data_row:last-child { border-bottom:none; margin-bottom: 0; }
+.data_row .data_label { float:left; color:#777;  }
+.data_row .data_value { margin-left: 180px; font-size: 11pt; }
 
 
 
