@@ -80,10 +80,15 @@ body { width:1230px; margin:0 auto; }
 #brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
 #user_panel { width:500px; right:10px; }
-#patientID 	{ width:300px; right:540px; }
+#patientID 	{ width:340px; right:540px; }
 #eventType 	{ width:150px; left: 260px; }
 
 /* ====== CONTENT STRUCTURES ====== */
+#content .fullWidth		{ width:1230px; margin-top:20px; position: relative; }
+/* View Episode, summary hides for event Display */
+#content .fullWidth > #episodes_sidebar	{ float:left;	} /* expands for summary */
+#content .fullWidth > #event_display	{ float:left;   }
+
 #content .centralColumn { width:800px; 	margin: 20px auto 0 auto; }
 #content .wrapTwo 	{ width:1200px; margin: 20px auto 0 auto; }
 #content .wrapTwo > .narrowColumn 	{ width:360px; float:right; }
@@ -112,13 +117,14 @@ em { font-style: italic; color:#333; }
 .caps  	{ font-variant: small-caps; }
 
 /* ====== BOXES ====== */
-#content .whiteBox, #content .alertBox, #content .blueBox, #content .patientBox  { padding:10px; margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content .whiteBox, #content .alertBox, #content .blueBox, #content .patientBox  { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #content .whiteBox > p, #content .alertBox > p, #content .blueBox > p  { background: none; padding:0; margin-bottom:8px;  }
-#content .whiteBox 	{ background: #fafafa; }
-#content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding-left:50px; }
-#content .blueBox	{ background: #dae6f1; color:#4d5155; }
+#content .whiteBox 	{ background: #fafafa; padding:10px; }
+#content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding:10px 10px 10px 50px; }
+#content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
+#content .fullBox	{ background: #dae6f1; }
 /* specific content */
-#content .patientBox  { position: relative; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
+#content .patientBox  { position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
 /* icons for boxes */
 #content .withIcon { padding-left: 40px; }
 #content .boxIcon { position: absolute; top:5px; left:0; }
@@ -134,7 +140,7 @@ a:hover .aPush	{ border-bottom: thin solid #3665ff; }
 /* defaults */
 label { font-size:11pt; }
 input { font-size:11pt; padding:3px; background: #fcfcfc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;  border:solid 1px #6b8aaa; }
-input:focus { background: #fff; border:solid 1px #19a8ea;  }
+input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 /* big fields */
 .bigInput > label { font-size:13pt; }
 .bigInput > input { font-size:13pt; padding:5px; }
@@ -174,7 +180,7 @@ table tr:last-child { border-bottom: none; }
 
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
 .grid-view table { width:100%; } 
-.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; padding:10px; border-right:1px solid #bbb;   }
+.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; min-width:50px; padding:10px; border-right:1px solid #bbb;   }
 .grid-view table th:last-child { border-right: none; }
 .grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
@@ -248,13 +254,22 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 /* hide this! */
 #patient-adv-search { display:none; }
 
-
 /* ====== PATIENT - SUMMARY ====== */ 
 #personal_details h4, #contact_details h4 { padding:3px 0 8px 0; font-size:9pt; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
 .data_row  {  background:inherit;  border-bottom:1px dotted #ccc; padding:10px 0; }
 .data_row:last-child { border-bottom:none; margin-bottom: 0; }
 .data_row .data_label { float:left; color:#777;  }
 .data_row .data_value { margin-left: 180px; font-size: 11pt; }
+
+/* ====== VIEW EPISODE ====== */
+/* top controls */
+.episodesBanner { }
+#episodes_sidebar > .episode {}
+.episode .episode_nav { width:170px; float:left; background: #0F0;  }
+.episode .episode_details { float:left; background: #f00;  }
+
+
+	
 
 
 

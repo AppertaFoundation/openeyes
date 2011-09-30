@@ -3,7 +3,6 @@ $patientName = $model->first_name . ' ' . $model->last_name;
 $this->breadcrumbs=array(
 	"{$patientName} ({$model->hos_num})",
 );
-Yii::app()->clientScript->registerCssFile('/css/patient.css', 'screen, projection');
 $this->widget('application.extensions.fancybox.EFancyBox', array(
 	'target'=>'a.fancybox',
 	'config'=>array()
@@ -76,16 +75,16 @@ if (!empty($address)) {
 					</div> <!-- #personal_details -->
 					<div class="whiteBox" id="contact_details">
 						<h4>Contact Details:</h4>
-						<div class="data_row telephone">
+						<div class="data_row">
 							<div class="data_label">Telephone:</div>
 							<div class="data_value"><?php echo !empty($model->primary_phone) ? $model->primary_phone : 'Unknown'?></div>
 						</div>
-						<div class="data_row row_buffer">
+						<div class="data_row">
 							<div class="data_label">Email:</div>
 							<div class="data_value"><?php echo !empty($address->email) ? $address->email : 'Unknown'?></div>
 
 						</div>
-						<div class="data_row row_buffer">
+						<div class="data_row">
 							<div class="data_label">Next of Kin:</div>
 							<div class="data_value">Unknown</div>
 						</div>
@@ -120,6 +119,6 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><a href="#"><span class="aPush">View all episodes for this patient</span></a></p>
+					<p><a href="#"><span class="aPush">View all Episodes, Summaries and Events</span></a></p>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
