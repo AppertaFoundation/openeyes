@@ -123,7 +123,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 </div>
 </div>
 <script type="text/javascript">
-	$('#view_all').live('click', function() {
+	$('#view_all').die('click').live('click', function() {
 		$('#patient-tabs').tabs('select', 1);
 	});
 </script>
