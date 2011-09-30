@@ -14,7 +14,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 return array(
 	'section1' => array(
-		'service_id' => 1,
+		'specialty_id' => 1,
 		'name' => 'subsection 1'
 	)
 );
