@@ -48,7 +48,7 @@ if (empty($operations)) { ?>
 </td><td>
 <?php echo $eo->getEyeText() ?>
 </td><td>
-<?php echo $user->title . ' ' . $user->first_name . ' ' . $user->last_name ?>
+<?php echo $user->title . ' ' . $user->first_name . ' ' . $user->last_name . ' (' . $eo->event->episode->firm->serviceSpecialtyAssignment->specialty->name . ')' ?>
 </td><td>
 <?php echo $eo->convertDate($eo->decision_date) ?>
 </td><td>

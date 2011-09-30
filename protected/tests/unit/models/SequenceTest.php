@@ -22,6 +22,7 @@ class SequenceTest extends CDbTestCase
 		'sites' => 'Site',
 		'theatres' => 'Theatre',
 		'sequences' => 'Sequence',
+		'specialties' => 'Specialty'
 	);
 	
 	public function dataProvider_FrequencyIntervals()
@@ -447,7 +448,7 @@ class SequenceTest extends CDbTestCase
 			if ($name == 'sequence3' || $name == 'sequence4') {
 				$expected = 'None';
 			} else {
-				$expected = $this->firms['firm1']['name'];
+				$expected = $this->firms['firm1']['name'] . ' (' . $this->specialties['specialty1']['name'] . ')';
 			}
 			
 			$this->assertEquals($expected, $sequence->getFirmName());

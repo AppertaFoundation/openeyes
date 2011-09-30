@@ -178,7 +178,61 @@ class Sequence extends CActiveRecord
 			self::SELECT_5THWEEK => '5th in month',
 		);
 	}
-	
+
+	public function getRepeatIntervalText()
+	{
+		switch ($this->repeat_interval) {
+			case self::FREQUENCY_1WEEK:
+				$text =  'Every week';
+				break;
+                        case self::FREQUENCY_2WEEKS:
+                                $text =  'Every 2 weeks';
+                                break;
+                        case self::FREQUENCY_3WEEKS:
+                                $text =  'Every 3 weeks';
+                                break;
+                        case self::FREQUENCY_4WEEKS:
+                                $text =  'Every 4 weeks';
+                                break;
+                        case self::FREQUENCY_ONCE:
+                                $text =  'Once';
+                                break;
+			default:
+				$text = 'None';
+				break;
+		}
+
+		return $text;
+	}
+
+	public function getWeekSelectionText()
+	{
+		$text = array();
+
+		$ws = $this->week_selection;
+
+		if (!$ws) {
+			return 'None';
+		}
+
+		$i = 4;
+		foreach (array(self::SELECT_5THWEEK, self::SELECT_4THWEEK, self::SELECT_3RDWEEK, self::SELECT_2NDWEEK, self::SELECT_1STWEEK) as $week) {
+			if ($ws >= $week) {
+				array_push($text, $i+1);
+				$ws -= pow(2, $i);
+			}
+			$i--;	
+		}
+
+		if (count($text) == 1) {
+			$copy = 'Week ';
+		} else {
+			$copy = 'Weeks ';
+		}
+
+		return $copy . implode(', ', array_reverse($text)) . ' in month';
+	}
+
 	protected function beforeSave()
 	{
 		$startTime = strtotime($this->start_date);
@@ -372,7 +426,7 @@ class Sequence extends CActiveRecord
 	public function getFirmName()
 	{
 		if (!empty($this->sequenceFirmAssignment)) {
-			return $this->sequenceFirmAssignment->firm->name;
+			return $this->sequenceFirmAssignment->firm->name . ' (' . $this->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 		} else {
 			return 'None';
 		}

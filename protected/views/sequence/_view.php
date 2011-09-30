@@ -42,8 +42,12 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<?php echo CHtml::encode($data->end_date); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('repeat_interval')); ?>:</b>
-	<?php echo CHtml::encode($data->repeat_interval); ?>
+        <b>Frequency:</b>
+        <?php echo CHtml::encode($data->getRepeatIntervalText()); ?>
+        <br />
+
+	<b>Week selection:</b>
+	<?php echo CHtml::encode($data->getWeekSelectionText()); ?>
 	<br />
 
 

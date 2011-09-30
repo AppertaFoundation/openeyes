@@ -17,17 +17,26 @@ class WaitingListService
 	/**
 	 * Gets the list of operations in need of a booking, i.e. the waiting list.
 	 *
+	 * Can be filtered by (service_id OR firm_id) and/or type of letter.
+	 * Letter types are invitation, 1st reminder, 2nd reminder, gp referral, removal.
+	 *
+	 * Letter status is based on the 'datetime' field for operations to be booked and the 'cancelled_date' field for operations
+	 *	to be rescheduled.
+	 *
 	 * @param int $firmId
+	 * @param int $serviceId
+	 * @param int $status
 	 * @return array
 	 */
 	public function getWaitingList($firmId, $serviceId, $status)
 	{
 		$whereSql = '';
 
+		// intval() for basic data sanitising
 		if (!empty($firmId)) {
-			$whereSql .= 'AND f.id = ' . $firmId;
+			$whereSql .= 'AND f.id = ' . intval($firmId);
 		} elseif (!empty($serviceId)) {
-			$whereSql .= 'AND ssa.service_id = ' . $serviceId;
+			$whereSql .= 'AND ssa.service_id = ' . intval($serviceId);
 		}
 
 		$whereSql2 = $whereSql;
