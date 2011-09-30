@@ -54,23 +54,13 @@
 		</div> <!-- #content --> 
 		<div id="help" class="clearfix"> 
 			<div class="hint">
-				<p><strong>Do you need help with OpenEyes?</strong></p>
-				<p>Before you contact the helpdesk...</p>
-				<p>Is there a "Super User" in your office available? (A "Super User" is...)</p>
-				<p>Have you checked the <a href="#">Quick Reference Guide?</a></p>
-			</div>
-			<div class="hint">
-				<p><strong>Searching by patient details.</strong></p>
-				<p>Although the Last Name is required it doesn't have to be complete. For example if you search for "Smi", the results will include all last names starting with "Smi...". Any other information you can add will help narrow the search results.</p>
-			</div>
-
-			<div class="hint">
-				<p><strong>Still need help?</strong></p>
-				<p>Contact the helpdesk:</p>
+				<p><strong>Online Help</strong></p>
+				<p><a href="#">Quick Reference Guide</a></p>
+				<p>&nbsp;</p>
+				<p><strong>Helpdesk</strong></p>
 				<p>Telephone: 01234 12343567 ext. 0000</p>
 				<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
 			</div>
-		</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
 	
