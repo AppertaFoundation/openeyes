@@ -17,7 +17,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  *
  * The followings are the available columns in table 'operation_procedure_assignment':
  * @property string $operation_id
- * @property string $procedure_id
+ * @property string $proc_id
  * @property integer $display_order
  */
 class OperationProcedureAssignment extends BaseActiveRecord
@@ -38,12 +38,12 @@ class OperationProcedureAssignment extends BaseActiveRecord
 	{
 		return 'operation_procedure_assignment';
 	}
-	
+
 	public function primaryKey()
 	{
-		return array('operation_id', 'procedure_id');
+		return array('operation_id', 'proc_id');
 	}
-	
+
 	public function defaultScope()
 	{
 		return array('order'=>'display_order ASC');
@@ -57,13 +57,13 @@ class OperationProcedureAssignment extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('operation_id, procedure_id', 'required'),
+			array('operation_id, proc_id', 'required'),
 			array('display_order', 'numerical', 'integerOnly'=>true),
-			array('operation_id, procedure_id', 'length', 'max'=>10),
-			array('operation_id, procedure_id', 'safe'),
+			array('operation_id, proc_id', 'length', 'max'=>10),
+			array('operation_id, proc_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('operation_id, procedure_id, display_order', 'safe', 'on'=>'search'),
+			array('operation_id, proc_id, display_order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,7 +76,7 @@ class OperationProcedureAssignment extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'operation' => array(self::BELONGS_TO, 'ElementOperation', 'operation_id'),
-			'procedure' => array(self::BELONGS_TO, 'Procedure', 'procedure_id'),
+			'procedure' => array(self::BELONGS_TO, 'Procedure', 'proc_id'),
 		);
 	}
 
@@ -87,7 +87,7 @@ class OperationProcedureAssignment extends BaseActiveRecord
 	{
 		return array(
 			'operation_id' => 'Operation',
-			'procedure_id' => 'Procedure',
+			'proc_id' => 'Procedure',
 			'display_order' => 'Display Order',
 		);
 	}
@@ -104,7 +104,7 @@ class OperationProcedureAssignment extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('operation_id',$this->operation_id,true);
-		$criteria->compare('procedure_id',$this->procedure_id,true);
+		$criteria->compare('proc_id',$this->proc_id,true);
 		$criteria->compare('display_order',$this->display_order);
 
 		return new CActiveDataProvider(get_class($this), array(

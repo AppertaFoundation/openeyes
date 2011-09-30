@@ -110,8 +110,8 @@ class TheatreController extends BaseController
 
 				$procedures = Yii::app()->db->createCommand()
 					->select("GROUP_CONCAT(p.term SEPARATOR ', ') AS List")
-					->from('procedure p')
-					->join('operation_procedure_assignment opa', 'opa.procedure_id = p.id')
+					->from('proc p')
+					->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
 					->where('opa.operation_id = :id',
 						array(':id'=>$values['operation_id']))
 					->group('opa.operation_id')

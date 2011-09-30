@@ -111,7 +111,7 @@ class ElementOperation extends BaseElement
 		// class name for the relations automatically generated below.
 		return array(
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)', 'order' => 'display_order ASC'),
+			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, proc_id)', 'order' => 'display_order ASC'),
 			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id'),
 			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
 			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id')
@@ -425,7 +425,7 @@ class ElementOperation extends BaseElement
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
 				$procedure->operation_id = $operationId;
-				$procedure->procedure_id = $id;
+				$procedure->proc_id = $id;
 				$procedure->display_order = $order;
 				if (!$procedure->save()) {
 					throw new Exception('Unable to save procedure');
@@ -440,7 +440,6 @@ class ElementOperation extends BaseElement
 	protected function beforeValidate()
 	{
 		if (!empty($_POST['action']) && empty($_POST['Procedures'])) {
-//		if (empty($_POST['Procedures'])) {
 			$this->addError('eye', 'At least one procedure must be entered');
 		}
 

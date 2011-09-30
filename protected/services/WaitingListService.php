@@ -77,7 +77,7 @@ class WaitingListService
 				service_specialty_assignment ssa,
 				patient pat,
 				operation_procedure_assignment opa,
-				`procedure` p
+				proc p
 			WHERE
 				eo.event_id = ev.id
 			AND
@@ -91,7 +91,7 @@ class WaitingListService
 			AND
 				opa.operation_id = eo.id
 			AND
-				opa.procedure_id = p.id
+				opa.proc_id = p.id
 			AND
 				ep.end_date IS NULL
 			AND
@@ -117,7 +117,7 @@ class WaitingListService
 				service_specialty_assignment ssa,
 				patient pat,
 				operation_procedure_assignment opa,
-				`procedure` p,
+				proc p,
 				cancelled_booking cb
 			WHERE
 				eo.event_id = ev.id
@@ -132,7 +132,7 @@ class WaitingListService
 			AND
 				opa.operation_id = eo.id
 			AND
-				opa.procedure_id = p.id
+				opa.proc_id = p.id
 			AND
 				ep.end_date IS NULL
 			AND
