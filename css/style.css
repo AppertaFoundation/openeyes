@@ -225,8 +225,7 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 #patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding:0 10px; border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212;   }
 #patientID > .patientReminder { padding-top:9px; }
 #patientID > .i_patient { position:absolute; right:0; bottom:0; }
-.patientReminder > .given 		{ display:inline-block; font-size: 12pt; font-weight: bold; }
-.patientReminder > .given:after { content:", "; color:#444; }
+.patientReminder > .given 		{ display:inline-block; font-size: 12pt; }
 .patientReminder > .surname 	{ display:inline-block; font-size: 12pt; }
 .patientReminder > .number 		{ display:block; font-size: 9pt; margin-top: 2px; }
 
