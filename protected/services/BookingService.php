@@ -15,7 +15,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 class BookingService
 {
 	/**
-	 * Search sequences that match booking requirements, and figure out how 
+	 * Search sequences that match booking requirements, and figure out how
 	 * full the respective sessions would be
 	 *
 	 * @return CDbReader
@@ -28,50 +28,50 @@ class BookingService
 				throw new Exception('Firm id is invalid.');
 			}
 		}
-		
+
 		if (substr($minDate,0,8) == substr($monthStart,0,8)) {
 			$startDate = $minDate;
 		} else {
 			$startDate = $monthStart;
 		}
 		$monthEnd = substr($monthStart,0,8) . date('t', strtotime($monthStart));
-		
+
 		if ($firmId === null) {
 			$firmSql = 'f.id IS NULL';
 		} else {
 			$firmSql = "f.firm_id = $firmId";
 		}
-		
-		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS bookings, 
+
+		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
+				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
-			FROM `session` `s` 
+			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			WHERE s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND 
-				CAST('" . $monthEnd . "' AS DATE) AND $firmSql 
-			GROUP BY s.id 
-		UNION 
-			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
+			WHERE s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
+				CAST('" . $monthEnd . "' AS DATE) AND $firmSql
+			GROUP BY s.id
+		UNION
+			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				0 AS bookings, 0 AS bookings_duration
-			FROM `session` `s` 
+			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
-				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND 
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
+				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
 				CAST('" . $monthEnd . "' AS DATE) AND $firmSql ORDER BY WEEKDAY(DATE) ASC";
-		
+
 		$sessions = Yii::app()->db->createCommand($sql)->query();
-		
+
 		return $sessions;
 	}
-	
+
 	/**
-	 * Search theatres that match booking requirements, and find their 
+	 * Search theatres that match booking requirements, and find their
 	 * associated session data
-	 * 
+	 *
 	 * @param string $date (YYYY-MM-DD format)
 	 * @param integer $firmId firm ID
 	 * @return CDbReader
@@ -87,82 +87,82 @@ class BookingService
 			}
 			$firmSql = "f.firm_id = $firmId";
 		}
-		
-		$sql = "SELECT t.*, s.start_time, s.end_time, s.id AS session_id, 
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS bookings, 
-				SUM(o.total_duration) AS bookings_duration 
-			FROM `session` `s` 
+
+		$sql = "SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
+				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
+				COUNT(a.id) AS bookings,
+				SUM(o.total_duration) AS bookings_duration
+			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `booking` `a` ON s.id = a.session_id
-			JOIN `element_operation` `o` ON a.element_operation_id = o.id 
-			JOIN `theatre` `t` ON q.theatre_id = t.id 
+			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			JOIN `theatre` `t` ON q.theatre_id = t.id
 			WHERE s.date = '" . $date . "' AND $firmSql
-			GROUP BY s.id 
-		UNION 
-			SELECT t.*, s.start_time, s.end_time, s.id AS session_id, 
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
+			GROUP BY s.id
+		UNION
+			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
+				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				0 AS bookings, 0 AS bookings_duration
-			FROM `session` `s` 
+			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
-			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id 
-			JOIN `theatre` `t` ON q.theatre_id = t.id 
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND 
+			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			JOIN `theatre` `t` ON q.theatre_id = t.id
+			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
 				s.date = '" . $date . "' AND $firmSql";
-		
+
 		$sessions = Yii::app()->db->createCommand($sql)->query();
-		
+
 		return $sessions;
 	}
-	
+
 	/**
 	 * Search sessions by ID and find their associated data
-	 * 
+	 *
 	 * @param integer $sessionId session ID
 	 * @return CDbReader
 	 */
 	public function findSession($sessionId)
 	{
-		$sql = "SELECT t.*, s.start_time, s.end_time, s.date, 
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				COUNT(a.id) AS bookings, 
-				SUM(o.total_duration) AS bookings_duration, site.id AS site_id 
-			FROM `session` `s` 
+		$sql = "SELECT t.*, s.start_time, s.end_time, s.date,
+				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
+				COUNT(a.id) AS bookings,
+				SUM(o.total_duration) AS bookings_duration, site.id AS site_id
+			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `booking` `a` ON s.id = a.session_id
-			JOIN `element_operation` `o` ON a.element_operation_id = o.id 
-			JOIN `theatre` `t` ON q.theatre_id = t.id 
+			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			JOIN `theatre` `t` ON q.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
 			WHERE s.id = '" . $sessionId . "'";
-		
+
 		$sessions = Yii::app()->db->createCommand($sql)->query();
-		
+
 		return $sessions;
 	}
-	
+
 	/**
 	 * Search for theatres/sessions, filtered by site/service/firm/theatre
-	 * 
+	 *
 	 * @param string  $startDate (YYYY-MM-DD)
 	 * @param string  $endDate   (YYYY-MM-DD)
 	 * @param integer $siteId
 	 * @param integer $theatreId
 	 * @param integer $serviceId
-	 * @param integer $firmId 
+	 * @param integer $firmId
 	 * @param integer $wardId
 	 * @return CDbReader
 	 */
 	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $serviceId = null, $firmId = null, $wardId = null)
 	{
-		if (empty($startDate) || empty($endDate) || 
+		if (empty($startDate) || empty($endDate) ||
 			(strtotime($endDate) < strtotime($startDate))) {
 			throw new Exception('Invalid start and end dates.');
 		}
-		
+
 		$whereSql = 's.date BETWEEN :start AND :end';
 		$whereParams = array(':start' => $startDate, ':end' => $endDate);
-		
+
 		if (!empty($siteId)) {
 			$whereSql .= ' AND t.site_id = :siteId';
 			$whereParams[':siteId'] = $siteId;
@@ -183,12 +183,12 @@ class BookingService
 			$whereSql .= ' AND w.id = :wardId';
 			$whereParams[':wardId'] = $wardId;
 		}
-		
+
 		$command = Yii::app()->db->createCommand()
-			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, 
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration, 
-				o.eye, o.anaesthetic_type, o.comments, 
-				o.total_duration AS operation_duration, p.first_name, 
+			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id,
+				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
+				o.eye, o.anaesthetic_type, o.comments,
+				o.total_duration AS operation_duration, p.first_name,
 				p.last_name, p.dob, p.gender, w.name AS ward, b.display_order')
 			->from('session s')
 			->join('sequence q', 's.sequence_id = q.id')
@@ -205,7 +205,7 @@ class BookingService
 			->join('ward w', 'w.id = b.ward_id')
 			->where($whereSql, $whereParams)
 			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
-		
+
 		return $command->queryAll();
 	}
 }

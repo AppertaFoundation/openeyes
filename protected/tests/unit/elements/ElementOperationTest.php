@@ -28,7 +28,7 @@ class ElementOperationTest extends CDbTestCase
 		'events' => 'Event',
 		'procedures' => 'Procedure',
 		'services' => 'Service',
-		'subsections' => 'ServiceSubsection',
+		'subsections' => 'SpecialtySubsection',
 		'elements' => 'ElementOperation',
 		'operationProcedures' => 'OperationProcedureAssignment',
 		'sequences' => 'Sequence',
@@ -119,7 +119,7 @@ class ElementOperationTest extends CDbTestCase
 			array(2847405, 'Unknown')
 		);
 	}
-	
+
 	public function dataProvider_StatusText()
 	{
 		return array(
@@ -196,7 +196,7 @@ class ElementOperationTest extends CDbTestCase
 		));
 
 		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
-		
+
 		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertTrue($element->save(true));
@@ -215,7 +215,7 @@ class ElementOperationTest extends CDbTestCase
 		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_LEFT;
 
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
-		
+
 		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertTrue($element->save(true));
@@ -234,7 +234,7 @@ class ElementOperationTest extends CDbTestCase
 		$_POST['schedule_timeframe2'] = ElementOperation::SCHEDULE_AFTER_2MO;
 		$_POST['ElementDiagnosis']['eye'] = ElementDiagnosis::EYE_RIGHT;
 		$_POST['ElementOperation']['eye'] = ElementDiagnosis::EYE_LEFT;
-		
+
 		$_POST['Procedures'] = array($this->procedures['procedure1']['id']);
 
 		$this->assertFalse($element->save(true));
@@ -412,14 +412,14 @@ class ElementOperationTest extends CDbTestCase
 
 		$this->assertEquals($text, $this->element->getScheduleText());
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_StatusText
 	 */
 	public function testGetStatusText_ReturnsCorrectData($status, $text)
 	{
 		$this->element->status = $status;
-		
+
 		$this->assertEquals($text, $this->element->getStatusText());
 	}
 
@@ -1327,7 +1327,7 @@ class ElementOperationTest extends CDbTestCase
 
 		$this->assertEquals($expected, $operation->getWardOptions($siteId));
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_WardOptions
 	 */
@@ -1345,7 +1345,7 @@ class ElementOperationTest extends CDbTestCase
 
 		$siteId = 1;
 		$theatreId = 1;
-		
+
 		TheatreWardAssignment::model()->deleteAll();
 
 		$expected = array();
@@ -1356,7 +1356,7 @@ class ElementOperationTest extends CDbTestCase
 
 		$this->assertEquals($expected, $operation->getWardOptions($siteId, $theatreId));
 	}
-	
+
 	public function testGetWardOptions_IncludeTheatreIdWithWard_ReturnsCorrectWard()
 	{
 		Yii::app()->params['pseudonymise_patient_details'] = false;
@@ -1372,7 +1372,7 @@ class ElementOperationTest extends CDbTestCase
 		$siteId = 1;
 		$theatreId = 1;
 		$ward = $this->wards('ward1');
-		
+
 		$assignment = new TheatreWardAssignment;
 		$assignment->theatre_id = $theatreId;
 		$assignment->ward_id = $ward->id;

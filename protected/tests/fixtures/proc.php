@@ -12,9 +12,15 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-
-foreach ($subsections as $section) {
-	echo CHtml::tag('option', 
-		array('value'=>$section->id), 
-		CHtml::encode($section->name), true);
-}
+return array(
+	'procedure1' => array(
+		'term' => 'Foobar Procedure',
+		'short_format' => 'FUB',
+		'default_duration' => 60,
+	),
+	'procedure2' => array(
+		'term' => 'Test Procedure',
+		'short_format' => 'TP',
+		'default_duration' => 20,
+	)
+);
