@@ -77,7 +77,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
 	});
-	$('ul.events li a').live('click', function() {
+	$('ul.events li a').die('click').live('click', function() {
 		$('ul.events li.shown').removeClass('shown');
 		$(this).parent().addClass('shown');
 		$.ajax({
@@ -89,7 +89,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		});
 		return false;
 	});
-	$('.episode div.title').live('click', function() {
+	$('.episode div.title').die('click').live('click', function() {
 		var id = $(this).children('input').val();
 		$('ul.events li.shown').removeClass('shown');
 		$.ajax({

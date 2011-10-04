@@ -63,7 +63,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 </div>
 <script type="text/javascript">
 	$(function() {
-		$('#previous_month').live('click',function() {
+		$('#previous_month').die('click').live('click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
 			var firm = $('input[id=sessionFirm]').val();
@@ -86,7 +86,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			});
 			return false;
 		});
-		$('#next_month').live('click',function() {
+		$('#next_month').die('click').live('click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
 			var firm = $('input[id=sessionFirm]').val();
@@ -109,7 +109,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			});
 			return false;
 		});
-		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full').live('click', function() {
+		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full').die('click').live('click', function() {
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');
 			var day = $(this).text();
@@ -141,7 +141,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				}
 			});
 		});
-		$('#theatres div.shinybutton').live('click', function() {
+		$('#theatres div.shinybutton').die('click').live('click', function() {
 			var session = $(this).children().children('span.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
@@ -150,7 +150,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			$(this).addClass('highlighted');
 			showTheatreList(operation, month, day, session);
 		});
-		$('#firmSelect #firmId').live('change', function() {
+		$('#firmSelect #firmId').die('change').live('change', function() {
 			var firmId = $(this).val();
 			var operation = $('input[id=operation]').val();
 			

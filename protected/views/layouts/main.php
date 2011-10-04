@@ -67,7 +67,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 </div><!-- page -->
 
 <script type="text/javascript">
-	$('select[id=selected_firm_id]').live('change', function() {
+	$('select[id=selected_firm_id]').die('change').live('change', function() {
 		var firmId = $('select[id=selected_firm_id]').val();
 		$.ajax({
 			type: 'post',

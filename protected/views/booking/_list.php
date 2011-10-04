@@ -113,7 +113,7 @@ echo CHtml::endForm(); ?>
 <?php
 	}
 	?>
-	$('button#cancel_operation').live('click', function() {
+	$('button#cancel_operation').die('click').live('click', function() {
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',
 			type: 'GET',
