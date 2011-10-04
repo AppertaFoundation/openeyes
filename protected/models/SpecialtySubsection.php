@@ -104,4 +104,23 @@ class SpecialtySubsection extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getList($specialtyId)
+	{
+		$sections = Yii::app()->db->createCommand()
+			->select('id, name')
+			->from('specialty_subsection')
+			->where('specialty_id = :id',
+				array(':id'=>$specialtyId))
+			->order('name ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($sections as $section) {
+			$data[$section['id']] = $section['name'];
+		}
+
+		return $data;
+	}
 }

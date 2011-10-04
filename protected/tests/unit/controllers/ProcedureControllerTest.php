@@ -52,7 +52,7 @@ class ProcedureControllerTest extends CDbTestCase
 		}
 		Yii::app()->session['Procedures'] = $session;
 
-		$_GET['name'] = 'Bar Procedure - BZ1';
+		$_GET['name'] = 'Bar Procedure';
 
 		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
 			array('ProcedureController'));
@@ -67,7 +67,7 @@ class ProcedureControllerTest extends CDbTestCase
 		Yii::app()->session['Procedures'] = $session;
 
 		$procedure = $this->procedures['procedure1'];
-		$_GET['name'] = "{$procedure['term']} - {$procedure['short_format']}";
+		$_GET['name'] = $procedure['term'];
 
 		$data = array(
 			'term' => $procedure['term'],
@@ -97,7 +97,7 @@ class ProcedureControllerTest extends CDbTestCase
 		Yii::app()->session['Procedures'] = $session;
 
 		$procedure = $this->procedures['procedure1'];
-		$_GET['name'] = "{$procedure['term']} - {$procedure['short_format']}";
+		$_GET['name'] = $procedure['term'];
 
 		$data = array(
 			'term' => $procedure['term'],
@@ -112,33 +112,6 @@ class ProcedureControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('_ajaxProcedure', array('data' => $data), false, false);
 		$mockController->actionDetails();
-	}
-
-	public function testActionSubsection_MissingService_RendersNothing()
-	{
-		$_GET = array();
-
-		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
-			array('ProcedureController'));
-		$mockController->expects($this->never())
-			->method('renderPartial');
-		$mockController->actionSubsection();
-	}
-
-	public function testActionSubsection_ValidService_RendersAjaxPartial()
-	{
-		$specialtyId = $this->specialties['specialty1']['id'];
-		$_GET['specialty'] = $specialtyId;
-
-		$subsections = SpecialtySubsection::model()->findAllByAttributes(
-			array('specialty_id' => $specialtyId));
-
-		$mockController = $this->getMock('ProcedureController', array('renderPartial'),
-			array('ProcedureController'));
-		$mockController->expects($this->once())
-			->method('renderPartial')
-			->with('_subsectionOptions', array('subsections' => $subsections), false, false);
-		$mockController->actionSubsection();
 	}
 
 	public function testActionList_MissingSubsection_RendersNothing()

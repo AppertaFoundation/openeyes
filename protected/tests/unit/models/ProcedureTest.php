@@ -45,12 +45,12 @@ class ProcedureTest extends CDbTestCase
 		);
 
 		return array(
-			array('Foo', array('Foobar Procedure - FUB'), $procedure1),
-			array('Foobar', array('Foobar Procedure - FUB'), $procedure1),
-			array('Fo', array('Foobar Procedure - FUB'), $procedure1),
-			array('Test', array('Test Procedure - TP'), $procedure2),
-			array('Test Pro', array('Test Procedure - TP'), $procedure2),
-			array('Te', array('Test Procedure - TP'), $procedure2),
+			array('Foo', array('Foobar Procedure'), $procedure1),
+			array('Foobar', array('Foobar Procedure'), $procedure1),
+			array('Fo', array('Foobar Procedure'), $procedure1),
+			array('Test', array('Test Procedure'), $procedure2),
+			array('Test Pro', array('Test Procedure'), $procedure2),
+			array('Te', array('Test Procedure'), $procedure2),
 		);
 	}
 

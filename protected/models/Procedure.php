@@ -129,8 +129,7 @@ class Procedure extends BaseActiveRecord
 		$procedures = Yii::app()->db->createCommand()
 			->select($select)
 			->from('proc')
-			->where('term LIKE :term OR short_format LIKE :format',
-				array(':term'=>$search, ':format'=>$search))
+			->where('term LIKE :term', array(':term'=>$search))
 			->limit(5)
 			->queryAll();
 
@@ -138,7 +137,7 @@ class Procedure extends BaseActiveRecord
 		$session = Yii::app()->session['Procedures'];
 
 		foreach ($procedures as $procedure) {
-			$data[] = "{$procedure['term']} - {$procedure['short_format']}";
+			$data[] = $procedure['term'];
 			$id = $procedure['id'];
 			$session[$id] = array(
 				'term' => $procedure['term'],
@@ -148,6 +147,26 @@ class Procedure extends BaseActiveRecord
 		}
 
 		Yii::app()->session['Procedures'] = $session;
+
+		return $data;
+	}
+
+	public function getListBySpecialty($specialtyId)
+	{
+		$procedures = Yii::app()->db->createCommand()
+			->select('proc.id, proc.term')
+			->from('proc')
+			->join('proc_specialty_assignment psa', 'psa.proc_id = proc.id')
+			->where('psa.specialty_id = :id',
+				array(':id'=>$specialtyId))
+			->order('proc.term ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($procedures as $procedure) {
+			$data[$procedure['id']] = $procedure['term'];
+		}
 
 		return $data;
 	}

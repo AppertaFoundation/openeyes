@@ -46,7 +46,8 @@ foreach ($elements as $element) {
 			'/_form/' .
 			$element->viewNumber,
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
-			'patient' => $patient, 'newRecord' => true)
+			'patient' => $patient, 'newRecord' => true, 'specialty' => $specialty,
+			'subsections' => $subsections, 'procedures' => $procedures)
 	);
 }
 

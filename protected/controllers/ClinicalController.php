@@ -177,13 +177,27 @@ class ClinicalController extends BaseController
 		// Check to see if they need to choose a referral
 		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
 
-		$this->renderPartial($this->getTemplateName('create', $eventTypeId), array(
+		$params = array(
 			'elements' => $elements,
 			'eventTypeId' => $eventTypeId,
 			'specialties' => $specialties,
 			'patient' => $patient,
-			'referrals' => $referrals
-			), false, true
+			'referrals' => $referrals);
+
+		if ($eventType->name == 'operation') {
+			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$procedures = array();
+			if (empty($subsections)) {
+				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+			}
+
+			$params['specialty'] = $specialty;
+			$params['subsections'] = $subsections;
+			$params['procedures'] = $procedures;
+		}
+
+		$this->renderPartial($this->getTemplateName('create', $eventTypeId), $params, false, true
 		);
 	}
 
@@ -261,12 +275,27 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
+		$params = array(
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient
-			), false, true);
+			'patient' => $patient);
+
+		if ($event->eventType->name == 'operation') {
+			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$procedures = array();
+			if (empty($subsections)) {
+				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+			}
+
+			$params['specialty'] = $specialty;
+			$params['subsections'] = $subsections;
+			$params['procedures'] = $procedures;
+		}
+
+		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), $params, false, true
+		);
 	}
 
 	public function actionEpisodeSummary($id)

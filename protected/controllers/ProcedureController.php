@@ -59,8 +59,7 @@ class ProcedureController extends Controller
 		if (!empty($_GET['name'])) {
 			if (!empty($list)) {
 				foreach ($list as $id => $procedure) {
-					$match = "{$procedure['term']} - {$procedure['short_format']}";
-					if ($match == $_GET['name']) {
+					if ($procedure['term'] == $_GET['name']) {
 						$data = $procedure;
 						$data['id'] = $id;
 
@@ -73,12 +72,10 @@ class ProcedureController extends Controller
 
 			// if not in the session, check in the db
 			if (!$found) {
-				$search = explode(' - ', $_GET['name']);
 				$procedure = Yii::app()->db->createCommand()
 					->select('*')
 					->from('proc')
-					->where('term=:term AND short_format=:sf',
-						array(':term'=>$search[0], ':sf'=>$search[1]))
+					->where('term=:term', array(':term'=>$_GET['name']))
 					->queryRow();
 				if (!empty($procedure)) {
 					$data = array(
@@ -95,17 +92,6 @@ class ProcedureController extends Controller
 					$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
 				}
 			}
-		}
-	}
-
-	public function actionSubsection()
-	{
-		if (!empty($_GET['specialty'])) {
-			$specialty = $_GET['specialty'];
-			$subsections = SpecialtySubsection::model()->findAllByAttributes(
-				array('specialty_id' => $specialty));
-
-			$this->renderPartial('_subsectionOptions', array('subsections' => $subsections), false, false);
 		}
 	}
 
