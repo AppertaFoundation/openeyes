@@ -13,7 +13,14 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 */
 
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-$session = $operation->booking->session; ?>
+$session = $operation->booking->session;
+
+$firm = $operation->event->episode->firm;
+$theatre = $operation->booking->session->sequence->theatre; ?>
+<strong>Service:</strong> <?php echo CHtml::encode($firm->serviceSpecialtyAssignment->service->name); ?><br />
+<strong>Firm:</strong> <?php echo CHtml::encode($firm->name); ?>
+<p/>
+<strong>Location:</strong> <?php echo CHtml::encode($theatre->site->name) . ' - ' . CHtml::encode($theatre->name); ?><br />
 <strong>Date of operation:</strong> <?php echo date('F j, Y', strtotime($session->date)); ?><br />
 <strong>Session time:</strong> <?php echo substr($session->start_time, 0, 5) . ' - ' . substr($session->end_time, 0, 5); ?><br />
 <strong>Duration of operation:</strong> <?php echo $operation->total_duration . ' minutes'; ?>

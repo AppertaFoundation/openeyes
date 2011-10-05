@@ -26,7 +26,8 @@ class BookingControllerTest extends CDbTestCase
 		'theatres' => 'Theatre',
 		'cancellationReasons' => 'CancellationReason',
 		'users' => 'User',
-		'wards' => 'Ward'
+		'wards' => 'Ward',
+		'sites' => 'Site'
 	);
 
 	protected $controller;
@@ -64,16 +65,20 @@ class BookingControllerTest extends CDbTestCase
 		$event->datetime = date('Y-m-d', $lastTime);
 		$event->save();
 
+		$siteId = 1;
+
 		$operation = $this->operations('element1');
 		$minDate = $operation->getMinDate();
-		$sessions = $operation->getSessions();
+		$sessions = $operation->getSessions(false, $siteId);
 
 		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
 
 		$_GET['operation'] = $operation->id;
-		
+
 		$firm = $this->firms('firm1');
-		
+
+		$site = $this->sites('site1');
+
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
 		$firmList = Firm::model()->findAll($criteria);
@@ -83,8 +88,8 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_schedule',
-				array('operation'=>$operation, 'date'=>$thisMonth, 
-					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList));
+				array('operation'=>$operation, 'date'=>$thisMonth,
+					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList, 'siteList'=>array(), 'site'=>$site));
 
 		$mockController->actionSchedule();
 	}
@@ -93,12 +98,14 @@ class BookingControllerTest extends CDbTestCase
 	{
 		$operation = $this->operations('element1');
 		$minDate = $operation->getMinDate();
-		$sessions = $operation->getSessions();
+		$sessions = $operation->getSessions(false, 1);
 
 		$_GET['operation'] = $operation->id;
-		
+
 		$firm = $this->firms('firm1');
-		
+
+		$site = $this->sites('site1');
+
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
 		$firmList = Firm::model()->findAll($criteria);
@@ -108,8 +115,8 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_schedule',
-				array('operation'=>$operation, 'date'=>$minDate, 
-					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList));
+				array('operation'=>$operation, 'date'=>$minDate,
+					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList, 'siteList'=>array(), 'site'=>$site));
 
 		$mockController->actionSchedule();
 	}
@@ -135,9 +142,13 @@ class BookingControllerTest extends CDbTestCase
 
 		$operation = $this->operations('element1');
 		$minDate = $operation->getMinDate();
-		$sessions = $operation->getSessions();
+		$sessions = $operation->getSessions(false, 1);
 
 		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+
+		$firm = $this->firms('firm1');
+
+		$site = $this->sites('site1');
 
 		$_GET['operation'] = $operation->id;
 
@@ -146,7 +157,8 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_reschedule',
-				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions));
+				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions, 'firmId'=>$firm->id,
+					'site'=>$site));
 
 		$mockController->actionReschedule();
 	}
@@ -155,16 +167,21 @@ class BookingControllerTest extends CDbTestCase
 	{
 		$operation = $this->operations('element1');
 		$minDate = $operation->getMinDate();
-		$sessions = $operation->getSessions();
+		$sessions = $operation->getSessions(false, 1);
 
 		$_GET['operation'] = $operation->id;
+
+		$firm = $this->firms('firm1');
+
+		$site = $this->sites('site1');
 
 		$mockController = $this->getMock('BookingController', array('renderPartial'),
 			array('BookingController'));
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_reschedule',
-				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions));
+				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>$firm->id,
+					'site'=>$site));
 
 		$mockController->actionReschedule();
 	}
@@ -184,7 +201,7 @@ class BookingControllerTest extends CDbTestCase
 	{
 		$operation = $this->operations('element1');
 		$minDate = $operation->getMinDate();
-		$sessions = $operation->getSessions();
+		$sessions = $operation->getSessions(false, 1);
 
 		$_GET['operation'] = $operation->id;
 		$firm = $this->firms('firm1');
@@ -328,6 +345,8 @@ class BookingControllerTest extends CDbTestCase
 		$_GET['operation'] = $operationId;
 		$_GET['session'] = $sessionId;
 
+		$site = $this->sites('site1');
+
 		$bookings = Booking::model()->findAllByAttributes(
 			array('session_id'=>$sessionId));
 
@@ -340,7 +359,7 @@ class BookingControllerTest extends CDbTestCase
 			->with('/booking/_list',
 				array('operation'=>$operation, 'session'=>$session,
 					'bookings'=>$bookings, 'minutesStatus' => $status,
-					'reschedule'=>false));
+					'reschedule'=>false, 'site'=>$site));
 
 		$mockController->actionList();
 	}
@@ -381,6 +400,8 @@ class BookingControllerTest extends CDbTestCase
 
 		$operation = $this->operations('element1');
 
+		$site = $this->sites('site1');
+
 		$mockController = $this->getMock('BookingController', array('renderPartial'),
 			array('BookingController'));
 		$mockController->expects($this->once())
@@ -388,7 +409,7 @@ class BookingControllerTest extends CDbTestCase
 			->with('/booking/_list',
 				array('operation'=>$operation, 'session'=>$session,
 					'bookings'=>$bookings, 'minutesStatus' => $status,
-					'reschedule'=>false));
+					'reschedule'=>false, 'site'=>$site));
 
 		$mockController->actionList();
 	}
@@ -445,7 +466,7 @@ class BookingControllerTest extends CDbTestCase
 		);
 
 		$ward = $this->wards('ward3');
-		
+
 		TheatreWardAssignment::model()->deleteAll();
 
 		$mockController = $this->getMock('BookingController',

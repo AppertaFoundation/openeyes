@@ -61,7 +61,7 @@ class BookingServiceTest extends CDbTestCase
 		$minDate = $monthStart;
 
 		$this->setExpectedException('Exception', 'Firm id is invalid.');
-		$this->service->findSessions($monthStart, $minDate, $firmId);
+		$this->service->findSessions($monthStart, $minDate, $firmId, 1);
 	}
 
 	// @todo: do this in a better way than just re-running the query
@@ -99,7 +99,7 @@ class BookingServiceTest extends CDbTestCase
 		$command = Yii::app()->db->createCommand($sql);
 		$reader = $command->query();
 
-		$result = $this->service->findSessions($monthStart, $minDate, $firmId);
+		$result = $this->service->findSessions($monthStart, $minDate, $firmId, 1);
 
 		$this->assertEquals('CDbDataReader', get_class($result));
 		$this->assertEquals($reader->rowCount, $result->count());
@@ -140,7 +140,7 @@ class BookingServiceTest extends CDbTestCase
 		$command = Yii::app()->db->createCommand($sql);
 		$reader = $command->query();
 
-		$result = $this->service->findSessions($monthStart, $minDate, $firmId);
+		$result = $this->service->findSessions($monthStart, $minDate, $firmId, 1);
 
 		$this->assertEquals('CDbDataReader', get_class($result));
 		$this->assertEquals($reader->rowCount, $result->count());

@@ -471,7 +471,7 @@ div.greyGradient {
     padding: 15px;
 }
 
-span#dateSelected span.highlighted, span#timeSelected span.highlighted {
+span#dateSelected span.highlighted, span#siteSelected span.highlighted {
     color: #ff0000;
     font-weight: bold;
     text-transform: uppercase;

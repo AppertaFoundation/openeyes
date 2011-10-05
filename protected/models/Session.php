@@ -109,4 +109,25 @@ class Session extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getSiteListByFirm($firmId)
+	{
+		$sites = Yii::app()->db->createCommand()
+			->select('site.id, site.short_name')
+			->from('site')
+			->join('theatre t', 'site.id = t.site_id')
+			->join('sequence s', 's.theatre_id = t.id')
+			->join('sequence_firm_assignment sfa', 'sfa.sequence_id = s.id')
+			->where('sfa.firm_id = :id', array(':id'=>$firmId))
+			->order('site.name ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($sites as $site) {
+			$data[$site['id']] = $site['short_name'];
+		}
+
+		return $data;
+	}
 }
