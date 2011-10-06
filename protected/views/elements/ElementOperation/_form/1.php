@@ -316,8 +316,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
 			duration = duration * 2;
 		}
-		var projectedDuration = Number($('#fancybox-content #projected_duration').text()) - duration;
-		var totalDuration = Number($('#fancybox-content #ElementOperation_total_duration').val()) - duration;
+		var projectedDuration = Number($('#projected_duration').text()) - duration;
+		var totalDuration = Number($('#ElementOperation_total_duration').val()) - duration;
 
 		if (projectedDuration < 0) {
 			projectedDuration = 0;
@@ -325,8 +325,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		if (totalDuration < 0) {
 			totalDuration = 0;
 		}
-		$('#fancybox-content #projected_duration').text(projectedDuration);
-		$('#fancybox-content #ElementOperation_total_duration').val(totalDuration);
+		$('#projected_duration').text(projectedDuration);
+		$('#ElementOperation_total_duration').val(totalDuration);
 
 		$(row).parents('tr').remove();
 

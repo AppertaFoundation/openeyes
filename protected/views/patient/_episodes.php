@@ -24,7 +24,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		<li class="header"><?php echo $group; ?></li>
 <?php	foreach ($eventTypes as $type) {
 			$name = ucfirst($type->name); ?>
-		<li><a href="/clinical/create?event_type_id=<?php echo $type->id; ?>" class="fancybox2"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php
+		<li><a href="/clinical/create?event_type_id=<?php echo $type->id; ?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php
 		echo $name; ?>" /><span><?php echo $name; ?></span></a></li>
 <?php
 		}
@@ -74,6 +74,21 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			$('#episode_types').slideDown({'duration':75});
 		}
 	});
+	$('#add_episode li a').click(function() {
+		$('ul.events li.shown').removeClass('shown');
+		$.ajax({
+			url: $(this).attr('href'),
+			type: 'GET',
+			success: function(data) {
+				$('#episodes_details').show();
+				$('#episodes_details').html(data);
+			}
+		});
+		if ($('#episode_types').is(':visible')) {
+			$('#episode_types').hide();
+		}
+		return false;
+	});
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
 	});
@@ -103,5 +118,4 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		});
 		return false;
 	});
-	$('a.fancybox2').fancybox({'onStart':function() { $('ul.events li.shown').removeClass('shown'); }});
 </script>

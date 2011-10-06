@@ -67,7 +67,8 @@ if (isset($referrals) && is_array($referrals)) {
 	}
 } ?>
 <div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" id="scheduleNow"><span>Save and schedule now</span></button>
+<?php
+	echo CHtml::link("<span>Save and schedule now</span>", array('booking/schedule', 'operation' => $operation->id), array('class' => 'fancybox shinybutton highlighted', 'encode' => false, 'style' => 'float: right;')); ?>
 <button type="submit" value="submit" class="shinybutton" id="scheduleLater"><span>Save and schedule later</span></button>
 <?php
 $this->endWidget(); ?>
@@ -81,7 +82,10 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$('#fancybox-content').html(data);
+					// todo: get this part working to trigger a fancybox
+					$('#episodes_details').show();
+					$('#episodes_details').html(data);
+					return false;
 				}
 			}
 		});
@@ -96,10 +100,8 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$.fancybox.close();
-					document.open();
-					document.write(data);
-					document.close();
+					$('#episodes_details').show();
+					$('#episodes_details').html(data);
 				}
 			}
 		});
