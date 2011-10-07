@@ -21,7 +21,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(),
 		array('separator' => ' &nbsp; ')); ?>
 	</div>
-	<div class="cleartall"></div>
+	<div class="tallbreak"></div>
 	<div class="label">Add procedure:</div>
 <?php
 	if (!empty($subsections) || !empty($procedures)) { ?>
@@ -34,10 +34,12 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		} else {
 			echo CHtml::dropDownList('select_procedure_id', '', $procedures,
 				array('empty' => 'Select a commonly used procedure'));
- 		} ?> &nbsp; <strong>or</strong></div>
+ 		} ?> &nbsp; <strong>or</strong><br />
 <?php
+	} else { ?>
+	<div class="data"><?php
 	} ?>
-	<div class="data"><span></span><?php
+	<span></span><?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	'name'=>'procedure_id',
 	'id'=>'autocomplete_procedure_id',
@@ -115,8 +117,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		}",
 	),
 	'htmlOptions'=>array('style'=>'width: 400px;')
-)); ?></div>
-	<div class="cleartall"></div>
+)); ?><br/></div>
+	<div class="tallbreak"></div>
 	<div id="procedureDiv"<?php
 	if ($newRecord) { ?> style="display:none;"<?php
 	} ?>>
@@ -158,11 +160,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tfoot>
 		</table>
 	</div>
-	<div class="cleartall"></div>
+	<div class="tallbreak"></div>
 	<div class="label">Consultant required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'consultant_required',
 		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?></div>
-	<div class="cleartall"></div>
+	<div class="tallbreak"></div>
 	<div class="label">Anaesthetic type:</div>
 	<div class="data"><?php
 		$i = 0;
@@ -175,11 +177,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	<?php
 		}
 	?></div>
-	<div class="cleartall"></div>
+	<div class="tallbreak"></div>
 	<div class="label">Overnight Stay required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay',
-		$model->getOvernightOptions(), array('separator' => ' ')); ?></div>
-	<div class="cleartall"></div>
+		$model->getOvernightOptions(), array('separator' => ' ')); ?></div><br />
+	<div class="tallbreak"></div>
 	<div class="label">Decision Date:</div>
 	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			'name'=>'ElementOperation[decision_date]',
@@ -192,8 +194,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			),
 			'value' => $model->decision_date,
 			'htmlOptions'=>array('style'=>'width: 110px;')
-		)); ?></div>
-	<div class="cleartall"></div>
+		)); ?></div><br />
+	<div class="tallbreak"></div>
 	<div class="label">Add comments:</div>
 	<div class="data"><?php echo CHtml::activeTextArea($model, 'comments'); ?></div>
 </div>
@@ -316,8 +318,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
 			duration = duration * 2;
 		}
-		var projectedDuration = Number($('#fancybox-content #projected_duration').text()) - duration;
-		var totalDuration = Number($('#fancybox-content #ElementOperation_total_duration').val()) - duration;
+		var projectedDuration = Number($('#projected_duration').text()) - duration;
+		var totalDuration = Number($('#ElementOperation_total_duration').val()) - duration;
 
 		if (projectedDuration < 0) {
 			projectedDuration = 0;
@@ -325,8 +327,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		if (totalDuration < 0) {
 			totalDuration = 0;
 		}
-		$('#fancybox-content #projected_duration').text(projectedDuration);
-		$('#fancybox-content #ElementOperation_total_duration').val(totalDuration);
+		$('#projected_duration').text(projectedDuration);
+		$('#ElementOperation_total_duration').val(totalDuration);
 
 		$(row).parents('tr').remove();
 

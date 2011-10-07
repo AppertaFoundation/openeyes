@@ -87,10 +87,8 @@ $this->endWidget(); ?>
 						$('#clinical-update_es_').hide();
 					}
 				} catch (e) {
-					$.fancybox.close();
-					document.open();
-					document.write(data);
-					document.close();
+					$('#episodes_details').show();
+					$('#episodes_details').html(data);
 				}
 			}
 		});

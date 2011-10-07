@@ -163,8 +163,7 @@ class ClinicalController extends BaseController
 					$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
 					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 				} else {
-					$this->redirect(array('patient/view',
-						'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));
+					$this->redirect(array('view', 'id' => $eventId));
 				}
 
 				return;
@@ -263,11 +262,7 @@ class ClinicalController extends BaseController
 					$eventTypeName = ucfirst($event->eventType->name);
 					Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
 
-					$this->redirect(array(
-						'patient/view',
-						'id' => $this->patientId,
-						'tabId' => 1,
-						'eventId' => $event->id));
+					$this->redirect(array('view', 'id' => $event->id));
 				}
 			}
 
