@@ -18,6 +18,7 @@ class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
 	public $model;
+	public $service;
 
 	public function filters()
 	{
@@ -281,6 +282,7 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
+		$this->service = new ClinicalService;
 		$patient = $this->loadModel($_GET['id']);
 
 		$episodes = $patient->episodes;
