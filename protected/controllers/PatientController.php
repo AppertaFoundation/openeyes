@@ -228,7 +228,7 @@ class PatientController extends BaseController
 			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
 	}
 
-	public function actionEpisodes()
+	/*public function actionEpisodes()
 	{
 		$patient = $this->loadModel($_GET['id']);
 		$event = !empty($_GET['event']) ? $_GET['event'] : false;
@@ -253,7 +253,7 @@ class PatientController extends BaseController
 		$this->renderPartial('_episodes',
 			array('model'=>$patient, 'episodes'=>$patient->episodes,
 				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
-	}
+	}*/
 
 	public function actionContacts()
 	{
@@ -265,6 +265,27 @@ class PatientController extends BaseController
 	{
 		$patient = $this->loadModel($_GET['id']);
 		$this->renderPartial('_correspondence', array('model'=>$patient));
+	}
+
+	public function actionEpisodes()
+	{
+		$patient = $this->loadModel($_GET['id']);
+
+		$episodes = $patient->episodes;
+
+		/*foreach ($patient->episodes as $episode) {
+			$speciality_name = $episode->firm->serviceSpecialtyAssignment->specialty->name;
+
+			if (!isset($episodes[$speciality_name])) {
+				$episodes[$speciality_name] = array();
+			}
+
+			$episodes[$speciality_name][] = $episode;
+		}*/
+
+		$this->render('episodes', array(
+			'model' => $patient, 'episodes' => $episodes
+		));
 	}
 
 	/**
