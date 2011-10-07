@@ -1,4 +1,16 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
 
 class ClinicalController extends BaseController
 {
@@ -165,13 +177,27 @@ class ClinicalController extends BaseController
 		// Check to see if they need to choose a referral
 		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
 
-		$this->renderPartial($this->getTemplateName('create', $eventTypeId), array(
+		$params = array(
 			'elements' => $elements,
 			'eventTypeId' => $eventTypeId,
 			'specialties' => $specialties,
 			'patient' => $patient,
-			'referrals' => $referrals
-			), false, true
+			'referrals' => $referrals);
+
+		if ($eventType->name == 'operation') {
+			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$procedures = array();
+			if (empty($subsections)) {
+				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+			}
+
+			$params['specialty'] = $specialty;
+			$params['subsections'] = $subsections;
+			$params['procedures'] = $procedures;
+		}
+
+		$this->renderPartial($this->getTemplateName('create', $eventTypeId), $params, false, true
 		);
 	}
 
@@ -249,12 +275,27 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
+		$params = array(
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient
-			), false, true);
+			'patient' => $patient);
+
+		if ($event->eventType->name == 'operation') {
+			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$procedures = array();
+			if (empty($subsections)) {
+				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+			}
+
+			$params['specialty'] = $specialty;
+			$params['subsections'] = $subsections;
+			$params['procedures'] = $procedures;
+		}
+
+		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), $params, false, true
+		);
 	}
 
 	public function actionEpisodeSummary($id)

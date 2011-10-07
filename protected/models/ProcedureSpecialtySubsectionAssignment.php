@@ -1,22 +1,22 @@
 <?php
 
 /**
- * This is the model class for table "service_subsection".
+ * This is the model class for table "proc_specialty_subsection_assignment".
  *
- * The followings are the available columns in table 'service_subsection':
+ * The followings are the available columns in table 'proc_specialty_subsection_assignment':
  * @property string $id
- * @property string $service_id
- * @property string $name
+ * @property string $proc_id
+ * @property string $specialty_subsection_id
  *
  * The followings are the available model relations:
- * @property Procedure[] $procedures
- * @property Service $service
+ * @property SpecialtySubsection $specialtySubsection
+ * @property Proc $proc
  */
-class ServiceSubsection extends BaseActiveRecord
+class ProcedureSpecialtySubsectionAssignment extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ServiceSubsection the static model class
+	 * @return ProcedureSpecialtySubsectionAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -28,7 +28,7 @@ class ServiceSubsection extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'service_subsection';
+		return 'proc_specialty_subsection_assignment';
 	}
 
 	/**
@@ -39,12 +39,11 @@ class ServiceSubsection extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_id, name', 'required'),
-			array('service_id', 'length', 'max'=>10),
-			array('name', 'length', 'max'=>255),
+			array('proc_id, specialty_subsection_id', 'required'),
+			array('proc_id, specialty_subsection_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, service_id, name', 'safe', 'on'=>'search'),
+			array('id, proc_id, specialty_subsection_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -56,8 +55,8 @@ class ServiceSubsection extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'procedures' => array(self::HAS_MANY, 'Procedure', 'service_subsection_id'),
-			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
+			'specialtySubsection' => array(self::BELONGS_TO, 'SpecialtySubsection', 'specialty_subsection_id'),
+			'proc' => array(self::BELONGS_TO, 'Proc', 'proc_id'),
 		);
 	}
 
@@ -68,8 +67,8 @@ class ServiceSubsection extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'service_id' => 'Service',
-			'name' => 'Name',
+			'proc_id' => 'Proc',
+			'specialty_subsection_id' => 'Specialty Subsection',
 		);
 	}
 
@@ -85,10 +84,10 @@ class ServiceSubsection extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('service_id',$this->service_id,true);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('proc_id',$this->proc_id,true);
+		$criteria->compare('specialty_subsection_id',$this->specialty_subsection_id,true);
 
-		return new CActiveDataProvider(get_class($this), array(
+		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
 	}

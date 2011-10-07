@@ -1,4 +1,17 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
+
 Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 <div class="heading">
 <span class="emphasize">Book Operation:</span> Operation details
@@ -10,9 +23,24 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	</div>
 	<div class="cleartall"></div>
 	<div class="label">Add procedure:</div>
+<?php
+	if (!empty($subsections) || !empty($procedures)) { ?>
+	<div class="data"><?php
+		if (!empty($subsections)) {
+			echo CHtml::dropDownList('subsection_id', '', $subsections,
+				array('empty' => 'Select a subsection'));
+			echo CHtml::dropDownList('select_procedure_id', '', array(),
+				array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
+		} else {
+			echo CHtml::dropDownList('select_procedure_id', '', $procedures,
+				array('empty' => 'Select a commonly used procedure'));
+ 		} ?> &nbsp; <strong>or</strong></div>
+<?php
+	} ?>
 	<div class="data"><span></span><?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	'name'=>'procedure_id',
+	'id'=>'autocomplete_procedure_id',
 	'source'=>"js:function(request, response) {
 		var existingProcedures = [];
 		$('#procedure_list tbody').children().each(function () {
@@ -71,7 +99,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					$('#ElementOperation_total_duration').val(operationDuration + thisDuration);
 
 					// clear out text field
-					$('#procedure_id').val('');
+					$('#autocomplete_procedure_id').val('');
 
 					// remove selection from the filter box
 					if ($('select[name=procedure]').children().length > 0) {
@@ -87,7 +115,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		}",
 	),
 	'htmlOptions'=>array('style'=>'width: 400px;')
-)); ?></div><span class="tooltip"><a href="#"><img src="/images/icon_info.png" /><span>Type the first few characters of a procedure into the <strong>add procedure</strong> text box. When you see the required procedure displayed - <strong>click</strong> to select.</span></a></span>
+)); ?></div>
 	<div class="cleartall"></div>
 	<div id="procedureDiv"<?php
 	if ($newRecord) { ?> style="display:none;"<?php
@@ -130,22 +158,6 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			</tfoot>
 		</table>
 	</div>
-	<?php
-$this->widget('zii.widgets.jui.CJuiAccordion', array(
-	'panels'=>array(
-		'or browse procedures for all services'=>$this->renderPartial('/procedure/_selectLists',
-			array('specialties' => $specialties),true),
-	),
-	'id'=>'procedure_selects',
-    // additional javascript options for the accordion plugin
-    'options'=>array(
-		'active'=>false,
-		'animated'=>'bounceslide',
-		'collapsible'=>true,
-		'autoHeight'=>false,
-		'clearStyle'=>true
-	),
-)); ?>
 	<div class="cleartall"></div>
 	<div class="label">Consultant required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'consultant_required',
@@ -160,12 +172,9 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 				echo 'checked="checked"';
 			} ?>value="<?php echo $id; ?>" type="radio" name="ElementOperation[anaesthetic_type]">
 		<label for="ElementOperation_anaesthetic_type_<?php echo $i; ?>"><?php echo $value; ?></label>
-<?php		if ($i == 3) {
-				echo '<br />';
-			}
-			$i++;
+	<?php
 		}
-		?></div>
+	?></div>
 	<div class="cleartall"></div>
 	<div class="label">Overnight Stay required?</div>
 	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay',
@@ -208,6 +217,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 </div>
 <script type="text/javascript">
 	$(function() {
+		$('input[id=autocomplete_procedure_id]').watermark('type the first few characters of a procedure');
 		$("#ElementOperation_decision_date_0").val('<?php
 			echo (empty($model->decision_date) || $model->decision_date == '0000-00-00')
 				? date('Y-m-d') : $model->decision_date; ?>');
@@ -233,12 +243,79 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 				$('select[name=schedule_timeframe2]').attr('disabled', true);
 			}
 		});
+
+		$('select[id=subsection_id]').change(function() {
+			var subsection = $('select[name=subsection_id] option:selected').val();
+			if (subsection != 'Select a subsection') {
+				var existingProcedures = [];
+				$('#procedure_list tbody').children().each(function () {
+					var text = $(this).children('td:first').text();
+					existingProcedures.push(text.replace(/ remove$/i, ''));
+				});
+				$.ajax({
+					'url': '<?php echo Yii::app()->createUrl('procedure/list'); ?>',
+					'type': 'POST',
+					'data': {'subsection': subsection, 'existing': existingProcedures},
+					'success': function(data) {
+						$('select[name=select_procedure_id]').attr('disabled', false);
+						$('select[name=select_procedure_id]').html(data);
+						$('select[name=select_procedure_id]').show();
+					}
+				});
+			}
+		});
+
+		$('#select_procedure_id').change(function() {
+			var procedure = $('select[name=select_procedure_id] option:selected').text();
+			if (procedure != 'Select a commonly used procedure') {
+				$.ajax({
+					'url': '<?php echo Yii::app()->createUrl('procedure/details'); ?>',
+					'type': 'GET',
+					'data': {'name': procedure},
+					'success': function(data) {
+						// append selection onto procedure list
+						$('#procedure_list tbody').append(data);
+						$('#procedureDiv').show();
+						$('#procedure_list').show();
+
+						// update total duration
+						var totalDuration = 0;
+						$('#procedure_list tbody').children().children('td:odd').each(function() {
+							duration = Number($(this).text());
+							if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
+								duration = duration * 2;
+							}
+							totalDuration += duration;
+						});
+						var thisDuration = Number($('#procedure_list tbody').children().children(':last').text());
+						if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
+							thisDuration = thisDuration * 2;
+						}
+						var operationDuration = Number($('#ElementOperation_total_duration').val());
+						$('#projected_duration').text(totalDuration);
+						$('#ElementOperation_total_duration').val(operationDuration + thisDuration);
+
+						// clear out text field
+						$('#autocomplete_procedure_id').val('');
+
+						// remove the procedure from the options list
+						$('select[name=select_procedure_id] option:selected').remove();
+
+						// disable the dropdown if there are no items left to select
+						if ($('select[name=select_procedure_id] option').length == 1) {
+							$('select[name=select_procedure_id]').attr('disabled', true);
+						}
+					}
+				});
+			}
+			return false;
+		});
 	});
 	function removeProcedure(row) {
 		var duration = $(row).parent().siblings('td').text();
 		if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
 			duration = duration * 2;
-		}		
+		}
 		var projectedDuration = Number($('#fancybox-content #projected_duration').text()) - duration;
 		var totalDuration = Number($('#fancybox-content #ElementOperation_total_duration').val()) - duration;
 
@@ -257,7 +334,7 @@ $this->widget('zii.widgets.jui.CJuiAccordion', array(
 	};
 	$('input[name="ElementOperation[eye]"]').click(function() {
 		if ($('input[name="Procedures[]"]').length == 0) {
-			$('input[id="procedure_id"]').focus();
+			$('input[id="autocomplete_procedure_id"]').focus();
 		}
 	});
 </script>

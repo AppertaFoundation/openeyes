@@ -1,4 +1,18 @@
-<div id="bookings">
+<?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
+
+?><div id="bookings">
 <div class="cleartall"></div>
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
@@ -79,8 +93,8 @@ if (!empty($reschedule)) {
 <div class="cleartall"></div>
 <div class="greyGradient">
 <div style="display: inline;">
-<span id="dateSelected">Date currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?></span></span><br/>
-<span id="timeSelected">Time currently selected: <span class="highlighted"><?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span></div>
+<span id="siteSelected">Location currently selected: <span class="highlighted"><?php echo $site->name; ?></span></span><br />
+<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 <button type="submit" value="submit" class="shinybutton highlighted" style="margin-top:-15px;"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
 <button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="margin-top:-15px;"><span>Cancel operation</span></button>
@@ -99,7 +113,7 @@ echo CHtml::endForm(); ?>
 <?php
 	}
 	?>
-	$('button#cancel_operation').live('click', function() {
+	$('button#cancel_operation').die('click').live('click', function() {
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',
 			type: 'GET',

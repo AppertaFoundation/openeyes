@@ -1,16 +1,29 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
+
 
 class SequenceTest extends CDbTestCase
 {
 	public $model;
-	
+
 	public $fixtures = array(
 		'firms' => 'Firm',
 		'sites' => 'Site',
 		'theatres' => 'Theatre',
 		'sequences' => 'Sequence',
 	);
-	
+
 	public function dataProvider_FrequencyIntervals()
 	{
 		$timestamp = time();
@@ -22,7 +35,7 @@ class SequenceTest extends CDbTestCase
 			array(Sequence::FREQUENCY_ONCE, $timestamp, $timestamp + 1),
 		);
 	}
-	
+
 	public function dataProvider_CreateAttributes()
 	{
 		return array(
@@ -73,7 +86,7 @@ class SequenceTest extends CDbTestCase
 			array(array('end_date' => date('Y-m-d', strtotime('-1 year'))), 0, array()),
 		);
 	}
-	
+
 	public function dataProvider_PreExistingSequences()
 	{
 		return array(
@@ -83,7 +96,7 @@ class SequenceTest extends CDbTestCase
 				'start_time' => '08:00',
 				'end_time' => '12:00',
 				'end_date' => null,
-				'repeat_interval' => Sequence::FREQUENCY_1WEEK), true, 
+				'repeat_interval' => Sequence::FREQUENCY_1WEEK), true,
 				'Start date is < end date'
 			),
 			// end date >= start date
@@ -92,7 +105,7 @@ class SequenceTest extends CDbTestCase
 				'start_time' => '08:00',
 				'end_time' => '12:00',
 				'end_date' => date('Y-m-d', strtotime('+52 weeks')),
-				'repeat_interval' => Sequence::FREQUENCY_1WEEK), true,
+				'repeat_interval' => Sequence::FREQUENCY_1WEEK), false,
 				'End date is > start date'
 			),
 			// start time between start and end times
@@ -196,7 +209,7 @@ class SequenceTest extends CDbTestCase
 			),
 		);
 	}
-	
+
 	public function dataProvider_PreExistingSequences_Weeks()
 	{
 		return array(
@@ -242,23 +255,23 @@ class SequenceTest extends CDbTestCase
 			),
 		);
 	}
-	
+
 	public function setUp()
 	{
 		parent::setUp();
 		$this->model = new Sequence;
 	}
-	
+
 	public function testModel()
 	{
 		$this->assertEquals('Sequence', get_class(Sequence::model()), 'Class name should match model.');
 	}
-	
+
 	public function testTableName()
 	{
 		$this->assertEquals('sequence', $this->model->tableName(), 'Table name should be singular.');
 	}
-	
+
 	public function testAttributeLabels()
 	{
 		$expected = array(
@@ -270,25 +283,25 @@ class SequenceTest extends CDbTestCase
 			'end_date' => 'End Date',
 			'repeat_interval' => 'Repeat',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should be customised.');
 	}
-	
+
 	public function testGetTheatreOptions_ReturnsCorrectData()
 	{
 		$theatre = $this->theatres['theatre1'];
 		$site1 = $this->sites['site1'];
 		$site2 = $this->sites['site2'];
-		
+
 		$expected = array();
 		foreach ($this->theatres as $theatre) {
 			$site = $theatre['site_id'] == 1 ? $site1 : $site2;
 			$expected[$theatre['id']] = "{$site['name']} - {$theatre['name']}";
 		}
-		
+
 		$this->assertEquals($expected, $this->model->getTheatreOptions(), 'Theatre options should fetch from the database.');
 	}
-	
+
 	public function testGetFrequencyOptions_ReturnsCorrectData()
 	{
 		$expected = array(
@@ -298,10 +311,10 @@ class SequenceTest extends CDbTestCase
 			Sequence::FREQUENCY_4WEEKS => 'Every 4 weeks',
 			Sequence::FREQUENCY_ONCE => 'One time',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->getFrequencyOptions(), 'Frequency options should match the constants.');
 	}
-	
+
 	public function testGetWeekSelectionOptions_ReturnsCorrectData()
 	{
 		$expected = array(
@@ -311,10 +324,10 @@ class SequenceTest extends CDbTestCase
 			Sequence::SELECT_4THWEEK => '4th in month',
 			Sequence::SELECT_5THWEEK => '5th in month',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->getWeekSelectionOptions(), 'Week selection options should match the constants.');
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_FrequencyIntervals
 	 */
@@ -331,13 +344,13 @@ class SequenceTest extends CDbTestCase
 		$model = $this->model;
 		$attributes['theatre_id'] = $this->theatres['theatre1']['id'];
 		$model->setAttributes($attributes);
-		
+
 		$_POST['Sequence']['week_selection'] = array(
 			Sequence::SELECT_2NDWEEK,
 			Sequence::SELECT_4THWEEK,
 			Sequence::SELECT_5THWEEK
 		);
-		
+
 		$expectedValue = Sequence::SELECT_2NDWEEK + Sequence::SELECT_4THWEEK + Sequence::SELECT_5THWEEK;
 		$this->assertEquals($validData, $model->validate());
 		if ($validData) {
@@ -346,7 +359,7 @@ class SequenceTest extends CDbTestCase
 			$this->assertEquals($expectedValue, $model->week_selection);
 		}
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_PreExistingSequences
 	 */
@@ -356,7 +369,7 @@ class SequenceTest extends CDbTestCase
 		$attributes['theatre_id'] = $this->theatres['theatre1']['id'];
 		$model->setAttributes($attributes);
 		$model->save(true);
-		
+
 		$model = $this->model;
 		$model->theatre_id = $this->theatres['theatre1']['id'];
 		$model->start_date = date('Y-m-d', strtotime('+1 week'));
@@ -364,14 +377,14 @@ class SequenceTest extends CDbTestCase
 		$model->end_time = '11:00';
 		$model->end_date = date('Y-m-d', strtotime('+13 weeks'));
 		$model->repeat_interval = Sequence::FREQUENCY_4WEEKS;
-		
+
 		$this->assertEquals(!$conflictsExist, $model->validate());
 		if (!$conflictsExist) {
 			$this->assertEquals(array(), $model->getErrors());
 			$this->assertTrue($model->save(true));
 		}
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_PreExistingSequences_Weeks
 	 */
@@ -384,12 +397,12 @@ class SequenceTest extends CDbTestCase
 			}
 		}
 		$_POST['Sequence']['week_selection'] = $selection;
-		
+
 		$model = new Sequence;
 		$attributes['theatre_id'] = $this->theatres['theatre1']['id'];
 		$model->setAttributes($attributes);
 		$model->save(true);
-		
+
 		$model = $this->model;
 		$model->theatre_id = $this->theatres['theatre1']['id'];
 		$model->start_date = date('Y-m-d', strtotime('+1 week'));
@@ -398,7 +411,7 @@ class SequenceTest extends CDbTestCase
 		$model->end_date = date('Y-m-d', strtotime('+13 weeks'));
 		$model->repeat_interval = 0;
 		$model->week_selection = Sequence::SELECT_2NDWEEK + Sequence::SELECT_4THWEEK + Sequence::SELECT_5THWEEK;
-		
+
 		$this->assertEquals(!$conflictsExist, $model->validate());
 		if (!$conflictsExist) {
 			$this->assertEquals(array(), $model->getErrors());
@@ -426,7 +439,7 @@ class SequenceTest extends CDbTestCase
 		$this->assertEquals($numResults, $results->getItemCount());
 		$this->assertEquals($expectedResults, $data);
 	}
-	
+
 	public function testGetFirmName()
 	{
 		foreach ($this->sequences as $name => $data) {
@@ -436,7 +449,7 @@ class SequenceTest extends CDbTestCase
 			} else {
 				$expected = $this->firms['firm1']['name'];
 			}
-			
+
 			$this->assertEquals($expected, $sequence->getFirmName());
 		}
 	}

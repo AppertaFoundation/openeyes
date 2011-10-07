@@ -1,4 +1,17 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
+
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
@@ -17,6 +30,10 @@ if ($operation->event->episode->firm_id != $firm->id) {
 	<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
 <?php
 }
+if (empty($sessions)) { ?>
+	<div class="flash-error">This firm has no scheduled sessions.</div>
+<?php
+}
 	?>
 <div id="firmSelect" class="greyGradient">
 	You are viewing the schedule for <strong><?php echo $firm->name; ?></strong>.
@@ -28,6 +45,17 @@ if ($operation->event->episode->firm_id != $firm->id) {
 <?php	} ?>
 	</select>
 </div>
+<?php
+	if (!empty($site->name)) { ?>
+<div id="siteSelect" class="greyGradient">
+	You are viewing the calendar for <strong><?php echo $site->name; ?></strong>.
+	<?php echo CHtml::dropDownList('siteId', '', $siteList,
+		array('empty' => 'Select a different site', 'disabled' => empty($siteList))); ?>
+</div>
+<div class="cleartall"></div>
+<?php
+	}
+	?>
 <div id="operation">
 	<h1>Select theatre slot</h1><br />
 <?php
@@ -42,7 +70,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 		<div id="session_dates">
 		<div id="details">
 <?php	echo $this->renderPartial('_calendar',
-			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions), false, true); ?>
+			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions, 'firmId' => $firm->id), false, true); ?>
 		</div>
 		</div>
 	</div>
@@ -50,13 +78,17 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 </div>
 <script type="text/javascript">
 	$(function() {
-		$('#previous_month').live('click',function() {
+		$('#previous_month').die('click').live('click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
+			var firm = $('input[id=sessionFirm]').val();
+			if (firm == '') {
+				firm = 'EMG';
+			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month},
+				'data': {'operation': operation, 'date': month, 'firmId': firm},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -69,13 +101,17 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			});
 			return false;
 		});
-		$('#next_month').live('click',function() {
+		$('#next_month').die('click').live('click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
+			var firm = $('input[id=sessionFirm]').val();
+			if (firm == '') {
+				firm = 'EMG';
+			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month},
+				'data': {'operation': operation, 'date': month, 'firmId': firm},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -88,7 +124,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			});
 			return false;
 		});
-		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full').live('click', function() {
+		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full').die('click').live('click', function() {
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');
 			var day = $(this).text();
@@ -120,7 +156,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				}
 			});
 		});
-		$('#theatres div.shinybutton').live('click', function() {
+		$('#theatres div.shinybutton').die('click').live('click', function() {
 			var session = $(this).children().children('span.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
@@ -129,11 +165,10 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			$(this).addClass('highlighted');
 			showTheatreList(operation, month, day, session);
 		});
-		$('#firmSelect #firmId').live('change', function() {
+		$('#firmSelect #firmId').die('change').live('change', function() {
 			var firmId = $(this).val();
 			var operation = $('input[id=operation]').val();
-			console.log('firm: ' + firmId);
-			
+
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/schedule'); ?>',
 				'type': 'GET',
@@ -141,7 +176,26 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				'success': function(data) {
 					$('#schedule').html(data);
 				}
-			});			
+			});
+		});
+		$('select[id=siteId]').change(function() {
+			var site = $('select[name=siteId] option:selected').val();
+			if (site != 'Select a different site') {
+				var firmId = $('input[id=sessionFirm]').val();
+				var operation = $('input[id=operation]').val();
+				if (firmId == '') {
+					firmId = 'EMG';
+				}
+
+				$.ajax({
+					'url': '<?php echo Yii::app()->createUrl('booking/schedule'); ?>',
+					'type': 'GET',
+					'data': {'operation': operation, 'firmId': firmId, 'siteId': site},
+					'success': function(data) {
+						$('#schedule').html(data);
+					}
+				});
+			}
 		});
 	});
 

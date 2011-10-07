@@ -1,3 +1,16 @@
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
+
 .ui-tabs-nav li {
     display: inline;
     padding: 0;
@@ -458,7 +471,7 @@ div.greyGradient {
     padding: 15px;
 }
 
-span#dateSelected span.highlighted, span#timeSelected span.highlighted {
+span#dateSelected span.highlighted, span#siteSelected span.highlighted {
     color: #ff0000;
     font-weight: bold;
     text-transform: uppercase;
@@ -466,4 +479,12 @@ span#dateSelected span.highlighted, span#timeSelected span.highlighted {
 
 .ui-autocomplete li.ui-menu-item a {
     font: 10pt Arial;
+}
+
+#modifyDiagnosis {
+    margin-top: -20px !important;
+}
+
+#modifyDiagnosis span {
+    min-width: 0px;
 }

@@ -1,18 +1,30 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
 
 /**
- * This is the model class for table "procedure".
+ * This is the model class for table "proc".
  *
- * The followings are the available columns in table 'procedure':
+ * The followings are the available columns in table 'proc':
  * @property string $id
  * @property string $term
  * @property string $short_format
  * @property integer $default_duration
- * @property string $service_subsection_id
  *
  * The followings are the available model relations:
  * @property ElementOperation[] $elementOperations
- * @property ServiceSubsection $serviceSubsection
+ * @property Specialty $specialty
+ * @property SpecialtySubsection $serviceSubsection
  * @property OpcsCode[] $opcsCodes
  */
 class Procedure extends BaseActiveRecord
@@ -31,7 +43,7 @@ class Procedure extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'procedure';
+		return 'proc';
 	}
 
 	/**
@@ -42,13 +54,12 @@ class Procedure extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('term, short_format, default_duration, service_subsection_id', 'required'),
+			array('term, short_format, default_duration', 'required'),
 			array('default_duration', 'numerical', 'integerOnly'=>true),
 			array('term, short_format', 'length', 'max'=>255),
-			array('service_subsection_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, term, short_format, default_duration, service_subsection_id', 'safe', 'on'=>'search'),
+			array('id, term, short_format, default_duration', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -60,9 +71,10 @@ class Procedure extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(procedure_id, operation_id)'),
-			'serviceSubsection' => array(self::BELONGS_TO, 'ServiceSubsection', 'service_subsection_id'),
-			'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(procedure_id, opcs_code_id)'),
+			'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(proc_id, operation_id)'),
+			'specialties' => array(self::MANY_MANY, 'Specialty', 'proc_specialty_assignment(proc_id, specialty_id)'),
+			'specialtySubsections' => array(self::MANY_MANY, 'SpecialtySubsection', 'proc_specialty_subsection_assignment(proc_id, specialty_subsection_id)'),
+			'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(proc_id, opcs_code_id)'),
 		);
 	}
 
@@ -76,7 +88,6 @@ class Procedure extends BaseActiveRecord
 			'term' => 'Term',
 			'short_format' => 'Short Format',
 			'default_duration' => 'Default Duration',
-			'service_subsection_id' => 'Service Subsection',
 		);
 	}
 
@@ -95,7 +106,6 @@ class Procedure extends BaseActiveRecord
 		$criteria->compare('term',$this->term,true);
 		$criteria->compare('short_format',$this->short_format,true);
 		$criteria->compare('default_duration',$this->default_duration);
-		$criteria->compare('service_subsection_id',$this->service_subsection_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -118,9 +128,8 @@ class Procedure extends BaseActiveRecord
 
 		$procedures = Yii::app()->db->createCommand()
 			->select($select)
-			->from('procedure')
-			->where('term LIKE :term OR short_format LIKE :format',
-				array(':term'=>$search, ':format'=>$search))
+			->from('proc')
+			->where('term LIKE :term', array(':term'=>$search))
 			->limit(5)
 			->queryAll();
 
@@ -128,7 +137,7 @@ class Procedure extends BaseActiveRecord
 		$session = Yii::app()->session['Procedures'];
 
 		foreach ($procedures as $procedure) {
-			$data[] = "{$procedure['term']} - {$procedure['short_format']}";
+			$data[] = $procedure['term'];
 			$id = $procedure['id'];
 			$session[$id] = array(
 				'term' => $procedure['term'],
@@ -138,6 +147,26 @@ class Procedure extends BaseActiveRecord
 		}
 
 		Yii::app()->session['Procedures'] = $session;
+
+		return $data;
+	}
+
+	public function getListBySpecialty($specialtyId)
+	{
+		$procedures = Yii::app()->db->createCommand()
+			->select('proc.id, proc.term')
+			->from('proc')
+			->join('proc_specialty_assignment psa', 'psa.proc_id = proc.id')
+			->where('psa.specialty_id = :id',
+				array(':id'=>$specialtyId))
+			->order('proc.term ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($procedures as $procedure) {
+			$data[$procedure['id']] = $procedure['term'];
+		}
 
 		return $data;
 	}

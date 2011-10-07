@@ -1,4 +1,16 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
 
 /**
  * This is the model class for table "element_operation".
@@ -45,6 +57,12 @@ class ElementOperation extends BaseElement
 	const STATUS_NEEDS_RESCHEDULING = 2;
 	const STATUS_RESCHEDULED = 3;
 	const STATUS_CANCELLED = 4;
+
+	const LETTER_INVITE = 0;
+	const LETTER_REMINDER_1 = 1;
+	const LETTER_REMINDER_2 = 2;
+	const LETTER_GP = 3;
+	const LETTER_REMOVAL = 4;
 
 	public $service;
 
@@ -93,7 +111,7 @@ class ElementOperation extends BaseElement
 		// class name for the relations automatically generated below.
 		return array(
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, procedure_id)', 'order' => 'display_order ASC'),
+			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, proc_id)', 'order' => 'display_order ASC'),
 			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id'),
 			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
 			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id')
@@ -243,10 +261,10 @@ class ElementOperation extends BaseElement
 	{
 		return array(
 			self::ANAESTHETIC_TOPICAL => 'Topical',
-			self::ANAESTHETIC_LOCAL => 'Local',
-			self::ANAESTHETIC_LOCAL_WITH_COVER => 'Local with cover',
-			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'Local with sedation',
-			self::ANAESTHETIC_GENERAL => 'General'
+			self::ANAESTHETIC_LOCAL => 'LA',
+			self::ANAESTHETIC_LOCAL_WITH_COVER => 'LA with cover',
+			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
+			self::ANAESTHETIC_GENERAL => 'GA'
 		);
 	}
 
@@ -257,16 +275,16 @@ class ElementOperation extends BaseElement
 				$text = 'Topical';
 				break;
 			case self::ANAESTHETIC_LOCAL:
-				$text = 'Local';
+				$text = 'LA';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'Local with cover';
+				$text = 'LA with cover';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'Local with sedation';
+				$text = 'LAS';
 				break;
 			case self::ANAESTHETIC_GENERAL:
-				$text = 'General';
+				$text = 'GA';
 				break;
 			default:
 				$text = 'Unknown';
@@ -396,7 +414,6 @@ class ElementOperation extends BaseElement
 
 	protected function afterSave()
 	{
-		parent::afterSave();
 
 		$operationId = $this->id;
 		$order = 1;
@@ -408,7 +425,7 @@ class ElementOperation extends BaseElement
 			foreach ($_POST['Procedures'] as $id) {
 				$procedure = new OperationProcedureAssignment;
 				$procedure->operation_id = $operationId;
-				$procedure->procedure_id = $id;
+				$procedure->proc_id = $id;
 				$procedure->display_order = $order;
 				if (!$procedure->save()) {
 					throw new Exception('Unable to save procedure');
@@ -417,6 +434,16 @@ class ElementOperation extends BaseElement
 				$order++;
 			}
 		}
+		return parent::afterSave();
+	}
+
+	protected function beforeValidate()
+	{
+		if (!empty($_POST['action']) && empty($_POST['Procedures'])) {
+			$this->addError('eye', 'At least one procedure must be entered');
+		}
+
+		return parent::beforeValidate();
 	}
 
 	public function getMinDate()
@@ -431,7 +458,7 @@ class ElementOperation extends BaseElement
 		return $date;
 	}
 
-	public function getSessions($emergency = false)
+	public function getSessions($emergency = false, $siteId)
 	{
 		$minDate = $this->getMinDate();
 		$thisMonth = mktime(0, 0, 0, date('m'), 1, date('Y'));
@@ -448,7 +475,7 @@ class ElementOperation extends BaseElement
 		}
 
 		$service = $this->getBookingService();
-		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
+		$sessions = $service->findSessions($monthStart, $minDate, $firmId, $siteId);
 
 		$results = array();
 		foreach ($sessions as $session) {
@@ -637,12 +664,12 @@ class ElementOperation extends BaseElement
 				->join('ward w', 't.ward_id = w.id')
 				->where('t.theatre_id = :id', array(':id' => $theatreId))
 				->queryRow();
-			
+
 			if (!empty($ward)) {
 				$results[$ward['id']] = $ward['name'];
 			}
 		}
-		
+
 		if (empty($results)) {
 			// otherwise select by site and patient age/gender
 			$patient = $this->event->episode->patient;
@@ -727,6 +754,70 @@ class ElementOperation extends BaseElement
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Returns the letter status for an operation.
+	 *
+	 * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
+	 *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
+  	 *
+	 * return int
+	 */
+	public function getLetterStatus()
+	{
+		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
+			$criteria = new CDbCriteria;
+			$criteria->addCondition('element_operation_id = :eoid');
+			$criteria->params = array('eoid' => $this->id);
+			$criteria->order = 'id DESC';
+			$criteria->limit = 1;
+                	$cancelledBooking = CancelledBooking::model()->find($criteria);
+
+			$datetime = strtotime($cancelledBooking->cancelled_date);
+		} else {
+			$datetime = strtotime($this->event->datetime);
+		}
+
+		$now = time();
+		$week = 86400 * 7;
+
+		if ($datetime >= ($now - 2 * $week)) {
+			$letterStatus = self::LETTER_INVITE;
+		} elseif (
+			$datetime >= ($now - 4 * $week) &&
+			$datetime < ($now - 2 * $week)
+		) {
+			$letterStatus = self::LETTER_REMINDER_1;
+		} elseif (
+                        $datetime >= ($now - 6 * $week) &&
+                        $datetime < ($now - 4 * $week)
+                ) {
+                        $letterStatus = self::LETTER_REMINDER_2;
+                } elseif (
+                        $datetime >= ($now - 8 * $week) &&
+                        $datetime < ($now - 6 * $week)
+                ) {
+                        $letterStatus = self::LETTER_GP;
+                } elseif (
+                        $datetime < ($now - 8 * $week)
+                ) {
+                        $letterStatus = self::LETTER_REMOVAL;
+                }
+
+		return $letterStatus;
+	}
+
+	public static function getLetterOptions()
+	{
+		return array(
+			'' => 'Any',
+			self::LETTER_INVITE => 'Invitation',
+			self::LETTER_REMINDER_1 => '1st Reminder',
+			self::LETTER_REMINDER_2 => '2nd Reminder',
+			self::LETTER_GP => 'Refer to GP',
+			self::LETTER_REMOVAL => 'To be removed'
+		);
 	}
 
 	/**

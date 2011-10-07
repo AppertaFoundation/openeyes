@@ -1,35 +1,15 @@
-/**
- * ed_vitreoretinal.js
- * 
- * Classes for implementing EyeDraw in HTML5
- *
- * Include in HTML file using <script language="JavaScript" src="ed_vitreoretinal.js" type="text/javascript"></script>
- * 
- * OpenEyes is licensed by Moorfields Eye Hospital NHS Foundation Trust (the “Licensor”) under version 3 of 
- * the GNU General Public Licence (GPL), and version 1 of the Open Eyes Proprietary Licence (OEPL).
- * 
- * You can choose the licence that most suits your intended use of OpenEyes. If you wish to contribute to the OpenEyes open source project
- * or incorporate OpenEyes into your own open source project, version 3 of the GNU General Public Licence or any later version shall apply.
- * If you wish to use OpenEyes for commercial purposes, the terms of the OpenEyes Proprietary Licence shall apply; 
- * 
- * A plain text version of the OpenEyes Proprietary Licence is distributed with this software. The Licensor reserves the right to publish
- * revised and/or new versions of the OpenEyes Proprietary Licence from time to time. Each version will be given a distinguishing version number.
- * 
- * When using OpenEyes in your commercial application, or open source application you are required to distribute your chosen 
- * licence (GPLv3 or OEPLv1) with your application and ensure the following acknowledgement is contained within both the program 
- * and in any user’s manual.
- * 
- * 		"This software uses elements of OpenEyes open source software (see http://www.openeyes.org.uk) Open Eyes is used and may only be 
- * 		used under the [GPL/OEPL] version [insert version number]"
- * 
- * @author Bill Aylward <bill.aylward@mac.com>
- * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
- * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
- * @version 0.9
- * Modification date: 13th March 2011
- * @copyright Copyright (c) 2011 OpenEyes
- * @package User
- */
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
 
 /**
  *  Square (Template doodle)

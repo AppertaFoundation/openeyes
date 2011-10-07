@@ -1,4 +1,16 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
 
 class BookingController extends BaseController
 {
@@ -42,7 +54,7 @@ class BookingController extends BaseController
 		if ($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
-		
+
 		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
 		if ($firmId != 'EMG') {
 			$_GET['firm'] = $firmId;
@@ -51,16 +63,34 @@ class BookingController extends BaseController
 			$firm = new Firm;
 			$firm->name = 'Emergency List';
 		}
-		
-		$sessions = $operation->getSessions($firm->name == 'Emergency List');
-		
+
+		if ($firm->name != 'Emergency List') {
+			$siteList = Session::model()->getSiteListByFirm($firmId);
+		} else {
+			$siteList = Site::model()->getList();
+		}
+		if (!empty($_GET['siteId'])) {
+			$siteId = $_GET['siteId'];
+		} else { // grab the first (possibly only) site off the list
+			$siteId = key($siteList);
+		}
+		if (!empty($siteId)) {
+			unset($siteList[$siteId]);
+			$site = Site::model()->findByPk($siteId);
+			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
+		} else {
+			$site = new Site;
+			$sessions = array();
+		}
+
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
 		$firmList = Firm::model()->findAll($criteria);
 
 		$this->renderPartial('/booking/_schedule',
-			array('operation'=>$operation, 'date'=>$minDate, 
-				'sessions'=>$sessions, 'firm' => $firm, 'firmList' => $firmList), 
+			array('operation'=>$operation, 'date'=>$minDate,
+				'sessions'=>$sessions, 'firm' => $firm, 'firmList' => $firmList, 'siteList' => $siteList,
+				'site'=>$site),
 			false, true);
 	}
 
@@ -76,10 +106,26 @@ class BookingController extends BaseController
 		if ($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
-		$sessions = $operation->getSessions();
+
+		$firmId = $operation->event->episode->firm_id;
+		$firm = Firm::model()->findByPk($firmId);
+		$siteList = Session::model()->getSiteListByFirm($firmId);
+		if (!empty($_GET['siteId'])) {
+			$siteId = $_GET['siteId'];
+		} else { // grab the first (possibly only) site off the list
+			$siteId = key($siteList);
+		}
+		if (!empty($siteId)) {
+			unset($siteList[$siteId]);
+			$site = Site::model()->findByPk($siteId);
+			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
+		} else {
+			$site = new Site;
+			$sessions = array();
+		}
 
 		$this->renderPartial('/booking/_reschedule',
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'site' => $site, 'firmId' => $firmId), false, true);
 	}
 
 	public function actionRescheduleLater()
@@ -94,7 +140,23 @@ class BookingController extends BaseController
 		if ($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
-		$sessions = $operation->getSessions();
+
+		$firmId = $operation->event->episode->firm_id;
+		$firm = Firm::model()->findByPk($firmId);
+		$siteList = Session::model()->getSiteListByFirm($firmId);
+		if (!empty($_GET['siteId'])) {
+			$siteId = $_GET['siteId'];
+		} else { // grab the first (possibly only) site off the list
+			$siteId = key($siteList);
+		}
+		if (!empty($siteId)) {
+			unset($siteList[$siteId]);
+			$site = Site::model()->findByPk($siteId);
+			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
+		} else {
+			$site = new Site;
+			$sessions = array();
+		}
 
 		$this->renderPartial('/booking/_reschedule_later',
 	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
@@ -146,10 +208,37 @@ class BookingController extends BaseController
 			throw new Exception('Operation id is invalid.');
 		}
 		$minDate = !empty($_GET['date']) ? strtotime($_GET['date']) : $operation->getMinDate();
-		$sessions = $operation->getSessions();
+
+		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
+		if ($firmId != 'EMG') {
+			$_GET['firm'] = $firmId;
+			$firm = Firm::model()->findByPk($firmId);
+		} else {
+			$firm = new Firm;
+			$firm->name = 'Emergency List';
+		}
+
+		if ($firm->name != 'Emergency List') {
+			$siteList = Session::model()->getSiteListByFirm($firmId);
+		} else {
+			$siteList = Site::model()->getList();
+		}
+		if (!empty($_GET['siteId'])) {
+			$siteId = $_GET['siteId'];
+		} else { // grab the first (possibly only) site off the list
+			$siteId = key($siteList);
+		}
+		if (!empty($siteId)) {
+			unset($siteList[$siteId]);
+			$site = Site::model()->findByPk($siteId);
+			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
+		} else {
+			$site = new Site;
+			$sessions = array();
+		}
 
 		$this->renderPartial('/booking/_calendar',
-			array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+			array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>$firmId), false, true);
 	}
 
 	public function actionTheatres()
@@ -190,6 +279,11 @@ class BookingController extends BaseController
 		}
 		$session['id'] = $sessionId;
 
+		$sessionModel = Session::model()->findByPk($session['id']);
+		$sequence = Sequence::model()->findByPk($sessionModel->sequence_id);
+		$theatre = Theatre::model()->findByPk($sequence->theatre_id);
+		$site = Site::model()->findByPk($theatre->site_id);
+
 		$criteria = new CDbCriteria;
 		$criteria->compare('session_id', $sessionId);
 		$criteria->order = 'display_order ASC';
@@ -206,7 +300,7 @@ class BookingController extends BaseController
 		$this->renderPartial('/booking/_list',
 			array('operation'=>$operation, 'session'=>$session,
 				'bookings'=>$bookings, 'minutesStatus'=>$minutesStatus,
-				'reschedule'=>$reschedule), false, true);
+				'reschedule'=>$reschedule, 'site'=>$site), false, true);
 	}
 
 	public function actionCreate()
@@ -223,7 +317,7 @@ class BookingController extends BaseController
 			$session = Session::model()->findByPk($model->session_id);
 			$operation = ElementOperation::model()->findByPk($model->element_operation_id);
 			if (!empty($_POST['wardType'])) {
-				/* currently not in use, but if we want to allow a checkbox for 
+				/* currently not in use, but if we want to allow a checkbox for
 				 * booking into an observational ward, it would be handled here
 				 */
 				$observationWard = Ward::model()->findByAttributes(

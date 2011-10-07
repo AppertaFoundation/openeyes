@@ -1,4 +1,16 @@
 <?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk   info@openeyes.org.uk
+--
+*/
 
 /**
  * This is the model class for table "element_diagnosis".
@@ -141,18 +153,7 @@ class ElementDiagnosis extends BaseElement
 	public function beforeValidate()
 	{
 		if (!empty($this->disorder_id)) {
-			$terms = explode(' - ', $this->disorder_id);
-
-			if (count($terms) != 2) {
-	// A hack because validate is called a second time on update by ClinicalService->update. Get rid of this method! Replace with an id fetched by ajax, like with procedures?
-				return parent::beforeValidate();
-			}
-
-			$disorder = Disorder::model()->find('
-				term = ? AND
-				fully_specified_name = ? AND
-				systemic = 0
-			', $terms);
+			$disorder = Disorder::model()->find('term = ? AND systemic = 0', array($this->disorder_id));
 
 			if (empty($disorder)) {
 				return false;
