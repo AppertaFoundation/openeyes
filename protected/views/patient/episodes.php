@@ -1,3 +1,8 @@
+<?php
+$cs = Yii::app()->getClientScript();
+$cs->registerCoreScript('jquery');
+$cs->registerCoreScript('jquery.ui');
+?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
@@ -69,6 +74,7 @@
 		} else {
 			$('#episode-details-'+$(this).attr('rel')).addClass('hidden');
 		}
+		return false;1
 	});
 
 	$('a.show-event-details').unbind('click').click(function() {
@@ -78,14 +84,16 @@
 				$('#event_content').html(data);
 			}
 		});
+		return false;
 	});
 
 	$('#addNewEvent').unbind('click').click(function() {
 		$.ajax({
-			url: '/clinical/create?event_type_id=25',
+			url: '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>25)); ?>',
 			success: function(data) {
 				$('#event_content').html(data);
 			}
 		});
+		return false;
 	});
 </script>

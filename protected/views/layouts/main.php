@@ -28,8 +28,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico"/> 
 	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"> 
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/libs/modernizr-2.0.6.min.js"></script> 
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
 </head> 
  
 <body> 
@@ -80,6 +78,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals</h6> 
 	</div> <!-- #footer --> 
  
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	 <script>window.jQuery || document.write('<script src="/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
  
 	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/plugins.js"></script>
 	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/script.js"></script>
