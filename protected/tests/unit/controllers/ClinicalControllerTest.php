@@ -249,8 +249,7 @@ class ClinicalControllerTest extends CDbTestCase
 
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => $patientId, 'tabId' => 1,
-				'eventId' => $expectedEventId));
+			->with(array('view', 'id' => $patientId));
 
 		$mockController->expects($this->any())
 			->method('getUserId')
@@ -396,8 +395,7 @@ class ClinicalControllerTest extends CDbTestCase
 			array('renderPartial', 'redirect', 'getUserId'), array('ClinicalController'));
 		$mockController->expects($this->once())
 			->method('redirect')
-			->with(array('patient/view', 'id' => null, 'tabId' => 1,  // Id is from $controller->patientId, but it's not stored in the mock
-				'eventId' => $event->id));
+			->with(array('view', 'id' => 1));  // Id is from $controller->patientId, but it's not stored in the mock
 
 		$mockController->expects($this->once())
 			->method('getUserId')

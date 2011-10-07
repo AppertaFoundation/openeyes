@@ -67,8 +67,7 @@ if (isset($referrals) && is_array($referrals)) {
 	}
 } ?>
 <div class="cleartall"></div>
-<?php
-	echo CHtml::link("<span>Save and schedule now</span>", array('booking/schedule', 'operation' => $operation->id), array('class' => 'fancybox shinybutton highlighted', 'encode' => false, 'style' => 'float: right;')); ?>
+<button type="submit" value="submit" class="shinybutton highlighted" id="scheduleNow"><span>Save and schedule now</span></button>
 <button type="submit" value="submit" class="shinybutton" id="scheduleLater"><span>Save and schedule later</span></button>
 <?php
 $this->endWidget(); ?>
@@ -83,8 +82,7 @@ $this->endWidget(); ?>
 					displayErrors(data);
 				} catch (e) {
 					// todo: get this part working to trigger a fancybox
-					$('#episodes_details').show();
-					$('#episodes_details').html(data);
+					$.fancybox({'content': data});
 					return false;
 				}
 			}
@@ -102,6 +100,27 @@ $this->endWidget(); ?>
 				} catch (e) {
 					$('#episodes_details').show();
 					$('#episodes_details').html(data);
+
+					// add the newly created operation to the event list
+					var href = $('a#editlink').attr('href');
+					href = href.replace('update\/', '');
+
+					var day = new Date();
+					var dateString = '';
+					if (day.getDate() < 10) {
+						dateString = dateString + '0';
+					}
+					dateString = dateString + day.getDate() + '/';
+					if ((day.getMonth() + 1) < 10) {
+						dateString = dateString + '0';
+					}
+					dateString = dateString + (day.getMonth() + 1) + '/';
+					dateString = dateString + day.getFullYear();
+					var li = '<li class="shown"><a href="' + href +
+						'"><span class="type">Operation</span><span class="date"> ' + dateString +
+						'</span></a></li>';
+
+					$('ul.events').append(li);
 				}
 			}
 		});
