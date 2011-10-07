@@ -21,6 +21,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $date
  * @property string $start_time
  * @property string $end_time
+ * @property string $comments
  *
  * The followings are the available model relations:
  * @property Booking[] $bookings
@@ -55,9 +56,10 @@ class Session extends CActiveRecord
 		return array(
 			array('sequence_id, date, start_time, end_time', 'required'),
 			array('sequence_id', 'length', 'max'=>10),
+			array('comments', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, sequence_id, date, start_time, end_time', 'safe', 'on'=>'search'),
+			array('id, sequence_id, date, start_time, end_time, comments', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,6 +87,7 @@ class Session extends CActiveRecord
 			'date' => 'Date',
 			'start_time' => 'Start Time',
 			'end_time' => 'End Time',
+			'comments' => 'Comments'
 		);
 	}
 
@@ -104,6 +107,7 @@ class Session extends CActiveRecord
 		$criteria->compare('date',$this->date,true);
 		$criteria->compare('start_time',$this->start_time,true);
 		$criteria->compare('end_time',$this->end_time,true);
+		$criteria->compare('comments',$this->comments,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
