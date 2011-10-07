@@ -25,6 +25,13 @@ if (!empty($episode)) {
 	}
 ?>
 <h3>Episode Summary</h3>
+<?php
+	if ($editable && empty($episode->end_date)) {
+		echo CHtml::link('<span>Close Episode</span>', array('clinical/closeEpisode', 'id' => $episode->id), array('id' => 'closelink', 'class' => 'shinybutton', 'encode' => false, 'style' => 'float: right; margin-top: -30px;')); ?>
+		<div id="dialog-confirm" title="Close this episode?" style="display: none;">
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>This episode will be marked as closed, and no further events will be added to it. Are you sure?</p>
+</div><?php
+	} ?>
 <div class="col_left">Start date:<br/>
 <span><?php echo date('jS F, Y', strtotime($episode->start_date)); ?></span>
 </div>
@@ -32,7 +39,7 @@ if (!empty($episode)) {
 <span><?php echo $eye ?></span>
 </div>
 <div class="col_left">End date:<br/>
-<span><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'; ?></span>
+<span><?php echo !empty($episode->end_date) ? date('jS F, Y', strtotime($episode->end_date)) : '(still open)'; ?></span>
 </div>
 <div class="col_right">Principal diagnosis:<br/>
 <span><?php echo $text ?></span>
@@ -59,4 +66,34 @@ if (!empty($episode)) {
 	$('div#episodes_details').hide();
 </script>
 <?php
-}
+} ?>
+<script type="text/javascript">
+	$('#closelink').click(function() {
+		$('#dialog-confirm').dialog({
+			resizable: false,
+			height: 140,
+			modal: false,
+			buttons: {
+				"Close episode": function() {
+					$.ajax({
+						url: $('#closelink').attr('href'),
+						type: 'GET',
+						success: function(data) {
+							$('#episodes_details').show();
+							$('#episodes_details').html(data);
+						}
+					});
+					$(this).dialog('close');
+				},
+				Cancel: function() {
+					$(this).dialog('close');
+				}
+			},
+		    open: function() {
+    			$(this).parents('.ui-dialog-buttonpane button:eq(1)').focus();
+    		}
+		});
+		return false;
+	});
+	</script>
+</script>

@@ -476,9 +476,8 @@ Comments
 <div class="cleartall"></div>
 <script type="text/javascript">
 	$('a.fancybox').fancybox([]);
-	
+
 	$('#editlink').click(function() {
-		console.log('url: ' + $(this).attr('href'));
 		$.ajax({
 			url: $(this).attr('href'),
 			type: 'GET',

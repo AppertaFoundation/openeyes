@@ -488,3 +488,27 @@ span#dateSelected span.highlighted, span#siteSelected span.highlighted {
 #modifyDiagnosis span {
     min-width: 0px;
 }
+
+#dialog-confirm {
+    background: #fff;
+}
+
+.ui-dialog-buttonpane {
+    background: #fff !important;
+}
+
+.ui-dialog-buttonset button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    float: right;
+}
+
+a.ui-dialog-titlebar-close {
+    float: right;
+}
+
+div.ui-dialog-titlebar {
+    padding-bottom: 5px;
+    font-size: 14pt Arial;
+    color: #039;
+}

@@ -434,16 +434,19 @@ class ClinicalControllerTest extends CDbTestCase
 	public function testActionEpisodeSummary_ValidEpisode_RendersEpisodeSummaryView()
 	{
 		$episode = $this->episodes('episode1');
+		$firm = $this->firms('firm1');
+		$episode->firm = $firm;
 
 		$mockController = $this->getMock('ClinicalController', array('renderPartial'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService');
 		$mockController->service = $mockService;
+		$mockController->firm = $firm;
 
 		$mockController->expects($this->any())
 			->method('renderPartial')
 			->with('episodeSummary', array(
-				'episode' => $episode
+				'episode' => $episode, 'editable' => true
 			), false, true);
 
 		$mockController->actionEpisodeSummary($episode->id);
@@ -470,17 +473,21 @@ class ClinicalControllerTest extends CDbTestCase
 	{
 		$episode = $this->episodes('episode1');
 		$summaryName = 'episodeSummary';
+		$firm = $this->firms('firm1');
+		$episode->firm = $firm;
 
 		$mockController = $this->getMock('ClinicalController', array('renderPartial'), array('ClinicalController'));
 
 		$mockService = $this->getMock('ClinicalService');
 		$mockController->service = $mockService;
+		$mockController->firm = $firm;
 
 		$mockController->expects($this->any())
 			->method('renderPartial')
 			->with('summary', array(
 				'episode' => $episode,
-				'summary' => $summaryName), false, true);
+				'summary' => $summaryName,
+				'editable' => true), false, true);
 
 		$_GET['summary'] = $summaryName;
 		$mockController->actionSummary($episode->id);
@@ -551,5 +558,46 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->storeData();
 		$this->assertEquals($this->firms('firm1'), $mockController->firm, 'Firm should be loaded.');
 		$this->assertEquals($service, $mockController->service, 'Service should be created.');
+	}
+
+	public function testActionCloseEpisode_InvalidEpisode_ThrowsException()
+	{
+		$fakeId = 5829;
+
+		$this->setExpectedException('CHttpException', 'Invalid episode id.');
+		$this->controller->actionCloseEpisode($fakeId);
+	}
+
+	public function testActionCloseEpisode_ValidEpisode_RendersSummaryView()
+	{
+		$episode = $this->episodes('episode1');
+		$summaryName = 'episodeSummary';
+		$firm = $this->firms('firm1');
+		$episode->firm = $firm;
+
+		$mockController = $this->getMock('ClinicalController', array('renderPartial'), array('ClinicalController'));
+
+		$mockService = $this->getMock('ClinicalService');
+		$mockController->service = $mockService;
+		$mockController->firm = $firm;
+
+		$this->assertNull($episode->end_date, 'End date should not be set yet.');
+
+		$date = date('Y-m-d H:i:s');
+
+		$expectedEpisode = $episode;
+		$expectedEpisode->end_date = $date;
+
+		$mockController->expects($this->any())
+			->method('renderPartial')
+			->with('episodeSummary', array(
+				'episode' => $expectedEpisode, 'editable' => true), false, true);
+
+		$_GET['summary'] = $summaryName;
+		$mockController->actionCloseEpisode($episode->id);
+
+		$expectedTime = strtotime($date);
+		$actualTime = strtotime($episode->end_date);
+		$this->assertLessThanOrEqual(($expectedTime + 10), $actualTime, 'End date should now be set to today.');
 	}
 }

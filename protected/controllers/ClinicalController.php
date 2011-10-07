@@ -301,7 +301,15 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid episode id.');
 		}
 
-		$this->renderPartial('episodeSummary', array('episode' => $episode), false, true);
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
+		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
 	public function actionSummary($id)
@@ -316,11 +324,20 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'No summary.');
 		}
 
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
 		$this->logActivity('viewed patient summary');
 
 		$this->renderPartial('summary', array(
 			'episode' => $episode,
-			'summary' => $_GET['summary']
+			'summary' => $_GET['summary'],
+			'editable' => $editable
 			), false, true
 		);
 	}
@@ -425,5 +442,27 @@ class ClinicalController extends BaseController
 		}
 
 		return $template;
+	}
+
+	public function actionCloseEpisode($id)
+	{
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
+		$episode->end_date = date('Y-m-d H:i:s');
+		$episode->save(false);
+
+		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 }
