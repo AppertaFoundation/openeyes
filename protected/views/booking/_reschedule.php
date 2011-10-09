@@ -29,7 +29,47 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 } ?>
 	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
 	<p><strong>Current schedule:</strong></p>
-<?php $this->renderPartial('_session', array('operation' => $operation)); ?><br />
+<?php $this->renderPartial('_session', array('operation' => $operation)); ?>
+	<div class="cleartall"></div>
+<?php
+if ($operation->event->episode->firm_id != $firm->id) {
+	if ($firm->name == 'Emergency List') {
+		$class = 'flash-error';
+		$message = 'You are booking into the Emergency List.';
+	} else {
+		$class = 'flash-notice';
+		$message = 'You are booking into the list for ' . $firm->name . '.';
+	} ?>
+	<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
+	<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
+<?php
+}
+if (empty($sessions)) { ?>
+	<div class="flash-error">This firm has no scheduled sessions.</div>
+<?php
+}
+	?>
+<div id="firmSelect" class="greyGradient">
+	You are viewing the schedule for <strong><?php echo $firm->name; ?></strong>.
+	<select id="firmId">
+		<option value="">Select a different firm</option>
+		<option value="EMG">Emergency List</option>
+<?php	foreach ($firmList as $aFirm) { ?>
+		<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
+<?php	} ?>
+	</select>
+</div>
+<?php
+	if (!empty($site->name)) { ?>
+<div id="siteSelect" class="greyGradient">
+	You are viewing the calendar for <strong><?php echo $site->name; ?></strong>.
+	<?php echo CHtml::dropDownList('siteId', '', $siteList,
+		array('empty' => 'Select a different site', 'disabled' => empty($siteList))); ?>
+</div>
+<div class="cleartall"></div>
+<?php
+	}
+	?>
 	<p><strong>Select a session date:</strong></p>
 	<div id="calendar">
 		<div id="session_dates">
@@ -119,6 +159,38 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 			$(this).addClass('highlighted');
 			showTheatreList(operation, month, day, session);
 		});
+		$('#firmSelect #firmId').die('change').live('change', function() {
+			var firmId = $(this).val();
+			var operation = $('input[id=operation]').val();
+
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('booking/reschedule'); ?>',
+				'type': 'GET',
+				'data': {'operation': operation, 'firmId': firmId},
+				'success': function(data) {
+					$('#schedule').html(data);
+				}
+			});
+		});
+		$('select[id=siteId]').change(function() {
+			var site = $('select[name=siteId] option:selected').val();
+			if (site != 'Select a different site') {
+				var firmId = $('input[id=sessionFirm]').val();
+				var operation = $('input[id=operation]').val();
+				if (firmId == '') {
+					firmId = 'EMG';
+				}
+
+				$.ajax({
+					'url': '<?php echo Yii::app()->createUrl('booking/reschedule'); ?>',
+					'type': 'GET',
+					'data': {'operation': operation, 'firmId': firmId, 'siteId': site},
+					'success': function(data) {
+						$('#schedule').html(data);
+					}
+				});
+			}
+		});
 	});
 
 	function showTheatreList(operation, month, day, session) {
@@ -130,6 +202,7 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 				'month': month,
 				'day': day,
 				'session': session,
+				'reschedule': true,
 			},
 			'success': function(data) {
 				if ($('#bookings').length == 0) {

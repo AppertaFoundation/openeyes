@@ -107,9 +107,19 @@ class BookingController extends BaseController
 			$minDate = $thisMonth;
 		}
 
-		$firmId = $operation->event->episode->firm_id;
-		$firm = Firm::model()->findByPk($firmId);
-		$siteList = Session::model()->getSiteListByFirm($firmId);
+		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
+		if ($firmId != 'EMG') {
+			$_GET['firm'] = $firmId;
+			$firm = Firm::model()->findByPk($firmId);
+		} else {
+			$firm = new Firm;
+			$firm->name = 'Emergency List';
+		}
+		if ($firm->name != 'Emergency List') {
+			$siteList = Session::model()->getSiteListByFirm($firmId);
+		} else {
+			$siteList = Site::model()->getList();
+		}
 		if (!empty($_GET['siteId'])) {
 			$siteId = $_GET['siteId'];
 		} else { // grab the first (possibly only) site off the list
@@ -124,8 +134,13 @@ class BookingController extends BaseController
 			$sessions = array();
 		}
 
+		$criteria = new CDbCriteria;
+		$criteria->order = 'name ASC';
+		$firmList = Firm::model()->findAll($criteria);
+
 		$this->renderPartial('/booking/_reschedule',
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'site' => $site, 'firmId' => $firmId), false, true);
+	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firm' => $firm,
+		 'firmList' => $firmList, 'siteList' => $siteList, 'site' => $site, 'firmId' => $firmId), false, true);
 	}
 
 	public function actionRescheduleLater()
