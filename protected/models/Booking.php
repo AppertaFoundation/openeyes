@@ -21,6 +21,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $session_id
  * @property integer $display_order
  * @property integer $ward_id
+ * @property string $adminssion_time
  *
  * The followings are the available model relations:
  * @property ElementOperation $elementOperation
@@ -57,7 +58,7 @@ class Booking extends CActiveRecord
 			array('display_order', 'numerical', 'integerOnly'=>true),
 			array('ward_id', 'numerical', 'integerOnly'=>true),
 			array('element_operation_id, session_id', 'length', 'max'=>10),
-			array('element_operation_id, session_id, display_order, ward_id', 'safe'),
+			array('element_operation_id, session_id, display_order, ward_id, admission_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, element_operation_id, session_id, display_order, ward_id', 'safe', 'on'=>'search'),

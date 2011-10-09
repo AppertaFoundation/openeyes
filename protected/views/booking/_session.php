@@ -23,4 +23,5 @@ $theatre = $operation->booking->session->sequence->theatre; ?>
 <strong>Location:</strong> <?php echo CHtml::encode($theatre->site->name) . ' - ' . CHtml::encode($theatre->name); ?><br />
 <strong>Date of operation:</strong> <?php echo date('F j, Y', strtotime($session->date)); ?><br />
 <strong>Session time:</strong> <?php echo substr($session->start_time, 0, 5) . ' - ' . substr($session->end_time, 0, 5); ?><br />
+<strong>Admission time:</strong> <?php echo substr($operation->booking->admission_time, 0, 5); ?><br />
 <strong>Duration of operation:</strong> <?php echo $operation->total_duration . ' minutes'; ?>

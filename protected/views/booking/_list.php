@@ -67,6 +67,14 @@ if (!$reschedule) {
 		</tr>
 	</tfoot>
 </table>
+<div class="cleartall"></div>
+<div class="greyGradient">
+<div style="display: inline;"><strong>Admission Time:</strong> <?php
+	echo CHtml::textField('Booking[admission_time]',
+		date('H:i', strtotime('-1 hour', strtotime($session['start_time']))),
+		array('size' => '6'));	?>
+</div>
+</div>
 <?php
 if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
