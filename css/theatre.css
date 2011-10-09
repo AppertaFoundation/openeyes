@@ -82,6 +82,18 @@ h3.date a {
 	border-left: 0px;
 }
 
+#theatreList th.sessionComments {
+    border-top: 1px solid #CEE7F8;
+    border-bottom: 1px solid #CEE7F8;
+    border-right: 0;
+    border-left: 0;
+    background: #fff;
+}
+
+#theatreList td.sessionComments {
+    border-bottom: 1px solid #CEE7F8;
+}
+
 #theatreList .leftAlign {
 	text-align: left;
 }

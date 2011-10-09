@@ -57,20 +57,6 @@ class TheatreController extends BaseController
 			$theatreId = !empty($_POST['theatre-id']) ? $_POST['theatre-id'] : null;
 			$wardId = !empty($_POST['ward-id']) ? $_POST['ward-id'] : null;
 
-			if (!empty($siteId)) {
-				$theatreList = $this->getFilteredTheatres($siteId);
-				$wardList = $this->getFilteredWards($siteId);
-			} else {
-				$theatreList = array();
-				$wardList = array();
-			}
-
-			if (!empty($serviceId)) {
-				$firmList = $this->getFilteredFirms($serviceId);
-			} else {
-				$firmList = array();
-			}
-
 			if (!empty($_POST['date-start']) && !empty($_POST['date-end'])) {
 				$_POST['date-filter'] = 'custom';
 			}
@@ -133,7 +119,8 @@ class TheatreController extends BaseController
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
 					'ward' => $values['ward'],
-					'displayOrder' => $values['display_order']
+					'displayOrder' => $values['display_order'],
+					'comments' => $values['session_comments']
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
