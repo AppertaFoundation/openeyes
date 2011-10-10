@@ -12,9 +12,33 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-return array(
-	'section1' => array(
-		'service_id' => 1,
-		'name' => 'subsection 1'
-	)
-);
+?>
+<div class="view">
+	<b><?php echo CHtml::encode($data->getAttributeLabel('id')); ?>:</b>
+	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('sequence_id')); ?>:</b>
+	<?php echo CHtml::encode($data->sequence_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('date')); ?>:</b>
+	<?php echo CHtml::encode($data->date); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('start_time')); ?>:</b>
+	<?php echo CHtml::encode($data->start_time); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('end_time')); ?>:</b>
+	<?php echo CHtml::encode($data->end_time); ?>
+<?php
+	if (!empty($data->comments)) { ?>
+	<br/>
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('comments')); ?>:</b>
+	<?php echo CHtml::encode($data->comments); ?>
+<?php
+	}
+	?>
+</div>

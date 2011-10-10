@@ -67,6 +67,14 @@ if (!$reschedule) {
 		</tr>
 	</tfoot>
 </table>
+<div class="cleartall"></div>
+<div class="greyGradient">
+<div style="display: inline;"><strong>Admission Time:</strong> <?php
+	echo CHtml::textField('Booking[admission_time]',
+		date('H:i', strtotime('-1 hour', strtotime($session['start_time']))),
+		array('size' => '6'));	?>
+</div>
+</div>
 <?php
 if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
@@ -93,8 +101,8 @@ if (!empty($reschedule)) {
 <div class="cleartall"></div>
 <div class="greyGradient">
 <div style="display: inline;">
-<span id="dateSelected">Date currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?></span></span><br/>
-<span id="timeSelected">Time currently selected: <span class="highlighted"><?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span></div>
+<span id="siteSelected">Location currently selected: <span class="highlighted"><?php echo $site->name; ?></span></span><br />
+<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 <button type="submit" value="submit" class="shinybutton highlighted" style="margin-top:-15px;"><span>Confirm slot</span></button><?php
 echo CHtml::endForm(); ?>
 <button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="margin-top:-15px;"><span>Cancel operation</span></button>

@@ -12,12 +12,11 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 
 if ($editable) {
 	echo CHtml::link('<span>Edit</span>',
-		array('clinical/update', 'id'=>$eventId), array('id'=>'editlink','class'=>'fancybox shinybutton', 'encode'=>false));
+		array('clinical/update', 'id'=>$eventId), array('id'=>'editlink','class'=>'shinybutton', 'encode'=>false));
 }
 
 /**
@@ -34,8 +33,3 @@ foreach ($elements as $element) {
 		);
 	}
 }
-?>
-<script type="text/javascript">
-        $('a.fancybox').fancybox([]);
-</script>
-

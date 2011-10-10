@@ -163,8 +163,7 @@ class ClinicalController extends BaseController
 					$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
 					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 				} else {
-					$this->redirect(array('patient/view',
-						'id' => $this->patientId, 'tabId' => 1, 'eventId' => $eventId));
+					$this->redirect(array('view', 'id' => $eventId));
 				}
 
 				return;
@@ -177,13 +176,27 @@ class ClinicalController extends BaseController
 		// Check to see if they need to choose a referral
 		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
 
-		$this->renderPartial($this->getTemplateName('create', $eventTypeId), array(
+		$params = array(
 			'elements' => $elements,
 			'eventTypeId' => $eventTypeId,
 			'specialties' => $specialties,
 			'patient' => $patient,
-			'referrals' => $referrals
-			), false, true
+			'referrals' => $referrals);
+
+		if ($eventType->name == 'operation') {
+			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$procedures = array();
+			if (empty($subsections)) {
+				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+			}
+
+			$params['specialty'] = $specialty;
+			$params['subsections'] = $subsections;
+			$params['procedures'] = $procedures;
+		}
+
+		$this->renderPartial($this->getTemplateName('create', $eventTypeId), $params, false, true
 		);
 	}
 
@@ -249,11 +262,7 @@ class ClinicalController extends BaseController
 					$eventTypeName = ucfirst($event->eventType->name);
 					Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
 
-					$this->redirect(array(
-						'patient/view',
-						'id' => $this->patientId,
-						'tabId' => 1,
-						'eventId' => $event->id));
+					$this->redirect(array('view', 'id' => $event->id));
 				}
 			}
 
@@ -261,12 +270,27 @@ class ClinicalController extends BaseController
 			// The validation process will have populated and error messages.
 		}
 
-		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), array(
+		$params = array(
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient
-			), false, true);
+			'patient' => $patient);
+
+		if ($event->eventType->name == 'operation') {
+			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
+			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$procedures = array();
+			if (empty($subsections)) {
+				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+			}
+
+			$params['specialty'] = $specialty;
+			$params['subsections'] = $subsections;
+			$params['procedures'] = $procedures;
+		}
+
+		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), $params, false, true
+		);
 	}
 
 	public function actionEpisodeSummary($id)
@@ -277,7 +301,15 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid episode id.');
 		}
 
-		$this->renderPartial('episodeSummary', array('episode' => $episode), false, true);
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
+		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
 	public function actionSummary($id)
@@ -292,11 +324,20 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'No summary.');
 		}
 
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
 		$this->logActivity('viewed patient summary');
 
 		$this->renderPartial('summary', array(
 			'episode' => $episode,
-			'summary' => $_GET['summary']
+			'summary' => $_GET['summary'],
+			'editable' => $editable
 			), false, true
 		);
 	}
@@ -401,5 +442,27 @@ class ClinicalController extends BaseController
 		}
 
 		return $template;
+	}
+
+	public function actionCloseEpisode($id)
+	{
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
+		$episode->end_date = date('Y-m-d H:i:s');
+		$episode->save(false);
+
+		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 }

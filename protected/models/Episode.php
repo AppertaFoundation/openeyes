@@ -56,7 +56,7 @@ class Episode extends BaseActiveRecord
 		return array(
 			array('patient_id', 'required'),
 			array('patient_id, firm_id', 'length', 'max'=>10),
-			array('enddate', 'safe'),
+			array('end_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, patient_id, firm_id, start_date, end_date', 'safe', 'on'=>'search'),

@@ -38,7 +38,8 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' . $elementClassName . '/_form/' .
 		$element->viewNumber, array('model' => $element, 'form' => $form, 'specialties' => $specialties,
-		'patient' => $patient, 'newRecord' => false)
+		'patient' => $patient, 'newRecord' => false, 'specialty' => $specialty, 'subsections' => $subsections,
+		'procedures' => $procedures)
 	);
 }
 
@@ -86,10 +87,8 @@ $this->endWidget(); ?>
 						$('#clinical-update_es_').hide();
 					}
 				} catch (e) {
-					$.fancybox.close();
-					document.open();
-					document.write(data);
-					document.close();
+					$('#episodes_details').show();
+					$('#episodes_details').html(data);
 				}
 			}
 		});

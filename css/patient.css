@@ -471,7 +471,7 @@ div.greyGradient {
     padding: 15px;
 }
 
-span#dateSelected span.highlighted, span#timeSelected span.highlighted {
+span#dateSelected span.highlighted, span#siteSelected span.highlighted {
     color: #ff0000;
     font-weight: bold;
     text-transform: uppercase;
@@ -487,4 +487,28 @@ span#dateSelected span.highlighted, span#timeSelected span.highlighted {
 
 #modifyDiagnosis span {
     min-width: 0px;
+}
+
+#dialog-confirm {
+    background: #fff;
+}
+
+.ui-dialog-buttonpane {
+    background: #fff !important;
+}
+
+.ui-dialog-buttonset button {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    float: right;
+}
+
+a.ui-dialog-titlebar-close {
+    float: right;
+}
+
+div.ui-dialog-titlebar {
+    padding-bottom: 5px;
+    font-size: 14pt Arial;
+    color: #039;
 }

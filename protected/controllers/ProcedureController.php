@@ -15,12 +15,12 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 class ProcedureController extends Controller
 {
 	public $layout='column2';
-	
+
 	public function filters()
 	{
 		return array('accessControl');
 	}
-	
+
 	public function accessRules()
 	{
 		return array(
@@ -28,7 +28,7 @@ class ProcedureController extends Controller
 				'users'=>array('@')
 			),
 			// non-logged in can't view anything
-			array('deny', 
+			array('deny',
 				'users'=>array('?')
 			),
 		);
@@ -51,7 +51,7 @@ class ProcedureController extends Controller
 	{
 		echo CJavaScript::jsonEncode(Procedure::getList($_GET['term']));
 	}
-	
+
 	public function actionDetails()
 	{
 		$list = Yii::app()->session['Procedures'];
@@ -59,8 +59,7 @@ class ProcedureController extends Controller
 		if (!empty($_GET['name'])) {
 			if (!empty($list)) {
 				foreach ($list as $id => $procedure) {
-					$match = "{$procedure['term']} - {$procedure['short_format']}";
-					if ($match == $_GET['name']) {
+					if ($procedure['term'] == $_GET['name']) {
 						$data = $procedure;
 						$data['id'] = $id;
 
@@ -73,12 +72,10 @@ class ProcedureController extends Controller
 
 			// if not in the session, check in the db
 			if (!$found) {
-				$search = explode(' - ', $_GET['name']);
 				$procedure = Yii::app()->db->createCommand()
 					->select('*')
-					->from('procedure')
-					->where('term=:term AND short_format=:sf', 
-						array(':term'=>$search[0], ':sf'=>$search[1]))
+					->from('proc')
+					->where('term=:term', array(':term'=>$_GET['name']))
 					->queryRow();
 				if (!empty($procedure)) {
 					$data = array(
@@ -97,31 +94,21 @@ class ProcedureController extends Controller
 			}
 		}
 	}
-	
-	public function actionSubsection()
-	{
-		if (!empty($_GET['service'])) {
-			$service = $_GET['service'];
-			$subsections = ServiceSubsection::model()->findAllByAttributes(
-				array('service_id' => $service));
-			
-			$this->renderPartial('_subsectionOptions', array('subsections' => $subsections), false, false);
-		}
-	}
-	
+
 	public function actionList()
 	{
 		if (!empty($_POST['subsection'])) {
 			$criteria = new CDbCriteria;
-			$criteria->select = 'id, term, short_format';
-			$criteria->compare('service_subsection_id', $_POST['subsection']);
-			
+			$criteria->select = 't.id, term, short_format';
+			$criteria->join = 'LEFT JOIN proc_specialty_subsection_assignment pssa ON t.id = pssa.proc_id';
+			$criteria->compare('pssa.specialty_subsection_id', $_POST['subsection']);
+
 			if (!empty($_POST['existing'])) {
 				$criteria->addNotInCondition("CONCAT_WS(' - ', term, short_format)", $_POST['existing']);
 			}
 
 			$procedures = Procedure::model()->findAll($criteria);
-			
+
 			$this->renderPartial('_procedureOptions', array('procedures' => $procedures), false, false);
 		}
 	}

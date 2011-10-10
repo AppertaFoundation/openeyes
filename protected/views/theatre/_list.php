@@ -62,8 +62,12 @@ if (empty($theatres)) { ?>
                     }
                     echo ">{$lastSession['timeAvailable']}"; ?> min</span></th>
     </tr>
-<?php                $lastSession = $session;
-                } ?>
+<?php				$lastSession = $session;
+				}
+				if (!empty($session['comments'])) { ?>
+    <tr><th class="sessionComments" colspan="7">Session Comments</th></tr>
+	<tr><td colspan="7" class="sessionComments leftAlign"><?php echo nl2br($session['comments']); ?></td></tr>
+<?php			} ?>
     <tr>
         <td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
         <td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>

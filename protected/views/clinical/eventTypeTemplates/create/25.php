@@ -46,7 +46,8 @@ foreach ($elements as $element) {
 			'/_form/' .
 			$element->viewNumber,
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
-			'patient' => $patient, 'newRecord' => true)
+			'patient' => $patient, 'newRecord' => true, 'specialty' => $specialty,
+			'subsections' => $subsections, 'procedures' => $procedures)
 	);
 }
 
@@ -80,7 +81,9 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$('#fancybox-content').html(data);
+					// todo: get this part working to trigger a fancybox
+					$.fancybox({'content': data});
+					return false;
 				}
 			}
 		});
@@ -95,10 +98,29 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$.fancybox.close();
-					document.open();
-					document.write(data);
-					document.close();
+					$('#episodes_details').show();
+					$('#episodes_details').html(data);
+
+					// add the newly created operation to the event list
+					var href = $('a#editlink').attr('href');
+					href = href.replace('update\/', '');
+
+					var day = new Date();
+					var dateString = '';
+					if (day.getDate() < 10) {
+						dateString = dateString + '0';
+					}
+					dateString = dateString + day.getDate() + '/';
+					if ((day.getMonth() + 1) < 10) {
+						dateString = dateString + '0';
+					}
+					dateString = dateString + (day.getMonth() + 1) + '/';
+					dateString = dateString + day.getFullYear();
+					var li = '<li class="shown"><a href="' + href +
+						'"><span class="type">Operation</span><span class="date"> ' + dateString +
+						'</span></a></li>';
+
+					$('ul.events').append(li);
 				}
 			}
 		});

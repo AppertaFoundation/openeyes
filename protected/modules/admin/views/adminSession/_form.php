@@ -12,17 +12,33 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-return array(
-	'procedure1' => array(
-		'term' => 'Foobar Procedure',
-		'short_format' => 'FUB',
-		'default_duration' => 60,
-		'service_subsection_id' => 1
-	),
-	'procedure2' => array(
-		'term' => 'Test Procedure',
-		'short_format' => 'TP',
-		'default_duration' => 20,
-		'service_subsection_id' => 1
-	)
-);
+?>
+<div class="form">
+
+<?php $form=$this->beginWidget('CActiveForm', array(
+	'id'=>'session-form',
+	'enableAjaxValidation'=>false,
+)); ?>
+
+	<p class="note">Fields with <span class="required">*</span> are required.</p>
+
+	<?php echo $form->errorSummary($model); ?>
+
+	<div class="row"><?php echo $model->sequence_id; ?></div>
+	<div class="row"><?php echo $model->date; ?></div>
+	<div class="row"><?php echo $model->start_time; ?></div>
+	<div class="row"><?php echo $model->end_time; ?></div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'comments'); ?>
+		<?php echo $form->textArea($model,'comments'); ?>
+		<?php echo $form->error($model,'comments'); ?>
+	</div>
+
+	<div class="row buttons">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	</div>
+
+<?php $this->endWidget(); ?>
+
+</div><!-- form -->

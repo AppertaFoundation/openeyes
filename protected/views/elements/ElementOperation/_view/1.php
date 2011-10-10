@@ -89,19 +89,6 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 <?php
 if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking)) { ?>
 <div class="view"><?php $this->renderPartial('/booking/_session',array('operation' => $data));
-	$this->widget('zii.widgets.jui.CJuiAccordion', array(
-		'panels'=>array(
-			'Clinic details'=>$this->renderPartial('/booking/_clinic',
-				array('operation' => $data),true),
-		),
-		'id'=>'clinic-details',
-		// additional javascript options for the accordion plugin
-		'options'=>array(
-			'active'=>false,
-			'animated'=>'bounceslide',
-			'collapsible'=>true,
-		),
-	));
 } ?>
 </div>
 <div class="cleartall"></div>

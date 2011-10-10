@@ -52,7 +52,7 @@ if (empty($model->event_id)) {
 	<div class="data"><?php echo CHtml::activeRadioButtonList($diagnosis, 'eye', $model->getEyeOptions(),
 		array('separator' => ' &nbsp; ')); ?>
 	</div>
-	<div class="cleartall"></div>
+	<div class="tallbreak"></div>
 	<div id="editDiagnosis"<?php
 	if ($hasDiagnosis) { ?> style="display: none;"<?php } ?>>
 		<div class="label">Enter diagnosis:</div>
@@ -87,7 +87,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		<div class="data"><?php echo $value; ?></div><button id="modifyDiagnosis" type="submit" value="submit" class="shinybutton"><span>Modify</span></button>
 		<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo $value; ?>" />
 	</div>
-	<div class="cleartall"></div>
+	<div class="tallbreak"></div>
 </div>
 <script type="text/javascript">
 	$('input[name="ElementDiagnosis[eye]"]').click(function() {

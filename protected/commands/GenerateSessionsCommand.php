@@ -21,13 +21,14 @@ class GenerateSessionsCommand extends CConsoleCommand
 	public function getHelp()
 	{
 		$help = "A script to generate session data based on sequences in the database for future dates.\n
-Optional parameter to specify the end date for the script.\n";
+Optional parameters to 1) specify the end date for the script, 2) specify whether output should be returned rather than displayed.\n";
 
 		return $help;
 	}
 
 	public function run($args)
 	{
+		$output = '';
 		$today = date('Y-m-d');
 		$endDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
 		$sequences = Sequence::model()->findAll(
@@ -90,11 +91,17 @@ Optional parameter to specify the end date for the script.\n";
 					$insert .= "\n";
 				}
 
-				echo "\nSequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
+				$output .= "\nSequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
 
 				$command = Yii::app()->db->createCommand($insert);
 				$command->execute();
 			}
+		}
+
+		if (empty($args[1])) {
+			echo $output;
+		} else {
+			return $output;
 		}
 	}
 }

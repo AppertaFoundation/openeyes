@@ -12,54 +12,15 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-
 return array(
-	'site1' => array(
-		'name' => 'Moorfields City Road',
-		'short_name' => 'City Road'
+	'procedure1' => array(
+		'term' => 'Foobar Procedure',
+		'short_format' => 'FUB',
+		'default_duration' => 60,
 	),
-	'site2' => array(
-		'name' => 'Northwick Park',
-		'short_name' => 'Northwick Park'
-	),
-	'site3' => array(
-		'name' => 'Potters Bar',
-		'short_name' => 'Potters Bar'
-	),
-	'site4' => array(
-		'name' => 'Watford',
-		'short_name' => 'Watford'
-	),
-	'site5' => array(
-		'name' => 'Bedford',
-		'short_name' => 'Bedford'
-	),
-	'site6' => array(
-		'name' => 'Ealing',
-		'short_name' => 'Ealing'
-	),
-	'site7' => array(
-		'name' => 'St Georges\'',
-		'short_name' => 'St Georges\''
-	),
-	'site8' => array(
-		'name' => 'Bridge Lane',
-		'short_name' => 'Bridge Lane'
-	),
-	'site9' => array(
-		'name' => 'QMHR',
-		'short_name' => 'QMHR'
-	),
-	'site10' => array(
-		'name' => 'Teddington',
-		'short_name' => 'Teddington'
-	),
-	'site11' => array(
-		'name' => 'Moorfields East',
-		'short_name' => 'East'
-	),
-	'site12' => array(
-		'name' => 'St Ann\'s',
-		'short_name' => 'St Ann\'s'
-	),
+	'procedure2' => array(
+		'term' => 'Test Procedure',
+		'short_format' => 'TP',
+		'default_duration' => 20,
+	)
 );

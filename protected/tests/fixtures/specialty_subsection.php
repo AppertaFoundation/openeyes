@@ -12,9 +12,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-
-foreach ($subsections as $section) {
-	echo CHtml::tag('option', 
-		array('value'=>$section->id), 
-		CHtml::encode($section->name), true);
-}
+return array(
+	'section1' => array(
+		'specialty_id' => 1,
+		'name' => 'subsection 1'
+	)
+);

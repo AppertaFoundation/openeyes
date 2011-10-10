@@ -24,7 +24,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		<li class="header"><?php echo $group; ?></li>
 <?php	foreach ($eventTypes as $type) {
 			$name = ucfirst($type->name); ?>
-		<li><a href="/clinical/create?event_type_id=<?php echo $type->id; ?>" class="fancybox2"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php
+		<li><a href="/clinical/create?event_type_id=<?php echo $type->id; ?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php
 		echo $name; ?>" /><span><?php echo $name; ?></span></a></li>
 <?php
 		}
@@ -42,14 +42,17 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	if ($event === false) {
 		$episode = end($episodes);
 
+		$editable = false;
 		// View the open episode for this firm's specialty, if any
 		foreach ($episodes as $ep) {
 			if ($ep->firm->serviceSpecialtyAssignment->specialty_id == $firm->serviceSpecialtyAssignment->specialty_id) {
 				$episode = $ep;
+				$editable = true;
 			}
 		}
+
 		$this->renderPartial('/clinical/episodeSummary',
-			array('episode' => $episode)
+			array('episode' => $episode, 'editable' => $editable)
 		);
 	} ?></div>
 </div>
@@ -73,6 +76,21 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		} else {
 			$('#episode_types').slideDown({'duration':75});
 		}
+	});
+	$('#add_episode li a').click(function() {
+		$('ul.events li.shown').removeClass('shown');
+		$.ajax({
+			url: $(this).attr('href'),
+			type: 'GET',
+			success: function(data) {
+				$('#episodes_details').show();
+				$('#episodes_details').html(data);
+			}
+		});
+		if ($('#episode_types').is(':visible')) {
+			$('#episode_types').hide();
+		}
+		return false;
 	});
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
@@ -103,5 +121,4 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		});
 		return false;
 	});
-	$('a.fancybox2').fancybox({'onStart':function() { $('ul.events li.shown').removeClass('shown'); }});
 </script>

@@ -12,54 +12,28 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-
-return array(
-	'site1' => array(
-		'name' => 'Moorfields City Road',
-		'short_name' => 'City Road'
-	),
-	'site2' => array(
-		'name' => 'Northwick Park',
-		'short_name' => 'Northwick Park'
-	),
-	'site3' => array(
-		'name' => 'Potters Bar',
-		'short_name' => 'Potters Bar'
-	),
-	'site4' => array(
-		'name' => 'Watford',
-		'short_name' => 'Watford'
-	),
-	'site5' => array(
-		'name' => 'Bedford',
-		'short_name' => 'Bedford'
-	),
-	'site6' => array(
-		'name' => 'Ealing',
-		'short_name' => 'Ealing'
-	),
-	'site7' => array(
-		'name' => 'St Georges\'',
-		'short_name' => 'St Georges\''
-	),
-	'site8' => array(
-		'name' => 'Bridge Lane',
-		'short_name' => 'Bridge Lane'
-	),
-	'site9' => array(
-		'name' => 'QMHR',
-		'short_name' => 'QMHR'
-	),
-	'site10' => array(
-		'name' => 'Teddington',
-		'short_name' => 'Teddington'
-	),
-	'site11' => array(
-		'name' => 'Moorfields East',
-		'short_name' => 'East'
-	),
-	'site12' => array(
-		'name' => 'St Ann\'s',
-		'short_name' => 'St Ann\'s'
-	),
+$this->breadcrumbs=array(
+	'Sessions',
 );
+
+$this->menu=array(
+	array('label'=>'Create Sessions', 'url'=>array('massCreate')),
+	array('label'=>'Manage Sessions', 'url'=>array('admin')),
+);
+?>
+
+<h1>Sessions</h1>
+
+<?php
+	if (Yii::app()->user->hasFlash('notice')) { ?>
+<div class="flash-notice">
+	<?php echo nl2br(Yii::app()->user->getFlash('notice')); ?>
+</div>
+<?php
+	}
+?>
+
+<?php $this->widget('zii.widgets.CListView', array(
+	'dataProvider'=>$dataProvider,
+	'itemView'=>'_view',
+)); ?>

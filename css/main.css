@@ -594,6 +594,10 @@ div.cleartall {
 	min-height: 13px;
 }
 
+div.tallbreak {
+	min-height: 13px;
+}
+
 .data_row {
     width: 100%;
     padding: 3px 0;

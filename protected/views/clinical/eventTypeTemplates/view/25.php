@@ -48,7 +48,7 @@ if ($operation->status != $operation::STATUS_CANCELLED) {
 <?php
 	}
 	if ($editable) {
-		echo CHtml::link('<span>Edit Operation</span>', array('clinical/update', 'id' => $eventId), array('id' => 'editlink', 'class' => 'fancybox shinybutton', 'encode' => false));
+		echo CHtml::link('<span>Edit Operation</span>', array('clinical/update', 'id' => $eventId), array('id' => 'editlink', 'class' => 'shinybutton', 'encode' => false));
 	}
 } else { ?>
 <div class="flash-notice">
@@ -476,5 +476,17 @@ Comments
 <div class="cleartall"></div>
 <script type="text/javascript">
 	$('a.fancybox').fancybox([]);
+
+	$('#editlink').click(function() {
+		$.ajax({
+			url: $(this).attr('href'),
+			type: 'GET',
+			success: function(data) {
+				$('#episodes_details').show();
+				$('#episodes_details').html(data);
+			}
+		});
+		return false;
+	});
 </script>
 
