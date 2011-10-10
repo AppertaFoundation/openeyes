@@ -103,7 +103,7 @@ class Session extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('sequence_id',$this->sequence_id,true);
+		$criteria->compare('t.sequence_id',$this->sequence_id,true);
 		$criteria->compare('date',$this->date,true);
 		$criteria->compare('start_time',$this->start_time,true);
 		$criteria->compare('end_time',$this->end_time,true);
@@ -133,5 +133,17 @@ class Session extends CActiveRecord
 		}
 
 		return $data;
+	}
+
+	public function getFirmName()
+	{
+		$sequence = $this->sequence;
+		if (!empty($sequence->sequenceFirmAssignment)) {
+			$name = $sequence->sequenceFirmAssignment->firm->name;
+		} else {
+			$name = 'None';
+		}
+
+		return $name;
 	}
 }
