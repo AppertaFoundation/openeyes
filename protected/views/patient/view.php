@@ -23,7 +23,9 @@ $this->widget('application.extensions.fancybox.EFancyBox', array(
 
 $address_str = '';
 
-if (!empty($address)) {
+if (!empty($model->address)) {
+	$address = $model->address;
+
 	$fields = array(
 		'address1' => $address->address1,
 		'address2' => $address->address2,
@@ -141,3 +143,7 @@ if (!empty($address)) {
 					return false;
 				});
 			</script>
+<?php
+function filter_nulls($data) {
+        return $data !== null;
+}

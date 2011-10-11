@@ -75,8 +75,8 @@ class Patient extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-					'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
-			'address' => array(self::HAS_ONE, 'Address', 'id'),
+			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+			'address' => array(self::BELONGS_TO, 'Address', 'id'),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
 		);
 	}
