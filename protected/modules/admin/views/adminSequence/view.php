@@ -21,12 +21,20 @@ $this->menu=array(
 	array('label'=>'List Sequence', 'url'=>array('index')),
 	array('label'=>'Create Sequence', 'url'=>array('create')),
 	array('label'=>'Update Sequence', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Sequence', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
+	array('label'=>'Delete Sequence', 'url'=>'#', 'visible' => ($model->getAssociatedBookings() == 0),
+		  'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
 	array('label'=>'Manage Sequence', 'url'=>array('admin')),
 );
 ?>
 
 <h1>View Sequence #<?php echo $model->id; ?></h1>
+
+<?php
+if ($model->getAssociatedBookings() > 0) { ?>
+<div class="flash-notice">This sequence cannot be deleted as it has associated bookings.</div>
+<?php
+}
+	?>
 
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
@@ -58,4 +66,4 @@ $this->menu=array(
 			'value' => !empty($model->week_selection) ? $model->getWeekText() : $model->getFrequencyText(),
 		),
 	),
-)); ?>
+));

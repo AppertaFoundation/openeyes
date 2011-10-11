@@ -120,7 +120,30 @@ class AdminSequenceController extends BaseController
 	 */
 	public function actionDelete($id)
 	{
-		throw new CHttpException(400,'Figure out what delete should really do.');
+		if(Yii::app()->request->isPostRequest)
+		{
+			// we only allow deletion via POST request
+
+			// make really sure this thing has no bookings associated with it before we delete
+			$sequence = $this->loadModel($id);
+			if ($sequence->getAssociatedBookings() > 0) {
+				throw new CHttpException(400, 'This sequence has bookings associated with it and cannot be deleted.');
+			}
+
+			// delete any sessions that are involved with this sequence first
+			Session::model()->deleteAllByAttributes(array('sequence_id' => $sequence->id));
+
+			// also delete any firm association(s)
+			SequenceFirmAssignment::model()->deleteAllByAttributes(array('sequence_id' => $sequence->id));
+
+			$sequence->delete();
+
+			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+			if(!isset($_GET['ajax']))
+				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		}
+		else
+			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
 	/**
