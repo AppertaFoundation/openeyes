@@ -19,9 +19,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 <!--[if IE 8]>		<html class="no-js ie8 oldie" lang="en"> <![endif]--> 
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]--> 
 <head> 
-	<script type="text/javascript" src="/assets/1661d663/jquery.js"></script>
-	<script type="text/javascript" src="/assets/1661d663/jui/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/assets/e117752f/jquery.fancybox-1.3.4.pack.js"></script>
+	<script type="text/javascript" src="/js/jquery.js"></script>
+	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<meta charset="utf-8"> 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
  
@@ -30,6 +30,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<link rel="icon" href="favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico"/> 
 	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"> 
+	<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/libs/modernizr-2.0.6.min.js"></script> 
 </head> 
  
@@ -81,12 +82,14 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals</h6> 
 	</div> <!-- #footer --> 
  
+ <?php /*
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	 <script>window.jQuery || document.write('<script src="/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
  
 	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/plugins.js"></script>
 	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/script.js"></script>
-	
+	*/?>
+
 	<script type="text/javascript">
 		$('select[id=selected_firm_id]').live('change', function() {
 			var firmId = $('select[id=selected_firm_id]').val();

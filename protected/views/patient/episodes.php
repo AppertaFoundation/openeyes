@@ -1,8 +1,3 @@
-<?php
-$cs = Yii::app()->getClientScript();
-$cs->registerCoreScript('jquery');
-$cs->registerCoreScript('jquery.ui');
-?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">

@@ -12,11 +12,27 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
+?>
+<script type="text/javascript" src="/js/phrase.js"></script>
+<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
+<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
+<?php /*
+<link rel="stylesheet" type="text/css" href="/css/jqueryui/theme/jquery-ui.css" />
+<script type="text/javascript" src="/js/libs/jquery-1.6.2.js"></script>
+<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/phrase.js"></script>
+<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
+<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
+<?php
+/*
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
+Yii::app()->clientScript->registerCoreScript('jquery-ui');
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
+$cs->registerScriptFile($baseUrl.'/js/jquery.fancybox-1.3.4.pack.js');
+*/
 
 $form = $this->beginWidget('CActiveForm', array(
 		'id'=>'clinical-create',
@@ -82,8 +98,8 @@ if (isset($referrals) && is_array($referrals)) {
 	</div>
 	
 	<div class="form_button">
-			<button type="submit" value="submit" class="wBtn_save_schedule_later ir" id="scheduleLater">Save and Schedule later</button>
-			<button type="submit" value="submit" class="wBtn_save_schedule_now ir" id="scheduleNow">Save and Schedule now</button> 
+			<button type="submit" value="submit" class="wBtn_save_schedule_later ir fancybox" id="scheduleLater">Save and Schedule later</button>
+			<button type="submit" value="submit" class="wBtn_save_schedule_now ir fancybox" id="scheduleNow">Save and Schedule now</button> 
 	</div>
 	
 	</form>
@@ -92,6 +108,8 @@ if (isset($referrals) && is_array($referrals)) {
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
+	$('button.fancybox').fancybox([]);
+
 	$('#scheduleNow').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',

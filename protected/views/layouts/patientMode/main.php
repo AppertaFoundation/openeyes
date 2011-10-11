@@ -20,13 +20,13 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 <head> 
 	<meta charset="utf-8"> 
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
- 
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
 	<meta name="viewport" content="width=device-width"> 
 	<link rel="icon" href="favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico"/> 
 	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"> 
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/libs/modernizr-2.0.6.min.js"></script> 
+	<script type="text/javascript" src="/assets/e117752f/jquery.fancybox-1.3.4.pack.js"></script>
 </head> 
  
 <body> 
@@ -87,7 +87,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  
 	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/plugins.js"></script>
 	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/script.js"></script>
-	
+	<script type="text/javascript" src="/assets/e117752f/jquery.fancybox-1.3.4.pack.js"></script>
+
 	<script type="text/javascript">
 		$('select[id=selected_firm_id]').live('change', function() {
 			var firmId = $('select[id=selected_firm_id]').val();
