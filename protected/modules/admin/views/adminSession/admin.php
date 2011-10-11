@@ -61,6 +61,11 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'start_time',
 		'end_time',
 		array(
+			'header' => 'Firm',
+			'type' => 'raw',
+			'value' => '$data->getFirmName()',
+		),
+		array(
 			'class'=>'CButtonColumn',
 		),
 	),
