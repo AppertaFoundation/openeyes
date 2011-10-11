@@ -12,32 +12,24 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-class SequenceController extends BaseController
+class AdminSequenceController extends BaseController
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
-	
-	public function filters()
+	public $layout='column2';
+
+	protected function beforeAction($action)
 	{
-		return array('accessControl');
+		// Sample code to be used when RBAC is fully implemented.
+		if (!Yii::app()->user->checkAccess('admin')) {
+			throw new CHttpException(403, 'You are not authorised to perform this action.');
+		}
+
+		return parent::beforeAction($action);
 	}
-	
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'users'=>array('@')
-			),
-			// non-logged in can't view anything
-			array('deny', 
-				'users'=>array('?')
-			),
-		);
-	}
-	
+
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
@@ -110,7 +102,7 @@ class SequenceController extends BaseController
 				$firmValid = true;
 			}
 			if ($model->save() && $firmValid) {
-				
+
 				$this->redirect(array('view','id'=>$model->id));
 			}
 		}
@@ -153,6 +145,17 @@ class SequenceController extends BaseController
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Sequence']))
 			$model->attributes=$_GET['Sequence'];
+		if (isset($_GET['Firm']))
+			$model->firm_id = $_GET['Firm']['id'];
+		if (isset($_GET['Site']))
+			$model->site_id = $_GET['Site']['id'];
+		if (isset($_GET['Sequence']['repeat']) && $_GET['Sequence']['repeat'] != '') {
+			if ($_GET['Sequence']['repeat'] <= 4) {
+				$model->repeat_interval = $_GET['Sequence']['repeat'];
+			} elseif ($_GET['Sequence']['repeat'] >= 5) {
+				$model->week_selection = $_GET['Sequence']['repeat'] - Sequence::FREQUENCY_4WEEKS;
+			}
+		}
 
 		$this->render('admin',array(
 			'model'=>$model,

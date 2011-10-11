@@ -40,10 +40,22 @@ $this->menu=array(
 			'label' => 'Theatre',
 			'value' => $model->theatre->site->name . ' - ' . $model->theatre->name
 		),
-		'start_date',
-		'start_time',
-		'end_time',
+		array(
+			'label' => 'Start Date',
+			'value' => $model->start_date . ' (' . date('l', strtotime($model->start_date)) . ')'
+		),
+		array(
+			'label' => 'Start Time',
+			'value' => substr($model->start_time, 0, 5)
+		),
+		array(
+			'label' => 'End Time',
+			'value' => substr($model->end_time, 0, 5)
+		),
 		'end_date',
-		'repeat_interval',
+		array(
+			'label' => 'Occurrence',
+			'value' => !empty($model->week_selection) ? $model->getWeekText() : $model->getFrequencyText(),
+		),
 	),
 )); ?>

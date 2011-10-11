@@ -23,19 +23,15 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('theatre_id')); ?>:</b>
-	<?php echo CHtml::encode($data->theatre->site->name . ' - ' . $data->theatre->name); ?>
+	<?php echo CHtml::encode($data->theatre->site->short_name . ' - ' . $data->theatre->name); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('start_date')); ?>:</b>
-	<?php echo CHtml::encode($data->start_date); ?>
+	<?php echo CHtml::encode($data->start_date . ' (' . date('l', strtotime($data->start_date)) . ')'); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('start_time')); ?>:</b>
-	<?php echo CHtml::encode($data->start_time); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('end_time')); ?>:</b>
-	<?php echo CHtml::encode($data->end_time); ?>
+	<b><?php echo CHtml::encode('Time:'); ?>:</b>
+	<?php echo CHtml::encode(substr($data->start_time, 0, 5) . '-' . substr($data->end_time, 0, 5)); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('end_date')); ?>:</b>
@@ -43,7 +39,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('repeat_interval')); ?>:</b>
-	<?php echo CHtml::encode($data->repeat_interval); ?>
+	<?php echo !empty($data->week_selection) ? CHtml::encode($data->getWeekText()) : CHtml::encode($data->getFrequencyText()); ?>
 	<br />
 
 

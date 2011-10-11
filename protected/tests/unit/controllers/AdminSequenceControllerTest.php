@@ -12,7 +12,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-class SequenceControllerTest extends CDbTestCase
+class AdminSequenceControllerTest extends CDbTestCase
 {
 	public $fixtures = array(
 		'firms' => 'Firm',
@@ -26,14 +26,14 @@ class SequenceControllerTest extends CDbTestCase
 
 	protected function setUp()
 	{
-		$this->controller = new SequenceController('SequenceController');
+		$this->controller = new AdminSequenceController('AdminSequenceController');
 		parent::setUp();
 	}
 
 	public function testActionIndex_RendersIndexView()
 	{
-		$mockController = $this->getMock('SequenceController', array('render'),
-			array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController', array('render'),
+			array('AdminSequenceController'));
 		$mockController->expects($this->any())
 			->method('render')
 			->with('index');
@@ -53,7 +53,7 @@ class SequenceControllerTest extends CDbTestCase
 		$sequence = $this->sequences('sequence1');
 		$firm = $this->firms('firm1');
 
-		$mockController = $this->getMock('SequenceController', array('render'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController', array('render'), array('AdminSequenceController'));
 
 		$mockController->expects($this->once())
 			->method('render')
@@ -67,7 +67,7 @@ class SequenceControllerTest extends CDbTestCase
 		$sequence = new Sequence;
 		$firm = new SequenceFirmAssignment;
 
-		$mockController = $this->getMock('SequenceController', array('render'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController', array('render'), array('AdminSequenceController'));
 
 		$mockController->expects($this->once())
 			->method('render')
@@ -90,20 +90,20 @@ class SequenceControllerTest extends CDbTestCase
 		$firmAssignment = new SequenceFirmAssignment;
 		$firmAssignment->validate();
 
-		$mockController = $this->getMock('SequenceController',
-			array('render', 'redirect'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController',
+			array('render', 'redirect'), array('AdminSequenceController'));
 
 		$mockController->expects($this->never())
 			->method('redirect');
-		
+
 		$mockController->expects($this->once())
 			->method('render')
 			->with('create', array('model'=>$sequence,'firm'=>$firmAssignment));
 
 		$mockController->actionCreate();
-		
+
 		$requiredFields = array('end_time', 'repeat_interval', 'start_date', 'start_time', 'theatre_id');
-		
+
 		$this->assertEquals(array(), array_diff($requiredFields, array_keys($sequence->getErrors())));
 		$this->assertEquals(array(), $firmAssignment->getErrors());
 	}
@@ -112,15 +112,15 @@ class SequenceControllerTest extends CDbTestCase
 	{
 		$sequenceData = $this->sequences['sequence1'];
 		$sequenceData['start_date'] = date('Y-m-d', strtotime('+3 days'));
-		
+
 		$maxId = $this->sequences['sequence3']['id'];
-		
+
 		$_POST['Sequence'] = $sequenceData;
 		$_POST['SequenceFirmAssignment'] = $this->sequenceFirmAssignments['sfa1'];
 		$_POST['action'] = 'create';
 
-		$mockController = $this->getMock('SequenceController',
-			array('render', 'redirect'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController',
+			array('render', 'redirect'), array('AdminSequenceController'));
 
 		$mockController->expects($this->once())
 			->method('redirect');
@@ -134,7 +134,7 @@ class SequenceControllerTest extends CDbTestCase
 		$sequence->sequenceFirmAssignment;
 		$firm = $this->sequenceFirmAssignments('sfa1');
 
-		$mockController = $this->getMock('SequenceController', array('render'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController', array('render'), array('AdminSequenceController'));
 
 		$mockController->expects($this->once())
 			->method('render')
@@ -157,12 +157,12 @@ class SequenceControllerTest extends CDbTestCase
 		$sequence->validate();
 //		$firmAssignment->validate();
 
-		$mockController = $this->getMock('SequenceController',
-			array('render', 'redirect'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController',
+			array('render', 'redirect'), array('AdminSequenceController'));
 
 		$mockController->expects($this->once())
 			->method('redirect');
-		
+
 		$mockController->expects($this->once())
 			->method('render')
 			->with('update', array('model'=>$sequence,'firm'=>$firmAssignment));
@@ -175,7 +175,7 @@ class SequenceControllerTest extends CDbTestCase
 		$sequenceData = $this->sequences['sequence1'];
 		$startDate = date('Y-m-d', strtotime('+3 days'));
 		$sequenceData['start_date'] = $startDate;
-		
+
 		$_POST['Sequence'] = $sequenceData;
 		$_POST['SequenceFirmAssignment'] = $this->sequenceFirmAssignments['sfa1'];
 		$_POST['action'] = 'update';
@@ -184,8 +184,8 @@ class SequenceControllerTest extends CDbTestCase
 		$sequence->start_date = $startDate;
 		$firm = $this->firms('firm1');
 
-		$mockController = $this->getMock('SequenceController',
-			array('render', 'redirect'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController',
+			array('render', 'redirect'), array('AdminSequenceController'));
 
 		$mockController->expects($this->any())
 			->method('redirect')
@@ -193,16 +193,16 @@ class SequenceControllerTest extends CDbTestCase
 
 		$mockController->actionUpdate($sequence->id);
 	}
-	
+
 	public function testActionAdmin_NoGetParameter_RendersAdminView()
 	{
 		$_GET = array();
-		
+
 		$sequence = new Sequence('search');
 		$sequence->unsetAttributes();
 
-		$mockController = $this->getMock('SequenceController',
-			array('render'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController',
+			array('render'), array('AdminSequenceController'));
 
 		$mockController->expects($this->any())
 			->method('render')
@@ -210,17 +210,17 @@ class SequenceControllerTest extends CDbTestCase
 
 		$mockController->actionAdmin();
 	}
-	
+
 	public function testActionAdmin_WithGetParameter_RendersAdminView()
 	{
 		$data = $this->sequences['sequence1'];
 		$_GET = array('Sequence' => $data);
-		
+
 		$sequence = new Sequence('search');
 		$sequence->attributes = $data;
 
-		$mockController = $this->getMock('SequenceController',
-			array('render'), array('SequenceController'));
+		$mockController = $this->getMock('AdminSequenceController',
+			array('render'), array('AdminSequenceController'));
 
 		$mockController->expects($this->any())
 			->method('render')
