@@ -44,7 +44,7 @@
 			</div> <!-- #episodes_sidebar -->
 			<div id="event_display">
 				<div id="add-event-select-type" class="whiteBox addEvent clearfix hidden">
-					<h3>Adding New Event to "Medical Retina Service"</h3>
+					<h3>Adding New Event</h3>
 					<p><strong>Select event to add:</strong></p>
 					<p><a href="#" id="add-operation"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong>Operation</strong></a></p>
 				</div>
