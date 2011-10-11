@@ -29,6 +29,10 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  */
 class Session extends CActiveRecord
 {
+	public $firm_id;
+	public $site_id;
+	public $weekday;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Session the static model class
@@ -59,7 +63,7 @@ class Session extends CActiveRecord
 			array('comments', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, sequence_id, date, start_time, end_time, comments', 'safe', 'on'=>'search'),
+			array('id, sequence_id, date, start_time, end_time, comments, firm_id, site_id, weekday', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,6 +77,7 @@ class Session extends CActiveRecord
 		return array(
 			'bookings' => array(self::HAS_MANY, 'Booking', 'session_id'),
 			'sequence' => array(self::BELONGS_TO, 'Sequence', 'sequence_id'),
+			'bookingCount' => array(self::STAT, 'Booking', 'session_id'),
 		);
 	}
 
@@ -108,6 +113,24 @@ class Session extends CActiveRecord
 		$criteria->compare('start_time',$this->start_time,true);
 		$criteria->compare('end_time',$this->end_time,true);
 		$criteria->compare('comments',$this->comments,true);
+		$criteria->with = array();
+		if ($this->firm_id) {
+			$criteria->together = true;
+			$criteria->with[] = 'sequence';
+			$criteria->with[] = 'sequence.sequenceFirmAssignment';
+			$criteria->compare('sequenceFirmAssignment.firm_id', (int)$this->firm_id);
+		}
+		if ($this->site_id) {
+			$criteria->together = true;
+			$criteria->with[] = 'sequence';
+			$criteria->with[] = 'sequence.theatre';
+			$criteria->compare('theatre.site_id', $this->site_id);
+		}
+		if ($this->weekday) {
+			$criteria->together = true;
+			$criteria->with[] = 'sequence';
+			$criteria->compare('sequence.weekday', $this->weekday);
+		}
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -145,5 +168,17 @@ class Session extends CActiveRecord
 		}
 
 		return $name;
+	}
+
+	public function getAssociatedBookings()
+	{
+		$results = Yii::app()->db->createCommand()
+			->select('COUNT(b.id) AS bookings_count')
+			->from('session s')
+			->join('booking b', 's.id = b.session_id')
+			->where('s.id = :id' , array(':id' => $this->id))
+			->queryRow();
+
+		return $results['bookings_count'];
 	}
 }
