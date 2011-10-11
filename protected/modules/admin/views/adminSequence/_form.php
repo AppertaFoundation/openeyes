@@ -39,7 +39,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'start_date'); ?>
-		<?php 
+		<?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	'model'=>$model,
 	'attribute'=>'start_date',
@@ -72,7 +72,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'end_date'); ?>
-		<?php 
+		<?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	'model'=>$model,
 	'attribute'=>'end_date',
@@ -89,18 +89,21 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 )); ?>
 		<?php echo $form->error($model,'end_date'); ?>
 	</div>
-
+	<div class="row">
+		<?php echo $form->labelEx($model,'week_selection');
+		$i = 0;
+		foreach ($model->getWeekSelectionOptions() as $value => $name) { ?>
+		<input id="Sequence_week_selection_<?php echo $i; ?>" value="<?php echo $value; ?>" type="checkbox" name="Sequence[week_selection][]"<?php
+			if (($model->week_selection & $value) == $value) {
+				echo ' checked="checked"';
+			} ?> /> <label for="Sequence_week_selection_<?php echo $i; ?>" style="display: inline; font-weight: normal;"><?php echo $name; ?></label> &nbsp; <?php
+		}
+		echo $form->error($model,'week_selection'); ?>
+	</div>
 	<div class="row">
 		<?php echo $form->labelEx($model,'repeat_interval'); ?>
-		<?php echo $form->dropDownList($model,'repeat_interval',$model->getFrequencyOptions()); ?>
+		<?php echo $form->dropDownList($model,'repeat_interval',$model->getFrequencyOptions()) . ' (Leave as-is if using week selection above)'; ?>
 		<?php echo $form->error($model,'repeat_interval'); ?>
-	</div>
-
-	<div class="row">
-		<?php echo $form->labelEx($model,'week_selection'); ?>
-		<?php echo $form->checkBoxList($model,'week_selection',$model->getWeekSelectionOptions(), 
-			array('separator'=>' &nbsp; ', 'template'=>'{input} {label}')); ?>
-		<?php echo $form->error($model,'week_selection'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -318,6 +318,12 @@ class Sequence extends CActiveRecord
 			$this->addError('start_date, end_date', 'There is a conflict with an existing sequence.');
 		}
 
+		// check for one-off sequence and empty end date
+		if (empty($this->week_selection) && $this->repeat_interval == self::FREQUENCY_ONCE && empty($this->end_date)) {
+			$valid = false;
+			$this->addError('end_date', 'End date must be set if repeat is set to one time.');
+		}
+
 		$valid = $valid && parent::beforeValidate();
 		return $valid;
 	}
@@ -487,5 +493,18 @@ class Sequence extends CActiveRecord
 		}
 
 		return $text;
+	}
+
+	public function getAssociatedBookings()
+	{
+		$results = Yii::app()->db->createCommand()
+			->select('COUNT(b.id) AS bookings_count')
+			->from('sequence q')
+			->join('session s', 'q.id = s.sequence_id')
+			->join('booking b', 's.id = b.session_id')
+			->where('q.id = :id' , array(':id' => $this->id))
+			->queryRow();
+
+		return $results['bookings_count'];
 	}
 }
