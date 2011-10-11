@@ -51,7 +51,7 @@
 
 				<div class="display_actions">
 					<div class="display_mode">View mode</div>
-					<div class="action_options"><span class="aLabel">you can: </span><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span></div>
+					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
 				</div>
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="eventBox fullWidthEvent">
@@ -76,12 +76,20 @@
 				</div>
 				<!-- #event_content -->
 				<div class="display_actions footer">
-					<div class="action_options"><span class="aLabel">you can: </span><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span></div>
+					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
 		<script type="text/javascript">
 			$('a.episode-details').unbind('click').click(function() {
+				$.ajax({
+					url: '/clinical/episodesummary/'+$(this).attr('rel'),
+					success: function(data) {
+						$('div.action_options').hide();
+						$('#event_content').html(data);
+					}
+				});
+				return false;
 				if ($('#episode-details-'+$(this).attr('rel')).hasClass('hidden')) {
 					$('#episode-details-'+$(this).attr('rel')).removeClass('hidden');
 				} else {
@@ -96,6 +104,7 @@
 					url: '/clinical/'+$(this).attr('rel'),
 					success: function(data) {
 						$('div.display_actions').show();
+						$('div.action_options').show();
 						$('#event_content').html(data);
 					}
 				});
