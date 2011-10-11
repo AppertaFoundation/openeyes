@@ -117,7 +117,7 @@ if (!empty($address)) {
 									</thead>
 									<tbody>
 										<?php foreach ($episodes as $i => $episode) {?>
-											<tr class="<?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
+											<tr id="<?php echo $episode->id?>" class="all-episode <?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
 												<td><?php echo date('d/m/y', strtotime($episode->start_date))?></td>
 												<td><?php echo $episode->end_date !== null ? date('d/m/y', strtotime($episode->end_date)) : ''?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
@@ -135,3 +135,9 @@ if (!empty($address)) {
 					<p><a href="/patient/episodes/<?php echo $model->id?>"><span class="aPush">View all Episodes, Summaries and Events</span></a></p>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
+			<script type="text/javascript">
+				$('tr.all-episode').unbind('click').click(function() {
+					window.location.href = '/patient/episodes/<?php echo $model->id?>/episode/'+$(this).attr('id');
+					return false;
+				});
+			</script>

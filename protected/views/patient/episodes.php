@@ -6,7 +6,13 @@
 			</div>
 			<div id="episodes_sidebar">
 				<?php foreach ($episodes as $i => $episode) {
-					if ($i == 0) $current_episode = $episode;
+					if (isset($_GET['episode']) && ctype_digit($_GET['episode'])) {
+						if ($episode->id == $_GET['episode']) {
+							$current_episode = $episode;
+						}
+					} else {
+						if ($i == 0) $current_episode = $episode;
+					}
 					?>
 					<div class="episode open clearfix">
 						<div class="episode_nav">

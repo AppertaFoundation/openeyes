@@ -46,6 +46,23 @@ foreach ($elements as $element) {
 }
 ?></h4>
 </div>
+
+<?php if ($operation->status != $operation::STATUS_CANCELLED && $operation->status != $operation::STATUS_PENDING) {?>
+	<div style="margin-top:40px; text-align:center;">
+		<button type="submit" value="submit" class="btn_print-letter ir" id="btn_btn">Print letter</button>
+		<button type="submit" value="submit" class="wBtn_reschedule-now ir" id="btn_btn">Reschedule now</button>
+		<button type="submit" value="submit" class="wBtn_reschedule-later ir" id="btn_btn">Reschedule later</button>
+		<button type="submit" value="submit" class="wBtn_cancel-operation ir">Cancel operation</button>	
+	</div>
+<?php }else{?>
+	<div style="margin-top:40px; text-align:center;">
+		<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_btn">Print invitation letter</button>
+		<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_btn">Print reminder letter</button>
+		<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_btn">Print GP refer back letter</button>
+		<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_btn">Schedule now</button>
+		<button type="submit" value="submit" class="wBtn_cancel-operation ir">Cancel operation</button>	
+	</div>
+<?php }?>
 <?php /*
 <h4>Admission</h4>
 <div class="eventHighlight">

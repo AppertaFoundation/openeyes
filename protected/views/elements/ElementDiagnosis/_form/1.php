@@ -52,7 +52,11 @@ if (empty($model->event_id)) {
 						<span class="patient"><strong><?php echo $patient->first_name?></strong> <?php echo $patient->last_name?> (<?php echo $patient->hos_num?>)</span>
 					</div>
 					<!-- Details -->
-					<h3>Book Operation</h3>
+					<?php if (empty($model->event_id)) {?>
+						<h3>Book Operation</h3>
+					<?php }else{?>
+						<h3>Edit Operation</h3>
+					<?php }?>
 					<h4>Select diagnosis</h4>
  
 					<div id="editEyeSelection" class="eventDetail">
