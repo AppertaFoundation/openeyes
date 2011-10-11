@@ -114,6 +114,7 @@ h2.alert { background-color:#ffe6b2; }
 em { font-style: italic; color:#333; }
 .small 	{ font-size: 8pt; font-weight: normal; }
 .normal { font-size: 10pt; font-weight: normal;}
+.bold  	{ font-size: 11pt; font-weight: bolder; }
 .caps  	{ font-variant: small-caps; }
 
 /* ====== BOXES ====== */
@@ -156,17 +157,32 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 .labelHint 		{ color: #777; }
 .labelRequired 	{ color: #b33; }
 /* buttons */
-button.btn_login, button.btn_findPatient, button.btn_refineSearch { display:inline-block; width:125px; height:40px; } 
+button.btn_login, button.btn_findPatient, button.btn_refineSearch, button.btn_cancel { display:inline-block; width:125px; height:40px; } 
 button.btn_login 		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
 button.btn_login:hover 	{ background-image: url(../img/_elements/btns/login_o.png); }
 button.btn_findPatient 			{ background:transparent url(../img/_elements/btns/find-patient.png) no-repeat; }
 button.btn_findPatient:hover 	{ background-image: url(../img/_elements/btns/find-patient_o.png); }
 button.btn_refineSearch 		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
 button.btn_refineSearch:hover 	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
+button.btn_cancel 			{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
+button.btn_cancel:hover 	{ background-image: url(../img/_elements/btns/cancel_o.png); }
 /* special buttons */
 button.btn_newEvent			{ display:inline-block; float:right; width:155px; height:35px; margin:1px 2px 0 0;}
 button.btn_newEvent 		{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
 button.btn_newEvent:hover 	{ background-image: url(../img/_elements/btns/new-event_o.png); }
+/* long buttons */
+button.wBtn_save_schedule_later, button.wBtn_save_schedule_now { display:inline-block; width:202px; height:40px; } 
+button.wBtn_save_schedule_later 		{ background:transparent url(../img/_elements/btns/wide/save-schedule-later.png) no-repeat; }
+button.wBtn_save_schedule_later:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-later_o.png); }
+button.wBtn_save_schedule_now 			{ background:transparent url(../img/_elements/btns/wide/save-schedule-now.png) no-repeat; }
+button.wBtn_save_schedule_now:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-now_o.png); }
+
+/* small buttons */
+button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
+button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
+button.smBtn_modify:hover 	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
+ 
+
 
 /* ====== TABLES - GENERAL ====== */
 table 	{ border-collapse: collapse; }
@@ -280,15 +296,38 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 .episode ul.events li { display:block; height:16px; margin-bottom:4px; vertical-align: middle; } 
 .episode ul.events li img { vertical-align: bottom; margin-left:-5px; margin-right: 5px; padding-right:5px; } 
 .episode ul.events .date { position:relative; top:1px; }
-.episode ul.events li a { display:inline-block; height:inherit; margin-left: 5px; padding-right: 50px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
+.episode ul.events li a { display:block; height:inherit; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
 .episode ul.events li a:hover { border-bottom: none; background: #3665ff; color:#fff; }
-.episode ul.events .viewing { display:inline-block; height:inherit; background: #a29d8a; color:#fff; margin-left: 5px; padding-right: 50px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
-
+.episode ul.events .viewing { display:block; height:inherit; background: #a29d8a url(../img/_elements/icons/event_open_bg.png) right center no-repeat; color:#fff; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
 /* summary */
 .episode .episode_details { float:left; position:relative; width:470px; padding:6px 15px 12px 25px; }
 .episode_details > .folderIcon { position: absolute; top:5px; right:7px; }
 .episode_details > .row  { padding:0 0 2px 2px;  }
 .episode_details > .row .label { display:inline-block; width:130px; font-size:9pt; color:#666; }
+
+/* EVENT DISPLAY */
+#event_display.narrowEventContent { padding-right:4px; }
+/* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
+#event_display .addEvent { border:5px solid #69bd51; }
+#event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+#event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
+
+/* NEW EVENT - Users selects a New Event to add, these are details needed */
+#event_display #new_event_details { width:1012px; margin-right:4px; border: 2px solid #ffb212; }
+#new_event_details .patientReminder { display:block; background: #fff2d7; padding:10px; }
+#new_event_details .patientReminder .patient { position:relative; top:1px; left:5px;}
+#new_event_details form > h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
+#new_event_details form > h4 { color:#000; padding:10px 10px 0 10px; border-top:2px solid #dae6f1;  }
+/* event detail */
+#new_event_details .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px;  }
+#new_event_details .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:11pt;  }
+.eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.eventDetail > .data > .group:hover { background:#fff;}
+.eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
+.eventDetail > .data > .labelHint { width: 280px; }
+/* extra details */
+.eventDetail .extraDetails { display:block; margin:8px 0; padding-top:8px; border-top:1px dotted #b9c4cd; }
+
 
 
 /* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */

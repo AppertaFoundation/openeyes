@@ -8,13 +8,10 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-?><p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-
-<?php
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
@@ -22,8 +19,8 @@ Yii::app()->clientScript->registerCoreScript('jquery');
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 
 $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'clinical-create',
-    'enableAjaxValidation'=>true,
+		'id'=>'clinical-create',
+		'enableAjaxValidation'=>true,
 	'htmlOptions' => array('class'=>'sliding'),
 	'focus'=>'#procedure_id'
 ));
@@ -47,7 +44,7 @@ foreach ($elements as $element) {
 			$element->viewNumber,
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 			'patient' => $patient, 'newRecord' => true, 'specialty' => $specialty,
-			'subsections' => $subsections, 'procedures' => $procedures)
+			'subsections' => $subsections, 'procedures' => $procedures, 'patient' => $patient)
 	);
 }
 
@@ -66,9 +63,32 @@ if (isset($referrals) && is_array($referrals)) {
 <?php
 	}
 } ?>
-<div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" id="scheduleNow"><span>Save and schedule now</span></button>
-<button type="submit" value="submit" class="shinybutton" id="scheduleLater"><span>Save and schedule later</span></button>
+
+					<h4>Schedule Operation</h4>
+					
+					<div id="schedule options" class="eventDetail">
+							<div class="label">Schedule options:</div>
+							<div class="data">
+								<input id="ScheduleOperation" type="hidden" value="" name="ScheduleOperationn[schedule]" />
+								<span class="group">
+									<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" /> 
+									<label for="ScheduleOperation_0">As soon as possible</label>
+								</span>
+								<span class="group">
+									<input id="ScheduleOperation_1" value="0" type="radio" name="ScheduleOperation[schedule]" />
+									<label for="ScheduleOperation_1">Within timeframe specified by patient</label>
+								</span>
+							</div>
+					</div>
+					
+					<div class="form_button">
+							<button type="submit" value="submit" class="wBtn_save_schedule_later ir" id="scheduleLater">Save and Schedule later</button>
+							<button type="submit" value="submit" class="wBtn_save_schedule_now ir" id="scheduleNow">Save and Schedule now</button> 
+					</div>
+					
+					</form>
+				</div> <!-- #new_event_details -->
+
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
@@ -81,7 +101,9 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$('#fancybox-content').html(data);
+					document.open();
+					document.write(data);
+					document.close();
 				}
 			}
 		});
@@ -96,7 +118,6 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$.fancybox.close();
 					document.open();
 					document.write(data);
 					document.close();

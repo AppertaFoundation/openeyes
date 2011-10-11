@@ -74,6 +74,7 @@ $cs->registerCoreScript('jquery.ui');
 		} else {
 			$('#episode-details-'+$(this).attr('rel')).addClass('hidden');
 		}
+		$('div.display_actions').show();
 		return false;1
 	});
 
@@ -81,6 +82,7 @@ $cs->registerCoreScript('jquery.ui');
 		$.ajax({
 			url: '/clinical/'+$(this).attr('rel'),
 			success: function(data) {
+				$('div.display_actions').show();
 				$('#event_content').html(data);
 			}
 		});
@@ -91,6 +93,7 @@ $cs->registerCoreScript('jquery.ui');
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>25)); ?>',
 			success: function(data) {
+				$('div.display_actions').hide();
 				$('#event_content').html(data);
 			}
 		});
