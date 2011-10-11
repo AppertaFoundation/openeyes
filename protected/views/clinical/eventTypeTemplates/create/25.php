@@ -64,30 +64,30 @@ if (isset($referrals) && is_array($referrals)) {
 	}
 } ?>
 
-					<h4>Schedule Operation</h4>
-					
-					<div id="schedule options" class="eventDetail">
-							<div class="label">Schedule options:</div>
-							<div class="data">
-								<input id="ScheduleOperation" type="hidden" value="" name="ScheduleOperationn[schedule]" />
-								<span class="group">
-									<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" /> 
-									<label for="ScheduleOperation_0">As soon as possible</label>
-								</span>
-								<span class="group">
-									<input id="ScheduleOperation_1" value="0" type="radio" name="ScheduleOperation[schedule]" />
-									<label for="ScheduleOperation_1">Within timeframe specified by patient</label>
-								</span>
-							</div>
-					</div>
-					
-					<div class="form_button">
-							<button type="submit" value="submit" class="wBtn_save_schedule_later ir" id="scheduleLater">Save and Schedule later</button>
-							<button type="submit" value="submit" class="wBtn_save_schedule_now ir" id="scheduleNow">Save and Schedule now</button> 
-					</div>
-					
-					</form>
-				</div> <!-- #new_event_details -->
+	<h4>Schedule Operation</h4>
+	
+	<div id="schedule options" class="eventDetail">
+			<div class="label">Schedule options:</div>
+			<div class="data">
+				<input id="ScheduleOperation" type="hidden" value="" name="ScheduleOperationn[schedule]" />
+				<span class="group">
+					<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" /> 
+					<label for="ScheduleOperation_0">As soon as possible</label>
+				</span>
+				<span class="group">
+					<input id="ScheduleOperation_1" value="0" type="radio" name="ScheduleOperation[schedule]" />
+					<label for="ScheduleOperation_1">Within timeframe specified by patient</label>
+				</span>
+			</div>
+	</div>
+	
+	<div class="form_button">
+			<button type="submit" value="submit" class="wBtn_save_schedule_later ir" id="scheduleLater">Save and Schedule later</button>
+			<button type="submit" value="submit" class="wBtn_save_schedule_now ir" id="scheduleNow">Save and Schedule now</button> 
+	</div>
+	
+	</form>
+</div> <!-- #new_event_details -->
 
 <?php
 $this->endWidget(); ?>
@@ -101,9 +101,8 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					document.open();
-					document.write(data);
-					document.close();
+					$.fancybox({'content': data});
+					return false;
 				}
 			}
 		});
@@ -118,9 +117,7 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					document.open();
-					document.write(data);
-					document.close();
+					window.location.href = data;
 				}
 			}
 		});

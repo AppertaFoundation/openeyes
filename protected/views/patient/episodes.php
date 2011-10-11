@@ -55,9 +55,22 @@ $cs->registerCoreScript('jquery.ui');
 					<!-- EVENT CONTENT HERE -->
 					<div id="event_content">
 						<?php
-						$this->renderPartial('/clinical/episodeSummary',
-							array('episode' => $current_episode)
-						);
+						if (ctype_digit(@$_GET['event'])) {?>
+							<div>
+							<?php
+							$this->renderPartial(
+								"/clinical/".$this->getTemplateName('view', $event->event_type_id),
+								array(
+									'elements' => $elements,
+									'eventId' => $_GET['event'],
+									'editable' => $editable
+								), false, true
+							);
+						} else {
+							$this->renderPartial('/clinical/episodeSummary',
+								array('episode' => $current_episode)
+							);
+						}
 						?>
 					</div>
 					<!-- #event_content -->

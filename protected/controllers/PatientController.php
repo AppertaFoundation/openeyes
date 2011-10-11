@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -19,6 +19,7 @@ class PatientController extends BaseController
 	public $layout = '//layouts/column2';
 	public $model;
 	public $service;
+	public $firm;
 
 	public function filters()
 	{
@@ -40,10 +41,21 @@ class PatientController extends BaseController
 
 	protected function beforeAction($action)
 	{
+		parent::storeData();
+
 		// Sample code to be used when RBAC is fully implemented.
 //		if (!Yii::app()->user->checkAccess('admin')) {
 //			throw new CHttpException(403, 'You are not authorised to perform this action.');
 //		}
+
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		if (!isset($this->firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+		}
+
+		$this->service = new ClinicalService;
 
 		return parent::beforeAction($action);
 	}
@@ -241,33 +253,6 @@ class PatientController extends BaseController
 			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
 	}
 
-	/*public function actionEpisodes()
-	{
-		$patient = $this->loadModel($_GET['id']);
-		$event = !empty($_GET['event']) ? $_GET['event'] : false;
-
-		$firm = Firm::model()->findByPk($this->selectedFirmId);
-
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
-		$eventTypes = EventType::model()->getAllPossible($specialtyId);
-
-		$typeGroups = $this->getEventTypeGrouping();
-
-		foreach ($eventTypes as $eventType) {
-			foreach ($typeGroups as $name => $group) {
-				if (in_array($eventType->name, $group)) {
-					$typeList[$name][] = $eventType;
-				}
-			}
-		}
-
-		$eventId = isset($_REQUEST['eventId']) ? $_REQUEST['eventId'] : null;
-
-		$this->renderPartial('_episodes',
-			array('model'=>$patient, 'episodes'=>$patient->episodes,
-				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
-	}*/
-
 	public function actionContacts()
 	{
 		$patient = $this->loadModel($_GET['id']);
@@ -287,18 +272,29 @@ class PatientController extends BaseController
 
 		$episodes = $patient->episodes;
 
-		/*foreach ($patient->episodes as $episode) {
-			$speciality_name = $episode->firm->serviceSpecialtyAssignment->specialty->name;
+		if (ctype_digit(@$_GET['event'])) {
+			$event = Event::model()->findByPk($_GET['event']);
 
-			if (!isset($episodes[$speciality_name])) {
-				$episodes[$speciality_name] = array();
+			// The eventType, firm and patient are fetched from the event object
+			$elements = $this->service->getElements(
+				null, null, null, Yii::app()->user->id, $event
+			);
+
+			// Decide whether to display the 'edit' button in the template
+			if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+				$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+				$editable = false;
+			} else {
+				$editable = true;
 			}
 
-			$episodes[$speciality_name][] = $episode;
-		}*/
+			$event_template_name = $this->getTemplateName('view', $event->event_type_id);
+
+			$this->logActivity('viewed event');
+		}
 
 		$this->render('episodes', array(
-			'model' => $patient, 'episodes' => $episodes
+			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name
 		));
 	}
 
