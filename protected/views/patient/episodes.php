@@ -43,68 +43,83 @@
 				<?php }?>
 			</div> <!-- #episodes_sidebar -->
 			<div id="event_display">
-					<div class="display_actions">
-						<div class="display_mode">View mode</div>
-						<div class="action_options"><span class="aLabel">you can: </span><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span></div>
-					</div>
-					<!-- EVENT CONTENT HERE -->
-					<div id="event_content">
+				<div id="add-event-select-type" class="whiteBox addEvent clearfix hidden">
+					<h3>Adding New Event to "Medical Retina Service"</h3>
+					<p><strong>Select event to add:</strong></p>
+					<p><a href="#" id="add-operation"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong>Operation</strong></a></p>
+				</div>
+
+				<div class="display_actions">
+					<div class="display_mode">View mode</div>
+					<div class="action_options"><span class="aLabel">you can: </span><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span></div>
+				</div>
+				<!-- EVENT CONTENT HERE -->
+				<div id="event_content" class="eventBox fullWidthEvent">
+					<?php
+					if (ctype_digit(@$_GET['event'])) {?>
+						<div>
 						<?php
-						if (ctype_digit(@$_GET['event'])) {?>
-							<div>
-							<?php
-							$this->renderPartial(
-								"/clinical/".$this->getTemplateName('view', $event->event_type_id),
-								array(
-									'elements' => $elements,
-									'eventId' => $_GET['event'],
-									'editable' => $editable
-								), false, true
-							);
-						} else {
-							$this->renderPartial('/clinical/episodeSummary',
-								array('episode' => $current_episode)
-							);
-						}
-						?>
-					</div>
-					<!-- #event_content -->
-					<div class="display_actions footer">
-						<div class="action_options"><span class="aLabel">you can: </span><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span></div>
-					</div>
+						$this->renderPartial(
+							"/clinical/".$this->getTemplateName('view', $event->event_type_id),
+							array(
+								'elements' => $elements,
+								'eventId' => $_GET['event'],
+								'editable' => $editable
+							), false, true
+						);
+					} else {
+						$this->renderPartial('/clinical/episodeSummary',
+							array('episode' => $current_episode)
+						);
+					}
+					?>
+				</div>
+				<!-- #event_content -->
+				<div class="display_actions footer">
+					<div class="action_options"><span class="aLabel">you can: </span><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span></div>
+				</div>
 			</div><!-- #event_display -->
-
 		</div> <!-- .fullWidth -->
-<script type="text/javascript">
-	$('a.episode-details').unbind('click').click(function() {
-		if ($('#episode-details-'+$(this).attr('rel')).hasClass('hidden')) {
-			$('#episode-details-'+$(this).attr('rel')).removeClass('hidden');
-		} else {
-			$('#episode-details-'+$(this).attr('rel')).addClass('hidden');
-		}
-		$('div.display_actions').show();
-		return false;1
-	});
-
-	$('a.show-event-details').unbind('click').click(function() {
-		$.ajax({
-			url: '/clinical/'+$(this).attr('rel'),
-			success: function(data) {
+		<script type="text/javascript">
+			$('a.episode-details').unbind('click').click(function() {
+				if ($('#episode-details-'+$(this).attr('rel')).hasClass('hidden')) {
+					$('#episode-details-'+$(this).attr('rel')).removeClass('hidden');
+				} else {
+					$('#episode-details-'+$(this).attr('rel')).addClass('hidden');
+				}
 				$('div.display_actions').show();
-				$('#event_content').html(data);
-			}
-		});
-		return false;
-	});
+				return false;1
+			});
 
-	$('#addNewEvent').unbind('click').click(function() {
-		$.ajax({
-			url: '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>25)); ?>',
-			success: function(data) {
-				$('div.display_actions').hide();
-				$('#event_content').html(data);
-			}
-		});
-		return false;
-	});
-</script>
+			$('a.show-event-details').unbind('click').click(function() {
+				$.ajax({
+					url: '/clinical/'+$(this).attr('rel'),
+					success: function(data) {
+						$('div.display_actions').show();
+						$('#event_content').html(data);
+					}
+				});
+				return false;
+			});
+
+			$('#addNewEvent').unbind('click').click(function() {
+				if ($('#add-event-select-type').hasClass('hidden')) {
+					$('#add-event-select-type').removeClass('hidden');
+				} else {
+					$('#add-event-select-type').addClass('hidden');
+				}
+				return false;
+			});
+
+			$('#add-operation').unbind('click').click(function() {
+				$.ajax({
+					url: '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>25)); ?>',
+					success: function(data) {
+						$('div.display_actions').hide();
+						$('#add-event-select-type').addClass('hidden');
+						$('#event_content').html(data);
+					}
+				});
+				return false;
+			});
+		</script>
