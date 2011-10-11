@@ -155,21 +155,41 @@ class Firm extends BaseActiveRecord
 	{
 		return $this->serviceSpecialtyAssignment->specialty->name;
 	}
-	
+
 	/**
-	 * Fetch an array of service IDs and names
+	 * Fetch an array of firm IDs and names
 	 * @return array
 	 */
 	public function getList()
 	{
 		$list = Firm::model()->findAll();
 		$result = array();
-		
+
 		foreach ($list as $firm) {
 			$result[$firm->id] = $firm->name;
 		}
-		
+
 		return $result;
+	}
+
+	public function getListWithSpecialties()
+	{
+		$firms = Yii::app()->db->createCommand()
+			->select('f.id, f.name, s.name AS specialty')
+			->from('firm f')
+			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
+			->join('specialty s', 'ssa.specialty_id = s.id')
+			->order('f.name ASC, s.name ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($firms as $firm) {
+			$data[$firm['id']] = $firm['name'] . ' (' . $firm['specialty'] . ')';
+		}
+
+		return $data;
+
 	}
 
 	/**
