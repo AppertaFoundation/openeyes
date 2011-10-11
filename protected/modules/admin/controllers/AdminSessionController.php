@@ -127,6 +127,10 @@ class AdminSessionController extends Controller
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['Session']))
 			$model->attributes=$_GET['Session'];
+		if (isset($_GET['Firm']))
+			$model->firm_id = $_GET['Firm']['id'];
+		if (isset($_GET['Site']))
+			$model->site_id = $_GET['Site']['id'];
 
 		$this->render('admin',array(
 			'model'=>$model,

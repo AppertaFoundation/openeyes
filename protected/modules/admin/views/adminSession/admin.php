@@ -55,15 +55,31 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
-		'id',
 		'sequence_id',
-		'date',
-		'start_time',
-		'end_time',
 		array(
-			'header' => 'Firm',
-			'type' => 'raw',
-			'value' => '$data->getFirmName()',
+			'header'=>'Firm',
+			'value'=>'$data->getFirmName()',
+			'filter'=>CHtml::dropDownList('Firm[id]', $model->firm_id, Firm::model()->getListWithSpecialties(), array('empty' => '')),
+		),
+		array(
+			'header'=>'Site/Theatre',
+			'value'=>'$data->sequence->theatre->site->name . "-" . $data->sequence->theatre->name',
+			'filter'=>CHtml::dropDownList('Site[id]', $model->site_id, Site::model()->getList(), array('empty' => '')),
+		),
+		array(
+			'header'=>'Day',
+			'name'=>'weekday',
+			'value'=>'date("l ", strtotime($data->sequence->start_date))',
+			'filter'=>CHtml::dropDownList('Session[weekday]', $model->weekday, Sequence::model()->getWeekdayOptions(), array('empty' => '')),
+		),
+		'date',
+		array(
+			'name'=>'start_time',
+			'value'=>'substr($data->start_time, 0, 5)',
+		),
+		array(
+			'name'=>'end_time',
+			'value'=>'substr($data->end_time, 0, 5)',
 		),
 		array(
 			'class'=>'CButtonColumn',
