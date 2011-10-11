@@ -267,8 +267,9 @@ class PatientController extends BaseController
 
 	public function actionEpisodes()
 	{
+		$this->layout = '//layouts/patientMode/column2';
 		$this->service = new ClinicalService;
-		$patient = $this->loadModel($_GET['id']);
+		$patient = $this->model = $this->loadModel($_GET['id']);
 
 		$episodes = $patient->episodes;
 
