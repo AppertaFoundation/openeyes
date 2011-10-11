@@ -2,7 +2,7 @@
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
 				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent">Add New Event</button></form>
-				<p><img style="position:relative; top:-2px;"src="/img/_elements/icons/event_blank.png" alt="event_blank" width="16" height="16" /> <strong>&nbsp;Event: HPC</strong></p>
+				<p>&nbsp;</p>
 			</div>
 			<div id="episodes_sidebar">
 				<?php foreach ($episodes as $i => $episode) {
@@ -48,10 +48,14 @@
 					<p><strong>Select event to add:</strong></p>
 					<p><a href="#" id="add-operation"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong>Operation</strong></a></p>
 				</div>
-
-				<div class="display_actions">
+				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php if (ctype_digit(@$_GET['event'])) echo $_GET['event']?>" />
+				<?php
+				if (!isset($current_episode)) {?>
+					<h4>There are currently no episodes for this patient.</h4>
+				<?php }?>
+				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">View mode</div>
-					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
+					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a class="edit-event" href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
 				</div>
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="eventBox fullWidthEvent">
@@ -68,15 +72,17 @@
 							), false, true
 						);
 					} else {
-						$this->renderPartial('/clinical/episodeSummary',
-							array('episode' => $current_episode)
-						);
+						if (isset($current_episode)) {
+							$this->renderPartial('/clinical/episodeSummary',
+								array('episode' => $current_episode)
+							);
+						}
 					}
 					?>
 				</div>
 				<!-- #event_content -->
-				<div class="display_actions footer">
-					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
+				<div class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
+					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a class="edit-event" href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
@@ -90,19 +96,15 @@
 					}
 				});
 				return false;
-				if ($('#episode-details-'+$(this).attr('rel')).hasClass('hidden')) {
-					$('#episode-details-'+$(this).attr('rel')).removeClass('hidden');
-				} else {
-					$('#episode-details-'+$(this).attr('rel')).addClass('hidden');
-				}
-				$('div.display_actions').show();
-				return false;1
 			});
 
 			$('a.show-event-details').unbind('click').click(function() {
+				var event_id = $(this).attr('rel');
+
 				$.ajax({
 					url: '/clinical/'+$(this).attr('rel'),
 					success: function(data) {
+						$('#edit-eventid').val(event_id);
 						$('div.display_actions').show();
 						$('div.action_options').show();
 						$('#event_content').html(data);
@@ -130,5 +132,16 @@
 					}
 				});
 				return false;
+			});
+
+			$('a.edit-event').unbind('click').click(function() {
+				$.ajax({
+					url: '/clinical/update/'+$('#edit-eventid').val(),
+					success: function(data) {
+						$('div.display_actions').show();
+						$('div.action_options').show();
+						$('#event_content').html(data);
+					}
+				});
 			});
 		</script>
