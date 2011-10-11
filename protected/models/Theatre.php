@@ -104,7 +104,7 @@ class Theatre extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	public static function getDateFilterOptions()
 	{
 		return array(
@@ -113,5 +113,23 @@ class Theatre extends CActiveRecord
 			'month' => 'This month',
 			'custom' => 'or from'
 		);
+	}
+
+	public function getListWithSites()
+	{
+		$theatres = Yii::app()->db->createCommand()
+			->select('t.id, t.name, s.name AS site')
+			->from('theatre t')
+			->join('site s', 't.site_id = s.id')
+			->order('s.name ASC, t.name ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($theatres as $theatre) {
+			$data[$theatre['id']] = $theatre['site'] . ' - ' . $theatre['name'];
+		}
+
+		return $data;
 	}
 }

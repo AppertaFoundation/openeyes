@@ -50,8 +50,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'frequency'); ?>
-		<?php echo $form->textField($model,'frequency'); ?>
+		<?php echo $form->label($model,'repeat_interval'); ?>
+		<?php echo $form->textField($model,'repeat_interval'); ?>
 	</div>
 
 	<div class="row buttons">
