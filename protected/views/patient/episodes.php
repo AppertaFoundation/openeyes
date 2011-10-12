@@ -61,7 +61,7 @@
 				<?php }?>
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">View mode</div>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>><span class="aBtn_inactive">View</span><span class="aBtn"><a class="edit-event" href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
+					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>><span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span></div>
 				</div>
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="eventBox fullWidthEvent">
@@ -89,7 +89,7 @@
 				</div>
 				<!-- #event_content -->
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>><span class="aBtn_inactive">View</span><span class="aBtn"><a class="edit-event" href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
+					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>><span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span></div>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
@@ -116,6 +116,12 @@
 						$('#display_actions_footer').show();
 						$('div.action_options').show();
 						$('#event_content').html(data);
+
+						if (data.match(/<button type="submit" value="submit" class="wBtn_/)) {
+							$('span.edit-event').show();
+						} else {
+							$('span.edit-event').hide();
+						}
 					}
 				});
 				return false;
