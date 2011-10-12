@@ -22,11 +22,11 @@
 							<ul class="events">
 								<?php foreach ($episode->events as $event) {?>
 									<?php
-									$elements = $this->service->getElements(
+									$event_elements = $this->service->getElements(
 										null, null, null, 0, $event
 									);
 									$scheduled = false;
-									foreach ($elements as $element) {
+									foreach ($event_elements as $element) {
 										if (get_class($element) == 'ElementOperation' && $element->status == ElementOperation::STATUS_SCHEDULED) {
 											$scheduled = true;
 										}
@@ -86,8 +86,9 @@
 					}
 					?>
 				</div>
+				</div>
 				<!-- #event_content -->
-				<div class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
+				<div id="display_actions_footer" class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="action_options" style="display: none;"><span class="aBtn_inactive">View</span><span class="aBtn"><a class="edit-event" href="#">Edit</a></span><?php /*<span class="aBtn"><a href="#">Save</a></span><span class="aBtn"><a href="#">Delete</a></span>*/?></div>
 				</div>
 			</div><!-- #event_display -->
@@ -112,6 +113,7 @@
 					success: function(data) {
 						$('#edit-eventid').val(event_id);
 						$('div.display_actions').show();
+						$('#display_actions_footer').show();
 						$('div.action_options').show();
 						$('#event_content').html(data);
 					}
