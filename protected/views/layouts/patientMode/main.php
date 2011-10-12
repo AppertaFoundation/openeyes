@@ -93,7 +93,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/assets/e117752f/jquery.fancybox-1.3.4.pack.js"></script>
 
 	<script type="text/javascript">
-		$('select[id=selected_firm_id]').live('change', function() {
+		$('select[id=selected_firm_id]').die('change').live('change', function() {
 			var firmId = $('select[id=selected_firm_id]').val();
 			$.ajax({
 				type: 'post',

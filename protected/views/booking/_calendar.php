@@ -40,7 +40,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		echo CHtml::hiddenField('nmonth', $nextMonth);
 		echo '<span class="button">';
 		echo CHtml::submitButton('Next Month >',
-			array('id' => 'next_month', 'class'=>'form_button', 'disabled' => ($nextMonth > $nextYear)));
+			array('id' => 'next_month', 'class'=>'form_button', 'style'=>'margin-top: 41px; margin-right: 5px;','disabled' => ($nextMonth > $nextYear)));
 		echo '</span>';
 		echo CHtml::closeTag('form'); ?>
 			</div>

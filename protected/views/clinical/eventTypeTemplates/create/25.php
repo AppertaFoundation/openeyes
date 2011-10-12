@@ -16,6 +16,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 <script type="text/javascript" src="/js/phrase.js"></script>
 <script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 <script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
 <?php /*
 <link rel="stylesheet" type="text/css" href="/css/jqueryui/theme/jquery-ui.css" />
 <script type="text/javascript" src="/js/libs/jquery-1.6.2.js"></script>
@@ -119,7 +120,7 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$.fancybox({'content': data});
+					$('#event_content').html(data);
 					return false;
 				}
 			}

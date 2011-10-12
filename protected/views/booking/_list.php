@@ -12,7 +12,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-?><div id="bookings">
+?>
+<div id="bookings">
 <div class="cleartall"></div>
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
