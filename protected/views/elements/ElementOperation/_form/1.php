@@ -122,43 +122,45 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					<div id="procedureDiv"<?php
 					if ($newRecord) { ?> style="display:none;"<?php
 					} ?>>
-						<table id="procedure_list" class="grid"<?php
-					if ($newRecord) { ?> style="display:none;"<?php
-					} ?> title="Procedure List">
-							<thead>
-								<tr>
-									<th>Procedures Added</th>
-									<th>Duration</th>
-								</tr>
-							</thead>
-							<tbody>
-				<?php
-					$totalDuration = 0;
-					if (!empty($model->procedures)) {
-						foreach ($model->procedures as $procedure) {
-							$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
-								' ' . CHtml::link('remove', '#',
-								array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
-							$totalDuration += $procedure['default_duration']; ?>
-								<tr>
-									<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
-									<td><?php echo $display; ?></td>
-									<td><?php echo $procedure['default_duration']; ?></td>
-								</tr>
-				<?php }
-					} ?>
-							</tbody>
-							<tfoot>
-								<tr>
-									<td class="topPadded">Calculated Total Duration:</td>
-									<td id="projected_duration"><?php echo $totalDuration; ?></td>
-								</tr>
-								<tr>
-									<td>Estimated Total Duration:</td>
-									<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
-								</tr>
-							</tfoot>
-						</table>
+						<div class="extraDetails grid-view">
+							<table id="procedure_list" class="grid" style="width:100%; background:#e3f0f2;<?php
+						if ($newRecord) { ?> display:none;<?php
+						} ?>" title="Procedure List">
+								<thead>
+									<tr>
+										<th>Procedures Added</th>
+										<th>Duration</th>
+									</tr>
+								</thead>
+								<tbody>
+					<?php
+						$totalDuration = 0;
+						if (!empty($model->procedures)) {
+							foreach ($model->procedures as $procedure) {
+								$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
+									' ' . CHtml::link('remove', '#',
+									array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
+								$totalDuration += $procedure['default_duration']; ?>
+									<tr>
+										<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
+										<td><?php echo $display; ?></td>
+										<td><?php echo $procedure['default_duration']; ?></td>
+									</tr>
+					<?php }
+						} ?>
+								</tbody>
+								<tfoot style="border-top:2px solid #CCC;">
+									<tr>
+										<td class="topPadded">Calculated Total Duration:</td>
+										<td id="projected_duration"><?php echo $totalDuration; ?></td>
+									</tr>
+									<tr>
+										<td>Estimated Total Duration:</td>
+										<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
 					</div>
 
 					<div id="consultRequired" class="eventDetail">

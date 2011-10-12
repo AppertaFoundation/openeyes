@@ -110,7 +110,7 @@ $this->endWidget(); ?>
 <script type="text/javascript">
 	$('button.fancybox').fancybox([]);
 
-	$('#scheduleNow').click(function() {
+	$('#scheduleNow').unbind('click').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
 			'type': 'POST',
@@ -126,7 +126,7 @@ $this->endWidget(); ?>
 		});
 		return false;
 	});
-	$('#scheduleLater').click(function() {
+	$('#scheduleLater').unbind('click').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
 			'type': 'POST',
