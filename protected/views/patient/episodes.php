@@ -148,7 +148,7 @@
 					e.preventDefault();
 					$collapsed = false;
 
-					$('#add-event-select-type').slideToggle('slow',function() {
+					$('#add-event-select-type').slideToggle(100,function() {
 						if($(this).is(":visible")){
 							$('img','#addNewEvent').attr("src",$btn_inactive);
 						} else {
