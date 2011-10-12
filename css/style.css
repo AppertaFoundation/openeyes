@@ -334,11 +334,14 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 #event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 
+#event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; }
+
+
 /* NEW EVENT - Users selects a New Event to add, these are details needed */
  /* Green PlUS Graphic */
 #event_plus_graphic { display:block; position:absolute; top:64px; left:296px; }
  /* event content */ 
-#event_display .addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; } /* allow gap for graphic */
+#event_display .addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; } /* allow gap for graphic - NOT USED */
 #event_display .fullWidthEvent { width:1020px; }
 #event_display .miniWidthEvent { width:510px; }
 /* elements of event & episode */

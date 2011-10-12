@@ -2,7 +2,7 @@
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
 				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent">Add New Event</button></form>
-				<p>&nbsp;</p>
+				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<div id="episodes_sidebar">
 				<?php foreach ($episodes as $i => $episode) {
@@ -57,7 +57,9 @@
 				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php if (ctype_digit(@$_GET['event'])) echo $_GET['event']?>" />
 				<?php
 				if (!isset($current_episode)) {?>
-					<h4>There are currently no episodes for this patient.</h4>
+					<div class="alertBox fullWidthEvent">
+						<h4>There are currently no episodes for this patient, please add a new event to open an episode.</h4>
+					</div>
 				<?php }?>
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">View mode</div>
