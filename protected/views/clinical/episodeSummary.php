@@ -24,7 +24,7 @@ if (!empty($episode)) {
 					$text = $diagnosis->disorder->term;
 	}
 ?>
-<h3>Episode Summary</h3>
+<h3>Episode Summary (<?php echo $episode->firm->serviceSpecialtyAssignment->specialty->name?>)</h3>
 
 <h4>Start date:</h4>
 <div class="eventHighlight">
