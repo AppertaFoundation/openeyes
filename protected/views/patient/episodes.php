@@ -1,7 +1,7 @@
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
-				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent">Add New Event</button></form>
+				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent"><img style="float:right; margin:1px 2px 0 0;" src="/img/_elements/btns/new-event.png" alt="add-new-event" width="155" height="35" /></button></form>
 				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<div id="episodes_sidebar">
@@ -49,7 +49,7 @@
 				<?php }?>
 			</div> <!-- #episodes_sidebar -->
 			<div id="event_display">
-				<div id="add-event-select-type" class="whiteBox addEvent clearfix hidden">
+				<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
 					<h3>Adding New Event</h3>
 					<p><strong>Select event to add:</strong></p>
 					<p><a href="#" id="add-operation"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong>Operation</strong></a></p>
@@ -129,13 +129,37 @@
 				return false;
 			});
 
-			$('#addNewEvent').unbind('click').click(function() {
-				if ($('#add-event-select-type').hasClass('hidden')) {
-					$('#add-event-select-type').removeClass('hidden');
-				} else {
-					$('#add-event-select-type').addClass('hidden');
-				}
-				return false;
+			$(document).ready(function(){
+				$btn_normal = $('img','#addNewEvent').attr("src");
+				$btn_over = $btn_normal.replace(/.png$/ig,"_o.png");
+				$btn_inactive = $btn_normal.replace(/.png$/ig,"_inactive.png");
+				$collapsed = true;
+				
+				// rollover... if not open
+				$('#addNewEvent').mouseover(function(){
+					if($collapsed){ $('img','#addNewEvent').attr("src",$btn_over); }
+				});
+				
+				$('#addNewEvent').mouseout(function(){
+					if($collapsed){ $('img','#addNewEvent').attr("src",$btn_normal);	}
+				});
+
+				$('#addNewEvent').unbind('click').click(function(e) {
+					e.preventDefault();
+					$collapsed = false;
+
+					$('#add-event-select-type').slideToggle('slow',function() {
+						if($(this).is(":visible")){
+							$('img','#addNewEvent').attr("src",$btn_inactive);
+						} else {
+							$('img','#addNewEvent').attr("src",$btn_normal);
+							$collapsed = true;
+						}
+						return false;
+					});
+
+					return false;
+				});
 			});
 
 			$('#add-operation').unbind('click').click(function() {
@@ -143,7 +167,9 @@
 					url: '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>25)); ?>',
 					success: function(data) {
 						$('div.display_actions').hide();
-						$('#add-event-select-type').addClass('hidden');
+						$('#add-event-select-type').hide();
+						$collapsed = true;
+						$('img','#addNewEvent').attr("src",$btn_normal);
 						$('#event_content').html(data);
 					}
 				});
