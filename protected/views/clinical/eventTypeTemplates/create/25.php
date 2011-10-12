@@ -136,6 +136,7 @@ $this->endWidget(); ?>
 					displayErrors(data);
 				} catch (e) {
 					window.location.href = data;
+					return false;
 				}
 			}
 		});
