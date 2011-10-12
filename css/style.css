@@ -87,7 +87,7 @@ body { width:1230px; margin:0 auto; }
 #content .fullWidth		{ width:1230px; margin-top:20px; position: relative; }
 /* View Episode, summary hides for event Display */
 #content .fullWidth > #episodes_sidebar	{ float:left;	} /* expands for summary */
-#content .fullWidth > #event_display	{ float:right; max-width: 1040px; overflow: hidden; }
+#content .fullWidth > #event_display	{ float:right; max-width: 1040px; min-height:200px; overflow: hidden; }
 
 #content .centralColumn { width:800px; 	margin: 20px auto 0 auto; }
 #content .wrapTwo 	{ width:1200px; margin: 20px auto 0 auto; }
@@ -330,6 +330,7 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
 #event_display .addEvent { border:5px solid #69bd51; }
+#event_display .addEvent > h3 { padding:0; }
 #event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 
@@ -340,13 +341,14 @@ ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 #event_display .addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; } /* allow gap for graphic */
 #event_display .fullWidthEvent { width:1020px; }
 #event_display .miniWidthEvent { width:510px; }
-/* elements of event */
+/* elements of event & episode */
 #event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
 #event_content h4 { color:#666; font-size:9pt; padding:5px 10px 0 10px; margin-bottom: 5px; }
 #event_content form > h4 { color:#000; font-size:11pt; border-top:2px solid #dae6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 #event_content .eventHighlight > h4 { color:#000; font-size:12pt; padding:0 10px 5px 10px; }
+#event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 /* event detail */
 #event_content .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px;  }
 #event_content .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:11pt;  }
