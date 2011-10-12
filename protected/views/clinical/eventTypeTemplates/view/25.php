@@ -19,10 +19,9 @@ foreach ($elements as $element) {
 	}
 }
 
-$scheduled = ($operation->status != $operation::STATUS_CANCELLED && $operation->status != $operation::STATUS_PENDING) ? 'Scheduled' : 'Unscheduled';
 ?>
 <!-- Details -->
-<h3>Operation (<?php echo $scheduled?>)</h3>
+<h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
 <h4>Diagnosis</h4>
 
 <div class="eventHighlight">
@@ -47,25 +46,68 @@ foreach ($elements as $element) {
 ?></h4>
 </div>
 
-<?php if ($operation->status != $operation::STATUS_CANCELLED && $operation->status != $operation::STATUS_PENDING) {?>
-	<div style="margin-top:40px; text-align:center;">
+<?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
+	if (empty($operation->booking)) {
+		$isAdmissionLetter = true;
+
+		// The operation hasn't been booked yet?>
+		<div style="margin-top:40px; text-align:center;">
+			<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_btn">Print invitation letter</button>
+			<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_btn">Print reminder letter</button>
+			<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_btn">Print GP refer back letter</button>
+			<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_schedule_now">Schedule now</button>
+			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel_operation">Cancel operation</button> 
+		</div>
+	<?php } else {?>
 		<button type="submit" value="submit" class="btn_print-letter ir" id="btn_btn">Print letter</button>
-		<button type="submit" value="submit" class="wBtn_reschedule-now ir" id="btn_btn">Reschedule now</button>
-		<button type="submit" value="submit" class="wBtn_reschedule-later ir" id="btn_btn">Reschedule later</button>
-		<button type="submit" value="submit" class="wBtn_cancel-operation ir">Cancel operation</button>	
-	</div>
-<?php }else{?>
-	<div style="margin-top:40px; text-align:center;">
-		<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_btn">Print invitation letter</button>
-		<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_btn">Print reminder letter</button>
-		<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_btn">Print GP refer back letter</button>
-		<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_btn">Schedule now</button>
-		<button type="submit" value="submit" class="wBtn_cancel-operation ir">Cancel operation</button>	
-	</div>
+		<button type="submit" value="submit" class="wBtn_reschedule-now ir" id="btn_reschedule_now">Reschedule now</button>
+		<button type="submit" value="submit" class="wBtn_reschedule-later ir" id="btn_reschedule_later">Reschedule later</button>
+		<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel_operation">Cancel operation</button>
+	<?php }?>
 <?php }?>
-<?php /*
-<h4>Admission</h4>
-<div class="eventHighlight">
-	<h4>Wednesday 12/10/2011 at 10:30am. Come to Mackellar ward at 08:30am</h4>
-</div>
-*/?>
+<script type="text/javascript">
+	$('#btn_schedule_now').unbind('click').click(function() {
+		$.ajax({
+			url: '/booking/schedule',
+			type: "GET",
+			data: {'operation': <?php echo $operation->id?>},
+			success: function(data) {
+				$('#event_content').html(data);
+				return false;
+			}
+		});
+	});
+	$('#btn_cancel_operation').unbind('click').click(function() {
+		$.ajax({
+			url: '/booking/cancelOperation',
+			type: "GET",
+			data: {'operation': <?php echo $operation->id?>},
+			success: function(data) {
+				$('#event_content').html(data);
+				return false;
+			}
+		});
+	});
+	$('#btn_reschedule_now').unbind('click').click(function() {
+		$.ajax({
+			url: '/booking/reschedule',
+			type: "GET",
+			data: {'operation': <?php echo $operation->id?>},
+			success: function(data) {
+				$('#event_content').html(data);
+				return false;
+			}
+		});
+	});
+	$('#btn_reschedule_later').unbind('click').click(function() {
+		$.ajax({
+			url: '/booking/rescheduleLater',
+			type: "GET",
+			data: {'operation': <?php echo $operation->id?>},
+			success: function(data) {
+				$('#event_content').html(data);
+				return false;
+			}
+		});
+	});
+</script>
