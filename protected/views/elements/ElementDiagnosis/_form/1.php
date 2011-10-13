@@ -110,9 +110,9 @@ if (empty($model->event_id)) {
 					<div id="enteredDiagnosis" class="eventDetail">
 						<div class="label">Selected diagnosis:</div>
 						<div class="data">
-							<span id="enteredDiagnosisText" class="bold" style="margin-right:20px;">Mature cataract</span>
+							<span id="enteredDiagnosisText" class="bold" style="margin-right:20px;"><?php echo $value?></span>
 							<button id="modifyDiagnosis" type="submit" value="submit" class="smBtn_modify ir">Modify</button>
-							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="Mature cataract" />
+							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo $value?>" />
 						</div>
 					</div>
 
