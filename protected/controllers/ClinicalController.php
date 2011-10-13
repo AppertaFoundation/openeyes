@@ -163,7 +163,8 @@ class ClinicalController extends BaseController
 					$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
 					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 				} else {
-					die("/patient/episodes/".$this->patientId."/event/".$eventId);
+					echo $eventId;
+					//die("/patient/episodes/".$this->patientId."/event/".$eventId);
 				}
 
 				return;

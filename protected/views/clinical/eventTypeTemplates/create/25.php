@@ -133,10 +133,13 @@ $this->endWidget(); ?>
 			'type': 'POST',
 			'data': $('#clinical-create').serialize(),
 			'success': function(data) {
+				if (data.match(/^[0-9]+$/)) {
+					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+					return false;
+				}
 				try {
 					displayErrors(data);
 				} catch (e) {
-					window.location.href = data;
 					return false;
 				}
 			}
