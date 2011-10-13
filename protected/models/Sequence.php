@@ -319,7 +319,7 @@ class Sequence extends CActiveRecord
 		}
 
 		// check for one-off sequence and empty end date
-		if (empty($this->week_selection) && $this->repeat_interval == self::FREQUENCY_ONCE && empty($this->end_date)) {
+		if (!empty($this->start_date) && empty($this->week_selection) && $this->repeat_interval == self::FREQUENCY_ONCE && empty($this->end_date)) {
 			$valid = false;
 			$this->addError('end_date', 'End date must be set if repeat is set to one time.');
 		}
