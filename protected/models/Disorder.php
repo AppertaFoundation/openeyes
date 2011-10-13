@@ -150,7 +150,7 @@ class Disorder extends BaseActiveRecord
 	 */
 	public static function getList($term)
 	{
-		$search = "%{$term}%";
+		$search = "{$term}%";
 
 		$select = 'term, id';
 
@@ -159,7 +159,6 @@ class Disorder extends BaseActiveRecord
 			->from('disorder')
 			->where('(term LIKE :term OR fully_specified_name LIKE :format) AND systemic = 0',
 					array(':term' => $search, ':format' => $search))
-			->limit(5)
 			->queryAll();
 
 		$data = array();
