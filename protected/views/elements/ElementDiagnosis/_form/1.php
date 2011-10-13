@@ -64,15 +64,15 @@ if (empty($model->event_id)) {
 						<div class="data">
 							<input id="ytElementDiagnosis_eye" type="hidden" value="" name="ElementDiagnosis[eye]" />
 							<span class="group">
-							<input id="ElementDiagnosis_eye_0" value="1" checked="checked" type="radio" name="ElementDiagnosis[eye]" />
+							<input id="ElementDiagnosis_eye_0" value="1"<?php if ($diagnosis->eye == '1' || $diagnosis->eye === null) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_0">Right</label>
 							</span>
 							<span class="group">
-							<input id="ElementDiagnosis_eye_1" value="0" type="radio" name="ElementDiagnosis[eye]" />
+							<input id="ElementDiagnosis_eye_1" value="0"<?php if ($diagnosis->eye === '0') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_1">Left</label>
 							</span>
 							<span class="group">
-							<input id="ElementDiagnosis_eye_2" value="2" type="radio" name="ElementDiagnosis[eye]" />
+							<input id="ElementDiagnosis_eye_2" value="2"<?php if ($diagnosis->eye == '2') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_2">Both</label>
 							</span>
 						</div>

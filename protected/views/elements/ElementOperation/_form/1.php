@@ -5,15 +5,15 @@
 						<div class="data">
 							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
 							<span class="group">
-							<input id="ElementOperation_eye_0" value="1" type="radio" name="ElementOperation[eye]" />
+							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1' || $model->eye === null) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_0">Right</label>
 							</span>
 							<span class="group">
-							<input id="ElementOperation_eye_1" value="0" type="radio" name="ElementOperation[eye]" />
+							<input id="ElementOperation_eye_1" value="0" <?php if ($model->eye === '0' && $model->eye !== null) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_1">Left</label>
 							</span>
 							<span class="group">
-							<input id="ElementOperation_eye_2" value="2" type="radio" name="ElementOperation[eye]" />
+							<input id="ElementOperation_eye_2" value="2" <?php if ($model->eye == '2') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_2">Both</label>
 							</span>
 						</div>
