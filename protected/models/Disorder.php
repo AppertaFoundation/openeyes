@@ -150,14 +150,14 @@ class Disorder extends BaseActiveRecord
 	 */
 	public static function getList($term)
 	{
-		$search = "{$term}%";
+		$search = "%{$term}%";
 
 		$select = 'term, id';
 
 		$disorders = Yii::app()->db->createCommand()
 			->select($select)
 			->from('disorder')
-			->where('(term LIKE :term OR fully_specified_name LIKE :format) AND systemic = 0',
+			->where('(term LIKE :term) AND systemic = 0',
 					array(':term' => $search, ':format' => $search))
 			->queryAll();
 
