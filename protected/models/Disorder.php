@@ -158,7 +158,7 @@ class Disorder extends BaseActiveRecord
 			->select($select)
 			->from('disorder')
 			->where('(term LIKE :term) AND systemic = 0',
-					array(':term' => $search, ':format' => $search))
+					array(':term' => $search))
 			->queryAll();
 
 		$data = array();
