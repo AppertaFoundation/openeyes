@@ -164,7 +164,6 @@ class ClinicalController extends BaseController
 					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 				} else {
 					echo $eventId;
-					//die("/patient/episodes/".$this->patientId."/event/".$eventId);
 				}
 
 				return;
