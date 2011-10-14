@@ -207,16 +207,13 @@ class ClinicalControllerTest extends CDbTestCase
 		$mockController->service = $mockService;
 		$mockController->firm = $firm;
 
-		$referrals = $mockController->checkForReferrals($firm, $patient->id);
-
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with($mockController->getTemplateName('create', $eventTypeId), array(
 				'elements' => $expectedElements,
 				'eventTypeId' => $eventTypeId,
 				'specialties' => $specialties,
-				'patient' => $patient,
-				'referrals' => $referrals
+				'patient' => $patient
 			), false, true);
 
 		$mockController->expects($this->once())

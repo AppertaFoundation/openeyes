@@ -157,9 +157,7 @@ class ClinicalController extends BaseController
 
 				$eventTypeName = ucfirst($eventType->name);
 				Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
-				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($eventId)) {
-					$this->redirect(array('chooseReferral', 'id' => $eraId));
-				} elseif (!empty($_POST['scheduleNow'])) {
+				if (!empty($_POST['scheduleNow'])) {
 					$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
 					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 				} else {
@@ -173,15 +171,12 @@ class ClinicalController extends BaseController
 			// be displayed again in the call below
 		}
 
-		// Check to see if they need to choose a referral
-		$referrals = $this->checkForReferrals($this->firm, $this->patientId);
-
 		$params = array(
 			'elements' => $elements,
 			'eventTypeId' => $eventTypeId,
 			'specialties' => $specialties,
-			'patient' => $patient,
-			'referrals' => $referrals);
+			'patient' => $patient
+		);
 
 		if ($eventType->name == 'operation') {
 			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
@@ -253,17 +248,15 @@ class ClinicalController extends BaseController
 			$success = $this->service->updateElements($elements, $_POST, $event);
 
 			if ($success) {
-				if (Yii::app()->params['use_pas'] && $eraId = $this->checkForReferral($event->id)) {
-					$this->redirect(array('chooseReferral', 'id' => $eraId));
-				} else {
-					$this->logActivity('updated event');
+				$this->logActivity('updated event');
 
-					// Nothing has gone wrong with updating elements, go to the view page
-					$eventTypeName = ucfirst($event->eventType->name);
-					Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
+				$this->assignReferralIfRequired($event->id, $this->firm, $this->patientId);
 
-					$this->redirect(array('view', 'id' => $event->id));
-				}
+				// Nothing has gone wrong with updating elements, go to the view page
+				$eventTypeName = ucfirst($event->eventType->name);
+				Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
+
+				$this->redirect(array('view', 'id' => $event->id));
 			}
 
 			// If we get this far element validation has failed, so we render them again.
@@ -340,34 +333,6 @@ class ClinicalController extends BaseController
 			'editable' => $editable
 			), false, true
 		);
-	}
-
-	/**
-	 * Checks to see if there the user needs to select a referral.
-	 *
-	 * This is calculated as follows:
-	 *
-	 * Check for an open episode for this patient and this firm's specialty
-	 * If there is an open episode and it has a referral, no action required so return false
-	 * If no episode or the episode has no referral, check to see if a referral can be chosen automatically
-	 * If it can, it will be dealt with when creating or updating the event so no action required here, return false
-	 * If it can't, return an array of referrals for the user to choose from
-	 *
-	 * @param $firm object
-	 * @param $patientId id
-	 *
-	 * @return array
-	 */
-	public function checkForReferrals($firm, $patientId)
-	{
-		// If pas isn't in use there can't be any referrals
-		if (!Yii::app()->params['use_pas']) {
-			return false;
-		}
-
-		$referralService = new ReferralService;
-
-		return $referralService->getReferralsList($firm, $patientId);
 	}
 
 	/**
