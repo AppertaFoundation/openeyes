@@ -100,7 +100,8 @@ if (empty($model->event_id)) {
 									}",
 								),
 								'htmlOptions'=>array(
-									'style'=>'height:20px;width:350px;font:10pt Arial;'
+									'style'=>'width: 300px;'
+									//height:20px;width:350px;font:10pt Arial;'
 								),
 							));
 							?>
