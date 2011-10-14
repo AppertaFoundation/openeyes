@@ -32,13 +32,17 @@ $this->layout = 'simple';
 			<div class="loginRow bigInput">
 				<?php echo CHtml::activeLabel($model,'username', array('label'=>'Username:')); ?>
 				<?php echo $form->textField($model,'username',array('tabindex' => 1)); ?>
-				<a href="#" tabindex="5"><span class="small">Forgotten your username?</span></a>
+				<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
+					<a href="#" tabindex="5"><span class="small">Forgotten your username?</span></a>
+				<?php }?>
 			</div>
 
 			<div class="loginRow bigInput">
 				<?php echo CHtml::activeLabel($model,'password', array('label'=>'Password:')); ?>
 				<?php echo $form->passwordField($model,'password',array('tabindex' => 2)); ?>
-				<a href="#" tabindex="6"><span class="small">Forgotten your password?</span></a>
+				<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
+					<a href="#" tabindex="6"><span class="small">Forgotten your password?</span></a>
+				<?php }?>
 			</div>
 
 			<div class="row">
