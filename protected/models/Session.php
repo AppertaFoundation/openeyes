@@ -22,6 +22,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $start_time
  * @property string $end_time
  * @property string $comments
+ * @property integer $status
  *
  * The followings are the available model relations:
  * @property Booking[] $bookings
@@ -29,6 +30,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  */
 class Session extends CActiveRecord
 {
+	const STATUS_AVAILABLE = 0;
+	const STATUS_UNAVAILABLE = 1;
+
 	public $firm_id;
 	public $site_id;
 	public $weekday;
@@ -60,10 +64,10 @@ class Session extends CActiveRecord
 		return array(
 			array('sequence_id, date, start_time, end_time', 'required'),
 			array('sequence_id', 'length', 'max'=>10),
-			array('comments', 'safe'),
+			array('comments, status', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, sequence_id, date, start_time, end_time, comments, firm_id, site_id, weekday', 'safe', 'on'=>'search'),
+			array('id, sequence_id, date, start_time, end_time, comments, status, firm_id, site_id, weekday', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,7 +96,8 @@ class Session extends CActiveRecord
 			'date' => 'Date',
 			'start_time' => 'Start Time',
 			'end_time' => 'End Time',
-			'comments' => 'Comments'
+			'comments' => 'Comments',
+			'status' => 'Status'
 		);
 	}
 
@@ -180,5 +185,27 @@ class Session extends CActiveRecord
 			->queryRow();
 
 		return $results['bookings_count'];
+	}
+
+	public function getStatusOptions()
+	{
+		return array(
+			self::STATUS_AVAILABLE => 'Available',
+			self::STATUS_UNAVAILABLE => 'Unavailable'
+		);
+	}
+
+	public function getStatusText()
+	{
+		switch($this->status) {
+			case self::STATUS_UNAVAILABLE:
+				$text = 'Unavailable';
+				break;
+			default:
+				$text = 'Available';
+				break;
+		}
+
+		return $text;
 	}
 }

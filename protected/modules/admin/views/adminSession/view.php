@@ -35,6 +35,10 @@ $this->menu=array(
 		'date',
 		'start_time',
 		'end_time',
-		'comments'
+		array(
+			'name'=>'status',
+			'value'=>$model->getStatusText()
+		),
+		'comments',
 	),
 )); ?>
