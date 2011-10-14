@@ -31,8 +31,20 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'comments'); ?>
-		<?php echo $form->textArea($model,'comments'); ?>
+		<?php echo $form->textArea($model,'comments', array('rows'=>10, 'cols'=>40)); ?>
 		<?php echo $form->error($model,'comments'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'status');
+		$i = 0;
+		foreach ($model->getStatusOptions() as $value => $name) { ?>
+		<input id="Session_status_<?php echo $i; ?>" value="<?php echo $value; ?>" type="radio" name="Session[status]"<?php
+			if ($model->status == $value) {
+				echo ' checked="checked"';
+			} ?> /> <label for="Session_status_<?php echo $i; ?>" style="display: inline; font-weight: normal;"><?php echo $name; ?></label> &nbsp; <?php
+		}
+		echo $form->error($model,'status'); ?>
 	</div>
 
 	<div class="row buttons">
