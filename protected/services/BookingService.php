@@ -56,7 +56,8 @@ class BookingService
 			JOIN `site` ON t.site_id = site.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			WHERE s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
+			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
+				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
 				CAST('" . $monthEnd . "' AS DATE) AND $firmSql AND site.id = $siteId
 			GROUP BY s.id
 		UNION
@@ -67,7 +68,8 @@ class BookingService
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `theatre` `t` ON q.theatre_id = t.id
 			JOIN `site` ON t.site_id = site.id
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
+			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
+				s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
 				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
 				CAST('" . $monthEnd . "' AS DATE) AND $firmSql AND site.id = $siteId
 			ORDER BY WEEKDAY(DATE) ASC";
@@ -107,7 +109,7 @@ class BookingService
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			JOIN `theatre` `t` ON q.theatre_id = t.id
-			WHERE s.date = '" . $date . "' AND $firmSql
+			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND s.date = '" . $date . "' AND $firmSql
 			GROUP BY s.id
 		UNION
 			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
@@ -117,7 +119,8 @@ class BookingService
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `theatre` `t` ON q.theatre_id = t.id
-			WHERE s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
+			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
+				s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
 				s.date = '" . $date . "' AND $firmSql";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
@@ -169,8 +172,8 @@ class BookingService
 			throw new Exception('Invalid start and end dates.');
 		}
 
-		$whereSql = 's.date BETWEEN :start AND :end';
-		$whereParams = array(':start' => $startDate, ':end' => $endDate);
+		$whereSql = 's.status != :status AND s.date BETWEEN :start AND :end';
+		$whereParams = array(':status' => Session::STATUS_UNAVAILABLE, ':start' => $startDate, ':end' => $endDate);
 
 		if (!empty($siteId)) {
 			$whereSql .= ' AND t.site_id = :siteId';
