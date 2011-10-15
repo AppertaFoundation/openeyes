@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk	 info@openeyes.org.uk
+http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
@@ -153,8 +153,8 @@ class BookingService
 	/**
 	 * Search for theatres/sessions, filtered by site/service/firm/theatre
 	 *
-	 * @param string	$startDate (YYYY-MM-DD)
-	 * @param string	$endDate	 (YYYY-MM-DD)
+	 * @param string  $startDate (YYYY-MM-DD)
+	 * @param string  $endDate   (YYYY-MM-DD)
 	 * @param integer $siteId
 	 * @param integer $theatreId
 	 * @param integer $serviceId
@@ -194,41 +194,27 @@ class BookingService
 		}
 
 		$command = Yii::app()->db->createCommand()
-			->select('t.name, s.date, s.start_time, s.end_time, s.id AS session_id,
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration')
+			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id,
+				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
+				o.eye, o.anaesthetic_type, o.comments,
+				o.total_duration AS operation_duration, p.first_name,
+				p.last_name, p.dob, p.gender, w.name AS ward, b.display_order')
 			->from('session s')
 			->join('sequence q', 's.sequence_id = q.id')
 			->join('theatre t', 't.id = q.theatre_id')
+			->leftJoin('booking b', 'b.session_id = s.id')
+			->leftJoin('element_operation o', 'o.id = b.element_operation_id')
+			->leftJoin('event e', 'e.id = o.event_id')
+			->leftJoin('episode ep', 'ep.id = e.episode_id')
+			->leftJoin('patient p', 'p.id = ep.patient_id')
 			->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
 			->join('firm f', 'f.id = sfa.firm_id')
 			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
 			->join('service ser', 'ser.id = ssa.service_id')
+			->leftJoin('ward w', 'w.id = b.ward_id')
 			->where($whereSql, $whereParams)
-			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC');
+			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
 
-		$sessions = array();
-		foreach ($command->queryAll() as $session) {
-			$session['operation'] = false;
-			
-			foreach (Yii::app()->db->createCommand()
-				->select('DISTINCT(o.id) AS operation_id, o.eye, o.anaesthetic_type, o.comments, o.total_duration AS operation_duration,
-					p.first_name, p.last_name, p.dob, p.gender, w.name AS ward, b.display_order')
-				->from('booking b')
-				->join('element_operation o', 'o.id = b.element_operation_id')
-				->join('event e', 'e.id = o.event_id')
-				->join('episode ep', 'ep.id = e.episode_id')
-				->join('patient p', 'p.id = ep.patient_id')
-				->join('ward w', 'w.id = b.ward_id')
-				->where('b.session_id = :sessionId',array(':sessionId' => $session['session_id']))
-				->order('b.display_order ASC')
-				->query() as $operation) {
-				$session['operation'] = $operation;
-				break;
-			}
-
-			$sessions[] = $session;
-		}
-
-		return $sessions;
+		return $command->queryAll();
 	}
 }

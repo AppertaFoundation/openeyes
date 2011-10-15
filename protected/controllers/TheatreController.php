@@ -104,50 +104,42 @@ class TheatreController extends BaseController
 				$sessionTime = explode(':', $values['session_duration']);
 				$sessionDuration = ($sessionTime[0] * 60) + $sessionTime[1];
 
-				if ($values['operation']) {
-					$operation->eye = $values['operation']['eye'];
-					$operation->anaesthetic_type = $values['operation']['anaesthetic_type'];
-					$age = floor((time() - strtotime($values['operation']['dob'])) / 60 / 60 / 24 / 365);
+				$operation->eye = $values['eye'];
+				$operation->anaesthetic_type = $values['anaesthetic_type'];
+				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
 
-					$procedures = Yii::app()->db->createCommand()
-						->select("GROUP_CONCAT(p.term SEPARATOR ', ') AS List")
-						->from('proc p')
-						->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
-						->where('opa.operation_id = :id',
-							array(':id'=>$values['operation']['operation_id']))
-						->group('opa.operation_id')
-						->order('opa.display_order ASC')
-						->queryRow();
-				}
+				$procedures = Yii::app()->db->createCommand()
+					->select("GROUP_CONCAT(p.term SEPARATOR ', ') AS List")
+					->from('proc p')
+					->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
+					->where('opa.operation_id = :id',
+						array(':id'=>$values['operation_id']))
+					->group('opa.operation_id')
+					->order('opa.display_order ASC')
+					->queryRow();
 
 				$theatres[$values['name']][$values['date']][] = array(
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
 					'sessionId' => $values['session_id'],
 					'sessionDuration' => $sessionDuration,
-					'operationDuration' => ($values['operation'] ? $values['operation']['operation_duration'] : null),
-					'operationComments' => ($values['operation'] ? $values['operation']['comments'] : null),
+					'operationDuration' => $values['operation_duration'],
+					'operationComments' => $values['comments'],
 					'timeAvailable' => $sessionDuration - 0,
-					'eye' => ($values['operation'] ? substr($operation->getEyeText(), 0, 1) : null),
-					'anaesthetic' => ($values['operation'] ? $operation->getAnaestheticAbbreviation() : null),
-					'procedures' => ($values['operation'] ? $procedures['List'] : null),
-					'patientName' => ($values['operation'] ? $values['operation']['first_name'] . ' ' . $values['operation']['last_name'] : null),
-					'patientAge' => ($values['operation'] ? $age : null),
-					'patientGender' => ($values['operation'] ? $values['operation']['gender'] : null),
-					'ward' => ($values['operation'] ? $values['operation']['ward'] : null),
-					'displayOrder' => ($values['operation'] ? $values['operation']['display_order'] : null)
+					'eye' => substr($operation->getEyeText(), 0, 1),
+					'anaesthetic' => $operation->getAnaestheticAbbreviation(),
+					'procedures' => $procedures['List'],
+					'patientName' => $values['first_name'] . ' ' . $values['last_name'],
+					'patientAge' => $age,
+					'patientGender' => $values['gender'],
+					'ward' => $values['ward'],
+					'displayOrder' => $values['display_order']
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
-					if ($values['operation']) {
-						$theatreTotals[$values['name']][$values['date']][$values['session_id']] = $values['operation']['operation_duration'];
-					} else {
-						$theatreTotals[$values['name']][$values['date']][$values['session_id']] = 0;
-					}
+					$theatreTotals[$values['name']][$values['date']][$values['session_id']] = $values['operation_duration'];
 				} else {
-					if ($values['operation']) {
-						$theatreTotals[$values['name']][$values['date']][$values['session_id']] += $values['operation']['operation_duration'];
-					}
+					$theatreTotals[$values['name']][$values['date']][$values['session_id']] += $values['operation_duration'];
 				}
 			}
 
