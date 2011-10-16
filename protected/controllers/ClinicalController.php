@@ -125,7 +125,6 @@ class ClinicalController extends BaseController
 			$this->resetSessionPatient($_REQUEST['patient_id']);
 		}
 
-/*
 		if ($_POST && $_POST['action'] == 'create' && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
 			// firms in a different tab. Set the session firm id to the provided firm id.
@@ -144,7 +143,7 @@ class ClinicalController extends BaseController
 				throw new Exception('Invalid firm id on attempting to create event.');
 			}
 		}
-*/
+
 		$elements = $this->service->getElements(
 			$eventType, $this->firm, $this->patientId, $this->getUserId()
 		);

@@ -29,7 +29,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 				'clinical/create',
 				array(
 					'event_type_id' => $type->id,
-					'patient_id' => $model->id
+					'patient_id' => $model->id,
+					'firm_id' => $firm->id
 				)
 			)
 		?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php echo $name; ?>" />
