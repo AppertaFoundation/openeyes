@@ -62,6 +62,11 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
+		// Check the patient id for this event is the same as the session patient id
+		if ($event->episode->patient->id != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($event->episode->patient->id);
+		}
+
 		// The eventType, firm and patient are fetched from the event object
 		$elements = $this->service->getElements(
 			null, null, null, $this->getUserId(), $event
@@ -115,6 +120,31 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
+		// Check the patient id for this new event is the same as the session patient id
+		if (!empty($_REQUEST['patient_id']) && $_REQUEST['patient_id'] != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($_REQUEST['patient_id']);
+		}
+
+/*
+		if ($_POST && $_POST['action'] == 'create' && $_POST['firm_id'] != $this->firm->id) {
+			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
+			// firms in a different tab. Set the session firm id to the provided firm id.
+
+			$session = Yii::app()->session;
+
+			$firms = $session['firms'];
+			$firmId = intval($_POST['firm_id']);
+
+			if ($firms[$firmId]) {
+				$session['selected_firm_id'] = $firmId;
+				$this->selectedFirmId = $firmId;
+				$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+			} else {
+				// They've supplied a firm id in the post to which they are not entitled??
+				throw new Exception('Invalid firm id on attempting to create event.');
+			}
+		}
+*/
 		$elements = $this->service->getElements(
 			$eventType, $this->firm, $this->patientId, $this->getUserId()
 		);
@@ -175,7 +205,8 @@ class ClinicalController extends BaseController
 			'elements' => $elements,
 			'eventTypeId' => $eventTypeId,
 			'specialties' => $specialties,
-			'patient' => $patient
+			'patient' => $patient,
+			'firm' => $this->firm
 		);
 
 		if ($eventType->name == 'operation') {
@@ -191,7 +222,11 @@ class ClinicalController extends BaseController
 			$params['procedures'] = $procedures;
 		}
 
-		$this->renderPartial($this->getTemplateName('create', $eventTypeId), $params, false, true
+		$this->renderPartial(
+			$this->getTemplateName('create', $eventTypeId),
+			$params,
+			false,
+			true
 		);
 	}
 
@@ -214,6 +249,11 @@ class ClinicalController extends BaseController
 		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
 			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
 			throw new CHttpException(403, 'The firm you are using is not associated with the specialty for this event.');
+		}
+
+		// Check the patient id for this event is the same as the session patient id
+		if ($event->episode->patient->id != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($event->episode->patient->id);
 		}
 
 		// eventType, firm and patientId are fetched from the event object.
@@ -267,7 +307,8 @@ class ClinicalController extends BaseController
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient);
+			'patient' => $patient
+		);
 
 		if ($event->eventType->name == 'operation') {
 			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
@@ -282,10 +323,19 @@ class ClinicalController extends BaseController
 			$params['procedures'] = $procedures;
 		}
 
-		$this->renderPartial($this->getTemplateName('update', $event->event_type_id), $params, false, true
+		$this->renderPartial(
+			$this->getTemplateName('update', $event->event_type_id),
+			$params,
+			false,
+			true
 		);
 	}
 
+	/**
+	 * Displays the patient summary.
+	 *
+	 * @param int $id
+	 */
 	public function actionEpisodeSummary($id)
 	{
 		$episode = Episode::model()->findByPk($id);
@@ -302,9 +352,19 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
+		// Check the patient id for this episode is the same as the session patient id
+		if ($episode->patient->id != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($episode->patient->id);
+		}
+
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
+	/**
+	 * Displays the extra episode summary data, if any, for the episode
+	 *
+	 * @param int $id
+	 */
 	public function actionSummary($id)
 	{
 		$episode = Episode::model()->findByPk($id);
@@ -323,6 +383,11 @@ class ClinicalController extends BaseController
 			$editable = false;
 		} else {
 			$editable = true;
+		}
+
+		// Check the patient id for this episode is the same as the session patient id
+		if ($episode->patient->id != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($episode->patient->id);
 		}
 
 		$this->logActivity('viewed patient summary');

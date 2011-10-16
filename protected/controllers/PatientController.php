@@ -59,9 +59,7 @@ class PatientController extends BaseController
 
 		$this->layout = '//layouts/patientMode/main';
 
-		$app = Yii::app();
-		$app->session['patient_id'] = $patient->id;
-		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
+		$this->setSessionPatient($patient);
 
 		$this->logActivity('viewed patient');
 
@@ -151,12 +149,17 @@ class PatientController extends BaseController
 	public function actionSummary()
 	{
 		$patient = $this->loadModel($_GET['id']);
+
+		// Check the patient id is the same as the session patient id
+		if ($patient->id != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($patient->id);
+		}
+
 		$address = Address::model()->findByPk($patient->address_id);
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $patient->id);
 		$criteria->order = 'start_date DESC';
-		$criteria->limit = 5;
 
 		$dataProvider = new CActiveDataProvider('Episode', array(
 			'criteria'=>$criteria));
@@ -168,6 +171,11 @@ class PatientController extends BaseController
 	public function actionEpisodes()
 	{
 		$patient = $this->loadModel($_GET['id']);
+
+		if ($patient->id != Yii::app()->session['patient_id']) {
+			$this->resetSessionPatient($patient->id);
+		}
+
 		$event = !empty($_GET['event']) ? $_GET['event'] : false;
 
 		$firm = Firm::model()->findByPk($this->selectedFirmId);
@@ -190,18 +198,6 @@ class PatientController extends BaseController
 		$this->renderPartial('_episodes',
 			array('model'=>$patient, 'episodes'=>$patient->episodes,
 				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
-	}
-
-	public function actionContacts()
-	{
-		$patient = $this->loadModel($_GET['id']);
-		$this->renderPartial('_contacts', array('model'=>$patient));
-	}
-
-	public function actionCorrespondence()
-	{
-		$patient = $this->loadModel($_GET['id']);
-		$this->renderPartial('_correspondence', array('model'=>$patient));
 	}
 
 	/**
@@ -269,14 +265,14 @@ class PatientController extends BaseController
 		return $data;
 	}
 
-        public function getTemplateName($action, $eventTypeId)
-        {
-                $template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
+	public function getTemplateName($action, $eventTypeId)
+	{
+		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
 
-                if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
-                        $template = $action;
-                }
+		if (!file_exists(Yii::app()->basePath . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'clinical' . DIRECTORY_SEPARATOR . $template . '.php')) {
+			$template = $action;
+		}
 
-                return $template;
-        }
+		return $template;
+	}
 }

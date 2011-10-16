@@ -24,13 +24,13 @@ class BaseController extends Controller
 	public $showForm = false;
 	public $patientId;
 	public $patientName;
-	
+
 	/**
-	 * Default all access rule filters to a deny-basis to prevent accidental 
+	 * Default all access rule filters to a deny-basis to prevent accidental
 	 * allowing of actions that don't have access rules defined yet
-	 * 
+	 *
 	 * @param $filterChain
-	 * @return type 
+	 * @return type
 	 */
 	public function filterAccessControl($filterChain)
 	{
@@ -79,6 +79,39 @@ class BaseController extends Controller
 		}
 
 		return parent::beforeAction($action);
+	}
+
+	/**
+	 * Resets the session patient information.
+	 *
+	 * This method is called when the patient id for the requested activity is not the
+	 * same as the session patient id, e.g. the user has viewed a different patient in
+	 * a different tab. As such the patient id has to be reset to prevent problems
+	 * such an event being assigned to the wrong patient.
+	 *
+	 * This code is much like that in PatientController->actionView.
+	 *
+	 * @param int $patientId
+	 */
+	public function resetSessionPatient($patientId)
+	{
+		$patient = Patient::model()->findByPk($patientId);
+
+		if (empty($patient)) {
+			throw new Exception('Invalid patient id provided.');
+		}
+
+		$this->setSessionPatient($patient);
+
+		$this->patientId = Yii::app()->session['patient_id'];
+		$this->patientName = Yii::app()->session['patient_name'];
+	}
+
+	protected function setSessionPatient($patient)
+	{
+		$app = Yii::app();
+		$app->session['patient_id'] = $patient->id;
+		$app->session['patient_name'] = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
 	}
 
 	public function checkPatientId()

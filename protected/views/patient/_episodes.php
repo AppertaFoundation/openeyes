@@ -24,7 +24,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		<li class="header"><?php echo $group; ?></li>
 <?php	foreach ($eventTypes as $type) {
 			$name = ucfirst($type->name); ?>
-		<li><a href="/clinical/create?event_type_id=<?php echo $type->id; ?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php
+		<li><a href="/clinical/create?event_type_id=<?php echo $type->id; ?>&patient_id=<?php echo $model->id ?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php
 		echo $name; ?>" /><span><?php echo $name; ?></span></a></li>
 <?php
 		}

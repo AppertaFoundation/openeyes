@@ -25,9 +25,10 @@ $form = $this->beginWidget('CActiveForm', array(
     'enableAjaxValidation'=>false,
 	'htmlOptions' => array('class'=>'sliding')
 ));
-
 echo CHtml::hiddenField('action', 'create');
 echo CHtml::hiddenField('event_type_id', $eventTypeId);
+echo CHtml::hiddenField('patient_id', $patient->id);
+echo CHtml::hiddenField('firm_id', $firm->id);
 
 /**
  * Loop through all the possible element types and display
@@ -37,12 +38,13 @@ foreach ($elements as $element) {
 	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
-		'/elements/' .
-			$elementClassName .
-			'/_form/' .
-			$element->viewNumber,
-		array('model' => $element, 'form' => $form, 'specialties' => $specialties, 
-			'patient' => $patient)
+		'/elements/' . $elementClassName . '/_form/' . $element->viewNumber,
+		array(
+			'model' => $element,
+			'form' => $form,
+			'specialties' => $specialties,
+			'patient' => $patient
+		)
 	);
 }
 
