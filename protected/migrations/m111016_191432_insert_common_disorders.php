@@ -4,6 +4,7 @@ class m111016_191432_insert_common_disorders extends CDbMigration
 {
 	public function up()
 	{
+/*
 		$this->truncateTable('common_ophthalmic_disorder');
 
 		$disorders = array(
@@ -212,6 +213,7 @@ class m111016_191432_insert_common_disorders extends CDbMigration
 				'specialty_id' => $disorder[2]
 			));
 		}
+*/
 	}
 
 	public function down()
