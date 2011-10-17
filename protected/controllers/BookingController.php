@@ -330,6 +330,7 @@ class BookingController extends BaseController
 			$model->attributes=$_POST['Booking'];
 
 			$session = Session::model()->findByPk($model->session_id);
+
 			$operation = ElementOperation::model()->findByPk($model->element_operation_id);
 			if (!empty($_POST['wardType'])) {
 				/* currently not in use, but if we want to allow a checkbox for
@@ -373,6 +374,11 @@ class BookingController extends BaseController
 					$operation->status = ElementOperation::STATUS_SCHEDULED;
 				}
 				$operation->save();
+
+				if (!empty($_POST['Session']['comments'])) {
+					$session->comments = $_POST['Session']['comments'];
+					$session->save();
+				}
 
 				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;

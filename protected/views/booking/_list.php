@@ -74,6 +74,8 @@ if (!$reschedule) {
 	echo CHtml::textField('Booking[admission_time]',
 		date('H:i', strtotime('-1 hour', strtotime($session['start_time']))),
 		array('size' => '6'));	?>
+<strong> Session comments:</strong>
+<?php echo CHtml::textArea('Session[comments]', $session['comments'], array('rows'=>3, 'cols'=>50)); ?>
 </div>
 </div>
 <?php
@@ -99,6 +101,8 @@ if (!empty($reschedule)) {
 	);
 }
 ?>
+
+
 <div class="cleartall"></div>
 <div class="greyGradient">
 <div style="display: inline;">

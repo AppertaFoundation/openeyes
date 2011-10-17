@@ -136,7 +136,7 @@ class BookingService
 	 */
 	public function findSession($sessionId)
 	{
-		$sql = "SELECT t.*, s.start_time, s.end_time, s.date,
+		$sql = "SELECT t.*, s.start_time, s.end_time, s.date, s.comments,
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration, site.id AS site_id
