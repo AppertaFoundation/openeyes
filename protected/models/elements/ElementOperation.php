@@ -831,7 +831,11 @@ class ElementOperation extends BaseElement
 
 		$elementDiagnosis = ElementDiagnosis::model()->find('event_id = ?', array($eventId));
 
-		return $elementDiagnosis->disorder->fully_specified_name;
+		if (empty($elementDiagnosis)) {
+			return null;
+		} else {
+			return $elementDiagnosis->disorder->fully_specified_name;
+		}
 	}
 
 	/**

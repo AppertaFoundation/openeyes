@@ -39,8 +39,9 @@
 						<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
 							<div class="row"><span class="label">Start date:</span><?php echo date('jS F, Y',strtotime($episode->start_date))?></div>
 							<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? date('jS F, Y',strtotime($episode->end_date)) : '-')?></div>
-							<div class="row"><span class="label">Principal eye:</span><?php echo $episode->getPrincipalDiagnosis()->getEyeText()?></div>
-							<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->getPrincipalDiagnosis() ? $episode->getPrincipalDiagnosis()->disorder->term : 'No diagnosis')?></div>
+                                                        <?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
+							<div class="row"><span class="label">Principal eye:</span><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></div>
+							<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Specialty:</span><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></div>
 							<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></span></div>
 							<img class="folderIcon"src="/img/_elements/icons/folder_open.png" alt="folder open" />

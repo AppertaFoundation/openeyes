@@ -124,8 +124,9 @@ if (!empty($model->address)) {
 												<td><?php echo $episode->end_date !== null ? date('d/m/y', strtotime($episode->end_date)) : ''?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
 												<td><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></td>
-												<td><?php echo $episode->getPrincipalDiagnosis()->getEyeText()?></td>
-												<td><?php echo $episode->getPrincipalDiagnosis() ? $episode->getPrincipalDiagnosis()->disorder->term : 'No diagnosis'?></td>
+												<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
+												<td><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></td>
+												<td><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis'?></td>
 											</tr>
 										<?php }?>
 									</tbody>
