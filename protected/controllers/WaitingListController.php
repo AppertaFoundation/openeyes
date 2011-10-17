@@ -80,6 +80,21 @@ class WaitingListController extends BaseController
 		}
 	}
 
+	public function actionUpdateSessionComments()
+	{
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			if (!empty($_POST['sessionId']) && !empty($_POST['comments'])) {
+				$session = Session::model()->findByPk($_POST['sessionId']);
+
+				if (!empty($session)) {
+					$session->comments = $_POST['comments'];
+					$session->save();
+				}
+			}
+			return true;
+		}
+	}
+
 	/**
 	 * Helper method to fetch firms by service ID
 	 *

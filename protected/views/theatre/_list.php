@@ -66,7 +66,10 @@ if (empty($theatres)) { ?>
 				}
 				if (!empty($session['comments'])) { ?>
     <tr><th class="sessionComments" colspan="7">Session Comments</th></tr>
-	<tr><td colspan="7" class="sessionComments leftAlign"><?php echo nl2br($session['comments']); ?></td></tr>
+	<tr><td colspan="7" class="sessionComments leftAlign">
+	<?php echo CHtml::textArea('comments' . $session['sessionId'], $session['comments'], array('rows'=>2, 'cols'=>80)); ?>
+	<?php echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId'])); ?>
+	</td></tr>
 <?php			} ?>
     <tr>
         <td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
@@ -132,6 +135,21 @@ if (empty($theatres)) { ?>
 	} else {
 		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "none");
 	}
+	$('input[id^="editComments"]').click(function() {
+		id = this.name;
+		value = $('#comments' + this.name).val();
+
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('waitingList/updateSessionComments'); ?>',
+			'type': 'POST',
+			'data': 'sessionId=' + id + '&comments=' + value,
+			'success': function(data) {
+				return true;
+			}
+		});
+
+		return true;
+	});
 </script>
 <?php
 }
