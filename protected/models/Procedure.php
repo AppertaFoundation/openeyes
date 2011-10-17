@@ -122,7 +122,7 @@ class Procedure extends BaseActiveRecord
 	 */
 	public static function getList($term)
 	{
-		$search = "{$term}%";
+		$search = "%{$term}%";
 
 		$select = 'term, short_format, id, default_duration';
 

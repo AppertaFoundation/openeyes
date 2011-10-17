@@ -70,11 +70,11 @@ if (empty($theatres)) { ?>
 <?php			} ?>
     <tr>
         <td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
-        <td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
-        <td class="operation leftAlign">[<?php echo $session['eye']; ?>] <?php echo !empty($session['procedures']) ? $session['procedures'] : 'No procedures'; ?></td>
+        <td class="patient leftAlign"><?php echo !empty($session['procedures']) ? $session['patientName'] . ' (' . $session['patientAge'] . ')' : ''; ?></td>
+        <td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
         <td class="duration"><?php echo $session['operationDuration']; ?></td>
         <td class="ward"><?php echo $session['ward']; ?></td>
-        <td class="anaesthetic"><?php echo $session['anaesthetic']; ?></td>
+        <td class="anaesthetic"><?php echo !empty($session['procedures']) ? $session['anaesthetic'] : ''; ?></td>
         <td class="alerts"><div class="alert gender invisible <?php echo $session['patientGender']; ?>"></div><?php
         if (!empty($session['operationComments'])) { ?><div class="alert comments invisble"><img class="invisible" src="/images/icon_comments.gif" alt="comments"title="<?php echo $session['operationComments']; ?>" /></div><?php
         } ?></td>

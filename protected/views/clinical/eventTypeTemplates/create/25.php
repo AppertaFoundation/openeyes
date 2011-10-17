@@ -8,22 +8,36 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-?><p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-
+?>
+<script type="text/javascript" src="/js/phrase.js"></script>
+<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
+<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
+<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
+<?php /*
+<link rel="stylesheet" type="text/css" href="/css/jqueryui/theme/jquery-ui.css" />
+<script type="text/javascript" src="/js/libs/jquery-1.6.2.js"></script>
+<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/js/phrase.js"></script>
+<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
+<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 <?php
+/*
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
+Yii::app()->clientScript->registerCoreScript('jquery-ui');
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
+$cs->registerScriptFile($baseUrl.'/js/jquery.fancybox-1.3.4.pack.js');
+*/
 
 $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'clinical-create',
-    'enableAjaxValidation'=>true,
+		'id'=>'clinical-create',
+		'enableAjaxValidation'=>true,
 	'htmlOptions' => array('class'=>'sliding'),
 	'focus'=>'#procedure_id'
 ));
@@ -43,28 +57,60 @@ foreach ($elements as $element) {
 	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
-		'/elements/' . $elementClassName . '/_form/' . $element->viewNumber,
-		array(
-			'model' => $element,
-			'form' => $form,
-			'specialties' => $specialties,
-			'patient' => $patient,
-			'newRecord' => true,
-			'specialty' => $specialty,
-			'subsections' => $subsections,
-			'procedures' => $procedures
-		)
+		'/elements/' .
+			$elementClassName .
+			'/_form/' .
+			$element->viewNumber,
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
+			'patient' => $patient, 'newRecord' => true, 'specialty' => $specialty,
+			'subsections' => $subsections, 'procedures' => $procedures, 'patient' => $patient)
 	);
 }
 
+// Display referral select box if required
+if (isset($referrals) && is_array($referrals)) {
+	// There is at least on referral, so include it/them
+	if (count($referrals) > 1) {
+		// Display a list of referrals for the user to choose from
 ?>
-<div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" id="scheduleNow"><span>Save and schedule now</span></button>
-<button type="submit" value="submit" class="shinybutton" id="scheduleLater"><span>Save and schedule later</span></button>
+<div class="box_grey_big_gradient_top"></div>
+<div class="box_grey_big_gradient_bottom">
+	<span class="referral_red">There is more than one open referral that could apply to this event.</span><p />
+	<label for="referral_id">Select the referral that applies to this event:</label>
+<?php echo CHtml::dropDownList('referral_id', '', CHtml::listData($referrals, 'id', 'id')); ?>
+</div>
+<?php }}?>
+	<h4>Schedule Operation</h4>
+	
+	<div id="schedule options" class="eventDetail">
+			<div class="label">Schedule options:</div>
+			<div class="data">
+				<input id="ScheduleOperation" type="hidden" value="" name="ScheduleOperationn[schedule]" />
+				<span class="group">
+					<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" /> 
+					<label for="ScheduleOperation_0">As soon as possible</label>
+				</span>
+				<span class="group">
+					<input id="ScheduleOperation_1" value="0" type="radio" name="ScheduleOperation[schedule]" />
+					<label for="ScheduleOperation_1">Within timeframe specified by patient</label>
+				</span>
+			</div>
+	</div>
+	
+	<div class="form_button">
+			<button type="submit" value="submit" class="wBtn_save_schedule_later ir fancybox" id="scheduleLater">Save and Schedule later</button>
+			<button type="submit" value="submit" class="wBtn_save_schedule_now ir fancybox" id="scheduleNow">Save and Schedule now</button> 
+	</div>
+	
+	</form>
+</div> <!-- #new_event_details -->
+
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
-	$('#scheduleNow').click(function() {
+	$('button.fancybox').fancybox([]);
+
+	$('#scheduleNow').unbind('click').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
 			'type': 'POST',
@@ -73,46 +119,27 @@ $this->endWidget(); ?>
 				try {
 					displayErrors(data);
 				} catch (e) {
-					// todo: get this part working to trigger a fancybox
-					$.fancybox({'content': data});
+					$('#event_content').html(data);
 					return false;
 				}
 			}
 		});
 		return false;
 	});
-	$('#scheduleLater').click(function() {
+	$('#scheduleLater').unbind('click').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
 			'type': 'POST',
 			'data': $('#clinical-create').serialize(),
 			'success': function(data) {
+				if (data.match(/^[0-9]+$/)) {
+					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+					return false;
+				}
 				try {
 					displayErrors(data);
 				} catch (e) {
-					$('#episodes_details').show();
-					$('#episodes_details').html(data);
-
-					// add the newly created operation to the event list
-					var href = $('a#editlink').attr('href');
-					href = href.replace('update\/', '');
-
-					var day = new Date();
-					var dateString = '';
-					if (day.getDate() < 10) {
-						dateString = dateString + '0';
-					}
-					dateString = dateString + day.getDate() + '/';
-					if ((day.getMonth() + 1) < 10) {
-						dateString = dateString + '0';
-					}
-					dateString = dateString + (day.getMonth() + 1) + '/';
-					dateString = dateString + day.getFullYear();
-					var li = '<li class="shown"><a href="' + href +
-						'"><span class="type">Operation</span><span class="date"> ' + dateString +
-						'</span></a></li>';
-
-					$('ul.events').append(li);
+					return false;
 				}
 			}
 		});
@@ -136,6 +163,5 @@ $this->endWidget(); ?>
 			$('#clinical-create_es_ ul').html('');
 			$('#clinical-create_es_').hide();
 		}
-
 	}
 </script>

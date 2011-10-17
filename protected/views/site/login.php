@@ -19,44 +19,51 @@ $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 $this->pageTitle=Yii::app()->name . ' - Login';
 $this->layout = 'simple';
 ?>
-<div id="login">
-	<div class="text">Login to OpenEyes:</div>
+		<h2 class="alert">Please login</h2>
 
-	<div class="form">
-	<?php $form=$this->beginWidget('CActiveForm', array(
-		'id'=>'login-form',
-		'enableAjaxValidation'=>false,
-	));?>
+		<div id="login-form" class="form_greyBox">
+		<?php $form=$this->beginWidget('CActiveForm', array(
+			'id'=>'loginform',
+			'enableAjaxValidation'=>false,
+		))?>
 		<?php echo $form->error($model,'password'); ?>
+		<?php //<form action="/site/login" method="post"> ?>
 
-		<div class="row">
-			<?php echo CHtml::activeLabel($model,'username', array('label'=>'Username:')); ?>
-			<?php echo $form->textField($model,'username'); ?>
-		</div>
+			<div class="loginRow bigInput">
+				<?php echo CHtml::activeLabel($model,'username', array('label'=>'Username:')); ?>
+				<?php echo $form->textField($model,'username',array('tabindex' => 1)); ?>
+				<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
+					<a href="#" tabindex="5"><span class="small">Forgotten your username?</span></a>
+				<?php }?>
+			</div>
 
-		<div class="row">
-			<?php echo CHtml::activeLabel($model,'password', array('label'=>'Password:')); ?>
-			<?php echo $form->passwordField($model,'password'); ?>
-		</div>
+			<div class="loginRow bigInput">
+				<?php echo CHtml::activeLabel($model,'password', array('label'=>'Password:')); ?>
+				<?php echo $form->passwordField($model,'password',array('tabindex' => 2)); ?>
+				<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
+					<a href="#" tabindex="6"><span class="small">Forgotten your password?</span></a>
+				<?php }?>
+			</div>
 
-		<div class="row">
-			<?php echo CHtml::activeLabel($model,'siteId', array('label'=>'Site:')); ?>
-			<?php echo $form->dropDownList($model, 'siteId', $sites); ?>
-			<?php echo $form->error($model,'siteId'); ?>
-		</div>
+			<div class="row">
+				<?php echo CHtml::activeLabel($model,'siteId', array('label'=>'Site:')); ?>
+				<?php echo $form->dropDownList($model, 'siteId', $sites, array('tabindex' => 3)); ?>
+				<?php echo $form->error($model,'siteId'); ?>
+			</div>
 
-		<div class="row buttons">
-			<?php echo CHtml::submitButton(''); ?>
-		</div>
+			<div class="row">
+				<button type="submit" name="yt0" value="" class="btn_login ir" tabindex="4">Login</button>
+			</div>
 
-	<?php $this->endWidget(); ?>
-	</div><!-- form -->
+		<?php $this->endWidget(); ?>
+	</div><!-- #login-form -->
+	<script type="text/javascript">
+		$('input[id=LoginForm_username]').watermark('enter username');
+		$('input[id=LoginForm_password]').watermark('enter password');
 
-	<div class="contact">Don't have a username and password? <span style="font-weight: normal;">Contact the helpdesk on:</span><br />
-		Telephone: <span class="number">ext. 0000</span> Email: <span class="number">helpdesk@openeyes.org.uk</span>
-	</div>
-</div>
-<script type="text/javascript">
-	$('input[id=LoginForm_username]').watermark('enter username');
-	$('input[id=LoginForm_password]').watermark('enter password');
-</script>
+		if ($('#LoginForm_username').val() == '') {
+			$('#LoginForm_username').focus();
+		} else {
+			$('#LoginForm_password').select().focus();
+		}
+	</script>

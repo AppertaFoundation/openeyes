@@ -157,9 +157,8 @@ class Disorder extends BaseActiveRecord
 		$disorders = Yii::app()->db->createCommand()
 			->select($select)
 			->from('disorder')
-			->where('(term LIKE :term OR fully_specified_name LIKE :format) AND systemic = 0',
-					array(':term' => $search, ':format' => $search))
-			->limit(5)
+			->where('(term LIKE :term) AND systemic = 0',
+					array(':term' => $search))
 			->queryAll();
 
 		$data = array();

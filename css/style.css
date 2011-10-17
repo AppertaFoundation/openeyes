@@ -1,0 +1,446 @@
+/* HTML5 ✰ Boilerplate
+ * ==|== normalize ==========================================================
+ */
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
+audio:not([controls]) { display: none; }
+[hidden] { display: none; }
+
+html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+body { margin: 0; font-size: 10pt; line-height: 1.231; }
+body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+
+::-moz-selection { background: #faf564; color: #000; text-shadow: none; }
+::selection { background: #faf564; color: #000; text-shadow: none; }
+
+a { color: #0b59da; text-decoration: none; }
+a:visited { color: #0b59da; }
+a:hover { color: #003cff; }
+a:focus { outline: thin dotted; }
+a:hover, a:active { outline: 0; }
+
+abbr[title] { border-bottom: 1px dotted; }
+b, strong { font-weight: bold; }
+blockquote { margin: 1em 40px; }
+dfn { font-style: italic; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+ins { background: #ff9; color: #000; text-decoration: none; }
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+pre, code, kbd, samp { font-family: monospace, monospace; _font-family: 'courier new', monospace; font-size: 1em; }
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
+q { quotes: none; }
+q:before, q:after { content: ""; content: none; }
+small { font-size: 85%; }
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+ul, ol { margin: 1em 0; padding: 0 0 0 40px; }
+dd { margin: 0 0 0 40px; }
+nav ul, nav ol { list-style: none; list-style-image: none; margin: 0; padding: 0; }
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+svg:not(:root) { overflow: hidden; }
+figure { margin: 0; }
+
+form { margin: 0; }
+fieldset { border: 0; margin: 0; padding: 0; }
+label { cursor: pointer; }
+legend { border: 0; *margin-left: -7px; padding: 0; }
+button, input, select, textarea { font-size: 100%; margin: 0; vertical-align: baseline; *vertical-align: middle; }
+button, input { line-height: normal; *overflow: visible; }
+table button, table input { *overflow: auto; }
+button, input[type="button"], input[type="reset"], input[type="submit"] { cursor: pointer; -webkit-appearance: button; }
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; }
+input[type="search"] { -webkit-appearance: textfield; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
+input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; }
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+textarea { overflow: auto; vertical-align: top; resize: vertical; }
+input:valid, textarea:valid {  }
+input:invalid, textarea:invalid { background-color: #f0dddd; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
+/* ======================================================================== primary styles ================= */
+
+html { background-color: #d4d1cd; }
+body { width:1230px; margin:0 auto; }
+/* ====== STRUCTURE ====== */
+#container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
+#container 		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae;  }
+#header 		{ height: 70px; position: relative; }
+#content 		{ min-height: 400px;}
+#help 			{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }  /* offset by 5px! */
+#help:before 	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
+#footer 		{ width: 1234px; height:35px;background: #b3b0ae url(../img/_structure/openeyes_footer.png) bottom right no-repeat; padding-top:5px} /* allow for help offset */
+/* ---- add border radius ---- */
+#footer, #help	{-webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
+
+/* HEADER structure */
+#brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
+#user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
+#user_panel { width:500px; right:10px; }
+#patientID 	{ width:340px; right:540px; }
+#eventType 	{ width:150px; left: 260px; }
+
+/* ====== CONTENT STRUCTURES ====== */
+#content .fullWidth		{ width:1230px; margin-top:20px; position: relative; }
+/* View Episode, summary hides for event Display */
+#content .fullWidth > #episodes_sidebar	{ float:left;	} /* expands for summary */
+#content .fullWidth > #event_display	{ float:right; max-width: 1040px; min-height:200px; overflow: hidden; }
+
+#content .centralColumn { width:800px; 	margin: 20px auto 0 auto; }
+#content .wrapTwo 	{ width:1200px; margin: 20px auto 0 auto; }
+#content .wrapTwo > .narrowColumn 	{ width:360px; float:right; }
+#content .wrapTwo > .wideColumn		{ width:820px; float:left; }
+#content .wrapTwo > .halfColumnLeft		{ width:580px; float:left; }
+#content .wrapTwo > .halfColumnRight	{ width:600px; float:right; }
+					
+/* ====== GENERAL ====== */
+
+/* TYPOGRAPHY - BASIC */
+p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
+#content p { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content p { background: #fafafa; padding:10px; margin-bottom: 15px; }
+h3,h4,h5 { margin-bottom:10px; }
+/* base: font-size: 10pt; line-height: 1.231;  */
+h3 { font-size: 14pt; font-weight: normal; }
+h4 { font-size: 11pt; font-weight: normal; }
+h5 { font-size: 10pt; line-height:1.5; }
+/* H2 reserved for page headers, H6 left for custom uses */
+h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/gradients/h2_edge.png) center left repeat-y; padding:5px 15px 3px 55px; 
+-moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
+h2.alert { background-color:#ffe6b2; }
+em { font-style: italic; color:#333; }
+.small 	{ font-size: 8pt; font-weight: normal; }
+.normal { font-size: 10pt; font-weight: normal;}
+.bold  	{ font-size: 11pt; font-weight: bolder; }
+.caps  	{ font-variant: small-caps; }
+
+/* ====== BOXES ====== */
+#content .whiteBox, #content .alertBox, #content .blueBox, #content .fullBox, #content .patientBox  { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content .whiteBox > p, #content .alertBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px;  }
+#content .whiteBox 	{ background: #fafafa; padding:10px; }
+#content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding:10px 10px 10px 50px; }
+#content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
+#content .fullBox	{ background: #dae6f1; }
+/* specific content */
+#content .patientBox  { position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
+#content .eventBox { background: #fafafa; padding:10px; }
+/* icons for boxes */
+#content .withIcon { padding-left: 40px; }
+#content .boxIcon { position: absolute; top:5px; left:0; }
+
+/* ====== A HREF ====== */
+a:hover, .aPush { border-bottom: thin dotted #002ec4; }
+a:hover .aPush	{ border-bottom: thin solid #3665ff; }
+
+/* ====== FORMS - GENERAL ====== */
+.form_greyBox { background: #e2dfdb url(../img/_elements/gradients/bg_form.jpg) top left repeat-x; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; border:2px solid #666; }
+.form_column { display:block; width:45%; float:left; margin-right:2%; }
+.form_button { display:block; clear: both; width:inherit; text-align:right; margin-top: 15px; }
+/* defaults */
+label { font-size:11pt; }
+input { font-size:11pt; padding:3px; background: #fcfcfc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;  border:solid 1px #6b8aaa; }
+input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
+/* big fields */
+.bigInput > label { font-size:13pt; }
+.bigInput > input { font-size:13pt; padding:5px; }
+/* organise label inputs and hints */
+.inputLayout, .multiInputRight, .customRight { display:block; border-bottom:1px dotted #999; padding-bottom:5px; margin-bottom:10px; }
+.inputLayout > label { display: block; float:left; width:50%; }
+.inputLayout > input { display: block; float:right; width:45%; }
+.multiInputRight, .customRight 	 { text-align:right; }
+.multiInputRight > label 		 { display: block; float:left; }
+.multiInputRight > input 		 { width:auto; text-align: center; padding:3px 0;}
+/* form hints */
+.labelHint, .labelRequired { display:block; font-size: 8pt; padding-right:10px; text-align: left;  }
+.labelHint 		{ color: #777; }
+.labelRequired 	{ color: #b33; }
+
+/* buttons -- set up all normal buttons */
+button.btn_login, button.btn_findPatient, button.btn_refineSearch, button.btn_print-letter, button.btn_cancel { display:inline-block; width:125px; height:40px; }
+/* graphics */
+button.btn_login 		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
+button.btn_login:hover 	{ background-image: url(../img/_elements/btns/login_o.png); }
+button.btn_findPatient 			{ background:transparent url(../img/_elements/btns/find-patient.png) no-repeat; }
+button.btn_findPatient:hover 	{ background-image: url(../img/_elements/btns/find-patient_o.png); }
+button.btn_refineSearch 		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
+button.btn_refineSearch:hover 	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
+button.btn_print-letter 		{ background:transparent url(../img/_elements/btns/print-letter.png) no-repeat; }
+button.btn_print-letter:hover 	{ background-image: url(../img/_elements/btns/print-letter_o.png); }
+button.btn_cancel 			{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
+button.btn_cancel:hover 	{ background-image: url(../img/_elements/btns/cancel_o.png); }
+/* special buttons */
+button.btn_newEvent			{ display:inline-block; float:right; width:155px; height:35px; margin:1px 2px 0 0;}
+button.btn_newEvent 		{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
+button.btn_newEvent:hover 	{ background-image: url(../img/_elements/btns/new-event_o.png); }
+/* long buttons -- set up all wide buttons */
+button.wBtn_save_schedule_later, button.wBtn_save_schedule_now, button.wBtn_schedule-now, button.wBtn_print-invitation-letter, button.wBtn_print-reminder-letter, button.wBtn_print-gp-refer-back-letter, button.wBtn_cancel-operation, button.wBtn_reschedule-now, button.wBtn_reschedule-later   { display:inline-block; width:202px; height:40px; } 
+/* graphics */
+button.wBtn_save_schedule_later 		{ background:transparent url(../img/_elements/btns/wide/save-schedule-later.png) no-repeat; }
+button.wBtn_save_schedule_later:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-later_o.png); }
+button.wBtn_save_schedule_now 			{ background:transparent url(../img/_elements/btns/wide/save-schedule-now.png) no-repeat; }
+button.wBtn_save_schedule_now:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-now_o.png); }
+button.wBtn_schedule-now 			{ background:transparent url(../img/_elements/btns/wide/schedule-now.png) no-repeat; }
+button.wBtn_schedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/schedule-now_o.png); }
+button.wBtn_print-invitation-letter				{ background:transparent url(../img/_elements/btns/wide/print-invitation-letter.png) no-repeat; }
+button.wBtn_print-invitation-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-invitation-letter_o.png); }
+button.wBtn_print-reminder-letter			{ background:transparent url(../img/_elements/btns/wide/print-reminder-letter.png) no-repeat; }
+button.wBtn_print-reminder-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-reminder-letter_o.png); }
+button.wBtn_print-gp-refer-back-letter			{ background:transparent url(../img/_elements/btns/wide/print-gp-refer-back-letter.png) no-repeat; }
+button.wBtn_print-gp-refer-back-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-gp-refer-back-letter_o.png); }
+button.wBtn_cancel-operation			{ background:transparent url(../img/_elements/btns/wide/cancel-operation.png) no-repeat; }
+button.wBtn_cancel-operation:hover 		{ background-image: url(../img/_elements/btns/wide/cancel-operation_o.png); }
+button.wBtn_reschedule-now			{ background:transparent url(../img/_elements/btns/wide/reschedule-now.png) no-repeat; }
+button.wBtn_reschedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-now_o.png); }
+button.wBtn_reschedule-later			{ background:transparent url(../img/_elements/btns/wide/reschedule-later.png) no-repeat; }
+button.wBtn_reschedule-later:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-later_o.png); }
+
+
+/* small buttons */
+button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
+button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
+button.smBtn_modify:hover 	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
+ 
+
+
+/* ====== TABLES - GENERAL ====== */
+table 	{ border-collapse: collapse; }
+.odd 	{ background-color: #edf4f9; border-bottom: 1px solid #ccd; }
+.even	{ background-color: #e1eef9; border-bottom: 1px solid #ccd; }
+.odd:hover, .even:hover { background-color: #ffe6b2; border-bottom-color: #999; }
+/* overwritten by if closed */
+.odd.closed { background-color: #c5cfdb; border-bottom: 1px solid #bbb; font-size:8pt; }
+.even.closed { background-color: #b9c3ce; border-bottom: 1px solid #bbb; font-size:8pt; }
+.odd.closed:hover, .even.closed:hover { background-color: #ffe8b7; border-bottom-color: #999; }
+
+
+table tr:last-child { border-bottom: none; }
+.table_endRow{ background: #ddd; height:15px; }
+
+/* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
+.grid-view table { width:100%; } 
+.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; min-width:50px; padding:10px; border-right:1px solid #bbb;   }
+.grid-view table th:last-child { border-right: none; }
+.grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
+.grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
+/* change properties for closed rows */
+.grid-view table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+
+/* make sure default pager is hidden! */
+#patient-grid .pager { display: none !important; visibility: hidden; }
+/* my pagination */
+.resultsPagination { text-align:right; background: #ddd; padding:10px;  }
+.resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
+.resultsPagination .showingPage { color:#000; font-weight: bold;}
+
+
+
+/* ------------------------------------------------- HELP & FOOTER  */
+
+/* ====== HELP! ====== */
+div.hint { float:left; width:358px; margin:0 0 20px 25px; padding: 0 10px 0 15px;  border-left: 1px dotted #35b3ef; }
+div.hint > p { color:#4a616a; font-size: 8pt; line-height: 1.5;  }
+div.hint:last-child { border-right: none; }
+
+/* ====== FOOTER ====== */
+#footer h6 { margin:14px 0 0 12px; font-size:7pt; font-weight: normal; color:#666; }
+
+/* ------------------------------------------------- HEADER MODULES  */
+
+/* add border radius */
+#user_panel, ul#user_nav a, #patientID { -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
+
+/* ====== USER PANEL ====== */
+#user_panel { background: #dae6f1 url(../img/_elements/gradients/bg_userpanel.jpg) bottom left repeat-x; padding:0 10px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;   }
+#user_id	{ float:left; padding-top:10px; }
+/* nav in user panel */
+ul#user_nav	{ float:right; padding:0; margin:0; }
+ul#user_nav > li { display:inline-block; margin: 0 0 8px 4px;}
+ul#user_nav > li a 	 { display:inline-block; background: #cdd9e3; padding:10px 5px 3px 5px; border:none; }
+ul#user_nav > li a:hover { background: #fff; border:none; }
+ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
+
+/* ====== PATIENT ID ====== */
+#patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding:0 10px; border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212;   }
+#patientID > .patientReminder { padding-top:9px; }
+#patientID > .i_patient { position:absolute; right:0; bottom:0; }
+.patientReminder > .given 		{ display:inline-block; font-size: 12pt; font-weight: bold; }
+.patientReminder > .given:after { content:", "; color:#444; }
+.patientReminder > .surname 	{ display:inline-block; font-size: 12pt; }
+.patientReminder > .number 		{ display:block; font-size: 9pt; margin-top: 2px; }
+
+/* ------------------------------------------------- PAGE SPECIFIC  */
+
+/* ====== LOGIN ====== */
+#login-form 				{ width:350px; margin: 50px auto 0 auto; padding:40px 30px 25px 30px; }
+#login-form .loginRow 		{ position:relative; height:55px; margin-bottom: 20px; text-align: right;}
+#login-form .loginRow label { position:absolute; top:5px; left:10px; }
+#login-form .loginRow input { position:absolute; top:0; right:0; width:200px; margin:0 0 5px 0; }
+#login-form .loginRow a 	{ position:absolute; bottom:0; right:0; }
+#login-form .row 			{ width:350px; text-align: right; margin-top:30px; }
+#login-form .row label		{ margin-right: 5px;  }
+#login-form .row select 	{ position: relative; top:-1px; width:180px; }
+
+/* ====== HOME - SEARCH ====== */
+/* id */
+#search_patient_id { padding:15px; }
+#search_patient_id > .btn_findPatient { display:block; float:right; }
+#search_patient_id input { display:inline-block; margin: 0 20px; }
+/* details */
+#search_patient_details { padding:15px; margin-top: 10px; }
+/* refine details */
+#refine_patient_details { padding:10px; margin-bottom: 10px;  }
+/* hide this! */
+#patient-adv-search { display:none; }
+
+/* ====== PATIENT - SUMMARY ====== */ 
+#personal_details h4, #contact_details h4 { padding:3px 0 8px 0; font-size:9pt; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
+.data_row  {  background:inherit;  border-bottom:1px dotted #ccc; padding:10px 0; }
+.data_row:last-child { border-bottom:none; margin-bottom: 0; }
+.data_row .data_label { float:left; color:#777;  }
+.data_row .data_value { margin-left: 180px; font-size: 11pt; }
+
+/* ====== VIEW EPISODE ====== */
+/* top controls */
+.episodesBanner { }
+/* corners TR BR */
+#episodes_sidebar > .episode, .episode .episode_nav { -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
+/* container */
+#episodes_sidebar > .episode.open 	{ background: #eaddaf; margin-bottom:5px;}
+#episodes_sidebar > .episode.closed { background: #dad3ba; margin-bottom:5px;}
+/* nav */
+.episode .episode_nav { width:170px; background: #fff; float:left; padding:5px 6px 10px 5px; margin:3px 0 3px 0;}
+.episode .episode_nav > h4 { margin-top:5px;  }
+.episode ul.events { list-style-type: none; padding: 0px; margin: 0px;}
+.episode ul.events li { display:block; height:16px; margin-bottom:4px; vertical-align: middle; } 
+.episode ul.events li img { vertical-align: bottom; margin-left:-5px; margin-right: 5px; padding-right:5px; } 
+.episode ul.events .date { position:relative; top:1px; }
+.episode ul.events li a { display:block; height:inherit; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
+.episode ul.events li a:hover { border-bottom: none; background: #3665ff; color:#fff; }
+.episode ul.events .viewing { display:block; height:inherit; background: #a29d8a url(../img/_elements/icons/event_open_bg.png) right center no-repeat; color:#fff; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
+/* summary */
+.episode .episode_details { float:left; position:relative; width:470px; padding:6px 15px 12px 25px; }
+.episode_details > .folderIcon { position: absolute; top:5px; right:7px; }
+.episode_details > .row  { padding:0 0 2px 2px;  }
+.episode_details > .row .label { display:inline-block; width:130px; font-size:9pt; color:#666; }
+
+/* EVENT DISPLAY */
+#event_display.narrowEventContent { padding-right:4px; }
+/* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
+#event_display .addEvent { border:5px solid #69bd51; }
+#event_display .addEvent > h3 { padding:0; }
+#event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+#event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
+
+#event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; }
+
+
+/* NEW EVENT - Users selects a New Event to add, these are details needed */
+ /* Green PlUS Graphic */
+#event_plus_graphic { display:block; position:absolute; top:64px; left:296px; }
+ /* event content */ 
+#event_display .addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; } /* allow gap for graphic - NOT USED */
+#event_display .fullWidthEvent { width:1020px; }
+#event_display .miniWidthEvent { width:510px; }
+/* elements of event & episode */
+#event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
+#event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
+#event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
+#event_content h4 { color:#666; font-size:9pt; padding:5px 10px 0 10px; margin-bottom: 5px; }
+#event_content form > h4 { color:#000; font-size:11pt; border-top:2px solid #dae6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
+#event_content .eventHighlight > h4 { color:#000; font-size:12pt; padding:0 10px 5px 10px; }
+#event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+/* event detail */
+#event_content .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px;  }
+#event_content .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:11pt;  }
+.eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.eventDetail > .data > .group:hover { background:#fff;}
+.eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
+.eventDetail > .data > .labelHint { width: 280px; }
+/* extra details */
+.eventDetail .extraDetails { display:block; margin:8px 0; padding-top:8px; border-top:1px dotted #b9c4cd; }
+
+
+
+/* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */
+#event_display .display_actions { background: #eaddaf; border-bottom:1px solid #a29d8a; }
+#event_display .display_actions.footer { height: 35px; border-top:1px solid #a29d8a; border-bottom: none; padding-top:10px; -webkit-border-bottom-left-radius: 8px; -webkit-border-bottom-right-radius: 8px; -moz-border-radius-bottomleft: 8px; -moz-border-radius-bottomright: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}  
+.display_actions .display_mode	{ display:inline-block; color:#fff; font-size:10pt; height:20px; margin:3px 0 0 3px; padding:5px 10px 0 10px; background: #a29d8a; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
+.display_actions .display_mode.edit { background:#3665ff; }
+.display_actions .action_options { float:right; }
+.display_actions .action_options .aLabel { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 10px; }
+.display_actions .action_options .aBtn_inactive { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 5px; color:#666; }
+.display_actions .action_options .aBtn { display:inline-block; height:18px; margin:3px;}
+.display_actions .action_options .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.display_actions .action_options .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==|== non-semantic helper classes ======================================== */
+.ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
+.ir br { display: none; }
+.hidden { display: none !important; visibility: hidden; }
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+.invisible { visibility: hidden; }
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
+
+
+/* ==|== media queries ====================================================== */
+
+@media only screen and (min-width: 480px) {
+
+
+}
+
+@media only screen and (min-width: 768px) {
+
+}
+
+
+
+/* ==|== print styles ======================================================= */
+ 
+@media print {
+  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important; -ms-filter: none !important; } 
+  a, a:visited { text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; } 
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; }
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}

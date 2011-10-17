@@ -1,45 +1,28 @@
-<?php
-/*
-_____________________________________________________________________________
-(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
-(C) OpenEyes Foundation, 2011
-This file is part of OpenEyes.
-OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
-_____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
---
-*/
+					<h4>Operation details</h4>
+					<div id="editEyeOperation" class="eventDetail">
+						<div class="label">Select eye(s):</div>
+						<div class="data">
+							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
+							<span class="group">
+							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1' || $model->eye === null) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<label for="ElementOperation_eye_0">Right</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_eye_1" value="0" <?php if ($model->eye === '0' && $model->eye !== null) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<label for="ElementOperation_eye_1">Left</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_eye_2" value="2" <?php if ($model->eye == '2') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<label for="ElementOperation_eye_2">Both</label>
+							</span>
+						</div>
+					</div>
 
-Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
-<div class="heading">
-<span class="emphasize">Book Operation:</span> Operation details
-</div>
-<div class="box_grey rounded-corners">
-	<div class="label">Select eye(s):</div>
-	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'eye', $model->getEyeOptions(),
-		array('separator' => ' &nbsp; ')); ?>
-	</div>
-	<div class="tallbreak"></div>
-	<div class="label">Add procedure:</div>
+					<div id="typeProcedure" class="eventDetail">
+						<div class="label">Add procedure:</div>
+						<div class="data">
+						<?php /*<input style="width: 400px;" id="procedure_id" type="text" name="procedure_id" />*/?>
 <?php
-	if (!empty($subsections) || !empty($procedures)) { ?>
-	<div class="data"><?php
-		if (!empty($subsections)) {
-			echo CHtml::dropDownList('subsection_id', '', $subsections,
-				array('empty' => 'Select a subsection'));
-			echo CHtml::dropDownList('select_procedure_id', '', array(),
-				array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
-		} else {
-			echo CHtml::dropDownList('select_procedure_id', '', $procedures,
-				array('empty' => 'Select a commonly used procedure'));
- 		} ?> &nbsp; <strong>or</strong><br />
-<?php
-	} else { ?>
-	<div class="data"><?php
-	} ?>
-	<span></span><?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	'name'=>'procedure_id',
 	'id'=>'autocomplete_procedure_id',
@@ -117,106 +100,146 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		}",
 	),
 	'htmlOptions'=>array('style'=>'width: 400px;')
-)); ?><br/></div>
-	<div class="tallbreak"></div>
-	<div id="procedureDiv"<?php
-	if ($newRecord) { ?> style="display:none;"<?php
-	} ?>>
-		<table id="procedure_list" class="grid"<?php
-	if ($newRecord) { ?> style="display:none;"<?php
-	} ?> title="Procedure List">
-			<thead>
-				<tr>
-					<th>Procedures Added</th>
-					<th>Duration</th>
-				</tr>
-			</thead>
-			<tbody>
-<?php
-	$totalDuration = 0;
-	if (!empty($model->procedures)) {
-		foreach ($model->procedures as $procedure) {
-			$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
-				' ' . CHtml::link('remove', '#',
-				array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
-			$totalDuration += $procedure['default_duration']; ?>
-				<tr>
-					<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
-					<td><?php echo $display; ?></td>
-					<td><?php echo $procedure['default_duration']; ?></td>
-				</tr>
-<?php	}
-	} ?>
-			</tbody>
-			<tfoot>
-				<tr>
-					<td class="topPadded">Calculated Total Duration:</td>
-					<td id="projected_duration"><?php echo $totalDuration; ?></td>
-				</tr>
-				<tr>
-					<td>Estimated Total Duration:</td>
-					<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
-				</tr>
-			</tfoot>
-		</table>
-	</div>
-	<div class="tallbreak"></div>
-	<div class="label">Consultant required?</div>
-	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'consultant_required',
-		$model->getConsultantOptions(), array('separator' => ' &nbsp; ')); ?></div>
-	<div class="tallbreak"></div>
-	<div class="label">Anaesthetic type:</div>
-	<div class="data"><?php
-		$i = 0;
-		foreach ($model->getAnaestheticOptions() as $id => $value) { ?>
-		<input id="ElementOperation_anaesthetic_type_<?php echo $i; ?>"<?php
-			if ($model->anaesthetic_type == $id) {
-				echo 'checked="checked"';
-			} ?>value="<?php echo $id; ?>" type="radio" name="ElementOperation[anaesthetic_type]">
-		<label for="ElementOperation_anaesthetic_type_<?php echo $i; ?>"><?php echo $value; ?></label>
-	<?php
-		}
-	?></div>
-	<div class="tallbreak"></div>
-	<div class="label">Overnight Stay required?</div>
-	<div class="data"><?php echo CHtml::activeRadioButtonList($model, 'overnight_stay',
-		$model->getOvernightOptions(), array('separator' => ' ')); ?></div><br />
-	<div class="tallbreak"></div>
-	<div class="label">Decision Date:</div>
-	<div class="data"><span></span><?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-			'name'=>'ElementOperation[decision_date]',
-			'id'=>'ElementOperation_decision_date_0',
-			// additional javascript options for the date picker plugin
-			'options'=>array(
-				'showAnim'=>'fold',
-				'dateFormat'=>'yy-mm-dd',
-				'maxDate'=>'today'
-			),
-			'value' => $model->decision_date,
-			'htmlOptions'=>array('style'=>'width: 110px;')
-		)); ?></div><br />
-	<div class="tallbreak"></div>
-	<div class="label">Add comments:</div>
-	<div class="data"><?php echo CHtml::activeTextArea($model, 'comments'); ?></div>
-</div>
-<div class="box_grey_big_gradient_top"></div>
-<div class="box_grey_big_gradient_bottom">
-	<div class="label">Schedule Operation:</div>
-	<div class="data">
-	<?php
-	$timeframe1 = $model->schedule_timeframe == ElementOperation::SCHEDULE_IMMEDIATELY ? 0 : 1;
-	if ($model->schedule_timeframe != ElementOperation::SCHEDULE_IMMEDIATELY) {
-		$timeframe2 = $model->schedule_timeframe;
-		$options = array();
-	} else {
-		$timeframe2 = 0;
-		$options = array('disabled' => true);
-	}
-	echo CHtml::radioButtonList('schedule_timeframe1', $timeframe1,
-		$model->getScheduleOptions(), array('separator' => '<br />'));
-	echo CHtml::dropDownList('schedule_timeframe2', $timeframe2,
-			$model->getScheduleDelayOptions(), $options); ?></div>
-</div>
+)); ?>
+						<span class="labelHint">Type the first few characters of a procedure.<br /> <strong>Click to select</strong> the required procedure.</span>
+						</div>
+
+						<div class="extraDetails">
+							<?php if (!empty($subsections) || !empty($procedures)) { ?>
+								<div class="data"><strong>or</strong> <?php
+									if (!empty($subsections)) {
+										echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
+										echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
+									} else {
+										echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
+									} ?> &nbsp;
+								</div>
+							<?php }?>
+						</div> <!-- .extraDetails -->
+					</div>
+					
+					<div id="procedureDiv"<?php
+					if ($newRecord) { ?> style="display:none;"<?php
+					} ?>>
+						<div class="extraDetails grid-view">
+							<table id="procedure_list" class="grid" style="width:100%; background:#e3f0f2;<?php
+						if ($newRecord) { ?> display:none;<?php
+						} ?>" title="Procedure List">
+								<thead>
+									<tr>
+										<th>Procedures Added</th>
+										<th>Duration</th>
+									</tr>
+								</thead>
+								<tbody>
+					<?php
+						$totalDuration = 0;
+						if (!empty($model->procedures)) {
+							foreach ($model->procedures as $procedure) {
+								$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
+									' ' . CHtml::link('remove', '#',
+									array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
+								$totalDuration += $procedure['default_duration']; ?>
+									<tr>
+										<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
+										<td><?php echo $display; ?></td>
+										<td><?php echo $procedure['default_duration']; ?></td>
+									</tr>
+					<?php }
+						} ?>
+								</tbody>
+								<tfoot style="border-top:2px solid #CCC;">
+									<tr>
+										<td class="topPadded">Calculated Total Duration:</td>
+										<td id="projected_duration"><?php echo $totalDuration; ?></td>
+									</tr>
+									<tr>
+										<td>Estimated Total Duration:</td>
+										<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</div>
+
+					<div id="consultRequired" class="eventDetail">
+						<div class="label">Consultant required?</div>
+						<div class="data">
+							<input id="ytElementOperation_consultant_required" type="hidden" value="" name="ElementOperation[consultant_required]" />
+							<span class="group">
+							<input id="ElementOperation_consultant_required_0" value="1" type="radio" name="ElementOperation[consultant_required]" /> 
+							<label for="ElementOperation_consultant_required_0">Yes</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_consultant_required_1" value="0" checked="checked" type="radio" name="ElementOperation[consultant_required]" />
+							<label for="ElementOperation_consultant_required_1">No</label>
+							</span>
+						</div>
+					</div>
+					<div id="anaestheticType" class="eventDetail">
+						<div class="label">Anaesthetic type:</div>
+						<div class="data">
+							<span class="group">		
+							<input id="ElementOperation_anaesthetic_type_0" checked="checked" value="0" type="radio" name="ElementOperation[anaesthetic_type]" />
+							<label for="ElementOperation_anaesthetic_type_0">Topical</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_anaesthetic_type_2" value="2" type="radio" name="ElementOperation[anaesthetic_type]" />
+							<label for="ElementOperation_anaesthetic_type_2">LA</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_anaesthetic_type_1" value="1" type="radio" name="ElementOperation[anaesthetic_type]" />
+							<label for="ElementOperation_anaesthetic_type_1">LA with cover</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_anaesthetic_type_3" value="3" type="radio" name="ElementOperation[anaesthetic_type]" />
+							<label for="ElementOperation_anaesthetic_type_3">LAS</label>
+							</span>
+							<span class="group">
+							<input id="ElementOperation_anaesthetic_type_4" value="4" type="radio" name="ElementOperation[anaesthetic_type]" />
+							<label for="ElementOperation_anaesthetic_type_4">GA</label>
+							</span>
+						</div>
+					</div>
+					<div id="overnightStay" class="eventDetail">
+						<div class="label">Overnight Stay required?</div>
+						<div class="data">
+							<input id="ytElementOperation_overnight_stay" type="hidden" value="" name="ElementOperation[overnight_stay]" />
+							<span class="group">
+								<input id="ElementOperation_overnight_stay_0" value="1" type="radio" name="ElementOperation[overnight_stay]" /> 
+								<label for="ElementOperation_overnight_stay_0">Yes</label>
+							</span>
+							<span class="group">
+								<input id="ElementOperation_overnight_stay_1" value="0" checked="checked" type="radio" name="ElementOperation[overnight_stay]" />
+								<label for="ElementOperation_overnight_stay_1">No</label>
+							</span>
+						</div>
+					</div>
+					
+					<div id="decisionDate" class="eventDetail">
+						<div class="label">Decision Date:</div>
+						<div class="data">
+							<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								'name'=>'ElementOperation[decision_date]',
+								'id'=>'ElementOperation_decision_date_0',
+								// additional javascript options for the date picker plugin
+								'options'=>array(
+									'showAnim'=>'fold',
+									'dateFormat'=>'yy-mm-dd',
+									'maxDate'=>'today'
+								),
+								'value' => $model->decision_date,
+								'htmlOptions'=>array('style'=>'width: 110px;')
+							)); ?>
+						</div>
+					</div>	
+					
+					<div id="addComments" class="eventDetail">
+						<div class="label">Add comments:</div>
+						<div class="data">
+							<textarea rows="4" cols="50" name="ElementOperation[comments]" id="ElementOperation_comments"></textarea>
+						</div>
+					</div>
 <script type="text/javascript">
 	$(function() {
 		$('input[id=autocomplete_procedure_id]').watermark('type the first few characters of a procedure');

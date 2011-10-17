@@ -47,10 +47,17 @@ return CMap::mergeArray(
 				'urlFormat'=>'path',
 				'showScriptName'=>false,
 				'rules'=>array(
+					'patient/results/error'=>'site/index',
+					'patient/no-results'=>'site/index',
+					'patient/results/<hos_num:\d+>/<first_name:.*>/<last_name:.*>/<nhs_num:[\d-]+>/<gender:.*>/<dob_day:\d+>/<dob_month:\d+>/<dob_year:\d+>/<page_num:\d+>'=>'patient/results',
+					'patient/viewpas/<pas_key:\d+>'=>'patient/viewpas',
+					'patient/episodes/<id:\d+>/event/<event:\d+>'=>'patient/episodes',
+					'patient/episodes/<id:\d+>/episode/<episode:\d+>'=>'patient/episodes',
 					'' => 'site/index', // default action
 					'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 					'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
 					'<controller:\w+>/<action:\w+>'=>'<controller>/<action>',
+					'<controller:\w+>/<action:\w+>/<hospital_num:\d+>'=>'patient/results',
 				),
 			),
 			// uncomment the following line to use a sqlite database
@@ -88,18 +95,18 @@ return CMap::mergeArray(
 						'class'=>'CFileLogRoute',
 						'levels'=>'error, warning',
 					),
-                                        array(
-                                                'class'=>'CFileLogRoute',
-                                                'levels'=>'user',
-                                                'logfile'=>'userActivity.log',
-                                                'filter' => array(
-                                                        'class' => 'CLogFilter',
-                                                        'prefixSession' => False,
-                                                        'prefixUser' => true,
-                                                        'logUser' => true,
-                                                        'logVars' => array('_GET','_POST'),
-                                                ),
-                                        ),
+																				array(
+																								'class'=>'CFileLogRoute',
+																								'levels'=>'user',
+																								'logfile'=>'userActivity.log',
+																								'filter' => array(
+																												'class' => 'CLogFilter',
+																												'prefixSession' => False,
+																												'prefixUser' => true,
+																												'logUser' => true,
+																												'logVars' => array('_GET','_POST'),
+																								),
+																				),
 					// uncomment the following to show log messages on web pages
 					/*
 					array(

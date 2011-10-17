@@ -17,6 +17,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 <strong>Select a session time:</strong>
 <?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 $tabs = array();
 foreach ($theatres as $name => $sessions) {
 	$pretext = '<div id="box_grey_gradient_top"></div>

@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -17,6 +17,9 @@ Yii::import('application.controllers.*');
 class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
+	public $model;
+	public $service;
+	public $firm;
 
 	public function filters()
 	{
@@ -38,10 +41,21 @@ class PatientController extends BaseController
 
 	protected function beforeAction($action)
 	{
+		parent::storeData();
+
 		// Sample code to be used when RBAC is fully implemented.
 //		if (!Yii::app()->user->checkAccess('admin')) {
 //			throw new CHttpException(403, 'You are not authorised to perform this action.');
 //		}
+
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		if (!isset($this->firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+		}
+
+		$this->service = new ClinicalService;
 
 		return parent::beforeAction($action);
 	}
@@ -57,15 +71,35 @@ class PatientController extends BaseController
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
+		$episodes = $patient->episodes;
+
 		$this->layout = '//layouts/patientMode/main';
+		$this->model = $patient;
 
 		$this->setSessionPatient($patient);
 
 		$this->logActivity('viewed patient');
 
+		$episodes_open = 0;
+		$episodes_closed = 0;
+
+		foreach ($episodes as $episode) {
+			if ($episode->end_date === null) {
+				$episodes_open++;
+			} else {
+				$episodes_closed++;
+			}
+		}
+
 		$this->render('view', array(
-			'model' => $patient, 'tab' => $tabId, 'event' => $eventId,
+			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
+	}
+
+	public function actionViewpas() {
+		$patient = Patient::model()->find('PAS_Key=:PAS_Key', array(':PAS_Key'=>(integer)$_GET['pas_key']));
+		header('Location: /patient/view/'.$patient->id);
+		exit;
 	}
 
 	/**
@@ -97,38 +131,92 @@ class PatientController extends BaseController
 	/**
 	 * Display results based on a search submission
 	 */
-	public function actionResults()
+	public function actionResults($page=false)
 	{
+		if (!empty($_POST)) {
+			if (!@$_POST['Patient']['hos_num'] && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
+				header('Location: /patient/results/error');
+				setcookie('patient-search-minimum-criteria','1',0,'/');
+				exit;
+			}
+			$get_hos_num = (@$_POST['Patient']['hos_num'] ? $_POST['Patient']['hos_num'] : '0');
+			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
+			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
+			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? $_POST['Patient']['nhs_num'] : '0');
+			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
+			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
+			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
+			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
+
+			header("Location: /patient/results/$get_hos_num/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/$get_dob_day/$get_dob_month/$get_dob_year/1");
+			setcookie('patient-search-minimum-criteria','1',0,'/');
+			exit;
+		}
+
+		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
+			header('Location: /patient/results/error');
+			exit;
+		}
+
 		$model = new Patient;
 
-		// The user has to provide some minimal criteria
-		if (empty($_POST['Patient']['last_name']) && empty($_POST['Patient']['hos_num'])) {
-			return CJavaScript::jsonEncode(false);
-		}
+		$items_per_page = 10;
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
-			$criteria = $service->search($this->collatePostData());
+			$criteria = $service->search($this->collateGetData());
+
+			$nr = Patient::model()->count($criteria);
 
 			$dataProvider = new CActiveDataProvider('Patient', array(
 				'criteria' => $criteria,
-				'pagination' => array('pageSize' => PHP_INT_MAX)
+				'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
 			));
 		} else {
-			$model->attributes = $this->collatePostData();
-			$dataProvider = $model->search();
+			$model->attributes = $this->collateGetData();
+			$dataProvider = $model->search(array(
+				'currentPage' => (integer)@$_GET['page_num']-1,
+				'items_per_page' => $items_per_page
+			));
+
+			$nr = $model->search_nr();
 		}
 
-		$results = $dataProvider->getData();
-
-		$output = array();
-
-		foreach ($results as $result) {
-			$output[] = array($result['id'], $result['first_name'], $result['last_name']);
+		if ($nr == 0) {
+			header('Location: /patient/no-results');
+			exit;
 		}
 
-		//echo CJavaScript::jsonEncode($output);
-		echo CJavaScript::jsonEncode($results);
+		if ($nr == 1) {
+			foreach ($dataProvider->getData() as $item) {
+				header('Location: /patient/view/'.$item->id);
+				exit;
+			}
+		}
+
+		$pages = ceil($nr/$items_per_page);
+
+		if (count($nr) == 0) {
+			$this->render('index', array(
+				'dataProvider' => $dataProvider
+			));
+		} else {
+			$this->render('results', array(
+				'dataProvider' => $dataProvider,
+				'pages' => $pages,
+				'items_per_page' => $items_per_page,
+				'total_items' => $nr,
+				'hos_num' => (integer)$_GET['hos_num'],
+				'first_name' => $_GET['first_name'],
+				'last_name' => $_GET['last_name'],
+				'nhs_num' => (integer)$_GET['nhs_num'],
+				'gender' => $_GET['gender'],
+				'dob_day' => (integer)$_GET['dob_day'],
+				'dob_month' => (integer)$_GET['dob_month'],
+				'dob_year' => (integer)$_GET['dob_year'],
+				'pagen' => (integer)$_GET['page_num']-1
+			));
+		}
 	}
 
 	/**
@@ -137,7 +225,7 @@ class PatientController extends BaseController
 	public function actionAdmin()
 	{
 		$model = new Patient('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if (isset($_GET['Patient']))
 			$model->attributes = $_GET['Patient'];
 
@@ -168,36 +256,50 @@ class PatientController extends BaseController
 			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
 	}
 
-	public function actionEpisodes()
+	public function actionContacts()
 	{
 		$patient = $this->loadModel($_GET['id']);
+		$this->renderPartial('_contacts', array('model'=>$patient));
+	}
 
-		if ($patient->id != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($patient->id);
-		}
+	public function actionCorrespondence()
+	{
+		$patient = $this->loadModel($_GET['id']);
+		$this->renderPartial('_correspondence', array('model'=>$patient));
+	}
 
-		$event = !empty($_GET['event']) ? $_GET['event'] : false;
+	public function actionEpisodes()
+	{
+		$this->layout = '//layouts/patientMode/column2';
+		$this->service = new ClinicalService;
+		$patient = $this->model = $this->loadModel($_GET['id']);
 
-		$firm = Firm::model()->findByPk($this->selectedFirmId);
+		$episodes = $patient->episodes;
 
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
-		$eventTypes = EventType::model()->getAllPossible($specialtyId);
+		if (ctype_digit(@$_GET['event'])) {
+			$event = Event::model()->findByPk($_GET['event']);
 
-		$typeGroups = $this->getEventTypeGrouping();
+			// The eventType, firm and patient are fetched from the event object
+			$elements = $this->service->getElements(
+				null, null, null, $event->user_id, $event
+			);
 
-		foreach ($eventTypes as $eventType) {
-			foreach ($typeGroups as $name => $group) {
-				if (in_array($eventType->name, $group)) {
-					$typeList[$name][] = $eventType;
-				}
+			// Decide whether to display the 'edit' button in the template
+			if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
+				$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+				$editable = false;
+			} else {
+				$editable = true;
 			}
+
+			$event_template_name = $this->getTemplateName('view', $event->event_type_id);
+
+			$this->logActivity('viewed event');
 		}
 
-		$eventId = isset($_REQUEST['eventId']) ? $_REQUEST['eventId'] : null;
-
-		$this->renderPartial('_episodes',
-			array('model'=>$patient, 'episodes'=>$patient->episodes,
-				'eventTypeGroups'=>$typeList, 'firm'=>$firm, 'event'=>$event), false, true);
+		$this->render('episodes', array(
+			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name
+		));
 	}
 
 	/**
@@ -239,7 +341,7 @@ class PatientController extends BaseController
 	 * Perform a search on a model and return the results
 	 * (separate function for unit testing)
 	 *
-	 * @param array $data   form data of search terms
+	 * @param array $data		form data of search terms
 	 * @return dataProvider
 	 */
 	public function getSearch($data)
@@ -260,6 +362,23 @@ class PatientController extends BaseController
 
 		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
 			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
+		}
+
+		return $data;
+	}
+
+	public function collateGetData()
+	{
+		$data = $_GET;
+
+		if (isset($_GET['dob_day']) && isset($_GET['dob_month']) && isset($_GET['dob_year']) && $_GET['dob_day'] && $_GET['dob_month'] && $_GET['dob_year']) {
+			$data['dob'] = $_GET['dob_year'] . '-' . $_GET['dob_month'] . '-' . $_GET['dob_day'];
+		}
+
+		foreach ($data as $key => $value) {
+			if ($value == '0') {
+				$data[$key] = '';
+			}
 		}
 
 		return $data;
