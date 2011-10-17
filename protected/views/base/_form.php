@@ -27,7 +27,8 @@ if (!Yii::app()->user->isGuest) {
 
 			<ul id="user_nav">
 				<li><a href="/">Home</a></li>
-				<li><a href="/theatre">Theatre Management</a></li>
+				<li><a href="/theatre">Diary</a></li>
+				<li><a href="/waitingList">Waiting List</a></li>
 				<li><a href="/site/logout" class="logout">Logout</a></li>
 			</ul>
 		</div>
