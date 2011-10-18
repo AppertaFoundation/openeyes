@@ -30,12 +30,14 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 	{
 		$output = '';
 		$today = date('Y-m-d');
-		$endDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
+		$initialEndDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
 		$sequences = Sequence::model()->findAll(
 			'start_date <= :end_date AND end_date IS NULL or end_date > :today',
-			array(':end_date'=>date('Y-m-d', $endDate), ':today'=>$today));
+			array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today));
 
 		foreach ($sequences as $sequence) {
+			$endDate = $initialEndDate;
+
 			$session = Yii::app()->db->createCommand()
 				->select('date')
 				->from('session')
@@ -44,7 +46,7 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 				->queryRow();
 
 			$startDate = empty($session) ? strtotime($today) : strtotime($session['date']) + (60 * 60 * 24);
-			$sequenceEnd = empty($sequence->end_date) ? $endDate : strtotime($sequence->end_date);
+			$sequenceEnd = empty($sequence->end_date) ? $initialEndDate : strtotime($sequence->end_date);
 
 			if ($endDate > $sequenceEnd) {
 				$endDate = $sequenceEnd;
@@ -52,22 +54,27 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 
 			$dateList = array();
 			if (empty($sequence->week_selection)) {
-				$interval = $sequence->getFrequencyInteger($sequence['repeat_interval'], $endDate);
-				$days = $interval / 24 / 60 / 60;
+                                if (empty($sequence['repeat_interval'])) {
+                                        // No repeat interval means it's one-off, so we only concern ourselves with the start date
+                                        $dateList[] = $sequence->start_date;
+                                } else {
+					$interval = $sequence->getFrequencyInteger($sequence['repeat_interval'], $endDate);
+					$days = $interval / 24 / 60 / 60;
 
-				$date = date('Y-m-d', $startDate);
-				$time = $startDate;
-				// get the next occurrence of the sequence on/after the start date
-				while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
-					$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
-					$time = strtotime($date);
-				}
+					$date = date('Y-m-d', $startDate);
+					$time = $startDate;
+					// get the next occurrence of the sequence on/after the start date
+					while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
+						$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
+						$time = strtotime($date);
+					}
 
-				while ($time <= $endDate) {
-					$dateList[] = $date;
-
-					$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
-					$time = strtotime($date);
+					while ($time <= $endDate) {
+						$dateList[] = $date;
+	
+						$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
+						$time = strtotime($date);
+					}
 				}
 			} else {
 				$date = date('Y-m-d', $startDate);
