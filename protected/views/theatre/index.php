@@ -28,7 +28,7 @@ $cs->registerCSSFile('/css/theatre.css', 'all');
 	<table>
 	<tr>
 		<th>Site:</th>
-		<th>Service:</th>
+		<th>Specialty:</th>
 		<th>Firm:</th>
 		<th>Theatre:</th>
 		<th>Ward:</th>
@@ -38,13 +38,13 @@ $cs->registerCSSFile('/css/theatre.css', 'all');
 	echo CHtml::dropDownList('site-id', '', Site::model()->getList(),
 		array('empty'=>'All sites', 'onChange' => "js:loadTheatres(this.value); loadWards(this.value);")); ?></td>
 		<td><?php
-	echo CHtml::dropDownList('service-id', '', Service::model()->getList(),
-		array('empty'=>'All services', 'ajax'=>array(
+	echo CHtml::dropDownList('specialty-id', '', Specialty::model()->getList(),
+		array('empty'=>'All specialties', 'ajax'=>array(
 			'type'=>'POST',
-			'data'=>array('service_id'=>'js:this.value'),
+			'data'=>array('specialty_id'=>'js:this.value'),
 			'url'=>Yii::app()->createUrl('theatre/filterFirms'),
 			'success'=>"js:function(data) {
-				if ($('#service-id').val() != '') {
+				if ($('#specialty-id').val() != '') {
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);
 				} else {

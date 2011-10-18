@@ -51,27 +51,27 @@ class WaitingListController extends BaseController
 		if (empty($_POST)) {
 			$operations = array();
 		} else {
-			$serviceId = !empty($_POST['service-id']) ? $_POST['service-id'] : null;
+			$specialtyId = !empty($_POST['specialty-id']) ? $_POST['specialty-id'] : null;
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$status = !empty($_POST['status']) ? $_POST['status'] : null;
 
 			$service = new WaitingListService;
-			$operations = $service->getWaitingList($firmId, $serviceId, $status);
+			$operations = $service->getWaitingList($firmId, $specialtyId, $status);
 		}
 
 		$this->renderPartial('_list', array('operations' => $operations), false, true);
 	}
 
 	/**
-	 * Generates a firm list based on a service id provided via POST
+	 * Generates a firm list based on a specialty id provided via POST
 	 * echoes form option tags for display
 	 */
 	public function actionFilterFirms()
 	{
 		echo CHtml::tag('option', array('value'=>''),
 			CHtml::encode('All firms'), true);
-		if (!empty($_POST['service_id'])) {
-			$firms = $this->getFilteredFirms($_POST['service_id']);
+		if (!empty($_POST['specialty_id'])) {
+			$firms = $this->getFilteredFirms($_POST['specialty_id']);
 
 			foreach ($firms as $id => $name) {
 				echo CHtml::tag('option', array('value'=>$id),
@@ -96,21 +96,21 @@ class WaitingListController extends BaseController
 	}
 
 	/**
-	 * Helper method to fetch firms by service ID
+	 * Helper method to fetch firms by specialty ID
 	 *
-	 * @param integer $serviceId
+	 * @param integer $specialtyId
 	 *
 	 * @return array
 	 */
-	protected function getFilteredFirms($serviceId)
+	protected function getFilteredFirms($specialtyId)
 	{
 		$data = Yii::app()->db->createCommand()
 			->select('f.id, f.name')
 			->from('firm f')
 			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
-			->join('service s', 'ssa.service_id = s.id')
-			->where('ssa.service_id=:id',
-				array(':id'=>$serviceId))
+			->join('specialty s', 'ssa.specialty_id = s.id')
+			->where('ssa.specialty_id=:id',
+				array(':id'=>$specialtyId))
 			->queryAll();
 
 		$firms = array();

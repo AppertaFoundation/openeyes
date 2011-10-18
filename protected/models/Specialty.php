@@ -108,4 +108,20 @@ class Specialty extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+        /**
+         * Fetch an array of specialty IDs and names
+         * @return array
+         */
+        public function getList()
+        {
+                $list = Specialty::model()->findAll();
+                $result = array();
+
+                foreach ($list as $specialty) {
+                        $result[$specialty->id] = $specialty->name;
+                }
+
+                return $result;
+        }
 }

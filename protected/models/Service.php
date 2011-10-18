@@ -98,20 +98,4 @@ class Service extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
-	/**
-	 * Fetch an array of service IDs and names
-	 * @return array
-	 */
-	public function getList()
-	{
-		$list = Service::model()->findAll();
-		$result = array();
-		
-		foreach ($list as $service) {
-			$result[$service->id] = $service->name;
-		}
-		
-		return $result;
-	}
 }

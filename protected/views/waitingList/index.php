@@ -28,20 +28,20 @@ $cs->registerCSSFile('/css/waitingList.css', 'all');
         <div id="main-search">
         <table>
         <tr>
-                <th>Service:</th>
+                <th>Specialty:</th>
                 <th>Firm:</th>
                 <th>Type:</th>
 		<th>&nbsp;</th>
         </tr>
         <tr>
                 <td><?php
-        echo CHtml::dropDownList('service-id', '', Service::model()->getList(),
-                array('empty'=>'All services', 'ajax'=>array(
+        echo CHtml::dropDownList('specialty-id', '', Specialty::model()->getList(),
+                array('empty'=>'All specialties', 'ajax'=>array(
                         'type'=>'POST',
-                        'data'=>array('service_id'=>'js:this.value'),
+                        'data'=>array('specialty_id'=>'js:this.value'),
                         'url'=>Yii::app()->createUrl('waitingList/filterFirms'),
                         'success'=>"js:function(data) {
-                                if ($('#service-id').val() != '') {
+                                if ($('#specialty-id').val() != '') {
                                         $('#firm-id').attr('disabled', false);
                                         $('#firm-id').html(data);
                                 } else {
