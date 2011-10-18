@@ -25,7 +25,8 @@ foreach ($elements as $element) {
 <h4>Diagnosis</h4>
 
 <div class="eventHighlight">
-	<h4><?php echo $operation->getEyeText()?> <?php echo $operation->getDisorder() ?></h4>
+	<?php $disorder = $operation->getDisorder(); ?>
+	<h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : '' ?></h4>
 </div>
 
 <h4>Operation</h4>
@@ -45,6 +46,25 @@ foreach ($elements as $element) {
 }
 ?></h4>
 </div>
+
+<?php
+
+if (!empty($operation->booking)) {
+?>
+<h4>Session</h4>
+<div class="eventHighlight">
+<?php $session = $operation->booking->session ?>
+<h4><?php
+	echo $session->start_time . ' - ' .
+		$session->end_time . ' ' .
+		date('jS F, Y', strtotime($session->date)) . ', ' .
+		$session->sequence->sequenceFirmAssignment->firm->name . ' (' . 
+		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')'
+?></h4>
+</div>
+<?php
+}
+?>
 
 <?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	if (empty($operation->booking)) {
