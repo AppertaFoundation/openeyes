@@ -16,30 +16,34 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 <?php
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
-$cs->registerCSSFile('/css/theatre.css', 'all');
+//$cs->registerCSSFile('/css/theatre.css', 'all');
 $cs->registerCoreScript('jquery');
 $cs->registerCoreScript('jquery.ui');
 $cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
-$cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js');
+//$cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js');
 
 if (empty($theatres)) { ?>
 <h2 class="theatre">No theatre schedules match your search criteria.</h2>
 </div>
 <?php
-} else { ?>
-    <div id="multiOpenAccordion">
+} else {
+?>
+<div>
 <?php
-    $panels = array();
+	$panels = array();
 	$firstTheatreShown = false;
-    foreach ($theatres as $name => $dates) { ?>
+	foreach ($theatres as $name => $dates) { ?>
 <h2 class="theatre<?php if (!$firstTheatreShown) { echo ' firstTheatre'; } ?>"><?php echo $name; ?></h2>
-<?php   $firstTheatreShown = true;
+<?php
+		$firstTheatreShown = true;
 		foreach ($dates as $date => $sessions) {
-            $timestamp = strtotime($date); ?>
-<h3 class="date"><a href="#"><?php echo date('d ', $timestamp);
-            echo substr(date('F', $timestamp), 0, 3);
-            echo date(' Y', $timestamp);
-            echo ' - ' . date('l', $timestamp); ?></a></h3>
+            		$timestamp = strtotime($date); ?>
+<h3 class="date"><a href="#"><?php
+			echo date('d ', $timestamp);
+            		echo substr(date('F', $timestamp), 0, 3);
+            		echo date(' Y', $timestamp);
+            		echo ' - ' . date('l', $timestamp);
+?></a></h3>
 <div>
     <table>
     <tr>
@@ -51,9 +55,29 @@ if (empty($theatres)) { ?>
         <th class="repeat">Anaesthetic</th>
         <th class="last">Alerts</th>
     </tr>
-<?php        $lastSession = $sessions[0];
-            foreach ($sessions as $session) {
-                if ($session['sessionId'] != $lastSession['sessionId']) { ?>
+<?php
+			$lastSession = $sessions[0];
+            		foreach ($sessions as $session) {
+                		if ($session['sessionId'] != $lastSession['sessionId']) { ?>
+    <tr><th class="sessionComments" colspan="7">Session Comments</th></tr>
+    <tr><td colspan="7" class="sessionComments leftAlign">
+
+<?php
+
+$form = $this->beginWidget('CActiveForm', array(
+        'id'=>'commentsForm' . $session['sessionId'],
+        'enableAjaxValidation'=>false,
+        'htmlOptions' => array('class'=>'sliding')
+));
+
+echo CHtml::hiddenField('id', $session['sessionId']);
+echo CHtml::textArea('comments', $session['comments'], array('rows'=>2, 'cols'=>80));
+echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId']));
+
+$this->endWidget();
+
+?>
+    </td></tr>
     <tr>
         <th class="footer" colspan="7">Time unallocated: <?php
                     echo '<span';
@@ -65,27 +89,6 @@ if (empty($theatres)) { ?>
 <?php		$lastSession = $session;
 	}
 ?>
-    <tr><th class="sessionComments" colspan="7">Session Comments</th></tr>
-	<tr><td colspan="7" class="sessionComments leftAlign">
-	
-<?php
-
-$form = $this->beginWidget('CActiveForm', array(
-        'id'=>'commentsForm' . $session['sessionId'],
-        'enableAjaxValidation'=>false,
-        'htmlOptions' => array('class'=>'sliding')
-));
-
-echo CHtml::hiddenField('id', $session['sessionId']);
-echo CHtml::textArea('comments', $session['comments'], array('rows'=>2, 'cols'=>80)); 
-echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId'])); 
-
-$this->endWidget();
-
-?>
-	<?php //echo CHtml::textArea('comments' . $session['sessionId'], $session['comments'], array('rows'=>2, 'cols'=>80)); ?>
-	<?php //echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId'])); ?>
-	</td></tr>
     <tr>
         <td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
         <td class="patient leftAlign"><?php echo !empty($session['procedures']) ? $session['patientName'] . ' (' . $session['patientAge'] . ')' : ''; ?></td>
@@ -99,8 +102,27 @@ $this->endWidget();
     </tr>
 <?php
             } ?>
+    <tr><th class="sessionComments" colspan="7">Session Comments</th></tr>
+    <tr><td colspan="7" class="sessionComments leftAlign">
+
+<?php
+
+$form = $this->beginWidget('CActiveForm', array(
+        'id'=>'commentsForm' . $session['sessionId'],
+        'enableAjaxValidation'=>false,
+        'htmlOptions' => array('class'=>'sliding')
+));
+
+echo CHtml::hiddenField('id', $session['sessionId']);
+echo CHtml::textArea('comments', $session['comments'], array('rows'=>2, 'cols'=>80));
+echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId']));
+
+$this->endWidget();
+
+?>
+    </td></tr>
     <tr>
-        <th class="footer" colspan="7">Time unallocated: <?php
+    <th class="footer" colspan="7">Time unallocated: <?php
                     echo '<span';
                     if ($session['timeAvailable'] < 0) {
                        echo ' class="full"';
@@ -110,46 +132,13 @@ $this->endWidget();
     </table>
 </div>
 <?php
-        }
-    }
-    ?>
+	}
+}
+?>
     </div>
 </div>
-<div id="alertOptions">
-    <input type="checkbox" name="theatre_alerts" value="comments" /> Comments<br />
-    <input type="checkbox" name="theatre_alerts" value="gender" /> Gender<br />
-    <input type="checkbox" name="theatre_alerts" value="latex" disabled="true" /> Latex allergy<br />
-    <input type="checkbox" name="theatre_alerts" value="consultant" disabled="true" /> Consultant required
-</div>
-<div class="clear"></div>
+<div class="cleartall"></div>
 <script type="text/javascript">
-	$('input[name=theatre_alerts][value=comments]').click(function() {
-		if ($(this).is(':checked')) {
-			$('.comments').removeClass('invisible');
-			$('.comments img').removeClass('invisible');
-		} else {
-			$('.comments').addClass('invisible');
-			$('.comments img').addClass('invisible');
-		}
-	});
-	$('input[name=theatre_alerts][value=gender]').click(function() {
-		if ($(this).is(':checked')) {
-			$('.gender').removeClass('invisible');
-		} else {
-			$('.gender').addClass('invisible');
-		}
-	});
-	$('#multiOpenAccordion').multiOpenAccordion({
-		autoHeight: false,
-		clearStyle: true });
-	// if we've selected today, or a same-day custom date range, show expanded
-	if ('today' == $('input[name=date-filter]:checked').val() ||
-		($('input[name=date-filter]:checked').val() == 'custom' &&
-		$('input[id=date-start]').val() == $('input[id=date-end]').val())) {
-		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "all");
-	} else {
-		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "none");
-	}
 	$('input[id^="editComments"]').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('waitingList/updateSessionComments'); ?>',

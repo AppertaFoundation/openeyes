@@ -217,8 +217,7 @@ class BookingService
 			->leftJoin('ward w', 'w.id = b.ward_id')
 			->where($whereSql, $whereParams)
 			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
-//$foo = $command->queryAll();
-//exit;
+
 		return $command->queryAll();
 	}
 }

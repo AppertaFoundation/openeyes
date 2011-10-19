@@ -147,6 +147,76 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 <div class="cleartall"></div>
 <div id="searchResults"></div>
 <div class="cleartall"></div>
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
 <script type="text/javascript">
 	$('#theatre-filter button[type="submit"]').click(function() {
 		$.ajax({
