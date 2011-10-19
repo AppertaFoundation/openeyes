@@ -45,27 +45,64 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 				->order('date DESC')
 				->queryRow();
 
-			$startDate = empty($session) ? strtotime($today) : strtotime($session['date']) + (60 * 60 * 24);
+			// The date of the most recent session for this sequence plus one day, or today if no sessions for this sequence yet
+//			$startDate = empty($session) ? strtotime($today) : strtotime($session['date']) + (60 * 60 * 24);
+
+			// The date of the most recent session for this sequence plus one day, or the seqeunce start date if no sessions
+			//	for this sequence yet
+			$startDate = empty($session) ? strtotime($sequence->start_date) : strtotime($session['date']) + (60 * 60 * 24);
+
+			// The date to generate sessions until - the sequence end date if there is one, else (the date provided on the command
+			//	line OR 13 months from now).
 			$sequenceEnd = empty($sequence->end_date) ? $initialEndDate : strtotime($sequence->end_date);
 
 			if ($endDate > $sequenceEnd) {
+				// @todo - is this code for anything? endDate is the same as initialEndDate so the above
+				//	ternary operator should make this impossible
 				$endDate = $sequenceEnd;
 			}
 
 			$dateList = array();
 			if (empty($sequence->week_selection)) {
+				// No week selection, e.g. 1st on month, 2nd in month
                                 if (empty($sequence['repeat_interval'])) {
                                         // No repeat interval means it's one-off, so we only concern ourselves with the start date
-                                        $dateList[] = $sequence->start_date;
+
+					// If a session already exists for this one off there's no point creating another
+					if (empty($session)) {
+                                        	$dateList[] = $sequence->start_date;
+					}
                                 } else {
+					// There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
+					//	function below returns 60 * 60 * 24 * 14, i.e. two weeks
 					$interval = $sequence->getFrequencyInteger($sequence['repeat_interval'], $endDate);
+
+					// The number of days in the interval - 14 in the case of two week interval
 					$days = $interval / 24 / 60 / 60;
 
-					$date = date('Y-m-d', $startDate);
-					$time = $startDate;
+					// IF there's no session use the sequence start date. If there is use the most recent
+					//	session date plus the interval (e.g. two weeks)
+					if (empty($session)) {
+						$nextStartDate = $startDate;
+					} else {
+						$nextStartDate = $startDate + $interval - 86400;
+					}
+
+					// Convert $nextStartDate (a timestamp of the seqence start date or the most recent session date plus the interval to a date.
+					$date = date('Y-m-d', $nextStartDate);
+
+					// The timestamp of the start date
+					$time = $nextStartDate;
+
 					// get the next occurrence of the sequence on/after the start date
+
+					// Check to see if the day of the week for the time is the same day of the week as the sequence start date
+					//	Process loop if it isn't
 					while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
+						// Set the date to $time + 1 day
 						$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
+
+						// Set the time to the timstamp for the date + 1 day
 						$time = strtotime($date);
 					}
 
