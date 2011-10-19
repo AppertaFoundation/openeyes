@@ -154,26 +154,26 @@ class BookingService
 	}
 
 	/**
-	 * Search for theatres/sessions, filtered by site/service/firm/theatre
+	 * Search for theatres/sessions, filtered by site/specialty/firm/theatre
 	 *
 	 * @param string  $startDate (YYYY-MM-DD)
 	 * @param string  $endDate   (YYYY-MM-DD)
 	 * @param integer $siteId
 	 * @param integer $theatreId
-	 * @param integer $serviceId
+	 * @param integer $specialtyId
 	 * @param integer $firmId
 	 * @param integer $wardId
 	 * @return CDbReader
 	 */
-	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $serviceId = null, $firmId = null, $wardId = null)
+	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $specialtyId = null, $firmId = null, $wardId = null)
 	{
 		if (empty($startDate) || empty($endDate) ||
 			(strtotime($endDate) < strtotime($startDate))) {
 			throw new Exception('Invalid start and end dates.');
 		}
 
-		$whereSql = 's.status != :status AND s.date BETWEEN :start AND :end';
-		$whereParams = array(':status' => Session::STATUS_UNAVAILABLE, ':start' => $startDate, ':end' => $endDate);
+		$whereSql = 's.date BETWEEN :start AND :end';
+		$whereParams = array(':start' => $startDate, ':end' => $endDate);
 
 		if (!empty($siteId)) {
 			$whereSql .= ' AND t.site_id = :siteId';
@@ -183,9 +183,9 @@ class BookingService
 			$whereSql .= ' AND t.id = :theatreId';
 			$whereParams[':theatreId'] = $theatreId;
 		}
-		if (!empty($serviceId)) {
-			$whereSql .= ' AND ser.id = :serviceId';
-			$whereParams[':serviceId'] = $serviceId;
+		if (!empty($specialtyId)) {
+			$whereSql .= ' AND spec.id = :specialtyId';
+			$whereParams[':specialtyId'] = $specialtyId;
 		}
 		if (!empty($firmId)) {
 			$whereSql .= ' AND f.id = :firmId';
@@ -213,11 +213,12 @@ class BookingService
 			->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
 			->join('firm f', 'f.id = sfa.firm_id')
 			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
-			->join('service ser', 'ser.id = ssa.service_id')
+			->join('specialty spec', 'spec.id = ssa.specialty_id')
 			->leftJoin('ward w', 'w.id = b.ward_id')
 			->where($whereSql, $whereParams)
 			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
-
+//$foo = $command->queryAll();
+//exit;
 		return $command->queryAll();
 	}
 }

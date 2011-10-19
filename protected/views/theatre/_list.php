@@ -62,15 +62,30 @@ if (empty($theatres)) { ?>
                     }
                     echo ">{$lastSession['timeAvailable']}"; ?> min</span></th>
     </tr>
-<?php				$lastSession = $session;
-				}
-				if (!empty($session['comments'])) { ?>
+<?php		$lastSession = $session;
+	}
+?>
     <tr><th class="sessionComments" colspan="7">Session Comments</th></tr>
 	<tr><td colspan="7" class="sessionComments leftAlign">
-	<?php echo CHtml::textArea('comments' . $session['sessionId'], $session['comments'], array('rows'=>2, 'cols'=>80)); ?>
-	<?php echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId'])); ?>
+	
+<?php
+
+$form = $this->beginWidget('CActiveForm', array(
+        'id'=>'commentsForm' . $session['sessionId'],
+        'enableAjaxValidation'=>false,
+        'htmlOptions' => array('class'=>'sliding')
+));
+
+echo CHtml::hiddenField('id', $session['sessionId']);
+echo CHtml::textArea('comments', $session['comments'], array('rows'=>2, 'cols'=>80)); 
+echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId'])); 
+
+$this->endWidget();
+
+?>
+	<?php //echo CHtml::textArea('comments' . $session['sessionId'], $session['comments'], array('rows'=>2, 'cols'=>80)); ?>
+	<?php //echo CHtml::button('Edit comments', array('id' => 'editComments' . $session['sessionId'], 'name' => $session['sessionId'])); ?>
 	</td></tr>
-<?php			} ?>
     <tr>
         <td class="session"><?php echo substr($session['startTime'], 0, 5) . '-' . substr($session['endTime'], 0, 5); ?></td>
         <td class="patient leftAlign"><?php echo !empty($session['procedures']) ? $session['patientName'] . ' (' . $session['patientAge'] . ')' : ''; ?></td>
@@ -136,13 +151,10 @@ if (empty($theatres)) { ?>
 		$('#multiOpenAccordion').multiOpenAccordion("option", "active", "none");
 	}
 	$('input[id^="editComments"]').click(function() {
-		id = this.name;
-		value = $('#comments' + this.name).val();
-
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('waitingList/updateSessionComments'); ?>',
 			'type': 'POST',
-			'data': 'sessionId=' + id + '&comments=' + value,
+			'data': $('#commentsForm' + this.name).serialize(),
 			'success': function(data) {
 				return true;
 			}
