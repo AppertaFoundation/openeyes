@@ -8,74 +8,78 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
-$patient = $operation->event->episode->patient; ?>
+?>
 <div id="schedule">
-<p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-<h3>Schedule Operation</h3>
-<?php
-if ($operation->event->episode->firm_id != $firm->id) {
-	if ($firm->name == 'Emergency List') {
-		$class = 'flash-error';
-		$message = 'You are booking into the Emergency List.';
-	} else {
-		$class = 'flash-notice';
-		$message = 'You are booking into the list for ' . $firm->name . '.';
-	} ?>
-	<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
-	<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
-<?php
-}
-if (empty($sessions)) { ?>
-	<div class="flash-error">This firm has no scheduled sessions.</div>
-<?php
-}
-	?>
-<div id="firmSelect" class="greyGradient">
-	You are viewing the schedule for <strong><?php echo $firm->name; ?></strong>.
-	<select id="firmId">
-		<option value="">Select a different firm</option>
-		<option value="EMG">Emergency List</option>
-<?php	foreach ($firmList as $aFirm) { ?>
-		<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
-<?php	} ?>
-	</select>
-</div>
-<?php
-	if (!empty($site->name)) { ?>
-<div id="siteSelect" class="greyGradient">
-	You are viewing the calendar for <strong><?php echo $site->name; ?></strong>.
-	<?php echo CHtml::dropDownList('siteId', '', $siteList,
-		array('empty' => 'Select a different site', 'disabled' => empty($siteList))); ?>
-</div>
-<div class="cleartall"></div>
-<?php
+	<div class="patientReminder">
+		<span class="patient"><strong>Tracy</strong> Jones (1002074)</span>
+	</div>
+ 
+	<h3>Schedule Operation</h3>
+ 
+	<?php
+	if ($operation->event->episode->firm_id != $firm->id) {
+		if ($firm->name == 'Emergency List') {
+			$class = 'flash-error';
+			$message = 'You are booking into the Emergency List.';
+		} else {
+			$class = 'flash-notice';
+			$message = 'You are booking into the list for ' . $firm->name . '.';
+		} ?>
+		<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
+		<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
+		<?php
+	}
+	if (empty($sessions)) { ?>
+		<div class="flash-error">This firm has no scheduled sessions.</div>
+		<?php
 	}
 	?>
-<div id="operation">
-	<h1>Select theatre slot</h1><br />
-<?php
-if (Yii::app()->user->hasFlash('info')) { ?>
-<div class="flash-notice">
-    <?php echo Yii::app()->user->getFlash('info'); ?>
-</div>
-<?php
-} ?>
-	<strong>Select a session date:</strong><br />
-	<div id="calendar">
-		<div id="session_dates">
-		<div id="details">
-<?php	echo $this->renderPartial('_calendar',
-			array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions, 'firmId' => $firm->id), false, true); ?>
-		</div>
+
+	<div id="firmSelect" class="eventDetail clearfix">
+		<div class="label"><span class="normal">Viewing the schedule for </span><br /><strong><?php echo $firm->name?></strong></div>
+		<div class="data">
+			<select id="firmId">
+				<option value="">Select a different firm</option>
+				<?php foreach ($firmList as $aFirm) {?>
+					<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
+				<?php }?>
+			</select>
 		</div>
 	</div>
-</div>
-</div>
+
+	<?php if (!empty($site->name)) {?>
+		<div id="siteSelect" class="eventDetail clearfix">
+			<div class="label"><span class="normal">Viewing the calendar for: </span><br /><strong><?php echo $site->name; ?></strong></div>
+			<div class="data">
+				<?php echo CHtml::dropDownList('siteId', '', $siteList, array('empty' => 'Select a different site', 'disabled' => empty($siteList))); ?>
+			</div>
+		</div>
+	<?php }?>
+
+<div id="operation">
+	<h3>Select theatre slot</h3>
+
+	<?php if (Yii::app()->user->hasFlash('info')) {?>
+		<div class="flash-notice">
+			<?php echo Yii::app()->user->getFlash('info'); ?>
+		</div>
+	<?php }?>
+
+	<h4>Select a session date:</h4>
+	<div id="calendar">
+		<div id="session_dates">
+			<div id="details">
+				<?php echo $this->renderPartial('_calendar', array('operation'=>$operation, 'date'=>$date, 'sessions' => $sessions, 'firmId' => $firm->id), false, true); ?>
+			</div> <!-- details -->
+		</div> <!--session_dates -->
+	</div> <!-- calendar -->
+</div> <!-- operation -->
+</div> <!-- #schedule -->
+
 <script type="text/javascript">
 	$(function() {
 		$('#previous_month').die('click').live('click',function() {
