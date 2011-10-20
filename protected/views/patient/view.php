@@ -12,6 +12,10 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery.fancybox-1.3.4.pack.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery.mousewheel-3.0.4.pack.js'] = false;
+
 $patientName = $model->first_name . ' ' . $model->last_name;
 $this->breadcrumbs=array(
 	"{$patientName} ({$model->hos_num})",

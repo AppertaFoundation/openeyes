@@ -12,10 +12,6 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerCoreScript('jquery');
-$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 $this->pageTitle=Yii::app()->name . ' - Login';
 $this->layout = 'simple';
 ?>

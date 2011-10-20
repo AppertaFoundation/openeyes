@@ -562,3 +562,16 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
 }
+
+#support-info {
+	float: right;
+	margin-top: -1.2em;
+	margin-right: 13em;
+	font-size: 7pt;
+	font-weight: normal;
+	color: #666;
+}
+
+#support-info a {
+	color: #666;
+}

@@ -12,13 +12,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
-$cs->registerScriptFile($baseUrl.'/js/phrase.js');
-Yii::app()->clientScript->registerCoreScript('jquery');
-
 $this->layout = 'main'; ?>
+<script type="text/javascript" src="/js/phrase.js"></script>
 <h2>Patient search</h2>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>

@@ -26,6 +26,11 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<link rel="icon" href="favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico"/> 
 	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"> 
+	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery.fancybox-1.3.4.css">
+	<script type="text/javascript" src="/js/jquery.js"></script>
+	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/libs/modernizr-2.0.6.min.js"></script> 
 </head> 
  
@@ -59,13 +64,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
-	
-	<div id="footer"> 
-		<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals</h6> 
-	</div> <!-- #footer --> 
- 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="js/libs/jquery-1.6.2.min.js"><\/script>')</script>
 
+	<?php echo $this->renderPartial('/base/_footer',array())?>
 </body> 
 </html> 

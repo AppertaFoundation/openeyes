@@ -12,28 +12,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-?>
-<script type="text/javascript" src="/js/phrase.js"></script>
-<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
-<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
-<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
-<?php /*
-<link rel="stylesheet" type="text/css" href="/css/jqueryui/theme/jquery-ui.css" />
-<script type="text/javascript" src="/js/libs/jquery-1.6.2.js"></script>
-<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
-<script type="text/javascript" src="/js/phrase.js"></script>
-<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
-<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
-<?php
-/*
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerScriptFile($baseUrl.'/js/phrase.js');
-Yii::app()->clientScript->registerCoreScript('jquery');
-Yii::app()->clientScript->registerCoreScript('jquery-ui');
-$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
-$cs->registerScriptFile($baseUrl.'/js/jquery.fancybox-1.3.4.pack.js');
-*/
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
 
 $form = $this->beginWidget('CActiveForm', array(
 		'id'=>'clinical-create',

@@ -62,6 +62,11 @@ class SiteController extends BaseController
 				'actions'=>array('login'),
 				'users'=>array('?')
 			),
+			// non-logged in can view debug info
+			array('allow',
+				'actions'=>array('debuginfo'),
+				'users'=>array('?')
+			),
 			// logged in can view logout
 			array('allow',
 				'actions'=>array('logout'),
@@ -141,6 +146,10 @@ class SiteController extends BaseController
 	{
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
+	}
+
+	public function actionDebuginfo() {
+		$this->renderPartial('/site/debuginfo',array());
 	}
 
 	/*
