@@ -35,7 +35,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 </head> 
  
 <body> 
- 
+	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix"> 
 			<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div> 
