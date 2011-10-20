@@ -126,7 +126,7 @@
 						$('div.action_options').show();
 						$('#event_content').html(data);
 
-						if (data.match(/<button type="submit" value="submit" class="wBtn_/)) {
+						if (data.match(/<!-- editable -->/)) {
 							$('span.edit-event').show();
 						} else {
 							$('span.edit-event').hide();
@@ -141,12 +141,12 @@
 				$btn_over = $btn_normal.replace(/.png$/ig,"_o.png");
 				$btn_inactive = $btn_normal.replace(/.png$/ig,"_inactive.png");
 				$collapsed = true;
-				
+
 				// rollover... if not open
 				$('#addNewEvent').mouseover(function(){
 					if($collapsed){ $('img','#addNewEvent').attr("src",$btn_over); }
 				});
-				
+
 				$('#addNewEvent').mouseout(function(){
 					if($collapsed){ $('img','#addNewEvent').attr("src",$btn_normal);	}
 				});

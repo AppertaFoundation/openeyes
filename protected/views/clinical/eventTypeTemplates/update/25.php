@@ -45,9 +45,10 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-        <div class="form_button">
-                        <button type="submit" value="submit" class="wBtn_edit_operation ir fancybox" id="update">Edit operation</button>
-        </div>
+	<button type="submit" value="submit" id="update">Update operation</button>
+	<!--div class="form_button">
+		<button type="submit" value="submit" class="wBtn_edit_operation ir fancybox" id="update">Edit operation</button>
+	</div-->
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
@@ -71,22 +72,22 @@ $this->endWidget(); ?>
 		return false;
 	});
 
-        function displayErrors(data) {
-                arr = $.parseJSON(data);
-                if (!$.isEmptyObject(arr)) {
-                        $('#clinical-update_es_ ul').html('');
+	function displayErrors(data) {
+		arr = $.parseJSON(data);
+		if (!$.isEmptyObject(arr)) {
+			$('#clinical-update_es_ ul').html('');
 
-                        $.each(arr, function(index, value) {
-                                element = index.replace('Element', '');
-                                element = element.substr(0, element.indexOf('_'));
-                                list = '<li>' + element + ': ' + value + '</li>';
-                                $('#clinical-update_es_ ul').append(list);
-                        });
-                        $('#clinical-update_es_').show();
-                        return false;
-                } else {
-                        $('#clinical-update_es_ ul').html('');
-                        $('#clinical-update_es_').hide();
-                }
-        }
+			$.each(arr, function(index, value) {
+				element = index.replace('Element', '');
+				element = element.substr(0, element.indexOf('_'));
+				list = '<li>' + element + ': ' + value + '</li>';
+				$('#clinical-update_es_ ul').append(list);
+			});
+			$('#clinical-update_es_').show();
+			return false;
+		} else {
+			$('#clinical-update_es_ ul').html('');
+			$('#clinical-update_es_').hide();
+		}
+	}
 </script>

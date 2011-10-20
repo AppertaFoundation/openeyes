@@ -15,17 +15,17 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 ?><p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
 
 <?php
+
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
-Yii::app()->clientScript->registerCoreScript('jquery');
 
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
 
 $form = $this->beginWidget('CActiveForm', array(
         'id'=>'event-create',
-        'enableAjaxValidation'=>true,
+        'enableAjaxValidation'=>false,
         'htmlOptions' => array('class'=>'sliding'),
         'focus'=>'#procedure_id'
 ));
@@ -60,8 +60,6 @@ foreach ($elements as $element) {
 $this->endWidget();
 ?>
 <script type="text/javascript">
-        $('button.fancybox').fancybox([]);
-
         $('#createEvent').unbind('click').click(function() {
                 $.ajax({
                         'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',

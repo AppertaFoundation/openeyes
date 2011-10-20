@@ -58,7 +58,7 @@ if (!empty($operation->booking)) {
 	echo $session->start_time . ' - ' .
 		$session->end_time . ' ' .
 		date('jS F, Y', strtotime($session->date)) . ', ' .
-		$session->sequence->sequenceFirmAssignment->firm->name . ' (' . 
+		$session->sequence->sequenceFirmAssignment->firm->name . ' (' .
 		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')'
 ?></h4>
 </div>
@@ -67,6 +67,9 @@ if (!empty($operation->booking)) {
 ?>
 
 <?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
+?>
+<!-- editable -->
+<?php
 	if (empty($operation->booking)) {
 		$isAdmissionLetter = true;
 
@@ -76,7 +79,7 @@ if (!empty($operation->booking)) {
 			<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_btn">Print reminder letter</button>
 			<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_btn">Print GP refer back letter</button>
 			<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_schedule_now">Schedule now</button>
-			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel_operation">Cancel operation</button> 
+			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel_operation">Cancel operation</button>
 		</div>
 	<?php } else {?>
 		<div style="margin-top:40px; text-align:center;">
@@ -96,7 +99,7 @@ if (!empty($operation->booking)) {
 <!-- ================================================ -->
   <!-- * * * * * * * * * *  LETTER  * * * * * * * * * * -->
   <!-- ================================================ -->
-  
+
   <div id="letters">
   	<div id="letterTemplate">
   		<div id="l_type">Type of Letter</div>
@@ -145,7 +148,7 @@ if (!empty($operation->booking)) {
   		<div id="l_content">
 
 <p><strong>Hospital number reference: INP/A/Hosnum<br />
-NHS number:</strong></p>  
+NHS number:</strong></p>
 
 <p>Dear Parent or Guardian of PatientName,</p>
 
@@ -164,28 +167,28 @@ NHS number:</strong></p>
 <br />
 Admissions Officer</p>
   		</div>
-  		
-  		
+
+
   	</div> <!-- #letterTemplate -->
   </div> <!-- #letters -->
 
-  
+
 <div id="letterFooter">   <!--  letter footer -->
 Patron: Her Majesty The Queen<br />
 Chairman: Rudy Markham<br />
 Chief Executive: John Pelly<br />
 </div>
-  
+
   <!-- ================================================ -->
-  <!-- * * * * * * * * end of LETTER  * * * * * * * * * --> 
-  <!-- ================================================ -->
-  
-  
+  <!-- * * * * * * * * end of LETTER  * * * * * * * * * -->
   <!-- ================================================ -->
 
-  <!-- * * * * * * * * *    FORM    * * * * * * * * * * --> 
+
   <!-- ================================================ -->
-  
+
+  <!-- * * * * * * * * *    FORM    * * * * * * * * * * -->
+  <!-- ================================================ -->
+
 <div id="printForm">
   	<div id="printFormTemplate">
 		<table width="100%">
@@ -226,7 +229,7 @@ Chief Executive: John Pelly<br />
 			</tr>
 		</table>
 
-		
+
 		<table width="100%">
 			<tr>
 				<td width="25%"><strong>Admitting Consultant:</strong></td> <!-- width control -->
@@ -236,14 +239,14 @@ Chief Executive: John Pelly<br />
 
 			</tr>
 			<tr>
-				<td>Service:</td>				
-				<td>Service</td>				
-				<td>Telephone:</td>				
-				<td>Telephone</td>				
+				<td>Service:</td>
+				<td>Service</td>
+				<td>Telephone:</td>
+				<td>Telephone</td>
 			</tr>
 			<tr>
-				<td>Site:</td>				
-				<td>site</td>				
+				<td>Site:</td>
+				<td>site</td>
 				<td colspan="2">
 
 					<table width="100%" class="subTableNoBorders">
@@ -254,18 +257,18 @@ Chief Executive: John Pelly<br />
 						</tr>
 					</table>
 
-				</td>				
+				</td>
 			</tr>
 			<tr>
-				<td><strong>Person organising admission:</strong></td>				
-				<td>Doctor</td>				
-				<td><strong>Dates patient unavailable:</strong></td>				
+				<td><strong>Person organising admission:</strong></td>
+				<td>Doctor</td>
+				<td><strong>Dates patient unavailable:</strong></td>
 				<td>DatesCantComeIn</td>
 			</tr>
 			<tr>
 
-				<td colspan="2" style="border-bottom:1px dotted #000;">Signature:</td>								
-				<td>Available at short notice:</td>				
+				<td colspan="2" style="border-bottom:1px dotted #000;">Signature:</td>
+				<td>Available at short notice:</td>
 				<td>ShortNotice</td>
 			</tr>
 		</table>
@@ -280,33 +283,33 @@ Chief Executive: John Pelly<br />
 			</tr>
 			<tr>
 
-				<td>Admission category:</td>				
-				<td>DayCase</td>				
+				<td>Admission category:</td>
+				<td>DayCase</td>
 				<td colspan="2" rowspan="5" align="center" style="vertical-align:middle;">
 					<strong>Patient Added to Waiting List.<br />
 					Admission Date to be arranged</strong>
-				</td>				
-								
+				</td>
+
 			</tr>
 			<tr>
 
-				<td><strong>Diagnosis:</strong></td>				
-				<td>Diagnosis</td>				
-								
+				<td><strong>Diagnosis:</strong></td>
+				<td>Diagnosis</td>
+
 			</tr>
 			<tr>
-				<td><strong>Intended procedure:</strong></td>				
-				<td>Operation</td>				
-				
+				<td><strong>Intended procedure:</strong></td>
+				<td>Operation</td>
+
 			</tr>
 			<tr>
-				<td><strong>Eye:</strong></td>								
-				<td>eye</td>				
+				<td><strong>Eye:</strong></td>
+				<td>eye</td>
 			</tr>
 
 			<tr>
-				<td><strong>Total theatre time (mins):</strong></td>								
-				<td>duration</td>				
+				<td><strong>Total theatre time (mins):</strong></td>
+				<td>duration</td>
 			</tr>
 		</table>
 		<span class="subTitle">PRE-OP ASSESSMENT INFORMATION</span>
@@ -332,16 +335,16 @@ Chief Executive: John Pelly<br />
 			<tr>
 				<td style="border:2px solid #666; height:7em;">Comments</td>
 			</tr>
-			
-		</table>	
-		
+
+		</table>
+
   	</div> <!-- adminFormTemplate -->
  </div> <!-- printForm -->
-  
-  
+
+
   <!-- ================================================ -->
 
-  <!-- * * * * * * * *  end of FORM   * * * * * * * * * --> 
+  <!-- * * * * * * * *  end of FORM   * * * * * * * * * -->
   <!-- ================================================ -->
 
 

@@ -15,14 +15,13 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
-Yii::app()->clientScript->registerCoreScript('jquery');
 
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
 
 $form = $this->beginWidget('CActiveForm', array(
         'id'=>'event-update',
-        'enableAjaxValidation'=>true,
+        'enableAjaxValidation'=>false,
         'htmlOptions' => array('class'=>'sliding'),
         'focus'=>'#procedure_id'
 ));
@@ -46,23 +45,16 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-<?php
-if (EyeDrawService::getActive()) { ?>
-<button type="submit" value="submit" class="shinybutton highlighted" onClick="javascript: eyedraw_submit();" id="updateEvent"><span>Update</span></button>
-<?php
-} else { ?>
 <button type="submit" value="submit" class="shinybutton highlighted" id="updateEvent"><span>Update</span></button>
 <?php
-}
-
-$this->endWidget(); 
+$this->endWidget();
 ?>
 <script type="text/javascript">
         $('button.fancybox').fancybox([]);
 
         $('#updateEvent').unbind('click').click(function() {
                 $.ajax({
-                        'url': '<?php echo Yii::app()->createUrl('clinical/update'); ?>',
+                        'url': '<?php echo Yii::app()->createUrl('clinical/update', array('id'=>$id)); ?>',
                         'type': 'POST',
                         'data': $('#event-update').serialize(),
                         'success': function(data) {

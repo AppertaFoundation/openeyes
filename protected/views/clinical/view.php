@@ -28,3 +28,9 @@ foreach ($elements as $element) {
 		);
 	}
 }
+
+if ($editable) {
+?>
+<!-- editable -->
+<?php
+}
