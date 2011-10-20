@@ -247,7 +247,7 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
 
 
-/* ------------------------------------------------- ADMIN	*/
+/* ------------------------------------------------- ADMIN  */
 
 .adminMode { position:relative; }
 .adminMode #mainmenu { padding:10px 5px 10px 15px;}
@@ -303,8 +303,8 @@ ul#user_nav > li a:hover { background: #fff; border:none; }
 ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#fff; padding:10px 5px 3px 5px; border:none; }
 /* in ADMIN mode */
-#user_panel.inAdmin { background:#333; color:#fff; border-color:#000; height:45px;	}
-#user_panel.inAdmin ul#user_nav > li a	{ display:inline-block; background: #aaa; }
+#user_panel.inAdmin { background:#333; color:#fff; border-color:#000; height:45px;  }
+#user_panel.inAdmin ul#user_nav > li a 	{ display:inline-block; background: #aaa; }
 #user_panel.inAdmin ul#user_nav > li a:hover { background: #fff; border:none; }
 #user_panel.inAdmin ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
  
@@ -540,7 +540,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 #letterTemplate { display:none; background:#fff; font-size:10pt; }
 #letterTemplate #l_type { text-align: center; font-size:6pt; }
-#letterTemplate #l_content	p { margin-bottom:1.5em; }
+#letterTemplate #l_content  p { margin-bottom:1.5em; }
 #letterFooter { display:none; text-align:right; font-size:6pt; line-height: 1.5; position:absolute; bottom:0; right:0; }
 
 
@@ -604,19 +604,4 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 	#letterTemplate { display:block !important; page-break-after: always;}
 	#letterFooter { display:block !important; }
 	#printForm	{ display:block !important; }
-
-	
-}
-
-#support-info {
-	float: right;
-	margin-top: -1.2em;
-	margin-right: 13em;
-	font-size: 7pt;
-	font-weight: normal;
-	color: #666;
-}
-
-#support-info a {
-	color: #666;
 }
