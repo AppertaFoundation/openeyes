@@ -1,0 +1,97 @@
+/* HTML5 ✰ Boilerplate
+
+ * ==|== normalize ==========================================================
+ */
+
+html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+body { margin: 0; font-size: 10pt; line-height: 1.231; }
+body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+
+a { color: #0b59da; text-decoration: none; }
+a:visited { color: #0b59da; }
+a:hover { color: #003cff; }
+a:focus { outline: thin dotted; }
+a:hover, a:active { outline: 0; }
+
+/* ======================================================================== primary styles ================= */
+
+html { background-color: #d4d1cd; }
+body { width:1230px; margin:0 auto; }
+/* ====== STRUCTURE ====== */
+#container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
+#container 		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae;  }
+#header 		{ height: 70px; position: relative; }
+#content 		{ min-height: 400px;}
+#help 			{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }  /* offset by 5px! */
+#help:before 	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
+#footer 		{ width: 1234px; height:35px;background: #b3b0ae url(../img/_structure/openeyes_footer.png) bottom right no-repeat; padding-top:5px} /* allow for help offset */
+/* ---- add border radius ---- */
+#footer, #help	{-webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
+
+/* HEADER structure */
+#brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
+
+/* ====== GENERAL ====== */
+
+/* TYPOGRAPHY - BASIC */
+p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
+#content p { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+h3,h4,h5 { margin-bottom:10px; }
+#content p { margin-bottom: 10px; }
+/* base: font-size: 10pt; line-height: 1.231;  */
+h3 { font-size: 14pt; font-weight: normal; }
+h4 { font-size: 11pt; font-weight: normal; }
+h5 { font-size: 10pt; line-height:1.5; }
+/* H2 reserved for page headers, H6 left for custom uses */
+h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/gradients/h2_edge.png) center left no-repeat; padding:5px 15px 3px 55px; 
+-moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
+h2.alert { background-color:#ffe6b2; }
+em { font-style: italic; color:#333; }
+.small 	{ font-size: 8pt; font-weight: normal; }
+.normal { font-size: 10pt; font-weight: normal;}
+.caps  	{ font-variant: small-caps; }
+
+/* ====== BOXES ====== */
+#content .whiteBox, #content .alertBox, #content .blueBox, #content .patientBox  { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#content .whiteBox > p, #content .alertBox > p, #content .blueBox > p  { background: none; padding:0; margin-bottom:8px;  }
+#content .whiteBox 	{ background: #fafafa; padding:10px; }
+#content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding:10px 10px 10px 50px; }
+#content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
+#content .fullBox	{ background: #dae6f1; }
+/* specific content */
+#content .patientBox  { position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
+/* icons for boxes */
+#content .withIcon { padding-left: 40px; }
+#content .boxIcon { position: absolute; top:5px; left:0; }
+
+/* ====== A HREF ====== */
+a:hover, .aPush { border-bottom: thin dotted #002ec4; }
+a:hover .aPush	{ border-bottom: thin solid #3665ff; }
+
+/* ====== FORMS - GENERAL ====== */
+.form_greyBox { background: #e2dfdb url(../img/_elements/gradients/bg_form.jpg) top left repeat-x; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; border:2px solid #666; }
+
+
+/* ====== FOOTER ====== */
+#footer h6 { margin:14px 0 0 12px; font-size:7pt; font-weight: normal; color:#666; }
+
+/* ====== LOGIN ====== */
+#down-form 				{ width:465px; margin: 50px auto 0 auto; padding:40px 30px 25px 30px; }
+#down-form .loginRow 		{ position:relative; height:55px; margin-bottom: 20px; text-align: right;}
+#down-form .loginRow label { position:absolute; top:5px; left:10px; }
+#down-form .loginRow input { position:absolute; top:0; right:0; width:200px; margin:0 0 5px 0; }
+#down-form .loginRow a 	{ position:absolute; bottom:0; right:0; }
+#down-form .row 			{ width:350px; text-align: right; margin-top:30px; }
+#down-form .row label		{ margin-right: 5px;  }
+#down-form .row select 	{ position: relative; top:-1px; width:180px; }
+
+/* ==|== non-semantic helper classes ======================================== */
+.ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
+.ir br { display: none; }
+.hidden { display: none !important; visibility: hidden; }
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+.invisible { visibility: hidden; }
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { zoom: 1; }
