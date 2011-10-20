@@ -112,6 +112,7 @@ h5 { font-size: 10pt; line-height:1.5; }
 h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/gradients/h2_edge.png) center left repeat-y; padding:5px 15px 3px 55px; 
 -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
 h2.alert { background-color:#ffe6b2; }
+h2.admin { background:#333; color:#fff; }
 em { font-style: italic; color:#333; }
 .small 	{ font-size: 8pt; font-weight: normal; }
 .normal { font-size: 10pt; font-weight: normal;}
@@ -246,6 +247,35 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
 
 
+/* ------------------------------------------------- ADMIN  */
+
+.adminMode { position:relative; }
+.adminMode #mainmenu { padding:10px 5px 10px 15px;}
+.adminMode #mainmenu ul { list-style-type: none; padding: 0px; margin: 0px; }
+.adminMode #mainmenu ul > li { display:inline-block; margin-right: 5px; }
+.adminMode #mainmenu a { display:block; padding:5px; background: #ccc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.adminMode #mainmenu a:hover { border:none; color:#fff; background:#3665ff; }
+.adminMode #mainmenu li.active a { background:#bbb; }
+
+.adminMode #sidebar { position:absolute; top:90px; right:10px; width:20%; background:#ddd; padding:10px;  -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;  }
+.adminMode #sidebar .portlet-title { font-size:11pt; font-weight: bold; }
+.adminMode #sidebar ul { list-style-type: none; padding: 0px; margin: 10px 0; }
+.adminMode #sidebar ul > li { display:block; margin-bottom: 5px; }
+.adminMode #sidebar  a { display:block; padding:5px; background: #ccc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.adminMode #sidebar  a:hover { border:none; color:#fff; background:#3665ff; }
+.adminMode #sidebar  li.active a { background:#bbb; }
+ 
+.adminMode h1 { font-size:16pt; font-weight: bold; padding-bottom:10px}
+.adminMode .list-view { padding-left:20px; width:75%; }
+.adminMode .list-view .summary { padding-bottom:10px; border-bottom:1px solid #999; }
+.adminMode .list-view .items .view { margin:10px 0; padding-bottom:10px; border-bottom:1px dotted #999; }
+.adminMode .list-view .items .view b { display:inline-block; width:120px; color:#777; }
+.adminMode .list-view .items .view a { font-weight: bold;}
+
+.adminMode .pager { background:#ccc; padding:20px 10px; }
+.adminMode ul.yiiPager { list-style-type: none; padding: 0px; margin: 0px; padding-top:10px;  }
+.adminMode ul.yiiPager > li { display:inline-block; margin-right: 5px; }
+
 
 /* ------------------------------------------------- HELP & FOOTER  */
 
@@ -272,7 +302,12 @@ ul#user_nav > li a 	 { display:inline-block; background: #cdd9e3; padding:10px 5
 ul#user_nav > li a:hover { background: #fff; border:none; }
 ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#fff; padding:10px 5px 3px 5px; border:none; }
-
+/* in ADMIN mode */
+#user_panel.inAdmin { background:#333; color:#fff; border-color:#000; height:45px;  }
+#user_panel.inAdmin ul#user_nav > li a 	{ display:inline-block; background: #aaa; }
+#user_panel.inAdmin ul#user_nav > li a:hover { background: #fff; border:none; }
+#user_panel.inAdmin ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
+ 
 /* ====== PATIENT ID ====== */
 #patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding:0 10px; border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212;   }
 #patientID > .patientReminder { padding-top:9px; }
@@ -419,7 +454,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation table tbody td.closed { background:#828282; font-size:12pt; }
 #operation table tbody td.selected_date { background:#3665ff; font-size:12pt; color:#fff; }
 /* hovers all the same */
-#operation td.available:hover, #operation td.limited:hover, #operation td.full:hoverul { background:#3665ff; color:#fff; cursor:pointer; }
+#operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background:#3665ff; color:#fff; cursor:pointer; }
 /* KEY */
 #operation #day 			.color_box { background:#666; }
 #operation #available 		.color_box { background:#69bd51; }
@@ -501,21 +536,20 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 
 	
+/* ====== LETTERs (hidden in page) ====== */
+
+#letterTemplate { display:none; background:#fff; font-size:10pt; }
+#letterTemplate #l_type { text-align: center; font-size:6pt; }
+#letterTemplate #l_content  p { margin-bottom:1.5em; }
+#letterFooter { display:none; text-align:right; font-size:6pt; line-height: 1.5; position:absolute; bottom:0; right:0; }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* ====== FORMs (hidden in page) ====== */
+#printForm	{ display:none; background:#fff; font-size:7pt; }
+#printFormTemplate .title { font-size:13pt; font-weight: bold; }
+#printFormTemplate table tr > td { padding:1em 0.5em; border:1px solid #eee; }
+#printFormTemplate .subTitle { display:block; font-size:8pt; font-weight: bold; margin-top:1em; padding-top:0.5em; padding-bottom: 0.5em; }
+#printFormTemplate table.subTableNoBorders tr > td { border:none; }
 
 
 
@@ -561,17 +595,19 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
   @page { margin: 0.5cm; }
   p, h2, h3 { orphans: 3; widows: 3; }
   h2, h3 { page-break-after: avoid; }
+  
+  /* PREPAPRE PAGE FOR PRINT */
+  html { height:100%; }
+  body { width:auto !important; margin: 0 !important;}
+  #container { display:none !important; }
+  #footer { display:none !important; }
+  #letterTemplate { display:block !important; page-break-after: always;}
+  #letterFooter { display:block !important; }
+  #printForm	{ display:block !important; }
+
+  
 }
 
-#support-info {
-	float: right;
-	margin-top: -1.2em;
-	margin-right: 13em;
-	font-size: 7pt;
-	font-weight: normal;
-	color: #666;
-}
 
-#support-info a {
-	color: #666;
-}
+
+
