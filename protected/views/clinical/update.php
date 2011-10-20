@@ -17,10 +17,14 @@ $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
+
 $form = $this->beginWidget('CActiveForm', array(
-    'id'=>'clinical-update',
-    'enableAjaxValidation'=>false,
-	'htmlOptions'=> array('class'=>'sliding')
+        'id'=>'event-update',
+        'enableAjaxValidation'=>true,
+        'htmlOptions' => array('class'=>'sliding'),
+        'focus'=>'#procedure_id'
 ));
 
 echo CHtml::hiddenField('action', 'update');
@@ -44,11 +48,54 @@ foreach ($elements as $element) {
 <div class="cleartall"></div>
 <?php
 if (EyeDrawService::getActive()) { ?>
-<button type="submit" value="submit" class="shinybutton highlighted" onClick="javascript: eyedraw_submit();"><span>Update</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted" onClick="javascript: eyedraw_submit();" id="updateEvent"><span>Update</span></button>
 <?php
 } else { ?>
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Update</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted" id="updateEvent"><span>Update</span></button>
 <?php
 }
 
-$this->endWidget();
+$this->endWidget(); 
+?>
+<script type="text/javascript">
+        $('button.fancybox').fancybox([]);
+
+        $('#updateEvent').unbind('click').click(function() {
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('clinical/update'); ?>',
+                        'type': 'POST',
+                        'data': $('#event-update').serialize(),
+                        'success': function(data) {
+                                if (data.match(/^[0-9]+$/)) {
+                                        window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+                                        return false;
+                                }
+                                try {
+                                        displayErrors(data);
+                                } catch (e) {
+                                        return false;
+                                }
+                        }
+                });
+                return false;
+        });
+
+        function displayErrors(data) {
+                arr = $.parseJSON(data);
+                if (!$.isEmptyObject(arr)) {
+                        $('#event-update_es_ ul').html('');
+
+                        $.each(arr, function(index, value) {
+                                element = index.replace('Element', '');
+                                element = element.substr(0, element.indexOf('_'));
+                                list = '<li>' + element + ': ' + value + '</li>';
+                                $('#event-update_es_ ul').append(list);
+                        });
+                        $('#event-update_es_').show();
+                        return false;
+                } else {
+                        $('#event-update_es_ ul').html('');
+                        $('#event-update_es_').hide();
+                }
+        }
+</script>

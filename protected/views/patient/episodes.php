@@ -53,7 +53,13 @@
 				<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
 					<h3>Adding New Event</h3>
 					<p><strong>Select event to add:</strong></p>
-					<p><a href="#" id="add-operation"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong>Operation</strong></a></p>
+					<?php
+						foreach ($eventTypes as $eventType) {
+?>
+					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+<?php
+						}
+?>
 				</div>
 				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php if (ctype_digit(@$_GET['event'])) echo $_GET['event']?>" />
 				<?php
@@ -163,9 +169,10 @@
 				});
 			});
 
-			$('#add-operation').unbind('click').click(function() {
+			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
+				eventTypeId = this.id.match(/\d*$/);
 				$.ajax({
-					url: '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>25)); ?>',
+					url: '/clinical/create?event_type_id=' + eventTypeId,
 					success: function(data) {
 						$('div.display_actions').hide();
 						$('#add-event-select-type').hide();

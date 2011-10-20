@@ -16,8 +16,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
 
 $form = $this->beginWidget('CActiveForm', array(
-		'id'=>'clinical-create',
-		'enableAjaxValidation'=>true,
+	'id'=>'clinical-create',
+	'enableAjaxValidation'=>true,
 	'htmlOptions' => array('class'=>'sliding'),
 	'focus'=>'#procedure_id'
 ));

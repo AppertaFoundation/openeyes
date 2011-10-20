@@ -45,7 +45,9 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" id="update"><span>Update operation</span></button>
+        <div class="form_button">
+                        <button type="submit" value="submit" class="wBtn_edit_operation ir fancybox" id="update">Edit operation</button>
+        </div>
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
@@ -54,30 +56,37 @@ $this->endWidget(); ?>
 			'url': '<?php echo Yii::app()->createUrl('clinical/update', array('id'=>$id)); ?>',
 			'type': 'POST',
 			'data': $('#clinical-update').serialize(),
-			'success': function(data) {
-				try {
-					arr = $.parseJSON(data);
-					if (!$.isEmptyObject(arr)) {
-						$('#clinical-update_es_ ul').html('');
-
-						$.each(arr, function(index, value) {
-							element = index.replace('Element', '');
-							element = element.substr(0, element.indexOf('_'));
-							list = '<li>' + element + ': ' + value + '</li>';
-							$('#clinical-update_es_ ul').append(list);
-						});
-						$('#clinical-update_es_').show();
-						return false;
-					} else {
-						$('#clinical-update_es_ ul').html('');
-						$('#clinical-update_es_').hide();
-					}
-				} catch (e) {
-					$('#episodes_details').show();
-					$('#episodes_details').html(data);
-				}
-			}
+                        'success': function(data) {
+                                if (data.match(/^[0-9]+$/)) {
+                                        window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+                                        return false;
+                                }
+                                try {
+                                        displayErrors(data);
+                                } catch (e) {
+                                        return false;
+                                }
+                        }
 		});
 		return false;
 	});
+
+        function displayErrors(data) {
+                arr = $.parseJSON(data);
+                if (!$.isEmptyObject(arr)) {
+                        $('#clinical-update_es_ ul').html('');
+
+                        $.each(arr, function(index, value) {
+                                element = index.replace('Element', '');
+                                element = element.substr(0, element.indexOf('_'));
+                                list = '<li>' + element + ': ' + value + '</li>';
+                                $('#clinical-update_es_ ul').append(list);
+                        });
+                        $('#clinical-update_es_').show();
+                        return false;
+                } else {
+                        $('#clinical-update_es_ ul').html('');
+                        $('#clinical-update_es_').hide();
+                }
+        }
 </script>

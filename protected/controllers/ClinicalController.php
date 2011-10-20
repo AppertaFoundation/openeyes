@@ -291,11 +291,8 @@ class ClinicalController extends BaseController
 
 				$this->assignReferralIfRequired($event->id, $this->firm, $this->patientId);
 
-				// Nothing has gone wrong with updating elements, go to the view page
-				$eventTypeName = ucfirst($event->eventType->name);
-				Yii::app()->user->setFlash('success', "{$eventTypeName} updated.");
-
-				$this->redirect(array('view', 'id' => $event->id));
+				echo $event->id;
+				return;
 			}
 
 			// If we get this far element validation has failed, so we render them again.

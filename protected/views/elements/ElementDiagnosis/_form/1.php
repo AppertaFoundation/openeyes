@@ -43,9 +43,6 @@ if (empty($model->event_id)) {
 }
 ?>
 				<div id="new_event_details" class="whiteBox">
-					<form id="clinical-create" action="/clinical/create?event_type_id=25" method="post">
-					<input type="hidden" value="create" name="action" id="action" />
-					<input type="hidden" value="25" name="event_type_id" id="event_type_id" />
 					<!-- Reminder -->
 					<div class="patientReminder">
 						<span class="type"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="op" width="16" height="16" /></span>

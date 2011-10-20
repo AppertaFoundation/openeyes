@@ -20,11 +20,16 @@ $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl.'/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
+
 $form = $this->beginWidget('CActiveForm', array(
-	'id'=>'clinical-create',
-	'enableAjaxValidation'=>false,
-	'htmlOptions' => array('class'=>'sliding')
+        'id'=>'event-create',
+        'enableAjaxValidation'=>true,
+        'htmlOptions' => array('class'=>'sliding'),
+        'focus'=>'#procedure_id'
 ));
+
 echo CHtml::hiddenField('action', 'create');
 echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $patient->id);
@@ -50,6 +55,49 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Create</span></button>
+<button type="submit" value="submit" class="shinybutton highlighted" id="createEvent"><span>Create</span></button>
 <?php
 $this->endWidget();
+?>
+<script type="text/javascript">
+        $('button.fancybox').fancybox([]);
+
+        $('#createEvent').unbind('click').click(function() {
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
+                        'type': 'POST',
+                        'data': $('#event-create').serialize(),
+                        'success': function(data) {
+                                if (data.match(/^[0-9]+$/)) {
+                                        window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+                                        return false;
+                                }
+                                try {
+                                        displayErrors(data);
+                                } catch (e) {
+                                        return false;
+                                }
+                        }
+                });
+                return false;
+        });
+
+        function displayErrors(data) {
+                arr = $.parseJSON(data);
+                if (!$.isEmptyObject(arr)) {
+                        $('#event-create_es_ ul').html('');
+
+                        $.each(arr, function(index, value) {
+                                element = index.replace('Element', '');
+                                element = element.substr(0, element.indexOf('_'));
+                                list = '<li>' + element + ': ' + value + '</li>';
+                                $('#event-create_es_ ul').append(list);
+                        });
+                        $('#event-create_es_').show();
+                        return false;
+                } else {
+                        $('#event-create_es_ ul').html('');
+                        $('#event-create_es_').hide();
+                }
+        }
+</script>

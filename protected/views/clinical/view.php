@@ -14,11 +14,6 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 
-if ($editable) {
-	echo CHtml::link('<span>Edit</span>',
-		array('clinical/update', 'id'=>$eventId), array('id'=>'editlink','class'=>'shinybutton', 'encode'=>false));
-}
-
 /**
  * Loop through all the element types completed for this event
  */
