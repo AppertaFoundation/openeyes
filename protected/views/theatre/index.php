@@ -8,42 +8,44 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerCSSFile('/css/theatre.css', 'all');
 ?>
-<h3 class="title">Theatre Schedules</h3>
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'theatre-filter',
-	'action'=>Yii::app()->createUrl('theatre/search'),
-	'enableAjaxValidation'=>false,
-)); ?>
-<div id="search-options">
-	<div id="main-search">
-	<div id="title">Show schedules by:</div>
-	<table>
-	<tr>
-		<th>Site:</th>
-		<th>Specialty:</th>
-		<th>Firm:</th>
-		<th>Theatre:</th>
-		<th>Ward:</th>
-	</tr>
-	<tr>
-		<td><?php
-	echo CHtml::dropDownList('site-id', '', Site::model()->getList(),
-		array('empty'=>'All sites', 'onChange' => "js:loadTheatres(this.value); loadWards(this.value);")); ?></td>
-		<td><?php
-	echo CHtml::dropDownList('specialty-id', '', Specialty::model()->getList(),
-		array('empty'=>'All specialties', 'ajax'=>array(
-			'type'=>'POST',
-			'data'=>array('specialty_id'=>'js:this.value'),
-			'url'=>Yii::app()->createUrl('theatre/filterFirms'),
-			'success'=>"js:function(data) {
+		<h2>Theatre Schedules</h2>
+ 
+		<div class="fullWidth fullBox clearfix">
+			<div id="whiteBox">
+				<p><strong>Use the filters below to view Theatre schedules:</strong></p>
+			</div>
+ 
+			<div id="theatre_display">
+				<?php $this->beginWidget('CActiveForm', array('id'=>'theatre-filter', 'action'=>Yii::app()->createUrl('theatre/search'), 'enableAjaxValidation'=>false))?>
+				<div id="search-options">
+					<div id="main-search" class="grid-view">
+						<h3>Search schedules by:</h3>
+							<table>
+								<tbody>
+								<tr>
+									<th>Site:</th>
+									<th>Theatre:</th>
+									<th>Firm:</th>
+									<th>Specialty:</th>
+									<th>Ward:</th>
+								</tr>
+								<tr class="even">
+									<td>
+										<?php echo CHtml::dropDownList('site-id', '', Site::model()->getList(), array('empty'=>'All sites', 'onChange' => "js:loadTheatres(this.value); loadWards(this.value);"))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('theatre-id', '', array(), array('empty'=>'All theatres'))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty'=>'All firms', 'disabled'=>(empty($firmId))))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('specialty-id', '', Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
 				if ($('#specialty-id').val() != '') {
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);
@@ -52,33 +54,42 @@ $cs->registerCSSFile('/css/theatre.css', 'all');
 					$('#firm-id').html(data);
 				}
 			}",
-		))); ?></td>
-		<td><?php
-	echo CHtml::dropDownList('firm-id', '', array(),
-		array('empty'=>'All firms', 'disabled'=>(empty($firmId)))); ?></td>
-		<td><?php
-	echo CHtml::dropDownList('theatre-id', '', array(),
-		array('empty'=>'All theatres')); ?></td>
-		<td><?php
-	echo CHtml::dropDownList('ward-id', '', array(),
-		array('empty'=>'All wards')); ?></td>
-	</tr>
-	</table>
-	</div>
-	<div id="extra-search">
-<?php
-	echo CHtml::radioButtonList('date-filter', '', Theatre::getDateFilterOptions(),
-		array('separator' => '&nbsp;')); ?>
+		)))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('ward-id', '', array(), array('empty'=>'All wards'))?>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+					</div> <!-- #main-search -->
+					<div id="extra-search" class="eventDetail clearfix">
+						<div class="data">
+							<span class="group">
+							<input type="radio" name="date-filter" id="date-filter_0" value="today">
+							<label for="date-filter_0">Today</label>
+							</span>
+							<span class="group">
+							<input type="radio" name="date-filter" id="date-filter_1" value="week">
+							<label for="date-filter_1">This week</label>
+							</span>
+							<span class="group">
+							<input type="radio" name="date-filter" id="date-filter_2" value="month">
+							<label for="date-filter_2">This month</label>
+							</span>
+							<span class="group">
+							<input type="radio" name="date-filter" id="date-filter_3" value="custom">
+							<label for="date-filter_3">or select date range:</label>
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-    'name'=>'date-start',
+		'name'=>'date-start',
 	'id'=>'date-start',
-    // additional javascript options for the date picker plugin
-    'options'=>array(
+		// additional javascript options for the date picker plugin
+		'options'=>array(
 		'changeMonth'=>true,
 		'changeYear'=>true,
 		'showOtherMonths'=>true,
-        'showAnim'=>'fold',
+				'showAnim'=>'fold',
 		'dateFormat'=>'yy-mm-dd',
 		'onSelect'=>"js:function(selectedDate) {
 			var option = this.id == 'date-start' ? 'minDate' : 'maxDate',
@@ -98,16 +109,17 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				$('input[name=date-filter][value=custom]').attr('checked', true);
 			}
 		}",
-    ),
+		),
 	'htmlOptions'=>array('size'=>10),
 ));
-?> to
+?>
+							to
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-    'name'=>'date-end',
+		'name'=>'date-end',
 	'id'=>'date-end',
-    // additional javascript options for the date picker plugin
-    'options'=>array(
+		// additional javascript options for the date picker plugin
+		'options'=>array(
 		'changeMonth'=>true,
 		'changeYear'=>true,
 		'showOtherMonths'=>true,
@@ -131,92 +143,25 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				$('input[name=date-filter][value=custom]').attr('checked', true);
 			}
 		}"
-    ),
+		),
 	'htmlOptions'=>array('size'=>10),
 ));
 ?>
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Search</span></button>
-<?php $this->endWidget(); ?>
-	</div>
-</div>
+							</span>
 
-<div class="search-options">
-</div>
-<div class="main-search">
-</div>
-<div class="cleartall"></div>
-<div id="searchResults"></div>
-<div class="cleartall"></div>
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
-&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />
+							<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
+							<?php $this->endWidget()?>
+						</div>
+
+					</div> <!-- #extra-search -->
+					</form>
+				</div> <!-- #search-options -->
+
+				<div id="theatreList">
+				</div>
+			</div> <!-- #theatre_display -->
+
+		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	$('#theatre-filter button[type="submit"]').click(function() {
 		$.ajax({
@@ -224,7 +169,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			'type': 'POST',
 			'data': $('#theatre-filter').serialize(),
 			'success': function(data) {
-				$('#searchResults').html(data);
+				$('#theatreList').html(data);
 				return false;
 			}
 		});
