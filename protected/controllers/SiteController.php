@@ -89,14 +89,25 @@ class SiteController extends BaseController
 	 */
 	public function actionError()
 	{
-			$this->layout = "error";
-
 	    if($error=Yii::app()->errorHandler->error)
 	    {
 	    	if(Yii::app()->request->isAjaxRequest)
 	    		echo $error['message'];
-	    	else
-	        	$this->render('error', $error);
+	    	else {
+					switch ($error['code']) {
+						case 404:
+							$this->layout = "error404";
+							$this->render('error', $error);
+							break;
+						case 500:
+							$this->layout = "error500";
+							$this->render('error',$error);
+							break;
+						default:
+							$this->layout = "error500";
+							$this->render('error',$error);
+					}
+				}
 	    }
 	}
 
