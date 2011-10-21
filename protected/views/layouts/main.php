@@ -39,7 +39,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix"> 
-			<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div> 
+			<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div>
+			<?php if (Yii::app()->params['environment'] == 'training') {?><div id="h1-environment">Training system</div><?php }?>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 		</div> <!-- #header --> 
 		<!--div id="mainmenu">

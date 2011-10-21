@@ -38,7 +38,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
-		<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div> 
+		<?php if (Yii::app()->params['environment'] == 'training') {?><div id="h1-environment" style="margin-top: 0.8em;">Training system</div><?php }?>
+		<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div>
 	</div> <!-- #header --> 
 
 	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
