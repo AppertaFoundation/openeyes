@@ -297,8 +297,10 @@ class PatientController extends BaseController
 			$this->logActivity('viewed event');
 		}
 
+		$eventTypes = EventType::model()->getAllPossible($this->firm->serviceSpecialtyAssignment->specialty_id);
+
 		$this->render('episodes', array(
-			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name
+			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name, 'eventTypes' => $eventTypes
 		));
 	}
 

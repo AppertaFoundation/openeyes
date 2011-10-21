@@ -16,8 +16,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
 
 $form = $this->beginWidget('CActiveForm', array(
-		'id'=>'clinical-create',
-		'enableAjaxValidation'=>true,
+	'id'=>'clinical-create',
+	'enableAjaxValidation'=>true,
 	'htmlOptions' => array('class'=>'sliding'),
 	'focus'=>'#procedure_id'
 ));
@@ -61,13 +61,13 @@ if (isset($referrals) && is_array($referrals)) {
 </div>
 <?php }}?>
 	<h4>Schedule Operation</h4>
-	
+
 	<div id="schedule options" class="eventDetail">
 			<div class="label">Schedule options:</div>
 			<div class="data">
 				<input id="ScheduleOperation" type="hidden" value="" name="ScheduleOperationn[schedule]" />
 				<span class="group">
-					<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" /> 
+					<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" />
 					<label for="ScheduleOperation_0">As soon as possible</label>
 				</span>
 				<span class="group">
@@ -76,20 +76,19 @@ if (isset($referrals) && is_array($referrals)) {
 				</span>
 			</div>
 	</div>
-	
+
 	<div class="form_button">
-			<button type="submit" value="submit" class="wBtn_save_schedule_later ir fancybox" id="scheduleLater">Save and Schedule later</button>
-			<button type="submit" value="submit" class="wBtn_save_schedule_now ir fancybox" id="scheduleNow">Save and Schedule now</button> 
+			<button type="submit" value="submit" class="wBtn_save-schedule-later ir fancybox" id="scheduleLater">Save and Schedule later</button>
+			<button type="submit" value="submit" class="wBtn_save-schedule-now ir fancybox" id="scheduleNow">Save and Schedule now</button>
 	</div>
-	
+
 	</form>
 </div> <!-- #new_event_details -->
 
 <?php
-$this->endWidget(); ?>
+$this->endWidget();
+?>
 <script type="text/javascript">
-	$('button.fancybox').fancybox([]);
-
 	$('#scheduleNow').unbind('click').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',

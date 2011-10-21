@@ -41,7 +41,7 @@ $this->layout = 'main'; ?>
 			echo CHtml::label('Search by hospital number:', 'hospital_number');
 			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 		?>
-		<button type="submit" value="submit" class="btn_findPatient ir" id="findPatient_id">Find patient</button>
+		<button type="submit" value="submit" class="btn_find-patient ir" id="findPatient_id">Find patient</button>
 		<?php //$this->endWidget();?>
 	</div>
 	<?php

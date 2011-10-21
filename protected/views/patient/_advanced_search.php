@@ -47,7 +47,7 @@ $form=$this->beginWidget('CActiveForm', array(
 			</div>
 		</div>
 		<div class="form_button">
-			<button type="submit" value="submit" class="btn_findPatient ir" id="findPatient_details">Find patient</button>
+			<button type="submit" value="submit" class="btn_find-patient ir" id="findPatient_details">Find patient</button>
 		</div>
 	</div>
 	<?php $this->endWidget();?>
