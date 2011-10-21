@@ -120,7 +120,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							</div>
 						
 							<div class="form_button">
-								<button type="submit" value="submit" class="btn_refineSearch ir" id="refinePatient_details">Find patient</button>	
+								<button type="submit" value="submit" class="btn_refine-search ir" id="refinePatient_details">Find patient</button>	
 							</div>
 							
 						</div>

@@ -45,10 +45,9 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-	<button type="submit" value="submit" id="update">Update operation</button>
-	<!--div class="form_button">
-		<button type="submit" value="submit" class="wBtn_edit_operation ir fancybox" id="update">Edit operation</button>
-	</div-->
+	<div class="form_button">
+		<button type="submit" value="submit" class="wBtn_edit-operation ir fancybox" id="update">Edit operation</button>
+	</div>
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
