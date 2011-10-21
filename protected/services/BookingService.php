@@ -197,11 +197,14 @@ class BookingService
 		}
 
 		$command = Yii::app()->db->createCommand()
-			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id,
+			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
-				o.eye, o.anaesthetic_type, o.comments,
+				f.name AS firm_name, spec.name AS specialty_name,
+				o.eye, o.anaesthetic_type, o.comments, b.admission_time,
+				o.consultant_required, o.overnight_stay,
+				e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 				o.total_duration AS operation_duration, p.first_name,
-				p.last_name, p.dob, p.gender, w.name AS ward, b.display_order')
+				p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order')
 			->from('session s')
 			->join('sequence q', 's.sequence_id = q.id')
 			->join('theatre t', 't.id = q.theatre_id')
