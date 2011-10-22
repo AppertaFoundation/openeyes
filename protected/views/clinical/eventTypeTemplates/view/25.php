@@ -107,8 +107,8 @@ if (!empty($operation->booking)) {
 
   			<table width="100%">
   				<tr>
-  					<td style="text-align:left;" width="50%"><img src="img/_print/letterhead_seal.jpg" alt="letterhead_seal" /></td>
-  					<td style="text-align:right;"><img src="img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td>
+  					<td style="text-align:left;" width="50%"><img src="/img/_print/letterhead_seal.jpg" alt="letterhead_seal" /></td>
+  					<td style="text-align:right;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td>
   				</tr>
   				<tr>
   					<td colspan="2" style="text-align:right;">
@@ -194,7 +194,7 @@ Chief Executive: John Pelly<br />
 		<table width="100%">
 			<tr>
 				<td colspan="2" style="border:none;">&nbsp;</td>
-				<td colspan="4" style="text-align:right; border:none;"><img src="img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td>
+				<td colspan="4" style="text-align:right; border:none;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td>
 			</tr>
 
 			<tr>

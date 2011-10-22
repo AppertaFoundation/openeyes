@@ -113,26 +113,26 @@ exit;
 								<?php
 					if ($session['patientGender'] == 'M') {
 ?>
-<img src="img/_elements/icons/alerts/female.png" alt="female" width="17" height="17" />
+<img src="/img/_elements/icons/alerts/female.png" alt="female" width="17" height="17" />
 <?php
 					} else {
 ?>
-<img src="img/_elements/icons/alerts/male.png" alt="male" width="17" height="17" />
+<img src="/img/_elements/icons/alerts/male.png" alt="male" width="17" height="17" />
 <?php
 					}
 
 					if (!empty($session['operationComments']) && preg_match('/\w/', $session['operationComments'])) {
-							?><img src="img/_elements/icons/alerts/comment.png" alt="<?php echo htmlentities($session['operationComments']) ?>" title="<?php echo htmlentities($session['operationComments']) ?>" width="17" height="17" />
+							?><img src="/img/_elements/icons/alerts/comment.png" alt="<?php echo htmlentities($session['operationComments']) ?>" title="<?php echo htmlentities($session['operationComments']) ?>" width="17" height="17" />
 <?php
 					}
 
                                 	if (!empty($session['overnightStay'])) {
-                                                        ?><img src="img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" width="17" height="17" />
+                                                        ?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" width="17" height="17" />
 <?php
                                 	}
 
                                 	if (!empty($session['consultantRequired'])) {
-                                                        ?><img src="img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
+                                                        ?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
 <?php
                                 	}
 				}

@@ -64,7 +64,7 @@ if (!empty($model->address)) {
  
 					<!-- double re-enforcement of mode change not currently required, but might be needed in the future
 					<div class="patientBox withIcon">
-						<img class="boxIcon" src="img/_elements/icons/patient.png" alt="patient" width="36" height="35" />
+						<img class="boxIcon" src="/img/_elements/icons/patient.png" alt="patient" width="36" height="35" />
 						<div id="patientHeader"><h3>Mrs Lucinda Smith <span class="normal">(1008504)</span></h3></div>
 					</div>
 					-->
