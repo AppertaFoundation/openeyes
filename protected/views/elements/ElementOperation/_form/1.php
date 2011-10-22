@@ -161,17 +161,16 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 							</table>
 						</div>
 					</div>
-
 					<div id="consultRequired" class="eventDetail">
 						<div class="label">Consultant required?</div>
 						<div class="data">
-							<input id="ytElementOperation_consultant_required" type="hidden" value="" name="ElementOperation[consultant_required]" />
+							<input id="ytElementOperation_consultant_required" type="hidden" value="<?php echo $model->consultant_required?>" name="ElementOperation[consultant_required]" />
 							<span class="group">
-							<input id="ElementOperation_consultant_required_0" value="1" type="radio" name="ElementOperation[consultant_required]" /> 
+							<input id="ElementOperation_consultant_required_0" value="1" <?php if ($model->consultant_required) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" /> 
 							<label for="ElementOperation_consultant_required_0">Yes</label>
 							</span>
 							<span class="group">
-							<input id="ElementOperation_consultant_required_1" value="0" checked="checked" type="radio" name="ElementOperation[consultant_required]" />
+							<input id="ElementOperation_consultant_required_1" value="0" <?php if (!$model->consultant_required) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" />
 							<label for="ElementOperation_consultant_required_1">No</label>
 							</span>
 						</div>
@@ -179,26 +178,12 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					<div id="anaestheticType" class="eventDetail">
 						<div class="label">Anaesthetic type:</div>
 						<div class="data">
-							<span class="group">		
-							<input id="ElementOperation_anaesthetic_type_0" checked="checked" value="0" type="radio" name="ElementOperation[anaesthetic_type]" />
-							<label for="ElementOperation_anaesthetic_type_0">Topical</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_anaesthetic_type_2" value="2" type="radio" name="ElementOperation[anaesthetic_type]" />
-							<label for="ElementOperation_anaesthetic_type_2">LA</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_anaesthetic_type_1" value="1" type="radio" name="ElementOperation[anaesthetic_type]" />
-							<label for="ElementOperation_anaesthetic_type_1">LA with cover</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_anaesthetic_type_3" value="3" type="radio" name="ElementOperation[anaesthetic_type]" />
-							<label for="ElementOperation_anaesthetic_type_3">LAS</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_anaesthetic_type_4" value="4" type="radio" name="ElementOperation[anaesthetic_type]" />
-							<label for="ElementOperation_anaesthetic_type_4">GA</label>
-							</span>
+							<?php foreach ($model->getAnaestheticOptions() as $id => $value) {?>
+								<span class="group">
+								<input id="ElementOperation_anaesthetic_type_<?php echo $id?>" <?php if ($model->anaesthetic_type == $id){?>checked="checked" <?php }?>value="<?php echo $id?>" type="radio" name="ElementOperation[anaesthetic_type]" />
+								<label for="ElementOperation_anaesthetic_type_<?php echo $id?>"><?php echo $value?></label>
+								</span>
+							<?php }?>
 						</div>
 					</div>
 					<div id="overnightStay" class="eventDetail">
@@ -206,11 +191,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						<div class="data">
 							<input id="ytElementOperation_overnight_stay" type="hidden" value="" name="ElementOperation[overnight_stay]" />
 							<span class="group">
-								<input id="ElementOperation_overnight_stay_0" value="1" type="radio" name="ElementOperation[overnight_stay]" /> 
+								<input id="ElementOperation_overnight_stay_0" value="1" <?php if ($model->overnight_stay == 1){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" /> 
 								<label for="ElementOperation_overnight_stay_0">Yes</label>
 							</span>
 							<span class="group">
-								<input id="ElementOperation_overnight_stay_1" value="0" checked="checked" type="radio" name="ElementOperation[overnight_stay]" />
+								<input id="ElementOperation_overnight_stay_1" value="0" <?php if ($model->overnight_stay == 0){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" />
 								<label for="ElementOperation_overnight_stay_1">No</label>
 							</span>
 						</div>
@@ -237,7 +222,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					<div id="addComments" class="eventDetail">
 						<div class="label">Add comments:</div>
 						<div class="data">
-							<textarea rows="4" cols="50" name="ElementOperation[comments]" id="ElementOperation_comments"></textarea>
+							<textarea rows="4" cols="50" name="ElementOperation[comments]" id="ElementOperation_comments"><?php echo strip_tags($model->comments)?></textarea>
 						</div>
 					</div>
 <script type="text/javascript">
