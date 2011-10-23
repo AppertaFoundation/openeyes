@@ -137,6 +137,8 @@ em { font-style: italic; color:#333; }
 a:hover, .aPush { border-bottom: thin dotted #002ec4; }
 a:hover .aPush	{ border-bottom: thin solid #3665ff; }
 
+.clickable { cursor: pointer; }
+
 /* ====== FORMS - GENERAL ====== */
 .form_greyBox { background: #e2dfdb url(../img/_elements/gradients/bg_form.jpg) top left repeat-x; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; border:2px solid #666; }
 .form_column { display:block; width:45%; float:left; margin-right:2%; }
@@ -161,7 +163,7 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 .labelRequired 	{ color: #b33; }
 
 /* buttons -- set up all normal buttons */
-button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search  { display:inline-block; width:125px; height:40px; }
+button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search, button.btn_save { display:inline-block; width:125px; height:40px; }
 /* graphics */
 button.btn_login 		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
 button.btn_login:hover 	{ background-image: url(../img/_elements/btns/login_o.png); }
@@ -173,6 +175,8 @@ button.btn_print-letter 		{ background:transparent url(../img/_elements/btns/pri
 button.btn_print-letter:hover 	{ background-image: url(../img/_elements/btns/print-letter_o.png); }
 button.btn_cancel 			{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
 button.btn_cancel:hover 	{ background-image: url(../img/_elements/btns/cancel_o.png); }
+button.btn_save 		{ background:transparent url(../img/_elements/btns/save.png) no-repeat; }
+button.btn_save:hover 	{ background-image: url(../img/_elements/btns/save_o.png); }
 button.btn_search 			{ background:transparent url(../img/_elements/btns/search.png) no-repeat; }
 button.btn_search:hover 	{ background-image: url(../img/_elements/btns/search_o.png); }
 /* special buttons */
@@ -196,6 +200,10 @@ button.wBtn_print-gp-refer-back-letter			{ background:transparent url(../img/_el
 button.wBtn_print-gp-refer-back-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-gp-refer-back-letter_o.png); }
 button.wBtn_cancel-operation			{ background:transparent url(../img/_elements/btns/wide/cancel-operation.png) no-repeat; }
 button.wBtn_cancel-operation:hover 		{ background-image: url(../img/_elements/btns/wide/cancel-operation_o.png); }
+button.wBtn_edit-operation			{ background:transparent url(../img/_elements/btns/wide/edit-operation.png) no-repeat; }
+button.wBtn_edit-operation:hover 	{ background-image: url(../img/_elements/btns/wide/edit-operation_o.png); }
+button.wBtn_confirm-slot			{ background:transparent url(../img/_elements/btns/wide/confirm-slot.png) no-repeat; }
+button.wBtn_confirm-slot:hover 	{ background-image: url(../img/_elements/btns/wide/confirm-slot_o.png); }
 button.wBtn_reschedule-now			{ background:transparent url(../img/_elements/btns/wide/reschedule-now.png) no-repeat; }
 button.wBtn_reschedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-now_o.png); }
 button.wBtn_reschedule-later			{ background:transparent url(../img/_elements/btns/wide/reschedule-later.png) no-repeat; }
@@ -206,11 +214,8 @@ button.wBtn_next-month			{ background:transparent url(../img/_elements/btns/wide
 button.wBtn_next-month:hover 	{ background-image: url(../img/_elements/btns/wide/next-month_o.png); }
 button.wBtn_close-episode			{ background:transparent url(../img/_elements/btns/wide/close-episode.png) no-repeat; }
 button.wBtn_close-episode:hover 	{ background-image: url(../img/_elements/btns/wide/close-episode_o.png); }
-button.wBtn_edit-operation			{ background:transparent url(../img/_elements/btns/wide/edit-operation.png) no-repeat; }
-button.wBtn_edit-operation:hover 	{ background-image: url(../img/_elements/btns/wide/edit-operation_o.png); }
 
-button.wBtn_confirm-slot			{ background:transparent url(../img/_elements/btns/wide/confirm-slot.png) no-repeat; }
-button.wBtn_confirm-slot:hover 	{ background-image: url(../img/_elements/btns/wide/confirm-slot_o.png); }
+
 /* small buttons */
 button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
 button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
@@ -332,6 +337,9 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #support-info { float: right; margin-top: -1.2em; margin-right: 13em; font-size: 7pt; font-weight: normal; color: #666; }
 #support-info a { color: #666; }
 
+/* to indicate that user is in training mode  */
+#h1-environment { float: right; font-size: 14px; margin-top: 0; margin-right: 0.9em; }
+
 
 /* ------------------------------------------------- PAGE SPECIFIC  */
 
@@ -348,7 +356,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* ====== HOME - SEARCH ====== */
 /* id */
 #search_patient_id { padding:15px; }
-#search_patient_id > .btn_findPatient { display:block; float:right; }
+#search_patient_id > .btn_find-patient{ display:block; float:right; }
 #search_patient_id input { display:inline-block; margin: 0 20px; }
 /* details */
 #search_patient_details { padding:15px; margin-top: 10px; }
@@ -461,7 +469,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation table tbody td.selected_date { background:#3665ff; font-size:12pt; color:#fff; }
 #operation table tbody td.outside_rtt{ background-image: url(../img/_elements/icons/RTT-warning.png); background-position: bottom right; background-repeat: no-repeat; }
 /* hovers all the same */
-#operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background:#3665ff; color:#fff; cursor:pointer; }
+#operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background-color:#3665ff; color:#fff; cursor:pointer; }
 /* KEY */
 #operation #day 			.color_box { background:#666; }
 #operation #available 		.color_box { background:#69bd51; }
@@ -614,4 +622,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
   body { width:auto !important; margin: 0 !important;}
 }
 
-#h1-environment { float: right; font-size: 14px; margin-top: 0; margin-right: 0.9em; }
+
+
+

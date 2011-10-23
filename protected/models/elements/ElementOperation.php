@@ -792,20 +792,20 @@ class ElementOperation extends BaseElement
 		) {
 			$letterStatus = self::LETTER_REMINDER_1;
 		} elseif (
-                        $datetime >= ($now - 6 * $week) &&
-                        $datetime < ($now - 4 * $week)
-                ) {
-                        $letterStatus = self::LETTER_REMINDER_2;
-                } elseif (
-                        $datetime >= ($now - 8 * $week) &&
-                        $datetime < ($now - 6 * $week)
-                ) {
-                        $letterStatus = self::LETTER_GP;
-                } elseif (
-                        $datetime < ($now - 8 * $week)
-                ) {
-                        $letterStatus = self::LETTER_REMOVAL;
-                }
+			$datetime >= ($now - 6 * $week) &&
+			$datetime < ($now - 4 * $week)
+		) {
+			$letterStatus = self::LETTER_REMINDER_2;
+		} elseif (
+			$datetime >= ($now - 8 * $week) &&
+			$datetime < ($now - 6 * $week)
+		) {
+			$letterStatus = self::LETTER_GP;
+		} elseif (
+			$datetime < ($now - 8 * $week)
+		) {
+			$letterStatus = self::LETTER_REMOVAL;
+		}
 
 		return $letterStatus;
 	}
