@@ -55,11 +55,16 @@ if (!empty($operation->booking)) {
 <div class="eventHighlight">
 <?php $session = $operation->booking->session ?>
 <h4><?php
+	if (empty($session->sequence->sequenceFirmAssignment)) {
+		$firmName = 'Emergency List';
+	} else {
+		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
+					$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+	}
+
 	echo $session->start_time . ' - ' .
 		$session->end_time . ' ' .
-		date('jS F, Y', strtotime($session->date)) . ', ' .
-		$session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')'
+		date('jS F, Y', strtotime($session->date)) . ', ' . $firmName
 ?></h4>
 </div>
 <?php

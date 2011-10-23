@@ -72,7 +72,7 @@ foreach ($theatres as $name => $sessions) {
 </div>
 
 <script type="text/javascript">
-	$('div[id^="bookingSession"]').click(function() {
+	$('div[id^="bookingSession"]').unbind('click').click(function() {
 		id = this.id;
 		id = id.replace(/bookingSession/,'');
 
@@ -80,7 +80,7 @@ foreach ($theatres as $name => $sessions) {
             'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
             'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,
             'type': 'POST',
-            'data': 'operation=<?php echo $operation->id ?>&session=' + 1182,
+            'data': 'operation=<?php echo $operation->id ?>&session=' + id + '&reschedule=<?php echo $reschedule ?>',
             'success': function(data) {
 				$('#sessionDetails').html('');
 				$('#sessionDetails').html(data);

@@ -12,10 +12,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
+$patient = $operation->event->episode->patient;
+
 ?>
 <div id="schedule">
 	<div class="patientReminder">
-		<span class="patient"><strong>Tracy</strong> Jones (1002074)</span>
+		<span class="patient"><strong><?php echo $patient->first_name ?></strong> <?php echo $patient->last_name ?> (<?php echo $patient->hos_num ?>)</span>
 	</div>
 
 	<h3>Schedule Operation</h3>
@@ -44,12 +46,14 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		<div class="data">
 			<select id="firmId">
 				<option value="">Select a different firm</option>
+				<option value="EMG">Emergency List</option>
 				<?php foreach ($firmList as $aFirm) {?>
 					<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
 				<?php }?>
 			</select>
 		</div>
 	</div>
+
 <div id="operation">
 	<h3>Select theatre slot</h3>
 
@@ -131,7 +135,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm},
+				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm, 'reschedule': 0},
 				'success': function(data) {
 					if ($('#theatres').length == 0) {
 						$('#operation').append(data);
