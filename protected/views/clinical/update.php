@@ -14,10 +14,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
-$cs->registerScriptFile($baseUrl.'/js/phrase.js');
-
-Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
+$cs->registerScriptFile($baseUrl . '/js/phrase.js');
+Yii::app()->clientScript->registerCoreScript('jquery');
+$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 
 $form = $this->beginWidget('CActiveForm', array(
         'id'=>'event-update',
