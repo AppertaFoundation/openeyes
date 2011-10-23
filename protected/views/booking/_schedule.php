@@ -86,7 +86,7 @@ $patient = $operation->event->episode->patient;
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month, 'firmId': firm},
+				'data': {'operation': operation, 'date': month, 'firmId': '<?php echo empty($firm->id) ? 'EMG' : $firm->id ?>'},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -109,7 +109,7 @@ $patient = $operation->event->episode->patient;
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month, 'firmId': firm},
+				'data': {'operation': operation, 'date': month, 'firmId': '<?php echo empty($firm->id) ? 'EMG' : $firm->id ?>'},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {

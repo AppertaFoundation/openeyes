@@ -117,7 +117,8 @@ class BookingService
 				s.date = '" . $date . "' AND $firmSql";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
-
+//var_dump($sql);
+//exit;
 		return $sessions;
 	}
 
