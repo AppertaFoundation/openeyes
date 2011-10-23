@@ -20,7 +20,7 @@ class BookingService
 	 *
 	 * @return CDbReader
 	 */
-	public function findSessions($monthStart, $minDate, $firmId, $siteId)
+	public function findSessions($monthStart, $minDate, $firmId)
 	{
 		if ($firmId !== null) {
 			$firm = Firm::model()->findByPk($firmId);
@@ -28,11 +28,6 @@ class BookingService
 				throw new Exception('Firm id is invalid.');
 			}
 		}
-		$site = Site::model()->findByPk($siteId);
-		if (empty($site)) {
-			throw new Exception('Site id is invalid.');
-		}
-
 		if (substr($minDate,0,8) == substr($monthStart,0,8)) {
 			$startDate = $minDate;
 		} else {
@@ -53,12 +48,11 @@ class BookingService
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `theatre` `t` ON q.theatre_id = t.id
-			JOIN `site` ON t.site_id = site.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
 				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
-				CAST('" . $monthEnd . "' AS DATE) AND $firmSql AND site.id = $siteId
+				CAST('" . $monthEnd . "' AS DATE) AND $firmSql
 			GROUP BY s.id
 		UNION
 			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
@@ -67,11 +61,10 @@ class BookingService
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `theatre` `t` ON q.theatre_id = t.id
-			JOIN `site` ON t.site_id = site.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
 				s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
 				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
-				CAST('" . $monthEnd . "' AS DATE) AND $firmSql AND site.id = $siteId
+				CAST('" . $monthEnd . "' AS DATE) AND $firmSql
 			ORDER BY WEEKDAY(DATE) ASC";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();

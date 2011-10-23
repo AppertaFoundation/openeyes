@@ -31,7 +31,7 @@ echo CHtml::hiddenField('patient_id', $patient->id);
 echo CHtml::hiddenField('firm_id', $firm->id);
 
 ?>
-<div id="clinical-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
+<div id="clinical-create_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
 <ul><li>&nbsp;</li></ul></div>
 <?php
 

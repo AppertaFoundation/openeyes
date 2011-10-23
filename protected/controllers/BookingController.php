@@ -64,24 +64,7 @@ class BookingController extends BaseController
 			$firm->name = 'Emergency List';
 		}
 
-		if ($firm->name != 'Emergency List') {
-			$siteList = Session::model()->getSiteListByFirm($firmId);
-		} else {
-			$siteList = Site::model()->getList();
-		}
-		if (!empty($_GET['siteId'])) {
-			$siteId = $_GET['siteId'];
-		} else { // grab the first (possibly only) site off the list
-			$siteId = key($siteList);
-		}
-		if (!empty($siteId)) {
-			unset($siteList[$siteId]);
-			$site = Site::model()->findByPk($siteId);
-			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
-		} else {
-			$site = new Site;
-			$sessions = array();
-		}
+		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';

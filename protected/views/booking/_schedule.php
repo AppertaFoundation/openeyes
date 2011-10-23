@@ -17,9 +17,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<div class="patientReminder">
 		<span class="patient"><strong>Tracy</strong> Jones (1002074)</span>
 	</div>
- 
+
 	<h3>Schedule Operation</h3>
- 
+
 	<?php
 	if ($operation->event->episode->firm_id != $firm->id) {
 		if ($firm->name == 'Emergency List') {
@@ -50,16 +50,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			</select>
 		</div>
 	</div>
-
-	<?php if (!empty($site->name)) {?>
-		<div id="siteSelect" class="eventDetail clearfix">
-			<div class="label"><span class="normal">Viewing the calendar for: </span><br /><strong><?php echo $site->name; ?></strong></div>
-			<div class="data">
-				<?php echo CHtml::dropDownList('siteId', '', $siteList, array('empty' => 'Select a different site', 'disabled' => empty($siteList))); ?>
-			</div>
-		</div>
-	<?php }?>
-
 <div id="operation">
 	<h3>Select theatre slot</h3>
 
@@ -181,25 +171,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 					$('#schedule').html(data);
 				}
 			});
-		});
-		$('select[id=siteId]').change(function() {
-			var site = $('select[name=siteId] option:selected').val();
-			if (site != 'Select a different site') {
-				var firmId = $('input[id=sessionFirm]').val();
-				var operation = $('input[id=operation]').val();
-				if (firmId == '') {
-					firmId = 'EMG';
-				}
-
-				$.ajax({
-					'url': '<?php echo Yii::app()->createUrl('booking/schedule'); ?>',
-					'type': 'GET',
-					'data': {'operation': operation, 'firmId': firmId, 'siteId': site},
-					'success': function(data) {
-						$('#schedule').html(data);
-					}
-				});
-			}
 		});
 	});
 

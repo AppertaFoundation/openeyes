@@ -29,7 +29,7 @@ echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
 
 ?>
-<div id="clinical-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
+<div id="event-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
 <ul><li>&nbsp;</li></ul></div>
 <?php
 

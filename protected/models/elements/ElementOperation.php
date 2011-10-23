@@ -458,7 +458,7 @@ class ElementOperation extends BaseElement
 		return $date;
 	}
 
-	public function getSessions($emergency = false, $siteId)
+	public function getSessions($emergency = false)
 	{
 		$minDate = $this->getMinDate();
 		$thisMonth = mktime(0, 0, 0, date('m'), 1, date('Y'));
@@ -475,7 +475,7 @@ class ElementOperation extends BaseElement
 		}
 
 		$service = $this->getBookingService();
-		$sessions = $service->findSessions($monthStart, $minDate, $firmId, $siteId);
+		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
 
 		$results = array();
 		foreach ($sessions as $session) {
