@@ -22,12 +22,15 @@ $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'clinical-update',
 	'enableAjaxValidation' => true,
 	'htmlOptions' => array('class' => 'sliding')
-	));
+));
 
 echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
 
-echo $form->errorSummary($elements);
+?>
+<div id="clinical-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
+<?php
 
 /**
  * Loop through all the possible element types and display

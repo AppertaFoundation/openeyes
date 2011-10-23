@@ -18,9 +18,6 @@ $cs->registerScriptFile($baseUrl . '/js/phrase.js');
 Yii::app()->clientScript->registerCoreScript('jquery');
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 
-//Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-//Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
-
 $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'clinical-create',
 	'enableAjaxValidation'=>false,
@@ -32,6 +29,11 @@ echo CHtml::hiddenField('action', 'create');
 echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $patient->id);
 echo CHtml::hiddenField('firm_id', $firm->id);
+
+?>
+<div id="clinical-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
+<?php
 
 /**
  * Loop through all the possible element types and display
