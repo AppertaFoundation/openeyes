@@ -459,6 +459,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation table tbody td.full { background:#427633; font-size:12pt; }
 #operation table tbody td.closed { background:#828282; font-size:12pt; }
 #operation table tbody td.selected_date { background:#3665ff; font-size:12pt; color:#fff; }
+#operation table tbody td.outside_rtt{ background-image: url(../img/_elements/icons/RTT-warning.png); background-position: bottom right; background-repeat: no-repeat; }
 /* hovers all the same */
 #operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background:#3665ff; color:#fff; cursor:pointer; }
 /* KEY */
@@ -468,7 +469,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation #full 			.color_box { background:#427633; }
 #operation #closed 			.color_box { background:#828282; }
 #operation #selected_date 	.color_box { background:#3665ff; }
-#operation #outside_rtt 	.color_box { background:#eeeeee; }
+#operation #outside_rtt 	.color_box { background:transparent url(../img/_elements/icons/RTT-warning_tiny.png) top left no-repeat; }
 /* theatres */
 #theatres { margin-top:10px; }
 #theatres > h4 { font-weight: bold; }
