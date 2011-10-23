@@ -180,7 +180,7 @@ button.btn_newEvent			{ display:inline-block; float:right; width:155px; height:3
 button.btn_newEvent 		{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
 button.btn_newEvent:hover 	{ background-image: url(../img/_elements/btns/new-event_o.png); }
 /* long buttons -- set up all wide buttons */
-button.wBtn_save-schedule-later, button.wBtn_save-schedule-now, button.wBtn_schedule-now, button.wBtn_print-invitation-letter, button.wBtn_print-reminder-letter, button.wBtn_print-gp-refer-back-letter, button.wBtn_cancel-operation, button.wBtn_reschedule-now, button.wBtn_reschedule-later, button.wBtn_previous-month, button.wBtn_next-month, button.wBtn_close-episode, button.wBtn_edit-operation  { display:inline-block; width:202px; height:40px; } 
+button.wBtn_save-schedule-later, button.wBtn_save-schedule-now, button.wBtn_schedule-now, button.wBtn_print-invitation-letter, button.wBtn_print-reminder-letter, button.wBtn_print-gp-refer-back-letter, button.wBtn_cancel-operation, button.wBtn_confirm-slot, button.wBtn_reschedule-now, button.wBtn_reschedule-later, button.wBtn_previous-month, button.wBtn_next-month, button.wBtn_close-episode, button.wBtn_edit-operation  { display:inline-block; width:202px; height:40px; } 
 /* graphics */
 button.wBtn_save-schedule-later 		{ background:transparent url(../img/_elements/btns/wide/save-schedule-later.png) no-repeat; }
 button.wBtn_save-schedule-later:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-later_o.png); }
@@ -209,6 +209,8 @@ button.wBtn_close-episode:hover 	{ background-image: url(../img/_elements/btns/w
 button.wBtn_edit-operation			{ background:transparent url(../img/_elements/btns/wide/edit-operation.png) no-repeat; }
 button.wBtn_edit-operation:hover 	{ background-image: url(../img/_elements/btns/wide/edit-operation_o.png); }
 
+button.wBtn_confirm-slot			{ background:transparent url(../img/_elements/btns/wide/confirm-slot.png) no-repeat; }
+button.wBtn_confirm-slot:hover 	{ background-image: url(../img/_elements/btns/wide/confirm-slot_o.png); }
 /* small buttons */
 button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
 button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }

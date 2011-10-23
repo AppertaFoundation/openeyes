@@ -12,29 +12,29 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-?>
-<div id="bookings">
-<div class="cleartall"></div>
-<?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 if (!$reschedule) {
 	echo CHtml::form(array('booking/create'), 'post', array('id' => 'bookingForm'));
 } else {
 	echo CHtml::form(array('booking/update'), 'post', array('id' => 'bookingForm'));
-} ?>
-<strong>View other operations in this session:</strong>
-<span class="<?php echo $minutesStatus; ?>"><?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></span>
-<p/>
-<table id="appointment_list">
-	<thead>
-		<tr class="head">
-			<th>Operation list overview</th>
-			<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
-			<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
+}
+
+?>
+	<h4>Other operations in this session: <?php echo abs($session['time_available']) . " min {$minutesStatus}"; ?></h4>
+
+	<div class="theatre-sessions">
+	<table id="appointment_list">
+		<thead>
+			<tr>
+				<th>Operation list overview</th>
+				<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
+
+				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
-		</tr>
-	</thead>
-	<tbody>
+			</tr>
+		</thead>
+		<tbody>
+
 <?php
 	$counter = 1;
 	foreach ($bookings as $booking) {
@@ -49,27 +49,29 @@ if (!$reschedule) {
 		if (empty($procedureList)) {
 			$procedureList = 'No procedures';
 		} ?>
-		<tr>
-			<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
-			<td><?php echo $procedureList; ?></td>
-			<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
-		</tr>
+
+			<tr>
+				<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
+				<td><?php echo $procedureList; ?></td>
+				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
+			</tr>
 <?php
 		$counter++;
 	} ?>
 	</tbody>
-	<tfoot class="rounded_corners">
-		<tr>
-			<td colspan="3"><?php echo ($counter - 1) . ' booking';
+		<tfoot>
+			<tr>
+				<th colspan="3"><?php echo ($counter - 1) . ' booking';
 	if (($counter - 1) != 1) {
 		echo 's';
 	}
-	echo ' currently scheduled'; ?></td>
-		</tr>
-	</tfoot>
+	echo ' currently scheduled'; ?></th>
+			</tr>
+		</tfoot>
 </table>
-<div class="cleartall"></div>
-<div class="greyGradient">
+</div>
+
+<!-- needs styling -->
 <div style="display: inline;"><strong>Admission Time:</strong> <?php
 	echo CHtml::textField('Booking[admission_time]',
 		date('H:i', strtotime('-1 hour', strtotime($session['start_time']))),
@@ -77,7 +79,11 @@ if (!$reschedule) {
 <strong> Session comments:</strong>
 <?php echo CHtml::textArea('Session[comments]', $session['comments'], array('rows'=>3, 'cols'=>50)); ?>
 </div>
-</div>
+<!-- /needs styling -->
+<br />
+
+
+
 <?php
 if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
@@ -87,6 +93,8 @@ if (!$reschedule) {
 	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
 	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 }
+
+
 if (!empty($reschedule)) {
 	echo '<div class="errorSummary" style="display:none"></div><p/>';
 	echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
@@ -102,17 +110,18 @@ if (!empty($reschedule)) {
 }
 ?>
 
+		<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 
-<div class="cleartall"></div>
-<div class="greyGradient">
-<div style="display: inline;">
-<span id="siteSelected">Location currently selected: <span class="highlighted"><?php echo $site->name; ?></span></span><br />
-<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
-<button type="submit" value="submit" class="shinybutton highlighted" style="margin-top:-15px;"><span>Confirm slot</span></button><?php
-echo CHtml::endForm(); ?>
-<button type="submit" value="submit" class="shinybutton" id="cancel_operation" style="margin-top:-15px;"><span>Cancel operation</span></button>
-</div>
-</div>
+		<div style="margin-top:10px;">
+
+		<button id="confirm_slot" value="submit" type="submit" class="wBtn_confirm-slot ir">Confirm slot</button>
+		<button id="cancel_operation" value="submit" type="submit" class="wBtn_cancel-operation ir"><span>Cancel operation</span></button>
+		</div>
+
+<?php
+echo CHtml::endForm();
+?>
+
 <script type="text/javascript">
 <?php
 	if (!empty($reschedule)) { ?>
