@@ -105,22 +105,33 @@ class TheatreController extends BaseController
 					->queryRow();
 
 				$theatres[$values['name']][$values['date']][] = array(
+					'episodeId' => $values['episodeId'],
+					'eventId' => $values['eventId'],
+					'firm_name' => $values['firm_name'],
+					'specialty_name' => $values['specialty_name'],
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
+					'sequenceId' => $values['sequence_id'],
 					'sessionId' => $values['session_id'],
 					'sessionDuration' => $sessionDuration,
 					'operationDuration' => $values['operation_duration'],
 					'operationComments' => $values['comments'],
-					'timeAvailable' => $sessionDuration - 0,
+					'consultantRequired' => $values['consultant_required'],
+					'overnightStay' => $values['overnight_stay'],
+					'admissionTime' => $values['admission_time'],
+					'timeAvailable' => $sessionDuration,
 					'eye' => substr($operation->getEyeText(), 0, 1),
 					'anaesthetic' => $operation->getAnaestheticAbbreviation(),
 					'procedures' => $procedures['List'],
+					'patientHosNum' => $values['hos_num'],
+					'patientId' => $values['patientId'],
 					'patientName' => $values['first_name'] . ' ' . $values['last_name'],
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
 					'ward' => $values['ward'],
 					'displayOrder' => $values['display_order'],
-					'comments' => $values['session_comments']
+					'comments' => $values['session_comments'],
+					'operationDuration' => $values['operation_duration']
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
@@ -195,6 +206,21 @@ class TheatreController extends BaseController
 			}
 		}
 	}
+
+        public function actionUpdateSessionComments()
+        {
+                if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+                        if (!empty($_POST['id']) && !empty($_POST['comments'])) {
+                                $session = Session::model()->findByPk($_POST['id']);
+
+                                if (!empty($session)) {
+                                        $session->comments = $_POST['comments'];
+                                        $session->save();
+                                }
+                        }
+                        return true;
+                }
+        }
 
 	/**
 	 * Helper method to fetch firms by specialty ID

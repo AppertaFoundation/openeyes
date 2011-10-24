@@ -12,14 +12,16 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
+$patient = $operation->event->episode->patient;
+
 ?>
 <div id="schedule">
 	<div class="patientReminder">
-		<span class="patient"><strong>Tracy</strong> Jones (1002074)</span>
+		<span class="patient"><strong><?php echo $patient->first_name ?></strong> <?php echo $patient->last_name ?> (<?php echo $patient->hos_num ?>)</span>
 	</div>
- 
+
 	<h3>Schedule Operation</h3>
- 
+
 	<?php
 	if ($operation->event->episode->firm_id != $firm->id) {
 		if ($firm->name == 'Emergency List') {
@@ -44,21 +46,13 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		<div class="data">
 			<select id="firmId">
 				<option value="">Select a different firm</option>
+				<option value="EMG">Emergency List</option>
 				<?php foreach ($firmList as $aFirm) {?>
 					<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
 				<?php }?>
 			</select>
 		</div>
 	</div>
-
-	<?php if (!empty($site->name)) {?>
-		<div id="siteSelect" class="eventDetail clearfix">
-			<div class="label"><span class="normal">Viewing the calendar for: </span><br /><strong><?php echo $site->name; ?></strong></div>
-			<div class="data">
-				<?php echo CHtml::dropDownList('siteId', '', $siteList, array('empty' => 'Select a different site', 'disabled' => empty($siteList))); ?>
-			</div>
-		</div>
-	<?php }?>
 
 <div id="operation">
 	<h3>Select theatre slot</h3>
@@ -92,7 +86,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month, 'firmId': firm},
+				'data': {'operation': operation, 'date': month, 'firmId': '<?php echo empty($firm->id) ? 'EMG' : $firm->id ?>'},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -115,7 +109,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'date': month, 'firmId': firm},
+				'data': {'operation': operation, 'date': month, 'firmId': '<?php echo empty($firm->id) ? 'EMG' : $firm->id ?>'},
 				'success': function(data) {
 					$('#details').html(data);
 					if ($('#theatres').length > 0) {
@@ -129,6 +123,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			return false;
 		});
 		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full').die('click').live('click', function() {
+			$('#sessionDetails').html('');
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');
 			var day = $(this).text();
@@ -141,7 +136,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm},
+				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm, 'reschedule': 0},
 				'success': function(data) {
 					if ($('#theatres').length == 0) {
 						$('#operation').append(data);
@@ -181,25 +176,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 					$('#schedule').html(data);
 				}
 			});
-		});
-		$('select[id=siteId]').change(function() {
-			var site = $('select[name=siteId] option:selected').val();
-			if (site != 'Select a different site') {
-				var firmId = $('input[id=sessionFirm]').val();
-				var operation = $('input[id=operation]').val();
-				if (firmId == '') {
-					firmId = 'EMG';
-				}
-
-				$.ajax({
-					'url': '<?php echo Yii::app()->createUrl('booking/schedule'); ?>',
-					'type': 'GET',
-					'data': {'operation': operation, 'firmId': firmId, 'siteId': site},
-					'success': function(data) {
-						$('#schedule').html(data);
-					}
-				});
-			}
 		});
 	});
 

@@ -14,10 +14,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
-$cs->registerScriptFile($baseUrl.'/js/phrase.js');
-
-Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
+$cs->registerScriptFile($baseUrl . '/js/phrase.js');
+Yii::app()->clientScript->registerCoreScript('jquery');
+$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 
 $form = $this->beginWidget('CActiveForm', array(
         'id'=>'event-update',
@@ -28,6 +27,11 @@ $form = $this->beginWidget('CActiveForm', array(
 
 echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
+
+?>
+<div id="event-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
+<?php
 
 /**
  * Loop through all the possible element types and display

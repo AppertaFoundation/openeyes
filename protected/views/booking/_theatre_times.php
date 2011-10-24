@@ -12,43 +12,82 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-?>
-<div id="theatres">
-<strong>Select a session time:</strong>
-<?php
 Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
-$tabs = array();
+
+?>
+
+<div id="theatres">
+	<h4>Select a session time:</h4>
+	<div id="theatre-times">
+		<ul>
+<?php
+
+$i = 0;
 foreach ($theatres as $name => $sessions) {
-	$pretext = '<div id="box_grey_gradient_top"></div>
-<div id="box_grey_gradient_bottom">';
-	$tabs[$name] = '';
+?>
+			<li><a title="#theatre-times_tab_<?php echo $i ?>" href="#theatre-times_tab_<?php echo $i ?>"><?php echo $name ?></a></li>
+<?php
+
+	$i++;
+}
+?>
+		</ul>
+<?php
+
+$i = 0;
+foreach ($theatres as $name => $sessions) {
+?>
+		<div id="theatre-times_tab_<?php echo $i ?>" class="sessionTimes">
+<?php
 	foreach ($sessions as $session) {
 		$startTime = substr($session['start_time'], 0, 5);
 		$endTime = substr($session['end_time'], 0, 5);
-		$status = $session['time_available'] >= 0 ? 'available' : 'overbooked';
-		$prevText = $tabs[$name];
-		$tabs[$name] = "<div class=\"shinybutton\"><div>{$startTime} - {$endTime}<br />
-			<span class=\"{$session['status']}\">(" . abs($session['time_available']) . " min {$status})</span>
-			<span class=\"session_id\">{$session['id']}</span></div></div>" . $prevText;
-	}
-	$posttext = '</div>';
-	
-	$tabs[$name] = $pretext . $tabs[$name] . $posttext;
-}
-
-$this->widget('zii.widgets.jui.CJuiTabs', array(
-		'tabs'=>$tabs,
-	'id'=>'theatre-times',
-		// additional javascript options for the tabs plugin
-		'options'=>array(
-				'collapsible'=>false,
-		'select'=>"js:function(event, ui) {
-			if ($('#bookings').length > 0) {
-				$('#bookings').remove();
-			}
-		}",
-		),
-));
+		if ($session['time_available'] >= 0) {
+			$status = 'available';
+			$class = ' available';
+		} else {
+			$status = 'overbooked';
+			$class = '';
+		}
 ?>
+			<div class="timeBlock<?php echo $class ?>" id="bookingSession<?php echo $session['id'] ?>" name="<?php echo $session['id'] ?>">
+				<span class="time"><?php echo $startTime ?> - <?php echo $endTime ?></span>
+				<span class="available">(<?php echo abs($session['time_available']) ?> min <?php echo $status ?>)</span>
+				<span class="session_id"><?php echo $session['id'] ?></span>
+			</div>
+<?php
+	}
+?>
+		</div> <!-- #theatre-times_tab_<?php echo $i ?> -->
+<?php
+
+	$i++;
+}
+?>
+	</div> <!-- #theatre-times -->
+</div> <!-- #theatres -->
+
+<div id="sessionDetails">
 </div>
+
+<script type="text/javascript">
+	$('div[id^="bookingSession"]').unbind('click').click(function() {
+		id = this.id;
+		id = id.replace(/bookingSession/,'');
+
+        $.ajax({
+            'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
+            'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,
+            'type': 'POST',
+            'data': 'operation=<?php echo $operation->id ?>&session=' + id + '&reschedule=<?php echo $reschedule ?>',
+            'success': function(data) {
+				$('#sessionDetails').html('');
+				$('#sessionDetails').html(data);
+				$('#sessionDetails').show();
+            }
+        });
+
+        return true;
+	});
+</script>

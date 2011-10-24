@@ -11,7 +11,14 @@ _____________________________________________________________________________
 http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
+/*
+foreach ($theatres as $name => $dates) {
+	var_dump($name);
+	var_dump($dates);
+}
 
+exit;
+*/
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 //$cs->registerCSSFile('/css/theatre.css', 'all');
@@ -22,64 +29,142 @@ $cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
 
 if (empty($theatres)) {?>
 	<p class="fullBox"><strong>No theatre schedules match your search criteria.</strong></p>
-<?php } else {?>
-	<p class="fullBox"><strong>Showing results for:&nbsp;</strong>"This Month", "Vitreoretinal Services", "Aylward Bill" </p>
-<?php
+<?php } else {
 	$panels = array();
+//var_dump($theatres);
+//exit;
+/*
+foreach ($theatres as $name => $dates) {
+	var_dump($name);
+	foreach ($dates as $date => $sessions) {
+		var_dump($date);
+		foreach ($sessions as $session) {
+			var_dump($session['sessionId']);
+		}
+	}
+}
+exit;
+*/
 	$firstTheatreShown = false;
 	foreach ($theatres as $name => $dates) { ?>
 		<h3 class="theatre<?php if (!$firstTheatreShown) {?> firstTheatre<?php }?>"><strong><?php echo $name?></strong></h3>
 		<?php
 		$firstTheatreShown = true;
 		foreach ($dates as $date => $sessions) {
+			$timestamp = strtotime($date);?>
+<?php
+			$previousSequenceId = '';
+			$timeAvailable = $sessions[0]['sessionDuration'];
 			foreach ($sessions as $session) {
-				$timestamp = strtotime($date);?>
-				<h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for Bill Aylward (Vitreoretinal) </h3>
-				<div class="theatre-sessions whiteBox clearfix">
-					<div class="sessionComments" style="display:block; float:right; width:300px; ">Patient has an Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. - Bill.
-						<div class="modifyComments"><span class="date">16:00 16/10/11</span><span class="edit"><a href="#">Edit</a></span></div>
-					</div>
+				if ($previousSequenceId != $session['sequenceId']) {
+					if ($previousSequenceId != '') {
+?>
+                                                        <tr>
+                                                                <th colspan="7" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
+                                                        </tr>
+                                                </tbody>
+                                        </table>
+                                </div>
+<?php
+					}
 
-					<table>
-						<tbody>
+?>
+<h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo $session['firm_name'] ?> (<?php echo $session['specialty_name'] ?>) </h3>
+                                <div class="theatre-sessions whiteBox clearfix">
+
+                                                <div class="sessionComments" style="display:block; float:right; width:300px; ">
+                                                        <form>
+                                                                <textarea rows="2" style="width:295px;" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
+                                                        </form>
+                                                        <div class="modifyComments"><span class="edit"><a href="#" id="editComments<?php echo $session['sessionId'] ?>" name="<?php echo $session['sessionId'] ?>">Edit comment</a></span></div>
+                                                </div>
+
+                                        <table>
+                                                <tbody>
+                                                        <tr>
+                                                                <th>Start</th>
+                                                                <th>Hospital #</th>
+                                                                <th>Patient (Age)</th>
+                                                                <th>[Eye] Operation</th>
+                                                                <th>Ward</th>
+                                                                <th>Alerts</th>
+                                                        </tr>
+<?php
+					$previousSequenceId = $session['sequenceId'];
+					$timeAvailable = $session['sessionDuration'];
+				}
+
+				if (!empty($session['patientId'])) {
+					$timeAvailable -= $session['operationDuration'];
+?>
 							<tr>
-								<th>Start</th>
-								<th>Hospital #</th>
-								<th>Patient (Age)</th>
-								<th>[Eye] Operation</th>
-								<th>Ward</th>
-								<th>Alerts</th>
+								<td class="session"><?php echo substr($session['admissionTime'], 0, 5)?></td>
+								<td class="hospital"><?php echo CHtml::link(
+                							$session['patientHosNum'],
+									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
+							       	);
+								?></td>
+								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
+								<td class="ward"><?php echo $session['ward']; ?></td>
+								<td class="alerts">
+								<?php
+					if ($session['patientGender'] == 'M') {
+?>
+<img src="/img/_elements/icons/alerts/male.png" alt="male" width="17" height="17" />
+<?php
+					} else {
+?>
+<img src="/img/_elements/icons/alerts/female.png" alt="female" width="17" height="17" />
+<?php
+					}
+
+					if (!empty($session['operationComments']) && preg_match('/\w/', $session['operationComments'])) {
+							?><img src="/img/_elements/icons/alerts/comment.png" alt="<?php echo htmlentities($session['operationComments']) ?>" title="<?php echo htmlentities($session['operationComments']) ?>" width="17" height="17" />
+<?php
+					}
+
+                                	if (!empty($session['overnightStay'])) {
+                                                        ?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" width="17" height="17" />
+<?php
+                                	}
+
+                                	if (!empty($session['consultantRequired'])) {
+                                                        ?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
+<?php
+                                	}
+				}
+?>
+							</td>
 							</tr>
+<?php
+			}
+?>
 							<tr>
-								<td class="session"><?php echo substr($session['startTime'], 0, 5)?></td>
-								<td class="hospital">1001234</td>
-								<td class="patient leftAlign">Chay Close (91)</td>
-								<td class="operation leftAlign"> [R] Phako/IOL (GA)</td>
-								<td class="ward">Sedgwick</td>
-								<td class="alerts"><img src="img/_elements/icons/alerts/female.png" alt="female" width="17" height="17" /><img src="img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" /></td>
-							</tr>
-							<tr>
-								<th colspan="7" class="footer">Time unallocated: <span>225 min</span></th>
+								<th colspan="7" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
 							</tr>
 						</tbody>
 					</table>
 				</div>
-			<?php }
+<?php
 		}
 	}
 }
 ?>
 <script type="text/javascript">
-	$('input[id^="editComments"]').click(function() {
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('waitingList/updateSessionComments'); ?>',
-			'type': 'POST',
-			'data': $('#commentsForm' + this.name).serialize(),
-			'success': function(data) {
-				return true;
-			}
-		});
+    $('a[id^="editComments"]').click(function() {
+        id = this.name;
+        value = $('#comments' + this.name).val();
 
-		return true;
-	});
+        $.ajax({
+            'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
+            'type': 'POST',
+            'data': 'id=' + id + '&comments=' + value,
+            'success': function(data) {
+                return true;
+            }
+        });
+
+        return true;
+    });
 </script>

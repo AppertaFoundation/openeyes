@@ -116,9 +116,13 @@
 
 			$('a.show-event-details').unbind('click').click(function() {
 				var event_id = $(this).attr('rel');
+				view_event(event_id);
+				return false;
+			});
 
+			function view_event(event_id) {
 				$.ajax({
-					url: '/clinical/'+$(this).attr('rel'),
+					url: '/clinical/'+event_id,
 					success: function(data) {
 						$('#edit-eventid').val(event_id);
 						$('div.display_actions').show();
@@ -133,8 +137,7 @@
 						}
 					}
 				});
-				return false;
-			});
+			}
 
 			$(document).ready(function(){
 				$btn_normal = $('img','#addNewEvent').attr("src");
@@ -185,13 +188,37 @@
 			});
 
 			$('a.edit-event').unbind('click').click(function() {
+				edit_event($('#edit-eventid').val());
+				return false;
+			});
+
+			function edit_event(event_id) {
 				$.ajax({
-					url: '/clinical/update/'+$('#edit-eventid').val(),
+					url: '/clinical/update/'+event_id,
 					success: function(data) {
+						edit_mode();
 						$('div.display_actions').show();
 						$('div.action_options').show();
 						$('#event_content').html(data);
 					}
 				});
-			});
+			}
+
+			function edit_mode() {
+				$('div.action_options').html('<span class="aBtn"><a class="view-event" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
+				$('a.view-event').unbind('click').click(function() {
+					view_event($('#edit-eventid').val());
+					view_mode();
+					return false;
+				});
+			}
+
+			function view_mode() {
+				$('div.action_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-event" href="#">Edit</a></span>');
+				$('a.edit-event').unbind('click').click(function() {
+					edit_event($('#edit-eventid').val());
+					edit_mode();
+					return false;
+				});
+			}
 		</script>

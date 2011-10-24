@@ -458,7 +458,7 @@ class ElementOperation extends BaseElement
 		return $date;
 	}
 
-	public function getSessions($emergency = false, $siteId)
+	public function getSessions($emergency = false)
 	{
 		$minDate = $this->getMinDate();
 		$thisMonth = mktime(0, 0, 0, date('m'), 1, date('Y'));
@@ -475,7 +475,7 @@ class ElementOperation extends BaseElement
 		}
 
 		$service = $this->getBookingService();
-		$sessions = $service->findSessions($monthStart, $minDate, $firmId, $siteId);
+		$sessions = $service->findSessions($monthStart, $minDate, $firmId);
 
 		$results = array();
 		foreach ($sessions as $session) {
@@ -560,7 +560,9 @@ class ElementOperation extends BaseElement
 		$results = array();
 		$names = array();
 		foreach ($sessions as $session) {
-			$name = $session['name'];
+			$theatre = Theatre::model()->findByPk($session['id']);
+
+			$name = $session['name'] . ' (' . $theatre->site->name . ')';
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
@@ -790,20 +792,20 @@ class ElementOperation extends BaseElement
 		) {
 			$letterStatus = self::LETTER_REMINDER_1;
 		} elseif (
-                        $datetime >= ($now - 6 * $week) &&
-                        $datetime < ($now - 4 * $week)
-                ) {
-                        $letterStatus = self::LETTER_REMINDER_2;
-                } elseif (
-                        $datetime >= ($now - 8 * $week) &&
-                        $datetime < ($now - 6 * $week)
-                ) {
-                        $letterStatus = self::LETTER_GP;
-                } elseif (
-                        $datetime < ($now - 8 * $week)
-                ) {
-                        $letterStatus = self::LETTER_REMOVAL;
-                }
+			$datetime >= ($now - 6 * $week) &&
+			$datetime < ($now - 4 * $week)
+		) {
+			$letterStatus = self::LETTER_REMINDER_2;
+		} elseif (
+			$datetime >= ($now - 8 * $week) &&
+			$datetime < ($now - 6 * $week)
+		) {
+			$letterStatus = self::LETTER_GP;
+		} elseif (
+			$datetime < ($now - 8 * $week)
+		) {
+			$letterStatus = self::LETTER_REMOVAL;
+		}
 
 		return $letterStatus;
 	}

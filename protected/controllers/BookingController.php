@@ -64,24 +64,7 @@ class BookingController extends BaseController
 			$firm->name = 'Emergency List';
 		}
 
-		if ($firm->name != 'Emergency List') {
-			$siteList = Session::model()->getSiteListByFirm($firmId);
-		} else {
-			$siteList = Site::model()->getList();
-		}
-		if (!empty($_GET['siteId'])) {
-			$siteId = $_GET['siteId'];
-		} else { // grab the first (possibly only) site off the list
-			$siteId = key($siteList);
-		}
-		if (!empty($siteId)) {
-			unset($siteList[$siteId]);
-			$site = Site::model()->findByPk($siteId);
-			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
-		} else {
-			$site = new Site;
-			$sessions = array();
-		}
+		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
@@ -89,8 +72,8 @@ class BookingController extends BaseController
 
 		$this->renderPartial('/booking/_schedule',
 			array('operation'=>$operation, 'date'=>$minDate,
-				'sessions'=>$sessions, 'firm' => $firm, 'firmList' => $firmList, 'siteList' => $siteList,
-				'site'=>$site),
+				'sessions'=>$sessions, 'firm' => $firm, 'firmList' => $firmList
+			),
 			false, true);
 	}
 
@@ -120,27 +103,25 @@ class BookingController extends BaseController
 		} else {
 			$siteList = Site::model()->getList();
 		}
-		if (!empty($_GET['siteId'])) {
-			$siteId = $_GET['siteId'];
-		} else { // grab the first (possibly only) site off the list
-			$siteId = key($siteList);
-		}
-		if (!empty($siteId)) {
-			unset($siteList[$siteId]);
-			$site = Site::model()->findByPk($siteId);
-			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
-		} else {
-			$site = new Site;
-			$sessions = array();
-		}
+
+		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
 		$firmList = Firm::model()->findAll($criteria);
 
 		$this->renderPartial('/booking/_reschedule',
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firm' => $firm,
-		 'firmList' => $firmList, 'siteList' => $siteList, 'site' => $site, 'firmId' => $firmId), false, true);
+			array(
+				'operation'=>$operation,
+				'date'=>$minDate,
+				'sessions'=>$sessions,
+				'firm' => $firm,
+		 		'firmList' => $firmList,
+		 		'firmId' =>	$firmId
+		 	),
+		 	false,
+		 	true
+		);
 	}
 
 	public function actionRescheduleLater()
@@ -158,23 +139,17 @@ class BookingController extends BaseController
 
 		$firmId = $operation->event->episode->firm_id;
 		$firm = Firm::model()->findByPk($firmId);
-		$siteList = Session::model()->getSiteListByFirm($firmId);
-		if (!empty($_GET['siteId'])) {
-			$siteId = $_GET['siteId'];
-		} else { // grab the first (possibly only) site off the list
-			$siteId = key($siteList);
-		}
-		if (!empty($siteId)) {
-			unset($siteList[$siteId]);
-			$site = Site::model()->findByPk($siteId);
-			$sessions = $operation->getSessions($firm->name == 'Emergency List', $siteId);
-		} else {
-			$site = new Site;
-			$sessions = array();
-		}
+		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
 		$this->renderPartial('/booking/_reschedule_later',
-	array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions), false, true);
+			array(
+				'operation'=>$operation,
+				'date'=>$minDate,
+				'sessions'=>$sessions#
+			),
+			false,
+			true
+		);
 	}
 
 	public function actionCancelOperation()
@@ -195,8 +170,9 @@ class BookingController extends BaseController
 
 			if ($cancel->save() && $operation->save()) {
 				$patientId = $operation->event->episode->patient->id;
-				$this->redirect(array('patient/view', 'id'=>$patientId, 'tabId'=>1,
-					'eventId'=>$operation->event->id));
+
+				$this->redirect(array('patient/episodes','id'=>$patientId,
+					'event'=>$operation->event->id));
 			}
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
@@ -272,12 +248,18 @@ class BookingController extends BaseController
 		if (empty($day)) {
 			throw new Exception('Day is required.');
 		}
+		if (empty($_REQUEST['reschedule']) || $_REQUEST['reschedule'] == 0) {
+			$reschedule = 0;
+		} else {
+			$reschedule = 1;
+		}
+
 		$time = strtotime($month);
 		$date = date('Y-m-d', mktime(0,0,0,date('m', $time), $day, date('Y', $time)));
 		$theatres = $operation->getTheatres($date, $firmId == 'EMG');
 
 		$this->renderPartial('/booking/_theatre_times',
-			array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres), false, true);
+			array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres, 'reschedule' => $reschedule), false, true);
 	}
 
 	public function actionList()
@@ -310,7 +292,11 @@ class BookingController extends BaseController
 			$minutesStatus = 'overbooked';
 		}
 
-		$reschedule = !empty($_GET['reschedule']);
+		if (empty($_REQUEST['reschedule']) || $_REQUEST['reschedule'] == 0) {
+			$reschedule = 0;
+		} else {
+			$reschedule = 1;
+		}
 
 		$this->renderPartial('/booking/_list',
 			array('operation'=>$operation, 'session'=>$session,
@@ -382,8 +368,9 @@ class BookingController extends BaseController
 
 				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1,
-					'eventId'=>$model->elementOperation->event->id));
+
+				$this->redirect(array('patient/episodes','id'=>$patientId,
+					'event'=>$model->elementOperation->event->id));
 			}
 		}
 	}
@@ -423,10 +410,10 @@ class BookingController extends BaseController
 					$operation->save();
 				}
 
-				Yii::app()->user->setFlash('success','Booking updated.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
-				$this->redirect(array('patient/view','id'=>$patientId, 'tabId'=>1,
-					'eventId'=>$model->elementOperation->event->id));
+
+				$this->redirect(array('patient/episodes','id'=>$patientId,
+					'event'=>$model->elementOperation->event->id));
 			}
 		}
 	}

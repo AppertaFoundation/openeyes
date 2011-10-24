@@ -12,12 +12,15 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
+$baseUrl = Yii::app()->baseUrl;
+$cs = Yii::app()->getClientScript();
+$cs->registerScriptFile($baseUrl . '/js/phrase.js');
+Yii::app()->clientScript->registerCoreScript('jquery');
+$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
 
 $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'clinical-create',
-	'enableAjaxValidation'=>true,
+	'enableAjaxValidation'=>false,
 	'htmlOptions' => array('class'=>'sliding'),
 	'focus'=>'#procedure_id'
 ));
@@ -27,7 +30,10 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $patient->id);
 echo CHtml::hiddenField('firm_id', $firm->id);
 
-echo $form->errorSummary($elements);
+?>
+<div id="clinical-create_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
+<?php
 
 /**
  * Loop through all the possible element types and display
