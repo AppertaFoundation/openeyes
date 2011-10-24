@@ -35,10 +35,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 </head> 
  
 <body> 
+	<?php if (Yii::app()->params['watermark']) {?>
+		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
-		<?php if (Yii::app()->params['environment'] == 'training') {?><div id="h1-environment" style="margin-top: 0.8em;">Training system</div><?php }?>
 		<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div>
 	</div> <!-- #header --> 
 
@@ -67,5 +69,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<!--#container --> 
 
 	<?php echo $this->renderPartial('/base/_footer',array())?>
+
+	<?php if (Yii::app()->params['watermark']) {?>
+		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
 </body> 
 </html> 
