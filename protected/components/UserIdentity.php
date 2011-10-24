@@ -133,8 +133,12 @@ class UserIdentity extends CUserIdentity
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 		} else {
+			// Gets the firms the user is associated with
 			foreach ($user->firms as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
+
+				// Set the firm to one the user is associated with
+				$app->session['selected_firm_id'] = $firm->id;
 			}
 
 			// Get arbitrarily selected firms
@@ -160,7 +164,12 @@ class UserIdentity extends CUserIdentity
 		$app->session['firms'] = $firms;
 
 		reset($firms);
-		$app->session['selected_firm_id'] = key($firms);
+
+		if (empty($app->session['selected_firm_id'])) {
+			// The user doesn't have firms of their own to select from so we select
+			//	one arbitrarily
+			$app->session['selected_firm_id'] = key($firms);
+		}
 
 		return true;
 	}
