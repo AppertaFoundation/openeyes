@@ -29,9 +29,7 @@ $cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
 
 if (empty($theatres)) {?>
 	<p class="fullBox"><strong>No theatre schedules match your search criteria.</strong></p>
-<?php } else {?>
-	<p class="fullBox"><strong>Showing results for:&nbsp;</strong>"This Month", "Vitreoretinal Services", "Aylward Bill" </p>
-<?php
+<?php } else {
 	$panels = array();
 //var_dump($theatres);
 //exit;
