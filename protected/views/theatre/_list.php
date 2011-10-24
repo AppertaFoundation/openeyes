@@ -113,11 +113,11 @@ exit;
 								<?php
 					if ($session['patientGender'] == 'M') {
 ?>
-<img src="/img/_elements/icons/alerts/female.png" alt="female" width="17" height="17" />
+<img src="/img/_elements/icons/alerts/female.png" alt="male" width="17" height="17" />
 <?php
 					} else {
 ?>
-<img src="/img/_elements/icons/alerts/male.png" alt="male" width="17" height="17" />
+<img src="/img/_elements/icons/alerts/male.png" alt="female" width="17" height="17" />
 <?php
 					}
 
