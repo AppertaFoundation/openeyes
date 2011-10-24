@@ -130,7 +130,6 @@ class Procedure extends BaseActiveRecord
 			->select($select)
 			->from('proc')
 			->where('term LIKE :term', array(':term'=>$search))
-			->limit(5)
 			->queryAll();
 
 		$data = array();
