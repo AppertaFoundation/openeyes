@@ -134,12 +134,23 @@ class PatientController extends BaseController
 	public function actionResults($page=false)
 	{
 		if (!empty($_POST)) {
-			if (!@$_POST['Patient']['hos_num'] && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
+
+			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
 				header('Location: /patient/results/error');
 				setcookie('patient-search-minimum-criteria','1',0,'/');
 				exit;
 			}
-			$get_hos_num = (@$_POST['Patient']['hos_num'] ? $_POST['Patient']['hos_num'] : '0');
+
+			if (@$_POST['Patient']['hos_num']) {
+				$get_hos_num = $_POST['Patient']['hos_num'];
+
+				if (Yii::app()->params['use_pas']) {
+					$get_hos_num = str_pad($get_hos_num, 7, '0', STR_PAD_LEFT);
+				}
+			} else {
+				$get_hos_num = '000000';
+			}
+
 			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
 			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
 			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? $_POST['Patient']['nhs_num'] : '0');

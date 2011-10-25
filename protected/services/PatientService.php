@@ -50,56 +50,87 @@ class PatientService
 			$value = strtoupper($value);
 		}
 
-		$params = array();
-		$criteria=new CDbCriteria;
-		$criteria->select = '"t".RM_PATIENT_NO, "t".SEX, TO_CHAR("t".DATE_OF_BIRTH, \'YYYY-MM-DD\') AS DATE_OF_BIRTH, SILVER.SURNAME_IDS.*, SILVER.NUMBER_IDS.*';
-		$criteria->join = 'LEFT OUTER JOIN SILVER.SURNAME_IDS ON "t".RM_PATIENT_NO = SILVER.SURNAME_IDS.RM_PATIENT_NO LEFT OUTER JOIN SILVER.NUMBER_IDS ON ("t".RM_PATIENT_NO = SILVER.NUMBER_IDS.RM_PATIENT_NO)';
-		if (!empty($data['dob'])) {
-			$criteria->addCondition("TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = :dob");
-			$params[':dob'] = $data['dob'];
-		}
-		if (!empty($data['first_name']) && !empty($data['last_name'])) {
-			$criteria->addCondition("RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = :sn_type AND ((Name1 = :first_name OR Name2 = :first_name) AND Surname_ID = :last_name))");
-			$params[':sn_type'] = 'NO';
-			$params[':first_name'] = "{$data['first_name']}";
-			$params[':last_name'] = "{$data['last_name']}";
-		}
-		if (!empty($data['gender'])) {
-			$criteria->compare('SEX',$data['gender']);
-			$params[':ycp0'] = $data['gender'];
-		}
-		if (!empty($data['hos_num'])) {
-			// add tweaks in for hospital number jiggering
-			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS
-				WHERE NUM_ID_TYPE != :number_type AND NUMBER_ID = :hos_number)");
-			$params[':number_type'] = 'NHS';
-			$params[':hos_number'] = $this->formatHospitalNumberForPas($data['hos_num']);
-		}
-		if (!empty($data['nhs_num'])) {
-			// add tweaks in for hospital number jiggering
-			$criteria->addCondition("RM_PATIENT_NO IN
-				(SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS
-				WHERE NUM_ID_TYPE = :number_type AND
-				NUMBER_ID = :nhs_number)");
-			$params[':number_type'] = 'NHS';
-			$params[':nhs_number'] = $data['nhs_num'];
-		}
+		$whereSql = '';
 
-		$criteria->params = $params;
-		$results = PAS_Patient::model()->findAll($criteria);
+                if (!empty($data['hos_num'])) {
+			$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
+			//$hosNum = $this->formatHospitalNumberForPas($data['hos_num']);
+			$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
+                }
+                if (!empty($data['dob'])) {
+                        $whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
+                }
+                if (!empty($data['first_name']) && !empty($data['last_name'])) {
+			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name']) . "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
+                }
+                if (!empty($data['gender'])) {
+                        $whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
+                }
+                if (!empty($data['nhs_num'])) {
+			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
+                }
+
+                $sql = "
+                        SELECT
+                                DISTINCT(p.rm_patient_no)
+                        FROM
+                                PATIENTS p,
+                                SURNAME_IDS s,
+                                NUMBER_IDS n
+                        WHERE
+                                (
+                                        s.rm_patient_no = p.rm_patient_no
+                                AND
+                                        s.surname_type = 'NO'
+                                )
+                        AND
+                                (
+                                        n.rm_patient_no = p.rm_patient_no
+                                " . $whereSql . "
+                                )
+                ";
+
+/*
+		$sql = "
+			SELECT
+    				p.rm_patient_no,
+    				p.sex,
+    				TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH,
+    				s.*,
+    				n.*
+			FROM
+    				PATIENTS p,
+    				SURNAME_IDS s,
+    				NUMBER_IDS n
+			WHERE
+    				(
+					s.rm_patient_no = p.rm_patient_no
+				AND
+					s.surname_type = 'NO'
+				)
+			AND
+				(
+					n.rm_patient_no = p.rm_patient_no
+				" . $whereSql . "
+				)
+		";
+*/
+                $connection = Yii::app()->db_pas;
+                $command = $connection->createCommand($sql);
+                $results = $command->queryAll();
+
 		$patients = array();
 		$ids = array();
 
-		if (!empty($results)) {
-			foreach ($results as $pasPatient) {
-				$address = PAS_PatientAddress::model()->findByPk($pasPatient->RM_PATIENT_NO);
+		foreach ($results as $result) {
+			$pasPatient = PAS_Patient::model()->findByPk($result['RM_PATIENT_NO']);
 
-				if (isset($address)) {
-					$patient = $this->updatePatient($pasPatient, $address);
-					$patients[] = $patient;
-					$ids[] = $patient->pas_key;
-				}
+			$address = PAS_PatientAddress::model()->findByPk($pasPatient->RM_PATIENT_NO);
+
+			if (isset($address)) {
+				$patient = $this->updatePatient($pasPatient, $address);
+				$patients[] = $patient;
+				$ids[] = $patient->pas_key;
 			}
 		}
 
@@ -168,7 +199,7 @@ class PatientService
 		$patient->title      = $patientData->names[0]->TITLE;
 		$patient->first_name = $patientData->names[0]->NAME1;
 		$patient->last_name  = $patientData->names[0]->SURNAME_ID;
-		$patient->dob        = $patientData->DATE_OF_BIRTH;
+		$patient->dob        = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
 		$patient->gender     = $patientData->SEX;
 		if ($addressData->TEL_NO != 'NONE') {
 			$patient->primary_phone = $addressData->TEL_NO;
