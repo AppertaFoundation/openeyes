@@ -55,7 +55,7 @@ class BookingController extends BaseController
 			$minDate = $thisMonth;
 		}
 
-		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
+		$firmId = empty($_GET['firmId']) ? Yii::app()->session['selected_firm_id'] : $_GET['firmId'];
 		if ($firmId != 'EMG') {
 			$_GET['firm'] = $firmId;
 			$firm = Firm::model()->findByPk($firmId);
@@ -90,7 +90,7 @@ class BookingController extends BaseController
 			$minDate = $thisMonth;
 		}
 
-		$firmId = empty($_GET['firmId']) ? $operation->event->episode->firm_id : $_GET['firmId'];
+		$firmId = empty($_GET['firmId']) ? Yii::app()->session['selected_firm_id'] : $_GET['firmId'];
 		if ($firmId != 'EMG') {
 			$_GET['firm'] = $firmId;
 			$firm = Firm::model()->findByPk($firmId);
