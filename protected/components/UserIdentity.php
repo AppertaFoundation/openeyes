@@ -136,9 +136,6 @@ class UserIdentity extends CUserIdentity
 			// Gets the firms the user is associated with
 			foreach ($user->firms as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
-
-				// Set the firm to one the user is associated with
-				$app->session['selected_firm_id'] = $firm->id;
 			}
 
 			// Get arbitrarily selected firms
@@ -160,12 +157,20 @@ class UserIdentity extends CUserIdentity
 			}
 		}
 
+		if (!count($firms)) {
+			throw new Exception('User has no firm rights and cannot use the system.');
+		}
+
 		$app->session['user'] = $user;
 		$app->session['firms'] = $firms;
 
 		reset($firms);
-
-		if (empty($app->session['selected_firm_id'])) {
+			
+		if (count($user->firms)) {
+			// Set the firm to one the user is associated with
+			$userFirms = $user->firms;
+			$app->session['selected_firm_id'] = $userFirms[0]->id;
+		} else {
 			// The user doesn't have firms of their own to select from so we select
 			//	one arbitrarily
 			$app->session['selected_firm_id'] = key($firms);
