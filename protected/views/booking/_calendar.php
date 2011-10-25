@@ -95,3 +95,9 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 		</table>
 	</div> <!-- details -->
 </div> <!--session_dates -->
+
+<script>
+$(document).ready(function() {
+	$('#sessionDetails').html('');
+});
+</script>
