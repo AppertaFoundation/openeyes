@@ -83,6 +83,12 @@ class TheatreController extends BaseController
 					$endDate = date('Y-m-d');
 					break;
 			}
+
+			if (empty($siteId) && empty($specialtyId) && empty($firmId) && empty($theatreId) && empty($wardId)) {
+				// No search options selected, e.g. the page has just loaded, so set to the session firm
+				$firmId = Yii::app()->session['selected_firm_id'];
+			}
+
 			$service = new BookingService;
 			$data = $service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $specialtyId, $firmId, $wardId);
 

@@ -12,10 +12,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-?><p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
-
-<?php
-
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 $cs->registerScriptFile($baseUrl . '/js/phrase.js');

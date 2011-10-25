@@ -54,8 +54,6 @@ foreach ($elements as $element) {
 $this->endWidget();
 ?>
 <script type="text/javascript">
-        $('button.fancybox').fancybox([]);
-
         $('#updateEvent').unbind('click').click(function() {
                 $.ajax({
                         'url': '<?php echo Yii::app()->createUrl('clinical/update', array('id'=>$id)); ?>',

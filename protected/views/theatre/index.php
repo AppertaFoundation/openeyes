@@ -14,12 +14,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 ?>
 		<h2>Theatre Schedules</h2>
- 
+
 		<div class="fullWidth fullBox clearfix">
 			<div id="whiteBox">
 				<p><strong>Use the filters below to view Theatre schedules:</strong></p>
 			</div>
- 
+
 			<div id="theatre_display">
 				<?php $this->beginWidget('CActiveForm', array('id'=>'theatre-filter', 'action'=>Yii::app()->createUrl('theatre/search'), 'enableAjaxValidation'=>false))?>
 				<div id="search-options">
@@ -163,7 +163,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
+	$(document).ready(function() {
+		return getList();
+	});
 	$('#theatre-filter button[type="submit"]').click(function() {
+		return getList();
+	});
+	function getList() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
 			'type': 'POST',
@@ -174,7 +180,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			}
 		});
 		return false;
-	});
+	}
+
 	$('input[name=date-filter]').change(function() {
 		if ($(this).val() != 'custom') {
 			$('input[id=date-start]').val('');
