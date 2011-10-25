@@ -14,6 +14,8 @@ return array(
 		'ldap_dn' => 'ou=people,o=openeyes',
 		'adminEmail'=>'webmaster@example.com',
 		// if true or not present, patient details are pseudonymised. This must be present and set to false to store real patient data
-		'pseudonymise_patient_details' => true
+		'pseudonymise_patient_details' => true,
+		'environment' => 'live', // can be dev, training, live etc
+		'google_analytics_account' => ''
 	)
 );
