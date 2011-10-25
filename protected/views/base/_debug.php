@@ -20,12 +20,14 @@ if (is_object($user)) {
 	$username = 'Not logged in';
 	$firm = 'Not logged in';
 }
+
+$commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(@$_SERVER['DOCUMENT_ROOT']."/.git/FETCH_HEAD"));
 ?>
 Server: <?php echo $hostname?>
 
 Date: <?php echo date('d.m.Y H:i:s')?>
 
-Commit: <?php echo trim(`git log |head -n1 |cut -d ' ' -f2`)?>
+Commit: <?php echo $commit?>
 
 User agent: <?php echo @$_SERVER['HTTP_USER_AGENT']?>
 
