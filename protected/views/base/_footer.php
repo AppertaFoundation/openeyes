@@ -1,5 +1,5 @@
 	<div id="footer">
-		<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals</h6>
+		<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals &nbsp;&nbsp;|&nbsp;&nbsp; served by <?php echo trim(`hostname`)?></h6>
 		<div id="support-info">
 			<a id="support-info-link" href="#">Support info</a>
 		</div>
