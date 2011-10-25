@@ -23,6 +23,7 @@ if (is_object($user)) {
 <div id="debug-info-modal">
 	<ul>
 		<li>Server: <?php echo $hostname?></li>
+		<li>Docroot: <?php echo @$_SERVER['DOCUMENT_ROOT']?></li>
 		<li>Date: <?php echo date('d.m.Y H:i:s')?></li>
 		<li>Commit: <?php echo trim(`git log |head -n1 |cut -d ' ' -f2`)?></li>
 		<li>User agent: <?php echo @$_SERVER['HTTP_USER_AGENT']?></li>
