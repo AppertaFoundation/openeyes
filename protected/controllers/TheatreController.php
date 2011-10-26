@@ -84,7 +84,7 @@ class TheatreController extends BaseController
 					break;
 			}
 
-			if (empty($siteId) && empty($specialtyId) && empty($firmId) && empty($theatreId) && empty($wardId)) {
+			if (empty($siteId) && empty($specialtyId) && empty($firmId) && empty($theatreId) && empty($wardId) && empty($filter)) {
 				// No search options selected, e.g. the page has just loaded, so set to the session firm
 				$firmId = Yii::app()->session['selected_firm_id'];
 			}
