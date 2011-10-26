@@ -87,6 +87,7 @@ if (empty($model->event_id)) {
 								'value'=>'',
 								'sourceUrl'=>array('disorder/autocomplete'),
 								'options'=>array(
+									'minLength'=>'3',
 									'select'=>"js:function(event, ui) {
 										var value = ui.item.value;
 										$('input[id=ElementDiagnosis_disorder_id_0]').val('');
