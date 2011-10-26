@@ -22,7 +22,7 @@ if (!Yii::app()->user->isGuest) {
 	<div id="user_panel">
 		<div class="clearfix">
 			<div id="user_id">
-				Hi <strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>&nbsp;<a href="#" class="small">(not you?)</a>
+				Hi <strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>&nbsp;<!--a href="#" class="small">(not you?)</a-->
 			</div>
 
 			<ul id="user_nav">
