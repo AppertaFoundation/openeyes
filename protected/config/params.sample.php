@@ -16,6 +16,7 @@ return array(
 		// if true or not present, patient details are pseudonymised. This must be present and set to false to store real patient data
 		'pseudonymise_patient_details' => true,
 		'environment' => 'live', // can be dev, training, live etc
-		'google_analytics_account' => ''
+		'google_analytics_account' => '',
+		'watermark' => ''
 	)
 );
