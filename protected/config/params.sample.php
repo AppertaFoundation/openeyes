@@ -18,6 +18,7 @@ return array(
 		'environment' => 'live', // can be dev, training, live etc
 		'google_analytics_account' => '',
 		'watermark' => '',
+		'watermark_description' => '',
 		'helpdesk_email' => '',
 		'helpdesk_phone' => ''
 	)
