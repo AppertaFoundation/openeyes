@@ -76,8 +76,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			<div class="hint">
 				<p><strong>Still need help?</strong></p>
 				<p>Contact the helpdesk:</p>
-				<p>Telephone: 01234 12343567 ext. 0000</p>
-				<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
+				<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
+				<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
 			</div>
 		</div> <!-- #help --> 
 	</div> 

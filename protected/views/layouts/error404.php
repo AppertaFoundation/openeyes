@@ -38,8 +38,8 @@
 				If you need assistance please feel free to contact the helpdesk (for all we care):
 			</p>
 			<p>
-				Telephone: 01234 12343567 ext. 0000<br/>
-				Email: <a href="mailto:helpdesk@openeyes.org.uk">helpdesk@openeyes.org.uk</a>
+				Telephone: <?php echo Yii::app()->params['helpdesk_phone']?><br/>
+				Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a>
 			</p>
 		</div>
 	</div> <!-- #content --> 

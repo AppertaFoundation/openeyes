@@ -17,6 +17,8 @@ return array(
 		'pseudonymise_patient_details' => true,
 		'environment' => 'live', // can be dev, training, live etc
 		'google_analytics_account' => '',
-		'watermark' => ''
+		'watermark' => '',
+		'helpdesk_email' => '',
+		'helpdesk_phone' => ''
 	)
 );
