@@ -36,7 +36,10 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
  
 <body> 
 	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
+	<?php if (Yii::app()->params['watermark_description']) {?>
+		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
 	<?php }?>
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
@@ -73,12 +76,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<?php echo $this->renderPartial('/base/_footer',array())?>
 
 	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
 	<?php }?>
 
-	<?php if (Yii::app()->params['watermark_description']) {?>
-		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
-	<?php }?>
 
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">

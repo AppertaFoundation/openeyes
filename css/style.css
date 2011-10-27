@@ -66,6 +66,7 @@ td { vertical-align: top; }
 html { background-color: #d4d1cd; }
 body { width:1230px; margin:0 auto; }
 /* ====== STRUCTURE ====== */
+#header { border-top:2px solid #b3b0ae; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; }
 #container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
 #container 		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; }
 #header 		{ height: 70px; position: relative; }
@@ -622,6 +623,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
   body { width:auto !important; margin: 0 !important;}
 }
 
-.h1-watermark { width: 100%; font-size: 16px; margin-top: 1.2em; margin-bottom: 1.2em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark-description { width: 100%; font-size: 11px; margin-top: 1.2em; margin-bottom: 1.2em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description p { margin-left: 1em; }
