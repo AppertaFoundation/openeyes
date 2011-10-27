@@ -13,34 +13,52 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 */
 
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="language" content="en" />
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-	<!-- blueprint CSS framework -->
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
-	<!--[if lt IE 8]>
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
-	<![endif]-->
+  <title>Open Eyes - Admin</title>
+  <meta name="viewport" content="width=device-width">
 
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/main.css" />
-	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
-
-	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="favicon.ico"/>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/js/libs/modernizr-2.0.6.min.js"></script>
 </head>
 
 <body>
 
-<div class="container" id="page">
+  <div id="container">
+	<div id="header" class="clearfix">
 
-	<div id="header">
-		<div id="logo"><?php echo CHtml::encode(Yii::app()->name); ?> ADMIN PAGE</div>
-	</div><!-- header -->
+		<div id="brand" class="ir"><h1>OpenEyes</h1></div>
+		
+		<div id="user_panel" class="inAdmin">
+			<div class="clearfix">
+				<div id="user_id">
+					Hi <strong>Bob Andrews</strong>&nbsp;<a href="#" class="small">(not you?)</a>
+				</div>
+				
+				<ul id="user_nav">
 
-	<div id="mainmenu">
+					<li><a href="/">OpenEyes Home</a></li>
+					<li><a href="/site/logout" class="logout">Logout</a></li>
+				</ul>
+			</div>
+		</div> <!-- #user_panel -->
+	</div> <!-- #header -->
+	
+	<div id="content" class="adminMode">
+
+		<h2 class="admin">ADMIN</h2>
+		<div id="mainmenu" class="fullBox" style="background:#ccc;">
+
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/site/index')),
@@ -58,19 +76,64 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
 		)); ?>
-	</div><!-- mainmenu -->
+		</div>	<!-- #mainmenu -->
+		
+		<div class="whiteBox"> <!-- REPLACEs <div id="content"> in current HTML structure (already have a "content" id) -->
 
-	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-		'links'=>$this->breadcrumbs,
-	)); ?><!-- breadcrumbs -->
+		<div id="sidebar">
+			<div id="yw2" class="portlet">
+				<div class="portlet-content">
+
+                <?php
+                        $this->beginWidget('zii.widgets.CPortlet', array(
+                                'title'=>'Operations',
+                        ));
+                        $this->widget('zii.widgets.CMenu', array(
+                                'items'=>$this->menu,
+                                'htmlOptions'=>array('class'=>'operations'),
+                        ));
+                        $this->endWidget();
+                ?>
+				</div> <!-- .portlet-content -->
+			</div>	<!-- .portlet -->	
+		</div> <!-- #sidebar -->
 
 	<?php echo $content; ?>
 
-	<div id="footer">
-		Copyright OpenEyes Foundation 2011<br/>
-	</div><!-- footer -->
+	</div> <!-- .whiteBox -->
+		
+	</div> <!-- #content -->
 
-</div><!-- page -->
+	<div id="help" class="clearfix">
+		<div class="hint">
+			<p><strong>Do you need help with OpenEyes?</strong></p>
+			<p>Before you contact the helpdesk...</p>
+			<p>Is there a "Super User" in your office available? (A "Super User" is...)</p>
+			<p>Have you checked the <a href="#">Quick Reference Guide?</a></p>
+
+		</div>
+		
+		<div class="hint">
+			<p><strong>Searching by patient details.</strong></p>
+			<p>Although the Last Name is required it doesn't have to be complete. For example if you search for "Smi", the results will include all last names starting with "Smi...". Any other information you can add will help narrow the search results.</p>
+		</div>
+		
+		<div class="hint">
+			<p><strong>Still need help?</strong></p>
+
+			<p>Contact the helpdesk:</p>
+			<p>Telephone: 01234 12343567 ext. 0000</p>
+			<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
+		</div>
+		
+	</div> <!-- #help -->
+  </div> 
+  <!--#container -->
+
+  
+  <div id="footer">
+  	<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals</h6>
+  </div> <!-- #footer -->
 
 </body>
 </html>
