@@ -69,7 +69,7 @@ class PatientService
                 if (!empty($data['nhs_num'])) {
 			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
                 }
-
+		
                 $sql = "
                         SELECT
                                 DISTINCT(p.rm_patient_no)

@@ -82,7 +82,7 @@ exit;
                                         <table>
                                                 <tbody>
                                                         <tr>
-                                                                <th>Start</th>
+                                                                <th>Admit time</th>
                                                                 <th>Hospital #</th>
                                                                 <th>Patient (Age)</th>
                                                                 <th>[Eye] Operation</th>
