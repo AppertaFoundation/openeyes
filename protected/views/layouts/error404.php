@@ -1,4 +1,4 @@
-<?php header('HTTP/1.1 503 Service Temporarily Unavailable')?>
+<?php header('HTTP/1.1 404 Page Not Found')?>
 <!doctype html> 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]--> 
 <!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]--> 
@@ -26,20 +26,21 @@
 
 	<div id="content"> 
 		<div id="down-form" class="form_greyBox">
-			<h3>Page not found</h3>
+			<h3>OpenEyes is broken</h3>
 			<div style="height: 1em;"></div>
 			<p>
-				<strong>We're very sorry but the page you requested doesn't appear to exist.</strong>
+				<strong>There has been a problem trying to access OpenEyes, please try again in a moment</strong>
 			</p>
 			<p>
-				Please check the link and try again.
+				If there continues to be a problem please contact support
 			</p>
 			<p>
-				If you need assistance please feel free to contact the helpdesk (for all we care):
-			</p>
-			<p>
-				Telephone: <?php echo Yii::app()->params['helpdesk_phone']?><br/>
-				Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a>
+				Support Options
+				<ul>
+					<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo Yii::app()->params['helpdesk_phone']?></li>
+					<li>Less urgent issues email <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></li>
+					<li>Log a support call or question at ???????????</li>
+				</ul>
 			</p>
 		</div>
 	</div> <!-- #content --> 
