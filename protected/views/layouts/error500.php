@@ -1,4 +1,4 @@
-<?php header('HTTP/1.1 503 Service Temporarily Unavailable')?>
+<?php header('HTTP/1.1 500 Internal Server Error')?>
 <!doctype html> 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]--> 
 <!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]--> 
@@ -38,8 +38,8 @@
 				If you need assistance please feel free to contact the helpdesk (for all we care):
 			</p>
 			<p>
-				Telephone: 01234 12343567 ext. 0000<br/>
-				Email: <a href="mailto:helpdesk@openeyes.org.uk">helpdesk@openeyes.org.uk</a>
+				Telephone: <?php echo Yii::app()->params['helpdesk_phone']?><br/>
+				Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a>
 			</p>
 		</div>
 	</div> <!-- #content --> 

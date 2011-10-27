@@ -61,8 +61,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		<div class="hint">
 			<p><strong>Do you require a username and password?</strong></p>
 			<p>Contact the helpdesk:</p>
-			<p>Telephone: 01234 12343567 ext. 0000</p>
-			<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
+			<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
+			<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
 		</div>
 	</div> <!-- #help --> 
 	</div> 
@@ -72,6 +72,10 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 	<?php if (Yii::app()->params['watermark']) {?>
 		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
+
+	<?php if (Yii::app()->params['watermark_description']) {?>
+		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
 	<?php }?>
 
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
