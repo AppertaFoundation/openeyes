@@ -1,4 +1,4 @@
-<?php header('HTTP/1.1 503 Service Temporarily Unavailable')?>
+<?php header('HTTP/1.1 500 Internal Server Error')?>
 <!doctype html> 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]--> 
 <!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]--> 
