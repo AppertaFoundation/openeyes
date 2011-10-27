@@ -335,8 +335,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .popup.red { border-color: #cf2239; }
 
 /* for lightbox that pops up with debug */
-#support-info { float: right; margin-top: -1.2em; margin-right: 13em; font-size: 7pt; font-weight: normal; color: #666; }
-#support-info a { color: #666; }
+#footer a { color: #666; }
 
 /* to indicate that user is in training mode  */
 #h1-environment { float: right; font-size: 14px; margin-top: 0; margin-right: 0.9em; }
