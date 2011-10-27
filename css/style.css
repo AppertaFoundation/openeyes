@@ -181,7 +181,7 @@ button.btn_save:hover 	{ background-image: url(../img/_elements/btns/save_o.png)
 button.btn_search 			{ background:transparent url(../img/_elements/btns/search.png) no-repeat; }
 button.btn_search:hover 	{ background-image: url(../img/_elements/btns/search_o.png); }
 /* special buttons */
-button.btn_newEvent			{ display:inline-block; float:right; width:155px; height:35px; margin:1px 2px 0 0;}
+button.btn_newEvent			{ float:right; width:155px; height:35px; margin:0px 0px 0px 0px;padding:0px;}
 button.btn_newEvent 		{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
 button.btn_newEvent:hover 	{ background-image: url(../img/_elements/btns/new-event_o.png); }
 /* long buttons -- set up all wide buttons */
