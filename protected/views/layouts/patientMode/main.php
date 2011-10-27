@@ -35,7 +35,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
  
 <body> 
 	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
 	<?php }?>
 
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
@@ -106,7 +106,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	</script>
 
 	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
 	<?php }?>
 
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
