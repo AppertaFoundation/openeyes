@@ -58,12 +58,14 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			<p>Ensure that CAPs LOCK is off.</p>
 		</div>
 
-		<div class="hint">
-			<p><strong>Do you require a username and password?</strong></p>
-			<p>Contact the helpdesk:</p>
-			<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
-			<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
-		</div>
+		<?php if (Yii::app()->params['helpdesk_phone'] && Yii::app()->params['helpdesk_email']) {?>
+			<div class="hint">
+				<p><strong>Do you require a username and password?</strong></p>
+				<p>Contact the helpdesk:</p>
+				<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
+				<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
+			</div>
+		<?php }?>
 	</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
