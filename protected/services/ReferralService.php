@@ -18,18 +18,17 @@ class ReferralService
 	/**
 	 * Perform a search based on the patient pas key
 	 *
-	 * @param int $pasKey
+	 * @param int $hosNum
 	 */
-	public function search($pasKey)
+	public function search($hosNum)
 	{
-		$results = PAS_Referral::model()->findAll('X_CN = ?', array($pasKey));
+		$results = PAS_Referral::model()->findAll('X_CN = ?', array($hosNum));
 
 		if (!empty($results)) {
 			foreach ($results as $pasReferral) {
 				$patient = Patient::model()->find('pas_key = ?', array($pasReferral->X_CN));
 
-				//$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REFSPEC));
-				$specialty = Specialty::model()->findByPk(1);
+				$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REFSPEC));
 
 				$referral = Referral::model()->find('refno = ?', array($pasReferral->REFNO));
 
@@ -58,7 +57,7 @@ class ReferralService
 	 *
 	 * @return array
 	 */
-	public function getReferralsList($firm, $patientId)
+	public function getReferral($firm, $patientId)
 	{
 		if (!Yii::app()->params['use_pas']) {
 			return false;
@@ -71,8 +70,8 @@ class ReferralService
 			->join('episode e', 'e.id = r_e_a.episode_id')
 			->join('firm f', 'e.firm_id = f.id')
 			->join('service_specialty_assignment s_s_a', 'f.service_specialty_assignment_id = s_s_a.id')
-			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.service_id = :service_id', array(
-				':patient_id' => $patientId, ':service_id' => $firm->serviceSpecialtyAssignment->service_id
+			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.specialty_id = :specialty_id', array(
+				':patient_id' => $patientId, ':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id
 			))
 			->queryRow();
 
@@ -81,14 +80,14 @@ class ReferralService
 			return false;
 		}
 
-		// Look for open referrals of this specialty
+		// Look for open referrals of this service
 		$referrals = Referral::model()->findAll(
 			array(
 				'order' => 'refno DESC',
 				'condition' => 'patient_id = :p AND service_id = :s AND closed = 0',
 				'params' => array(
 					':p' => $patientId,
-					':s' => $firm->serviceSpecialtyAssignment->service_id
+					':s' => $firm->serviceSpecialtyAssignment->specialty_id
 				),
 				'limit' => 1
 			)
@@ -96,7 +95,7 @@ class ReferralService
 
 		if (count($referrals)) {
 			// There is at least one open referral for this service, so return that.
-			return array($referrals[0]);
+			return $referrals[0];
 		}
 
 		// There are no open referrals for this specialty, try and find open referrals for a different
@@ -105,13 +104,14 @@ class ReferralService
 			array(
 				'order' => 'refno DESC',
 				'condition' => 'patient_id = :p AND closed = 0',
-				'params' => array(':p' => $patientId)
+				'params' => array(':p' => $patientId),
+				'limit' => 1
 			)
 		);
 
 		if (count($referrals)) {
 			// There are referrals, use the newest one
-			return $referrals;
+			return $referrals[0];
 		}
 
 		// There are no open referrals so no referral can be associated.
@@ -120,33 +120,14 @@ class ReferralService
 
 	public function assignReferral($eventId, $firm, $patientId)
 	{
-		$referrals = $this->getReferralsList($firm, $patientId);
+		$referral = $this->getReferral($firm, $patientId);
 
-		if (!isset($referrals) || !$referrals) {
+		if (empty($referral)) {
 			// Either there is already a referral for the episode or there are no open referrals
 			// for this patient, so do nothing
 			return;
 		}
 
-		if (is_array($referrals)) {
-			// There is at least one referral - check to see if the referral_id provided by the user is in it.
-			// If not, assign the first referral to the episode.
-			if (isset($_REQUEST['referral_id'])) {
-				foreach ($referrals as $referral) {
-					if ($referral->id = $_REQUEST['referral_id']) {
-						$this->addReferral($eventId, $referral->id);
-						return;
-					}
-				}
-			}
-
-			// No referral_id provided, or doesn't match, so assign the first referral in the list to the episode
-			$this->addReferral($eventId, $referrals[0]->id);
-		}
-	}
-
-	public function addReferral($eventId, $referralId)
-	{
 		$event = Event::model()->findByPk($eventId);
 
 		if (!isset($event)) {
@@ -156,7 +137,7 @@ class ReferralService
 		$rea = new ReferralEpisodeAssignment;
 
 		$rea->episode_id = $event->episode_id;
-		$rea->referral_id = $referralId;
+		$rea->referral_id = $referral->id;
 		$rea->save();
 	}
 }

@@ -152,7 +152,7 @@ class ElementDiagnosis extends BaseElement
 	 */
 	public function beforeValidate()
 	{
-		if (!empty($this->disorder_id)) {
+		if (!empty($this->disorder_id) && preg_match('/[^\d]/', $this->disorder_id)) {
 			$disorder = Disorder::model()->find('term = ? AND systemic = 0', array($this->disorder_id));
 
 			if (empty($disorder)) {

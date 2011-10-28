@@ -72,7 +72,9 @@ class PatientService
 		
                 $sql = "
                         SELECT
-                                DISTINCT(p.rm_patient_no)
+                                p.rm_patient_no,
+				n.num_id_type,
+				n.number_id
                         FROM
                                 PATIENTS p,
                                 SURNAME_IDS s,
@@ -128,7 +130,7 @@ class PatientService
 			$address = PAS_PatientAddress::model()->findByPk($pasPatient->RM_PATIENT_NO);
 
 			if (isset($address)) {
-				$patient = $this->updatePatient($pasPatient, $address);
+				$patient = $this->updatePatient($pasPatient, $address, $result);
 				$patients[] = $patient;
 				$ids[] = $patient->pas_key;
 			}
@@ -151,7 +153,8 @@ class PatientService
 	public function formatHospitalNumberFromPas($string)
 	{
 		if (is_numeric($string) && $string < 1000000) {
-			$number = $string + 1000000;
+//			$number = $string + 1000000;
+			$number = str_pad($string, 7, '0', STR_PAD_LEFT);
 		} else {
 			$number = $string;
 		}
@@ -185,17 +188,20 @@ class PatientService
 	 *
 	 * @return Patient
 	 */
-	protected function updatePatient($patientData, $addressData)
+	protected function updatePatient($patientData, $addressData, $result)
 	{
+		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
+
 		// update OpenEyes database info
-		$patient = Patient::model()->findByAttributes(array('pas_key' => $patientData->RM_PATIENT_NO));
+//		$patient = Patient::model()->findByAttributes(array('pas_key' => $patientData->RM_PATIENT_NO));
+		$patient = Patient::model()->findByPk($patientData->RM_PATIENT_NO);
 		$address = new Address;
 		if (empty($patient)) {
 			$patient = new Patient;
 		} elseif (!empty($patient->address_id)) {
 			$address = Address::model()->findByPk($patient->address_id);
 		}
-		$patient->pas_key    = $patientData->RM_PATIENT_NO;
+		$patient->pas_key    = $hosNum;
 		$patient->title      = $patientData->names[0]->TITLE;
 		$patient->first_name = $patientData->names[0]->NAME1;
 		$patient->last_name  = $patientData->names[0]->SURNAME_ID;
@@ -209,13 +215,18 @@ class PatientService
 		$address->save();
 		$patient->address_id = $address->id;
 
+/*
 		$hospitalNumber = PAS_PatientNumber::model()->findByAttributes(
 			array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO),
 			'NUM_ID_TYPE != :numType',
 			array(':numType' => 'NHS'));
+
 		if (!empty($hospitalNumber)) {
 			$patient->hos_num = $this->formatHospitalNumberFromPas($hospitalNumber->NUMBER_ID);
 		}
+*/
+
+		$patient->hos_num = $hosNum;
 		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(
 			array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
 				  'NUM_ID_TYPE' => 'NHS'));

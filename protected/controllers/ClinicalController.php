@@ -97,7 +97,7 @@ class ClinicalController extends BaseController
 		if (Yii::app()->params['use_pas']) {
 			$patient = Patient::model()->findByPk($this->patientId);
 			$referralService = new ReferralService;
-			$referralService->search($patient->pas_key);
+			$referralService->search($patient->hos_num);
 		}
 
 		$this->render('index');
