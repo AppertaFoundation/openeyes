@@ -322,7 +322,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #patientID > .patientReminder { padding-top:9px; }
 #patientID > .i_patient { position:absolute; right:0; bottom:0; }
 .patientReminder > .given 		{ display:inline-block; font-size: 12pt; font-weight: bold; }
-.patientReminder > .given:after { content:", "; color:#444; }
+.patientReminder > .given:after { color:#444; }
 .patientReminder > .surname 	{ display:inline-block; font-size: 12pt; }
 .patientReminder > .number 		{ display:block; font-size: 9pt; margin-top: 2px; }
 
