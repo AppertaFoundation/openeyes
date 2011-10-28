@@ -1,14 +1,37 @@
+<?php
+/*
+_____________________________________________________________________________
+(C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+(C) OpenEyes Foundation, 2011
+This file is part of OpenEyes.
+OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+_____________________________________________________________________________
+http://www.openeyes.org.uk       info@openeyes.org.uk
+--
+*/
+
+if (empty($model->event_id)) {
+        // It's a new event so fetch the most recent element_diagnosis
+        $diagnosis = ElementDiagnosis::model()->getNewestDiagnosis();
+
+        if (!empty($diagnosis->disorder)) {
+                $model->eye = $diagnosis->eye;
+        }
+}
+?>
 					<h4>Operation details</h4>
 					<div id="editEyeOperation" class="eventDetail">
 						<div class="label">Select eye(s):</div>
 						<div class="data">
 							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
 							<span class="group">
-							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1' || $model->eye === null) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_0">Right</label>
 							</span>
 							<span class="group">
-							<input id="ElementOperation_eye_1" value="0" <?php if ($model->eye === '0' && $model->eye !== null) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<input id="ElementOperation_eye_1" value="0" <?php if (empty($model->eye)) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_1">Left</label>
 							</span>
 							<span class="group">

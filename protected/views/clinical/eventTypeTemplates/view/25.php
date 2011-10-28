@@ -80,18 +80,18 @@ if (!empty($operation->booking)) {
 
 		// The operation hasn't been booked yet?>
 		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_btn">Print invitation letter</button>
-			<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_btn">Print reminder letter</button>
-			<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_btn">Print GP refer back letter</button>
-			<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_schedule_now">Schedule now</button>
-			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel_operation">Cancel operation</button>
+			<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_print-invitation-letter">Print invitation letter</button>
+			<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_print-reminder-letter">Print reminder letter</button>
+			<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_print-gp-refer-back-letter">Print GP refer back letter</button>
+			<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_schedule-now">Schedule now</button>
+			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel-operation">Cancel operation</button>
 		</div>
 	<?php } else {?>
 		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" value="submit" class="btn_print-letter ir" id="btn_btn">Print letter</button>
-			<button type="submit" value="submit" class="wBtn_reschedule-now ir" id="btn_reschedule_now">Reschedule now</button>
-			<button type="submit" value="submit" class="wBtn_reschedule-later ir" id="btn_reschedule_later">Reschedule later</button>
-			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel_operation">Cancel operation</button>
+			<button type="submit" value="submit" class="btn_print-letter ir" id="btn_print-letter">Print letter</button>
+			<button type="submit" value="submit" class="wBtn_reschedule-now ir" id="btn_reschedule-now">Reschedule now</button>
+			<button type="submit" value="submit" class="wBtn_reschedule-later ir" id="btn_reschedule-later">Reschedule later</button>
+			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel-operation">Cancel operation</button>
 		</div>
 	<?php }?>
 <?php }?>
@@ -400,5 +400,8 @@ Chief Executive: John Pelly<br />
 				return false;
 			}
 		});
+	});
+	$('#btn_print-invitation-letter').unbind('click').click(function() {
+		printContent('Some test letter content');
 	});
 </script>
