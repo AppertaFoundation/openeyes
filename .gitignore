@@ -14,3 +14,5 @@ nbproject/*
 /protected/views/elements/ElementExample/
 .DS_Store
 /.idea/
+error/404.php
+error/500.php

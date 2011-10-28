@@ -89,28 +89,32 @@ class SiteController extends BaseController
 	 */
 	public function actionError()
 	{
-	    if($error=Yii::app()->errorHandler->error)
-	    {
-				error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
+		if($error=Yii::app()->errorHandler->error)
+		{
+			error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
 
-	    	if(Yii::app()->request->isAjaxRequest)
-	    		echo $error['message'];
-	    	else {
-					switch ($error['code']) {
-						case 404:
-							$this->layout = "error404";
-							$this->render('error', $error);
-							break;
-						case 500:
-							$this->layout = "error500";
-							$this->render('error',$error);
-							break;
-						default:
-							$this->layout = "error500";
-							$this->render('error',$error);
-					}
+			if(Yii::app()->request->isAjaxRequest)
+				echo $error['message'];
+			else {
+				switch ($error['code']) {
+					case 404:
+						if (file_exists("error/404.php")) {
+							header('Location: /error/404.php');
+						} else {
+							header('Location: /error/404.sample.php');
+						}
+						exit;
+					case 500:
+					default:
+						if (file_exists("error/500.php")) {
+							header('Location: /error/500.php');
+						} else {
+							header('Location: /error/500.sample.php');
+						}
+						exit;
 				}
-	    }
+			}
+		}
 	}
 
 	/**

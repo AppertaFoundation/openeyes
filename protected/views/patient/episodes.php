@@ -1,7 +1,7 @@
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
-				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent"><img style="float:right; margin:1px 2px 0 0;" src="/img/_elements/btns/new-event.png" alt="add-new-event" width="155" height="35" /></button></form>
+				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent"><img style="float:right; margin:0px 0px 0 0;" src="/img/_elements/btns/new-event.png" alt="add-new-event" width="155" height="35" /></button></form>
 				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<div id="episodes_sidebar">

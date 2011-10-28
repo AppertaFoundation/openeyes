@@ -36,7 +36,10 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
  
 <body> 
 	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
+	<?php if (Yii::app()->params['watermark_description']) {?>
+		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
 	<?php }?>
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
@@ -58,12 +61,14 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			<p>Ensure that CAPs LOCK is off.</p>
 		</div>
 
-		<div class="hint">
-			<p><strong>Do you require a username and password?</strong></p>
-			<p>Contact the helpdesk:</p>
-			<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
-			<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
-		</div>
+		<?php if (Yii::app()->params['helpdesk_phone'] && Yii::app()->params['helpdesk_email']) {?>
+			<div class="hint">
+				<p><strong>Do you require a username and password?</strong></p>
+				<p>Contact the helpdesk:</p>
+				<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
+				<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
+			</div>
+		<?php }?>
 	</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
@@ -71,12 +76,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<?php echo $this->renderPartial('/base/_footer',array())?>
 
 	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark" style="margin-top: 0.8em;"><?php echo Yii::app()->params['watermark']?></div>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
 	<?php }?>
 
-	<?php if (Yii::app()->params['watermark_description']) {?>
-		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
-	<?php }?>
 
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
