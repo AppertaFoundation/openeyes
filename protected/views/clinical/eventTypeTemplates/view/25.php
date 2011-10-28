@@ -357,7 +357,7 @@ Chief Executive: John Pelly<br />
 
 
 <script type="text/javascript">
-	$('#btn_schedule_now').unbind('click').click(function() {
+	$('#btn_schedule-now').unbind('click').click(function() {
 		$.ajax({
 			url: '/booking/schedule',
 			type: "GET",
@@ -368,7 +368,7 @@ Chief Executive: John Pelly<br />
 			}
 		});
 	});
-	$('#btn_cancel_operation').unbind('click').click(function() {
+	$('#btn_cancel-operation').unbind('click').click(function() {
 		$.ajax({
 			url: '/booking/cancelOperation',
 			type: "GET",
@@ -379,7 +379,7 @@ Chief Executive: John Pelly<br />
 			}
 		});
 	});
-	$('#btn_reschedule_now').unbind('click').click(function() {
+	$('#btn_reschedule-now').unbind('click').click(function() {
 		$.ajax({
 			url: '/booking/reschedule',
 			type: "GET",
@@ -390,7 +390,7 @@ Chief Executive: John Pelly<br />
 			}
 		});
 	});
-	$('#btn_reschedule_later').unbind('click').click(function() {
+	$('#btn_reschedule-later').unbind('click').click(function() {
 		$.ajax({
 			url: '/booking/rescheduleLater',
 			type: "GET",
