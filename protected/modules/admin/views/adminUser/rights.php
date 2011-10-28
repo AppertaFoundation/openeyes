@@ -45,19 +45,20 @@ $this->menu=array(
 	foreach ($rights as $service) {
 ?>
 	<div class="row">
-------------------
 		<?php echo CHtml::label($service['name'], $service['label']); ?>
 		<?php echo CHtml::checkBox($service['label'], $service['checked']); ?>
-
+		<br />
 <?php
 		foreach ($service['firms'] as $firm) {
 ?>
+&nbsp;&nbsp;&nbsp;&nbsp;
 			<?php echo CHtml::label($firm['name'], $firm['label']); ?>
 			<?php echo CHtml::checkBox($firm['label'], $firm['checked']); ?>
 <?php
 		}
 ?>
 	</div>
+	<br />
 <?php
 	}
 ?>

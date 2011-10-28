@@ -45,4 +45,30 @@ $this->menu=array(
                         'value' => CHtml::encode($model->getGlobalFirmRightsText())
                 ),
 	),
-)); ?>
+));
+?>
+<table class="detail-view" id="rights">
+<tr class="even"><th>Rights</th><td>
+<b>Services</b>
+<br />
+<?php
+        foreach ($rights as $service) {
+		if ($service['checked']) {
+			echo $service['name'] . "<br />\n";
+		}
+	}
+?>
+<br />
+<b>Firms</b>
+<br />
+<?php
+	foreach ($rights as $service) {
+		foreach ($service['firms'] as $firm) {
+			if ($firm['checked']) {
+				echo $firm['name'] . ' (' . $service['name'] . ")<br />\n";
+			}
+                }
+        }
+?>
+</td></tr>
+</table>

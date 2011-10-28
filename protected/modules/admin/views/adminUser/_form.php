@@ -24,15 +24,15 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 	<?php echo $form->errorSummary($model); ?>
 
+        <?php
+                if (Yii::app()->params['auth_source'] == 'BASIC') {
+        ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'username'); ?>
 		<?php echo $form->textField($model,'username',array('size'=>40,'maxlength'=>40)); ?>
 		<?php echo $form->error($model,'username'); ?>
 	</div>
 
-	<?php
-		if (Yii::app()->params['auth_source'] == 'BASIC') {
-	?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'first_name'); ?>
 		<?php echo $form->textField($model,'first_name',array('size'=>40,'maxlength'=>40)); ?>
@@ -61,6 +61,14 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 		<?php echo $form->labelEx($model,'password_repeat'); ?>
 		<?php echo $form->passwordField($model,'password_repeat',array('size'=>40,'maxlength'=>40)); ?>
 	</div>
+	<?php
+		} else {
+	?>
+        <div class="row">
+                <?php echo $form->labelEx($model,'username'); ?>
+                <?php echo $model->username ?>
+                <?php echo $form->error($model,'username'); ?>
+        </div>
 	<?php
 		}
 	?>

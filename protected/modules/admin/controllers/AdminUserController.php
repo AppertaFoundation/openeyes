@@ -36,8 +36,14 @@ class AdminUserController extends Controller
 	 */
 	public function actionView($id)
 	{
+		$model = $this->loadModel($id);
+
+                $service = new RightsService($model->id);
+// @todo - change to a service?
+                $rights = $service->loadRights();
+
 		$this->render('view',array(
-			'model'=>$this->loadModel($id),
+			'model'=>$model, 'rights' => $rights
 		));
 	}
 
