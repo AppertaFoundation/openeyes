@@ -84,7 +84,7 @@ if (!empty($operation->booking)) {
 		<div style="margin-top:40px; text-align:center;">
 			<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_print-invitation-letter">Print invitation letter</button>
 			<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_print-reminder-letter">Print reminder letter</button>
-			<button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_print-gp-refer-back-letter">Print GP refer back letter</button>
+			<!--button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_print-gp-refer-back-letter">Print GP refer back letter</button-->
 			<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_schedule-now">Schedule now</button>
 			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel-operation">Cancel operation</button>
 		</div>
@@ -208,12 +208,12 @@ if (!empty($operation->booking)) {
   		appendPrintContent(baseContent);
 	}
 
-	function loadMiddleLetterPrintContent() {
+	function loadInvitationLetterPrintContent() {
 		var content = '<p>I have been asked to arrange your <?php
 		if ($patient->isChild()) {
 ?>child&apos;s <?php
 		}
-?> admission for surgery under the care of <?php echo $consultantName ?>';
+?> admission for surgery under the care of <?php echo $consultantName ?>.';
 
 		content += ' This is currently anticipated to be a <?php
 			if ($operation->overnight_stay) {
@@ -223,7 +223,33 @@ if (!empty($operation->booking)) {
 			}
 		?> procedure.</p>';
 
-		content += '<p>Please will you telephone CONTACT within TIME LIMIT of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.</p>';
+		content += '<p>Please will you telephone CONTACT within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.</p>';
+
+		content += '<p>Should you<?php
+		if ($patient->isChild()) {
+?>r child<?php
+		}
+?> no longer require treatment please let me know as soon as possible.</p>';
+
+		appendPrintContent(content);
+	}
+
+	function loadReminderLetterPrintContent() {
+		var content = '<p>I recently invited you to telephone to arrange a date for your <?php
+		if ($patient->isChild()) {
+?>child&apos;s <?php
+		}
+?> admission for surgery under the care of <?php echo $consultantName ?>. I have not yet heard from you.</p>';
+
+		content += '<p>This is currently anticipated to be a <?php
+			if ($operation->overnight_stay) {
+				echo 'an overnight stay';
+			} else {
+				echo 'day case';
+			}
+		?> procedure.</p>';
+
+		content += '<p>Please will you telephone CONTACT within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation.</p>';
 
 		content += '<p>Should you<?php
 		if ($patient->isChild()) {
@@ -337,7 +363,7 @@ if (!empty($operation->booking)) {
 
 		loadStartLetterPrintContent();
 
-		loadMiddleLetterPrintContent();
+		loadInvitationLetterPrintContent();
 
 		loadEndLetterPrintContent();
 
@@ -349,4 +375,17 @@ if (!empty($operation->booking)) {
 
 		printContent();
 	});
+
+	$('#btn_print-reminder-letter').unbind('click').click(function() {
+		clearPrintContent();
+
+		loadStartLetterPrintContent();
+
+		loadReminderLetterPrintContent();
+
+		loadEndLetterPrintContent();
+
+		printContent();
+	});
+
 </script>
