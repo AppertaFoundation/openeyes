@@ -260,6 +260,52 @@ if (!empty($operation->booking)) {
 		appendPrintContent(content);
 	}
 
+	function loadScheduledLetterPrintContent() {
+		var content = '';
+
+<?php
+		$schedule = '<table><tr><td>Date of admission:</td><td>' . $operation->booking->session->date . '</td></tr>';
+		$schedule .= '<tr><td>Time to arrive:</td><td>' . $operation->booking->admission_time . '</td></tr>';
+		$schedule .= '<tr><td>Date of surgery:</td><td>' . $operation->booking->session->date . '</td></tr>';
+
+		if ($site->id == 100) {
+?>
+
+<?php
+		} else {
+			if ($event->episode->firm->serviceSpecialtyAssignment->specialty_id == 13) {
+?>
+
+<?php
+			} else {
+				if ($patient->isChild()) {
+?>
+		content += '<p>I am writing to confirm the date for your child&apos;s eye operation. The details are:</p>';
+		content += '<?php echo $schedule ?><tr><td>Location:</td><td>Richard Desmond&apos;s Children&apos;s Eye Centre (RDCEC)</td></tr></table>';
+<?php
+				} else {
+?>
+		content += '<p>On behalf of <?php echo $consultantName ?>, I am delighted to confirm the date of your operation. The details are:</p>';
+		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php echo $operation->booking->ward->name ?></td></tr></table>';
+		content += '<p>It is very important that you let us know immediately if you are unable to attend on this admission date. ';
+		content += 'You can do this by calling CHANGECONTACT Admission Coordinator on CHANGETEL.</p>';
+		content += '<p>Please let us know if you have any change in your general health that may affect your surgery.</p>';
+		content += '<p>If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
+		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
+		content += '<ul><li>Bring this letter with you on <?php echo $operaton->booking->session->date ?></li>';
+		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
+		content += '<li>PLease go directly to ward <?php echo $operation->booking->ward->name ?></li>';
+		content += '<li>You must not drive yourself to or from hospital</li>';
+		content == '<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating area is available for patients coming for surgery.</li>';
+		content += '</ul>';
+<?php
+				}
+			}
+		}
+?>
+		appendPrintContent(content);
+	}
+
 	function loadEndLetterPrintContent() {
 		var content = '<p>Yours sincerely,<br /><br /><br /><br /><br />Admissions Officer</p></div></div> <!-- #letterTemplate --></div> <!-- #letters -->';
 		content += '<div id="letterFooter"><!--  letter footer -->Patron: Her Majesty The Queen<br />Chairman: Rudy Markham<br />Chief Executive: John Pelly<br /></div>';
@@ -382,6 +428,19 @@ if (!empty($operation->booking)) {
 		loadStartLetterPrintContent();
 
 		loadReminderLetterPrintContent();
+
+		loadEndLetterPrintContent();
+
+		printContent();
+	});
+
+	$('#btn_print-letter').unbind('click').click(function() {
+	alert('a');
+		clearPrintContent();
+
+		loadStartLetterPrintContent();
+
+		loadScheduledLetterPrintContent();
 
 		loadEndLetterPrintContent();
 
