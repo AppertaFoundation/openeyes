@@ -166,6 +166,15 @@ class Patient extends BaseActiveRecord
 		return $age;
 	}
 
+	public function isChild()
+	{
+		if ($this->getAge() < 16) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	private function randomData($field)
 	{
 		if (!Yii::app()->params['pseudonymise_patient_details']) {

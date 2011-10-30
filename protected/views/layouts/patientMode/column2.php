@@ -16,6 +16,29 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<div class="span-19">
 		<div id="content">
 			<?php echo $content; ?>
+
+
+
+
+
+
+
+
+  <!-- ====================================================  P R I N T  S T U F F ============  -->
+
+  <div class="printable" id="printable">
+
+  </div>
+  <!-- ====================================================  end of P R I N T  S T U F F ============  -->
+
+
+
+
+
+
+
+
+
 		</div><!-- content -->
 	</div>
 	<div class="span-5 last">
@@ -33,4 +56,17 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 		</div><!-- sidebar -->
 	</div>
 </div>
+
+<script>
+
+function clearPrintContent() {
+	$('#printable').html('');
+}
+
+function appendPrintContent(content) {
+	$('#printable').append(content);
+}
+
+</script>
+
 <?php $this->endContent();

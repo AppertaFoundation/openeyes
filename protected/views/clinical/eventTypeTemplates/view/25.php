@@ -96,266 +96,6 @@ if (!empty($operation->booking)) {
 	<?php }?>
 <?php }?>
 
-
-
-
-
-
-<!-- ================================================ -->
-  <!-- * * * * * * * * * *  LETTER  * * * * * * * * * * -->
-  <!-- ================================================ -->
-
-  <div id="letters">
-  	<div id="letterTemplate">
-  		<div id="l_type">Type of Letter</div>
-  		<div id="l_address">
-
-  			<table width="100%">
-  				<tr>
-  					<td style="text-align:left;" width="50%"><img src="/img/_print/letterhead_seal.jpg" alt="letterhead_seal" /></td>
-  					<td style="text-align:right;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td>
-  				</tr>
-  				<tr>
-  					<td colspan="2" style="text-align:right;">
-					LocationFullName<br />
-
-					LocationAddress1<br />
-					LocationAddress2<br />
-					LocationAddress3<br />
-					LocationAddress4<br />
-					</td>
-  				</tr>
-  				<tr>
-
-  					<td style="text-align:left;">
-					Parent/Guardian of PatientName<br />
-					PatientAddress1<br />
-					PatientAddress2<br />
-					PatientCity<br />
-					PatientPostCode<br />
-
-					PatientCountry<br />
-					</td>
-					<td style="text-align:right;">
-					&nbsp;<br />
-					Tel LocationTel<br />
-					Fax LocationFax<br />
-					</td>
-
-  				</tr>
-  				<tr>
-  					<td colspan="2" style="text-align:right;">
-					LetterDate
-					</td>
-  				</tr>
-  			</table>
-  		</div>
-  		<div id="l_content">
-
-<p><strong>Hospital number reference: INP/A/Hosnum<br />
-NHS number:</strong></p>
-
-<p>Dear Parent or Guardian of PatientName,</p>
-
-<p>I have been asked to arrange your child's admission for surgery under the care of CONSULTANT. This is currently anticipated to be a<ADMIT TYPE> procedure STAYLENGTH in hospital.</p>
-
-<p>Please will you telephone CONTACT within TIME LIMIT of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.</p>
-
-<p>Should your child no longer require treatment, please let me know as soon as possible.</p>
-
-
-<p>Yours sincerely,
-<br />
-<br />
-<br />
-<br />
-<br />
-Admissions Officer</p>
-  		</div>
-
-
-  	</div> <!-- #letterTemplate -->
-  </div> <!-- #letters -->
-
-
-<div id="letterFooter">   <!--  letter footer -->
-Patron: Her Majesty The Queen<br />
-Chairman: Rudy Markham<br />
-Chief Executive: John Pelly<br />
-</div>
-
-  <!-- ================================================ -->
-  <!-- * * * * * * * * end of LETTER  * * * * * * * * * -->
-  <!-- ================================================ -->
-
-
-  <!-- ================================================ -->
-
-  <!-- * * * * * * * * *    FORM    * * * * * * * * * * -->
-  <!-- ================================================ -->
-
-<div id="printForm">
-  	<div id="printFormTemplate">
-		<table width="100%">
-			<tr>
-				<td colspan="2" style="border:none;">&nbsp;</td>
-				<td colspan="4" style="text-align:right; border:none;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td>
-			</tr>
-
-			<tr>
-				<td colspan="2" width="50%"> <!-- width control -->
-					<span class="title">Admission Form</span>
-				</td>
-				<td rowspan="4">
-					Patient Name,<br />
-					Address<br />
-
-					Address<br />
-				</td>
-				<td rowspan="4">
-					Patient Name,<br />
-					Address 1<br />
-					Address 1<br />
-				</td>
-
-			</tr>
-			<tr>
-				<td>Hospital Number</td>
-				<td>number</td>
-			</tr>
-			<tr>
-				<td>DOB</td>
-
-				<td>dd/mm/yyyy</td>
-			</tr>
-			<tr>
-				<td>[empty]</td>
-				<td>[empty]</td>
-			</tr>
-		</table>
-
-
-		<table width="100%">
-			<tr>
-				<td width="25%"><strong>Admitting Consultant:</strong></td> <!-- width control -->
-				<td width="25%">Consultant</td>
-				<td><strong>Decision to admit date (or today�s date):</strong></td>
-				<td>AdminDate</td>
-
-			</tr>
-			<tr>
-				<td>Service:</td>
-				<td>Service</td>
-				<td>Telephone:</td>
-				<td>Telephone</td>
-			</tr>
-			<tr>
-				<td>Site:</td>
-				<td>site</td>
-				<td colspan="2">
-
-					<table width="100%" class="subTableNoBorders">
-						<tr>
-							<td>AlternatePhone</td>
-							<td>WorkPhone</td>
-							<td>MobilePhone</td>
-						</tr>
-					</table>
-
-				</td>
-			</tr>
-			<tr>
-				<td><strong>Person organising admission:</strong></td>
-				<td>Doctor</td>
-				<td><strong>Dates patient unavailable:</strong></td>
-				<td>DatesCantComeIn</td>
-			</tr>
-			<tr>
-
-				<td colspan="2" style="border-bottom:1px dotted #000;">Signature:</td>
-				<td>Available at short notice:</td>
-				<td>ShortNotice</td>
-			</tr>
-		</table>
-		<span class="subTitle">ADMISSION DETAILS</span>
-		<table width="100%">
-			<tr>
-
-				<td width="25%"><strong>Urgency:</strong></td> <!-- width control -->
-				<td width="25%">Urgency</td>
-				<td><strong>Consultant to be present:</strong></td>
-				<td>Cons</td>
-			</tr>
-			<tr>
-
-				<td>Admission category:</td>
-				<td>DayCase</td>
-				<td colspan="2" rowspan="5" align="center" style="vertical-align:middle;">
-					<strong>Patient Added to Waiting List.<br />
-					Admission Date to be arranged</strong>
-				</td>
-
-			</tr>
-			<tr>
-
-				<td><strong>Diagnosis:</strong></td>
-				<td>Diagnosis</td>
-
-			</tr>
-			<tr>
-				<td><strong>Intended procedure:</strong></td>
-				<td>Operation</td>
-
-			</tr>
-			<tr>
-				<td><strong>Eye:</strong></td>
-				<td>eye</td>
-			</tr>
-
-			<tr>
-				<td><strong>Total theatre time (mins):</strong></td>
-				<td>duration</td>
-			</tr>
-		</table>
-		<span class="subTitle">PRE-OP ASSESSMENT INFORMATION</span>
-		<table width="100%">
-			<tr>
-
-				<td width="25%"><strong>Anaesthesia:</strong></td> <!-- width control -->
-				<td width="25%">anaesth</td>
-				<td><strong>Likely to need anaesthetist review:</strong></td>
-				<td>anaes</td>
-			</tr>
-			<tr>
-
-				<td><strong>Anaesthesia is:</strong></td>
-				<td>anaesth</td>
-				<td><strong>Does the patient need to stop medication:</strong></td>
-				<td>stopMed</td>
-			</tr>
-		</table>
-		<span class="subTitle">COMMENTS</span>
-
-		<table width="100%">
-			<tr>
-				<td style="border:2px solid #666; height:7em;">Comments</td>
-			</tr>
-
-		</table>
-
-  	</div> <!-- adminFormTemplate -->
- </div> <!-- printForm -->
-
-
-  <!-- ================================================ -->
-
-  <!-- * * * * * * * *  end of FORM   * * * * * * * * * -->
-  <!-- ================================================ -->
-
-
-
-
-
 <script type="text/javascript">
 	$('#btn_schedule-now').unbind('click').click(function() {
 		$.ajax({
@@ -401,7 +141,112 @@ Chief Executive: John Pelly<br />
 			}
 		});
 	});
+
+<?php
+
+	$event = Event::model()->findByPk($eventId);
+	$patient = $event->episode->patient;
+	$consultant = $event->episode->firm->getConsultant();
+
+?>
+
+	function loadBaseLetterPrintContent() {
+		var baseContent = '<div id="letters"><div id="letterTemplate"><div id="l_address">';
+		baseContent += '<table width="100%"><tr><td style="text-align:left;" width="50%"><img src="/img/_print/letterhead_seal.jpg" alt="letterhead_seal" /></td><td style="text-align:right;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td></tr>';
+		baseContent += '<tr><td colspan="2" style="text-align:right;">';
+		baseContent += '<?php
+
+			foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {
+				if (!empty($site->$field)) {
+					echo $site->$field . '<br />';
+				}
+			}
+
+			echo '<br />Tel ' . $site->telephone . '<br />';
+			echo 'Fax: ' . $site->fax . '</td></tr>';
+		?>';
+
+		baseContent += '<tr><td colspan="2" style="text-align:left;"><?php
+
+			$patientName = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
+
+			if ($patient->isChild()) {
+				$patientName = 'Parent/Guardian of ' . $patientName;
+			}
+
+			echo $patientName;
+		?>';
+
+		baseContent += '<?php
+
+			foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
+				if (!empty($patient->address->$field)) {
+					echo $patient->address->$field . '<br />';
+				}
+			}
+
+			echo $patient->address->country->name . '<br />';
+		?></td></tr>';
+
+		baseContent += '<tr><td colspan="2" style="text-align:right;"><?php echo date('F j Y') ?></td></tr></table></div>';
+
+
+
+		baseContent += '<div id="l_content"><p><strong>Hospital number reference: <?php echo $patient->hos_num ?><?php
+			if (!empty($patient->nhs_num)) {
+				echo '<br />NHS number: ' . $patient->nhs_num . '</strong>';
+			}
+		?><p />';
+
+		baseContent += '<p>Dear <?php echo $patientName ?>,</p>';
+
+  		appendPrintContent(baseContent);
+	}
+
+	function loadEndLetterPrintContent() {
+		appendPrintContent('<p>Yours sincerely,<br /><br /><br /><br /><br />Admissions Officer</p></div></div> <!-- #letterTemplate --></div> <!-- #letters -->');
+	}
+
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
-		printContent('Some test letter content');
+		alert('button clicked');
+
+		clearPrintContent();
+		loadBaseLetterPrintContent();
+
+		var content = '<p>I have been asked to arrange your <?php
+		if ($patient->isChild()) {
+?>child&apos;s <?php
+		}
+?> admission for surgery under the care of <?php
+
+		if (empty($consultant)) {
+			echo 'CONSULTANT';
+		} else {
+			$contact = $consultant->contact;
+
+			echo $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
+		} ?>.';
+
+		content += ' This is currently anticipated to be a <?php
+			if ($operation->overnight_stay) {
+				echo 'an overnight stay';
+			} else {
+				echo 'day case';
+			}
+		?> procedure.</p>';
+
+		content += '<p>Please will you telephone CONTACT within TIME LIMIT of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.</p>';
+
+		content += '<p>Should you<?php
+		if ($patient->isChild()) {
+?>r child<?php
+		}
+?> no longer require treatment please let me know as soon as possible.</p>';
+
+		appendPrintContent(content);
+
+		loadEndLetterPrintContent();
+
+		printContent();
 	});
 </script>

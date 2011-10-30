@@ -80,13 +80,16 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
 		$this->logActivity('viewed event');
 
 		$this->renderPartial(
 			$this->getTemplateName('view', $event->event_type_id), array(
 			'elements' => $elements,
 			'eventId' => $id,
-			'editable' => $editable
+			'editable' => $editable,
+			'site' => $site
 			), false, true);
 	}
 
