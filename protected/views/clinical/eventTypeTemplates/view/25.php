@@ -475,7 +475,6 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	});
 
 	$('#btn_print-letter').unbind('click').click(function() {
-	alert('a');
 		clearPrintContent();
 
 		loadStartLetterPrintContent();
