@@ -38,8 +38,10 @@ foreach ($elements as $element) {
 		$viewNumber = $element->viewNumber;
 
 		if (get_class($element) == 'ElementOperation') {
+			$procedureList = array();
 			foreach ($element->procedures as $procedure) {
 				echo "{$procedure->short_format} ({$procedure->default_duration} minutes)<br />";
+				$procedureList[] = $procedure->short_format;
 			}
 		}
 	}
@@ -145,12 +147,33 @@ if (!empty($operation->booking)) {
 <?php
 
 	$event = Event::model()->findByPk($eventId);
-	$patient = $event->episode->patient;
 	$consultant = $event->episode->firm->getConsultant();
+	if (empty($consultant)) {
+		$consultantName = 'CONSULTANT';
+	} else {
+		$contact = $consultant->contact;
 
+		$consultantName = $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
+	}
+
+	$patient = $event->episode->patient;
+	$patientDetails = '';
+	foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
+		if (!empty($patient->address->$field)) {
+			$patientDetails .= $patient->address->$field . '<br />';
+		}
+	}
+
+	$patientDetails .= $patient->address->country->name . '<br />';
+
+	$patientName = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
+
+	if ($patient->isChild()) {
+		$patientName = 'Parent/Guardian of ' . $patientName;
+	}
 ?>
 
-	function loadBaseLetterPrintContent() {
+	function loadStartLetterPrintContent() {
 		var baseContent = '<div id="letters"><div id="letterTemplate"><div id="l_address">';
 		baseContent += '<table width="100%"><tr><td style="text-align:left;" width="50%"><img src="/img/_print/letterhead_seal.jpg" alt="letterhead_seal" /></td><td style="text-align:right;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td></tr>';
 		baseContent += '<tr><td colspan="2" style="text-align:right;">';
@@ -166,27 +189,9 @@ if (!empty($operation->booking)) {
 			echo 'Fax: ' . $site->fax . '</td></tr>';
 		?>';
 
-		baseContent += '<tr><td colspan="2" style="text-align:left;"><?php
+		baseContent += '<tr><td colspan="2" style="text-align:left;"><?php echo $patientName ?>';
 
-			$patientName = $patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name;
-
-			if ($patient->isChild()) {
-				$patientName = 'Parent/Guardian of ' . $patientName;
-			}
-
-			echo $patientName;
-		?>';
-
-		baseContent += '<?php
-
-			foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-				if (!empty($patient->address->$field)) {
-					echo $patient->address->$field . '<br />';
-				}
-			}
-
-			echo $patient->address->country->name . '<br />';
-		?></td></tr>';
+		baseContent += '<?php echo $patientDetails ?></td></tr>';
 
 		baseContent += '<tr><td colspan="2" style="text-align:right;"><?php echo date('F j Y') ?></td></tr></table></div>';
 
@@ -203,29 +208,12 @@ if (!empty($operation->booking)) {
   		appendPrintContent(baseContent);
 	}
 
-	function loadEndLetterPrintContent() {
-		appendPrintContent('<p>Yours sincerely,<br /><br /><br /><br /><br />Admissions Officer</p></div></div> <!-- #letterTemplate --></div> <!-- #letters -->');
-	}
-
-	$('#btn_print-invitation-letter').unbind('click').click(function() {
-		alert('button clicked');
-
-		clearPrintContent();
-		loadBaseLetterPrintContent();
-
+	function loadMiddleLetterPrintContent() {
 		var content = '<p>I have been asked to arrange your <?php
 		if ($patient->isChild()) {
 ?>child&apos;s <?php
 		}
-?> admission for surgery under the care of <?php
-
-		if (empty($consultant)) {
-			echo 'CONSULTANT';
-		} else {
-			$contact = $consultant->contact;
-
-			echo $contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name;
-		} ?>.';
+?> admission for surgery under the care of <?php echo $consultantName ?>';
 
 		content += ' This is currently anticipated to be a <?php
 			if ($operation->overnight_stay) {
@@ -244,8 +232,120 @@ if (!empty($operation->booking)) {
 ?> no longer require treatment please let me know as soon as possible.</p>';
 
 		appendPrintContent(content);
+	}
+
+	function loadEndLetterPrintContent() {
+		var content = '<p>Yours sincerely,<br /><br /><br /><br /><br />Admissions Officer</p></div></div> <!-- #letterTemplate --></div> <!-- #letters -->';
+		content += '<div id="letterFooter"><!--  letter footer -->Patron: Her Majesty The Queen<br />Chairman: Rudy Markham<br />Chief Executive: John Pelly<br /></div>';
+
+		appendPrintContent(content);
+	}
+
+
+	function loadStartFormPrintContent() {
+		var content = '<div id="printForm"><div id="printFormTemplate">';
+
+		content += '<table width="100%">';
+
+		content += '<tr><td colspan="2" style="border:none;">&nbsp;</td><td colspan="4" style="text-align:right; border:none;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td></tr><tr><td colspan="2" width="50%"> <!-- width control --><span class="title">Admission Form</span></td>';
+		content += '<td rowspan="4">Patient Name,<br />Address<br />Address<br /></td>';
+		content += '<td rowspan="4"><?php echo $patientName ?><br /><?php echo $patientDetails ?></td></tr>';
+
+		content += '<tr><td>Hospital Number</td><td><?php echo $patient->hos_num ?></td></tr>';
+		content += '<tr><td>DOB</td><td><?php echo $patient->dob ?></td></tr>';
+		content += '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>';
+
+		content += '</table>';
+
+  		appendPrintContent(content);
+
+	}
+
+	function loadMiddleFirmPrintContent() {
+
+		var content = '<table width="100%">';
+
+		content += '<tr><td width="25%"><strong>Admitting Consultant:</strong></td> <!-- width control --><td width="25%"><?php echo $consultantName ?></td>';
+		content += '<td><strong>Decision to admit date (or today&apos;s date):</strong></td><td><?php echo $operation->decision_date ?></td></tr>';
+
+		content += '<tr><td>Service:</td><td><?php echo $event->episode->firm->serviceSpecialtyAssignment->specialty->name ?></td>				<td>Telephone:</td>	<td><?php echo $patient->primary_phone ?></td></tr>';
+
+		content += '<tr><td>Site:</td><td><?php echo $site->name ?></td><td colspan="2">';
+		content += '<table width="100%" class="subTableNoBorders"><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></td></tr>';
+
+		content += '<tr><td><strong>Person organising admission:</strong></td><td><?php echo $consultantName ?></td><td><strong>Dates patient unavailable:</strong></td><td>&nbsp;</td></tr>';
+
+		content += '<tr><td colspan="2" style="border-bottom:1px dotted #000;">Signature:</td><td>Available at short notice:</td><td>&nbsp;</td></tr>';
+
+		content += '</table>';
+
+		appendPrintContent(content);
+
+		content = '<span class="subTitle">ADMISSION DETAILS</span><table width="100%">';
+		content += '<tr><td width="25%"><strong>Urgency:</strong></td> <!-- width control --><td width="25%">&nbsp;</td>';
+		content += '<td><strong>Consultant to be present:</strong></td><td><?php
+			if (empty($operation->consultant_required)) {
+				echo 'No';
+			} else {
+				echo 'Yes';
+			}
+		?></td></tr>';
+
+		content += '<tr><td>Admission category:</td><td>DayCase</td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle;">';
+		content += '<strong>Patient Added to Waiting List.<br />Admission Date to be arranged</strong></td></tr>';
+
+		content += '<tr><td><strong>Diagnosis:</strong></td><td><?php
+
+			$disorder = $operation->getDisorder();
+
+			echo !empty($disorder) ? $operation->getEyeText() : 'Unknown';
+			echo !empty($disorder) ? $operation->getDisorder() : ''
+		?></td></tr>';
+
+		content += '<tr><td><strong>Intended procedure:</strong></td><td><?php echo implode(', ', $procedureList) ?></td></tr>';
+
+		content += '<tr><td><strong>Eye:</strong></td><td><?php echo $operation->getEyeText() ?></td></tr>';
+
+		content += '<tr><td><strong>Total theatre time (mins):</strong></td><td><?php echo $operation->total_duration ?></td></tr>';
+
+		content += '</table>';
+
+		// Pre-op
+		content += '<span class="subTitle">PRE-OP ASSESSMENT INFORMATION</span><table width="100%">';
+		content += '<tr><td width="25%"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%">anaesth</td><td><strong>Likely to need anaesthetist review:</strong></td><td>anaes</td></tr>';
+
+		content += '<tr><td><strong>Anaesthesia is:</strong></td><td>anaesth</td><td><strong>Does the patient need to stop medication:</strong></td><td>stopMed</td></tr>';
+
+		content += '</table>';
+
+		appendPrintContent(content);
+
+	}
+
+	function loadEndFormPrintContent() {
+		var content = '<span class="subTitle">COMMENTS</span>';
+
+		content += '<table width="100%"><tr><td style="border:2px solid #666; height:7em;">Comments</td></tr></table>';
+
+		content += '</div> <!-- adminFormTemplate --></div> <!-- printForm -->';
+
+  		appendPrintContent(content);
+	}
+
+	$('#btn_print-invitation-letter').unbind('click').click(function() {
+		clearPrintContent();
+
+		loadStartLetterPrintContent();
+
+		loadMiddleLetterPrintContent();
 
 		loadEndLetterPrintContent();
+
+		loadStartFormPrintContent();
+
+		loadMiddleFirmPrintContent();
+
+		loadEndFormPrintContent()
 
 		printContent();
 	});
