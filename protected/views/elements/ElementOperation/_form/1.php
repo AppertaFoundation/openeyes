@@ -103,22 +103,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                                         $('#procedureDiv').show();
                                         $('#procedure_list').show();
 
-                                        // update total duration
-                                        var totalDuration = 0;
-                                        $('#procedure_list tbody').children().children('td:odd').each(function() {
-                                                duration = Number($(this).text());
-                                                if ($('input[name=\"ElementOperation[eye]\"]:checked').val() == " . ElementOperation::EYE_BOTH . ") {
-                                                        duration = duration * 2;
-                                                }
-                                                totalDuration += duration;
-                                        });
-                                        var thisDuration = Number($('#procedure_list tbody').children().children(':last').text());
-                                        if ($('input[name=\"ElementOperation[eye]\"]:checked').val() == " . ElementOperation::EYE_BOTH . ") {
-                                                thisDuration = thisDuration * 2;
-                                        }
-                                        var operationDuration = Number($('#ElementOperation_total_duration').val());
-                                        $('#projected_duration').text(totalDuration);
-                                        $('#ElementOperation_total_duration').val(operationDuration + thisDuration);
+										updateTotalDuration();
 
                                         // clear out text field
                                         $('#autocomplete_procedure_id').val('');
@@ -140,7 +125,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 )); ?>
 						</div> <!-- .extraDetails -->
 					</div>
-					
+
 					<div id="procedureDiv"<?php
 					if ($newRecord) { ?> style="display:none;"<?php
 					} ?>>
@@ -189,7 +174,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						<div class="data">
 							<input id="ytElementOperation_consultant_required" type="hidden" value="<?php echo $model->consultant_required?>" name="ElementOperation[consultant_required]" />
 							<span class="group">
-							<input id="ElementOperation_consultant_required_0" value="1" <?php if ($model->consultant_required) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" /> 
+							<input id="ElementOperation_consultant_required_0" value="1" <?php if ($model->consultant_required) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" />
 							<label for="ElementOperation_consultant_required_0">Yes</label>
 							</span>
 							<span class="group">
@@ -214,7 +199,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						<div class="data">
 							<input id="ytElementOperation_overnight_stay" type="hidden" value="" name="ElementOperation[overnight_stay]" />
 							<span class="group">
-								<input id="ElementOperation_overnight_stay_0" value="1" <?php if ($model->overnight_stay == 1){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" /> 
+								<input id="ElementOperation_overnight_stay_0" value="1" <?php if ($model->overnight_stay == 1){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" />
 								<label for="ElementOperation_overnight_stay_0">Yes</label>
 							</span>
 							<span class="group">
@@ -223,7 +208,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 							</span>
 						</div>
 					</div>
-					
+
 					<div id="decisionDate" class="eventDetail">
 						<div class="label">Decision Date:</div>
 						<div class="data">
@@ -240,8 +225,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							)); ?>
 						</div>
-					</div>	
-					
+					</div>
+
 					<div id="addComments" class="eventDetail">
 						<div class="label">Add comments:</div>
 						<div class="data">
@@ -365,7 +350,23 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 		return false;
 	};
+	function updateTotalDuration() {
+		// update total duration
+		var totalDuration = 0;
+		$('#procedure_list tbody').children().children('td:odd').each(function() {
+			duration = Number($(this).text());
+			totalDuration += duration;
+		});
+		if ($('input[name=\"ElementOperation[eye]\"]:checked').val() == <?php echo ElementOperation::EYE_BOTH ?>) {
+		$('#projected_duration').text(totalDuration + ' * 2');
+			totalDuration *= 2;
+		}
+		$('#projected_duration').text(totalDuration);
+		$('#ElementOperation_total_duration').val(totalDuration);
+	}
+
 	$('input[name="ElementOperation[eye]"]').click(function() {
+		updateTotalDuration();
 		if ($('input[name="Procedures[]"]').length == 0) {
 			$('input[id="autocomplete_procedure_id"]').focus();
 		}
