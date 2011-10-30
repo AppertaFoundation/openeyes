@@ -19,6 +19,8 @@ foreach ($elements as $element) {
 	}
 }
 
+$cancelledBookings = $operation->getCancelledBookings();
+
 ?>
 <!-- Details -->
 <h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
@@ -71,15 +73,27 @@ if (!empty($operation->booking)) {
 </div>
 <?php
 }
-?>
 
-<?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
+if (count($cancelledBookings)) {
+?>
+<h4>Cancelled Bookings</h4>
+<div class="eventHighlight"><h4>
+<?php
+	foreach ($cancelledBookings as $cb) {
+		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . $cb->date;
+		echo ', ' . $cb->theatre->name . ' (' . $cb->theatre->site->name . ') ';
+		echo ', cancelled on ' . $cb->cancelled_date . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text . '<br />';
+	}
+?>
+</h4></div>
+<?php
+}
+
+if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 ?>
 <!-- editable -->
 <?php
 	if (empty($operation->booking)) {
-		$isAdmissionLetter = true;
-
 		// The operation hasn't been booked yet?>
 		<div style="margin-top:40px; text-align:center;">
 			<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_print-invitation-letter">Print invitation letter</button>
@@ -279,8 +293,16 @@ if (!empty($operation->booking)) {
 <?php
 			} else {
 				if ($patient->isChild()) {
+					if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
+?>
+		content += '<p>I am writing to inform you that the date for your child&apos;s eye operation has been changed from . The details now are:</p>';
+<?php
+					} else {
 ?>
 		content += '<p>I am writing to confirm the date for your child&apos;s eye operation. The details are:</p>';
+<?php
+					}
+?>
 		content += '<?php echo $schedule ?><tr><td>Location:</td><td>Richard Desmond&apos;s Children&apos;s Eye Centre (RDCEC)</td></tr></table>';
 		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
 		content += '<ul><li><b>Please contact the Children&apos;s Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>';

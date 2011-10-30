@@ -74,6 +74,8 @@ class CancelledBooking extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'cancelledReason' => array(self::BELONGS_TO, 'CancellationReason', 'cancelled_reason_id'),
+			'theatre' => array(self::BELONGS_TO, 'Theatre', 'theatre_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 

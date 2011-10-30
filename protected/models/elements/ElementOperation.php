@@ -841,6 +841,31 @@ class ElementOperation extends BaseElement
 	}
 
 	/**
+	 * Returns an array of cancelled bookings
+	 *
+	 * @return array
+	 */
+	public function getCancelledBookings()
+	{
+		if ($this->status == self::STATUS_PENDING || $this->status == self::STATUS_SCHEDULED) {
+			// Can't be any cancelled bookings, return empty array
+			return array();
+		}
+
+		$cbs = CancelledBooking::model()->findAll(
+			array(
+				'order' => 'id DESC',
+				'condition' => 'element_operation_id = :eoid',
+				'params' => array(
+					':eoid' => $this->id
+				)
+			)
+		);
+
+		return $cbs;
+	}
+
+	/**
 	 * Used by the booking event type template to format the date.
 	 *
 	 * @param string date
