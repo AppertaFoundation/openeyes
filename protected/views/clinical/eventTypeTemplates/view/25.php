@@ -287,7 +287,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 <?php
 		} else {
-			if ($event->episode->firm->serviceSpecialtyAssignment->specialty_id == 13) {
+			if ($event->episode->firm->serviceSpecialtyAssignment->specialty_id == 100) {
 ?>
 
 <?php
@@ -295,7 +295,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 				if ($patient->isChild()) {
 					if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
-		content += '<p>I am writing to inform you that the date for your child&apos;s eye operation has been changed from . The details now are:</p>';
+		content += '<p>I am writing to inform you that the date for your child&apos;s eye operation has been changed from <?php echo $cancelledBookings[0]->date ?>. The details now are:</p>';
 <?php
 					} else {
 ?>
@@ -316,8 +316,16 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += 'Please let us know by return of post, or if necessary, telephone Admission Department on 020 7566 2258.</p>';
 <?php
 				} else {
+					if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
+?>
+		content += '<p>I am writing to inform you that the date for your eye operation has been changed from <?php echo $cancelledBookings[0]->date ?>. The details now are:</p>';
+<?php
+					} else {
 ?>
 		content += '<p>On behalf of <?php echo $consultantName ?>, I am delighted to confirm the date of your operation. The details are:</p>';
+<?php
+					}
+?>
 		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php echo $operation->booking->ward->name ?></td></tr></table>';
 		content += '<p>It is very important that you let us know immediately if you are unable to attend on this admission date. ';
 		content += 'You can do this by calling CHANGECONTACT Admission Coordinator on CHANGETEL.</p>';
