@@ -282,6 +282,16 @@ if (!empty($operation->booking)) {
 ?>
 		content += '<p>I am writing to confirm the date for your child&apos;s eye operation. The details are:</p>';
 		content += '<?php echo $schedule ?><tr><td>Location:</td><td>Richard Desmond&apos;s Children&apos;s Eye Centre (RDCEC)</td></tr></table>';
+		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
+		content += '<ul><li><b>Please contact the Children&apos;s Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>';
+		content += '<li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
+		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
+		content += '<li>PLease go directly to the Main Reception on level 5 of the RDCEC at the time of your child&apos;s admission.</li>';
+		content += '</ul>';
+		content += '<p>If there has been any change in your child&apos;s general health, such as a cough or cold, any infection disease, or any other condition which might affect their fitness for operation, please telephone 0207 566 2596 and ask to speak to a nurse for advice.</p>';
+		content += '<p>If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
+		content += '<p>It is very important that you let us know immediately if you are unable to keep this admission date. ';
+		content += 'Please let us know by return of post, or if necessary, telephone Admission Department on 020 7566 2258.</p>';
 <?php
 				} else {
 ?>
@@ -292,7 +302,7 @@ if (!empty($operation->booking)) {
 		content += '<p>Please let us know if you have any change in your general health that may affect your surgery.</p>';
 		content += '<p>If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
 		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
-		content += '<ul><li>Bring this letter with you on <?php echo $operaton->booking->session->date ?></li>';
+		content += '<ul><li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
 		content += '<li>PLease go directly to ward <?php echo $operation->booking->ward->name ?></li>';
 		content += '<li>You must not drive yourself to or from hospital</li>';
