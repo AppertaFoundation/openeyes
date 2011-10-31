@@ -9,8 +9,8 @@ class Config {
 if (file_exists("../protected/config/params.php")) {
 	$t = new Config(require("../protected/config/params.php"));
 
-	$helpdesk_phone = $t->config['params']['helpdesk_phone'];
-	$helpdesk_email = $t->config['params']['helpdesk_email'];
+	$helpdesk_phone = @$t->config['params']['helpdesk_phone'];
+	$helpdesk_email = @$t->config['params']['helpdesk_email'];
 }
 ?>
 <!doctype html> 
