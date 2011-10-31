@@ -33,6 +33,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 									<th>Firm:</th>
 									<th>Specialty:</th>
 									<th>Ward:</th>
+									<th>Emergency List:</th>
 								</tr>
 								<tr class="even">
 									<td>
@@ -58,6 +59,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('ward-id', '', array(), array('empty'=>'All wards'))?>
+									</td>
+									<td>
+										<?php echo CHtml::checkBox('emergency_list')?>
 									</td>
 								</tr>
 								</tbody>
@@ -182,6 +186,21 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return false;
 	}
 
+	$('input[name=emergency_list]').change(function() {
+		if ($(this).is(':checked')) {
+			$('#site-id').attr("disabled", true);
+			$('#specialty-id').attr("disabled", true);
+			$('#theatre-id').attr("disabled", true);
+			$('#firm-id').attr("disabled", true);
+			$('#ward-id').attr("disabled", true);
+		} else {
+			$('#site-id').attr("disabled", false);
+			$('#specialty-id').attr("disabled", false);
+			$('#theatre-id').attr("disabled", false);
+			$('#firm-id').attr("disabled", false);
+			$('#ward-id').attr("disabled", false);
+		}
+	});
 	$('input[name=date-filter]').change(function() {
 		if ($(this).val() != 'custom') {
 			$('input[id=date-start]').val('');
