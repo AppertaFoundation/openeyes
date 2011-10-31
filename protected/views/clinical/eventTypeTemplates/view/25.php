@@ -42,7 +42,7 @@ foreach ($elements as $element) {
 		if (get_class($element) == 'ElementOperation') {
 			$procedureList = array();
 			foreach ($element->procedures as $procedure) {
-				echo "{$procedure->short_format} ({$procedure->default_duration} minutes)<br />";
+				echo "{$procedure->term} ({$procedure->default_duration} minutes)<br />";
 				$procedureList[] = $procedure->short_format;
 			}
 		}
@@ -311,7 +311,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += '<ul><li><b>Please contact the Children&apos;s Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>';
 		content += '<li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
-		content += '<li>PLease go directly to the Main Reception on level 5 of the RDCEC at the time of your child&apos;s admission.</li>';
+		content += '<li>Please go directly to the Main Reception on level 5 of the RDCEC at the time of your child&apos;s admission.</li>';
 		content += '</ul>';
 		content += '<p>If there has been any change in your child&apos;s general health, such as a cough or cold, any infection disease, or any other condition which might affect their fitness for operation, please telephone 0207 566 2596 and ask to speak to a nurse for advice.</p>';
 		content += '<p>If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
@@ -337,7 +337,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
 		content += '<ul><li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
-		content += '<li>PLease go directly to ward <?php echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES) ?></li>';
+		content += '<li>Please go directly to ward <?php echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES) ?></li>';
 		content += '<li>You must not drive yourself to or from hospital</li>';
 		content == '<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating area is available for patients coming for surgery.</li>';
 		content += '</ul>';
@@ -428,9 +428,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		// Pre-op
 		content += '<span class="subTitle">PRE-OP ASSESSMENT INFORMATION</span><table width="100%">';
-		content += '<tr><td width="25%"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%">anaesth</td><td><strong>Likely to need anaesthetist review:</strong></td><td>anaes</td></tr>';
+		content += '<tr><td width="25%"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%">&nbsp;</td><td><strong>Likely to need anaesthetist review:</strong></td><td>&nbsp;</td></tr>';
 
-		content += '<tr><td><strong>Anaesthesia is:</strong></td><td>anaesth</td><td><strong>Does the patient need to stop medication:</strong></td><td>stopMed</td></tr>';
+		content += '<tr><td><strong>Anaesthesia is:</strong></td><td>&nbsp;</td><td><strong>Does the patient need to stop medication:</strong></td><td>&nbsp;</td></tr>';
 
 		content += '</table>';
 
@@ -440,7 +440,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	function loadEndFormPrintContent() {
 		var content = '<span class="subTitle">COMMENTS</span>';
 
-		content += '<table width="100%"><tr><td style="border:2px solid #666; height:7em;">Comments</td></tr></table>';
+		content += '<table width="100%"><tr><td style="border:2px solid #666; height:7em;">&nbsp;</td></tr></table>';
 
 		content += '</div> <!-- adminFormTemplate --></div> <!-- printForm -->';
 

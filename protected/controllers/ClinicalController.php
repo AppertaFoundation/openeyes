@@ -96,13 +96,14 @@ class ClinicalController extends BaseController
 	public function actionIndex()
 	{
 		$this->logActivity('viewed patient index');
-
+/*
+Referral code moved to cron job
 		if (Yii::app()->params['use_pas']) {
 			$patient = Patient::model()->findByPk($this->patientId);
 			$referralService = new ReferralService;
 			$referralService->search($patient->hos_num);
 		}
-
+*/
 		$this->render('index');
 	}
 
@@ -183,7 +184,7 @@ class ClinicalController extends BaseController
 			);
 
 			if ($eventId) {
-				$this->assignReferralIfRequired($eventId, $this->firm, $this->patientId);
+//				$this->assignReferralIfRequired($eventId, $this->firm, $this->patientId);
 
 				$this->logActivity('created event.');
 
@@ -292,7 +293,7 @@ class ClinicalController extends BaseController
 			if ($success) {
 				$this->logActivity('updated event');
 
-				$this->assignReferralIfRequired($event->id, $this->firm, $this->patientId);
+//				$this->assignReferralIfRequired($event->id, $this->firm, $this->patientId);
 
 				echo $event->id;
 				return;
@@ -406,6 +407,7 @@ class ClinicalController extends BaseController
 	 * @param $firm object
 	 * @param $patientId int
 	 */
+/*
 	public function assignReferralIfRequired($eventId, $firm, $patientId)
 	{
 		if (!Yii::app()->params['use_pas']) {
@@ -417,7 +419,7 @@ class ClinicalController extends BaseController
 
 		$referralService->assignReferral($eventId, $firm, $patientId);
 	}
-
+*/
 	/**
 	 * Sets arrays of episodes and eventTypes for use by the clinical base.php view.
 	 */
