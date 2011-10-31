@@ -55,26 +55,28 @@ foreach ($elements as $element) {
 $this->endWidget(); ?>
 <script type="text/javascript">
 	$('#update').click(function() {
+		$('#update').attr("disabled", true);
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/update', array('id'=>$id)); ?>',
 			'type': 'POST',
 			'data': $('#clinical-update').serialize(),
-                        'success': function(data) {
-                                if (data.match(/^[0-9]+$/)) {
-                                        window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
-                                        return false;
-                                }
-                                try {
-                                        displayErrors(data);
-                                } catch (e) {
-                                        return false;
-                                }
-                        }
+			'success': function(data) {
+				if (data.match(/^[0-9]+$/)) {
+					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+					return false;
+				}
+				try {
+					displayErrors(data);
+				} catch (e) {
+					return false;
+				}
+			}
 		});
 		return false;
 	});
 
 	function displayErrors(data) {
+		$('#update').attr("disabled", false);
 		arr = $.parseJSON(data);
 		if (!$.isEmptyObject(arr)) {
 			$('#clinical-update_es_ ul').html('');
