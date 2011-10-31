@@ -25,6 +25,12 @@ class FetchPASReferralsCommand extends CConsoleCommand
 
 	public function run($args)
 	{
-		echo "Fetching referrals from PAS...\n";	
+                if (!Yii::app()->params['use_pas']) {
+			echo 'To use FetchPASReferrals use_pas must be set to true.';
+			return false;
+                }
+
+        	$referralService = new ReferralService;
+                $referralService->getNewReferrals();
 	}
 }

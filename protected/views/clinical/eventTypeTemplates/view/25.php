@@ -24,11 +24,16 @@ $cancelledBookings = $operation->getCancelledBookings();
 ?>
 <!-- Details -->
 <h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
-<h4>Diagnosis</h4>
 
+<h4>Diagnosis</h4>
 <div class="eventHighlight">
 	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : '' ?></h4>
+	<h4><?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
+</div>
+
+<h4>Diagnosis Eye</h4>
+<div class="eventHighlight">
+        <h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?></h4>
 </div>
 
 <h4>Operation</h4>
@@ -49,6 +54,12 @@ foreach ($elements as $element) {
 	}
 }
 ?></h4>
+</div>
+
+
+<h4>Operation Eye</h4>
+<div class="eventHighlight">
+        <h4><?php echo $operation->getEyeText(); ?></h4>
 </div>
 
 <?php

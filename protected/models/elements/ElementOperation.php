@@ -262,7 +262,7 @@ class ElementOperation extends BaseElement
 		return array(
 			self::ANAESTHETIC_TOPICAL => 'Topical',
 			self::ANAESTHETIC_LOCAL => 'LA',
-			self::ANAESTHETIC_LOCAL_WITH_COVER => 'LA with cover',
+			self::ANAESTHETIC_LOCAL_WITH_COVER => 'LAC',
 			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
 			self::ANAESTHETIC_GENERAL => 'GA'
 		);
@@ -278,7 +278,7 @@ class ElementOperation extends BaseElement
 				$text = 'LA';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'LA with cover';
+				$text = 'LAC';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
 				$text = 'LAS';
@@ -298,16 +298,16 @@ class ElementOperation extends BaseElement
 	{
 		switch ($this->anaesthetic_type) {
 			case self::ANAESTHETIC_TOPICAL:
-				$text = 'TOP';
+				$text = 'Topical';
 				break;
 			case self::ANAESTHETIC_LOCAL:
-				$text = 'LOC';
+				$text = 'LA';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'LWC';
+				$text = 'LAC';
 				break;
 			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'LWS';
+				$text = 'LAS';
 				break;
 			case self::ANAESTHETIC_GENERAL:
 				$text = 'GA';

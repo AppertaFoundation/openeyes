@@ -20,33 +20,81 @@ class ReferralService
 	 *
 	 * @param int $hosNum
 	 */
-	public function search($hosNum)
+	public function getNewReferrals()
 	{
-		$results = PAS_Referral::model()->findAll('X_CN = ?', array($hosNum));
+                if (!Yii::app()->params['use_pas']) {
+			throw new Exception('use_pas not set to true');
+                }
 
-		if (!empty($results)) {
-			foreach ($results as $pasReferral) {
-				$patient = Patient::model()->find('pas_key = ?', array($pasReferral->X_CN));
+                $mid = Yii::app()->db->createCommand()
+                        ->select('MAX(refno) AS mrn')
+                        ->from('referral')
+                        ->queryRow();
 
-				$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REFSPEC));
+                if (empty($mid['mrn'])) {
+			throw new Exception('No MID in ReferralService.search');
+                }
+		
+		$results = PAS_Referral::model()->findAll('REFNO > ? AND REF_SPEC <> \'OP\'', array($mid['mrn']));
 
-				$referral = Referral::model()->find('refno = ?', array($pasReferral->REFNO));
+		// Put all new PAS referrals in OE
+		foreach ($results as $pasReferral) {
+			$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REF_SPEC));
 
-				if (!isset($referral)) {
-					$referral = new Referral;
-				}
+			if (empty($specialty)) {
+				echo 'No specialty for ref_spec ' . $pasReferral->REF_SPEC . "\n";
+			} else {
+				$ssa = ServiceSpecialtyAssignment::model()->find('specialty_id = ?', array($specialty->id));
+				$referral = new Referral;
 
-				$referral->service_id = $specialty->id;
-				$referral->patient_id = $patient->id;
+				// N.B. service_id points to the service_specialty_assignment.id - needs to be changed!
+				$referral->service_id = $ssa->id;
+				$referral->patient_id = $pasReferral->X_CN;
 				$referral->refno = $pasReferral->REFNO;
-
+	
 				if (!empty($pasReferral->DT_CLOSE)) {
 					$referral->closed = 1;
 				}
-
-				$referral->save();
+	
+				if ($referral->save()) {
+					echo 'Added referral refo ' . $referral->refno . "\n";
+				} else {
+					echo 'Unable to save referral refno ' . $referral->refno . "\n";
+				}
 			}
 		}
+
+		echo "\nREFERRAL CREATION COMPLETE.\n\n";
+
+		// Find all the open referrals with no referral
+                $command = Yii::app()->db->createCommand()
+                        ->select('p.id AS pid, ep.id AS epid, rea.id AS reaid, ssa.id AS ssaid')
+                        ->from('patient p')
+                        ->join('episode ep', 'ep.patient_id = p.id')
+			->join('firm f', 'f.id = ep.firm_id')
+			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
+                        ->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
+			->where('ep.end_date IS NULL');
+
+                foreach ($command->queryAll() as $result) {
+			if (empty($result['reaid'])) {
+				$referralId = $this->getReferral($result['pid'], $result['ssaid']);
+
+				if ($referralId) {
+                			$rea = new ReferralEpisodeAssignment;
+
+                			$rea->episode_id = $result['epid'];
+                			$rea->referral_id = $referralId;
+                			if (!$rea->save()) {
+						echo 'Unable to save referral for epid ' . $result['epid'] . ' and referral ' . $referralId . "\n";
+					} else {
+						echo 'Assignment rea id ' . $rea->id . ' to patient ' . $result['epid'] . ' and referral ' . $referralId . "\n";
+					}
+				}
+			}
+		}
+
+		echo "\nREFERRAL ASSIGNMENT COMPLETE.\n\n";
 	}
 
 	/**
@@ -57,26 +105,9 @@ class ReferralService
 	 *
 	 * @return array
 	 */
-	public function getReferral($firm, $patientId)
+	public function getReferral($patientId, $ssaId)
 	{
 		if (!Yii::app()->params['use_pas']) {
-			return false;
-		}
-
-		// Check for an open episode for this patient and firm's service with a referral
-		$episode = Yii::app()->db->createCommand()
-			->select('referral_id AS rid')
-			->from('referral_episode_assignment r_e_a')
-			->join('episode e', 'e.id = r_e_a.episode_id')
-			->join('firm f', 'e.firm_id = f.id')
-			->join('service_specialty_assignment s_s_a', 'f.service_specialty_assignment_id = s_s_a.id')
-			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.specialty_id = :specialty_id', array(
-				':patient_id' => $patientId, ':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id
-			))
-			->queryRow();
-
-		if (isset($episode['rid'])) {
-			// There is an open episode and it has a referral, no action required
 			return false;
 		}
 
@@ -87,7 +118,7 @@ class ReferralService
 				'condition' => 'patient_id = :p AND service_id = :s AND closed = 0',
 				'params' => array(
 					':p' => $patientId,
-					':s' => $firm->serviceSpecialtyAssignment->specialty_id
+					':s' => $ssaId
 				),
 				'limit' => 1
 			)
@@ -95,7 +126,7 @@ class ReferralService
 
 		if (count($referrals)) {
 			// There is at least one open referral for this service, so return that.
-			return $referrals[0];
+			return $referrals[0]->id;
 		}
 
 		// There are no open referrals for this specialty, try and find open referrals for a different
@@ -111,33 +142,10 @@ class ReferralService
 
 		if (count($referrals)) {
 			// There are referrals, use the newest one
-			return $referrals[0];
+			return $referrals[0]->id;
 		}
 
 		// There are no open referrals so no referral can be associated.
 		return false;
-	}
-
-	public function assignReferral($eventId, $firm, $patientId)
-	{
-		$referral = $this->getReferral($firm, $patientId);
-
-		if (empty($referral)) {
-			// Either there is already a referral for the episode or there are no open referrals
-			// for this patient, so do nothing
-			return;
-		}
-
-		$event = Event::model()->findByPk($eventId);
-
-		if (!isset($event)) {
-			return;
-		}
-
-		$rea = new ReferralEpisodeAssignment;
-
-		$rea->episode_id = $event->episode_id;
-		$rea->referral_id = $referral->id;
-		$rea->save();
 	}
 }

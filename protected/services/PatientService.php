@@ -193,11 +193,11 @@ class PatientService
 		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
 
 		// update OpenEyes database info
-//		$patient = Patient::model()->findByAttributes(array('pas_key' => $patientData->RM_PATIENT_NO));
 		$patient = Patient::model()->findByPk($patientData->RM_PATIENT_NO);
 		$address = new Address;
 		if (empty($patient)) {
 			$patient = new Patient;
+			$patient->id = $patientData->RM_PATIENT_NO;
 		} elseif (!empty($patient->address_id)) {
 			$address = Address::model()->findByPk($patient->address_id);
 		}
