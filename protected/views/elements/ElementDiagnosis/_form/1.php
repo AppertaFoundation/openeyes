@@ -79,7 +79,7 @@ if (empty($model->event_id)) {
 						<div class="label">Enter diagnosis:</div>
 						<div class="data">
 							<?php echo CHtml::dropDownList('ElementDiagnosis[disorder_id]', '', CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)), array('empty' => 'Select a commonly used diagnosis')); ?>
-							<span style="margin-left:20px; margin-right:20px;"><strong>or</strong></span>
+							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
 							<?php
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'name'=>'ElementDiagnosis[disorder_id]',
