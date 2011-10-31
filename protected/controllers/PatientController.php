@@ -310,8 +310,10 @@ class PatientController extends BaseController
 
 		$eventTypes = EventType::model()->getAllPossible($this->firm->serviceSpecialtyAssignment->specialty_id);
 
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
 		$this->render('episodes', array(
-			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name, 'eventTypes' => $eventTypes
+			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name, 'eventTypes' => $eventTypes, 'site' => $site
 		));
 	}
 

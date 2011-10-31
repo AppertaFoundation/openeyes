@@ -83,7 +83,8 @@
 							array(
 								'elements' => $elements,
 								'eventId' => $_GET['event'],
-								'editable' => $editable
+								'editable' => $editable,
+								'site' => $site
 							), false, true
 						);
 						echo '</div>';

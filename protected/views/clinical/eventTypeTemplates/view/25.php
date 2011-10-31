@@ -275,6 +275,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	}
 
 	function loadScheduledLetterPrintContent() {
+<?php
+	if (!empty($operation->booking)) {
+?>
 		var content = '';
 
 <?php
@@ -342,6 +345,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 				}
 			}
 		}
+	}
 ?>
 		appendPrintContent(content);
 	}
