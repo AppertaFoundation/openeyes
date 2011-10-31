@@ -12,11 +12,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerScriptFile($baseUrl . '/js/phrase.js');
-Yii::app()->clientScript->registerCoreScript('jquery');
-$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
+Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 
 $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'clinical-create',
