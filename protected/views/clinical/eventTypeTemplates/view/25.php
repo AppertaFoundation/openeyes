@@ -167,23 +167,23 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	} else {
 		$contact = $consultant->contact;
 
-		$consultantName = htmlspecialchars($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
+		$consultantName = htmlspecialchars($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name, ENT_QUOTES);
 	}
 
 	$patient = $event->episode->patient;
 	$patientDetails = '';
 	foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 		if (!empty($patient->address->$field)) {
-			$patientDetails .= htmlspecialchars($patient->address->$field) . '<br />';
+			$patientDetails .= htmlspecialchars($patient->address->$field, ENT_QUOTES) . '<br />';
 		}
 	}
 
-	$patientDetails .= htmlspecialchars($patient->address->country->name) . '<br />';
+	$patientDetails .= htmlspecialchars($patient->address->country->name, ENT_QUOTES) . '<br />';
 
-	$patientName = htmlspecialchars($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
+	$patientName = htmlspecialchars($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name, ENT_QUOTES);
 
 	if ($patient->isChild()) {
-		$patientName = htmlspecialchars('Parent/Guardian of ' . $patientName);
+		$patientName = htmlspecialchars('Parent/Guardian of ', ENT_QUOTES) . $patientName;
 	}
 ?>
 
@@ -195,12 +195,12 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 			foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {
 				if (!empty($site->$field)) {
-					echo htmlspecialchars($site->$field) . '<br />';
+					echo htmlspecialchars($site->$field, ENT_QUOTES) . '<br />';
 				}
 			}
 
-			echo '<br />Tel ' . htmlspecialchars($site->telephone) . '<br />';
-			echo 'Fax: ' . htmlspecialchars($site->fax) . '</td></tr>';
+			echo '<br />Tel ' . htmlspecialchars($site->telephone, ENT_QUOTES) . '<br />';
+			echo 'Fax: ' . htmlspecialchars($site->fax, ENT_QUOTES) . '</td></tr>';
 		?>';
 
 		baseContent += '<tr><td colspan="2" style="text-align:left;"><?php echo $patientName ?>';
@@ -329,7 +329,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 <?php
 					}
 ?>
-		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php echo htmlspecialchars($operation->booking->ward->name) ?></td></tr></table>';
+		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES) ?></td></tr></table>';
 		content += '<p>It is very important that you let us know immediately if you are unable to attend on this admission date. ';
 		content += 'You can do this by calling CHANGECONTACT Admission Coordinator on CHANGETEL.</p>';
 		content += '<p>Please let us know if you have any change in your general health that may affect your surgery.</p>';
@@ -337,7 +337,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
 		content += '<ul><li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
-		content += '<li>PLease go directly to ward <?php echo htmlspecialchars($operation->booking->ward->name) ?></li>';
+		content += '<li>PLease go directly to ward <?php echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES) ?></li>';
 		content += '<li>You must not drive yourself to or from hospital</li>';
 		content == '<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating area is available for patients coming for surgery.</li>';
 		content += '</ul>';
@@ -384,9 +384,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += '<tr><td width="25%"><strong>Admitting Consultant:</strong></td> <!-- width control --><td width="25%"><?php echo $consultantName ?></td>';
 		content += '<td><strong>Decision to admit date (or today&apos;s date):</strong></td><td><?php echo $operation->decision_date ?></td></tr>';
 
-		content += '<tr><td>Service:</td><td><?php echo htmlspecialchars($event->episode->firm->serviceSpecialtyAssignment->specialty->name) ?></td><td>Telephone:</td><td><?php echo htmlspecialchars($patient->primary_phone) ?></td></tr>';
+		content += '<tr><td>Service:</td><td><?php echo htmlspecialchars($event->episode->firm->serviceSpecialtyAssignment->specialty->name, ENT_QUOTES) ?></td><td>Telephone:</td><td><?php echo htmlspecialchars($patient->primary_phone) ?></td></tr>';
 
-		content += '<tr><td>Site:</td><td><?php echo htmlspecialchars($site->name) ?></td><td colspan="2">';
+		content += '<tr><td>Site:</td><td><?php echo htmlspecialchars($site->name, ENT_QUOTES) ?></td><td colspan="2">';
 		content += '<table width="100%" class="subTableNoBorders"><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></td></tr>';
 
 		content += '<tr><td><strong>Person organising admission:</strong></td><td><?php echo $consultantName ?></td><td><strong>Dates patient unavailable:</strong></td><td>&nbsp;</td></tr>';
@@ -415,14 +415,14 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			$disorder = $operation->getDisorder();
 
 			echo !empty($disorder) ? $operation->getEyeText() : 'Unknown';
-			echo !empty($disorder) ? htmlspecialchars($operation->getDisorder()) : ''
+			echo !empty($disorder) ? htmlspecialchars($operation->getDisorder(), ENT_QUOTES) : ''
 		?></td></tr>';
 
-		content += '<tr><td><strong>Intended procedure:</strong></td><td><?php echo htmlspecialchars(implode(', ', $procedureList)) ?></td></tr>';
+		content += '<tr><td><strong>Intended procedure:</strong></td><td><?php echo htmlspecialchars(implode(', ', $procedureList), ENT_QUOTES) ?></td></tr>';
 
 		content += '<tr><td><strong>Eye:</strong></td><td><?php echo $operation->getEyeText() ?></td></tr>';
 
-		content += '<tr><td><strong>Total theatre time (mins):</strong></td><td><?php echo htmlspecialchars($operation->total_duration) ?></td></tr>';
+		content += '<tr><td><strong>Total theatre time (mins):</strong></td><td><?php echo htmlspecialchars($operation->total_duration, ENT_QUOTES) ?></td></tr>';
 
 		content += '</table>';
 
