@@ -11,40 +11,19 @@ _____________________________________________________________________________
 http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
-/*
-foreach ($theatres as $name => $dates) {
-	var_dump($name);
-	var_dump($dates);
-}
 
-exit;
-*/
 $baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
-//$cs->registerCSSFile('/css/theatre.css', 'all');
 $cs->registerCoreScript('jquery');
 $cs->registerCoreScript('jquery.ui');
+$cs->registerCoreScript('jquery.printElement.min');
 $cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
-//$cs->registerScriptFile($baseUrl.'/js/jquery.multi-open-accordion-1.5.2.min.js');
 
 if (empty($theatres)) {?>
 	<p class="fullBox"><strong>No theatre schedules match your search criteria.</strong></p>
 <?php } else {
 	$panels = array();
-//var_dump($theatres);
-//exit;
-/*
-foreach ($theatres as $name => $dates) {
-	var_dump($name);
-	foreach ($dates as $date => $sessions) {
-		var_dump($date);
-		foreach ($sessions as $session) {
-			var_dump($session['sessionId']);
-		}
-	}
-}
-exit;
-*/
+
 	$firstTheatreShown = false;
 	foreach ($theatres as $name => $dates) { ?>
 		<h3 class="theatre<?php if (!$firstTheatreShown) {?> firstTheatre<?php }?>"><strong><?php echo $name?></strong></h3>
@@ -151,6 +130,95 @@ exit;
 	}
 }
 ?>
+
+<div id="foo">
+OPERATION LIST FORM
+<br /><br />
+<?php
+
+$previousSequenceId = '';
+
+foreach ($theatres as $name => $dates) {
+        $firstTheatreShown = false;
+        foreach ($theatres as $name => $dates) {
+                $firstTheatreShown = true;
+                foreach ($dates as $date => $sessions) {
+                        foreach ($sessions as $session) {
+                                if ($previousSequenceId != $session['sequenceId']) {
+                                        if ($previousSequenceId != '') {
+?>
+</table>
+<?php
+                                        }
+?>
+<table>
+<tr><td>
+THEATRE NO:
+</td><td colspan="2">
+<?php echo(htmlspecialchars($name, ENT_QUOTES)) ?>
+</td></tr>
+<tr><td>
+SESSION:
+</td><td>
+<?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5) ?>
+</td><td>
+NHS
+</td></tr>
+</table>
+
+<table>
+<tr><td>
+SURGICAL FIRM: <?php echo htmlspecialchars($session['firm_name'], ENT_QUOTES) ?>
+</td><td>
+ANAESTHETIST:
+</td><td>
+&nbsp;
+</td><td>
+DATE:
+</td><td>
+<?php echo date('Y/m/d') ?>
+</td></tr>
+</table>
+
+<table>
+<tbody>
+<tr>
+<th>HOSPT NO</th>
+<th>PATIENT</th>
+<th>AGE</th>
+<th>WARD</th>
+<th>GA or LA</th>
+<th>PROCEDURES AND COMMENTS</th>
+<th>ADMISSION TIME</th>
+</tr>
+<?php
+                                        $previousSequenceId = $session['sequenceId'];
+                                        $timeAvailable = $session['sessionDuration'];
+                                }
+
+                                if (!empty($session['patientId'])) {
+                                        $timeAvailable -= $session['operationDuration'];
+?>
+<tr>
+<td><?php echo $session['patientHosNum'] ?></td>
+<td><?php echo htmlspecialchars($session['patientName']) ?></td>
+<td><?php echo htmlspecialchars($session['patientAge']) ?></td>
+<td><?php echo htmlspecialchars($session['ward']) ?></td>
+<td><?php echo htmlspecialchars($session['anaesthetic']) ?></td>
+<td>
+<?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.htmlspecialchars($session['procedures']) : 'No procedures'?><br />
+<?php echo htmlspecialchars($session['operationComments']) ?>
+<td><?php echo $session['admissionTime'] ?></td>
+</td></tr>
+<?php
+                                }
+                        }
+                }
+        }
+}
+?>
+</div>
+
 <script type="text/javascript">
     $('a[id^="editComments"]').click(function() {
         id = this.name;
