@@ -158,8 +158,16 @@ class BookingService
 	 * @param integer $wardId
 	 * @return CDbReader
 	 */
-	public function findTheatresAndSessions($startDate, $endDate, $siteId = null, $theatreId = null, $specialtyId = null, $firmId = null, $wardId = null)
-	{
+	public function findTheatresAndSessions(
+		$startDate,
+		$endDate,
+		$siteId = null,
+		$theatreId = null,
+		$specialtyId = null,
+		$firmId = null,
+		$wardId = null,
+		$emergencyList
+	) {
 		if (empty($startDate) || empty($endDate) ||
 			(strtotime($endDate) < strtotime($startDate))) {
 			throw new Exception('Invalid start and end dates.');
@@ -168,51 +176,76 @@ class BookingService
 		$whereSql = 's.date BETWEEN :start AND :end';
 		$whereParams = array(':start' => $startDate, ':end' => $endDate);
 
-		if (!empty($siteId)) {
-			$whereSql .= ' AND t.site_id = :siteId';
-			$whereParams[':siteId'] = $siteId;
-		}
-		if (!empty($theatreId)) {
-			$whereSql .= ' AND t.id = :theatreId';
-			$whereParams[':theatreId'] = $theatreId;
-		}
-		if (!empty($specialtyId)) {
-			$whereSql .= ' AND spec.id = :specialtyId';
-			$whereParams[':specialtyId'] = $specialtyId;
-		}
-		if (!empty($firmId)) {
-			$whereSql .= ' AND f.id = :firmId';
-			$whereParams[':firmId'] = $firmId;
-		}
-		if (!empty($wardId)) {
-			$whereSql .= ' AND w.id = :wardId';
-			$whereParams[':wardId'] = $wardId;
-		}
+		if (empty($emergencyList)) {
+			if (!empty($siteId)) {
+				$whereSql .= ' AND t.site_id = :siteId';
+				$whereParams[':siteId'] = $siteId;
+			}
+			if (!empty($theatreId)) {
+				$whereSql .= ' AND t.id = :theatreId';
+				$whereParams[':theatreId'] = $theatreId;
+			}
+			if (!empty($specialtyId)) {
+				$whereSql .= ' AND spec.id = :specialtyId';
+				$whereParams[':specialtyId'] = $specialtyId;
+			}
+			if (!empty($firmId)) {
+				$whereSql .= ' AND f.id = :firmId';
+				$whereParams[':firmId'] = $firmId;
+			}
+			if (!empty($wardId)) {
+				$whereSql .= ' AND w.id = :wardId';
+				$whereParams[':wardId'] = $wardId;
+			}
 
-		$command = Yii::app()->db->createCommand()
-			->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
-				f.name AS firm_name, spec.name AS specialty_name,
-				o.eye, o.anaesthetic_type, o.comments, b.admission_time,
-				o.consultant_required, o.overnight_stay,
-				e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
-				o.total_duration AS operation_duration, p.first_name,
-				p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order')
-			->from('session s')
-			->join('sequence q', 's.sequence_id = q.id')
-			->join('theatre t', 't.id = q.theatre_id')
-			->leftJoin('booking b', 'b.session_id = s.id')
-			->leftJoin('element_operation o', 'o.id = b.element_operation_id')
-			->leftJoin('event e', 'e.id = o.event_id')
-			->leftJoin('episode ep', 'ep.id = e.episode_id')
-			->leftJoin('patient p', 'p.id = ep.patient_id')
-			->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
-			->join('firm f', 'f.id = sfa.firm_id')
-			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
-			->join('specialty spec', 'spec.id = ssa.specialty_id')
-			->leftJoin('ward w', 'w.id = b.ward_id')
-			->where($whereSql, $whereParams)
-			->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
+			$command = Yii::app()->db->createCommand()
+				->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
+					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
+					f.name AS firm_name, spec.name AS specialty_name,
+					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
+					o.consultant_required, o.overnight_stay,
+					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
+					o.total_duration AS operation_duration, p.first_name,
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order')
+				->from('session s')
+				->join('sequence q', 's.sequence_id = q.id')
+				->join('theatre t', 't.id = q.theatre_id')
+				->leftJoin('booking b', 'b.session_id = s.id')
+				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
+				->leftJoin('event e', 'e.id = o.event_id')
+				->leftJoin('episode ep', 'ep.id = e.episode_id')
+				->leftJoin('patient p', 'p.id = ep.patient_id')
+				->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
+				->join('firm f', 'f.id = sfa.firm_id')
+				->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
+				->join('specialty spec', 'spec.id = ssa.specialty_id')
+				->leftJoin('ward w', 'w.id = b.ward_id')
+				->where($whereSql, $whereParams)
+				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
+		} else {
+			$whereSql .= ' AND sfa.id IS NULL';
+
+			$command = Yii::app()->db->createCommand()
+				->select('DISTINCT(o.id) AS operation_id, t.name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
+					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
+					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
+					o.consultant_required, o.overnight_stay,
+					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
+					o.total_duration AS operation_duration, p.first_name,
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order')
+				->from('session s')
+				->join('sequence q', 's.sequence_id = q.id')
+				->join('theatre t', 't.id = q.theatre_id')
+				->leftJoin('booking b', 'b.session_id = s.id')
+				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
+				->leftJoin('event e', 'e.id = o.event_id')
+				->leftJoin('episode ep', 'ep.id = e.episode_id')
+				->leftJoin('patient p', 'p.id = ep.patient_id')
+				->leftJoin('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
+				->leftJoin('ward w', 'w.id = b.ward_id')
+				->where($whereSql, $whereParams)
+				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
+		}
 
 		return $command->queryAll();
 	}

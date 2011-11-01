@@ -56,6 +56,7 @@ class TheatreController extends BaseController
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$theatreId = !empty($_POST['theatre-id']) ? $_POST['theatre-id'] : null;
 			$wardId = !empty($_POST['ward-id']) ? $_POST['ward-id'] : null;
+			$emergencyList = !empty($_POST['emergency_list']) ? $_POST['emergency_list'] : null;
 
 			if (!empty($_POST['date-start']) && !empty($_POST['date-end'])) {
 				$_POST['date-filter'] = 'custom';
@@ -84,13 +85,30 @@ class TheatreController extends BaseController
 					break;
 			}
 
-			if (empty($siteId) && empty($specialtyId) && empty($firmId) && empty($theatreId) && empty($wardId) && empty($filter)) {
+			if (
+				empty($siteId) &&
+				empty($specialtyId) &&
+				empty($firmId) &&
+				empty($theatreId) &&
+				empty($wardId) &&
+				empty($filter) &&
+				empty($emergencyList)
+			) {
 				// No search options selected, e.g. the page has just loaded, so set to the session firm
 				$firmId = Yii::app()->session['selected_firm_id'];
 			}
 
 			$service = new BookingService;
-			$data = $service->findTheatresAndSessions($startDate, $endDate, $siteId, $theatreId, $specialtyId, $firmId, $wardId);
+			$data = $service->findTheatresAndSessions(
+				$startDate,
+				$endDate,
+				$siteId,
+				$theatreId,
+				$specialtyId,
+				$firmId,
+				$wardId,
+				$emergencyList
+			);
 
 			foreach ($data as $values) {
 				$sessionTime = explode(':', $values['session_duration']);
@@ -213,20 +231,20 @@ class TheatreController extends BaseController
 		}
 	}
 
-        public function actionUpdateSessionComments()
-        {
-                if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-                        if (!empty($_POST['id']) && !empty($_POST['comments'])) {
-                                $session = Session::model()->findByPk($_POST['id']);
+	public function actionUpdateSessionComments()
+	{
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			if (!empty($_POST['id']) && !empty($_POST['comments'])) {
+				$session = Session::model()->findByPk($_POST['id']);
 
-                                if (!empty($session)) {
-                                        $session->comments = $_POST['comments'];
-                                        $session->save();
-                                }
-                        }
-                        return true;
-                }
-        }
+				if (!empty($session)) {
+					$session->comments = $_POST['comments'];
+					$session->save();
+				}
+			}
+			return true;
+		}
+	}
 
 	/**
 	 * Helper method to fetch firms by specialty ID
