@@ -113,7 +113,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		});
 
 		function printContent() {
-			$('#content').printElement();
+			$('#printable').printElement();
 		}
 	</script>
 

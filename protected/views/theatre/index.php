@@ -154,7 +154,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							</span>
 
 							<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
-							<button value="print" type="button" style="float:right;" id="btn-print">Print</button>
+							<!--button value="print" type="button" style="float:right;" id="btn-print">Print</button-->
 							<?php $this->endWidget()?>
 						</div>
 
@@ -175,7 +175,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return getList();
 	});
         $('#btn-print').click(function() {
-                alert('a');
                 printContent();
         });
 	function getList() {

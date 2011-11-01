@@ -76,9 +76,9 @@ class PatientService
 				n.num_id_type,
 				n.number_id
                         FROM
-                                PATIENTS p,
-                                SURNAME_IDS s,
-                                NUMBER_IDS n
+                                SILVER.PATIENTS p,
+                                SILVER.SURNAME_IDS s,
+                                SILVER.NUMBER_IDS n
                         WHERE
                                 (
                                         s.rm_patient_no = p.rm_patient_no

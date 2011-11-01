@@ -12,12 +12,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerCoreScript('jquery');
-$cs->registerCoreScript('jquery.ui');
-$cs->registerCoreScript('jquery.printElement.min');
-$cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
+//$baseUrl = Yii::app()->baseUrl;
+//$cs = Yii::app()->getClientScript();
+//$cs->registerCoreScript('jquery');
+//$cs->registerCoreScript('jquery.ui');
+//$cs->registerCoreScript('jquery.printElement.min');
+//$cs->registerCSSFile('/css/jqueryui/theme/jquery-ui.css', 'all');
 
 if (empty($theatres)) {?>
 	<p class="fullBox"><strong>No theatre schedules match your search criteria.</strong></p>
@@ -131,7 +131,7 @@ if (empty($theatres)) {?>
 }
 ?>
 
-<div id="foo">
+<div id="printable" style="display: none;">
 OPERATION LIST FORM
 <br /><br />
 <?php

@@ -131,8 +131,8 @@ class TheatreController extends BaseController
 				$theatres[$values['name']][$values['date']][] = array(
 					'episodeId' => $values['episodeId'],
 					'eventId' => $values['eventId'],
-					'firm_name' => $values['firm_name'],
-					'specialty_name' => $values['specialty_name'],
+					'firm_name' => @$values['firm_name'],
+					'specialty_name' => @$values['specialty_name'],
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
 					'sequenceId' => $values['sequence_id'],
