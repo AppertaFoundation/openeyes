@@ -189,7 +189,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		}
 	}
 
-	$patientDetails .= htmlspecialchars($patient->address->country->name, ENT_QUOTES) . '<br />';
+	if (!empty($patient->address->country->name)) {
+		$patientDetails .= htmlspecialchars($patient->address->country->name, ENT_QUOTES) . '<br />';
+	}
 
 	$patientName = htmlspecialchars($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name, ENT_QUOTES);
 
