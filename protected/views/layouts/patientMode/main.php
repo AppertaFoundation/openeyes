@@ -107,7 +107,13 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		});
 
 		function printContent(content) {
-			$('#printable').printElement();
+			$('#printable').printElement(
+				{
+					pageTitle:'openeyes printout',
+           	 			printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
+            				overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
+				}
+			);
 		}
 	</script>
 

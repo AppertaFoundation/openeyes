@@ -144,10 +144,11 @@ if (empty($sessions)) { ?>
 			var day = $(this).text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
+			var firm = $('input[id=sessionFirm]').val();
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'month': month, 'day': day, 'reschedule': 1},
+				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm, 'reschedule': 1},
 				'success': function(data) {
 					if ($('#theatres').length == 0) {
 						$('#operation').append(data);
