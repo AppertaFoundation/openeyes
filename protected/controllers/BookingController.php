@@ -402,6 +402,11 @@ class BookingController extends BaseController
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 					$operation->save();
+
+                                	if (!empty($_POST['Session']['comments'])) {
+                                        	$model->session->comments = $_POST['Session']['comments'];
+                                        	$model->session->save();
+                                	}
 				} else {
 					$model->delete();
 
