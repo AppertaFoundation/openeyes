@@ -548,10 +548,18 @@ class ElementOperation extends BaseElement
 		if (empty($date)) {
 			throw new Exception('Date is required.');
 		}
+/*
 		if (!$emergency) {
 			$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
 		} else {
 			$firmId = null;
+		}
+*/
+
+		if (empty($emergency) || $emergency == 'EMG') {
+			$firmId = null;
+		} else {
+			$firmId = $emergency;
 		}
 
 		$service = $this->getBookingService();

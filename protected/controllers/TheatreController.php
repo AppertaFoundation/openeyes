@@ -119,7 +119,7 @@ class TheatreController extends BaseController
 				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
 
 				$procedures = Yii::app()->db->createCommand()
-					->select("GROUP_CONCAT(p.term SEPARATOR ', ') AS List")
+					->select("GROUP_CONCAT(p.short_format SEPARATOR ', ') AS List")
 					->from('proc p')
 					->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
 					->where('opa.operation_id = :id',

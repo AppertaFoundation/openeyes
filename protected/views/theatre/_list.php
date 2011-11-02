@@ -48,7 +48,7 @@ if (empty($theatres)) {?>
 					}
 
 ?>
-<h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firn_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> </h3>
+<h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> </h3>
                                 <div class="theatre-sessions whiteBox clearfix">
 
                                                 <div class="sessionComments" style="display:block; float:right; width:300px; ">
@@ -133,9 +133,16 @@ if (empty($theatres)) {?>
 }
 ?>
 
-<div id="printable" style="display: none;">
-OPERATION LIST FORM
-<br /><br />
+<!-- ====================================================  P R I N T  S T U F F ============  -->
+<div class="printable" id="printable">
+  
+<!-- ================================================ -->
+<!-- * * * * * * * * * *   DIARY  * * * * * * * * * * -->
+<!-- ================================================ -->
+
+<div id="diaryTemplate">
+<div id="d_title">OPERATION LIST FORM</div>
+
 <?php
 
 $previousSequenceId = '';
@@ -153,8 +160,8 @@ foreach ($theatres as $name => $dates) {
 <?php
                                         }
 ?>
-<table>
-<tr><td>
+<table class="d_overview">
+<tbody><tr><td>
 THEATRE NO:
 </td><td colspan="2">
 <?php echo(htmlspecialchars($name, ENT_QUOTES)) ?>
@@ -166,10 +173,10 @@ SESSION:
 </td><td>
 NHS
 </td></tr>
-</table>
+</tbody></table>
 
-<table>
-<tr><td>
+<table class="d_overview">
+<tbody><tr><td>
 SURGICAL FIRM: <?php echo htmlspecialchars($session['firm_name'], ENT_QUOTES) ?>
 </td><td>
 ANAESTHETIST:
@@ -180,9 +187,9 @@ DATE:
 </td><td>
 <?php echo date('Y/m/d') ?>
 </td></tr>
-</table>
+</tbody></table>
 
-<table>
+<table class="d_data">
 <tbody>
 <tr>
 <th>HOSPT NO</th>
@@ -219,7 +226,14 @@ DATE:
         }
 }
 ?>
-</div>
+</div> <!-- #diaryTemplate -->
+<!-- ================================================ -->
+
+<!-- * * * * * * * * end of DIARY  * * * * * * * * * --> 
+<!-- ================================================ -->
+
+</div> <!-- end of printable area -->
+<!-- ====================================================  end of P R I N T  S T U F F ============  -->	
 
 <script type="text/javascript">
     $('a[id^="editComments"]').click(function() {

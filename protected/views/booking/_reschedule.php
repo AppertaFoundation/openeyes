@@ -32,7 +32,6 @@ $patient = $operation->event->episode->patient;
 			$message = 'You are booking into the list for ' . $firm->name . '.';
 		} ?>
 		<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
-		<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
 		<?php
 	}
 	if (empty($sessions)) { ?>
@@ -41,28 +40,16 @@ $patient = $operation->event->episode->patient;
 	}
 	?>
 
-	<p><strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes</p>
-	<p><strong>Current schedule:</strong></p>
+
+
+	<div class="eventDetail">
+		<strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes
+	</div>
+	
+	<div class="eventDetail">
+                <div class="label"><strong>Current schedule:</strong></div>
 <?php $this->renderPartial('_session', array('operation' => $operation)); ?>
-	<div class="cleartall"></div>
-<?php
-if ($operation->event->episode->firm_id != $firm->id) {
-	if ($firm->name == 'Emergency List') {
-		$class = 'flash-error';
-		$message = 'You are booking into the Emergency List.';
-	} else {
-		$class = 'flash-notice';
-		$message = 'You are booking into the list for ' . $firm->name . '.';
-	} ?>
-	<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
-	<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
-<?php
-}
-if (empty($sessions)) { ?>
-	<div class="flash-error">This firm has no scheduled sessions.</div>
-<?php
-}
-?>
+	</div>
 
 	<div id="firmSelect" class="eventDetail clearfix">
 		<div class="label"><span class="normal">Viewing the schedule for </span><br /><strong><?php echo $firm->name?></strong></div>
@@ -144,11 +131,10 @@ if (empty($sessions)) { ?>
 			var day = $(this).text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
-			var firm = $('input[id=sessionFirm]').val();
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm, 'reschedule': 1},
+				'data': {'operation': operation, 'month': month, 'day': day, 'firm': '<?php echo empty($firm->id) ? 'EMG' : $firm->id ?>', 'reschedule': 1},
 				'success': function(data) {
 					if ($('#theatres').length == 0) {
 						$('#operation').append(data);

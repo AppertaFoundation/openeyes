@@ -32,7 +32,6 @@ $patient = $operation->event->episode->patient;
 			$message = 'You are booking into the list for ' . $firm->name . '.';
 		} ?>
 		<div class="<?php echo $class; ?>"><?php echo $message; ?></div>
-		<input id="sessionFirm" type="hidden" value="<?php echo $firm->id; ?>" />
 		<?php
 	}
 	if (empty($sessions)) { ?>
@@ -79,10 +78,6 @@ $patient = $operation->event->episode->patient;
 		$('#previous_month').die('click').live('click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
-			var firm = $('input[id=sessionFirm]').val();
-			if (firm == '') {
-				firm = 'EMG';
-			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
@@ -102,10 +97,6 @@ $patient = $operation->event->episode->patient;
 		$('#next_month').die('click').live('click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
-			var firm = $('input[id=sessionFirm]').val();
-			if (firm == '') {
-				firm = 'EMG';
-			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/sessions'); ?>',
 				'type': 'GET',
@@ -129,14 +120,10 @@ $patient = $operation->event->episode->patient;
 			var day = $(this).text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
-			var firm = $('input[id=sessionFirm]').val();
-			if (firm == '') {
-				firm = 'EMG';
-			}
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('booking/theatres'); ?>',
 				'type': 'GET',
-				'data': {'operation': operation, 'month': month, 'day': day, 'firm': firm, 'reschedule': 0},
+				'data': {'operation': operation, 'month': month, 'day': day, 'firm': '<?php echo empty($firm->id) ? 'EMG' : $firm->id ?>', 'reschedule': 0},
 				'success': function(data) {
 					if ($('#theatres').length == 0) {
 						$('#operation').append(data);

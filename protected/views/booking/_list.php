@@ -71,18 +71,24 @@ if (!$reschedule) {
 </table>
 </div>
 
-<!-- needs styling -->
-<div style="display: inline;"><strong>Admission Time:</strong> <?php
-	echo CHtml::textField('Booking[admission_time]',
-		date('H:i', strtotime('-1 hour', strtotime($session['start_time']))),
-		array('size' => '6'));	?>
-<strong> Session comments:</strong>
-<?php echo CHtml::textArea('Session[comments]', $session['comments'], array('rows'=>3, 'cols'=>50)); ?>
+<div class="eventDetail clearfix">
+	<div class="label"><strong>Admission Time:</strong></div>
+	<div class="data"> 
+		<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
+	</div>
 </div>
-<!-- /needs styling -->
-<br />
 
+<div class="eventDetail clearfix" style="position:relative;">
+	<div class="label"><strong>Session comments:</strong>
 
+	<img src="img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
+	</div>
+	<div class="data">
+		<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
+			<textarea id="Session_comments" name="Session[comments]" rows="2" style="width:395px;"><?php echo htmlspecialchars($session['comments']) ?></textarea>
+		</div>
+	</div>	
+</div>
 
 <?php
 if (!$reschedule) {
@@ -110,13 +116,13 @@ if (!empty($reschedule)) {
 }
 ?>
 
-		<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 
-		<div style="margin-top:10px;">
+<div style="margin-top:10px;">
 
-		<button id="confirm_slot" value="submit" type="submit" class="wBtn_confirm-slot ir">Confirm slot</button>
-		<button id="cancel_operation" value="submit" type="submit" class="wBtn_cancel-operation ir"><span>Cancel operation</span></button>
-		</div>
+<button id="confirm_slot" value="submit" type="submit" class="wBtn_confirm-slot ir">Confirm slot</button>
+<button id="cancel_operation" value="submit" type="submit" class="wBtn_cancel-operation ir"><span>Cancel operation</span></button>
+</div>
 
 <?php
 echo CHtml::endForm();

@@ -164,8 +164,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 				<div id="theatreList">
 				</div>
+				<!-- print -->
 			</div> <!-- #theatre_display -->
-
+			<div style="text-align:right; margin-right:10px;"><button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button></div>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	$(document).ready(function() {
