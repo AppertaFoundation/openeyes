@@ -65,8 +65,9 @@ if (empty($theatres)) {?>
                                                                 <th>Hospital #</th>
                                                                 <th>Patient (Age)</th>
                                                                 <th>[Eye] Operation</th>
+								<th>Anesth</th>
                                                                 <th>Ward</th>
-                                                                <th>Alerts</th>
+                                                                <th>Info</th>
                                                         </tr>
 <?php
 					$previousSequenceId = $session['sequenceId'];
@@ -85,6 +86,7 @@ if (empty($theatres)) {?>
 								?></td>
 								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
+								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
 								<td class="ward"><?php echo $session['ward']; ?></td>
 								<td class="alerts">
 								<?php
