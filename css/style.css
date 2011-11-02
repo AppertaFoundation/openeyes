@@ -564,7 +564,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 /* ------------------------ PRINT STUFF */
 
-.printable { display:block; }
+.printable { display:none; }
 .printable * { font-size:9pt; }
 	
 /* ====== LETTERs (hidden in page) ====== */
