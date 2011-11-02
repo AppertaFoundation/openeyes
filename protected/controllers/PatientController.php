@@ -254,8 +254,6 @@ class PatientController extends BaseController
 			$this->resetSessionPatient($patient->id);
 		}
 
-		$address = Address::model()->findByPk($patient->address_id);
-
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $patient->id);
 		$criteria->order = 'start_date DESC';
@@ -264,7 +262,7 @@ class PatientController extends BaseController
 			'criteria'=>$criteria));
 
 		$this->renderPartial('_summary',
-			array('model'=>$patient, 'address'=>$address, 'episodes'=>$dataProvider));
+			array('model'=>$patient, 'address'=>$patient->address, 'episodes'=>$dataProvider));
 	}
 
 	public function actionContacts()
