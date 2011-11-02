@@ -66,14 +66,14 @@ td { vertical-align: top; }
 html { background-color: #d4d1cd; }
 body { width:1230px; margin:0 auto; }
 /* ====== STRUCTURE ====== */
-#header { border-top:2px solid #b3b0ae; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; }
 #container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
-#container 		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; }
-#header 		{ height: 70px; position: relative; }
+#container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px;}
+#header 		{ height: 70px; position: relative; border-top:2px solid #b3b0ae; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px;}
 #content 		{ min-height: 400px;}
 #help 			{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }  /* offset by 5px! */
 #help:before 	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
 #footer 		{ width: 1234px; height:35px;background: #b3b0ae url(../img/_structure/openeyes_footer.png) bottom right no-repeat; padding-top:5px} /* allow for help offset */
+#footer a { color: #666; }
 /* ---- add border radius ---- */
 #footer, #help	{-webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
 
@@ -164,7 +164,7 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 .labelRequired 	{ color: #b33; }
 
 /* buttons -- set up all normal buttons */
-button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search, button.btn_save { display:inline-block; width:125px; height:40px; }
+button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search, button.btn_save, button.btn_print { display:inline-block; width:125px; height:40px; }
 /* graphics */
 button.btn_login 		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
 button.btn_login:hover 	{ background-image: url(../img/_elements/btns/login_o.png); }
@@ -172,6 +172,8 @@ button.btn_find-patient 			{ background:transparent url(../img/_elements/btns/fi
 button.btn_find-patient:hover 	{ background-image: url(../img/_elements/btns/find-patient_o.png); }
 button.btn_refine-search 		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
 button.btn_refine-search:hover 	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
+button.btn_print 		{ background:transparent url(../img/_elements/btns/print.png) no-repeat; }
+button.btn_print:hover 	{ background-image: url(../img/_elements/btns/print_o.png); }
 button.btn_print-letter 		{ background:transparent url(../img/_elements/btns/print-letter.png) no-repeat; }
 button.btn_print-letter:hover 	{ background-image: url(../img/_elements/btns/print-letter_o.png); }
 button.btn_cancel 			{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
@@ -255,6 +257,13 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
 
+/* ------------------------------------------------- DEVELOPER ADDITIONS  */
+
+.h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.h1-watermark-description p { margin-left: 1em; }
+#debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
+
 
 /* ------------------------------------------------- ADMIN  */
 
@@ -335,7 +344,8 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .popup.red { border-color: #cf2239; }
 
 /* for lightbox that pops up with debug */
-#footer a { color: #666; }
+#support-info { float: right; margin-top: -1.2em; margin-right: 13em; font-size: 7pt; font-weight: normal; color: #666; }
+#support-info a { color: #666; }
 
 /* to indicate that user is in training mode  */
 #h1-environment { float: right; font-size: 14px; margin-top: 0; margin-right: 0.9em; }
@@ -423,6 +433,8 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* event detail */
 #event_content .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px;  }
 #event_content .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:11pt;  }
+
+.eventDetail > .data { display:inline-block; }
 .eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .eventDetail > .data > .group:hover { background:#fff;}
 .eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
@@ -481,7 +493,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* theatres */
 #theatres { margin-top:10px; }
 #theatres > h4 { font-weight: bold; }
-#theatre-times ul { list-style-type: none; padding:10px 0 15px 10px; margin: 0px; font-size:12pt; }
+#theatre-times h5 { margin:20px 0 5px 10px; padding:0; font-size:12pt; }
 #theatre-times .sessionTimes {}
 #theatre-times .sessionTimes .timeBlock { display:inline-block; width:300px; background: #eeeeee; color:#999; border:1px solid #fff; padding:15px 25px 12px 25px; text-align: center;  }
 #theatre-times .sessionTimes .timeBlock.available { background:#69bd51; color:#000; }
@@ -543,7 +555,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #waitingList table td.letterStatus > img {margin-right:3px; }
 
 
-
 /* SESSION COMMENTS */
 .sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px 10px 20px 10px; margin-bottom: 15px; position:relative; }
 .sessionComments > .modifyComments { position:absolute; bottom:-20px; right:5px; height:20px; background:#fee54f; padding:3px 10px; }
@@ -551,27 +562,38 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .sessionComments > .modifyComments > .edit { float: right; }
 
 
-
-
 /* ------------------------ PRINT STUFF */
 
-.printable { display:none; }
+.printable { display:block; }
+.printable * { font-size:9pt; }
 	
 /* ====== LETTERs (hidden in page) ====== */
 
-#letterTemplate { display:none; background:#fff; font-size:10pt; }
+#letterTemplate { display:block; background:#fff; }
 #letterTemplate #l_type { text-align: center; font-size:6pt; }
-#letterTemplate #l_content  p { margin-bottom:1.5em; }
-#letterFooter { display:none; text-align:right; font-size:6pt; line-height: 1.5; position:absolute; bottom:0; right:0; }
+#letterTemplate #l_content  p { margin-bottom:1em; }
+#letterTemplate #l_content	ul { margin:0 0 1.5em 0.5em; } 
+#letterTemplate #l_content	table { margin-bottom:1.5em; } 
+#letterTemplate #l_content	td { padding:0.25em 0.5em; } 
+#letterFooter { display:block; text-align:right; font-size:6pt; line-height: 1.5; position:absolute; bottom:0; right:0; }
 
 
 /* ====== FORMs (hidden in page) ====== */
-#printForm	{ display:none; background:#fff; font-size:7pt; }
+#printForm	{ display:block; background:#fff; font-size:7pt; }
 #printFormTemplate .title { font-size:13pt; font-weight: bold; }
 #printFormTemplate table tr > td { padding:1em 0.5em; border:1px solid #eee; }
 #printFormTemplate .subTitle { display:block; font-size:8pt; font-weight: bold; margin-top:1em; padding-top:0.5em; padding-bottom: 0.5em; }
 #printFormTemplate table.subTableNoBorders tr > td { border:none; }
 
+
+/* ====== DIARY (hidden in page) ====== */
+
+#diaryTemplate #d_title { text-align: center; font-size:10pt; font-weight: bold; border-bottom:2px solid grey; margin-bottom:1em; }
+#diaryTemplate table.d_overview { width:100%;border-collapse: separate;  border-spacing: 0.2em; }
+#diaryTemplate table.d_overview td { border-bottom:1px dotted grey; padding:0.3em 1em; }
+#diaryTemplate table.d_data { width:100%; border-top:1px solid grey; margin-top:1em; text-align: left;}
+#diaryTemplate table.d_data th { padding:0.5em; border-left:1px solid grey; }
+#diaryTemplate table.d_data td { padding:0.75em 0.25em 1em 0.5em; border:1px solid grey; }
 
 
 
@@ -619,10 +641,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
   
   /* PREPAPRE PAGE FOR PRINT */
   html { height:100%; }
-  body { width:auto !important; margin: 0 !important;}
+  .printable { display:block !important; }
 }
+
 
 .h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description p { margin-left: 1em; }
 #debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
+
