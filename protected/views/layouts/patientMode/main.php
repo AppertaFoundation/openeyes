@@ -32,6 +32,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/libs/modernizr-2.0.6.min.js"></script>
 	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.printElement.min.js"></script>
+
 </head>
 
 <body>
@@ -58,21 +59,25 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			</div> <!-- #patientID -->
 
 		</div> <!-- #header -->
-		<!--div id="mainmenu">
-			<?php $this->widget('zii.widgets.CMenu',array(
-				'items'=>array(
-					array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>!Yii::app()->user->isGuest),
-					array('label'=>'Admin', 'url'=>array('/admin'), 'visible'=>!Yii::app()->user->isGuest),
-					array('label'=>'Search Patients', 'url'=>array('/patient/admin'), 'visible'=>!Yii::app()->user->isGuest),
-					array('label'=>'Phrases for this firm', 'url'=>array('/phraseByFirm/index'), 'visible'=>!Yii::app()->user->isGuest),
-					array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-					array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
-				),
-			)); ?>
-		</div--><!-- mainmenu -->
 
 		<div id="content">
 			<?php echo $content; ?>
+
+
+
+
+  <!-- ====================================================  P R I N T  S T U F F ============  -->
+  <div class="printable" id="printable">
+
+  </div> <!-- end of printable area -->
+
+  <!-- ====================================================  end of P R I N T  S T U F F ============  -->
+
+
+
+
+
+
 		</div> <!-- #content -->
 		<div id="help" class="clearfix">
 			<div class="hint">
@@ -106,14 +111,24 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			});
 		});
 
-		function printContent(content) {
-			$('#printable').printElement(
-				{
-					pageTitle:'openeyes printout',
-           	 			printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
-            				overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
-				}
-			);
+		function clearPrintContent() {
+			$('#printable').html('');
+		}
+
+		function appendPrintContent(content) {
+			$('#printable').append(content);
+		}
+
+		function printContent() {
+			printElem({
+				pageTitle:'openeyes printout',
+				printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
+				overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
+			});
+		}
+
+		function printElem(options){
+			$('#printable').printElement(options);
 		}
 	</script>
 

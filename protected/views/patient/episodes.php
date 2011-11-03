@@ -14,7 +14,7 @@
 						if ($i == 0) $current_episode = $episode;
 					}
 					?>
-					<div class="episode open clearfix">
+					<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 						<div class="episode_nav">
 							<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
 							<div class="small"><?php echo date('d.m.Y',strtotime($episode->start_date))?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">Details</a><span></div>
@@ -76,7 +76,6 @@
 				<div id="event_content" class="eventBox fullWidthEvent">
 					<?php
 					if (ctype_digit(@$_GET['event'])) {?>
-						<div>
 						<?php
 						$this->renderPartial(
 							"/clinical/".$this->getTemplateName('view', $event->event_type_id),
@@ -87,7 +86,6 @@
 								'site' => $site
 							), false, true
 						);
-						echo '</div>';
 					} else {
 						if (isset($current_episode)) {
 							$this->renderPartial('/clinical/episodeSummary',

@@ -12,61 +12,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
  $this->beginContent('//layouts/patientMode/main'); ?>
-<div class="container">
-	<div class="span-19">
-		<div id="content">
-			<?php echo $content; ?>
 
-
-
-
-
-
-
-
-  <!-- ====================================================  P R I N T  S T U F F ============  -->
-
-  <div class="printable" id="printable">
-
-  </div>
-  <!-- ====================================================  end of P R I N T  S T U F F ============  -->
-
-
-
-
-
-
-
-
-
-		</div><!-- content -->
-	</div>
-	<div class="span-5 last">
-		<div id="sidebar">
-		<?php
-			$this->beginWidget('zii.widgets.CPortlet', array(
-				'title'=>'Operations',
-			));
-			$this->widget('zii.widgets.CMenu', array(
-				'items'=>$this->menu,
-				'htmlOptions'=>array('class'=>'operations'),
-			));
-			$this->endWidget();
-		?>
-		</div><!-- sidebar -->
-	</div>
-</div>
-
-<script>
-
-function clearPrintContent() {
-	$('#printable').html('');
-}
-
-function appendPrintContent(content) {
-	$('#printable').append(content);
-}
-
-</script>
+<?php echo $content; ?>
 
 <?php $this->endContent();
