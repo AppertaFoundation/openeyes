@@ -135,7 +135,7 @@ if (empty($theatres)) {?>
 
 <!-- ====================================================  P R I N T  S T U F F ============  -->
 <div class="printable" id="printable">
-  
+
 <!-- ================================================ -->
 <!-- * * * * * * * * * *   DIARY  * * * * * * * * * * -->
 <!-- ================================================ -->
@@ -157,6 +157,8 @@ foreach ($theatres as $name => $dates) {
                                         if ($previousSequenceId != '') {
 ?>
 </table>
+<br />
+<br />
 <?php
                                         }
 ?>
@@ -177,7 +179,7 @@ NHS
 
 <table class="d_overview">
 <tbody><tr><td>
-SURGICAL FIRM: <?php echo htmlspecialchars($session['firm_name'], ENT_QUOTES) ?>
+SURGICAL FIRM: <?php echo empty($session['firm_name']) ? 'Emergency list' : htmlspecialchars($session['firm_name'], ENT_QUOTES) ?>
 </td><td>
 ANAESTHETIST:
 </td><td>
@@ -229,11 +231,11 @@ DATE:
 </div> <!-- #diaryTemplate -->
 <!-- ================================================ -->
 
-<!-- * * * * * * * * end of DIARY  * * * * * * * * * --> 
+<!-- * * * * * * * * end of DIARY  * * * * * * * * * -->
 <!-- ================================================ -->
 
 </div> <!-- end of printable area -->
-<!-- ====================================================  end of P R I N T  S T U F F ============  -->	
+<!-- ====================================================  end of P R I N T  S T U F F ============  -->
 
 <script type="text/javascript">
     $('a[id^="editComments"]').click(function() {
