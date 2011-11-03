@@ -257,14 +257,6 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
 
-/* ------------------------------------------------- DEVELOPER ADDITIONS  */
-
-.h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark-description p { margin-left: 1em; }
-#debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
-
-
 /* ------------------------------------------------- ADMIN  */
 
 .adminMode { position:relative; }
@@ -588,14 +580,16 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 /* ====== DIARY (hidden in page) ====== */
 
-#diaryTemplate #d_title { text-align: center; font-size:10pt; font-weight: bold; border-bottom:2px solid grey; margin-bottom:1em; }
-#diaryTemplate table.d_overview { width:100%;border-collapse: separate;  border-spacing: 0.2em; }
-#diaryTemplate table.d_overview td { border-bottom:1px dotted grey; padding:0.3em 1em; }
-#diaryTemplate table.d_data { width:100%; border-top:1px solid grey; margin-top:1em; text-align: left;}
-#diaryTemplate table.d_data th { padding:0.5em; border-left:1px solid grey; }
-#diaryTemplate table.d_data td { padding:0.75em 0.25em 1em 0.5em; border:1px solid grey; }
-
-
+#diaryTemplate { display:block; background:#fff; }
+#diaryTemplate #d_title { text-align: center; font-size:10pt; font-weight: bold; border-bottom:2px solid grey; padding-bottom:0.5em; margin-bottom:1em; }
+#diaryTemplate .d_group { padding-bottom:2em; margin-bottom: 2em; border-bottom: 3px solid grey; }
+#diaryTemplate table.d_overview { width:100%; border-collapse: separate;  border-spacing: 0.2em; }
+#diaryTemplate table.d_overview td { border-bottom:1px dotted grey; padding:0.5em 1em; }
+#diaryTemplate .d_info { display:inline-block; margin-right: 3em; }
+#diaryTemplate .d_info > strong { margin-left: 0.5em; font-size:10pt; }
+#diaryTemplate table.d_data { width:97%; margin-left:1em; margin-top:1em; text-align: left;}
+#diaryTemplate table.d_data th { padding:0.5em 0.75em; font-size:7pt; }
+#diaryTemplate table.d_data td { padding:0.75em 0.25em 1em 0.5em; border:1px solid #CCC; }
 
 
 /* ==|== non-semantic helper classes ======================================== */
@@ -641,9 +635,10 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
   
   /* PREPAPRE PAGE FOR PRINT */
   html { height:100%; }
-  .printable { display:block !important; }
+  .printable { display:block !important; width:1100px !important; }
 }
 
+/* ======================================================================== DEV TEAM Extra styles ================= */
 
 .h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
