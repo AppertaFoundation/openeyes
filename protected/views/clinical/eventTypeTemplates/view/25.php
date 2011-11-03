@@ -550,13 +550,13 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		content += '<table width="100%">';
 
-		content += '<tr><td colspan="2" style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;">&nbsp;</td><td colspan="4" style="text-align:right; padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td></tr><tr><td colspan="2" width="50%" style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;"> <!-- width control --><span class="title" style="font-size:13pt; font-weight: bold;">Admission Form</span></td>';
-		content += '<td rowspan="4" style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;">Patient Name,<br /></td>';
-		content += '<td rowspan="4" style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;"><?php echo $patientName ?><br /><?php echo $patientDetails ?></td></tr>';
+		content += '<tr><td colspan="2" style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td colspan="4" style="text-align:right; padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></td></tr><tr><td colspan="2" width="50%" style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"> <!-- width control --><span class="title" style="font-size:13pt; font-weight: bold;">Admission Form</span></td>';
+		content += '<td rowspan="4" style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">&nbsp;</td>';
+		content += '<td rowspan="4" style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo $patientName ?><br /><?php echo $patientDetails ?></td></tr>';
 
-		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;">Hospital Number</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;"><?php echo $patient->hos_num ?></td></tr>';
-		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;">DOB</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;"><?php echo $patient->dob ?></td></tr>';
-		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;">&nbsp;</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif;; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">Hospital Number</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo $patient->hos_num ?></td></tr>';
+		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">DOB</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo $patient->dob ?></td></tr>';
+		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
 		content += '</table>';
 
@@ -568,25 +568,25 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		var content = '<table width="100%">';
 
-		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Admitting Consultant:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo $consultantName ?></td>';
-		content += '<td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Decision to admit date (or today&apos;s date):</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo $operation->decision_date ?></td></tr>';
+		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admitting Consultant:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $consultantName ?></td>';
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Decision to admit date (or today&apos;s date):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->decision_date ?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">Service:</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo htmlspecialchars($event->episode->firm->serviceSpecialtyAssignment->specialty->name, ENT_QUOTES) ?></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">Telephone:</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo htmlspecialchars($patient->primary_phone) ?>&nbsp;</td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Service:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($event->episode->firm->serviceSpecialtyAssignment->specialty->name, ENT_QUOTES) ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Telephone:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($patient->primary_phone) ?>&nbsp;</td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">Site:</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo htmlspecialchars($site->name, ENT_QUOTES) ?></td><td colspan="2" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Site:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($site->name, ENT_QUOTES) ?></td><td colspan="2" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
 		content += '<table width="100%" class="subTableNoBorders" style="border:none;"><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Person organising admission:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo $consultantName ?></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Dates patient unavailable:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Person organising admission:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $consultantName ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Dates patient unavailable:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
-		content += '<tr><td colspan="2" style="border-bottom:1px dotted #000; border:1px solid #000; font-family: sans-serif;; font-size:10pt;">Signature:</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">Available at short notice:</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td colspan="2" style="border-bottom:1px dotted #000; border:1px solid #000; font-family: sans-serif; font-size:10pt;">Signature:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Available at short notice:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
 		content += '</table>';
 
 		appendPrintContent(content);
 
-		content = '<span class="subTitle" style="display:block; font-size:8pt; font-weight: bold; margin-top:1em; padding-top:0.5em; padding-bottom: 0.5em;">ADMISSION DETAILS</span><table width="100%">';
-		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Urgency:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td>';
-		content += '<td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Consultant to be present:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php
+		content = '<span class="subTitle" style="font-family: sans-serif; font-size:10pt;">ADMISSION DETAILS</span><table width="100%">';
+		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Urgency:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td>';
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Consultant to be present:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
 			if (empty($operation->consultant_required)) {
 				echo 'No';
 			} else {
@@ -594,15 +594,15 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">Admission category:</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Admission category:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
                         if ($operation->overnight_stay) {
                                 echo 'an overnight stay';
                         } else {
                                 echo 'day case';
-                        } ?></td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle; font-family: sans-serif;; font-size:10pt; border:1px solid #000; font-family: sans-serif;; font-size:10pt;">';
+                        } ?></td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle; font-family: sans-serif; font-size:10pt; border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
 		content += '<strong>Patient Added to Waiting List.<br />Admission Date to be arranged</strong></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Diagnosis:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Diagnosis:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
 
 			$disorder = $operation->getDisorder();
 
@@ -610,19 +610,19 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			echo !empty($disorder) ? htmlspecialchars($operation->getDisorder(), ENT_QUOTES) : ''
 		?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo htmlspecialchars(implode(', ', $procedureList), ENT_QUOTES) ?></td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars(implode(', ', $procedureList), ENT_QUOTES) ?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo $operation->getEyeText() ?></td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getEyeText() ?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><?php echo htmlspecialchars($operation->total_duration, ENT_QUOTES) ?></td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($operation->total_duration, ENT_QUOTES) ?></td></tr>';
 
 		content += '</table>';
 
 		// Pre-op
-		content += '<span class="subTitle">PRE-OP ASSESSMENT INFORMATION</span><table width="100%">';
-		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Likely to need anaesthetist review:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<span class="subTitle" style="font-family: sans-serif; font-size:10pt;">PRE-OP ASSESSMENT INFORMATION</span><table width="100%">';
+		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Likely to need anaesthetist review:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Anaesthesia is:</strong></td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;"><strong>Does the patient need to stop medication:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif;; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia is:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Does the patient need to stop medication:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
 		content += '</table>';
 
@@ -630,9 +630,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	}
 
 	function loadEndFormPrintContent() {
-		var content = '<span class="subTitle">COMMENTS</span>';
+		var content = '<span class="subTitle" style="font-family: sans-serif; font-size:10pt;">COMMENTS</span>';
 
-		content += '<table width="100%"><tr><td style="border:2px solid #666; height:7em; font-family: sans-serif;; font-size:10pt;">&nbsp;</td></tr></table>';
+		content += '<table width="100%"><tr><td style="border:2px solid #666; height:7em; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr></table>';
 
 		content += '</div> <!-- adminFormTemplate --></div> <!-- printForm -->';
 
