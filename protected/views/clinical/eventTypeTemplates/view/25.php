@@ -220,7 +220,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		baseContent += '<?php echo $patientDetails ?></td></tr>';
 
-		baseContent += '<tr><td colspan="2" style="text-align:right;"><?php echo date('F j Y') ?></td></tr></table></div>';
+		baseContent += '<tr><td colspan="2" style="text-align:right;"><?php echo date('d/m/Y') ?></td></tr></table></div>';
 
 
 
@@ -236,6 +236,68 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	}
 
 	function loadInvitationLetterPrintContent() {
+<?php
+	$changeContact = '';
+
+	// Generate contact name and telephone number
+	if ($patient->isChild()) {
+		if ($site->id == 1) { // City Road
+			$changeContact = 'a nurse on 020 7566 2596';
+		} else { // St. George's
+			$changeContact = 'Naeela Butt on 020 8725 0060';
+		}	
+	} else {
+		$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
+		$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
+
+		switch ($site->id) {
+			case 1:
+				switch ($serviceId) {
+					case 2: // Adnexal
+						$changeContact = 'Sarah Veerapatren on 020 7566 2206';
+						break;
+					case 4: // Cataract
+						$changeContact = 'Ian Johnson on 020 7566 2006';
+						break;
+					case 5: // External Disease aka Corneal
+						$changeContact = 'Ian Johnson on 020 7566 2006';
+						break;
+                                        case 6: // Glaucoma
+                                                $changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
+                                                break;
+					case 11: // Vitreoretinal
+						$changeContact = 'Deidre Clarke on 020 7566 2004';
+						break;
+					default: // Medical Retinal, Paediatric, Strabismus
+						$changeContact = 'Sherry Ramos on 0207 566 2258';
+						break;
+				}
+				break;
+			case 3: // Ealing
+				$changeContact = 'Valerie Giddings on 020 8967 5648';
+				break;
+			case 4: // Northwick Park
+				$changeContact = 'Saroj Mistry on 020 8869 3161';
+				break;
+			case 6: // Mile End
+				if ($serviceId == 4) { // Cataract
+					$changeContact = 'Linda Haslin on 020 7566 2712';
+				} else {
+					$changeContact = 'Eileen Harper on 020 7566 2020';
+				}
+				break;
+			case 7: // Potters Bar
+                                $changeContact = 'Sue Harney on 020 7566 2339';
+                                break;
+			case 9: // St Anns
+				$changeContact = 'Veronica Brade on 020 7566 2843';
+				break;
+			default: // St George's
+				$changeContact = 'Naeela Butt on 020 8725 0060';
+				break;
+		}
+	}
+?>
 		var content = '<p>I have been asked to arrange your <?php
 		if ($patient->isChild()) {
 ?>child&apos;s <?php
@@ -250,7 +312,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?> procedure.</p>';
 
-		content += '<p>Please will you telephone CONTACT within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.</p>';
+		content += '<p>Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.</p>';
 
 		content += '<p>Should you<?php
 		if ($patient->isChild()) {
@@ -276,7 +338,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?> procedure.</p>';
 
-		content += '<p>Please will you telephone CONTACT within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation.</p>';
+		content += '<p>Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree a convenient date for this operation.</p>';
 
 		content += '<p>Should you<?php
 		if ($patient->isChild()) {
@@ -290,73 +352,185 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	function loadScheduledLetterPrintContent() {
 <?php
 	if (!empty($operation->booking)) {
+
+		// Get $refuseContact
+		switch ($site->id) {
+			case 1: // City Road
+				$refuseContact = $specialty->name . ' Admission Coordinator on ';
+				switch ($specialty->id) {
+					case 7: // Glaucoma
+						$refuseContact .= '020 7566 2056';
+						break;
+					case 8: // Medical Retinal
+						$refuseContact .= '020 7566 2258';
+						break;
+					case 11: // Paediatrics
+						$refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						break;
+					case 13: // Refractive Laser
+						$refuseContact = '020 7566 2205 and ask for Joyce Carmichael';
+						$healthContact = '020 7253 3411 X4336 and ask Laser Nurse';
+                                        case 14: // Strabismus
+                                                $refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+                                                break;
+					default:
+						$refuseContact .= '020 7566 2206';
+						break;
+				}
+				break;
+			case 3: // Ealing
+				$refuseContact = '020 8967 5766 and ask for Sister Kelly';
+				$healthContact = 'Sister Kelly on 020 8967 5766';
+				break;
+			case 4: // Northwick Park
+				$refuseContact = '020 8869 3161 and ask for Sister Titmus';
+                                $healthContact = 'Sister Titmus on 020 8869 3162';
+			case 6: // Mile End
+				if ($specialty->id == 7) { // Glaucoma
+					$refuseContact = '020 7566 2020 and ask for Eileen Harper';
+                                	$healthContact = 'Eileen Harper on 020 7566 2020';
+				} else {
+					$refuseContact = '020 7566 2712 and ask for Linda Haslin';
+                                        $healthContact = 'Linda Haslin on 020 7566 2712';
+				}
+                                break;
+			case 7: // Potters Bar
+				$refuseContact = '01707 646422 and ask for Potters Bar Admission Team';
+                                $healthContact = 'Potters Bar Admission Team on 01707 646422';
+				break;
+			case 9: // St Anns
+				$refuseContact = '020 8211 8323 and ask for St Ann&apos;s Team';
+                                $healthContact = 'St Ann&apos;s Team on 020 8211 8323';
+				break;
+			case 5: // St George's
+				$refuseContact = '020 8725 0060 and ask for Naeela Butt';
+                                $healthContact = 'Naeela Butt Team on 020 8725 0060';
+			default:
+				break;
+		}
 ?>
 		var content = '';
 
 <?php
-		$schedule = '<table><tr><td>Date of admission:</td><td>' . $operation->booking->session->date . '</td></tr>';
+		$schedule = '<table><tr><td>Date of admission:</td><td>' . date('l F j, Y', strtotime($operation->booking->session->date)) . '</td></tr>';
 		$schedule .= '<tr><td>Time to arrive:</td><td>' . $operation->booking->admission_time . '</td></tr>';
-		$schedule .= '<tr><td>Date of surgery:</td><td>' . $operation->booking->session->date . '</td></tr>';
+		$schedule .= '<tr><td>Date of surgery:</td><td>' . date('l F j, Y', strtotime($operation->booking->session->date)) . '</td></tr>';
 
-		if ($site->id == 100) {
-?>
-
-<?php
-		} else {
-			if ($event->episode->firm->serviceSpecialtyAssignment->specialty_id == 100) {
-?>
-
-<?php
-			} else {
-				if ($patient->isChild()) {
-					if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
+		if ($patient->isChild()) {
+			if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
 		content += '<p>I am writing to inform you that the date for your child&apos;s eye operation has been changed from <?php echo $cancelledBookings[0]->date ?>. The details now are:</p>';
 <?php
-					} else {
+			} else {
+				if ($site->id == 5) { // St George's
+?>
+		 content += '<p>On behalf of <?php echo $consultantName ?>, I am delighted to confirm the date you have agreed for your child&apos;s operation. The details are:</p>';
+<?php
+				} else { // City Road
 ?>
 		content += '<p>I am writing to confirm the date for your child&apos;s eye operation. The details are:</p>';
 <?php
-					}
+				}
+			}
 ?>
-		content += '<?php echo $schedule ?><tr><td>Location:</td><td>Richard Desmond&apos;s Children&apos;s Eye Centre (RDCEC)</td></tr></table>';
+		content += '<?php echo $schedule ?><tr><td>Location:</td><td><?php
+			if ($site->id == 5) { // St George's
+				echo 'St Georges Jungle Ward';
+			} else { // City Road
+				echo 'Richard Desmond&apos;s Children&apos;s Eye Centre (RDCEC)';
+			}
+		?></td></tr></table>';
 		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
+<?php
+			 if ($site->id != 5) { // City Road
+?>
 		content += '<ul><li><b>Please contact the Children&apos;s Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>';
-		content += '<li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
+<?php
+			}
+?>
+		content += '<li>Bring this letter with you on <?php echo date('l F j, Y', strtotime($operation->booking->session->date)) ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
+<?php
+			if ($site->id == 5) { // St Georges
+?>
+		content += '<li>Please go directly to Duke Elder Ward on level 5 of the Lanesborough wing at the time of admission.</li>';	
+<?php
+			} else {
+?>
 		content += '<li>Please go directly to the Main Reception on level 5 of the RDCEC at the time of your child&apos;s admission.</li>';
+<?php
+			}
+?>
+		content += '<li>
 		content += '</ul>';
-		content += '<p>If there has been any change in your child&apos;s general health, such as a cough or cold, any infection disease, or any other condition which might affect their fitness for operation, please telephone 0207 566 2596 and ask to speak to a nurse for advice.</p>';
+		content += '<p>If there has been any change in your child&apos;s general health, such as a cough or cold, any infection disease, or any other condition which might affect their fitness for operation, please telephone <?php
+			if ($site->id == 5) { // St George's
+				echo '020 8725 0060 and ask Naeela Butt for advice.';
+			} else {
+				echo '0207 566 2596 and ask to speak to a nurse';
+			}
+		?> for advice<p />';
+
 		content += '<p>If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
 		content += '<p>It is very important that you let us know immediately if you are unable to keep this admission date. ';
+<?php
+			if ($site->id == 5) { // St George's
+?>
 		content += 'Please let us know by return of post, or if necessary, telephone Admission Department on 020 7566 2258.</p>';
 <?php
-				} else {
-					if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
+			} else {
+?>
+		content += 'Please let us know by return of post, or if necessary, telephone 020 8725 0060 and ask for Naeela Butt.</p>';
+<?php
+			}
+		} else {
+			if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
 		content += '<p>I am writing to inform you that the date for your eye operation has been changed from <?php echo $cancelledBookings[0]->date ?>. The details now are:</p>';
 <?php
-					} else {
+			} else {
 ?>
 		content += '<p>On behalf of <?php echo $consultantName ?>, I am delighted to confirm the date of your operation. The details are:</p>';
 <?php
-					}
+			}
 ?>
-		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES) ?></td></tr></table>';
+		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php 
+			if ($specialty->id == 13) { // Refractive laser
+                                echo 'Refractive waiting room - Cumberlidge Wing 4th Floor';
+                        } else {    
+                                echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES);
+                        }           
+                ?></td></tr></table>';
+
 		content += '<p>It is very important that you let us know immediately if you are unable to attend on this admission date. ';
-		content += 'You can do this by calling CHANGECONTACT Admission Coordinator on CHANGETEL.</p>';
+<?php
+			if ($site->id == 1 && $specialty->id != 13) { // City Road and not Refractive
+?>
+		content += 'You can do this by calling <?php echo $refuseContact ?><p />';
 		content += '<p>Please let us know if you have any change in your general health that may affect your surgery.</p>';
+<?php
+			} else {
+?>
+		contact += 'Please let us know by return of post, or if necessary, telephone <?php echo $refuseContact ?>.<p />';
+		content += '<p>If there has been any change in your general health, such as a cough or cold, any infection disease, or any other condition which might affect your fitness for operation, please telephone <?php echo $healthContact ?> for advice.<p />';
+<?php
+			}
+?>
 		content += '<p>If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
 		content += '<p>To ensure your admission proceeds smoothly, please follow these instructions:<br />';
-		content += '<ul><li>Bring this letter with you on <?php echo $operation->booking->session->date ?></li>';
+		content += '<ul><li>Bring this letter with you on <?php echo date('l F j, Y', strtotime($operation->booking->session->date)) ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
-		content += '<li>Please go directly to ward <?php echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES) ?></li>';
+		content += '<li>Please go directly to <?php 
+			if ($specialty->id == 13) { // Refractive laser
+				echo 'Refractive waiting room - Cumberlidge Wing 4th Floor';
+			} else {
+				echo 'ward ' . htmlspecialchars($operation->booking->ward->name, ENT_QUOTES);
+			}
+		?></li>';
 		content += '<li>You must not drive yourself to or from hospital</li>';
 		content == '<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating area is available for patients coming for surgery.</li>';
 		content += '</ul>';
 <?php
-				}
-			}
 		}
 	}
 ?>
@@ -420,7 +594,12 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?></td></tr>';
 
-		content += '<tr><td>Admission category:</td><td>DayCase</td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle;">';
+		content += '<tr><td>Admission category:</td><td><?php
+                        if ($operation->overnight_stay) {
+                                echo 'an overnight stay';
+                        } else {
+                                echo 'day case';
+                        } ?></td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle;">';
 		content += '<strong>Patient Added to Waiting List.<br />Admission Date to be arranged</strong></td></tr>';
 
 		content += '<tr><td><strong>Diagnosis:</strong></td><td><?php
