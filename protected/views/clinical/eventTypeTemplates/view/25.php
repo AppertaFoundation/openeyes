@@ -239,6 +239,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 <?php
 	$changeContact = '';
 
+        $serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
+        $specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
+
 	// Generate contact name and telephone number
 	if ($patient->isChild()) {
 		if ($site->id == 1) { // City Road
@@ -247,9 +250,6 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			$changeContact = 'Naeela Butt on 020 8725 0060';
 		}
 	} else {
-		$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
-		$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
-
 		switch ($site->id) {
 			case 1:
 				switch ($serviceId) {
@@ -461,7 +461,6 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 <?php
 			}
 ?>
-		content += '<li>
 		content += '</ul>';
 		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">If there has been any change in your child&apos;s general health, such as a cough or cold, any infection disease, or any other condition which might affect their fitness for operation, please telephone <?php
 			if ($site->id == 5) { // St George's
