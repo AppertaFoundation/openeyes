@@ -419,7 +419,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		if ($patient->isChild()) {
 			if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
-		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your child&apos;s eye operation has been changed from <?php echo $cancelledBookings[0]->date ?>. The details now are:</p>';
+		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your child&apos;s eye operation has been changed from <?php echo date('l F j, Y', strtotime($cancelledBookings[0]->date)) ?>. The details now are:</p>';
 <?php
 			} else {
 				if ($site->id == 5) { // St George's
@@ -441,10 +441,11 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?></td></tr></table>';
 		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">To ensure your admission proceeds smoothly, please follow these instructions:<br />';
+		content += '<ul style="font-family: sans-serif; font-size:10pt; margin:0 0 1.5em 0.5em;">';
 <?php
 			 if ($site->id != 5) { // City Road
 ?>
-		content += '<ul style="font-family: sans-serif; font-size:10pt; margin:0 0 1.5em 0.5em;"><li><b>Please contact the Children&apos;s Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>';
+		content += '<li><b>Please contact the Children&apos;s Ward as soon as possible on 0207 566 2595 or 2596 to discuss pre-operative instructions</b></li>';
 <?php
 			}
 ?>
@@ -485,7 +486,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		} else {
 			if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
-		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your eye operation has been changed from <?php echo $cancelledBookings[0]->date ?>. The details now are:</p>';
+		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your eye operation has been changed from <?php echo date('l F j, Y', strtotime($cancelledBookings[0]->date)) ?>. The details now are:</p>';
 <?php
 			} else {
 ?>
