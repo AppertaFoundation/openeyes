@@ -178,25 +178,25 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	} else {
 		$contact = $consultant->contact;
 
-		$consultantName = htmlspecialchars($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name, ENT_QUOTES);
+		$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
 	}
 
 	$patient = $event->episode->patient;
 	$patientDetails = '';
 	foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 		if (!empty($patient->address->$field)) {
-			$patientDetails .= htmlspecialchars($patient->address->$field, ENT_QUOTES) . '<br />';
+			$patientDetails .= CHtml::encode($patient->address->$field) . '<br />';
 		}
 	}
 
 	if (!empty($patient->address->country->name)) {
-		$patientDetails .= htmlspecialchars($patient->address->country->name, ENT_QUOTES) . '<br />';
+		$patientDetails .= CHtml::encode($patient->address->country->name) . '<br />';
 	}
 
-	$patientName = htmlspecialchars($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name, ENT_QUOTES);
+	$patientName = CHtml::encode($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
 
 	if ($patient->isChild()) {
-		$patientName = htmlspecialchars('Parent/Guardian of ', ENT_QUOTES) . $patientName;
+		$patientName = CHtml::encode('Parent/Guardian of ') . $patientName;
 	}
 ?>
 
@@ -208,12 +208,12 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 			foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {
 				if (!empty($site->$field)) {
-					echo htmlspecialchars($site->$field, ENT_QUOTES) . '<br />';
+					echo CHtml::encode($site->$field) . '<br />';
 				}
 			}
 
-			echo '<br />Tel ' . htmlspecialchars($site->telephone, ENT_QUOTES) . '<br />';
-			echo 'Fax: ' . htmlspecialchars($site->fax, ENT_QUOTES) . '</td></tr>';
+			echo '<br />Tel ' . CHtml::encode($site->telephone) . '<br />';
+			echo 'Fax: ' . CHtml::encode($site->fax) . '</td></tr>';
 		?>';
 
 		baseContent += '<tr><td colspan="2" style="text-align:left; font-family: sans-serif; font-size:10pt;"><?php echo $patientName ?>';
@@ -498,7 +498,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			if ($specialty->id == 13) { // Refractive laser
                                 echo 'Refractive waiting room - Cumberlidge Wing 4th Floor';
                         } else {
-                                echo htmlspecialchars($operation->booking->ward->name, ENT_QUOTES);
+                                echo CHtml::encode($operation->booking->ward->name);
                         }
                 ?></td></tr></table>';
 
@@ -524,7 +524,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			if ($specialty->id == 13) { // Refractive laser
 				echo 'Refractive waiting room - Cumberlidge Wing 4th Floor';
 			} else {
-				echo 'ward ' . htmlspecialchars($operation->booking->ward->name, ENT_QUOTES);
+				echo 'ward ' . CHtml::encode($operation->booking->ward->name);
 			}
 		?></li>';
 		content += '<li>You must not drive yourself to or from hospital</li>';
@@ -571,9 +571,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admitting Consultant:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $consultantName ?></td>';
 		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Decision to admit date (or today&apos;s date):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->decision_date ?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Service:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($event->episode->firm->serviceSpecialtyAssignment->specialty->name, ENT_QUOTES) ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Telephone:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($patient->primary_phone) ?>&nbsp;</td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Service:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($event->episode->firm->serviceSpecialtyAssignment->specialty->name) ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Telephone:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($patient->primary_phone) ?>&nbsp;</td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Site:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($site->name, ENT_QUOTES) ?></td><td colspan="2" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Site:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($site->name) ?></td><td colspan="2" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
 		content += '<table width="100%" class="subTableNoBorders" style="border:none;"><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></table></td></tr>';
 
 		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Person organising admission:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $consultantName ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Dates patient unavailable:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
@@ -607,14 +607,14 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			$disorder = $operation->getDisorder();
 
 			echo !empty($disorder) ? $operation->getEyeText() : 'Unknown';
-			echo !empty($disorder) ? htmlspecialchars($operation->getDisorder(), ENT_QUOTES) : ''
+			echo !empty($disorder) ? CHtml::encode($operation->getDisorder()) : ''
 		?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars(implode(', ', $procedureList), ENT_QUOTES) ?></td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td></tr>';
 
 		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getEyeText() ?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo htmlspecialchars($operation->total_duration, ENT_QUOTES) ?></td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($operation->total_duration) ?></td></tr>';
 
 		content += '</table>';
 

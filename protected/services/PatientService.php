@@ -74,7 +74,8 @@ class PatientService
                         SELECT
                                 p.rm_patient_no,
 				n.num_id_type,
-				n.number_id
+				n.number_id,
+				TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
                         FROM
                                 SILVER.PATIENTS p,
                                 SILVER.SURNAME_IDS s,
@@ -205,7 +206,8 @@ class PatientService
 		$patient->title      = $patientData->names[0]->TITLE;
 		$patient->first_name = $patientData->names[0]->NAME1;
 		$patient->last_name  = $patientData->names[0]->SURNAME_ID;
-		$patient->dob        = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
+//		$patient->dob        = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
+		$patient->dob        = $result['DATE_OF_BIRTH'];
 		$patient->gender     = $patientData->SEX;
 		if ($addressData->TEL_NO != 'NONE') {
 			$patient->primary_phone = $addressData->TEL_NO;
