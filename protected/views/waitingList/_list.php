@@ -24,8 +24,8 @@ if (empty($operations)) { ?>
 	$i = 0;
 	foreach ($operations as $id => $operation) {
 		$eo = ElementOperation::model()->findByPk($operation['eoid']);
-		$consultant = $eo->event->episode->firm->getConsultant();
-		$user = $consultant->contact->userContactAssignment->user;
+//		$consultant = $eo->event->episode->firm->getConsultant();
+//		$user = $consultant->contact->userContactAssignment->user;
 ?>
     <tr class="<?php echo $i%2 ? 'even' : 'odd' ?>">
 <?php
