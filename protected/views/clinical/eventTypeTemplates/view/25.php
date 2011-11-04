@@ -511,7 +511,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 <?php
 			} else {
 ?>
-		contact += 'Please let us know by return of post, or if necessary, telephone <?php echo $refuseContact ?>.<p />';
+		content += 'Please let us know by return of post, or if necessary, telephone <?php echo $refuseContact ?>.<p />';
 		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">If there has been any change in your general health, such as a cough or cold, any infection disease, or any other condition which might affect your fitness for operation, please telephone <?php echo $healthContact ?> for advice.<p />';
 <?php
 			}
