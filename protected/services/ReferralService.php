@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -22,27 +22,30 @@ class ReferralService
 	 */
 	public function getNewReferrals()
 	{
-                if (!Yii::app()->params['use_pas']) {
+								if (!Yii::app()->params['use_pas']) {
 			throw new Exception('use_pas not set to true');
-                }
+								}
 
-                $mid = Yii::app()->db->createCommand()
-                        ->select('MAX(refno) AS mrn')
-                        ->from('referral')
-                        ->queryRow();
+								$mid = Yii::app()->db->createCommand()
+												->select('MAX(refno) AS mrn')
+												->from('referral')
+												->queryRow();
 
-                if (empty($mid['mrn'])) {
-			throw new Exception('No MID in ReferralService.search');
-                }
+								if (empty($mid['mrn'])) {
+			//throw new Exception('No MID in ReferralService.search');
+			exit;
+								}
 		
 		$results = PAS_Referral::model()->findAll('REFNO > ? AND REF_SPEC <> \'OP\'', array($mid['mrn']));
+
+		$errors = '';
 
 		// Put all new PAS referrals in OE
 		foreach ($results as $pasReferral) {
 			$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REF_SPEC));
 
 			if (empty($specialty)) {
-				echo 'No specialty for ref_spec ' . $pasReferral->REF_SPEC . "\n";
+				//echo 'No specialty for ref_spec ' . $pasReferral->REF_SPEC . "\n";
 			} else {
 				$ssa = ServiceSpecialtyAssignment::model()->find('specialty_id = ?', array($specialty->id));
 				$referral = new Referral;
@@ -57,44 +60,48 @@ class ReferralService
 				}
 	
 				if ($referral->save()) {
-					echo 'Added referral refo ' . $referral->refno . "\n";
+					//echo 'Added referral refo ' . $referral->refno . "\n";
 				} else {
-					echo 'Unable to save referral refno ' . $referral->refno . "\n";
+					$errors .= "Unable to save referral refno $referral->refno\n";
 				}
 			}
 		}
 
-		echo "\nREFERRAL CREATION COMPLETE.\n\n";
+		//echo "\nREFERRAL CREATION COMPLETE.\n\n";
 
 		// Find all the open referrals with no referral
-                $command = Yii::app()->db->createCommand()
-                        ->select('p.id AS pid, ep.id AS epid, rea.id AS reaid, ssa.id AS ssaid')
-                        ->from('patient p')
-                        ->join('episode ep', 'ep.patient_id = p.id')
+								$command = Yii::app()->db->createCommand()
+												->select('p.id AS pid, ep.id AS epid, rea.id AS reaid, ssa.id AS ssaid')
+												->from('patient p')
+												->join('episode ep', 'ep.patient_id = p.id')
 			->join('firm f', 'f.id = ep.firm_id')
 			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
-                        ->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
+												->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
 			->where('ep.end_date IS NULL');
 
-                foreach ($command->queryAll() as $result) {
+								foreach ($command->queryAll() as $result) {
 			if (empty($result['reaid'])) {
 				$referralId = $this->getReferral($result['pid'], $result['ssaid']);
 
 				if ($referralId) {
-                			$rea = new ReferralEpisodeAssignment;
-
-                			$rea->episode_id = $result['epid'];
-                			$rea->referral_id = $referralId;
-                			if (!$rea->save()) {
-						echo 'Unable to save referral for epid ' . $result['epid'] . ' and referral ' . $referralId . "\n";
+					$rea = new ReferralEpisodeAssignment;
+					$rea->episode_id = $result['epid'];
+					$rea->referral_id = $referralId;
+					if (!$rea->save()) {
+						$errors .= 'Unable to save referral for epid ' . $result['epid'] . ' and referral ' . $referralId . "\n";
 					} else {
-						echo 'Assignment rea id ' . $rea->id . ' to patient ' . $result['epid'] . ' and referral ' . $referralId . "\n";
+						//echo 'Assignment rea id ' . $rea->id . ' to patient ' . $result['epid'] . ' and referral ' . $referralId . "\n";
 					}
 				}
 			}
 		}
 
-		echo "\nREFERRAL ASSIGNMENT COMPLETE.\n\n";
+		if ($errors) {
+			$hostname = trim(`/bin/hostname`);
+			mail(Yii::app()->params['alerts_email'],"[$hostname] Referrals crontab failed",$errors);
+		}
+
+		//echo "\nREFERRAL ASSIGNMENT COMPLETE.\n\n";
 	}
 
 	/**
