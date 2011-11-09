@@ -21,6 +21,7 @@ if (is_object($user)) {
 }
 
 $commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(@$_SERVER['DOCUMENT_ROOT']."/.git/FETCH_HEAD"));
+$branch = array_pop(explode('/',file_get_contents(".git/HEAD")));
 ?>
 <div id="debug-info-modal">
 	<code>
@@ -29,6 +30,7 @@ $commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(@$_SERVER['DOCUMENT_
 		Docroot: <?php echo @$_SERVER['DOCUMENT_ROOT']?><br />
 		Date: <?php echo date('d.m.Y H:i:s')?><br />
 		Commit: <?php echo $commit?><br />
+		Branch: <?php echo $branch?><br/>
 		User agent: <?php echo wordwrap(@$_SERVER['HTTP_USER_AGENT'], 80, "<br />\n");?>
 		Client IP: <?php echo @$_SERVER['REMOTE_ADDR']?><br />
 		Username: <?php echo $username?><br />
