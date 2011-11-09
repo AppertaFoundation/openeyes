@@ -147,11 +147,13 @@ if (empty($theatres)) {?>
 
 $previousSequenceId = '';
 
-foreach ($theatres as $name => $dates) {
         $firstTheatreShown = false;
         foreach ($theatres as $name => $dates) {
                 $firstTheatreShown = true;
                 foreach ($dates as $date => $sessions) {
+                        $timestamp = strtotime($date);
+                        $previousSequenceId = '';
+                        $timeAvailable = $sessions[0]['sessionDuration'];
                         foreach ($sessions as $session) {
                                 if ($previousSequenceId != $session['sequenceId']) {
                                         if ($previousSequenceId != '') {
@@ -226,7 +228,6 @@ DATE:
                         }
                 }
         }
-}
 ?>
 </div> <!-- #diaryTemplate -->
 <!-- ================================================ -->
