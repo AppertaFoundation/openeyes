@@ -189,7 +189,7 @@ ANAESTHETIST:
 </td><td>
 DATE:
 </td><td>
-<?php echo date('Y/m/d') ?>
+<?php echo date('d M Y') ?>
 </td></tr>
 </tbody></table>
 

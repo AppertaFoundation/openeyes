@@ -17,7 +17,7 @@
 					<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 						<div class="episode_nav">
 							<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-							<div class="small"><?php echo date('d.m.Y',strtotime($episode->start_date))?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">Details</a><span></div>
+							<div class="small"><?php echo date('d M Y',strtotime($episode->start_date))?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">Details</a><span></div>
 							<h4><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></h4>
 							<ul class="events">
 								<?php foreach ($episode->events as $event) {?>
@@ -32,13 +32,13 @@
 										}
 									}
 									?>
-									<li><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo date('d/m/Y',strtotime($event->datetime))?></span></a></li>
+									<li><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo date('d M Y',strtotime($event->datetime))?></span></a></li>
 								<?php }?>
 							</ul>
 						</div>
 						<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
-							<div class="row"><span class="label">Start date:</span><?php echo date('jS F, Y',strtotime($episode->start_date))?></div>
-							<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? date('jS F, Y',strtotime($episode->end_date)) : '-')?></div>
+							<div class="row"><span class="label">Start date:</span><?php echo date('d M Y',strtotime($episode->start_date))?></div>
+							<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? date('d M Y',strtotime($episode->end_date)) : '-')?></div>
                                                         <?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
 							<div class="row"><span class="label">Principal eye:</span><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>

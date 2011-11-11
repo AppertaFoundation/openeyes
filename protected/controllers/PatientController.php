@@ -96,8 +96,8 @@ class PatientController extends BaseController
 		));
 	}
 
-	public function actionViewpas() {
-		$patient = Patient::model()->find('PAS_Key=:PAS_Key', array(':PAS_Key'=>(integer)$_GET['pas_key']));
+	public function actionViewhosnum() {
+		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num'=>(integer)$_GET['hos_num']));
 		header('Location: /patient/view/'.$patient->id);
 		exit;
 	}

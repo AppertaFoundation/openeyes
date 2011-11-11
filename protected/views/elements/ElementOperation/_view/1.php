@@ -36,7 +36,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 </div>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('decision_date')); ?>:</b>
-	<?php echo date('d/m/Y', strtotime($data->decision_date)); ?>
+	<?php echo date('d M Y', strtotime($data->decision_date)); ?>
 	<br />
 </div>
 <?php
@@ -94,7 +94,7 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 <div class="cleartall"></div>
 <?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
-	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('F j, Y', $data->getMinDate()));
+	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('d M Y', $data->getMinDate()));
 } ?>
 <script type="text/javascript">
 	$('#procedureDiv').show();

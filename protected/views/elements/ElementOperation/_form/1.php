@@ -238,7 +238,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		$('input[id=autocomplete_procedure_id]').watermark('type the first few characters of a procedure');
 		$("#ElementOperation_decision_date_0").val('<?php
 			echo (empty($model->decision_date) || $model->decision_date == '0000-00-00')
-				? date('Y-m-d') : $model->decision_date; ?>');
+				? date('d M Y') : $model->decision_date; ?>');
 		$("#procedure_list tbody").sortable({
 			 helper: function(e, tr)
 			 {

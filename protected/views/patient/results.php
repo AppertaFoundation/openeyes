@@ -50,13 +50,12 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							'dataProvider'=>$dataProvider,
 							'template'=>"{items}\n{pager}",
 							'columns'=>array(
-								'pas_key',
+								'hos_num',
 								'title',
 								'first_name',
 								'last_name',
 								'dob',
 								'gender',
-								'hos_num',
 								'nhs_num'
 							)
 						));
@@ -132,7 +131,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('table.items tr').click(function() {
-					window.location.href = '/patient/viewpas/'+$(this).children(":first").html();
+					window.location.href = '/patient/viewhosnum/'+$(this).children(":first").html();
 					return false;
 				});
 			</script>

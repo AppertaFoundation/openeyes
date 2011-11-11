@@ -18,8 +18,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('pas_key')); ?>:</b>
-	<?php echo CHtml::encode($data->pas_key); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('hos_num')); ?>:</b>
+	<?php echo CHtml::encode($data->hos_num); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('title')); ?>:</b>

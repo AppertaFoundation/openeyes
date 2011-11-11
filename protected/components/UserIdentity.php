@@ -129,7 +129,7 @@ class UserIdentity extends CUserIdentity
 		$firms = array();
 
 		if ($user->global_firm_rights) {
-			foreach(Firm::model()->findAll(array('order'=>'name')) as $firm) {
+			foreach(Firm::model()->findAll() as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 		} else {
@@ -160,6 +160,8 @@ class UserIdentity extends CUserIdentity
 		if (!count($firms)) {
 			throw new Exception('User has no firm rights and cannot use the system.');
 		}
+
+		natcasesort($firms);
 
 		$app->session['user'] = $user;
 		$app->session['firms'] = $firms;
