@@ -62,6 +62,11 @@ foreach ($elements as $element) {
         <h4><?php echo $operation->getEyeText(); ?></h4>
 </div>
 
+<h4>Total Duration</h4>
+<div class="eventHighlight">
+        <h4><?php echo $operation->total_duration; ?> minutes</h4>
+</div>
+
 <?php
 
 if (!empty($operation->booking)) {
@@ -616,33 +621,68 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Admission category:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admission category:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
                         if ($operation->overnight_stay) {
                                 echo 'an overnight stay';
                         } else {
                                 echo 'day case';
-                        } ?></td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle; font-family: sans-serif; font-size:10pt; border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
+                        } ?></td>';
+<?php
+                        if (empty($operation->booking)) {
+?>
+		content += '<td colspan="2" rowspan="5" align="center" style="vertical-align:middle; font-family: sans-serif; font-size:10pt; border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
 		content += '<strong>Patient Added to Waiting List.<br />Admission Date to be arranged</strong></td></tr>';
-
+<?php
+						} else {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Operation date:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td></tr>';
+<?php
+						}
+?>
 		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Diagnosis:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
 
 			$disorder = $operation->getDisorder();
 
 			echo !empty($disorder) ? $operation->getEyeText() : 'Unknown';
 			echo !empty($disorder) ? CHtml::encode($operation->getDisorder()) : ''
-		?></td></tr>';
+		?></td>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td></tr>';
-
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getEyeText() ?></td></tr>';
-
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($operation->total_duration) ?></td></tr>';
-
-		content += '</table>';
+<?php
+                        if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Discussed with patient:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td>';
+<?php
+						}
+?>
+		content += '</tr><tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>';
+<?php
+                        if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Theatre session:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td>';
+<?php
+						}
+?>
+		content += '</tr><tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getEyeText() ?></td>';
+<?php
+                        if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admission time:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->booking->admission_time ?></td>';
+<?php
+						}
+?>
+		content += '</tr><tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($operation->total_duration) ?></td>';
+<?php
+                        if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Proposed admission date:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>';
+<?php
+						}
+?>
+		content += '</tr></table>';
 
 		// Pre-op
 		content += '<span class="subTitle" style="font-family: sans-serif; font-size:10pt;">PRE-OP ASSESSMENT INFORMATION</span><table width="100%">';
-		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Likely to need anaesthetist review:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getAnaestheticText() ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Likely to need anaesthetist review:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
 		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia is:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Does the patient need to stop medication:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 

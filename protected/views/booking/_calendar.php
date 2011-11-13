@@ -55,7 +55,7 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 		<table>
 			<tbody>
 <?php
-	$rttDate = strtotime('+11 weeks', strtotime($operation->event->datetime));
+	$rttDate = strtotime('+6 weeks', strtotime($operation->event->datetime));
 	foreach ($sessions as $weekday => $list) { ?>
 				<tr>
 					<th><?php echo substr($weekday, 0, 3); ?></th>

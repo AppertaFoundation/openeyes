@@ -62,6 +62,22 @@ class TheatreController extends BaseController
 				$_POST['date-filter'] = 'custom';
 			}
 			$filter = !empty($_POST['date-filter']) ? $_POST['date-filter'] : null;
+
+			$service = new BookingService;
+
+			if (
+				empty($siteId) &&
+				empty($specialtyId) &&
+				empty($firmId) &&
+				empty($theatreId) &&
+				empty($wardId) &&
+				empty($filter) &&
+				empty($emergencyList)
+			) {
+				// No search options selected, e.g. the page has just loaded, so set to the session firm
+				$firmId = Yii::app()->session['selected_firm_id'];
+			}
+
 			switch($filter) {
 				case 'custom':
 					$startDate = $_POST['date-start'];
@@ -79,26 +95,20 @@ class TheatreController extends BaseController
 					$endDate = date('Y-m-d', strtotime("+{$addDays} days"));
 					break;
 				case 'today':
-				default: // show today
 					$startDate = date('Y-m-d');
 					$endDate = date('Y-m-d');
+				default: // show the next list for this firm if there is one, or today
+					if (empty($firmId)) {
+						$startDate = date('Y-m-d');
+						$endDate = date('Y-m-d');
+					} else {
+						$startDate = $service->getNextSessionDate($firmId);
+						$endDate = $startDate;
+					}
+
 					break;
 			}
 
-			if (
-				empty($siteId) &&
-				empty($specialtyId) &&
-				empty($firmId) &&
-				empty($theatreId) &&
-				empty($wardId) &&
-				empty($filter) &&
-				empty($emergencyList)
-			) {
-				// No search options selected, e.g. the page has just loaded, so set to the session firm
-				$firmId = Yii::app()->session['selected_firm_id'];
-			}
-
-			$service = new BookingService;
 			$data = $service->findTheatresAndSessions(
 				$startDate,
 				$endDate,
