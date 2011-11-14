@@ -139,6 +139,7 @@ class TheatreController extends BaseController
 					->queryRow();
 
 				$theatres[$values['name']][$values['date']][] = array(
+					'operationId' => $values['operation_id'],
 					'episodeId' => $values['episodeId'],
 					'eventId' => $values['eventId'],
 					'firm_name' => @$values['firm_name'],
@@ -255,6 +256,25 @@ class TheatreController extends BaseController
 			return true;
 		}
 	}
+
+	public function actionMoveOperation()
+        {
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			if (!empty($_POST['id'])) {
+				$operation = ElementOperation::model()->findByPk($_POST['id']);
+
+				if ($operation->move($_POST['up'])) {
+					echo CJavaScript::jsonEncode(1);
+				} else {
+					return CJavaScript::jsonEncode(1);;
+				}
+
+				return true;
+			}
+		}
+
+		return false;
+        }
 
 	/**
 	 * Helper method to fetch firms by specialty ID

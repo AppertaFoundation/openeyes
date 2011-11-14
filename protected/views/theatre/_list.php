@@ -46,7 +46,6 @@ if (empty($theatres)) {?>
 				</div>
 <?php
 					}
-
 ?>
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> </h3>
 				<div class="theatre-sessions whiteBox clearfix">
@@ -68,6 +67,7 @@ if (empty($theatres)) {?>
 								<th>Anesth</th>
 								<th>Ward</th>
 								<th>Info</th>
+								<th>Move</th>
 							</tr>
 <?php
 					$previousSequenceId = $session['sequenceId'];
@@ -77,7 +77,7 @@ if (empty($theatres)) {?>
 				if (!empty($session['patientId'])) {
 					$timeAvailable -= $session['operationDuration'];
 ?>
-							<tr>
+							<tr id="oprow_<?php echo $session['operationId'] ?>">
 								<td class="session"><?php echo substr($session['admissionTime'], 0, 5)?></td>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
@@ -114,15 +114,22 @@ if (empty($theatres)) {?>
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
 <?php
 					}
+?>
+								<td>
+									<a id="u_<?php echo $session['operationId'] ?>" href="">&nbsp;&uarr;&nbsp;</a>
+										&nbsp;&nbsp;
+									<a id="d_<?php echo $session['operationId'] ?>" href="">&nbsp;&darr;&nbsp;</a>
+								</td>
+<?php
 				}
 ?>
-							</td>
+								</td>
 							</tr>
 <?php
 			}
 ?>
 							<tr>
-								<th colspan="7" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
+								<th colspan="8" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
 							</tr>
 						</tbody>
 					</table>
@@ -236,19 +243,53 @@ DATE:
 <!-- ====================================================  end of P R I N T  S T U F F ============  -->
 
 <script type="text/javascript">
-    $('a[id^="editComments"]').click(function() {
-	id = this.name;
-	value = $('#comments' + this.name).val();
+	$('a[id^="editComments"]').click(function() {
+		id = this.name;
+		value = $('#comments' + this.name).val();
 
-	$.ajax({
-	    'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
-	    'type': 'POST',
-	    'data': 'id=' + id + '&comments=' + value,
-	    'success': function(data) {
+		$.ajax({
+	    		'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
+	    		'type': 'POST',
+	    		'data': 'id=' + id + '&comments=' + value,
+	    		'success': function(data) {
+				return true;
+	    		}
+		});
+
 		return true;
-	    }
 	});
 
-	return true;
-    });
+	$('a[id^="u_"]').click(function() {
+		id = this.id.replace(/u_/i, "");
+
+        	$.ajax({
+            		'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
+            		'type': 'POST',
+            		'data': 'id=' + id + '&up=1',
+            		'success': function(data) {
+				if (data == 1) {
+					$('#oprow_' + id).prev().before($('#oprow_' + id));
+				}
+            		},
+        	});
+
+		return false;
+	});
+
+        $('a[id^="d_"]').click(function() {
+                id = this.id.replace(/d_/i, "");
+
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
+                        'type': 'POST',
+                        'data': 'id=' + id + '&up=0',
+                        'success': function(data) {
+				if (data == 1) {
+					$('#oprow_' + id).next().after($('#oprow_' + id));
+				}
+                         },
+                });
+
+                return false;
+        });
 </script>

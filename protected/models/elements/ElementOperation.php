@@ -894,4 +894,44 @@ class ElementOperation extends BaseElement
 	{
 		return date('G:i:s', strtotime('-1 hour', strtotime($time)));
 	}
+
+	/**
+	 * Move the operation up or down within the session
+	 *
+	 * @param boolean $up
+	 */
+	public function move($up)
+	{
+		$booking = $this->booking;
+
+		$criteria=new CDbCriteria;
+		$criteria->addCondition('session_id = :sid');
+
+		if ($up) {
+			$criteria->addCondition('display_order < :do');
+			$criteria->order = 'display_order ASC';
+		} else {
+			$criteria->addCondition('display_order > :do');
+			$criteria->order = 'display_order DESC';
+		}
+
+		$criteria->params = array(':sid' => $booking->session_id, ':do' => $booking->display_order);
+		$criteria->limit = 1;
+
+		$otherBooking = Booking::model()->find($criteria);
+
+		if (empty($otherBooking)) {
+			return false;
+		}
+
+		$otherDisplayOrder = $otherBooking->display_order;
+
+		$otherBooking->display_order = $booking->display_order;
+		$booking->display_order = $otherDisplayOrder;
+
+		$booking->save();
+		$otherBooking->save();
+
+		return true;
+	}
 }
