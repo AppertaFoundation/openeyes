@@ -284,6 +284,11 @@ class ClinicalController extends BaseController
 			if ($success) {
 				$this->logActivity('updated event');
 
+				// Update event to indicate user has made a change
+				$event->datetime = date("Y-m-d H:i:s");
+				$event->user = $this->getUserId();
+				$event->save();
+
 				echo $event->id;
 				return;
 			}

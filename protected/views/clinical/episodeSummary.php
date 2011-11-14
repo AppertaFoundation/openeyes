@@ -104,7 +104,7 @@ if (!empty($episode)) {
 
 <?php if (empty($episode->end_date)) {?>
 	<div style="margin-top:40px; text-align:right; position:relative; ">
-		<button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button>
+		<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
 
 		<div id="close-episode-popup" class="popup red" style="display: none;">
 			<p style="text-align:left;">You are closing this episode. This can not be undone. Once an episode is closed it can not be re-opened.</p>

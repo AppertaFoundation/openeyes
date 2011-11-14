@@ -25,6 +25,11 @@ $cancelledBookings = $operation->getCancelledBookings();
 <!-- Details -->
 <h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
 
+<h4>User</h4>
+<div class="eventHighlight">
+        <h4><?php echo $operation->event->user->username ?> on <?php echo date('d M Y', strtotime($operation->event->datetime)) ?> at <?php echo date('H:i', strtotime($operation->event->datetime)) ?></h4>
+</div>
+
 <h4>Diagnosis</h4>
 <div class="eventHighlight">
 	<?php $disorder = $operation->getDisorder(); ?>
@@ -65,6 +70,11 @@ foreach ($elements as $element) {
 <h4>Total Duration</h4>
 <div class="eventHighlight">
         <h4><?php echo $operation->total_duration; ?> minutes</h4>
+</div>
+
+<h4>Comments</h4>
+<div class="eventHighlight">
+        <h4><?php echo empty($operation->comments) ? 'none' : $operation->comments ?></h4>
 </div>
 
 <?php

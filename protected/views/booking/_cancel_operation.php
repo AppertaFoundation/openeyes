@@ -25,7 +25,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <div class="errorSummary" style="display:none"></div>
 <?php
 echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
-if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
+if (!empty($operation->booking) && (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date)))) {
 	$listIndex = 3;
 } else {
 	$listIndex = 2;

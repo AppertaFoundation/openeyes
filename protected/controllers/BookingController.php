@@ -171,6 +171,8 @@ class BookingController extends BaseController
 			if ($cancel->save() && $operation->save()) {
 				$patientId = $operation->event->episode->patient->id;
 
+				$this->updateEvent($operation->event);
+
 				$this->redirect(array('patient/episodes','id'=>$patientId,
 					'event'=>$operation->event->id));
 			}
@@ -366,8 +368,9 @@ class BookingController extends BaseController
 					$session->save();
 				}
 
-				Yii::app()->user->setFlash('success','Booking saved.');
 				$patientId = $model->elementOperation->event->episode->patient->id;
+
+				$this->updateEvent($model->elementOperation->event);
 
 				$this->redirect(array('patient/episodes','id'=>$patientId,
 					'event'=>$model->elementOperation->event->id));
@@ -403,10 +406,10 @@ class BookingController extends BaseController
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 					$operation->save();
 
-                                	if (!empty($_POST['Session']['comments'])) {
-                                        	$model->session->comments = $_POST['Session']['comments'];
-                                        	$model->session->save();
-                                	}
+					if (!empty($_POST['Session']['comments'])) {
+						$model->session->comments = $_POST['Session']['comments'];
+						$model->session->save();
+					}
 				} else {
 					$model->delete();
 
@@ -417,9 +420,24 @@ class BookingController extends BaseController
 
 				$patientId = $model->elementOperation->event->episode->patient->id;
 
+				$this->updateEvent($model->elementOperation->event);
+
 				$this->redirect(array('patient/episodes','id'=>$patientId,
 					'event'=>$model->elementOperation->event->id));
 			}
 		}
+	}
+
+	/**
+	 * Update the event object with the datetime and the user id
+	 *
+	 * @param object $event
+	 */
+	public function updateEvent($event)
+	{
+		// Update event with this user and datetime
+		$event->user_id = Yii::app()->user->id;
+		$event->datetime = date("Y-m-d H:i:s");
+		$event->save();
 	}
 }

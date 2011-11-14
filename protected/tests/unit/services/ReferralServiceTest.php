@@ -34,14 +34,6 @@ class ReferralServiceTest extends CDbTestCase
 		parent::setUp();
 	}
 
-	public function testGetReferralList_ReferralPresent()
-	{
-		$firm = Firm::model()->findByPk($this->firms['firm1']['id']);
-		$patientId = $this->patients['patient1']['id'];
-
-		$this->assertFalse($this->service->getReferralsList($firm, $patientId));
-	}
-
 //	public function testManualReferralNeeded_ValidEventId_ReferralEpisodeAssignmentExists_ReturnsFalse()
 //	{
 //		$id = 1;
