@@ -908,11 +908,12 @@ class ElementOperation extends BaseElement
 		$criteria->addCondition('session_id = :sid');
 
 		if ($up) {
+			// Moving up the page means moving down the display_order
 			$criteria->addCondition('display_order < :do');
-			$criteria->order = 'display_order ASC';
+			$criteria->order = 'display_order DESC';
 		} else {
 			$criteria->addCondition('display_order > :do');
-			$criteria->order = 'display_order DESC';
+			$criteria->order = 'display_order ASC';
 		}
 
 		$criteria->params = array(':sid' => $booking->session_id, ':do' => $booking->display_order);

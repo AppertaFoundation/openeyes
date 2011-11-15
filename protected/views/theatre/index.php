@@ -163,7 +163,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 				<div id="theatreList">
 				</div>
-				<!-- print -->
+
+				<!-- ====================================================  P R I N T  S T U F F ============  -->
+				<div class="printable" id="printable">
+
+				</div> <!-- end of printable area -->
+				<!-- ====================================================  end of P R I N T  S T U F F ============  -->
+
 			</div> <!-- #theatre_display -->
 			<div style="text-align:right; margin-right:10px;"><button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button></div>
 		</div> <!-- .fullWidth -->
@@ -185,9 +191,18 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		         });
 		});
         });
-		
+
 	function printElem(options){
-		$('#printable').printElement(options);
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
+                        'type': 'POST',
+                        'data': $('#theatre-filter').serialize(),
+                        'success': function(data) {
+                                $('#printable').html(data);
+				$('#printable').printElement(options);
+                                return false;
+                        }
+                });
 	}
 
 	function getList() {

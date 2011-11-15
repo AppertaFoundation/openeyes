@@ -46,7 +46,17 @@ class TheatreController extends BaseController
 		$this->render('index');
 	}
 
+	public function actionPrintList()
+	{
+		$this->renderPartial('_print_list', array('theatres'=>$this->getTheatres()), false, true);
+	}
+
 	public function actionSearch()
+	{
+		$this->renderPartial('_list', array('theatres'=>$this->getTheatres()), false, true);
+	}
+
+	public function getTheatres()
 	{
 		$operation = new ElementOperation;
 		$theatres = array();
@@ -185,7 +195,8 @@ class TheatreController extends BaseController
 				}
 			}
 		}
-		$this->renderPartial('_list', array('theatres'=>$theatres), false, true);
+
+		return $theatres;
 	}
 
 	/**
