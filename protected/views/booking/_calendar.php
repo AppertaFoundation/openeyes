@@ -60,8 +60,11 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 				<tr>
 					<th><?php echo substr($weekday, 0, 3); ?></th>
 <?php foreach ($list as $date => $data) {
-			// check if date is outside this month
-			if (date('m', strtotime($date)) !== date('m', strtotime($thisMonth))) {
+			// check if date is outside this month or before today
+			if (
+				date('m', strtotime($date)) !== date('m', strtotime($thisMonth)) ||
+				strtotime($date) < strtotime(date('d M Y'))
+			) {
 				$list[$date]['status'] = 'invalid';
 			} elseif (date('Y-m-d', strtotime($date)) >= date('Y-m-d', $rttDate)) {
 				$list[$date]['status'] .= ' outside_rtt';
