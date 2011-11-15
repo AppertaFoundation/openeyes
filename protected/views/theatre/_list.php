@@ -79,8 +79,8 @@ if (empty($theatres)) {?>
 ?>
 							<tr id="oprow_<?php echo $session['operationId'] ?>">
 								<td class="session">
-                                                                		<input type="text" id="admitTime<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
-										<a href="#" id="editAdmitTime<?php echo $session['operationId'] ?>">Edit</a>
+                                                                	<input type="text" id="admitTime<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
+									<a href="#" id="editAdmitTime<?php echo $session['operationId'] ?>">Edit</a>
 								</td>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
@@ -153,11 +153,11 @@ if (empty($theatres)) {?>
 	    		'type': 'POST',
 	    		'data': 'id=' + id + '&admission_time=' + value,
 	    		'success': function(data) {
-				return true;
+				return false;
 	    		}
 		});
 
-		return true;
+		return false;
 	});
 
         $('a[id^="editComments"]').click(function() {
@@ -169,11 +169,11 @@ if (empty($theatres)) {?>
                         'type': 'POST',
                         'data': 'id=' + id + '&comments=' + value,
                         'success': function(data) {
-                                return true;
+                                return false;
                         }
                 });
 
-                return true;
+                return false;
         });
 
 	$('a[id^="u_"]').click(function() {
