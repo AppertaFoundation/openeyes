@@ -76,7 +76,7 @@ if (!$reschedule) {
 <div class="eventDetail clearfix">
 	<div class="label"><strong>Admission Time:</strong></div>
 	<div class="data"> 
-		<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
+		<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo ($session['start_time'] == '13:30:00') ? '12:00' : date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
 	</div>
 </div>
 

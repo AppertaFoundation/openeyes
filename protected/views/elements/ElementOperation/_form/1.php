@@ -195,7 +195,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 					<div id="overnightStay" class="eventDetail">
-						<div class="label">Overnight Stay required?</div>
+						<div class="label">Post operative stay required?</div>
 						<div class="data">
 							<input id="ytElementOperation_overnight_stay" type="hidden" value="" name="ElementOperation[overnight_stay]" />
 							<span class="group">
