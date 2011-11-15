@@ -320,6 +320,16 @@ class BookingController extends BaseController
 			$session = Session::model()->findByPk($model->session_id);
 
 			$operation = ElementOperation::model()->findByPk($model->element_operation_id);
+
+			if (!empty($operation->booking)) {
+				// This operation already has a booking. There must be two users creating an episode at once
+				//	or suchlike. Ignore and return.
+				$this->redirect(array('patient/episodes','id'=>$operation->event->episode->patient->id,
+					'event'=>$operation->event->id));
+
+				return;
+			}
+
 			if (!empty($_POST['wardType'])) {
 				/* currently not in use, but if we want to allow a checkbox for
 				 * booking into an observational ward, it would be handled here
