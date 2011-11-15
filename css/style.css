@@ -529,7 +529,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatreList .theatre-sessions { margin-bottom:15px; }
 
 /* Theartre sesssion diary data - based on grid-view class */
-.theatre-sessions table { width:850px; } 
+.theatre-sessions table { width:900px; } 
 .theatre-sessions table tr { border-bottom: 1px dotted #dedede;}
 .theatre-sessions table tr:hover { background-color: #fff;} 
 .theatre-sessions table th { text-align: left; background:#eee; color: #777; font-size: 8pt; min-width:35px; padding:5px 10px; border-right:1px solid #bbb;   }
@@ -538,7 +538,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* .theatre-sessions table td:last-child { border-right: none; } */
 .theatre-sessions table th.footer { font-size:9pt; padding:10px; color: #333; }
 /* Control the widths of key tds */
-.theatre-sessions table td.session { width:40px; }
+.theatre-sessions table td.session { width:100px; }
 .theatre-sessions table td.duration { width:30px; }
 .theatre-sessions table td.hospital { width:60px; }
 .theatre-sessions table td.alerts	 { width:100px; }

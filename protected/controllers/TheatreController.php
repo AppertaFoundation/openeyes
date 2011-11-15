@@ -268,6 +268,21 @@ class TheatreController extends BaseController
 		}
 	}
 
+        public function actionUpdateAdmitTime()
+        {
+                if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+                        if (!empty($_POST['id']) && !empty($_POST['admission_time'])) {
+                                $booking = Booking::model()->findByAttributes(array('element_operation_id' => $_POST['id']));
+
+                                if (!empty($booking)) {
+                                        $booking->admission_time = $_POST['admission_time'];
+                                        $booking->save();
+                                }
+                        }
+                        return true;
+                }
+        }
+
 	public function actionMoveOperation()
         {
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
