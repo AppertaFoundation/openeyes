@@ -80,7 +80,7 @@ if (empty($theatres)) {?>
 							<tr id="oprow_<?php echo $session['operationId'] ?>">
 								<td class="session">
                                                                 	<input type="text" id="admitTime<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
-									<a href="#" id="editAdmitTime<?php echo $session['operationId'] ?>">Edit</a>
+									<a href="#" id="editAdmitTime<?php echo $session['operationId'] ?>">Save</a>
 								</td>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
