@@ -68,16 +68,19 @@ class BookingControllerTest extends CDbTestCase
 		$siteId = 1;
 
 		$operation = $this->operations('element1');
+
 		$minDate = $operation->getMinDate();
-		$sessions = $operation->getSessions(false, $siteId);
+
+		$sessions = $operation->getSessions(false);
 
 		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
 
 		$_GET['operation'] = $operation->id;
 
 		$firm = $this->firms('firm1');
-
 		$site = $this->sites('site1');
+
+		$_GET['siteId'] = $site->id;
 
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
@@ -89,7 +92,7 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_schedule',
 				array('operation'=>$operation, 'date'=>$thisMonth,
-					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList, 'siteList'=>array(), 'site'=>$site));
+					'sessions'=>$sessions, 'firm'=>null, 'firmList'=>$firmList));
 
 		$mockController->actionSchedule();
 	}
