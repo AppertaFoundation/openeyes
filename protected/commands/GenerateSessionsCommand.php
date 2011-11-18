@@ -142,9 +142,7 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 			}
 		}
 
-		if (empty($args[1])) {
-			echo $output;
-		} else {
+		if (!empty($args[1])) {
 			return $output;
 		}
 	}
