@@ -119,7 +119,7 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_schedule',
 				array('operation'=>$operation, 'date'=>$minDate,
-					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList, 'siteList'=>array(), 'site'=>$site));
+					'sessions'=>$sessions, 'firm'=>null, 'firmList'=>$firmList));
 
 		$mockController->actionSchedule();
 	}
@@ -164,8 +164,8 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_reschedule',
-				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions, 'firmId'=>$firm->id,
-					'site'=>$site, 'siteList'=>array(), 'firmList'=>$firmList, 'firm'=>$firm));
+				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions, 'firmId'=>null,
+					'firmList'=>$firmList, 'firm'=>null));
 
 		$mockController->actionReschedule();
 	}
@@ -191,8 +191,8 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_reschedule',
-				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>$firm->id,
-					'site'=>$site, 'siteList'=>array(), 'firmList'=>$firmList, 'firm'=>$firm));
+				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>null,
+					'firmList'=>$firmList, 'firm'=>null));
 
 		$mockController->actionReschedule();
 	}
@@ -275,6 +275,7 @@ class BookingControllerTest extends CDbTestCase
 		$_GET['operation'] = $operation->id;
 		$_GET['month'] = date('F Y');
 		$_GET['day'] = 10;
+		$_GET['firm'] = false;
 
 		$date = date('Y-m-d', mktime(0,0,0,date('m'),$_GET['day'],date('Y')));
 
@@ -285,7 +286,7 @@ class BookingControllerTest extends CDbTestCase
 		$mockController->expects($this->once())
 			->method('renderPartial')
 			->with('/booking/_theatre_times',
-				array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres));
+				array('operation'=>$operation, 'date'=>$date, 'theatres'=>$theatres, 'reschedule'=>0));
 
 		$mockController->actionTheatres();
 	}
@@ -349,7 +350,8 @@ class BookingControllerTest extends CDbTestCase
 			'duration' => 240,
 			'time_available' => 150,
 			'status' => 'available',
-			'code' => '',
+			'code' => null,
+			'comments' => null
 		);
 		$status = 'available';
 
@@ -370,7 +372,7 @@ class BookingControllerTest extends CDbTestCase
 			->with('/booking/_list',
 				array('operation'=>$operation, 'session'=>$session,
 					'bookings'=>$bookings, 'minutesStatus' => $status,
-					'reschedule'=>false, 'site'=>$site));
+					'reschedule'=>0, 'site'=>$site));
 
 		$mockController->actionList();
 	}
@@ -399,7 +401,8 @@ class BookingControllerTest extends CDbTestCase
 			'duration' => 240,
 			'time_available' => -20,
 			'status' => 'full',
-			'code' => '',
+			'code' => null,
+			'comments' => null
 		);
 		$status = 'overbooked';
 
@@ -420,7 +423,7 @@ class BookingControllerTest extends CDbTestCase
 			->with('/booking/_list',
 				array('operation'=>$operation, 'session'=>$session,
 					'bookings'=>$bookings, 'minutesStatus' => $status,
-					'reschedule'=>false, 'site'=>$site));
+					'reschedule'=>false, 'site'=>$site, 'reschedule'=>0));
 
 		$mockController->actionList();
 	}
