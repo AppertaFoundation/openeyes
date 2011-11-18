@@ -187,7 +187,8 @@ class BookingServiceTest extends CDbTestCase
 			'session_duration' => null,
 			'bookings' => 0,
 			'bookings_duration' => null,
-			'code' => ''
+			'code' => '',
+			'comments' => null
 		);
 		$this->assertEquals($expected, $session);
 	}

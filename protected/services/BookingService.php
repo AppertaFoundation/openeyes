@@ -192,7 +192,7 @@ class BookingService
 		$specialtyId = null,
 		$firmId = null,
 		$wardId = null,
-		$emergencyList
+		$emergencyList = null
 	) {
 		if (empty($startDate) || empty($endDate) ||
 			(strtotime($endDate) < strtotime($startDate))) {
