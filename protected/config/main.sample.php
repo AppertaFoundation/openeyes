@@ -180,6 +180,12 @@ return CMap::mergeArray(
 					),
 				),
 			),
+			'session' => array(
+				'class' => 'application.components.CDbHttpSession',
+				'connectionID' => 'db',
+				'sessionTableName' => 'user_session',
+				'autoCreateSessionTable' => false
+			)
 		)
 	)
 );
