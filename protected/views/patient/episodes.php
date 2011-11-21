@@ -129,6 +129,8 @@
 						$('div.action_options').show();
 						$('#event_content').html(data);
 
+						$('.display_mode').html(header_text);
+
 						if (data.match(/<!-- editable -->/)) {
 							$('span.edit-event').show();
 						} else {
@@ -139,6 +141,8 @@
 			}
 
 			$(document).ready(function(){
+				$('.display_mode').html(header_text);
+
 				$btn_normal = $('img','#addNewEvent').attr("src");
 				$btn_over = $btn_normal.replace(/.png$/ig,"_o.png");
 				$btn_inactive = $btn_normal.replace(/.png$/ig,"_inactive.png");
