@@ -93,31 +93,6 @@ class PatientService
                                 )
                 ";
 
-/*
-		$sql = "
-			SELECT
-    				p.rm_patient_no,
-    				p.sex,
-    				TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH,
-    				s.*,
-    				n.*
-			FROM
-    				PATIENTS p,
-    				SURNAME_IDS s,
-    				NUMBER_IDS n
-			WHERE
-    				(
-					s.rm_patient_no = p.rm_patient_no
-				AND
-					s.surname_type = 'NO'
-				)
-			AND
-				(
-					n.rm_patient_no = p.rm_patient_no
-				" . $whereSql . "
-				)
-		";
-*/
                 $connection = Yii::app()->db_pas;
                 $command = $connection->createCommand($sql);
                 $results = $command->queryAll();
@@ -133,13 +108,13 @@ class PatientService
 			if (isset($address)) {
 				$patient = $this->updatePatient($pasPatient, $address, $result);
 				$patients[] = $patient;
-				$ids[] = $patient->pas_key;
+				$ids[] = $patient->hos_num;
 			}
 		}
 
 		// collect all the patients we just created
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('pas_key', $ids);
+		$criteria->addInCondition('hos_num', $ids);
 
 		return $criteria;
 	}
@@ -201,6 +176,13 @@ class PatientService
 			$patient->id = $patientData->RM_PATIENT_NO;
 		} elseif (!empty($patient->address_id)) {
 			$address = Address::model()->findByPk($patient->address_id);
+
+			// This was put here because the migration had some patient records with address_ids that
+			// pointed to non-existent records.
+			if (empty($address)) {
+				$address = new Address;
+				$address->id = $patient->address_id;
+			}
 		}
 		$patient->pas_key    = $hosNum;
 		$patient->title      = $patientData->names[0]->TITLE;

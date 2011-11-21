@@ -27,10 +27,10 @@ if (!$reschedule) {
 		<thead>
 			<tr>
 				<th>Operation list overview</th>
-				<th>Date: <?php echo date('F j, Y', strtotime($session['date'])); ?></th>
-
+				<th>Date: <?php echo date('d M Y', strtotime($session['date'])); ?></th>
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
+				<th>Admission time</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -54,6 +54,8 @@ if (!$reschedule) {
 				<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
 				<td><?php echo $procedureList; ?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
+				<td><?php echo $booking->admission_time ?></td>
+
 			</tr>
 <?php
 		$counter++;
@@ -61,7 +63,7 @@ if (!$reschedule) {
 	</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="3"><?php echo ($counter - 1) . ' booking';
+				<th colspan="4"><?php echo ($counter - 1) . ' booking';
 	if (($counter - 1) != 1) {
 		echo 's';
 	}
@@ -74,7 +76,7 @@ if (!$reschedule) {
 <div class="eventDetail clearfix">
 	<div class="label"><strong>Admission Time:</strong></div>
 	<div class="data"> 
-		<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
+		<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo ($session['start_time'] == '13:30:00') ? '12:00' : date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
 	</div>
 </div>
 
@@ -116,7 +118,7 @@ if (!empty($reschedule)) {
 }
 ?>
 
-<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d F Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d M Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 
 <div style="margin-top:10px;">
 

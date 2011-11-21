@@ -147,6 +147,32 @@ class BookingService
 	}
 
 	/**
+	 * Get the date of the next sessionm for the firm
+	 *
+	 * @param int $firmId
+	 * @return string
+	 */
+	public function getNextSessionDate($firmId)
+	{
+		$date = Yii::app()->db->createCommand()
+			->select('date')
+			->from('session s')
+			->join('sequence q', 's.sequence_id = q.id')
+			->join('sequence_firm_assignment ssa', 'ssa.sequence_id = q.id')
+			->where('firm_id = :fid AND date >= CURDATE()', array(':fid' => $firmId))
+			->order('date ASC')
+			->limit(1)
+			->queryRow();
+
+		if (empty($date)) {
+			// No sessions, return today
+			return date('Y-m-d');
+		} else {
+			return $date['date'];
+		}
+	}
+
+	/**
 	 * Search for theatres/sessions, filtered by site/specialty/firm/theatre
 	 *
 	 * @param string  $startDate (YYYY-MM-DD)
@@ -166,7 +192,7 @@ class BookingService
 		$specialtyId = null,
 		$firmId = null,
 		$wardId = null,
-		$emergencyList
+		$emergencyList = null
 	) {
 		if (empty($startDate) || empty($endDate) ||
 			(strtotime($endDate) < strtotime($startDate))) {

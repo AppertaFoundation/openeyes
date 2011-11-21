@@ -21,24 +21,36 @@ foreach ($elements as $element) {
 
 $cancelledBookings = $operation->getCancelledBookings();
 
+if (!empty($operation->booking)) {
+	$session = $operation->booking->session;
+}
 ?>
+<script type="text/javascript">
+	<?php if (isset($session)) {?>
+		var header_text = "Operation: <?php echo date('d M Y', strtotime($session->date))?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
+	<?php }else{?>
+		var header_text = "Operation:";
+	<?php }?>
+</script>
+
 <!-- Details -->
 <h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
+
+<h4>User</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->event->user->username ?> on <?php echo date('d M Y', strtotime($operation->event->datetime)) ?> at <?php echo date('H:i', strtotime($operation->event->datetime)) ?></h4>
+</div>
 
 <h4>Diagnosis</h4>
 <div class="eventHighlight">
 	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
-</div>
-
-<h4>Diagnosis Eye</h4>
-<div class="eventHighlight">
-        <h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?></h4>
+	<h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
 </div>
 
 <h4>Operation</h4>
 <div class="eventHighlight">
-	<h4><?php
+	<h4><?php echo $operation->getEyeText()?> 
+<?php
 foreach ($elements as $element) {
 	// Only display elements that have been completed, i.e. they have an event id
 	if ($element->event_id) {
@@ -56,11 +68,12 @@ foreach ($elements as $element) {
 ?></h4>
 </div>
 
-
-<h4>Operation Eye</h4>
-<div class="eventHighlight">
-        <h4><?php echo $operation->getEyeText(); ?></h4>
-</div>
+<?if (!empty($operation->comments)) {?>
+	<h4>Comments</h4>
+	<div class="eventHighlight">
+		<h4><?php echo $operation->comments?></h4>
+	</div>
+<?php }?>
 
 <?php
 
@@ -74,13 +87,18 @@ if (!empty($operation->booking)) {
 		$firmName = 'Emergency List';
 	} else {
 		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-					$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
 
 	echo $session->start_time . ' - ' .
 		$session->end_time . ' ' .
-		date('jS F, Y', strtotime($session->date)) . ', ' . $firmName
+		date('d M Y', strtotime($session->date)) . ', ' . $firmName
 ?></h4>
+</div>
+
+<h4>Admission Time</h4>
+<div class="eventHighlight">
+<h4><?php echo $operation->booking->admission_time ?></h4>
 </div>
 <?php
 }
@@ -91,10 +109,22 @@ if (count($cancelledBookings)) {
 <div class="eventHighlight"><h4>
 <?php
 	foreach ($cancelledBookings as $cb) {
-		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . $cb->date;
+		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . date('d M Y', strtotime($cb->date));
 		echo ', ' . $cb->theatre->name . ' (' . $cb->theatre->site->name . ') ';
-		echo ', cancelled on ' . $cb->cancelled_date . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text . '<br />';
+		echo ', cancelled on ' . date('d M Y', strtotime($cb->cancelled_date)) . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text . '<br />';
 	}
+?>
+</h4></div>
+<?php
+}
+
+if ($operation->status == $operation::STATUS_CANCELLED && !empty($operation->cancellation)) {
+$co = $operation->cancellation;
+?>
+<h4>Cancellation details</h4>
+<div class="eventHighlight"><h4>
+<?php
+	echo 'Cancelled on ' . date('d M Y', strtotime($co->cancelled_date)) . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
 ?>
 </h4></div>
 <?php
@@ -182,15 +212,20 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	}
 
 	$patient = $event->episode->patient;
-	$patientDetails = '';
+	$patientDetails = '<br />';
+
+	// Here because of yii bug that fails to recognise address despite valid relationship and address_id
+
+	$address = Address::model()->findByPk($patient->address_id);
+
 	foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-		if (!empty($patient->address->$field)) {
-			$patientDetails .= CHtml::encode($patient->address->$field) . '<br />';
+		if (!empty($address->$field)) {
+			$patientDetails .= CHtml::encode($address->$field) . '<br />';
 		}
 	}
 
-	if (!empty($patient->address->country->name)) {
-		$patientDetails .= CHtml::encode($patient->address->country->name) . '<br />';
+	if (!empty($address->country->name)) {
+		$patientDetails .= CHtml::encode($address->country->name) . '<br />';
 	}
 
 	$patientName = CHtml::encode($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
@@ -220,7 +255,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		baseContent += '<?php echo $patientDetails ?></td></tr>';
 
-		baseContent += '<tr><td colspan="2" style="text-align:right; font-family: sans-serif; font-size:10pt;"><?php echo date('d/m/Y') ?></td></tr></table></div>';
+		baseContent += '<tr><td colspan="2" style="text-align:right; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y') ?></td></tr></table></div>';
 
 
 
@@ -232,15 +267,15 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		baseContent += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">Dear <?php echo $patientName ?>,</p>';
 
-  		appendPrintContent(baseContent);
+			appendPrintContent(baseContent);
 	}
 
 	function loadInvitationLetterPrintContent() {
 <?php
 	$changeContact = '';
 
-        $serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
-        $specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
+				$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
+				$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
 
 	// Generate contact name and telephone number
 	if ($patient->isChild()) {
@@ -262,9 +297,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 					case 5: // External Disease aka Corneal
 						$changeContact = 'Ian Johnson on 020 7566 2006';
 						break;
-                                        case 6: // Glaucoma
-                                                $changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
-                                                break;
+																				case 6: // Glaucoma
+																								$changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
+																								break;
 					case 11: // Vitreoretinal
 						$changeContact = 'Deidre Clarke on 020 7566 2004';
 						break;
@@ -287,8 +322,8 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 				}
 				break;
 			case 7: // Potters Bar
-                                $changeContact = 'Sue Harney on 020 7566 2339';
-                                break;
+																$changeContact = 'Sue Harney on 020 7566 2339';
+																break;
 			case 9: // St Anns
 				$changeContact = 'Veronica Brade on 020 7566 2843';
 				break;
@@ -370,9 +405,9 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 					case 13: // Refractive Laser
 						$refuseContact = '020 7566 2205 and ask for Joyce Carmichael';
 						$healthContact = '020 7253 3411 X4336 and ask Laser Nurse';
-                                        case 14: // Strabismus
-                                                $refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-                                                break;
+																				case 14: // Strabismus
+																								$refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+																								break;
 					default:
 						$refuseContact .= '020 7566 2206';
 						break;
@@ -384,27 +419,27 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 				break;
 			case 4: // Northwick Park
 				$refuseContact = '020 8869 3161 and ask for Sister Titmus';
-                                $healthContact = 'Sister Titmus on 020 8869 3162';
+																$healthContact = 'Sister Titmus on 020 8869 3162';
 			case 6: // Mile End
 				if ($specialty->id == 7) { // Glaucoma
 					$refuseContact = '020 7566 2020 and ask for Eileen Harper';
-                                	$healthContact = 'Eileen Harper on 020 7566 2020';
+																	$healthContact = 'Eileen Harper on 020 7566 2020';
 				} else {
 					$refuseContact = '020 7566 2712 and ask for Linda Haslin';
-                                        $healthContact = 'Linda Haslin on 020 7566 2712';
+																				$healthContact = 'Linda Haslin on 020 7566 2712';
 				}
-                                break;
+																break;
 			case 7: // Potters Bar
 				$refuseContact = '01707 646422 and ask for Potters Bar Admission Team';
-                                $healthContact = 'Potters Bar Admission Team on 01707 646422';
+																$healthContact = 'Potters Bar Admission Team on 01707 646422';
 				break;
 			case 9: // St Anns
 				$refuseContact = '020 8211 8323 and ask for St Ann&apos;s Team';
-                                $healthContact = 'St Ann&apos;s Team on 020 8211 8323';
+																$healthContact = 'St Ann&apos;s Team on 020 8211 8323';
 				break;
 			case 5: // St George's
 				$refuseContact = '020 8725 0060 and ask for Naeela Butt';
-                                $healthContact = 'Naeela Butt Team on 020 8725 0060';
+																$healthContact = 'Naeela Butt Team on 020 8725 0060';
 			default:
 				break;
 		}
@@ -412,14 +447,14 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		var content = '';
 
 <?php
-		$schedule = '<table style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;"><tr><td>Date of admission:</td><td>' . date('l F j, Y', strtotime($operation->booking->session->date)) . '</td></tr>';
+		$schedule = '<table style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;"><tr><td>Date of admission:</td><td>' . date('d M Y', strtotime($operation->booking->session->date)) . '</td></tr>';
 		$schedule .= '<tr><td>Time to arrive:</td><td>' . $operation->booking->admission_time . '</td></tr>';
-		$schedule .= '<tr><td>Date of surgery:</td><td>' . date('l F j, Y', strtotime($operation->booking->session->date)) . '</td></tr>';
+		$schedule .= '<tr><td>Date of surgery:</td><td>' . date('d M Y', strtotime($operation->booking->session->date)) . '</td></tr>';
 
 		if ($patient->isChild()) {
 			if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
-		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your child&apos;s eye operation has been changed from <?php echo date('l F j, Y', strtotime($cancelledBookings[0]->date)) ?>. The details now are:</p>';
+		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your child&apos;s eye operation has been changed from <?php echo date('d M Y', strtotime($cancelledBookings[0]->date)) ?>. The details now are:</p>';
 <?php
 			} else {
 				if ($site->id == 5) { // St George's
@@ -449,7 +484,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 <?php
 			}
 ?>
-		content += '<li>Bring this letter with you on <?php echo date('l F j, Y', strtotime($operation->booking->session->date)) ?></li>';
+		content += '<li>Bring this letter with you on <?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
 <?php
 			if ($site->id == 5) { // St Georges
@@ -486,7 +521,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		} else {
 			if ($operation->status == ElementOperation::STATUS_RESCHEDULED) {
 ?>
-		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your eye operation has been changed from <?php echo date('l F j, Y', strtotime($cancelledBookings[0]->date)) ?>. The details now are:</p>';
+		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">I am writing to inform you that the date for your eye operation has been changed from <?php echo date('d M Y', strtotime($cancelledBookings[0]->date)) ?>. The details now are:</p>';
 <?php
 			} else {
 ?>
@@ -496,11 +531,11 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 ?>
 		content += '<?php echo $schedule ?><tr><td>Ward:</td><td><?php
 			if ($specialty->id == 13) { // Refractive laser
-                                echo 'Refractive waiting room - Cumberlidge Wing 4th Floor';
-                        } else {
-                                echo CHtml::encode($operation->booking->ward->name);
-                        }
-                ?></td></tr></table>';
+																echo 'Refractive waiting room - Cumberlidge Wing 4th Floor';
+												} else {
+																echo CHtml::encode($operation->booking->ward->name);
+												}
+								?></td></tr></table>';
 
 		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">It is very important that you let us know immediately if you are unable to attend on this admission date. ';
 <?php
@@ -518,7 +553,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 ?>
 		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor.</p>';
 		content += '<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">To ensure your admission proceeds smoothly, please follow these instructions:<br />';
-		content += '<ul style="font-family: sans-serif; font-size:10pt; margin:0 0 1.5em 0.5em;"><li>Bring this letter with you on <?php echo date('l F j, Y', strtotime($operation->booking->session->date)) ?></li>';
+		content += '<ul style="font-family: sans-serif; font-size:10pt; margin:0 0 1.5em 0.5em;"><li>Bring this letter with you on <?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></li>';
 		content += '<li>Please complete the attached in-patient questionnaire and bring it with you</li>';
 		content += '<li>Please go directly to <?php
 			if ($specialty->id == 13) { // Refractive laser
@@ -560,7 +595,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		content += '</table>';
 
-  		appendPrintContent(content);
+			appendPrintContent(content);
 
 	}
 
@@ -569,7 +604,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		var content = '<table width="100%">';
 
 		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admitting Consultant:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $consultantName ?></td>';
-		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Decision to admit date (or today&apos;s date):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->decision_date ?></td></tr>';
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Decision to admit date (or today&apos;s date):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y', strtotime($operation->decision_date)) ?></td></tr>';
 
 		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Service:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($event->episode->firm->serviceSpecialtyAssignment->specialty->name) ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Telephone:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($patient->primary_phone) ?>&nbsp;</td></tr>';
 
@@ -594,35 +629,70 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			}
 		?></td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">Admission category:</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
-                        if ($operation->overnight_stay) {
-                                echo 'an overnight stay';
-                        } else {
-                                echo 'day case';
-                        } ?></td><td colspan="2" rowspan="5" align="center" style="vertical-align:middle; font-family: sans-serif; font-size:10pt; border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admission category:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
+												if ($operation->overnight_stay) {
+																echo 'an overnight stay';
+												} else {
+																echo 'day case';
+												} ?></td>';
+<?php
+												if (empty($operation->booking)) {
+?>
+		content += '<td colspan="2" rowspan="5" align="center" style="vertical-align:middle; font-family: sans-serif; font-size:10pt; border:1px solid #000; font-family: sans-serif; font-size:10pt;">';
 		content += '<strong>Patient Added to Waiting List.<br />Admission Date to be arranged</strong></td></tr>';
-
+<?php
+						} else {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Operation date:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td></tr>';
+<?php
+						}
+?>
 		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Diagnosis:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php
 
 			$disorder = $operation->getDisorder();
 
 			echo !empty($disorder) ? $operation->getEyeText() : 'Unknown';
 			echo !empty($disorder) ? CHtml::encode($operation->getDisorder()) : ''
-		?></td></tr>';
+		?></td>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td></tr>';
-
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getEyeText() ?></td></tr>';
-
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($operation->total_duration) ?></td></tr>';
-
-		content += '</table>';
+<?php
+												if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Discussed with patient:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td>';
+<?php
+						}
+?>
+		content += '</tr><tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Intended procedure:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>';
+<?php
+												if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Theatre session:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td>';
+<?php
+						}
+?>
+		content += '</tr><tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Eye:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getEyeText() ?></td>';
+<?php
+												if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Admission time:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->booking->admission_time ?></td>';
+<?php
+						}
+?>
+		content += '</tr><tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Total theatre time (mins):</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo CHtml::encode($operation->total_duration) ?></td>';
+<?php
+												if (!empty($operation->booking)) {
+?>
+		content += '<td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Proposed admission date:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>';
+<?php
+						}
+?>
+		content += '</tr></table>';
 
 		// Pre-op
 		content += '<span class="subTitle" style="font-family: sans-serif; font-size:10pt;">PRE-OP ASSESSMENT INFORMATION</span><table width="100%">';
-		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Likely to need anaesthetist review:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia:</strong></td> <!-- width control --><td width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><?php echo $operation->getAnaestheticText() ?></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Likely to need anaesthetist review:</strong></td><td	width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
-		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia is:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Does the patient need to stop medication:</strong></td><td  width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
+		content += '<tr><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Anaesthesia is:</strong></td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="border:1px solid #000; font-family: sans-serif; font-size:10pt;"><strong>Does the patient need to stop medication:</strong></td><td	width="25%" style="border:1px solid #000; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
 		content += '</table>';
 
@@ -636,7 +706,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		content += '</div> <!-- adminFormTemplate --></div> <!-- printForm -->';
 
-  		appendPrintContent(content);
+			appendPrintContent(content);
 	}
 
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
@@ -653,7 +723,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 		loadMiddleFirmPrintContent();
 
-		loadEndFormPrintContent()
+		loadEndFormPrintContent();
 
 		printContent();
 	});
@@ -678,6 +748,12 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		loadScheduledLetterPrintContent();
 
 		loadEndLetterPrintContent();
+
+								loadStartFormPrintContent();
+
+								loadMiddleFirmPrintContent();
+
+								loadEndFormPrintContent();
 
 		printContent();
 	});

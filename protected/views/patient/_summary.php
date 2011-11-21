@@ -64,7 +64,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		<div class="data_label">Date of Birth:</div>
 		<div class="data_value"><?php
 		$dobTime = strtotime($model->dob);
-		echo date('jS F, Y', $dobTime);
+		echo date('d M Y', $dobTime);
 		echo ' (Age ' . $model->getAge()  . ')';
 		?></div>
 	</div>
@@ -99,8 +99,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 	$this->widget('zii.widgets.grid.CGridView', array(
 		'dataProvider'=>$episodes,
 		'columns'=>array(
-			array('name'=>'Start Date','value'=>'date("d/m/Y", strtotime($data->start_date))'),
-			array('name'=>'End Date','value'=>'!empty($data->end_date) ? date("d/m/Y", strtotime($data->end_date)) : ""'),
+			array('name'=>'Start Date','value'=>'date("d M Y", strtotime($data->start_date))'),
+			array('name'=>'End Date','value'=>'!empty($data->end_date) ? date("d M Y", strtotime($data->end_date)) : ""'),
 			array('name'=>'Firm', 'value'=>'$data->firm->name'),
 			array('name'=>'Specialty', 'value'=>'$data->firm->serviceSpecialtyAssignment->specialty->name'),
 			array('name'=>'Eye','value'=>'$data->getPrincipalDiagnosisEyeText()'), // 'diagnosis.location',

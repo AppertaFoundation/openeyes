@@ -25,8 +25,13 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <div class="errorSummary" style="display:none"></div>
 <?php
 echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+if (!empty($operation->booking) && (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date)))) {
+	$listIndex = 3;
+} else {
+	$listIndex = 2;
+}
 echo CHtml::dropDownList('cancellation_reason', '',
-	CancellationReason::getReasonsByListNumber(1),
+	CancellationReason::getReasonsByListNumber($listIndex),
 	array('empty'=>'Select a reason')
 ); ?>
 <div class="buttonwrapper">

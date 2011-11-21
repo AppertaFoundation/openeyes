@@ -38,37 +38,37 @@ if (empty($theatres)) {?>
 				if ($previousSequenceId != $session['sequenceId']) {
 					if ($previousSequenceId != '') {
 ?>
-                                                        <tr>
-                                                                <th colspan="7" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
-                                                        </tr>
-                                                </tbody>
-                                        </table>
-                                </div>
+							<tr>
+								<th colspan="8" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 <?php
 					}
-
 ?>
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> </h3>
-                                <div class="theatre-sessions whiteBox clearfix">
+				<div class="theatre-sessions whiteBox clearfix">
 
-                                                <div class="sessionComments" style="display:block; float:right; width:300px; ">
-                                                        <form>
-                                                                <textarea rows="2" style="width:295px;" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
-                                                        </form>
-                                                        <div class="modifyComments"><span class="edit"><a href="#" id="editComments<?php echo $session['sessionId'] ?>" name="<?php echo $session['sessionId'] ?>">Edit comment</a></span></div>
-                                                </div>
+						<div class="sessionComments" style="display:block; float:right; width:250px; ">
+							<form>
+								<textarea rows="2" style="width:245px;" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
+							</form>
+							<div class="modifyComments"><span class="edit"><a href="#" id="editComments<?php echo $session['sessionId'] ?>" name="<?php echo $session['sessionId'] ?>">Edit comment</a></span></div>
+						</div>
 
-                                        <table>
-                                                <tbody>
-                                                        <tr>
-                                                                <th>Admit time</th>
-                                                                <th>Hospital #</th>
-                                                                <th>Patient (Age)</th>
-                                                                <th>[Eye] Operation</th>
+					<table>
+						<tbody>
+							<tr>
+								<th>Admit time</th>
+								<th>Hospital #</th>
+								<th>Patient (Age)</th>
+								<th>[Eye] Operation</th>
 								<th>Anesth</th>
-                                                                <th>Ward</th>
-                                                                <th>Info</th>
-                                                        </tr>
+								<th>Ward</th>
+								<th>Info</th>
+								<th>Move</th>
+							</tr>
 <?php
 					$previousSequenceId = $session['sequenceId'];
 					$timeAvailable = $session['sessionDuration'];
@@ -77,10 +77,13 @@ if (empty($theatres)) {?>
 				if (!empty($session['patientId'])) {
 					$timeAvailable -= $session['operationDuration'];
 ?>
-							<tr>
-								<td class="session"><?php echo substr($session['admissionTime'], 0, 5)?></td>
+							<tr id="oprow_<?php echo $session['operationId'] ?>">
+								<td class="session">
+                                                                	<input type="text" id="admitTime<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
+									<a href="#" id="editAdmitTime<?php echo $session['operationId'] ?>">Save</a>
+								</td>
 								<td class="hospital"><?php echo CHtml::link(
-                							$session['patientHosNum'],
+									$session['patientHosNum'],
 									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
 							       	);
 								?></td>
@@ -105,24 +108,31 @@ if (empty($theatres)) {?>
 <?php
 					}
 
-                                	if (!empty($session['overnightStay'])) {
-                                                        ?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" width="17" height="17" />
+					if (!empty($session['overnightStay'])) {
+							?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" width="17" height="17" />
 <?php
-                                	}
+					}
 
-                                	if (!empty($session['consultantRequired'])) {
-                                                        ?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
+					if (!empty($session['consultantRequired'])) {
+							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
 <?php
-                                	}
+					}
+?>
+								<td>
+									<a id="u_<?php echo $session['operationId'] ?>" href="">&nbsp;&uarr;&nbsp;</a>
+										&nbsp;&nbsp;
+									<a id="d_<?php echo $session['operationId'] ?>" href="">&nbsp;&darr;&nbsp;</a>
+								</td>
+<?php
 				}
 ?>
-							</td>
+								</td>
 							</tr>
 <?php
 			}
 ?>
 							<tr>
-								<th colspan="7" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
+								<th colspan="8" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
 							</tr>
 						</tbody>
 					</table>
@@ -133,125 +143,70 @@ if (empty($theatres)) {?>
 }
 ?>
 
-<!-- ====================================================  P R I N T  S T U F F ============  -->
-<div class="printable" id="printable">
-
-<!-- ================================================ -->
-<!-- * * * * * * * * * *   DIARY  * * * * * * * * * * -->
-<!-- ================================================ -->
-
-<div id="diaryTemplate">
-<div id="d_title">OPERATION LIST FORM</div>
-
-<?php
-
-$previousSequenceId = '';
-
-        $firstTheatreShown = false;
-        foreach ($theatres as $name => $dates) {
-                $firstTheatreShown = true;
-                foreach ($dates as $date => $sessions) {
-                        $timestamp = strtotime($date);
-                        $previousSequenceId = '';
-                        $timeAvailable = $sessions[0]['sessionDuration'];
-                        foreach ($sessions as $session) {
-                                if ($previousSequenceId != $session['sequenceId']) {
-                                        if ($previousSequenceId != '') {
-?>
-</table>
-<br />
-<br />
-<?php
-                                        }
-?>
-<table class="d_overview">
-<tbody><tr><td>
-THEATRE NO:
-</td><td colspan="2">
-<?php echo(htmlspecialchars($name, ENT_QUOTES)) ?>
-</td></tr>
-<tr><td>
-SESSION:
-</td><td>
-<?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5) ?>
-</td><td>
-NHS
-</td></tr>
-</tbody></table>
-
-<table class="d_overview">
-<tbody><tr><td>
-SURGICAL FIRM: <?php echo empty($session['firm_name']) ? 'Emergency list' : htmlspecialchars($session['firm_name'], ENT_QUOTES) ?>
-</td><td>
-ANAESTHETIST:
-</td><td>
-&nbsp;
-</td><td>
-DATE:
-</td><td>
-<?php echo date('Y/m/d') ?>
-</td></tr>
-</tbody></table>
-
-<table class="d_data">
-<tbody>
-<tr>
-<th>HOSPT NO</th>
-<th>PATIENT</th>
-<th>AGE</th>
-<th>WARD</th>
-<th>GA or LA</th>
-<th>PROCEDURES AND COMMENTS</th>
-<th>ADMISSION TIME</th>
-</tr>
-<?php
-                                        $previousSequenceId = $session['sequenceId'];
-                                        $timeAvailable = $session['sessionDuration'];
-                                }
-
-                                if (!empty($session['patientId'])) {
-                                        $timeAvailable -= $session['operationDuration'];
-?>
-<tr>
-<td><?php echo $session['patientHosNum'] ?></td>
-<td><?php echo htmlspecialchars($session['patientName']) ?></td>
-<td><?php echo htmlspecialchars($session['patientAge']) ?></td>
-<td><?php echo htmlspecialchars($session['ward']) ?></td>
-<td><?php echo htmlspecialchars($session['anaesthetic']) ?></td>
-<td>
-<?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.htmlspecialchars($session['procedures']) : 'No procedures'?><br />
-<?php echo htmlspecialchars($session['operationComments']) ?>
-<td><?php echo $session['admissionTime'] ?></td>
-</td></tr>
-<?php
-                                }
-                        }
-                }
-        }
-?>
-</div> <!-- #diaryTemplate -->
-<!-- ================================================ -->
-
-<!-- * * * * * * * * end of DIARY  * * * * * * * * * -->
-<!-- ================================================ -->
-
-</div> <!-- end of printable area -->
-<!-- ====================================================  end of P R I N T  S T U F F ============  -->
-
 <script type="text/javascript">
-    $('a[id^="editComments"]').click(function() {
-        id = this.name;
-        value = $('#comments' + this.name).val();
+	$('a[id^="editAdmitTime"]').click(function() {
+		id = this.id.replace(/editAdmitTime/i, "");
+		value = $('#admitTime' + id).val();
 
-        $.ajax({
-            'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
-            'type': 'POST',
-            'data': 'id=' + id + '&comments=' + value,
-            'success': function(data) {
-                return true;
-            }
+		$.ajax({
+	    		'url': '<?php echo Yii::app()->createUrl('theatre/updateAdmitTime'); ?>',
+	    		'type': 'POST',
+	    		'data': 'id=' + id + '&admission_time=' + value,
+	    		'success': function(data) {
+				return false;
+	    		}
+		});
+
+		return false;
+	});
+
+        $('a[id^="editComments"]').click(function() {
+                id = this.name;
+                value = $('#comments' + this.name).val();
+
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
+                        'type': 'POST',
+                        'data': 'id=' + id + '&comments=' + value,
+                        'success': function(data) {
+                                return false;
+                        }
+                });
+
+                return false;
         });
 
-        return true;
-    });
+	$('a[id^="u_"]').click(function() {
+		id = this.id.replace(/u_/i, "");
+
+        	$.ajax({
+            		'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
+            		'type': 'POST',
+            		'data': 'id=' + id + '&up=1',
+            		'success': function(data) {
+				if (data == 1) {
+					$('#oprow_' + id).prev().before($('#oprow_' + id));
+				}
+            		},
+        	});
+
+		return false;
+	});
+
+        $('a[id^="d_"]').click(function() {
+                id = this.id.replace(/d_/i, "");
+
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
+                        'type': 'POST',
+                        'data': 'id=' + id + '&up=0',
+                        'success': function(data) {
+				if (data == 1) {
+					$('#oprow_' + id).next().after($('#oprow_' + id));
+				}
+                         },
+                });
+
+                return false;
+        });
 </script>

@@ -50,7 +50,7 @@ return CMap::mergeArray(
 					'patient/results/error'=>'site/index',
 					'patient/no-results'=>'site/index',
 					'patient/results/<hos_num:\d+>/<first_name:.*>/<last_name:.*>/<nhs_num:[\d-]+>/<gender:.*>/<dob_day:\d+>/<dob_month:\d+>/<dob_year:\d+>/<page_num:\d+>'=>'patient/results',
-					'patient/viewpas/<pas_key:\d+>'=>'patient/viewpas',
+					'patient/viewhosnum/<hos_num:.+>'=>'patient/viewhosnum',
 					'patient/episodes/<id:\d+>/event/<event:\d+>'=>'patient/episodes',
 					'patient/episodes/<id:\d+>/episode/<episode:\d+>'=>'patient/episodes',
 					'' => 'site/index', // default action
@@ -180,6 +180,12 @@ return CMap::mergeArray(
 					),
 				),
 			),
+			'session' => array(
+				'class' => 'application.components.CDbHttpSession',
+				'connectionID' => 'db',
+				'sessionTableName' => 'user_session',
+				'autoCreateSessionTable' => false
+			)
 		)
 	)
 );
