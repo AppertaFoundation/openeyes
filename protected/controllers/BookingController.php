@@ -256,6 +256,8 @@ class BookingController extends BaseController
 			$reschedule = 1;
 		}
 
+		$operation->getMinDate();
+
 		$time = strtotime($month);
 		$date = date('Y-m-d', mktime(0,0,0,date('m', $time), $day, date('Y', $time)));
 		$theatres = $operation->getTheatres($date, $firmId);
