@@ -174,6 +174,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			<div style="text-align:right; margin-right:10px;"><button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button></div>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
+	var searchData;
+
 	$(document).ready(function() {
 		return getList();
 	});
@@ -196,7 +198,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
                 $.ajax({
                         'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
                         'type': 'POST',
-                        'data': $('#theatre-filter').serialize(),
+                        'data': searchData,
                         'success': function(data) {
                                 $('#printable').html(data);
 				$('#printable').printElement(options);
@@ -206,10 +208,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	}
 
 	function getList() {
+		searchData = $('#theatre-filter').serialize();
+
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
 			'type': 'POST',
-			'data': $('#theatre-filter').serialize(),
+			'data': searchData,
 			'success': function(data) {
 				$('#theatreList').html(data);
 				return false;
