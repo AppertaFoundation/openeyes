@@ -64,7 +64,7 @@ ANAESTHETIST:
 </td><td>
 DATE:
 </td><td>
-<?php echo date('d M Y') ?>
+<?php echo date('d M Y', strtotime($date)) ?>
 </td></tr>
 </tbody></table>
 

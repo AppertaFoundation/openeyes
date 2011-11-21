@@ -153,7 +153,8 @@ class PatientController extends BaseController
 
 			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
 			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
-			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? $_POST['Patient']['nhs_num'] : '0');
+			// Get rid of any dashes from nhs_num as PAS doesn't store them
+			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? preg_replace('/-/', '', $_POST['Patient']['nhs_num']) : '0');
 			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
 			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
 			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
