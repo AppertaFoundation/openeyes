@@ -68,7 +68,7 @@ foreach ($elements as $element) {
 ?></h4>
 </div>
 
-<?if (!empty($operation->comments)) {?>
+<?php if (!empty($operation->comments)) {?>
 	<h4>Comments</h4>
 	<div class="eventHighlight">
 		<h4><?php echo $operation->comments?></h4>
