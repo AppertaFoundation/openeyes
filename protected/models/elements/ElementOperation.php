@@ -844,7 +844,7 @@ class ElementOperation extends BaseElement
 		if (empty($elementDiagnosis)) {
 			return null;
 		} else {
-			return $elementDiagnosis->disorder->fully_specified_name;
+			return $elementDiagnosis->disorder->term;
 		}
 	}
 
