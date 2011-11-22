@@ -24,12 +24,14 @@ $cancelledBookings = $operation->getCancelledBookings();
 if (!empty($operation->booking)) {
 	$session = $operation->booking->session;
 }
+
+$status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : 'Not scheduled';
 ?>
 <script type="text/javascript">
 	<?php if (isset($session)) {?>
 		var header_text = "Operation: <?php echo date('d M Y', strtotime($session->date))?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
 	<?php }else{?>
-		var header_text = "Operation:";
+		var header_text = "Operation: <?php echo $status?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
 	<?php }?>
 </script>
 
@@ -59,7 +61,7 @@ foreach ($elements as $element) {
 		if (get_class($element) == 'ElementOperation') {
 			$procedureList = array();
 			foreach ($element->procedures as $procedure) {
-				echo "{$procedure->term} ({$procedure->default_duration} minutes)<br />";
+				echo "{$procedure->term}<br />";
 				$procedureList[] = $procedure->short_format;
 			}
 		}
@@ -90,15 +92,13 @@ if (!empty($operation->booking)) {
 		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
 
-	echo $session->start_time . ' - ' .
-		$session->end_time . ' ' .
-		date('d M Y', strtotime($session->date)) . ', ' . $firmName
+	echo date('d M Y', strtotime($session->date)).' '.substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
 ?></h4>
 </div>
 
 <h4>Admission Time</h4>
 <div class="eventHighlight">
-<h4><?php echo $operation->booking->admission_time ?></h4>
+<h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 </div>
 <?php
 }
