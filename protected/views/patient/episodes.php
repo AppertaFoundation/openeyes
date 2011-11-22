@@ -1,4 +1,5 @@
 		<h2>Episodes &amp; Events</h2>
+		<script type="text/javascript"> var header_text = ''; </script>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
 				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent"><img style="float:right; margin:0px 0px 0 0;" src="/img/_elements/btns/new-event.png" alt="add-new-event" width="155" height="35" /></button></form>
