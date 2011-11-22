@@ -120,6 +120,8 @@
 			});
 
 			function view_event(event_id) {
+				var header_text = '';
+
 				$.ajax({
 					url: '/clinical/'+event_id,
 					success: function(data) {
