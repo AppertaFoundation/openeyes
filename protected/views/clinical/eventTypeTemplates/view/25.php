@@ -24,12 +24,14 @@ $cancelledBookings = $operation->getCancelledBookings();
 if (!empty($operation->booking)) {
 	$session = $operation->booking->session;
 }
+
+$status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : 'Not scheduled';
 ?>
 <script type="text/javascript">
 	<?php if (isset($session)) {?>
 		var header_text = "Operation: <?php echo date('d M Y', strtotime($session->date))?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
 	<?php }else{?>
-		var header_text = "Operation:";
+		var header_text = "Operation: <?php echo $status?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
 	<?php }?>
 </script>
 
