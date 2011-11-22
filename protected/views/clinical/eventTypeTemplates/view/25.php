@@ -59,7 +59,7 @@ foreach ($elements as $element) {
 		if (get_class($element) == 'ElementOperation') {
 			$procedureList = array();
 			foreach ($element->procedures as $procedure) {
-				echo "{$procedure->term} ({$procedure->default_duration} minutes)<br />";
+				echo "{$procedure->term}<br />";
 				$procedureList[] = $procedure->short_format;
 			}
 		}
