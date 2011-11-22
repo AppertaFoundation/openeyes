@@ -90,9 +90,7 @@ if (!empty($operation->booking)) {
 		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
 
-	echo $session->start_time . ' - ' .
-		$session->end_time . ' ' .
-		date('d M Y', strtotime($session->date)) . ', ' . $firmName
+	echo date('d M Y', strtotime($session->date)).' '.$session->start_time . ' - ' . $session->end_time . ', '.$firmName;
 ?></h4>
 </div>
 
