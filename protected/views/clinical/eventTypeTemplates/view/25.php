@@ -98,7 +98,7 @@ if (!empty($operation->booking)) {
 
 <h4>Admission Time</h4>
 <div class="eventHighlight">
-<h4><?php echo $operation->booking->admission_time ?></h4>
+<h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 </div>
 <?php
 }
