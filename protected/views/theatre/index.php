@@ -171,7 +171,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				<!-- ====================================================  end of P R I N T  S T U F F ============  -->
 
 			</div> <!-- #theatre_display -->
-			<div style="text-align:right; margin-right:10px;"><button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button></div>
+			<div style="text-align:right; margin-right:10px;">
+				<button type="submit" value="submit" class="btn_save ir" id="btn_save" style="display: none;">Save</button>
+				<button type="submit" value="submit" class="btn_cancel ir" id="btn_cancel" style="display: none;">Cancel</button>
+				<button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button>
+			</div>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	var searchData;
@@ -263,4 +267,39 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			}
 		});
 	}
+
+	$('#btn_save').click(function() {
+		var data = {}
+
+		$('input[name^="admitTime"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["operation_"+id] = $(this).val();
+		});
+
+		$('textarea[name^="comments"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["comments_"+id] = $(this).val();
+		});
+
+		$.ajax({
+			'type': 'POST',
+			'data': data,
+			'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
+			'success': function(data) {
+				$('#updated-flash').show();
+
+				// Apply changes to the read-only values in the dom
+				$('input[name^="admitTime"]').map(function() {
+					var id = $(this).attr('id').match(/[0-9]+/);
+					$('#admitTime_ro_'+id).html($(this).val());
+				});
+				$('textarea[name^="comments"]').map(function() {
+					var id = $(this).attr('id').match(/[0-9]+/);
+					$('#comments_ro_'+id).html($(this).val());
+				});
+
+				view_mode();
+			}
+		});
+	});
 </script>

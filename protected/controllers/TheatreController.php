@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -253,7 +253,7 @@ class TheatreController extends BaseController
 		}
 	}
 
-	public function actionUpdateSessionComments()
+	/*public function actionUpdateSessionComments()
 	{
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 			if (!empty($_POST['id']) && !empty($_POST['comments'])) {
@@ -266,25 +266,54 @@ class TheatreController extends BaseController
 			}
 			return true;
 		}
+	}*/
+
+	public function actionSaveSessions() {
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			$display_order = 1;
+
+			foreach ($_POST as $key => $value) {
+				if (preg_match('/^operation_([0-9]+)$/',$key,$m)) {
+					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
+
+					if (!empty($booking)) {
+						$booking->admission_time = $value;
+						$booking->display_order = $display_order++;
+						$booking->save();
+					}
+				}
+
+				if (preg_match('/^comments_([0-9]+)$/',$key,$m)) {
+					$session = Session::model()->findByPk($m[1]);
+
+					if (!empty($session)) {
+						$session->comments = $value;
+						$session->save();
+					}
+				}
+			}
+
+			return true;
+		}
 	}
 
-        public function actionUpdateAdmitTime()
-        {
-                if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-                        if (!empty($_POST['id']) && !empty($_POST['admission_time'])) {
-                                $booking = Booking::model()->findByAttributes(array('element_operation_id' => $_POST['id']));
+	/*public function actionUpdateAdmitTime()
+	{
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			if (!empty($_POST['id']) && !empty($_POST['admission_time'])) {
+				$booking = Booking::model()->findByAttributes(array('element_operation_id' => $_POST['id']));
 
-                                if (!empty($booking)) {
-                                        $booking->admission_time = $_POST['admission_time'];
-                                        $booking->save();
-                                }
-                        }
-                        return true;
-                }
-        }
+				if (!empty($booking)) {
+					$booking->admission_time = $_POST['admission_time'];
+					$booking->save();
+				}
+			}
+			return true;
+		}
+	}*/
 
 	public function actionMoveOperation()
-        {
+				{
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 			if (!empty($_POST['id'])) {
 				$operation = ElementOperation::model()->findByPk($_POST['id']);
@@ -300,7 +329,7 @@ class TheatreController extends BaseController
 		}
 
 		return false;
-        }
+				}
 
 	/**
 	 * Helper method to fetch firms by specialty ID
