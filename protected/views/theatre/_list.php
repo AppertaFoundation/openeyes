@@ -109,11 +109,11 @@ if (empty($theatres)) {?>
 								<?php
 					if ($session['patientGender'] == 'M') {
 ?>
-<img src="/img/_elements/icons/alerts/male.png" alt="male" width="17" height="17" />
+<img src="/img/_elements/icons/alerts/male.png" alt="male" title="male" width="17" height="17" />
 <?php
 					} else {
 ?>
-<img src="/img/_elements/icons/alerts/female.png" alt="female" width="17" height="17" />
+<img src="/img/_elements/icons/alerts/female.png" alt="female" title="female" width="17" height="17" />
 <?php
 					}
 
@@ -123,12 +123,12 @@ if (empty($theatres)) {?>
 					}
 
 					if (!empty($session['overnightStay'])) {
-							?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" width="17" height="17" />
+							?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" title="Overnight stay required" width="17" height="17" />
 <?php
 					}
 
 					if (!empty($session['consultantRequired'])) {
-							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" width="17" height="17" />
+							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
 <?php
 					}
 				}
