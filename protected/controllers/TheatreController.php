@@ -94,15 +94,12 @@ class TheatreController extends BaseController
 					$endDate = $_POST['date-end'];
 					break;
 				case 'month':
-					$startDate = date('Y-m-01');
-					$endDate = date('Y-m-t');
+					$startDate = date('Y-m-d');
+					$endDate = date('Y-m-d', strtotime("+30 days"));
 					break;
 				case 'week':
-					$thisWeekday = date('N');
-					$addDays = $thisWeekday - 1; // 1 == Monday
-					$startDate = date('Y-m-d', strtotime("-{$addDays} days"));
-					$addDays = 7 - $thisWeekday; // 7 == Sunday
-					$endDate = date('Y-m-d', strtotime("+{$addDays} days"));
+					$startDate = date('Y-m-d');
+					$endDate = date('Y-m-d', strtotime("+7 days"));
 					break;
 				case 'today':
 					$startDate = date('Y-m-d');
@@ -353,6 +350,8 @@ class TheatreController extends BaseController
 		foreach ($data as $values) {
 			$firms[$values['id']] = $values['name'];
 		}
+
+		natcasesort($firms);
 
 		return $firms;
 	}

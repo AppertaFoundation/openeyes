@@ -75,11 +75,11 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 							</span>
 							<span class="group">
 							<input type="radio" name="date-filter" id="date-filter_1" value="week">
-							<label for="date-filter_1">This week</label>
+							<label for="date-filter_1">Next 7 days</label>
 							</span>
 							<span class="group">
 							<input type="radio" name="date-filter" id="date-filter_2" value="month">
-							<label for="date-filter_2">This month</label>
+							<label for="date-filter_2">Next 30 days</label>
 							</span>
 							<span class="group">
 							<input type="radio" name="date-filter" id="date-filter_3" value="custom">
