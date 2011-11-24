@@ -24,7 +24,7 @@ echo CHtml::form(array('booking/cancelOperation'), 'post', array('id' => 'cancel
 echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <div class="errorSummary" style="display:none"></div>
 <?php
-echo CHtml::label('Cancellation Reason: ', 'cancellation_reason');
+echo CHtml::label('Cancellation reason: ', 'cancellation_reason');
 if (!empty($operation->booking) && (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date)))) {
 	$listIndex = 3;
 } else {
@@ -33,7 +33,11 @@ if (!empty($operation->booking) && (date('Y-m-d') == date('Y-m-d', strtotime($op
 echo CHtml::dropDownList('cancellation_reason', '',
 	CancellationReason::getReasonsByListNumber($listIndex),
 	array('empty'=>'Select a reason')
-); ?>
+);
+echo "<br/>".CHtml::label('Comments: ', 'cancellation_comment');
+echo '<div style="height: 0.4em;"></div>';
+echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
+echo '<div style="height: 0.4em;"></div>'?>
 <div class="buttonwrapper">
 <button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel operation</span></button>
 </div><?php
