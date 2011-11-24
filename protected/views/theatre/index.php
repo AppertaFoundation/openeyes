@@ -43,10 +43,10 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 										<?php echo CHtml::dropDownList('theatre-id', '', array(), array('empty'=>'All theatres'))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty'=>'All firms', 'disabled'=>(empty($firmId))))?>
+										<?php echo CHtml::dropDownList('firm-id', $firm->id, Firm::model()->getList($firm->serviceSpecialtyAssignment->specialty_id), array('empty'=>'All firms'))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('specialty-id', '', Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
+										<?php echo CHtml::dropDownList('specialty-id', $firm->serviceSpecialtyAssignment->specialty_id, Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
 				if ($('#specialty-id').val() != '') {
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);
@@ -87,7 +87,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		'name'=>'date-start',
-	'id'=>'date-start',
+		'id'=>'date-start',
 		// additional javascript options for the date picker plugin
 		'options'=>array(
 		'changeMonth'=>true,
@@ -121,7 +121,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		'name'=>'date-end',
-	'id'=>'date-end',
+		'id'=>'date-end',
 		// additional javascript options for the date picker plugin
 		'options'=>array(
 		'changeMonth'=>true,
@@ -151,6 +151,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	'htmlOptions'=>array('size'=>10),
 ));
 ?>
+							</span>
+							<span class="group">
+							<a href="" id="last_week">Last week</a> <a href="" id="next_week">Next week</a>
 							</span>
 
 							<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
@@ -191,24 +194,24 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		$("#btn_print").click(function() {
 			printElem(
 			{
-		             	pageTitle:'openeyes printout',
-		             	printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
+			     	pageTitle:'openeyes printout',
+			     	printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
 	       	     		overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
-		         });
+			 });
 		});
-        });
+	});
 
 	function printElem(options){
-                $.ajax({
-                        'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
-                        'type': 'POST',
-                        'data': searchData,
-                        'success': function(data) {
-                                $('#printable').html(data);
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
+			'type': 'POST',
+			'data': searchData,
+			'success': function(data) {
+				$('#printable').html(data);
 				$('#printable').printElement(options);
-                                return false;
-                        }
-                });
+				return false;
+			}
+		});
 	}
 
 	function getList() {
@@ -239,12 +242,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			$('#theatre-id').attr("disabled", false);
 			$('#firm-id').attr("disabled", false);
 			$('#ward-id').attr("disabled", false);
-		}
-	});
-	$('input[name=date-filter]').change(function() {
-		if ($(this).val() != 'custom') {
-			$('input[id=date-start]').val('');
-			$('input[id=date-end]').val('');
 		}
 	});
 	function loadTheatres(siteId) {
@@ -302,4 +299,113 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			}
 		});
 	});
+
+	$('#date-filter_0').click(function() {
+		today = new Date();
+		todayString = dateString(today);
+
+		$('#date-start').val(todayString);
+		$('#date-end').val(todayString);
+
+		return true;
+	});
+
+	$('#date-filter_1').click(function() {
+		today = new Date();
+		todayString = dateString(today);
+
+		$('#date-start').val(dateString(today));
+
+		$('#date-end').val(returnDateWithInterval(today, 7));
+
+		return true;
+	});
+
+        $('#date-filter_2').click(function() {
+                today = new Date();
+
+                $('#date-start').val(dateString(today));
+
+                $('#date-end').val(returnDateWithInterval(today, 30));
+
+		return true;
+        });
+
+	$('#last_week').click(function() {
+		// Calculate week before custom date or week before today if no custom date
+		sd = $('#date-start').val();
+
+		if (sd == '') {
+			// No date-start. Make date-start one week before today, date-end today
+			today = new Date();
+	
+			$('#date-end').val(dateString(today));
+	
+			$('#date-start').val(returnDateWithInterval(today, -7));
+		} else {
+			// Make date-end date-start, make date-start one week before date-start
+			$('#date-end').val(sd);
+
+			$('#date-start').val(returnDateWithIntervalFromString(sd, -7));
+		}
+
+		// Perform search
+
+		return false;
+	});
+
+	$('#next_week').click(function() {
+		// Calculate week before custom date or week before today if no custom date
+		ed = $('#date-end').val();
+
+		if (ed == '') {
+			// No date-start. Make date-start one week before today, date-end today
+			today = new Date();
+
+			$('#date-start').val(dateString(today));
+
+			$('#date-end').val(returnDateWithInterval(today, 7));
+		} else {
+			// Make date-start date-end, make date-end one week after date-end
+
+			$('#date-start').val(ed);
+
+			$('#date-end').val(returnDateWithIntervalFromString(ed, 7));
+		}
+
+		return false;
+	});
+
+        function returnDateWithInterval(d, interval) {
+		// Uses javascript date format (months from 0 to 11)
+                dateWithInterval = new Date(d.getTime() + (86400000 * interval));
+
+                return dateString(dateWithInterval);
+        }
+
+	function returnDateWithIntervalFromString(ds, interval) {
+		// Uses real date format (months from 1 to 12)
+		times = ds.split('-');
+
+		// Convert to javascript date format
+		date = new Date(times[0], times[1] - 1, times[2], 0, 0, 0, 0);
+
+		dateWithInterval = new Date(date.getTime() + (86400000 * interval));
+
+		return dateString(dateWithInterval);
+	}
+
+	function dateString(date) {
+		m = date.getMonth() + 1;
+		if (m < 10) {
+			m = '0' + m;
+		}
+
+		d = date.getDate();
+		if (d < 10) {
+			d = '0' + d;
+		}
+
+		return date.getFullYear() + '-' + m + '-' + d;
+	}
 </script>

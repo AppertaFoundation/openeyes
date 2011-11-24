@@ -19,7 +19,7 @@ class TheatreController extends BaseController
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/main';
-
+ 
 	public function filters()
 	{
 		return array('accessControl');
@@ -38,12 +38,16 @@ class TheatreController extends BaseController
 		);
 	}
 
-	/**
-	 * Lists all models.
-	 */
 	public function actionIndex()
 	{
-		$this->render('index');
+	        $firm = Firm::model()->findByPk($this->selectedFirmId);
+
+                if (empty($firm)) {
+                        // No firm selected, reject
+                        throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+                }
+
+		$this->render('index', array('firm' => $firm));
 	}
 
 	public function actionPrintList()
@@ -88,32 +92,12 @@ class TheatreController extends BaseController
 				$firmId = Yii::app()->session['selected_firm_id'];
 			}
 
-			switch($filter) {
-				case 'custom':
-					$startDate = $_POST['date-start'];
-					$endDate = $_POST['date-end'];
-					break;
-				case 'month':
-					$startDate = date('Y-m-d');
-					$endDate = date('Y-m-d', strtotime("+30 days"));
-					break;
-				case 'week':
-					$startDate = date('Y-m-d');
-					$endDate = date('Y-m-d', strtotime("+7 days"));
-					break;
-				case 'today':
-					$startDate = date('Y-m-d');
-					$endDate = date('Y-m-d');
-				default: // show the next list for this firm if there is one, or today
-					if (empty($firmId)) {
-						$startDate = date('Y-m-d');
-						$endDate = date('Y-m-d');
-					} else {
-						$startDate = $service->getNextSessionDate($firmId);
-						$endDate = $startDate;
-					}
-
-					break;
+			if (empty($_POST['date-start']) || empty($_POST['date-end'])) {
+				$startDate = $service->getNextSessionDate($firmId);
+				$endDate = $startDate;
+			} else {
+				$startDate = $_POST['date-start'];
+                                $endDate = $_POST['date-end'];
 			}
 
 			$data = $service->findTheatresAndSessions(
