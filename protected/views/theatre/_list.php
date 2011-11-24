@@ -46,10 +46,12 @@ if (empty($theatres)) {?>
 				if ($previousSequenceId != $session['sequenceId']) {
 					if ($previousSequenceId != '') {
 ?>
+						</tbody>
+						<tfoot>
 							<tr>
 								<th colspan="8" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
 							</tr>
-						</tbody>
+						</tfoot>
 					</table>
 				</div>
 <?php
