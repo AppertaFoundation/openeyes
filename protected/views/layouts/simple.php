@@ -55,6 +55,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		<?php echo $content; ?>
 	</div> <!-- #content --> 
 	<div id="help" class="clearfix"> 
+		<?php /*
 		<div class="hint">
 			<p><strong>Login Help</strong></p>
 			<p>User name and password are case sensitive: "A" is different to "a".</p>
@@ -69,6 +70,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
 			</div>
 		<?php }?>
+		*/?>
 	</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
