@@ -67,6 +67,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
   </div>
 		</div> <!-- #content --> 
 		<div id="help" class="clearfix"> 
+			<?php /*
 			<div class="hint">
 				<p><strong>Do you need help with OpenEyes?</strong></p>
 				<p>Before you contact the helpdesk...</p>
@@ -84,6 +85,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
 				<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
 			</div>
+			*/?>
 		</div> <!-- #help --> 
 	</div> 
 	<!--#container --> 
