@@ -26,9 +26,9 @@ if (!Yii::app()->user->isGuest) {
 			</div>
 
 			<ul id="user_nav">
-				<li><a href="/">Home</a></li>
-				<li><a href="/theatre">Diary</a></li>
-				<li><a href="/waitingList">Waiting List</a></li>
+				<li><?php if ($_SERVER['REQUEST_URI'] == '/') {?><span class="selected">Home</span><?php }else{?><a href="/">Home</a><?php }?></li>
+				<li><?php if ($_SERVER['REQUEST_URI'] == '/theatre') {?><span class="selected">Diary</span><?php }else{?><a href="/theatre">Diary</a><?php }?></li>
+				<li><?php if ($_SERVER['REQUEST_URI'] == '/waitingList') {?><span class="selected">Waiting List</span><?php }else{?><a href="/waitingList">Waiting List</a><?php }?></li>
 				<li><a href="/site/logout" class="logout">Logout</a></li>
 			</ul>
 		</div>
