@@ -25,6 +25,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $cancelled_date
  * @property string $user_id
  * @property string $cancelled_reason_id
+ * @property string $cancellation_comment
  *
  * The followings are the available model relations:
  * @property CancellationReason $cancelledReason
@@ -59,6 +60,7 @@ class CancelledBooking extends CActiveRecord
 			array('element_operation_id, date, start_time, end_time, theatre_id, user_id, cancelled_reason_id', 'required'),
 			array('element_operation_id, theatre_id, user_id, cancelled_reason_id', 'length', 'max'=>10),
 			array('element_operation_id, date, start_time, end_time, theatre_id, user_id, cancelled_date, cancelled_reason_id', 'safe'),
+			array('cancellation_comment', 'length', 'max' => 200),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, element_operation_id, date, start_time, end_time, theatre_id, cancelled_date, user_id, cancelled_reason_id', 'safe', 'on'=>'search'),
@@ -94,6 +96,7 @@ class CancelledBooking extends CActiveRecord
 			'cancelled_date' => 'Cancelled Date',
 			'user_id' => 'User',
 			'cancelled_reason_id' => 'Cancelled Reason',
+			'cancellation_comment' => 'Cancellation comment'
 		);
 	}
 
@@ -117,6 +120,7 @@ class CancelledBooking extends CActiveRecord
 		$criteria->compare('cancelled_date',$this->cancelled_date,true);
 		$criteria->compare('user_id',$this->user_id,true);
 		$criteria->compare('cancelled_reason_id',$this->cancelled_reason_id,true);
+		$criteria->compare('cancellation_comment',$this->cancellation_comment,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

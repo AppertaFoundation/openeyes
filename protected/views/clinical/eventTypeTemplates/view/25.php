@@ -111,7 +111,11 @@ if (count($cancelledBookings)) {
 	foreach ($cancelledBookings as $cb) {
 		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . date('d M Y', strtotime($cb->date));
 		echo ', ' . $cb->theatre->name . ' (' . $cb->theatre->site->name . ') ';
-		echo ', cancelled on ' . date('d M Y', strtotime($cb->cancelled_date)) . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text . '<br />';
+		echo ', cancelled on ' . date('d M Y', strtotime($cb->cancelled_date)) . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text;
+		if ($cb->cancellation_comment) {
+			echo ' ('.$cb->cancellation_comment.')';
+		}
+		echo '<br />';
 	}
 ?>
 </h4></div>
@@ -127,6 +131,12 @@ $co = $operation->cancellation;
 	echo 'Cancelled on ' . date('d M Y', strtotime($co->cancelled_date)) . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
 ?>
 </h4></div>
+<?php if ($co->cancellation_comment) {?>
+	<h4>Cancellation comments</h4>
+	<div class="eventHighlight">
+		<h4><?php echo str_replace("\n","<br/>",$co->cancellation_comment)?></h4>
+	</div>
+<?php }?>
 <?php
 }
 

@@ -116,8 +116,10 @@ if (!empty($reschedule)) {
 		array('empty' => 'Select a reason')
 	);
 }
-?>
-
+echo "<br/>".CHtml::label('Comments: ', 'cancellation_comment');
+echo '<div style="height: 0.4em;"></div>';
+echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
+echo '<div style="height: 0.4em;"></div>'?>
 <span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d M Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 
 <div style="margin-top:10px;">
