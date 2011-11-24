@@ -590,7 +590,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 		content += '<td rowspan="4" style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo $patientName ?><br /><?php echo $patientDetails ?></td></tr>';
 
 		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">Hospital Number</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo $patient->hos_num ?></td></tr>';
-		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">DOB</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo $patient->dob ?></td></tr>';
+		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">DOB</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;"><?php echo date('d M Y', strtotime($patient->dob)) ?></td></tr>';
 		content += '<tr><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">&nbsp;</td><td style="padding:1em 0.5em; border:none; font-family: sans-serif; font-size:10pt;">&nbsp;</td></tr>';
 
 		content += '</table>';
