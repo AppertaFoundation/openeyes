@@ -107,7 +107,8 @@ class Site extends BaseActiveRecord
 	 */
 	public function getList()
 	{
-		$list = Site::model()->findAll();
+		$list = Site::model()->findAll(array('order' => 'short_name'));
+
 		$result = array();
 
 		foreach ($list as $site) {

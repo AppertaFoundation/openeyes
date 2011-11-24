@@ -81,6 +81,7 @@ class BookingControllerTest extends CDbTestCase
 		$site = $this->sites('site1');
 
 		$_GET['siteId'] = $site->id;
+		$_GET['firmId'] = $firm->id;
 
 		$criteria = new CDbCriteria;
 		$criteria->order = 'name ASC';
@@ -92,7 +93,7 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_schedule',
 				array('operation'=>$operation, 'date'=>$thisMonth,
-					'sessions'=>$sessions, 'firm'=>null, 'firmList'=>$firmList));
+					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList));
 
 		$mockController->actionSchedule();
 	}
@@ -107,6 +108,8 @@ class BookingControllerTest extends CDbTestCase
 
 		$firm = $this->firms('firm1');
 
+		$_GET['firmId'] = $firm->id;
+
 		$site = $this->sites('site1');
 
 		$criteria = new CDbCriteria;
@@ -119,7 +122,7 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_schedule',
 				array('operation'=>$operation, 'date'=>$minDate,
-					'sessions'=>$sessions, 'firm'=>null, 'firmList'=>$firmList));
+					'sessions'=>$sessions, 'firm'=>$firm, 'firmList'=>$firmList));
 
 		$mockController->actionSchedule();
 	}
@@ -151,6 +154,8 @@ class BookingControllerTest extends CDbTestCase
 
 		$firm = $this->firms('firm1');
 
+		$_GET['firmId'] = $firm->id;
+
 		$site = $this->sites('site1');
 
 		$criteria = new CDbCriteria;
@@ -165,7 +170,7 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_reschedule',
 				array('operation'=>$operation, 'date'=>$thisMonth, 'sessions'=>$sessions, 'firmId'=>null,
-					'firmList'=>$firmList, 'firm'=>null));
+					'firmList'=>$firmList, 'firm'=>$firm));
 
 		$mockController->actionReschedule();
 	}
@@ -179,6 +184,7 @@ class BookingControllerTest extends CDbTestCase
 		$_GET['operation'] = $operation->id;
 
 		$firm = $this->firms('firm1');
+		$_GET['firmId'] = $firm->id;
 
 		$site = $this->sites('site1');
 
@@ -192,7 +198,7 @@ class BookingControllerTest extends CDbTestCase
 			->method('renderPartial')
 			->with('/booking/_reschedule',
 				array('operation'=>$operation, 'date'=>$minDate, 'sessions'=>$sessions, 'firmId'=>null,
-					'firmList'=>$firmList, 'firm'=>null));
+					'firmList'=>$firmList, 'firm'=>$firm));
 
 		$mockController->actionReschedule();
 	}
