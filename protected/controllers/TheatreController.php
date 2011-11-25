@@ -40,12 +40,12 @@ class TheatreController extends BaseController
 
 	public function actionIndex()
 	{
-	        $firm = Firm::model()->findByPk($this->selectedFirmId);
+		$firm = Firm::model()->findByPk($this->selectedFirmId);
 
-                if (empty($firm)) {
-                        // No firm selected, reject
-                        throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
-                }
+		if (empty($firm)) {
+			// No firm selected, reject
+			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
+		}
 
 		$this->render('index', array('firm' => $firm));
 	}
@@ -56,25 +56,23 @@ class TheatreController extends BaseController
 
 		$_POST = $_GET;
 
+		$previousSequenceId = false;
+
 		foreach ($this->getTheatres() as $name => $dates) {
 			foreach ($dates as $date => $sessions) {
 				foreach ($sessions as $session) {
-					break;
-				}
-			}
+					if ($session['sequenceId'] != $previousSequenceId) {
+						$pdf->add_page(array(
+							'theatre_no' => $name,
+							'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
+							'surgical_firm' => empty($session['firm_name']) ? 'Emergency list' : $session['firm_name'],
+							'anaesthetist' => '', // todo: wtf
+							'date' => date('d M Y', strtotime($date))
+						));
+					}
 
-			$pdf->add_page(array(
-				'theatre_no' => $name,
-				'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
-				'surgical_firm' => empty($session['firm_name']) ? 'Emergency list' : $session['firm_name'],
-				'anaesthetist' => '', // todo: wtf
-				'date' => date('d M Y', strtotime($date))
-			));
-
-			foreach ($dates as $date => $sessions) {
-				foreach ($sessions as $session) {
-					if (!empty($session['procedures'])) {
-						$procedures = '['.$session['eye'].'] '.$session['procedures'];
+					if (!empty($session['patientId'])) {
+						$procedures = !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures';
 
 						if ($session['operationComments']) {
 							$procedures .= "\n".$session['operationComments'];
@@ -82,6 +80,8 @@ class TheatreController extends BaseController
 
 						$pdf->add_row($session['patientHosNum'], $session['patientName'], $session['patientAge'], $session['ward'], $session['anaesthetic'], $procedures, $session['admissionTime']);
 					}
+
+					$previousSequenceId = $session['sequenceId'];
 				}
 			}
 		}
@@ -131,7 +131,7 @@ class TheatreController extends BaseController
 				$endDate = $startDate;
 			} else {
 				$startDate = $_POST['date-start'];
-                                $endDate = $_POST['date-end'];
+																$endDate = $_POST['date-end'];
 			}
 
 			$data = $service->findTheatresAndSessions(
