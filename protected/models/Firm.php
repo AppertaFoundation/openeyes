@@ -207,7 +207,6 @@ class Firm extends BaseActiveRecord
 		natcasesort($data);
 
 		return $data;
-
 	}
 
 	/**
