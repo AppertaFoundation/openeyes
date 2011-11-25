@@ -157,7 +157,8 @@ class TheatreController extends BaseController
 					'ward' => $values['ward'],
 					'displayOrder' => $values['display_order'],
 					'comments' => $values['session_comments'],
-					'operationDuration' => $values['operation_duration']
+					'operationDuration' => $values['operation_duration'],
+					'confirmed' => $values['confirmed']
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
@@ -294,7 +295,7 @@ class TheatreController extends BaseController
 	}*/
 
 	public function actionMoveOperation()
-				{
+	{
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 			if (!empty($_POST['id'])) {
 				$operation = ElementOperation::model()->findByPk($_POST['id']);
@@ -310,7 +311,25 @@ class TheatreController extends BaseController
 		}
 
 		return false;
-				}
+	}
+
+        public function actionConfirmOperation()
+        {
+                if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+                        if (!empty($_POST['id'])) {
+                                $operation = ElementOperation::model()->findByPk($_POST['id']);
+
+				$operation->booking->confirmed = 1;
+				$operation->booking->save();
+
+                                echo CJavaScript::jsonEncode(1);
+
+                                return true;
+                        }
+                }
+
+                return false;
+        }
 
 	/**
 	 * Helper method to fetch firms by specialty ID

@@ -101,7 +101,7 @@ if (empty($theatres)) {?>
 									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
 											);
 								?></td>
-								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+								<td class="patient leftAlign"><?php if (!$session['confirmed']) { ?><a href="#" id="confirm<?php echo $session['operationId'] ?>"><img src="img/_elements/btns/misc/confirm-icon.png" alt="confirm-icon" width="19" height="19" /></a><?php } ?><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
 								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
 								<td class="ward"><?php echo $session['ward']; ?></td>
@@ -129,6 +129,12 @@ if (empty($theatres)) {?>
 
 					if (!empty($session['consultantRequired'])) {
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
+<?php
+					}
+
+					if ($session['confirmed']) {
+?>
+							<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" />
 <?php
 					}
 				}
@@ -218,6 +224,31 @@ if (empty($theatres)) {?>
 
 		return false;
 	});
+
+        $('a[id^="confirm"]').click(function() {
+                id = this.id.replace(/confirm/i, "");
+
+		a = this;
+
+		parent = $(this).parent();
+
+		sibling = $(parent).siblings('.alerts');
+
+                $.ajax({
+                        'url': '<?php echo Yii::app()->createUrl('theatre/confirmOperation'); ?>',
+                        'type': 'POST',
+                        'data': 'id=' + id,
+                        'success': function(data) {
+                                if (data == 1) {
+					sibling.append('<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" />');
+
+					$(a).remove();
+                                }
+                        },
+                });
+
+                return false;
+        });
 
 	function enable_sort() {
 		$("#theatre_list tbody").sortable({
