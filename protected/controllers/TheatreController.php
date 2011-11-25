@@ -57,6 +57,12 @@ class TheatreController extends BaseController
 		$_POST = $_GET;
 
 		foreach ($this->getTheatres() as $name => $dates) {
+			foreach ($dates as $date => $sessions) {
+				foreach ($sessions as $session) {
+					break;
+				}
+			}
+
 			$pdf->add_page(array(
 				'theatre_no' => $name,
 				'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
