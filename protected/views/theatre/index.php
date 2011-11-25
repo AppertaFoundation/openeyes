@@ -180,6 +180,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				<button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button>
 			</div>
 		</div> <!-- .fullWidth -->
+		<div id="iframeprintholder" style="display: none;"></div>
 <script type="text/javascript">
 	var searchData;
 
@@ -190,29 +191,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return getList();
 	});
 
-  	$(document).ready(function() {
+	$(document).ready(function() {
 		$("#btn_print").click(function() {
-			printElem(
-			{
-			     	pageTitle:'openeyes printout',
-			     	printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
-	       	     		overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
-			 });
+			window.location.href = '<?php echo Yii::app()->createUrl('theatre/printList')?>?'+searchData;
 		});
 	});
-
-	function printElem(options){
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
-			'type': 'POST',
-			'data': searchData,
-			'success': function(data) {
-				$('#printable').html(data);
-				$('#printable').printElement(options);
-				return false;
-			}
-		});
-	}
 
 	function getList() {
 		searchData = $('#theatre-filter').serialize();

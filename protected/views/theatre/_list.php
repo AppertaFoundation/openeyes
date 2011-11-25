@@ -67,7 +67,7 @@ if (empty($theatres)) {?>
 								<textarea style="display: none;" rows="2" style="width:245px;" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
 								<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
 							</form>
-							<?/*<div class="modifyComments"><span class="edit"><a href="#" id="editComments<?php echo $session['sessionId'] ?>" name="<?php echo $session['sessionId'] ?>">Edit comment</a></span></div>*/?>
+							<?php /*<div class="modifyComments"><span class="edit"><a href="#" id="editComments<?php echo $session['sessionId'] ?>" name="<?php echo $session['sessionId'] ?>">Edit comment</a></span></div>*/?>
 						</div>
 
 					<table id="theatre_list">
