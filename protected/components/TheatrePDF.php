@@ -57,34 +57,34 @@ class TheatrePDF extends FPDF {
 		'L' => array(
 			0 => array(
 				'title' => 'HOSPT NO',
-				'width' => 18,
+				'width' => 24,
 				'align' => 'C'
 			),
 			1 => array(
 				'title' => 'PATIENT',
-				'width' => 25,
+				'width' => 45,
 				'align' => 'L',
 				'wrap' => true
 			),
 			2 => array(
 				'title' => 'AGE',
-				'width' => 8,
+				'width' => 10,
 				'align' => 'C'
 			),
 			3 => array(
 				'title' => 'WARD',
-				'width' => 15,
+				'width' => 20,
 				'align' => 'C',
 				'wrap' => true
 			),
 			4 => array(
 				'title' => 'GA or LA',
-				'width' => 15,
+				'width' => 20,
 				'align' => 'C'
 			),
 			5 => array(
 				'title' => 'PROCEDURES AND COMMENTS',
-				'width' => 178,
+				'width' => 137,
 				'align' => 'L',
 				'wrap' => true
 			),
@@ -103,7 +103,7 @@ class TheatrePDF extends FPDF {
 	private $row_padding_bottom = 2;
 	private $row_height = 4;
 	private $bold = false;
-	private $fontsize = 10;
+	private $fontsize = 12;
 	private $row_data = array();
 	private $n_pages = 0;
 	private $orientation = 'L';
@@ -131,7 +131,7 @@ class TheatrePDF extends FPDF {
 
 	function add_page($params, $has_procedures=true) {
 		$this->addPage();
-		$this->fontsize(10);
+		$this->fontsize(14);
 
 		$this->setY(5);
 
@@ -140,14 +140,14 @@ class TheatrePDF extends FPDF {
 		$this->SetLineWidth(0.5);
 
 		if ($this->orientation == 'P') {
-			$this->Line(10,11,200,11);
+			$this->Line(50,11,150,11);
 		} else {
-			$this->Line(10,11,287,11);
+			$this->Line(120,11,177,11);
 		}
 
-		$this->setY(12);
+		$this->setY(15);
 
-		$this->fontsize(8);
+		$this->fontsize(12);
 
 		$this->SetLineWidth(0.1);
 
@@ -166,22 +166,24 @@ class TheatrePDF extends FPDF {
 			$this->Cell(15,8,'DATE:','B',0);
 			$this->Cell(28,8,$params['date'],'B',1);
 		} else {
-			$this->Cell(80,8,'THEATRE NO:','B',0);
-			$this->Cell(197,8,$params['theatre_no'],'B',1);
+			$this->Cell(100,8,'THEATRE NO:','B',0);
+			$this->Cell(177,8,$params['theatre_no'],'B',1);
 
-			$this->Cell(80,8,'SESSION:','B',0);
-			$this->Cell(67,8,$params['session'],'B',0);
-			$this->Cell(130,8,'NHS','B',1);
+			$this->Cell(100,8,'SESSION:','B',0);
+			$this->Cell(97,8,$params['session'],'B',0);
+			$this->Cell(80,8,'NHS','B',1);
 
-			$this->Cell(80,8,'SURGICAL FIRM: '.$params['surgical_firm'],'B',0);
-			$this->Cell(67,8,'ANAESTHETIST: '.$params['anaesthetist'],'B',0);
+			$this->Cell(100,8,'SURGICAL FIRM: '.$params['surgical_firm'],'B',0);
+			$this->Cell(97,8,'ANAESTHETIST: '.$params['anaesthetist'],'B',0);
 			$this->Cell(15,8,'DATE:','B',0);
-			$this->Cell(115,8,$params['date'],'B',1);
+			$this->Cell(65,8,$params['date'],'B',1);
 		}
 
-		$this->setY(38);
+		$this->setY(42);
 
 		$this->bold();
+
+		$this->fontsize(10);
 
 		if ($has_procedures) {
 			foreach ($this->columns as $i => $column) {
