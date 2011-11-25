@@ -66,9 +66,7 @@ class BookingController extends BaseController
 
 		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
-		$criteria = new CDbCriteria;
-		$criteria->order = 'name ASC';
-		$firmList = Firm::model()->findAll($criteria);
+		$firmList = Firm::model()->getListWithSpecialties();
 
 		$this->renderPartial('/booking/_schedule',
 			array('operation'=>$operation, 'date'=>$minDate,
@@ -106,9 +104,7 @@ class BookingController extends BaseController
 
 		$sessions = $operation->getSessions($firm->name == 'Emergency List');
 
-		$criteria = new CDbCriteria;
-		$criteria->order = 'name ASC';
-		$firmList = Firm::model()->findAll($criteria);
+		$firmList = Firm::model()->getListWithSpecialties();
 
 		$this->renderPartial('/booking/_reschedule',
 			array(

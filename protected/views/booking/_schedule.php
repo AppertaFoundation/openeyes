@@ -46,8 +46,8 @@ $patient = $operation->event->episode->patient;
 			<select id="firmId">
 				<option value="">Select a different firm</option>
 				<option value="EMG">Emergency List</option>
-				<?php foreach ($firmList as $aFirm) {?>
-					<option value="<?php echo $aFirm->id; ?>"><?php echo $aFirm->name; ?> (<?php echo $aFirm->serviceSpecialtyAssignment->specialty->name ?>)</option>
+				<?php foreach ($firmList as $id => $name) {?>
+					<option value="<?php echo $id ?>"><?php echo $name ?></option>
 				<?php }?>
 			</select>
 		</div>

@@ -22,19 +22,19 @@ class ReferralService
 	 */
 	public function getNewReferrals()
 	{
-								if (!Yii::app()->params['use_pas']) {
-			throw new Exception('use_pas not set to true');
-								}
+		if (!Yii::app()->params['use_pas']) {
+			return "The use_pas parameter in config/params.php must be set to true for this to work or the User model will ask for passwords.\n";
+		}
 
-								$mid = Yii::app()->db->createCommand()
-												->select('MAX(refno) AS mrn')
-												->from('referral')
-												->queryRow();
+		$mid = Yii::app()->db->createCommand()
+				->select('MAX(refno) AS mrn')
+				->from('referral')
+				->queryRow();
 
-								if (empty($mid['mrn'])) {
-			//throw new Exception('No MID in ReferralService.search');
+		if (empty($mid['mrn'])) {
+			echo "There are no referrals in the DB. This would cause every referral from PAS to be fetched.\n";
 			exit;
-								}
+		}
 		
 		$results = PAS_Referral::model()->findAll('REFNO > ? AND REF_SPEC <> \'OP\'', array($mid['mrn']));
 
@@ -51,7 +51,7 @@ class ReferralService
 				$referral = new Referral;
 
 				// N.B. service_id points to the service_specialty_assignment.id - needs to be changed!
-				$referral->service_id = $ssa->id;
+				$referral->service_specialty_assignment_id = $ssa->id;
 				$referral->patient_id = $pasReferral->X_CN;
 				$referral->refno = $pasReferral->REFNO;
 	
@@ -69,17 +69,17 @@ class ReferralService
 
 		//echo "\nREFERRAL CREATION COMPLETE.\n\n";
 
-		// Find all the open referrals with no referral
-								$command = Yii::app()->db->createCommand()
-												->select('p.id AS pid, ep.id AS epid, rea.id AS reaid, ssa.id AS ssaid')
-												->from('patient p')
-												->join('episode ep', 'ep.patient_id = p.id')
+		// Find all the open episodes with no referral
+		$command = Yii::app()->db->createCommand()
+			->select('p.id AS pid, ep.id AS epid, rea.id AS reaid, ssa.id AS ssaid')
+			->from('patient p')
+			->join('episode ep', 'ep.patient_id = p.id')
 			->join('firm f', 'f.id = ep.firm_id')
 			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
-												->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
+			->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
 			->where('ep.end_date IS NULL');
 
-								foreach ($command->queryAll() as $result) {
+		foreach ($command->queryAll() as $result) {
 			if (empty($result['reaid'])) {
 				$referralId = $this->getReferral($result['pid'], $result['ssaid']);
 
@@ -122,7 +122,7 @@ class ReferralService
 		$referrals = Referral::model()->findAll(
 			array(
 				'order' => 'refno DESC',
-				'condition' => 'patient_id = :p AND service_id = :s AND closed = 0',
+				'condition' => 'patient_id = :p AND service_specialty_assignment_id = :s AND closed = 0',
 				'params' => array(
 					':p' => $patientId,
 					':s' => $ssaId

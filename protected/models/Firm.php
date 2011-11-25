@@ -160,14 +160,30 @@ class Firm extends BaseActiveRecord
 	 * Fetch an array of firm IDs and names
 	 * @return array
 	 */
-	public function getList()
+	public function getList($specialtyId = null)
 	{
-		$list = Firm::model()->findAll();
 		$result = array();
 
-		foreach ($list as $firm) {
-			$result[$firm->id] = $firm->name;
+		if (empty($specialtyId)) {
+			$list = Firm::model()->findAll();
+		
+			foreach ($list as $firm) {
+				$result[$firm->id] = $firm->name;
+			}
+		} else {
+			$list = Yii::app()->db->createCommand()
+                        ->select('f.id, f.name')
+                        ->from('firm f')
+                        ->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
+			->where('ssa.specialty_id = :sid', array(':sid' => $specialtyId))
+                        ->queryAll();
+
+			foreach ($list as $firm) {
+                                $result[$firm['id']] = $firm['name'];
+                        }
 		}
+
+		natcasesort($result);
 
 		return $result;
 	}
@@ -188,8 +204,9 @@ class Firm extends BaseActiveRecord
 			$data[$firm['id']] = $firm['name'] . ' (' . $firm['specialty'] . ')';
 		}
 
-		return $data;
+		natcasesort($data);
 
+		return $data;
 	}
 
 	/**
