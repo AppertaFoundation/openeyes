@@ -20,24 +20,12 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 <div id="theatres">
 	<h4>Select a session time:</h4>
 	<div id="theatre-times">
-		<ul>
 <?php
 
 $i = 0;
 foreach ($theatres as $name => $sessions) {
 ?>
-			<li><a title="#theatre-times_tab_<?php echo $i ?>" href="#theatre-times_tab_<?php echo $i ?>"><?php echo $name ?></a></li>
-<?php
-
-	$i++;
-}
-?>
-		</ul>
-<?php
-
-$i = 0;
-foreach ($theatres as $name => $sessions) {
-?>
+		<h5><?php echo $name ?></h5>
 		<div id="theatre-times_tab_<?php echo $i ?>" class="sessionTimes">
 <?php
 	foreach ($sessions as $session) {
