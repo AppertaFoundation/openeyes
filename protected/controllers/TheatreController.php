@@ -48,7 +48,35 @@ class TheatreController extends BaseController
 
 	public function actionPrintList()
 	{
-		$this->renderPartial('_print_list', array('theatres'=>$this->getTheatres()), false, true);
+		$pdf = new TheatrePDF;
+
+		$_POST = $_GET;
+
+		foreach ($this->getTheatres() as $name => $dates) {
+			$pdf->add_page(array(
+				'theatre_no' => $name,
+				'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
+				'surgical_firm' => empty($session['firm_name']) ? 'Emergency list' : $session['firm_name'],
+				'anaesthetist' => '', // todo: wtf
+				'date' => date('d M Y', strtotime($date))
+			));
+
+			foreach ($dates as $date => $sessions) {
+				foreach ($sessions as $session) {
+					if (!empty($session['procedures'])) {
+						$procedures = '['.$session['eye'].'] '.$session['procedures'];
+
+						if ($session['operationComments']) {
+							$procedures .= "\n".$session['operationComments'];
+						}
+
+						$pdf->add_row($session['patientHosNum'], $session['patientName'], $session['patientAge'], $session['ward'], $session['anaesthetic'], $procedures, $session['admissionTime']);
+					}
+				}
+			}
+		}
+
+		$pdf->build();
 	}
 
 	public function actionSearch()
