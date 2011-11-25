@@ -194,13 +194,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$(document).ready(function() {
 		$("#btn_print").click(function() {
 			window.location.href = '<?php echo Yii::app()->createUrl('theatre/printList')?>?'+searchData;
-
-			/*$("#iframeprintholder").html("<iframe id='iframeprint' name='printme' src='<?php echo Yii::app()->createUrl('theatre/printList')?>?"+searchData+"' />");
-
-			$('#iframeprint').load(function() {
-				window.frames['printme'].focus();
-				window.frames['printme'].print();
-			});*/
 		});
 	});
 
