@@ -158,46 +158,46 @@ if (empty($theatres)) {?>
 		value = $('#admitTime' + id).val();
 
 		$.ajax({
-					'url': '<?php echo Yii::app()->createUrl('theatre/updateAdmitTime'); ?>',
-					'type': 'POST',
-					'data': 'id=' + id + '&admission_time=' + value,
-					'success': function(data) {
+			'url': '<?php echo Yii::app()->createUrl('theatre/updateAdmitTime'); ?>',
+			'type': 'POST',
+			'data': 'id=' + id + '&admission_time=' + value,
+			'success': function(data) {
 				return false;
-					}
+			}
 		});
 
 		return false;
 	});
 
-				$('a[id^="editComments"]').click(function() {
-								id = this.name;
-								value = $('#comments' + this.name).val();
+	$('a[id^="editComments"]').click(function() {
+		id = this.name;
+		value = $('#comments' + this.name).val();
 
-								$.ajax({
-												'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
-												'type': 'POST',
-												'data': 'id=' + id + '&comments=' + value,
-												'success': function(data) {
-																return false;
-												}
-								});
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
+			'type': 'POST',
+			'data': 'id=' + id + '&comments=' + value,
+			'success': function(data) {
+				return false;
+			}
+		});
 
-								return false;
-				});
+		return false;
+	});
 
 	$('a[id^="u_"]').click(function() {
 		id = this.id.replace(/u_/i, "");
 
-					$.ajax({
-								'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
-								'type': 'POST',
-								'data': 'id=' + id + '&up=1',
-								'success': function(data) {
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
+			'type': 'POST',
+			'data': 'id=' + id + '&up=1',
+			'success': function(data) {
 				if (data == 1) {
 					$('#oprow_' + id).prev().before($('#oprow_' + id));
 				}
-								},
-					});
+			},
+		});
 
 		return false;
 	});

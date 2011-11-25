@@ -32,9 +32,17 @@
 											$scheduled = true;
 										}
 									}
+
+									if (ctype_digit(@$_GET['event']) && $_GET['event'] == $event->id) {
+										$highlight = true;
+									} else {
+										$highlight = false;
+									}
 									?>
-									<li><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo date('d M Y',strtotime($event->datetime))?></span></a></li>
-								<?php }?>
+									<li><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo date('d M Y',strtotime($event->datetime))?></span><?php if ($highlight) echo '</div>' ?></a></li>
+							<?php
+								}
+							?>
 							</ul>
 						</div>
 						<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
@@ -117,6 +125,13 @@
 			$('a.show-event-details').unbind('click').click(function() {
 				var event_id = $(this).attr('rel');
 				view_event(event_id);
+				// Highlight event clicked - get child of element. If it's a div do nothing. If it's a span blank all other elements of this class and add a div to this span
+
+				var content = $(".viewing").contents()
+				$(".viewing").replaceWith(content);
+
+				$(this).wrapInner('<div class="viewing" />');
+
 				return false;
 			});
 
