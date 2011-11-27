@@ -78,10 +78,10 @@ if (isset($referrals) && is_array($referrals)) {
 					<input id="ScheduleOperation_0" value="1" checked="checked" type="radio" name="ScheduleOperation[schedule]" />
 					<label for="ScheduleOperation_0">As soon as possible</label>
 				</span>
-				<span class="group">
+				<!--span class="group">
 					<input id="ScheduleOperation_1" value="0" type="radio" name="ScheduleOperation[schedule]" />
 					<label for="ScheduleOperation_1">Within timeframe specified by patient</label>
-				</span>
+				</span-->
 			</div>
 	</div>
 
