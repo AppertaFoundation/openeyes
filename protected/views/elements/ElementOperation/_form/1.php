@@ -121,7 +121,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 												});
 								}",
 				),
-				'htmlOptions'=>array('style'=>'width: 400px;')
+				'htmlOptions'=>array('style'=>'width: 400px; margin-left: 300px')
 )); ?>
 						</div> <!-- .extraDetails -->
 					</div>
