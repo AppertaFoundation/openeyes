@@ -167,7 +167,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				<div id="theatreList">
 				</div>
 
-				<!-- ====================================================  P R I N T  S T U F F ============  -->
+				<!-- ====================================================  P R I N T	S T U F F ============	-->
 				<div class="printable" id="printable">
 
 				</div> <!-- end of printable area -->
@@ -193,9 +193,33 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$(document).ready(function() {
 		$("#btn_print").click(function() {
-			window.location.href = '<?php echo Yii::app()->createUrl('theatre/printList')?>?'+searchData;
+			printElem(
+			{
+						pageTitle:'openeyes printout',
+						printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
+									overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
+			 });
 		});
 	});
+
+	function printElem(options){
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
+			'type': 'POST',
+			'data': searchData,
+			'success': function(data) {
+				$('#printable').html(data);
+				$('#printable').printElement(options);
+				return false;
+			}
+		});
+	}
+
+	/*$(document).ready(function() {
+		$("#btn_print").click(function() {
+			window.location.href = '<?php echo Yii::app()->createUrl('theatre/printList')?>?'+searchData;
+		});
+	});*/
 
 	function getList() {
 		searchData = $('#theatre-filter').serialize();
@@ -304,15 +328,15 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return true;
 	});
 
-        $('#date-filter_2').click(function() {
-                today = new Date();
+				$('#date-filter_2').click(function() {
+								today = new Date();
 
-                $('#date-start').val(dateString(today));
+								$('#date-start').val(dateString(today));
 
-                $('#date-end').val(returnDateWithInterval(today, 30));
+								$('#date-end').val(returnDateWithInterval(today, 30));
 
 		return true;
-        });
+				});
 
 	$('#last_week').click(function() {
 		// Calculate week before custom date or week before today if no custom date
@@ -359,12 +383,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return false;
 	});
 
-        function returnDateWithInterval(d, interval) {
+				function returnDateWithInterval(d, interval) {
 		// Uses javascript date format (months from 0 to 11)
-                dateWithInterval = new Date(d.getTime() + (86400000 * interval));
+								dateWithInterval = new Date(d.getTime() + (86400000 * interval));
 
-                return dateString(dateWithInterval);
-        }
+								return dateString(dateWithInterval);
+				}
 
 	function returnDateWithIntervalFromString(ds, interval) {
 		// Uses real date format (months from 1 to 12)

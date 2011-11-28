@@ -52,6 +52,8 @@ class TheatreController extends BaseController
 
 	public function actionPrintList()
 	{
+		$this->renderPartial('_print_list', array('theatres'=>$this->getTheatres()), false, true);
+		/*
 		$pdf = new TheatrePDF;
 
 		$_POST = $_GET;
@@ -87,6 +89,7 @@ class TheatreController extends BaseController
 		}
 
 		$pdf->build();
+		*/
 	}
 
 	public function actionSearch()
