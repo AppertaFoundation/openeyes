@@ -86,70 +86,31 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 							<label for="date-filter_3">or select date range:</label>
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-		'name'=>'date-start',
-		'id'=>'date-start',
-		// additional javascript options for the date picker plugin
-		'options'=>array(
-		'changeMonth'=>true,
-		'changeYear'=>true,
-		'showOtherMonths'=>true,
-				'showAnim'=>'fold',
-		'dateFormat'=>'yy-mm-dd',
-		'onSelect'=>"js:function(selectedDate) {
-			var option = this.id == 'date-start' ? 'minDate' : 'maxDate',
-				instance = $(this).data('datepicker'),
-				date = $.datepicker.parseDate(
-					instance.settings.dateFormat ||
-					$.datepicker._defaults.dateFormat,
-					selectedDate, instance.settings );
-			if (this.id == 'date-start') {
-				$('#date-end').datepicker('option', option, date);
-			} else {
-				$('#date-start').datepicker('option', option, date);
-			}
-		}",
-		'onClose'=>"js:function(dateText, inst) {
-			if (dateText != '') {
-				$('input[name=date-filter][value=custom]').attr('checked', true);
-			}
-		}",
-		),
-	'htmlOptions'=>array('size'=>10),
-));
+								'name'=>'date-start',
+								'id'=>'date-start',
+								// additional javascript options for the date picker plugin
+								'options'=>array(
+									'showAnim'=>'fold',
+									'dateFormat'=>'yy-mm-dd',
+									'maxDate'=>'today'
+								),
+								'value' => $model->decision_date,
+								'htmlOptions'=>array('style'=>'width: 110px;')
+							));
 ?>
 							to
-<?php
-$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-		'name'=>'date-end',
-		'id'=>'date-end',
-		// additional javascript options for the date picker plugin
-		'options'=>array(
-		'changeMonth'=>true,
-		'changeYear'=>true,
-		'showOtherMonths'=>true,
-		'showAnim'=>'fold',
-		'dateFormat'=>'yy-mm-dd',
-		'onSelect'=>"js:function(selectedDate) {
-			var option = this.id == 'date-start' ? 'minDate' : 'maxDate',
-				instance = $(this).data('datepicker'),
-				date = $.datepicker.parseDate(
-					instance.settings.dateFormat ||
-					$.datepicker._defaults.dateFormat,
-					selectedDate, instance.settings );
-			if (this.id == 'date-start') {
-				$('#date-end').datepicker('option', option, date);
-			} else {
-				$('#date-start').datepicker('option', option, date);
-			}
-		}",
-		'onClose'=>"js:function(dateText, inst) {
-			if (dateText != '') {
-				$('input[name=date-filter][value=custom]').attr('checked', true);
-			}
-		}"
-		),
-	'htmlOptions'=>array('size'=>10),
-));
+<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								'name'=>'date-end',
+								'id'=>'date-end',
+								// additional javascript options for the date picker plugin
+								'options'=>array(
+									'showAnim'=>'fold',
+									'dateFormat'=>'yy-mm-dd',
+									'maxDate'=>'today'
+								),
+								'value' => $model->decision_date,
+								'htmlOptions'=>array('style'=>'width: 110px;')
+							));
 ?>
 							</span>
 							<span class="group">
