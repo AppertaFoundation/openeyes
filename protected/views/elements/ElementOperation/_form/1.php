@@ -44,21 +44,21 @@ if (empty($model->event_id)) {
 					<div id="typeProcedure" class="eventDetail">
 						<div class="label">Add procedure:</div>
 						<div class="data">
-																												<?php if (!empty($subsections) || !empty($procedures)) { ?>
-																																<div class="data"> <?php
-																																				if (!empty($subsections)) {
-																																								echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
-																																								echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
-																																				} else {
-																																								echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
-																																				} ?> &nbsp;
-																																</div>
-																												<?php }?>
+							<?php if (!empty($subsections) || !empty($procedures)) { ?>
+								<div class="data"> <?php
+									if (!empty($subsections)) {
+										echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
+										echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
+									} else {
+										echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
+									} ?> &nbsp;
+								</div>
+							<?php }?>
 						<span class="labelHint"><strong>Click to select</strong> the required procedure<br /><strong>or</strong> type the first few characters of a procedure.</span>
 						</div>
 
 						<div class="extraDetails">
-																								<?php /*<input style="width: 400px;" id="procedure_id" type="text" name="procedure_id" />*/?>
+							<?php /*<input style="width: 400px;" id="procedure_id" type="text" name="procedure_id" />*/?>
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'name'=>'procedure_id',
@@ -129,7 +129,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					<div id="procedureDiv"<?php
 					if ($newRecord) { ?> style="display:none;"<?php
 					} ?>>
-						<div class="extraDetails grid-view">
+						<div class="extraDetails grid-view extraDetails-margin">
 							<table id="procedure_list" class="grid" style="width:100%; background:#e3f0f2;<?php
 						if ($newRecord) { ?> display:none;<?php
 						} ?>" title="Procedure List">

@@ -433,6 +433,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .eventDetail > .data > .labelHint { width: 280px; }
 /* extra details */
 .eventDetail .extraDetails { display:block; margin:8px 0; padding-top:8px; border-top:1px dotted #b9c4cd; }
+.extraDetails-margin { margin-left: 310px; }
 
 /* ====== EVENT GENERAL ====== */
 /* drop down menu list - width control in HTML */
@@ -653,3 +654,5 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #footer-contacts { margin-left: auto; margin-right: auto; margin-top: 1px; width: 28em; }
 
 #LoginForm_siteId { margin-top: 6px; position: absolute; right: 0; top: 0; width: 212px; }
+
+#procedureDiv { background: #DAE6F1; }
