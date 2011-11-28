@@ -41,7 +41,7 @@ $this->layout = 'simple';
 				<?php }?>
 			</div>
 
-			<div class="row">
+			<div class="loginRow bigInput">
 				<?php echo CHtml::activeLabel($model,'siteId', array('label'=>'Site:')); ?>
 				<?php echo $form->dropDownList($model, 'siteId', $sites, array('tabindex' => 3)); ?>
 				<?php echo $form->error($model,'siteId'); ?>
