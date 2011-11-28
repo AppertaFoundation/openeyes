@@ -39,7 +39,7 @@
 										$highlight = false;
 									}
 									?>
-									<li><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo date('d M Y',strtotime($event->datetime))?></span><?php if ($highlight) echo '</div>' ?></a></li>
+									<li id="eventLi<?php echo $event->id ?>"><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo date('d M Y',strtotime($event->datetime))?></span><?php if ($highlight) echo '</div>' ?></a></li>
 							<?php
 								}
 							?>
@@ -111,6 +111,18 @@
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
 		<script type="text/javascript">
+		<?php
+			if (ctype_digit(@$_GET['event'])) {
+		?>
+			var currentEvent = <?php echo $_GET['event'] ?>;
+		<?php
+			} else {
+		?>
+			var currentEvent = '';
+		<?php
+			}
+		?>
+
 			$('a.episode-details').unbind('click').click(function() {
 				$.ajax({
 					url: '/clinical/episodesummary/'+$(this).attr('rel'),
@@ -122,15 +134,29 @@
 				return false;
 			});
 
-			$('a.show-event-details').unbind('click').click(function() {
+			$('a.show-event-details').die('click').live('click', function() {
 				var event_id = $(this).attr('rel');
 				view_event(event_id);
 				// Highlight event clicked - get child of element. If it's a div do nothing. If it's a span blank all other elements of this class and add a div to this span
 
+				// Get rid of all "viewing" divs
 				var content = $(".viewing").contents()
 				$(".viewing").replaceWith(content);
 
+				// Wrap contents of chosen a in the "viewing" div
 				$(this).wrapInner('<div class="viewing" />');
+
+				// Get rid of the a
+				var content = $(this).contents()
+                                $(this).replaceWith(content);
+
+				if (currentEvent != '') {
+					// An event was highlighted previously so recreate the a it had
+					$('li[id=eventLi' + currentEvent + ']').wrapInner('<a href="#" rel="' + currentEvent + '" class="show-event-details" />');
+				}
+
+				// Prepare for the next click
+				currentEvent = event_id;
 
 				return false;
 			});

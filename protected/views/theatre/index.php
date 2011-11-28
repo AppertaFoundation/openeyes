@@ -153,7 +153,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 ?>
 							</span>
 							<span class="group">
-							<a href="" id="last_week">Last week</a> <a href="" id="next_week">Next week</a>
+							<a href="" id="last_week">Last week</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="next_week">Next week</a>
 							</span>
 
 							<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
