@@ -141,7 +141,7 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><a href="/patient/episodes/<?php echo $model->id?>"><span class="aPush">View all Episodes, Summaries and Events</span></a></p>
+					<p><a href="/patient/episodes/<?php echo $model->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
