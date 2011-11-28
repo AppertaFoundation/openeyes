@@ -8,17 +8,17 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk       info@openeyes.org.uk
+http://www.openeyes.org.uk			 info@openeyes.org.uk
 --
 */
 
 if (empty($model->event_id)) {
-        // It's a new event so fetch the most recent element_diagnosis
-        $diagnosis = ElementDiagnosis::model()->getNewestDiagnosis();
+				// It's a new event so fetch the most recent element_diagnosis
+				$diagnosis = ElementDiagnosis::model()->getNewestDiagnosis();
 
-        if (!empty($diagnosis->disorder)) {
-                $model->eye = $diagnosis->eye;
-        }
+				if (!empty($diagnosis->disorder)) {
+								$model->eye = $diagnosis->eye;
+				}
 }
 ?>
 					<h4>Operation details</h4>
@@ -27,10 +27,6 @@ if (empty($model->event_id)) {
 						<div class="data">
 							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
 							<span class="group">
-							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-							<label for="ElementOperation_eye_0">Right</label>
-							</span>
-							<span class="group">
 							<input id="ElementOperation_eye_1" value="0" <?php if (empty($model->eye)) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_1">Left</label>
 							</span>
@@ -38,90 +34,94 @@ if (empty($model->event_id)) {
 							<input id="ElementOperation_eye_2" value="2" <?php if ($model->eye == '2') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_2">Both</label>
 							</span>
+							<span class="group">
+							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<label for="ElementOperation_eye_0">Right</label>
+							</span>
 						</div>
 					</div>
 
 					<div id="typeProcedure" class="eventDetail">
 						<div class="label">Add procedure:</div>
 						<div class="data">
-                                                        <?php if (!empty($subsections) || !empty($procedures)) { ?>
-                                                                <div class="data"> <?php
-                                                                        if (!empty($subsections)) {
-                                                                                echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
-                                                                                echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
-                                                                        } else {
-                                                                                echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
-                                                                        } ?> &nbsp;
-                                                                </div>
-                                                        <?php }?>
+																												<?php if (!empty($subsections) || !empty($procedures)) { ?>
+																																<div class="data"> <?php
+																																				if (!empty($subsections)) {
+																																								echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
+																																								echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
+																																				} else {
+																																								echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
+																																				} ?> &nbsp;
+																																</div>
+																												<?php }?>
 						<span class="labelHint"><strong>Click to select</strong> the required procedure<br /><strong>or</strong> type the first few characters of a procedure.</span>
 						</div>
 
 						<div class="extraDetails">
-                                                <?php /*<input style="width: 400px;" id="procedure_id" type="text" name="procedure_id" />*/?>
+																								<?php /*<input style="width: 400px;" id="procedure_id" type="text" name="procedure_id" />*/?>
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-        'name'=>'procedure_id',
-        'id'=>'autocomplete_procedure_id',
-        'source'=>"js:function(request, response) {
-                var existingProcedures = [];
-                $('#procedure_list tbody').children().each(function () {
-                        var text = $(this).children('td:first').text();
-                        existingProcedures.push(text.replace(/ remove$/i, ''));
-                });
+				'name'=>'procedure_id',
+				'id'=>'autocomplete_procedure_id',
+				'source'=>"js:function(request, response) {
+								var existingProcedures = [];
+								$('#procedure_list tbody').children().each(function () {
+												var text = $(this).children('td:first').text();
+												existingProcedures.push(text.replace(/ remove$/i, ''));
+								});
 
-                $.ajax({
-                        'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
-                        'type':'GET',
-                        'data':{'term': request.term},
-                        'success':function(data) {
-                                data = $.parseJSON(data);
+								$.ajax({
+												'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
+												'type':'GET',
+												'data':{'term': request.term},
+												'success':function(data) {
+																data = $.parseJSON(data);
 
-                                var result = [];
+																var result = [];
 
-                                for (var i = 0; i < data.length; i++) {
-                                        var index = $.inArray(data[i], existingProcedures);
-                                        if (index == -1) {
-                                                result.push(data[i]);
-                                        }
-                                }
+																for (var i = 0; i < data.length; i++) {
+																				var index = $.inArray(data[i], existingProcedures);
+																				if (index == -1) {
+																								result.push(data[i]);
+																				}
+																}
 
-                                response(result);
-                        }
-                });
-        }",
-        'options'=>array(
-                'minLength'=>'2',
-                'select'=>"js:function(event, ui) {
-                        $.ajax({
-                                'url': '" . Yii::app()->createUrl('procedure/details') . "',
-                                'type': 'GET',
-                                'data': {'name': ui.item.value},
-                                'success': function(data) {
-                                        // append selection onto procedure list
-                                        $('#procedure_list tbody').append(data);
-                                        $('#procedureDiv').show();
-                                        $('#procedure_list').show();
+																response(result);
+												}
+								});
+				}",
+				'options'=>array(
+								'minLength'=>'2',
+								'select'=>"js:function(event, ui) {
+												$.ajax({
+																'url': '" . Yii::app()->createUrl('procedure/details') . "',
+																'type': 'GET',
+																'data': {'name': ui.item.value},
+																'success': function(data) {
+																				// append selection onto procedure list
+																				$('#procedure_list tbody').append(data);
+																				$('#procedureDiv').show();
+																				$('#procedure_list').show();
 
 										updateTotalDuration();
 
-                                        // clear out text field
-                                        $('#autocomplete_procedure_id').val('');
+																				// clear out text field
+																				$('#autocomplete_procedure_id').val('');
 
-                                        // remove selection from the filter box
-                                        if ($('select[name=procedure]').children().length > 0) {
-                                                var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
-                                                $('select[name=procedure] option').each(function () {
-                                                        if ($(this).text() == name) {
-                                                                $(this).remove();
-                                                        }
-                                                });
-                                        }
-                                }
-                        });
-                }",
-        ),
-        'htmlOptions'=>array('style'=>'width: 400px;')
+																				// remove selection from the filter box
+																				if ($('select[name=procedure]').children().length > 0) {
+																								var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
+																								$('select[name=procedure] option').each(function () {
+																												if ($(this).text() == name) {
+																																$(this).remove();
+																												}
+																								});
+																				}
+																}
+												});
+								}",
+				),
+				'htmlOptions'=>array('style'=>'width: 400px;')
 )); ?>
 						</div> <!-- .extraDetails -->
 					</div>
