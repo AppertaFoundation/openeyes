@@ -75,8 +75,8 @@ if (empty($model->event_id)) {
 						</div>
 					</div>
  
-					<div id="editDiagnosis" class="eventDetail" style="display: none;">
-						<div class="label">Enter diagnosis:</div>
+					<div id="editDiagnosis" class="eventDetail">
+						<div class="label">Diagnosis:</div>
 						<div class="data">
 							<?php echo CHtml::dropDownList('ElementDiagnosis[disorder_id]', '', CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)), array('empty' => 'Select a commonly used diagnosis')); ?>
 							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
@@ -90,11 +90,11 @@ if (empty($model->event_id)) {
 									'minLength'=>'3',
 									'select'=>"js:function(event, ui) {
 										var value = ui.item.value;
-										$('input[id=ElementDiagnosis_disorder_id_0]').val('');
-										$('#enteredDiagnosisText').html(value);
-										$('#editDiagnosis').hide();
-										$('#enteredDiagnosis').show();
-										$('input[id=savedDiagnosis]').val(value);
+										//$('input[id=ElementDiagnosis_disorder_id_0]').val('');
+										//$('#enteredDiagnosisText').html(value);
+										//$('#editDiagnosis').hide();
+										//$('#enteredDiagnosis').show();
+										//$('input[id=savedDiagnosis]').val(value);
 									}",
 								),
 								'htmlOptions'=>array(
@@ -106,15 +106,6 @@ if (empty($model->event_id)) {
 						</div>
 					</div>
 
-					<div id="enteredDiagnosis" class="eventDetail">
-						<div class="label">Diagnosis:</div>
-						<div class="data">
-							<span id="enteredDiagnosisText" class="bold" style="margin-right:20px;"><?php echo $value?></span>
-							<button id="modifyDiagnosis" type="submit" value="submit" class="smBtn_modify ir">Modify</button>
-							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo $value?>" />
-						</div>
-					</div>
-
 					<script type="text/javascript">
 						$('input[name="ElementDiagnosis[eye]"]').click(function() {
 							var disorder = $('input[name="ElementDiagnosis[disorder_id]"]').val();
@@ -123,19 +114,9 @@ if (empty($model->event_id)) {
 							}
 						});
 						$('input[name="ElementDiagnosis[disorder_id]"]').watermark('type the first few characters of a diagnosis');
-						$('#modifyDiagnosis').click(function() {
-							$('input[id=ElementDiagnosis_disorder_id_0]').val('');
-							$('input[id=savedDiagnosis]').val('');
-							$('#enteredDiagnosis').hide();
-							$('#editDiagnosis').show();
-							return false;
-						});
 						$('select[name="ElementDiagnosis[disorder_id]"]').change(function() {
 							var value = $(this).children(':selected').text();
+							$('#ElementDiagnosis_disorder_id_0').val(value);
 							$(this).children(':selected').attr('selected', false);
-							$('#enteredDiagnosisText').html(value);
-							$('#editDiagnosis').hide();
-							$('#enteredDiagnosis').show();
-							$('input[id=savedDiagnosis]').val(value);
 						});
 					</script>
