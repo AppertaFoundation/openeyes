@@ -23,7 +23,7 @@ if (empty($model->event_id)) {
 ?>
 					<h4>Operation details</h4>
 					<div id="editEyeOperation" class="eventDetail">
-						<div class="label">Select eye(s):</div>
+						<div class="label">Eye(s):</div>
 						<div class="data">
 							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
 							<span class="group">

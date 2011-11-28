@@ -57,7 +57,7 @@ if (empty($model->event_id)) {
 					<h4>Select diagnosis</h4>
  
 					<div id="editEyeSelection" class="eventDetail">
-						<div class="label">Select eye(s):</div>
+						<div class="label">Eye(s):</div>
 						<div class="data">
 							<input id="ytElementDiagnosis_eye" type="hidden" value="" name="ElementDiagnosis[eye]" />
 							<span class="group">
@@ -107,7 +107,7 @@ if (empty($model->event_id)) {
 					</div>
 
 					<div id="enteredDiagnosis" class="eventDetail">
-						<div class="label">Selected diagnosis:</div>
+						<div class="label">Diagnosis:</div>
 						<div class="data">
 							<span id="enteredDiagnosisText" class="bold" style="margin-right:20px;"><?php echo $value?></span>
 							<button id="modifyDiagnosis" type="submit" value="submit" class="smBtn_modify ir">Modify</button>
