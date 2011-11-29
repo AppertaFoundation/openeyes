@@ -98,9 +98,12 @@ body { width:1230px; margin:0 auto; }
 #content .wrapTwo > .wideColumn		{ width:820px; float:left; }
 #content .wrapTwo > .halfColumnLeft		{ width:580px; float:left; }
 #content .wrapTwo > .halfColumnRight	{ width:600px; float:right; }
-					
+
 /* DOES this GO? */
+
 /* ====== GENERAL ====== */
+
+/* what about this? */
 
 /* TYPOGRAPHY - BASIC */
 p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
