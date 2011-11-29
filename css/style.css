@@ -73,6 +73,7 @@ body { width:1230px; margin:0 auto; }
 #help				{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }	/* offset by 5px! */
 #help:before	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
 #footer			{ width: 1234px; height:25px;background: #b3b0ae url(../img/_structure/openeyes_footer.png) bottom right no-repeat; padding-top:14px} /* allow for help offset */
+#footer			{ width: 1234px; height:25px; background: #b3b0ae url(../img/_structure/openeyes_footer.png) bottom right no-repeat; padding-top:14px} /* allow for help offset */
 #footer a { color: #666; }
 /* ---- add border radius ---- */
 #footer, #help	{-webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
