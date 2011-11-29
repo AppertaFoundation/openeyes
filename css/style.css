@@ -106,31 +106,32 @@ p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
 #content p { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #content p { background: #fafafa; padding:10px; margin-bottom: 15px; }
 h3,h4,h5 { margin-bottom:10px; }
-/* base: font-size: 10pt; line-height: 1.231;  */
-h3 { font-size: 14pt; font-weight: normal; }
-h4 { font-size: 11pt; font-weight: normal; }
-h5 { font-size: 10pt; line-height:1.5; }
+/* base: font-size: 13px; line-height: 1.231;  */
+h3 { font-size: 19px; font-weight: normal; }
+h4 { font-size: 15px; font-weight: normal; }
+h5 { font-size: 13px; line-height:1.5; }
 /* H2 reserved for page headers, H6 left for custom uses */
-h2 { display:inline; font-size:10pt; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/gradients/h2_edge.png) center left repeat-y; padding:5px 15px 3px 55px; 
+h2 { display:inline; font-size:13px; font-weight: bold; color:#333; background:#fffdea url(../img/_elements/gradients/h2_edge.png) center left repeat-y; padding:5px 15px 3px 55px; 
 -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
 h2.alert { background-color:#ffe6b2; }
 h2.admin { background:#333; color:#fff; }
 em { font-style: italic; color:#333; }
-.small	{ font-size: 8pt; font-weight: normal; }
-.normal { font-size: 10pt; font-weight: normal;}
-.bold		{ font-size: 11pt; font-weight: bolder; }
-.caps		{ font-variant: small-caps; }
+.small 	{ font-size: 11px; font-weight: normal; }
+.normal { font-size: 13px; font-weight: normal;}
+.bold  	{ font-size: 15px; font-weight: bolder; }
+.caps  	{ font-variant: small-caps; }
 
 /* ====== BOXES ====== */
 #content .whiteBox, #content .alertBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#content .whiteBox > p, #content .alertBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px;	}
-#content .whiteBox	{ background: #fafafa; padding:10px; }
-#content .alertBox	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding:10px 10px 10px 50px; }
+#content .whiteBox > p, #content .alertBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px; }
+#content .whiteBox 	{ background: #fafafa; padding:10px; }
+#content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/warning.png) top left no-repeat; padding:10px 10px 10px 50px; }
 #content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
 #content .fullBox	{ background: #dae6f1; }
 /* specific content */
-#content .patientBox	{ position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
+#content .patientBox  { position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
 #content .eventBox { background: #fafafa; padding:10px; }
+#content .watermarkBox { background:#fafafa; padding:5px 10px 10px 10px; }
 /* icons for boxes */
 #content .withIcon { padding-left: 40px; }
 #content .boxIcon { position: absolute; top:5px; left:0; }
