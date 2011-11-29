@@ -29,14 +29,14 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 ?>
 <script type="text/javascript">
 	<?php if (isset($session)) {?>
-		var header_text = "Operation: <?php echo date('d M Y', strtotime($session->date))?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
+		var header_text = "Operation: <?php echo date('j M Y', strtotime($session->date))?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>";
 	<?php }else{?>
-		var header_text = "Operation: <?php echo $status?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
+		var header_text = "Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>";
 	<?php }?>
 </script>
 
 <!-- Details -->
-<h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
+<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
 <h4>User</h4>
 <div class="eventHighlight">

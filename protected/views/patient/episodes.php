@@ -18,7 +18,7 @@
 					<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 						<div class="episode_nav">
 							<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-							<div class="small"><?php echo date('d M Y',strtotime($episode->start_date))?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">Details</a><span></div>
+							<div class="small"><?php echo date('d M Y',strtotime($episode->start_date))?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a><span></div>
 							<h4><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></h4>
 							<ul class="events">
 								<?php foreach ($episode->events as $event) {?>
@@ -48,7 +48,7 @@
 						<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
 							<div class="row"><span class="label">Start date:</span><?php echo date('d M Y',strtotime($episode->start_date))?></div>
 							<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? date('d M Y',strtotime($episode->end_date)) : '-')?></div>
-                                                        <?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
+							<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
 							<div class="row"><span class="label">Principal eye:</span><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Specialty:</span><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></div>
@@ -79,10 +79,13 @@
 				<?php }?>
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">View mode</div>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>><span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span></div>
+					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
+						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
+					</div>
 				</div>
+				<div class="colorband category_treatement"></div>
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="eventBox fullWidthEvent">
+				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa url(/img/_elements/icons/event/watermark/_blank.png) top left repeat-y;">
 					<?php
 					if (ctype_digit(@$_GET['event'])) {?>
 						<?php
@@ -105,8 +108,11 @@
 					?>
 				</div>
 				<!-- #event_content -->
+				<div class="colorband category_treatement"></div>
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>><span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span></div>
+					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
+						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
+					</div>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
@@ -115,6 +121,7 @@
 			if (ctype_digit(@$_GET['event'])) {
 		?>
 			var currentEvent = <?php echo $_GET['event'] ?>;
+			var header_text = '';
 		<?php
 			} else {
 		?>
@@ -148,7 +155,7 @@
 
 				// Get rid of the a
 				var content = $(this).contents()
-                                $(this).replaceWith(content);
+																$(this).replaceWith(content);
 
 				if (currentEvent != '') {
 					// An event was highlighted previously so recreate the a it had
@@ -162,8 +169,6 @@
 			});
 
 			function view_event(event_id) {
-				var header_text = '';
-
 				$.ajax({
 					url: '/clinical/'+event_id,
 					success: function(data) {
@@ -180,12 +185,13 @@
 						} else {
 							$('span.edit-event').hide();
 						}
+						view_mode();
 					}
 				});
 			}
 
 			$(document).ready(function(){
-				$('.display_mode').html(header_text);
+				if (header_text) $('.display_mode').html(header_text);
 
 				$btn_normal = $('img','#addNewEvent').attr("src");
 				$btn_over = $btn_normal.replace(/.png$/ig,"_o.png");
@@ -224,11 +230,13 @@
 				$.ajax({
 					url: '/clinical/create?event_type_id=' + eventTypeId,
 					success: function(data) {
-						$('div.display_actions').hide();
+						$('.display_mode').removeClass('edit').addClass('add');
+						//$('div.display_actions').hide();
 						$('#add-event-select-type').hide();
 						$collapsed = true;
 						$('img','#addNewEvent').attr("src",$btn_normal);
 						$('#event_content').html(data);
+						$('.display_mode').html(header_text);
 					}
 				});
 				return false;
@@ -252,6 +260,8 @@
 			}
 
 			function edit_mode() {
+				$('.display_mode').removeClass('add').addClass('edit');
+
 				$('div.action_options').html('<span class="aBtn"><a class="view-event" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 				$('a.view-event').unbind('click').click(function() {
 					view_event($('#edit-eventid').val());
@@ -261,6 +271,8 @@
 			}
 
 			function view_mode() {
+				$('.display_mode').removeClass('edit').removeClass('add');;
+
 				$('div.action_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-event" href="#">Edit</a></span>');
 				$('a.edit-event').unbind('click').click(function() {
 					edit_event($('#edit-eventid').val());

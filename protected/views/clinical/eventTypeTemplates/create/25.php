@@ -33,6 +33,9 @@ echo CHtml::hiddenField('patient_id', $patient->id);
 echo CHtml::hiddenField('firm_id', $firm->id);
 
 ?>
+<script type="text/javascript">
+	var header_text = 'Operation: <?php echo $patient->first_name?> <?php echo $patient->last_name?>';
+</script>
 <div id="clinical-create_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
 <ul><li>&nbsp;</li></ul></div>
 <?php
