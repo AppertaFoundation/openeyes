@@ -103,8 +103,6 @@ body { width:1230px; margin:0 auto; }
 
 /* ====== GENERAL ====== */
 
-/* what about this? */
-
 /* TYPOGRAPHY - BASIC */
 p,h1,h2,h3,h4,h5,h5,h6 { margin:0; padding:0 }
 #content p { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
