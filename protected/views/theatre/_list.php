@@ -105,7 +105,7 @@ if (empty($theatres)) {?>
 									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
 											);
 								?></td>
-								<td class="patient leftAlign"><?php if (!$session['confirmed']) { ?><a href="#" id="confirm<?php echo $session['operationId'] ?>"><img src="img/_elements/btns/misc/confirm-icon.png" alt="confirm-icon" width="19" height="19" /></a><?php } ?><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+								<td class="patient leftAlign"><?php if (!$session['confirmed']) { ?><a href="#" id="confirm<?php echo $session['operationId'] ?>" title="Click to confirm booking" alt="Click to confirm booking"><img src="img/_elements/btns/misc/confirm-icon.png" alt="confirm-icon" width="19" height="19" /></a><?php } ?><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
 								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
 								<td class="ward"><?php echo $session['ward']; ?></td>
@@ -138,7 +138,7 @@ if (empty($theatres)) {?>
 
 					if ($session['confirmed']) {
 ?>
-							<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" />
+							<img src="img/_elements/icons/alerts/confirmed.png" alt="Booking confirmed" title="Booking confirmed" width="17" height="17" />
 <?php
 					}
 				}
@@ -244,7 +244,7 @@ if (empty($theatres)) {?>
                         'data': 'id=' + id,
                         'success': function(data) {
                                 if (data == 1) {
-					sibling.append('<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" />');
+					sibling.append('<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" alt="Booking confirmed" title="Booking confirmed" width="17" height="17" />');
 
 					$(a).remove();
                                 }
