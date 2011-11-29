@@ -168,74 +168,74 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 /* buttons -- set up all normal buttons */
 button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search, button.btn_save, button.btn_print { display:inline-block; width:125px; height:40px; }
 /* graphics */
-button.btn_login		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
-button.btn_login:hover	{ background-image: url(../img/_elements/btns/login_o.png); }
-button.btn_find-patient				{ background:transparent url(../img/_elements/btns/find-patient.png) no-repeat; }
-button.btn_find-patient:hover		{ background-image: url(../img/_elements/btns/find-patient_o.png); }
-button.btn_refine-search		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
-button.btn_refine-search:hover	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
-button.btn_print		{ background:transparent url(../img/_elements/btns/print.png) no-repeat; }
-button.btn_print:hover	{ background-image: url(../img/_elements/btns/print_o.png); }
-button.btn_print-letter			{ background:transparent url(../img/_elements/btns/print-letter.png) no-repeat; }
-button.btn_print-letter:hover		{ background-image: url(../img/_elements/btns/print-letter_o.png); }
-button.btn_cancel				{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
-button.btn_cancel:hover		{ background-image: url(../img/_elements/btns/cancel_o.png); }
-button.btn_save			{ background:transparent url(../img/_elements/btns/save.png) no-repeat; }
-button.btn_save:hover		{ background-image: url(../img/_elements/btns/save_o.png); }
-button.btn_search				{ background:transparent url(../img/_elements/btns/search.png) no-repeat; }
-button.btn_search:hover		{ background-image: url(../img/_elements/btns/search_o.png); }
+button.btn_login 		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
+button.btn_login:hover 	{ background-image: url(../img/_elements/btns/login_o.png); }
+button.btn_find-patient 			{ background:transparent url(../img/_elements/btns/find-patient.png) no-repeat; }
+button.btn_find-patient:hover 	{ background-image: url(../img/_elements/btns/find-patient_o.png); }
+button.btn_refine-search 		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
+button.btn_refine-search:hover 	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
+button.btn_print 		{ background:transparent url(../img/_elements/btns/print.png) no-repeat; }
+button.btn_print:hover 	{ background-image: url(../img/_elements/btns/print_o.png); }
+button.btn_print-letter 		{ background:transparent url(../img/_elements/btns/print-letter.png) no-repeat; }
+button.btn_print-letter:hover 	{ background-image: url(../img/_elements/btns/print-letter_o.png); }
+button.btn_cancel 			{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
+button.btn_cancel:hover 	{ background-image: url(../img/_elements/btns/cancel_o.png); }
+button.btn_save 		{ background:transparent url(../img/_elements/btns/save.png) no-repeat; }
+button.btn_save:hover 	{ background-image: url(../img/_elements/btns/save_o.png); }
+button.btn_search 			{ background:transparent url(../img/_elements/btns/search.png) no-repeat; }
+button.btn_search:hover 	{ background-image: url(../img/_elements/btns/search_o.png); }
 /* special buttons */
 button.btn_newEvent			{ float:right; width:155px; height:35px; margin:0px 0px 0px 0px;padding:0px;}
-button.btn_newEvent			{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
-button.btn_newEvent:hover		{ background-image: url(../img/_elements/btns/new-event_o.png); }
+button.btn_newEvent 		{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
+button.btn_newEvent:hover 	{ background-image: url(../img/_elements/btns/new-event_o.png); }
 /* long buttons -- set up all wide buttons */
 button.wBtn_save-schedule-later, button.wBtn_save-schedule-now, button.wBtn_schedule-now, button.wBtn_print-invitation-letter, button.wBtn_print-reminder-letter, button.wBtn_print-gp-refer-back-letter, button.wBtn_cancel-operation, button.wBtn_confirm-slot, button.wBtn_reschedule-now, button.wBtn_reschedule-later, button.wBtn_previous-month, button.wBtn_next-month, button.wBtn_close-episode, button.wBtn_edit-operation  { display:inline-block; width:202px; height:40px; } 
 /* graphics */
-button.wBtn_save-schedule-later			{ background:transparent url(../img/_elements/btns/wide/save-schedule-later.png) no-repeat; }
-button.wBtn_save-schedule-later:hover		{ background-image: url(../img/_elements/btns/wide/save-schedule-later_o.png); }
-button.wBtn_save-schedule-now				{ background:transparent url(../img/_elements/btns/wide/save-schedule-now.png) no-repeat; }
-button.wBtn_save-schedule-now:hover		{ background-image: url(../img/_elements/btns/wide/save-schedule-now_o.png); }
-button.wBtn_schedule-now			{ background:transparent url(../img/_elements/btns/wide/schedule-now.png) no-repeat; }
-button.wBtn_schedule-now:hover		{ background-image: url(../img/_elements/btns/wide/schedule-now_o.png); }
+button.wBtn_save-schedule-later 		{ background:transparent url(../img/_elements/btns/wide/save-schedule-later.png) no-repeat; }
+button.wBtn_save-schedule-later:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-later_o.png); }
+button.wBtn_save-schedule-now 			{ background:transparent url(../img/_elements/btns/wide/save-schedule-now.png) no-repeat; }
+button.wBtn_save-schedule-now:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-now_o.png); }
+button.wBtn_schedule-now 			{ background:transparent url(../img/_elements/btns/wide/schedule-now.png) no-repeat; }
+button.wBtn_schedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/schedule-now_o.png); }
 button.wBtn_print-invitation-letter				{ background:transparent url(../img/_elements/btns/wide/print-invitation-letter.png) no-repeat; }
-button.wBtn_print-invitation-letter:hover			{ background-image: url(../img/_elements/btns/wide/print-invitation-letter_o.png); }
+button.wBtn_print-invitation-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-invitation-letter_o.png); }
 button.wBtn_print-reminder-letter			{ background:transparent url(../img/_elements/btns/wide/print-reminder-letter.png) no-repeat; }
-button.wBtn_print-reminder-letter:hover			{ background-image: url(../img/_elements/btns/wide/print-reminder-letter_o.png); }
+button.wBtn_print-reminder-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-reminder-letter_o.png); }
 button.wBtn_print-gp-refer-back-letter			{ background:transparent url(../img/_elements/btns/wide/print-gp-refer-back-letter.png) no-repeat; }
-button.wBtn_print-gp-refer-back-letter:hover		{ background-image: url(../img/_elements/btns/wide/print-gp-refer-back-letter_o.png); }
+button.wBtn_print-gp-refer-back-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-gp-refer-back-letter_o.png); }
 button.wBtn_cancel-operation			{ background:transparent url(../img/_elements/btns/wide/cancel-operation.png) no-repeat; }
-button.wBtn_cancel-operation:hover		{ background-image: url(../img/_elements/btns/wide/cancel-operation_o.png); }
+button.wBtn_cancel-operation:hover 		{ background-image: url(../img/_elements/btns/wide/cancel-operation_o.png); }
 button.wBtn_edit-operation			{ background:transparent url(../img/_elements/btns/wide/edit-operation.png) no-repeat; }
-button.wBtn_edit-operation:hover	{ background-image: url(../img/_elements/btns/wide/edit-operation_o.png); }
+button.wBtn_edit-operation:hover 	{ background-image: url(../img/_elements/btns/wide/edit-operation_o.png); }
 button.wBtn_confirm-slot			{ background:transparent url(../img/_elements/btns/wide/confirm-slot.png) no-repeat; }
-button.wBtn_confirm-slot:hover	{ background-image: url(../img/_elements/btns/wide/confirm-slot_o.png); }
+button.wBtn_confirm-slot:hover 	{ background-image: url(../img/_elements/btns/wide/confirm-slot_o.png); }
 button.wBtn_reschedule-now			{ background:transparent url(../img/_elements/btns/wide/reschedule-now.png) no-repeat; }
-button.wBtn_reschedule-now:hover		{ background-image: url(../img/_elements/btns/wide/reschedule-now_o.png); }
+button.wBtn_reschedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-now_o.png); }
 button.wBtn_reschedule-later			{ background:transparent url(../img/_elements/btns/wide/reschedule-later.png) no-repeat; }
-button.wBtn_reschedule-later:hover		{ background-image: url(../img/_elements/btns/wide/reschedule-later_o.png); }
+button.wBtn_reschedule-later:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-later_o.png); }
 button.wBtn_previous-month			{ background:transparent url(../img/_elements/btns/wide/previous-month.png) no-repeat; }
-button.wBtn_previous-month:hover	{ background-image: url(../img/_elements/btns/wide/previous-month_o.png); }
+button.wBtn_previous-month:hover 	{ background-image: url(../img/_elements/btns/wide/previous-month_o.png); }
 button.wBtn_next-month			{ background:transparent url(../img/_elements/btns/wide/next-month.png) no-repeat; }
-button.wBtn_next-month:hover	{ background-image: url(../img/_elements/btns/wide/next-month_o.png); }
+button.wBtn_next-month:hover 	{ background-image: url(../img/_elements/btns/wide/next-month_o.png); }
 button.wBtn_close-episode			{ background:transparent url(../img/_elements/btns/wide/close-episode.png) no-repeat; }
-button.wBtn_close-episode:hover		{ background-image: url(../img/_elements/btns/wide/close-episode_o.png); }
+button.wBtn_close-episode:hover 	{ background-image: url(../img/_elements/btns/wide/close-episode_o.png); }
 
 
 /* small buttons */
 button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
-button.smBtn_modify			{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
-button.smBtn_modify:hover		{ background-image: url(../img/_elements/btns/small/modify_o.png); }
+button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
+button.smBtn_modify:hover 	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
  
 
 
 /* ====== TABLES - GENERAL ====== */
-table		{ border-collapse: collapse; }
-.odd	{ background-color: #edf4f9; border-bottom: 1px solid #ccd; }
+table 	{ border-collapse: collapse; }
+.odd 	{ background-color: #edf4f9; border-bottom: 1px solid #ccd; }
 .even	{ background-color: #e1eef9; border-bottom: 1px solid #ccd; }
 .odd:hover, .even:hover { background-color: #ffe6b2; border-bottom-color: #999; }
 /* overwritten by if closed */
-.odd.closed { background-color: #c5cfdb; border-bottom: 1px solid #bbb; font-size:8pt; }
-.even.closed { background-color: #b9c3ce; border-bottom: 1px solid #bbb; font-size:8pt; }
+.odd.closed { background-color: #c5cfdb; border-bottom: 1px solid #bbb; font-size:11px; }
+.even.closed { background-color: #b9c3ce; border-bottom: 1px solid #bbb; font-size:11px; }
 .odd.closed:hover, .even.closed:hover { background-color: #ffe8b7; border-bottom-color: #999; }
 /* close table */
 table tr:last-child { border-bottom: none; }
@@ -243,9 +243,9 @@ table tr:last-child { border-bottom: none; }
 
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
 .grid-view table { width:100%; } 
-.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 8pt; min-width:50px; padding:10px; border-right:1px solid #bbb;	 }
+.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:50px; padding:10px; border-right:1px solid #bbb;   }
 .grid-view table th:last-child { border-right: none; }
-.grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;	 }
+.grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
 /* change properties for closed rows */
 .grid-view table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
@@ -255,7 +255,7 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 /* make sure default pager is hidden! */
 #patient-grid .pager { display: none !important; visibility: hidden; }
 /* my pagination */
-.resultsPagination { text-align:right; background: #ddd; padding:10px;	}
+.resultsPagination { text-align:right; background: #ddd; padding:10px;  }
 .resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
 
@@ -269,15 +269,15 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .adminMode #mainmenu a:hover { border:none; color:#fff; background:#3665ff; }
 .adminMode #mainmenu li.active a { background:#bbb; }
 
-.adminMode #sidebar { position:absolute; top:90px; right:10px; width:20%; background:#ddd; padding:10px;	-webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;	}
-.adminMode #sidebar .portlet-title { font-size:11pt; font-weight: bold; }
+.adminMode #sidebar { position:absolute; top:90px; right:10px; width:20%; background:#ddd; padding:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;  }
+.adminMode #sidebar .portlet-title { font-size:15px; font-weight: bold; }
 .adminMode #sidebar ul { list-style-type: none; padding: 0px; margin: 10px 0; }
 .adminMode #sidebar ul > li { display:block; margin-bottom: 5px; }
 .adminMode #sidebar  a { display:block; padding:5px; background: #ccc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .adminMode #sidebar  a:hover { border:none; color:#fff; background:#3665ff; }
 .adminMode #sidebar  li.active a { background:#bbb; }
  
-.adminMode h1 { font-size:16pt; font-weight: bold; padding-bottom:10px}
+.adminMode h1 { font-size:22px; font-weight: bold; padding-bottom:10px}
 .adminMode .list-view { padding-left:20px; width:75%; }
 .adminMode .list-view .summary { padding-bottom:10px; border-bottom:1px solid #999; }
 .adminMode .list-view .items .view { margin:10px 0; padding-bottom:10px; border-bottom:1px dotted #999; }
@@ -285,7 +285,7 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .adminMode .list-view .items .view a { font-weight: bold;}
 
 .adminMode .pager { background:#ccc; padding:20px 10px; }
-.adminMode ul.yiiPager { list-style-type: none; padding: 0px; margin: 0px; padding-top:10px;	}
+.adminMode ul.yiiPager { list-style-type: none; padding: 0px; margin: 0px; padding-top:10px;  }
 .adminMode ul.yiiPager > li { display:inline-block; margin-right: 5px; }
 
 
@@ -293,11 +293,11 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 
 /* ====== HELP! ====== */
 div.hint { float:left; width:358px; margin:0 0 20px 25px; padding: 0 10px 0 15px;  border-left: 1px dotted #35b3ef; }
-div.hint > p { color:#4a616a; font-size: 8pt; line-height: 1.5;  }
+div.hint > p { color:#4a616a; font-size: 11px; line-height: 1.5;  }
 div.hint:last-child { border-right: none; }
 
 /* ====== FOOTER ====== */
-#footer h6 { float: left; margin:5px 0 0 12px; font-size:7pt; font-weight: normal; color:#666; }
+#footer h6 { float: left; margin:5px 0 0 12px; font-size:9px; font-weight: normal; color:#666; }
 
 /* ------------------------------------------------- HEADER MODULES  */
 
