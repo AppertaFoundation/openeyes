@@ -94,7 +94,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'dateFormat'=>'yy-mm-dd',
 									'maxDate'=>'today'
 								),
-								'value' => $model->decision_date,
+								'value' => date('Y-m-d'),
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							));
 ?>
@@ -108,7 +108,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'dateFormat'=>'yy-mm-dd',
 									'maxDate'=>'today'
 								),
-								'value' => $model->decision_date,
+								'value' => date('Y-m-d'),
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							));
 ?>
