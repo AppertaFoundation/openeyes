@@ -95,11 +95,9 @@ body { width:1230px; margin:0 auto; }
 #content .centralColumn { width:800px;	margin: 20px auto 0 auto; }
 #content .wrapTwo		{ width:1200px; margin: 20px auto 0 auto; }
 #content .wrapTwo > .narrowColumn		{ width:360px; float:right; }
-#content .wrapTwo > .wideColumn		{ width:820px; float:left; }
+#content .wrapTwo > .wideColumn			{ width:820px; float:left; }
 #content .wrapTwo > .halfColumnLeft		{ width:580px; float:left; }
 #content .wrapTwo > .halfColumnRight	{ width:600px; float:right; }
-
-/* DOES this GO? */
 
 /* ====== GENERAL ====== */
 
