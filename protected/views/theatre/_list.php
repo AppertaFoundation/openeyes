@@ -74,6 +74,7 @@ if (empty($theatres)) {?>
 						<thead>
 							<tr>
 								<th>Admit time</th>
+								<th class="th_sort" style="display: none;">Sort</th>
 								<th>Hospital #</th>
 								<th>Patient (Age)</th>
 								<th>[Eye] Operation</th>
@@ -95,6 +96,9 @@ if (empty($theatres)) {?>
 								<td class="session">
 									<input style="display: none;" type="text" name="admitTime<?php echo $session['operationId']?>" id="admitTime<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
 									<span id="admitTime_ro_<?php echo $session['operationId']?>"><?php echo substr($session['admissionTime'], 0, 5)?></span>
+								</td>
+								<td class="td_sort" style="display: none;">
+									<img src="/img/_elements/icons/draggable_row.png" alt="draggable_row" width="25" height="28" />
 								</td>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
@@ -263,18 +267,7 @@ if (empty($theatres)) {?>
 				 });
 				 return $helper;
 			 },
-			 placeholder: 'theatre-list-sort-placeholder',
-			 stop: function(e, tr) {
-				 n = 0;
-
-				 $('tbody').children().map(function() {
-					 if ($(this).attr('id') !== undefined) {
-						 if (m = $(this).attr('id').match(/^oprow_([0-9]+)$/)) {
-							 $('#admitTime'+m[1]).val(times[n++]);
-						 }
-					 }
-				 });
-			 }
+			 placeholder: 'theatre-list-sort-placeholder'
 		}).disableSelection();
 		$("#theatre_list tbody").sortable('enable');
 	}
@@ -293,6 +286,8 @@ if (empty($theatres)) {?>
 		$('#btn_save').show();
 		$('#btn_cancel').show();
 		$('div.action_options').html('<span class="aBtn"><a class="view-sessions" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
+		$('td.td_sort').show();
+		$('th.th_sort').show();
 	});
 
 	$('a.view-sessions').live('click',function() {
@@ -312,6 +307,8 @@ if (empty($theatres)) {?>
 		$('#btn_save').hide();
 		$('#btn_cancel').hide();
 		$('div.action_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" href="#">Edit</a></span>');
+		$('td.td_sort').hide();
+		$('th.th_sort').hide();
 
 		// revert text changes
 		$('span[id^="admitTime_ro_"]').map(function() {
