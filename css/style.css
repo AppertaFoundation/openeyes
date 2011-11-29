@@ -147,23 +147,23 @@ a:hover .aPush	{ border-bottom: thin solid #3665ff; }
 .form_column { display:block; width:45%; float:left; margin-right:2%; }
 .form_button { display:block; clear: both; width:inherit; text-align:right; margin-top: 15px; }
 /* defaults */
-label { font-size:11pt; }
-input { font-size:11pt; padding:3px; background: #fcfcfc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;	border:solid 1px #6b8aaa; }
-input:focus { background: #ffffff; border:solid 1px #19a8ea;	}
+label { font-size:15px; }
+input { font-size:15px; padding:3px; background: #fcfcfc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;  border:solid 1px #6b8aaa; }
+input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 /* big fields */
-.bigInput > label { font-size:13pt; }
-.bigInput > input { font-size:13pt; padding:5px; }
+.bigInput > label { font-size:17px; }
+.bigInput > input { font-size:17px; padding:5px; }
 /* organise label inputs and hints */
 .inputLayout, .multiInputRight, .customRight { display:block; border-bottom:1px dotted #999; padding-bottom:5px; margin-bottom:10px; }
 .inputLayout > label { display: block; float:left; width:50%; }
 .inputLayout > input { display: block; float:right; width:45%; }
-.multiInputRight, .customRight	 { text-align:right; }
-.multiInputRight > label		 { display: block; float:left; }
-.multiInputRight > input		 { width:auto; text-align: center; padding:3px 0;}
+.multiInputRight, .customRight 	 { text-align:right; }
+.multiInputRight > label 		 { display: block; float:left; }
+.multiInputRight > input 		 { width:auto; text-align: center; padding:3px 0;}
 /* form hints */
-.labelHint, .labelRequired { display:block; font-size: 8pt; padding-right:10px; text-align: left;  }
-.labelHint		{ color: #777; }
-.labelRequired	{ color: #b33; }
+.labelHint, .labelRequired { display:block; font-size: 11px; padding-right:10px; text-align: left;  }
+.labelHint 		{ color: #777; }
+.labelRequired 	{ color: #b33; }
 
 /* buttons -- set up all normal buttons */
 button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search, button.btn_save, button.btn_print { display:inline-block; width:125px; height:40px; }
