@@ -90,7 +90,7 @@ class ElementOperationTest extends CDbTestCase
 		return array(
 			array(ElementOperation::ANAESTHETIC_TOPICAL, 'Topical'),
 			array(ElementOperation::ANAESTHETIC_LOCAL, 'LA'),
-			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'LA with cover'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'LAC'),
 			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'LAS'),
 			array(ElementOperation::ANAESTHETIC_GENERAL, 'GA'),
 			array(2847405, 'Unknown'),
@@ -100,10 +100,10 @@ class ElementOperationTest extends CDbTestCase
 	public function dataProvider_AnaesteticAbbreviation()
 	{
 		return array(
-			array(ElementOperation::ANAESTHETIC_TOPICAL, 'TOP'),
-			array(ElementOperation::ANAESTHETIC_LOCAL, 'LOC'),
-			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'LWC'),
-			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'LWS'),
+			array(ElementOperation::ANAESTHETIC_TOPICAL, 'Topical'),
+			array(ElementOperation::ANAESTHETIC_LOCAL, 'LA'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER, 'LAC'),
+			array(ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION, 'LAS'),
 			array(ElementOperation::ANAESTHETIC_GENERAL, 'GA'),
 			array(2847405, 'Unknown'),
 		);
@@ -344,7 +344,7 @@ class ElementOperationTest extends CDbTestCase
 		$expected = array(
 			ElementOperation::ANAESTHETIC_TOPICAL => 'Topical',
 			ElementOperation::ANAESTHETIC_LOCAL => 'LA',
-			ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER => 'LA with cover',
+			ElementOperation::ANAESTHETIC_LOCAL_WITH_COVER => 'LAC',
 			ElementOperation::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
 			ElementOperation::ANAESTHETIC_GENERAL => 'GA'
 		);
@@ -988,9 +988,10 @@ class ElementOperationTest extends CDbTestCase
 				$operation = ElementOperation::model()->findByPk($appt['element_operation_id']);
 				$bookingTime += $operation->total_duration;
 			}
+			$site = Site::model()->findByPk($theatre['site_id']);
 			$sessions[] = array(
 				'id' => $theatre['id'],
-				'name' => $theatre['name'],
+				'name' => $theatre['name'] . ' (' . $site->name . ')',
 				'site_id' => $theatre['site_id'],
 				'start_time' => $session['start_time'],
 				'end_time' => $session['end_time'],
@@ -1002,7 +1003,8 @@ class ElementOperationTest extends CDbTestCase
 		}
 
 		foreach ($sessions as $session) {
-			$name = $session['name'];
+			$site = Site::model()->findByPk($theatre['site_id']);
+			$name = $session['name'] . ' (' . $site['name'] . ')';
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
@@ -1030,7 +1032,7 @@ class ElementOperationTest extends CDbTestCase
 			->method('getBookingService')
 			->will($this->returnValue($service));
 
-		$result = $mockElement->getTheatres($date);
+		$result = $mockElement->getTheatres($date, $firm['id']);
 
 		$this->assertEquals($expected, $result);
 	}
@@ -1092,7 +1094,8 @@ class ElementOperationTest extends CDbTestCase
 		}
 
 		foreach ($sessions as $session) {
-			$name = $session['name'];
+			$site = Site::model()->findByPk($theatre['site_id']);
+                        $name = $session['name'] . ' (' . $site['name'] . ')';
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
@@ -1120,7 +1123,7 @@ class ElementOperationTest extends CDbTestCase
 			->method('getBookingService')
 			->will($this->returnValue($service));
 
-		$result = $mockElement->getTheatres($date);
+		$result = $mockElement->getTheatres($date, $firm['id']);
 
 		$this->assertEquals($expected, $result);
 	}
@@ -1158,7 +1161,8 @@ class ElementOperationTest extends CDbTestCase
 		}
 
 		foreach ($sessions as $session) {
-			$name = $session['name'];
+			$site = Site::model()->findByPk($theatre['site_id']);
+                        $name = $session['name'] . ' (' . $site['name'] . ')';
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];
@@ -1186,7 +1190,7 @@ class ElementOperationTest extends CDbTestCase
 			->method('getBookingService')
 			->will($this->returnValue($service));
 
-		$result = $mockElement->getTheatres($date);
+		$result = $mockElement->getTheatres($date, $firm['id']);
 
 		$this->assertEquals($expected, $result);
 	}
@@ -1230,6 +1234,7 @@ class ElementOperationTest extends CDbTestCase
 			'time_available' => 150,
 			'status' => 'available',
 			'code' => '',
+			'comments' => ''
 		);
 
 		$this->assertEquals($expected, $result);
@@ -1263,7 +1268,8 @@ class ElementOperationTest extends CDbTestCase
 			'site_id' => $theatre['site_id'],
 			'time_available' => 0,
 			'status' => 'full',
-			'code' => ''
+			'code' => '',
+			'comments' => ''
 		);
 
 		$result = $this->element->getSession($session['id']);
