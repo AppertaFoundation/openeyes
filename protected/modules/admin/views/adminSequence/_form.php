@@ -49,7 +49,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
         'showAnim'=>'fold',
 		'minDate'=>'new Date()',
 		'defaultDate'=>$model->start_date,
-		'dateFormat'=>'yy-mm-dd'
+		'dateFormat'=>'d-M-yy'
     ),
     'htmlOptions'=>array(
         'style'=>'height:20px;'
@@ -81,7 +81,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
     'options'=>array(
         'showAnim'=>'fold',
 		'minDate'=>'new Date()',
-		'defaultDate'=>$model->end_date
+		'defaultDate'=>$model->end_date,
+		'dateFormat'=>'d-M-yy'
     ),
     'htmlOptions'=>array(
         'style'=>'height:20px;'
