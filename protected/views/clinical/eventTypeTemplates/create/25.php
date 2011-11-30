@@ -86,8 +86,9 @@ if (isset($referrals) && is_array($referrals)) {
 	</div>
 
 	<div class="form_button">
-			<button type="submit" value="submit" class="wBtn_save-schedule-later ir fancybox" id="scheduleLater">Save and Schedule later</button>
-			<button type="submit" value="submit" class="wBtn_save-schedule-now ir fancybox" id="scheduleNow">Save and Schedule now</button>
+			<button type="submit" value="submit" class="wBtn_add-schedule-later ir fancybox" id="scheduleLater">Save and Schedule later</button>
+			<button type="submit" value="submit" class="wBtn_add-schedule-now ir fancybox" id="scheduleNow">Save and Schedule now</button>
+			<button type="submit" value="submit" class="wBtn_cancel-operation ir fancybox" id="cancelOperation">Save and Schedule now</button>
 	</div>
 
 	</form>
@@ -132,6 +133,17 @@ $this->endWidget();
 				}
 			}
 		});
+		return false;
+	});
+
+	$('#cancelOperation').unbind('click').click(function() {
+		if (last_item_type == 'url') {
+			window.location.href = last_item_id;
+		} else if (last_item_type == 'episode') {
+			load_episode_summary(last_item_id);
+		} else if (last_item_type == 'event') {
+			view_event(last_item_id);
+		}
 		return false;
 	});
 
