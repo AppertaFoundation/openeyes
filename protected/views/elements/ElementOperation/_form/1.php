@@ -218,7 +218,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'yy-mm-dd',
+									'dateFormat'=>'dd-mm-yy',
 									'maxDate'=>'today'
 								),
 								'value' => $model->decision_date,

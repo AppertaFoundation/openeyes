@@ -48,7 +48,7 @@
 						<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
 							<div class="row"><span class="label">Start date:</span><?php echo date('d M Y',strtotime($episode->start_date))?></div>
 							<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? date('d M Y',strtotime($episode->end_date)) : '-')?></div>
-                                                        <?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
+																												<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
 							<div class="row"><span class="label">Principal eye:</span><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Specialty:</span><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></div>
@@ -123,16 +123,36 @@
 			}
 		?>
 
+		<?php if (ctype_digit(@$_GET['event'])) {?>
+			var last_item_type = 'event';
+			var last_item_id = <?php echo $_GET['event']?>;
+		<?php }else if (isset($current_episode)) {?>
+			var last_item_type = 'episode';
+			var last_item_id = <?php echo $current_episode->id?>;
+		<?php }else{?>
+			var last_item_type = 'url';
+			var last_item_id = window.location.href;
+		<?php }?>
+
 			$('a.episode-details').unbind('click').click(function() {
+				load_episode_summary($(this).attr('rel'));
+				return false;
+			});
+
+			function load_episode_summary(id) {
 				$.ajax({
-					url: '/clinical/episodesummary/'+$(this).attr('rel'),
+					url: '/clinical/episodesummary/'+id,
 					success: function(data) {
+						last_item_type = 'episode';
+						last_item_id = id;
+
 						$('div.action_options').hide();
 						$('#event_content').html(data);
+						view_mode();
 					}
 				});
 				return false;
-			});
+			}
 
 			$('a.show-event-details').die('click').live('click', function() {
 				var event_id = $(this).attr('rel');
@@ -148,7 +168,7 @@
 
 				// Get rid of the a
 				var content = $(this).contents()
-                                $(this).replaceWith(content);
+				$(this).replaceWith(content);
 
 				if (currentEvent != '') {
 					// An event was highlighted previously so recreate the a it had
@@ -180,6 +200,11 @@
 						} else {
 							$('span.edit-event').hide();
 						}
+
+						last_item_type = 'event';
+						last_item_id = event_id;
+
+						view_mode();
 					}
 				});
 			}
