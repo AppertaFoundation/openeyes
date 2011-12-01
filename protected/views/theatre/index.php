@@ -264,6 +264,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				});
 
 				view_mode();
+				load_table_states();
 			}
 		});
 	});

@@ -33,6 +33,7 @@ if (empty($theatres)) {?>
 		Sessions updated!
 	</span>
 	<?php
+	$tbody = 0;
 	foreach ($theatres as $name => $dates) { ?>
 		<h3 class="theatre<?php if (!$firstTheatreShown) {?> firstTheatre<?php }?>"><strong><?php echo $name?></strong></h3>
 		<?php
@@ -83,7 +84,7 @@ if (empty($theatres)) {?>
 								<th>Info</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="tbody_<?php echo $tbody++;?>">
 <?php
 					$previousSequenceId = $session['sequenceId'];
 					$timeAvailable = $session['sessionDuration'];
@@ -163,6 +164,28 @@ if (empty($theatres)) {?>
 ?>
 
 <script type="text/javascript">
+	var table_states = {};
+
+	$(document).ready(function() {
+		load_table_states();
+	});
+
+	function load_table_states() {
+		table_states = {};
+
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id');
+
+				table_states[tbody_id] = [];
+
+				$(this).children('tr[id^="oprow_"]').map(function() {
+					table_states[tbody_id].push($(this).attr('id'));
+				});
+			}
+		});
+	}
+
 	$('a[id^="editAdmitTime"]').click(function() {
 		id = this.id.replace(/editAdmitTime/i, "");
 		value = $('#admitTime' + id).val();
@@ -229,8 +252,8 @@ if (empty($theatres)) {?>
 		return false;
 	});
 
-        $('a[id^="confirm"]').click(function() {
-                id = this.id.replace(/confirm/i, "");
+	$('a[id^="confirm"]').click(function() {
+		id = this.id.replace(/confirm/i, "");
 
 		a = this;
 
@@ -238,21 +261,21 @@ if (empty($theatres)) {?>
 
 		sibling = $(parent).siblings('.alerts');
 
-                $.ajax({
-                        'url': '<?php echo Yii::app()->createUrl('theatre/confirmOperation'); ?>',
-                        'type': 'POST',
-                        'data': 'id=' + id,
-                        'success': function(data) {
-                                if (data == 1) {
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/confirmOperation'); ?>',
+			'type': 'POST',
+			'data': 'id=' + id,
+			'success': function(data) {
+				if (data == 1) {
 					sibling.append('<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" alt="Booking confirmed" title="Booking confirmed" width="17" height="17" />');
 
 					$(a).remove();
-                                }
-                        },
-                });
+				}
+			},
+		});
 
-                return false;
-        });
+		return false;
+	});
 
 	function enable_sort() {
 		$("#theatre_list tbody").sortable({
@@ -295,6 +318,18 @@ if (empty($theatres)) {?>
 	});
 
 	$('#btn_cancel').live('click',function() {
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id');
+
+				if (table_states[tbody_id] !== undefined) {
+					for (x in table_states[tbody_id]) {
+						$('#'+table_states[tbody_id][x]).appendTo('#'+tbody_id);
+					}
+				}
+			}
+		});
+
 		view_mode();
 	});
 
