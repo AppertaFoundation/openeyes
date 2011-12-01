@@ -84,7 +84,7 @@ if (empty($model->event_id)) {
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'name'=>'ElementDiagnosis[disorder_id]',
 								'id'=>'ElementDiagnosis_disorder_id_0',
-								'value'=>'',
+								'value'=>$diagnosis->disorder->term,
 								'sourceUrl'=>array('disorder/autocomplete'),
 								'options'=>array(
 									'minLength'=>'3',
