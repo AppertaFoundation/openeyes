@@ -2,7 +2,7 @@
  * ==|== normalize ==========================================================
  */
 
-article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { ddragisplay: block; }
 audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
 audio:not([controls]) { display: none; }
 [hidden] { display: none; }
@@ -571,6 +571,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table td.session { width:40px; }
 .theatre-sessions table td.dragsort { width:26px; }
 .theatre-sessions table td.dragsort:hover { cursor: pointer; background-color:#ffe6b2; }
+.theatre-sessions table td.confirm { width:28px; padding-left:15px; }
 .theatre-sessions table td.patient a { float:right; } 
 .theatre-sessions table td.duration { width:30px; }
 .theatre-sessions table td.hospital { width:60px; }
