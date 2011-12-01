@@ -21,9 +21,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 <div id="d_title">OPERATION LIST FORM</div>
 
 <?php
-
-$theatres = unserialize(file_get_contents("/tmp/debug"));
-
 $previousSequenceId = '';
 
 $firstTheatreShown = false;
