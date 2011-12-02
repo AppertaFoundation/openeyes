@@ -101,7 +101,7 @@ class TheatreControllerTest extends CDbTestCase
 			->with('_list', array('theatres'=>array()), false, true);
 		$this->assertNull($mockController->actionSearch());
 	}
-
+/*
 	public function testActionSearch_WithFirmId_RendersIndexView()
 	{
 		$firmId = $this->firms['firm1']['id'];
@@ -114,7 +114,7 @@ class TheatreControllerTest extends CDbTestCase
 			->with('_list', array('theatres'=>array()), false, true);
 		$this->assertNull($mockController->actionSearch());
 	}
-
+*/
 	public function testActionSearch_WithWardId_RendersIndexView()
 	{
 		$wardId = $this->wards['ward1']['id'];

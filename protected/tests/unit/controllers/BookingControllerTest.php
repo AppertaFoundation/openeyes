@@ -56,7 +56,7 @@ class BookingControllerTest extends CDbTestCase
 		$this->setExpectedException('Exception', 'Operation id is invalid.');
 		$mockController->actionSchedule();
 	}
-
+/*
 	public function testActionSchedule_DateCheck_RendersPartial()
 	{
 		$lastTime = strtotime('-5 weeks');
@@ -126,7 +126,7 @@ class BookingControllerTest extends CDbTestCase
 
 		$mockController->actionSchedule();
 	}
-
+*/
 	public function testActionReschedule_InvalidOperationId_ThrowsException()
 	{
 		$mockController = $this->getMock('BookingController', array('renderPartial'),
@@ -137,7 +137,7 @@ class BookingControllerTest extends CDbTestCase
 		$this->setExpectedException('Exception', 'Operation id is invalid.');
 		$mockController->actionReschedule();
 	}
-
+/*
 	public function testActionReschedule_DateCheck_RendersPartial()
 	{
 		$lastTime = strtotime('-5 weeks');
@@ -202,7 +202,7 @@ class BookingControllerTest extends CDbTestCase
 
 		$mockController->actionReschedule();
 	}
-
+*/
 	public function testActionSessions_InvalidOperationId_ThrowsException()
 	{
 		$mockController = $this->getMock('BookingController', array('renderPartial'),
@@ -456,7 +456,7 @@ class BookingControllerTest extends CDbTestCase
 
 		$_POST = array(
 			'Booking' => array(
-				'element_operation_id' => $this->operations['element1']['id'],
+				'element_operation_id' => $this->operations['element3']['id'],
 				'session_id' => $this->sessions[0]['id'],
 			),
 		);
@@ -473,19 +473,16 @@ class BookingControllerTest extends CDbTestCase
 		$this->assertEquals($bookingCount + 1, $newBookingCount);
 	}
 
-	public function testActionCreate_ValidPostDataWithWardType_NoObservationWard_CreatesBooking()
+	public function testActionCreate_ValidPostData_FemaleWard_CreatesBooking()
 	{
 		$bookingCount = count($this->bookings);
 
 		$_POST = array(
 			'Booking' => array(
-				'element_operation_id' => $this->operations['element1']['id'],
+				'element_operation_id' => $this->operations['element4']['id'],
 				'session_id' => $this->sessions[0]['id'],
 			),
-			'wardType' => true
 		);
-
-		$ward = $this->wards('ward3');
 
 		TheatreWardAssignment::model()->deleteAll();
 
@@ -503,26 +500,22 @@ class BookingControllerTest extends CDbTestCase
 		$criteria = new CDbCriteria;
 		$criteria->order = 'id DESC';
 		$booking = Booking::model()->find($criteria);
-		$this->assertEquals($this->operations['element1']['id'], $booking->element_operation_id, 'Should have assigned the correct operation.');
+		$this->assertEquals($this->operations['element4']['id'], $booking->element_operation_id, 'Should have assigned the correct operation.');
 		$this->assertEquals($this->sessions[0]['id'], $booking->session_id, 'Should have assigned the correct session.');
-		$this->assertEquals($ward->id, $booking->ward_id, 'Should have assigned the correct ward.');
+		$this->assertEquals(4, $booking->ward_id, 'Should have assigned the correct ward.');
 	}
 
-	public function testActionCreate_ValidPostDataWithWardType_ObservationWard_CreatesBooking()
+	public function testActionCreate_ValidPostDataWithWardType_MaleWard_CreatesBooking()
 	{
 		$bookingCount = count($this->bookings);
 
 		$_POST = array(
 			'Booking' => array(
-				'element_operation_id' => $this->operations['element1']['id'],
+				'element_operation_id' => $this->operations['element3']['id'],
 				'session_id' => $this->sessions[0]['id'],
 			),
 			'wardType' => true
 		);
-
-		$ward = $this->wards('ward1');
-		$ward->restriction = Ward::RESTRICTION_OBSERVATION;
-		$ward->save();
 
 		$mockController = $this->getMock('BookingController',
 			array('redirect'), array('BookingController'));
@@ -538,9 +531,9 @@ class BookingControllerTest extends CDbTestCase
 		$criteria = new CDbCriteria;
 		$criteria->order = 'id DESC';
 		$booking = Booking::model()->find($criteria);
-		$this->assertEquals($this->operations['element1']['id'], $booking->element_operation_id, 'Should have assigned the correct operation.');
+		$this->assertEquals($this->operations['element3']['id'], $booking->element_operation_id, 'Should have assigned the correct operation.');
 		$this->assertEquals($this->sessions[0]['id'], $booking->session_id, 'Should have assigned the correct session.');
-		$this->assertEquals($ward->id, $booking->ward_id, 'Should have assigned the correct ward.');
+		$this->assertEquals(3, $booking->ward_id, 'Should have assigned the correct ward.');
 	}
 
 	/**
@@ -578,6 +571,7 @@ class BookingControllerTest extends CDbTestCase
 
 		$_POST['booking_id'] = $bookingId;
 		$_POST['cancellation_reason'] = $this->cancellationReasons['reason1']['id'];
+		$_POST['cancellation_comment'] = 'Cancellation comment';
 		$_POST['Booking'] = array(
 			'element_operation_id' => $this->operations['element1']['id'],
 			'session_id' => $sessionId,

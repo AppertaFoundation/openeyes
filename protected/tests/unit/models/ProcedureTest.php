@@ -130,7 +130,7 @@ class ProcedureTest extends CDbTestCase
 		$results = Procedure::getList('Fo');
 		$this->assertEquals($expected, Yii::app()->session['Procedures']);
 
-		$results = Procedure::getList('Bar');
+		$results = Procedure::getList('Qux');
 		$this->assertEquals(array(), $results);
 		$this->assertEquals($expected, Yii::app()->session['Procedures']);
 	}
