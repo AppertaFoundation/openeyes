@@ -129,12 +129,15 @@ class TheatreController extends BaseController
 				$firmId = Yii::app()->session['selected_firm_id'];
 			}
 
+			$_POST['date-start'] = $this->reformat_date($_POST['date-start']);
+			$_POST['date-end'] = $this->reformat_date($_POST['date-end']);
+
 			if (empty($_POST['date-start']) || empty($_POST['date-end'])) {
 				$startDate = $service->getNextSessionDate($firmId);
 				$endDate = $startDate;
 			} else {
 				$startDate = $_POST['date-start'];
-																$endDate = $_POST['date-end'];
+				$endDate = $_POST['date-end'];
 			}
 
 			$data = $service->findTheatresAndSessions(
@@ -216,6 +219,21 @@ class TheatreController extends BaseController
 		}
 
 		return $theatres;
+	}
+
+	public function reformat_date($date) {
+		if (preg_match('/^([0-9]+)-([a-zA-Z]+)-([0-9]+)$/',$date,$m)) {
+			return "{$m[3]}-".str_pad($this->get_month_num($m[2]),2,'0',STR_PAD_LEFT)."-".str_pad($m[1],2,'0',STR_PAD_LEFT);
+		}
+		return $date;
+	}
+
+	public function get_month_num($month) {
+		for ($i=1;$i<=12;$i++) {
+			if (date('M',mktime(0,0,0,$i,1,date('Y'))) == $month) {
+				return $i;
+			}
+		}
 	}
 
 	/**
