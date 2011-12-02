@@ -7,6 +7,8 @@ class m111201_154311_add_snomed_to_proc extends CDbMigration
 		$this->truncateTable('proc_specialty_assignment');
 		$this->truncateTable('proc_specialty_subsection_assignment');
 		$this->truncateTable('specialty_subsection');
+		$this->truncateTable('proc_opcs_assignment');
+		$this->truncateTable('opcs_code');
 		$this->truncateTable('proc');
 		$this->addColumn('proc', 'snomed_code', 'int(10) unsigned NOT NULL DEFAULT 0');
 		$this->addColumn('proc', 'snomed_term', 'varchar(255) NOT NULL DEFAULT 0');
@@ -308,13 +310,13 @@ class m111201_154311_add_snomed_to_proc extends CDbMigration
 			array(6,2,'Socket & eye removal')
 		);
 
-                foreach ($specSubs as $specSub) {
-                        $this->insert('specialty_subsection', array(
-                                'id' => $specSub[0],
-                                'specialty_id' => $specSub[1],
-                                'name' => $specSub[2],
-                        ));
-                }
+		foreach ($specSubs as $specSub) {
+			$this->insert('specialty_subsection', array(
+				'id' => $specSub[0],
+				'specialty_id' => $specSub[1],
+				'name' => $specSub[2],
+			));
+		}
 
 		$pSpecAs = array(
 			array(2,48,4),
@@ -592,13 +594,13 @@ class m111201_154311_add_snomed_to_proc extends CDbMigration
 			array(394,328,8)
 		);
 
-                foreach ($pSpecAs as $pSpecA) {
-                        $this->insert('proc_specialty_assignment', array(
-                                'id' => $pSpecA[0],
-                                'proc_id' => $pSpecA[1],
-                                'specialty_id' => $pSpecA[2],
-                        ));
-                }
+		foreach ($pSpecAs as $pSpecA) {
+			$this->insert('proc_specialty_assignment', array(
+				'id' => $pSpecA[0],
+				'proc_id' => $pSpecA[1],
+				'specialty_id' => $pSpecA[2],
+			));
+		}
 
 		$pSSAs = array(	
 			array(1,8,4),
@@ -729,20 +731,20 @@ class m111201_154311_add_snomed_to_proc extends CDbMigration
 		);
 
 		foreach ($pSSAs as $pSSA) {
-                        $this->insert('proc_specialty_subsection_assignment', array(
-                                'id' => $pSSA[0],
-                                'proc_id' => $pSSA[1],
-                                'specialty_subsection_id' => $pSSA[2],
-                        )); 
-                }
+			$this->insert('proc_specialty_subsection_assignment', array(
+				'id' => $pSSA[0],
+				'proc_id' => $pSSA[1],
+				'specialty_subsection_id' => $pSSA[2],
+			)); 
+		}
 	}
 
 	public function down()
 	{
-                $this->truncateTable('proc_specialty_assignment');
-                $this->truncateTable('proc_specialty_subsection_assignment');
-                $this->truncateTable('specialty_subsection');
-                $this->truncateTable('proc');
+		$this->truncateTable('proc_specialty_assignment');
+		$this->truncateTable('proc_specialty_subsection_assignment');
+		$this->truncateTable('specialty_subsection');
+		$this->truncateTable('proc');
 		$this->dropColumn('proc', 'snomed_code');
 		$this->dropColumn('proc', 'snomed_term');
 	}
