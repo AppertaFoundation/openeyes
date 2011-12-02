@@ -321,7 +321,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 		$('#date-start').val(format_date(today));
 
-		$('#date-end').val(format_date(returnDateWithInterval(today, 7)));
+		$('#date-end').val(format_date(returnDateWithInterval(today, 6)));
 
 		return true;
 	});
@@ -331,7 +331,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 		$('#date-start').val(format_date(today));
 
-		$('#date-end').val(format_date(returnDateWithInterval(today, 30)));
+		$('#date-end').val(format_date(returnDateWithInterval(today, 29)));
 
 		return true;
 	});
