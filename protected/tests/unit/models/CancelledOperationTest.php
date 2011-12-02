@@ -50,6 +50,7 @@ class CancelledOperationTest extends CDbTestCase
 			'cancelled_date' => 'Cancelled Date',
 			'user_id' => 'User',
 			'cancelled_reason_id' => 'Cancelled Reason',
+			'cancellation_comment' => 'Cancellation comment',
 		);
 		
 		$this->assertEquals($expected, $this->model->attributeLabels());

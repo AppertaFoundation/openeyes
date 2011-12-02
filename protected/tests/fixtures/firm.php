@@ -15,16 +15,19 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 return array(
 	'firm1' => array(
+		'id' => 1,
 		'service_specialty_assignment_id' => '1',
 		'pas_code' => 'AEAB',
 		'name' => 'Aylward Firm'
 	),
 	'firm2' => array(
+		'id' => 2,
 		'service_specialty_assignment_id' => '2',
 		'pas_code' => 'ADCR',
 		'name' => 'Collin Firm'
 	),
 	'firm3' => array(
+		'3' => 3,
 		'service_specialty_assignment_id' => '3',
 		'pas_code' => 'CAAB',
 		'name' => 'Allan Firm'

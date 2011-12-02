@@ -54,8 +54,8 @@ class ElementOperationTest extends CDbTestCase
 	public function dataProvider_Search()
 	{
 		return array(
-			array(array('eye' => ElementOperation::EYE_BOTH), 1, array('element1')),
-			array(array('eye' => ElementOperation::EYE_LEFT), 1, array('element2')),
+			array(array('eye' => ElementOperation::EYE_BOTH), 2, array('element1', 'element3')),
+			array(array('eye' => ElementOperation::EYE_LEFT), 2, array('element2', 'element4')),
 			array(array('eye' => ElementOperation::EYE_RIGHT), 0, array()),
 		);
 	}

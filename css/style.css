@@ -303,6 +303,12 @@ div.hint:last-child { border-right: none; }
 /* ====== FOOTER ====== */
 #footer h6 { float: left; margin:5px 0 0 12px; font-size:9px; font-weight: normal; color:#666; }
 
+/* mini help in footer:  617px is center */
+#footer {position:relative; }
+#footer .help { position:absolute; top:0; left:342px; width:550px; height:23px; background:#e2dfdb; font-size:11px; text-align: center; padding-top:9px; border-top:1px solid #b3b0ae; -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;  }
+#footer .help .divider { padding:0 5px; color:#aaa; }
+
+
 /* ------------------------------------------------- HEADER MODULES  */
 
 /* add border radius to header elements */
@@ -680,11 +686,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
 
 .theatre-list-sort-placeholder { visibility: visible !important; float: left; height: 62px; }
-
-.footer-helpdesk { color: #fff !important; font-size: 14px; }
-.footer-helpdesk a { color: #0B59DA !important; font-size: 14px; }
-.footer-helpdesk-phone { color: #0B59DA !important; font-size: 14px; }
-#footer-contacts { margin-left: auto; margin-right: auto; margin-top: 1px; width: 28em; }
 
 #LoginForm_siteId { margin-top: 6px; position: absolute; right: 0; top: 0; width: 212px; }
 
