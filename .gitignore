@@ -16,3 +16,7 @@ nbproject/*
 /.idea/
 error/404.php
 error/500.php
+protected/commands/FetchBookingsCommand.php
+protected/commands/FetchUsersCommand.php
+protected/config/db_dw.php
+protected/config/db_muu.php
