@@ -24,7 +24,7 @@ if (file_exists("../protected/config/params.php")) {
  
 <title>OpenEyes - Login</title> 
 	<meta name="viewport" content="width=device-width"> 
-	<link rel="icon" href="favicon.ico" type="image/x-icon" /> 
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="/favicon.ico"/> 
 	<link rel="stylesheet" href="/css/style-error.css"> 
 </head> 

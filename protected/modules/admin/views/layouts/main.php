@@ -26,8 +26,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
   <title>Open Eyes - Admin</title>
   <meta name="viewport" content="width=device-width">
 
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <link rel="shortcut icon" href="favicon.ico"/>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="/favicon.ico"/>
   <link rel="stylesheet" href="/css/style.css">
   <script src="/js/libs/modernizr-2.0.6.min.js"></script>
 </head>
