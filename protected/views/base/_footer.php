@@ -7,7 +7,7 @@
 				<span class="divider">|</span>
 				<span>phone: <strong>ext. 2071</strong></span>
 				<span class="divider">|</span>
-				<span><a href="/help">Online Help Documentation</a</span>
+				<span><a href="/pdf/OpenEyesOnlineHelp.pdf" target="_new">Online Help Documentation</a</span>
 		</div>
 	</div> <!-- #footer -->
 
