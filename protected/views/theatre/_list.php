@@ -311,6 +311,7 @@ if (empty($theatres)) {?>
 		$('div.action_options').html('<span class="aBtn"><a class="view-sessions" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		$('td.td_sort').show();
 		$('th.th_sort').show();
+		$('#btn_print').hide();
 	});
 
 	$('a.view-sessions').live('click',function() {
@@ -354,5 +355,7 @@ if (empty($theatres)) {?>
 			var id = $(this).attr('id').match(/[0-9]+/);
 			$('#comments'+id).val($(this).html());
 		});
+
+		$('#btn_print').show();
 	}
 </script>
