@@ -104,6 +104,7 @@ class SiteController extends BaseController
 						exit;
 					case 500:
 					default:
+						error_log("URI: ".@$_SERVER['REQUEST_URI']);
 						error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
 
 						if (file_exists("error/500.php")) {
