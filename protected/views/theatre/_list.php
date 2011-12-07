@@ -108,7 +108,7 @@ if (empty($theatres)) {?>
 											);
 								?></td>
 								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
-								<td class="patient leftAlign"><?php if (!$session['confirmed']) { ?><a href="#" id="confirm<?php echo $session['operationId'] ?>" title="Click to confirm booking" alt="Click to confirm booking"><img src="img/_elements/btns/misc/confirm-icon.png" alt="confirm-icon" width="19" height="19" /></a><?php } ?><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
 								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
 								<td class="ward"><?php echo $session['ward']; ?></td>
@@ -136,12 +136,6 @@ if (empty($theatres)) {?>
 
 					if (!empty($session['consultantRequired'])) {
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
-<?php
-					}
-
-					if ($session['confirmed']) {
-?>
-							<img src="img/_elements/icons/alerts/confirmed.png" alt="Booking confirmed" title="Booking confirmed" width="17" height="17" />
 <?php
 					}
 				}
@@ -187,97 +181,6 @@ if (empty($theatres)) {?>
 			}
 		});
 	}
-
-	$('a[id^="editAdmitTime"]').click(function() {
-		id = this.id.replace(/editAdmitTime/i, "");
-		value = $('#admitTime' + id).val();
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/updateAdmitTime'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&admission_time=' + value,
-			'success': function(data) {
-				return false;
-			}
-		});
-
-		return false;
-	});
-
-	$('a[id^="editComments"]').click(function() {
-		id = this.name;
-		value = $('#comments' + this.name).val();
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&comments=' + value,
-			'success': function(data) {
-				return false;
-			}
-		});
-
-		return false;
-	});
-
-	$('a[id^="u_"]').click(function() {
-		id = this.id.replace(/u_/i, "");
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&up=1',
-			'success': function(data) {
-				if (data == 1) {
-					$('#oprow_' + id).prev().before($('#oprow_' + id));
-				}
-			},
-		});
-
-		return false;
-	});
-
-	$('a[id^="d_"]').click(function() {
-		id = this.id.replace(/d_/i, "");
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&up=0',
-			'success': function(data) {
-				if (data == 1) {
-					$('#oprow_' + id).next().after($('#oprow_' + id));
-				}
-			},
-		});
-
-		return false;
-	});
-
-	$('a[id^="confirm"]').click(function() {
-		id = this.id.replace(/confirm/i, "");
-
-		a = this;
-
-		parent = $(this).parent();
-
-		sibling = $(parent).siblings('.alerts');
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/confirmOperation'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id,
-			'success': function(data) {
-				if (data == 1) {
-					sibling.append('<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" alt="Booking confirmed" title="Booking confirmed" width="17" height="17" />');
-
-					$(a).remove();
-				}
-			},
-		});
-
-		return false;
-	});
 
 	function enable_sort() {
 		$("#theatre_list tbody").sortable({
