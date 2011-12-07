@@ -245,8 +245,10 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 
 		$('input[name^="confirm_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["confirm_"+id] = $(this).val();
+			if ($(this).attr('checked')) {
+				var id = $(this).attr('id').match(/[0-9]+/);
+				data["confirm_"+id] = $(this).val();
+			}
 		});
 
 		$.ajax({
