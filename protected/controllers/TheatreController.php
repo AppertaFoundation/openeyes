@@ -314,6 +314,7 @@ class TheatreController extends BaseController
 					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
 
 					if (!empty($booking)) {
+						$booking->confirmed = (@$_POST['confirm_'.$m[1]] ? 1 : 0);
 						$booking->admission_time = $value;
 						$booking->display_order = $display_order++;
 						$booking->save();

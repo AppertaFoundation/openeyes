@@ -77,6 +77,7 @@ if (empty($theatres)) {?>
 								<th>Admit time</th>
 								<th class="th_sort" style="display: none;">Sort</th>
 								<th>Hospital #</th>
+								<th>Confirm</th>
 								<th>Patient (Age)</th>
 								<th>[Eye] Operation</th>
 								<th>Anesth</th>
@@ -106,6 +107,7 @@ if (empty($theatres)) {?>
 									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
 											);
 								?></td>
+								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
 								<td class="patient leftAlign"><?php if (!$session['confirmed']) { ?><a href="#" id="confirm<?php echo $session['operationId'] ?>" title="Click to confirm booking" alt="Click to confirm booking"><img src="img/_elements/btns/misc/confirm-icon.png" alt="confirm-icon" width="19" height="19" /></a><?php } ?><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
 								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
@@ -312,6 +314,7 @@ if (empty($theatres)) {?>
 		$('td.td_sort').show();
 		$('th.th_sort').show();
 		$('#btn_print').hide();
+		$('input[name^="confirm_"]').attr('disabled',false);
 	});
 
 	$('a.view-sessions').live('click',function() {
@@ -357,5 +360,6 @@ if (empty($theatres)) {?>
 		});
 
 		$('#btn_print').show();
+		$('input[name^="confirm_"]').attr('disabled',true);
 	}
 </script>

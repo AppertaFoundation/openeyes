@@ -246,6 +246,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			data["comments_"+id] = $(this).val();
 		});
 
+		$('input[name^="confirm_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["confirm_"+id] = $(this).val();
+		});
+
 		$.ajax({
 			'type': 'POST',
 			'data': data,
