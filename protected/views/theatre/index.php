@@ -417,4 +417,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 		return date.getFullYear() + '-' + m + '-' + d;
 	}
+
+	$('#date-start').bind('change',function() {
+		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
+	});
+
+	$('#date-end').bind('change',function() {
+		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
+	});
 </script>
