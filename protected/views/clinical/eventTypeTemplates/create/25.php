@@ -88,9 +88,9 @@ if (isset($referrals) && is_array($referrals)) {
 	</div>
 
 	<div class="form_button">
-			<button type="submit" value="submit" class="wBtn_add-schedule-later ir fancybox" id="scheduleLater">Save and Schedule later</button>
-			<button type="submit" value="submit" class="wBtn_add-schedule-now ir fancybox" id="scheduleNow">Save and Schedule now</button>
-			<button type="submit" value="submit" class="wBtn_cancel-operation ir fancybox" id="cancelOperation">Save and Schedule now</button>
+		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
+		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
+		<button type="submit" class="classy red venti" id="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
 	</div>
 
 	</form>

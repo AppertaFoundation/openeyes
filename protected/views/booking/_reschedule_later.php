@@ -51,7 +51,8 @@ echo '<div style="height: 0.4em;"></div>';
 echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
 echo '<div style="height: 0.4em;"></div>'?>
 <div class="clear"></div>
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel booking</span></button><?php
+<button type="submit" class="classy red venti"><span class="button-span button-span-red">Cancel booking</span></button>
+<?php
 echo CHtml::endForm(); ?>
 </div>
 </div>
