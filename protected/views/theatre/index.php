@@ -91,8 +91,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'d-M-yy',
-									'maxDate'=>'today'
+									'dateFormat'=>'d-M-yy'
 								),
 								'value' => '',
 								'htmlOptions'=>array('style'=>'width: 110px;')
@@ -105,8 +104,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'d-M-yy',
-									'maxDate'=>'today'
+									'dateFormat'=>'d-M-yy'
 								),
 								'value' => '',
 								'htmlOptions'=>array('style'=>'width: 110px;')
