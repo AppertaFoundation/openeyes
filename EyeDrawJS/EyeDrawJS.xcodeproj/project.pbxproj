@@ -1,0 +1,158 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXFileReference section */
+		A93413771386E7A2004F355E /* ED_AntSeg.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_AntSeg.js; path = ../../Javascript/ED_AntSeg.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A94A7383145A0DF3005741A3 /* ED_Adnexal.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_Adnexal.js; path = ../ED_Adnexal.js; sourceTree = "<group>"; };
+		A94C72BA1366C4E500ED3A41 /* ED_Cancer.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_Cancer.js; path = ../ED_Cancer.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A955F5731452DD6E006A4598 /* ED_Strabismus.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_Strabismus.js; path = ../ED_Strabismus.js; sourceTree = "<group>"; };
+		A95DC9CB13B39811004A5D08 /* Licence */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Licence; path = ../Licence; sourceTree = "<group>"; };
+		A96D712A137FEB600057A471 /* ED_General.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_General.js; path = ../../Javascript/ED_General.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A9AA65FC1323996800AA3919 /* ED_VitreoRetinal.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_VitreoRetinal.js; path = ../ED_VitreoRetinal.js; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A9AA65FD1323996800AA3919 /* ED_Drawing.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_Drawing.js; path = ../ED_Drawing.js; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A9AA65FE1323996800AA3919 /* EyeDrawingFunctions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = EyeDrawingFunctions.html; path = ../EyeDrawingFunctions.html; sourceTree = SOURCE_ROOT; };
+		A9C9FEDE13D9555D00A21202 /* ED_MedicalRetina.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_MedicalRetina.js; path = ../ED_MedicalRetina.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A9F06423132D34A400A5914F /* styles.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = styles.css; path = ../styles.css; sourceTree = "<group>"; };
+		A9F06424132D35CD00A5914F /* Misc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Misc.txt; path = EyeDrawJS.xcodeproj/Misc.txt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		08FB7794FE84155DC02AAC07 /* EyeDrawJS */ = {
+			isa = PBXGroup;
+			children = (
+				A94A7383145A0DF3005741A3 /* ED_Adnexal.js */,
+				A9C9FEDE13D9555D00A21202 /* ED_MedicalRetina.js */,
+				A95DC9CB13B39811004A5D08 /* Licence */,
+				A93413771386E7A2004F355E /* ED_AntSeg.js */,
+				A96D712A137FEB600057A471 /* ED_General.js */,
+				A94C72BA1366C4E500ED3A41 /* ED_Cancer.js */,
+				A9F06424132D35CD00A5914F /* Misc.txt */,
+				A9F06423132D34A400A5914F /* styles.css */,
+				A9AA65FC1323996800AA3919 /* ED_VitreoRetinal.js */,
+				A955F5731452DD6E006A4598 /* ED_Strabismus.js */,
+				A9AA65FD1323996800AA3919 /* ED_Drawing.js */,
+				A9AA65FE1323996800AA3919 /* EyeDrawingFunctions.html */,
+			);
+			name = EyeDrawJS;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		D28A88AD04BDD90700651E21 /* EyeDrawJS */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "EyeDrawJS" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/bin/make;
+			dependencies = (
+			);
+			name = EyeDrawJS;
+			passBuildSettingsInEnvironment = 1;
+			productName = EyeDrawJS;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXProject section */
+		08FB7793FE84155DC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "EyeDrawJS" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 08FB7794FE84155DC02AAC07 /* EyeDrawJS */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D28A88AD04BDD90700651E21 /* EyeDrawJS */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB919008733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = EyeDrawJS;
+			};
+			name = Debug;
+		};
+		1DEB919108733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = EyeDrawJS;
+			};
+			name = Release;
+		};
+		1DEB919408733D9F0010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB919508733D9F0010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB918F08733D9F0010E9CD /* Build configuration list for PBXLegacyTarget "EyeDrawJS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919008733D9F0010E9CD /* Debug */,
+				1DEB919108733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB919308733D9F0010E9CD /* Build configuration list for PBXProject "EyeDrawJS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB919408733D9F0010E9CD /* Debug */,
+				1DEB919508733D9F0010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 08FB7793FE84155DC02AAC07 /* Project object */;
+}

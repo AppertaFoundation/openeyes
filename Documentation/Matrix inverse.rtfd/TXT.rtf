@@ -1,0 +1,44 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1038\cocoasubrtf350
+{\fonttbl\f0\fnil\fcharset0 Verdana;\f1\fmodern\fcharset0 Courier;\f2\fswiss\fcharset0 Helvetica;
+}
+{\colortbl;\red255\green255\blue255;\red0\green15\blue68;\red199\green37\blue0;\red27\green84\blue155;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww15540\viewh13540\viewkind0
+\deftab720
+\pard\pardeftab720\sa320\ql\qnatural
+
+\f0\b\fs32 \cf2 Inverse Matrices\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\b0\fs26 \cf0 You also have the capability of removing all transformations from a nested movie clip to make it seem as though it is not being transformed at all. The concatenated matrix alone, however, will not provide this for you. What you need is an inverse matrix.\
+An 
+\i \cf3 inverse matrix
+\i0 \cf0  is a square matrix where there exists another unique matrix that, when multiplied with the inverse, results in the identity matrix. Both matrices are then considered 
+\i \cf3 invertable
+\i0 \cf0  and are inverses of each other. All Flash transformation matrices are invertable meaning for each transformation matrix, there exists another matrix that when multiplied by the transformation matrix will give you the identity matrix. Given the identity matrix 
+\f1\fs30 \cf4 I
+\f0\fs26 \cf0  and a matrix 
+\f1\fs30 \cf4 A
+\f0\fs26 \cf0 , there exists a matrix 
+\f1\fs30 \cf4 B
+\f0\fs26 \cf0  so that\
+
+\f1\fs30 \cf4 A*B = I
+\f0\fs26 \cf0 \
+and\
+
+\f1\fs30 \cf4 B*A = I
+\f0\fs26 \cf0 \
+The method of obtaining an inverse matrix manually is a little complex. It involves finding the adjoint of the matrix and dividing it by its determinant. The process is slightly simpler given the form of our affine transformation matrices but the details of which is still beyond the breadth of this tutorial. It reduces to the following.\
+Given the matrix\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f2\fs24 \cf0 {{\NeXTGraphic m_elements_base.gif \width1340 \height1340 \noorient
+}¬}\pard\pardeftab720\sa260\ql\qnatural
+
+\f0\fs26 \cf0 \
+its inverse can be found using\
+\pard\pardeftab720\sa260\ql\qnatural
+
+\f2\fs24 \cf0 {{\NeXTGraphic m_inverse_calc.gif \width5700 \height1360 \noorient
+}¬}}

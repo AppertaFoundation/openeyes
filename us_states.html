@@ -1,0 +1,99 @@
+<html>
+<head>
+
+<script type="text/javascript">
+
+var State = new Array();
+var Code = new Array();
+
+function BuildArrays()
+{
+ State[0] = "Alabama";         Code[0] = "AL";
+ State[1] = "Alaska";          Code[1] = "AK";
+ State[2] = "Arizona";         Code[2] = "AZ";
+ State[3] = "Arkansas";        Code[3] = "AR";
+ State[4] = "California";      Code[4] = "CA";
+ State[5] = "Colorado";        Code[5] = "CO";
+ State[6] = "Connecticut";     Code[6] = "CT";
+ State[7] = "Delaware";        Code[7] = "DE";
+ State[8] = "Florida";         Code[8] = "FL";
+ State[9] = "Georgia";         Code[9] = "GA";
+State[10] = "Hawaii";         Code[10] = "HI";
+State[11] = "Idaho";          Code[11] = "ID";
+State[12] = "Illinois";       Code[12] = "IL";
+State[13] = "Indiana";        Code[13] = "IN";
+State[14] = "Iowa";           Code[14] = "IA";
+State[15] = "Kansas";         Code[15] = "KS";
+State[16] = "Kentucky";       Code[16] = "KY";
+State[17] = "Louisiana";      Code[17] = "LA";
+State[18] = "Maine";          Code[18] = "ME";
+State[19] = "Maryland";       Code[19] = "MD";
+State[20] = "Massachusetts";  Code[20] = "MA";
+State[21] = "Michigan";       Code[21] = "MI";
+State[22] = "Minnesota";      Code[22] = "MN";
+State[23] = "Mississippi";    Code[23] = "MS";
+State[24] = "Missouri";       Code[24] = "MO";
+State[25] = "Montana";        Code[25] = "MT";
+State[26] = "Nebraska";       Code[26] = "NE";
+State[27] = "Nevada";         Code[27] = "NV";
+State[28] = "New Hampshire";  Code[28] = "NH";
+State[29] = "New Jersey";     Code[29] = "NJ";
+State[30] = "New Mexico";     Code[30] = "NM";
+State[31] = "New York";       Code[31] = "NY";
+State[32] = "North Carolina"; Code[32] = "NC";
+State[33] = "North Dakota";   Code[33] = "ND";
+State[34] = "Ohio";           Code[34] = "OH";
+State[35] = "Oklahoma";       Code[35] = "OK";
+State[36] = "Oregon";         Code[36] = "OR";
+State[37] = "Pennsylvania";   Code[37] = "PA";
+State[38] = "Rhode Island";   Code[38] = "RI";
+State[39] = "South Carolina"; Code[39] = "SC";
+State[40] = "South Dakota";   Code[40] = "SD";
+State[41] = "Tennessee";      Code[41] = "TN";
+State[42] = "Texas";          Code[42] = "TX";
+State[43] = "Utah";           Code[43] = "UT";
+State[44] = "Vermont";        Code[44] = "VT";
+State[45] = "Virginia";       Code[45] = "VA";
+State[46] = "Washington";     Code[46] = "WA";
+State[47] = "West Virginia";  Code[47] = "WV";
+State[48] = "Wisconsin";      Code[48] = "WI";
+State[49] = "Wyoming";        Code[49] = "WY";
+}
+...
+</script>
+
+<body onload="BuildArrays()">
+...
+The postal code for 
+<input id="StateIn" type="text" value="Alabama" 
+  style="width:100px"/> is
+<input id="CodeOut" type="text" value="AL" onfocus="this.blur()"
+  style="width:30px; font-weight:bold; text-align:center"/>
+<input type="button" value="Find" onclick="Find()"/>
+<span id="Msg" style="color:red"></span>
+
+
+<script type="text/javascript">
+...
+
+function Find()
+{
+  var InputName = document.getElementById("StateIn").value.toLowerCase()  
+  for (i=0; i < State.length; i++) {
+    var ArrayName = State[i].toLowerCase()
+    if (ArrayName.indexOf(InputName) != -1) {
+      document.getElementById("StateIn").value = State[i];
+      document.getElementById("CodeOut").value = Code[i];
+      break;
+    }
+  }
+  if (i == State.length) {
+    document.getElementById("Msg").innerText = "No match";
+    document.getElementById("CodeOut").value = "";
+  }
+  else {
+    document.getElementById("Msg").innerText = "";
+  }
+}
+
+</script>

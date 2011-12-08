@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Test Page</title>
+	<link rel="stylesheet" href="includes/main.css" type="text/css" media="screen" />
+	<script language="JavaScript" src="functions.js" type="text/javascript"></script>
+	<script language="JavaScript" src="contact_data.js" type="text/javascript"></script>
+
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	
+
+</head>
+
+	<body OnLoad="javascript:bldInitial()">
+		<form name="menuform" action="http:\\www.google.com">
+			<input type="text" name="entry" size="30" style="font-weight: bold" onKeyUp="javascript:bldUpdate();">
+			<br \>
+			<select name="namelist" size=10 style="width: 200px" onclick=doSomething(namelist.value)>
+				<option>
+			</select>
+		</form>
+	</body>
+	
+</html>

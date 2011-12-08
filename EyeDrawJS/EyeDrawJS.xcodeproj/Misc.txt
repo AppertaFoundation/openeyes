@@ -1,0 +1,220 @@
+/*
+
+Java:
+curveTo(float x1, float y1, float x2, float y2, float x3, float y3) 
+Adds a curved segment, defined by three new points, to the path by drawing a Bézier curve that intersects both the current coordinates
+and the coordinates (x3, y3), using the specified points (x1, y1) and (x2, y2) as Bézier control points.
+
+Arc2D.Float(float x, float y, float w, float h, float start, float extent, int type)
+extent: The angular extent of the arc in degrees.
+height: The overall height of the full ellipse of which this arc is a partial section (not considering the angular extents).
+start: The starting angle of the arc in degrees.
+width:	The overall width of the full ellipse of which this arc is a partial section (not considering the angular extents).
+x: The X coordinate of the upper-left corner of the framing rectangle of the arc.
+y: The Y coordinate of the upper-left corner of the framing rectangle of the arc.
+
+drawOval(int x, int y,int width,int height) Draws the outline of an oval. The result is a circle or ellipse that fits within the
+rectangle specified by the x, y, width, and height arguments.
+
+Canvas:
+bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+Adds the given point to the current subpath, connected to the previous one by a cubic Bézier curve with the given control points.
+
+arc(x, y, radius, startAngle, endAngle [, anticlockwise ] )
+Adds points to the subpath such that the arc described by the circumference of the circle described by the arguments, starting at the 
+given start angle and ending at the given end angle, going in the given direction (defaulting to clockwise), is added to the path, 
+connected to the previous point by a straight line.
+
+Angles are measured from due East (3 o'clock) positive clockwise
+
+*/
+
+/**
+* Sector
+*/
+// Define namespace and alias
+/*	 
+// Constructor
+ED.Sector = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+{
+// Call super-class constructor
+ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order); 
+
+// Set classname
+this.className = "Sector";
+
+// Set bounding rectangle, corners clockwise from bottom left
+this.boundingRect[0] = new ED.Point(-110, 110);
+this.boundingRect[1] = new ED.Point(-110, -110);
+this.boundingRect[2] = new ED.Point(110, -110);
+this.boundingRect[3] = new ED.Point(110, 110);
+this.boundingRect[4] = new ED.Point(this.apexX, this.apexY);
+
+}
+
+// Set superclass and constructor
+ED.Sector.prototype = new ED.Doodle;
+ED.Sector.prototype.constructor = ED.Sector;
+
+// This allows running of parent method when overridden by subclass
+ED.Sector.superclass = ED.Doodle.prototype;
+
+// Methods
+
+// Assign settings for doodle
+ED.Sector.prototype.setPropertyDefaults = function()
+{
+this.isSelectable = true;
+this.isOrientated = true;
+this.isScaleable = true;
+this.isSqueezable = false;
+this.isMoveable = false;
+this.isRotatable = true;
+}
+
+ED.Sector.prototype.defaultParameters = function()
+{
+this.originX = 0;
+this.originY = 0;
+}
+
+// Draw
+ED.Sector.prototype.draw = function(ctx)
+{
+// Call draw method in superclass
+ED.Square.superclass.draw.call(this, ctx);
+
+ctx.strokeStyle = "blue";
+ctx.fillStyle = "yellow"
+ctx.lineWidth = 4;
+ctx.beginPath();
+ctx.arc(0,0,100,-Math.PI/2 - this.arc/2,-Math.PI/2 + this.arc/2,false);
+ctx.lineTo(0,0);
+ctx.closePath();
+ctx.stroke();
+ctx.fill();
+}
+*/
+
+
+
+/**
+* Posterior Pole
+*/
+// Define namespace and alias
+/*
+// Constructor
+ED.PostPole = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+{
+// Call super-class constructor
+ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order); 
+
+// Set classname
+this.className = "PostPole";
+
+// Set bounding rectangle, corners clockwise from bottom left
+this.boundingRect[0] = new ED.Point(-110, 110);
+this.boundingRect[1] = new ED.Point(-110, -110);
+this.boundingRect[2] = new ED.Point(110, -110);
+this.boundingRect[3] = new ED.Point(110, 110);
+//this.boundingRect[4] = new ED.Point(this.apexX, this.apexY);
+this.minimumApexX = 0;
+this.maximumApexX = 0;
+this.minimumApexY = -100;
+this.maximumApexY = 100;
+}
+
+// Set superclass and constructor
+ED.PostPole.prototype = new ED.Doodle;
+ED.PostPole.prototype.constructor = ED.Circle;
+
+// This allows running of parent method when overridden by subclass
+ED.PostPole.superclass = ED.Doodle.prototype;
+
+// Methods
+
+// Assign settings for doodle
+ED.PostPole.prototype.setPropertyDefaults = function()
+{
+this.isSelectable = true;
+this.isOrientated = false;
+this.isScaleable = true;
+this.isSqueezable = false;
+this.isMoveable = true;
+this.isRotatable = false;
+}
+*/
+// Draw
+/*
+
+Java:
+curveTo(float x1, float y1, float x2, float y2, float x3, float y3) 
+Adds a curved segment, defined by three new points, to the path by drawing a Bézier curve that intersects both the current coordinates
+and the coordinates (x3, y3), using the specified points (x1, y1) and (x2, y2) as Bézier control points.
+
+Canvas:
+bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x, y)
+Adds the given point to the current subpath, connected to the previous one by a cubic Bézier curve with the given control points.
+
+
+*/
+
+/*
+ED.PostPole.prototype.draw = function(ctx)
+{
+// Call draw method in superclass
+ED.PostPole.superclass.draw.call(this, ctx);
+
+// These values different for right and left eyes
+var startX;
+var midX1;
+var midX2;
+var midX3;
+var endX1;
+var endX2;
+var endX3;
+var odX;
+var cupX;
+
+if(true)
+{
+startX = -300;
+midX1 = -50;
+midX2 = 300;
+midX3 = 300;
+endX1 = 300;
+endX2 = 350;
+endX3 = 400;
+odX = 300;
+}
+else
+{
+startX = 300;
+midX1 = 50;
+midX2 = -300;
+midX3 = -300;
+endX1 = -300;
+endX2 = -350;
+endX3 = -400;
+odX = -300;
+}
+
+// New drawing path
+ctx.beginPath();
+
+// Superior arcades
+ctx.moveTo(startX, -100);
+ctx.bezierCurveTo(midX1, -500, midX2, -200, midX3, -24);
+ctx.bezierCurveTo(endX1, -80, endX2, -140, endX3, -160);
+
+// Set thickness of line to 6 pixels, and colour to red
+ctx.strokeStyle = "red";
+ctx.lineWidth = 6;
+
+// Draw  path
+ctx.stroke();
+
+}
+*/
+
+

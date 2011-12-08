@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Canvas Test</title>
+ 
+<script type="text/javascript">
+// globals
+var x = 0;
+var y = 0;
+ 
+function init() {
+    var canvas = document.getElementById('canvas');
+    canvas.addEventListener("mousedown", drawLine, false);
+}
+ 
+/*
+ * Get mouse event coordinate converted to canvas coordinate
+ * c: The canvas object
+ * e: A mouse event
+ */
+function toCanvasX(c, e) {
+  var posx = 0;
+ 
+  if (e.pageX)   {
+    posx = e.pageX;
+  } else if (e.clientX)   {
+    posx = e.clientX + document.body.scrollLeft
+      + document.documentElement.scrollLeft;
+  }
+  posx = posx - c.offsetLeft;
+  return posx;
+}
+ 
+function toCanvasY(c, e) {
+  var posy = 0;
+ 
+  if (e.pageY)   {
+    posy = e.pageY;
+  } else if (e.clientY)   {
+    posy = e.clientY + document.body.scrollTop
+      + document.documentElement.scrollTop;
+  }
+  posy = posy - c.offsetTop;
+ 
+  return posy;
+}
+ 
+function drawLine(e) {
+  var posx = toCanvasX(this, e);
+  var posy = toCanvasY(this, e);
+  var ctx= this.getContext('2d');
+ 
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(posx, posy);
+  ctx.stroke();
+ 
+  x = posx;
+  y = posy;
+}
+</script>
+ 
+</head>
+ 
+<body onload="init();">
+ 
+<canvas id="canvas" width="500" height="500" style="border: 1px dotted;">
+      This text is displayed if your browser does not support HTML5 Canvas.
+</canvas>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"> <style>
+	.KEYW {color: #933;}
+	.COMM {color: #bbb; font-style: italic;}
+	.NUMB {color: #393;}
+	.STRN {color: #393;}
+	.REGX {color: #339;}
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}
+	</style></head><body><pre><span class='line'>  1</span> <span class="COMM">/**
+<span class='line'>  2</span>  * @fileOverview Contains doodle Subclasses for the adnexal drawing
+<span class='line'>  3</span>  * @author &lt;a href="mailto:bill.aylward@mac.com">Bill Aylward&lt;/a>
+<span class='line'>  4</span>  * @version 0.8
+<span class='line'>  5</span>  *
+<span class='line'>  6</span>  * Modification date: 28th Ootober 2011
+<span class='line'>  7</span>  * Copyright 2011 OpenEyes
+<span class='line'>  8</span>  * 
+<span class='line'>  9</span>  * This file is part of OpenEyes.
+<span class='line'> 10</span>  * 
+<span class='line'> 11</span>  * OpenEyes is free software: you can redistribute it and/or modify
+<span class='line'> 12</span>  * it under the terms of the GNU General Public License as published by
+<span class='line'> 13</span>  * the Free Software Foundation, either version 3 of the License, or
+<span class='line'> 14</span>  * (at your option) any later version.
+<span class='line'> 15</span>  * 
+<span class='line'> 16</span>  * OpenEyes is distributed in the hope that it will be useful,
+<span class='line'> 17</span>  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+<span class='line'> 18</span>  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+<span class='line'> 19</span>  * GNU General Public License for more details.
+<span class='line'> 20</span>  * 
+<span class='line'> 21</span>  * You should have received a copy of the GNU General Public License
+<span class='line'> 22</span>  * along with OpenEyes.  If not, see &lt;http://www.gnu.org/licenses/>.
+<span class='line'> 23</span>  */</span><span class="WHIT">
+<span class='line'> 24</span> 
+<span class='line'> 25</span> </span><span class="COMM">/**
+<span class='line'> 26</span>  * Defines the EyeDraw namespace
+<span class='line'> 27</span>  * @namespace Namespace for all EyeDraw classes
+<span class='line'> 28</span>  */</span><span class="WHIT">
+<span class='line'> 29</span> </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">ED</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="KEYW">null</span><span class="WHIT"> </span><span class="PUNC">||</span><span class="WHIT"> </span><span class="KEYW">typeof</span><span class="PUNC">(</span><span class="NAME">ED</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">!=</span><span class="WHIT"> </span><span class="STRN">"object"</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">{</span><span class="WHIT"> </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ED</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">Object</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 30</span> 
+<span class='line'> 31</span> </span><span class="COMM">/**
+<span class='line'> 32</span>  * Anterior segment with adjustable sized pupil
+<span class='line'> 33</span>  *
+<span class='line'> 34</span>  * @class AdnexalEye
+<span class='line'> 35</span>  * @property {String} className Name of doodle subclass
+<span class='line'> 36</span>  * @param {Drawing} _drawing
+<span class='line'> 37</span>  * @param {Int} _originX
+<span class='line'> 38</span>  * @param {Int} _originY
+<span class='line'> 39</span>  * @param {Int} _apexX
+<span class='line'> 40</span>  * @param {Int} _apexY
+<span class='line'> 41</span>  * @param {Float} _scaleX
+<span class='line'> 42</span>  * @param {Float} _scaleY
+<span class='line'> 43</span>  * @param {Float} _arc
+<span class='line'> 44</span>  * @param {Float} _rotation
+<span class='line'> 45</span>  * @param {Int} _order
+<span class='line'> 46</span>  */</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="NAME">ED.AdnexalEye</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 48</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 49</span> </span><span class="WHIT">	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 51</span> </span><span class="WHIT">	
+<span class='line'> 52</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
+<span class='line'> 53</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"AdnexalEye"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 54</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 55</span> 
+<span class='line'> 56</span> </span><span class="COMM">/**
+<span class='line'> 57</span>  * Sets superclass and constructor
+<span class='line'> 58</span>  */</span><span class="WHIT">
+<span class='line'> 59</span> </span><span class="NAME">ED.AdnexalEye.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Doodle</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 60</span> </span><span class="NAME">ED.AdnexalEye.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ED.AdnexalEye</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 61</span> </span><span class="NAME">ED.AdnexalEye.superclass</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ED.Doodle.prototype</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 62</span> 
+<span class='line'> 63</span> </span><span class="COMM">/**
+<span class='line'> 64</span>  * Sets handle attributes
+<span class='line'> 65</span>  */</span><span class="WHIT">
+<span class='line'> 66</span> </span><span class="NAME">ED.AdnexalEye.prototype.setHandles</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 67</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 68</span> </span><span class="WHIT">	</span><span class="COMM">//this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);</span><span class="WHIT">
+<span class='line'> 69</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 70</span> 
+<span class='line'> 71</span> </span><span class="COMM">/**
+<span class='line'> 72</span>  * Set default properties
+<span class='line'> 73</span>  */</span><span class="WHIT">
+<span class='line'> 74</span> </span><span class="NAME">ED.AdnexalEye.prototype.setPropertyDefaults</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 75</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 76</span> </span><span class="WHIT">	</span><span class="NAME">this.isSelectable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 77</span> </span><span class="WHIT">    </span><span class="NAME">this.isDeletable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 78</span> </span><span class="WHIT">	</span><span class="NAME">this.isOrientated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 79</span> </span><span class="WHIT">	</span><span class="NAME">this.isScaleable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 80</span> </span><span class="WHIT">	</span><span class="NAME">this.isSqueezable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 81</span> </span><span class="WHIT">	</span><span class="NAME">this.isMoveable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 82</span> </span><span class="WHIT">	</span><span class="NAME">this.isRotatable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 83</span> </span><span class="WHIT">    </span><span class="NAME">this.isUnique</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 84</span> </span><span class="WHIT">	</span><span class="NAME">this.rangeOfScale</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Range</span><span class="PUNC">(</span><span class="PUNC">+</span><span class="NUMB">1</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="NUMB">4</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 85</span> </span><span class="WHIT">	</span><span class="NAME">this.rangeOfArc</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Range</span><span class="PUNC">(</span><span class="NAME">Math.PI</span><span class="PUNC">/</span><span class="NUMB">6</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">*</span><span class="NUMB">2</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 86</span> </span><span class="WHIT">	</span><span class="NAME">this.rangeOfApexX</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Range</span><span class="PUNC">(</span><span class="PUNC">-</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 87</span> </span><span class="WHIT">	</span><span class="NAME">this.rangeOfApexY</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Range</span><span class="PUNC">(</span><span class="PUNC">-</span><span class="NUMB">280</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">60</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 88</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 89</span> 
+<span class='line'> 90</span> </span><span class="COMM">/**
+<span class='line'> 91</span>  * Sets default parameters
+<span class='line'> 92</span>  */</span><span class="WHIT">
+<span class='line'> 93</span> </span><span class="NAME">ED.AdnexalEye.prototype.setParameterDefaults</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 94</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'> 95</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'> 96</span> 
+<span class='line'> 97</span> </span><span class="COMM">/**
+<span class='line'> 98</span>  * Draws doodle or performs a hit test if a Point parameter is passed
+<span class='line'> 99</span>  *
+<span class='line'>100</span>  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+<span class='line'>101</span>  */</span><span class="WHIT">
+<span class='line'>102</span> </span><span class="NAME">ED.AdnexalEye.prototype.draw</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>103</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>104</span> </span><span class="WHIT">	</span><span class="COMM">// Get context</span><span class="WHIT">
+<span class='line'>105</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.drawing.context</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>106</span> </span><span class="WHIT">	
+<span class='line'>107</span> 	</span><span class="COMM">// Call draw method in superclass</span><span class="WHIT">
+<span class='line'>108</span> </span><span class="WHIT">	</span><span class="NAME">ED.AdnexalEye.superclass.draw.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>109</span> </span><span class="WHIT">   
+<span class='line'>110</span> 	</span><span class="COMM">// Boundary path</span><span class="WHIT">
+<span class='line'>111</span> </span><span class="WHIT">	</span><span class="NAME">ctx.beginPath</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>112</span> </span><span class="WHIT">    
+<span class='line'>113</span> 	</span><span class="COMM">// Draw outline of eyelids</span><span class="WHIT">
+<span class='line'>114</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">s</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">1</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>115</span> </span><span class="WHIT">    </span><span class="NAME">ctx.moveTo</span><span class="PUNC">(</span><span class="PUNC">-</span><span class="NUMB">400</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>116</span> </span><span class="WHIT">    </span><span class="NAME">ctx.bezierCurveTo</span><span class="PUNC">(</span><span class="PUNC">-</span><span class="NUMB">400</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">50</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">200</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">250</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">250</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>117</span> </span><span class="WHIT">    </span><span class="NAME">ctx.bezierCurveTo</span><span class="PUNC">(</span><span class="NUMB">200</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">250</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">300</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">100</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">350</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">50</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>118</span> </span><span class="WHIT">    </span><span class="NAME">ctx.bezierCurveTo</span><span class="PUNC">(</span><span class="NUMB">400</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">60</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">440</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">10</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">440</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>119</span> </span><span class="WHIT">    </span><span class="NAME">ctx.bezierCurveTo</span><span class="PUNC">(</span><span class="NUMB">440</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">10</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">400</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">50</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">350</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">50</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>120</span> </span><span class="WHIT">    </span><span class="NAME">ctx.bezierCurveTo</span><span class="PUNC">(</span><span class="NUMB">300</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">100</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">200</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">250</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">250</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>121</span> </span><span class="WHIT">    </span><span class="NAME">ctx.bezierCurveTo</span><span class="PUNC">(</span><span class="PUNC">-</span><span class="NUMB">200</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">250</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">400</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">50</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="PUNC">-</span><span class="NUMB">400</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>122</span> 
+<span class='line'>123</span> </span><span class="WHIT">    </span><span class="COMM">// Close path</span><span class="WHIT">
+<span class='line'>124</span> </span><span class="WHIT">    </span><span class="COMM">//ctx.closePath();</span><span class="WHIT">
+<span class='line'>125</span> </span><span class="WHIT">	
+<span class='line'>126</span> 	</span><span class="COMM">// Set line attributes</span><span class="WHIT">
+<span class='line'>127</span> </span><span class="WHIT">	</span><span class="NAME">ctx.lineWidth</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">4</span><span class="PUNC">;</span><span class="WHIT">	
+<span class='line'>128</span> 	</span><span class="NAME">ctx.fillStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"rgba(100, 200, 250, 0)"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>129</span> </span><span class="WHIT">	</span><span class="NAME">ctx.strokeStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"gray"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>130</span> </span><span class="WHIT">	
+<span class='line'>131</span> 	</span><span class="COMM">// Draw boundary path (also hit testing)</span><span class="WHIT">
+<span class='line'>132</span> </span><span class="WHIT">	</span><span class="NAME">this.drawBoundary</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>133</span> </span><span class="WHIT">	
+<span class='line'>134</span> 	</span><span class="COMM">// Other paths and drawing here</span><span class="WHIT">
+<span class='line'>135</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.drawFunctionMode</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">ED.drawFunctionMode.Draw</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>136</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>137</span> </span><span class="WHIT">        </span><span class="COMM">// Boundary path</span><span class="WHIT">
+<span class='line'>138</span> </span><span class="WHIT">        </span><span class="NAME">ctx.beginPath</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>139</span> </span><span class="WHIT">        
+<span class='line'>140</span>         </span><span class="COMM">// Do a 360 arc</span><span class="WHIT">
+<span class='line'>141</span> </span><span class="WHIT">        </span><span class="NAME">ctx.arc</span><span class="PUNC">(</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">190</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">2</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>142</span> </span><span class="WHIT">        
+<span class='line'>143</span>         </span><span class="COMM">// Move to inner circle</span><span class="WHIT">
+<span class='line'>144</span> </span><span class="WHIT">        </span><span class="NAME">ctx.moveTo</span><span class="PUNC">(</span><span class="NUMB">120</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>145</span> </span><span class="WHIT">        
+<span class='line'>146</span>         </span><span class="COMM">// Arc back the other way</span><span class="WHIT">
+<span class='line'>147</span> </span><span class="WHIT">        </span><span class="NAME">ctx.arc</span><span class="PUNC">(</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">120</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">s</span><span class="PUNC">,</span><span class="WHIT">  </span><span class="NUMB">2</span><span class="WHIT"> </span><span class="PUNC">*</span><span class="WHIT"> </span><span class="NAME">Math.PI</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NUMB">0</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>148</span> </span><span class="WHIT">        
+<span class='line'>149</span>         </span><span class="COMM">// Set line attributes</span><span class="WHIT">
+<span class='line'>150</span> </span><span class="WHIT">        </span><span class="NAME">ctx.lineWidth</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">4</span><span class="PUNC">;</span><span class="WHIT">	
+<span class='line'>151</span>         </span><span class="NAME">ctx.fillStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"rgba(100, 200, 250, 0.75)"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>152</span> </span><span class="WHIT">        </span><span class="NAME">ctx.strokeStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"gray"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>153</span> </span><span class="WHIT">        
+<span class='line'>154</span>         </span><span class="NAME">ctx.fill</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>155</span> </span><span class="WHIT">        </span><span class="NAME">ctx.stroke</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>156</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>157</span> </span><span class="WHIT">    
+<span class='line'>158</span> 	</span><span class="COMM">// Coordinates of handles (in canvas plane)</span><span class="WHIT">
+<span class='line'>159</span> </span><span class="WHIT">	</span><span class="COMM">//this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));</span><span class="WHIT">
+<span class='line'>160</span> </span><span class="WHIT">	
+<span class='line'>161</span> 	</span><span class="COMM">// Draw handles if selected</span><span class="WHIT">
+<span class='line'>162</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.isSelected</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">this.isForDrawing</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">this.drawHandles</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>163</span> </span><span class="WHIT">    
+<span class='line'>164</span> 	</span><span class="COMM">// Return value indicating successful hit test</span><span class="WHIT">
+<span class='line'>165</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isClicked</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>166</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>167</span> 
+<span class='line'>168</span> </span><span class="COMM">/**
+<span class='line'>169</span>  * Returns a string containing a text description of the doodle
+<span class='line'>170</span>  *
+<span class='line'>171</span>  * @returns {String} Description of doodle
+<span class='line'>172</span>  */</span><span class="WHIT">
+<span class='line'>173</span> </span><span class="NAME">ED.AdnexalEye.prototype.description</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>174</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>175</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.getGrade</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">" pupil"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>176</span> </span><span class="WHIT">    
+<span class='line'>177</span>     </span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.hasPXE</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">" with pseudoexfoliation"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>178</span> </span><span class="WHIT">	
+<span class='line'>179</span> 	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>180</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>181</span> 
+<span class='line'>182</span> </span></pre></body></html>

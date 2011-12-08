@@ -1,0 +1,80 @@
+/* Default font and colour */
+body {
+	font-family: Helvetica, Verdana, Arial, sans-serif;
+	color:#444;
+	font-size: 0.7em;
+}
+
+canvas {
+    border: 1px solid black;
+}
+
+/* No focus indicator for canvas element */
+canvas:focus {
+    outline: 0;
+}
+
+button.imgbutton {
+	width: 36px;
+	height: 36px;
+	border: solid 1px;
+	background-color: #eeeeee;
+	margin-right: 0px;
+	margin-bottom: 2px;
+	overflow: visible;
+}
+
+button:hover {
+	background-color: #bbbbbb;
+	border: solid 1px;
+}
+
+button:active {
+	background-color: #888888;
+	border: solid 1px;
+}
+
+button:disabled {
+	background-color: #eeeeee;
+	border: solid 1px;
+}
+
+button img {
+	/* Margin required to centre button img - not sure why */
+	margin-left: -5px;
+	margin-top: -1px;
+	padding: 0;
+	border: none;
+	width: 32px;
+	height: 32px;
+}
+
+span.squiggle {
+	display:inline-block;
+	margin-bottom:-4px;
+}
+
+.colourWell {
+    margin-bottom: 4px;
+}
+
+.preview {
+	display: inline-table;
+    margin-bottom: 4px;
+}
+
+.thickness {
+	position: relative;
+	top: -15px;
+	display: inline-block;
+}
+
+.fill {
+	position: relative;
+	top: -5px;
+	display: inline-block;
+}
+
+.fillbutton {
+/*       display: list-item; */
+}
