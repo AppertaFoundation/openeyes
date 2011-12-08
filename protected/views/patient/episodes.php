@@ -2,7 +2,7 @@
 		<script type="text/javascript"> var header_text = ''; </script>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner whiteBox">
-				<form><button type="submit" value="submit" class="btn_newEvent ir" id="addNewEvent"><img style="float:right; margin:0px 0px 0 0;" src="/img/_elements/btns/new-event.png" alt="add-new-event" width="155" height="35" /></button></form>
+				<form><button style="float: right; margin-right: 1px;" type="submit" id="addNewEvent" class="classy green" tabindex="2"><span class="button-icon-green">+</span><span class="button-span button-span-green">&nbsp;&nbsp;add new Event</span></button></form>
 				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<div id="episodes_sidebar">
@@ -212,19 +212,7 @@
 			$(document).ready(function(){
 				$('.display_mode').html(header_text);
 
-				$btn_normal = $('img','#addNewEvent').attr("src");
-				$btn_over = $btn_normal.replace(/.png$/ig,"_o.png");
-				$btn_inactive = $btn_normal.replace(/.png$/ig,"_inactive.png");
 				$collapsed = true;
-
-				// rollover... if not open
-				$('#addNewEvent').mouseover(function(){
-					if($collapsed){ $('img','#addNewEvent').attr("src",$btn_over); }
-				});
-
-				$('#addNewEvent').mouseout(function(){
-					if($collapsed){ $('img','#addNewEvent').attr("src",$btn_normal);	}
-				});
 
 				$('#addNewEvent').unbind('click').click(function(e) {
 					e.preventDefault();
@@ -232,9 +220,13 @@
 
 					$('#add-event-select-type').slideToggle(100,function() {
 						if($(this).is(":visible")){
-							$('img','#addNewEvent').attr("src",$btn_inactive);
+							$('#addNewEvent').removeClass('green').addClass('inactive');
+							$('#addNewEvent span.button-span-green').removeClass('button-span-green').addClass('button-span-inactive');
+							$('#addNewEvent span.button-icon-green').removeClass('button-icon-green').addClass('button-icon-inactive');
 						} else {
-							$('img','#addNewEvent').attr("src",$btn_normal);
+							$('#addNewEvent').removeClass('inactive').addClass('green');
+							$('#addNewEvent span.button-span-inactive').removeClass('button-span-inactive').addClass('button-span-green');
+							$('#addNewEvent span.button-icon-inactive').removeClass('button-icon-inactive').addClass('button-icon-green');
 							$collapsed = true;
 						}
 						return false;
@@ -252,7 +244,9 @@
 						$('div.display_actions').hide();
 						$('#add-event-select-type').hide();
 						$collapsed = true;
-						$('img','#addNewEvent').attr("src",$btn_normal);
+						$('#addNewEvent').removeClass('inactive').addClass('green');
+						$('#addNewEvent span.button-span-inactive').removeClass('button-span-inactive').addClass('button-span-green');
+						$('#addNewEvent span.button-icon-inactive').removeClass('button-icon-inactive').addClass('button-icon-green');
 						$('#event_content').html(data);
 					}
 				});

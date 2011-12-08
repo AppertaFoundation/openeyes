@@ -49,8 +49,8 @@ foreach ($elements as $element) {
 ?>
 <div class="cleartall"></div>
 	<div class="form_button">
-		<button type="submit" value="submit" class="btn_save ir fancybox" id="update">Save</button>
-		<button type="submit" value="submit" class="btn_cancel ir fancybox" id="cancel">Cancel</button>
+		<button type="submit" class="classy green tall" id="update"><span class="button-span button-span-green">Save</span></button>
+		<button type="submit" class="classy red tall" id="cancel"><span class="button-span button-span-red">Cancel</span></button>
 	</div>
 <?php
 $this->endWidget(); ?>

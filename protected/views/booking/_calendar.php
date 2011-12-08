@@ -24,28 +24,28 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 				<div id="dates" class="clearfix">
 					<div id="current_month" class="column"><?php echo date('F Y', $date)?></div>
 					<div class="column" id="month_back">
-						<?php if (date('Ym') >= date('Ym', $date)) {?>
-							<img src="/img/_elements/btns/wide/previous-month_inactive.png" alt="previous-month_inactive" width="202" height="40" />
-						<?php }else{
+						<?php if (date('Ym') >= date('Ym', $date)) {
+							echo '<button type="submit" class="classy inactive venti" name="yt1" id="previous_month"><span class="button-span button-span-inactive">&#x25C0;&nbsp;&nbsp;previous month</span></button>';
+						} else {
 							echo CHtml::form(array('booking/sessions', 'operation'=>$operation->id, 'date'=>$lastMonth), 'post');
 							echo CHtml::hiddenField('operation', $operation->id);
 							echo CHtml::hiddenField('pmonth', $lastMonth);
 							echo '<span class="button">';
-							echo '<button type="submit" value="submit" name="yt1" id="previous_month" class="wBtn_previous-month ir">Previous Month</button>';
+							echo '<button type="submit" class="classy blue venti" name="yt1" id="previous_month"><span class="button-span button-span-blue">&#x25C0;&nbsp;&nbsp;previous month</span></button>';
 							echo '</span>';
 							echo CHtml::closeTag('form');
 							?>
 						<?php }?>
 					</div>
 					<div class="column" id="month_forward">
-						<?php if ($nextMonth > $nextYear) {?>
-							<img src="/img/_elements/btns/wide/next-month_inactive.png" alt="next-month_inactive" width="202" height="40" />
-						<?php }else{
+						<?php if ($nextMonth > $nextYear) {
+							echo '<button type="submit" class="classy blue inactive" name="yt1" id="next_month"><span class="button-span button-span-inactive">next month&nbsp;&nbsp;&#x25B6;</span></button>';
+						} else {
 							echo CHtml::form(array('booking/sessions', 'operation'=>$operation->id, 'date'=>$nextMonth), 'post');
 							echo CHtml::hiddenField('operation', $operation->id);
 							echo CHtml::hiddenField('nmonth', $nextMonth);
 							echo '<span class="button">';
-							echo '<button type="submit" value="submit" name="yt1" id="next_month" class="wBtn_next-month ir">Next Month</button>';
+							echo '<button type="submit" class="classy blue venti" name="yt1" id="next_month"><span class="button-span button-span-blue">next month&nbsp;&nbsp;&#x25B6;</span></button>';
 							echo '</span>';
 							echo CHtml::closeTag('form'); ?>
 						<?php }?>

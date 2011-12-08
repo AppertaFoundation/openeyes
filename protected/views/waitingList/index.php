@@ -52,8 +52,7 @@
 									    ?>
 									</td>
 									<td>
-										<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
-
+										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
 									</td>
 								</tr>
 								</tbody>

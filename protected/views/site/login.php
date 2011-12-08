@@ -48,7 +48,7 @@ $this->layout = 'simple';
 			</div>
 
 			<div class="row">
-				<button type="submit" name="yt0" value="" class="btn_login ir" tabindex="4">Login</button>
+				<button type="submit" name="yt0" class="classy green tall" tabindex="2"><span class="button-span button-span-blue">Login</button>
 			</div>
 
 		<?php $this->endWidget(); ?>

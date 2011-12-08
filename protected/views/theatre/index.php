@@ -115,7 +115,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							<a href="" id="last_week">Last week</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="next_week">Next week</a>
 							</span>
 
-							<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
+							<button type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
 							<?php $this->endWidget()?>
 						</div>
 
@@ -134,9 +134,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 			</div> <!-- #theatre_display -->
 			<div style="text-align:right; margin-right:10px;">
-				<button type="submit" value="submit" class="btn_save ir" id="btn_save" style="display: none;">Save</button>
-				<button type="submit" value="submit" class="btn_cancel ir" id="btn_cancel" style="display: none;">Cancel</button>
-				<button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button>
+				<button type="submit" class="classy green tall" id="btn_save" style="display: none;"><span class="button-span button-span-green">Save</span></button>
+				<button type="submit" class="classy red tall" id="btn_cancel" style="display: none;"><span class="button-span button-span-red">Cancel</span></button>
+				<button type="submit" class="classy blue tall" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
 			</div>
 		</div> <!-- .fullWidth -->
 		<div id="iframeprintholder" style="display: none;"></div>
