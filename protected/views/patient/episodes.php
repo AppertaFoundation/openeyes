@@ -82,6 +82,9 @@
 					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
 						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
 					</div>
+					<div class="action_options_alt" style="display: none;">
+						<span class="aBtn save"><a href="#" class="edit-save">Save</a></span><span class="aBtn cancel"><a href="#" class="edit-cancel">Cancel</a></span>
+					</div>
 				</div>
 				<div class="colorband category_treatement"></div>
 				<!-- EVENT CONTENT HERE -->
@@ -112,6 +115,9 @@
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
 						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
+					</div>
+					<div class="action_options_alt" style="display: none;">
+						<span class="aBtn save"><a href="#" class="edit-save">Save</a></span><span class="aBtn cancel"><a href="#" class="edit-cancel">Cancel</a></span>
 					</div>
 				</div>
 			</div><!-- #event_display -->
@@ -196,6 +202,7 @@
 						$('div.display_actions').show();
 						$('#display_actions_footer').show();
 						$('div.action_options').show();
+						$('div.action_options_alt').hide();
 						$('#event_content').html(data);
 
 						$('.display_mode').html(header_text);
@@ -265,13 +272,17 @@
 				return false;
 			});
 
+			function edited() {
+				$('div.action_options').hide();
+				$('div.action_options_alt').show();
+			}
+
 			function edit_event(event_id) {
 				$.ajax({
 					url: '/clinical/update/'+event_id,
 					success: function(data) {
 						edit_mode();
 						$('div.display_actions').show();
-						$('div.action_options').show();
 						$('#event_content').html(data);
 					}
 				});

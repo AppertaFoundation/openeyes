@@ -48,15 +48,10 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-	<div class="form_button">
-		<button type="submit" class="classy green tall" id="update"><span class="button-span button-span-green">Save</span></button>
-		<button type="submit" class="classy red tall" id="cancel"><span class="button-span button-span-red">Cancel</span></button>
-	</div>
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
-	$('#update').click(function() {
-		$('#update').attr("disabled", true);
+	$('a.edit-save').unbind('click').click(function() {
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('clinical/update', array('id'=>$id)); ?>',
 			'type': 'POST',
@@ -77,7 +72,6 @@ $this->endWidget(); ?>
 	});
 
 	function displayErrors(data) {
-		$('#update').attr("disabled", false);
 		arr = $.parseJSON(data);
 		if (!$.isEmptyObject(arr)) {
 			$('#clinical-update_es_ ul').html('');
@@ -96,7 +90,7 @@ $this->endWidget(); ?>
 		}
 	}
 
-	$('#cancel').unbind('click').click(function() {
+	$('a.edit-cancel').unbind('click').click(function() {
 		if (last_item_type == 'url') {
 			window.location.href = last_item_id;
 		} else if (last_item_type == 'episode') {
@@ -105,5 +99,19 @@ $this->endWidget(); ?>
 			view_event(last_item_id);
 		}
 		return false;
+	});
+
+	$(document).ready(function() {
+		$('input').change(function() {
+			edited();
+		});
+
+		$('select').change(function() {
+			edited();
+		});
+
+		$('textarea').bind('keyup',function() {
+			edited();
+		});
 	});
 </script>

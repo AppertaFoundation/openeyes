@@ -543,6 +543,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .action_options .aBtn { display:inline-block; height:18px; margin:3px;}
 .action_options .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .action_options .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
+.display_actions .action_options_alt { float:right; }
+.display_actions .action_options_alt .aLabel { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 10px; }
+.display_actions .action_options_alt .aBtn_inactive { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 5px; color:#666; }
+.action_options_alt .aBtn { display:inline-block; height:18px; margin:3px;}
+.action_options_alt .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
 
 /* ====== CATEGORY & EVENT COLOUR ====== */
 #event_display .colorband { height:5px; background:#a29d8a;  }
