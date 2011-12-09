@@ -162,6 +162,15 @@
 						$('div.action_options').hide();
 						$('#event_content').html(data);
 						view_mode();
+
+						if (currentEvent != '') {
+							// An event was highlighted previously so recreate the a it had
+							$('li[id=eventLi' + currentEvent + ']').wrapInner('<a href="#" rel="' + currentEvent + '" class="show-event-details" />');
+							currentEvent = '';
+							var content = $(".viewing").contents()
+							$(".viewing").replaceWith(content);
+						}
+
 					}
 				});
 				return false;
