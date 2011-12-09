@@ -218,10 +218,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'yy-mm-dd',
+									'dateFormat'=>'d-M-yy',
 									'maxDate'=>'today'
 								),
-								'value' => $model->decision_date,
+								'value' => date('j-M-Y',strtotime($model->decision_date)),
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							)); ?>
 						</div>
@@ -234,11 +234,19 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 <script type="text/javascript">
+	var removed_stack = [];
+
+	$(document).ready(function() {
+		$('select[name=select_procedure_id]').children().map(function() {
+			removed_stack[$(this).val()] = $(this).text();
+		});
+	});
+
 	$(function() {
 		$('input[id=autocomplete_procedure_id]').watermark('type the first few characters of a procedure');
 		$("#ElementOperation_decision_date_0").val('<?php
 			echo (empty($model->decision_date) || $model->decision_date == '0000-00-00')
-				? date('d M Y') : $model->decision_date; ?>');
+				? date('j-M-Y') : date('j-M-Y',strtotime($model->decision_date)); ?>');
 		$("#procedure_list tbody").sortable({
 			 helper: function(e, tr)
 			 {
@@ -330,6 +338,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		});
 	});
 	function removeProcedure(row) {
+		var option_value = $(row).parent().siblings('input').val();
+
 		var duration = $(row).parent().siblings('td').text();
 		if ($('input[name="ElementOperation[eye]"]:checked').val() == <?php echo ElementOperation::EYE_BOTH; ?>) {
 			duration = duration * 2;
@@ -348,8 +358,57 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 		$(row).parents('tr').remove();
 
+		var text = removed_stack[option_value];
+
+		$('select[name=select_procedure_id]').append($('<option>',{text : option_value}).text(text));
+		$('select[name=select_procedure_id]').attr('disabled',false);
+		sortProcedures();
+
 		return false;
 	};
+
+	function sortProcedures() {
+		var $dd = $('select[name=select_procedure_id]');
+
+		if ($dd.length > 0) { // make sure we found the select we were looking for
+
+			// save the selected value
+			var selectedVal = $dd.val();
+
+			// get the options and loop through them
+			var $options = $('option', $dd);
+			var arrVals = [];
+			$options.each(function(){
+					// push each option value and text into an array
+					arrVals.push({
+							val: $(this).val(),
+							text: $(this).text()
+					});
+			});
+
+			// sort the array by the value (change val to text to sort by text instead)
+			arrVals.sort(function(a, b){
+				if(a.val>b.val){
+					return 1;
+				}
+				else if (a.val==b.val){
+					return 0;
+				}
+				else {
+					return -1;
+				}
+			});
+
+			// loop through the sorted array and set the text/values to the options
+			for (var i = 0, l = arrVals.length; i < l; i++) {
+					$($options[i]).val(arrVals[i].val).text(arrVals[i].text);
+			}
+
+			// set the selected value back
+			$dd.val(selectedVal);
+		}
+	}
+
 	function updateTotalDuration() {
 		// update total duration
 		var totalDuration = 0;

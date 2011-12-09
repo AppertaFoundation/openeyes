@@ -39,7 +39,7 @@ echo '<div style="height: 0.4em;"></div>';
 echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
 echo '<div style="height: 0.4em;"></div>'?>
 <div class="buttonwrapper">
-<button type="submit" value="submit" class="shinybutton highlighted"><span>Cancel operation</span></button>
+<button type="submit" class="classy red venti"><span class="button-span button-span-red">Cancel operation</span></button>
 </div><?php
 echo CHtml::endForm(); ?>
 </div>

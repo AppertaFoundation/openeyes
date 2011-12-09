@@ -14,6 +14,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 return array(
 	'element1' => array(
+		'id' => 1,
 		'event_id' => 1,
 		'eye' => ElementOperation::EYE_BOTH,
 		'total_duration' => 90,
@@ -25,6 +26,7 @@ return array(
 		'status' => ElementOperation::STATUS_SCHEDULED
 	),
 	'element2' => array(
+		'id' => 2,
 		'event_id' => 2,
 		'eye' => ElementOperation::EYE_LEFT,
 		'total_duration' => 120,
@@ -34,5 +36,29 @@ return array(
 		'overnight_stay' => false,
 		'comments' => 'bar',
 		'status' => ElementOperation::STATUS_SCHEDULED
-	)
+	),
+        'element3' => array(
+		'id' => 3,
+                'event_id' => 3,
+                'eye' => ElementOperation::EYE_BOTH,
+                'total_duration' => 90,
+                'consultant_required' => true,
+                'anaesthetist_required' => false,
+                'anaesthetic_type' => ElementOperation::ANAESTHETIC_TOPICAL,
+                'overnight_stay' => false,
+                'comments' => 'qux',
+                'status' => ElementOperation::STATUS_SCHEDULED
+        ),
+        'element4' => array(
+		'id' => 4,
+                'event_id' => 5,
+                'eye' => ElementOperation::EYE_LEFT,
+                'total_duration' => 120,
+                'consultant_required' => true,
+                'anaesthetist_required' => false,
+                'anaesthetic_type' => ElementOperation::ANAESTHETIC_TOPICAL,
+                'overnight_stay' => false,
+                'comments' => 'zob',
+                'status' => ElementOperation::STATUS_SCHEDULED
+        ),
 );

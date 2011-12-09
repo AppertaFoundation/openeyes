@@ -49,7 +49,7 @@ foreach ($elements as $element) {
 
 ?>
 <div class="cleartall"></div>
-<button type="submit" value="submit" class="shinybutton highlighted" id="updateEvent"><span>Update</span></button>
+<button type="submit" class="classy green tall" id="updateEvent"><span class="button-span button-span-green">Update</span></button>
 <?php
 $this->endWidget();
 ?>

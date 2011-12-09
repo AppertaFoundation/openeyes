@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -49,7 +49,8 @@ foreach ($elements as $element) {
 ?>
 <div class="cleartall"></div>
 	<div class="form_button">
-		<button type="submit" value="submit" class="wBtn_edit-operation ir fancybox" id="update">Save</button>
+		<button type="submit" class="classy green tall" id="update"><span class="button-span button-span-green">Save</span></button>
+		<button type="submit" class="classy red tall" id="cancel"><span class="button-span button-span-red">Cancel</span></button>
 	</div>
 <?php
 $this->endWidget(); ?>
@@ -94,4 +95,15 @@ $this->endWidget(); ?>
 			$('#clinical-update_es_').hide();
 		}
 	}
+
+	$('#cancel').unbind('click').click(function() {
+		if (last_item_type == 'url') {
+			window.location.href = last_item_id;
+		} else if (last_item_type == 'episode') {
+			load_episode_summary(last_item_id);
+		} else if (last_item_type == 'event') {
+			view_event(last_item_id);
+		}
+		return false;
+	});
 </script>

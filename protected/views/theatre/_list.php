@@ -33,6 +33,7 @@ if (empty($theatres)) {?>
 		Sessions updated!
 	</span>
 	<?php
+	$tbody = 0;
 	foreach ($theatres as $name => $dates) { ?>
 		<h3 class="theatre<?php if (!$firstTheatreShown) {?> firstTheatre<?php }?>"><strong><?php echo $name?></strong></h3>
 		<?php
@@ -76,6 +77,7 @@ if (empty($theatres)) {?>
 								<th>Admit time</th>
 								<th class="th_sort" style="display: none;">Sort</th>
 								<th>Hospital #</th>
+								<th>Confirm</th>
 								<th>Patient (Age)</th>
 								<th>[Eye] Operation</th>
 								<th>Anesth</th>
@@ -83,7 +85,7 @@ if (empty($theatres)) {?>
 								<th>Info</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody id="tbody_<?php echo $tbody++;?>">
 <?php
 					$previousSequenceId = $session['sequenceId'];
 					$timeAvailable = $session['sessionDuration'];
@@ -105,7 +107,8 @@ if (empty($theatres)) {?>
 									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
 											);
 								?></td>
-								<td class="patient leftAlign"><?php if (!$session['confirmed']) { ?><a href="#" id="confirm<?php echo $session['operationId'] ?>"><img src="img/_elements/btns/misc/confirm-icon.png" alt="confirm-icon" width="19" height="19" /></a><?php } ?><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
+								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
+								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
 								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
 								<td class="ward"><?php echo $session['ward']; ?></td>
@@ -135,12 +138,6 @@ if (empty($theatres)) {?>
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
 <?php
 					}
-
-					if ($session['confirmed']) {
-?>
-							<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" />
-<?php
-					}
 				}
 ?>
 								</td>
@@ -163,96 +160,27 @@ if (empty($theatres)) {?>
 ?>
 
 <script type="text/javascript">
-	$('a[id^="editAdmitTime"]').click(function() {
-		id = this.id.replace(/editAdmitTime/i, "");
-		value = $('#admitTime' + id).val();
+	var table_states = {};
 
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/updateAdmitTime'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&admission_time=' + value,
-			'success': function(data) {
-				return false;
+	$(document).ready(function() {
+		load_table_states();
+	});
+
+	function load_table_states() {
+		table_states = {};
+
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id');
+
+				table_states[tbody_id] = [];
+
+				$(this).children('tr[id^="oprow_"]').map(function() {
+					table_states[tbody_id].push($(this).attr('id'));
+				});
 			}
 		});
-
-		return false;
-	});
-
-	$('a[id^="editComments"]').click(function() {
-		id = this.name;
-		value = $('#comments' + this.name).val();
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/updateSessionComments'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&comments=' + value,
-			'success': function(data) {
-				return false;
-			}
-		});
-
-		return false;
-	});
-
-	$('a[id^="u_"]').click(function() {
-		id = this.id.replace(/u_/i, "");
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&up=1',
-			'success': function(data) {
-				if (data == 1) {
-					$('#oprow_' + id).prev().before($('#oprow_' + id));
-				}
-			},
-		});
-
-		return false;
-	});
-
-	$('a[id^="d_"]').click(function() {
-		id = this.id.replace(/d_/i, "");
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/moveOperation'); ?>',
-			'type': 'POST',
-			'data': 'id=' + id + '&up=0',
-			'success': function(data) {
-				if (data == 1) {
-					$('#oprow_' + id).next().after($('#oprow_' + id));
-				}
-			},
-		});
-
-		return false;
-	});
-
-        $('a[id^="confirm"]').click(function() {
-                id = this.id.replace(/confirm/i, "");
-
-		a = this;
-
-		parent = $(this).parent();
-
-		sibling = $(parent).siblings('.alerts');
-
-                $.ajax({
-                        'url': '<?php echo Yii::app()->createUrl('theatre/confirmOperation'); ?>',
-                        'type': 'POST',
-                        'data': 'id=' + id,
-                        'success': function(data) {
-                                if (data == 1) {
-					sibling.append('<img src="img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" />');
-
-					$(a).remove();
-                                }
-                        },
-                });
-
-                return false;
-        });
+	}
 
 	function enable_sort() {
 		$("#theatre_list tbody").sortable({
@@ -288,6 +216,8 @@ if (empty($theatres)) {?>
 		$('div.action_options').html('<span class="aBtn"><a class="view-sessions" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		$('td.td_sort').show();
 		$('th.th_sort').show();
+		$('#btn_print').hide();
+		$('input[name^="confirm_"]').attr('disabled',false);
 	});
 
 	$('a.view-sessions').live('click',function() {
@@ -295,6 +225,18 @@ if (empty($theatres)) {?>
 	});
 
 	$('#btn_cancel').live('click',function() {
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id');
+
+				if (table_states[tbody_id] !== undefined) {
+					for (x in table_states[tbody_id]) {
+						$('#'+table_states[tbody_id][x]).appendTo('#'+tbody_id);
+					}
+				}
+			}
+		});
+
 		view_mode();
 	});
 
@@ -319,5 +261,8 @@ if (empty($theatres)) {?>
 			var id = $(this).attr('id').match(/[0-9]+/);
 			$('#comments'+id).val($(this).html());
 		});
+
+		$('#btn_print').show();
+		$('input[name^="confirm_"]').attr('disabled',true);
 	}
 </script>

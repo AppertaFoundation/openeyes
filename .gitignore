@@ -7,6 +7,8 @@ nbproject/*
 /protected/config/main.php
 /protected/config/test.php
 /protected/runtime/
+/protected/commands/FetchUsersCommand.php
+/protected/config/db_muu.php
 /assets/
 .*swp
 /protected/models/ElementExample.php
@@ -16,3 +18,7 @@ nbproject/*
 /.idea/
 error/404.php
 error/500.php
+protected/commands/FetchBookingsCommand.php
+protected/commands/FetchUsersCommand.php
+protected/config/db_dw.php
+protected/config/db_muu.php

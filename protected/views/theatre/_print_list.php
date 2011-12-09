@@ -13,7 +13,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 */
 
 ?>
-
 <!-- ================================================ -->
 <!-- * * * * * * * * * *   DIARY  * * * * * * * * * * -->
 <!-- ================================================ -->
@@ -22,7 +21,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 <div id="d_title">OPERATION LIST FORM</div>
 
 <?php
-
 $previousSequenceId = '';
 
 $firstTheatreShown = false;
@@ -92,7 +90,7 @@ DATE:
 <td><?php echo htmlspecialchars($session['patientAge']) ?></td>
 <td><?php echo htmlspecialchars($session['ward']) ?></td>
 <td><?php echo htmlspecialchars($session['anaesthetic']) ?></td>
-<td>
+<td style="max-width: 500px; word-wrap:break-word; overflow: hidden;">
 <?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.htmlspecialchars($session['procedures']) : 'No procedures'?><br />
 <?php echo htmlspecialchars($session['operationComments']) ?>
 <td><?php echo $session['admissionTime'] ?></td>

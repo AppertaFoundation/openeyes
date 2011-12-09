@@ -124,8 +124,8 @@ echo '<div style="height: 0.4em;"></div>'?>
 
 <div style="margin-top:10px;">
 
-<button id="confirm_slot" value="submit" type="submit" class="wBtn_confirm-slot ir">Confirm slot</button>
-<button id="cancel_operation" value="submit" type="submit" class="wBtn_cancel-operation ir"><span>Cancel operation</span></button>
+<button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>
+<button type="submit" class="classy red venti" id="cancel_operation"><span class="button-span button-span-red">Cancel operation</span></button>
 </div>
 
 <?php

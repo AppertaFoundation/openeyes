@@ -12,13 +12,15 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-//Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
-//Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery.min.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 
-$baseUrl = Yii::app()->baseUrl;
+/*$baseUrl = Yii::app()->baseUrl;
 $cs = Yii::app()->getClientScript();
 Yii::app()->clientScript->registerCoreScript('jquery');
 $cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
+*/
 
 $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'clinical-create',
@@ -89,8 +91,9 @@ if (isset($referrals) && is_array($referrals)) {
 	</div>
 
 	<div class="form_button">
-			<button type="submit" value="submit" class="wBtn_save-schedule-later ir fancybox" id="scheduleLater">Save and Schedule later</button>
-			<button type="submit" value="submit" class="wBtn_save-schedule-now ir fancybox" id="scheduleNow">Save and Schedule now</button>
+		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
+		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
+		<button type="submit" class="classy red venti" id="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
 	</div>
 
 	</form>
@@ -135,6 +138,17 @@ $this->endWidget();
 				}
 			}
 		});
+		return false;
+	});
+
+	$('#cancelOperation').unbind('click').click(function() {
+		if (last_item_type == 'url') {
+			window.location.href = last_item_id;
+		} else if (last_item_type == 'episode') {
+			load_episode_summary(last_item_id);
+		} else if (last_item_type == 'event') {
+			view_event(last_item_id);
+		}
 		return false;
 	});
 

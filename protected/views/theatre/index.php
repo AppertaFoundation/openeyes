@@ -91,8 +91,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'yy-mm-dd',
-									'maxDate'=>'today'
+									'dateFormat'=>'d-M-yy'
 								),
 								'value' => '',
 								'htmlOptions'=>array('style'=>'width: 110px;')
@@ -105,8 +104,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'yy-mm-dd',
-									'maxDate'=>'today'
+									'dateFormat'=>'d-M-yy'
 								),
 								'value' => '',
 								'htmlOptions'=>array('style'=>'width: 110px;')
@@ -117,7 +115,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							<a href="" id="last_week">Last week</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="next_week">Next week</a>
 							</span>
 
-							<button value="submit" type="submit" class="btn_search ir" style="float:right;">Search</button>
+							<button type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
 							<?php $this->endWidget()?>
 						</div>
 
@@ -136,9 +134,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 			</div> <!-- #theatre_display -->
 			<div style="text-align:right; margin-right:10px;">
-				<button type="submit" value="submit" class="btn_save ir" id="btn_save" style="display: none;">Save</button>
-				<button type="submit" value="submit" class="btn_cancel ir" id="btn_cancel" style="display: none;">Cancel</button>
-				<button type="submit" value="submit" class="btn_print ir" id="btn_print">Print</button>
+				<button type="submit" class="classy green tall" id="btn_save" style="display: none;"><span class="button-span button-span-green">Save</span></button>
+				<button type="submit" class="classy red tall" id="btn_cancel" style="display: none;"><span class="button-span button-span-red">Cancel</span></button>
+				<button type="submit" class="classy blue tall" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
 			</div>
 		</div> <!-- .fullWidth -->
 		<div id="iframeprintholder" style="display: none;"></div>
@@ -246,6 +244,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			data["comments_"+id] = $(this).val();
 		});
 
+		$('input[name^="confirm_"]').map(function() {
+			if ($(this).attr('checked')) {
+				var id = $(this).attr('id').match(/[0-9]+/);
+				data["confirm_"+id] = $(this).val();
+			}
+		});
+
 		$.ajax({
 			'type': 'POST',
 			'data': data,
@@ -264,40 +269,77 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				});
 
 				view_mode();
+				load_table_states();
 			}
 		});
 	});
 
+	function getmonth(i) {
+		switch (i) {
+			case 0: return 'Jan';
+			case 1: return 'Feb';
+			case 2: return 'Mar';
+			case 3: return 'Apr';
+			case 4: return 'May';
+			case 5: return 'Jun';
+			case 6: return 'Jul';
+			case 7: return 'Aug';
+			case 8: return 'Sep';
+			case 9: return 'Oct';
+			case 10: return 'Nov';
+			case 11: return 'Dec';
+		}
+	}
+
+	function getmonth_r(m) {
+		switch (m) {
+			case 'Jan': return 0;
+			case 'Feb': return 1;
+			case 'Mar': return 2;
+			case 'Apr': return 3;
+			case 'May': return 4;
+			case 'Jun': return 5;
+			case 'Jul': return 6;
+			case 'Aug': return 7;
+			case 'Sep': return 8;
+			case 'Oct': return 9;
+			case 'Nov': return 10;
+			case 'Dec': return 11;
+		}
+	}
+
+	function format_date(d) {
+		return d.getDate()+"-"+getmonth(d.getMonth())+"-"+d.getFullYear();
+	}
+
 	$('#date-filter_0').click(function() {
 		today = new Date();
-		todayString = dateString(today);
 
-		$('#date-start').val(todayString);
-		$('#date-end').val(todayString);
+		$('#date-start').val(format_date(today));
+		$('#date-end').val(format_date(today));
 
 		return true;
 	});
 
 	$('#date-filter_1').click(function() {
 		today = new Date();
-		todayString = dateString(today);
 
-		$('#date-start').val(dateString(today));
+		$('#date-start').val(format_date(today));
 
-		$('#date-end').val(returnDateWithInterval(today, 7));
+		$('#date-end').val(format_date(returnDateWithInterval(today, 6)));
 
 		return true;
 	});
 
-				$('#date-filter_2').click(function() {
-								today = new Date();
+	$('#date-filter_2').click(function() {
+		today = new Date();
 
-								$('#date-start').val(dateString(today));
+		$('#date-start').val(format_date(today));
 
-								$('#date-end').val(returnDateWithInterval(today, 30));
+		$('#date-end').val(format_date(returnDateWithInterval(today, 29)));
 
 		return true;
-				});
+	});
 
 	$('#last_week').click(function() {
 		// Calculate week before custom date or week before today if no custom date
@@ -307,14 +349,14 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			// No date-start. Make date-start one week before today, date-end today
 			today = new Date();
 	
-			$('#date-end').val(dateString(today));
+			$('#date-end').val(format_date(today));
 	
-			$('#date-start').val(returnDateWithInterval(today, -7));
+			$('#date-start').val(format_date(returnDateWithInterval(today, -7)));
 		} else {
 			// Make date-end date-start, make date-start one week before date-start
 			$('#date-end').val(sd);
 
-			$('#date-start').val(returnDateWithIntervalFromString(sd, -7));
+			$('#date-start').val(format_date(returnDateWithIntervalFromString(sd, -7)));
 		}
 
 		// Perform search
@@ -330,37 +372,36 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			// No date-start. Make date-start one week before today, date-end today
 			today = new Date();
 
-			$('#date-start').val(dateString(today));
+			$('#date-start').val(format_date(today));
 
-			$('#date-end').val(returnDateWithInterval(today, 7));
+			$('#date-end').val(format_date(returnDateWithInterval(today, 7)));
 		} else {
 			// Make date-start date-end, make date-end one week after date-end
 
 			$('#date-start').val(ed);
 
-			$('#date-end').val(returnDateWithIntervalFromString(ed, 7));
+			$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 7)));
 		}
 
 		return false;
 	});
 
-				function returnDateWithInterval(d, interval) {
+	function returnDateWithInterval(d, interval) {
 		// Uses javascript date format (months from 0 to 11)
-								dateWithInterval = new Date(d.getTime() + (86400000 * interval));
-
-								return dateString(dateWithInterval);
-				}
+		dateWithInterval = new Date(d.getTime() + (86400000 * interval));
+		return dateWithInterval;
+	}
 
 	function returnDateWithIntervalFromString(ds, interval) {
 		// Uses real date format (months from 1 to 12)
 		times = ds.split('-');
 
 		// Convert to javascript date format
-		date = new Date(times[0], times[1] - 1, times[2], 0, 0, 0, 0);
+		date = new Date(times[2], getmonth_r(times[1]), times[0], 0, 0, 0, 0);
 
 		dateWithInterval = new Date(date.getTime() + (86400000 * interval));
 
-		return dateString(dateWithInterval);
+		return dateWithInterval;
 	}
 
 	function dateString(date) {
@@ -376,4 +417,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 		return date.getFullYear() + '-' + m + '-' + d;
 	}
+
+	$('#date-start').bind('change',function() {
+		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
+	});
+
+	$('#date-end').bind('change',function() {
+		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
+	});
 </script>

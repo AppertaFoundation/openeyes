@@ -77,6 +77,7 @@ if (empty($model->event_id)) {
 					<div id="editDiagnosis" class="eventDetail">
 						<div class="label">Diagnosis:</div>
 						<div class="data">
+							<span id="enteredDiagnosisText" class="bold" style="margin-right:20px;"><?php echo $value?></span>
 							<?php echo CHtml::dropDownList('ElementDiagnosis[disorder_id]', '', CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)), array('empty' => 'Select a commonly used diagnosis')); ?>
 							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
 							<?php
@@ -89,11 +90,13 @@ if (empty($model->event_id)) {
 									'minLength'=>'3',
 									'select'=>"js:function(event, ui) {
 										var value = ui.item.value;
-										//$('input[id=ElementDiagnosis_disorder_id_0]').val('');
-										//$('#enteredDiagnosisText').html(value);
+										$('#ElementDiagnosis_disorder_id_0').val('');
+										$('#enteredDiagnosisText').html(value);
 										//$('#editDiagnosis').hide();
 										//$('#enteredDiagnosis').show();
-										//$('input[id=savedDiagnosis]').val(value);
+										$('input[id=savedDiagnosis]').val(value);
+										$('#ElementDiagnosis_disorder_id').focus();
+										return false;
 									}",
 								),
 								'htmlOptions'=>array(
@@ -102,6 +105,7 @@ if (empty($model->event_id)) {
 								),
 							));
 							?>
+							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo $value?>" />
 						</div>
 					</div>
 
@@ -115,7 +119,8 @@ if (empty($model->event_id)) {
 						$('input[name="ElementDiagnosis[disorder_id]"]').watermark('type the first few characters of a diagnosis');
 						$('select[name="ElementDiagnosis[disorder_id]"]').change(function() {
 							var value = $(this).children(':selected').text();
-							$('#ElementDiagnosis_disorder_id_0').val(value);
+							$('#enteredDiagnosisText').html(value);
+							$('#savedDiagnosis').val(value);
 							$(this).children(':selected').attr('selected', false);
 						});
 					</script>

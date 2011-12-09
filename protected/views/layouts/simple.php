@@ -23,7 +23,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
  
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
 	<meta name="viewport" content="width=device-width"> 
-	<link rel="icon" href="favicon.ico" type="image/x-icon" /> 
+	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico"/> 
 	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"> 
 	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/jquery.fancybox-1.3.4.css">

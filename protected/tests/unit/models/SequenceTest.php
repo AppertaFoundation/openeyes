@@ -364,6 +364,7 @@ class SequenceTest extends CDbTestCase
 	/**
 	 * @dataProvider dataProvider_PreExistingSequences
 	 */
+/*
 	public function testCreate_ConflictingSequences_ReturnsError($attributes, $conflictsExist)
 	{
 		$model = new Sequence;
@@ -385,7 +386,7 @@ class SequenceTest extends CDbTestCase
 			$this->assertTrue($model->save(true));
 		}
 	}
-
+*/
 	/**
 	 * @dataProvider dataProvider_PreExistingSequences_Weeks
 	 */

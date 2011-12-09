@@ -129,12 +129,15 @@ class TheatreController extends BaseController
 				$firmId = Yii::app()->session['selected_firm_id'];
 			}
 
+			$_POST['date-start'] = $this->reformat_date($_POST['date-start']);
+			$_POST['date-end'] = $this->reformat_date($_POST['date-end']);
+
 			if (empty($_POST['date-start']) || empty($_POST['date-end'])) {
 				$startDate = $service->getNextSessionDate($firmId);
 				$endDate = $startDate;
 			} else {
 				$startDate = $_POST['date-start'];
-																$endDate = $_POST['date-end'];
+				$endDate = $_POST['date-end'];
 			}
 
 			$data = $service->findTheatresAndSessions(
@@ -156,15 +159,21 @@ class TheatreController extends BaseController
 				$operation->anaesthetic_type = $values['anaesthetic_type'];
 				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
 
-				$procedures = Yii::app()->db->createCommand()
-					->select("GROUP_CONCAT(p.short_format SEPARATOR ', ') AS List")
-					->from('proc p')
+				$procedures = array('List'=>'');
+
+				foreach (Yii::app()->db->createCommand()
+					->select("p.short_format")
+					->from("proc p")
 					->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
 					->where('opa.operation_id = :id',
 						array(':id'=>$values['operation_id']))
-					->group('opa.operation_id')
 					->order('opa.display_order ASC')
-					->queryRow();
+					->queryAll() as $row) {
+					if ($procedures['List']) {
+						$procedures['List'] .= ", ";
+					}
+					$procedures['List'] .= $row['short_format'];
+				}
 
 				$theatres[$values['name']][$values['date']][] = array(
 					'operationId' => $values['operation_id'],
@@ -216,6 +225,21 @@ class TheatreController extends BaseController
 		}
 
 		return $theatres;
+	}
+
+	public function reformat_date($date) {
+		if (preg_match('/^([0-9]+)-([a-zA-Z]+)-([0-9]+)$/',$date,$m)) {
+			return "{$m[3]}-".str_pad($this->get_month_num($m[2]),2,'0',STR_PAD_LEFT)."-".str_pad($m[1],2,'0',STR_PAD_LEFT);
+		}
+		return $date;
+	}
+
+	public function get_month_num($month) {
+		for ($i=1;$i<=12;$i++) {
+			if (date('M',mktime(0,0,0,$i,1,date('Y'))) == $month) {
+				return $i;
+			}
+		}
 	}
 
 	/**
@@ -296,6 +320,7 @@ class TheatreController extends BaseController
 					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
 
 					if (!empty($booking)) {
+						$booking->confirmed = (@$_POST['confirm_'.$m[1]] ? 1 : 0);
 						$booking->admission_time = $value;
 						$booking->display_order = $display_order++;
 						$booking->save();

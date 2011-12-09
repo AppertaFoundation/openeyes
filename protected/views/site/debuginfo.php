@@ -21,7 +21,8 @@ if (is_object($user)) {
 }
 
 $commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(@$_SERVER['DOCUMENT_ROOT']."/.git/FETCH_HEAD"));
-$branch = array_pop(explode('/',file_get_contents(".git/HEAD")));
+$ex = explode('/',file_get_contents(".git/HEAD"));
+$branch = array_pop($ex);
 ?>
 <div id="debug-info-modal">
 	<code>
