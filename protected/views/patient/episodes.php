@@ -216,6 +216,8 @@
 
 						$('.display_mode').html(header_text);
 
+						view_mode();
+
 						if (data.match(/<!-- editable -->/)) {
 							$('span.edit-event').show();
 						} else {
@@ -224,8 +226,6 @@
 
 						last_item_type = 'event';
 						last_item_id = event_id;
-
-						view_mode();
 					}
 				});
 			}
