@@ -15,8 +15,8 @@
 		A96D712A137FEB600057A471 /* ED_General.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_General.js; path = ../../Javascript/ED_General.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		A9AA65FC1323996800AA3919 /* ED_VitreoRetinal.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_VitreoRetinal.js; path = ../ED_VitreoRetinal.js; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
 		A9AA65FD1323996800AA3919 /* ED_Drawing.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_Drawing.js; path = ../ED_Drawing.js; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
-		A9AA65FE1323996800AA3919 /* EyeDrawingFunctions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = EyeDrawingFunctions.html; path = ../EyeDrawingFunctions.html; sourceTree = SOURCE_ROOT; };
 		A9C9FEDE13D9555D00A21202 /* ED_MedicalRetina.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; name = ED_MedicalRetina.js; path = ../ED_MedicalRetina.js; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.javascript; };
+		A9EE55481494E97D005768C7 /* TestBed.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = TestBed.html; path = ../TestBed.html; sourceTree = "<group>"; };
 		A9F06423132D34A400A5914F /* styles.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = styles.css; path = ../styles.css; sourceTree = "<group>"; };
 		A9F06424132D35CD00A5914F /* Misc.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Misc.txt; path = EyeDrawJS.xcodeproj/Misc.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -26,6 +26,7 @@
 			isa = PBXGroup;
 			children = (
 				A94A7383145A0DF3005741A3 /* ED_Adnexal.js */,
+				A9EE55481494E97D005768C7 /* TestBed.html */,
 				A9C9FEDE13D9555D00A21202 /* ED_MedicalRetina.js */,
 				A95DC9CB13B39811004A5D08 /* Licence */,
 				A93413771386E7A2004F355E /* ED_AntSeg.js */,
@@ -36,7 +37,6 @@
 				A9AA65FC1323996800AA3919 /* ED_VitreoRetinal.js */,
 				A955F5731452DD6E006A4598 /* ED_Strabismus.js */,
 				A9AA65FD1323996800AA3919 /* ED_Drawing.js */,
-				A9AA65FE1323996800AA3919 /* EyeDrawingFunctions.html */,
 			);
 			name = EyeDrawJS;
 			sourceTree = "<group>";

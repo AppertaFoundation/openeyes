@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>EyeDraw</title>
+        
+        <link rel="stylesheet" href="styles.css" type="text/css" media="screen" />
+        
+        <!--   Include this file first to establish name space and include key drawing classes -->
+        <script language="JavaScript" src="ED_Drawing.js" type="text/javascript"></script>
+        
+        <!--   Subclasses loaded according to need -->
+        <script language="JavaScript" src="ED_General.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_VitreoRetinal.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_Cancer.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_AntSeg.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_MedicalRetina.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_Strabismus.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_Adnexal.js" type="text/javascript"></script>
+        
+        <!--   This script handles the drawings for the page   -->
+        <script type="text/javascript">
+            
+            // This set can be written by PHP and contains doodle data for this drawing from a database
+            var doodleSetRPS = 
+            [{subclass: "Fundus", originX: "0", originY: "0", apexX: "0", apexY: "0", scaleX: "1", scaleY: "1", arc: "0", rotation: "0", order: "0"},
+             {subclass: "RRD", originX: "0", originY: "0", apexX: "0", apexY: "105", scaleX: "1", scaleY: "1", arc: "160", rotation: "330", order: "1"},
+             {subclass: "UTear", originX: "-212", originY: "-320", apexX: "0", apexY: "-22", scaleX: "1", scaleY: "1", arc: "0", rotation: "327", order: "2"}];
+            
+            // Assign a global variable to each drawing on the page
+            var drawing;
+            
+            // Runs on page load
+            function init()
+            {
+                // Get reference to the drawing canvas
+                var canvas = document.getElementById('canvas');
+                
+                // Create a drawing linked to the canvas
+                drawing = new ED.Drawing(canvas, ED.eye.Right, 'RPS');
+                
+                // Preload any images
+                drawing.preLoadImagesFrom('graphics/');
+                
+                // Set focus to canvas element
+                canvas.focus();
+                
+                // Wait for drawing object to be ready before adding objects or drawings
+                drawing.onLoaded = function()
+                {
+                    drawing.load(doodleSetRPS);                    
+                    drawing.drawAllDoodles();
+                }
+                
+                // Function to detect changes in parameters (eg from mouse dragging)
+                drawing.parameterListener = function()
+                {
+                }
+            }
+            
+            </script>
+    </head>
+    
+    <body onload="init();">
+        <div>
+            <div>
+                <form>
+                    <div>
+                        <span>
+                            
+                            <!-- Doodle controls toolbar -->
+                            <button class="imgbutton" class="imgbutton" disabled="true" id="moveToFrontRPS" title="Move to front" onclick="drawing.moveToFront(); return false;" ><img src="graphics/moveToFront.gif"/></button>
+                            <button class="imgbutton" disabled="true" id="moveToBackRPS" title="Move to back" onclick="drawing.moveToBack(); return false;" ><img src="graphics/moveToBack.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="deleteRPS" title="Delete" onclick="drawing.deleteDoodle(); return false;" ><img src="graphics/delete.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="lockRPS" title="Lock" onclick="drawing.lock(); return false;" ><img src="graphics/lock.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawing.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>                  
+                            <br />
+                            
+                            <!-- Doodle selection toolbar -->
+                            <button class="imgbutton" id="RRDRPS" title="Retinal detachment" onclick="drawing.addDoodle('RRD'); return false;" ><img src="graphics/rrd.gif" /></button>
+                            <button class="imgbutton" id="uTearRPS" title="U tear" onclick="drawing.addDoodle('UTear'); return false;" ><img src="graphics/uTear.gif" /></button>
+                            <button class="imgbutton" id="roundHoleRPS" title="Round hole" onclick="drawing.addDoodle('RoundHole'); return false;" ><img src="graphics/roundHole.gif" /></button>
+                            <button class="imgbutton" id="dialysisRPS" title="Dialysis" onclick="drawing.addDoodle('Dialysis'); return false;" ><img src="graphics/dialysis.gif" /></button>
+                            <button class="imgbutton" id="grtRPS" title="GRT" onclick="drawing.addDoodle('GRT'); return false;" ><img src="graphics/grt.gif" /></button>
+                            <button class="imgbutton" id="macularHoleRPS" title="Macular hole" onclick="drawing.addDoodle('MacularHole'); return false;" ><img src="graphics/macularHole.gif" /></button>
+                            <button class="imgbutton" id="starFoldRPS" title="Star Fold" onclick="drawing.addDoodle('StarFold'); return false;" ><img src="graphics/starFold.gif" /></button>
+                            <button class="imgbutton" id="antPVRRPS" title="Anterior PVR" onclick="drawing.addDoodle('AntPVR'); return false;" ><img src="graphics/antPVR.gif" /></button>
+                            <button class="imgbutton" id="latticeRPS" title="Lattice" onclick="drawing.addDoodle('Lattice'); return false;" ><img src="graphics/lattice.gif" /></button>
+                            <button class="imgbutton" id="cryoRPS" title="Cryo" onclick="drawing.addDoodle('Cryo'); return false;" ><img src="graphics/cryo.gif" /></button>
+                            <button class="imgbutton" id="laserCircleRPS" title="Laser" onclick="drawing.addDoodle('LaserCircle'); return false;" ><img src="graphics/laserCircle.gif" /></button>
+                            <button class="imgbutton" id="buckleRPS" title="Buckle" onclick="drawing.addDoodle('Buckle'); return false;" ><img src="graphics/buckle.gif" /></button>
+                             <br />
+                            
+                            <!-- Canvas element -->
+                            <canvas id="canvas" class="canvasclass" width="400" height="400" tabindex="2"></canvas>
+                            <br />
+
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

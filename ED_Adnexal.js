@@ -119,9 +119,6 @@ ED.AdnexalEye.prototype.draw = function(_point)
     ctx.bezierCurveTo(440* s,10* s,400* s,50* s,350* s,50* s);
     ctx.bezierCurveTo(300* s,100* s,200* s,250* s,0* s,250* s);
     ctx.bezierCurveTo(-200* s,250* s,-400* s,50* s,-400* s,0* s);
-
-    // Close path
-    //ctx.closePath();
 	
 	// Set line attributes
 	ctx.lineWidth = 4;	
@@ -154,10 +151,7 @@ ED.AdnexalEye.prototype.draw = function(_point)
         ctx.fill();
         ctx.stroke();
 	}
-    
-	// Coordinates of handles (in canvas plane)
-	//this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
-	
+
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
     
