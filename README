@@ -22,3 +22,12 @@ README				This file
 styles.css			A css file containing styles
 
 TestBed.html		An HTML file for use when testing or developing doodles
+
+
+Generating Documentation
+
+To update the documentation files, cd to the jsdoc-toolkit directory and run;
+
+	java -jar jsrun.jar app/run.js -a -t=templates/jsdoc ../*.js
+	
+Updated files can be found by pointing your browser to out/jsdoc/index.html
