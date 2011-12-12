@@ -181,4 +181,19 @@ $this->endWidget();
 			$('#clinical-create_es_').hide();
 		}
 	}
+
+	$(document).ready(function() {
+		$('div.action_options').hide();
+		$('div.action_options_alt').show();
+
+		$('a.edit-save').unbind('click').click(function() {
+			$('#scheduleLater').click();
+			return false;
+		});
+
+		$('a.edit-cancel').unbind('click').click(function() {
+			$('#cancelOperation').click();
+			return false;
+		});
+	});
 </script>
