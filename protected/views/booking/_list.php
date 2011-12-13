@@ -83,7 +83,7 @@ if (!$reschedule) {
 <div class="eventDetail clearfix" style="position:relative;">
 	<div class="label"><strong>Session comments:</strong>
 
-	<img src="img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
+	<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
 	</div>
 	<div class="data">
 		<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
