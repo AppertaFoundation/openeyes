@@ -46,7 +46,7 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 <h4>Diagnosis</h4>
 <div class="eventHighlight">
 	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
+	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
 </div>
 
 <h4>Operation</h4>

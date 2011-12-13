@@ -848,6 +848,18 @@ class ElementOperation extends BaseElement
 		}
 	}
 
+	public function getDisorderEyeText() {
+		$eventId = $this->event_id;
+
+		$elementDiagnosis = ElementDiagnosis::model()->find('event_id = ?', array($eventId));
+
+		if (empty($elementDiagnosis)) {
+			return null;
+		} else {
+			return $elementDiagnosis->getEyeText();
+		}
+	}
+
 	/**
 	 * Returns an array of cancelled bookings
 	 *
