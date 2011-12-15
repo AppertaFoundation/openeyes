@@ -20,3 +20,6 @@ protected/commands/FetchBookingsCommand.php
 protected/commands/FetchUsersCommand.php
 protected/config/db_dw.php
 protected/config/db_muu.php
+/.buildpath
+/.settings
+/.project
