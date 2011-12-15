@@ -202,6 +202,8 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix)
     this.imageArray['laserPattern'] = new Image();
     this.imageArray['fuchsPattern'] = new Image();
     this.imageArray['pscPattern'] = new Image();
+    this.imageArray['meshworkPattern'] = new Image();
+    this.imageArray['newVesselPattern'] = new Image();
     
 	// Set transform to map from doodle to canvas plane
 	this.transform.translate(this.canvas.width/2, this.canvas.height/2);
@@ -1263,6 +1265,32 @@ ED.Drawing.prototype.setParameterForDoodle = function(_class, _parameter, _value
 }
 
 /**
+ * Returns the total extent in degrees covered by doodles of the passed class
+ *
+ * @param {String} _class Class of the doodle to be updated
+ * @returns {Int} Total extent in degrees, with maximum of 360
+ */
+ED.Drawing.prototype.totalDegreesExtent = function(_class)
+{
+    var degrees = 0;
+
+    // Calculate total for all doodles of this class
+    for (var i = 0; i < this.doodleArray.length; i++)
+    {
+        // Find doodles of given class name
+        if (this.doodleArray[i].className == _class)
+        {
+            degrees += this.doodleArray[i].degreesExtent();
+        }
+    }
+
+    // Overlapping doodles do not increase total beyond 360 degrees
+    if (degrees > 360) degrees = 360;
+
+    return degrees;
+}
+
+/**
  * Returns a string containing a description of the drawing
  *
  * @returns {String} Description of the drawing
@@ -1288,8 +1316,12 @@ ED.Drawing.prototype.report = function()
             }
             else
             {
-                groupArray[doodle.className] += ", ";
-                groupArray[doodle.className] += doodle.description();
+                // Only add additional detail if supplied by descripton method
+                if (doodle.description().length > 0)
+                {
+                    groupArray[doodle.className] += ", ";
+                    groupArray[doodle.className] += doodle.description();
+                }
             }
         }
         else
@@ -2206,7 +2238,7 @@ ED.Doodle.prototype.groupDescription = function()
  */
 ED.Doodle.prototype.description = function()
 {
-	return "Description of " + this.className;
+	return "";
 }
 
 /**
@@ -2281,6 +2313,18 @@ ED.Doodle.prototype.clockHourExtent = function()
     clockHourEnd = clockHourEnd.toFixed(0);
     if (clockHourEnd == 0) clockHourEnd = 12;  
     return "from " + clockHourStart + " to " + clockHourEnd;
+}
+
+/**
+ * Returns the extent converted to degrees
+ *
+ * @returns {Int} Extent 0 to 360 degrees
+ */
+ED.Doodle.prototype.degreesExtent = function()
+{
+    var degrees = this.arc * 180/Math.PI;
+    var intDegrees = Math.round(degrees);
+    return intDegrees;
 }
 
 /**

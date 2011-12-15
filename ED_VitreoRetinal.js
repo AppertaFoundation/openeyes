@@ -2102,7 +2102,6 @@ ED.LaserCircle.prototype.draw = function(_point)
             ctx.stroke();
             
         }
-
 	}
 	
 	// Coordinates of handles (in canvas plane)

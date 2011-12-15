@@ -9,13 +9,8 @@
         <script language="JavaScript" src="ED_Drawing.js" type="text/javascript"></script>
         
         <!--   Subclasses loaded according to need -->
-        <script language="JavaScript" src="ED_General.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_VitreoRetinal.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_Cancer.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_AntSeg.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_MedicalRetina.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_Strabismus.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_Adnexal.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_Vitreoretinal.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_Glaucoma.js" type="text/javascript"></script>
         
         <!--   This script handles the drawings for the page   -->
         <script type="text/javascript">
@@ -47,7 +42,10 @@
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawing.onLoaded = function()
                 {
-                    drawing.load(doodleSetRPS);                    
+                    drawing.addDoodle('Gonioscopy');
+                    //drawing.addDoodle('AngleRecession');
+                    //drawing.addDoodle('PigmentedMesh');
+                    drawing.deselectDoodles();
                     drawing.drawAllDoodles();
                 }
                 
@@ -76,24 +74,16 @@
                             <br />
                             
                             <!-- Doodle selection toolbar -->
-                            <button class="imgbutton" id="RRDRPS" title="Retinal detachment" onclick="drawing.addDoodle('RRD'); return false;" ><img src="graphics/rrd.gif" /></button>
-                            <button class="imgbutton" id="uTearRPS" title="U tear" onclick="drawing.addDoodle('UTear'); return false;" ><img src="graphics/uTear.gif" /></button>
-                            <button class="imgbutton" id="roundHoleRPS" title="Round hole" onclick="drawing.addDoodle('RoundHole'); return false;" ><img src="graphics/roundHole.gif" /></button>
-                            <button class="imgbutton" id="dialysisRPS" title="Dialysis" onclick="drawing.addDoodle('Dialysis'); return false;" ><img src="graphics/dialysis.gif" /></button>
-                            <button class="imgbutton" id="grtRPS" title="GRT" onclick="drawing.addDoodle('GRT'); return false;" ><img src="graphics/grt.gif" /></button>
-                            <button class="imgbutton" id="macularHoleRPS" title="Macular hole" onclick="drawing.addDoodle('MacularHole'); return false;" ><img src="graphics/macularHole.gif" /></button>
-                            <button class="imgbutton" id="starFoldRPS" title="Star Fold" onclick="drawing.addDoodle('StarFold'); return false;" ><img src="graphics/starFold.gif" /></button>
-                            <button class="imgbutton" id="antPVRRPS" title="Anterior PVR" onclick="drawing.addDoodle('AntPVR'); return false;" ><img src="graphics/antPVR.gif" /></button>
-                            <button class="imgbutton" id="latticeRPS" title="Lattice" onclick="drawing.addDoodle('Lattice'); return false;" ><img src="graphics/lattice.gif" /></button>
-                            <button class="imgbutton" id="cryoRPS" title="Cryo" onclick="drawing.addDoodle('Cryo'); return false;" ><img src="graphics/cryo.gif" /></button>
-                            <button class="imgbutton" id="laserCircleRPS" title="Laser" onclick="drawing.addDoodle('LaserCircle'); return false;" ><img src="graphics/laserCircle.gif" /></button>
-                            <button class="imgbutton" id="buckleRPS" title="Buckle" onclick="drawing.addDoodle('Buckle'); return false;" ><img src="graphics/buckle.gif" /></button>
+                            <button class="imgbutton" title="Angle new vessels" onclick="drawing.addDoodle('AngleNV'); return false;" ><img src="graphics/angleNV.gif" /></button>
+                            <button class="imgbutton" title="Anterior synechiae" onclick="drawing.addDoodle('AntSynech'); return false;" ><img src="graphics/antSynech.gif" /></button>
+                            <button class="imgbutton" title="Angle recession" onclick="drawing.addDoodle('AngleRecession'); return false;" ><img src="graphics/angleRecession.gif" /></button>
+                            <button class="imgbutton" title="Pigmented meshwork" onclick="drawing.addDoodle('PigmentedMesh'); return false;" ><img src="graphics/pigmentedMesh.gif" /></button>
                              <br />
                             
                             <!-- Canvas element -->
                             <canvas id="canvas" class="canvasclass" width="400" height="400" tabindex="2"></canvas>
                             <br />
-
+                            <button title="Report" onclick="alert(drawing.report()); return false;" >Report</button><br />
                         </span>
                     </div>
                 </form>
