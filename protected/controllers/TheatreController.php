@@ -159,15 +159,21 @@ class TheatreController extends BaseController
 				$operation->anaesthetic_type = $values['anaesthetic_type'];
 				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
 
-				$procedures = Yii::app()->db->createCommand()
-					->select("GROUP_CONCAT(p.short_format SEPARATOR ', ') AS List")
-					->from('proc p')
+				$procedures = array('List'=>'');
+
+				foreach (Yii::app()->db->createCommand()
+					->select("p.short_format")
+					->from("proc p")
 					->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
 					->where('opa.operation_id = :id',
 						array(':id'=>$values['operation_id']))
-					->group('opa.operation_id')
 					->order('opa.display_order ASC')
-					->queryRow();
+					->queryAll() as $row) {
+					if ($procedures['List']) {
+						$procedures['List'] .= ", ";
+					}
+					$procedures['List'] .= $row['short_format'];
+				}
 
 				$theatres[$values['name']][$values['date']][] = array(
 					'operationId' => $values['operation_id'],

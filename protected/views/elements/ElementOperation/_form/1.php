@@ -338,6 +338,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		});
 	});
 	function removeProcedure(row) {
+		edited();
+
 		var option_value = $(row).parent().siblings('input').val();
 
 		var duration = $(row).parent().siblings('td').text();

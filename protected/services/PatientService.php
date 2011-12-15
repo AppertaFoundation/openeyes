@@ -210,7 +210,10 @@ class PatientService
 		}
 */
 
-		$patient->hos_num = $hosNum;
+		if (preg_match('/^[0-9]+$/',$hosNum)) {
+			$patient->hos_num = $hosNum;
+		}
+
 		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(
 			array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
 				  'NUM_ID_TYPE' => 'NHS'));

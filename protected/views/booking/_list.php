@@ -83,7 +83,7 @@ if (!$reschedule) {
 <div class="eventDetail clearfix" style="position:relative;">
 	<div class="label"><strong>Session comments:</strong>
 
-	<img src="img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
+	<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
 	</div>
 	<div class="data">
 		<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
@@ -124,8 +124,8 @@ echo '<div style="height: 0.4em;"></div>'?>
 
 <div style="margin-top:10px;">
 
-<button id="confirm_slot" value="submit" type="submit" class="wBtn_confirm-slot ir">Confirm slot</button>
-<button id="cancel_operation" value="submit" type="submit" class="wBtn_cancel-operation ir"><span>Cancel operation</span></button>
+<button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>
+<button type="submit" class="classy red venti" id="cancel_operation"><span class="button-span button-span-red">Cancel operation</span></button>
 </div>
 
 <?php

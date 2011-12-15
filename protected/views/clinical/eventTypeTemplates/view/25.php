@@ -29,14 +29,14 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 ?>
 <script type="text/javascript">
 	<?php if (isset($session)) {?>
-		var header_text = "Operation: <?php echo date('d M Y', strtotime($session->date))?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
+		var header_text = "Operation: <?php echo date('j M Y', strtotime($session->date))?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>";
 	<?php }else{?>
-		var header_text = "Operation: <?php echo $status?> (<?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>)";
+		var header_text = "Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?>";
 	<?php }?>
 </script>
 
 <!-- Details -->
-<h3>Operation (<?php echo $operation->getStatusText()?>)</h3>
+<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
 <h4>User</h4>
 <div class="eventHighlight">
@@ -46,7 +46,7 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 <h4>Diagnosis</h4>
 <div class="eventHighlight">
 	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
+	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
 </div>
 
 <h4>Operation</h4>
@@ -147,18 +147,17 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	if (empty($operation->booking)) {
 		// The operation hasn't been booked yet?>
 		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" value="submit" class="wBtn_print-invitation-letter ir" id="btn_print-invitation-letter">Print invitation letter</button>
-			<button type="submit" value="submit" class="wBtn_print-reminder-letter ir" id="btn_print-reminder-letter">Print reminder letter</button>
-			<!--button type="submit" value="submit" class="wBtn_print-gp-refer-back-letter ir" id="btn_print-gp-refer-back-letter">Print GP refer back letter</button-->
-			<button type="submit" value="submit" class="wBtn_schedule-now ir" id="btn_schedule-now">Schedule now</button>
-			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel-operation">Cancel operation</button>
+			<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print invitation letter</span></button>
+			<button type="submit" class="classy blue venti" value="submit" id="btn_print-reminder-letter"><span class="button-span button-span-blue">Print reminder letter</span></button>
+			<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
+			<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
 		</div>
 	<?php } else {?>
 		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" value="submit" class="btn_print-letter ir" id="btn_print-letter">Print letter</button>
-			<button type="submit" value="submit" class="wBtn_reschedule-now ir" id="btn_reschedule-now">Reschedule now</button>
-			<button type="submit" value="submit" class="wBtn_reschedule-later ir" id="btn_reschedule-later">Reschedule later</button>
-			<button type="submit" value="submit" class="wBtn_cancel-operation ir" id="btn_cancel-operation">Cancel operation</button>
+			<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
+			<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
+			<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
+			<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
 		</div>
 	<?php }?>
 <?php }?>

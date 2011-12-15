@@ -42,17 +42,16 @@ if (empty($model->event_id)) {
 	$diagnosis = $model;
 }
 ?>
-				<div id="new_event_details" class="whiteBox">
 					<!-- Reminder -->
-					<div class="patientReminder">
+					<?/*<div class="patientReminder">
 						<span class="type"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="op" width="16" height="16" /></span>
 						<span class="patient"><strong><?php echo $patient->first_name?></strong> <?php echo $patient->last_name?> (<?php echo $patient->hos_num?>)</span>
-					</div>
+					</div>*/?>
 					<!-- Details -->
 					<?php if (empty($model->event_id)) {?>
-						<h3>Book Operation</h3>
+						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Book Operation</h3>
 					<?php }else{?>
-						<h3>Edit Operation</h3>
+						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Edit Operation</h3>
 					<?php }?>
 					<h4>Select diagnosis</h4>
  

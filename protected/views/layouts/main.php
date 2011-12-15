@@ -25,15 +25,15 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
 	<meta name="viewport" content="width=device-width"> 
 	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
-	<link rel="shortcut icon" href="<?php echo Yii::app()->request->baseUrl; ?>/favicon.ico"/> 
-	<link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/style.css"> 
+	<link rel="shortcut icon" href="/favicon.ico"/> 
+	<link rel="stylesheet" href="/css/style.css"> 
 	<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
 	<script type="text/javascript" src="/js/jquery.js"></script>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
-	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/libs/modernizr-2.0.6.min.js"></script>
-	<script src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.printElement.min.js"></script>
+	<script src="/js/libs/modernizr-2.0.6.min.js"></script>
+	<script src="/js/jquery.printElement.min.js"></script>
 </head> 
  
 <body> 

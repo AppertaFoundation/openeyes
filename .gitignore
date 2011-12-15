@@ -7,6 +7,8 @@ nbproject/*
 /protected/config/main.php
 /protected/config/test.php
 /protected/runtime/
+/protected/commands/FetchUsersCommand.php
+/protected/config/db_muu.php
 /assets/
 .*swp
 /protected/models/ElementExample.php
