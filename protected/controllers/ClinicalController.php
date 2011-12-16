@@ -122,10 +122,6 @@ class ClinicalController extends BaseController
 			$this->resetSessionPatient($_REQUEST['patient_id']);
 		}
 
-		if (isset($_POST['ElementOperation']['decision_date'])) {
-			$_POST['ElementOperation']['decision_date'] = date('Y-m-d',strtotime($_POST['ElementOperation']['decision_date']));
-		}
-
 		if ($_POST && $_POST['action'] == 'create' && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
 			// firms in a different tab. Set the session firm id to the provided firm id.
@@ -264,10 +260,6 @@ class ClinicalController extends BaseController
 		$specialties = Specialty::model()->findAll();
 
 		$patient = Patient::model()->findByPk($this->patientId);
-
-		if (isset($_POST['ElementOperation']['decision_date'])) {
-			$_POST['ElementOperation']['decision_date'] = date('Y-m-d',strtotime($_POST['ElementOperation']['decision_date']));
-		}
 
 		if ($_POST && $_POST['action'] == 'update') {
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
