@@ -96,10 +96,22 @@ class PatientController extends BaseController
 		));
 	}
 
-	public function actionViewhosnum() {
-		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num'=>(integer)$_GET['hos_num']));
-		header('Location: /patient/view/'.$patient->id);
-		exit;
+	/**
+	 * Redirect to correct patient view by hospital number
+	 * @param string $hos_num
+	 * @throws CHttpException
+	 */
+	public function actionViewhosnum($hos_num) {
+		$hos_num = (int) $hos_num;
+		if(!$hos_num) {
+			throw new CHttpException(400, 'Invalid hospital number');
+		}
+		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
+		if($patient) {
+			$this->redirect('/patient/view/'.$patient->id);
+		} else {
+			throw new CHttpException(404, 'Hospital number not found');
+		}
 	}
 
 	/**

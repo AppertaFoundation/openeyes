@@ -99,7 +99,8 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							<h3>Refine your search</h3>
 							<h4>Add, or modify, the details below to help you find the patient you are looking for.</h4>
 							
-							<!--<div class="multiInputRight clearfix">
+							<!--
+							<div class="multiInputRight clearfix">
 								<label for="dob">Age range:<span class="labelHint">e.g. 20 to 40</span></label>
 								<input size="2" maxlength="2" type="text" value="00" name="dob_day" id="dob_day" /><strong style="margin:0 5px 0 8px;"> to </strong>
 								<input size="2" maxlength="2" type="text" value="99" name="dob_month" id="dob_month" />
@@ -130,7 +131,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 				</div> <!-- .narrowColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
-				$('table.items tr').click(function() {
+				$('#patient-grid .items tr').click(function() {
 					window.location.href = '/patient/viewhosnum/'+$(this).children(":first").html();
 					return false;
 				});
