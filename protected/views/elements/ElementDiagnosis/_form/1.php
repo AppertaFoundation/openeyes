@@ -43,7 +43,7 @@ if (empty($model->event_id)) {
 }
 ?>
 					<!-- Reminder -->
-					<?/*<div class="patientReminder">
+					<?php /*<div class="patientReminder">
 						<span class="type"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="op" width="16" height="16" /></span>
 						<span class="patient"><strong><?php echo $patient->first_name?></strong> <?php echo $patient->last_name?> (<?php echo $patient->hos_num?>)</span>
 					</div>*/?>
