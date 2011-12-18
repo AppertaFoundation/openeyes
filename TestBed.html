@@ -22,7 +22,8 @@
              {subclass: "UTear", originX: "-212", originY: "-320", apexX: "0", apexY: "-22", scaleX: "1", scaleY: "1", arc: "0", rotation: "327", order: "2"}];
             
             // Assign a global variable to each drawing on the page
-            var drawing;
+            var drawingEdit;
+            var doodleAngleGradeSup;
             
             // Runs on page load
             function init()
@@ -31,28 +32,62 @@
                 var canvas = document.getElementById('canvas');
                 
                 // Create a drawing linked to the canvas
-                drawing = new ED.Drawing(canvas, ED.eye.Right, 'RPS');
+                drawingEdit = new ED.Drawing(canvas, ED.eye.Right, 'RPS');
                 
                 // Preload any images
-                drawing.preLoadImagesFrom('graphics/');
+                drawingEdit.preLoadImagesFrom('graphics/');
                 
                 // Set focus to canvas element
                 canvas.focus();
                 
                 // Wait for drawing object to be ready before adding objects or drawings
-                drawing.onLoaded = function()
+                drawingEdit.onLoaded = function()
                 {
-                    drawing.addDoodle('Gonioscopy');
-                    //drawing.addDoodle('AngleRecession');
-                    //drawing.addDoodle('PigmentedMesh');
-                    drawing.deselectDoodles();
-                    drawing.drawAllDoodles();
+                    drawingEdit.addDoodle('Gonioscopy');
+                    doodleAngleGradeSup = drawingEdit.addDoodle('AngleGrade');
+//                    doodle = drawingEdit.addDoodle('AngleGrade');
+//                    doodle.rotation = 90 * Math.PI/180;
+//                    doodle = drawingEdit.addDoodle('AngleGrade');
+//                    doodle.rotation = 180 * Math.PI/180;
+//                    doodle = drawingEdit.addDoodle('AngleGrade');
+//                    doodle.rotation = 270 * Math.PI/180;
+                    //drawingEdit.addDoodle('PigmentedMesh');
+                    drawingEdit.deselectDoodles();
+                    drawingEdit.drawAllDoodles();
                 }
                 
                 // Function to detect changes in parameters (eg from mouse dragging)
-                drawing.parameterListener = function()
+                drawingEdit.parameterListener = function()
                 {
+                    if (drawingEdit.selectedDoodle != null && drawingEdit.selectedDoodle.className == 'AngleGrade')
+                    {
+                        if (drawingEdit.selectedDoodle.rotation == 0)
+                        {
+                            var angleGradeSup = document.getElementById('angleGradeSup');
+                            var grade = drawingEdit.selectedDoodle.getParameter('grade');
+                            angleGradeSup.value = grade;
+                            angleGradeSup.title = "Hello world";
+                        }
+                    }
                 }
+            }
+            
+            function setGrade(_doodleVarName, _value)
+            {
+                var doodle;
+                
+                switch (_doodleVarName)
+                {
+                    case "doodleAngleGradeSup":
+                        doodle = doodleAngleGradeSup;
+                        break;
+                    default:
+                        doodle = null;
+                        break;
+                }
+                
+                // Set new value for doodle
+                drawingEdit.setParameterForDoodle(doodle, 'grade', _value); 
             }
             
             </script>
@@ -66,24 +101,31 @@
                         <span>
                             
                             <!-- Doodle controls toolbar -->
-                            <button class="imgbutton" class="imgbutton" disabled="true" id="moveToFrontRPS" title="Move to front" onclick="drawing.moveToFront(); return false;" ><img src="graphics/moveToFront.gif"/></button>
-                            <button class="imgbutton" disabled="true" id="moveToBackRPS" title="Move to back" onclick="drawing.moveToBack(); return false;" ><img src="graphics/moveToBack.gif" /></button>
-                            <button class="imgbutton" disabled="true" id="deleteRPS" title="Delete" onclick="drawing.deleteDoodle(); return false;" ><img src="graphics/delete.gif" /></button>
-                            <button class="imgbutton" disabled="true" id="lockRPS" title="Lock" onclick="drawing.lock(); return false;" ><img src="graphics/lock.gif" /></button>
-                            <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawing.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>                  
+                            <button class="imgbutton" class="imgbutton" disabled="true" id="moveToFrontRPS" title="Move to front" onclick="drawingEdit.moveToFront(); return false;" ><img src="graphics/moveToFront.gif"/></button>
+                            <button class="imgbutton" disabled="true" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="graphics/moveToBack.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="deleteRPS" title="Delete" onclick="drawingEdit.deleteDoodle(); return false;" ><img src="graphics/delete.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="lockRPS" title="Lock" onclick="drawingEdit.lock(); return false;" ><img src="graphics/lock.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>                  
                             <br />
                             
                             <!-- Doodle selection toolbar -->
-                            <button class="imgbutton" title="Angle new vessels" onclick="drawing.addDoodle('AngleNV'); return false;" ><img src="graphics/angleNV.gif" /></button>
-                            <button class="imgbutton" title="Anterior synechiae" onclick="drawing.addDoodle('AntSynech'); return false;" ><img src="graphics/antSynech.gif" /></button>
-                            <button class="imgbutton" title="Angle recession" onclick="drawing.addDoodle('AngleRecession'); return false;" ><img src="graphics/angleRecession.gif" /></button>
-                            <button class="imgbutton" title="Pigmented meshwork" onclick="drawing.addDoodle('PigmentedMesh'); return false;" ><img src="graphics/pigmentedMesh.gif" /></button>
+                            <button class="imgbutton" title="Angle new vessels" onclick="drawingEdit.addDoodle('AngleNV'); return false;" ><img src="graphics/angleNV.gif" /></button>
+                            <button class="imgbutton" title="Anterior synechiae" onclick="drawingEdit.addDoodle('AntSynech'); return false;" ><img src="graphics/antSynech.gif" /></button>
+                            <button class="imgbutton" title="Angle recession" onclick="drawingEdit.addDoodle('AngleRecession'); return false;" ><img src="graphics/angleRecession.gif" /></button>
+                            <button class="imgbutton" title="Pigmented meshwork" onclick="drawingEdit.addDoodle('PigmentedMesh'); return false;" ><img src="graphics/pigmentedMesh.gif" /></button>
                              <br />
                             
                             <!-- Canvas element -->
                             <canvas id="canvas" class="canvasclass" width="400" height="400" tabindex="2"></canvas>
                             <br />
-                            <button title="Report" onclick="alert(drawing.report()); return false;" >Report</button><br />
+                            <button title="Report" onclick="alert(drawingEdit.report()); return false;" >Report</button><br />
+                            <select id="angleGradeSup" onclick="setGrade('doodleAngleGradeSup', this.value);">
+                                <option value="O">O</option>
+                                <option value="I">I</option>
+                                <option value="II">II</option>
+                                <option value="III">III</option>
+                                <option value="IV">IV</option>
+                            </select>
                         </span>
                     </div>
                 </form>

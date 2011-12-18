@@ -177,18 +177,18 @@ ED.Gonioscopy.prototype.draw = function(_point)
         ctx.stroke();
         
         // Iris
-        ctx.beginPath();
-        
-        // Arc across, move to inner and arc back
-        ctx.arc(0, 0, rir, arcStart, arcEnd, true);       
-        ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
-        
-        // Set fill attributes (same colour as AntSeg)
-        ctx.fillStyle = "rgba(100, 200, 250, 1.0)";
-        
-        // Draw it
-        ctx.strokeStyle = "lightgray";
-        ctx.fill();
+//        ctx.beginPath();
+//        
+//        // Arc across, move to inner and arc back
+//        ctx.arc(0, 0, rir, arcStart, arcEnd, true);       
+//        ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
+//        
+//        // Set fill attributes (same colour as AntSeg)
+//        ctx.fillStyle = "rgba(100, 200, 250, 1.0)";
+//        
+//        // Draw it
+//        ctx.strokeStyle = "lightgray";
+//        ctx.fill();
 	}
         
 	// Return value indicating successful hit test
@@ -279,7 +279,7 @@ ED.AntSynech.prototype.draw = function(_point)
     
     // AntSynech is at equator
     var ras = 420;
-	var rir = 370;
+	var rir = 350;
     var r = rir + (ras - rir)/2;
 	
 	// Calculate parameters for arcs
@@ -570,8 +570,8 @@ ED.AngleRecession.prototype.draw = function(_point)
 	ED.AngleRecession.superclass.draw.call(this, _point);
     
     // AngleRecession is at equator
-    var ras = 350;
-	var rir = 370;
+    var ras = 340;
+	var rir = 364;
     var r = rir + (ras - rir)/2;
 	
 	// Calculate parameters for arcs
@@ -762,3 +762,192 @@ ED.PigmentedMesh.prototype.description = function()
     if (this.apexY > -300) return "Moderately pigmented meshwork";
     else return "Heavily pigmented meshwork";
 }
+
+/**
+ * AngleGrade
+ *
+ * @class AngleGrade
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Int} _originX
+ * @param {Int} _originY
+ * @param {Int} _apexX
+ * @param {Int} _apexY
+ * @param {Float} _scaleX
+ * @param {Float} _scaleY
+ * @param {Float} _arc
+ * @param {Float} _rotation
+ * @param {Int} _order
+ */
+ED.AngleGrade = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+{
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	
+	// Set classname
+	this.className = "AngleGrade";
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.AngleGrade.prototype = new ED.Doodle;
+ED.AngleGrade.prototype.constructor = ED.AngleGrade;
+ED.AngleGrade.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.AngleGrade.prototype.setHandles = function()
+{   
+    this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.AngleGrade.prototype.setPropertyDefaults = function()
+{
+	this.isSelectable = true;
+    this.isDeletable = false;
+	this.isOrientated = false;
+	this.isScaleable = false;
+	this.isSqueezable = false;
+	this.isMoveable = false;
+	this.isRotatable = false;
+	this.rangeOfScale = new ED.Range(+0.125, +1.5);
+	this.rangeOfArc = new ED.Range(Math.PI/12, Math.PI*2);
+	this.rangeOfApexX = new ED.Range(-0, +0);
+	this.rangeOfApexY = new ED.Range(-460, -360);
+}
+
+/**
+ * Sets default parameters
+ */
+ED.AngleGrade.prototype.setParameterDefaults = function()
+{
+    this.rotation = 0 * Math.PI/180;
+    this.arc = 90 * Math.PI/180;
+    this.apexY = -360;
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.AngleGrade.prototype.draw = function(_point)
+{
+	// Get context
+	var ctx = this.drawing.context;
+	
+	// Call draw method in superclass
+	ED.AngleGrade.superclass.draw.call(this, _point);
+    
+    // AngleGrade is at equator
+	var rir = -this.apexY;
+    var rpu = 100;
+	
+	// Calculate parameters for arcs
+	var theta = this.arc/2;
+	var arcStart = - Math.PI/2 + theta;
+	var arcEnd = - Math.PI/2 - theta;
+    
+	// Boundary path
+	ctx.beginPath();
+    
+    // Arc across, move to inner and arc back
+	ctx.arc(0, 0, rir, arcStart, arcEnd, true);
+	ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
+    ctx.closePath();
+    
+    // Set fill attributes (same colour as AntSeg)
+    ctx.fillStyle = "rgba(100, 200, 250, 1.0)";
+	ctx.strokeStyle = "rgba(100, 100, 100, 1.0)";
+    ctx.lineWidth = 4;
+	
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+	
+	// Other stuff here
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
+	{
+	}
+	
+	// Coordinates of handles (in canvas plane)
+	this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
+	
+	// Draw handles if selected
+	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
+	
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns parameters
+ *
+ * @returns {String} value of parameter
+ */
+ED.AngleGrade.prototype.getParameter = function(_parameter)
+{
+    var returnValue;
+    
+    switch (_parameter)
+    {
+        case 'grade':
+            // Return value uses SCHEIE classificaton
+            if (this.apexY < -430) returnValue = "IV";
+            else if (this.apexY < -390) returnValue = "III";
+            else if (this.apexY < -380) returnValue = "II";
+            else if (this.apexY < -370) returnValue = "I";
+            else returnValue = "O";
+            break;
+        default:
+            returnValue = "";
+            break;
+    }
+    
+    return returnValue;
+}
+
+/**
+ * Sets derived parameters for this doodle
+ *
+ * @param {String} _parameter Name of parameter
+ * @param {String} _value New value of parameter
+ */
+ED.AngleGrade.prototype.setParameter = function(_parameter, _value)
+{
+    switch (_parameter)
+    {
+        case 'grade':
+            switch (_value)
+            {
+                case 'IV':
+                    this.apexY = -460;
+                    break;
+                case 'III':
+                    this.apexY = -430;
+                    break;
+                case 'II':
+                    this.apexY = -390;
+                    break;
+                case 'I':
+                    this.apexY = -380;
+                    break;
+                case 'O':
+                    this.apexY = -360;
+                    break;
+                default:
+                    this.apexY = -360;
+                    break;
+            }
+            break;
+            
+        default:
+            break
+    }
+}
+
+

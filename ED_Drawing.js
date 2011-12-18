@@ -1241,17 +1241,43 @@ ED.Drawing.prototype.deleteDoodlesOfClass = function(_className)
 /**
  * Updates a doodle with a vew value of a parameter
  *
- * @param {String} _class Class of the doodle to be updated
+ * @param {Doodle} _doodle The doodle to be updated
  * @param {String} _parameter Name of the parameter
  * @param {Any} _value New value of the parameter
  */
-ED.Drawing.prototype.setParameterForDoodle = function(_class, _parameter, _value)
+ED.Drawing.prototype.setParameterForDoodle = function(_doodle, _parameter, _value)
 {
     // Get pointer to doodle
-    var doodle = this.firstDoodleOfClass(_class);
+    //var doodle = this.firstDoodleOfClass(_class);
     
-    // Determine whether parameter is generic or special
-    if(typeof(doodle[_parameter]) != 'undefined')
+    // Determine whether doodle exists
+    if (typeof(_doodle[_parameter]) != 'undefined')
+    {
+        _doodle[_parameter] = +_value;
+    }
+    else
+    {
+        _doodle.setParameter(_parameter, _value);
+    }
+    
+    // Refresh drawing
+    this.repaint();               
+}
+
+/**
+ * Updates a doodle of class with a vew value of a parameter. Use if one one member of class exists
+ *
+ * @param {String} _className The name of the doodle class to be updated
+ * @param {String} _parameter Name of the parameter
+ * @param {Any} _value New value of the parameter
+ */
+ED.Drawing.prototype.setParameterForDoodleOfClass = function(_className, _parameter, _value)
+{
+    // Get pointer to doodle
+    var doodle = this.firstDoodleOfClass(_className);
+    
+    // Determine whether doodle exists
+    if (typeof(doodle[_parameter]) != 'undefined')
     {
         doodle[_parameter] = +_value;
     }
@@ -1823,6 +1849,7 @@ ED.Report.prototype.isMacOff = function()
  * @property {Range} rangeOfArc Range of allowable Arcs
  * @property {Range} rangeOfApexX Range of allowable values of apexX
  * @property {Range} rangeOfApexY Range of allowable values of apexY
+ * @property {Bool} isSelected True if doodle is currently selected
  * @property {Bool} isBeingDragged Flag indicating doodle is being dragged
  * @property {Int} draggingHandleIndex index of handle being dragged
  * @property {Range} draggingHandleRing Inner or outer ring of dragging handle
