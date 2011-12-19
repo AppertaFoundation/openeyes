@@ -99,7 +99,6 @@ if (!empty($episode)) {
 		});
 		return false;
 	});
-	</script>
 </script>
 
 <?php if (empty($episode->end_date)) {?>

@@ -12,11 +12,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-$baseUrl = Yii::app()->baseUrl;
-$cs = Yii::app()->getClientScript();
-$cs->registerScriptFile($baseUrl . '/js/phrase.js');
-Yii::app()->clientScript->registerCoreScript('jquery');
-$cs->registerScriptFile($baseUrl.'/js/jquery.watermark.min.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/js/phrase.js');
 
 $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'clinical-update',
