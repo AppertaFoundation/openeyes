@@ -103,6 +103,14 @@ class PatientService
 		foreach ($results as $result) {
 			$pasPatient = PAS_Patient::model()->findByPk($result['RM_PATIENT_NO']);
 
+			foreach ($connection->createCommand("select s.* from SILVER.PATIENTS p, SILVER.SURNAME_IDS s where p.RM_PATIENT_NO = '1002518' and s.surname_type = 'NO' and s.rm_patient_no = p.rm_patient_no")->queryAll() as $row) {
+				$surname = PAS_PatientSurname::model();
+				foreach ($row as $key => $value) {
+					$surname->{$key} = $value;
+				}
+				break;
+			}
+
 			foreach ($connection->createCommand("select * from SILVER.PATIENT_ADDRS where RM_PATIENT_NO = $pasPatient->RM_PATIENT_NO order by date_end desc")->queryAll() as $row) {
 				$address = PAS_PatientAddress::model();
 				foreach ($row as $key => $value) {
@@ -111,10 +119,8 @@ class PatientService
 				break;
 			}
 
-			//$address = PAS_PatientAddress::model()->findByPk($pasPatient->RM_PATIENT_NO);
-
 			if (isset($address)) {
-				$patient = $this->updatePatient($pasPatient, $address, $result);
+				$patient = $this->updatePatient($pasPatient, $address, $result, $surname);
 				$patients[] = $patient;
 				$ids[] = $patient->hos_num;
 			}
@@ -172,7 +178,7 @@ class PatientService
 	 *
 	 * @return Patient
 	 */
-	protected function updatePatient($patientData, $addressData, $result)
+	protected function updatePatient($patientData, $addressData, $result, $surname)
 	{
 		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
 
@@ -193,9 +199,9 @@ class PatientService
 			}
 		}
 		$patient->pas_key		 = $hosNum;
-		$patient->title			 = $patientData->names[0]->TITLE;
-		$patient->first_name = $patientData->names[0]->NAME1;
-		$patient->last_name  = $patientData->names[0]->SURNAME_ID;
+		$patient->title			 = $surname->TITLE;
+		$patient->first_name = $surname->NAME1;
+		$patient->last_name  = $surname->SURNAME_ID;
 //		$patient->dob				 = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
 		$patient->dob				 = $result['DATE_OF_BIRTH'];
 		$patient->gender		 = $patientData->SEX;
