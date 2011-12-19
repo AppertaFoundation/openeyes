@@ -19,7 +19,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	//'action' => Yii::app()->createUrl('patient/results')
 ));?>
 	<div id="search_patient_details" class="form_greyBox clearfix">
-		<h3>Or, search by person details</h3>
+		<div style="margin-bottom: 12px;"><label style="font-size: 17px;">Or, search by patient name:</label></div>
 		<div class="form_column">
 			<div class="inputLayout clearfix">
 				<?php echo CHtml::label('First name:<span class="labelRequired">First name is required</span>', 'first_name');?>
