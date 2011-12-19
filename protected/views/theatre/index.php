@@ -30,8 +30,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 								<tr>
 									<th>Site:</th>
 									<th>Theatre:</th>
-									<th>Firm:</th>
 									<th>Specialty:</th>
+									<th>Firm:</th>
 									<th>Ward:</th>
 									<th>Emergency List:</th>
 								</tr>
@@ -41,9 +41,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('theatre-id', '', array(), array('empty'=>'All theatres'))?>
-									</td>
-									<td>
-										<?php echo CHtml::dropDownList('firm-id', $firm->id, Firm::model()->getList($firm->serviceSpecialtyAssignment->specialty_id), array('empty'=>'All firms'))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('specialty-id', $firm->serviceSpecialtyAssignment->specialty_id, Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
@@ -56,6 +53,9 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				}
 			}",
 		)))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('firm-id', $firm->id, Firm::model()->getList($firm->serviceSpecialtyAssignment->specialty_id), array('empty'=>'All firms'))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('ward-id', '', array(), array('empty'=>'All wards'))?>
