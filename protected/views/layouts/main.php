@@ -28,12 +28,13 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<link rel="shortcut icon" href="/favicon.ico"/> 
 	<link rel="stylesheet" href="/css/style.css"> 
 	<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
-	<script type="text/javascript" src="/js/jquery.js"></script>
+	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
+	<?php // TODO: These scripts should probably be registered through Yii too ?>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
-	<script src="/js/libs/modernizr-2.0.6.min.js"></script>
-	<script src="/js/jquery.printElement.min.js"></script>
+	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 </head> 
  
 <body> 
@@ -44,7 +45,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix"> 
-			<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div>
+			<div id="brand" class="ir"><h1><a href="/site/index">OpenEyes</a></h1></div>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 		</div> <!-- #header --> 
 		<!--div id="mainmenu">
@@ -92,14 +93,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 	<?php echo $this->renderPartial('/base/_footer',array())?>
  
- <?php /*
-	 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	 <script>window.jQuery || document.write('<script src="/js/libs/jquery-1.6.2.min.js"><\/script>')</script>
- 
-	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/plugins.js"></script>
-	<script defer src="<?php echo Yii::app()->request->baseUrl; ?>/js/script.js"></script>
-	*/?>
-
 	<script type="text/javascript">
 		$('select[id=selected_firm_id]').die('change').live('change', function() {
 			var firmId = $('select[id=selected_firm_id]').val();

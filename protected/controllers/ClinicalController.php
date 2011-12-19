@@ -38,15 +38,26 @@ class ClinicalController extends BaseController
 		);
 	}
 
-	protected function beforeAction($action)
-	{
+	protected function beforeAction($action) {
+		
+		// Prevent jquery + other js that might conflict getting loaded twice on ajax calls
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			Yii::app()->clientScript->scriptMap = array(
+				'jquery.js' => false,
+				'jquery.min.js' => false,
+				'jquery-ui.js' => false,
+				'jquery-ui.min.js' => false,
+			);
+		}
+		
 		// Sample code to be used when RBAC is fully implemented.
-		// if (!Yii::app()->user->checkAccess('admin')) {
-		//	throw new CHttpException(403, 'You are not authorised to perform this action.');
-		// }
+		/*
+		if (!Yii::app()->user->checkAccess('admin')) {
+			throw new CHttpException(403, 'You are not authorised to perform this action.');
+		}
+		*/
 
 		$this->storeData();
-
 		return parent::beforeAction($action);
 	}
 

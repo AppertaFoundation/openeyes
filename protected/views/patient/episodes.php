@@ -1,6 +1,6 @@
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
-			<div id="episodesBanner whiteBox">
+			<div id="episodesBanner" class="whiteBox">
 				<form><button style="float: right; margin-right: 1px;" type="submit" id="addNewEvent" class="classy green" tabindex="2"><span class="button-icon-green">+</span><span class="button-span button-span-green">&nbsp;&nbsp;add new Event</span></button></form>
 				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
@@ -52,7 +52,7 @@
 							<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Specialty:</span><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></div>
 							<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></div>
-							<img class="folderIcon"src="/img/_elements/icons/folder_open.png" alt="folder open" />
+							<img class="folderIcon" src="/img/_elements/icons/folder_open.png" alt="folder open" />
 						</div>
 					</div> <!-- .episode -->
 				<?php }?>

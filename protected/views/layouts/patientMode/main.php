@@ -26,7 +26,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<link rel="shortcut icon" href="/favicon.ico"/>
 	<link rel="stylesheet" href="/css/style.css">
 	<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
-	<script type="text/javascript" src="/js/jquery.js"></script>
+	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
+	<?php // TODO: These scripts should probably be registered through Yii too ?>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
@@ -43,7 +44,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<?php echo $this->renderPartial('/base/_debug',array())?>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div>
+			<div id="brand" class="ir"><h1><a href="/site/index">OpenEyes</a></h1></div>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 			<div id="patientID">
 				<div class="i_patient">
