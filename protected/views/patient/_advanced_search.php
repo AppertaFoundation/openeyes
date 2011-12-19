@@ -29,25 +29,9 @@ $form=$this->beginWidget('CActiveForm', array(
 				<?php echo CHtml::label('Last name:<span class="labelRequired">Last name is required</span>', 'last_name');?>
 				<?php echo CHtml::textField('Patient[last_name]', '', array('style'=>'width: 150px;', 'class' => 'topPadding'));?>
 			</div>
-			<div class="multiInputRight clearfix">
-				<?php echo CHtml::label('Date of birth:<span class="labelHint">dd / mm / yyyy</span>', 'dob');?>
-				<?php echo CHtml::textField('dob_day', '', array('size'=>2, 'maxlength'=>2));?><strong style="margin:0 5px 0 8px;">&#47;</strong>
-				<?php echo CHtml::textField('dob_month', '', array('size'=>2, 'maxlength'=>2));?><strong style="margin:0 5px 0 8px;">&#47;</strong>
-				<?php echo CHtml::textField('dob_year', '', array('size'=>4, 'maxlength'=>4));?>
-			</div>
-		</div>
-		<div class="form_column">
-			<div class="inputLayout clearfix">
-				<?php echo CHtml::label('NHS #:<span class="labelHint">for example: 111-222-3333</span>', 'nhs_number')?>
-				<?php echo CHtml::textField('Patient[nhs_num]', '')?>
-			</div>
-			<div class="customRight clearfix">
-				<?php echo CHtml::label('Gender:<span class="labelHint">if known</span>', 'gender', array('style'=>'float: left;'));?>
-				<?php echo CHtml::radioButtonList('Patient[gender]', '', array('M'=>'Male','F'=>'Female'), array('separator'=>' &nbsp; '))?>
-			</div>
 		</div>
 		<div class="form_button">
-			<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_details" tabindex="2"><span class="button-span button-span-blue">Find patient</button>
+			<button type="submit" style="margin-top: -33px; float: right; display: block;" class="classy blue tall" id="findPatient_details" tabindex="2"><span class="button-span button-span-blue">Find patient</button>
 		</div>
 	</div>
 	<?php $this->endWidget();?>

@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -20,8 +20,8 @@ class PatientService
 	/**
 	 * Create a new instance of the service
 	 *
-	 * @param model $patient      instance of the patient model
-	 * @param model $pasPatient   instance of the PAS patient model
+	 * @param model $patient			instance of the patient model
+	 * @param model $pasPatient		instance of the PAS patient model
 	 */
 	public function __construct($patient = null, $pasPatient = null)
 	{
@@ -52,50 +52,50 @@ class PatientService
 
 		$whereSql = '';
 
-                if (!empty($data['hos_num'])) {
+								if (!empty($data['hos_num'])) {
 			$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
 			//$hosNum = $this->formatHospitalNumberForPas($data['hos_num']);
 			$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
-                }
-                if (!empty($data['dob'])) {
-                        $whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
-                }
-                if (!empty($data['first_name']) && !empty($data['last_name'])) {
+								}
+								if (!empty($data['dob'])) {
+												$whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
+								}
+								if (!empty($data['first_name']) && !empty($data['last_name'])) {
 			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name']) . "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
-                }
-                if (!empty($data['gender'])) {
-                        $whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
-                }
-                if (!empty($data['nhs_num'])) {
+								}
+								if (!empty($data['gender'])) {
+												$whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
+								}
+								if (!empty($data['nhs_num'])) {
 			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
-                }
+								}
 		
-                $sql = "
-                        SELECT
-                                p.rm_patient_no,
+								$sql = "
+												SELECT
+																p.rm_patient_no,
 				n.num_id_type,
 				n.number_id,
 				TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
-                        FROM
-                                SILVER.PATIENTS p,
-                                SILVER.SURNAME_IDS s,
-                                SILVER.NUMBER_IDS n
-                        WHERE
-                                (
-                                        s.rm_patient_no = p.rm_patient_no
-                                AND
-                                        s.surname_type = 'NO'
-                                )
-                        AND
-                                (
-                                        n.rm_patient_no = p.rm_patient_no
-                                " . $whereSql . "
-                                )
-                ";
+												FROM
+																SILVER.PATIENTS p,
+																SILVER.SURNAME_IDS s,
+																SILVER.NUMBER_IDS n
+												WHERE
+																(
+																				s.rm_patient_no = p.rm_patient_no
+																AND
+																				s.surname_type = 'NO'
+																)
+												AND
+																(
+																				n.rm_patient_no = p.rm_patient_no
+																" . $whereSql . "
+																)
+								";
 
-                $connection = Yii::app()->db_pas;
-                $command = $connection->createCommand($sql);
-                $results = $command->queryAll();
+								$connection = Yii::app()->db_pas;
+								$command = $connection->createCommand($sql);
+								$results = $command->queryAll();
 
 		$patients = array();
 		$ids = array();
@@ -103,10 +103,24 @@ class PatientService
 		foreach ($results as $result) {
 			$pasPatient = PAS_Patient::model()->findByPk($result['RM_PATIENT_NO']);
 
-			$address = PAS_PatientAddress::model()->findByPk($pasPatient->RM_PATIENT_NO);
+			foreach ($connection->createCommand("select s.* from SILVER.PATIENTS p, SILVER.SURNAME_IDS s where p.RM_PATIENT_NO = '1002518' and s.surname_type = 'NO' and s.rm_patient_no = p.rm_patient_no")->queryAll() as $row) {
+				$surname = PAS_PatientSurname::model();
+				foreach ($row as $key => $value) {
+					$surname->{$key} = $value;
+				}
+				break;
+			}
+
+			foreach ($connection->createCommand("select * from SILVER.PATIENT_ADDRS where RM_PATIENT_NO = $pasPatient->RM_PATIENT_NO order by date_end desc")->queryAll() as $row) {
+				$address = PAS_PatientAddress::model();
+				foreach ($row as $key => $value) {
+					$address->{$key} = $value;
+				}
+				break;
+			}
 
 			if (isset($address)) {
-				$patient = $this->updatePatient($pasPatient, $address, $result);
+				$patient = $this->updatePatient($pasPatient, $address, $result, $surname);
 				$patients[] = $patient;
 				$ids[] = $patient->hos_num;
 			}
@@ -160,11 +174,11 @@ class PatientService
 	 * Find an existing patient or create a new one
 	 * Update its info with the latest info from PAS
 	 *
-	 * @param array $data   Data from PAS to store in the patient model
+	 * @param array $data		Data from PAS to store in the patient model
 	 *
 	 * @return Patient
 	 */
-	protected function updatePatient($patientData, $addressData, $result)
+	protected function updatePatient($patientData, $addressData, $result, $surname)
 	{
 		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
 
@@ -184,13 +198,13 @@ class PatientService
 				$address->id = $patient->address_id;
 			}
 		}
-		$patient->pas_key    = $hosNum;
-		$patient->title      = $patientData->names[0]->TITLE;
-		$patient->first_name = $patientData->names[0]->NAME1;
-		$patient->last_name  = $patientData->names[0]->SURNAME_ID;
-//		$patient->dob        = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
-		$patient->dob        = $result['DATE_OF_BIRTH'];
-		$patient->gender     = $patientData->SEX;
+		$patient->pas_key		 = $hosNum;
+		$patient->title			 = $surname->TITLE;
+		$patient->first_name = $surname->NAME1;
+		$patient->last_name  = $surname->SURNAME_ID;
+//		$patient->dob				 = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
+		$patient->dob				 = $result['DATE_OF_BIRTH'];
+		$patient->gender		 = $patientData->SEX;
 		if ($addressData->TEL_NO != 'NONE') {
 			$patient->primary_phone = $addressData->TEL_NO;
 		}
@@ -216,7 +230,7 @@ class PatientService
 
 		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(
 			array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
-				  'NUM_ID_TYPE' => 'NHS'));
+					'NUM_ID_TYPE' => 'NHS'));
 		if (!empty($nhsNumber)) {
 			$patient->nhs_num = $nhsNumber->NUMBER_ID;
 		}
@@ -229,7 +243,7 @@ class PatientService
 	 * Update address info with the latest info from PAS
 	 *
 	 * @param object $address  the PAS_PatientAddress model to be updated
-	 * @param array  $data     Data from PAS to store in the patient model
+	 * @param array  $data		 Data from PAS to store in the patient model
 	 *
 	 * @return Address
 	 */

@@ -12,6 +12,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
+/*
 ?>
 <div class="extraSummary">
 	This is the extra episode summary detail page for Medical Retinal.
@@ -37,3 +38,5 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	);
 ?>
 </div>
+*/
+?>

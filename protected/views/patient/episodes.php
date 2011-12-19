@@ -1,5 +1,4 @@
 		<h2>Episodes &amp; Events</h2>
-		<script type="text/javascript"> var header_text = ''; </script>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner" class="whiteBox">
 				<form><button style="float: right; margin-right: 1px;" type="submit" id="addNewEvent" class="classy green" tabindex="2"><span class="button-icon-green">+</span><span class="button-span button-span-green">&nbsp;&nbsp;add new Event</span></button></form>
@@ -78,7 +77,7 @@
 					</div>
 				<?php }?>
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
-					<div class="display_mode">View mode</div>
+					<div class="display_mode">Episode summary</div>
 					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
 						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
 					</div>
@@ -127,7 +126,6 @@
 			if (ctype_digit(@$_GET['event'])) {
 		?>
 			var currentEvent = <?php echo $_GET['event'] ?>;
-			var header_text = '';
 		<?php
 			} else {
 		?>
@@ -170,6 +168,8 @@
 							var content = $(".viewing").contents()
 							$(".viewing").replaceWith(content);
 						}
+
+						$('.display_mode').html('Episode summary');
 
 					}
 				});
@@ -214,7 +214,9 @@
 						$('div.action_options_alt').hide();
 						$('#event_content').html(data);
 
-						$('.display_mode').html(header_text);
+						if ($('#header_text').length >0) {
+							$('.display_mode').html($('#header_text').html());
+						}
 
 						view_mode();
 
@@ -231,7 +233,9 @@
 			}
 
 			$(document).ready(function(){
-				if (header_text) $('.display_mode').html(header_text);
+				if ($('#header_text').length >0) {
+					$('.display_mode').html($('#header_text').html());
+				}
 
 				$collapsed = true;
 
@@ -270,7 +274,10 @@
 						$('#addNewEvent span.button-span-inactive').removeClass('button-span-inactive').addClass('button-span-green');
 						$('#addNewEvent span.button-icon-inactive').removeClass('button-icon-inactive').addClass('button-icon-green');
 						$('#event_content').html(data);
-						$('.display_mode').html(header_text);
+
+						if ($('#header_text').length >0) {
+							$('.display_mode').html($('#header_text').html());
+						}
 					}
 				});
 				return false;
