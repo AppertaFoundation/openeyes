@@ -33,7 +33,7 @@ if (file_exists("../protected/config/params.php")) {
  
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
-		<div id="brand" class="ir"><a href="/site/index"><h1>OpenEyes</h1></a></div> 
+		<div id="brand" class="ir"><h1><a href="/site/index">OpenEyes</a></h1></div> 
 	</div> <!-- #header --> 
 
 	<!-- breadcrumbs -->
@@ -48,14 +48,12 @@ if (file_exists("../protected/config/params.php")) {
 			<p>
 				If there continues to be a problem please contact support
 			</p>
-			<p>
-				Support Options
-				<ul>
-					<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
-					<li>Less urgent issues email <a href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?></a></li>
-					<li>Log a support call or question at ???????????</li>
-				</ul>
-			</p>
+			<h4>Support Options</h4>
+			<ul>
+				<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
+				<li>Less urgent issues email <a href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?></a></li>
+				<li>Log a support call or question at ???????????</li>
+			</ul>
 		</div>
 	</div> <!-- #content --> 
 	<div id="help" class="clearfix"> 
