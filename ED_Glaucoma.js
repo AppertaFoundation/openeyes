@@ -29,6 +29,19 @@
 if (ED == null || typeof(ED) != "object") { var ED = new Object();}
 
 /**
+ * Radii from out to in
+ */
+var rsl = 480;
+var rsli = 470
+var rtmo = 404;
+var rtmi = 304;
+var rcbo = 270;
+var rcbi = 190;
+var riro = 190;
+var riri = 176;
+var rpu = 100;
+
+/**
  * Gonioscopy
  *
  * @class Gonioscopy
@@ -105,14 +118,6 @@ ED.Gonioscopy.prototype.draw = function(_point)
 	
 	// Call draw method in superclass
 	ED.Gonioscopy.superclass.draw.call(this, _point);
-    
-	// Radii from out to in
-    var rsc = 460;
-    var rtm = 430;
-    var rsp = 390;
-    var rcb = 380
-	var rir = 370;
-    var rpu = 100;
 
 	// Calculate parameters for arcs
 	var arcStart = 0;
@@ -122,18 +127,18 @@ ED.Gonioscopy.prototype.draw = function(_point)
 	ctx.beginPath();
     
 	// Do a 360 arc
-	ctx.arc(0, 0, rsc, arcStart, arcEnd, true);
+	ctx.arc(0, 0, rsl, arcStart, arcEnd, true);
     
     // Move to inner circle
-    ctx.moveTo(rpu, 0);
+    //ctx.moveTo(rpu, 0);
     
 	// Arc back the other way
-	ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
+	//ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
 	
 	// Set line attributes
-	ctx.lineWidth = 4;	
+	ctx.lineWidth = 15;	
 	ctx.fillStyle = "rgba(255, 255, 255, 0)";
-	ctx.strokeStyle = "gray";
+	ctx.strokeStyle = "rgba(200, 200, 200, 1)";
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -145,9 +150,9 @@ ED.Gonioscopy.prototype.draw = function(_point)
         ctx.beginPath();
         
         // Arc across, move to inner and arc back
-        ctx.arc(0, 0, rtm, arcStart, arcEnd, true);
+        ctx.arc(0, 0, rtmo, arcStart, arcEnd, true);
         //ctx.moveTo(rsp, 0);        
-        ctx.arc(0, 0, rsp, arcEnd, arcStart, false);
+        ctx.arc(0, 0, rtmi, arcEnd, arcStart, false);
         
         // Set line attributes
         ctx.lineWidth = 1;
@@ -155,9 +160,9 @@ ED.Gonioscopy.prototype.draw = function(_point)
         // Create pattern
         var ptrn = ctx.createPattern(this.drawing.imageArray['meshworkPattern'],'repeat');
         ctx.fillStyle = ptrn;
+        ctx.strokeStyle = "rgba(200, 200, 200, 1)";
         
         // Draw it
-        ctx.strokeStyle = "lightgray";
         ctx.fill();
         ctx.stroke();
 
@@ -165,30 +170,64 @@ ED.Gonioscopy.prototype.draw = function(_point)
         ctx.beginPath();
         
         // Arc across, move to inner and arc back
-        ctx.arc(0, 0, rcb, arcStart, arcEnd, true);       
-        ctx.arc(0, 0, rir, arcEnd, arcStart, false);
-        
-        // Set fill attributes
-        ctx.fillStyle = "rgba(200, 150, 100, 0.75)";
-        
+        ctx.arc(0, 0, rcbo, arcStart, arcEnd, true);       
+        ctx.arc(0, 0, rcbi, arcEnd, arcStart, false);
+
         // Draw it
-        ctx.strokeStyle = "lightgray";
+        ctx.fillStyle = "rgba(200, 200, 200, 1)";
         ctx.fill();
-        ctx.stroke();
+
+        // Draw radial lines
+        var firstAngle = 15;
+        var innerPoint = new ED.Point(0,0);
+        var outerPoint = new ED.Point(0,0);
+        var i = 0;
+        
+        // Loop through clock face
+        for (i = 0; i < 12; i++)
+        {
+            // Get angle
+            var angleInRadians = (firstAngle + i * 30) * Math.PI/180;
+            innerPoint.setWithPolars(rcbi, angleInRadians);
+            
+            // Set new line
+            ctx.beginPath();
+            ctx.moveTo(innerPoint.x, innerPoint.y);
+            
+            // Some lines are longer, wider and darker
+            if (i == 1 || i == 4 || i == 7 || i == 10)
+            {  
+                outerPoint.setWithPolars(rsl + 80, angleInRadians);
+                ctx.lineWidth = 6;
+                ctx.strokeStyle = "rgba(20, 20, 20, 1)";
+            }
+            else
+            {
+                outerPoint.setWithPolars(rsl, angleInRadians);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "rgba(137, 137, 137, 1)";
+            }
+
+            // Draw line
+            ctx.lineTo(outerPoint.x, outerPoint.y);
+            ctx.stroke();
+        }
         
         // Iris
-//        ctx.beginPath();
-//        
-//        // Arc across, move to inner and arc back
-//        ctx.arc(0, 0, rir, arcStart, arcEnd, true);       
-//        ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
-//        
-//        // Set fill attributes (same colour as AntSeg)
-//        ctx.fillStyle = "rgba(100, 200, 250, 1.0)";
-//        
-//        // Draw it
-//        ctx.strokeStyle = "lightgray";
-//        ctx.fill();
+        ctx.beginPath();
+        
+        // Arc across, move to inner and arc back
+        ctx.arc(0, 0, riro, arcStart, arcEnd, true);       
+        ctx.arc(0, 0, riri, arcEnd, arcStart, false);
+        
+        // Set attributes
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(180, 180, 180, 1)";
+        //ctx.fillStyle = "rgba(200, 200, 200, 1)";
+        
+        // Draw it
+        ctx.fill();
+        ctx.stroke();
 	}
         
 	// Return value indicating successful hit test
@@ -234,6 +273,7 @@ ED.AntSynech.prototype.setHandles = function()
 {
 	this.handleArray[0] = new ED.Handle(null, true, ED.Mode.Arc, false);
 	this.handleArray[3] = new ED.Handle(null, true, ED.Mode.Arc, false);
+    this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
 }
 
 /**
@@ -248,9 +288,9 @@ ED.AntSynech.prototype.setPropertyDefaults = function()
 	this.isMoveable = false;
 	this.isRotatable = true;
 	this.rangeOfScale = new ED.Range(+0.125, +1.5);
-	this.rangeOfArc = new ED.Range(Math.PI/10, Math.PI*2);
+	this.rangeOfArc = new ED.Range(30 * Math.PI/180, Math.PI*2);
 	this.rangeOfApexX = new ED.Range(-0, +0);
-	this.rangeOfApexY = new ED.Range(50, +250);
+	this.rangeOfApexY = new ED.Range(-rsli, -rcbo);
 }
 
 /**
@@ -259,9 +299,7 @@ ED.AntSynech.prototype.setPropertyDefaults = function()
 ED.AntSynech.prototype.setParameterDefaults = function()
 {
     this.arc = 30 * Math.PI/180;
-    
-    // The radius property is changed by movement in rotatable doodles
-    this.radius = 350;
+    this.apexY = -rtmi;
 }
 
 /**
@@ -278,16 +316,17 @@ ED.AntSynech.prototype.draw = function(_point)
 	ED.AntSynech.superclass.draw.call(this, _point);
     
     // AntSynech is at equator
-    var ras = 420;
-	var rir = 350;
+    var ras = -this.apexY;
+	var rir = riri;
+    
     var r = rir + (ras - rir)/2;
 	
 	// Calculate parameters for arcs
 	var theta = this.arc/2;
 	var arcStart = - Math.PI/2 + theta;
 	var arcEnd = - Math.PI/2 - theta;
-    var outArcStart = - Math.PI/2 + theta - Math.PI/24;
-    var outArcEnd = - Math.PI/2 - theta + Math.PI/24;
+    var outArcStart = - Math.PI/2 + theta - Math.PI/14;
+    var outArcEnd = - Math.PI/2 - theta + Math.PI/14;
     
     // Coordinates of 'corners' of AntSynech
 	var topRightX = rir * Math.sin(theta);
@@ -319,6 +358,7 @@ ED.AntSynech.prototype.draw = function(_point)
 	// Coordinates of handles (in canvas plane)
 	this.handleArray[0].location = this.transform.transformPoint(new ED.Point(topLeftX, topLeftY));
 	this.handleArray[3].location = this.transform.transformPoint(new ED.Point(topRightX, topRightY));
+    this.handleArray[4].location = this.transform.transformPoint(new ED.Point(0, this.apexY));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
@@ -405,9 +445,6 @@ ED.AngleNV.prototype.setPropertyDefaults = function()
 ED.AngleNV.prototype.setParameterDefaults = function()
 {
     this.arc = 30 * Math.PI/180;
-    
-    // The radius property is changed by movement in rotatable doodles
-    this.radius = 350;
 }
 
 /**
@@ -424,8 +461,8 @@ ED.AngleNV.prototype.draw = function(_point)
 	ED.AngleNV.superclass.draw.call(this, _point);
     
     // AngleNV is at equator
-    var ras = 420;
-	var rir = 370;
+    var ras = rtmo;
+	var rir = rtmi;
     var r = rir + (ras - rir)/2;
 	
 	// Calculate parameters for arcs
@@ -551,9 +588,6 @@ ED.AngleRecession.prototype.setPropertyDefaults = function()
 ED.AngleRecession.prototype.setParameterDefaults = function()
 {
     this.arc = 30 * Math.PI/180;
-    
-    // The radius property is changed by movement in rotatable doodles
-    this.radius = 350;
 }
 
 /**
@@ -570,8 +604,8 @@ ED.AngleRecession.prototype.draw = function(_point)
 	ED.AngleRecession.superclass.draw.call(this, _point);
     
     // AngleRecession is at equator
-    var ras = 340;
-	var rir = 364;
+    var ras = riri - 30;
+	var rir = riri;
     var r = rir + (ras - rir)/2;
 	
 	// Calculate parameters for arcs
@@ -597,7 +631,7 @@ ED.AngleRecession.prototype.draw = function(_point)
 	// Close path
 	ctx.closePath();
     
-    ctx.fillStyle = "rgba(255, 255, 255, 1.0)";
+    ctx.fillStyle = "rgba(255, 255, 200, 1.0)";
 	ctx.strokeStyle = "rgba(255, 255, 255, 0)";
 	
 	// Draw boundary path (also hit testing)
@@ -713,8 +747,8 @@ ED.PigmentedMesh.prototype.draw = function(_point)
 	ED.PigmentedMesh.superclass.draw.call(this, _point);
     
 	// Radii from out to in
-    var rtm = 430;
-    var rsp = 390;
+    var ro = rtmo;
+    var ri = rtmi;
     
 	// Calculate parameters for arcs
 	var arcStart = 0;
@@ -724,8 +758,8 @@ ED.PigmentedMesh.prototype.draw = function(_point)
 	ctx.beginPath();
 
     // Arc across, move to inner and arc back
-    ctx.arc(0, 0, rtm, arcStart, arcEnd, true);    
-    ctx.arc(0, 0, rsp, arcEnd, arcStart, false);
+    ctx.arc(0, 0, ro, arcStart, arcEnd, true);    
+    ctx.arc(0, 0, ri, arcEnd, arcStart, false);
 	
 	// Set attributes
 	ctx.lineWidth = 1;
@@ -818,7 +852,7 @@ ED.AngleGrade.prototype.setPropertyDefaults = function()
 	this.rangeOfScale = new ED.Range(+0.125, +1.5);
 	this.rangeOfArc = new ED.Range(Math.PI/12, Math.PI*2);
 	this.rangeOfApexX = new ED.Range(-0, +0);
-	this.rangeOfApexY = new ED.Range(-460, -360);
+	this.rangeOfApexY = new ED.Range(-rsli, -riri);
 }
 
 /**
@@ -828,7 +862,7 @@ ED.AngleGrade.prototype.setParameterDefaults = function()
 {
     this.rotation = 0 * Math.PI/180;
     this.arc = 90 * Math.PI/180;
-    this.apexY = -360;
+    this.apexY = -riri;
 }
 
 /**
@@ -843,10 +877,6 @@ ED.AngleGrade.prototype.draw = function(_point)
 	
 	// Call draw method in superclass
 	ED.AngleGrade.superclass.draw.call(this, _point);
-    
-    // AngleGrade is at equator
-	var rir = -this.apexY;
-    var rpu = 100;
 	
 	// Calculate parameters for arcs
 	var theta = this.arc/2;
@@ -857,7 +887,7 @@ ED.AngleGrade.prototype.draw = function(_point)
 	ctx.beginPath();
     
     // Arc across, move to inner and arc back
-	ctx.arc(0, 0, rir, arcStart, arcEnd, true);
+	ctx.arc(0, 0, -this.apexY, arcStart, arcEnd, true);
 	ctx.arc(0, 0, rpu, arcEnd, arcStart, false);
     ctx.closePath();
     
@@ -872,6 +902,7 @@ ED.AngleGrade.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
+        console.log(-this.apexY);
 	}
 	
 	// Coordinates of handles (in canvas plane)
@@ -897,11 +928,11 @@ ED.AngleGrade.prototype.getParameter = function(_parameter)
     {
         case 'grade':
             // Return value uses SCHEIE classificaton
-            if (this.apexY < -430) returnValue = "IV";
-            else if (this.apexY < -390) returnValue = "III";
-            else if (this.apexY < -380) returnValue = "II";
-            else if (this.apexY < -370) returnValue = "I";
-            else returnValue = "O";
+            returnValue = "O";
+            if (-this.apexY > riro) returnValue = "I";
+            if (-this.apexY > rcbo) returnValue = "II";
+            if (-this.apexY > rtmo) returnValue = "III";
+            if (-this.apexY >= rsli) returnValue = "IV";
             break;
         default:
             returnValue = "";
@@ -925,22 +956,22 @@ ED.AngleGrade.prototype.setParameter = function(_parameter, _value)
             switch (_value)
             {
                 case 'IV':
-                    this.apexY = -460;
+                    this.apexY = -rsli;
                     break;
                 case 'III':
-                    this.apexY = -430;
+                    this.apexY = -rtmo;
                     break;
                 case 'II':
-                    this.apexY = -390;
+                    this.apexY = -rcbo;
                     break;
                 case 'I':
-                    this.apexY = -380;
+                    this.apexY = -riro;
                     break;
                 case 'O':
-                    this.apexY = -360;
+                    this.apexY = -riri;
                     break;
                 default:
-                    this.apexY = -360;
+                    this.apexY = -riri;
                     break;
             }
             break;
