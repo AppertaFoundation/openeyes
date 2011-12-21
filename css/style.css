@@ -408,6 +408,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .episode ul.events li .viewing { display:block; height:inherit; background: #ccc url(../img/_elements/icons/event/event_open_arrow.png) right center no-repeat; color:#fff; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
 
 /* category colours - watermark tint */
+.episode ul.events li .viewing.demo { color:#333; background-color: #fff; }
 .episode ul.events li .viewing.blank { color:#333; background-color: #ccc; }
 .episode ul.events li .viewing.treatment { color:#333; background-color: #f8cfce; }
 
@@ -554,6 +555,9 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #event_display .colorband { height:5px; background:#a29d8a;  }
 #event_display .colorband.category_blank { background:#ccc;}
 #event_display .colorband.category_treatement { background:#f88e8c;}
+#event_display .colorband.category_communication { background:#86cdff;}
+#event_display .colorband.category_investigation { background:#a5a0a9;}
+#event_display .colorband.category_clinical { background:#fdcc56;}
 #event_display h3.withEventIcon { display:inline-block; height:40px; padding:17px 0 0 50px; margin-left:5px; }
 
 /* ====== THEATRE MANAGEMENT & WAITING LIST ====== */
