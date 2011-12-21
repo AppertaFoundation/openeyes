@@ -32,9 +32,14 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 <!-- Details -->
 <h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
-<h4>User</h4>
+<h4>Created by</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->event->user->username ?> on <?php echo date('d M Y', strtotime($operation->event->datetime)) ?> at <?php echo date('H:i', strtotime($operation->event->datetime)) ?></h4>
+	<h4><?php echo $operation->event->user->username ?> on <?php echo date('d M Y', strtotime($operation->event->created_date)) ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
+</div>
+
+<h4>Last modified by</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->event->usermodified->username?> on <?php echo date('d M Y', strtotime($operation->event->last_modified_date))?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
 </div>
 
 <h4>Diagnosis</h4>

@@ -240,7 +240,6 @@ class ClinicalService
 	{
 		$event = new Event();
 		$event->episode_id = $episode->id;
-		$event->user_id = $userId;
 		$event->event_type_id = $eventTypeId;
 		$event->datetime = date("Y-m-d H:i:s");
 		if (!$event->save()) {

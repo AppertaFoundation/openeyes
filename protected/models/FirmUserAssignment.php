@@ -51,11 +51,11 @@ class FirmUserAssignment extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('firm_id, user_id', 'required'),
-			array('firm_id, user_id', 'length', 'max'=>10),
+			array('firm_id', 'required'),
+			array('firm_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, firm_id, user_id', 'safe', 'on'=>'search'),
+			array('id, firm_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -67,7 +67,7 @@ class FirmUserAssignment extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 		);
 	}
@@ -80,7 +80,7 @@ class FirmUserAssignment extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'firm_id' => 'Firm',
-			'user_id' => 'User',
+			'created_user_id' => 'User',
 		);
 	}
 
@@ -97,7 +97,7 @@ class FirmUserAssignment extends CActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('firm_id',$this->firm_id,true);
-		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('created_user_id',$this->created_user_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

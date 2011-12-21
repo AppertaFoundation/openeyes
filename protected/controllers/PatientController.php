@@ -303,7 +303,7 @@ class PatientController extends BaseController
 
 			// The eventType, firm and patient are fetched from the event object
 			$elements = $this->service->getElements(
-				null, null, null, $event->user_id, $event
+				null, null, null, $event->created_user_id, $event
 			);
 
 			// Decide whether to display the 'edit' button in the template

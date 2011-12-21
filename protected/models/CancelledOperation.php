@@ -53,13 +53,13 @@ class CancelledOperation extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('element_operation_id, user_id, cancelled_reason_id', 'required'),
-			array('element_operation_id, user_id, cancelled_reason_id', 'length', 'max'=>10),
+			array('element_operation_id, cancelled_reason_id', 'required'),
+			array('element_operation_id, cancelled_reason_id', 'length', 'max'=>10),
 			array('cancelled_date', 'safe'),
 			array('cancellation_comment', 'length', 'max' => 200),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('element_operation_id, cancelled_date, user_id, cancelled_reason_id', 'safe', 'on'=>'search'),
+			array('element_operation_id, cancelled_date, cancelled_reason_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,7 +73,7 @@ class CancelledOperation extends CActiveRecord
 		return array(
 			'elementOperation' => array(self::BELONGS_TO, 'ElementOperation', 'element_operation_id'),
 			'cancelledReason' => array(self::BELONGS_TO, 'CancellationReason', 'cancelled_reason_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'user_id')
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id')
 		);
 	}
 
@@ -85,7 +85,7 @@ class CancelledOperation extends CActiveRecord
 		return array(
 			'element_operation_id' => 'Element Operation',
 			'cancelled_date' => 'Cancelled Date',
-			'user_id' => 'User',
+			'created_user_id' => 'User',
 			'cancelled_reason_id' => 'Cancelled Reason',
 			'cancellation_comment' => 'Cancellation comment'
 		);
@@ -104,7 +104,7 @@ class CancelledOperation extends CActiveRecord
 
 		$criteria->compare('element_operation_id',$this->element_operation_id,true);
 		$criteria->compare('cancelled_date',$this->cancelled_date,true);
-		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('cancelled_reason_id',$this->cancelled_reason_id,true);
 		$criteria->compare('cancellation_comment',$this->cancellation_comment,true);
 

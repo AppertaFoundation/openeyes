@@ -38,6 +38,17 @@ class BaseActiveRecord extends CActiveRecord
 			}
 		}
 
+		if (!isset($this->id)) {
+			// Set creation properties
+			if (Yii::app()->user->id === NULL) {
+				// Revert to the admin user
+				$this->created_user_id = 1;
+			} else {
+				$this->created_user_id = Yii::app()->user->id;
+			}
+			$this->created_date = date('Y-m-d H:i:s');
+		}
+
 		// Set the last_modified_user_id and last_modified_date fields
 		if (Yii::app()->user->id === NULL) {
 			// Revert to the admin user
