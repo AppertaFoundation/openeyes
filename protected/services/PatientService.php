@@ -103,7 +103,7 @@ class PatientService
 		foreach ($results as $result) {
 			$pasPatient = PAS_Patient::model()->findByPk($result['RM_PATIENT_NO']);
 
-			foreach ($connection->createCommand("select s.* from SILVER.PATIENTS p, SILVER.SURNAME_IDS s where p.RM_PATIENT_NO = '1002518' and s.surname_type = 'NO' and s.rm_patient_no = p.rm_patient_no")->queryAll() as $row) {
+			foreach ($connection->createCommand("select s.* from SILVER.PATIENTS p, SILVER.SURNAME_IDS s where p.RM_PATIENT_NO = '{$result['RM_PATIENT_NO']}' and s.surname_type = 'NO' and s.rm_patient_no = p.rm_patient_no")->queryAll() as $row) {
 				$surname = PAS_PatientSurname::model();
 				foreach ($row as $key => $value) {
 					$surname->{$key} = $value;

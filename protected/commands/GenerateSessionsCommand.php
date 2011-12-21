@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -65,14 +65,14 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 			$dateList = array();
 			if (empty($sequence->week_selection)) {
 				// No week selection, e.g. 1st on month, 2nd in month
-                                if (empty($sequence['repeat_interval'])) {
-                                        // No repeat interval means it's one-off, so we only concern ourselves with the start date
+				if (empty($sequence['repeat_interval'])) {
+					// No repeat interval means it's one-off, so we only concern ourselves with the start date
 
 					// If a session already exists for this one off there's no point creating another
 					if (empty($session)) {
-                                        	$dateList[] = $sequence->start_date;
+						$dateList[] = $sequence->start_date;
 					}
-                                } else {
+				} else {
 					// There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
 					//	function below returns 60 * 60 * 24 * 14, i.e. two weeks
 					$interval = $sequence->getFrequencyInteger($sequence['repeat_interval'], $endDate);

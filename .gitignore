@@ -25,3 +25,5 @@ protected/config/db_muu.php
 /.buildpath
 /.settings
 /.project
+protected/commands/BillCommand.php
+protected/commands/FetchBookings2Command.php
