@@ -64,6 +64,11 @@ foreach ($elements as $element) {
 ?></h4>
 </div>
 
+<h4>Priority</h4>
+<div class="eventHighlight">
+	<h4><?php echo ($operation->urgent) ? 'Urgent' : 'Routine' ?></h4>
+</div>
+
 <?php if (!empty($operation->comments)) {?>
 	<h4>Comments</h4>
 	<div class="eventHighlight">

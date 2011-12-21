@@ -209,6 +209,21 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 
+					<div id="urgent" class="eventDetail">
+						<div class="label">Priority</div>
+						<div class="data">
+							<input id="ytElementOperation_urgent" type="hidden" value="<?php echo $model->urgent ?>" name="ElementOperation[urgent]" />
+							<span class="group">
+								<input id="ElementOperation_urgent_0" value="0" <?php if(!$model->urgent) { ?>checked="checked" <?php } ?>type="radio" name="ElementOperation[urgent]" />
+								<label for="ElementOperation_urgent_0">Routine</label>
+							</span>
+							<span class="group">
+								<input id="ElementOperation_urgent_1" value="1" <?php if($model->urgent) { ?>checked="checked" <?php } ?>type="radio" name="ElementOperation[urgent]" />
+								<label for="ElementOperation_urgent_1">Urgent</label>
+							</span>
+						</div>
+					</div>
+					
 					<div id="decisionDate" class="eventDetail">
 						<div class="label">Decision Date:</div>
 						<div class="data">
