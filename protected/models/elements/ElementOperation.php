@@ -27,6 +27,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property integer $overnight_stay
  * @property data $decision_date
  * @property integer $schedule_timeframe
+ * @property boolean $urgent
  *
  * The followings are the available model relations:
  * @property Event $event
@@ -63,6 +64,9 @@ class ElementOperation extends BaseElement
 	const LETTER_REMINDER_2 = 2;
 	const LETTER_GP = 3;
 	const LETTER_REMOVAL = 4;
+	
+	const URGENT = 1;
+	const ROUTINE = 0;
 
 	public $service;
 
@@ -95,11 +99,11 @@ class ElementOperation extends BaseElement
 			array('eye', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. 5-Dec-2011)'),
-			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'numerical', 'integerOnly' => true),
+			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
 			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe', 'safe', 'on' => 'search'),
+			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -148,6 +152,7 @@ class ElementOperation extends BaseElement
 			'overnight_stay' => 'Overnight Stay',
 			'decision_date' => 'Decision Date',
 			'schedule_timeframe' => 'Schedule Timeframe',
+			'urgent' => 'Priority',
 		);
 	}
 
@@ -173,7 +178,8 @@ class ElementOperation extends BaseElement
 		$criteria->compare('overnight_stay', $this->overnight_stay);
 		$criteria->compare('decision_date', $this->decision_date);
 		$criteria->compare('schedule_timeframe', $this->schedule_timeframe);
-
+		$criteria->compare('urgent', $this->urgent);
+		
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
 			));
@@ -191,6 +197,7 @@ class ElementOperation extends BaseElement
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
+		$this->urgent = self::ROUTINE;
 	}
 
 	/**
@@ -249,6 +256,17 @@ class ElementOperation extends BaseElement
 		return array(
 			self::CONSULTANT_REQUIRED => 'Yes',
 			self::CONSULTANT_NOT_REQUIRED => 'No',
+		);
+	}
+
+	/**
+	 * Return list of priority options
+	 * @return array
+	 */
+	public function getPriorityOptions() {
+		return array(
+			self::URGENT => 'Urgent',
+			self::ROUTINE => 'Routine',
 		);
 	}
 
