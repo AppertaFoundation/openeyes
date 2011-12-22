@@ -99,8 +99,24 @@ class GpService
 		}
 		echo "\n";
 
+		$msg = '';
+
 		if (!empty($errors)) {
-			mail(Yii::app()->params['alerts_email'],"FetchGP errors",implode("\n",$errors));
+			$msg = implode("\n",$errors)."\n";
+		}
+
+		$n=0;
+		foreach (Yii::app()->db->createCommand()->select()->from('patient')->where("gp_id is null")->queryAll() as $patient) {
+			$n++;
+		}
+
+		if ($n >0) {
+			$msg .= "$n patient(s) have a null gp_id.\n";
+		}
+
+		if (strlen($msg) >0) {
+			$hostname = trim(`/bin/hostname`);
+			mail(Yii::app()->params['alerts_email'],"[$hostname] FetchGP errors",$msg);
 		}
 	}
 
