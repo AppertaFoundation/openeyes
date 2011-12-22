@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -25,12 +25,12 @@ class FetchPASReferralsCommand extends CConsoleCommand
 
 	public function run($args)
 	{
-                if (!Yii::app()->params['use_pas']) {
+		if (!Yii::app()->params['use_pas']) {
 			echo "To use FetchPASReferrals use_pas must be set to true.\n";
 			return false;
-                }
+		}
 
-        	$referralService = new ReferralService;
-                $referralService->getNewReferrals();
+		$referralService = new ReferralService;
+		$referralService->getNewReferrals();
 	}
 }

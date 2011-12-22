@@ -57,13 +57,13 @@ class CancelledBooking extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('element_operation_id, date, start_time, end_time, theatre_id, user_id, cancelled_reason_id', 'required'),
-			array('element_operation_id, theatre_id, user_id, cancelled_reason_id', 'length', 'max'=>10),
-			array('element_operation_id, date, start_time, end_time, theatre_id, user_id, cancelled_date, cancelled_reason_id', 'safe'),
+			array('element_operation_id, date, start_time, end_time, theatre_id, cancelled_reason_id', 'required'),
+			array('element_operation_id, theatre_id, cancelled_reason_id', 'length', 'max'=>10),
+			array('element_operation_id, date, start_time, end_time, theatre_id, cancelled_date, cancelled_reason_id', 'safe'),
 			array('cancellation_comment', 'length', 'max' => 200),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, element_operation_id, date, start_time, end_time, theatre_id, cancelled_date, user_id, cancelled_reason_id', 'safe', 'on'=>'search'),
+			array('id, element_operation_id, date, start_time, end_time, theatre_id, cancelled_date, cancelled_reason_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -77,7 +77,7 @@ class CancelledBooking extends CActiveRecord
 		return array(
 			'cancelledReason' => array(self::BELONGS_TO, 'CancellationReason', 'cancelled_reason_id'),
 			'theatre' => array(self::BELONGS_TO, 'Theatre', 'theatre_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 		);
 	}
 
@@ -94,7 +94,7 @@ class CancelledBooking extends CActiveRecord
 			'end_time' => 'End Time',
 			'theatre_id' => 'Theatre',
 			'cancelled_date' => 'Cancelled Date',
-			'user_id' => 'User',
+			'created_user_id' => 'User',
 			'cancelled_reason_id' => 'Cancelled Reason',
 			'cancellation_comment' => 'Cancellation comment'
 		);
@@ -118,7 +118,7 @@ class CancelledBooking extends CActiveRecord
 		$criteria->compare('end_time',$this->end_time,true);
 		$criteria->compare('theatre_id',$this->theatre_id,true);
 		$criteria->compare('cancelled_date',$this->cancelled_date,true);
-		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('cancelled_reason_id',$this->cancelled_reason_id,true);
 		$criteria->compare('cancellation_comment',$this->cancellation_comment,true);
 

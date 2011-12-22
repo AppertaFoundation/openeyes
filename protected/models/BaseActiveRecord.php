@@ -38,12 +38,32 @@ class BaseActiveRecord extends CActiveRecord
 			}
 		}
 
+		$user_id = null;
+
+		try {
+			if (isset(Yii::app()->user)) {
+				$user_id = Yii::app()->user->id;
+			}
+		} catch (Exception $e) {
+		}
+
+		if (!isset($this->id)) {
+			// Set creation properties
+			if ($user_id === NULL) {
+				// Revert to the admin user
+				$this->created_user_id = 1;
+			} else {
+				$this->created_user_id = $user_id;
+			}
+			$this->created_date = date('Y-m-d H:i:s');
+		}
+
 		// Set the last_modified_user_id and last_modified_date fields
-		if (Yii::app()->user->id === NULL) {
+		if ($user_id === NULL) {
 			// Revert to the admin user
 			$this->last_modified_user_id = 1;
 		} else {
-			$this->last_modified_user_id = Yii::app()->user->id;
+			$this->last_modified_user_id = $user_id;
 		}
 		$this->last_modified_date = date('Y-m-d H:i:s');
 

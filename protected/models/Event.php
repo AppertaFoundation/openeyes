@@ -54,11 +54,11 @@ class Event extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('episode_id, user_id, event_type_id', 'required'),
-			array('episode_id, user_id, event_type_id', 'length', 'max'=>10),
+			array('episode_id, event_type_id', 'required'),
+			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, episode_id, user_id, event_type_id, datetime', 'safe', 'on'=>'search'),
+			array('id, episode_id, event_type_id, datetime', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,7 +71,8 @@ class Event extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'episode' => array(self::BELONGS_TO, 'Episode', 'episode_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 		);
 	}
@@ -84,7 +85,7 @@ class Event extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'episode_id' => 'Episode',
-			'user_id' => 'User',
+			'created_user_id' => 'User',
 			'event_type_id' => 'Event Type',
 			'datetime' => 'Datetime',
 		);
@@ -103,7 +104,7 @@ class Event extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('episode_id',$this->episode_id,true);
-		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('event_type_id',$this->event_type_id,true);
 		$criteria->compare('datetime',$this->datetime,true);
 

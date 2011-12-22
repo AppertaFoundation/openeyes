@@ -158,7 +158,6 @@ class BookingController extends BaseController
 			$cancel->cancelled_date = date('Y-m-d H:i:s');
 			$cancel->cancelled_reason_id = $_POST['cancellation_reason'];
 			$cancel->cancellation_comment = strip_tags($_POST['cancellation_comment']);
-			$cancel->user_id = Yii::app()->user->id;
 
 			$operation = ElementOperation::model()->findByPk($operationId);
 			$operation->status = ElementOperation::STATUS_CANCELLED;
@@ -403,7 +402,6 @@ class BookingController extends BaseController
 			$cancellation->end_time = $model->session->end_time;
 			$cancellation->theatre_id = $model->session->sequence->theatre_id;
 			$cancellation->cancelled_date = date('Y-m-d H:i:s');
-			$cancellation->user_id = Yii::app()->user->id;
 			$cancellation->cancelled_reason_id = $reason->id;
 			$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
 
@@ -446,7 +444,6 @@ class BookingController extends BaseController
 	public function updateEvent($event)
 	{
 		// Update event with this user and datetime
-		$event->user_id = Yii::app()->user->id;
 		$event->datetime = date("Y-m-d H:i:s");
 		$event->save();
 	}
