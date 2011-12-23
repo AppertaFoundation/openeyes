@@ -17,8 +17,8 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 if (!empty($operation->booking)) {
 	$session = $operation->booking->session;
 
-	if (isset($session->firm)) {
-		$firmName = $session->firm->name . ' (' . $session->firm->serviceSpecialtyAssignment->service->name . ')';
+	if (isset($session->sequence->sequenceFirmAssignment->firm)) {
+		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' . $session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->service->name . ')';
 	} else {
 		$firmName = 'Emergency List';
 	}
