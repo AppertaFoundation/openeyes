@@ -74,6 +74,36 @@ foreach ($elements as $element) {
 	<h4><?php echo ($operation->urgent) ? 'Urgent' : 'Routine' ?></h4>
 </div>
 
+<h4>Anaesthetic</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->getAnaestheticText()?></h4>
+</div>
+
+<h4>Consultant</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->consultant_required ? 'Yes' : 'No'?></h4>
+</div>
+
+<h4>Post Operative Stay Required</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->overnight_stay ? 'Yes' : 'No'?></h4>
+</div>
+
+<h4>Decision Date</h4>
+<div class="eventHighlight">
+	<h4><?php echo date('d M Y',$operation->decision_date)?></h4>
+</div>
+
+<h4>Operation Type</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->urgent ? 'Urgent' : 'Routine'?></h4>
+</div>
+
+<h4>Operation Comments</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->comments ? $operation->comments : 'None'?></h4>
+</div>
+
 <?php if (!empty($operation->comments)) {?>
 	<h4>Comments</h4>
 	<div class="eventHighlight">
