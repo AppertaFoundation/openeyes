@@ -1,4 +1,4 @@
-<?php $this->renderPartial("eventTypeTemplates/view/25/form_start", array(
+<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form_start", array(
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
 	'patient' => $patient,
@@ -204,4 +204,4 @@
 	
 </table>
 
-<?php $this->renderPartial("eventTypeTemplates/view/25/form_end"); ?>
+<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form_end"); ?>

@@ -425,7 +425,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 ?>
 
 <div id="printcontent_form" style="display: none;">
-<?php $this->renderPartial("eventTypeTemplates/view/25/form", array(
+<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form", array(
 	'site' => $site,
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
@@ -437,7 +437,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 )); ?>
 </div>
 <div id="printcontent_invitationletter" style="display: none;">
-<?php $this->renderPartial("eventTypeTemplates/view/25/invitation_letter", array(
+<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/invitation_letter", array(
 	'site' => $site,
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
@@ -448,7 +448,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 )); ?>
 </div>
 <div id="printcontent_reminderletter" style="display: none;">
-<?php $this->renderPartial("eventTypeTemplates/view/25/reminder_letter", array(
+<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/reminder_letter", array(
 	'site' => $site,
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
@@ -459,7 +459,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 )); ?>
 </div>
 <div id="printcontent_scheduledletter" style="display: none;">
-<?php $this->renderPartial("eventTypeTemplates/view/25/scheduled_letter", array(
+<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/scheduled_letter", array(
 	'site' => $site,
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
