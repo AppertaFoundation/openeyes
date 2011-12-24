@@ -440,6 +440,10 @@ class ElementOperation extends BaseElement
 			$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		}
 
+		if (preg_match('/^[0-9]{1,3}-[a-zA-Z]{3}-[0-9]{4}$/',$this->decision_date)) {
+			$this->decision_date = date('Y-m-d',strtotime($this->decision_date));
+		}
+
 		return parent::beforeSave();
 	}
 
