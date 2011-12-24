@@ -26,7 +26,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property ElementOperation $elementOperation
  * @property CancellationReason $cancelledReason
  */
-class CancelledOperation extends CActiveRecord
+class CancelledOperation extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

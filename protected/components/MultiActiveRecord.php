@@ -12,7 +12,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 --
 */
 
-abstract class MultiActiveRecord extends CActiveRecord
+abstract class MultiActiveRecord extends BaseActiveRecord
 {
     /**
      * @var CDbConnection the default database connection for all active record classes.

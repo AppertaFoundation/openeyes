@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property Sequence[] $sequences
  * @property Site $site
  */
-class Theatre extends CActiveRecord
+class Theatre extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

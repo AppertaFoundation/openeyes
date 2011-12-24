@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property User $user
  * @property Firm $firm
  */
-class FirmUserAssignment extends CActiveRecord
+class FirmUserAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
