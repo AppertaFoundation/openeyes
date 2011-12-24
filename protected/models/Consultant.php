@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Consultant extends BaseActiveRecord
+class Consultant extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

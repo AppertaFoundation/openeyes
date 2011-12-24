@@ -27,7 +27,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property ElementOperation $elementOperation
  * @property Session $session
  */
-class Booking extends BaseActiveRecord
+class Booking extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

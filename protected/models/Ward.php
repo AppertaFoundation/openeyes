@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * The followings are the available model relations:
  * @property Site $site
  */
-class Ward extends BaseActiveRecord
+class Ward extends CActiveRecord
 {
 	const RESTRICTION_MALE = 1;
 	const RESTRICTION_FEMALE = 2;

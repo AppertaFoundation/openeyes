@@ -91,7 +91,7 @@ foreach ($elements as $element) {
 
 <h4>Decision Date</h4>
 <div class="eventHighlight">
-	<h4><?php echo date('d M Y',strtotime($operation->decision_date))?></h4>
+	<h4><?php echo date('d M Y',$operation->decision_date)?></h4>
 </div>
 
 <h4>Operation Type</h4>

@@ -31,7 +31,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property SequenceFirmAssignment[] $sequenceFirmAssignments
  * @property Session[] $sessions
  */
-class Sequence extends BaseActiveRecord
+class Sequence extends CActiveRecord
 {
 	const FREQUENCY_ONCE = 0;
 	const FREQUENCY_1WEEK = 1;

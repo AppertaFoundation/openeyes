@@ -25,7 +25,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property CancelledBooking[] $cancelledBookings
  * @property CancelledOperation[] $cancelledOperations
  */
-class CancellationReason extends BaseActiveRecord
+class CancellationReason extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

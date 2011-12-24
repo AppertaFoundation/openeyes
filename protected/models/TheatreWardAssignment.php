@@ -12,7 +12,7 @@
  * @property Ward $ward
  * @property Theatre $theatre
  */
-class TheatreWardAssignment extends BaseActiveRecord
+class TheatreWardAssignment extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

@@ -181,8 +181,8 @@ class ElementOperation extends BaseElement
 		$criteria->compare('urgent', $this->urgent);
 		
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
-		));
+				'criteria' => $criteria,
+			));
 	}
 
 	/**
@@ -438,10 +438,6 @@ class ElementOperation extends BaseElement
 			$this->schedule_timeframe = $_POST['schedule_timeframe2'];
 		} else {
 			$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
-		}
-
-		if (preg_match('/^[0-9]{2}-[a-zA-Z]{3}-[0-9]{4}$/',$this->decision_date,$m)) {
-			$this->decision_date = date('Y-m-d',strtotime($this->decision_date));
 		}
 
 		return parent::beforeSave();

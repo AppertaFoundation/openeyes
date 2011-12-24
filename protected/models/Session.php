@@ -28,7 +28,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property Booking[] $bookings
  * @property Sequence $sequence
  */
-class Session extends BaseActiveRecord
+class Session extends CActiveRecord
 {
 	const STATUS_AVAILABLE = 0;
 	const STATUS_UNAVAILABLE = 1;
