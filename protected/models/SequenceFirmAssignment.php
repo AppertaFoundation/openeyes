@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property Sequence $sequence
  * @property Firm $firm
  */
-class SequenceFirmAssignment extends CActiveRecord
+class SequenceFirmAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

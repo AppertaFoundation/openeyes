@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property Contact $contact
  * @property User $user
  */
-class UserContactAssignment extends CActiveRecord
+class UserContactAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

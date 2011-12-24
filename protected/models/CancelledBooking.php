@@ -30,7 +30,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * The followings are the available model relations:
  * @property CancellationReason $cancelledReason
  */
-class CancelledBooking extends CActiveRecord
+class CancelledBooking extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.

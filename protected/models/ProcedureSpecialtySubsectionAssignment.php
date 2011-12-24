@@ -12,7 +12,7 @@
  * @property SpecialtySubsection $specialtySubsection
  * @property Proc $proc
  */
-class ProcedureSpecialtySubsectionAssignment extends CActiveRecord
+class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
