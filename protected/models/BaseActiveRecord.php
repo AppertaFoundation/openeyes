@@ -58,14 +58,18 @@ class BaseActiveRecord extends CActiveRecord
 			$this->created_date = date('Y-m-d H:i:s');
 		}
 
-		// Set the last_modified_user_id and last_modified_date fields
-		if ($user_id === NULL) {
-			// Revert to the admin user
-			$this->last_modified_user_id = 1;
-		} else {
-			$this->last_modified_user_id = $user_id;
+		try {
+			// Set the last_modified_user_id and last_modified_date fields
+			if ($user_id === NULL) {
+				// Revert to the admin user
+				// need this try/catch block here to make older migrations pass with this hook in place
+				$this->last_modified_user_id = 1;
+			} else {
+				$this->last_modified_user_id = $user_id;
+			}
+			$this->last_modified_date = date('Y-m-d H:i:s');
+		} catch (Exception $e) {
 		}
-		$this->last_modified_date = date('Y-m-d H:i:s');
 
 		return parent::save($runValidation, $attributes);
 	}
