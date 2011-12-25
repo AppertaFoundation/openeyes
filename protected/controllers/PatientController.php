@@ -262,10 +262,7 @@ class PatientController extends BaseController
 	{
 		$patient = $this->loadModel($_GET['id']);
 
-		// Check the patient id is the same as the session patient id
-		if ($patient->id != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($patient->id);
-		}
+		$this->setSessionPatient($patient);
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $patient->id);
@@ -295,6 +292,8 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
 		$patient = $this->model = $this->loadModel($_GET['id']);
+
+		$this->setSessionPatient($patient);
 
 		$episodes = $patient->episodes;
 
