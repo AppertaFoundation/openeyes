@@ -983,11 +983,11 @@ class ElementOperation extends BaseElement
 		return true;
 	}
 
-	public function save() {
+	public function save($runValidation=true,$attributes=null) {
 		if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$this->decision_date)) {
 			$this->decision_date = date('j-M-Y',strtotime($this->decision_date));
 		}
 
-		return parent::save();
+		return parent::save($runValidation,$attributes);
 	}
 }
