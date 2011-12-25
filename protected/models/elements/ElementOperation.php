@@ -977,8 +977,13 @@ class ElementOperation extends BaseElement
 		$otherBooking->display_order = $booking->display_order;
 		$booking->display_order = $otherDisplayOrder;
 
-		$booking->save();
-		$otherBooking->save();
+		if (!$booking->save()) {
+			throw new SystemException('Unable to save booking: '.print_r($booking->getErrors(),true));
+		}
+
+		if (!$otherBooking->save()) {
+			throw new SystemException('Unable to save booking: '.print_r($otherBooking->getErrors(),true));
+		}
 
 		return true;
 	}

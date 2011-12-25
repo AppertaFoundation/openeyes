@@ -210,7 +210,10 @@ class PatientService
 		}
 
 		$address = $this->updateAddress($address, $addressData);
-		$address->save();
+		if (!$address->save()) {
+			throw new SystemException('Unable to update patient address: '.print_r($address->getErrors(),true));
+		}
+
 		$patient->address_id = $address->id;
 
 /*
@@ -234,7 +237,9 @@ class PatientService
 		if (!empty($nhsNumber)) {
 			$patient->nhs_num = $nhsNumber->NUMBER_ID;
 		}
-		$patient->save();
+		if (!$patient->save()) {
+			throw new SystemException('Unable to update patient: '.print_r($patient->getErrors(),true));
+		}
 
 		return $patient;
 	}

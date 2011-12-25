@@ -130,7 +130,9 @@ class ClinicalService
 				$element->event_id = $event->id;
 			}
 
-			$element->save();
+			if (!$element->save()) {
+				throw new SystemException('Unable to save element: '.print_r($element->getErrors(),true));
+			}
 		}
 
 		foreach ($toDelete as $element) {

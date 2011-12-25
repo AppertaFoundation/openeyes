@@ -323,7 +323,9 @@ class TheatreController extends BaseController
 						$booking->confirmed = (@$_POST['confirm_'.$m[1]] ? 1 : 0);
 						$booking->admission_time = $value;
 						$booking->display_order = $display_order++;
-						$booking->save();
+						if (!$booking->save()) {
+							throw new SystemException('Unable to save booking: '.print_r($booking->getErrors(),true));
+						}
 					}
 				}
 
@@ -332,7 +334,9 @@ class TheatreController extends BaseController
 
 					if (!empty($session)) {
 						$session->comments = $value;
-						$session->save();
+						if (!$session->save()) {
+							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
+						}
 					}
 				}
 			}
@@ -375,23 +379,25 @@ class TheatreController extends BaseController
 		return false;
 	}
 
-        public function actionConfirmOperation()
-        {
-                if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-                        if (!empty($_POST['id'])) {
-                                $operation = ElementOperation::model()->findByPk($_POST['id']);
+	public function actionConfirmOperation()
+	{
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			if (!empty($_POST['id'])) {
+				$operation = ElementOperation::model()->findByPk($_POST['id']);
 
 				$operation->booking->confirmed = 1;
-				$operation->booking->save();
+				if (!$operation->booking->save()) {
+					throw new SystemException('Unable to save booking: '.print_r($operation->booking->getErrors(),true));
+				}
 
-                                echo CJavaScript::jsonEncode(1);
+				echo CJavaScript::jsonEncode(1);
 
-                                return true;
-                        }
-                }
+				return true;
+			}
+		}
 
-                return false;
-        }
+		return false;
+	}
 
 	/**
 	 * Helper method to fetch firms by specialty ID

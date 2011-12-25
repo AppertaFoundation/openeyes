@@ -64,9 +64,12 @@ class AdminSequenceController extends BaseController
 				if ($model->save()) {
 					if (!empty($firmAssociation->firm_id)) {
 						$firmAssociation->sequence_id = $model->id;
-						$firmAssociation->save();
+						if ($firmAssociation->save()) {
+							$this->redirect(array('view','id'=>$model->id));
+						}
+					} else {
+						$this->redirect(array('view','id'=>$model->id));
 					}
-					$this->redirect(array('view','id'=>$model->id));
 				}
 			}
 		}

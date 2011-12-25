@@ -102,8 +102,6 @@ class AdminPhraseBySpecialtyController extends Controller
 					$model->phrase_name_id = PhraseName::model()->findByAttributes(array('name' => $_POST['PhraseName']))->id;
 				}
 			}
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
 
 			if($model->save()) $this->redirect(array('view','id'=>$model->id));
 		} 

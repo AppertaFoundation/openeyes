@@ -102,7 +102,9 @@ class RightsService
 				$ufr = new UserFirmRights;
 				$ufr->user_id = $this->userId;
 				$ufr->firm_id = $id;
-				$ufr->save();
+				if (!$ufr->save()) {
+					throw new SystemException('Unable to save UserFirmRights: '.print_r($ufr->getErrors(),true));
+				}
 			}
 		}
 
@@ -114,7 +116,9 @@ class RightsService
 				$usr = new UserServiceRights;
 				$usr->user_id = $this->userId;
 				$usr->service_id = $id;
-				$usr->save();
+				if (!$usr->save()) {
+					throw new SystemException('Unable to save UserServiceRights: '.print_r($usr->getErrors(),true));
+				}
 			}
 		}
 

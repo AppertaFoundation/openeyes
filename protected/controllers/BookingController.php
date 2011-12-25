@@ -369,11 +369,15 @@ class BookingController extends BaseController
 				} else {
 					$operation->status = ElementOperation::STATUS_SCHEDULED;
 				}
-				$operation->save();
+				if (!$operation->save()) {
+					throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
+				}
 
 				if (!empty($_POST['Session']['comments'])) {
 					$session->comments = $_POST['Session']['comments'];
-					$session->save();
+					if (!$session->save()) {
+						throw new SystemException('Unable to save session comments: '.print_r($session->getErrors(),true));
+					}
 				}
 
 				$patientId = $model->elementOperation->event->episode->patient->id;
@@ -408,22 +412,30 @@ class BookingController extends BaseController
 			if ($cancellation->save()) {
 				if (!empty($_POST['Booking'])) {
 					$model->attributes = $_POST['Booking'];
-					$model->save();
+					if (!$model->save()) {
+						throw new SystemException('Unable to save booking: '.print_r($model->getErrors(),true));
+					}
 
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
-					$operation->save();
+					if (!$operation->save()) {
+						throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
+					}
 
 					if (!empty($_POST['Session']['comments'])) {
 						$model->session->comments = $_POST['Session']['comments'];
-						$model->session->save();
+						if (!$model->session->save()) {
+							throw new SystemException('Unable to save session comments: '.print_r($model->session->getErrors(),true));
+						}
 					}
 				} else {
 					$model->delete();
 
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
-					$operation->save();
+					if (!$operation->save()) {
+						throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
+					}
 				}
 
 				$patientId = $model->elementOperation->event->episode->patient->id;
@@ -445,6 +457,8 @@ class BookingController extends BaseController
 	{
 		// Update event with this user and datetime
 		$event->datetime = date("Y-m-d H:i:s");
-		$event->save();
+		if (!$event->save()) {
+			throw new SystemException('Unable to update event datetime: '.print_r($event->getErrors(),true));
+		}
 	}
 }

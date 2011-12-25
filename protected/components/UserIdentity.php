@@ -110,7 +110,9 @@ class UserIdentity extends CUserIdentity
 			$user->first_name = $info['givenname'][0];
 			$user->last_name = $info['sn'][0];
 			$user->email = $info['mail'][0];
-			$user->save();
+			if (!$user->save()) {
+				throw new SystemException('Unable to update user with details with LDAP: '.print_r($user->getErrors(),true));
+			}
 		} else if (Yii::app()->params['auth_source'] == 'BASIC') {
 			if(!$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;

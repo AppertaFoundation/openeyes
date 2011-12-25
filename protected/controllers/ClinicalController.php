@@ -298,7 +298,9 @@ class ClinicalController extends BaseController
 				// Update event to indicate user has made a change
 				$event->datetime = date("Y-m-d H:i:s");
 				$event->user = $this->getUserId();
-				$event->save();
+				if (!$event->save()) {
+					throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
+				}
 
 				echo $event->id;
 				return;
@@ -477,7 +479,9 @@ class ClinicalController extends BaseController
 		}
 
 		$episode->end_date = date('Y-m-d H:i:s');
-		$episode->save(false);
+		if (!$episode->save(false)) {
+			throw new SystemException('Unable to save episode: '.print_r($episode->getErrors(),true));
+		}
 
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}

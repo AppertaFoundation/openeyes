@@ -49,12 +49,18 @@ class GpService
 					if ($gp = Gp::model()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
 						// Update existing GP
 						if ($contact = Contact::model()->findByPk($gp->contact_id)) {
-							$this->populateContact($contact, $pasGp);
+							if (!$this->populateContact($contact, $pasGp)) {
+								$errors[] = "Failed to populate contact for GP $gp->id: ".print_r($this->errors,true);
+							}
 
 							if ($address = Address::model()->findByPk($contact->address_id)) {
-								$this->populateAddress($address, $pasGp);
+								if (!$this->populateAddress($address, $pasGp)) {
+									$errors[] = "Failed to populate address for GP $gp->id: ".print_r($this->errors,true);
+								}
 
-								$this->populateGp($gp, $pasGp);
+								if (!$this->populateGp($gp, $pasGp)) {
+									$errors[] = "Failed to populate GP $gp->id: ".print_r($this->errors,true);
+								}
 							} else {
 								$errors[] = "No address for gp contact " . $contact->id;
 								echo "x";
@@ -66,26 +72,34 @@ class GpService
 					} else {
 						$address = new Address;
 
-						$this->populateAddress($address, $pasGp);
+						if (!$this->populateAddress($address, $pasGp)) {
+							$errors[] = "Unable to save new GP address: ".print_r($this->errors,true);
+						}
 
 						$contact = new Contact;
 
 						$contact->consultant = 0;
 						$contact->address_id = $address->id;
 
-						$this->populateContact($contact, $pasGp);
+						if (!$this->populateContact($contact, $pasGp)) {
+							$errors[] = "Unable to save new GP contact: ".print_r($this->errors,true);
+						}
 
 						$gp = new Gp;
 
 						$gp->contact_id = $contact->id;
 
-						$this->populateGp($gp, $pasGp);
+						if (!$this->populateGp($gp, $pasGp)) {
+							$errors[] = "Unable to save new GP: ".print_r($this->errors,true);
+						}
 					}
 
 					// Update patient
 					if ($patient = Patient::model()->findByPk($latestGP['PATIENT_ID'])) {
 						$patient->gp_id = $gp->id;
-						$patient->save();
+						if (!$patient->save()) {
+							$errors[] = "Unable to save patient {$latestGP['PATIENT_ID']}: ".print_r($patient->getErrors(),true);
+						}
 						echo ".";
 					} else {
 						$errors[] = "Unable to find patient {$latestGP['PATIENT_ID']}";
@@ -129,7 +143,13 @@ class GpService
 		$contact->first_name = $pasGp['FN1'] . ' ' . $pasGp['FN2'];
 		$contact->last_name = $pasGp['SN'];
 		$contact->primary_phone = $pasGp['TEL_1'];
-		$contact->save();
+
+		if (!$contact->save()) {
+			$this->errors = $contact->getErrors();
+			return false;
+		}
+
+		return true;
 	}
 
 	public function populateAddress($address, $pasGp)
@@ -141,14 +161,23 @@ class GpService
 		$address->country_id = 1;
 
 		if (!$address->save()) {
-			exit('failed to save address for ' . $pasGp['OBJ_PROF']);
+			$this->errors = $address->getErrors();
+			return false;
 		}
+
+		return true;
 	}
 
 	public function populateGp($gp, $pasGp)
 	{
 		$gp->obj_prof = $pasGp['OBJ_PROF'];
 		$gp->nat_id = $pasGp['NAT_ID'];
-		$gp->save();
+
+		if (!$gp->save()) {
+			$this->errors = $gp->getErrors();
+			return false;
+		}
+
+		return true;
 	}
 }
