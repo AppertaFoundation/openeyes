@@ -105,13 +105,16 @@ class GpService
 			$msg = implode("\n",$errors)."\n";
 		}
 
-		$n=0;
+		$patients_with_null_gp = array();
 		foreach (Yii::app()->db->createCommand()->select()->from('patient')->where("gp_id is null")->queryAll() as $patient) {
-			$n++;
+			$patients_with_null_gp[] = $patient;
 		}
 
-		if ($n >0) {
-			$msg .= "$n patient(s) have a null gp_id.\n";
+		if (count($patients_with_null_gp) >0) {
+			$msg .= count($patients_with_null_gp)." patient(s) have a null gp_id:\n";
+			foreach ($patients_with_null_gp as $patient) {
+				$msg .= " - $patient->first_name $patient->last_name (pas_key=$patient->pas_key, hos_num=$patient->hos_num)\n";
+			}
 		}
 
 		if (strlen($msg) >0) {
