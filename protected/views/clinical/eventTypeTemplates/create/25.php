@@ -21,7 +21,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 echo CHtml::hiddenField('action', 'create');
 echo CHtml::hiddenField('event_type_id', $eventTypeId);
-echo CHtml::hiddenField('patient_id', $patient->id);
+echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $firm->id);
 
 ?>

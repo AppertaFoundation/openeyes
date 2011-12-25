@@ -22,7 +22,7 @@ $form = $this->beginWidget('CActiveForm', array(
 
 echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
-
+echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 ?>
 <div id="clinical-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
 <ul><li>&nbsp;</li></ul></div>

@@ -170,7 +170,7 @@ class ElementDiagnosis extends BaseElement
 	 *
 	 * @return object
 	 */
-	public function getNewestDiagnosis()
+	public function getNewestDiagnosis($patient)
 	{
 		if (!empty($model->disorder)) {
 			return $model->disorder;
@@ -183,7 +183,7 @@ class ElementDiagnosis extends BaseElement
 
 			$firm = Firm::model()->findByPk($firmId);
 
-			$patientId = Yii::app()->session['patient_id'];
+			$patientId = $patient->id;
 
 			if (empty($patientId)) {
 				return null;

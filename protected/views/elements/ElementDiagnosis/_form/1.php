@@ -19,7 +19,7 @@ $hasDiagnosis = false;
 
 if (empty($model->event_id)) {
 	// It's a new event so fetch the most recent element_diagnosis
-	$diagnosis = $model->getNewestDiagnosis();
+	$diagnosis = $model->getNewestDiagnosis($patient);
 
 	if (empty($diagnosis->disorder)) {
 		// There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)

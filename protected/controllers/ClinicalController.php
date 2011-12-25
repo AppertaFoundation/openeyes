@@ -73,11 +73,6 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		// Check the patient id for this event is the same as the session patient id
-		if ($event->episode->patient->id != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($event->episode->patient->id);
-		}
-
 		// The eventType, firm and patient are fetched from the event object
 		$elements = $this->service->getElements(
 			null, null, null, $this->getUserId(), $event
@@ -128,9 +123,8 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
-		// Check the patient id for this new event is the same as the session patient id
-		if (!empty($_REQUEST['patient_id']) && $_REQUEST['patient_id'] != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($_REQUEST['patient_id']);
+		if (!$patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
+			throw new CHttpException(403, 'Invalid patient_id.');
 		}
 
 		if ($_POST && $_POST['action'] == 'create' && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
@@ -153,7 +147,7 @@ class ClinicalController extends BaseController
 		}
 
 		$elements = $this->service->getElements(
-			$eventType, $this->firm, $this->patientId, $this->getUserId()
+			$eventType, $this->firm, $patient->id, $this->getUserId()
 		);
 
 		if (!count($elements)) {
@@ -161,8 +155,6 @@ class ClinicalController extends BaseController
 		}
 
 		$specialties = Specialty::model()->findAll();
-
-		$patient = Patient::model()->findByPk($this->patientId);
 
 		if ($_POST && $_POST['action'] == 'create') {
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
@@ -184,7 +176,7 @@ class ClinicalController extends BaseController
 
 			// The user has submitted the form to create the event
 			$eventId = $this->service->createElements(
-				$elements, $_POST, $this->firm, $this->patientId, $this->getUserId(), $eventType->id
+				$elements, $_POST, $this->firm, $patient->id, $this->getUserId(), $eventType->id
 			);
 
 			if ($eventId) {
@@ -256,11 +248,6 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'The firm you are using is not associated with the specialty for this event.');
 		}
 
-		// Check the patient id for this event is the same as the session patient id
-		if ($event->episode->patient->id != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($event->episode->patient->id);
-		}
-
 		// eventType, firm and patientId are fetched from the event object.
 		$elements = $this->service->getElements(null, null, null, $this->getUserId(), $event);
 
@@ -270,7 +257,7 @@ class ClinicalController extends BaseController
 
 		$specialties = Specialty::model()->findAll();
 
-		$patient = Patient::model()->findByPk($this->patientId);
+		$patient = Patient::model()->findByPk($_REQUEST['patient_id']);
 
 		if ($_POST && $_POST['action'] == 'update') {
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
@@ -359,11 +346,6 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
-		// Check the patient id for this episode is the same as the session patient id
-		if ($episode->patient->id != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($episode->patient->id);
-		}
-
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
@@ -392,11 +374,6 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
-		// Check the patient id for this episode is the same as the session patient id
-		if ($episode->patient->id != Yii::app()->session['patient_id']) {
-			$this->resetSessionPatient($episode->patient->id);
-		}
-
 		$this->logActivity('viewed patient summary');
 
 		$this->renderPartial('summary', array(
@@ -413,7 +390,7 @@ class ClinicalController extends BaseController
 	public function listEpisodesAndEventTypes()
 	{
 		$this->service = new ClinicalService;
-		$patient = Patient::model()->findByPk($this->patientId);
+		$patient = Patient::model()->findByPk($_GET['patient_id']);
 
 		$this->episodes = $patient->episodes;
 
@@ -434,8 +411,6 @@ class ClinicalController extends BaseController
 	public function storeData()
 	{
 		parent::storeData();
-
-		$this->checkPatientId();
 
 		// Get the firm currently associated with this user
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);

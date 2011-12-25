@@ -264,7 +264,7 @@
 			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
 				eventTypeId = this.id.match(/\d*$/);
 				$.ajax({
-					url: '/clinical/create?event_type_id=' + eventTypeId,
+					url: '/clinical/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>',
 					success: function(data) {
 						$('.display_mode').removeClass('edit').addClass('add');
 						//$('div.display_actions').hide();
@@ -295,7 +295,7 @@
 
 			function edit_event(event_id) {
 				$.ajax({
-					url: '/clinical/update/'+event_id,
+					url: '/clinical/update/'+event_id+'?patient_id=<?php echo $model->id?>',
 					success: function(data) {
 						edit_mode();
 						$('div.display_actions').show();

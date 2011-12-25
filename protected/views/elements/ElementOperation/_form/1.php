@@ -14,7 +14,7 @@ http://www.openeyes.org.uk			 info@openeyes.org.uk
 
 if (empty($model->event_id)) {
 				// It's a new event so fetch the most recent element_diagnosis
-				$diagnosis = ElementDiagnosis::model()->getNewestDiagnosis();
+				$diagnosis = ElementDiagnosis::model()->getNewestDiagnosis($patient);
 
 				if (!empty($diagnosis->disorder)) {
 								$model->eye = $diagnosis->eye;

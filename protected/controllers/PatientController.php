@@ -76,8 +76,6 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->model = $patient;
 
-		$this->setSessionPatient($patient);
-
 		$this->logActivity('viewed patient');
 
 		$episodes_open = 0;
@@ -262,8 +260,6 @@ class PatientController extends BaseController
 	{
 		$patient = $this->loadModel($_GET['id']);
 
-		$this->setSessionPatient($patient);
-
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $patient->id);
 		$criteria->order = 'start_date DESC';
@@ -292,8 +288,6 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
 		$patient = $this->model = $this->loadModel($_GET['id']);
-
-		$this->setSessionPatient($patient);
 
 		$episodes = $patient->episodes;
 
