@@ -42,6 +42,6 @@ class BuildStringMapCommand extends CConsoleCommand
 	}
 
 	public function process($file) {
-		foreach (@file($file
+		//foreach (@file($file
 	}
 }
