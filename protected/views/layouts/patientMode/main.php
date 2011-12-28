@@ -31,8 +31,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
-	<script src="/js/libs/modernizr-2.0.6.min.js"></script>
-	<script src="/js/jquery.printElement.min.js"></script>
+	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 
 </head>
 
@@ -63,23 +63,10 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 		<div id="content">
 			<?php echo $content; ?>
-
-
-
-
-  <!-- ====================================================  P R I N T  S T U F F ============  -->
-  <div class="printable" id="printable">
-
-  </div> <!-- end of printable area -->
-
-  <!-- ====================================================  end of P R I N T  S T U F F ============  -->
-
-
-
-
-
-
-		</div> <!-- #content -->
+			<!-- ====================================================  P R I N T  S T U F F ============  -->
+			<div class="printable" id="printable"></div> <!-- end of printable area -->
+			<!-- ====================================================  end of P R I N T  S T U F F ============  -->
+		</div><!-- #content -->
 		<div id="help" class="clearfix">
 			<?php /*
 			<div class="hint">
@@ -92,13 +79,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			</div>
 			*/?>
 		</div>
-	</div>
-	<!--#container -->
+	</div><!--#container -->
 
 	<?php echo $this->renderPartial('/base/_footer',array())?>
 
-	<script defer src="/js/plugins.js"></script>
-	<script defer src="/js/script.js"></script>
+	<script defer type="text/javascript" src="/js/plugins.js"></script>
+	<script defer type="text/javascript" src="/js/script.js"></script>
 
 	<script type="text/javascript">
 		$('select[id=selected_firm_id]').die('change').live('change', function() {
@@ -123,15 +109,21 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		}
 
 		function printContent() {
-			printElem({
-				pageTitle:'openeyes printout',
-				printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
-				overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
+			$('#printable').printElement({
+				pageTitle: 'OpenEyes printout',
+				leaveOpen: true,
+				printMode: 'popup',
+				printBodyOptions: {
+					styleToAdd: 'width: auto !important; margin: 0.75em !important;',
+					classNameToAdd : 'openeyesPrintout'
+				},
+				overrideElementCSS: [
+					{
+						href: '/css/printcontent.css',
+						media: 'all'
+					}
+				]
 			});
-		}
-
-		function printElem(options){
-			$('#printable').printElement(options);
 		}
 	</script>
 
