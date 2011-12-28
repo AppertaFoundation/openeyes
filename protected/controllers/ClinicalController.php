@@ -39,7 +39,6 @@ class ClinicalController extends BaseController
 	}
 
 	protected function beforeAction($action) {
-		
 		// Prevent jquery + other js that might conflict getting loaded twice on ajax calls
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 			Yii::app()->clientScript->scriptMap = array(
@@ -58,6 +57,7 @@ class ClinicalController extends BaseController
 		*/
 
 		$this->storeData();
+
 		return parent::beforeAction($action);
 	}
 
@@ -390,7 +390,7 @@ class ClinicalController extends BaseController
 	public function listEpisodesAndEventTypes()
 	{
 		$this->service = new ClinicalService;
-		$patient = Patient::model()->findByPk($_GET['patient_id']);
+		$patient = Patient::model()->findByPk($_REQUEST['patient_id']);
 
 		$this->episodes = $patient->episodes;
 
