@@ -47,7 +47,7 @@ class BaseActiveRecord extends CActiveRecord
 		} catch (Exception $e) {
 		}
 
-		if ((isset($this->_new) && $this->_new) || !isset($this->id)) {
+		if ($this->getIsNewRecord() || !isset($this->id)) {
 			// Set creation properties
 			if ($user_id === NULL) {
 				// Revert to the admin user
