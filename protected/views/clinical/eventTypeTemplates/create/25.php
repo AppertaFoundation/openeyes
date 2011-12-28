@@ -22,8 +22,7 @@ $form = $this->beginWidget('CActiveForm', array(
 echo CHtml::hiddenField('action', 'create');
 echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
-echo CHtml::hiddenField('firm_id', $firm->id);
-
+echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 ?>
 <span style="display: none;" id="header_text">Operation: <?php echo $patient->first_name?> <?php echo $patient->last_name?></span>
 <div id="clinical-create_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>

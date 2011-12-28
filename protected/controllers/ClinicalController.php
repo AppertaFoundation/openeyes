@@ -257,7 +257,8 @@ class ClinicalController extends BaseController
 
 		$specialties = Specialty::model()->findAll();
 
-		$patient = Patient::model()->findByPk($_REQUEST['patient_id']);
+		$episode = Episode::model()->findByPk($event->episode_id);
+		$patient = Patient::model()->findByPk($episode->patient_id);
 
 		if ($_POST && $_POST['action'] == 'update') {
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
