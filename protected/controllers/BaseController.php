@@ -103,8 +103,12 @@ class BaseController extends Controller
 
 		$this->setSessionPatient($patient);
 
-		$this->patientId = Yii::app()->session['patient_id'];
-		$this->patientName = Yii::app()->session['patient_name'];
+		if (isset(Yii::app()->session['patient_id'])) {
+			$this->patientId = Yii::app()->session['patient_id'];
+		}
+		if (isset(Yii::app()->session['patient_name'])) {
+			$this->patientName = Yii::app()->session['patient_name'];
+		}
 	}
 
 	protected function setSessionPatient($patient)

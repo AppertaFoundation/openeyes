@@ -27,7 +27,7 @@ if (!empty($operation->booking)) {
 
 $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : 'Not scheduled';
 ?>
-<span style="display: none;" id="header_text"><?if (isset($session)) {?>Operation: <?php echo date('j M Y', strtotime($session->date))?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
+<span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo date('j M Y', strtotime($session->date))?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
 <!-- Details -->
 <h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
