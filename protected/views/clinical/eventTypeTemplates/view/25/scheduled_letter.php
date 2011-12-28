@@ -51,7 +51,7 @@
 		<th>Consultant:</th>
 		<td><?php echo $consultantName ?></td>
 		<th>Speciality:</th>
-		<td>** TODO **</td>
+		<td><?php echo $specialty->name ?></td>
 	</tr>
 </table>
 

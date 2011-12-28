@@ -84,7 +84,7 @@
 		<td><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>
 		<?php if (!empty($operation->booking)) { ?>
 		<th>Theatre session:</td>
-		<td>** TODO **</td>
+		<td><?php echo substr($operation->booking->session->start_time,0,5) . ' - ' . substr($operation->booking->session->end_time,0,5)?></td>
 		<?php } ?>
 	</tr>
 	
@@ -113,4 +113,5 @@
 	
 </table>
 
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form_end"); ?>
+<h2>Comments</h2>
+<p><?php echo $operation->comments?></p>
