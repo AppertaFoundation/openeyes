@@ -36,13 +36,13 @@ if (isset($_GET['section_id'])) {
                 <?php echo $form->dropDownList($model,'phrase_name_id',CHtml::listData(PhraseName::Model()->findAll(), 'id', 'name')); ?>
                 <?php echo $form->error($model,'phrase_name_id'); ?>
         </div>
-        <?} else {?>
+        <?php } else { ?>
         <div class="row">
                 <?php echo $form->labelEx($model,'phrase_name_id'); ?>
                 <?php echo $model->name->name; ?>
                 <?php echo $form->error($model,'phrase_name_id'); ?>
         </div>
-        <?}?>
+        <?php } ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'phrase'); ?>

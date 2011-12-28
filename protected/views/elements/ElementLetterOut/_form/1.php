@@ -37,7 +37,7 @@ foreach ($service->getContactData() as $key => $data) {
 
 	$patientContactOptions[$key] = $data['identifier'];
 ?>
-	contactData['<?= $key ?>'] = new Array(
+	contactData['<?php echo $key ?>'] = new Array(
 		'<?php echo $data['address'] ?>',
 		'<?php echo $data['full_name'] ?>',
 		'<?php echo $data['dear_name'] ?>',
@@ -59,7 +59,7 @@ foreach ($templates as $key => $template) {
 
 	$templateOptions[$key] = $template['name'];
 ?>
-	templates['<?= $key ?>'] = new Array(
+	templates['<?php echo $key ?>'] = new Array(
 		'<?php echo $template['phrase'] ?>',
 		'<?php echo $template['send_to'] ?>',
 		'<?php echo $template['cc'] ?>'

@@ -46,7 +46,7 @@ if (isset($_GET['section_id'])) {
                 ?>
 
 	</div>
-	<?} else {?>
+	<?php } else { ?>
 	<div class="row">
 		<?php echo $form->labelEx($model,'phrase_name_id'); ?>
 		<?php echo $model->name->name; ?>

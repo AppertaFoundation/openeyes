@@ -45,13 +45,13 @@ if (isset($_GET['section_id'])) {
                 ?>
 
         </div>
-        <?} else {?>
+        <?php } else { ?>
         <div class="row">
                 <?php echo $form->labelEx($model,'phrase_name_id'); ?>
                 <?php echo $model->name->name; ?>
                 <?php echo $form->error($model,'phrase_name_id'); ?>
         </div>
-        <?}?>
+        <?php } ?>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'phrase'); ?>
