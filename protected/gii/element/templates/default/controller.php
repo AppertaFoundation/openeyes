@@ -33,7 +33,7 @@
  * @copyright Copyright (c) 2012 OpenEyes Foundation, Moorfields Eye hospital
  * @package Clinical
  */
-<?php echo "?>\n"; ?>
+
 class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseControllerClass."\n"; ?>
 {
 	/**

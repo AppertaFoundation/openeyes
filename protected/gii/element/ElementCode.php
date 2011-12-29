@@ -146,10 +146,9 @@ class ElementCode extends CCodeModel
 			return array_merge(parent::rules(), array(
 				array('elementName, migrationPath', 'filter', 'filter'=>'trim'),
 				array('elementName, migrationPath', 'required'),
-				array('elementName', 'validateElementName', 'skipOnError'=>true),
 				array('migrationPath', 'validateModelPath', 'skipOnError'=>true),
 				array('tableName, modelPath, baseClass', 'required'),
-				array('tableName, modelPath', 'match', 'pattern'=>'/^(\w+[\w\.]*|\*?|\w+\.\*)$/',
+				array('elementName, tableName, modelPath', 'match', 'pattern'=>'/^(\w+[\w\.]*|\*?|\w+\.\*)$/',
 					'message'=>'{attribute} should only contain word characters, dots, and an optional ending asterisk.'),
 				array('elementFields', 'validateElementFields', 'skipOnError'=>true),
 			));
@@ -332,7 +331,7 @@ class ElementCode extends CCodeModel
 
 	/*
 	 * Check that all database field names conform to PHP variable naming rules
-	 * For example mysql allows field name like "2011aa", but PHP does not allow variables lieke "$model->2011aa"
+	 * For example mysql allows field name like "2011aa", but PHP does not allow variables like "$model->2011aa"
 	 *
 	 * @param CDbTableSchema $table the table schema object
 	 * @return string the invalid table column name. Null if no error.
@@ -343,20 +342,6 @@ class ElementCode extends CCodeModel
 		{
 			if(!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/',$column->name))
 				return $table->name.'.'.$column->name;
-		}
-	}
-	
-	/*
-	 * Validation method for element name
-	 * ***TODO*** put some sensible validation here for element name
-	 * @param string $attributes Name of attribute to be validated
-	 * @param array $params Array of parameters
-	 */
-	public function validateElementName($attribute,$params)
-	{
-		if (false)
-		{
-			$this->addError('elementName',"Element name invalid in some way.");
 		}
 	}
 
@@ -383,20 +368,60 @@ class ElementCode extends CCodeModel
 	}
 
 	/**
-	 * Validation method for elementFields ***TODO*** add more validation here
+	 * Validation method for elementFields
 	 *
 	 * @param string $attributes Name of attribute to be validated
 	 * @param array $params Array of parameters
 	 */
 	public function validateElementFields($attribute,$params)
 	{
+		$allowedValues = array('string', 'text', 'integer', 'float', 'decimal', 'datetime', 'timestamp', 'time', 'date', 'binary', 'boolean');
+		$existingKeys = array();
+		
 		// Split into lines
 		$lines = explode("\n", $this->elementFields);
+		
+		// Iterate through lines checking each
 		foreach($lines as $line)
 		{
-			if (!preg_match('/^\'/', $line))
+			// Trim white space from ends of line
+			$line = trim($line);
+
+			// Check that line contains exactly one instance of =>, 4 of ', and one comma
+			if (substr_count($line , "=>") != 1)
 			{
-				$this->addError('elementFields',"All lines must start with an apostrophe");
+				$this->addError('elementFields',"Each lines must contain '=>' exactly once");
+			}
+			else if (substr_count($line , "'") != 4)
+			{
+				$this->addError('elementFields',"Each lines must contain exactly 4 apostrophes");
+			}
+			else if ($line[strlen($line)-1] != ",")
+			{
+				$this->addError('elementFields',"Each lines must end with a comma");
+			}
+			else
+			{
+				// Split into keys and values
+				$keyAndValue = explode("=>", $line);
+				
+				// Remove apostrophes and commas
+				$key = trim(str_replace("'", "", $keyAndValue[0]));
+				$value = trim(str_replace("'", "", $keyAndValue[1]));
+				$value = trim(str_replace(",", "", $value));
+
+				// Check keys are unique, and values are allowed
+				if (in_array($key, $existingKeys))
+				{
+					$this->addError('elementFields',"Field names must be unique");
+				}
+				if (!in_array($value, $allowedValues))
+				{
+					$this->addError('elementFields',"Field types must be in the approved list");
+				}
+				
+				// Add key to array
+				$existingKeys[] = $key;
 			}
 		}
 	}
