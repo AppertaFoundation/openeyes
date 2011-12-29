@@ -280,7 +280,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	}
 
 	$patient = $event->episode->patient;
-	$patientDetails = '<br />';
+	$patientDetails = '';
 
 	// Here because of yii bug that fails to recognise address despite valid relationship and address_id
 	$address = Address::model()->findByPk($patient->address_id);
@@ -469,5 +469,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	'specialty' => $specialty,
 	'refuseContact' => $refuseContact,
 	'healthContact' => $healthContact,
+	'cancelledBookings' => $cancelledBookings,
 )); ?>
 </div>

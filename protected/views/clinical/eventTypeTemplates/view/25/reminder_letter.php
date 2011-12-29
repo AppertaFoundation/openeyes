@@ -5,12 +5,12 @@
 	'patient' => $patient,
 )); ?>
 
-<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">
+<p>
 	I recently invited you to telephone to arrange a date for your <?php if ($patient->isChild()) { ?>child&apos;s <?php } ?>
 	admission for surgery under the care of <?php echo $consultantName ?>. I have not yet heard from you.
 </p>
 
-<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">
+<p>
 	This is currently anticipated to be a
 	<?php
 	if ($operation->overnight_stay) {
@@ -22,12 +22,12 @@
 	procedure.
 </p>
 
-<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">
+<p>
 	Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree
 	a convenient date for this operation.
 </p>
 
-<p style="font-family: sans-serif; font-size:10pt; margin-bottom:1em;">
+<p>
 	Should you<?php	if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
 </p>
 

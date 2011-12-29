@@ -391,8 +391,7 @@ class ClinicalController extends BaseController
 	public function listEpisodesAndEventTypes()
 	{
 		$this->service = new ClinicalService;
-
-		if (isset($_REQUEST['patient_id'])) {
+		if(isset($_REQUEST['patient_id'])) {
 			$patient = Patient::model()->findByPk($_REQUEST['patient_id']);
 			$this->episodes = $patient->episodes;
 		}
