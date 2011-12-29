@@ -2,6 +2,7 @@
 	'site' => $site,
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
+	'salutation' => $salutation,
 	'patient' => $patient,
 )); ?>
 

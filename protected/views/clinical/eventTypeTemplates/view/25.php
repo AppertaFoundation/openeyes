@@ -295,11 +295,14 @@ $('#btn_schedule-now').unbind('click').click(function() {
 		$patientDetails .= CHtml::encode($address->country->name) . '<br />';
 	}
 
-	$patientName = CHtml::encode($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
 
 	if ($patient->isChild()) {
-		$patientName = CHtml::encode('Parent/Guardian of ') . $patientName;
+		$salutation = CHtml::encode('Parent/Guardian of ' . $patient->first_name . ' ' . $patient->last_name);
+	} else {
+		$salutation = CHtml::encode($patient->title . ' ' . $patient->last_name);
 	}
+	$patientName = CHtml::encode($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
+	
 	$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
 	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
 	
@@ -430,6 +433,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
+	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'operation' => $operation, 
 	'event' => $event,
@@ -442,6 +446,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
+	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'changeContact' => $changeContact,
 	'operation' => $operation,
@@ -453,6 +458,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
+	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'changeContact' => $changeContact,
 	'operation' => $operation,
@@ -464,6 +470,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	'patient' => $patient,
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
+	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'operation' => $operation,
 	'specialty' => $specialty,

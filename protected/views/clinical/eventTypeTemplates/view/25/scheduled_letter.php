@@ -2,6 +2,7 @@
 	'site' => $site,
 	'patientDetails' => $patientDetails,
 	'patientName' => $patientName,
+	'salutation' => $salutation,
 	'patient' => $patient,
 )); ?>
 
@@ -36,6 +37,7 @@
 	</tr>
 	<tr>
 		<th>Ward:</th>
+		<td>
 		<?php if ($site->id == 5) {
 			// St George's ?>
 			St Georges Jungle Ward
@@ -45,7 +47,7 @@
 		<?php }	?>
 		</td>
 		<th>Location:</th>
-		<td>** TODO **</td>
+		<td><?php echo CHtml::encode($site->name); ?></td>
 	</tr>
 	<tr>
 		<th>Consultant:</th>
@@ -62,28 +64,20 @@
 <?php } ?>
 
 <p>
-	<strong>All admissions require a Pre-Operative Assessment which your child must attend. Non-attendance will cause
-	a delay to your child's surgery.</strong>
-</p>
-
-<p>
 	<strong>It is important that you let us know immeadiately if you wish to cancel or rearrange this admission
 	date.
 	<?php if ($site->id == 5) {
 		// St George's ?>
-	Please let us know by return of post, or if necessary, telephone
-	Admission Department on 020 7566 2258.
+	Please let us know by return of post, or if necessary, telephone Admission Department on 020 7566 2258.
 	<?php } else { ?>
-	Please let us know by return of post, or if necessary, telephone 020
-	8725 0060 and ask for Naeela Butt.
+	Please let us know by return of post, or if necessary, telephone 020 8725 0060 and ask for Naeela Butt.
 	<?php } ?>
 	</strong>
 </p>
 
 <p>
-	If there has been any change in your child's general health, such as a
-	cough or cold, any infection disease, or any other condition which
-	might affect their fitness for operation, please telephone
+	If there has been any change in your child's general health, such as a cough or cold, any infection disease,
+	or any other condition which might affect their fitness for operation, please telephone
 	<?php if ($site->id == 5) {
 		// St George's ?>
 	020 8725 0060 and ask Naeela Butt for advice.
@@ -93,13 +87,12 @@
 </p>
 
 <p>
-	If you do not speak English, please arrange for an English speaking
-	adult to stay with you until you reach the ward and have been seen by a
-	Doctor.
+	If you do not speak English, please arrange for an English speaking adult to stay with you until you reach
+	the ward and have been seen by a Doctor.
 </p>
 
 <p>
-To help ensure your admission proceeds smoothly, please follow these instructions:
+	To help ensure your admission proceeds smoothly, please follow these instructions:
 </p>
 
 <ul>
@@ -151,7 +144,7 @@ To help ensure your admission proceeds smoothly, please follow these instruction
 		<?php } ?>
 		</td>
 		<th>Location:</th>
-		<td>** TODO **</td>
+		<td><?php echo CHtml::encode($site->name); ?></td>
 	</tr>
 	<tr>
 		<th>Consultant:</th>
@@ -195,14 +188,12 @@ To help ensure your admission proceeds smoothly, please follow these instruction
 </p>
 
 <p>
-	If you do not speak English, please arrange for an English speaking
-	adult to stay with you until you reach the ward and have been seen by a
-	Doctor.
+	If you do not speak English, please arrange for an English speaking adult to stay with you until you reach
+	the ward and have been seen by a Doctor.
 </p>
 
 <p>
-	To help ensure your admission proceeds smoothly, please follow these
-	instructions:
+	To help ensure your admission proceeds smoothly, please follow these instructions:
 </p>
 
 <ul>

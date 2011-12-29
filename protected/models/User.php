@@ -234,6 +234,11 @@ class User extends BaseActiveRecord
 		}
 	}
 
+	
+	public function getFullName() {
+		return implode(' ', array($this->first_name, $this->last_name));
+	}
+	
 	/**
 	 * Returns whether this user has a contact entry and a consultant entry
 	 *      i.e. they are a consultant for the centre.

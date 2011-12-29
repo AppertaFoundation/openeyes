@@ -25,14 +25,7 @@
 		<th>Site:</th>
 		<td><?php echo CHtml::encode($site->name) ?></td>
 		<th>Person organising admission:</th>
-		<td><?php echo $consultantName ?></td>
-	</tr>
-
-	<tr>
-		<th>Dates patient unavailable:</th>
-		<td>** TODO **</td>
-		<th>Available at short notice:</th>
-		<td>** TODO **</td>
+		<td><?php echo $operation->event->user->getFullName() ?></td>
 	</tr>
 
 	<tr>
@@ -46,21 +39,37 @@
 <table>
 
 	<tr>
-		<th>Urgency:</th>
+		<th>Priority:</th>
 		<td><?php echo ($operation->urgent) ? 'Urgent' : 'Routine'; ?></td>
-		<th>Consultant to be present:</th>
-		<td><?php echo (empty($operation->consultant_required)) ? 'No' : 'Yes'; ?></td>
+		<th>Admission category:</th>
+		<td><?php echo ($operation->overnight_stay) ? 'an overnight stay' : 'day case'; ?></td>
 	</tr>
 
 	<tr>
-		<th>Admission category:</th>
-		<td><?php echo ($operation->overnight_stay) ? 'an overnight stay' : 'day case'; ?></td>
+		<th>Consultant to be present:</th>
+		<td><?php echo (empty($operation->consultant_required)) ? 'No' : 'Yes'; ?></td>
+		<th>Total theatre time (mins):</th>
+		<td><?php echo CHtml::encode($operation->total_duration) ?></td>
+	</tr>
+	
+	<tr>
+		<th>Intended procedure:</th>
+		<td><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>
 		<?php
 		if (empty($operation->booking)) { ?>
-		<th colspan="2" rowspan="5">Patient Added to Waiting List, admission Date to be arranged</th>
+		<th colspan="2" rowspan="4">Patient Added to Waiting List, admission Date to be arranged</th>
 		<?php } else { 	?>
 		<th>Operation date:</th>
 		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<?php } ?>
+	</tr>
+	
+	<tr>
+		<th>Eye:</th>
+		<td><?php echo $operation->getEyeText() ?></td>
+		<?php if (!empty($operation->booking)) { ?>
+		<th>Theatre session:</td>
+		<td><?php echo substr($operation->booking->session->start_time,0,5) . ' - ' . substr($operation->booking->session->end_time,0,5)?></td>
 		<?php } ?>
 	</tr>
 	
@@ -73,42 +82,19 @@
 				echo 'Unknown';
 			} ?>
 		</td>
-		<?php if(!empty($operation->booking)) { ?>
-		<th>Discussed with patient:</th>
-		<td>** TODO **</td>
-		<?php } ?>
-	</tr>
-	
-	<tr>
-		<th>Intended procedure:</th>
-		<td><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>
-		<?php if (!empty($operation->booking)) { ?>
-		<th>Theatre session:</td>
-		<td><?php echo substr($operation->booking->session->start_time,0,5) . ' - ' . substr($operation->booking->session->end_time,0,5)?></td>
-		<?php } ?>
-	</tr>
-	
-	<tr>
-		<th>Eye:</th>
-		<td><?php echo $operation->getEyeText() ?></td>
 		<?php if (!empty($operation->booking)) { ?>
 		<th>Admission time:</th>
-		<td><?php echo $operation->booking->admission_time ?></td>
-		<?php } ?>
-	</tr>
-	
-	<tr>
-		<th>Total theatre time (mins):</th>
-		<td><?php echo CHtml::encode($operation->total_duration) ?></td>
-		<?php if (!empty($operation->booking)) { ?>
-		<th>Proposed admission date:</></th>
-		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<td><?php echo date('H:i',strtotime($operation->booking->admission_time)) ?></td>
 		<?php } ?>
 	</tr>
 	
 	<tr>
 		<th>Anaesthesia:</th>
 		<td><?php echo $operation->getAnaestheticText() ?></td>
+		<?php if (!empty($operation->booking)) { ?>
+		<th>Proposed admission date:</></th>
+		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<?php } ?>
 	</tr>
 	
 </table>

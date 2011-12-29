@@ -30,6 +30,6 @@
 	</p>
 
 	<p>
-		Dear <?php echo $patientName ?>,
+		Dear <?php echo $salutation ?>,
 	</p>
 
