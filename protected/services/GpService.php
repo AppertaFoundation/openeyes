@@ -127,7 +127,7 @@ class GpService
 		if (count($patients_with_null_gp) >0) {
 			$msg .= count($patients_with_null_gp)." patient(s) have a null gp_id:\n";
 			foreach ($patients_with_null_gp as $patient) {
-				$msg .= " - $patient->first_name $patient->last_name (pas_key=$patient->pas_key, hos_num=$patient->hos_num)\n";
+				$msg .= " - {$patient['first_name']} {$patient['last_name']} (pas_key={$patient['pas_key']}, hos_num={$patient['hos_num']})\n";
 			}
 		}
 
