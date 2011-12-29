@@ -148,8 +148,8 @@ class ClinicalController extends BaseController
 
 		$elements = $this->service->getElements(
 			$eventType, $this->firm, $patient->id, $this->getUserId()
-		);
-
+		);		
+		
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
 		}
@@ -422,9 +422,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
-		$this->service = new ClinicalService;
-
-		// Displays the list of episodes and events for this patient
+		// Gets the list of episodes and events for this patient
 		$this->listEpisodesAndEventTypes();
 	}
 

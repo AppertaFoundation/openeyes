@@ -26,8 +26,23 @@ class BaseElement extends BaseActiveRecord
 	public $viewNumber;
 
 	// Used during creation and updating of elements
-	public $required;
+	public $required = false;
 
+	/**
+	 * Temporary override to catch any bad constructor calls that may be lurking in the code.
+	 * Should now be using {@link setBaseOptions} after construction instead
+	 * 
+	 * @param string $scenario
+	 * @fixme This can be removed once we are sure that it is not throwing errors
+	 */
+	public function __construct($scenario = 'insert', $patientId = null) {
+		if($patientId !== null) {
+			throw new CException('Element constructor called with bad args, old code needs fixing');
+			Yii::log('Element constructor called with bad args, old code needs fixing');
+		}
+		parent::__construct($scenario);
+	}
+	
 	/**
 	 * Here we need to provide default options for when the element is instantiated
 	 * by findByPk in ClinicalService->getElements().
@@ -38,15 +53,14 @@ class BaseElement extends BaseActiveRecord
 	 * @param int $viewNumber
 	 * @param boolean $required
 	 */
-	public function __construct($firm = null, $patientId = null, $userId = null, $viewNumber = null, $required = false)
-	{
+	public function setBaseOptions($firm = null, $patientId = null, $userId = null, $viewNumber = null, $required = false) {
 		$this->firm = $firm;
 		$this->patientId = $patientId;
 		$this->userId = $userId;
 		$this->viewNumber = $viewNumber;
 		$this->required = $required;
 	}
-
+	
 	/**
 	 * Returns a list of Exam Phrases to be used by the element form.
 	 *

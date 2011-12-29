@@ -29,22 +29,21 @@ class OeDateFormat extends CActiveRecordBehavior {
 				$this->Owner->{$date_column} = date('Y-m-d',strtotime($date));
 			}
 		}
-		return parent::beforeSave($event);
 	}
 
 	/**
 	 * Converts ISO 9075 dates to OE (e.g. 5-Dec-2011) after read from database
 	 */
 	public function afterFind($event) {
-		/*
 		foreach($this->date_columns as $date_column) {
 			$date = $this->Owner->{$date_column};
-			Yii::log($date);
-			$this->Owner->{$date_column} = date('j-M-Y', strtotime($date));
-			Yii::log($this->Owner->{$date_column});
+			// Don't convert blank dates
+			if($date && $date != '0000-00-00') {
+				$this->Owner->{$date_column} = date('j-M-Y', strtotime($date));
+			} else {
+				$this->Owner->{$date_column} = '';
+			}
 		}
-		*/
-		return parent::afterFind($event);
 	}
 
 }

@@ -113,7 +113,7 @@ class ElementOperation extends BaseElement
 	public function behaviors() {
 		return array(
 			'OeDateFormat' => array(
-				'class' => 'OeDateFormat',
+				'class' => 'application.components.OeDateFormat',
 				'date_columns' => array('decision_date'),
 			),
 		);
@@ -439,11 +439,6 @@ class ElementOperation extends BaseElement
 		} else {
 			$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		}
-
-		if (preg_match('/^[0-9]{1,3}-[a-zA-Z]{3}-[0-9]{4}$/',$this->decision_date)) {
-			$this->decision_date = date('Y-m-d',strtotime($this->decision_date));
-		}
-
 		return parent::beforeSave();
 	}
 
@@ -988,11 +983,4 @@ class ElementOperation extends BaseElement
 		return true;
 	}
 
-	public function save($runValidation=true,$attributes=null) {
-		if (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$this->decision_date)) {
-			$this->decision_date = date('j-M-Y',strtotime($this->decision_date));
-		}
-
-		return parent::save($runValidation,$attributes);
-	}
 }

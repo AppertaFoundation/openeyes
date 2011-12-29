@@ -64,8 +64,6 @@ class ClinicalService
 		foreach ($elementsToProcess as $element) {
 			$element->event_id = $event->id;
 
-			$element->setIsNewRecord(true);
-
 			// No need to validate as it has already been validated and the event id was just generated.
 			if (!$element->save(false)) {
 				throw new Exception('Unable to save element ' . get_class($element) . '.');
@@ -126,7 +124,6 @@ class ClinicalService
 
 		foreach ($toSave as $element) {
 			if (!isset($element->event_id)) {
-				$element->setIsNewRecord(true);
 				$element->event_id = $event->id;
 			}
 
@@ -171,33 +168,17 @@ class ClinicalService
 		// Loop through the site_element_type objects and create an element object for each one.
 		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
 			$elementClassName = $siteElementTypeObject->possibleElementType->elementType->class_name;
-
+			$element = null;
 			if ($event) {
-				// This may already exist
+				// Element may already exist
 				$element = $elementClassName::model()->find('event_id = ?', array($event->id));
 			}
-
-			if (isset($element)) {
-				// Element already exists
-				$element->firm = $firm;
-				$element->patientId = $patientId;
-				$element->userId = $userId;
-				$element->viewNumber = $siteElementTypeObject->view_number;
-				$element->required = $siteElementTypeObject->required;
-			} else {
-				// This is a new element
-				$element = new $elementClassName(
-					$firm,
-					$patientId,
-					$userId,
-					$siteElementTypeObject->view_number,
-					$siteElementTypeObject->required
-				);
+			if (!$element) {
+				$element = new $elementClassName();
 				$element->setDefaultOptions();
 			}
-
+			$element->setBaseOptions($firm, $patientId, $userId, $siteElementTypeObject->view_number, $siteElementTypeObject->required);
 			$elements[] = $element;
-
 			unset($element);
 		}
 
