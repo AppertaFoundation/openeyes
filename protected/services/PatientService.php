@@ -281,9 +281,6 @@ class PatientService
 			// Make sure street number has a comma and space after it
 			$string = preg_replace('/([0-9]) /', '\1, ', $string);
 
-			// Expand short address terms (eg CRES -> CRESCENT)
-			$string = $this->expandShortTerms($string);
-
 			// Replace any full stops after street numbers with commas
 			$string = preg_replace('/([0-9])\./', '\1,', $string);
 
@@ -390,20 +387,5 @@ class PatientService
 		# $address->postcode = $postcode;
 
 		return $address;
-	}
-
-	/**
-	 * Import from Bill's original code
-	 * Expands short terms such as 'Cres'
-	 *
-	 * @param string $_addr Address
-	 *
-	 * @return string
-	 */
-	private function expandShortTerms($string)
-	{
-		$addr = str_replace('Cres', 'Crescent', $string);
-
-		return $addr;
 	}
 }
