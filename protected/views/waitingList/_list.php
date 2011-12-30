@@ -2,7 +2,7 @@
 <?php
 
 if (empty($operations)) { ?>
-<h2 class="theatre">Waiting list empty.</h2>
+<h2 class="theatre">Partial bookings waiting list empty.</h2>
 <?php
 } else {
 ?>
@@ -18,6 +18,8 @@ if (empty($operations)) { ?>
 						        <th>Eye</th>
 						        <th>Firm</th>
 						        <th>Decision Date</th>
+							<th>Regular/urgent</th>
+							<th>Location</th>
 						        <th>Book Status</th>
 					    	</tr>
 <?php
@@ -69,9 +71,12 @@ if (empty($operations)) { ?>
 	<td><?php echo $operation['List'] ?></td>
 	<td><?php echo $eo->getEyeText() ?></td>
 	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSpecialtyAssignment->specialty->name ?>)</td>
-	<td><?php echo $eo->convertDate($eo->decision_date) ?></td>
+	<td><?php echo $eo->decision_date ?></td>
+	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
+	<td>FIXME</td>
 	<td><?php echo $eo->getStatusText() ?></td>
 </tr>
+
 <?php
 		$i++;
 	}

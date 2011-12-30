@@ -209,6 +209,21 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 
+					<div id="site" class="siteDetail">
+						<div class="label"><?php echo $form->label(ElementOperation::model(),'site_id'); ?></div>
+						<div class="data">
+							<?php 
+							if (!$model->site_id) {
+								$active_site_id = Yii::app()->request->cookies['site_id']->value;	
+							} else {
+								$active_site_id = $model->site_id;
+							}
+							echo CHtml::dropDownList('ElementOperation[site_id]', $active_site_id, Site::model()->getList());
+							?>
+						</div>
+						
+					</div>
+
 					<div id="urgent" class="eventDetail">
 						<div class="label">Priority</div>
 						<div class="data">

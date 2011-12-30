@@ -162,6 +162,7 @@ class ClinicalController extends BaseController
 				$elementList = array();
 				foreach ($elements as $element) {
 					$elementClassName = get_class($element);
+					# echo var_export($_POST['ElementOperation'],true) . "fish"; exit;
 					$element->attributes = $_POST[$elementClassName];
 					$elementList[] = $element;
 					if (!$element->validate()) {

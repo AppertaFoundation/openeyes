@@ -100,10 +100,10 @@ class ElementOperation extends BaseElement
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. 5-Dec-2011)'),
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
-			array('eye, event_id, comments, decision_date', 'safe'),
+			array('eye, event_id, comments, decision_date, site_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent', 'safe', 'on' => 'search'),
+			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -131,7 +131,8 @@ class ElementOperation extends BaseElement
 			'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, proc_id)', 'order' => 'display_order ASC'),
 			'booking' => array(self::HAS_ONE, 'Booking', 'element_operation_id'),
 			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
-			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id')
+			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id'),
+			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 		);
 	}
 
@@ -153,6 +154,7 @@ class ElementOperation extends BaseElement
 			'decision_date' => 'Decision Date',
 			'schedule_timeframe' => 'Schedule Timeframe',
 			'urgent' => 'Priority',
+			'site_id' => 'Site that this will be booked for'
 		);
 	}
 
@@ -179,6 +181,7 @@ class ElementOperation extends BaseElement
 		$criteria->compare('decision_date', $this->decision_date);
 		$criteria->compare('schedule_timeframe', $this->schedule_timeframe);
 		$criteria->compare('urgent', $this->urgent);
+		$criteria->compare('site_id', $this->site_id);
 		
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
@@ -428,6 +431,7 @@ class ElementOperation extends BaseElement
 
 	protected function beforeSave()
 	{
+		# echo $_POST['site_id'] . "fish"; exit;
 		$anaesthetistRequired = array(
 			self::ANAESTHETIC_LOCAL_WITH_COVER, self::ANAESTHETIC_LOCAL_WITH_SEDATION,
 			self::ANAESTHETIC_GENERAL
@@ -774,13 +778,13 @@ class ElementOperation extends BaseElement
 	{
 		switch ($this->status) {
 			case self::STATUS_PENDING:
-				$status = 'Pending';
+				$status = 'Requires scheduling';
 				break;
 			case self::STATUS_SCHEDULED:
 				$status = 'Scheduled';
 				break;
 			case self::STATUS_NEEDS_RESCHEDULING:
-				$status = 'Needs rescheduling';
+				$status = 'Requires rescheduling';
 				break;
 			case self::STATUS_RESCHEDULED:
 				$status = 'Rescheduled';
