@@ -241,6 +241,9 @@ class PatientService
 			throw new SystemException('Unable to update patient: '.print_r($patient->getErrors(),true));
 		}
 
+		// Pull in the GP associate from PAS if we don't already have it
+		$patient->GetGP();
+
 		return $patient;
 	}
 
