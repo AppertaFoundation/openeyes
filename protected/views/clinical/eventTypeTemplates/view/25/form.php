@@ -1,6 +1,4 @@
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form_start", array(
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
 	'patient' => $patient,
 )); ?>
 

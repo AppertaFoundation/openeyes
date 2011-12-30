@@ -280,29 +280,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	}
 
 	$patient = $event->episode->patient;
-	$patientDetails = '';
 
-	// Here because of yii bug that fails to recognise address despite valid relationship and address_id
-	$address = Address::model()->findByPk($patient->address_id);
-
-	foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-		if (!empty($address->$field)) {
-			$patientDetails .= CHtml::encode($address->$field) . '<br />';
-		}
-	}
-
-	if (!empty($address->country->name)) {
-		$patientDetails .= CHtml::encode($address->country->name) . '<br />';
-	}
-
-
-	if ($patient->isChild()) {
-		$salutation = CHtml::encode('Parent/Guardian of ' . $patient->first_name . ' ' . $patient->last_name);
-	} else {
-		$salutation = CHtml::encode($patient->title . ' ' . $patient->last_name);
-	}
-	$patientName = CHtml::encode($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
-	
 	$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
 	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
 	
@@ -431,9 +409,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'operation' => $operation, 
 	'event' => $event,
@@ -444,9 +419,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/invitation_letter", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'changeContact' => $changeContact,
 	'operation' => $operation,
@@ -456,9 +428,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/reminder_letter", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'changeContact' => $changeContact,
 	'operation' => $operation,
@@ -468,9 +437,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/scheduled_letter", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'operation' => $operation,
 	'specialty' => $specialty,

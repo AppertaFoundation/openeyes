@@ -167,15 +167,30 @@ class Patient extends BaseActiveRecord
 		return $age;
 	}
 
-	public function isChild()
-	{
-		if ($this->getAge() < 16) {
-			return true;
-		} else {
-			return false;
-		}
+	public function isChild() {
+		return ($this->getAge() < 16);
 	}
 
+	public function getAddressName() {
+		if ($this->isChild()) {
+			return 'Parent/Guardian of ' . $this->getFullName();
+		} else {
+			return $this->getFullName();
+		}	
+	}
+	
+	public function getSalutationName() {
+		if ($this->isChild()) {
+			return 'Parent/Guardian of ' . $this->first_name . ' ' . $this->last_name;
+		} else {
+			return $this->title . ' ' . $this->last_name;
+		}	
+	}
+	
+	public function getFullName() {
+		return implode(' ',array($this->title, $this->first_name, $this->last_name));
+	}
+	
 	private function randomData($field)
 	{
 		if (!Yii::app()->params['pseudonymise_patient_details']) {

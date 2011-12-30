@@ -6,11 +6,11 @@
 <table class="half right">
 	<tr>
 		<th>Patient Name</th>
-		<td><?php echo $patientName ?></td>
+		<td><?php echo $patient->fullname ?></td>
 	</tr>
 	<tr>
 		<th>Address</th>
-		<td><?php echo $patientDetails ?></td>
+		<td><?php echo $patient->address->letterhtml ?></td>
 	</tr>
 </table>	
 <table class="half">

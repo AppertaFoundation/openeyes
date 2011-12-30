@@ -81,9 +81,8 @@ if (!$reschedule) {
 </div>
 
 <div class="eventDetail clearfix" style="position:relative;">
-	<div class="label"><strong>Session comments:</strong>
-
-	<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
+	<div class="label"><strong>Session Comments:</strong>
+		<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
 	</div>
 	<div class="data">
 		<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
@@ -93,37 +92,42 @@ if (!$reschedule) {
 </div>
 
 <?php
-if (!$reschedule) {
-	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
-	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
-} else {
+if ($reschedule) {
 	echo CHtml::hiddenField('booking_id', $operation->booking->id);
-	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
-	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 }
+echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
+echo CHtml::hiddenField('Booking[session_id]', $session['id']);
+?>
 
-
-if (!empty($reschedule)) {
-	echo '<div class="errorSummary" style="display:none"></div><p/>';
-	echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
-	if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
+<?php if ($reschedule) { ?>
+<h3>Reason for Reschedule</h3>
+<div class="eventDetail clearfix" style="position:relative;">
+	<div class="errorSummary" style="display:none"></div>
+	<div class="label"><strong><?php echo CHtml::label('Reschedule Reason: ', 'cancellation_reason'); ?></strong></div>
+	<?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
 		$listIndex = 3;
 	} else {
 		$listIndex = 2;
-	}
-	echo CHtml::dropDownList('cancellation_reason', '',
+	} ?>
+	<div class="data">
+	<?php echo CHtml::dropDownList('cancellation_reason', '',
 		CancellationReason::getReasonsByListNumber($listIndex),
 		array('empty' => 'Select a reason')
-	);
-}
-echo "<br/>".CHtml::label('Comments: ', 'cancellation_comment');
-echo '<div style="height: 0.4em;"></div>';
-echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
-echo '<div style="height: 0.4em;"></div>'?>
-<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d M Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+	); ?>
+	</div>
+</div>
+<div class="eventDetail clearfix" style="position:relative;">
+	<div class="label"><strong><?php echo CHtml::label('Reschedule Comments: ', 'cancellation_comment'); ?></strong></div>
+	<div class="data">
+		<textarea name="cancellation_comment" rows=3 cols=50></textarea>
+	</div>
+</div>
+<?php } ?>
 
+<div style="margin: 0.5em 0;">
+	<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d M Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+</div>
 <div style="margin-top:10px;">
-
 <button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>
 <button type="submit" class="classy red venti" id="cancel_operation"><span class="button-span button-span-red">Cancel operation</span></button>
 </div>
@@ -133,18 +137,15 @@ echo CHtml::endForm();
 ?>
 
 <script type="text/javascript">
-<?php
-	if (!empty($reschedule)) { ?>
-	$('#bookingForm button[type="submit"]').click(function () {
-		if ('' == $('#cancellation_reason option:selected').val()) {
-			$('div.errorSummary').html('Please select a cancellation reason');
+<?php if ($reschedule) { ?>
+	$('#bookingForm button#confirm_slot').click(function () {
+		if ($('#cancellation_reason option:selected').val() == '') {
+			$('div.errorSummary').html('Please select a reason for reschedule');
 			$('div.errorSummary').show();
 			return false;
 		}
 	});
-<?php
-	}
-	?>
+<?php } ?>
 	$('button#cancel_operation').die('click').live('click', function() {
 		$.ajax({
 			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',

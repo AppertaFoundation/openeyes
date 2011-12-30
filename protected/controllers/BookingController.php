@@ -44,14 +44,17 @@ class BookingController extends BaseController
 
 	public function actionSchedule()
 	{
-		$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
+		$operationId = (isset($_GET['operation'])) ? (int) $_GET['operation'] : 0;
+		if(!$operationId) {
+			throw new Exception('Operation id is invalid.');
+		}
 		$operation = ElementOperation::model()->findByPk($operationId);
-		if (empty($operation)) {
+		if(empty($operation)) {
 			throw new Exception('Operation id is invalid.');
 		}
 		$minDate = $operation->getMinDate();
 		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
-		if ($minDate < $thisMonth) {
+		if($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
 
