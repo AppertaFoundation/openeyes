@@ -29,7 +29,6 @@ class Helper {
 				$data[$key] = date('Y-m-d',strtotime($data[$key]));
 			}
 		}
-		Yii::log(var_export($data,true));
 		return $data;
 	}
 	
