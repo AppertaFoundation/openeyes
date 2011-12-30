@@ -98,7 +98,7 @@ class ElementOperation extends BaseElement
 			array('eye', 'required', 'message' => 'Please select an eye option'),
 			array('eye', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
-			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. 5-Dec-2011)'),
+			array('decision_date', 'date', 'format' => 'yyyy-MM-dd', 'message' => 'Please enter a valid decision date (e.g. 5-Dec-2011)'),
 			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
 			array('eye, event_id, comments, decision_date', 'safe'),
 			// The following rule is used by search().
@@ -110,6 +110,7 @@ class ElementOperation extends BaseElement
 	/**
 	 * Define date fields which should be converted when saving to (or fetching from) the database
 	 */
+	/*
 	public function behaviors() {
 		return array(
 			'OeDateFormat' => array(
@@ -118,6 +119,7 @@ class ElementOperation extends BaseElement
 			),
 		);
 	}
+	*/
 	
 	/**
 	 * @return array relational rules.

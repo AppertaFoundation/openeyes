@@ -37,6 +37,7 @@ class OeDateValidator extends CValidator {
 		}
 		
 		if(!$valid) {
+			Yii::log('error');
 			$message = ($this->message !== null) ? $this->message : Yii::t('yii','{attribute} is not a valid date');
 			$this->addError($object, $attribute, $message);
 		}

@@ -37,7 +37,7 @@ class ClinicalService
 
 			if ($element->required || isset($data[$elementClassName])) {
 				if (isset($data[$elementClassName])) {
-					$element->attributes = $data[$elementClassName];
+					$element->attributes = Helper::convertNHS2MySQL($data[$elementClassName]);
 				}
 
 				if (!$element->validate()) {
@@ -93,7 +93,7 @@ class ClinicalService
 			$needsValidation = false;
 
 			if (isset($data[$elementClassName])) {
-				$element->attributes = $data[$elementClassName];
+				$element->attributes = Helper::convertNHS2MySQL($data[$elementClassName]);
 
 				$toSave[] = $element;
 
