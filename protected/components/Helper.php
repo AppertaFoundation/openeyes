@@ -13,12 +13,14 @@
 */
 
 /**
- * Helper class
+ * Helper functions
  */
 class Helper {
 	
 	/**
-	 * Convert NHS dates (d-mmm-yyyy) to MySQL format
+	 * Convert NHS dates (d-mmm-yyyy) to MySQL format.
+	 * Strings that do not match the NHS format are returned unchanged.
+	 * 
 	 * @param array $data Data containing one or more NHS dates
 	 * @param array $fields Fields (keys) to convert (optional, if empty then all fields are checked for dates)
 	 */
@@ -30,6 +32,24 @@ class Helper {
 			}
 		}
 		return $data;
+	}
+	
+	/**
+	 * Convert MySQL date(time) value to NHS format.
+	 * Strings that do not match MySQL date(time) format are returned unchanged unless forced,
+	 * in which case they are returned as null
+	 * @param string $value
+	 * @param boolean $force
+	 * @return string
+	 */
+	public static function convertMySQL2NHS($value, $force = false) {
+		if(preg_match('/^\d{4}-\d{2}-\d{2}/', $value)) {
+			return date('j-M-Y',strtotime($value));
+		} else if($force) {
+			return null;
+		} else {
+			return $value;
+		}
 	}
 	
 }

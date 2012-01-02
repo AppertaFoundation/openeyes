@@ -236,7 +236,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 									'dateFormat'=>'d-M-yy',
 									'maxDate'=>'today'
 								),
-								'value' => date('j-M-Y',strtotime($model->decision_date)),
+								'value' => $model->NHSDate('decision_date'),
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							)); ?>
 						</div>
@@ -259,9 +259,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 	$(function() {
 		$('input[id=autocomplete_procedure_id]').watermark('type the first few characters of a procedure');
-		$("#ElementOperation_decision_date_0").val('<?php
-			echo (empty($model->decision_date) || $model->decision_date == '0000-00-00')
-				? date('j-M-Y') : date('j-M-Y',strtotime($model->decision_date)); ?>');
+		$("#ElementOperation_decision_date_0").val('<?php echo $model->NHSDate('decision_date'); ?>');
 		$("#procedure_list tbody").sortable({
 			 helper: function(e, tr)
 			 {

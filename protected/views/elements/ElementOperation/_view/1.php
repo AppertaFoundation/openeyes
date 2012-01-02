@@ -36,7 +36,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 </div>
 <div class="view">
 	<b><?php echo CHtml::encode($data->getAttributeLabel('decision_date')); ?>:</b>
-	<?php echo date('d M Y', strtotime($data->decision_date)); ?>
+	<?php echo CHtml::encode($this->getNHSDate('decision_date')); ?>
 	<br />
 </div>
 <?php
