@@ -26,9 +26,6 @@ if (empty($theatres)) {?>
 
 	$firstTheatreShown = false;
 	?>
-	<div class="action_options" style="float: right;">
-		<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" href="#">Edit</a></span>
-	</div>
 	<span style="margin-left: 10px; color: #f00; display: none;" id="updated-flash">
 		Sessions updated!
 	</span>
@@ -54,23 +51,27 @@ if (empty($theatres)) {?>
 							</tr>
 						</tfoot>
 					</table>
+					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $previousSessionId?>">
+						<button type="submit" class="classy green tall" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save</span></button>
+						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
+					</div>
 				</div>
 <?php
 					}
 ?>
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> </h3>
+				<div class="action_options" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
+					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_<?php echo $session['sessionId']?>" href="#">Edit</a></span>
+				</div>
 				<div class="theatre-sessions whiteBox clearfix">
-
-						<div class="sessionComments" style="display:block; float:right; width:250px; ">
-							<form>
-								Comments<br/>
-								<div style="height: 0.4em;"></div>
-								<textarea style="display: none;" rows="2" style="width:245px;" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
-								<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
-							</form>
-							<?php /*<div class="modifyComments"><span class="edit"><a href="#" id="editComments<?php echo $session['sessionId'] ?>" name="<?php echo $session['sessionId'] ?>">Edit comment</a></span></div>*/?>
-						</div>
-
+					<div class="sessionComments" style="display:block; float:right; width:250px; ">
+						<form>
+							Comments<br/>
+							<div style="height: 0.4em;"></div>
+							<textarea style="display: none;" rows="2" style="width:245px;" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
+							<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
+						</form>
+					</div>
 					<table id="theatre_list">
 						<thead>
 							<tr>
@@ -85,9 +86,10 @@ if (empty($theatres)) {?>
 								<th>Info</th>
 							</tr>
 						</thead>
-						<tbody id="tbody_<?php echo $tbody++;?>">
+						<tbody id="tbody_<?php echo $session['sessionId']?>">
 <?php
 					$previousSequenceId = $session['sequenceId'];
+					$previousSessionId = $session['sessionId'];
 					$timeAvailable = $session['sessionDuration'];
 				}
 
@@ -96,8 +98,8 @@ if (empty($theatres)) {?>
 ?>
 							<tr id="oprow_<?php echo $session['operationId'] ?>">
 								<td class="session">
-									<input style="display: none;" type="text" name="admitTime<?php echo $session['operationId']?>" id="admitTime<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
-									<span id="admitTime_ro_<?php echo $session['operationId']?>"><?php echo substr($session['admissionTime'], 0, 5)?></span>
+									<input style="display: none;" type="text" name="admitTime_<?php echo $session['operationId']?>" id="admitTime_<?php echo $session['sessionId']?>_<?php echo $session['operationId'] ?>" value="<?php echo substr($session['admissionTime'], 0, 5)?>" size="4">
+									<span id="admitTime_ro_<?php echo $session['sessionId']?>_<?php echo $session['operationId']?>"><?php echo substr($session['admissionTime'], 0, 5)?></span>
 								</td>
 								<td class="td_sort" style="display: none;">
 									<img src="/img/_elements/icons/draggable_row.png" alt="draggable_row" width="25" height="28" />
@@ -105,7 +107,7 @@ if (empty($theatres)) {?>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
 									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
-											);
+								);
 								?></td>
 								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
 								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
@@ -152,6 +154,10 @@ if (empty($theatres)) {?>
 							</tr>
 						</tfoot>
 					</table>
+					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $session['sessionId']?>">
+						<button type="submit" class="classy green tall" id="btn_save_<?php echo $session['sessionId']?>"><span class="button-span button-span-green">Save</span></button>
+						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $session['sessionId']?>"><span class="button-span button-span-red">Cancel</span></button>
+					</div>
 				</div>
 <?php
 		}
@@ -182,8 +188,8 @@ if (empty($theatres)) {?>
 		});
 	}
 
-	function enable_sort() {
-		$("#theatre_list tbody").sortable({
+	function enable_sort(session_id) {
+		$("#tbody_"+session_id).sortable({
 			 helper: function(e, tr)
 			 {
 				 var $originals = tr.children();
@@ -204,58 +210,88 @@ if (empty($theatres)) {?>
 		$("#theatre_list tbody").sortable('disable');
 	}
 
-	$('a.edit-sessions').live('click',function() {
+	var selected_tbody_id = null;
+
+	$('a.edit-sessions').die('click').live('click',function() {
+		cancel_edit();
+
+		selected_tbody_id = $(this).attr('id').replace(/^edit-sessions_/,'');
+
 		$('#updated-flash').hide();
-		$('div[id^="comments_ro_"]').hide();
-		$('textarea[name^="comments"]').show();
-		$('span[id^="admitTime_ro_"]').hide();
-		$('input[name^="admitTime"]').show();
-		enable_sort();
-		$('#btn_save').show();
-		$('#btn_cancel').show();
-		$('div.action_options').html('<span class="aBtn"><a class="view-sessions" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
+		$('div[id="comments_ro_'+selected_tbody_id+'"]').hide();
+		$('textarea[name="comments'+selected_tbody_id+'"]').show();
+		$('span[id^="admitTime_ro_'+selected_tbody_id+'_"]').hide();
+		$('input[id^="admitTime_'+selected_tbody_id+'_"]').show();
+		enable_sort(selected_tbody_id);
+		$('div.action_options').map(function() {
+			var html = $(this).html();
+			if (m = html.match(/edit-sessions_([0-9]+)/)) {
+				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+			}
+			if (m = html.match(/view-sessions_([0-9]+)/)) {
+				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+			}
+		});
+		$('div.action_options').hide();
+		$('#action_options_'+selected_tbody_id).show();
+		$('#action_options_'+selected_tbody_id).html('<span class="aBtn"><a class="view-sessions" id="view-sessions_'+selected_tbody_id+'" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		$('td.td_sort').show();
 		$('th.th_sort').show();
 		$('#btn_print').hide();
 		$('input[name^="confirm_"]').attr('disabled',false);
+		$('#buttons_'+selected_tbody_id).show();
+		return false;
 	});
 
-	$('a.view-sessions').live('click',function() {
+	$('a.view-sessions').die('click').live('click',function() {
 		view_mode();
+		return false;
 	});
 
-	$('#btn_cancel').live('click',function() {
-		$('tbody').map(function() {
-			if ($(this).attr('id') !== undefined) {
-				var tbody_id = $(this).attr('id');
+	$('button[id^="btn_cancel_"]').live('click',function() {
+		cancel_edit();
+		return false;
+	});
 
-				if (table_states[tbody_id] !== undefined) {
-					for (x in table_states[tbody_id]) {
-						$('#'+table_states[tbody_id][x]).appendTo('#'+tbody_id);
-					}
+	function cancel_edit() {
+		if (selected_tbody_id !== null) {
+			var tbody_id = "tbody_"+selected_tbody_id;
+
+			if (table_states[tbody_id] !== undefined) {
+				for (x in table_states[tbody_id]) {
+					$('#'+table_states[tbody_id][x]).appendTo('#'+tbody_id);
 				}
 			}
-		});
 
-		view_mode();
-	});
+			view_mode();
+
+			$('div[id^="buttons_"]').hide();
+		}
+	}
 
 	function view_mode() {
 		$('div[id^="comments_ro_"]').show();
 		$('textarea[name^="comments"]').hide();
 		$('span[id^="admitTime_ro_"]').show();
-		$('input[name^="admitTime"]').hide();
+		$('input[id^="admitTime_"]').hide();
 		disable_sort();
-		$('#btn_save').hide();
-		$('#btn_cancel').hide();
-		$('div.action_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" href="#">Edit</a></span>');
+		$('div.action_options').map(function() {
+			var html = $(this).html();
+			if (m = html.match(/edit-sessions_([0-9]+)/)) {
+				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+			}
+			if (m = html.match(/view-sessions_([0-9]+)/)) {
+				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+			}
+		});
+		$('div.action_options').show();
 		$('td.td_sort').hide();
 		$('th.th_sort').hide();
 
 		// revert text changes
 		$('span[id^="admitTime_ro_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			$('#admitTime'+id).val($(this).html());
+			var m = $(this).attr('id').match(/^admitTime_ro_([0-9]+)_([0-9]+)$/);
+			$('#admitTime_'+m[1]+'_'+m[2]).val($(this).html());
 		});
 		$('div[id^="comments_ro_"]').map(function() {
 			var id = $(this).attr('id').match(/[0-9]+/);

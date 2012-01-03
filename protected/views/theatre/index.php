@@ -134,8 +134,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 			</div> <!-- #theatre_display -->
 			<div style="text-align:right; margin-right:10px;">
-				<button type="submit" class="classy green tall" id="btn_save" style="display: none;"><span class="button-span button-span-green">Save</span></button>
-				<button type="submit" class="classy red tall" id="btn_cancel" style="display: none;"><span class="button-span button-span-red">Cancel</span></button>
 				<button type="submit" class="classy blue tall" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
 			</div>
 		</div> <!-- .fullWidth -->
@@ -231,12 +229,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 	}
 
-	$('#btn_save').click(function() {
+	$('button[id^="btn_save_"]').die('click').live('click',function() {
 		var data = {}
 
-		$('input[name^="admitTime"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["operation_"+id] = $(this).val();
+		$('input[name^="admitTime_"]').map(function() {
+			var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+			data["operation_"+m[2]] = $(this).val();
 		});
 
 		$('textarea[name^="comments"]').map(function() {
@@ -259,9 +257,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				$('#updated-flash').show();
 
 				// Apply changes to the read-only values in the dom
-				$('input[name^="admitTime"]').map(function() {
-					var id = $(this).attr('id').match(/[0-9]+/);
-					$('#admitTime_ro_'+id).html($(this).val());
+				$('input[name^="admitTime_"]').map(function() {
+					var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+					$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
 				});
 				$('textarea[name^="comments"]').map(function() {
 					var id = $(this).attr('id').match(/[0-9]+/);
@@ -270,6 +268,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 				view_mode();
 				load_table_states();
+				$('div[id^="buttons_"]').hide();
 			}
 		});
 	});
