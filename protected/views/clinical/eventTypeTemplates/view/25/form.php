@@ -66,7 +66,7 @@
 		<th>Eye:</th>
 		<td><?php echo $operation->getEyeText() ?></td>
 		<?php if (!empty($operation->booking)) { ?>
-		<th>Theatre session:</td>
+		<th>Theatre session:</th>
 		<td><?php echo substr($operation->booking->session->start_time,0,5) . ' - ' . substr($operation->booking->session->end_time,0,5)?></td>
 		<?php } ?>
 	</tr>
@@ -90,7 +90,7 @@
 		<th>Anaesthesia:</th>
 		<td><?php echo $operation->getAnaestheticText() ?></td>
 		<?php if (!empty($operation->booking)) { ?>
-		<th>Proposed admission date:</></th>
+		<th>Proposed admission date:</th>
 		<td><?php echo $operation->booking->session->NHSDate('date'); ?></td>
 		<?php } ?>
 	</tr>
