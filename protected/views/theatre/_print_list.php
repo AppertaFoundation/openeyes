@@ -62,7 +62,7 @@ ANAESTHETIST:
 </td><td>
 DATE:
 </td><td>
-<?php echo date('d M Y', strtotime($date)) ?>
+<?php echo Helper::convertDate2NHS($date); ?>
 </td></tr>
 </tbody></table>
 

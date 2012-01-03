@@ -91,7 +91,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'d-M-yy'
+									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 								),
 								'value' => '',
 								'htmlOptions'=>array('style'=>'width: 110px;')
@@ -104,7 +104,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'d-M-yy'
+									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 								),
 								'value' => '',
 								'htmlOptions'=>array('style'=>'width: 110px;')

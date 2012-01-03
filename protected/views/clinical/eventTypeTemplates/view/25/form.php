@@ -9,7 +9,7 @@
 		<th>Admitting Consultant:</th>
 		<td><?php echo $consultantName ?></td>
 		<th>Decision to admit date (or today's date):</th>
-		<td><?php echo date('d M Y', strtotime($operation->decision_date)) ?></td>
+		<td><?php echo $operation->NHSDate('decision_date'); ?></td>
 	</tr>
 
 	<tr>
@@ -58,7 +58,7 @@
 		<th colspan="2" rowspan="4">Patient Added to Waiting List, admission Date to be arranged</th>
 		<?php } else { 	?>
 		<th>Operation date:</th>
-		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<td><?php echo $operation->booking->session->NHSDate('date'); ?></td>
 		<?php } ?>
 	</tr>
 	
@@ -91,7 +91,7 @@
 		<td><?php echo $operation->getAnaestheticText() ?></td>
 		<?php if (!empty($operation->booking)) { ?>
 		<th>Proposed admission date:</></th>
-		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<td><?php echo $operation->booking->session->NHSDate('date'); ?></td>
 		<?php } ?>
 	</tr>
 	

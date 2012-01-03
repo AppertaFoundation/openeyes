@@ -14,7 +14,7 @@
 	<br /><?php echo $patient->address->letterhtml ?>
 </div>
 <div class="date">
-	<?php echo date('d M Y') ?>
+	<?php echo date(Helper::NHS_DATE_FORMAT) ?>
 </div>
 <div class="content">
 	<p>

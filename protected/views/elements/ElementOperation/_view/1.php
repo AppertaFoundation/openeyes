@@ -94,7 +94,7 @@ if ($data->status != ElementOperation::STATUS_CANCELLED && !empty($data->booking
 <div class="cleartall"></div>
 <?php
 if ($data->schedule_timeframe != $data::SCHEDULE_IMMEDIATELY) {
-	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . date('d M Y', $data->getMinDate()));
+	Yii::app()->user->setFlash('info',"Patient Request: Schedule On/After " . Helper::convertDate2NHS($data->getMinDate()));
 } ?>
 <script type="text/javascript">
 	$('#procedureDiv').show();

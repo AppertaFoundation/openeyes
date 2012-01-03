@@ -20,6 +20,6 @@
 	</tr>
 	<tr>
 		<th>DOB</th>
-		<td><?php echo date('d M Y', strtotime($patient->dob)) ?></td>
+		<td><?php echo $patient->NHSDate('dob'); ?></td>
 	</tr>
 </table>

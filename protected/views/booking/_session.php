@@ -29,7 +29,7 @@ if (!empty($operation->booking)) {
 
                         <span style="display:inline-block; width:160px;">Firm:</span><strong><?php echo CHtml::encode($firmName); ?></strong><br>
                         <span style="display:inline-block; width:160px;">Location:</span><strong><?php echo CHtml::encode($theatre->site->name) . ' - ' . CHtml::encode($theatre->name); ?></strong><br>
-                        <span style="display:inline-block; width:160px;">Date of operation:</span><strong><?php echo date('d M Y', strtotime($session->date)); ?></strong><br>
+                        <span style="display:inline-block; width:160px;">Date of operation:</span><strong><?php echo $session->NHSDate('date'); ?></strong><br>
                         <span style="display:inline-block; width:160px;">Session time:</span><strong><?php echo substr($session->start_time, 0, 5) . ' - ' . substr($session->end_time, 0, 5); ?></strong><br>
                         <span style="display:inline-block; width:160px;">Admission time:</span><strong><?php echo substr($operation->booking->admission_time, 0, 5); ?></strong> <br>
 

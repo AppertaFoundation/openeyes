@@ -17,6 +17,10 @@
  */
 class Helper {
 	
+	const NHS_DATE_FORMAT = 'j M Y';
+	const NHS_DATE_FORMAT_JS = 'd M yy';
+	const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
+	
 	/**
 	 * Convert NHS dates (d-mmm-yyyy) to MySQL format.
 	 * Strings that do not match the NHS format are returned unchanged.
@@ -27,7 +31,7 @@ class Helper {
 	public static function convertNHS2MySQL($data, $fields = null) {
 		$list = ($fields) ? $fields : array_keys($data);
 		foreach($list as $key) {
-			if(isset($data[$key]) && preg_match('/^\d{1,2}-\w{3}-\d{4}$/', $data[$key])) {
+			if(isset($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
 				$data[$key] = date('Y-m-d',strtotime($data[$key]));
 			}
 		}
@@ -36,19 +40,34 @@ class Helper {
 	
 	/**
 	 * Convert MySQL date(time) value to NHS format.
-	 * Strings that do not match MySQL date(time) format are returned unchanged unless forced,
-	 * in which case they are returned as null
+	 * Strings that do not match MySQL date(time) format return $empty_string.
+	 * 
 	 * @param string $value
-	 * @param boolean $force
+	 * @param string $empty_string
 	 * @return string
 	 */
-	public static function convertMySQL2NHS($value, $force = false) {
-		if(preg_match('/^\d{4}-\d{2}-\d{2}/', $value)) {
-			return date('j-M-Y',strtotime($value));
-		} else if($force) {
-			return null;
+	public static function convertMySQL2NHS($value, $empty_string = '-') {
+		if(preg_match('/^\d{4}-\d{2}-\d{2}/', $value) && $value != '0000-00-00 00:00:00' && $value != '0000-00-00') {
+			return self::convertDate2NHS($value, $empty_string);
 		} else {
-			return $value;
+			return $empty_string;
+		}
+	}
+	
+	/**
+	 * Convert date(time) value to NHS format.
+	 * Strings that do not return a valid date return $empty_string.
+	 * 
+	 * @param string $value
+	 * @param string $empty_string
+	 * @return string
+	 */
+	public static function convertDate2NHS($value, $empty_string = '-') {
+		$time = strtotime($value);
+		if($time) {
+			return date(self::NHS_DATE_FORMAT, $time);
+		} else {
+			return $empty_string;
 		}
 	}
 	
