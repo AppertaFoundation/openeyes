@@ -27,7 +27,7 @@ if (!$reschedule) {
 		<thead>
 			<tr>
 				<th>Operation list overview</th>
-				<th>Date: <?php echo $session->NHSDate('date'); ?></th>
+				<th>Date: <?php echo Helper::convertDate2NHS($session['date']); ?></th>
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 				<th>Admission time</th>
