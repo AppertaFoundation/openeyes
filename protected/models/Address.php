@@ -92,6 +92,19 @@ class Address extends BaseActiveRecord
 		);
 	}
 
+	public function getLetterHtml() {
+		$address = array();
+		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
+			if (!empty($this->$field)) {
+				$address[] = CHtml::encode($this->$field);
+			}
+		}
+		if(!empty($this->country->name)) {
+			$address[] = CHtml::encode($this->country->name);
+		}
+		return implode('<br />', $address);
+	}
+	
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

@@ -78,6 +78,7 @@ class Patient extends BaseActiveRecord
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
 			'address' => array(self::BELONGS_TO, 'Address', 'id'),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
+			'gp' => array(self::HAS_ONE, 'Gp', 'gp_id')
 		);
 	}
 
@@ -166,15 +167,30 @@ class Patient extends BaseActiveRecord
 		return $age;
 	}
 
-	public function isChild()
-	{
-		if ($this->getAge() < 16) {
-			return true;
-		} else {
-			return false;
-		}
+	public function isChild() {
+		return ($this->getAge() < 16);
 	}
 
+	public function getAddressName() {
+		if ($this->isChild()) {
+			return 'Parent/Guardian of ' . $this->getFullName();
+		} else {
+			return $this->getFullName();
+		}	
+	}
+	
+	public function getSalutationName() {
+		if ($this->isChild()) {
+			return 'Parent/Guardian of ' . $this->first_name . ' ' . $this->last_name;
+		} else {
+			return $this->title . ' ' . $this->last_name;
+		}	
+	}
+	
+	public function getFullName() {
+		return implode(' ',array($this->title, $this->first_name, $this->last_name));
+	}
+	
 	private function randomData($field)
 	{
 		if (!Yii::app()->params['pseudonymise_patient_details']) {
@@ -211,5 +227,18 @@ class Patient extends BaseActiveRecord
 	private function randomDate($startDate='1931-01-01',$endDate='2010-12-12')
 	{
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
+	}
+
+	public function getGP() {
+		if ($this->gp_id === NULL) {
+			if (Yii::app()->params['use_pas']) {
+				$service = new GpService;
+				$service->GetPatientGp($this->id);
+			} else {
+				return false;
+			}
+		} else {
+			return Gp::Model()->findByPk($this->gp_id);
+		}
 	}
 }

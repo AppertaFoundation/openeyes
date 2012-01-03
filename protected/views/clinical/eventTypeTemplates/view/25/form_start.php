@@ -3,14 +3,19 @@
 	<div class="logo"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></div>
 </div>
 <h1>Admission Form</h1>
+<?php
+if ($patient->address === NULL) {
+	$patient->address = Address::Model()->findByPk($patient->address_id);
+}
+?>
 <table class="half right">
 	<tr>
 		<th>Patient Name</th>
-		<td><?php echo $patientName ?></td>
+		<td><?php echo $patient->fullname ?></td>
 	</tr>
 	<tr>
 		<th>Address</th>
-		<td><?php echo $patientDetails ?></td>
+		<td><?php echo $patient->address->letterhtml ?></td>
 	</tr>
 </table>	
 <table class="half">

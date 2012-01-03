@@ -73,4 +73,15 @@ class BaseActiveRecord extends CActiveRecord
 
 		return parent::save($runValidation, $attributes);
 	}
+	
+	/**
+	 * Returns a date field in NHS format
+	 * @param string $attribute
+	 * @return string
+	 */
+	public function NHSDate($attribute) {
+		if($value = $this->getAttribute($attribute)) {
+			return Helper::convertMySQL2NHS($value, true);
+		}
+	}
 }

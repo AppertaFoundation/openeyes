@@ -1,8 +1,5 @@
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/letter_start", array(
 	'site' => $site,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'patient' => $patient,
 )); ?>
 

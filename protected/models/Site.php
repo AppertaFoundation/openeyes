@@ -117,4 +117,14 @@ class Site extends BaseActiveRecord
 
 		return $result;
 	}
+
+	public function getLetterHtml() {
+		$address = array();
+		foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {
+			if (!empty($this->$field)) {
+				$address[] = CHtml::encode($this->$field);
+			}
+		}
+		return implode('<br />', $address);
+	}
 }

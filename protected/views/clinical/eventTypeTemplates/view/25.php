@@ -27,19 +27,19 @@ if (!empty($operation->booking)) {
 
 $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : 'Not scheduled';
 ?>
-<span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo date('j M Y', strtotime($session->date))?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
+<span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
 <!-- Details -->
 <h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
 <h4>Created by</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->event->user->username ?> on <?php echo date('d M Y', strtotime($operation->event->created_date)) ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
+	<h4><?php echo $operation->event->user->username ?> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
 </div>
 
 <h4>Last modified by</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->event->usermodified->username?> on <?php echo date('d M Y', strtotime($operation->event->last_modified_date))?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
+	<h4><?php echo $operation->event->usermodified->username?> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
 </div>
 
 <h4>Diagnosis</h4>
@@ -91,7 +91,7 @@ foreach ($elements as $element) {
 
 <h4>Decision Date</h4>
 <div class="eventHighlight">
-	<h4><?php echo date('d M Y',strtotime($operation->decision_date))?></h4>
+	<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
 </div>
 
 <h4>Operation Type</h4>
@@ -126,7 +126,7 @@ if (!empty($operation->booking)) {
 		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
 
-	echo date('d M Y', strtotime($session->date)).' '.substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
+	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
 ?></h4>
 </div>
 
@@ -143,9 +143,9 @@ if (count($cancelledBookings)) {
 <div class="eventHighlight"><h4>
 <?php
 	foreach ($cancelledBookings as $cb) {
-		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . date('d M Y', strtotime($cb->date));
+		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . $cb->NHSDate('date');
 		echo ', ' . $cb->theatre->name . ' (' . $cb->theatre->site->name . ') ';
-		echo ', cancelled on ' . date('d M Y', strtotime($cb->cancelled_date)) . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text;
+		echo ', cancelled on ' . $cb->NHSDate('cancelled_date') . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text;
 		if ($cb->cancellation_comment) {
 			echo ' ('.$cb->cancellation_comment.')';
 		}
@@ -162,7 +162,7 @@ $co = $operation->cancellation;
 <h4>Cancellation details</h4>
 <div class="eventHighlight"><h4>
 <?php
-	echo 'Cancelled on ' . date('d M Y', strtotime($co->cancelled_date)) . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
+	echo 'Cancelled on ' . $co->NHSDate('cancelled_date') . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
 ?>
 </h4></div>
 <?php if ($co->cancellation_comment) {?>
@@ -280,29 +280,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	}
 
 	$patient = $event->episode->patient;
-	$patientDetails = '';
 
-	// Here because of yii bug that fails to recognise address despite valid relationship and address_id
-	$address = Address::model()->findByPk($patient->address_id);
-
-	foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-		if (!empty($address->$field)) {
-			$patientDetails .= CHtml::encode($address->$field) . '<br />';
-		}
-	}
-
-	if (!empty($address->country->name)) {
-		$patientDetails .= CHtml::encode($address->country->name) . '<br />';
-	}
-
-
-	if ($patient->isChild()) {
-		$salutation = CHtml::encode('Parent/Guardian of ' . $patient->first_name . ' ' . $patient->last_name);
-	} else {
-		$salutation = CHtml::encode($patient->title . ' ' . $patient->last_name);
-	}
-	$patientName = CHtml::encode($patient->title . ' ' . $patient->first_name . ' ' . $patient->last_name);
-	
 	$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
 	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
 	
@@ -431,9 +409,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'operation' => $operation, 
 	'event' => $event,
@@ -444,9 +419,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/invitation_letter", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'changeContact' => $changeContact,
 	'operation' => $operation,
@@ -456,9 +428,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/reminder_letter", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'changeContact' => $changeContact,
 	'operation' => $operation,
@@ -468,9 +437,6 @@ $('#btn_schedule-now').unbind('click').click(function() {
 <?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/scheduled_letter", array(
 	'site' => $site,
 	'patient' => $patient,
-	'patientDetails' => $patientDetails,
-	'patientName' => $patientName,
-	'salutation' => $salutation,
 	'consultantName' => $consultantName,
 	'operation' => $operation,
 	'specialty' => $specialty,

@@ -162,8 +162,7 @@ class ClinicalController extends BaseController
 				$elementList = array();
 				foreach ($elements as $element) {
 					$elementClassName = get_class($element);
-					# echo var_export($_POST['ElementOperation'],true) . "fish"; exit;
-					$element->attributes = $_POST[$elementClassName];
+					$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
 					$elementList[] = $element;
 					if (!$element->validate()) {
 						$valid = false;
@@ -263,11 +262,13 @@ class ClinicalController extends BaseController
 
 		if ($_POST && $_POST['action'] == 'update') {
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+				// TODO: This appears to overlap with the service->updateElements functionality
+				// and probably needs rationalising
 				$valid = true;
 				$elementList = array();
 				foreach ($elements as $element) {
 					$elementClassName = get_class($element);
-					$element->attributes = $_POST[$elementClassName];
+					$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
 					$elementList[] = $element;
 					if (!$element->validate()) {
 						$valid = false;
