@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -115,11 +115,11 @@ class BookingController extends BaseController
 				'date'=>$minDate,
 				'sessions'=>$sessions,
 				'firm' => $firm,
-		 		'firmList' => $firmList,
-		 		'firmId' =>	$firmId
-		 	),
-		 	false,
-		 	true
+				'firmList' => $firmList,
+				'firmId' =>	$firmId
+			),
+			false,
+			true
 		);
 	}
 
@@ -165,12 +165,29 @@ class BookingController extends BaseController
 			$operation = ElementOperation::model()->findByPk($operationId);
 			$operation->status = ElementOperation::STATUS_CANCELLED;
 
-			Booking::model()->deleteAll('element_operation_id = :id', array(':id'=>$operationId));
+			//Booking::model()->deleteAll('element_operation_id = :id', array(':id'=>$operationId));
 
 			if ($cancel->save() && $operation->save()) {
 				$patientId = $operation->event->episode->patient->id;
 
 				$this->updateEvent($operation->event);
+
+				if ($model = $operation->booking) {
+					// If there was a booking for this operation, create a CancelledBooking row
+					$cancellation = new CancelledBooking;
+					$cancellation->element_operation_id = $operationId;
+					$cancellation->date = $model->session->date;
+					$cancellation->start_time = $model->session->start_time;
+					$cancellation->end_time = $model->session->end_time;
+					$cancellation->theatre_id = $model->session->sequence->theatre_id;
+					$cancellation->cancelled_date = date('Y-m-d H:i:s');
+					$cancellation->cancelled_reason_id = $_POST['cancellation_reason'];
+					$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
+
+					if (!$cancellation->save()) {
+						throw new SystemException('Unable to save cancelled_booking: '.print_r($model->getErrors(),true));
+					}
+				}
 
 				$this->redirect(array('patient/episodes','id'=>$patientId,
 					'event'=>$operation->event->id));
