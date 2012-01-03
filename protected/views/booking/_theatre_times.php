@@ -39,7 +39,7 @@ foreach ($theatres as $name => $sessions) {
 			$class = '';
 		}
 ?>
-			<div class="timeBlock<?php echo $class ?>" id="bookingSession<?php echo $session['id'] ?>" name="<?php echo $session['id'] ?>">
+			<div class="timeBlock<?php echo $class ?>" id="bookingSession<?php echo $session['id'] ?>">
 				<span class="time"><?php echo $startTime ?> - <?php echo $endTime ?></span>
 				<span class="available">(<?php echo abs($session['time_available']) ?> min <?php echo $status ?>)</span>
 				<span class="session_id"><?php echo $session['id'] ?></span>
@@ -65,7 +65,6 @@ foreach ($theatres as $name => $sessions) {
 		id = id.replace(/bookingSession/,'');
 
         $.ajax({
-            'url': '<?php echo Yii::app()->createUrl('booking/list'); ?>',
             'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,
             'type': 'POST',
             'data': 'operation=<?php echo $operation->id ?>&session=' + id + '&reschedule=<?php echo $reschedule ?>',

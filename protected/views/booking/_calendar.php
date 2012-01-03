@@ -78,7 +78,7 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 				</tr>
 <?php
 	} ?>
-		</tbody>
+			</tbody>
 			<tfoot>
 				<tr>
 					<td colspan="8">
@@ -96,8 +96,6 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 				</tr>
 			</tfoot>
 		</table>
-	</div> <!-- details -->
-</div> <!--session_dates -->
 
 <script>
 $(document).ready(function() {
