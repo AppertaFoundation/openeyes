@@ -69,17 +69,12 @@ foreach ($elements as $element) {
 ?></h4>
 </div>
 
-<h4>Priority</h4>
-<div class="eventHighlight">
-	<h4><?php echo ($operation->urgent) ? 'Urgent' : 'Routine' ?></h4>
-</div>
-
 <h4>Anaesthetic</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->getAnaestheticText()?></h4>
 </div>
 
-<h4>Consultant</h4>
+<h4>Consultant required?</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->consultant_required ? 'Yes' : 'No'?></h4>
 </div>
@@ -94,18 +89,13 @@ foreach ($elements as $element) {
 	<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
 </div>
 
-<h4>Operation Type</h4>
+<h4>Operation priority</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->urgent ? 'Urgent' : 'Routine'?></h4>
 </div>
 
-<h4>Operation Comments</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->comments ? $operation->comments : 'None'?></h4>
-</div>
-
 <?php if (!empty($operation->comments)) {?>
-	<h4>Comments</h4>
+<h4>Operation Comments</h4>
 	<div class="eventHighlight">
 		<h4><?php echo $operation->comments?></h4>
 	</div>
