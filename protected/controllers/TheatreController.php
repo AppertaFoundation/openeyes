@@ -69,7 +69,7 @@ class TheatreController extends BaseController
 							'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
 							'surgical_firm' => empty($session['firm_name']) ? 'Emergency list' : $session['firm_name'],
 							'anaesthetist' => '', // todo: wtf
-							'date' => date('d M Y', strtotime($date))
+							'date' => Helper::convertDate2NHS($date)
 						));
 					}
 

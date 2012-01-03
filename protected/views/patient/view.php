@@ -86,7 +86,7 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Date of Birth:</div>
-							<div class="data_value"><?php echo date('d M Y', strtotime($model->dob)).' (Age '.$model->getAge().')'?></div>
+							<div class="data_value"><?php echo $model->NHSDate('dob') . ' (Age '.$model->getAge().')'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Gender:</div>
@@ -125,8 +125,8 @@ if (!empty($address)) {
 									<tbody>
 										<?php foreach ($episodes as $i => $episode) {?>
 											<tr id="<?php echo $episode->id?>" class="all-episode <?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
-												<td><?php echo date('d M Y', strtotime($episode->start_date))?></td>
-												<td><?php echo $episode->end_date !== null ? date('d M Y', strtotime($episode->end_date)) : ''?></td>
+												<td><?php echo $episode->NHSDate('start_date'); ?></td>
+												<td><?php echo $episode->NHSDate('end_date'); ?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
 												<td><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></td>
 												<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>

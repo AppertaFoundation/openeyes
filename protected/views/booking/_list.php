@@ -27,7 +27,7 @@ if (!$reschedule) {
 		<thead>
 			<tr>
 				<th>Operation list overview</th>
-				<th>Date: <?php echo date('d M Y', strtotime($session['date'])); ?></th>
+				<th>Date: <?php echo $session->NHSDate('date'); ?></th>
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 				<th>Admission time</th>
@@ -125,7 +125,7 @@ echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 <?php } ?>
 
 <div style="margin: 0.5em 0;">
-	<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo date('d M Y', strtotime($session['date'])); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+	<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 </div>
 <div style="margin-top:10px;">
 <button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>

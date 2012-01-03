@@ -63,7 +63,7 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 			// check if date is outside this month or before today
 			if (
 				date('m', strtotime($date)) !== date('m', strtotime($thisMonth)) ||
-				strtotime($date) < strtotime(date('d M Y'))
+				strtotime($date) < strtotime(date('Y-m-d'))
 			) {
 				$list[$date]['status'] = 'invalid';
 			} elseif (date('Y-m-d', strtotime($date)) >= date('Y-m-d', $rttDate)) {

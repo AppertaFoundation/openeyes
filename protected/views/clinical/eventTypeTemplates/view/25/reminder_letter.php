@@ -4,7 +4,7 @@
 )); ?>
 
 <p>
-	I recently invited you to telephone to arrange a date for your <?php if ($patient->isChild()) { ?>child&apos;s <?php } ?>
+	I recently invited you to telephone to arrange a date for your <?php if ($patient->isChild()) { ?>child's <?php } ?>
 	admission for surgery under the care of <?php echo $consultantName ?>. I have not yet heard from you.
 </p>
 

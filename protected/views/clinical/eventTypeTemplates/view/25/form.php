@@ -9,7 +9,7 @@
 		<th>Admitting Consultant:</th>
 		<td><?php echo $consultantName ?></td>
 		<th>Decision to admit date (or today's date):</th>
-		<td><?php echo date('d M Y', strtotime($operation->decision_date)) ?></td>
+		<td><?php echo $operation->NHSDate('decision_date'); ?></td>
 	</tr>
 
 	<tr>
@@ -55,10 +55,10 @@
 		<td><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>
 		<?php
 		if (empty($operation->booking)) { ?>
-		<th colspan="2" rowspan="4">Patient Added to Waiting List, admission Date to be arranged</th>
+		<th colspan="2" rowspan="4">Patient Added to partial bookings waiting List, admission Date to be arranged</th>
 		<?php } else { 	?>
 		<th>Operation date:</th>
-		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<td><?php echo $operation->booking->session->NHSDate('date'); ?></td>
 		<?php } ?>
 	</tr>
 	
@@ -66,7 +66,7 @@
 		<th>Eye:</th>
 		<td><?php echo $operation->getEyeText() ?></td>
 		<?php if (!empty($operation->booking)) { ?>
-		<th>Theatre session:</td>
+		<th>Theatre session:</th>
 		<td><?php echo substr($operation->booking->session->start_time,0,5) . ' - ' . substr($operation->booking->session->end_time,0,5)?></td>
 		<?php } ?>
 	</tr>
@@ -90,8 +90,8 @@
 		<th>Anaesthesia:</th>
 		<td><?php echo $operation->getAnaestheticText() ?></td>
 		<?php if (!empty($operation->booking)) { ?>
-		<th>Proposed admission date:</></th>
-		<td><?php echo date('d M Y', strtotime($operation->booking->session->date)) ?></td>
+		<th>Proposed admission date:</th>
+		<td><?php echo $operation->booking->session->NHSDate('date'); ?></td>
 		<?php } ?>
 	</tr>
 	

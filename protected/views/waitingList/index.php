@@ -1,4 +1,4 @@
-		<h2>Waiting List</h2>
+		<h2>Partial bookings waiting List</h2>
 
 		<div class="fullWidth fullBox clearfix">
 			<div id="whiteBox">
@@ -10,7 +10,7 @@
 				<div id="search-options">
 
 					<div id="main-search" class="grid-view">
-						<h3>Search Waiting Lists by:</h3>
+						<h3>Search partial bookings waiting lists by:</h3>
 					        <table>
 					        <tbody>
 					        	<tr>

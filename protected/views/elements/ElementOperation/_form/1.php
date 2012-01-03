@@ -209,6 +209,21 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 
+					<div id="site" class="siteDetail">
+						<div class="label"><?php echo $form->label(ElementOperation::model(),'site_id'); ?></div>
+						<div class="data">
+							<?php 
+							if (!$model->site_id) {
+								$active_site_id = Yii::app()->request->cookies['site_id']->value;	
+							} else {
+								$active_site_id = $model->site_id;
+							}
+							echo CHtml::dropDownList('ElementOperation[site_id]', $active_site_id, Site::model()->getList());
+							?>
+						</div>
+						
+					</div>
+
 					<div id="urgent" class="eventDetail">
 						<div class="label">Priority</div>
 						<div class="data">
@@ -233,10 +248,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								// additional javascript options for the date picker plugin
 								'options'=>array(
 									'showAnim'=>'fold',
-									'dateFormat'=>'d-M-yy',
+									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
 									'maxDate'=>'today'
 								),
-								'value' => $model->NHSDate('decision_date'),
+								'value' => $model->NHSDate('decision_date',''),
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							)); ?>
 						</div>
@@ -259,7 +274,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 	$(function() {
 		$('input[id=autocomplete_procedure_id]').watermark('type the first few characters of a procedure');
-		$("#ElementOperation_decision_date_0").val('<?php echo $model->NHSDate('decision_date'); ?>');
+		$("#ElementOperation_decision_date_0").val('<?php echo $model->NHSDate('decision_date',''); ?>');
 		$("#procedure_list tbody").sortable({
 			 helper: function(e, tr)
 			 {

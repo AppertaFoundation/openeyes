@@ -25,7 +25,7 @@ class OeDateFormat extends CActiveRecordBehavior {
 	public function beforeSave($event) {
 		foreach($this->date_columns as $date_column) {
 			$date = $this->Owner->{$date_column};
-			if(preg_match('/^\d{1,2}-\w{3}-\d{4}$/', $date) && strtotime($date)) {
+			if(preg_match(Helper::NHS_DATE_REGEX, $date) && strtotime($date)) {
 				$this->Owner->{$date_column} = date('Y-m-d',strtotime($date));
 			}
 		}
@@ -39,7 +39,7 @@ class OeDateFormat extends CActiveRecordBehavior {
 			$date = $this->Owner->{$date_column};
 			// Don't convert blank dates
 			if($date && $date != '0000-00-00') {
-				$this->Owner->{$date_column} = date('j-M-Y', strtotime($date));
+				$this->Owner->{$date_column} = date(Helper::NHS_DATE_FORMAT, strtotime($date));
 			} else {
 				$this->Owner->{$date_column} = '';
 			}

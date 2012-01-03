@@ -32,7 +32,7 @@ class OeDateValidator extends CValidator {
 			$valid = true;
 		}
 		
-		if(preg_match('/^\d{1,2}-\w{3}-\d{4}$/', $value) && strtotime($value)) {
+		if(preg_match(Helper::NHS_DATE_REGEX, $value) && strtotime($value)) {
 			$valid = true;
 		}
 		

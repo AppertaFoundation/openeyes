@@ -28,7 +28,7 @@ if (!empty($episode)) {
 
 <h4>Start date:</h4>
 <div class="eventHighlight">
-	<h4><?php echo date('d M Y', strtotime($episode->start_date))?></h4>
+	<h4><?php echo $episode->NHSDate('start_date'); ?></h4>
 </div>
 
 <h4>Principal eye:</h4>
