@@ -55,7 +55,7 @@
 		<td><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>
 		<?php
 		if (empty($operation->booking)) { ?>
-		<th colspan="2" rowspan="4">Patient Added to Waiting List, admission Date to be arranged</th>
+		<th colspan="2" rowspan="4">Patient Added to partial bookings waiting List, admission Date to be arranged</th>
 		<?php } else { 	?>
 		<th>Operation date:</th>
 		<td><?php echo $operation->booking->session->NHSDate('date'); ?></td>

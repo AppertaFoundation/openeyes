@@ -120,9 +120,10 @@ class PatientService
 			}
 
 			if (isset($address)) {
-				$patient = $this->updatePatient($pasPatient, $address, $result, $surname);
-				$patients[] = $patient;
-				$ids[] = $patient->hos_num;
+				if ($patient = $this->updatePatient($pasPatient, $address, $result, $surname)) {
+					$patients[] = $patient;
+					$ids[] = $patient->hos_num;
+				}
 			}
 		}
 
@@ -181,6 +182,8 @@ class PatientService
 	protected function updatePatient($patientData, $addressData, $result, $surname)
 	{
 		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
+
+		if (!ctype_digit($hosNum)) return false;
 
 		// update OpenEyes database info
 		$patient = Patient::model()->findByPk($patientData->RM_PATIENT_NO);
@@ -385,9 +388,13 @@ class PatientService
 		if (isset($town)) {
 			$address->city = $town;
 		}
-		# $address->county = $county;
+		if (isset($county)) {
+			$address->county = $county;
+		}
 		$address->country_id = $unitedKingdom->id;
-		# $address->postcode = $postcode;
+		if (isset($postcode)) {
+			$address->postcode = $postcode;
+		}
 
 		return $address;
 	}
