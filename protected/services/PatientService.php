@@ -388,9 +388,13 @@ class PatientService
 		if (isset($town)) {
 			$address->city = $town;
 		}
-		# $address->county = $county;
+		if (isset($county)) {
+			$address->county = $county;
+		}
 		$address->country_id = $unitedKingdom->id;
-		# $address->postcode = $postcode;
+		if (isset($postcode)) {
+			$address->postcode = $postcode;
+		}
 
 		return $address;
 	}
