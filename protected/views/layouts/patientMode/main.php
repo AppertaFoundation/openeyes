@@ -111,8 +111,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		function printContent() {
 			$('#printable').printElement({
 				pageTitle: 'OpenEyes printout',
-				leaveOpen: true,
-				printMode: 'popup',
+				//leaveOpen: true,
+				//printMode: 'popup',
 				printBodyOptions: {
 					styleToAdd: 'width: auto !important; margin: 0.75em !important;',
 					classNameToAdd : 'openeyesPrintout'
