@@ -251,8 +251,6 @@ class Episode extends BaseActiveRecord
 			if (!$rea->save()) {
 				throw new SystemException("Failed to associate referral $referral->id with episode $this->id: save() failed: ".print_r($rea->getErrors(),true));
 			}
-		} else {
-			mail(Yii::app()->params['alerts_email'],"Failed to fetch PAS referral for patient $this->patient_id episode $this->id","Results from PAS: $n");
 		}
 	}
 }
