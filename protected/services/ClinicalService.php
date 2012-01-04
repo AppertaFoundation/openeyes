@@ -206,6 +206,11 @@ class ClinicalService
 			if (!$episode->save()) {
 				throw new Exception('Unable to create create episode.');
 			}
+
+			if (Yii::app()->params['use_pas']) {
+				// Try to fetch a referral from PAS for this episode
+				$episode->fetchPASReferral();
+			}
 		}
 
 		return $episode;

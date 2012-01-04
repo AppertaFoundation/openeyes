@@ -50,7 +50,6 @@ class ReferralService
 				$ssa = ServiceSpecialtyAssignment::model()->find('specialty_id = ?', array($specialty->id));
 				$referral = new Referral;
 
-				// N.B. service_id points to the service_specialty_assignment.id - needs to be changed!
 				$referral->service_specialty_assignment_id = $ssa->id;
 				$referral->patient_id = $pasReferral->X_CN;
 				$referral->refno = $pasReferral->REFNO;

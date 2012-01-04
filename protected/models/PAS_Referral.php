@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -73,13 +73,13 @@ class PAS_Referral extends MultiActiveRecord
 		return parent::model($className);
 	}
 
-        /**
-         * @return string the associated db connection name
-         */
-        public function connectionId()
-        {
-                return 'db_pas';
-        }
+	/**
+	* @return string the associated db connection name
+	*/
+	public function connectionId()
+	{
+		return 'db_pas';
+	}
 
 	/**
 	 * @return string the associated database table name

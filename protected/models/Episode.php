@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -131,8 +131,8 @@ class Episode extends BaseActiveRecord
 	/**
 	 * Returns the episode for a patient and specialty if there is one.
 	 *
-	 * @param integer $specialtyId	    id of the specialty
-	 * @param integer $patientId	    id of the patient
+	 * @param integer $specialtyId			id of the specialty
+	 * @param integer $patientId			id of the patient
 	 *
 	 * @return object $episode if found, null otherwise
 	 */
@@ -189,13 +189,13 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
-        public function getPrincipalDiagnosisDisorderTerm() {
-                if ($diagnosis = $this->getPrincipalDiagnosis()) {
-                        return $diagnosis->disorder->term;
-                } else {
-                        return 'none';
-                }
-        }
+	public function getPrincipalDiagnosisDisorderTerm() {
+		if ($diagnosis = $this->getPrincipalDiagnosis()) {
+			return $diagnosis->disorder->term;
+		} else {
+			return 'none';
+		}
+	}
 
 	public static function getCurrentEpisodeByFirm($patientId, $firm)
 	{
@@ -217,5 +217,42 @@ class Episode extends BaseActiveRecord
 
 		return Episode::model()->findByPk($episode['eid']);
 	}
-}
 
+	public function fetchPASReferral() {
+		$patient_data = Yii::app()->db->createCommand()
+			->select('a.id, c.pas_code, e.ref_spec, d.id as ssa_id, c.id as firm_id')
+			->from('patient a')
+			->join('episode b', 'a.id = b.patient_id')
+			->join('firm c', 'b.firm_id = c.id')
+			->join('service_specialty_assignment d', 'c.service_specialty_assignment_id = d.id')
+			->join('specialty e', 'd.specialty_id = e.id')
+			->where('a.id = :patient_id', array(':patient_id' => $this->patient_id))
+			->queryRow();
+
+		$n = 0;
+		foreach (PAS_Referral::Model()->findAll('x_cn = ? and ref_spec = ? and dt_close is null',array($this->patient_id, $patient_data['ref_spec'])) as $row2) {
+			$n++;
+		}
+
+		if ($n == 1) {
+			$referral = new Referral;
+			$referral->refno = $row2->REFNO;
+			$referral->patient_id = $this->patient_id;
+			$referral->service_specialty_assignment_id = $patient_data['ssa_id'];
+			$referral->firm_id = $patient_data['firm_id'];
+			$referral->setIsNewRecord(true);
+			if (!$referral->save()) {
+				throw new SystemException("Failed to save referral for patient $this->patient_id episode $this->id: save() failed: ".print_r($referral->getErrors(),true));
+			}
+
+			$rea = new ReferralEpisodeAssignment;
+			$rea->referral_id = $referral->id;
+			$rea->episode_id = $this->id;
+			if (!$rea->save()) {
+				throw new SystemException("Failed to associate referral $referral->id with episode $this->id: save() failed: ".print_r($rea->getErrors(),true));
+			}
+		} else {
+			mail(Yii::app()->params['alerts_email'],"Failed to fetch PAS referral for patient $this->patient_id episode $this->id","Results from PAS: $n");
+		}
+	}
+}
