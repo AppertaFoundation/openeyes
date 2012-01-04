@@ -34,9 +34,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
-	<!-- Unused 
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
-	 -->
 </head> 
  
 <body> 
