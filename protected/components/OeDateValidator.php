@@ -19,7 +19,7 @@ class OeDateValidator extends CValidator {
 	/**
 	 * Validate date attribute
 	 * 
-	 * Dates must be in the format d-MMM-yyyy. Blank strings will also pass so that this validator can be combined with required without generating two errors.
+	 * Dates must be in the format d MMM yyyy or MySQL format (yyyy-mm-dd). Blank strings will also pass so that this validator can be combined with required without generating two errors.
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
@@ -32,7 +32,13 @@ class OeDateValidator extends CValidator {
 			$valid = true;
 		}
 		
+		// Allow NHS format
 		if(preg_match(Helper::NHS_DATE_REGEX, $value) && strtotime($value)) {
+			$valid = true;
+		}
+		
+		// Allow MySQL format (native). Required to avoid problems with both forms and models to be validated.
+		if(preg_match('/^\d{4}-\d{2}-\d{2}/', $value) && strtotime($value)) {
 			$valid = true;
 		}
 		

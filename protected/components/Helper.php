@@ -20,6 +20,7 @@ class Helper {
 	const NHS_DATE_FORMAT = 'j M Y';
 	const NHS_DATE_FORMAT_JS = 'd M yy';
 	const NHS_DATE_REGEX = '/^\d{1,2} \w{3} \d{4}$/';
+	const NHS_DATE_EXAMPLE = '5 Dec 2011';
 	
 	/**
 	 * Convert NHS dates (d-mmm-yyyy) to MySQL format.
