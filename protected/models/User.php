@@ -151,7 +151,7 @@ class User extends BaseActiveRecord
 	 *
 	 * @return boolean
 	 */
-	public function save($runValidation = true, $attributes = null)
+	public function save($runValidation = true, $attributes = null, $allow_overriding=false)
 	{
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
 			/**
@@ -169,7 +169,7 @@ class User extends BaseActiveRecord
 			}
 		}
 
-		return parent::save($runValidation, $attributes);
+		return parent::save($runValidation, $attributes, $allow_overriding);
 	}
 
 	/**

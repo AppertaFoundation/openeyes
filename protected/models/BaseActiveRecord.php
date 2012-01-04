@@ -25,9 +25,10 @@ class BaseActiveRecord extends CActiveRecord
 	 *
 	 * @param boolean $runValidation
 	 * @param array $attributes
+	 * @param boolean $allow_overriding - if true allows created/modified user/date to be set and saved via the model (otherwise gets overriden)
 	 * @return boolean
 	 */
-	public function save($runValidation=true,$attributes=null)
+	public function save($runValidation=true,$attributes=null,$allow_overriding=false)
 	{
 		$primaryKey = $this->tableSchema->primaryKey;
 		foreach ($this->attributes as $name => $value) {
@@ -48,26 +49,34 @@ class BaseActiveRecord extends CActiveRecord
 		}
 
 		if ($this->getIsNewRecord() || !isset($this->id)) {
-			// Set creation properties
-			if ($user_id === NULL) {
-				// Revert to the admin user
-				$this->created_user_id = 1;
-			} else {
-				$this->created_user_id = $user_id;
+			if (!$allow_overriding || $this->created_user_id == 1) {
+				// Set creation properties
+				if ($user_id === NULL) {
+					// Revert to the admin user
+					$this->created_user_id = 1;
+				} else {
+					$this->created_user_id = $user_id;
+				}
 			}
-			$this->created_date = date('Y-m-d H:i:s');
+			if (!$allow_overriding || $this->created_date == "1900-01-01 00:00:00") {
+				$this->created_date = date('Y-m-d H:i:s');
+			}
 		}
 
 		try {
-			// Set the last_modified_user_id and last_modified_date fields
-			if ($user_id === NULL) {
-				// Revert to the admin user
-				// need this try/catch block here to make older migrations pass with this hook in place
-				$this->last_modified_user_id = 1;
-			} else {
-				$this->last_modified_user_id = $user_id;
+			if (!$allow_overriding || $this->last_modified_user_id == 1) {
+				// Set the last_modified_user_id and last_modified_date fields
+				if ($user_id === NULL) {
+					// Revert to the admin user
+					// need this try/catch block here to make older migrations pass with this hook in place
+					$this->last_modified_user_id = 1;
+				} else {
+					$this->last_modified_user_id = $user_id;
+				}
 			}
-			$this->last_modified_date = date('Y-m-d H:i:s');
+			if (!$allow_overriding || $this->last_modified_date == "1900-01-01 00:00:00") {
+				$this->last_modified_date = date('Y-m-d H:i:s');
+			}
 		} catch (Exception $e) {
 		}
 
