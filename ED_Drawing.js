@@ -144,6 +144,7 @@ ED.isFirefox = function()
  * @class Drawing
  * @property {Canvas} canvas A canvas element used to edit and display the drawing
  * @property {Eye} eye Right or left eye (some doodles display differently according to side)
+ * @property {Bool} isEditable Flag indicating whether canvas is editable or not
  * @property {Context} context The 2d context of the canvas element
  * @property {Array} doodleArray Array of doodles in the drawing
  * @property {AffineTransform} transform Transform converts doodle plane -> canvas plane
@@ -161,13 +162,15 @@ ED.isFirefox = function()
  * @param {Canvas} _canvas Canvas element 
  * @param {Eye} _eye Right or left eye
  * @param {String} _IDSuffix String suffix to identify HTML elements related to this drawing
+ * @param {Bool} _isEditable Flag indicating whether canvas is editable or not
  */
-ED.Drawing = function(_canvas, _eye, _IDSuffix)
+ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
 {
 	// Properties
 	this.canvas = _canvas;
 	this.eye = _eye;
 	this.IDSuffix = _IDSuffix;
+    this.isEditable = _isEditable;
 	
 	this.context = this.canvas.getContext('2d');
 	this.doodleArray = new Array();
@@ -202,7 +205,9 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix)
     this.imageArray['laserPattern'] = new Image();
     this.imageArray['fuchsPattern'] = new Image();
     this.imageArray['pscPattern'] = new Image();
-    this.imageArray['meshworkPattern'] = new Image();
+    this.imageArray['meshworkPatternLight'] = new Image();
+    this.imageArray['meshworkPatternMedium'] = new Image();
+    this.imageArray['meshworkPatternHeavy'] = new Image();
     this.imageArray['newVesselPattern'] = new Image();
     
 	// Set transform to map from doodle to canvas plane
@@ -227,58 +232,61 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix)
     this.thickness = document.getElementById('thicknessSelect' + this.IDSuffix);
     
     // Add event listeners (NB within the event listener 'this' refers to the canvas, NOT the drawing instance)
-    var drawing = this;
-    
-    // Mouse listeners
-    this.canvas.addEventListener('mousedown', function(e) {
-                            var offset = ED.findOffset(this);
-                            var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
-                            drawing.mousedown(point);
-                             }, false);
-    
-    this.canvas.addEventListener('mouseup', function(e) { 
-                            var offset = ED.findOffset(this);
-                            var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
-                            drawing.mouseup(point); 
-                            }, false);
-    
-    this.canvas.addEventListener('mousemove', function(e) { 
-                            var offset = ED.findOffset(this);
-                            var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
-                            drawing.mousemove(point); 
-                            }, false);
-    
-    this.canvas.addEventListener('mouseout', function(e) { 
-                            var offset = ED.findOffset(this);
-                            var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
-                            drawing.mouseout(point); 
-                            }, false);
-    
-    // iOS listeners
-    this.canvas.addEventListener('touchstart', function(e) { 
-                            var point = new ED.Point(e.targetTouches[0].pageX - this.offsetLeft,e.targetTouches[0].pageY - this.offsetTop);
-                            e.preventDefault();
-                            drawing.mousedown(point); 
-                            }, false);
-    
-    this.canvas.addEventListener('touchend', function(e) { 
-                            var point = new ED.Point(e.targetTouches[0].pageX - this.offsetLeft,e.targetTouches[0].pageY - this.offsetTop);
-                            drawing.mouseup(point); 
-                            }, false);
-    
-    this.canvas.addEventListener('touchmove', function(e) { 
-                            var point = new ED.Point(e.targetTouches[0].pageX - this.offsetLeft,e.targetTouches[0].pageY - this.offsetTop);
-                            drawing.mousemove(point); 
-                            }, false);
-    
-    // Keyboard listener
-    window.addEventListener('keydown',function(e) {
-                            if (document.activeElement && document.activeElement.tagName == 'CANVAS') drawing.keydown(e);
-                            }, true);
-    
-    
-    // Stop browser stealing double click to select text
-    this.canvas.onselectstart = function () { return false; }
+    if (this.isEditable)
+    {
+        var drawing = this;
+        
+        // Mouse listeners
+        this.canvas.addEventListener('mousedown', function(e) {
+                                var offset = ED.findOffset(this);
+                                var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
+                                drawing.mousedown(point);
+                                 }, false);
+        
+        this.canvas.addEventListener('mouseup', function(e) { 
+                                var offset = ED.findOffset(this);
+                                var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
+                                drawing.mouseup(point); 
+                                }, false);
+        
+        this.canvas.addEventListener('mousemove', function(e) { 
+                                var offset = ED.findOffset(this);
+                                var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
+                                drawing.mousemove(point); 
+                                }, false);
+        
+        this.canvas.addEventListener('mouseout', function(e) { 
+                                var offset = ED.findOffset(this);
+                                var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
+                                drawing.mouseout(point); 
+                                }, false);
+        
+        // iOS listeners
+        this.canvas.addEventListener('touchstart', function(e) { 
+                                var point = new ED.Point(e.targetTouches[0].pageX - this.offsetLeft,e.targetTouches[0].pageY - this.offsetTop);
+                                e.preventDefault();
+                                drawing.mousedown(point); 
+                                }, false);
+        
+        this.canvas.addEventListener('touchend', function(e) { 
+                                var point = new ED.Point(e.targetTouches[0].pageX - this.offsetLeft,e.targetTouches[0].pageY - this.offsetTop);
+                                drawing.mouseup(point); 
+                                }, false);
+        
+        this.canvas.addEventListener('touchmove', function(e) { 
+                                var point = new ED.Point(e.targetTouches[0].pageX - this.offsetLeft,e.targetTouches[0].pageY - this.offsetTop);
+                                drawing.mousemove(point); 
+                                }, false);
+        
+        // Keyboard listener
+        window.addEventListener('keydown',function(e) {
+                                if (document.activeElement && document.activeElement.tagName == 'CANVAS') drawing.keydown(e);
+                                }, true);
+        
+        
+        // Stop browser stealing double click to select text
+        this.canvas.onselectstart = function () { return false; }
+    }
 }
 
 
@@ -333,7 +341,7 @@ ED.Drawing.prototype.checkAllLoaded = function()
 }
 
 /**
- * Loads doodles from passed set into doodleArray
+ * Loads doodles from passed set in JSON format into doodleArray
  *
  * @param {Set} _doodleSet Set of doodles from server
  */
@@ -348,6 +356,7 @@ ED.Drawing.prototype.load = function(_doodleSet)
 			this,
 			_doodleSet[i].originX,
 			_doodleSet[i].originY,
+			_doodleSet[i].radius,
 			_doodleSet[i].apexX,
 			_doodleSet[i].apexY,
 			_doodleSet[i].scaleX,
@@ -1819,6 +1828,7 @@ ED.Report.prototype.isMacOff = function()
  * @property {Drawing} drawing Drawing to which this doodle belongs
  * @property {Int} originX X coordinate of origin in doodle plane
  * @property {Int} originY Y coordinate of origin in doodle plane
+ * @property {Float} radius of doodle from origin (used for some rotatable doodles that are fixed at origin)
  * @property {Int} apexX X coordinate of apex in doodle plane
  * @property {Int} apexY Y coordinate of apex in doodle plane
  * @property {Float} scaleX Scale of doodle along X axis
@@ -1863,6 +1873,7 @@ ED.Report.prototype.isMacOff = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1871,7 +1882,7 @@ ED.Report.prototype.isMacOff = function()
  * @param {Float} _rotation
  * @param {Int} _order
  */
-ED.Doodle = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+ED.Doodle = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
 	// Function called as part of prototype assignment has no parameters passed
 	if (typeof(_drawing) != 'undefined')
@@ -1885,12 +1896,13 @@ ED.Doodle = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _sca
 			// Default set of parameters (Note use of unary + operator to type convert to numbers)
 			this.originX = +0;
 			this.originY = +0;
+            this.radius = +0;
 			this.apexX = +0;
 			this.apexY = +0;
 			this.scaleX = +1;
 			this.scaleY = +1;
 			this.arc = Math.PI;
-			this.rotation = 0;
+			this.rotation = +0;
 			this.order = this.drawing.doodleArray.length;
 			
 			this.setParameterDefaults();
@@ -1904,6 +1916,7 @@ ED.Doodle = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _sca
 			// Parameters
 			this.originX = +_originX;
 			this.originY = +_originY;
+            this.radius = +_radius;
 			this.apexX = +_apexX;
 			this.apexY = +_apexY;
 			this.scaleX = +_scaleX;
@@ -1940,7 +1953,6 @@ ED.Doodle = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _sca
         this.snapToGrid = false;
         this.snapToQuadrant = false;
         this.willReport = true;
-        this.radius = 0;
 		this.rangeOfScale = new ED.Range(+0.5, +4.0);
 		this.rangeOfArc = new ED.Range(Math.PI/6, Math.PI*2);
 		this.rangeOfApexX = new ED.Range(-500, +500);
@@ -2245,6 +2257,9 @@ ED.Doodle.prototype.drawBoundary = function(_point)
 			ctx.fill();
 		}
 		ctx.stroke();
+        
+        // Reset so shadow only on boundary
+        ctx.shadowBlur = 0;
 	}
 }
 
@@ -2451,6 +2466,7 @@ ED.Doodle.prototype.json = function()
     s = s + '"subclass": ' + '"' + this.className + '", '
     s = s + '"originX": ' + this.originX.toFixed(0) + ', '
     s = s + '"originY": ' + this.originY.toFixed(0) + ', '
+    s = s + '"radius": ' + this.radius.toFixed(0) + ', '
     s = s + '"apexX": ' + this.apexX.toFixed(0) + ', '
     s = s + '"apexY": ' + this.apexY.toFixed(0) + ', '
     s = s + '"scaleX": ' + this.scaleX.toFixed(2) + ', '

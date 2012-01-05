@@ -44,10 +44,10 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Float} _rotation
  * @param {Int} _order
  */
-ED.Freehand = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+ED.Freehand = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
 	// Call superclass constructor
-	ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
 	
 	// Set classname
 	this.className = "Freehand";
@@ -179,10 +179,10 @@ ED.Freehand.prototype.draw = function(_point)
  * @param {Float} _rotation
  * @param {Int} _order
  */
-ED.Lable = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+ED.Lable = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
 	// Call superclass constructor
-	ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
 	
 	// Set classname
 	this.className = "Lable";
@@ -324,10 +324,10 @@ ED.Lable.prototype.addLetter = function(_keyCode)
  * @param {Float} _rotation
  * @param {Int} _order
  */
-ED.Arrow = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+ED.Arrow = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
 	// Call superclass constructor
-	ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
 	
 	// Set classname
 	this.className = "Arrow";
@@ -440,14 +440,14 @@ ED.Arrow.prototype.draw = function(_point)
  * @param {Float} _rotation
  * @param {Int} _order
  */
-ED.Slider = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+ED.Slider = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
     // Slider Properties (Establish before superclass call so values are available for setPropertyDefaults)
     this.halfHeight =  6;
     this.halfLength = 200;
     
 	// Call superclass constructor
-	ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
 	
 	// Set classname
 	this.className = "Slider";
@@ -543,7 +543,6 @@ ED.Slider.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        console.log(this.apexX + " " + this.rangeOfApexX.max);
 	}
 	
     // Coordinates of handles (in canvas plane)
@@ -586,10 +585,10 @@ ED.Slider.prototype.description = function()
  * @param {Float} _rotation
  * @param {Int} _order
  */
-ED.PointInLine = function(_drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+ED.PointInLine = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
 	// Call superclass constructor
-	ED.Doodle.call(this, _drawing, _originX, _originY, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
 	
 	// Set classname
 	this.className = "PointInLine";
