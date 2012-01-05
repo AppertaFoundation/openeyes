@@ -40,10 +40,6 @@ if (empty($theatres)) {?>
 <?php
 			$previousSequenceId = '';
 			$timeAvailable = $sessions[0]['sessionDuration'];
-			// /me holds nose
-			Yii::log(var_export($sessions[0],true));
-			$session_metadata = array_intersect_key($sessions[0], array('consultant'=>0,'anaesthetist'=>0,'paediatric'=>0));
-			Yii::log(var_export($session_metadata,true));
 			foreach ($sessions as $session) {
 				if ($previousSequenceId != $session['sequenceId']) {
 					if ($previousSequenceId != '') {
@@ -51,8 +47,15 @@ if (empty($theatres)) {?>
 						</tbody>
 						<tfoot>
 							<tr>
-								<th colspan="8" class="footer">
-									Time unallocated: <span><?php echo $timeAvailable ?> min</span>
+								<?php $status = ($timeAvailable > 0); ?>
+								<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
+									<div class="timeLeft">
+										<?php if($status) { ?>
+										<?php echo $timeAvailable ?> minutes unallocated
+										<?php } else { ?>
+										<?php echo abs($timeAvailable) ?> minutes overbooked
+										<?php } ?>
+									</div>
 									<div class="metadata">
 										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
 										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
@@ -75,11 +78,10 @@ if (empty($theatres)) {?>
 					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_<?php echo $session['sessionId']?>" href="#">Edit</a></span>
 				</div>
 				<div class="theatre-sessions whiteBox clearfix">
-					<div class="sessionComments" style="display:block; float:right; width:250px; ">
+					<div class="sessionComments" style="display:block; float:right; width:205px; ">
 						<form>
-							Comments<br/>
-							<div style="height: 0.4em;"></div>
-							<textarea style="display: none;" rows="2" style="width:245px;" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
+							<h4>Comments</h4>
+							<textarea style="display: none;" rows="2" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
 							<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
 						</form>
 					</div>
@@ -155,14 +157,23 @@ if (empty($theatres)) {?>
 ?>
 								</td>
 							</tr>
-<?php
+			<?php
+				// Session data is replicated in every "session" record so we need to capture the last one of each group for display in the footer. Now wash your hands...
+				$session_metadata = array_intersect_key($session, array('consultant'=>0,'anaesthetist'=>0,'paediatric'=>0));
 			}
-?>
+			?>
 						</tbody>
 						<tfoot>
 							<tr>
-								<th colspan="8" class="footer">
-									Time unallocated: <span><?php echo $timeAvailable ?> min</span>
+								<?php $status = ($timeAvailable > 0); ?>
+								<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
+									<div class="timeLeft">
+										<?php if($status) { ?>
+										<?php echo $timeAvailable ?> minutes unallocated
+										<?php } else { ?>
+										<?php echo abs($timeAvailable) ?> minutes overbooked
+										<?php } ?>
+									</div>
 									<div class="metadata">
 										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
 										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
