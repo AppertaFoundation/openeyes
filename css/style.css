@@ -395,17 +395,17 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #episodes_sidebar > .episode.open 	{ background: #eaddaf; margin-bottom:5px;}
 #episodes_sidebar > .episode.closed { background: #dad3ba; margin-bottom:5px;}
 /* nav */
-.episode .episode_nav { width:170px; background: #fff; float:left; padding:5px 6px 10px 5px; margin:3px 0 3px 0;}
+.episode .episode_nav { width:170px; background: #fff; float:left; padding:5px 6px 10px 5px; margin:3px 1px 3px 0;}
 .episode .episode_nav > h4 { margin-top:5px;  }
 .episode ul.events { list-style-type: none; padding: 0px; margin: 0px;}
 .episode ul.events li { display:block; height:19px; margin-bottom:4px; } 
-.episode ul.events li img { vertical-align:middle; margin-left:-5px; margin-right: 10px; } 
+.episode ul.events li img { vertical-align:middle; margin-left:0; margin-right: 10px; } 
 .episode ul.events .date { position:relative; top:2px; border-bottom: }
 .episode ul.events .date .day { display:inline-block; width:20px; text-align:right; margin-right: 5px;  }
 .episode ul.events .date .mth { display:inline-block; width:34px; }
-.episode ul.events li a { display:block; height:inherit; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
+.episode ul.events li a { display:block; height:inherit; margin-left:-5px; padding-left:8px; padding-right: 10px; -webkit-border-top-right-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-topright: 6px; -moz-border-radius-bottomright: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px;}
 .episode ul.events li a:hover { border-bottom: none; background: #3665ff; color:#fff; }
-.episode ul.events li .viewing { display:block; height:inherit; background: #ccc url(../img/_elements/icons/event/event_open_arrow.png) right center no-repeat; color:#fff; margin-left: 5px; padding-right: 10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
+.episode ul.events li .viewing { display:block; height:inherit; background: #ccc url(../img/_elements/icons/event/event_open_arrow.png) right center no-repeat; color:#fff; margin-left:-5px; padding-left:8px; padding-right: 10px; -webkit-border-top-right-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-topright: 6px; -moz-border-radius-bottomright: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; }
 
 /* category colours - watermark tint */
 .episode ul.events li .viewing.demo { color:#333; background-color: #fff; }
