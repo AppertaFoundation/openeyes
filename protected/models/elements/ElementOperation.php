@@ -584,13 +584,6 @@ class ElementOperation extends BaseElement
 		if (empty($date)) {
 			throw new Exception('Date is required.');
 		}
-/*
-		if (!$emergency) {
-			$firmId = empty($_GET['firm']) ? $this->event->episode->firm_id : $_GET['firm'];
-		} else {
-			$firmId = null;
-		}
-*/
 
 		if (empty($emergency) || $emergency == 'EMG') {
 			$firmId = null;
@@ -613,17 +606,34 @@ class ElementOperation extends BaseElement
 			$session['id'] = $session['session_id'];
 			unset($session['session_duration'], $session['date'], $session['name']);
 
+			// Add status field to indicate if session is full or not
 			if ($session['time_available'] <= 0) {
-				$status = 'full';
+				$session['status'] = 'full';
 			} else {
-				$status = 'available';
+				$session['status'] = 'available';
 			}
-			$session['status'] = $status;
 
+			// Add bookable field to indicate if session can be booked for this operation
+			$bookable = ($session['time_available'] > 0);
+			if($bookable) {
+				if($this->anaesthetist_required && !$session['anaesthetist']) {
+					$bookable = false;
+				}
+				if($this->consultant_required && !$session['consultant']) {
+					$bookable = false;
+				}
+				$paediatric = ($this->event->episode->patient->getAge() < 16);
+				if($paediatric && !$session['paediatric']) {
+					$bookable = false;
+				}
+			}
+			$session['bookable'] = $bookable;
+			
 			$results[$name][] = $session;
 			if (!in_array($name, $names)) {
 				$names[] = $name;
 			}
+
 		}
 
 		if (count($results) > 1) {

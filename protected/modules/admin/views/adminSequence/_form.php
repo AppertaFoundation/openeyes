@@ -90,6 +90,28 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 )); ?>
 		<?php echo $form->error($model,'end_date'); ?>
 	</div>
+	
+	<div class="row">
+		<input id="Sequence_consultant" value="1" type="checkbox" name="Sequence[consultant]" 
+		<?php if($model->consultant) { ?>checked="checked"<?php } ?> />
+		<?php echo $form->labelEx($model,'consultant'); ?>
+		<?php echo $form->error($model,'consultant'); ?>
+	</div>
+	
+	<div class="row">
+		<input id="Sequence_paediatric" value="1" type="checkbox" name="Sequence[paediatric]" 
+		<?php if($model->paediatric) { ?>checked="checked"<?php } ?> />
+		<?php echo $form->labelEx($model,'paediatric'); ?>
+		<?php echo $form->error($model,'paediatric'); ?>
+	</div>
+	
+	<div class="row">
+		<input id="Sequence_anaesthetist" value="1" type="checkbox" name="Sequence[anaesthetist]" 
+		<?php if($model->anaesthetist) { ?>checked="checked"<?php } ?> />
+		<?php echo $form->labelEx($model,'anaesthetist'); ?>
+		<?php echo $form->error($model,'anaesthetist'); ?>
+	</div>
+
 	<div class="row">
 		<?php echo $form->labelEx($model,'week_selection');
 		$i = 0;
@@ -101,6 +123,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		}
 		echo $form->error($model,'week_selection'); ?>
 	</div>
+	
 	<div class="row">
 		<?php echo $form->labelEx($model,'repeat_interval'); ?>
 		<?php echo $form->dropDownList($model,'repeat_interval',$model->getFrequencyOptions()) . ' (Leave as-is if using week selection above)'; ?>

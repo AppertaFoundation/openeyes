@@ -478,7 +478,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation #dates #month_back {float:left; margin-left:10px; position:relative; top:-5px; }
 #operation #dates #month_forward { float:right; margin-right: 10px; position:relative; top:-5px; }
 #operation table { width:100%; } /* match dates width */
-#operation table tbody * { padding:25px 25px 22px 25px; background: #eee; border: 1px solid #fff; text-align: center; }
+#operation table tbody * { padding:15px 25px 12px 25px; background: #eee; border: 1px solid #fff; text-align: center; }
 #operation table tbody th { width:50px; background:#666; color:#fff; } /* the day, i.e Weds */
 #operation table tbody td { width:140px; }
 #operation table tbody td.invalid { color:#999; width:auto;  }
@@ -508,13 +508,15 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatres > h4 { font-weight: bold; }
 #theatre-times h5 { margin:20px 0 5px 10px; padding:0; font-size:16px; }
 #theatre-times .sessionTimes {}
-#theatre-times .sessionTimes .timeBlock { display:inline-block; width:300px; background: #eeeeee; color:#999; border:1px solid #fff; padding:15px 25px 12px 25px; text-align: center;  }
-#theatre-times .sessionTimes .timeBlock.available { background:#69bd51; color:#000; }
-#theatre-times .sessionTimes .timeBlock.available:hover { background:#3665ff; color:#fff; cursor:pointer; }
-#theatre-times .sessionTimes .timeBlock.selected_session { background:#3665ff; color:#fff; }
-#theatre-times .sessionTimes .timeBlock .time { display:block; font-size:16px; }
-#theatre-times .sessionTimes .timeBlock .available { display:block; }
-#theatre-times .sessionTimes .timeBlock .session_id { display:none; }
+#theatre-times .sessionTimes .timeBlock { display:inline-block; width:300px; background: #eeeeee; color:#999; border:1px solid #fff; padding:15px 25px 12px 25px; text-align: center; position: relative; }
+#theatre-times .sessionTimes .timeBlock.bookable { background:#69bd51; color:#000; }
+#theatre-times .sessionTimes .timeBlock.bookable:hover { background:#3665ff; color:#fff; cursor:pointer; }
+#theatre-times .sessionTimes .timeBlock.selected_session { background: #3665ff; color: #fff; }
+#theatre-times .sessionTimes .timeBlock .time { font-size: 16px; }
+#theatre-times .sessionTimes .timeBlock .session_id { display: none; }
+#theatre-times .sessionTimes .timeBlock .metadata { position: absolute; bottom: 6px; right: 6px; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
+#theatre-times .sessionTimes .timeBlock .metadata div { opacity: 1; }
+
 /* session details */
 #session_details { margin-top:20px; }
 #session_details > h4 { font-weight: bold; margin-bottom:20px;  }

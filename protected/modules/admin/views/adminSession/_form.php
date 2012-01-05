@@ -30,9 +30,24 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<div class="row"><?php echo $model->end_time; ?></div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'comments'); ?>
-		<?php echo $form->textArea($model,'comments', array('rows'=>10, 'cols'=>40)); ?>
-		<?php echo $form->error($model,'comments'); ?>
+		<input id="Session_consultant" value="1" type="checkbox" name="Session[consultant]" 
+		<?php if($model->consultant) { ?>checked="checked"<?php } ?> />
+		<?php echo $form->labelEx($model,'consultant'); ?>
+		<?php echo $form->error($model,'consultant'); ?>
+	</div>
+	
+	<div class="row">
+		<input id="Session_paediatric" value="1" type="checkbox" name="Session[paediatric]" 
+		<?php if($model->paediatric) { ?>checked="checked"<?php } ?> />
+		<?php echo $form->labelEx($model,'paediatric'); ?>
+		<?php echo $form->error($model,'paediatric'); ?>
+	</div>
+	
+	<div class="row">
+		<input id="Session_anaesthetist" value="1" type="checkbox" name="Session[anaesthetist]" 
+		<?php if($model->anaesthetist) { ?>checked="checked"<?php } ?> />
+		<?php echo $form->labelEx($model,'anaesthetist'); ?>
+		<?php echo $form->error($model,'anaesthetist'); ?>
 	</div>
 
 	<div class="row">
@@ -45,6 +60,12 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 			} ?> /> <label for="Session_status_<?php echo $i; ?>" style="display: inline; font-weight: normal;"><?php echo $name; ?></label> &nbsp; <?php
 		}
 		echo $form->error($model,'status'); ?>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'comments'); ?>
+		<?php echo $form->textArea($model,'comments', array('rows'=>10, 'cols'=>40)); ?>
+		<?php echo $form->error($model,'comments'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -92,29 +92,35 @@ class BookingService
 			$firmSql = "f.firm_id = $firmId";
 		}
 
-		$sql = "SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
+		$sql = "
+			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
+				s.consultant, s.anaesthetist, s.paediatric,
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
+			JOIN `theatre` `t` ON q.theatre_id = t.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			JOIN `theatre` `t` ON q.theatre_id = t.id
-			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND s.date = '" . $date . "' AND $firmSql
+			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
+				AND s.date = '" . $date . "' AND $firmSql
 			GROUP BY s.id
-		UNION
+			
+			UNION
+			
 			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
+				s.consultant, s.anaesthetist, s.paediatric,
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s`
 			JOIN `sequence` `q` ON s.sequence_id = q.id
 			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
 			JOIN `theatre` `t` ON q.theatre_id = t.id
-			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
-				s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
-				s.date = '" . $date . "' AND $firmSql";
+			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
+				AND s.date = '" . $date . "' AND $firmSql
+				AND s.id NOT IN (SELECT DISTINCT (session_id) FROM booking)";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 

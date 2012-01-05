@@ -25,6 +25,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property integer $repeat_interval
  * @property integer $weekday
  * @property integer $week_selection
+ * @property boolean $consultant
+ * @property boolean $paediatric
+ * @property boolean $anaesthetist
  *
  * The followings are the available model relations:
  * @property Theatre $theatre
@@ -76,7 +79,7 @@ class Sequence extends BaseActiveRecord
 			array('theatre_id, start_date, start_time, end_time, repeat_interval', 'required'),
 			array('repeat_interval', 'numerical', 'integerOnly'=>true),
 			array('theatre_id', 'length', 'max'=>10),
-			array('end_date, week_selection', 'safe'),
+			array('end_date, week_selection, consultant, paediatric, anaesthetist', 'safe'),
 			array('start_date', 'date', 'format'=>'yyyy-MM-dd'),
 			array('start_time', 'date', 'format'=>array('H:mm', 'H:mm:ss')),
 			array('end_time', 'date', 'format'=>array('H:mm', 'H:mm:ss')),
@@ -84,7 +87,7 @@ class Sequence extends BaseActiveRecord
 			array('end_time', 'checkTimes'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, theatre_id, start_date, start_time, end_time, end_date, repeat_interval, weekday, week_selection, firm_id, site_id', 'safe', 'on'=>'search'),
+			array('id, theatre_id, start_date, start_time, end_time, end_date, consultant, paediatric, anaesthetist, repeat_interval, weekday, week_selection, firm_id, site_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -115,6 +118,8 @@ class Sequence extends BaseActiveRecord
 			'end_time' => 'End Time (HH:MM or HH:MM:SS)',
 			'end_date' => 'End Date',
 			'repeat_interval' => 'Repeat',
+			'anaesthetist' => 'Anaesthetist present',
+			'consultant' => 'Consultant present',
 		);
 	}
 

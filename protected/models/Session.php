@@ -23,6 +23,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $end_time
  * @property string $comments
  * @property integer $status
+ * @property boolean $consultant
+ * @property boolean $paediatric
+ * @property boolean $anaesthetist
  *
  * The followings are the available model relations:
  * @property Booking[] $bookings
@@ -64,7 +67,7 @@ class Session extends BaseActiveRecord
 		return array(
 			array('sequence_id, date, start_time, end_time', 'required'),
 			array('sequence_id', 'length', 'max'=>10),
-			array('comments, status', 'safe'),
+			array('comments, status, consultant, paediatric, anaesthetist', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, sequence_id, date, start_time, end_time, comments, status, firm_id, site_id, weekday', 'safe', 'on'=>'search'),
@@ -97,7 +100,9 @@ class Session extends BaseActiveRecord
 			'start_time' => 'Start Time',
 			'end_time' => 'End Time',
 			'comments' => 'Comments',
-			'status' => 'Status'
+			'status' => 'Status',
+			'anaesthetist' => 'Anaesthetist present',
+			'consultant' => 'Consultant present',
 		);
 	}
 

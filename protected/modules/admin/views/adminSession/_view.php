@@ -32,13 +32,24 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('end_time')); ?>:</b>
 	<?php echo CHtml::encode($data->end_time); ?>
-<?php
-	if (!empty($data->comments)) { ?>
 	<br/>
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('consultant')); ?>:</b>
+	<?php echo ($data->consultant) ? 'Yes' : 'No'; ?>
+	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('paediatric')); ?>:</b>
+	<?php echo ($data->paediatric) ? 'Yes' : 'No'; ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetist')); ?>:</b>
+	<?php echo ($data->anaesthetist) ? 'Yes' : 'No'; ?>
+	<br />
+	
+	<?php if (!empty($data->comments)) { ?>
 	<b><?php echo CHtml::encode($data->getAttributeLabel('comments')); ?>:</b>
 	<?php echo CHtml::encode($data->comments); ?>
-<?php
-	}
-	?>
+	<br/>
+	<?php	}	?>
+	
 </div>
