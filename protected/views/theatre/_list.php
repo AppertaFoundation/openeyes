@@ -40,6 +40,10 @@ if (empty($theatres)) {?>
 <?php
 			$previousSequenceId = '';
 			$timeAvailable = $sessions[0]['sessionDuration'];
+			// /me holds nose
+			Yii::log(var_export($sessions[0],true));
+			$session_metadata = array_intersect_key($sessions[0], array('consultant'=>0,'anaesthetist'=>0,'paediatric'=>0));
+			Yii::log(var_export($session_metadata,true));
 			foreach ($sessions as $session) {
 				if ($previousSequenceId != $session['sequenceId']) {
 					if ($previousSequenceId != '') {
@@ -47,7 +51,14 @@ if (empty($theatres)) {?>
 						</tbody>
 						<tfoot>
 							<tr>
-								<th colspan="8" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
+								<th colspan="8" class="footer">
+									Time unallocated: <span><?php echo $timeAvailable ?> min</span>
+									<div class="metadata">
+										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
+										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
+										<?php if($session_metadata['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
+									</div>
+								</th>
 							</tr>
 						</tfoot>
 					</table>
@@ -150,7 +161,14 @@ if (empty($theatres)) {?>
 						</tbody>
 						<tfoot>
 							<tr>
-								<th colspan="8" class="footer">Time unallocated: <span><?php echo $timeAvailable ?> min</span></th>
+								<th colspan="8" class="footer">
+									Time unallocated: <span><?php echo $timeAvailable ?> min</span>
+									<div class="metadata">
+										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
+										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
+										<?php if($session_metadata['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
+									</div>
+								</th>
 							</tr>
 						</tfoot>
 					</table>

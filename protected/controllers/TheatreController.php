@@ -94,7 +94,7 @@ class TheatreController extends BaseController
 
 	public function actionSearch()
 	{
-		$this->renderPartial('_list', array('theatres'=>$this->getTheatres()), false, true);
+		$this->renderPartial('_list', array('theatres' => $this->getTheatres()), false, true);
 	}
 
 	public function getTheatres()
@@ -129,8 +129,8 @@ class TheatreController extends BaseController
 				$firmId = Yii::app()->session['selected_firm_id'];
 			}
 
-			$_POST['date-start'] = $this->reformat_date($_POST['date-start']);
-			$_POST['date-end'] = $this->reformat_date($_POST['date-end']);
+			$_POST['date-start'] = Helper::convertNHS2MySQL($_POST['date-start']);
+			$_POST['date-end'] = Helper::convertNHS2MySQL($_POST['date-end']);
 
 			if (empty($_POST['date-start']) || empty($_POST['date-end'])) {
 				$startDate = $service->getNextSessionDate($firmId);
@@ -174,8 +174,10 @@ class TheatreController extends BaseController
 					}
 					$procedures['List'] .= $row['short_format'];
 				}
-
-				$theatres[$values['name']][$values['date']][] = array(
+				
+				$theatreTitle = $values['name'] . ' ('. $values['site_name'] . ')';
+				//$theatreTitle = $values['name'];
+				$theatres[$theatreTitle][$values['date']][] = array(
 					'operationId' => $values['operation_id'],
 					'episodeId' => $values['episodeId'],
 					'eventId' => $values['eventId'],
@@ -204,13 +206,16 @@ class TheatreController extends BaseController
 					'displayOrder' => $values['display_order'],
 					'comments' => $values['session_comments'],
 					'operationDuration' => $values['operation_duration'],
-					'confirmed' => $values['confirmed']
+					'confirmed' => $values['confirmed'],
+					'consultant' => $values['session_consultant'],
+					'paediatric' => $values['session_paediatric'],
+					'anaesthetist' => $values['session_anaesthetist'],
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
-					$theatreTotals[$values['name']][$values['date']][$values['session_id']] = $values['operation_duration'];
+					$theatreTotals[$theatreTitle][$values['date']][$values['session_id']] = $values['operation_duration'];
 				} else {
-					$theatreTotals[$values['name']][$values['date']][$values['session_id']] += $values['operation_duration'];
+					$theatreTotals[$theatreTitle][$values['date']][$values['session_id']] += $values['operation_duration'];
 				}
 			}
 
@@ -225,13 +230,6 @@ class TheatreController extends BaseController
 		}
 
 		return $theatres;
-	}
-
-	public function reformat_date($date) {
-		if (preg_match('/^([0-9]+)-([a-zA-Z]+)-([0-9]+)$/',$date,$m)) {
-			return "{$m[3]}-".str_pad($this->get_month_num($m[2]),2,'0',STR_PAD_LEFT)."-".str_pad($m[1],2,'0',STR_PAD_LEFT);
-		}
-		return $date;
 	}
 
 	public function get_month_num($month) {
