@@ -419,7 +419,7 @@ class BookingController extends BaseController
 
 			$reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
 
-			$cancellation = new CancelledBooking;
+			$cancellation = new CancelledBooking();
 			$cancellation->element_operation_id = $operationId;
 			$cancellation->date = $model->session->date;
 			$cancellation->start_time = $model->session->start_time;
@@ -449,10 +449,9 @@ class BookingController extends BaseController
 						}
 					}
 				} else {
+					$operation = ElementOperation::model()->findByPk($operationId);
 					// we need to update the element_operation with a more accurate site_id based on what /was/ in the operation scheduled before it gets nuked.  this gives better information on the waiting list when it comes to rescheduling
-					# FIXME - where to grab the site it was booked for?
 					$operation->site_id = $model->ward->site->id;
-
 
 					$model->delete();
 
@@ -461,7 +460,7 @@ class BookingController extends BaseController
 
 					// we've just removed a booking and updated the element_operation status to 'needs rescheduling'
 					// any time we do that we need to add a new record to date_letter_sent
-					$date_letter_sent = new DateLetterSent;
+					$date_letter_sent = new DateLetterSent();
 					$date_letter_sent->element_operation_id = $operation->id;
 					$date_letter_sent->save();
 
