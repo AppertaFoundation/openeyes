@@ -455,7 +455,6 @@ class BookingController extends BaseController
 
 					$model->delete();
 
-					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
 
 					// we've just removed a booking and updated the element_operation status to 'needs rescheduling'
