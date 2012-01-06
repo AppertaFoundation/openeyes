@@ -599,7 +599,7 @@ class ElementOperation extends BaseElement
 		foreach ($sessions as $session) {
 			$theatre = Theatre::model()->findByPk($session['id']);
 
-			$name = $session['name'] . ' (' . $theatre->site->name . ')';
+			$name = $session['name'] . ' (' . $theatre->site->short_name . ')';
 			$sessionTime = explode(':', $session['session_duration']);
 			$session['duration'] = ($sessionTime[0] * 60) + $sessionTime[1];
 			$session['time_available'] = $session['duration'] - $session['bookings_duration'];

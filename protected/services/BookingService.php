@@ -231,7 +231,7 @@ class BookingService
 			}
 
 			$command = Yii::app()->db->createCommand()
-				->select('DISTINCT(o.id) AS operation_id, t.name, i.name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
+				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric,
 					f.name AS firm_name, spec.name AS specialty_name,
@@ -260,7 +260,7 @@ class BookingService
 			$whereSql .= ' AND sfa.id IS NULL';
 
 			$command = Yii::app()->db->createCommand()
-				->select('DISTINCT(o.id) AS operation_id, t.name, i.name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
+				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric,
 					o.eye, o.anaesthetic_type, o.comments, b.admission_time,

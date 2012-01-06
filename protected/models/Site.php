@@ -18,6 +18,14 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * The followings are the available columns in table 'site':
  * @property string $id
  * @property string $name
+ * @property string $code
+ * @property string $short_name
+ * @property string $address1
+ * @property string $address2
+ * @property string $address3
+ * @property string $postcode
+ * @property string $fax
+ * @property string $telephone
  *
  * The followings are the available model relations:
  * @property Theatre[] $theatres
