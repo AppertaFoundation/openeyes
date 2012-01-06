@@ -192,7 +192,7 @@ button.classy span.button-span-red		{  text-shadow: 1px 1px 0 #9a091c, 2px 2px 0
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
 button#addNewEvent { width:202px; }
 .button-icon-green { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
-.button-icon-inactive { font-size: 17px; font-weight: bold; width: 5px; float: left; margin-left: 7px; margin-top: 4px; padding-right: 6px; text-shadow: 2px 2px 0px #8b8b8b; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+.button-icon-inactive { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow:-1px -1px 0 #999; }
 
 /* background colours */
 button.classy.green {
