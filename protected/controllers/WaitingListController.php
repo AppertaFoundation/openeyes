@@ -55,9 +55,10 @@ class WaitingListController extends BaseController
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$status = !empty($_POST['status']) ? $_POST['status'] : null;
 			$hos_num = !empty($_POST['hos_num']) && ctype_digit($_POST['hos_num']) ? $_POST['hos_num'] : false;
+			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
 
 			$service = new WaitingListService;
-			$operations = $service->getWaitingList($firmId, $specialtyId, $status, $hos_num);
+			$operations = $service->getWaitingList($firmId, $specialtyId, $status, $hos_num, $site_id);
 		}
 
 		$this->renderPartial('_list', array('operations' => $operations), false, true);

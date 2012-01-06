@@ -28,19 +28,23 @@ class WaitingListService
 	 * @param int $status
 	 * @return array
 	 */
-	public function getWaitingList($firmId, $specialtyId, $status, $hos_num=false)
+	public function getWaitingList($firmId, $specialtyId, $status, $hos_num=false, $site_id=false)
 	{
 		$whereSql = '';
 
 		// intval() for basic data sanitising
 		if (!empty($firmId)) {
-			$whereSql .= 'AND f.id = ' . intval($firmId);
+			$whereSql .= ' AND f.id = ' . intval($firmId).' ';
 		} elseif (!empty($specialtyId)) {
-			$whereSql .= 'AND ssa.specialty_id = ' . intval($specialtyId);
+			$whereSql .= ' AND ssa.specialty_id = ' . intval($specialtyId).' ';
 		}
 
 		if ($hos_num && ctype_digit($hos_num)) {
-			$whereSql .= "AND pat.hos_num = '$hos_num' ";
+			$whereSql .= " AND pat.hos_num = '$hos_num' ";
+		}
+
+		if ($site_id && ctype_digit($site_id)) {
+			$whereSql .= " AND eo.site_id = $site_id ";
 		}
 
 		$whereSql2 = $whereSql;

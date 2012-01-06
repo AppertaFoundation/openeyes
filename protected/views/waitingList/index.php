@@ -18,6 +18,7 @@
 					                <th>Firm:</th>
 
 					                <th>Type:</th>
+													<th>Site:</th>
 
 					        	</tr>
 					        	<tr  class="even">
@@ -53,6 +54,9 @@
 					                	<?php
 									        echo CHtml::dropDownList('status', '', ElementOperation::getLetterOptions())
 									    ?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('site_id','',Site::model()->getList(),array('empty'=>'All sites'))?>
 									</td>
 									<td>
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
