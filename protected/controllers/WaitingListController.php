@@ -116,7 +116,7 @@ class WaitingListController extends BaseController
 	/**
 	 * Prints next pending letter type for requested operations
 	 * Operation IDs are passed as an array (operations[]) via GET or POST
-	 * Invalid
+	 * Invalid operation IDs are ignored
 	 * @throws CHttpException
 	 */
 	public function actionPrintLetters() {
@@ -125,15 +125,16 @@ class WaitingListController extends BaseController
 			throw new CHttpException('400', 'Invalid operation list');
 		}
 		$operations = ElementOperation::model()->findAllByPk($operation_ids);
-		$break = false;
 		
 		// Print a letter for each operation, separated by a page break
+		$break = false;
 		foreach($operations as $operation) {
 			if($break) {
 				$this->printBreak();
+			} else {
+				$break = true;
 			}
 			$this->printLetter($operation);
-			$break = true;
 		}
 	}
 	
@@ -166,9 +167,9 @@ class WaitingListController extends BaseController
 				$contact = $consultant->contact;
 				$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
 			}
-			$site = $operation->site; // FIXME: This might be wrong
-			$procedureList = array(); // FIXME
-			$changeContact = 'FIXME'; // FIXME
+			$site = $operation->site; // FIXME: This might not be the site we're looking for
+			$procedureList = array(); // FIXME: Need to move code from 25.php
+			$changeContact = 'FIXME'; // FIXME: Need to move code from 25.php
 			$patient = $operation->event->episode->patient;
 			$this->renderPartial('letter/'.$letter_template, array(
 				'operation' => $operation,
