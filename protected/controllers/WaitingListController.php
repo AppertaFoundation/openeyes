@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -43,6 +43,15 @@ class WaitingListController extends BaseController
 	 */
 	public function actionIndex()
 	{
+		if (empty($_POST)) {
+			// look for values from the session
+			if (Yii::app()->session['waitinglist_searchoptions']) {
+				foreach (Yii::app()->session['waitinglist_searchoptions'] as $key => $value) {
+					$_POST[$key] = $value;
+				}
+			}
+		}
+
 		$this->render('index');
 	}
 
@@ -57,6 +66,14 @@ class WaitingListController extends BaseController
 			$hos_num = !empty($_POST['hos_num']) && ctype_digit($_POST['hos_num']) ? $_POST['hos_num'] : false;
 			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
 
+			Yii::app()->session['waitinglist_searchoptions'] = array(
+				'specialty-id' => $specialtyId,
+				'firm-id' => $firmId,
+				'status' => $status,
+				'hos_num' => $hos_num,
+				'site_id' => $site_id
+			);
+
 			$service = new WaitingListService;
 			$operations = $service->getWaitingList($firmId, $specialtyId, $status, $hos_num, $site_id);
 		}
@@ -70,6 +87,10 @@ class WaitingListController extends BaseController
 	 */
 	public function actionFilterFirms()
 	{
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['specialty-id'] = $_POST['specialty_id'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+
 		echo CHtml::tag('option', array('value'=>''),
 			CHtml::encode('All firms'), true);
 		if (!empty($_POST['specialty_id'])) {
@@ -82,6 +103,29 @@ class WaitingListController extends BaseController
 		}
 	}
 
+	public function actionFilterSetFirm() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['firm-id'] = $_POST['firm_id'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetStatus() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['status'] = $_POST['status'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetSiteId() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['site_id'] = $_POST['site_id'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetHosNum() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['hos_num'] = $_POST['hos_num'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
 	/**
 	 * Helper method to fetch firms by specialty ID
 	 *
