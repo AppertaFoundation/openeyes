@@ -56,11 +56,13 @@ if (empty($theatres)) {?>
 										<?php echo abs($timeAvailable) ?> minutes overbooked
 										<?php } ?>
 									</div>
+									<?php if(array_sum($session_metadata)) { ?>
 									<div class="metadata">
 										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
 										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
 										<?php if($session_metadata['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
 									</div>
+									<?php } ?>
 								</th>
 							</tr>
 						</tfoot>
@@ -174,11 +176,13 @@ if (empty($theatres)) {?>
 										<?php echo abs($timeAvailable) ?> minutes overbooked
 										<?php } ?>
 									</div>
+									<?php if(array_sum($session_metadata)) { ?>
 									<div class="metadata">
 										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
 										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
 										<?php if($session_metadata['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
 									</div>
+									<?php } ?>
 								</th>
 							</tr>
 						</tfoot>
