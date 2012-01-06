@@ -1,4 +1,4 @@
-/* HTML5 ✰ Boilerplate
+§/* HTML5 ✰ Boilerplate
  * ==|== normalize ==========================================================
  */
 
@@ -165,67 +165,86 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;  }
 .labelHint 		{ color: #777; }
 .labelRequired 	{ color: #b33; }
 
-/* buttons -- set up all normal buttons */
-button.btn_login, button.btn_find-patient, button.btn_refine-search, button.btn_print-letter, button.btn_cancel, button.btn_search, button.btn_save, button.btn_print { display:inline-block; width:125px; height:40px; }
-/* graphics */
-button.btn_login 		{ background:transparent url(../img/_elements/btns/login.png) no-repeat; }
-button.btn_login:hover 	{ background-image: url(../img/_elements/btns/login_o.png); }
-button.btn_find-patient 			{ background:transparent url(../img/_elements/btns/find-patient.png) no-repeat; }
-button.btn_find-patient:hover 	{ background-image: url(../img/_elements/btns/find-patient_o.png); }
-button.btn_refine-search 		{ background:transparent url(../img/_elements/btns/refine-search.png) no-repeat; }
-button.btn_refine-search:hover 	{ background-image: url(../img/_elements/btns/refine-search_o.png); }
-button.btn_print 		{ background:transparent url(../img/_elements/btns/print.png) no-repeat; }
-button.btn_print:hover 	{ background-image: url(../img/_elements/btns/print_o.png); }
-button.btn_print-letter 		{ background:transparent url(../img/_elements/btns/print-letter.png) no-repeat; }
-button.btn_print-letter:hover 	{ background-image: url(../img/_elements/btns/print-letter_o.png); }
-button.btn_cancel 			{ background:transparent url(../img/_elements/btns/cancel.png) no-repeat; }
-button.btn_cancel:hover 	{ background-image: url(../img/_elements/btns/cancel_o.png); }
-button.btn_save 		{ background:transparent url(../img/_elements/btns/save.png) no-repeat; }
-button.btn_save:hover 	{ background-image: url(../img/_elements/btns/save_o.png); }
-button.btn_search 			{ background:transparent url(../img/_elements/btns/search.png) no-repeat; }
-button.btn_search:hover 	{ background-image: url(../img/_elements/btns/search_o.png); }
-/* special buttons */
-button.btn_newEvent			{ float:right; width:155px; height:35px; margin:0px 0px 0px 0px;padding:0px;}
-button.btn_newEvent 		{ background:transparent url(../img/_elements/btns/new-event.png) no-repeat; }
-button.btn_newEvent:hover 	{ background-image: url(../img/_elements/btns/new-event_o.png); }
-/* long buttons -- set up all wide buttons */
-button.wBtn_save-schedule-later, button.wBtn_save-schedule-now, button.wBtn_schedule-now, button.wBtn_print-invitation-letter, button.wBtn_print-reminder-letter, button.wBtn_print-gp-refer-back-letter, button.wBtn_cancel-operation, button.wBtn_confirm-slot, button.wBtn_reschedule-now, button.wBtn_reschedule-later, button.wBtn_previous-month, button.wBtn_next-month, button.wBtn_close-episode, button.wBtn_edit-operation, button.wBtn_add-schedule-later, button.wBtn_add-schedule-now  { display:inline-block; width:202px; height:40px; } 
-/* graphics */
-button.wBtn_save-schedule-later 		{ background:transparent url(../img/_elements/btns/wide/save-schedule-later.png) no-repeat; }
-button.wBtn_save-schedule-later:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-later_o.png); }
-button.wBtn_save-schedule-now 			{ background:transparent url(../img/_elements/btns/wide/save-schedule-now.png) no-repeat; }
-button.wBtn_save-schedule-now:hover 	{ background-image: url(../img/_elements/btns/wide/save-schedule-now_o.png); }
-button.wBtn_schedule-now 			{ background:transparent url(../img/_elements/btns/wide/schedule-now.png) no-repeat; }
-button.wBtn_schedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/schedule-now_o.png); }
-button.wBtn_print-invitation-letter				{ background:transparent url(../img/_elements/btns/wide/print-invitation-letter.png) no-repeat; }
-button.wBtn_print-invitation-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-invitation-letter_o.png); }
-button.wBtn_print-reminder-letter			{ background:transparent url(../img/_elements/btns/wide/print-reminder-letter.png) no-repeat; }
-button.wBtn_print-reminder-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-reminder-letter_o.png); }
-button.wBtn_print-gp-refer-back-letter			{ background:transparent url(../img/_elements/btns/wide/print-gp-refer-back-letter.png) no-repeat; }
-button.wBtn_print-gp-refer-back-letter:hover 		{ background-image: url(../img/_elements/btns/wide/print-gp-refer-back-letter_o.png); }
-button.wBtn_cancel-operation			{ background:transparent url(../img/_elements/btns/wide/cancel-operation.png) no-repeat; }
-button.wBtn_cancel-operation:hover 		{ background-image: url(../img/_elements/btns/wide/cancel-operation_o.png); }
-button.wBtn_edit-operation			{ background:transparent url(../img/_elements/btns/wide/edit-operation.png) no-repeat; }
-button.wBtn_edit-operation:hover 	{ background-image: url(../img/_elements/btns/wide/edit-operation_o.png); }
-button.wBtn_confirm-slot			{ background:transparent url(../img/_elements/btns/wide/confirm-slot.png) no-repeat; }
-button.wBtn_confirm-slot:hover 	{ background-image: url(../img/_elements/btns/wide/confirm-slot_o.png); }
-button.wBtn_reschedule-now			{ background:transparent url(../img/_elements/btns/wide/reschedule-now.png) no-repeat; }
-button.wBtn_reschedule-now:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-now_o.png); }
-button.wBtn_reschedule-later			{ background:transparent url(../img/_elements/btns/wide/reschedule-later.png) no-repeat; }
-button.wBtn_reschedule-later:hover 		{ background-image: url(../img/_elements/btns/wide/reschedule-later_o.png); }
-button.wBtn_previous-month			{ background:transparent url(../img/_elements/btns/wide/previous-month.png) no-repeat; }
-button.wBtn_previous-month:hover 	{ background-image: url(../img/_elements/btns/wide/previous-month_o.png); }
-button.wBtn_next-month			{ background:transparent url(../img/_elements/btns/wide/next-month.png) no-repeat; }
-button.wBtn_next-month:hover 	{ background-image: url(../img/_elements/btns/wide/next-month_o.png); }
-button.wBtn_close-episode			{ background:transparent url(../img/_elements/btns/wide/close-episode.png) no-repeat; }
-button.wBtn_close-episode:hover 	{ background-image: url(../img/_elements/btns/wide/close-episode_o.png); }
-button.wBtn_add-schedule-later	{ background-image: url(../img/_elements/btns/wide/add-schedule-later.png); }
-button.wBtn_add-schedule-later:hover  { background-image: url(../img/_elements/btns/wide/add-schedule-later_o.png); }
-button.wBtn_add-schedule-now { background-image: url(../img/_elements/btns/wide/add-schedule-now.png); }
-button.wBtn_add-schedule-now:hover  { background-image: url(../img/_elements/btns/wide/add-schedule-now_o.png); }
+/* === CLASSY CSS BUTTONS === */
+/* default, inactive */
+button.classy { height:32px; padding:0; position:relative; top:1px; font-family: sans-serif; font-weight:normal; font-size:17px; letter-spacing: 1px;
+color:#fff; text-shadow:-1px -1px 0 #999; white-space:nowrap; border:none; overflow:visible; background:#bbb; 
+background: -moz-linear-gradient(#cacacb, #aeaeaf);    
+background: -ms-linear-gradient(#cacacb, #aeaeaf);  
+background: -webkit-linear-gradient(#cacacb, #aeaeaf); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#cacacb', endColorstr='#aeaeaf')"; 
+background:	linear-gradient(#cacacb, #aeaeaf); 
+border-bottom:2px solid #929293; 
+-webkit-border-radius:4px; -moz-border-radius:4px; border-radius:4px; 
+-webkit-box-shadow:0 1px 4px rgba(0,0,0,0.3); -moz-box-shadow:0 1px 4px rgba(0,0,0,0.3); box-shadow:0 1px 4px rgba(0,0,0,0.3); 
+cursor:pointer; }
+/* widths */
+button.tall 	{ width: 125px;}
+button.grande 	{ width: 154px; }
+button.venti 	{ width: auto; margin:0 2px;}
+button.venti span { padding:0 22px; }
+/* button text */
+button.classy span.button-span	  	 	{  display:block; height:32px; line-height:31px; }
+button.classy span.button-span-green 	{  text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+button.classy span.button-span-blue 	{  text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
+button.classy span.button-span-red		{  text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
 
+/* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
+button#addNewEvent { width:202px; }
+.button-icon-green { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+.button-icon-inactive { font-size: 17px; font-weight: bold; width: 5px; float: left; margin-left: 7px; margin-top: 4px; padding-right: 6px; text-shadow: 2px 2px 0px #8b8b8b; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
 
-/* small buttons */
+/* background colours */
+button.classy.green {
+background: -moz-linear-gradient(#43a844, #55a256);    
+background: -ms-linear-gradient(#43a844, #55a256);  
+background: -webkit-linear-gradient(#43a844, #55a256); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#43a844', endColorstr='#55a256')"; 
+background:	linear-gradient(#43a844, #55a256);
+border-bottom:2px solid #3fa522;  
+}
+button.classy.green:hover {
+background: -moz-linear-gradient(#48bd27, #3fa522);    
+background: -ms-linear-gradient(#48bd27, #3fa522);  
+background: -webkit-linear-gradient(#48bd27, #3fa522); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#48bd27', endColorstr='#3fa522')"; 
+background:	linear-gradient(#48bd27, #3fa522);
+border-bottom:2px solid #569b42; 
+}
+button.classy.blue {
+background: -moz-linear-gradient(#107be9, #1469bf);    
+background: -ms-linear-gradient(#107be9, #1469bf);  
+background: -webkit-linear-gradient(#107be9, #1469bf); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#107be9', endColorstr='#1469bf')"; 
+background:	linear-gradient(#107be9, #1469bf);
+border-bottom:2px solid #105dae;  
+}
+button.classy.blue:hover {
+background: -moz-linear-gradient(#118afb, #1279e3);    
+background: -ms-linear-gradient(#118afb, #1279e3);  
+background: -webkit-linear-gradient(#118afb, #1279e3); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#118afb', endColorstr='#1279e3')"; 
+background:	linear-gradient(#118afb, #1279e3);
+border-bottom:2px solid #1974d1; 
+}
+button.classy.red {
+background: -moz-linear-gradient(#cf0d27, #b8152b);    
+background: -ms-linear-gradient(#cf0d27, #b8152b);  
+background: -webkit-linear-gradient(#cf0d27, #b8152b); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#cf0d27', endColorstr='#b8152b')"; 
+background:	linear-gradient(#cf0d27, #b8152b);
+border-bottom:2px solid #9a091c;  
+}
+button.classy.red:hover {
+background: -moz-linear-gradient(#e81515, #e01a1a);    
+background: -ms-linear-gradient(#e81515, #e01a1a);  
+background: -webkit-linear-gradient(#e81515, #e01a1a); 
+-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#e81515', endColorstr='#e01a1a')"; 
+background:	linear-gradient(#e81515, #e01a1a);
+border-bottom:2px solid #ad1515; 
+}
+
+/* small buttons -- graphic */
 button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
 button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
 button.smBtn_modify:hover 	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
@@ -708,27 +727,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #procedureDiv { background: #DAE6F1; }
 
 
-/* === NEW BUTTON CLASSES === */
 
-button.classy,a.button.classy,button.classy:disabled:hover,a.button.classy.disabled:hover { height:32px; padding:0; position:relative; top:1px; font-family:Verdana; /*helvetica,arial,freesans,clean,sans-serif;*/ font-weight:normal; font-size:14px; letter-spacing: 1px; color:#333; text-shadow:1px 1px 0 #fff; white-space:nowrap; border:none; overflow:visible; background:#ddd; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#ffffff',endColorstr='#e1e1e1'); background:-webkit-gradient(linear,0% 0,0% 100%,from(#fff),to(#e1e1e1)); background:-moz-linear-gradient(-90deg,#fff,#e1e1e1); border-bottom:1px solid #ebebeb; -webkit-border-radius:4px; -moz-border-radius:4px; border-radius:4px; -webkit-box-shadow:0 1px 4px rgba(0,0,0,0.3); -moz-box-shadow:0 1px 4px rgba(0,0,0,0.3); box-shadow:0 1px 4px rgba(0,0,0,0.3); cursor:pointer; -webkit-font-smoothing:subpixel-antialiased!important; color:#fff; text-shadow:-1px -1px 0 rgba(0,0,0,0.3); }
-button.tall { width: 125px;}
-button.grande { width: 154px; }
-button.venti { width: 222px; }
-a.button.classy { display:inline-block; }
-span.button-span { display:block; height:32px; padding:0 16px; line-height:31px; }
-span.button-span-green { text-shadow: 2px 2px 0px #3f7940; filter: dropshadow(color=#3f7940, offx=2, offy=2); }
-span.button-span-blue { text-shadow: 2px 2px 0px #1359a1; filter: dropshadow(color=#1359a1, offx=2, offy=2); }
-span.button-span-red { text-shadow: 2px 2px 0px #ac1b1b; filter: dropshadow(color=#ac1b1b, offx=2, offy=2); }
-span.button-span-inactive { text-shadow: 2px 2px 0px #8b8b8b; filter: dropshadow(color=#8b8b8b, offx=2, offy=2); }
-.button-icon-green { font-size: 18px; font-weight: bold; width: 5px; float: left; margin-left: 7px; margin-top: 4px; padding-right: 6px; text-shadow: 2px 2px 0px #3f7940; filter: dropshadow(color=#3f7940, offx=2, offy=2); }
-.button-icon-inactive { font-size: 18px; font-weight: bold; width: 5px; float: left; margin-left: 7px; margin-top: 4px; padding-right: 6px; text-shadow: 2px 2px 0px #8b8b8b; filter: dropshadow(color=#8b8b8b, offx=2, offy=2); }
-a.button.classy.first-in-line,button.classy.first-in-line { margin-left:0; }
-button.classy.green,a.button.classy.green { background:#58a859; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#5fa660',endColorstr='#58a859'); background:-webkit-gradient(linear,left top,left bottom,from(#5fa660),to(#58a859)); background:-moz-linear-gradient(top,#5fa660,#58a859); border-color:#74bb5a; border-bottom-color:#509338; }
-button.classy.green:hover,a.button.classy.green:hover { border-bottom-color:#60b044; background:#60b044; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#8add6d',endColorstr='#60b044'); background:-webkit-gradient(linear,0% 0,0% 100%,from(#8add6d),to(#60b044)); background:-moz-linear-gradient(-90deg,#8add6d,#60b044); }
-button.classy.blue,a.button.classy.blue { background:#1c81e9; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#1c81e9',endColorstr='#4196ed'); background:-webkit-gradient(linear,left top,left bottom,from(#1c81e9),to(#4196ed)); background:-moz-linear-gradient(top,#1c81e9,#4196ed); border-color:#74bb5a; border-bottom-color:#4196ed; }
-button.classy.blue:hover,a.button.classy.blue:hover { border-bottom-color:#1f8eff; background:#1f8eff; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#44a1ff',endColorstr='#1f8eff'); background:-webkit-gradient(linear,0% 0,0% 100%,from(#44a1ff),to(#1f8eff)); background:-moz-linear-gradient(-90deg,#44a1ff,#1f8eff); }
-button.classy.red,a.button.classy.red { background:#cf2239; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#cf2239',endColorstr='#dc2d44'); background:-webkit-gradient(linear,left top,left bottom,from(#cf2239),to(#dc2d44)); background:-moz-linear-gradient(top,#cf2239,#dc2d44); border-color:#74bb5a; border-bottom-color:#dc2d44; }
-button.classy.red:hover,a.button.classy.red:hover { border-bottom-color:#e82525; background:#e82525; filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#fc1313',endColorstr='#e82525'); background:-webkit-gradient(linear,0% 0,0% 100%,from(#fc1313),to(#e82525)); background:-moz-linear-gradient(-90deg,#fc1313,#e82525); }
-button.classy.inactive,a.button.classy.inactive { background: #c4c4c4;}
-button.classy::-moz-focus-inner { margin:-1px -3px; }
-button.classy img,a.button.classy img { position:relative; top:-1px; margin-right:3px; vertical-align:middle; }
+
+
+
