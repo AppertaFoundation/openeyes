@@ -102,11 +102,25 @@ if (!empty($address)) {
 						<div class="data_row">
 							<div class="data_label">Email:</div>
 							<div class="data_value"><?php echo !empty($address->email) ? $address->email : 'Unknown'?></div>
-
 						</div>
 						<div class="data_row">
 							<div class="data_label">Next of Kin:</div>
 							<div class="data_value">Unknown</div>
+						</div>
+					</div>
+					<div class="whiteBox" id="gp_details">
+						<h4>General Practitioner:</h4>
+						<div class="data_row">
+							<div class="data_label">Name:</div>
+							<div class="data_value"><?php echo ($model->gp !== null) ? $model->gp->contact->title.' '.$model->gp->contact->first_name.' '.$model->gp->contact->last_name : 'Unknown'?></div>
+						</div>
+						<div class="data_row">
+							<div class="data_label">Address:</div>
+							<div class="data_value"><?php echo ($model->gp !== null) ? $model->gp->contact->address->address1.' '.$model->gp->contact->address->address2.' '.$model->gp->contact->address->city.' '.$model->gp->contact->address->county.' '.$model->gp->contact->address->postcode : 'Unknown'?></div>
+						</div>
+						<div class="data_row">
+							<div class="data_label">Telephone:</div>
+							<div class="data_value"><?php echo ($model->gp !== null) ? $model->gp->contact->primary_phone : 'Unknown'?></div>
 						</div>
 					</div>
 				</div>	<!-- .halfColumn -->
