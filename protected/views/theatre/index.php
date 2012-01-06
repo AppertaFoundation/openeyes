@@ -308,7 +308,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	}
 
 	function format_date(d) {
-		return d.getDate()+"-"+getmonth(d.getMonth())+"-"+d.getFullYear();
+		// FIXME: This should be getting the format from the Helper somehow 
+		return d.getDate() + " " + getmonth(d.getMonth()) + " " + d.getFullYear();
 	}
 
 	$('#date-filter_0').click(function() {
@@ -393,7 +394,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	function returnDateWithIntervalFromString(ds, interval) {
 		// Uses real date format (months from 1 to 12)
-		times = ds.split('-');
+		// FIXME: Needs to be defined by Helper
+		times = ds.split(' ');
 
 		// Convert to javascript date format
 		date = new Date(times[2], getmonth_r(times[1]), times[0], 0, 0, 0, 0);

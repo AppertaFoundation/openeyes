@@ -399,7 +399,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #patient-adv-search { display:none; }
 
 /* ====== PATIENT - SUMMARY ====== */ 
-#personal_details h4, #contact_details h4 { padding:3px 0 8px 0; font-size:12px; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
+#personal_details h4, #contact_details h4, #gp_details h4 { padding:3px 0 8px 0; font-size:12px; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
 .data_row  {  background:inherit;  border-bottom:1px dotted #ccc; padding:10px 0; }
 .data_row:last-child { border-bottom:none; margin-bottom: 0; }
 .data_row .data_label { float:left; color:#777;  }

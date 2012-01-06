@@ -23,20 +23,28 @@ class Helper {
 	const NHS_DATE_EXAMPLE = '5 Dec 2011';
 	
 	/**
-	 * Convert NHS dates (d-mmm-yyyy) to MySQL format.
+	 * Convert NHS dates to MySQL format.
 	 * Strings that do not match the NHS format are returned unchanged.
 	 * 
-	 * @param array $data Data containing one or more NHS dates
+	 * @param string|array $data Data containing one or more NHS dates
 	 * @param array $fields Fields (keys) to convert (optional, if empty then all fields are checked for dates)
+	 * @return string|array
 	 */
 	public static function convertNHS2MySQL($data, $fields = null) {
+		if($is_string = !is_array($data)) {
+			$data = array('dummy' => $data);
+		}
 		$list = ($fields) ? $fields : array_keys($data);
 		foreach($list as $key) {
 			if(isset($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
 				$data[$key] = date('Y-m-d',strtotime($data[$key]));
 			}
 		}
-		return $data;
+		if($is_string) {
+			return $data['dummy'];
+		} else {
+			return $data;
+		}
 	}
 	
 	/**

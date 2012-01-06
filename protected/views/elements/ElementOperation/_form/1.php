@@ -209,7 +209,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 
-					<div id="site" class="siteDetail">
+					<div id="site" class="eventDetail">
 						<div class="label"><?php echo $form->label(ElementOperation::model(),'site_id'); ?></div>
 						<div class="data">
 							<?php 

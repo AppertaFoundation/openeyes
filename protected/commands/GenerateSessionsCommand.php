@@ -126,9 +126,9 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 			}
 
 			if (!empty($dateList)) {
-				$insert = 'INSERT IGNORE INTO session (sequence_id, date, start_time, end_time) VALUES ';
+				$insert = 'INSERT IGNORE INTO session (sequence_id, date, start_time, end_time, consultant, anaesthetist, paediatric) VALUES ';
 				foreach ($dateList as $date) {
-					$insert .= "({$sequence->id}, '$date', '{$sequence->start_time}', '{$sequence->end_time}')";
+					$insert .= "({$sequence->id}, '$date', '{$sequence->start_time}', '{$sequence->end_time}', '{$sequence->consultant}', '{$sequence->anaesthetist}', '{$sequence->paediatric}')";
 					if ($date != end($dateList)) {
 						$insert .= ', ';
 					}
