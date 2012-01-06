@@ -24,19 +24,19 @@ class WaitingListService
 	 *	to be rescheduled.
 	 *
 	 * @param int $firmId
-	 * @param int $serviceId
+	 * @param int $specialtyId
 	 * @param int $status
 	 * @return array
 	 */
-	public function getWaitingList($firmId, $serviceId, $status)
+	public function getWaitingList($firmId, $specialtyId, $status)
 	{
 		$whereSql = '';
 
 		// intval() for basic data sanitising
 		if (!empty($firmId)) {
 			$whereSql .= 'AND f.id = ' . intval($firmId);
-		} elseif (!empty($serviceId)) {
-			$whereSql .= 'AND ssa.service_id = ' . intval($serviceId);
+		} elseif (!empty($specialtyId)) {
+			$whereSql .= 'AND ssa.specialty_id = ' . intval($specialtyId);
 		}
 
 		$whereSql2 = $whereSql;
