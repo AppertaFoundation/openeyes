@@ -79,6 +79,7 @@ class WaitingListService
 		$sql = '
 			SELECT
 				eo.id AS eoid,
+				eo.decision_date as decision_date,
 				ev.id AS evid,
 				ep.id AS epid,
 				pat.id AS pid,
@@ -119,6 +120,7 @@ class WaitingListService
 		UNION
 			SELECT
 				eo.id AS eoid,
+				eo.decision_date as decision_date,
 				ev.id AS evid,
 				ep.id AS epid,
 				pat.id AS pid,
@@ -159,6 +161,7 @@ class WaitingListService
 			' . $whereSql2 . '
 			GROUP BY
 				opa.operation_id
+			ORDER BY decision_date ASC
 		';
 
 		return Yii::app()->db->createCommand($sql)->query();
