@@ -35,6 +35,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
+	<script type="text/javascript" src="/js/print.js"></script>
 </head> 
  
 <body> 
@@ -62,9 +63,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		</div--><!-- mainmenu -->
 		<div id="content"> 
 			<?php echo $content; ?>
-			<!-- Unused 
-			<div class="printable" id="printable"></div>
-			 -->
 		</div><!-- #content --> 
 		<div id="help" class="clearfix"> 
 			<?php /*
@@ -104,11 +102,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				}
 			});
 		});
-		/* Unused
-		function printContent() {
-			$('#printable').printElement();
-		}
-		*/
 	</script>
 
 	<?php if (Yii::app()->params['watermark']) {?>
