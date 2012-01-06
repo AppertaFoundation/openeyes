@@ -33,6 +33,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
+	<script type="text/javascript" src="/js/print.js"></script>
 
 </head>
 
@@ -63,9 +64,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 		<div id="content">
 			<?php echo $content; ?>
-			<!-- ====================================================  P R I N T  S T U F F ============  -->
-			<div class="printable" id="printable"></div> <!-- end of printable area -->
-			<!-- ====================================================  end of P R I N T  S T U F F ============  -->
 		</div><!-- #content -->
 		<div id="help" class="clearfix">
 			<?php /*
@@ -99,32 +97,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				}
 			});
 		});
-
-		function clearPrintContent() {
-			$('#printable').html('');
-		}
-
-		function appendPrintContent(content) {
-			$('#printable').append(content);
-		}
-
-		function printContent() {
-			$('#printable').printElement({
-				pageTitle: 'OpenEyes printout',
-				//leaveOpen: true,
-				//printMode: 'popup',
-				printBodyOptions: {
-					styleToAdd: 'width: auto !important; margin: 0.75em !important;',
-					classNameToAdd : 'openeyesPrintout'
-				},
-				overrideElementCSS: [
-					{
-						href: '/css/printcontent.css',
-						media: 'all'
-					}
-				]
-			});
-		}
 	</script>
 
 	<?php if (Yii::app()->params['watermark']) {?>

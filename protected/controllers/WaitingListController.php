@@ -85,7 +85,6 @@ class WaitingListController extends BaseController
 	 * Helper method to fetch firms by specialty ID
 	 *
 	 * @param integer $specialtyId
-	 *
 	 * @return array
 	 */
 	protected function getFilteredFirms($specialtyId)
@@ -106,4 +105,92 @@ class WaitingListController extends BaseController
 
 		return $firms;
 	}
+	
+	/**
+	 * Test page for letter printing dev
+	 * TODO: Remove for launch
+	 */
+	public function actionTestPrintLetters() {
+		$this->render('test_letter');
+	}
+	
+	/**
+	 * Prints next pending letter type for requested operations
+	 * Operation IDs are passed as an array (operations[]) via GET or POST
+	 * Invalid operation IDs are ignored
+	 * @throws CHttpException
+	 */
+	public function actionPrintLetters() {
+		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
+		if(!is_array($operation_ids)) {
+			throw new CHttpException('400', 'Invalid operation list');
+		}
+		$operations = ElementOperation::model()->findAllByPk($operation_ids);
+		
+		// Print a letter for each operation, separated by a page break
+		$break = false;
+		foreach($operations as $operation) {
+			if($break) {
+				$this->printBreak();
+			} else {
+				$break = true;
+			}
+			$this->printLetter($operation);
+		}
+	}
+	
+	/**
+	 * Print a page break
+	 */
+	protected function printBreak() {
+		$this->renderPartial("letter/break");
+	}
+	
+	/**
+	 * Print the next letter for an operation
+	 * @param ElementOperation $operation
+	 */
+	protected function printLetter($operation) {
+		$letter_status = $operation->getLetterStatus();
+		$letter_templates = array(
+			ElementOperation::LETTER_INVITE => 'invitation_letter',
+			ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
+			ElementOperation::LETTER_REMINDER_2 => 'reminder_letter',
+			ElementOperation::LETTER_GP => 'gp_letter', // FIXME: This isn't implemented yet
+			ElementOperation::LETTER_REMOVAL => false,
+		);
+		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
+		if($letter_template) {
+			$consultant = $operation->event->episode->firm->getConsultant();
+			if (empty($consultant)) {
+				$consultantName = 'CONSULTANT';
+			} else {
+				$contact = $consultant->contact;
+				$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
+			}
+			$site = $operation->site; // FIXME: This might not be the site we're looking for
+			$procedureList = array(); // FIXME: Need to move code from 25.php
+			$changeContact = 'FIXME'; // FIXME: Need to move code from 25.php
+			$patient = $operation->event->episode->patient;
+			$this->renderPartial('letter/'.$letter_template, array(
+				'operation' => $operation,
+				'site' => $site,
+				'patient' => $patient,
+				'consultantName' => $consultantName,
+				'changeContact' => $changeContact,
+				'procedureList' => $procedureList,
+			));
+			$this->printBreak();
+			$this->renderPartial("letter/form", array(
+				'operation' => $operation, 
+				'site' => $site,
+				'patient' => $patient,
+				'consultantName' => $consultantName,
+				'procedureList' => $procedureList,
+			));
+		} else {
+			throw CException('Undefined operation letter template: '.$letter_status);
+		}
+	}
+
 }
