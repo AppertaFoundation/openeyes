@@ -449,12 +449,26 @@ class BookingController extends BaseController
 						}
 					}
 				} else {
+					// we need to update the element_operation with a more accurate site_id based on what /was/ in the operation scheduled before it gets nuked.  this gives better information on the waiting list when it comes to rescheduling
+					# FIXME - where to grab the site it was booked for?
+					$operation->site_id = $model->ward->site->id;
+
+
 					$model->delete();
 
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
+
+					// we've just removed a booking and updated the element_operation status to 'needs rescheduling'
+					// any time we do that we need to add a new record to date_letter_sent
+					$date_letter_sent = new DateLetterSent;
+					$date_letter_sent->element_operation_id = $operation->id;
+					$date_letter_sent->save();
+
+
 					if (!$operation->save()) {
 						throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
+					} else {
 					}
 				}
 
