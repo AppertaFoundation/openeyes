@@ -73,7 +73,7 @@ if (empty($operations)) { ?>
 	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSpecialtyAssignment->specialty->name ?>)</td>
 	<td><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
-	<td>FIXME</td>
+	<td><?php echo $eo->site->short_name?></td>
 	<td><?php echo $eo->getStatusText() ?></td>
 </tr>
 
