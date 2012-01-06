@@ -38,6 +38,9 @@
 										                                }
 										                        }",
                 					))); ?>
+													<br/>
+													<div style="height: 0.8em;"></div>
+													Hospital no: <input type="text" size="12" name="hos_num" value="<?=@$_REQUEST['patient_no']?>" />
 									</td>
 					                <td>
 

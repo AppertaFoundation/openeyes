@@ -28,7 +28,7 @@ class WaitingListService
 	 * @param int $status
 	 * @return array
 	 */
-	public function getWaitingList($firmId, $specialtyId, $status)
+	public function getWaitingList($firmId, $specialtyId, $status, $hos_num=false)
 	{
 		$whereSql = '';
 
@@ -37,6 +37,10 @@ class WaitingListService
 			$whereSql .= 'AND f.id = ' . intval($firmId);
 		} elseif (!empty($specialtyId)) {
 			$whereSql .= 'AND ssa.specialty_id = ' . intval($specialtyId);
+		}
+
+		if ($hos_num && ctype_digit($hos_num)) {
+			$whereSql .= "AND pat.hos_num = '$hos_num' ";
 		}
 
 		$whereSql2 = $whereSql;
