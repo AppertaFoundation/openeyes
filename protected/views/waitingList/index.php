@@ -40,8 +40,10 @@
 																						}",
 													))); ?>
 													<br/>
-													<div style="height: 0.8em;"></div>
-													Hospital no: <input type="text" size="12" name="hos_num" id="hos_num" value="<?=@$_POST['hos_num']?>" />
+													<div style="margin-top: 20px;">
+														<label for="hos_num">Hospital no:</label>
+														<input type="text" size="12" name="hos_num" id="hos_num" value="<?=@$_POST['hos_num']?>" />
+													</div>
 									</td>
 													<td>
 
@@ -153,6 +155,8 @@
 	});
 
 	$(document).ready(function() {
+		$('#hos_num').focus();
+
 		if ($('#specialty-id').val() != '') {
 			$.ajax({
 				url: '<?php echo Yii::app()->createUrl('waitingList/filterFirms')?>',
