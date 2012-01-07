@@ -847,24 +847,24 @@ class ElementOperation extends BaseElement
 
 		// if the last letter was the invitation and it was sent over two weeks ago from now:
 		$date_sent = new DateTime($this->date_letter_sent->date_invitation_letter_sent); $date_sent->setTime(0,0,0);
-		if ( ($this->getLastLetter() == self::LETTER_INVITE) and ($date_sent->getTimestamp() - $two_weeks_ago->getTimestamp() > 1209600) ) {
+		if ( ($this->getLastLetter() == self::LETTER_INVITE) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
 			return self::STATUS_GREEN1;
 		}
 
 		// if the last letter was the 1st reminder and it was sent over two weeks ago from now:
 		$date_sent = new DateTime($this->date_letter_sent->date_1st_reminder_letter_sent); $date_sent->setTime(0,0,0);
-		if ( ($this->getLastLetter() == self::LETTER_REMINDER_1) and ($date_sent->getTimestamp() - $two_weeks_ago->getTimestamp() > 1209600) ) {
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_1) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
 			return self::STATUS_GREEN2;
 		}
 
 		// if the last letter was the 2nd reminder and it was sent over two weeks ago from now:
 		$date_sent = new DateTime($this->date_letter_sent->date_2nd_reminder_letter_sent); $date_sent->setTime(0,0,0);
-		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent->getTimestamp() - $two_weeks_ago->getTimestamp() > 1209600) ) {
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
 			return self::STATUS_ORANGE;
 		}
 		// if the last letter was the gp letter and it was sent over one week ago from now:
 		$date_sent = new DateTime($this->date_letter_sent->date_gp_letter_sent); $date_sent->setTime(0,0,0);
-		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent->getTimestamp() - $one_week_ago->getTimestamp() > 1209600) ) {
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
 			return self::STATUS_RED;
 		}
 		return null;
