@@ -833,7 +833,14 @@ class ElementOperation extends BaseElement
 	{
 		if (is_null($this->getLastLetter())) {
 			return self::STATUS_PURPLE; // no invitation letter has been sent
-		} 
+		} elseif (
+			is_null($this->date_letter_sent->date_invitation_letter_sent) and
+			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and
+			is_null($this->date_letter_sent->date_gp_letter_sent)
+		) {
+			return self::STATUS_PURPLE; // no invitation letter has been sent
+		}
 
 		$now = new DateTime(); $now->setTime(0,0,0); $two_weeks_ago = $now->modify('-14 days');
 		$now = new DateTime(); $now->setTime(0,0,0); $one_week_ago = $now->modify('-7 days');
@@ -906,7 +913,7 @@ class ElementOperation extends BaseElement
 		) {
 			return self::LETTER_GP;
 		}
-		return true;
+		return null;
 	}
 
 	public function getNextLetter()
