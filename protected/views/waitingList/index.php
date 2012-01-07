@@ -42,7 +42,7 @@
 													<br/>
 													<div style="margin-top: 20px;">
 														<label for="hos_num">Hospital no:</label>
-														<input type="text" size="12" name="hos_num" id="hos_num" value="<?=@$_POST['hos_num']?>" />
+														<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
 													</div>
 									</td>
 													<td>
