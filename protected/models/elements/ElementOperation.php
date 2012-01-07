@@ -443,7 +443,6 @@ class ElementOperation extends BaseElement
 
 	protected function beforeSave()
 	{
-		# echo $_POST['site_id'] . "fish"; exit;
 		$anaesthetistRequired = array(
 			self::ANAESTHETIC_LOCAL_WITH_COVER, self::ANAESTHETIC_LOCAL_WITH_SEDATION,
 			self::ANAESTHETIC_GENERAL
@@ -835,7 +834,6 @@ class ElementOperation extends BaseElement
 		if (!$this->getLastLetter()) {
 			return self::STATUS_PURPLE; // no invitation letter has been sent
 		} 
-		return "fish";
 
 		$now = new DateTime(); $now->setTime(0,0,0); $two_weeks_ago = $now->modify('-14 days');
 		$now = new DateTime(); $now->setTime(0,0,0); $one_week_ago = $now->modify('-7 days');
@@ -862,6 +860,7 @@ class ElementOperation extends BaseElement
 		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent > $one_week_ago) ) {
 			return self::STATUS_RED;
 		}
+		return null;
 	}
 
 	public function getWaitingListLetterStatus()
