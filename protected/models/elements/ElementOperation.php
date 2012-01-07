@@ -839,24 +839,24 @@ class ElementOperation extends BaseElement
 		$now = new DateTime(); $now->setTime(0,0,0); $one_week_ago = $now->modify('-7 days');
 
 		// if the last letter was the invitation and it was sent over two weeks ago from now:
-		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_invitation_letter_sent)); $date_sent->setTime(0,0,0);
+		$date_sent = new DateTime($this->date_letter_sent->date_invitation_letter_sent); $date_sent->setTime(0,0,0);
 		if ( ($this->getLastLetter() == self::LETTER_INVITE) and ($date_sent > $two_weeks_ago) ) {
 			return self::STATUS_GREEN1;
 		}
 
 		// if the last letter was the 1st reminder and it was sent over two weeks ago from now:
-		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_1st_reminder_letter_sent)); $date_sent->setTime(0,0,0);
+		$date_sent = new DateTime($this->date_letter_sent->date_1st_reminder_letter_sent); $date_sent->setTime(0,0,0);
 		if ( ($this->getLastLetter() == self::LETTER_REMINDER_1) and ($date_sent > $two_weeks_ago) ) {
 			return self::STATUS_GREEN2;
 		}
 
 		// if the last letter was the 2nd reminder and it was sent over two weeks ago from now:
-		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_2nd_reminder_letter_sent)); $date_sent->setTime(0,0,0);
+		$date_sent = new DateTime($this->date_letter_sent->date_2nd_reminder_letter_sent); $date_sent->setTime(0,0,0);
 		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent > $two_weeks_ago) ) {
 			return self::STATUS_ORANGE;
 		}
 		// if the last letter was the gp letter and it was sent over one week ago from now:
-		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_gp_letter_sent)); $date_sent->setTime(0,0,0);
+		$date_sent = new DateTime($this->date_letter_sent->date_gp_letter_sent); $date_sent->setTime(0,0,0);
 		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent > $one_week_ago) ) {
 			return self::STATUS_RED;
 		}
