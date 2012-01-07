@@ -925,6 +925,27 @@ class ElementOperation extends BaseElement
 		}
 	}
 
+	public function getDueLetter()
+	{
+		$lastletter = $this->getLastLetter();
+		if (!$this->getWaitingListStatus()) { // if getwaitingliststatus returns null, we're white
+			return $lastletter; // no new letter is due, so we should print the last one
+		}
+		if ($this->getWaitingListStatus() == self::STATUS_PURPLE) {
+			return self::LETTER_INVITE;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_GREEN1) {
+			return self::LETTER_REMINDER_1;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_GREEN2) {
+			return self::LETTER_REMINDER_2;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_ORANGE) {
+			return self::LETTER_GP;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_RED) {
+			return null; // possibly this should return the gp letter, though it's already been sent?
+		} else {
+			return null; // possibly this should return $lastletter ?
+		}
+	}
+
 	public function getLetterStatus()
 	{
 		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
