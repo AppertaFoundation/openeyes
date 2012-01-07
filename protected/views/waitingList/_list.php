@@ -89,7 +89,7 @@ if (empty($operations)) { ?>
 	<td><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
 	<td><?php echo $eo->getStatusText() ?></td>
-	<td><input type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
+	<td><input <?php if ($tablecolour == 'White') {?>disabled="disabled" <?php }?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
 </tr>
 
 <?php
@@ -105,7 +105,7 @@ if (empty($operations)) { ?>
 </table>
 <script type="text/javascript">
 $('#checkall').click(function() {
-	$('input[id^="operation"]').attr('checked',$('#checkall').is(':checked'));
+	$('input[id^="operation"]:enabled').attr('checked',$('#checkall').is(':checked'));
 });
 </script>
 </div> <!-- #waitingList -->
