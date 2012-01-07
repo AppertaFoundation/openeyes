@@ -832,29 +832,100 @@ class ElementOperation extends BaseElement
 	 */
 	public function getWaitingListStatus()
 	{
-		# these reflect an actual status, relating to actions required rather than letters sent
-		# const STATUS_WHITE = 0; // no action required.  the default status.
-		# const STATUS_PURPLE = 1; // no invitation letter has been sent
-		# const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
-		# const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
-		# const STATUS_ORANGE = 4; // it's two weeks since 2nd reminder was sent with no further letters going out
-		# const STATUS_RED = 5; // it's one week since gp letter was sent and they're still on the list
-		# const STATUS_NOTWAITING = null;
+		if (!$this->getLastLetter()) {
+			return self::STATUS_PURPLE; // no invitation letter has been sent
+		} 
+		return "fish";
 
+		$now = new DateTime(); $now->setTime(0,0,0); $two_weeks_ago = $now->modify('-14 days');
+		$now = new DateTime(); $now->setTime(0,0,0); $one_week_ago = $now->modify('-7 days');
 
+		// if the last letter was the invitation and it was sent over two weeks ago from now:
+		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_invitation_letter_sent)); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_INVITE) and ($date_sent > $two_weeks_ago) ) {
+			return self::STATUS_GREEN1;
+		}
+
+		// if the last letter was the 1st reminder and it was sent over two weeks ago from now:
+		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_1st_reminder_letter_sent)); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_1) and ($date_sent > $two_weeks_ago) ) {
+			return self::STATUS_GREEN2;
+		}
+
+		// if the last letter was the 2nd reminder and it was sent over two weeks ago from now:
+		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_2nd_reminder_letter_sent)); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent > $two_weeks_ago) ) {
+			return self::STATUS_ORANGE;
+		}
+		// if the last letter was the gp letter and it was sent over one week ago from now:
+		$date_sent = new DateTime(strtotime($this->date_letter_sent->date_gp_letter_sent)); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($date_sent > $one_week_ago) ) {
+			return self::STATUS_RED;
+		}
 	}
+
 	public function getWaitingListLetterStatus()
 	{
 		echo var_export($this->date_letter_sent,true); exit;
 	}
+
 	public function getLastLetter()
 	{
-		
+		if (!$this->date_letter_sent) {
+			return null;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and // but no 1st reminder
+			is_null($this->date_letter_sent->date_2st_reminder_letter_sent) and // no 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_INVITE;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			is_null($this->date_letter_sent->date_2st_reminder_letter_sent) and // but no 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_REMINDER_1;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			$this->date_letter_sent->date_2st_reminder_letter_sent and // and a 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_REMINDER_2;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			$this->date_letter_sent->date_2st_reminder_letter_sent and // and a 2nd reminder
+			$this->date_letter_sent->date_gp_letter_sent // and a gp letter
+		) {
+			return self::LETTER_GP;
+		}
 	}
+
 	public function getNextLetter()
 	{
-
+		if (!$this->getLastLetter()) {
+			return self::LETTER_INVITE;
+		} else {
+			$lastletter = $this->getLastLetter();
+			if ($lastletter == self::LETTER_INVITE) {
+				return self::LETTER_REMINDER_1;	
+			} elseif ($lastletter == self::LETTER_REMINDER_1) {
+				return self::LETTER_REMINDER_2;
+			} elseif ($lastletter == self::LETTER_REMINDER_2) {
+				return self::LETTER_GP;
+			} elseif ($lastletter == self::LETTER_GP) {
+				return self::LETTER_REMOVAL;
+			}
+		}
 	}
+
 	public function getLetterStatus()
 	{
 		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {

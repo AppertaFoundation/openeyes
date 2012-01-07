@@ -30,7 +30,23 @@ if (empty($operations)) { ?>
 //		$consultant = $eo->event->episode->firm->getConsultant();
 //		$user = $consultant->contact->userContactAssignment->user;
 ?>
-    <tr class="<?php echo $i%2 ? 'even' : 'odd' ?>">
+
+<?php
+	if ($eo->getWaitingListStatus() == ElementOperation::STATUS_PURPLE) {
+		$tablecolour = "Purple";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_GREEN1) {
+		$tablecolour = "Green";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_GREEN2) {
+		$tablecolour = "Green";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_ORANGE) {
+		$tablecolour = "Orange";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_RED) {
+		$tablecolour = "Red";
+	} else {
+		$tablecolour = "White";
+	}
+?>
+    <tr class="waitinglist<?php echo $tablecolour ?>">
 <?php
 	$letterStatus = $eo->getLetterStatus();
 
