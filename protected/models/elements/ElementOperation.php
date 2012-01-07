@@ -864,7 +864,7 @@ class ElementOperation extends BaseElement
 		}
 		// if the last letter was the gp letter and it was sent over one week ago from now:
 		$date_sent = new DateTime($this->date_letter_sent->date_gp_letter_sent); $date_sent->setTime(0,0,0);
-		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+		if ( ($this->getLastLetter() == self::LETTER_GP) and ($now->getTimestamp() - $date_sent->getTimestamp() > 604800) ) {
 			return self::STATUS_RED;
 		}
 		return null;
