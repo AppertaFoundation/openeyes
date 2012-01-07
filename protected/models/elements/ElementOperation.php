@@ -877,7 +877,7 @@ class ElementOperation extends BaseElement
 		if (
 			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
 			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and // but no 1st reminder
-			is_null($this->date_letter_sent->date_2st_reminder_letter_sent) and // no 2nd reminder
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // no 2nd reminder
 			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
 		) {
 			return self::LETTER_INVITE;
@@ -885,7 +885,7 @@ class ElementOperation extends BaseElement
 		if (
 			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
 			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
-			is_null($this->date_letter_sent->date_2st_reminder_letter_sent) and // but no 2nd reminder
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // but no 2nd reminder
 			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
 		) {
 			return self::LETTER_REMINDER_1;
@@ -893,7 +893,7 @@ class ElementOperation extends BaseElement
 		if (
 			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
 			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
-			$this->date_letter_sent->date_2st_reminder_letter_sent and // and a 2nd reminder
+			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
 			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
 		) {
 			return self::LETTER_REMINDER_2;
@@ -901,7 +901,7 @@ class ElementOperation extends BaseElement
 		if (
 			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
 			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
-			$this->date_letter_sent->date_2st_reminder_letter_sent and // and a 2nd reminder
+			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
 			$this->date_letter_sent->date_gp_letter_sent // and a gp letter
 		) {
 			return self::LETTER_GP;
