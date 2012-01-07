@@ -51,7 +51,9 @@ if (empty($operations)) { ?>
 <?php
 	$lastletter = $eo->getLastLetter();
 
-	if ($lastletter == ElementOperation::LETTER_INVITE) {
+	if (is_null($lastletter)) {
+
+	} elseif ($lastletter == ElementOperation::LETTER_INVITE) {
 		?>
 			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
 		<?php
