@@ -68,6 +68,15 @@ class ElementOperation extends BaseElement
 	const URGENT = 1;
 	const ROUTINE = 0;
 
+	// these reflect an actual status, relating to actions required rather than letters sent
+	const STATUS_WHITE = 0; // no action required.  the default status.
+	const STATUS_PURPLE = 1; // no invitation letter has been sent
+	const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
+	const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
+	const STATUS_ORANGE = 4; // it's two weeks since 2nd reminder was sent with no further letters going out
+	const STATUS_RED = 5; // it's one week since gp letter was sent and they're still on the list
+	const STATUS_NOTWAITING = null;
+
 	public $service;
 
 	/**
@@ -821,6 +830,31 @@ class ElementOperation extends BaseElement
 		 *
 	 * return int
 	 */
+	public function getWaitingListStatus()
+	{
+		# these reflect an actual status, relating to actions required rather than letters sent
+		# const STATUS_WHITE = 0; // no action required.  the default status.
+		# const STATUS_PURPLE = 1; // no invitation letter has been sent
+		# const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
+		# const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
+		# const STATUS_ORANGE = 4; // it's two weeks since 2nd reminder was sent with no further letters going out
+		# const STATUS_RED = 5; // it's one week since gp letter was sent and they're still on the list
+		# const STATUS_NOTWAITING = null;
+
+
+	}
+	public function getWaitingListLetterStatus()
+	{
+		echo var_export($this->date_letter_sent,true); exit;
+	}
+	public function getLastLetter()
+	{
+		
+	}
+	public function getNextLetter()
+	{
+
+	}
 	public function getLetterStatus()
 	{
 		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
