@@ -144,6 +144,7 @@ class ElementOperation extends BaseElement
 			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
 			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'date_letter_sent' => array(self::HAS_ONE, 'DateLetterSent', 'element_operation_id', 'order' => 'date_letter_sent.id DESC')
 		);
 	}
 
@@ -1032,5 +1033,4 @@ class ElementOperation extends BaseElement
 
 		return true;
 	}
-
 }
