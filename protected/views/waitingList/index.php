@@ -106,7 +106,7 @@
 	});
 
 	$('#btn_print_all').click(function() {
-		print_items_from_selector('input[id^="operation"]');
+		print_items_from_selector('input[id^="operation"]:enabled');
 	});
 
 	function print_items_from_selector(sel) {
