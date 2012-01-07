@@ -245,31 +245,8 @@ class WaitingListController extends BaseController
 
 	public function actionConfirmPrinted() {
 		foreach ($_POST['operations'] as $operation_id) {
-			$operation = ElementOperation::Model()->findByPk($operation_id);
-
-			if ($dls = $operation->date_letter_sent) {
-				if ($dls->date_invitation_letter_sent == null) {
-					$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-				} else if ($dls->date_1st_reminder_letter_sent == null) {
-					$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
-				} else if ($dls->date_2nd_reminder_letter_sent == null) {
-					$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
-				} else if ($dls->date_gp_letter_sent == null) {
-					$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
-				} else if ($dls->date_scheduling_letter_sent == null) {
-					$dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
-				}
-				if (!$dls->save()) {
-					throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
-				}
-			} else {
-				$dls = new DateLetterSent;
-				$dls->element_operation_id = $operation->id;
-				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-				$dls->setIsNewRecord(true);
-				if (!$dls->save()) {
-					throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
-				}
+			if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
+				$operation->confirmLetterPrinted();
 			}
 		}
 	}
