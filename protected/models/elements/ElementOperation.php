@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -827,7 +827,7 @@ class ElementOperation extends BaseElement
 	 *
 	 * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
 	 *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
-  	 *
+		 *
 	 * return int
 	 */
 	public function getWaitingListStatus()
@@ -934,7 +934,7 @@ class ElementOperation extends BaseElement
 			$criteria->params = array('eoid' => $this->id);
 			$criteria->order = 'id DESC';
 			$criteria->limit = 1;
-                	$cancelledBooking = CancelledBooking::model()->find($criteria);
+									$cancelledBooking = CancelledBooking::model()->find($criteria);
 
 			$datetime = strtotime($cancelledBooking->cancelled_date);
 		} else {
@@ -1103,5 +1103,32 @@ class ElementOperation extends BaseElement
 		}
 
 		return true;
+	}
+
+	public function confirmLetterPrinted() {
+		if ($dls = $this->date_letter_sent) {
+			if ($dls->date_invitation_letter_sent == null) {
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_1st_reminder_letter_sent == null) {
+				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_2nd_reminder_letter_sent == null) {
+				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_gp_letter_sent == null) {
+				$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_scheduling_letter_sent == null) {
+				$dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
+			}
+			if (!$dls->save()) {
+				throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
+			}
+		} else {
+			$dls = new DateLetterSent;
+			$dls->element_operation_id = $this->id;
+			$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+			$dls->setIsNewRecord(true);
+			if (!$dls->save()) {
+				throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
+			}
+		}
 	}
 }

@@ -148,7 +148,7 @@
 				type: "POST",
 				data: data,
 				success: function(html) {
-					alert(html);
+					$('#waitingList-filter button[type="submit"]').click();
 				}
 			});
 		}
