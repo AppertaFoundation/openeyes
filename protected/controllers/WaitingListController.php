@@ -247,7 +247,7 @@ class WaitingListController extends BaseController
 		foreach ($_POST['operations'] as $operation_id) {
 			$operation = ElementOperation::Model()->findByPk($operation_id);
 
-			if ($dls = $operation->getDateLetterSent()) {
+			if ($dls = $operation->date_letter_sent) {
 				if ($dls->date_invitation_letter_sent == null) {
 					$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
 				} else if ($dls->date_1st_reminder_letter_sent == null) {
