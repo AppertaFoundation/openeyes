@@ -3,7 +3,7 @@ $(document).ready(function() {
 });
 
 function clearPrintContent() {
-	$('#printable').html('');
+	$('#printable').empty();
 }
 
 function appendPrintContent(content) {

@@ -608,6 +608,8 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table td { text-align: left; padding:10px 5px 10px 10px; border-right:1px solid #ccc;   }
 /* .theatre-sessions table td:last-child { border-right: none; } */
 .theatre-sessions table th.footer { font-size:12px; padding:10px; color: #333; }
+.theatre-sessions table th.footer.available { background: #bde0b3; }
+.theatre-sessions table th.footer.full { background: #eee; }
 /* Control the widths of key tds */
 .theatre-sessions table td.session { width:40px; }
 .theatre-sessions table td.dragsort { width:26px; }
@@ -619,14 +621,18 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table td.alerts	 { width:100px; }
 /* alert icons */
 .theatre-sessions table td.alerts > img {margin-right:3px; }
+.theatre-sessions .timeLeft { float: left; font-size: 14px; }
+.theatre-sessions .metadata { float: right; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
+.theatre-sessions .metadata div { opacity: 1; }
 #waitingList table td.letterStatus > img {margin-right:3px; }
 
 
 /* SESSION COMMENTS */
-.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px 10px 20px 10px; margin-bottom: 15px; position:relative; }
+.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px; margin-bottom: 15px; position:relative; min-height: 50px; }
 .sessionComments > .modifyComments { position:absolute; bottom:-20px; right:5px; height:20px; background:#fee54f; padding:3px 10px; }
 .sessionComments > .modifyComments > .date { padding-right:20px; color:#666;}
 .sessionComments > .modifyComments > .edit { float: right; }
+.sessionComments textarea { width: 200px; }
 
 /* waiting list row colour coding */
 .waitinglistPurple {background:#c9c;}
