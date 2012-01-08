@@ -40,8 +40,10 @@
 																						}",
 													))); ?>
 													<br/>
-													<div style="height: 0.8em;"></div>
-													Hospital no: <input type="text" size="12" name="hos_num" id="hos_num" value="<?=@$_POST['hos_num']?>" />
+													<div style="margin-top: 20px;">
+														<label for="hos_num">Hospital no:</label>
+														<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
+													</div>
 									</td>
 													<td>
 
@@ -79,75 +81,135 @@
 				<div id="searchResults" class="whiteBox">
 				</div> <!-- #searchResults -->
 			</div> <!-- #waitinglist_display -->
+			<div style="float: right; margin-right: 18px;">
+				<button style="margin-right: 15px;" type="submit" class="classy blue tall" id="btn_print_all"><span class="button-span button-span-blue">Print all</span></button>
+				<button style="margin-right: 15px;" type="submit" class="classy blue grande" id="btn_print"><span class="button-span button-span-blue">Print selected</span></button>
+				<button type="submit" class="classy green venti" id="btn_confirm_selected"><span class="button-span button-span-green">Confirm selected</span></button>
+			</div>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
-				$('#waitingList-filter button[type="submit"]').click(function() {
-								$.ajax({
-												'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
-												'type': 'POST',
-												'data': $('#waitingList-filter').serialize(),
-												'success': function(data) {
-																$('#searchResults').html(data);
-																return false;
-												}
-								});
-								return false;
-				});
+	$('#waitingList-filter button[type="submit"]').click(function() {
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
+			'type': 'POST',
+			'data': $('#waitingList-filter').serialize(),
+			'success': function(data) {
+				$('#searchResults').html(data);
+				return false;
+			}
+		});
+		return false;
+	});
 
-			$(document).ready(function() {
-				if ($('#specialty-id').val() != '') {
-					$.ajax({
-						url: '<?php echo Yii::app()->createUrl('waitingList/filterFirms')?>',
-						type: "POST",
-						data: "specialty_id="+$('#specialty-id').val(),
-						success: function(data) {
-							$('#firm-id').attr('disabled', false);
-							$('#firm-id').html(data);
-							$('#firm-id').val(<?php echo @$_POST['firm-id']?>);
-						}
-					});
+	$('#btn_print').click(function() {
+		print_items_from_selector('input[id^="operation"]:checked');
+	});
+
+	$('#btn_print_all').click(function() {
+		print_items_from_selector('input[id^="operation"]:enabled');
+	});
+
+	function print_items_from_selector(sel) {
+		var printurl = '/waitingList/printletters';
+		var i = 0;
+
+		$(sel).map(function() {
+			if (i >0) {
+				printurl += "&operations[]=";
+			} else {
+				printurl += "?operations[]=";
+			}
+			printurl += $(this).attr('id').replace(/operation/,'');
+			i += 1;
+		});
+
+		if (i == 0) {
+			alert("No items selected for printing.");
+		} else {
+			printUrl(printurl);
+		}
+	}
+
+	$('#btn_confirm_selected').click(function() {
+		var data = '';
+
+		$('input[id^="operation"]:checked').map(function() {
+			if (data.length >0) {
+				data += '&';
+			}
+			data += "operations[]=" + $(this).attr('id').replace(/operation/,'');
+		});
+
+		if (data.length == 0) {
+			alert('No items selected.');
+		} else {
+			$.ajax({
+				url: '/waitingList/confirmPrinted',
+				type: "POST",
+				data: data,
+				success: function(html) {
+					$('#waitingList-filter button[type="submit"]').click();
 				}
-
-				$('#firm-id').bind('change',function() {
-					$.ajax({
-						url: '<?php echo Yii::app()->createUrl('waitingList/filterSetFirm')?>',
-						type: "POST",
-						data: "firm_id="+$('#firm-id').val(),
-						success: function(data) {
-						}
-					});
-				});
-
-				$('#status').bind('change',function() {
-					$.ajax({
-						url: '<?php echo Yii::app()->createUrl('waitingList/filterSetStatus')?>',
-						type: "POST",
-						data: "status="+$('#status').val(),
-						success: function(data) {
-						}
-					});
-				});
-
-				$('#site_id').bind('change',function() {
-					$.ajax({
-						url: '<?php echo Yii::app()->createUrl('waitingList/filterSetSiteId')?>',
-						type: "POST",
-						data: "site_id="+$('#site_id').val(),
-						success: function(data) {
-						}
-					});
-				});
-
-				$('#hos_num').bind('keyup',function() {
-					$.ajax({
-						url: '<?php echo Yii::app()->createUrl('waitingList/filterSetHosNum')?>',
-						type: "POST",
-						data: "hos_num="+$('#hos_num').val(),
-						success: function(data) {
-						}
-					});
-				});
-
-				$('#waitingList-filter button[type="submit"]').click();
 			});
+		}
+	});
+
+	$(document).ready(function() {
+		$('#hos_num').focus();
+
+		if ($('#specialty-id').val() != '') {
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('waitingList/filterFirms')?>',
+				type: "POST",
+				data: "specialty_id="+$('#specialty-id').val(),
+				success: function(data) {
+					$('#firm-id').attr('disabled', false);
+					$('#firm-id').html(data);
+					$('#firm-id').val(<?php echo @$_POST['firm-id']?>);
+				}
+			});
+		}
+
+		$('#firm-id').bind('change',function() {
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('waitingList/filterSetFirm')?>',
+				type: "POST",
+				data: "firm_id="+$('#firm-id').val(),
+				success: function(data) {
+				}
+			});
+		});
+
+		$('#status').bind('change',function() {
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('waitingList/filterSetStatus')?>',
+				type: "POST",
+				data: "status="+$('#status').val(),
+				success: function(data) {
+				}
+			});
+		});
+
+		$('#site_id').bind('change',function() {
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('waitingList/filterSetSiteId')?>',
+				type: "POST",
+				data: "site_id="+$('#site_id').val(),
+				success: function(data) {
+				}
+			});
+		});
+
+		$('#hos_num').bind('keyup',function() {
+			$.ajax({
+				url: '<?php echo Yii::app()->createUrl('waitingList/filterSetHosNum')?>',
+				type: "POST",
+				data: "hos_num="+$('#hos_num').val(),
+				success: function(data) {
+				}
+			});
+		});
+
+		$('#waitingList-filter button[type="submit"]').click();
+	});
 </script>

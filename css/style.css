@@ -628,6 +628,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .sessionComments > .modifyComments > .date { padding-right:20px; color:#666;}
 .sessionComments > .modifyComments > .edit { float: right; }
 
+/* waiting list row colour coding */
+.waitinglistPurple {background:#c9c;}
+.waitinglistGreen {background:#cf6;}
+.waitinglistOrange {background:#f93;}
+.waitinglistRed {background:#e53737;}
+.waitinglistWhite {background:#eee;}
 
 /* ------------------------ PRINT STUFF */
 

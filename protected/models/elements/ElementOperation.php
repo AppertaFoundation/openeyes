@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -67,6 +67,15 @@ class ElementOperation extends BaseElement
 	
 	const URGENT = 1;
 	const ROUTINE = 0;
+
+	// these reflect an actual status, relating to actions required rather than letters sent
+	const STATUS_WHITE = 0; // no action required.  the default status.
+	const STATUS_PURPLE = 1; // no invitation letter has been sent
+	const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
+	const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
+	const STATUS_ORANGE = 4; // it's two weeks since 2nd reminder was sent with no further letters going out
+	const STATUS_RED = 5; // it's one week since gp letter was sent and they're still on the list
+	const STATUS_NOTWAITING = null;
 
 	public $service;
 
@@ -135,6 +144,7 @@ class ElementOperation extends BaseElement
 			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
 			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'date_letter_sent' => array(self::HAS_ONE, 'DateLetterSent', 'element_operation_id', 'order' => 'date_letter_sent.id DESC')
 		);
 	}
 
@@ -433,7 +443,6 @@ class ElementOperation extends BaseElement
 
 	protected function beforeSave()
 	{
-		# echo $_POST['site_id'] . "fish"; exit;
 		$anaesthetistRequired = array(
 			self::ANAESTHETIC_LOCAL_WITH_COVER, self::ANAESTHETIC_LOCAL_WITH_SEDATION,
 			self::ANAESTHETIC_GENERAL
@@ -817,9 +826,135 @@ class ElementOperation extends BaseElement
 	 *
 	 * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
 	 *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
-  	 *
+		 *
 	 * return int
 	 */
+	public function getWaitingListStatus()
+	{
+		if (is_null($this->getLastLetter())) {
+			return self::STATUS_PURPLE; // no invitation letter has been sent
+		} elseif (
+			is_null($this->date_letter_sent->date_invitation_letter_sent) and
+			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and
+			is_null($this->date_letter_sent->date_gp_letter_sent)
+		) {
+			return self::STATUS_PURPLE; // no invitation letter has been sent
+		}
+
+		$now = new DateTime(); $now->setTime(0,0,0); $two_weeks_ago = $now->modify('-14 days');
+		$now = new DateTime(); $now->setTime(0,0,0); $one_week_ago = $now->modify('-7 days');
+
+		// if the last letter was the invitation and it was sent over two weeks ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_invitation_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_INVITE) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+			return self::STATUS_GREEN1;
+		}
+
+		// if the last letter was the 1st reminder and it was sent over two weeks ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_1st_reminder_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_1) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+			return self::STATUS_GREEN2;
+		}
+
+		// if the last letter was the 2nd reminder and it was sent over two weeks ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_2nd_reminder_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+			return self::STATUS_ORANGE;
+		}
+		// if the last letter was the gp letter and it was sent over one week ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_gp_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_GP) and ($now->getTimestamp() - $date_sent->getTimestamp() > 604800) ) {
+			return self::STATUS_RED;
+		}
+		return null;
+	}
+
+	public function getWaitingListLetterStatus()
+	{
+		echo var_export($this->date_letter_sent,true); exit;
+	}
+
+	public function getLastLetter()
+	{
+		if (!$this->date_letter_sent) {
+			return null;
+		}
+		if (
+			!is_null($this->date_letter_sent->date_invitation_letter_sent) and 
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and // but no 1st reminder
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // no 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_INVITE;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // but no 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_REMINDER_1;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_REMINDER_2;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
+			$this->date_letter_sent->date_gp_letter_sent // and a gp letter
+		) {
+			return self::LETTER_GP;
+		}
+		return null;
+	}
+
+	public function getNextLetter()
+	{
+		if (!$this->getLastLetter()) {
+			return self::LETTER_INVITE;
+		} else {
+			$lastletter = $this->getLastLetter();
+			if ($lastletter == self::LETTER_INVITE) {
+				return self::LETTER_REMINDER_1;	
+			} elseif ($lastletter == self::LETTER_REMINDER_1) {
+				return self::LETTER_REMINDER_2;
+			} elseif ($lastletter == self::LETTER_REMINDER_2) {
+				return self::LETTER_GP;
+			} elseif ($lastletter == self::LETTER_GP) {
+				return self::LETTER_REMOVAL;
+			}
+		}
+	}
+
+	public function getDueLetter()
+	{
+		$lastletter = $this->getLastLetter();
+		if (!$this->getWaitingListStatus()) { // if getwaitingliststatus returns null, we're white
+			return $lastletter; // no new letter is due, so we should print the last one
+		}
+		if ($this->getWaitingListStatus() == self::STATUS_PURPLE) {
+			return self::LETTER_INVITE;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_GREEN1) {
+			return self::LETTER_REMINDER_1;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_GREEN2) {
+			return self::LETTER_REMINDER_2;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_ORANGE) {
+			return self::LETTER_GP;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_RED) {
+			return null; // possibly this should return the gp letter, though it's already been sent?
+		} else {
+			return null; // possibly this should return $lastletter ?
+		}
+	}
+
 	public function getLetterStatus()
 	{
 		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
@@ -828,7 +963,7 @@ class ElementOperation extends BaseElement
 			$criteria->params = array('eoid' => $this->id);
 			$criteria->order = 'id DESC';
 			$criteria->limit = 1;
-                	$cancelledBooking = CancelledBooking::model()->find($criteria);
+									$cancelledBooking = CancelledBooking::model()->find($criteria);
 
 			$datetime = strtotime($cancelledBooking->cancelled_date);
 		} else {
@@ -999,4 +1134,30 @@ class ElementOperation extends BaseElement
 		return true;
 	}
 
+	public function confirmLetterPrinted() {
+		if ($dls = $this->date_letter_sent) {
+			if ($dls->date_invitation_letter_sent == null) {
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_1st_reminder_letter_sent == null) {
+				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_2nd_reminder_letter_sent == null) {
+				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_gp_letter_sent == null) {
+				$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
+			} else if ($dls->date_scheduling_letter_sent == null) {
+				$dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
+			}
+			if (!$dls->save()) {
+				throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
+			}
+		} else {
+			$dls = new DateLetterSent;
+			$dls->element_operation_id = $this->id;
+			$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+			$dls->setIsNewRecord(true);
+			if (!$dls->save()) {
+				throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
+			}
+		}
+	}
 }

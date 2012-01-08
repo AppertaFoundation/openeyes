@@ -49,6 +49,11 @@ class WaitingListController extends BaseController
 				foreach (Yii::app()->session['waitinglist_searchoptions'] as $key => $value) {
 					$_POST[$key] = $value;
 				}
+			} else {
+				$_POST = array(
+					'firm-id' => Yii::app()->session['selected_firm_id'],
+					'specialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSpecialtyAssignment->specialty_id
+				);
 			}
 		}
 
@@ -238,4 +243,11 @@ class WaitingListController extends BaseController
 		}
 	}
 
+	public function actionConfirmPrinted() {
+		foreach ($_POST['operations'] as $operation_id) {
+			if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
+				$operation->confirmLetterPrinted();
+			}
+		}
+	}
 }

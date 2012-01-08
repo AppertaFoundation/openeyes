@@ -11,7 +11,7 @@ if (empty($operations)) { ?>
 					    <tbody>
 
 				    	<tr>
-								<th>Letter status</th>
+								<th>Letters sent</th>
 								<th>Patient</th>
 								<th>Hospital number</th>
 								<th>Location</th>
@@ -30,33 +30,55 @@ if (empty($operations)) { ?>
 //		$consultant = $eo->event->episode->firm->getConsultant();
 //		$user = $consultant->contact->userContactAssignment->user;
 ?>
-    <tr class="<?php echo $i%2 ? 'even' : 'odd' ?>">
-<?php
-	$letterStatus = $eo->getLetterStatus();
 
-	switch ($letterStatus) {
-		case ElementOperation::LETTER_INVITE:
-			$letterImage = 'invitation';
-			break;
-		case ElementOperation::LETTER_REMINDER_1:
-			$letterImage = 'letter1';
-			break;
-		case ElementOperation::LETTER_REMINDER_2:
-			$letterImage = 'letter2';
-			break;
-		case ElementOperation::LETTER_GP:
-			$letterImage = 'GP';
-			break;
-		case ElementOperation::LETTER_REMOVAL:
-			$letterImage = 'to-be-removed';
-			break;
-		default:
-			$letterImage = 'invitation';
-			break;
+<?php
+	if ($eo->getWaitingListStatus() == ElementOperation::STATUS_PURPLE) {
+		$tablecolour = "Purple";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_GREEN1) {
+		$tablecolour = "Green";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_GREEN2) {
+		$tablecolour = "Green";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_ORANGE) {
+		$tablecolour = "Orange";
+	} elseif ($eo->getWaitingListStatus() == ElementOperation::STATUS_RED) {
+		$tablecolour = "Red";
+	} else {
+		$tablecolour = "White";
 	}
 ?>
+    <tr class="waitinglist<?php echo $tablecolour ?>">
 	<td class="letterStatus">
-		<img src="img/_elements/icons/letters/<?php echo $letterImage ?>.png" alt="<?php echo $letterImage ?>" width="17" height="17" />
+<?php
+	$lastletter = $eo->getLastLetter();
+
+	if (is_null($lastletter)) {
+
+	} elseif ($lastletter == ElementOperation::LETTER_INVITE) {
+		?>
+			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
+		<?php
+	} elseif ($lastletter == ElementOperation::LETTER_REMINDER_1) {
+		?>
+			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
+			<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" width="17" height="17" />
+		<?php
+
+	} elseif ($lastletter == ElementOperation::LETTER_REMINDER_2) {
+		?>
+			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
+			<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" width="17" height="17" />
+			<img src="img/_elements/icons/letters/letter2.png" alt="2nd reminder" width="17" height="17" />
+		<?php
+
+	} elseif ($lastletter == ElementOperation::LETTER_GP) {
+		?>
+			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
+			<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" width="17" height="17" />
+			<img src="img/_elements/icons/letters/letter2.png" alt="2nd reminder" width="17" height="17" />
+			<img src="img/_elements/icons/letters/GP.png" alt="GP" width="17" height="17" />
+		<?php
+	}
+?>
 	</td>
 	<td class="patient">
 		<?php echo CHtml::link(trim($operation['last_name']) . ', ' . $operation['first_name'], '/patient/episodes/' . $operation['pid'] . '/event/' . $operation['evid'])?>
@@ -69,7 +91,7 @@ if (empty($operations)) { ?>
 	<td><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
 	<td><?php echo $eo->getStatusText() ?></td>
-	<td><input type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
+	<td><input <?php if ($tablecolour == 'White') {?>disabled="disabled" <?php }?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
 </tr>
 
 <?php
@@ -85,7 +107,7 @@ if (empty($operations)) { ?>
 </table>
 <script type="text/javascript">
 $('#checkall').click(function() {
-	$('input[id^="operation"]').attr('checked',$('#checkall').is(':checked'));
+	$('input[id^="operation"]:enabled').attr('checked',$('#checkall').is(':checked'));
 });
 </script>
 </div> <!-- #waitingList -->
