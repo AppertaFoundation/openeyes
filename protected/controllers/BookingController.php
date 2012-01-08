@@ -389,8 +389,11 @@ class BookingController extends BaseController
 				} else {
 					$operation->status = ElementOperation::STATUS_SCHEDULED;
 				}
+				if (!empty($_POST['Operation']['comments'])) {
+					$operation->comments = $_POST['Operation']['comments'];
+				}
 				if (!$operation->save()) {
-					throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
+					throw new SystemException('Unable to update operation data: '.print_r($operation->getErrors(),true));
 				}
 
 				if (!empty($_POST['Session']['comments'])) {

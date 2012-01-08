@@ -124,12 +124,19 @@ echo CHtml::hiddenField('Booking[session_id]', $session['id']);
 </div>
 <?php } ?>
 
+<div class="eventDetail clearfix" style="position:relative;">
+	<div class="label"><strong><?php echo CHtml::label('Operation Comments: ', 'operation_comments'); ?></strong></div>
+	<div class="data">
+		<textarea id="operation_comments" name="Operation[comments]" rows=3 cols=50><?php echo $operation->comments ?></textarea>
+	</div>
+</div>
+
 <div style="margin: 0.5em 0;">
 	<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
 </div>
 <div style="margin-top:10px;">
 <button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>
-<button type="submit" class="classy red venti" id="cancel_operation"><span class="button-span button-span-red">Cancel operation</span></button>
+<button type="button" class="classy red venti" id="cancel_scheduling"><span class="button-span button-span-red">Cancel <?php if($reschedule) { ?>re-<?php } ?>scheduling</span></button>
 </div>
 
 <?php
@@ -137,6 +144,10 @@ echo CHtml::endForm();
 ?>
 
 <script type="text/javascript">
+	$('button#cancel_scheduling').click(function() {
+		document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+		return false;
+	});
 <?php if ($reschedule) { ?>
 	$('#bookingForm button#confirm_slot').click(function () {
 		if ($('#cancellation_reason option:selected').val() == '') {
@@ -146,15 +157,4 @@ echo CHtml::endForm();
 		}
 	});
 <?php } ?>
-	$('button#cancel_operation').die('click').live('click', function() {
-		$.ajax({
-			url: '<?php echo Yii::app()->createUrl('booking/cancelOperation'); ?>',
-			type: 'GET',
-			data: {'operation': <?php echo $operation->id; ?>},
-			success: function(data) {
-				$('div#schedule').parent().html(data);
-			}
-		});
-		return false;
-	});
 </script>
