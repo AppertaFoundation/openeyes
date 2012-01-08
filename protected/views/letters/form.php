@@ -1,4 +1,4 @@
-<?php $this->renderPartial("/waitingList/letter/form_start", array(
+<?php $this->renderPartial("/letters/form_start", array(
 	'patient' => $patient,
 )); ?>
 
@@ -51,8 +51,8 @@
 	</tr>
 	
 	<tr>
-		<th>Intended procedure:</th>
-		<td><?php echo CHtml::encode(implode(', ', $procedureList)) ?></td>
+		<th>Intended procedure(s):</th>
+		<td><?php echo CHtml::encode($operation->proceduresString); ?></td>
 		<?php
 		if (empty($operation->booking)) { ?>
 		<th colspan="2" rowspan="4">Patient Added to partial bookings waiting List, admission Date to be arranged</th>

@@ -1,4 +1,4 @@
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/letter_start", array(
+<?php $this->renderPartial("/letters/letter_start", array(
 	'site' => $site,
 	'patient' => $patient,
 )); ?>
@@ -208,4 +208,4 @@
 	<?php } // End Adult ?>
 <?php } ?>
 
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/letter_end"); ?>
+<?php $this->renderPartial("/letters/letter_end"); ?>

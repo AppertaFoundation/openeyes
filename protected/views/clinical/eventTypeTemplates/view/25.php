@@ -167,28 +167,29 @@ $co = $operation->cancellation;
 if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 ?>
 <!-- editable -->
-<?php
+<div style="margin-top:40px; text-align:center;">
+	<?php
 	if (empty($operation->booking)) {
-		// The operation hasn't been booked yet?>
-		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print invitation letter</span></button>
-			<button type="submit" class="classy blue venti" value="submit" id="btn_print-reminder-letter"><span class="button-span button-span-blue">Print reminder letter</span></button>
-			<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
-			<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
-		</div>
+	// The operation hasn't been booked yet
+	$letterTypes = ElementOperation::getLetterOptions();
+	$letterType = isset($letterTypes[$operation->getDueLetter()]) ? $letterTypes[$operation->getDueLetter()] : false;
+	if($letterType) {
+	?>
+	<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print <?php echo $letterType ?> letter</span></button>
+	<?php } ?>
+	<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
 	<?php } else {?>
-		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
-			<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
-			<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
-			<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
-		</div>
+	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
+	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
+	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
 	<?php }?>
+	<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
+</div>
 <?php }?>
 
 <script type="text/javascript">
 
-$('#btn_schedule-now').unbind('click').click(function() {
+	$('#btn_schedule-now').unbind('click').click(function() {
 		$.ajax({
 			url: '/booking/schedule',
 			type: "GET",
@@ -237,16 +238,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	});
 
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
-		clearPrintContent();
-		appendPrintContent($('#printcontent_invitationletter').html());
-		appendPrintContent($('#printcontent_form').html());
-		printContent();
-	});
-
-	$('#btn_print-reminder-letter').unbind('click').click(function() {
-		clearPrintContent();
-		appendPrintContent($('#printcontent_reminderletter').html());
-		printContent();
+		printUrl('/waitingList/printletters?operations[]='+<?php echo $operation->id ?>);
 	});
 
 	$('#btn_print-letter').unbind('click').click(function() {
@@ -257,181 +249,36 @@ $('#btn_schedule-now').unbind('click').click(function() {
 	});
 
 </script>
-
+<div id="printcontent_scheduledletter" style="display: none;">
 <?php
-
+	// TODO: This needs moving to a controller so we can pull it in using an ajax call
 	$event = Event::model()->findByPk($eventId);
 	$consultant = $event->episode->firm->getConsultant();
 	if (empty($consultant)) {
 		$consultantName = 'CONSULTANT';
 	} else {
-		$contact = $consultant->contact;
-		$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
+		$consultantName = CHtml::encode($consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name);
 	}
-
 	$patient = $event->episode->patient;
-
-	$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
 	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
-	
-	// Generate change contact
-	$changeContact = '';
-	if ($patient->isChild()) {
-		if ($site->id == 1) {
-			// City Road
-			$changeContact = 'a nurse on 020 7566 2596';
-		} else {
-			// St. George's
-			$changeContact = 'Naeela Butt on 020 8725 0060';
-		}
-	} else {
-		switch ($site->id) {
-			case 1: // City Road
-				switch ($serviceId) {
-					case 2: // Adnexal
-						$changeContact = 'Sarah Veerapatren on 020 7566 2206';
-						break;
-					case 4: // Cataract
-						$changeContact = 'Ian Johnson on 020 7566 2006';
-						break;
-					case 5: // External Disease aka Corneal
-						$changeContact = 'Ian Johnson on 020 7566 2006';
-						break;
-					case 6: // Glaucoma
-						$changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
-						break;
-					case 11: // Vitreoretinal
-						$changeContact = 'Deidre Clarke on 020 7566 2004';
-						break;
-					default: // Medical Retinal, Paediatric, Strabismus
-						$changeContact = 'Sherry Ramos on 0207 566 2258';
-					break;
-				}
-				break;
-			case 3: // Ealing
-				$changeContact = 'Valerie Giddings on 020 8967 5648';
-				break;
-			case 4: // Northwick Park
-				$changeContact = 'Saroj Mistry on 020 8869 3161';
-				break;
-			case 6: // Mile End
-				if ($serviceId == 4) {
-					// Cataract
-					$changeContact = 'Linda Haslin on 020 7566 2712';
-				} else {
-					$changeContact = 'Eileen Harper on 020 7566 2020';
-				}
-				break;
-			case 7: // Potters Bar
-				$changeContact = 'Sue Harney on 020 7566 2339';
-				break;
-			case 9: // St Anns
-				$changeContact = 'Veronica Brade on 020 7566 2843';
-				break;
-			default: // St George's
-				$changeContact = 'Naeela Butt on 020 8725 0060';
-			break;
-		}
-	}
-	
-	// Generate refuse and health contacts
-	$refuseContact = '';
-	$healthContact = '';
-	switch ($site->id) {
-		case 1: // City Road
-			$refuseContact = $specialty->name . ' Admission Coordinator on ';
-			switch ($specialty->id) {
-				case 7: // Glaucoma
-					$refuseContact .= '020 7566 2056';
-					break;
-				case 8: // Medical Retinal
-					$refuseContact .= '020 7566 2258';
-					break;
-				case 11: // Paediatrics
-					$refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-					break;
-				case 13: // Refractive Laser
-					$refuseContact = '020 7566 2205 and ask for Joyce Carmichael';
-					$healthContact = '020 7253 3411 X4336 and ask Laser Nurse';
-					break;
-				case 14: // Strabismus
-					$refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-					break;
-				default:
-					$refuseContact .= '020 7566 2206';
-			}
-			break;
-		case 3: // Ealing
-			$refuseContact = '020 8967 5766 and ask for Sister Kelly';
-			$healthContact = 'Sister Kelly on 020 8967 5766';
-			break;
-		case 4: // Northwick Park
-			$refuseContact = '020 8869 3161 and ask for Sister Titmus';
-			$healthContact = 'Sister Titmus on 020 8869 3162';
-		case 6: // Mile End
-			switch ($specialty->id) {
-				case 7:	// Glaucoma
-					$refuseContact = '020 7566 2020 and ask for Eileen Harper';
-					$healthContact = 'Eileen Harper on 020 7566 2020';
-					break;
-				default:
-					$refuseContact = '020 7566 2712 and ask for Linda Haslin';
-					$healthContact = 'Linda Haslin on 020 7566 2712';
-			}
-			break;
-		case 7: // Potters Bar
-			$refuseContact = '01707 646422 and ask for Potters Bar Admission Team';
-			$healthContact = 'Potters Bar Admission Team on 01707 646422';
-			break;
-		case 9: // St Anns
-			$refuseContact = '020 8211 8323 and ask for St Ann\'s Team';
-			$healthContact = 'St Ann\'s Team on 020 8211 8323';
-			break;
-		case 5: // St George's
-			$refuseContact = '020 8725 0060 and ask for Naeela Butt';
-			$healthContact = 'Naeela Butt Team on 020 8725 0060';
-			break;
-	}
+	$scheduledContact = $operation->getScheduledContact();
 
+	$this->renderPartial("/letters/scheduled_letter", array(
+		'site' => $site,
+		'patient' => $patient,
+		'consultantName' => $consultantName,
+		'operation' => $operation,
+		'specialty' => $specialty,
+		'refuseContact' => $scheduledContact['refuse'],
+		'healthContact' => $scheduledContact['health'],
+		'cancelledBookings' => $cancelledBookings,
+	));
+	$this->renderPartial("/letters/break");
+	$this->renderPartial("/letters/form", array(
+		'operation' => $operation, 
+		'site' => $site,
+		'patient' => $patient,
+		'consultantName' => $consultantName,
+	));
 ?>
-
-<div id="printcontent_form" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'operation' => $operation, 
-	'event' => $event,
-	'procedureList' => $procedureList,
-)); ?>
-</div>
-<div id="printcontent_invitationletter" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/invitation_letter", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'changeContact' => $changeContact,
-	'operation' => $operation,
-)); ?>
-</div>
-<div id="printcontent_reminderletter" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/reminder_letter", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'changeContact' => $changeContact,
-	'operation' => $operation,
-)); ?>
-</div>
-<div id="printcontent_scheduledletter" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/scheduled_letter", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'operation' => $operation,
-	'specialty' => $specialty,
-	'refuseContact' => $refuseContact,
-	'healthContact' => $healthContact,
-	'cancelledBookings' => $cancelledBookings,
-)); ?>
 </div>

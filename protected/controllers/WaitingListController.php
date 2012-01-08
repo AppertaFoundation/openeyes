@@ -157,14 +157,6 @@ class WaitingListController extends BaseController
 	}
 	
 	/**
-	 * Test page for letter printing dev
-	 * TODO: Remove for launch
-	 */
-	public function actionTestPrintLetters() {
-		$this->render('test_letter');
-	}
-	
-	/**
 	 * Prints next pending letter type for requested operations
 	 * Operation IDs are passed as an array (operations[]) via GET or POST
 	 * Invalid operation IDs are ignored
@@ -193,7 +185,7 @@ class WaitingListController extends BaseController
 	 * Print a page break
 	 */
 	protected function printBreak() {
-		$this->renderPartial("letter/break");
+		$this->renderPartial("/letters/break");
 	}
 	
 	/**
@@ -206,7 +198,7 @@ class WaitingListController extends BaseController
 			ElementOperation::LETTER_INVITE => 'invitation_letter',
 			ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
 			ElementOperation::LETTER_REMINDER_2 => 'reminder_letter',
-			ElementOperation::LETTER_GP => 'gp_letter', // FIXME: This isn't implemented yet
+			ElementOperation::LETTER_GP => 'gp_letter',
 			ElementOperation::LETTER_REMOVAL => false,
 		);
 		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
@@ -218,25 +210,25 @@ class WaitingListController extends BaseController
 				$contact = $consultant->contact;
 				$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
 			}
-			$site = $operation->site; // FIXME: This might not be the site we're looking for
-			$procedureList = array(); // FIXME: Need to move code from 25.php
-			$changeContact = 'FIXME'; // FIXME: Need to move code from 25.php
+			// FIXME: The site associated with the operation might not be the one we're looking for
+			// if that is the case then both the methods below need attention 
+			$site = $operation->site;
+			$waitingListContact = $operation->waitingListContact;
+			
 			$patient = $operation->event->episode->patient;
-			$this->renderPartial('letter/'.$letter_template, array(
+			$this->renderPartial('/letters/'.$letter_template, array(
 				'operation' => $operation,
 				'site' => $site,
 				'patient' => $patient,
 				'consultantName' => $consultantName,
-				'changeContact' => $changeContact,
-				'procedureList' => $procedureList,
+				'changeContact' => $waitingListContact,
 			));
 			$this->printBreak();
-			$this->renderPartial("letter/form", array(
+			$this->renderPartial("/letters/form", array(
 				'operation' => $operation, 
 				'site' => $site,
 				'patient' => $patient,
 				'consultantName' => $consultantName,
-				'procedureList' => $procedureList,
 			));
 		} else {
 			throw CException('Undefined operation letter template: '.$letter_status);

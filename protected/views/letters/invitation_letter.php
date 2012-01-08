@@ -1,4 +1,4 @@
-<?php $this->renderPartial("/waitingList/letter/letter_start", array(
+<?php $this->renderPartial("/letters/letter_start", array(
 	'site' => $site,
 	'patient' => $patient,
 )); ?>
@@ -25,4 +25,4 @@
 	Should you<?php if ($patient->isChild()) { ?>r child<?php	}	?> no longer require treatment please let me know as soon as possible.
 </p>
 
-<?php $this->renderPartial("/waitingList/letter/letter_end"); ?>
+<?php $this->renderPartial("/letters/letter_end"); ?>

@@ -1042,6 +1042,153 @@ class ElementOperation extends BaseElement
 	}
 
 	/**
+	 * Get list of procedures (short format) as a string
+	 * @return string
+	 */
+	public function getProceduresString() {
+		$procedures = array();
+		foreach($this->procedures as $procedure) {
+			$procedures[] = $procedure->short_format;
+		}
+		return implode(', ',$procedures);
+	}
+
+	/**
+	 * Contact number/details for changes
+	 */
+	public function getWaitingListContact() {
+		$changeContact = '';
+		$siteId = $this->site->id;
+		$serviceId = $this->event->episode->firm->serviceSpecialtyAssignment->service->id;
+		if ($this->event->episode->patient->isChild()) {
+			if ($siteId == 1) {
+				// City Road
+				$changeContact = 'a nurse on 020 7566 2596';
+			} else {
+				// St. George's
+				$changeContact = 'Naeela Butt on 020 8725 0060';
+			}
+		} else {
+			switch ($siteId) {
+				case 1: // City Road
+					switch ($serviceId) {
+						case 2: // Adnexal
+							$changeContact = 'Sarah Veerapatren on 020 7566 2206';
+							break;
+						case 4: // Cataract
+							$changeContact = 'Ian Johnson on 020 7566 2006';
+							break;
+						case 5: // External Disease aka Corneal
+							$changeContact = 'Ian Johnson on 020 7566 2006';
+							break;
+						case 6: // Glaucoma
+							$changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
+							break;
+						case 11: // Vitreoretinal
+							$changeContact = 'Deidre Clarke on 020 7566 2004';
+							break;
+						default: // Medical Retinal, Paediatric, Strabismus
+							$changeContact = 'Sherry Ramos on 0207 566 2258';
+						break;
+					}
+					break;
+				case 3: // Ealing
+					$changeContact = 'Valerie Giddings on 020 8967 5648';
+					break;
+				case 4: // Northwick Park
+					$changeContact = 'Saroj Mistry on 020 8869 3161';
+					break;
+				case 6: // Mile End
+					if ($serviceId == 4) {
+						// Cataract
+						$changeContact = 'Linda Haslin on 020 7566 2712';
+					} else {
+						$changeContact = 'Eileen Harper on 020 7566 2020';
+					}
+					break;
+				case 7: // Potters Bar
+					$changeContact = 'Sue Harney on 020 7566 2339';
+					break;
+				case 9: // St Anns
+					$changeContact = 'Veronica Brade on 020 7566 2843';
+					break;
+				default: // St George's
+					$changeContact = 'Naeela Butt on 020 8725 0060';
+				break;
+			}
+		}
+		return $changeContact;
+	}
+
+	/**
+	 * Contact number/details for health/refuse
+	 */
+	public function getScheduledContact() {
+		$contact = array(
+			'health' => '',
+			'refuse' => '',
+		);
+		$siteId = $this->site->id;
+		$specialty = $this->event->episode->firm->serviceSpecialtyAssignment->specialty;
+		switch ($siteId) {
+			case 1: // City Road
+				$contact['refuse'] = $specialty->name . ' Admission Coordinator on ';
+				switch ($specialty->id) {
+					case 7: // Glaucoma
+						$contact['refuse'] .= '020 7566 2056';
+						break;
+					case 8: // Medical Retinal
+						$contact['refuse'] .= '020 7566 2258';
+						break;
+					case 11: // Paediatrics
+						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						break;
+					case 13: // Refractive Laser
+						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
+						$contact['health'] = '020 7253 3411 X4336 and ask Laser Nurse';
+						break;
+					case 14: // Strabismus
+						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						break;
+					default:
+						$contact['refuse'] .= '020 7566 2206';
+				}
+				break;
+			case 3: // Ealing
+				$contact['refuse'] = '020 8967 5766 and ask for Sister Kelly';
+				$contact['health'] = 'Sister Kelly on 020 8967 5766';
+				break;
+			case 4: // Northwick Park
+				$contact['refuse'] = '020 8869 3161 and ask for Sister Titmus';
+				$contact['health'] = 'Sister Titmus on 020 8869 3162';
+			case 6: // Mile End
+				switch ($specialty->id) {
+					case 7:	// Glaucoma
+						$contact['refuse'] = '020 7566 2020 and ask for Eileen Harper';
+						$contact['health'] = 'Eileen Harper on 020 7566 2020';
+						break;
+					default:
+						$contact['refuse'] = '020 7566 2712 and ask for Linda Haslin';
+					$contact['health'] = 'Linda Haslin on 020 7566 2712';
+				}
+				break;
+			case 7: // Potters Bar
+				$contact['refuse'] = '01707 646422 and ask for Potters Bar Admission Team';
+				$contact['health'] = 'Potters Bar Admission Team on 01707 646422';
+				break;
+			case 9: // St Anns
+				$contact['refuse'] = '020 8211 8323 and ask for St Ann\'s Team';
+				$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
+				break;
+			case 5: // St George's
+				$contact['refuse'] = '020 8725 0060 and ask for Naeela Butt';
+				$contact['health'] = 'Naeela Butt Team on 020 8725 0060';
+				break;
+		}
+		return $contact;
+	}
+	
+	/**
 	 * Returns an array of cancelled bookings
 	 *
 	 * @return array
