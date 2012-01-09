@@ -163,8 +163,11 @@
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);
 					$('#firm-id').val(<?php echo @$_POST['firm-id']?>);
+					$('#waitingList-filter button[type="submit"]').click();
 				}
 			});
+		} else {
+			$('#waitingList-filter button[type="submit"]').click();
 		}
 
 		$('#firm-id').bind('change',function() {
@@ -206,7 +209,5 @@
 				}
 			});
 		});
-
-		$('#waitingList-filter button[type="submit"]').click();
 	});
 </script>
