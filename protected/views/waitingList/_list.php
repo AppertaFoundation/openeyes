@@ -97,6 +97,12 @@ if (empty($operations)) { ?>
 <?php
 		$i++;
 	}
+
+	if ($i == 0) {?>
+		<td colspan="7" style="border: none; padding-top: 10px;">
+			There are no patients who match the specified criteria.
+		</td>
+	<?php }
 ?>
 </table>
 <?php
