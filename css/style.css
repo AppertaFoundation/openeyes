@@ -334,7 +334,7 @@ div.hint:last-child { border-right: none; }
 
 /* mini help in footer:  617px is center */
 #footer {position:relative; }
-#footer .help { position:absolute; top:0; left:342px; width:550px; height:23px; background:#e2dfdb; font-size:11px; text-align: center; padding-top:9px; border-top:1px solid #b3b0ae; -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;  }
+#footer .help { position:absolute; top:0; left:382px; width:660px; height:23px; background:#e2dfdb; font-size:11px; text-align: center; padding-top:9px; border-top:1px solid #b3b0ae; -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;  }
 #footer .help .divider { padding:0 5px; color:#aaa; }
 
 
