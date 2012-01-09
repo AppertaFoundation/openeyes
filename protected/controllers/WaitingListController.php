@@ -193,7 +193,7 @@ class WaitingListController extends BaseController
 	 * @param ElementOperation $operation
 	 */
 	protected function printLetter($operation) {
-		$letter_status = $operation->getLetterStatus();
+		$letter_status = $operation->getDueLetter();
 		$letter_templates = array(
 			ElementOperation::LETTER_INVITE => 'invitation_letter',
 			ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
