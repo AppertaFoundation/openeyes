@@ -196,6 +196,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 			data: {'operation': <?php echo $operation->id?>},
 			success: function(data) {
 				$('#event_content').html(data);
+				$('div.action_options').hide();
 				return false;
 			}
 		});

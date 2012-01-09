@@ -97,6 +97,8 @@ if (isset($referrals) && is_array($referrals)) {
 					displayErrors(data);
 				} catch (e) {
 					$('#event_content').html(data);
+					$('div.action_options_alt').hide();
+					$('div.action_options').hide();
 					return false;
 				}
 			}

@@ -329,5 +329,7 @@
 					edit_mode();
 					return false;
 				});
+
+				$('div.action_options_alt').hide();
 			}
 		</script>
