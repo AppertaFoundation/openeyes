@@ -16,10 +16,9 @@
 										<tr>
 													<th>Service:</th>
 													<th>Firm:</th>
-
 													<th>Type:</th>
 													<th>Site:</th>
-
+													<th>Hospital no:</th>
 										</tr>
 										<tr  class="even">
 													<td>
@@ -39,11 +38,6 @@
 																										}
 																						}",
 													))); ?>
-													<br/>
-													<div style="margin-top: 20px;">
-														<label for="hos_num">Hospital no:</label>
-														<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
-													</div>
 									</td>
 													<td>
 
@@ -59,6 +53,9 @@
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getList(),array('empty'=>'All sites'))?>
+									</td>
+									<td>
+										<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
 									</td>
 									<td>
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
@@ -166,8 +163,11 @@
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);
 					$('#firm-id').val(<?php echo @$_POST['firm-id']?>);
+					$('#waitingList-filter button[type="submit"]').click();
 				}
 			});
+		} else {
+			$('#waitingList-filter button[type="submit"]').click();
 		}
 
 		$('#firm-id').bind('change',function() {
@@ -209,7 +209,5 @@
 				}
 			});
 		});
-
-		$('#waitingList-filter button[type="submit"]').click();
 	});
 </script>

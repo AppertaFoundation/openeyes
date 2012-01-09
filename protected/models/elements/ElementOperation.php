@@ -955,15 +955,18 @@ class ElementOperation extends BaseElement
 		}
 	}
 
+	// This method is based on faulty logic and should not be called.
 	public function getLetterStatus()
 	{
+		return $this->getDueLetter();
+
 		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
 			$criteria = new CDbCriteria;
 			$criteria->addCondition('element_operation_id = :eoid');
 			$criteria->params = array('eoid' => $this->id);
 			$criteria->order = 'id DESC';
 			$criteria->limit = 1;
-									$cancelledBooking = CancelledBooking::model()->find($criteria);
+			$cancelledBooking = CancelledBooking::model()->find($criteria);
 
 			$datetime = strtotime($cancelledBooking->cancelled_date);
 		} else {
