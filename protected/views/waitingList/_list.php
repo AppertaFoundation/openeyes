@@ -50,7 +50,6 @@ if (empty($operations)) { ?>
 	<td class="letterStatus">
 <?php
 	$lastletter = $eo->getLastLetter();
-	$lastletter = ElementOperation::LETTER_GP;
 
 	if (is_null($lastletter)) {
 
