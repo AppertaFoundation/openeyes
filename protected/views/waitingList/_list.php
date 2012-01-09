@@ -6,7 +6,7 @@ if (empty($operations)) { ?>
 <?php
 } else {
 ?>
-					<div id="waitingList" class="grid-view">
+					<div id="waitingList" class="grid-view-waitinglist">
 					    <table>
 					    <tbody>
 
@@ -20,8 +20,8 @@ if (empty($operations)) { ?>
 								<th>Firm</th>
 								<th>Decision date</th>
 								<th>Priority</th>
-								<th>Book status</th>
-								<th>Select<br/><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
+								<th>Requires</th>
+								<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
 							</tr>
 <?php
 	$i = 0;
@@ -50,6 +50,7 @@ if (empty($operations)) { ?>
 	<td class="letterStatus">
 <?php
 	$lastletter = $eo->getLastLetter();
+	$lastletter = ElementOperation::LETTER_GP;
 
 	if (is_null($lastletter)) {
 
@@ -84,13 +85,13 @@ if (empty($operations)) { ?>
 		<?php echo CHtml::link(trim($operation['last_name']) . ', ' . $operation['first_name'], '/patient/episodes/' . $operation['pid'] . '/event/' . $operation['evid'])?>
 	</td>
 	<td><?php echo $operation['hos_num'] ?></td>
-	<td><?php echo $eo->site->short_name?></td>
+	<td style="width: 95px;"><?php echo $eo->site->short_name?></td>
 	<td><?php echo $operation['List'] ?></td>
 	<td><?php echo $eo->getEyeText() ?></td>
 	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSpecialtyAssignment->specialty->name ?>)</td>
-	<td><?php echo $eo->NHSDate('decision_date') ?></td>
+	<td style="width: 80px;"><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
-	<td><?php echo $eo->getStatusText() ?></td>
+	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>
 	<td><input <?php if ($tablecolour == 'White') {?>disabled="disabled" <?php }?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
 </tr>
 
