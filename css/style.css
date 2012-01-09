@@ -272,6 +272,16 @@ table tr:last-child { border-bottom: none; }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
 /* change properties for closed rows */
 .grid-view table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+
+/* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
+.grid-view-waitinglist table { width:100%; }
+.grid-view-waitinglist table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:16px; padding:6px; border-right:1px solid #bbb;   }
+.grid-view-waitinglist table th:last-child { border-right: none; }
+.grid-view-waitinglist table td { text-align: left; padding:6px; border-right:1px solid #ccc; border-bottom: 1px solid #ccc;}
+.grid-view-waitinglist table th:last-child, .grid-view-waitinglist td:last-child { border-right: none; }
+/* change properties for closed rows */
+.grid-view-waitinglist table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+
 /* hack to help with in page CSS for add Operation */
 table#procedure_list tbody tr { background-color: #edf4f9; }
 
@@ -625,6 +635,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions .metadata { float: right; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
 .theatre-sessions .metadata div { opacity: 1; }
 #waitingList table td.letterStatus > img {margin-right:3px; }
+#waitingList table td.letterStatus { width: 92px; }
 
 
 /* SESSION COMMENTS */
