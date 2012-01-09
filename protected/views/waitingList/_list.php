@@ -20,7 +20,7 @@ if (empty($operations)) { ?>
 								<th>Firm</th>
 								<th>Decision date</th>
 								<th>Priority</th>
-								<th>Requires</th>
+								<th>Book status (requires...)</th>
 								<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
 							</tr>
 <?php
@@ -83,7 +83,7 @@ if (empty($operations)) { ?>
 	<td class="patient">
 		<?php echo CHtml::link(trim("<b>" . $operation['last_name']) . '</b>, ' . $operation['first_name'], '/patient/episodes/' . $operation['pid'] . '/event/' . $operation['evid'])?>
 	</td>
-	<td><?php echo $operation['hos_num'] ?></td>
+	<td style="width: 53px;"><?php echo $operation['hos_num'] ?></td>
 	<td style="width: 95px;"><?php echo $eo->site->short_name?></td>
 	<td><?php echo $operation['List'] ?></td>
 	<td><?php echo $eo->getEyeText() ?></td>
