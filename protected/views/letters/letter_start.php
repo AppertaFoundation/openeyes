@@ -9,8 +9,13 @@
 	<br />Fax: <?php echo CHtml::encode($site->fax) ?>
 	<?php } ?>
 </div>
+<?php
+if ($patient->address === NULL) {
+	$patient->address = Address::Model()->findByPk($patient->address_id);
+}
+?>
 <div class="toAddress">
-	<?php echo $patient->addressname ?>
+	<?php echo $patient->addressname?>
 	<br /><?php echo $patient->address->letterhtml ?>
 </div>
 <div class="date">
