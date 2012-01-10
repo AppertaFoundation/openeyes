@@ -623,18 +623,16 @@ class ElementOperation extends BaseElement
 			}
 
 			// Add bookable field to indicate if session can be booked for this operation
-			$bookable = ($session['time_available'] > 0);
-			if($bookable) {
-				if($this->anaesthetist_required && !$session['anaesthetist']) {
-					$bookable = false;
-				}
-				if($this->consultant_required && !$session['consultant']) {
-					$bookable = false;
-				}
-				$paediatric = ($this->event->episode->patient->getAge() < 16);
-				if($paediatric && !$session['paediatric']) {
-					$bookable = false;
-				}
+			$bookable = true;
+			if($this->anaesthetist_required && !$session['anaesthetist']) {
+				$bookable = false;
+			}
+			if($this->consultant_required && !$session['consultant']) {
+				$bookable = false;
+			}
+			$paediatric = ($this->event->episode->patient->getAge() < 16);
+			if($paediatric && !$session['paediatric']) {
+				$bookable = false;
 			}
 			$session['bookable'] = $bookable;
 			
