@@ -241,8 +241,16 @@ class WaitingListController extends BaseController
 	public function actionConfirmPrinted() {
 		foreach ($_POST['operations'] as $operation_id) {
 			if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
-				$operation->confirmLetterPrinted();
+				if (Yii::app()->user->checkAccess('admin') and ($_POST['adminconfirmto'] != 'OFF')) {
+					// echo "fish"; exit;
+					$operation->confirmLetterPrinted($_POST['adminconfirmto']);
+				}
 			}
 		}
 	}
+
+	// to allow admin users to confirm printed up to a given letter 
+	// public function actionAdminConfirmPrinted() {
+			
+	// }
 }

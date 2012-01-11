@@ -81,6 +81,16 @@
 			<div style="float: right; margin-right: 18px;">
 				<button style="margin-right: 15px;" type="submit" class="classy blue tall" id="btn_print_all"><span class="button-span button-span-blue">Print all</span></button>
 				<button style="margin-right: 15px;" type="submit" class="classy blue grande" id="btn_print"><span class="button-span button-span-blue">Print selected</span></button>
+				<span class="admin-confirmto">
+					<select name="adminconfirmto" id="adminconfirmto">
+						<option value="OFF">Off</option>
+						<option value="noletters">No letters sent</option>
+						<option value="0">Invitation letter</option>
+						<option value="1">1st reminder letter</option>
+						<option value="2">2nd reminder letter</option>
+						<option value="3">GP letter</option>
+					</select>
+				</span>
 				<button type="submit" class="classy green venti" id="btn_confirm_selected"><span class="button-span button-span-green">Confirm selected</span></button>
 			</div>
 		</div> <!-- .fullWidth -->
@@ -129,7 +139,7 @@
 
 	$('#btn_confirm_selected').click(function() {
 		var data = '';
-
+		data += "adminconfirmto=" + $('#adminconfirmto').val();
 		$('input[id^="operation"]:checked').map(function() {
 			if (data.length >0) {
 				data += '&';

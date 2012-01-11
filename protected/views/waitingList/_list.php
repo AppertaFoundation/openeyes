@@ -91,7 +91,7 @@ if (empty($operations)) { ?>
 	<td style="width: 80px;"><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
 	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>
-	<td><input <?php if ($tablecolour == 'White') {?>disabled="disabled" <?php }?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
+	<td><input <?php if ($tablecolour == 'White' and !Yii::app()->user->checkAccess('admin')) {?>disabled="disabled" <?php }?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
 </tr>
 
 <?php

@@ -1282,10 +1282,46 @@ class ElementOperation extends BaseElement
 		return true;
 	}
 
-	public function confirmLetterPrinted() {
-		
+	public function confirmLetterPrinted($confirmto = null) {
+		// admin users can set confirmto and confirm up to a specific point, steamrollering whatever else is in there
+		if (!is_null($confirmto)) {
+			if (!$dls = $this->date_letter_sent) {
+				$dls = new DateLetterSent;
+				$dls->element_operation_id = $this->id;
+			}
+			if ($confirmto == self::LETTER_GP) {
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
+			}
+			if ($confirmto == self::LETTER_INVITE) {
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_1st_reminder_letter_sent = null;
+				$dls->date_2nd_reminder_letter_sent = null;
+				$dls->date_gp_letter_sent = null;
+			}
+			if ($confirmto == self::LETTER_REMINDER_1) {
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_2nd_reminder_letter_sent = null;
+				$dls->date_gp_letter_sent = null;
+			}
+			if ($confirmto == self::LETTER_REMINDER_2) {
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_gp_letter_sent = null;
+			}
+			if ($confirmto == 'noletters') {
+				$dls->date_invitation_letter_sent = null;
+				$dls->date_1st_reminder_letter_sent = null;
+				$dls->date_2nd_reminder_letter_sent = null;
+				$dls->date_gp_letter_sent = null;
+			}
+			$dls->save();
 		// Only confirm if letter is actually due
-		if($this->getDueLetter() !== $this->getLastLetter()) {
+		} else if ($this->getDueLetter() !== $this->getLastLetter()) {
 			if ($dls = $this->date_letter_sent) {
 				if ($dls->date_invitation_letter_sent == null) {
 					$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
