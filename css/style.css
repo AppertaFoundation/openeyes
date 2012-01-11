@@ -540,6 +540,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatre-times .sessionTimes .timeBlock { display:inline-block; width:300px; background: #eeeeee; color:#999; border:1px solid #fff; padding:15px 25px 12px 25px; text-align: center; position: relative; }
 #theatre-times .sessionTimes .timeBlock.bookable { background:#69bd51; color:#000; }
 #theatre-times .sessionTimes .timeBlock.bookable:hover { background:#3665ff; color:#fff; cursor:pointer; }
+#theatre-times .sessionTimes .timeBlock.bookable.full { background:#ffda56; color:#000; }
 #theatre-times .sessionTimes .timeBlock.selected_session { background: #3665ff; color: #fff; }
 #theatre-times .sessionTimes .timeBlock .time { font-size: 16px; }
 #theatre-times .sessionTimes .timeBlock .session_id { display: none; }

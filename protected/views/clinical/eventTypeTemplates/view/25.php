@@ -242,7 +242,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	});
 
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
-		printUrl('/waitingList/printletters?operations[]='+<?php echo $operation->id ?>);
+		printUrl('/waitingList/printletters?confirm=1&operations[]='+<?php echo $operation->id ?>);
 	});
 
 	$('#btn_print-letter').unbind('click').click(function() {
@@ -267,7 +267,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
 	$scheduledContact = $operation->getScheduledContact();
 
-	$this->renderPartial("/letters/scheduled_letter", array(
+	$this->renderPartial("/letters/admission_letter", array(
 		'site' => $site,
 		'patient' => $patient,
 		'consultantName' => $consultantName,

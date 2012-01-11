@@ -164,6 +164,7 @@ class WaitingListController extends BaseController
 	 */
 	public function actionPrintLetters() {
 		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
+		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
 		if(!is_array($operation_ids)) {
 			throw new CHttpException('400', 'Invalid operation list');
 		}
@@ -177,7 +178,8 @@ class WaitingListController extends BaseController
 			} else {
 				$break = true;
 			}
-			$this->printLetter($operation);
+			$this->printLetter($operation, $auto_confirm);
+			
 		}
 	}
 	
@@ -192,7 +194,7 @@ class WaitingListController extends BaseController
 	 * Print the next letter for an operation
 	 * @param ElementOperation $operation
 	 */
-	protected function printLetter($operation) {
+	protected function printLetter($operation, $auto_confirm = false) {
 		$letter_status = $operation->getDueLetter();
 		$letter_templates = array(
 			ElementOperation::LETTER_INVITE => 'invitation_letter',
@@ -230,6 +232,7 @@ class WaitingListController extends BaseController
 				'patient' => $patient,
 				'consultantName' => $consultantName,
 			));
+			$operation->confirmLetterPrinted();
 		} else {
 			throw CException('Undefined operation letter template: '.$letter_status);
 		}

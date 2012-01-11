@@ -623,18 +623,16 @@ class ElementOperation extends BaseElement
 			}
 
 			// Add bookable field to indicate if session can be booked for this operation
-			$bookable = ($session['time_available'] > 0);
-			if($bookable) {
-				if($this->anaesthetist_required && !$session['anaesthetist']) {
-					$bookable = false;
-				}
-				if($this->consultant_required && !$session['consultant']) {
-					$bookable = false;
-				}
-				$paediatric = ($this->event->episode->patient->getAge() < 16);
-				if($paediatric && !$session['paediatric']) {
-					$bookable = false;
-				}
+			$bookable = true;
+			if($this->anaesthetist_required && !$session['anaesthetist']) {
+				$bookable = false;
+			}
+			if($this->consultant_required && !$session['consultant']) {
+				$bookable = false;
+			}
+			$paediatric = ($this->event->episode->patient->getAge() < 16);
+			if($paediatric && !$session['paediatric']) {
+				$bookable = false;
 			}
 			$session['bookable'] = $bookable;
 			
@@ -1285,28 +1283,31 @@ class ElementOperation extends BaseElement
 	}
 
 	public function confirmLetterPrinted() {
-		if ($dls = $this->date_letter_sent) {
-			if ($dls->date_invitation_letter_sent == null) {
+		
+		// Only confirm if letter is actually due
+		if($this->getDueLetter() !== $this->getLastLetter()) {
+			if ($dls = $this->date_letter_sent) {
+				if ($dls->date_invitation_letter_sent == null) {
+					$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_1st_reminder_letter_sent == null) {
+					$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_2nd_reminder_letter_sent == null) {
+					$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_gp_letter_sent == null) {
+					$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_scheduling_letter_sent == null) {
+					$dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
+				}
+				if (!$dls->save()) {
+					throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
+				}
+			} else {
+				$dls = new DateLetterSent;
+				$dls->element_operation_id = $this->id;
 				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-			} else if ($dls->date_1st_reminder_letter_sent == null) {
-				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
-			} else if ($dls->date_2nd_reminder_letter_sent == null) {
-				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
-			} else if ($dls->date_gp_letter_sent == null) {
-				$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
-			} else if ($dls->date_scheduling_letter_sent == null) {
-				$dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
-			}
-			if (!$dls->save()) {
-				throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
-			}
-		} else {
-			$dls = new DateLetterSent;
-			$dls->element_operation_id = $this->id;
-			$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-			$dls->setIsNewRecord(true);
-			if (!$dls->save()) {
-				throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
+				if (!$dls->save()) {
+					throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
+				}
 			}
 		}
 	}
