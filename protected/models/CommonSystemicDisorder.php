@@ -105,6 +105,7 @@ class CommonSystemicDisorder extends BaseActiveRecord
 			->select('t.id AS did, t.term')
 			->from('disorder t')
 			->join('common_systemic_disorder', 't.id = common_systemic_disorder.disorder_id')
+			->order('t.term')
 			->queryAll();
 
 		$result = array();
