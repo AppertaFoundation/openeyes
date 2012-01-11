@@ -81,7 +81,7 @@
 			<div style="float: right; margin-right: 18px;">
 				<button style="margin-right: 15px;" type="submit" class="classy blue tall" id="btn_print_all"><span class="button-span button-span-blue">Print all</span></button>
 				<button style="margin-right: 15px;" type="submit" class="classy blue grande" id="btn_print"><span class="button-span button-span-blue">Print selected</span></button>
-				<?php if (!Yii::app()->user->checkAccess('admin')) { ?>
+				<?php if (Yii::app()->user->checkAccess('admin')) { ?>
 				<span class="admin-confirmto">
 					<select name="adminconfirmto" id="adminconfirmto">
 						<option value="OFF">Off</option>
