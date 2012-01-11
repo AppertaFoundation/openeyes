@@ -41,7 +41,8 @@ class Sequence extends BaseActiveRecord
 	const FREQUENCY_2WEEKS = 2;
 	const FREQUENCY_3WEEKS = 3;
 	const FREQUENCY_4WEEKS = 4;
-
+	const FREQUENCY_MONTHLY = 5;
+	
 	const SELECT_1STWEEK = 1;
 	const SELECT_2NDWEEK = 2;
 	const SELECT_3RDWEEK = 4;
@@ -188,6 +189,7 @@ class Sequence extends BaseActiveRecord
 			self::FREQUENCY_3WEEKS => 'Every 3 weeks',
 			self::FREQUENCY_4WEEKS => 'Every 4 weeks',
 			self::FREQUENCY_ONCE => 'One time',
+			self::FREQUENCY_MONTHLY => 'Monthly',
 		);
 	}
 
@@ -259,7 +261,7 @@ class Sequence extends BaseActiveRecord
 				$selection += $value;
 			}
 			$this->week_selection = $selection;
-			$this->repeat_interval = 0;
+			$this->repeat_interval = self::FREQUENCY_MONTHLY;
 		} else {
 			$this->week_selection = 0;
 		}
@@ -433,6 +435,9 @@ class Sequence extends BaseActiveRecord
 			case self::FREQUENCY_ONCE:
 				$interval = $endTimestamp + 1;
 				break;
+			case self::FREQUENCY_MONTHLY:
+				$interval = 0;
+				break;
 		}
 
 		return $interval;
@@ -464,6 +469,9 @@ class Sequence extends BaseActiveRecord
 				break;
 			case self::FREQUENCY_4WEEKS:
 				$text = 'Every 4 weeks';
+				break;
+			case self::FREQUENCY_MONTHLY:
+				$text = 'Monthly';
 				break;
 			default:
 				$text = 'Unknown';

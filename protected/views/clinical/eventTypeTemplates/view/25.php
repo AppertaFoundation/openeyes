@@ -267,7 +267,7 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
 	$scheduledContact = $operation->getScheduledContact();
 
-	$this->renderPartial("/letters/scheduled_letter", array(
+	$this->renderPartial("/letters/admission_letter", array(
 		'site' => $site,
 		'patient' => $patient,
 		'consultantName' => $consultantName,
