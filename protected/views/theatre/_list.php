@@ -93,7 +93,7 @@ if (empty($theatres)) {?>
 								<th>Admit time</th>
 								<th class="th_sort" style="display: none;">Sort</th>
 								<th>Hospital #</th>
-								<th>Confirm</th>
+								<th>Confirmed</th>
 								<th>Patient (Age)</th>
 								<th>[Eye] Operation</th>
 								<th>Anesth</th>
