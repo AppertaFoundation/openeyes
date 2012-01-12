@@ -60,16 +60,16 @@ if (empty($model->event_id)) {
 						<div class="data">
 							<input id="ytElementDiagnosis_eye" type="hidden" value="" name="ElementDiagnosis[eye]" />
 							<span class="group">
-							<input id="ElementDiagnosis_eye_1" value="0"<?php if (empty($diagnosis->eye)) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
-							<label for="ElementDiagnosis_eye_1">Left</label>
+							<input id="ElementDiagnosis_eye_0" value="1"<?php if ($diagnosis->eye == '1') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
+							<label for="ElementDiagnosis_eye_0">Right</label>
 							</span>
 							<span class="group">
 							<input id="ElementDiagnosis_eye_2" value="2"<?php if ($diagnosis->eye == '2') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_2">Both</label>
 							</span>
 							<span class="group">
-							<input id="ElementDiagnosis_eye_0" value="1"<?php if ($diagnosis->eye == '1') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
-							<label for="ElementDiagnosis_eye_0">Right</label>
+							<input id="ElementDiagnosis_eye_1" value="0"<?php if (empty($diagnosis->eye)) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
+							<label for="ElementDiagnosis_eye_1">Left</label>
 							</span>
 						</div>
 					</div>
@@ -77,7 +77,6 @@ if (empty($model->event_id)) {
 					<div id="editDiagnosis" class="eventDetail">
 						<div class="label">Diagnosis:</div>
 						<div class="data">
-							<span id="enteredDiagnosisText" class="bold" style="margin-right:20px;"><?php echo $value?></span>
 							<?php echo CHtml::dropDownList('ElementDiagnosis[disorder_id]', '', CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)), array('empty' => 'Select a commonly used diagnosis')); ?>
 							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
 							<?php
@@ -91,7 +90,7 @@ if (empty($model->event_id)) {
 									'select'=>"js:function(event, ui) {
 										var value = ui.item.value;
 										$('#ElementDiagnosis_disorder_id_0').val('');
-										$('#enteredDiagnosisText').html(value);
+										$('#enteredDiagnosisText span').html(value);
 										//$('#editDiagnosis').hide();
 										//$('#enteredDiagnosis').show();
 										$('input[id=savedDiagnosis]').val(value);
@@ -107,6 +106,11 @@ if (empty($model->event_id)) {
 							?>
 							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo $value?>" />
 						</div>
+						<div id="enteredDiagnosisText">
+							<div class="extraDetails">
+								<span class="bold" style="margin-right:20px;"><?php echo $value?></span>
+							</div>
+						</div>
 					</div>
 
 					<script type="text/javascript">
@@ -119,7 +123,7 @@ if (empty($model->event_id)) {
 						$('input[name="ElementDiagnosis[disorder_id]"]').watermark('type the first few characters of a diagnosis');
 						$('select[name="ElementDiagnosis[disorder_id]"]').change(function() {
 							var value = $(this).children(':selected').text();
-							$('#enteredDiagnosisText').html(value);
+							$('#enteredDiagnosisText span').html(value);
 							$('#savedDiagnosis').val(value);
 							$(this).children(':selected').attr('selected', false);
 						});

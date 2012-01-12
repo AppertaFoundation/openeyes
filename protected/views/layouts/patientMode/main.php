@@ -55,8 +55,8 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				</div>
 
 				<div class="patientReminder">
+					<span class="surname"><?php echo $this->model->last_name?></span>,
 					<span class="given"><?php echo $this->model->first_name?></span>
-					<span class="surname"><?php echo $this->model->last_name?></span>
 					<span class="number">Hospital number: <?php echo $this->model->hos_num?></span>
 				</div>
 			</div> <!-- #patientID -->

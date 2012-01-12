@@ -762,10 +762,5 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 #LoginForm_siteId { margin-top: 6px; position: absolute; right: 0; top: 0; width: 212px; }
 
-#procedureDiv { background: #DAE6F1; }
-
-
-
-
-
-
+#procedureDiv,
+#enteredDiagnosisText { margin-left: 300px; background: #DAE6F1; }
