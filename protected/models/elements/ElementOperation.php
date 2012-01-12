@@ -1282,7 +1282,7 @@ class ElementOperation extends BaseElement
 		return true;
 	}
 
-	public function confirmLetterPrinted($confirmto = null) {
+	public function confirmLetterPrinted($confirmto = null, $confirmdate = null) {
 		// admin users can set confirmto and confirm up to a specific point, steamrollering whatever else is in there
 		if (!is_null($confirmto)) {
 			if (!$dls = $this->date_letter_sent) {
@@ -1290,27 +1290,27 @@ class ElementOperation extends BaseElement
 				$dls->element_operation_id = $this->id;
 			}
 			if ($confirmto == self::LETTER_GP) {
-				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
-				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
-				$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_2nd_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_gp_letter_sent = Helper::convertNHS2MySQL($confirmdate);
 			}
 			if ($confirmto == self::LETTER_INVITE) {
-				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
 				$dls->date_1st_reminder_letter_sent = null;
 				$dls->date_2nd_reminder_letter_sent = null;
 				$dls->date_gp_letter_sent = null;
 			}
 			if ($confirmto == self::LETTER_REMINDER_1) {
-				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
 				$dls->date_2nd_reminder_letter_sent = null;
 				$dls->date_gp_letter_sent = null;
 			}
 			if ($confirmto == self::LETTER_REMINDER_2) {
-				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
-				$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
-				$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_2nd_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
 				$dls->date_gp_letter_sent = null;
 			}
 			if ($confirmto == 'noletters') {

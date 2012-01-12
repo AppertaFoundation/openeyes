@@ -82,6 +82,22 @@
 				<button style="margin-right: 15px;" type="submit" class="classy blue tall" id="btn_print_all"><span class="button-span button-span-blue">Print all</span></button>
 				<button style="margin-right: 15px;" type="submit" class="classy blue grande" id="btn_print"><span class="button-span button-span-blue">Print selected</span></button>
 				<?php if (Yii::app()->user->checkAccess('admin')) { ?>
+
+						<span class="data admin-confirmto">Set latest letter sent to be:
+							<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+								'name'=>'adminconfirmdate',
+								'id'=>'adminconfirmdate',
+								// additional javascript options for the date picker plugin
+								'options'=>array(
+									'showAnim'=>'fold',
+									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
+									'maxDate'=>'today'
+								),
+								'value' => date("j M Y"),
+								'htmlOptions'=>array('style'=>'width: 110px;')
+							)); ?>
+						</span>
+
 				<span class="admin-confirmto">
 					<select name="adminconfirmto" id="adminconfirmto">
 						<option value="OFF">Off</option>
@@ -141,7 +157,7 @@
 
 	$('#btn_confirm_selected').click(function() {
 		var data = '';
-		data += "adminconfirmto=" + $('#adminconfirmto').val();
+		data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();
 		$('input[id^="operation"]:checked').map(function() {
 			if (data.length >0) {
 				data += '&';
