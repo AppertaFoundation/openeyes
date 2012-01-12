@@ -39,7 +39,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 <body>
                 <?php if (Yii::app()->user->checkAccess('admin')) {?>
-                        <div class="h1-watermark-admin">&lt;&lt;&lt; You are logged in as admin &mdash; Only sober OpenEyes team members should do this &gt;&gt;&gt;</div>
+                        <div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
                 <?php } else if (Yii::app()->params['watermark']) {?>
                         <div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
                 <?php }?>
@@ -101,7 +101,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	</script>
 
                 <?php if (Yii::app()->user->checkAccess('admin')) {?>
-                        <div class="h1-watermark-admin">&lt;&lt;&lt; You are logged in as admin &mdash; Only sober OpenEyes team members should do this &gt;&gt;&gt;</div>
+                        <div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
                 <?php } else if (Yii::app()->params['watermark']) {?>
                         <div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
                 <?php }?>
