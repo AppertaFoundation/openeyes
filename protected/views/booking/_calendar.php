@@ -15,7 +15,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 
 <?php
-$today = date('Y-m-d');
 $thisMonth = date('Y-m-d', $date);
 $lastMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)-1, 1, date('Y', $date)));
 $nextMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)+1, 1, date('Y', $date)));
@@ -24,9 +23,9 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 				<div id="dates" class="clearfix">
 					<div id="current_month" class="column"><?php echo date('F Y', $date)?></div>
 					<div class="column" id="month_back">
-						<?php if (date('Ym') >= date('Ym', $date)) {
+						<?php /*if (date('Ym') >= date('Ym', $date)) {
 							echo '<button type="submit" class="classy inactive venti" name="yt1" id="previous_month"><span class="button-span button-span-inactive">&#x25C0;&nbsp;&nbsp;previous month</span></button>';
-						} else {
+						} else {*/
 							echo CHtml::form(array('booking/sessions', 'operation'=>$operation->id, 'date'=>$lastMonth), 'post');
 							echo CHtml::hiddenField('operation', $operation->id);
 							echo CHtml::hiddenField('pmonth', $lastMonth);
@@ -35,7 +34,7 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 							echo '</span>';
 							echo CHtml::closeTag('form');
 							?>
-						<?php }?>
+						<?php //} ?>
 					</div>
 					<div class="column" id="month_forward">
 						<?php if ($nextMonth > $nextYear) {
@@ -62,10 +61,11 @@ $nextYear = date('Y-m-d', mktime(0,0,0, date('m'), 1, date('Y')+1));
 <?php foreach ($list as $date => $data) {
 			// check if date is outside this month or before today
 			if (
-				date('m', strtotime($date)) !== date('m', strtotime($thisMonth)) ||
-				strtotime($date) < strtotime(date('Y-m-d'))
+				date('m', strtotime($date)) !== date('m', strtotime($thisMonth)) 
 			) {
 				$list[$date]['status'] = 'invalid';
+			} elseif (strtotime($date) < strtotime(date('Y-m-d'))) {
+				$list[$date]['status'] = 'inthepast';
 			} elseif (date('Y-m-d', strtotime($date)) >= date('Y-m-d', $rttDate)) {
 				$list[$date]['status'] .= ' outside_rtt';
 			} ?>

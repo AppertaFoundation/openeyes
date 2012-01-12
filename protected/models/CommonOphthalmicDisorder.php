@@ -127,6 +127,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 			->join('common_ophthalmic_disorder', 't.id = common_ophthalmic_disorder.disorder_id')
 			->where('common_ophthalmic_disorder.specialty_id = :specialty_id',
 				array(':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id))
+			->order('t.term')
 			->queryAll();
 
 		$result = array();

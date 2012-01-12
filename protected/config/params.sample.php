@@ -20,6 +20,7 @@ return array(
 		'watermark' => '',
 		'watermark_description' => '',
 		'helpdesk_email' => '',
-		'helpdesk_phone' => ''
+		'helpdesk_phone' => '',
+		'local_users' => array('admin')
 	)
 );

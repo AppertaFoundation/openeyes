@@ -39,9 +39,11 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 </head> 
  
 <body> 
-	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
+                <?php if (Yii::app()->user->checkAccess('admin')) {?>
+                        <div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
+                <?php } else if (Yii::app()->params['watermark']) {?>
+                        <div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
+                <?php }?>
 
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
@@ -104,9 +106,11 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		});
 	</script>
 
-	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
+		<?php if (Yii::app()->user->checkAccess('admin')) {?>
+			<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
+		<?php } else if (Yii::app()->params['watermark']) {?>
+			<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
+		<?php }?>
 
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
