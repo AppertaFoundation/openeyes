@@ -29,25 +29,11 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 ?>
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
+<div class="cols2">
 <!-- Details -->
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
+<h3 class="subsection">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
-<h4>Created by</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->event->user->username ?> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
-</div>
-
-<h4>Last modified by</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->event->usermodified->username?> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
-</div>
-
-<h4>Diagnosis</h4>
-<div class="eventHighlight">
-	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
-</div>
-
+<div class="col1">
 <h4>Operation</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->getEyeText()?> 
@@ -68,43 +54,80 @@ foreach ($elements as $element) {
 }
 ?></h4>
 </div>
+</div>
 
+<div class="col2">
+<h4>Diagnosis</h4>
+<div class="eventHighlight">
+	<?php $disorder = $operation->getDisorder(); ?>
+	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
+</div>
+</div>
+
+<div class="col1">
 <h4>Anaesthetic</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->getAnaestheticText()?></h4>
 </div>
+</div>
 
+<div class="col2">
 <h4>Consultant required?</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->consultant_required ? 'Yes' : 'No'?></h4>
 </div>
+</div>
 
+<div class="col1">
 <h4>Post Operative Stay Required</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->overnight_stay ? 'Yes' : 'No'?></h4>
 </div>
+</div>
 
+<div class="col2">
 <h4>Decision Date</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
 </div>
+</div>
 
+<div class="col1">
 <h4>Operation priority</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->urgent ? 'Urgent' : 'Routine'?></h4>
 </div>
+</div>
 
-<?php if (!empty($operation->comments)) {?>
+<?php if (!empty($operation->comments)) { ?>
+<div class="col2">
 <h4>Operation Comments</h4>
 	<div class="eventHighlight">
 		<h4><?php echo $operation->comments?></h4>
 	</div>
-<?php }?>
+</div>
+<?php } ?>
 
-<?php
+<div class="col1">
+<h4>Operation Created by</h4>
+<div class="eventHighlight">
+<h4><?php echo $operation->event->user->fullname ?> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
+</div>
+</div>
 
-if (!empty($operation->booking)) { ?>
-<h4>Session</h4>
+<div class="col2">
+<h4>Operation Last modified by</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->event->usermodified->fullname ?> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
+</div>
+</div>
+
+<?php if (!empty($operation->booking)) { ?>
+<!-- Booking -->
+<h3 class="subsection">Booking Details</h3>
+
+<div class="col1">
+<h4>List</h4>
 <div class="eventHighlight">
 <?php $session = $operation->booking->session ?>
 <h4><?php
@@ -114,20 +137,43 @@ if (!empty($operation->booking)) { ?>
 		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
 			$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
-
 	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
 ?></h4>
 </div>
+</div>
 
+<div class="col2">
+<h4>Theatre</h4>
+<div class="eventHighlight">
+<h4><?php echo $session->sequence->theatre->name ?> (<?php echo $session->sequence->theatre->site->name ?>)</h4>
+</div>
+</div>
+
+<div class="col1">
 <h4>Admission Time</h4>
 <div class="eventHighlight">
 <h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 </div>
-<?php
-}
+</div>
 
-if (count($cancelledBookings)) {
-?>
+<div class="col1">
+<h4>Booking Created by</h4>
+<div class="eventHighlight">
+<h4><?php echo $operation->booking->user->fullname ?> on <?php echo $operation->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->booking->created_date)) ?></h4>
+</div>
+</div>
+
+<div class="col2">
+<h4>Booking Last modified by</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->booking->usermodified->fullname ?> on <?php echo $operation->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->booking->last_modified_date)) ?></h4>
+</div>
+</div>
+
+<?php } ?>
+
+<?php if (count($cancelledBookings)) { ?>
+<div class="col1">
 <h4>Cancelled Bookings</h4>
 <div class="eventHighlight"><h4>
 <?php
@@ -142,29 +188,32 @@ if (count($cancelledBookings)) {
 	}
 ?>
 </h4></div>
-<?php
-}
+</div>
+<?php } ?>
 
-if ($operation->status == $operation::STATUS_CANCELLED && !empty($operation->cancellation)) {
-$co = $operation->cancellation;
+<?php if ($operation->status == $operation::STATUS_CANCELLED && !empty($operation->cancellation)) {
+	$co = $operation->cancellation;
 ?>
+<div class="col1">
 <h4>Cancellation details</h4>
 <div class="eventHighlight"><h4>
 <?php
 	echo 'Cancelled on ' . $co->NHSDate('cancelled_date') . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
 ?>
 </h4></div>
+</div>
 <?php if ($co->cancellation_comment) {?>
+<div class="col1">
 	<h4>Cancellation comments</h4>
 	<div class="eventHighlight">
 		<h4><?php echo str_replace("\n","<br/>",$co->cancellation_comment)?></h4>
 	</div>
-<?php }?>
-<?php
-}
+</div>
+<?php } ?>
+<?php } ?>
 
-if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
-?>
+</div>
+<?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) { ?>
 <!-- editable -->
 <div style="margin-top:40px; text-align:center;">
 	<?php
