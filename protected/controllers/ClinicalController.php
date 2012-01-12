@@ -86,7 +86,7 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->logActivity('viewed event');
 
@@ -95,7 +95,7 @@ class ClinicalController extends BaseController
 			'elements' => $elements,
 			'eventId' => $id,
 			'editable' => $editable,
-			'site' => $site
+			'currentSite' => $currentSite
 			), false, true);
 	}
 

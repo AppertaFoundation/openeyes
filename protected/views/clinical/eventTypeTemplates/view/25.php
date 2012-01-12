@@ -103,8 +103,7 @@ foreach ($elements as $element) {
 
 <?php
 
-if (!empty($operation->booking)) {
-?>
+if (!empty($operation->booking)) { ?>
 <h4>Session</h4>
 <div class="eventHighlight">
 <?php $session = $operation->booking->session ?>
@@ -113,7 +112,7 @@ if (!empty($operation->booking)) {
 		$firmName = 'Emergency List';
 	} else {
 		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+			$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
 
 	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
@@ -247,42 +246,43 @@ if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
 
 	$('#btn_print-letter').unbind('click').click(function() {
 		clearPrintContent();
-		appendPrintContent($('#printcontent_scheduledletter').html());
-		appendPrintContent($('#printcontent_form').html());
+		appendPrintContent($('#printcontent_admissionletter').html());
 		printContent();
 	});
 
 </script>
-<div id="printcontent_scheduledletter" style="display: none;">
+<?php if($operation->booking) { ?>
+<div id="printcontent_admissionletter" style="display: none;">
 <?php
 	// TODO: This needs moving to a controller so we can pull it in using an ajax call
 	$event = Event::model()->findByPk($eventId);
-	$consultant = $event->episode->firm->getConsultant();
-	if (empty($consultant)) {
-		$consultantName = 'CONSULTANT';
-	} else {
-		$consultantName = CHtml::encode($consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name);
-	}
 	$patient = $event->episode->patient;
-	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
-	$scheduledContact = $operation->getScheduledContact();
-
+	$admissionContact = $operation->getAdmissionContact();
+	$site = $operation->booking->session->sequence->theatre->site;
+	$firm = ($firm_assign = $operation->booking->session->sequence->sequenceFirmAssignment) ? $firm_assign->firm : false;
+	$emergency_list = false;
+	if(!$firm) {
+		$firm = $operation->event->episode->firm;
+		$emergency_list = true;
+	}
 	$this->renderPartial("/letters/admission_letter", array(
 		'site' => $site,
 		'patient' => $patient,
-		'consultantName' => $consultantName,
+		'firm' => $firm,
+		'emergencyList' => $emergency_list,
 		'operation' => $operation,
-		'specialty' => $specialty,
-		'refuseContact' => $scheduledContact['refuse'],
-		'healthContact' => $scheduledContact['health'],
+		'refuseContact' => $admissionContact['refuse'],
+		'healthContact' => $admissionContact['health'],
 		'cancelledBookings' => $cancelledBookings,
 	));
 	$this->renderPartial("/letters/break");
-	$this->renderPartial("/letters/form", array(
+	$this->renderPartial("/letters/admission_form", array(
 		'operation' => $operation, 
 		'site' => $site,
 		'patient' => $patient,
-		'consultantName' => $consultantName,
+		'firm' => $firm,
+		'emergencyList' => $emergency_list,
 	));
 ?>
 </div>
+<?php } ?>

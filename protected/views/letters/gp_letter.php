@@ -1,2 +1,2 @@
 <?php // FIXME: Implement?>
-<p>Not implemented yet</p>>
+<p>Not implemented yet</p>

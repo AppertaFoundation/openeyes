@@ -5,7 +5,14 @@
 
 <p>
 	I have been asked to arrange your <?php	if ($patient->isChild()) { ?>child's <?php } ?> admission for surgery under the care of
-	<?php echo $consultantName ?>. This is currently anticipated to be
+	<?php 
+		if($consultant = $firm->getConsultant()) {
+			$consultantName = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+		} else {
+			$consultantName = 'CONSULTANT';
+		}
+	?>
+	<?php echo CHtml::encode($consultantName) ?>. This is currently anticipated to be
 	<?php
 	if ($operation->overnight_stay) {
 		echo 'an overnight stay';

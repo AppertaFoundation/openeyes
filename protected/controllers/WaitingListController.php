@@ -205,34 +205,28 @@ class WaitingListController extends BaseController
 		);
 		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
 		if($letter_template) {
-			$consultant = $operation->event->episode->firm->getConsultant();
-			if (empty($consultant)) {
-				$consultantName = 'CONSULTANT';
-			} else {
-				$contact = $consultant->contact;
-				$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
-			}
-			// FIXME: The site associated with the operation might not be the one we're looking for
-			// if that is the case then both the methods below need attention 
+			$firm = $operation->event->episode->firm;
 			$site = $operation->site;
 			$waitingListContact = $operation->waitingListContact;
-			
 			$patient = $operation->event->episode->patient;
 			$this->renderPartial('/letters/'.$letter_template, array(
 				'operation' => $operation,
 				'site' => $site,
 				'patient' => $patient,
-				'consultantName' => $consultantName,
+				'firm' => $firm,
 				'changeContact' => $waitingListContact,
 			));
 			$this->printBreak();
-			$this->renderPartial("/letters/form", array(
+			$this->renderPartial("/letters/admission_form", array(
 				'operation' => $operation, 
 				'site' => $site,
 				'patient' => $patient,
-				'consultantName' => $consultantName,
+				'firm' => $firm,
+				'emergencyList' => false,
 			));
-			$operation->confirmLetterPrinted();
+			if($auto_confirm) {
+				$operation->confirmLetterPrinted();
+			}
 		} else {
 			throw CException('Undefined operation letter template: '.$letter_status);
 		}

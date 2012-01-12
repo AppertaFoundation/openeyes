@@ -75,7 +75,9 @@ class Booking extends BaseActiveRecord
 		return array(
 			'elementOperation' => array(self::BELONGS_TO, 'ElementOperation', 'element_operation_id'),
 			'session' => array(self::BELONGS_TO, 'Session', 'session_id'),
-			'ward' => array(self::BELONGS_TO, 'Ward', 'ward_id')
+			'ward' => array(self::BELONGS_TO, 'Ward', 'ward_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 

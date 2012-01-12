@@ -1,28 +1,25 @@
-<div id="waitingList">
+<div id="waitingList" class="grid-view-waitinglist">
 <?php
-
 if (empty($operations)) { ?>
 <h2 class="theatre">Partial bookings waiting list empty.</h2>
 <?php
 } else {
 ?>
-					<div id="waitingList" class="grid-view-waitinglist">
-					    <table>
-					    <tbody>
-
-				    	<tr>
-								<th>Letters sent</th>
-								<th>Patient</th>
-								<th>Hospital number</th>
-								<th>Location</th>
-								<th>Procedure</th>
-								<th>Eye</th>
-								<th>Firm</th>
-								<th>Decision date</th>
-								<th>Priority</th>
-								<th>Book status (requires...)</th>
-								<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
-							</tr>
+	<table>
+		<tbody>
+    	<tr>
+				<th>Letters sent</th>
+				<th>Patient</th>
+				<th>Hospital number</th>
+				<th>Location</th>
+				<th>Procedure</th>
+				<th>Eye</th>
+				<th>Firm</th>
+				<th>Decision date</th>
+				<th>Priority</th>
+				<th>Book status (requires...)</th>
+				<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
+			</tr>
 <?php
 	$i = 0;
 	foreach ($operations as $id => $operation) {
@@ -98,19 +95,20 @@ if (empty($operations)) { ?>
 		$i++;
 	}
 
-	if ($i == 0) {?>
+	if ($i == 0) { ?>
+	<tr>
 		<td colspan="7" style="border: none; padding-top: 10px;">
 			There are no patients who match the specified criteria.
 		</td>
+	</tr>
 	<?php }
 ?>
+</tbody>
 </table>
 <?php
 }
 ?>
-</tbody>
 
-</table>
 <script type="text/javascript">
 $('#checkall').click(function() {
 	$('input[id^="operation"]:enabled').attr('checked',$('#checkall').is(':checked'));

@@ -620,7 +620,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* .theatre-sessions table td:last-child { border-right: none; } */
 .theatre-sessions table th.footer { font-size:12px; padding:10px; color: #333; }
 .theatre-sessions table th.footer.available { background: #bde0b3; }
-.theatre-sessions table th.footer.full { background: #eee; }
+.theatre-sessions table th.footer.full { background: #ffedb2; }
 /* Control the widths of key tds */
 .theatre-sessions table td.session { width:40px; }
 .theatre-sessions table td.dragsort { width:26px; }
