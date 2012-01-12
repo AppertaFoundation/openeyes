@@ -134,7 +134,14 @@ if ($patient->address === NULL) {
 <h2>Comments</h2>
 	<table>
 		<tr>
-			<td height="25"><?php echo nl2br(CHtml::encode($operation->comments)); ?></td>
+			<td height="50"><?php echo nl2br(CHtml::encode($operation->comments)); ?></td>
+		</tr>
+	</table>
+
+<h2>Pre-op Assessment Date</h2>
+	<table>
+		<tr>
+			<td height="50"></td>
 		</tr>
 	</table>
 
