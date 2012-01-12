@@ -51,7 +51,7 @@ class UserIdentity extends CUserIdentity
 			return false;
 		}
 
-		if ($user->username == 'admin') {
+		if (in_array($user->username,Yii::app()->params['local_users'])) {
 			Yii::app()->params['auth_source'] = 'BASIC';
 		}
 
