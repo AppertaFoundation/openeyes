@@ -67,94 +67,101 @@ if (!$reschedule) {
 	if (($counter - 1) != 1) {
 		echo 's';
 	}
-	echo ' currently scheduled'; ?></th>
+	if ($_POST['bookable']) {
+		echo ' currently scheduled';
+	} else {
+		echo ' were scheduled';
+	}
+		?></th>
 			</tr>
 		</tfoot>
 </table>
 </div>
 
-<div class="eventDetail clearfix">
-	<div class="label"><strong>Admission Time:</strong></div>
-	<div class="data"> 
-		<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo ($session['start_time'] == '13:30:00') ? '12:00' : date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
-	</div>
-</div>
-
-<div class="eventDetail clearfix" style="position:relative;">
-	<div class="label"><strong>Session Comments:</strong>
-		<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
-	</div>
-	<div class="data">
-		<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
-			<textarea id="Session_comments" name="Session[comments]" rows="2" style="width:395px;"><?php echo htmlspecialchars($session['comments']) ?></textarea>
+<?php if ($_POST['bookable']) {?>
+	<div class="eventDetail clearfix">
+		<div class="label"><strong>Admission Time:</strong></div>
+		<div class="data"> 
+			<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo ($session['start_time'] == '13:30:00') ? '12:00' : date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
 		</div>
-	</div>	
-</div>
-
-<?php
-if ($reschedule) {
-	echo CHtml::hiddenField('booking_id', $operation->booking->id);
-}
-echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
-echo CHtml::hiddenField('Booking[session_id]', $session['id']);
-?>
-
-<?php if ($reschedule) { ?>
-<h3>Reason for Reschedule</h3>
-<div class="eventDetail clearfix" style="position:relative;">
-	<div class="errorSummary" style="display:none"></div>
-	<div class="label"><strong><?php echo CHtml::label('Reschedule Reason: ', 'cancellation_reason'); ?></strong></div>
-	<?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
-		$listIndex = 3;
-	} else {
-		$listIndex = 2;
-	} ?>
-	<div class="data">
-	<?php echo CHtml::dropDownList('cancellation_reason', '',
-		CancellationReason::getReasonsByListNumber($listIndex),
-		array('empty' => 'Select a reason')
-	); ?>
 	</div>
-</div>
-<div class="eventDetail clearfix" style="position:relative;">
-	<div class="label"><strong><?php echo CHtml::label('Reschedule Comments: ', 'cancellation_comment'); ?></strong></div>
-	<div class="data">
-		<textarea name="cancellation_comment" rows=3 cols=50></textarea>
+
+	<div class="eventDetail clearfix" style="position:relative;">
+		<div class="label"><strong>Session Comments:</strong>
+			<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
+		</div>
+		<div class="data">
+			<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
+				<textarea id="Session_comments" name="Session[comments]" rows="2" style="width:395px;"><?php echo htmlspecialchars($session['comments']) ?></textarea>
+			</div>
+		</div>	
 	</div>
-</div>
-<?php } ?>
 
-<div class="eventDetail clearfix" style="position:relative;">
-	<div class="label"><strong><?php echo CHtml::label('Operation Comments: ', 'operation_comments'); ?></strong></div>
-	<div class="data">
-		<textarea id="operation_comments" name="Operation[comments]" rows=3 cols=50><?php echo $operation->comments ?></textarea>
+	<?php
+	if ($reschedule) {
+		echo CHtml::hiddenField('booking_id', $operation->booking->id);
+	}
+	echo CHtml::hiddenField('Booking[element_operation_id]', $operation->id);
+	echo CHtml::hiddenField('Booking[session_id]', $session['id']);
+	?>
+
+	<?php if ($reschedule) { ?>
+	<h3>Reason for Reschedule</h3>
+	<div class="eventDetail clearfix" style="position:relative;">
+		<div class="errorSummary" style="display:none"></div>
+		<div class="label"><strong><?php echo CHtml::label('Reschedule Reason: ', 'cancellation_reason'); ?></strong></div>
+		<?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
+			$listIndex = 3;
+		} else {
+			$listIndex = 2;
+		} ?>
+		<div class="data">
+		<?php echo CHtml::dropDownList('cancellation_reason', '',
+			CancellationReason::getReasonsByListNumber($listIndex),
+			array('empty' => 'Select a reason')
+		); ?>
+		</div>
 	</div>
-</div>
+	<div class="eventDetail clearfix" style="position:relative;">
+		<div class="label"><strong><?php echo CHtml::label('Reschedule Comments: ', 'cancellation_comment'); ?></strong></div>
+		<div class="data">
+			<textarea name="cancellation_comment" rows=3 cols=50></textarea>
+		</div>
+	</div>
+	<?php } ?>
 
-<div style="margin: 0.5em 0;">
-	<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
-</div>
-<div style="margin-top:10px;">
-<button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>
-<button type="button" class="classy red venti" id="cancel_scheduling"><span class="button-span button-span-red">Cancel <?php if($reschedule) { ?>re-<?php } ?>scheduling</span></button>
-</div>
+	<div class="eventDetail clearfix" style="position:relative;">
+		<div class="label"><strong><?php echo CHtml::label('Operation Comments: ', 'operation_comments'); ?></strong></div>
+		<div class="data">
+			<textarea id="operation_comments" name="Operation[comments]" rows=3 cols=50><?php echo $operation->comments ?></textarea>
+		</div>
+	</div>
 
-<?php
-echo CHtml::endForm();
-?>
+	<div style="margin: 0.5em 0;">
+		<span id="dateSelected">Date/Time currently selected: <span class="highlighted"><?php echo Helper::convertDate2NHS($session['date']); ?>, <?php echo substr($session['start_time'], 0, 5) . ' - ' . substr($session['end_time'], 0, 5); ?></span></span>
+	</div>
+	<div style="margin-top:10px;">
+	<button type="submit" class="classy green venti" id="confirm_slot"><span class="button-span button-span-green">Confirm slot</span></button>
+	<button type="button" class="classy red venti" id="cancel_scheduling"><span class="button-span button-span-red">Cancel <?php if($reschedule) { ?>re-<?php } ?>scheduling</span></button>
+	</div>
 
-<script type="text/javascript">
-	$('button#cancel_scheduling').click(function() {
-		document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
-		return false;
-	});
-<?php if ($reschedule) { ?>
-	$('#bookingForm button#confirm_slot').click(function () {
-		if ($('#cancellation_reason option:selected').val() == '') {
-			$('div.errorSummary').html('Please select a reason for reschedule');
-			$('div.errorSummary').show();
+	<?php
+	echo CHtml::endForm();
+	?>
+
+	<script type="text/javascript">
+		$('button#cancel_scheduling').click(function() {
+			document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
 			return false;
-		}
-	});
-<?php } ?>
-</script>
+		});
+	<?php if ($reschedule) { ?>
+		$('#bookingForm button#confirm_slot').click(function () {
+			if ($('#cancellation_reason option:selected').val() == '') {
+				$('div.errorSummary').html('Please select a reason for reschedule');
+				$('div.errorSummary').show();
+				return false;
+			}
+		});
+	<?php } ?>
+	</script>
+<?php }?>

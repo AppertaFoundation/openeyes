@@ -522,8 +522,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation table tbody td.closed { background:#828282; font-size:16px; }
 #operation table tbody td.selected_date { background:#3665ff; font-size:16px; color:#fff; }
 #operation table tbody td.outside_rtt{ background-image: url(../img/_elements/icons/RTT-warning.png); background-position: bottom right; background-repeat: no-repeat; }
-/* hovers all the same */
+#operation table tbody td.inthepast { background:#828282; font-size:16px; }
+
+/* hovers */
 #operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background-color:#3665ff; color:#fff; cursor:pointer; }
+#operation td.inthepast:hover { background-color:#C2C2C2; color: #fff; cursor:pointer; }
+
 /* KEY */
 #operation #day 			.color_box { background:#666; }
 #operation #available 		.color_box { background:#69bd51; }
@@ -546,6 +550,9 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatre-times .sessionTimes .timeBlock .session_id { display: none; }
 #theatre-times .sessionTimes .timeBlock .metadata { position: absolute; bottom: 6px; right: 6px; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
 #theatre-times .sessionTimes .timeBlock .metadata div { opacity: 1; }
+
+#theatre-times .sessionTimes .timeBlock.inthepast { background:#828282; color: #000; }
+#theatre-times .sessionTimes .timeBlock.inthepast:hover { background:#C2C2C2; color: #fff; cursor:pointer; }
 
 /* session details */
 #session_details { margin-top:20px; }
@@ -740,7 +747,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* ======================================================================== DEV TEAM Extra styles ================= */
 
 .admin-confirmto {background-color: #DAA520;padding:10px;margin:3px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.admin-td {background-color: #DAA520;}
 .h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-admin { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #DAA520; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
