@@ -27,9 +27,20 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string  $nhs_num
  * @property integer $address_id
  * @property string  $primary_phone
+ * @property string  $gp_id
+ * @property string  $created_date
+ * @property string  $last_modified_date
+ * @property string  $created_user_id
+ * @property string  $last_modified_user_id
  */
 class Patient extends BaseActiveRecord
 {
+	
+	/**
+	 * How long before patient details are considered stale
+	 */
+	const PAS_CACHE_TIME = 10;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -241,4 +252,32 @@ class Patient extends BaseActiveRecord
 			return Gp::Model()->findByPk($this->gp_id);
 		}
 	}
+	
+	protected function loadFromPas() {
+		Yii::log('Patient data stale, pulling from PAS:'.$this->id);
+		if($pas_patient = PAS_Patient::model()->findByPk($this->id)) {
+ 			//$this->pas_key
+			$this->title = $pas_patient->name->TITLE;
+			$this->first_name = $pas_patient->name->NAME1;
+			$this->last_name = $pas_patient->name->SURNAME_ID;
+			$this->gender = $pas_patient->SEX;
+			$this->dob = $pas_patient->DATE_OF_BIRTH;
+ 			//$this->hos_num
+			//$this->nhs_num
+			//$this->address_id
+			//$this->primary_phone
+			//$this->gp_id
+		} else {
+			throw CException('Patient not found: '.$this->id);
+		}
+	}
+	
+	protected function afterFind() {
+		parent::afterFind();
+		if(strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+			$this->loadFromPas();
+			$this->save();
+		}
+	}
+	
 }
