@@ -265,7 +265,7 @@ class Patient extends BaseActiveRecord
  			//$this->hos_num
 			//$this->nhs_num
 			//$this->address_id
-			//$this->primary_phone
+			$this->primary_phone = $pas_patient->address->TEL_NO;
 			//$this->gp_id
 		} else {
 			throw CException('Patient not found: '.$this->id);
