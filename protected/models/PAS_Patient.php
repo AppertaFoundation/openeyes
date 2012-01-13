@@ -138,10 +138,7 @@ class PAS_Patient extends MultiActiveRecord
 			'names'=>array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
 			'numbers'=>array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
 			'addresses'=>array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
-			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO',
-				'condition' => "surname_type = 'NO'",
-				'limit' => 1
-			),
+			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 		);
 	}
 
