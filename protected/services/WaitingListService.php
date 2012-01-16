@@ -31,7 +31,6 @@ class WaitingListService
 	public function getWaitingList($firmId, $specialtyId, $status, $hos_num=false, $site_id=false)
 	{
 		$whereSql = '';
-
 		// intval() for basic data sanitising
 		if (!empty($firmId)) {
 			$whereSql .= ' AND f.id = ' . intval($firmId).' ';
@@ -49,6 +48,7 @@ class WaitingListService
 
 		$whereSql2 = $whereSql;
 
+		/*
 		if (!empty($status)) {
 			switch ($status) {
 				case ElementOperation::LETTER_INVITE:
@@ -75,6 +75,7 @@ class WaitingListService
 					break;
 			}
 		}
+		*/
 
 		$sql = '
 			SELECT

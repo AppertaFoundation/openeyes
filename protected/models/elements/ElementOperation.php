@@ -1011,8 +1011,7 @@ class ElementOperation extends BaseElement
 			self::LETTER_INVITE => 'Invitation',
 			self::LETTER_REMINDER_1 => '1st Reminder',
 			self::LETTER_REMINDER_2 => '2nd Reminder',
-			self::LETTER_GP => 'Refer to GP',
-			self::LETTER_REMOVAL => 'To be removed'
+			self::LETTER_GP => 'Refer to GP'
 		);
 	}
 

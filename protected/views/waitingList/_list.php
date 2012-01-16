@@ -24,6 +24,14 @@ if (empty($operations)) { ?>
 	$i = 0;
 	foreach ($operations as $id => $operation) {
 		$eo = ElementOperation::model()->findByPk($operation['eoid']);
+		if (isset($_POST['status']) and $_POST['status'] != '') {
+			if ($eo->getNextLetter() != $_POST['status']) {
+				continue;
+				# echo $eo->getNextLetter() . " ne " . $_POST['status'];
+			} else {
+				# echo "match";
+			}
+		}
 //		$consultant = $eo->event->episode->firm->getConsultant();
 //		$user = $consultant->contact->userContactAssignment->user;
 ?>
