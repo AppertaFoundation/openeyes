@@ -262,9 +262,7 @@ class Patient extends BaseActiveRecord
  			if($hos_num = $pas_patient->hos_number) {
  				// FIXME: These numbers need looking at to determine if the format is correct
 				$this->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
- 				if (preg_match('/^[0-9]+$/', $hos_num->NUMBER_ID)) {
-					$this->hos_num = $hos_num->NUMBER_ID;
-				}
+				$this->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
  			}
 			$this->title = $pas_patient->name->TITLE;
 			$this->first_name = $pas_patient->name->NAME1;
