@@ -430,7 +430,7 @@ class PatientService
 				if(!$address = $this->patient->address) {
 					$address = new Address();
 				}
-				$this->updateAddress($pas_patient->address, $address);
+				$this->updateAddress($address, $pas_patient->address);
 				$this->patient->address_id = $address->id;
 				$address->save();
 			}
