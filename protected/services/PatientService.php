@@ -408,7 +408,7 @@ class PatientService
 	 * Load data from PAS into existing Patient object and save
 	 */
 	public function loadFromPas() {
-		Yii::log('Patient data stale, pulling from PAS:'.$this->id);
+		Yii::log('Patient data stale, pulling from PAS:'.$this->patient->id);
 		if($this->patient->id && $pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
 			if($hos_num = $pas_patient->hos_number) {
 				// FIXME: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
