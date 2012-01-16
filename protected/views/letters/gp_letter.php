@@ -10,12 +10,9 @@
 	<?php } ?>
 </div>
 <div class="toAddress">
-	<?php if($gp = $patient->gp) { ?>
+	<?php $gp = $patient->gp ?>
 	<?php echo $gp->addressname ?>
 	<br /><?php echo $gp->address->letterhtml ?>
-	<?php } else {?>
-	UNKNOWN GP
-	<?php } ?>
 </div>
 <div class="date">
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>
@@ -30,7 +27,7 @@
 	</p>
 
 	<p>
-		Dear <?php if($gp) { echo $gp->salutationname; } else { ?>Doctor<?php } ?>,
+		Dear <?php echo $gp->salutationname; ?>,
 	</p>
 
 	<p>

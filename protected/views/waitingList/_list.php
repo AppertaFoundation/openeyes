@@ -88,8 +88,13 @@ if (empty($operations)) { ?>
 	<td style="width: 80px;"><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
 	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>
-	<td <?php if ($tablecolour == 'White' and Yii::app()->user->checkAccess('admin')) {echo ' class="admin-td" ';} ?>>
-	<input <?php if ($tablecolour == 'White' and !Yii::app()->user->checkAccess('admin')) {?>disabled="disabled" <?php }?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" /></td>
+	<td <?php if ($tablecolour == 'White' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
+		<?php if($eo->getDueLetter() == ElementOperation::LETTER_GP && !$operation['gp_id']) { ?>
+		<span style="color:red;">NO GP</span>
+		<?php } else { ?>
+		<input <?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?>disabled="disabled" <?php } ?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
+		<?php } ?>
+	</td>
 </tr>
 
 <?php
