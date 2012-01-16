@@ -413,7 +413,7 @@ class PatientService
 			if($hos_num = $pas_patient->hos_number) {
 				// FIXME: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
 				$this->patient->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
-				$patient->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
+				$this->patient->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
 			}
 			$this->patient->title = $pas_patient->name->TITLE;
 			$this->patient->first_name = $pas_patient->name->NAME1;
