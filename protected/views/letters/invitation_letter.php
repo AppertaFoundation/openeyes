@@ -29,7 +29,19 @@
 </p>
 
 <p>
-	Should you<?php if ($patient->isChild()) { ?>r child<?php	}	?> no longer require treatment please let me know as soon as possible.
+	Should you<?php if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
 </p>
 
 <?php $this->renderPartial("/letters/letter_end"); ?>
+<?php
+/*
+$this->renderPartial("/letters/break");
+$this->renderPartial("/letters/consent_form", array(
+	'operation' => $operation, 
+	'site' => $site,
+	'patient' => $patient,
+	'firm' => $firm,
+	'emergencyList' => false,
+	));
+*/
+?>
