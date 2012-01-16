@@ -52,45 +52,52 @@ class PatientService
 
 		$whereSql = '';
 
+								// Hospital number
 								if (!empty($data['hos_num'])) {
-			$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
-			//$hosNum = $this->formatHospitalNumberForPas($data['hos_num']);
-			$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
+									$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
+									$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
 								}
+								
+								// Date of birth
 								if (!empty($data['dob'])) {
-												$whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
+									$whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
 								}
-								if (!empty($data['first_name']) && !empty($data['last_name'])) {
-			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name']) . "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
-								}
+								
+								// Gender
 								if (!empty($data['gender'])) {
-												$whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
+									$whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
 								}
+								
+								// Name
+								if (!empty($data['first_name']) && !empty($data['last_name'])) {
+									$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name'])
+									. "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
+								}
+								
+								// NHS Number
 								if (!empty($data['nhs_num'])) {
-			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
+									$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
 								}
 		
 								$sql = "
 												SELECT
-																p.rm_patient_no,
-				n.num_id_type,
-				n.number_id,
-				TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
+													p.rm_patient_no,
+													n.num_id_type,
+													n.number_id,
+													TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
 												FROM
-																SILVER.PATIENTS p,
-																SILVER.SURNAME_IDS s,
-																SILVER.NUMBER_IDS n
+													SILVER.PATIENTS p,
+													SILVER.SURNAME_IDS s,
+													SILVER.NUMBER_IDS n
 												WHERE
-																(
-																				s.rm_patient_no = p.rm_patient_no
-																AND
-																				s.surname_type = 'NO'
-																)
-												AND
-																(
-																				n.rm_patient_no = p.rm_patient_no
-																" . $whereSql . "
-																)
+													s.rm_patient_no = p.rm_patient_no
+													AND
+													s.surname_type = 'NO'
+													AND
+													(
+														n.rm_patient_no = p.rm_patient_no
+														" . $whereSql . "
+													)
 								";
 
 								$connection = Yii::app()->db_pas;

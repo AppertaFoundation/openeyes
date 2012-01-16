@@ -263,7 +263,9 @@ class Patient extends BaseActiveRecord
 			$this->gender = $pas_patient->SEX;
 			$this->dob = date('Y-m-d',strtotime($pas_patient->DATE_OF_BIRTH));
  			//$this->hos_num
-			//$this->nhs_num
+ 			if($nhs_number = $pas_patient->nhs_number) {
+				$this->nhs_num = $nhs_number->NUMBER_ID;
+ 			}
 			//$this->address_id
 			$this->primary_phone = $pas_patient->address->TEL_NO;
 			//$this->gp_id
