@@ -101,4 +101,13 @@ class Contact extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function getFullName() {
+		return implode(' ',array($this->title, $this->first_name, $this->last_name));
+	}
+
+	public function getSalutationName() {
+		return $this->title . ' ' . $this->last_name;
+	}
+	
 }

@@ -11,8 +11,8 @@
 </div>
 <div class="toAddress">
 	<?php $gp = $patient->gp ?>
-	<?php echo $gp->addressname ?>
-	<br /><?php echo $gp->address->letterhtml ?>
+	<?php echo $gp->contact->fullname ?>
+	<br /><?php echo $gp->contact->address->letterhtml ?>
 </div>
 <div class="date">
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>
@@ -27,7 +27,7 @@
 	</p>
 
 	<p>
-		Dear <?php echo $gp->salutationname; ?>,
+		Dear <?php echo $gp->contact->salutationname; ?>,
 	</p>
 
 	<p>
