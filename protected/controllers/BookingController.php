@@ -185,6 +185,10 @@ class BookingController extends BaseController
 					$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
 
 					if (!$cancellation->save()) {
+						throw new SystemException('Unable to save cancelled_booking: '.print_r($cancellation->getErrors(),true));
+					}
+
+					if (!$model->delete()) {
 						throw new SystemException('Unable to save cancelled_booking: '.print_r($model->getErrors(),true));
 					}
 				}
