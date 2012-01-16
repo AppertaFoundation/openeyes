@@ -253,40 +253,11 @@ class Patient extends BaseActiveRecord
 		}
 	}
 	
-	/**
-	 * Load data from PAS into Patient object
-	 */
-	protected function loadFromPas() {
-		Yii::log('Patient data stale, pulling from PAS:'.$this->id);
-		if($this->id && $pas_patient = PAS_Patient::model()->findByPk($this->id)) {
- 			if($hos_num = $pas_patient->hos_number) {
- 				// FIXME: These numbers need looking at to determine if the format is correct
-				$this->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
-				$this->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
- 			}
-			$this->title = $pas_patient->name->TITLE;
-			$this->first_name = $pas_patient->name->NAME1;
-			$this->last_name = $pas_patient->name->SURNAME_ID;
-			$this->gender = $pas_patient->SEX;
-			$this->dob = date('Y-m-d',strtotime($pas_patient->DATE_OF_BIRTH));
-			if($nhs_number = $pas_patient->nhs_number) {
-				$this->nhs_num = $nhs_number->NUMBER_ID;
- 			}
- 			if($pas_patient->address) {
-				$this->primary_phone = $pas_patient->address->TEL_NO;
- 				//$this->address_id
- 			}
-			//$this->gp_id
-		} else {
-			throw CException('Patient not found: '.$this->id);
-		}
-	}
-	
 	protected function afterFind() {
 		parent::afterFind();
 		if(strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
-			$this->loadFromPas();
-			$this->save();
+			$patient_service = new PatientService($this);
+			$patient_service->loadFromPas();
 		}
 	}
 	

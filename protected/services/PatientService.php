@@ -145,13 +145,12 @@ class PatientService
 	 * Format a number from PAS into a meaningful digit
 	 *
 	 * @param string $string
-	 *
 	 * @return string
+	 * @deprecated
 	 */
 	public function formatHospitalNumberFromPas($string)
 	{
 		if (is_numeric($string) && $string < 1000000) {
-//			$number = $string + 1000000;
 			$number = str_pad($string, 7, '0', STR_PAD_LEFT);
 		} else {
 			$number = $string;
@@ -164,8 +163,8 @@ class PatientService
 	 * Format a number for PAS with cropping
 	 *
 	 * @param string $string
-	 *
 	 * @return string
+	 * @deprecated
 	 */
 	public function formatHospitalNumberForPas($string)
 	{
@@ -260,13 +259,12 @@ class PatientService
 	/**
 	 * Update address info with the latest info from PAS
 	 *
-	 * @param object $address  the PAS_PatientAddress model to be updated
-	 * @param array  $data		 Data from PAS to store in the patient model
-	 *
+	 * @param Address $address The patient address model to be updated
+	 * @param PAS_PatientAddress $data Data from PAS to store in the patient address model
 	 * @return Address
 	 */
-	protected function updateAddress($address, $data)
-	{
+	protected function updateAddress($address, $data) {
+		
 		$propertyName = empty($data->PROPERTY_NAME) ? '' : trim($data->PROPERTY_NAME);
 		$propertyNumber = empty($data->PROPERTY_NO) ? '' : trim($data->PROPERTY_NO);
 
@@ -405,4 +403,40 @@ class PatientService
 
 		return $address;
 	}
+	
+	/**
+	 * Load data from PAS into existing Patient object and save
+	 */
+	public function loadFromPas() {
+		Yii::log('Patient data stale, pulling from PAS:'.$this->id);
+		if($this->patient->id && $pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
+			if($hos_num = $pas_patient->hos_number) {
+				// FIXME: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
+				$this->patient->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
+				$patient->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
+			}
+			$this->patient->title = $pas_patient->name->TITLE;
+			$this->patient->first_name = $pas_patient->name->NAME1;
+			$this->patient->last_name = $pas_patient->name->SURNAME_ID;
+			$this->patient->gender = $pas_patient->SEX;
+			$this->patient->dob = date('Y-m-d',strtotime($pas_patient->DATE_OF_BIRTH));
+			if($nhs_number = $pas_patient->nhs_number) {
+				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
+			}
+			if($pas_patient->address) {
+				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
+				if(!$address = $this->patient->address) {
+					$address = new Address();
+				}
+				$this->updateAddress($pas_patient->address, $address);
+				$this->patient->address_id = $address->id;
+				$address->save();
+			}
+			//$this->patient->gp_id
+			$this->patient->save();
+		} else {
+			throw CException('Patient not found: '.$this->patient->id);
+		}
+	}
+	
 }
