@@ -423,6 +423,8 @@ class PatientService
 			if($nhs_number = $pas_patient->nhs_number) {
 				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
 			}
+			
+			// Address
 			if($pas_patient->address) {
 				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
 				if(!$address = $this->patient->address) {
@@ -432,7 +434,11 @@ class PatientService
 				$this->patient->address_id = $address->id;
 				$address->save();
 			}
-			//$this->patient->gp_id
+			
+			// GP
+			$gp_service = new GpService();
+			$gp_service->GetPatientGp($this->patient->id);
+
 			$this->patient->save();
 		} else {
 			throw CException('Patient not found: '.$this->patient->id);
