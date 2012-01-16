@@ -257,9 +257,9 @@ class Patient extends BaseActiveRecord
 		Yii::log('Patient data stale, pulling from PAS:'.$this->id);
 		if($pas_patient = PAS_Patient::model()->findByPk($this->id)) {
  			if($hos_num = $pas_patient->hos_number) {
-				$this->pas_key = $hos_num->NUM_TYPE_ID . $hos_num->NUMBER_ID;
- 				if (preg_match('/^[0-9]+$/', $hos_num)) {
-					$this->hos_num = $hos_num;
+				$this->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
+ 				if (preg_match('/^[0-9]+$/', $hos_num->NUMBER_ID)) {
+					$this->hos_num = $hos_num->NUMBER_ID;
 				}
  			}
 			$this->title = $pas_patient->name->TITLE;
