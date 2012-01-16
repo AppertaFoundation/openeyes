@@ -20,9 +20,10 @@
 <div class="content">
 	<p>
 		<strong>Hospital number reference: <?php echo $patient->hos_num ?>
-		<br />FIXME: Insert patient details
-			<?php if (!empty($patient->nhs_num)) { ?>
-				<br />NHS number: <?php echo $patient->nhs_num; } ?>
+		<?php if (!empty($patient->nhs_num)) { ?>
+		<br />NHS number: <?php echo $patient->nhs_num; } ?>
+		<br />Patient name: <?php echo $patient->fullname; ?>
+		<!-- <br />Address: <?php echo $patient->address->letterhtml ?>  -->
 		</strong>
 	</p>
 

@@ -36,7 +36,7 @@ $no_gp = ($letterType == $letterTypes[ElementOperation::LETTER_GP] && !$operatio
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
 <?php if ($no_gp) { ?>
-<div class="alertBox">Patient has no GP, please correct in PAS before printing GP letter</div>
+<div class="alertBox">Patient has no GP, please correct in PAS before printing GP letter.</div>
 <?php } ?>
 
 <div class="cols2">
