@@ -139,7 +139,7 @@ class PAS_Patient extends MultiActiveRecord
 			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'numbers'=>array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
 			'nhs_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
-			'hos_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'order' => '"hos_number"."NUM_ID_TYPE"'),
+			'hos_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'), 
 			'addresses'=>array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
 			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'address'=>array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO', 'order' => '"address"."DATE_END" DESC'),
