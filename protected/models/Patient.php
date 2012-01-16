@@ -256,14 +256,18 @@ class Patient extends BaseActiveRecord
 	protected function loadFromPas() {
 		Yii::log('Patient data stale, pulling from PAS:'.$this->id);
 		if($pas_patient = PAS_Patient::model()->findByPk($this->id)) {
- 			//$this->pas_key
+ 			if($hos_num = $pas_patient->hos_number) {
+				$this->pas_key = $hos_num->NUM_TYPE_ID . $hos_num->NUMBER_ID;
+ 				if (preg_match('/^[0-9]+$/', $hos_num)) {
+					$this->hos_num = $hos_num;
+				}
+ 			}
 			$this->title = $pas_patient->name->TITLE;
 			$this->first_name = $pas_patient->name->NAME1;
 			$this->last_name = $pas_patient->name->SURNAME_ID;
 			$this->gender = $pas_patient->SEX;
 			$this->dob = date('Y-m-d',strtotime($pas_patient->DATE_OF_BIRTH));
- 			//$this->hos_num
- 			if($nhs_number = $pas_patient->nhs_number) {
+			if($nhs_number = $pas_patient->nhs_number) {
 				$this->nhs_num = $nhs_number->NUMBER_ID;
  			}
 			//$this->address_id
