@@ -419,7 +419,7 @@ class PatientService
 			$this->patient->first_name = $pas_patient->name->NAME1;
 			$this->patient->last_name = $pas_patient->name->SURNAME_ID;
 			$this->patient->gender = $pas_patient->SEX;
-			$this->patient->dob = date('Y-m-d',strtotime($pas_patient->DATE_OF_BIRTH));
+			$this->patient->dob = $pas_patient->DATE_OF_BIRTH;
 			if($nhs_number = $pas_patient->nhs_number) {
 				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
 			}
