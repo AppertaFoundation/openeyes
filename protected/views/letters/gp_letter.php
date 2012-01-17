@@ -18,14 +18,18 @@
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>
 </div>
 <div class="content">
-	<p>
-		<strong>Hospital number reference: <?php echo $patient->hos_num ?>
+
+	<p><strong>Hospital number reference: <?php echo $patient->hos_num ?></strong></p>
+	
+	<div>
+		<div>
+			<strong><?php echo $patient->fullname; ?>
+			<br /><?php echo $patient->NHSDate('dob') ?>, <?php echo ($patient->gender == 'M') ? 'Male' : 'Female'; ?>
+			<br /><?php echo $patient->address->letterline ?></strong>
+		</div>
 		<?php if (!empty($patient->nhs_num)) { ?>
-		<br />NHS number: <?php echo $patient->nhs_num; } ?>
-		<br />Patient name: <?php echo $patient->fullname; ?>
-		<!-- <br />Address: <?php echo $patient->address->letterhtml ?>  -->
-		</strong>
-	</p>
+		<strong>NHS number: <?php echo $patient->nhs_num; } ?></strong>
+	</div>
 
 	<p>
 		Dear <?php echo $gp->contact->salutationname; ?>,

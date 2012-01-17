@@ -29,8 +29,8 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 
 // Calculate next letter to be printed
 $letterTypes = ElementOperation::getLetterOptions();
-$letterType = isset($letterTypes[$operation->getDueLetter()]) ? $letterTypes[$operation->getDueLetter()] : false;
-$no_gp = ($letterType == $letterTypes[ElementOperation::LETTER_GP] && !$operation->event->episode->patient->gp);
+$letterType = ($operation->getDueLetter() && isset($letterTypes[$operation->getDueLetter()])) ? $letterTypes[$operation->getDueLetter()] : false;
+$no_gp = ($operation->getDueLetter() == ElementOperation::LETTER_GP && !$operation->event->episode->patient->gp);
 
 ?>
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
@@ -230,13 +230,14 @@ foreach ($elements as $element) {
 	$nogp = false;
 	if (empty($operation->booking)) {
 	// The operation hasn't been booked yet
-	if($letterType && !$no_gp) {
+	if($letterType) {
+		if(!$no_gp) {
 	?>
 	<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print <?php echo $letterType ?> letter</span></button>
 	<?php } else {
 		// Patient has no GP defined ?>
 	<button type="submit" class="classy disabled venti" value="submit" id="btn_print-invitation-letter" disabled="disabled"><span class="button-span">Print <?php echo $letterType ?> letter</span></button>
-	<?php } ?>
+	<?php } } ?>
 	<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
 	<?php } else { // The operation has been booked ?>
 	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
