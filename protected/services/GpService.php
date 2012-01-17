@@ -221,8 +221,7 @@ class GpService {
 	*/
 	public function loadFromPas() {
 		Yii::log('GP data stale, pulling from PAS:'.$this->gp->id);
-		if($this->gp->id && $pas_gp = PAS_Gp::model()->findByPk($this->gp->id)) {
-			$this->gp->obj_prof = $pas_gp->OBJ_PROF;
+		if($this->gp->obj_prof && $pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
 			$this->gp->nat_id = $pas_gp->NAT_ID;
 			$this->gp->save();
 		} else {
