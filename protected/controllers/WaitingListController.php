@@ -204,14 +204,15 @@ class WaitingListController extends BaseController
 			ElementOperation::LETTER_REMOVAL => false,
 		);
 		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
+		$patient = $operation->event->episode->patient;
 		if($letter_template) {
 			$firm = $operation->event->episode->firm;
 			$site = $operation->site;
 			$waitingListContact = $operation->waitingListContact;
-			$patient = $operation->event->episode->patient;
 			
 			// Don't print GP letter if GP is not defined
 			if($letter_status != ElementOperation::LETTER_GP || $patient->gp) {
+				Yii::log("Printing letter: ".$letter_template);
 				$this->renderPartial('/letters/'.$letter_template, array(
 					'operation' => $operation,
 					'site' => $site,
@@ -233,8 +234,10 @@ class WaitingListController extends BaseController
 			} else {
 				Yii::log("Patient has no GP, printing letter supressed: ".$patient->id);
 			}
+		} else if($letter_status === null) {
+			Yii::log("No letter is due: ".$patient->id);
 		} else {
-			throw CException('Undefined operation letter template: '.$letter_status);
+			throw new CException('Undefined letter status');
 		}
 	}
 
