@@ -436,8 +436,8 @@ class PatientService
 			}
 			
 			// GP
-			$gp_service = new GpService();
-			$gp_service->GetPatientGp($this->patient->id);
+			//$gp_service = new GpService();
+			//$gp_service->GetPatientGp($this->patient->id);
 
 			$this->patient->save();
 		} else {

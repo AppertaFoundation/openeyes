@@ -143,7 +143,7 @@ class PAS_Patient extends MultiActiveRecord
 			'addresses'=>array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
 			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'address'=>array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO', 'order' => '"address"."DATE_END" DESC'),
-			'gp'=>array(self::HAS_ONE, 'PAS_Gp', 'PATIENT_GPS(OBJ_PROF,RM_PATIENT_NO)'),
+			//'gp'=>array(self::HAS_ONE, 'PAS_Gp', 'PATIENT_GPS(OBJ_PROF,RM_PATIENT_NO)'),
 		);
 	}
 
