@@ -223,19 +223,27 @@ class GpService {
 		Yii::log('GP data stale, pulling from PAS:'.$this->gp->obj_prof);
 		if($this->gp->obj_prof && $pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
 			$this->gp->nat_id = $pas_gp->NAT_ID;
-			$this->gp->save();
+			if(!$this->gp->contact) {
+				$this->gp->contact = new Contact();
+			}
 			$this->gp->contact->first_name = trim($pas_gp->FN1 . ' ' . $pas_gp->FN2);
 			$this->gp->contact->last_name = $pas_gp->SN;
 			$this->gp->contact->title = $pas_gp->TITLE;
 			$this->gp->contact->primary_phone = $pas_gp->TEL_1;
-			$this->gp->contact->save();
+			if(!$this->gp->contact->address) {
+				$this->gp->contact->address = new Address();
+			}
 			$this->gp->contact->address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
 			$this->gp->contact->address->address2 = $pas_gp->ADD_TWN . ' ' . $pas_gp->ADD_DIS;
 			$this->gp->contact->address->city = $pas_gp->ADD_TWN;
 			$this->gp->contact->address->county = $pas_gp->ADD_CTY;
 			$this->gp->contact->address->postcode = $pas_gp->PC;
 			$this->gp->contact->address->country_id = 1;
+			
+			// Save
 			$this->gp->contact->address->save();
+			$this->gp->contact->save();
+			$this->gp->save();
 		} else {
 			throw CException('GP not found: '.$this->gp->id);
 		}
