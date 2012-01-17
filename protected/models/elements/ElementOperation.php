@@ -1350,6 +1350,9 @@ class ElementOperation extends BaseElement
 				$dls->date_gp_letter_sent = null;
 			}
 			$dls->save();
+
+			OELog::log("Letter print confirmed, datelettersent=$dls->id confirmdate='$confirmdate'");
+
 		// Only confirm if letter is actually due
 		} else if ($this->getDueLetter() !== $this->getLastLetter()) {
 			if ($dls = $this->date_letter_sent) {
@@ -1367,6 +1370,9 @@ class ElementOperation extends BaseElement
 				if (!$dls->save()) {
 					throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
 				}
+
+				OELog::log("Letter print confirmed, datelettersent=$dls->id");
+
 			} else {
 				$dls = new DateLetterSent;
 				$dls->element_operation_id = $this->id;
@@ -1374,6 +1380,8 @@ class ElementOperation extends BaseElement
 				if (!$dls->save()) {
 					throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
 				}
+
+				OELog::log("Letter print confirmed, datelettersent=$dls->id");
 			}
 		}
 	}

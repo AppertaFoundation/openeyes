@@ -292,6 +292,8 @@ class ClinicalController extends BaseController
 					throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
 				}
 
+				OELog::log("Updated event $event->id");
+
 				echo $event->id;
 				return;
 			}
@@ -459,6 +461,8 @@ class ClinicalController extends BaseController
 		if (!$episode->save(false)) {
 			throw new SystemException('Unable to save episode: '.print_r($episode->getErrors(),true));
 		}
+
+		OELog::log("Closed episode $episode->id");
 
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}

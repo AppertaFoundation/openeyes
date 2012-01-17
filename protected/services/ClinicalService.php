@@ -128,6 +128,7 @@ class ClinicalService
 			}
 
 			if (!$element->save()) {
+				OELog::log("Unable to save element: $element->id ($elementClassName): ".print_r($element->getErrors(),true));
 				throw new SystemException('Unable to save element: '.print_r($element->getErrors(),true));
 			}
 		}
@@ -204,8 +205,11 @@ class ClinicalService
 			$episode->start_date = date("Y-m-d H:i:s");
 
 			if (!$episode->save()) {
+				OELog::log("Unable to create new episode for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
 				throw new Exception('Unable to create create episode.');
 			}
+
+			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
 
 			if (Yii::app()->params['use_pas']) {
 				// Try to fetch a referral from PAS for this episode
@@ -231,8 +235,11 @@ class ClinicalService
 		$event->event_type_id = $eventTypeId;
 		$event->datetime = date("Y-m-d H:i:s");
 		if (!$event->save()) {
+			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
 			throw new Exception('Unable to save event.');
 		}
+
+		OELog::log("Created new event for episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
 
 		return $event;
 	}

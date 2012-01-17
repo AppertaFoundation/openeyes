@@ -168,6 +168,9 @@ class BookingController extends BaseController
 			//Booking::model()->deleteAll('element_operation_id = :id', array(':id'=>$operationId));
 
 			if ($cancel->save() && $operation->save()) {
+
+				OELog::log("element_operation $operation->id cancelled");
+
 				$patientId = $operation->event->episode->patient->id;
 
 				$this->updateEvent($operation->event);
@@ -187,6 +190,8 @@ class BookingController extends BaseController
 					if (!$cancellation->save()) {
 						throw new SystemException('Unable to save cancelled_booking: '.print_r($cancellation->getErrors(),true));
 					}
+
+					OELog::log("Booking cancelled: $model->id (booking_cancellation=$cancellation->id");
 
 					if (!$model->delete()) {
 						throw new SystemException('Unable to save cancelled_booking: '.print_r($model->getErrors(),true));
@@ -388,6 +393,8 @@ class BookingController extends BaseController
 			$model->display_order = $displayOrder;
 
 			if ($model->save()) {
+				OELog::log("Booking made $model->id");
+
 				if ($operation->status == ElementOperation::STATUS_NEEDS_RESCHEDULING) {
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 				} else {
@@ -437,11 +444,15 @@ class BookingController extends BaseController
 			$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
 
 			if ($cancellation->save()) {
+				OELog::log("Booking cancelled: $model->id, cancelled_booking=$cancellation->id");
+
 				if (!empty($_POST['Booking'])) {
 					$model->attributes = $_POST['Booking'];
 					if (!$model->save()) {
 						throw new SystemException('Unable to save booking: '.print_r($model->getErrors(),true));
 					}
+
+					OELog::log("Booking rescheduled: $model->id, cancelled_booking=$cancellation->id");
 
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
