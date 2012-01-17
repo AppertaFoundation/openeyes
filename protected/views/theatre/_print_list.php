@@ -29,7 +29,7 @@ foreach ($theatres as $name => $dates) {
 	foreach ($dates as $date => $sessions) {
 		$timestamp = strtotime($date);
 		foreach ($sessions as $session) {
-			if ($previousSequenceId != $session['sequenceId']) {
+			if ($previousSequenceId != $session['sequenceId'] || $previousDate != $date) {
 				if ($previousSequenceId != '') {
 ?>
 </table>
@@ -81,6 +81,7 @@ DATE:
 				}
 
 								$previousSequenceId = $session['sequenceId'];
+								$previousDate = $date;
 
 				if (!empty($session['patientId'])) {
 ?>
