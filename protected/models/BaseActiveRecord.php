@@ -22,9 +22,9 @@ class BaseActiveRecord extends CActiveRecord
 {
 
 	/**
-	* How long before cached PAS details are considered stale
+	* How long (in seconds) before cached PAS details are considered stale
 	*/
-	const PAS_CACHE_TIME = 10;
+	const PAS_CACHE_TIME = 300;
 	
 	/**
 	 * Strips all html tags out of attributes to be saved.

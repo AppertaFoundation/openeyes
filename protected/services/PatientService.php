@@ -431,15 +431,18 @@ class PatientService
 					$address = new Address();
 				}
 				$this->updateAddress($address, $pas_patient->address);
-				$this->patient->address_id = $address->id;
-				$address->save();
 			}
 			
 			// GP
-			//$gp_service = new GpService();
-			//$gp_service->GetPatientGp($this->patient->id);
-
+			// FIXME: Get GP from PAS and check/update relation, no need to pull in all the GP address details as that is done in the GP service
+			
+			// Save
+			$address->save();
+			if(!$this->patient->address) {
+				$this->patient->address_id = $address->id;
+			}
 			$this->patient->save();
+			
 		} else {
 			throw CException('Patient not found: '.$this->patient->id);
 		}
