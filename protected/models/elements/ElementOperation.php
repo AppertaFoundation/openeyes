@@ -844,8 +844,8 @@ class ElementOperation extends BaseElement
 			return self::STATUS_PURPLE; // no invitation letter has been sent
 		}
 
-		$now = new DateTime(); $now->setTime(0,0,0); $two_weeks_ago = $now->modify('-14 days');
-		$now = new DateTime(); $now->setTime(0,0,0); $one_week_ago = $now->modify('-7 days');
+		$now = new DateTime(); $now->setTime(0,0,0); // $two_weeks_ago = $now->modify('-14 days');
+		$now = new DateTime(); $now->setTime(0,0,0); // $one_week_ago = $now->modify('-7 days');
 
 		// if the last letter was the invitation and it was sent over two weeks ago from now:
 		$date_sent = new DateTime($this->date_letter_sent->date_invitation_letter_sent); $date_sent->setTime(0,0,0);
