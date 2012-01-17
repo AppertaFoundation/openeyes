@@ -20,6 +20,12 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  */
 class BaseActiveRecord extends CActiveRecord
 {
+
+	/**
+	* How long before cached PAS details are considered stale
+	*/
+	const PAS_CACHE_TIME = 10;
+	
 	/**
 	 * Strips all html tags out of attributes to be saved.
 	 *

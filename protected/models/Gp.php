@@ -24,7 +24,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Gp extends MultiActiveRecord
+class Gp extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -105,4 +105,13 @@ class Gp extends MultiActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	protected function afterFind() {
+		parent::afterFind();
+		if(Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+			$gp_service = new GpService($this);
+			$gp_service->loadFromPas();
+		}
+	}
+	
 }

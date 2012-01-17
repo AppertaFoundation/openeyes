@@ -12,8 +12,30 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-class GpService
-{
+class GpService {
+	
+	public $gp;
+	public $pas_gp;
+	
+	/**
+	 * Create a new instance of the service
+	 *
+	 * @param model $gp Instance of the gp model
+	 * @param model $pas_gp Instance of the PAS gp model
+	 */
+	public function __construct($gp = null, $pas_gp = null) {
+		if (empty($gp)) {
+			$this->gp = new Gp();
+		} else {
+			$this->gp = $gp;
+		}
+		if (empty($pas_gp)) {
+			$this->pas_gp = new PAS_Gp();
+		} else {
+			$this->pas_gp = $pas_gp;
+		}
+	}
+	
 	/**
 	 * Get all the GPs from PAS and either insert or update them in the OE db
 	 *
@@ -193,4 +215,19 @@ class GpService
 
 		return true;
 	}
+	
+	/**
+	* Load data from PAS into existing GP object and save
+	*/
+	public function loadFromPas() {
+		Yii::log('GP data stale, pulling from PAS:'.$this->gp->id);
+		if($this->gp->id && $pas_gp = PAS_Gp::model()->findByPk($this->gp->id)) {
+			$this->gp->obj_prof = $pas_gp->OBJ_PROF;
+			$this->gp->nat_id = $pas_gp->NAT_ID;
+			$this->gp->save();
+		} else {
+			throw CException('GP not found: '.$this->gp->id);
+		}
+	}
+	
 }

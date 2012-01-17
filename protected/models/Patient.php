@@ -37,11 +37,6 @@ class Patient extends BaseActiveRecord
 {
 	
 	/**
-	 * How long before patient details are considered stale
-	 */
-	const PAS_CACHE_TIME = 10;
-	
-	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
 	 */
@@ -255,7 +250,7 @@ class Patient extends BaseActiveRecord
 	
 	protected function afterFind() {
 		parent::afterFind();
-		if(strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+		if(Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
 			$patient_service = new PatientService($this);
 			$patient_service->loadFromPas();
 		}
