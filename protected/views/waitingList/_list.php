@@ -1,3 +1,4 @@
+<div id="no_gp_warning" class="alertBox" style="display: none;">One or more patients has no GP, please correct in PAS before printing GP letter.</div>
 <div id="waitingList" class="grid-view-waitinglist">
 <?php
 if (empty($operations)) { ?>
@@ -24,6 +25,14 @@ if (empty($operations)) { ?>
 	$i = 0;
 	foreach ($operations as $id => $operation) {
 		$eo = ElementOperation::model()->findByPk($operation['eoid']);
+		if (isset($_POST['status']) and $_POST['status'] != '') {
+			if ($eo->getNextLetter() != $_POST['status']) {
+				continue;
+				# echo $eo->getNextLetter() . " ne " . $_POST['status'];
+			} else {
+				# echo "match";
+			}
+		}
 //		$consultant = $eo->event->episode->firm->getConsultant();
 //		$user = $consultant->contact->userContactAssignment->user;
 ?>
@@ -89,10 +98,14 @@ if (empty($operations)) { ?>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
 	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>
 	<td <?php if ($tablecolour == 'White' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
-		<?php if($eo->getDueLetter() == ElementOperation::LETTER_GP && !$operation['gp_id']) { ?>
-		<span style="color:red;">NO GP</span>
-		<?php } else { ?>
-		<input <?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?>disabled="disabled" <?php } ?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
+		<?php if ($eo->getDueLetter() != ElementOperation::LETTER_GP || $operation['gp_id'] || Yii::app()->user->checkAccess('admin')) { ?>
+			<input <?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?>disabled="disabled" <?php } ?>type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
+		<?php }  ?>
+		<?php if($eo->getDueLetter() == ElementOperation::LETTER_GP && !$operation['gp_id'] ) { ?>
+			<script type="text/javascript">
+				$('#no_gp_warning').show();
+			</script>
+			<span style="color:red;">NO GP</span>
 		<?php } ?>
 	</td>
 </tr>

@@ -16,7 +16,7 @@
 										<tr>
 													<th>Service:</th>
 													<th>Firm:</th>
-													<th>Type:</th>
+													<th>Next letter due:</th>
 													<th>Site:</th>
 													<th>Hospital no:</th>
 										</tr>
