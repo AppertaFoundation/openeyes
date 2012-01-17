@@ -227,9 +227,6 @@ class GpService {
 			// Contact
 			if(!$contact = $this->gp->contact) {
 				$contact = new Contact();
-				$contact->save();
-				$this->gp->contact_id = $contact->id;
-				$this->gp->save();
 			}
 			$contact->first_name = trim($pas_gp->FN1 . ' ' . $pas_gp->FN2);
 			$contact->last_name = $pas_gp->SN;
@@ -239,9 +236,6 @@ class GpService {
 			// Address
 			if(!$address = $contact->address) {
 				$address = new Address();
-				$address->save();
-				$contact->address_id = $address->id;
-				$contact->save();
 			}
 			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
 			$address->address2 = $pas_gp->ADD_TWN . ' ' . $pas_gp->ADD_DIS;
@@ -249,7 +243,17 @@ class GpService {
 			$address->county = $pas_gp->ADD_CTY;
 			$address->postcode = $pas_gp->PC;
 			$address->country_id = 1;
+
+			// Save
 			$address->save();
+			if(!$contact->address) {
+				$contact->address_id = $address->id;
+			}
+			$contact->save();
+			if(!$this->gp->contact) {
+				$this->gp->contact_id = $contact->id;
+			}
+			$this->gp->save();	
 				
 		} else {
 			throw CException('GP not found: '.$this->gp->id);
