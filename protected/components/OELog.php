@@ -1,4 +1,4 @@
-<?
+<?php
 class OELog {
 	static public function log($msg, $username=false) {
 		if (Yii::app()->params['log_events']) {
