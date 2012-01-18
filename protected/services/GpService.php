@@ -260,7 +260,6 @@ class GpService {
 				$this->gp->contact_id = $contact->id;
 			}
 			$this->gp->save();
-			return $this->gp;
 			
 		} else {
 			throw CException('GP not found: '.$this->gp->id);

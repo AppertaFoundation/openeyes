@@ -450,7 +450,8 @@ class PatientService
 					$gp = new Gp();
 					$gp->obj_prof = $pas_patient_gp->GP_ID;
 					$gp_service = new GpService($gp);
-					$gp = $gp_service->loadFromPas();
+					$gp_service->loadFromPas();
+					$gp = $gp_service->gp;
 				}
 				
 				// Update/set patient's GP
