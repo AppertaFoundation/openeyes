@@ -433,8 +433,30 @@ class PatientService
 				$this->updateAddress($address, $pas_patient->address);
 			}
 			
-			// GP
-			// FIXME: Get GP from PAS and check/update relation, no need to pull in all the GP address details as that is done in the GP service
+			// Get latest GP from PAS
+			$pas_patient_gp = PAS_PatientGps::model()->find(array(
+				'condition' => 'RM_PATIENT_NO = :patient_id',
+				'order' => 'DATE_FROM',
+				'params' => array(
+					':patient_id' => $this->patient->id,
+				),
+			));
+			if($pas_patient_gp) {
+				// Check that the GP is in openeyes
+				$gp = Gp::model()->findAllByPk($pas_patient_gp->GP_ID);
+				if(!$gp) {
+					// FIXME: Pull in GP to openeyes
+				}
+				
+				// Update/set patient's GP
+				if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
+					$this->patient->gp_id = $gp->id;
+				} else {
+					Yii::log('Patient\'s GP has not changed');
+				}
+			} else {
+				Yii::log('Patient has no GP in PAS');
+			}
 			
 			// Save
 			$address->save();
