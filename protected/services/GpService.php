@@ -218,10 +218,16 @@ class GpService {
 	
 	/**
 	 * Load data from PAS into existing GP object and save
+	 * 
+	 * @param string gp_id PAS GP ID (optional)
+	 * @return Gp
 	 */
 	public function loadFromPas() {
-		//Yii::log('GP data stale, pulling from PAS:'.$this->gp->obj_prof);
-		if($this->gp->obj_prof && $pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
+		if(!$this->gp->obj_prof) {
+			throw CException('GP not linked to PAS GP (obj_prof undefined)');
+		}
+		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof);
+		if($pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
 			$this->gp->nat_id = $pas_gp->NAT_ID;
 			
 			// Contact
@@ -253,8 +259,9 @@ class GpService {
 			if(!$this->gp->contact) {
 				$this->gp->contact_id = $contact->id;
 			}
-			$this->gp->save();	
-				
+			$this->gp->save();
+			return $this->gp;
+			
 		} else {
 			throw CException('GP not found: '.$this->gp->id);
 		}

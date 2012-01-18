@@ -445,8 +445,12 @@ class PatientService
 				// Check that the GP is in openeyes
 				$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
 				if(!$gp) {
+					// GP not in openeyes, pulling from PAS
 					Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID);
-					// FIXME: Pull in GP to openeyes
+					$gp = new Gp();
+					$gp->obj_prof = $pas_patient_gp->GP_ID;
+					$gp_service = new GpService($gp);
+					$gp = $gp_service->loadFromPas();
 				}
 				
 				// Update/set patient's GP
