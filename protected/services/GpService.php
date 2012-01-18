@@ -103,7 +103,9 @@ class GpService {
 				$errors[] = "Rejected bad GP record: {$gp['GP_ID']}";
 			} else {
 				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}'")->queryRow()) {
-					if ($gp = Gp::model()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
+					$gp_model = Gp::model();
+					$gp_model->use_pas = false;
+					if ($gp = $gp_model->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
 						// Update existing GP
 						if ($contact = Contact::model()->findByPk($gp->contact_id)) {
 							if (!$this->populateContact($contact, $pasGp)) {

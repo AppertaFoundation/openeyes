@@ -77,6 +77,16 @@ class Gp extends BaseActiveRecord
 	}
 
 	/**
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
+	 */ 
+	protected function instantiate($attributes) {
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
+	}
+	
+	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
 	public function attributeLabels()

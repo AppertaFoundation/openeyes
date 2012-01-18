@@ -166,7 +166,10 @@ class Patient extends BaseActiveRecord
 		return parent::beforeSave();
 	}
 
-	// Pass through use_pas flag to allow pas supression 
+	/**
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
+	 */ 
 	protected function instantiate($attributes) {
 		$model = parent::instantiate($attributes);
 		$model->use_pas = $this->use_pas;
