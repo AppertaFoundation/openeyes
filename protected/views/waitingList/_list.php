@@ -28,7 +28,6 @@ if (empty($operations)) { ?>
 		if (isset($_POST['status']) and $_POST['status'] != '') {
 			if ($eo->getNextLetter() != $_POST['status']) {
 				continue;
-				# echo $eo->getNextLetter() . " ne " . $_POST['status'];
 			} else {
 				# echo "match";
 			}
