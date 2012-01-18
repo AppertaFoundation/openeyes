@@ -26,6 +26,10 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  */
 class Gp extends BaseActiveRecord
 {
+	
+	// Set to false to supress cache refresh afterFind
+	public $use_pas = true;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Gp the static model class
@@ -108,7 +112,7 @@ class Gp extends BaseActiveRecord
 
 	protected function afterFind() {
 		parent::afterFind();
-		if(Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
 			Yii::log('GP details stale', 'trace');
 			$gp_service = new GpService($this);
 			$gp_service->loadFromPas();

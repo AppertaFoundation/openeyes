@@ -36,6 +36,9 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 class Patient extends BaseActiveRecord
 {
 	
+	// Set to false to supress cache refresh afterFind
+	public $use_pas = true;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -250,7 +253,7 @@ class Patient extends BaseActiveRecord
 	
 	protected function afterFind() {
 		parent::afterFind();
-		if(Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
 			Yii::log('Patient details stale', 'trace');
 			$patient_service = new PatientService($this);
 			$patient_service->loadFromPas();
