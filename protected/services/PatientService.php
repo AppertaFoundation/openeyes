@@ -192,7 +192,9 @@ class PatientService
 		if (!ctype_digit($hosNum)) return false;
 
 		// update OpenEyes database info
-		$patient = Patient::model()->findByPk($patientData->RM_PATIENT_NO);
+		$patient = Patient::model();
+		$patient->use_pas = false;
+		$patient->findByPk($patientData->RM_PATIENT_NO);
 		$address = new Address;
 		if (empty($patient)) {
 			$patient = new Patient;
