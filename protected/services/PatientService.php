@@ -473,7 +473,7 @@ class PatientService
 			$this->patient->save();
 			
 		} else {
-			throw CException('Patient not found: '.$this->patient->id);
+			throw new CException('Patient not found: '.$this->patient->id);
 		}
 	}
 	

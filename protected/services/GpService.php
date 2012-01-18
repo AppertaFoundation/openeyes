@@ -224,7 +224,7 @@ class GpService {
 	 */
 	public function loadFromPas() {
 		if(!$this->gp->obj_prof) {
-			throw CException('GP not linked to PAS GP (obj_prof undefined)');
+			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
 		}
 		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
 		if($pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
@@ -262,7 +262,7 @@ class GpService {
 			$this->gp->save();
 			
 		} else {
-			throw CException('GP not found: '.$this->gp->id);
+			throw new CException('GP not found: '.$this->gp->obj_prof);
 		}
 	}
 	
