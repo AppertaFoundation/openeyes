@@ -12,8 +12,30 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-class GpService
-{
+class GpService {
+	
+	public $gp;
+	public $pas_gp;
+	
+	/**
+	 * Create a new instance of the service
+	 *
+	 * @param model $gp Instance of the gp model
+	 * @param model $pas_gp Instance of the PAS gp model
+	 */
+	public function __construct($gp = null, $pas_gp = null) {
+		if (empty($gp)) {
+			$this->gp = new Gp();
+		} else {
+			$this->gp = $gp;
+		}
+		if (empty($pas_gp)) {
+			$this->pas_gp = new PAS_Gp();
+		} else {
+			$this->pas_gp = $pas_gp;
+		}
+	}
+	
 	/**
 	 * Get all the GPs from PAS and either insert or update them in the OE db
 	 *
@@ -81,7 +103,9 @@ class GpService
 				$errors[] = "Rejected bad GP record: {$gp['GP_ID']}";
 			} else {
 				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}'")->queryRow()) {
-					if ($gp = Gp::model()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
+					$gp_model = Gp::model();
+					$gp_model->use_pas = false;
+					if ($gp = $gp_model->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
 						// Update existing GP
 						if ($contact = Contact::model()->findByPk($gp->contact_id)) {
 							if (!$this->populateContact($contact, $pasGp)) {
@@ -193,4 +217,55 @@ class GpService
 
 		return true;
 	}
+	
+	/**
+	 * Load data from PAS into existing GP object and save
+	 * 
+	 * @param string gp_id PAS GP ID (optional)
+	 * @return Gp
+	 */
+	public function loadFromPas() {
+		if(!$this->gp->obj_prof) {
+			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
+		}
+		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
+		if($pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
+			$this->gp->nat_id = $pas_gp->NAT_ID;
+			
+			// Contact
+			if(!$contact = $this->gp->contact) {
+				$contact = new Contact();
+			}
+			$contact->first_name = trim($pas_gp->FN1 . ' ' . $pas_gp->FN2);
+			$contact->last_name = $pas_gp->SN;
+			$contact->title = $pas_gp->TITLE;
+			$contact->primary_phone = $pas_gp->TEL_1;
+			
+			// Address
+			if(!$address = $contact->address) {
+				$address = new Address();
+			}
+			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
+			$address->address2 = $pas_gp->ADD_TWN . ' ' . $pas_gp->ADD_DIS;
+			$address->city = $pas_gp->ADD_TWN;
+			$address->county = $pas_gp->ADD_CTY;
+			$address->postcode = $pas_gp->PC;
+			$address->country_id = 1;
+
+			// Save
+			$address->save();
+			if(!$contact->address) {
+				$contact->address_id = $address->id;
+			}
+			$contact->save();
+			if(!$this->gp->contact) {
+				$this->gp->contact_id = $contact->id;
+			}
+			$this->gp->save();
+			
+		} else {
+			Yii::log('GP not found in PAS: '.$this->gp->obj_prof, 'info');
+		}
+	}
+	
 }

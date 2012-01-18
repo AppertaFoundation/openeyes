@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+ _____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -13,89 +13,74 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 */
 
 /**
- * This is the model class for table "Gp".
+ * This is the model class for table "SILVER.PATIENT_GPS".
  *
- * The followings are the available columns in table 'Gp':
- * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
- * @property string $contact_id
- *
- * The followings are the available model relations:
- * @property Contact $contact
+ * The followings are the available columns in table 'SILVER.PATIENT_GPS':
+ * @property string $RM_PATIENT_NO
+ * @property string $DATE_FROM
+ * @property string $GP_ID
+ * @property string $PRACTICE_CODE
+ * @property string $HDDR_GROUP
+ * @property string $DATE_TO
  */
-class Gp extends BaseActiveRecord
-{
-	
-	// Set to false to supress cache refresh afterFind
-	public $use_pas = true;
-	
+class PAS_PatientGps extends MultiActiveRecord {
+
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Gp the static model class
+	 * @return PAS_PatientGps the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
+	}
+
+	/**
+	 * @return string the associated db connection name
+	 */
+	public function connectionId() {
+		return 'db_pas';
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
-		return 'Gp';
+	public function tableName() {
+		return 'SILVER.PATIENT_GPS';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
+	public function rules() {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('obj_prof, nat_id, contact_id', 'required'),
-			array('obj_prof, nat_id', 'length', 'max'=>20),
-			array('contact_id', 'length', 'max'=>10),
+			array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, obj_prof, nat_id, contact_id', 'safe', 'on'=>'search'),
+			array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
+	public function relations() {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
-		return array(
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-		);
+		return array();
 	}
 
 	/**
-	 * Pass through use_pas flag to allow pas supression
-	 * @see CActiveRecord::instantiate()
-	 */ 
-	protected function instantiate($attributes) {
-		$model = parent::instantiate($attributes);
-		$model->use_pas = $this->use_pas;
-		return $model;
-	}
-	
-	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
-			'id' => 'ID',
-			'obj_prof' => 'Obj Prof',
-			'nat_id' => 'Nat',
-			'contact_id' => 'Contact',
+ 			'RM_PATIENT_NO' => 'RM Patient No.',
+			'DATE_FROM' => 'Date From',
+			'GP_ID' => 'GP ID',
+			'PRACTICE_CODE' => 'Practice Code',
+			'HDDR_GROUP' => 'HDDR Group',
+			'DATE_TO' => 'Date To',
 		);
 	}
 
@@ -103,30 +88,19 @@ class Gp extends BaseActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
-
 		$criteria=new CDbCriteria;
-
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('obj_prof',$this->obj_prof,true);
-		$criteria->compare('nat_id',$this->nat_id,true);
-		$criteria->compare('contact_id',$this->contact_id,true);
-
+		$criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO,true);
+		$criteria->compare('DATE_FROM',$this->DATE_FROM,true);
+		$criteria->compare('GP_ID',$this->GP_ID,true);
+		$criteria->compare('PRACTICE_CODE',$this->PRACTICE_CODE,true);
+		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
+		$criteria->compare('DATE_TO',$this->DATE_TO,true);
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	protected function afterFind() {
-		parent::afterFind();
-		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
-			Yii::log('GP details stale', 'trace');
-			$gp_service = new GpService($this);
-			$gp_service->loadFromPas();
-		}
 	}
 	
 }
