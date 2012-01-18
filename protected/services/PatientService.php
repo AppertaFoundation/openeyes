@@ -240,8 +240,7 @@ class PatientService
 		}
 
 		// Pull in the GP associate from PAS if we don't already have it
-		// FIXME: Test this works again
-		//$patient->GetGP();
+		$patient->loadGP();
 
 		return $patient;
 	}

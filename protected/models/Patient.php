@@ -245,7 +245,7 @@ class Patient extends BaseActiveRecord
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
-	public function getGP() {
+	public function loadGP() {
 		if ($this->gp_id === NULL) {
 			if (Yii::app()->params['use_pas']) {
 				$service = new GpService;
