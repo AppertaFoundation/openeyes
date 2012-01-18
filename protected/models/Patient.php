@@ -251,6 +251,7 @@ class Patient extends BaseActiveRecord
 	protected function afterFind() {
 		parent::afterFind();
 		if(Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+			Yii::log('Patient details stale', 'trace');
 			$patient_service = new PatientService($this);
 			$patient_service->loadFromPas();
 		}

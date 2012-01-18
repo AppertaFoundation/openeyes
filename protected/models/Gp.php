@@ -109,6 +109,7 @@ class Gp extends BaseActiveRecord
 	protected function afterFind() {
 		parent::afterFind();
 		if(Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+			Yii::log('GP details stale', 'trace');
 			$gp_service = new GpService($this);
 			$gp_service->loadFromPas();
 		}

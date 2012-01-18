@@ -31,9 +31,6 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 $letterTypes = ElementOperation::getLetterOptions();
 $letterType = ($operation->getDueLetter() !== null && isset($letterTypes[$operation->getDueLetter()])) ? $letterTypes[$operation->getDueLetter()] : false;
 $no_gp = ($operation->getDueLetter() == ElementOperation::LETTER_GP && !$operation->event->episode->patient->gp);
-Yii::log('Letter Type:'.$letterType);
-Yii::log('GP:'.$no_gp);
-
 ?>
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 

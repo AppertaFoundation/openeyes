@@ -408,10 +408,10 @@ class PatientService
 	 * Load data from PAS into existing Patient object and save
 	 */
 	public function loadFromPas() {
-		Yii::log('Patient data stale, pulling from PAS:'.$this->patient->id);
+		Yii::log('Pulling Patient data from PAS:'.$this->patient->id, 'trace');
 		if($this->patient->id && $pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
 			if($hos_num = $pas_patient->hos_number) {
-				// FIXME: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
+				// TODO: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
 				$this->patient->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
 				$this->patient->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
 			}
@@ -446,7 +446,7 @@ class PatientService
 				$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
 				if(!$gp) {
 					// GP not in openeyes, pulling from PAS
-					Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID);
+					Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
 					$gp = new Gp();
 					$gp->obj_prof = $pas_patient_gp->GP_ID;
 					$gp_service = new GpService($gp);
@@ -456,13 +456,13 @@ class PatientService
 				
 				// Update/set patient's GP
 				if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
-					Yii::log('Patient\'s GP changed:'.$gp->obj_prof);
+					Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
 					$this->patient->gp_id = $gp->id;
 				} else {
-					Yii::log('Patient\'s GP has not changed');
+					Yii::log('Patient\'s GP has not changed', 'trace');
 				}
 			} else {
-				Yii::log('Patient has no GP in PAS');
+				Yii::log('Patient has no GP in PAS', 'info');
 			}
 			
 			// Save
