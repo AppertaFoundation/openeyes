@@ -189,12 +189,13 @@ class PatientService
 
 		if (!ctype_digit($hosNum)) return false;
 
-		// update OpenEyes database info
-		$patient = Patient::model();
-		$patient->use_pas = false;
-		$patient->findByPk($patientData->RM_PATIENT_NO);
+		// Supress auto PAS update
+		$patient_model = Patient::model();
+		$patient_model->use_pas = false;
+		$patient = $patient_model->findByPk($patientData->RM_PATIENT_NO);
+
 		$address = new Address;
-		if (empty($patient)) {
+		if (!$patient) {
 			$patient = new Patient;
 			$patient->id = $patientData->RM_PATIENT_NO;
 		} elseif (!empty($patient->address_id)) {
@@ -207,13 +208,12 @@ class PatientService
 				$address->id = $patient->address_id;
 			}
 		}
-		$patient->pas_key		 = $hosNum;
-		$patient->title			 = $surname->TITLE;
+		$patient->pas_key = $hosNum;
+		$patient->title = $surname->TITLE;
 		$patient->first_name = $surname->NAME1;
-		$patient->last_name  = $surname->SURNAME_ID;
-		//		$patient->dob				 = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
-		$patient->dob				 = $result['DATE_OF_BIRTH'];
-		$patient->gender		 = $patientData->SEX;
+		$patient->last_name = $surname->SURNAME_ID;
+		$patient->dob = $result['DATE_OF_BIRTH'];
+		$patient->gender = $patientData->SEX;
 		if ($addressData->TEL_NO != 'NONE') {
 			$patient->primary_phone = $addressData->TEL_NO;
 		}
