@@ -79,6 +79,10 @@ return CMap::mergeArray(
 				'username' => 'root',
 				'password' => '',
 				'charset' => 'utf8',
+				// Make default date format the same as MySQL (default is DD-MMM-YY)
+				'initSQLs'=> array(
+					'ALTER SESSION SET NLS_DATE_FORMAT = \'YYYY-MM-DD\'',
+				),
 			),
 			'authManager'=>array(
 				'class' => 'CDbAuthManager',
