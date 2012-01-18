@@ -257,7 +257,9 @@ class Patient extends BaseActiveRecord
 				return false;
 			}
 		} else {
-			return Gp::Model()->findByPk($this->gp_id);
+			$gp_model = Gp::model();
+			$gp_model->use_pas = false;
+			return $gp_model->findByPk($this->gp_id);
 		}
 	}
 	
