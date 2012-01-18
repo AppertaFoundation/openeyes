@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+ _____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -43,8 +43,7 @@ class PatientService
 	 *
 	 * @param array $data
 	 */
-	public function search($data)
-	{
+	public function search($data) {
 		// oracle apparently doesn't do case-insensitivity, so everything is uppercase
 		foreach ($data as $key => &$value) {
 			$value = strtoupper($value);
@@ -52,57 +51,57 @@ class PatientService
 
 		$whereSql = '';
 
-								// Hospital number
-								if (!empty($data['hos_num'])) {
-									$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
-									$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
-								}
-								
-								// Date of birth
-								if (!empty($data['dob'])) {
-									$whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
-								}
-								
-								// Gender
-								if (!empty($data['gender'])) {
-									$whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
-								}
-								
-								// Name
-								if (!empty($data['first_name']) && !empty($data['last_name'])) {
-									$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name'])
-									. "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
-								}
-								
-								// NHS Number
-								if (!empty($data['nhs_num'])) {
-									$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
-								}
-		
-								$sql = "
-												SELECT
-													p.rm_patient_no,
-													n.num_id_type,
-													n.number_id,
-													TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
-												FROM
-													SILVER.PATIENTS p,
-													SILVER.SURNAME_IDS s,
-													SILVER.NUMBER_IDS n
-												WHERE
-													s.rm_patient_no = p.rm_patient_no
-													AND
-													s.surname_type = 'NO'
-													AND
-													(
-														n.rm_patient_no = p.rm_patient_no
-														" . $whereSql . "
-													)
-								";
+		// Hospital number
+		if (!empty($data['hos_num'])) {
+			$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
+			$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
+		}
 
-								$connection = Yii::app()->db_pas;
-								$command = $connection->createCommand($sql);
-								$results = $command->queryAll();
+		// Date of birth
+		if (!empty($data['dob'])) {
+			$whereSql .= " AND TO_CHAR(DATE_OF_BIRTH, 'YYYY-MM-DD') = '" . addslashes($data['dob']) . "'";
+		}
+
+		// Gender
+		if (!empty($data['gender'])) {
+			$whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
+		}
+
+		// Name
+		if (!empty($data['first_name']) && !empty($data['last_name'])) {
+			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name'])
+			. "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
+		}
+
+		// NHS Number
+		if (!empty($data['nhs_num'])) {
+			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
+		}
+
+		$sql = "
+						SELECT
+							p.rm_patient_no,
+							n.num_id_type,
+							n.number_id,
+							TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
+						FROM
+							SILVER.PATIENTS p,
+							SILVER.SURNAME_IDS s,
+							SILVER.NUMBER_IDS n
+						WHERE
+							s.rm_patient_no = p.rm_patient_no
+							AND
+							s.surname_type = 'NO'
+							AND
+							(
+								n.rm_patient_no = p.rm_patient_no
+								" . $whereSql . "
+							)
+		";
+
+		$connection = Yii::app()->db_pas;
+		$command = $connection->createCommand($sql);
+		$results = $command->queryAll();
 
 		$patients = array();
 		$ids = array();
@@ -185,8 +184,7 @@ class PatientService
 	 *
 	 * @return Patient
 	 */
-	protected function updatePatient($patientData, $addressData, $result, $surname)
-	{
+	protected function updatePatient($patientData, $addressData, $result, $surname) {
 		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
 
 		if (!ctype_digit($hosNum)) return false;
@@ -213,7 +211,7 @@ class PatientService
 		$patient->title			 = $surname->TITLE;
 		$patient->first_name = $surname->NAME1;
 		$patient->last_name  = $surname->SURNAME_ID;
-//		$patient->dob				 = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
+		//		$patient->dob				 = date('Y-m-d', strtotime(preg_replace('/(\d\d)$/', '19$1', $patientData->DATE_OF_BIRTH)));
 		$patient->dob				 = $result['DATE_OF_BIRTH'];
 		$patient->gender		 = $patientData->SEX;
 		if ($addressData->TEL_NO != 'NONE') {
@@ -227,23 +225,12 @@ class PatientService
 
 		$patient->address_id = $address->id;
 
-/*
-		$hospitalNumber = PAS_PatientNumber::model()->findByAttributes(
-			array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO),
-			'NUM_ID_TYPE != :numType',
-			array(':numType' => 'NHS'));
-
-		if (!empty($hospitalNumber)) {
-			$patient->hos_num = $this->formatHospitalNumberFromPas($hospitalNumber->NUMBER_ID);
-		}
-*/
-
 		if (preg_match('/^[0-9]+$/',$hosNum)) {
 			$patient->hos_num = $hosNum;
 		}
 
 		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(
-			array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
+		array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
 					'NUM_ID_TYPE' => 'NHS'));
 		if (!empty($nhsNumber)) {
 			$patient->nhs_num = $nhsNumber->NUMBER_ID;
@@ -253,7 +240,8 @@ class PatientService
 		}
 
 		// Pull in the GP associate from PAS if we don't already have it
-		$patient->GetGP();
+		// FIXME: Test this works again
+		//$patient->GetGP();
 
 		return $patient;
 	}
@@ -266,7 +254,7 @@ class PatientService
 	 * @return Address
 	 */
 	protected function updateAddress($address, $data) {
-		
+
 		$propertyName = empty($data->PROPERTY_NAME) ? '' : trim($data->PROPERTY_NAME);
 		$propertyNumber = empty($data->PROPERTY_NO) ? '' : trim($data->PROPERTY_NO);
 
@@ -405,7 +393,7 @@ class PatientService
 
 		return $address;
 	}
-	
+
 	/**
 	 * Load data from PAS into existing Patient object and save
 	 */
@@ -428,7 +416,7 @@ class PatientService
 			if($nhs_number = $pas_patient->nhs_number) {
 				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
 			}
-			
+				
 			// Address
 			if($pas_patient->address) {
 				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
@@ -437,14 +425,14 @@ class PatientService
 				}
 				$this->updateAddress($address, $pas_patient->address);
 			}
-			
+				
 			// Get latest GP from PAS
 			$pas_patient_gp = PAS_PatientGps::model()->find(array(
 				'condition' => 'RM_PATIENT_NO = :patient_id',
 				'order' => 'DATE_FROM',
 				'params' => array(
 					':patient_id' => $this->patient->id,
-				),
+			),
 			));
 			if($pas_patient_gp) {
 				// Check that the GP is in openeyes
@@ -458,7 +446,7 @@ class PatientService
 					$gp_service->loadFromPas();
 					$gp = $gp_service->gp;
 				}
-				
+
 				// Update/set patient's GP
 				if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
 					Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
@@ -469,17 +457,17 @@ class PatientService
 			} else {
 				Yii::log('Patient has no GP in PAS', 'info');
 			}
-			
+				
 			// Save
 			$address->save();
 			if(!$this->patient->address) {
 				$this->patient->address_id = $address->id;
 			}
 			$this->patient->save();
-			
+				
 		} else {
 			Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
 		}
 	}
-	
+
 }

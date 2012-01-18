@@ -166,6 +166,13 @@ class Patient extends BaseActiveRecord
 		return parent::beforeSave();
 	}
 
+	// Pass through use_pas flag to allow pas supression 
+	protected function instantiate($attributes) {
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
+	}
+	
 	public function getAge()
 	{
 		$age = date('Y') - substr($this->dob, 0, 4);
