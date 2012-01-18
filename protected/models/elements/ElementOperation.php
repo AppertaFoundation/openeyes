@@ -920,7 +920,7 @@ class ElementOperation extends BaseElement
 
 	public function getNextLetter()
 	{
-		if (!$this->getLastLetter()) {
+		if (is_null($this->getLastLetter())) {
 			return self::LETTER_INVITE;
 		} else {
 			$lastletter = $this->getLastLetter();
