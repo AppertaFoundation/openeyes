@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -62,7 +62,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'source'=>"js:function(request, response) {
 								var existingProcedures = [];
 								$('#procedure_list tbody').children().each(function () {
-												var text = $(this).children('td:first').text();
+												var text = $(this).children('td:first').children('span:first').text();
 												existingProcedures.push(text.replace(/ remove$/i, ''));
 								});
 
@@ -94,25 +94,25 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 																'type': 'GET',
 																'data': {'name': ui.item.value},
 																'success': function(data) {
-																				// append selection onto procedure list
-																				$('#procedure_list tbody').append(data);
-																				$('#procedureDiv').show();
-																				$('#procedure_list').show();
+																			// append selection onto procedure list
+																			$('#procedure_list tbody').append(data);
+																			$('#procedureDiv').show();
+																			$('#procedure_list').show();
 
-										updateTotalDuration();
+																			updateTotalDuration();
 
-																				// clear out text field
-																				$('#autocomplete_procedure_id').val('');
+																			// clear out text field
+																			$('#autocomplete_procedure_id').val('');
 
-																				// remove selection from the filter box
-																				if ($('select[name=procedure]').children().length > 0) {
-																								var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
-																								$('select[name=procedure] option').each(function () {
-																												if ($(this).text() == name) {
-																																$(this).remove();
-																												}
-																								});
-																				}
+																			// remove selection from the filter box
+																			if ($('select[name=procedure]').children().length > 0) {
+																							var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
+																							$('select[name=procedure] option').each(function () {
+																											if ($(this).text() == name) {
+																															$(this).remove();
+																											}
+																							});
+																			}
 																}
 												});
 								}",
@@ -137,8 +137,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 										$totalDuration = 0;
 										if (!empty($model->procedures)) {
 											foreach ($model->procedures as $procedure) {
-												$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
-													' ' . CHtml::link('remove', '#',
+												$display = "<span>".$procedure['term'] . '</span> - <span>' . $procedure['short_format'] .
+													'</span> ' . CHtml::link('remove', '#',
 													array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
 												$totalDuration += $procedure['default_duration']; ?>
 										<tr>
@@ -298,7 +298,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			if (subsection != 'Select a subsection') {
 				var existingProcedures = [];
 				$('#procedure_list tbody').children().each(function () {
-					var text = $(this).children('td:first').text();
+					var text = $(this).children('td:first').children('span:first').text();
 					existingProcedures.push(text.replace(/ remove$/i, ''));
 				});
 				$.ajax({
