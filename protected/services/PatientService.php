@@ -408,8 +408,11 @@ class PatientService
 	 * Load data from PAS into existing Patient object and save
 	 */
 	public function loadFromPas() {
+		if(!$this->patient->id) {
+			throw new CException('Patient not linked to PAS patient (id undefined)');
+		}
 		Yii::log('Pulling Patient data from PAS:'.$this->patient->id, 'trace');
-		if($this->patient->id && $pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
+		if($pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
 			if($hos_num = $pas_patient->hos_number) {
 				// TODO: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
 				$this->patient->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
@@ -473,7 +476,7 @@ class PatientService
 			$this->patient->save();
 			
 		} else {
-			throw new CException('Patient not found: '.$this->patient->id);
+			Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
 		}
 	}
 	

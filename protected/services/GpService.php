@@ -262,7 +262,7 @@ class GpService {
 			$this->gp->save();
 			
 		} else {
-			throw new CException('GP not found: '.$this->gp->obj_prof);
+			Yii::log('GP not found in PAS: '.$this->gp->obj_prof, 'info');
 		}
 	}
 	

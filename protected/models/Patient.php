@@ -254,6 +254,7 @@ class Patient extends BaseActiveRecord
 			Yii::log('Patient details stale', 'trace');
 			$patient_service = new PatientService($this);
 			$patient_service->loadFromPas();
+			// FIXME: Check patient is being refreshed before return
 		}
 	}
 	
