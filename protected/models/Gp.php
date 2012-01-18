@@ -112,7 +112,6 @@ class Gp extends BaseActiveRecord
 			Yii::log('GP details stale', 'trace');
 			$gp_service = new GpService($this);
 			$gp_service->loadFromPas();
-			// FIXME: Check gp is being refreshed before return
 		}
 	}
 	
