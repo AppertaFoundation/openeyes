@@ -71,8 +71,8 @@
 									no extra search filters
 								</div>-->
 							</div> <!-- #extra-search -->
+						</div> <!-- #search-options -->
 					</form>
-				</div> <!-- #search-options -->
 
 				<div id="searchResults" class="whiteBox">
 				</div> <!-- #searchResults -->
@@ -135,22 +135,16 @@
 
 	function print_items_from_selector(sel) {
 		var printurl = '/waitingList/printletters';
-		var i = 0;
+		var operations = new Array();
+		
+		var operations = $(sel).map(function(i,n) {
+			return $(n).attr('id').replace(/operation/,'');
+		}).get();
 
-		$(sel).map(function() {
-			if (i >0) {
-				printurl += "&operations[]=";
-			} else {
-				printurl += "?operations[]=";
-			}
-			printurl += $(this).attr('id').replace(/operation/,'');
-			i += 1;
-		});
-
-		if (i == 0) {
+		if (operations.length == 0) {
 			alert("No items selected for printing.");
 		} else {
-			printUrl(printurl);
+			printUrl(printurl, {'operations[]': operations});
 		}
 	}
 
