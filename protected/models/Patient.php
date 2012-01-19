@@ -166,16 +166,6 @@ class Patient extends BaseActiveRecord
 		return parent::beforeSave();
 	}
 
-	/**
-	 * Pass through use_pas flag to allow pas supression
-	 * @see CActiveRecord::instantiate()
-	 */ 
-	protected function instantiate($attributes) {
-		$model = parent::instantiate($attributes);
-		$model->use_pas = $this->use_pas;
-		return $model;
-	}
-	
 	public function getAge()
 	{
 		$age = date('Y') - substr($this->dob, 0, 4);
@@ -257,12 +247,32 @@ class Patient extends BaseActiveRecord
 				return false;
 			}
 		} else {
-			$gp_model = Gp::model();
-			$gp_model->use_pas = false;
-			return $gp_model->findByPk($this->gp_id);
+			return Gp::model()->noPas()->findByPk($this->gp_id);
 		}
 	}
 	
+	/**
+	 * Supress PAS call after find
+	 */
+	public function noPas() {
+		$this->use_pas = false;
+		return $this;
+	}
+	
+	/**
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
+	 */ 
+	protected function instantiate($attributes) {
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
+	}
+	
+	/**
+	 * Update from PAS if enabled
+	 * @see CActiveRecord::afterFind()
+	 */
 	protected function afterFind() {
 		parent::afterFind();
 		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {

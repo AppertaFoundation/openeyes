@@ -103,9 +103,7 @@ class GpService {
 				$errors[] = "Rejected bad GP record: {$gp['GP_ID']}";
 			} else {
 				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}'")->queryRow()) {
-					$gp_model = Gp::model();
-					$gp_model->use_pas = false;
-					if ($gp = $gp_model->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
+					if ($gp = Gp::model()->noPas()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
 						// Update existing GP
 						if ($contact = Contact::model()->findByPk($gp->contact_id)) {
 							if (!$this->populateContact($contact, $pasGp)) {
@@ -154,9 +152,7 @@ class GpService {
 					}
 
 					// Update patient
-					$patient = Patient::Model();
-					$patient->use_pas = false;
-					if ($patient = $patient->findByPk($latestGP['PATIENT_ID'])) {
+					if ($patient = Patient::Model()->noPas()->findByPk($latestGP['PATIENT_ID'])) {
 						$patient->gp_id = $gp->id;
 						if (!$patient->save()) {
 							$errors[] = "Unable to save patient {$latestGP['PATIENT_ID']}: ".print_r($patient->getErrors(),true);

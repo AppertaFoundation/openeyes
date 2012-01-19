@@ -190,9 +190,7 @@ class PatientService
 		if (!ctype_digit($hosNum)) return false;
 
 		// Supress auto PAS update
-		$patient_model = Patient::model();
-		$patient_model->use_pas = false;
-		$patient = $patient_model->findByPk($patientData->RM_PATIENT_NO);
+		$patient = Patient::model()->noPas()->findByPk($patientData->RM_PATIENT_NO);
 
 		$address = new Address;
 		if (!$patient) {

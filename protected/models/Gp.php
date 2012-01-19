@@ -77,16 +77,6 @@ class Gp extends BaseActiveRecord
 	}
 
 	/**
-	 * Pass through use_pas flag to allow pas supression
-	 * @see CActiveRecord::instantiate()
-	 */ 
-	protected function instantiate($attributes) {
-		$model = parent::instantiate($attributes);
-		$model->use_pas = $this->use_pas;
-		return $model;
-	}
-	
-	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
 	public function attributeLabels()
@@ -120,6 +110,28 @@ class Gp extends BaseActiveRecord
 		));
 	}
 
+	/**
+	 * Supress PAS call after find
+	 */
+	public function noPas() {
+		$this->use_pas = false;
+		return $this;
+	}
+	
+	/**
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
+	 */ 
+	protected function instantiate($attributes) {
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
+	}
+	
+	/**
+	 * Update from PAS if enabled
+	 * @see CActiveRecord::afterFind()
+	 */
 	protected function afterFind() {
 		parent::afterFind();
 		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
