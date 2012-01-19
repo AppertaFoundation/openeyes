@@ -431,7 +431,7 @@ class PatientService
 			// Get latest GP from PAS
 			$pas_patient_gp = PAS_PatientGps::model()->find(array(
 				'condition' => 'RM_PATIENT_NO = :patient_id',
-				'order' => 'DATE_FROM',
+				'order' => 'DATE_FROM DESC',
 				'params' => array(
 					':patient_id' => $this->patient->id,
 			),
@@ -440,7 +440,7 @@ class PatientService
 				// Check that GP is not on our block list
 				if(GpService::is_bad_gp($pas_patient_gp->GP_ID)) {
 					Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
-					$this->patient->gp_id = 0;
+					$this->patient->gp_id = null;
 				} else {
 					// Check that the GP is in openeyes
 					$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
