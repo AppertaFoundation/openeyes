@@ -86,20 +86,27 @@ class GpService {
 		}
 	}
 
+	/**
+	 * Check to see if a GP ID (obj_prof) is on our block list
+	 * @param string $gp_id
+	 * @return boolean
+	 */
+	public static function is_bad_gp($gp_id) {
+		return (in_array($gp_id, Yii::app()->params['bad_gps']));
+	}
+	
 	// Populate the GP for a given patient. $patient_id can also be an array of patient_ids (used by the PopulateGps method above to populate multiple patient GPs at once)
 	public function GetPatientGp($patient_id, $verbose=false) {
 		if (!is_array($patient_id)) {
 			$patient_id = array($patient_id);
 		}
 
-		$bad_gps = Yii::app()->params['bad_gps'];
-
 		$errors = array();
 		foreach (Yii::app()->db_pas->createCommand("select distinct rm_patient_no as patient_id, max(date_from) as latestGP from silver.patient_gps where rm_patient_no in (".implode(',',$patient_id).") group by rm_patient_no order by rm_patient_no")->queryAll() as $latestGP) {
 			$gp = Yii::app()->db_pas->createCommand("select * from silver.patient_gps where rm_patient_no = '{$latestGP['PATIENT_ID']}' and date_from = '{$latestGP['LATESTGP']}'")->queryRow();
 
-			// Exclude bad GP data by obj_prof
-			if (in_array($gp['GP_ID'],$bad_gps)) {
+			// Exclude bad GP data
+			if (self::is_bad_gp($gp['GP_ID'])) {
 				$errors[] = "Rejected bad GP record: {$gp['GP_ID']}";
 			} else {
 				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}'")->queryRow()) {
@@ -221,6 +228,7 @@ class GpService {
 	 * 
 	 * @param string gp_id PAS GP ID (optional)
 	 * @return Gp
+	 * @todo This needs integrating with GetPatientGp and related methods
 	 */
 	public function loadFromPas() {
 		if(!$this->gp->obj_prof) {

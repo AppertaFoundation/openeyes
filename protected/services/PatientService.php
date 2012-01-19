@@ -432,24 +432,30 @@ class PatientService
 			),
 			));
 			if($pas_patient_gp) {
-				// Check that the GP is in openeyes
-				$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
-				if(!$gp) {
-					// GP not in openeyes, pulling from PAS
-					Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
-					$gp = new Gp();
-					$gp->obj_prof = $pas_patient_gp->GP_ID;
-					$gp_service = new GpService($gp);
-					$gp_service->loadFromPas();
-					$gp = $gp_service->gp;
-				}
-
-				// Update/set patient's GP
-				if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
-					Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
-					$this->patient->gp_id = $gp->id;
+				// Check that GP is not on our block list
+				if(GpService::is_bad_gp($pas_patient_gp->GP_ID)) {
+					Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
+					$this->patient->gp_id = 0;
 				} else {
-					Yii::log('Patient\'s GP has not changed', 'trace');
+					// Check that the GP is in openeyes
+					$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
+					if(!$gp) {
+						// GP not in openeyes, pulling from PAS
+						Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
+						$gp = new Gp();
+						$gp->obj_prof = $pas_patient_gp->GP_ID;
+						$gp_service = new GpService($gp);
+						$gp_service->loadFromPas();
+						$gp = $gp_service->gp;
+					}
+	
+					// Update/set patient's GP
+					if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
+						Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
+						$this->patient->gp_id = $gp->id;
+					} else {
+						Yii::log('Patient\'s GP has not changed', 'trace');
+					}
 				}
 			} else {
 				Yii::log('Patient has no GP in PAS', 'info');
