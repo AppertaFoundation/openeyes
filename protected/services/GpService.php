@@ -196,9 +196,10 @@ class GpService {
 
 	public function populateAddress($address, $pasGp)
 	{
-		$address->address1 = $pasGp['ADD_NAM'] . ' ' . $pasGp['ADD_NUM'] . ' ' . $pasGp['ADD_ST'];
-		$address->address2 = $pasGp['ADD_TWN'] . ' ' . $pasGp['ADD_DIS'];
-		$address->city = $pasGp['ADD_CTY'];
+		$address->address1 = trim($pasGp['ADD_NAM'] . ' ' . $pasGp['ADD_NUM'] . ' ' . $pasGp['ADD_ST']);
+		$address->address2 =  $pasGp['ADD_DIS'];
+		$address->city = $pasGp['ADD_TWN'];
+		$address->county = $pasGp['ADD_CTY'];
 		$address->postcode = $pasGp['PC'];
 		$address->country_id = 1;
 
@@ -252,7 +253,7 @@ class GpService {
 				$address = new Address();
 			}
 			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
-			$address->address2 = $pas_gp->ADD_TWN . ' ' . $pas_gp->ADD_DIS;
+			$address->address2 = $pas_gp->ADD_DIS;
 			$address->city = $pas_gp->ADD_TWN;
 			$address->county = $pas_gp->ADD_CTY;
 			$address->postcode = $pas_gp->PC;
