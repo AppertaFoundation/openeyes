@@ -42,8 +42,7 @@
 													<td>
 
 														<?php
-														echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], array(),
-																	array('empty'=>'All firms', 'disabled'=>(empty($firmId))));
+														echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], array(), array('empty'=>'All firms', 'disabled'=>(empty($firmId))));
 														?>
 													</td>
 													<td>

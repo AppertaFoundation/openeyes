@@ -144,6 +144,7 @@ class WaitingListController extends BaseController
 			->from('firm f')
 			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
 			->join('specialty s', 'ssa.specialty_id = s.id')
+			->order('f.name asc')
 			->where('ssa.specialty_id=:id',
 				array(':id'=>$specialtyId))
 			->queryAll();
@@ -163,6 +164,7 @@ class WaitingListController extends BaseController
 	 * @throws CHttpException
 	 */
 	public function actionPrintLetters() {
+		echo "fish"; exit;
 		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
 		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
 		if(!is_array($operation_ids)) {
