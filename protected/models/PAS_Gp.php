@@ -80,6 +80,14 @@ class PAS_Gp extends MultiActiveRecord
 	}
 
 	/**
+	 * @return string primary key for the table
+	 */
+	public function primaryKey()
+	{
+		return 'OBJ_PROF';
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
