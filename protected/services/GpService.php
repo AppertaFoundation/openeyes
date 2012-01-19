@@ -154,7 +154,9 @@ class GpService {
 					}
 
 					// Update patient
-					if ($patient = Patient::model()->findByPk($latestGP['PATIENT_ID'])) {
+					$patient = Patient::Model();
+					$patient->use_pas = false;
+					if ($patient = $patient->findByPk($latestGP['PATIENT_ID'])) {
 						$patient->gp_id = $gp->id;
 						if (!$patient->save()) {
 							$errors[] = "Unable to save patient {$latestGP['PATIENT_ID']}: ".print_r($patient->getErrors(),true);
