@@ -164,7 +164,6 @@ class WaitingListController extends BaseController
 	 * @throws CHttpException
 	 */
 	public function actionPrintLetters() {
-		echo "fish"; exit;
 		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
 		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
 		if(!is_array($operation_ids)) {
