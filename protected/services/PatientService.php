@@ -368,7 +368,12 @@ class PatientService
 				$town = trim($addressLines[0]);
 			}
 		}
-
+		
+		// Dedupe
+		if($town == $county) {
+			$county = '';
+		}
+		
 		// Store data
 		$unitedKingdom = Country::model()->findByAttributes(array('name' => 'United Kingdom'));
 		if (isset($address1)) {
