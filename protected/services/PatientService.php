@@ -370,7 +370,7 @@ class PatientService
 		}
 		
 		// Dedupe
-		if($town == $county) {
+		if (isset($county) && isset($town) && $town == $county) {
 			$county = '';
 		}
 		
