@@ -51,10 +51,10 @@
 <span class='line'> 44</span>  * @param {Float} _rotation
 <span class='line'> 45</span>  * @param {Int} _order
 <span class='line'> 46</span>  */</span><span class="WHIT">
-<span class='line'> 47</span> </span><span class="NAME">ED.Freehand</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'> 47</span> </span><span class="NAME">ED.Freehand</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'> 48</span> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'> 49</span> </span><span class="WHIT">	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
-<span class='line'> 50</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'> 50</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'> 51</span> </span><span class="WHIT">	
 <span class='line'> 52</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
 <span class='line'> 53</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"Freehand"</span><span class="PUNC">;</span><span class="WHIT">
@@ -186,10 +186,10 @@
 <span class='line'>179</span>  * @param {Float} _rotation
 <span class='line'>180</span>  * @param {Int} _order
 <span class='line'>181</span>  */</span><span class="WHIT">
-<span class='line'>182</span> </span><span class="NAME">ED.Lable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>182</span> </span><span class="NAME">ED.Lable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>183</span> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>184</span> </span><span class="WHIT">	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
-<span class='line'>185</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>185</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>186</span> </span><span class="WHIT">	
 <span class='line'>187</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
 <span class='line'>188</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"Lable"</span><span class="PUNC">;</span><span class="WHIT">
@@ -331,10 +331,10 @@
 <span class='line'>324</span>  * @param {Float} _rotation
 <span class='line'>325</span>  * @param {Int} _order
 <span class='line'>326</span>  */</span><span class="WHIT">
-<span class='line'>327</span> </span><span class="NAME">ED.Arrow</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>327</span> </span><span class="NAME">ED.Arrow</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>328</span> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>329</span> </span><span class="WHIT">	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
-<span class='line'>330</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>330</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>331</span> </span><span class="WHIT">	
 <span class='line'>332</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
 <span class='line'>333</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"Arrow"</span><span class="PUNC">;</span><span class="WHIT">
@@ -447,14 +447,14 @@
 <span class='line'>440</span>  * @param {Float} _rotation
 <span class='line'>441</span>  * @param {Int} _order
 <span class='line'>442</span>  */</span><span class="WHIT">
-<span class='line'>443</span> </span><span class="NAME">ED.Slider</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>443</span> </span><span class="NAME">ED.Slider</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>444</span> </span><span class="PUNC">{</span><span class="WHIT">
 <span class='line'>445</span> </span><span class="WHIT">    </span><span class="COMM">// Slider Properties (Establish before superclass call so values are available for setPropertyDefaults)</span><span class="WHIT">
 <span class='line'>446</span> </span><span class="WHIT">    </span><span class="NAME">this.halfHeight</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">  </span><span class="NUMB">6</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>447</span> </span><span class="WHIT">    </span><span class="NAME">this.halfLength</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">200</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>448</span> </span><span class="WHIT">    
 <span class='line'>449</span> 	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
-<span class='line'>450</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>450</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
 <span class='line'>451</span> </span><span class="WHIT">	
 <span class='line'>452</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
 <span class='line'>453</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"Slider"</span><span class="PUNC">;</span><span class="WHIT">
@@ -550,132 +550,131 @@
 <span class='line'>543</span> 	</span><span class="COMM">// Other stuff here</span><span class="WHIT">
 <span class='line'>544</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.drawFunctionMode</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">ED.drawFunctionMode.Draw</span><span class="PUNC">)</span><span class="WHIT">
 <span class='line'>545</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>546</span> </span><span class="WHIT">        </span><span class="NAME">console.log</span><span class="PUNC">(</span><span class="NAME">this.apexX</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">" "</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="NAME">this.rangeOfApexX.max</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>547</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>548</span> </span><span class="WHIT">	
-<span class='line'>549</span>     </span><span class="COMM">// Coordinates of handles (in canvas plane)</span><span class="WHIT">
-<span class='line'>550</span> </span><span class="WHIT">    </span><span class="NAME">this.handleArray</span><span class="PUNC">[</span><span class="NUMB">4</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">location</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.transform.transformPoint</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Point</span><span class="PUNC">(</span><span class="NAME">this.apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">this.apexY</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>551</span> </span><span class="WHIT">    
-<span class='line'>552</span> 	</span><span class="COMM">// Draw handles if selected</span><span class="WHIT">
-<span class='line'>553</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.isSelected</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">this.isForDrawing</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">this.drawHandles</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>554</span> </span><span class="WHIT">	
-<span class='line'>555</span> 	</span><span class="COMM">// Return value indicating successful hittest</span><span class="WHIT">
-<span class='line'>556</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isClicked</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>557</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>558</span> 
-<span class='line'>559</span> </span><span class="COMM">/**
-<span class='line'>560</span>  * Returns a string containing a text description of the doodle
-<span class='line'>561</span>  *
-<span class='line'>562</span>  * @returns {String} Description of doodle
-<span class='line'>563</span>  */</span><span class="WHIT">
-<span class='line'>564</span> </span><span class="NAME">ED.Slider.prototype.description</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>565</span> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>566</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"Mattress suture at "</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>567</span> </span><span class="WHIT">    
-<span class='line'>568</span>     </span><span class="NAME">returnString</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.clockHour</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">" o'clock"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>569</span> </span><span class="WHIT">    
-<span class='line'>570</span> 	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>571</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>572</span> 
-<span class='line'>573</span> </span><span class="COMM">/**
-<span class='line'>574</span>  * An example to be used as a template
-<span class='line'>575</span>  *
-<span class='line'>576</span>  * @class PointInLine
-<span class='line'>577</span>  * @property {String} className Name of doodle subclass
-<span class='line'>578</span>  * @param {Drawing} _drawing
-<span class='line'>579</span>  * @param {Int} _originX
-<span class='line'>580</span>  * @param {Int} _originY
-<span class='line'>581</span>  * @param {Int} _apexX
-<span class='line'>582</span>  * @param {Int} _apexY
-<span class='line'>583</span>  * @param {Float} _scaleX
-<span class='line'>584</span>  * @param {Float} _scaleY
-<span class='line'>585</span>  * @param {Float} _arc
-<span class='line'>586</span>  * @param {Float} _rotation
-<span class='line'>587</span>  * @param {Int} _order
-<span class='line'>588</span>  */</span><span class="WHIT">
-<span class='line'>589</span> </span><span class="NAME">ED.PointInLine</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>590</span> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>591</span> </span><span class="WHIT">	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
-<span class='line'>592</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>593</span> </span><span class="WHIT">	
-<span class='line'>594</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
-<span class='line'>595</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"PointInLine"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>596</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>597</span> 
-<span class='line'>598</span> </span><span class="COMM">/**
-<span class='line'>599</span>  * Sets superclass and constructor
-<span class='line'>600</span>  */</span><span class="WHIT">
-<span class='line'>601</span> </span><span class="NAME">ED.PointInLine.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Doodle</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>602</span> </span><span class="NAME">ED.PointInLine.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ED.PointInLine</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>603</span> </span><span class="NAME">ED.PointInLine.superclass</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ED.Doodle.prototype</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>604</span> 
-<span class='line'>605</span> </span><span class="COMM">/**
-<span class='line'>606</span>  * Sets handle attributes
-<span class='line'>607</span>  */</span><span class="WHIT">
-<span class='line'>608</span> </span><span class="NAME">ED.PointInLine.prototype.setHandles</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>609</span> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>610</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>611</span> 
-<span class='line'>612</span> </span><span class="COMM">/**
-<span class='line'>613</span>  * Sets default dragging attributes
-<span class='line'>614</span>  */</span><span class="WHIT">
-<span class='line'>615</span> </span><span class="NAME">ED.PointInLine.prototype.setPropertyDefaults</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>616</span> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>617</span> </span><span class="WHIT">	</span><span class="NAME">this.isSelectable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>618</span> </span><span class="WHIT">	</span><span class="NAME">this.isOrientated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>619</span> </span><span class="WHIT">	</span><span class="NAME">this.isScaleable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>620</span> </span><span class="WHIT">	</span><span class="NAME">this.isSqueezable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>621</span> </span><span class="WHIT">	</span><span class="NAME">this.isMoveable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>622</span> </span><span class="WHIT">	</span><span class="NAME">this.isRotatable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>623</span> </span><span class="WHIT">    </span><span class="NAME">this.isPointInLine</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>624</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>625</span> 
-<span class='line'>626</span> </span><span class="COMM">/**
-<span class='line'>627</span>  * Sets default parameters
-<span class='line'>628</span>  */</span><span class="WHIT">
-<span class='line'>629</span> </span><span class="NAME">ED.PointInLine.prototype.setParameterDefaults</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>630</span> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>631</span> </span><span class="WHIT">	</span><span class="NAME">this.originY</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">300</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>632</span> </span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>633</span> 
-<span class='line'>634</span> </span><span class="COMM">/**
-<span class='line'>635</span>  * Draws doodle or performs a hit test if a Point parameter is passed
-<span class='line'>636</span>  *
-<span class='line'>637</span>  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
-<span class='line'>638</span>  */</span><span class="WHIT">
-<span class='line'>639</span> </span><span class="NAME">ED.PointInLine.prototype.draw</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>640</span> </span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>641</span> </span><span class="WHIT">	</span><span class="COMM">// Get context</span><span class="WHIT">
-<span class='line'>642</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.drawing.context</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>643</span> </span><span class="WHIT">	
-<span class='line'>644</span> 	</span><span class="COMM">// Call draw method in superclass</span><span class="WHIT">
-<span class='line'>645</span> </span><span class="WHIT">	</span><span class="NAME">ED.PointInLine.superclass.draw.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>646</span> </span><span class="WHIT">	
-<span class='line'>647</span> 	</span><span class="COMM">// Boundary path</span><span class="WHIT">
-<span class='line'>648</span> </span><span class="WHIT">	</span><span class="NAME">ctx.beginPath</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>649</span> </span><span class="WHIT">	
-<span class='line'>650</span> 	</span><span class="COMM">// Round hole</span><span class="WHIT">
-<span class='line'>651</span> </span><span class="WHIT">	</span><span class="NAME">ctx.arc</span><span class="PUNC">(</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NUMB">8</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NAME">Math.PI</span><span class="PUNC">*</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>652</span> </span><span class="WHIT">    
-<span class='line'>653</span> 	</span><span class="COMM">// Close path</span><span class="WHIT">
-<span class='line'>654</span> </span><span class="WHIT">	</span><span class="NAME">ctx.closePath</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>655</span> </span><span class="WHIT">	
-<span class='line'>656</span> 	</span><span class="COMM">// Set line attributes</span><span class="WHIT">
-<span class='line'>657</span> </span><span class="WHIT">	</span><span class="NAME">ctx.lineWidth</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">4</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>658</span> </span><span class="WHIT">	</span><span class="NAME">ctx.fillStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">  </span><span class="STRN">"rgba(20,20,20,1)"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>659</span> </span><span class="WHIT">	</span><span class="NAME">ctx.strokeStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"rgba(20,20,20,1)"</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>660</span> </span><span class="WHIT">	
-<span class='line'>661</span> 	</span><span class="COMM">// Draw boundary path (also hit testing)</span><span class="WHIT">
-<span class='line'>662</span> </span><span class="WHIT">	</span><span class="NAME">this.drawBoundary</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>663</span> </span><span class="WHIT">	
-<span class='line'>664</span> 	</span><span class="COMM">// Other stuff here</span><span class="WHIT">
-<span class='line'>665</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.drawFunctionMode</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">ED.drawFunctionMode.Draw</span><span class="PUNC">)</span><span class="WHIT">
-<span class='line'>666</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
-<span class='line'>667</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
-<span class='line'>668</span> </span><span class="WHIT">	
-<span class='line'>669</span> 	</span><span class="COMM">// Return value indicating successful hittest</span><span class="WHIT">
-<span class='line'>670</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isClicked</span><span class="PUNC">;</span><span class="WHIT">
-<span class='line'>671</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>546</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>547</span> </span><span class="WHIT">	
+<span class='line'>548</span>     </span><span class="COMM">// Coordinates of handles (in canvas plane)</span><span class="WHIT">
+<span class='line'>549</span> </span><span class="WHIT">    </span><span class="NAME">this.handleArray</span><span class="PUNC">[</span><span class="NUMB">4</span><span class="PUNC">]</span><span class="PUNC">.</span><span class="NAME">location</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.transform.transformPoint</span><span class="PUNC">(</span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Point</span><span class="PUNC">(</span><span class="NAME">this.apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">this.apexY</span><span class="PUNC">)</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>550</span> </span><span class="WHIT">    
+<span class='line'>551</span> 	</span><span class="COMM">// Draw handles if selected</span><span class="WHIT">
+<span class='line'>552</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.isSelected</span><span class="WHIT"> </span><span class="PUNC">&&</span><span class="WHIT"> </span><span class="PUNC">!</span><span class="NAME">this.isForDrawing</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="NAME">this.drawHandles</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>553</span> </span><span class="WHIT">	
+<span class='line'>554</span> 	</span><span class="COMM">// Return value indicating successful hittest</span><span class="WHIT">
+<span class='line'>555</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isClicked</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>556</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>557</span> 
+<span class='line'>558</span> </span><span class="COMM">/**
+<span class='line'>559</span>  * Returns a string containing a text description of the doodle
+<span class='line'>560</span>  *
+<span class='line'>561</span>  * @returns {String} Description of doodle
+<span class='line'>562</span>  */</span><span class="WHIT">
+<span class='line'>563</span> </span><span class="NAME">ED.Slider.prototype.description</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>564</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>565</span> </span><span class="WHIT">    </span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"Mattress suture at "</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>566</span> </span><span class="WHIT">    
+<span class='line'>567</span>     </span><span class="NAME">returnString</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.clockHour</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT"> </span><span class="PUNC">+</span><span class="WHIT"> </span><span class="STRN">" o'clock"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>568</span> </span><span class="WHIT">    
+<span class='line'>569</span> 	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">returnString</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>570</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>571</span> 
+<span class='line'>572</span> </span><span class="COMM">/**
+<span class='line'>573</span>  * An example to be used as a template
+<span class='line'>574</span>  *
+<span class='line'>575</span>  * @class PointInLine
+<span class='line'>576</span>  * @property {String} className Name of doodle subclass
+<span class='line'>577</span>  * @param {Drawing} _drawing
+<span class='line'>578</span>  * @param {Int} _originX
+<span class='line'>579</span>  * @param {Int} _originY
+<span class='line'>580</span>  * @param {Int} _apexX
+<span class='line'>581</span>  * @param {Int} _apexY
+<span class='line'>582</span>  * @param {Float} _scaleX
+<span class='line'>583</span>  * @param {Float} _scaleY
+<span class='line'>584</span>  * @param {Float} _arc
+<span class='line'>585</span>  * @param {Float} _rotation
+<span class='line'>586</span>  * @param {Int} _order
+<span class='line'>587</span>  */</span><span class="WHIT">
+<span class='line'>588</span> </span><span class="NAME">ED.PointInLine</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>589</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>590</span> </span><span class="WHIT">	</span><span class="COMM">// Call superclass constructor</span><span class="WHIT">
+<span class='line'>591</span> </span><span class="WHIT">	</span><span class="NAME">ED.Doodle.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_drawing</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_originY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_radius</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_apexY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleX</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_scaleY</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_arc</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_rotation</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_order</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>592</span> </span><span class="WHIT">	
+<span class='line'>593</span> 	</span><span class="COMM">// Set classname</span><span class="WHIT">
+<span class='line'>594</span> </span><span class="WHIT">	</span><span class="NAME">this.className</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"PointInLine"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>595</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>596</span> 
+<span class='line'>597</span> </span><span class="COMM">/**
+<span class='line'>598</span>  * Sets superclass and constructor
+<span class='line'>599</span>  */</span><span class="WHIT">
+<span class='line'>600</span> </span><span class="NAME">ED.PointInLine.prototype</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">new</span><span class="WHIT"> </span><span class="NAME">ED.Doodle</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>601</span> </span><span class="NAME">ED.PointInLine.prototype.constructor</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ED.PointInLine</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>602</span> </span><span class="NAME">ED.PointInLine.superclass</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">ED.Doodle.prototype</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>603</span> 
+<span class='line'>604</span> </span><span class="COMM">/**
+<span class='line'>605</span>  * Sets handle attributes
+<span class='line'>606</span>  */</span><span class="WHIT">
+<span class='line'>607</span> </span><span class="NAME">ED.PointInLine.prototype.setHandles</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>608</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>609</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>610</span> 
+<span class='line'>611</span> </span><span class="COMM">/**
+<span class='line'>612</span>  * Sets default dragging attributes
+<span class='line'>613</span>  */</span><span class="WHIT">
+<span class='line'>614</span> </span><span class="NAME">ED.PointInLine.prototype.setPropertyDefaults</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>615</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>616</span> </span><span class="WHIT">	</span><span class="NAME">this.isSelectable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>617</span> </span><span class="WHIT">	</span><span class="NAME">this.isOrientated</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>618</span> </span><span class="WHIT">	</span><span class="NAME">this.isScaleable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>619</span> </span><span class="WHIT">	</span><span class="NAME">this.isSqueezable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>620</span> </span><span class="WHIT">	</span><span class="NAME">this.isMoveable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>621</span> </span><span class="WHIT">	</span><span class="NAME">this.isRotatable</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">false</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>622</span> </span><span class="WHIT">    </span><span class="NAME">this.isPointInLine</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">true</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>623</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>624</span> 
+<span class='line'>625</span> </span><span class="COMM">/**
+<span class='line'>626</span>  * Sets default parameters
+<span class='line'>627</span>  */</span><span class="WHIT">
+<span class='line'>628</span> </span><span class="NAME">ED.PointInLine.prototype.setParameterDefaults</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>629</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>630</span> </span><span class="WHIT">	</span><span class="NAME">this.originY</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="PUNC">-</span><span class="NUMB">300</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>631</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>632</span> 
+<span class='line'>633</span> </span><span class="COMM">/**
+<span class='line'>634</span>  * Draws doodle or performs a hit test if a Point parameter is passed
+<span class='line'>635</span>  *
+<span class='line'>636</span>  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+<span class='line'>637</span>  */</span><span class="WHIT">
+<span class='line'>638</span> </span><span class="NAME">ED.PointInLine.prototype.draw</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="KEYW">function</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>639</span> </span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>640</span> </span><span class="WHIT">	</span><span class="COMM">// Get context</span><span class="WHIT">
+<span class='line'>641</span> </span><span class="WHIT">	</span><span class="KEYW">var</span><span class="WHIT"> </span><span class="NAME">ctx</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NAME">this.drawing.context</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>642</span> </span><span class="WHIT">	
+<span class='line'>643</span> 	</span><span class="COMM">// Call draw method in superclass</span><span class="WHIT">
+<span class='line'>644</span> </span><span class="WHIT">	</span><span class="NAME">ED.PointInLine.superclass.draw.call</span><span class="PUNC">(</span><span class="KEYW">this</span><span class="PUNC">,</span><span class="WHIT"> </span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>645</span> </span><span class="WHIT">	
+<span class='line'>646</span> 	</span><span class="COMM">// Boundary path</span><span class="WHIT">
+<span class='line'>647</span> </span><span class="WHIT">	</span><span class="NAME">ctx.beginPath</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>648</span> </span><span class="WHIT">	
+<span class='line'>649</span> 	</span><span class="COMM">// Round hole</span><span class="WHIT">
+<span class='line'>650</span> </span><span class="WHIT">	</span><span class="NAME">ctx.arc</span><span class="PUNC">(</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NUMB">8</span><span class="PUNC">,</span><span class="NUMB">0</span><span class="PUNC">,</span><span class="NAME">Math.PI</span><span class="PUNC">*</span><span class="NUMB">2</span><span class="PUNC">,</span><span class="KEYW">true</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>651</span> </span><span class="WHIT">    
+<span class='line'>652</span> 	</span><span class="COMM">// Close path</span><span class="WHIT">
+<span class='line'>653</span> </span><span class="WHIT">	</span><span class="NAME">ctx.closePath</span><span class="PUNC">(</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>654</span> </span><span class="WHIT">	
+<span class='line'>655</span> 	</span><span class="COMM">// Set line attributes</span><span class="WHIT">
+<span class='line'>656</span> </span><span class="WHIT">	</span><span class="NAME">ctx.lineWidth</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="NUMB">4</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>657</span> </span><span class="WHIT">	</span><span class="NAME">ctx.fillStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT">  </span><span class="STRN">"rgba(20,20,20,1)"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>658</span> </span><span class="WHIT">	</span><span class="NAME">ctx.strokeStyle</span><span class="WHIT"> </span><span class="PUNC">=</span><span class="WHIT"> </span><span class="STRN">"rgba(20,20,20,1)"</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>659</span> </span><span class="WHIT">	
+<span class='line'>660</span> 	</span><span class="COMM">// Draw boundary path (also hit testing)</span><span class="WHIT">
+<span class='line'>661</span> </span><span class="WHIT">	</span><span class="NAME">this.drawBoundary</span><span class="PUNC">(</span><span class="NAME">_point</span><span class="PUNC">)</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>662</span> </span><span class="WHIT">	
+<span class='line'>663</span> 	</span><span class="COMM">// Other stuff here</span><span class="WHIT">
+<span class='line'>664</span> </span><span class="WHIT">	</span><span class="KEYW">if</span><span class="WHIT"> </span><span class="PUNC">(</span><span class="NAME">this.drawFunctionMode</span><span class="WHIT"> </span><span class="PUNC">==</span><span class="WHIT"> </span><span class="NAME">ED.drawFunctionMode.Draw</span><span class="PUNC">)</span><span class="WHIT">
+<span class='line'>665</span> </span><span class="WHIT">	</span><span class="PUNC">{</span><span class="WHIT">
+<span class='line'>666</span> </span><span class="WHIT">	</span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>667</span> </span><span class="WHIT">	
+<span class='line'>668</span> 	</span><span class="COMM">// Return value indicating successful hittest</span><span class="WHIT">
+<span class='line'>669</span> </span><span class="WHIT">	</span><span class="KEYW">return</span><span class="WHIT"> </span><span class="NAME">this.isClicked</span><span class="PUNC">;</span><span class="WHIT">
+<span class='line'>670</span> </span><span class="PUNC">}</span><span class="WHIT">
+<span class='line'>671</span> 
 <span class='line'>672</span> 
-<span class='line'>673</span> 
-<span class='line'>674</span> </span></pre></body></html>
+<span class='line'>673</span> </span></pre></body></html>

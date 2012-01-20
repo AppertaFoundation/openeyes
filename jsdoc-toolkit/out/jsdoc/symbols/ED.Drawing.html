@@ -199,6 +199,8 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ED.AffineTransform.html">ED.AffineTransform</a></li>
 	
+	<li><a href="../symbols/ED.AngleGrade.html">ED.AngleGrade</a></li>
+	
 	<li><a href="../symbols/ED.AngleNV.html">ED.AngleNV</a></li>
 	
 	<li><a href="../symbols/ED.AngleRecession.html">ED.AngleRecession</a></li>
@@ -295,8 +297,6 @@ ul.inheritsList
 	
 	<li><a href="../symbols/ED.PI.html">ED.PI</a></li>
 	
-	<li><a href="../symbols/ED.PigmentedMesh.html">ED.PigmentedMesh</a></li>
-	
 	<li><a href="../symbols/ED.Point.html">ED.Point</a></li>
 	
 	<li><a href="../symbols/ED.PointInLine.html">ED.PointInLine</a></li>
@@ -386,7 +386,7 @@ ul.inheritsList
 						<td class="attributes">&nbsp;</td>
 						<td class="nameDescription" >
 							<div class="fixedFont">
-								<b><a href="../symbols/ED.Drawing.html#constructor">ED.Drawing</a></b>(_canvas, _eye, _IDSuffix)
+								<b><a href="../symbols/ED.Drawing.html#constructor">ED.Drawing</a></b>(_canvas, _eye, _IDSuffix, _isEditable)
 							</div>
 							<div class="description">A Drawing consists of one canvas element displaying one or more doodles;
 Doodles are drawn in the 'doodle plane' consisting of a 1001 pixel square grid -500 to 500) with central origin, and negative Y upwards;
@@ -499,6 +499,16 @@ Each doodle contains additional transforms to handle individual position, rotati
 								<b><a href="../symbols/ED.Drawing.html#inverseTransform">inverseTransform</a></b>
 								</div>
 								<div class="description">Inverse transform converts canvas plane -> doodle plane</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont">
+								<b><a href="../symbols/ED.Drawing.html#isEditable">isEditable</a></b>
+								</div>
+								<div class="description">Flag indicating whether canvas is editable or not</div>
 							</td>
 						</tr>
 					
@@ -724,7 +734,7 @@ Each doodle contains additional transforms to handle individual position, rotati
 							<td class="nameDescription">
 								<div class="fixedFont"><b><a href="../symbols/ED.Drawing.html#load">load</a></b>(_doodleSet)
 								</div>
-								<div class="description">Loads doodles from passed set into doodleArray</div>
+								<div class="description">Loads doodles from passed set in JSON format into doodleArray</div>
 							</td>
 						</tr>
 					
@@ -803,9 +813,18 @@ Each doodle contains additional transforms to handle individual position, rotati
 						<tr>
 							<td class="attributes">&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b><a href="../symbols/ED.Drawing.html#setParameterForDoodle">setParameterForDoodle</a></b>(_class, _parameter, _value)
+								<div class="fixedFont"><b><a href="../symbols/ED.Drawing.html#setParameterForDoodle">setParameterForDoodle</a></b>(_doodle, _parameter, _value)
 								</div>
 								<div class="description">Updates a doodle with a vew value of a parameter</div>
+							</td>
+						</tr>
+					
+						<tr>
+							<td class="attributes">&nbsp;</td>
+							<td class="nameDescription">
+								<div class="fixedFont"><b><a href="../symbols/ED.Drawing.html#setParameterForDoodleOfClass">setParameterForDoodleOfClass</a></b>(_className, _parameter, _value)
+								</div>
+								<div class="description">Updates a doodle of class with a vew value of a parameter.</div>
 							</td>
 						</tr>
 					
@@ -925,7 +944,7 @@ Each doodle contains additional transforms to handle individual position, rotati
 				</div>
 				
 				<div class="fixedFont">
-						<b>ED.Drawing</b>(_canvas, _eye, _IDSuffix)
+						<b>ED.Drawing</b>(_canvas, _eye, _IDSuffix, _isEditable)
 				</div>
 				
 				<div class="description">
@@ -960,6 +979,12 @@ Each doodle contains additional transforms to handle individual position, rotati
 								
 							</dt>
 								<dd>String suffix to identify HTML elements related to this drawing</dd>
+						
+							<dt>
+								<span class="light fixedFont">{Bool}</span>  <b>_isEditable</b>
+								
+							</dt>
+								<dd>Flag indicating whether canvas is editable or not</dd>
 						
 						</dl>
 					
@@ -1164,6 +1189,28 @@ Each doodle contains additional transforms to handle individual position, rotati
 					</div>
 					<div class="description">
 						Inverse transform converts canvas plane -> doodle plane
+						
+						
+					</div>
+					
+					
+
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="isEditable"> </a>
+					<div class="fixedFont">
+					
+					<span class="light">{Bool}</span>
+					<b>isEditable</b>
+					
+					</div>
+					<div class="description">
+						Flag indicating whether canvas is editable or not
 						
 						
 					</div>
@@ -1824,7 +1871,7 @@ Each doodle contains additional transforms to handle individual position, rotati
 					
 					</div>
 					<div class="description">
-						Loads doodles from passed set into doodleArray
+						Loads doodles from passed set in JSON format into doodleArray
 						
 						
 					</div>
@@ -2092,7 +2139,7 @@ Each doodle contains additional transforms to handle individual position, rotati
 					<div class="fixedFont">
 					
 					
-					<b>setParameterForDoodle</b>(_class, _parameter, _value)
+					<b>setParameterForDoodle</b>(_doodle, _parameter, _value)
 					
 					</div>
 					<div class="description">
@@ -2108,10 +2155,58 @@ Each doodle contains additional transforms to handle individual position, rotati
 							<dt class="heading">Parameters:</dt>
 							
 								<dt>
-									<span class="light fixedFont">{<a href="../symbols/String.html">String</a>}</span> <b>_class</b>
+									<span class="light fixedFont">{Doodle}</span> <b>_doodle</b>
 									
 								</dt>
-								<dd>Class of the doodle to be updated</dd>
+								<dd>The doodle to be updated</dd>
+							
+								<dt>
+									<span class="light fixedFont">{<a href="../symbols/String.html">String</a>}</span> <b>_parameter</b>
+									
+								</dt>
+								<dd>Name of the parameter</dd>
+							
+								<dt>
+									<span class="light fixedFont">{Any}</span> <b>_value</b>
+									
+								</dt>
+								<dd>New value of the parameter</dd>
+							
+							</dl>
+						
+						
+						
+						
+						
+						
+						
+
+					<hr />
+				
+					<a name="setParameterForDoodleOfClass"> </a>
+					<div class="fixedFont">
+					
+					
+					<b>setParameterForDoodleOfClass</b>(_className, _parameter, _value)
+					
+					</div>
+					<div class="description">
+						Updates a doodle of class with a vew value of a parameter. Use if one one member of class exists
+						
+						
+					</div>
+					
+					
+					
+						
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							
+								<dt>
+									<span class="light fixedFont">{<a href="../symbols/String.html">String</a>}</span> <b>_className</b>
+									
+								</dt>
+								<dd>The name of the doodle class to be updated</dd>
 							
 								<dt>
 									<span class="light fixedFont">{<a href="../symbols/String.html">String</a>}</span> <b>_parameter</b>
@@ -2476,7 +2571,7 @@ Double clicking on a selected doodle promotes it to drawing mode (if is drawable
 <!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			
-			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Thu Dec 15 2011 15:54:23 GMT-0000 (GMT)
+			Documentation generated by <a href="http://code.google.com/p/jsdoc-toolkit/" target="_blank">JsDoc Toolkit</a> 2.4.0 on Fri Jan 13 2012 18:07:56 GMT-0000 (GMT)
 		</div>
 	</body>
 </html>

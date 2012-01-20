@@ -36,6 +36,7 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -251,6 +252,7 @@ ED.AntSeg.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -441,6 +443,7 @@ ED.NuclearCataract.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -644,6 +647,7 @@ ED.CorticalCataract.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -790,6 +794,7 @@ ED.PostSubcapCataract.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -968,6 +973,7 @@ ED.PCIOL.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1164,6 +1170,7 @@ ED.ACIOL.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1295,6 +1302,7 @@ ED.Bleb.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1417,6 +1425,7 @@ ED.PI.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1577,6 +1586,7 @@ ED.RK.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1734,6 +1744,7 @@ ED.LasikFlap.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1878,6 +1889,7 @@ ED.Fuchs.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2051,6 +2063,7 @@ ED.CornealScar.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2395,6 +2408,7 @@ ED.PhakoIncision.prototype.setParameter = function(_parameter, _value)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2548,6 +2562,7 @@ ED.SidePort.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2712,6 +2727,7 @@ ED.IrisHook.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2848,6 +2864,7 @@ ED.MattressSuture.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -3128,6 +3145,7 @@ ED.Baerveldt.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX

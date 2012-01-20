@@ -36,6 +36,7 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -274,6 +275,7 @@ ED.PostPole.prototype.setParameter = function(_parameter, _value)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -463,6 +465,7 @@ ED.PRP.prototype.rowOfBurns = function(_startX, _startY, _num, _sep)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -609,6 +612,7 @@ ED.Geographic.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -783,6 +787,7 @@ ED.CNV.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -914,6 +919,7 @@ ED.VitreousOpacity.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1113,6 +1119,7 @@ ED.DiabeticNV.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX

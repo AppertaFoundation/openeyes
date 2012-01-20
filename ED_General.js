@@ -36,6 +36,7 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -171,6 +172,7 @@ ED.Freehand.prototype.draw = function(_point)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -316,6 +318,7 @@ ED.Lable.prototype.addLetter = function(_keyCode)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -432,6 +435,7 @@ ED.Arrow.prototype.draw = function(_point)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -577,6 +581,7 @@ ED.Slider.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX

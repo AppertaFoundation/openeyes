@@ -36,6 +36,7 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -199,6 +200,7 @@ ED.Breasts.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -352,6 +354,7 @@ ED.Scar.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX

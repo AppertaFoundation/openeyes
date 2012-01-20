@@ -84,7 +84,8 @@ ED.Mode =
 	Arc:3,
 	Rotate:4,
 	Apex:5,
-    Draw:6
+    Handles:6,
+    Draw:7
 }
 
 /**
@@ -200,6 +201,7 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
     // Array of images to be preloaded (Add new images here)
     this.imageArray = new Array();
     this.imageArray['latticePattern'] = new Image();
+    this.imageArray['cribriformPattern'] = new Image();
     this.imageArray['cryoPattern'] = new Image();
     this.imageArray['antPVRPattern'] = new Image();
     this.imageArray['laserPattern'] = new Image();
@@ -746,6 +748,16 @@ ED.Drawing.prototype.mousemove = function(_point)
 					// Enforce bounds
 					this.selectedDoodle.apexX = this.selectedDoodle.rangeOfApexX.constrain(this.selectedDoodle.apexX);
 					this.selectedDoodle.apexY = this.selectedDoodle.rangeOfApexY.constrain(this.selectedDoodle.apexY);
+					break;
+				case ED.Mode.Handles:
+					// Move handles to new position (Stored in first 4 points of a squiggle)
+                    var i = this.selectedDoodle.draggingHandleIndex;
+					this.selectedDoodle.squiggleArray[0].pointsArray[i].x += (mousePosSelectedDoodlePlane.x - lastMousePosSelectedDoodlePlane.x);
+					this.selectedDoodle.squiggleArray[0].pointsArray[i].y += (mousePosSelectedDoodlePlane.y - lastMousePosSelectedDoodlePlane.y);
+
+                    // Enforce bounds
+					this.selectedDoodle.squiggleArray[0].pointsArray[i].x = this.selectedDoodle.rangeOfHandlesXArray[i].constrain(this.selectedDoodle.squiggleArray[0].pointsArray[i].x);
+					this.selectedDoodle.squiggleArray[0].pointsArray[i].y = this.selectedDoodle.rangeOfHandlesYArray[i].constrain(this.selectedDoodle.squiggleArray[0].pointsArray[i].y);
 					break;
                 case ED.Mode.Draw:
                     var p = new ED.Point(mousePosSelectedDoodlePlane.x,mousePosSelectedDoodlePlane.y);
@@ -1859,6 +1871,8 @@ ED.Report.prototype.isMacOff = function()
  * @property {Range} rangeOfArc Range of allowable Arcs
  * @property {Range} rangeOfApexX Range of allowable values of apexX
  * @property {Range} rangeOfApexY Range of allowable values of apexY
+ * @property {Array} rangeOfHandlesXArray Array of four ranges of allowable values of x coordinate of handle
+ * @property {Array} rangeOfHandlesYArray Array of four ranges of allowable values of y coordinate of handle
  * @property {Bool} isSelected True if doodle is currently selected
  * @property {Bool} isBeingDragged Flag indicating doodle is being dragged
  * @property {Int} draggingHandleIndex index of handle being dragged
@@ -1953,10 +1967,22 @@ ED.Doodle = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _sca
         this.snapToGrid = false;
         this.snapToQuadrant = false;
         this.willReport = true;
+        
+        // Permitted ranges
 		this.rangeOfScale = new ED.Range(+0.5, +4.0);
 		this.rangeOfArc = new ED.Range(Math.PI/6, Math.PI*2);
 		this.rangeOfApexX = new ED.Range(-500, +500);
 		this.rangeOfApexY = new ED.Range(-500, +500);
+        this.rangeOfHandlesXArray = new Array();
+        this.rangeOfHandlesXArray[0] = new ED.Range(-500, +500);
+        this.rangeOfHandlesXArray[1] = new ED.Range(-500, +500);
+        this.rangeOfHandlesXArray[2] = new ED.Range(-500, +500);
+        this.rangeOfHandlesXArray[3] = new ED.Range(-500, +500);
+        this.rangeOfHandlesYArray = new Array();
+        this.rangeOfHandlesYArray[0] = new ED.Range(-500, +500);
+        this.rangeOfHandlesYArray[1] = new ED.Range(-500, +500);
+        this.rangeOfHandlesYArray[2] = new ED.Range(-500, +500);
+        this.rangeOfHandlesYArray[3] = new ED.Range(-500, +500);
         this.rangeOfRadius = new ED.Range(100, 450);
         this.gridSpacing = 100;
 		
@@ -2952,6 +2978,19 @@ ED.Colour = function(_red, _green, _blue, _alpha)
     this.green = _green;
     this.blue = _blue;
     this.alpha = _alpha;
+}
+
+/**
+ * Sets the colour from a hex encoded string
+ *
+ * @param {String} Colour in hex format (eg 'E0AB4F')
+ */
+ED.Colour.prototype.setWithHexString = function(_hexString)
+{
+    // ***TODO*** add some string reality checks here
+    this.red = parseInt((_hexString.charAt(0) + _hexString.charAt(1)),16);
+    this.green = parseInt((_hexString.charAt(2) + _hexString.charAt(3)),16);
+    this.blue = parseInt((_hexString.charAt(4) + _hexString.charAt(5)),16);
 }
 
 /**

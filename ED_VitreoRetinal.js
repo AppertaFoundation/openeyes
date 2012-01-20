@@ -36,6 +36,7 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -181,6 +182,7 @@ ED.Square.prototype.draw = function(_point)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -314,6 +316,7 @@ ED.Fundus.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -458,6 +461,7 @@ ED.UTear.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -619,6 +623,7 @@ ED.RoundHole.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -858,6 +863,7 @@ ED.RRD.prototype.isMacOff = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -992,6 +998,7 @@ ED.Buckle.prototype.draw = function(_point)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1170,6 +1177,7 @@ ED.Dialysis.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1371,6 +1379,7 @@ ED.GRT.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1520,6 +1529,7 @@ ED.MacularHole.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1684,6 +1694,7 @@ ED.StarFold.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1858,6 +1869,7 @@ ED.Lattice.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -1987,6 +1999,7 @@ ED.Cryo.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2140,6 +2153,7 @@ ED.LaserCircle.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2299,6 +2313,7 @@ ED.AntPVR.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2510,6 +2525,7 @@ ED.Retinoschisis.prototype.diagnosticHierarchy = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2643,6 +2659,7 @@ ED.OuterLeafBreak.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2776,6 +2793,7 @@ ED.InnerLeafBreak.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -2952,6 +2970,7 @@ ED.BuckleOperation.prototype.drawRectus = function(_ctx, _quad)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -3130,6 +3149,7 @@ ED.CircumferentialBuckle.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -3273,6 +3293,7 @@ ED.BuckleSuture.prototype.draw = function(_point)
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -3433,6 +3454,7 @@ ED.EncirclingBand.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX
@@ -3571,6 +3593,7 @@ ED.DrainageSite.prototype.description = function()
  * @param {Drawing} _drawing
  * @param {Int} _originX
  * @param {Int} _originY
+ * @param {Float} _radius
  * @param {Int} _apexX
  * @param {Int} _apexY
  * @param {Float} _scaleX

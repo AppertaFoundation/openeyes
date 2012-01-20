@@ -29,7 +29,7 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 var canvas = document.getElementById('canvas');
                 
                 // Create a drawing linked to the canvas
-                drawingEdit = new ED.Drawing(canvas, ED.eye.Right, 'RPS', false);
+                drawingEdit = new ED.Drawing(canvas, ED.eye.Right, 'RPS', true);
                 
                 // Preload any images
                 drawingEdit.preLoadImagesFrom('graphics/');
@@ -40,8 +40,11 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    //drawingEdit.addDoodle('Lattice');
-                    //drawingEdit.addDoodle('Gonioscopy');
+                    drawingEdit.addDoodle('OpticDisk');
+                    drawingEdit.addDoodle('OpticCup');
+                    //drawingEdit.addDoodle('Papilloedema');
+                    //drawingEdit.addDoodle('DiskHaemorrhage');
+                    
                     //doodleAngleGradeSup = drawingEdit.addDoodle('AngleGrade');
 //                    doodle.rotation = 90 * Math.PI/180;
 //                    doodle = drawingEdit.addDoodle('AngleGrade');
@@ -49,8 +52,9 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
 //                    doodle = drawingEdit.addDoodle('AngleGrade');
 //                    doodle.rotation = 270 * Math.PI/180;
                     //drawingEdit.addDoodle('PigmentedMesh');
-                    //drawingEdit.deselectDoodles();
-                    drawingEdit.load(doodleSet);
+                    drawingEdit.deselectDoodles();
+                    //drawingEdit.load(doodleSet);
+                    
                     drawingEdit.drawAllDoodles();
                 }
                 
@@ -107,9 +111,9 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                             <br />
                             
                             <!-- Doodle selection toolbar -->
-                            <button class="imgbutton" title="Angle new vessels" onclick="drawingEdit.addDoodle('AngleNV'); return false;" ><img src="graphics/angleNV.gif" /></button>
-                            <button class="imgbutton" title="Anterior synechiae" onclick="drawingEdit.addDoodle('AntSynech'); return false;" ><img src="graphics/antSynech.gif" /></button>
-                            <button class="imgbutton" title="Angle recession" onclick="drawingEdit.addDoodle('AngleRecession'); return false;" ><img src="graphics/angleRecession.gif" /></button>
+                            <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskHaemorrhage'); return false;" ><img src="graphics/diskHaemorrhage.gif" /></button>
+                            <button class="imgbutton" title="nerveFibreDefect" onclick="drawingEdit.addDoodle('NerveFibreDefect'); return false;" ><img src="graphics/nerveFibreDefect.gif" /></button>
+                            <button class="imgbutton" title="Papilloedema" onclick="drawingEdit.addDoodle('Papilloedema'); return false;" ><img src="graphics/papilloedema.gif" /></button>
                              <br />
                             
                             <!-- Canvas element -->
