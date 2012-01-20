@@ -27,3 +27,4 @@ protected/config/db_muu.php
 /.project
 protected/commands/BillCommand.php
 protected/commands/FetchBookings2Command.php
+/cache/
