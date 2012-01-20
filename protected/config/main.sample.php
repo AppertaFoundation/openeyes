@@ -68,6 +68,7 @@ return CMap::mergeArray(
 				),
 			),
 			'db' => array(
+				'class' => 'CDbConnection',
 				'connectionString' => 'mysql:host=localhost;dbname=openeyes',
 				'emulatePrepare' => true,
 				'username' => 'root',
@@ -76,6 +77,7 @@ return CMap::mergeArray(
 				'schemaCachingDuration' => 300,
 			),
 			'testdb' => array(
+				'class' => 'CDbConnection',
 				'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
 				'emulatePrepare' => true,
 				'username' => 'root',
@@ -83,6 +85,7 @@ return CMap::mergeArray(
 				'charset' => 'utf8',
 			),
 			'db_pas' => array(
+				'class' => 'CDbConnection',
 				'connectionString' => 'mysql:host=localhost;dbname=openeyes',
 				'emulatePrepare' => true,
 				'username' => 'root',
