@@ -179,6 +179,7 @@ border-bottom:2px solid #929293;
 -webkit-border-radius:4px; -moz-border-radius:4px; border-radius:4px; 
 -webkit-box-shadow:0 1px 4px rgba(0,0,0,0.3); -moz-box-shadow:0 1px 4px rgba(0,0,0,0.3); box-shadow:0 1px 4px rgba(0,0,0,0.3); 
 cursor:pointer; }
+
 /* widths */
 button.tall 		{ width: 125px;	}
 button.grande 		{ width: 154px; }
@@ -194,6 +195,11 @@ button.classy span.button-span-red		{  text-shadow: 1px 1px 0 #9a091c, 2px 2px 0
 button.classy span.with-plussign		{ background: transparent url(../img/_elements/btns/plus-sign.png) no-repeat top left; padding-left:20px; }
 button.classy span.with-leftarrow		{ background: transparent url(../img/_elements/btns/left-arrow.png) no-repeat top left; padding-left:20px; }
 button.classy span.with-rightarrow		{ background: transparent url(../img/_elements/btns/right-arrow.png) no-repeat top right; padding-right:20px; }
+
+/* mini */
+button.mini 							{ height:24px; font-size:13px; width: auto; margin:0 2px; }
+button.mini span						{ padding:0 18px; }
+button.mini span.button-span	  	 	{ display:block; height:24px; line-height:23px; } 
 
 
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
@@ -512,6 +518,16 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* extra details */
 .eventDetail .extraDetails { display:block; margin:8px 0; padding-top:8px; border-top:1px dotted #b9c4cd; }
 .extraDetails-margin { margin-left: 310px; }
+
+/* optional elements  */
+#event_content .optionalElements { margin:20px 0; padding-bottom:20px; border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c;}
+#event_content .optionalElements > .eventDetail { margin-bottom:8px; position:relative; }
+/* viewing (not added) */
+.optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/extra-element_view.png) top right no-repeat; padding:4px 10px; margin:0; border-bottom:1px dotted #fafafa; }
+.optionalElements > .elementMeta.added { background:#aeb8c2 url(../img/_elements/icons/extra-element_added.png) top right no-repeat; }
+.optionalElements > .elementMeta:hover { background-color: #3665ff; cursor: pointer; }
+.eventDetail .addOptional { position:absolute; top:8px; right:5px; }
+
 
 /* ====== EVENT GENERAL ====== */
 /* drop down menu list - width control in HTML */
