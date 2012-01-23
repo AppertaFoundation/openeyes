@@ -136,6 +136,9 @@ em { font-style: italic; color:#333; }
 #content .withIcon { padding-left: 40px; }
 #content .boxIcon { position: absolute; top:5px; left:0; }
 
+/* ====== ERRORs ====== */
+#content .errorMessage {  text-align:center; background:#ffe6b2; border:#ff8921 1px solid; padding:5px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+
 /* ====== A HREF ====== */
 a:hover, .aPush { border-bottom: thin dotted #002ec4; }
 a:hover .aPush	{ border-bottom: thin solid #3665ff; }
