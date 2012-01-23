@@ -31,7 +31,7 @@ class GenerateSessionsCommand extends CConsoleCommand
 		$today = date('Y-m-d');
 		$initialEndDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
 		$sequences = Sequence::model()->findAll(
-			'start_date <= :end_date AND end_date IS NULL or end_date > :today',
+			'start_date <= :end_date AND (end_date IS NULL or end_date >= :today)',
 		array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today));
 
 		foreach ($sequences as $sequence) {
