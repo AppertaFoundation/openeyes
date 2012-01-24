@@ -139,21 +139,25 @@ class TransportController extends BaseController
 	public function actionConfirm() {
 		if (isset($_POST['booked']) && is_array($_POST['booked'])) {
 			foreach ($_POST['booked'] as $booking_id) {
-				$c = new TransportList;
-				$c->item_table = 'booking';
-				$c->item_id = $booking_id;
-				$c->status = 1;
-				$c->save();
+				if (!$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('booking',$booking_id,1))) {
+					$c = new TransportList;
+					$c->item_table = 'booking';
+					$c->item_id = $booking_id;
+					$c->status = 1;
+					$c->save();
+				}
 			}
 		}
 
 		if (isset($_POST['cancelled']) && is_array($_POST['cancelled'])) {
 			foreach ($_POST['cancelled'] as $cancelled_booking_id) {
-				$c = new TransportList;
-				$c->item_table = 'cancelled_booking';
-				$c->item_id = $cancelled_booking_id;
-				$c->status = 1;
-				$c->save();
+				if (!$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('cancelled_booking',$cancelled_booking_id,1))) {
+					$c = new TransportList;
+					$c->item_table = 'cancelled_booking';
+					$c->item_id = $cancelled_booking_id;
+					$c->status = 1;
+					$c->save();
+				}
 			}
 		}
 	}
