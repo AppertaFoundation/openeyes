@@ -42,17 +42,18 @@ return CMap::mergeArray(
 			'fixture'=>array(
 				'class'=>'system.test.CDbFixtureManager',
 			),
-			// uncomment the following to enable URLs in path-format
-			'urlManager'=>array(
-				'urlFormat'=>'path',
-				'showScriptName'=>false,
-				'rules'=>array(
-					'patient/results/error'=>'site/index',
-					'patient/no-results'=>'site/index',
-					'patient/results/<hos_num:\d+>/<first_name:.*>/<last_name:.*>/<nhs_num:[\d-]+>/<gender:.*>/<dob_day:\d+>/<dob_month:\d+>/<dob_year:\d+>/<page_num:\d+>'=>'patient/results',
-					'patient/viewhosnum/<hos_num:.+>'=>'patient/viewhosnum',
-					'patient/episodes/<id:\d+>/event/<event:\d+>'=>'patient/episodes',
-					'patient/episodes/<id:\d+>/episode/<episode:\d+>'=>'patient/episodes',
+			'urlManager' => array(
+				'urlFormat' => 'path',
+				'showScriptName' => false,
+				'rules' => array(
+					'patient/results/error' => 'site/index',
+					'patient/no-results' => 'site/index',
+					'patient/results/<hos_num:\d+>/<first_name:.*>/<last_name:.*>/<nhs_num:[\d-]+>/<gender:.*>/<dob_day:\d+>/<dob_month:\d+>/<dob_year:\d+>/<page_num:\d+>' => 'patient/results',
+					'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
+					'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
+					'patient/episodes/<id:\d+>/event/<event:\d+>' => 'patient/episodes',
+					'patient/episodes/<id:\d+>/episode/<episode:\d+>' => 'patient/episodes',
+					'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
 					'' => 'site/index', // default action
 					'<controller:\w+>/<id:\d+>'=>'<controller>/view',
 					'<controller:\w+>/<action:\w+>/<id:\d+>'=>'<controller>/<action>',
