@@ -55,7 +55,7 @@ class TransportController extends BaseController
 	}
 
 	public function getTCIEvents($from, $to) {
-		$sql = "select element_operation.id as eoid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method from booking
+		$sql = "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method, transport_list.id as transport from booking
 			join session on booking.session_id = session.id
 			join sequence on session.sequence_id = sequence.id
 			join theatre on sequence.theatre_id = theatre.id
@@ -67,9 +67,10 @@ class TransportController extends BaseController
 			join service_specialty_assignment on firm.service_specialty_assignment_id = service_specialty_assignment.id
 			join specialty on service_specialty_assignment.specialty_id = specialty.id
 			join patient on episode.patient_id = patient.id
+			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
 			where booking.created_date >= '$from' and booking.created_date <= '$to'
 			UNION
-				select element_operation.id as eoid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method from booking
+				select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method, transport_list.id as transport from booking
 			join session on booking.session_id = session.id
 			join cancelled_booking on cancelled_booking.element_operation_id = booking.element_operation_id
 			join theatre on cancelled_booking.theatre_id = theatre.id
@@ -81,9 +82,10 @@ class TransportController extends BaseController
 			join service_specialty_assignment on firm.service_specialty_assignment_id = service_specialty_assignment.id
 			join specialty on service_specialty_assignment.specialty_id = specialty.id
 			join patient on episode.patient_id = patient.id
+			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
 			where cancelled_booking.created_date >= '$from' and cancelled_booking.created_date <= '$to' and element_operation.status = 3
 			UNION
-				select element_operation.id as eoid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method from cancelled_booking
+				select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport from cancelled_booking
 			join theatre on cancelled_booking.theatre_id = theatre.id
 			join site on theatre.site_id = site.id
 			join element_operation on element_operation.id = cancelled_booking.element_operation_id
@@ -93,6 +95,7 @@ class TransportController extends BaseController
 			join service_specialty_assignment on firm.service_specialty_assignment_id = service_specialty_assignment.id
 			join specialty on service_specialty_assignment.specialty_id = specialty.id
 			join patient on episode.patient_id = patient.id
+			left join transport_list on (transport_list.item_table = 'cancelled_booking' and transport_list.item_id = cancelled_booking.id)
 			where cancelled_booking.created_date >= '$from' and cancelled_booking.created_date <= '$to' and element_operation.status != 3
 			ORDER BY session_date, session_time asc";
 
@@ -132,7 +135,7 @@ class TransportController extends BaseController
 
 		exit;
 	}
-	
+
 	/**
 	 * Print pending transport letters
 	 */
@@ -156,6 +159,28 @@ class TransportController extends BaseController
 				'transport' => $transport_list, 
 				'patient' => $patient,
 			));
+		}
+	}
+
+	public function actionConfirm() {
+		if (isset($_POST['booked']) && is_array($_POST['booked'])) {
+			foreach ($_POST['booked'] as $booking_id) {
+				$c = new TransportList;
+				$c->item_table = 'booking';
+				$c->item_id = $booking_id;
+				$c->status = 1;
+				$c->save();
+			}
+		}
+
+		if (isset($_POST['cancelled']) && is_array($_POST['cancelled'])) {
+			foreach ($_POST['cancelled'] as $cancelled_booking_id) {
+				$c = new TransportList;
+				$c->item_table = 'cancelled_booking';
+				$c->item_id = $cancelled_booking_id;
+				$c->status = 1;
+				$c->save();
+			}
 		}
 	}
 
