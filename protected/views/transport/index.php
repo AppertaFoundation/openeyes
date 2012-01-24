@@ -17,13 +17,15 @@
 				<div>
 					<?php
 					$times = Yii::app()->params['transport_csv_intervals'];
-					?>
-					<span id="digest_title"<?php if (time() < strtotime(date('Y-m-d ').$times[0])) {?> style="display: none;"<?php }?>>Activity digests:</span>
-					<?php foreach ($times as $i => $time) {?>
-						<a rel="<?php echo $time?>" <?php if (time() < strtotime(date('Y-m-d ').$time)) {?> style="display: none;"<?php }?> href="/transport/digest/<?php echo date('Ymd')."_".str_replace(':','',$time).".csv"?>">
-							<?php echo $time?>&nbsp;
-						</a>
-					<?}?>
+					if ($times && is_array($times)) {
+						?>
+						<span id="digest_title"<?php if (time() < strtotime(date('Y-m-d ').$times[0])) {?> style="display: none;"<?php }?>>Activity digests:</span>
+						<?php foreach ($times as $i => $time) {?>
+							<a rel="<?php echo $time?>" <?php if (time() < strtotime(date('Y-m-d ').$time)) {?> style="display: none;"<?php }?> href="/transport/digest/<?php echo date('Ymd')."_".str_replace(':','',$time).".csv"?>">
+								<?php echo $time?>&nbsp;
+							</a>
+						<?php }?>
+					<?php }?>
 				</div>
 			</div> <!-- #waitinglist_display -->
 		</div> <!-- .fullWidth -->
