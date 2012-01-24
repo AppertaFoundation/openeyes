@@ -193,6 +193,12 @@ class BookingController extends BaseController
 
 					OELog::log("Booking cancelled: $model->id (booking_cancellation=$cancellation->id");
 
+					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+							mail(Yii::app()->params['urgent_booking_notify_email'],"[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: OpenEyes <help@openeyes.org.uk>\r\n");
+						}
+					}
+
 					if (!$model->delete()) {
 						throw new SystemException('Unable to save cancelled_booking: '.print_r($model->getErrors(),true));
 					}
@@ -395,6 +401,12 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
+				if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+					if (strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+						mail(Yii::app()->params['urgent_booking_notify_email'],"[OpenEyes] Urgent booking made","A patient booking was made with a TCI date within the next 24 hours.\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: OpenEyes <help@openeyes.org.uk>\r\n");
+					}
+				}
+
 				if ($operation->status == ElementOperation::STATUS_NEEDS_RESCHEDULING) {
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 				} else {
@@ -454,6 +466,12 @@ class BookingController extends BaseController
 
 					OELog::log("Booking rescheduled: $model->id, cancelled_booking=$cancellation->id");
 
+					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+							mail(Yii::app()->params['urgent_booking_notify_email'],"[OpenEyes] Urgent reschedule made","A patient booking was rescheduled with a TCI date within the next 24 hours.\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: OpenEyes <help@openeyes.org.uk>\r\n");
+						}
+					}
+
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 					if (!$operation->save()) {
@@ -467,8 +485,14 @@ class BookingController extends BaseController
 						}
 					}
 				} else {
+					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+							mail(Yii::app()->params['urgent_booking_notify_email'],"[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: OpenEyes <help@openeyes.org.uk>\r\n");
+						}
+					}
+
 					$operation = ElementOperation::model()->findByPk($operationId);
-					// we need to update the element_operation with a more accurate site_id based on what /was/ in the operation scheduled before it gets nuked.  this gives better information on the waiting list when it comes to rescheduling
+					// we need to update the element_operation with a more accurate site_id based on what /was/ in the operation scheduled before it gets nuked.	this gives better information on the waiting list when it comes to rescheduling
 					$operation->site_id = $model->ward->site->id;
 
 					$model->delete();
