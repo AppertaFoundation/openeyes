@@ -15,7 +15,11 @@ if (file_exists("/etc/hostname")) {
 
 if (is_object($user)) {
 	$username = "$user->username ($user->id)";
-	$firm = "$firm->name ($firm->id)";
+	if($firm) {
+		$firm = "$firm->name ($firm->id)";
+	} else {
+		$firm = 'Not found'; // selectedFirmId seems to not be getting initialised sometimes
+	}
 } else {
 	$username = 'Not logged in';
 	$firm = 'Not logged in';
