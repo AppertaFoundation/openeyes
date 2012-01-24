@@ -12,8 +12,8 @@
 				<div id="searchResults" class="whiteBox">
 					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
 				</div> <!-- #searchResults -->
-				<button type="submit" class="classy blue grande" style="float: right;"><span class="button-span button-span-blue">Print</span></button>
-				<button type="submit" class="classy blue grande" style="margin-right: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
+				<button type="submit" class="classy blue grande" style="float: right;" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
+				<button type="submit" class="classy blue grande" style="margin-right: 20px; float: right;" id="btn_confirm"><span class="button-span button-span-blue">Confirm</span></button>
 				<div>
 					<?php
 					$times = Yii::app()->params['transport_csv_intervals'];
@@ -74,6 +74,20 @@
 	$('#tci_next').click(function() {
 		tci_date = new Date(tci_date.getTime() + (86400 * 1000));
 		update_tcis();	
+		return false;
+	});
+
+	$('#btn_confirm').click(function() {
+		$.ajax({
+			type: "POST",
+			url: "/transport/confirm",
+			data: $('input[name^="cancelled"]:checked').serialize()+"&"+$('input[name^="booked"]:checked').serialize(),
+			success: function(html) {
+				update_tcis();
+				return false;
+			}
+		});
+
 		return false;
 	});
 </script>
