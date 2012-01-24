@@ -60,6 +60,7 @@ return CMap::mergeArray(
 					'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 					'patient/episodes/<id:\d+>/event/<event:\d+>' => 'patient/episodes',
 					'patient/episodes/<id:\d+>/episode/<episode:\d+>' => 'patient/episodes',
+					'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
 					'' => 'site/index', // default action
 					'<controller:\w+>/<id:\d+>' => '<controller>/view',
 					'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
