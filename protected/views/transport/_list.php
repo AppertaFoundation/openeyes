@@ -27,10 +27,14 @@ if (empty($bookings)) { ?>
 ?>
 
 <?php
-	if (strtotime($booking['session_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
-		$tablecolour = "Red";
+	if ($booking['transport'] == null) {
+		if (strtotime($booking['session_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
+			$tablecolour = "Red";
+		} else {
+			$tablecolour = "Green";
+		}
 	} else {
-		$tablecolour = "Green";
+		$tablecolour = "Grey";
 	}
 ?>
     <tr class="waitinglist<?php echo $tablecolour ?>">
@@ -48,7 +52,13 @@ if (empty($bookings)) { ?>
 	<td style="width: 53px;"><?php echo $booking['specialty']?></td>
 	<td style="width: 80px;"><?php echo $booking['decision_date'] ?></td>
 	<td><?php echo ($booking['urgent']) ? 'Urgent' : 'Routine' ?></td>
-	<td style="width: 20px;"><input type="checkbox" id="operation_<?php echo $booking['eoid']?>" value="1" /></td>
+	<td style="width: 20px;">
+		<?php if ($booking['method'] == 'Cancelled') {?>
+			<input type="checkbox" name="cancelled[]" value="<?php echo $booking['checkid']?>" />
+		<?php }else{?>
+			<input type="checkbox" name="booked[]" value="<?php echo $booking['checkid']?>" />
+		<?php }?>
+	</td>
 </tr>
 
 <?php
@@ -71,7 +81,8 @@ if (empty($bookings)) { ?>
 
 <script type="text/javascript">
 $('#checkall').click(function() {
-	$('input[id^="operation"]:enabled').attr('checked',$('#checkall').is(':checked'));
+	$('input[name^="cancelled"]').attr('checked',$('#checkall').is(':checked'));
+	$('input[name^="booked"]').attr('checked',$('#checkall').is(':checked'));
 });
 </script>
 </div> <!-- #waitingList -->
