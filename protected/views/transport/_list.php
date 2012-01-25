@@ -30,7 +30,7 @@ if (empty($bookings)) { ?>
 
 	<?php
 		if ($booking['transport'] == null) {
-			if (strtotime($booking['session_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
+			if (strtotime($booking['session_date']) <= (strtotime($current_day) + 86400)) {
 				$tablecolour = "Red";
 			} else {
 				$tablecolour = "Green";

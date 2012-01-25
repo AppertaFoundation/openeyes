@@ -51,7 +51,7 @@ class TransportController extends BaseController
 	public function actionList() {
 		$bookings = $this->getTCIEvents(date('Y-m-d',strtotime($_POST['date']))." 00:00:00", date('Y-m-d',strtotime($_POST['date']))." 23:59:59");
 
-		$this->renderPartial('/transport/_list',array('bookings' => $bookings));
+		$this->renderPartial('/transport/_list',array('bookings' => $bookings, 'current_day' => date('Y-m-d',strtotime($_POST['date']))));
 	}
 
 	public function getTCIEvents($from, $to) {
