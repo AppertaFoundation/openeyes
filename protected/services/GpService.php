@@ -236,7 +236,11 @@ class GpService {
 			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
 		}
 		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
-		if($pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
+		$pas_query = new CDbCriteria();
+		$pas_query->condition = 'obj_prof = :gp_id';
+		$pas_query->order = 'DATE_FR DESC';
+		$pas_query->params = array(':gp_id' => $this->gp->obj_prof);
+		if($pas_gp = PAS_Gp::model()->find($pas_query)) {
 			$this->gp->nat_id = $pas_gp->NAT_ID;
 			
 			// Contact
