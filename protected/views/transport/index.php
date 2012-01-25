@@ -12,7 +12,9 @@
 				<div id="searchResults" class="whiteBox">
 					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
 				</div> <!-- #searchResults -->
+				<!-- Disabled until form finished 
 				<button type="submit" class="classy blue grande" style="float: right;" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
+				 -->
 				<button type="submit" class="classy blue grande" style="margin-right: 20px; float: right;" id="btn_confirm"><span class="button-span button-span-blue">Confirm</span></button>
 				<div>
 					<?php
@@ -90,6 +92,18 @@
 			}
 		});
 
+		return false;
+	});
+
+	$('#btn_print').click(function() {
+		var booked = $('input[name^="booked"]:checked').map(function(i,n) {
+			return $(n).val();
+		}).get();
+		if (booked.length == 0) {
+			alert("No items selected for printing.");
+		} else {
+			printUrl('/transport/print', {'booked': booked});
+		}
 		return false;
 	});
 </script>

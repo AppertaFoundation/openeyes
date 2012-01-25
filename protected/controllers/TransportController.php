@@ -136,6 +136,43 @@ class TransportController extends BaseController
 		exit;
 	}
 
+	/**
+	 * Print transport letters for bookings
+	 */
+	public function actionPrint() {
+		$booking_ids = (isset($_REQUEST['booked'])) ? $_REQUEST['booked'] : null;
+		if(!is_array($booking_ids)) {
+			throw new CHttpException('400', 'Invalid booking list');
+		}
+		$bookings = Booking::model()->findAllByPk($booking_ids);
+		
+		// Print a letter for booking, separated by a page break
+		$break = false;
+		foreach($bookings as $booking) {
+			if($break) {
+				$this->renderPartial("/letters/break");
+			} else {
+				$break = true;
+			}
+			$patient = $booking->elementOperation->event->episode->patient;
+			$transport = array(
+				'request_to' => 'FIXME: REQUEST TO',
+				'request_from' => 'FIXME: REQUEST FROM',
+				'escort' => '', // FIXME: No source yet
+				'mobility' => '', // FIXME: No source yet
+				'oxygen' => '', // FIXME: No source yet
+				'contact_name' => 'FIXME: CONTACT NAME',
+				'contact_number' => 'FIXME: CONTACT NUMBER',
+				'comments' => '', // FIXME: No source yet
+			);
+			$this->renderPartial("/transport/transport_form", array(
+				'booking' => $booking, 
+				'patient' => $patient,
+				'transport' => $transport,
+			));
+		}
+	}
+
 	public function actionConfirm() {
 		if (isset($_POST['booked']) && is_array($_POST['booked'])) {
 			foreach ($_POST['booked'] as $booking_id) {
