@@ -1064,7 +1064,7 @@ class ElementOperation extends BaseElement
 		$changeContact = '';
 		$siteId = $this->site->id;
 		$serviceId = $this->event->episode->firm->serviceSpecialtyAssignment->service->id;
-		$firmId = $this->event->episode->firm->id;
+		$firmCode = $this->event->episode->firm->pas_code;
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
@@ -1081,8 +1081,8 @@ class ElementOperation extends BaseElement
 							$changeContact = 'Sarah Veerapatren on 020 7566 2206/2292';
 							break;
 						case 4: // Cataract
-							switch($firmId)  {
-								case 68: // Julian Stevens
+							switch($firmCode)  {
+								case 'STEJ': // Julian Stevens
 									$changeContact = 'Joyce Carmichael on 020 7566 2205/2704';
 									break;
 								default:
@@ -1091,8 +1091,8 @@ class ElementOperation extends BaseElement
 							}
 							break;
 						case 5: // External Disease aka Corneal
-							switch($firmId)  {
-								case 68: // Julian Stevens
+							switch($firmCode)  {
+								case 'STEJ': // Julian Stevens
 									$changeContact = 'Joyce Carmichael on 020 7566 2205/2704';
 									break;
 								default:
