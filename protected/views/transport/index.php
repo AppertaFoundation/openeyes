@@ -10,7 +10,7 @@
 				</div>
 
 				<div id="searchResults" class="whiteBox">
-					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings, 'current_day' => date('Y-m-d')))?>
+					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
 				</div> <!-- #searchResults -->
 				<!-- Disabled until form finished 
 				<button type="submit" class="classy blue grande" style="float: right;" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
