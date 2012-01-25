@@ -192,12 +192,16 @@ class TransportController extends BaseController
 
 		if (isset($_POST['cancelled']) && is_array($_POST['cancelled'])) {
 			foreach ($_POST['cancelled'] as $cancelled_booking_id) {
-				if (!$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('cancelled_booking',$cancelled_booking_id,1))) {
+				$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('cancelled_booking',$cancelled_booking_id,1));
+
+				if (!$c) {
 					$c = new TransportList;
 					$c->item_table = 'cancelled_booking';
 					$c->item_id = $cancelled_booking_id;
 					$c->status = 1;
 					$c->save();
+				} else {
+					$c->delete();
 				}
 			}
 		}
