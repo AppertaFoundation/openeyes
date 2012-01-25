@@ -176,12 +176,16 @@ class TransportController extends BaseController
 	public function actionConfirm() {
 		if (isset($_POST['booked']) && is_array($_POST['booked'])) {
 			foreach ($_POST['booked'] as $booking_id) {
-				if (!$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('booking',$booking_id,1))) {
+				$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('booking',$booking_id,1));
+
+				if (!$c) {
 					$c = new TransportList;
 					$c->item_table = 'booking';
 					$c->item_id = $booking_id;
 					$c->status = 1;
 					$c->save();
+				} else {
+					$c->delete();
 				}
 			}
 		}
