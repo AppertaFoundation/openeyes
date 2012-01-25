@@ -472,6 +472,11 @@ class BookingController extends BaseController
 						}
 					}
 
+					// Looking for a matching row in transport_list and remove it so the entry in the transport list isn't grey
+					if ($tl = TransportList::model()->find('item_table = ? and item_id = ?',array('booking',$model->id))) {
+						$tl->delete();
+					}
+
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 					if (!$operation->save()) {

@@ -25,6 +25,7 @@ if (empty($bookings)) { ?>
 	$i = 0;
 	if ($bookings) {
 		foreach ($bookings as $id => $booking) {
+			if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;
 	?>
 
 	<?php
@@ -64,6 +65,7 @@ if (empty($bookings)) { ?>
 
 	<?php
 			$i++;
+			$last_eoid = $booking['eoid'];
 		}
 
 		if ($i == 0) { ?>
