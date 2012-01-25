@@ -1166,10 +1166,10 @@ class ElementOperation extends BaseElement
 					case 8: // Medical Retinal
 						$contact['refuse'] .= '020 7566 2258';
 						break;
-					//case 11: // Paediatrics
-						//$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						//$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
-						//break;
+					case 11: // Paediatrics
+						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						break;
 					case 13: // Refractive Laser
 						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
 						$contact['health'] = '020 7253 3411 X4336 and ask Laser Nurse';
@@ -1192,6 +1192,10 @@ class ElementOperation extends BaseElement
 			case 4: // Northwick Park
 				$contact['refuse'] .= '020 8869 3162';
 				//$contact['health'] = 'Sister Titmus on 020 8869 3162';
+			case 5: // St George's
+				$contact['refuse'] .= '020 8725 0060';
+				$contact['health'] = '020 8725 0060';
+				break;
 			case 6: // Mile End
 				switch ($specialty->id) {
 					case 7:	// Glaucoma
@@ -1211,10 +1215,6 @@ class ElementOperation extends BaseElement
 				$contact['refuse'] .= '020 8211 8323';
 				//$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
 				break;
-			//case 5: // St George's
-				//$contact['refuse'] .= '020 8725 0060';
-				//$contact['health'] = '020 8725 0060';
-				//break;
 		}
 		return $contact;
 	}
