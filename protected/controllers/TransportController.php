@@ -198,30 +198,5 @@ class TransportController extends BaseController
 			}
 		}
 	}
-	
-	/**
-	 * Print pending transport letters
-	 */
-	public function actionPrint() {		
-		$transport_list_ids = (isset($_REQUEST['transport_lists'])) ? $_REQUEST['transport_lists'] : null;
-		if(!is_array($operation_ids)) {
-			throw new CHttpException('400', 'Invalid transport list');
-		}
-		$transport_lists = TransportList::model()->findAllByPk($transport_list_ids);
-		
-		// Print a letter for each transport requirement, separated by a page break
-		$break = false;
-		foreach($transport_lists as $transport_list) {
-			if($break) {
-				$this->renderPartial("/letters/break");
-			} else {
-				$break = true;
-			}
-			$patient = $transport_list->patient;
-			$this->renderPartial("/transport/transport_form", array(
-				'transport' => $transport_list, 
-				'patient' => $patient,
-			));
-		}
-	}
+
 }
