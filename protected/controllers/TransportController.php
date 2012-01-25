@@ -137,27 +137,38 @@ class TransportController extends BaseController
 	}
 
 	/**
-	 * Print pending transport letters
+	 * Print transport letters for bookings
 	 */
-	public function actionPrint() {		
-		$transport_list_ids = (isset($_REQUEST['transport_lists'])) ? $_REQUEST['transport_lists'] : null;
-		if(!is_array($operation_ids)) {
-			throw new CHttpException('400', 'Invalid transport list');
+	public function actionPrint() {
+		$booking_ids = (isset($_REQUEST['booked'])) ? $_REQUEST['booked'] : null;
+		if(!is_array($booking_ids)) {
+			throw new CHttpException('400', 'Invalid booking list');
 		}
-		$transport_lists = TransportList::model()->findAllByPk($transport_list_ids);
+		$bookings = Booking::model()->findAllByPk($booking_ids);
 		
-		// Print a letter for each transport requirement, separated by a page break
+		// Print a letter for booking, separated by a page break
 		$break = false;
-		foreach($transport_lists as $transport_list) {
+		foreach($bookings as $booking) {
 			if($break) {
 				$this->renderPartial("/letters/break");
 			} else {
 				$break = true;
 			}
-			$patient = $transport_list->patient;
+			$patient = $booking->elementOperation->event->episode->patient;
+			$transport = array(
+				'request_to' => 'FIXME: REQUEST TO',
+				'request_from' => 'FIXME: REQUEST FROM',
+				'escort' => '', // FIXME: No source yet
+				'mobility' => '', // FIXME: No source yet
+				'oxygen' => '', // FIXME: No source yet
+				'contact_name' => 'FIXME: CONTACT NAME',
+				'contact_number' => 'FIXME: CONTACT NUMBER',
+				'comments' => '', // FIXME: No source yet
+			);
 			$this->renderPartial("/transport/transport_form", array(
-				'transport' => $transport_list, 
+				'booking' => $booking, 
 				'patient' => $patient,
+				'transport' => $transport,
 			));
 		}
 	}

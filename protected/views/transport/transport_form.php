@@ -19,19 +19,19 @@
 <p class="centered">
 		<strong>Request for non-urgent transport</strong>
 		<br /><?php echo $patient->id ?> - <?php echo $patient->fullname ?>
-		<br />Area: <?php echo $transport['area'] ?>
-		<br />Date: <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($transport['date'])) ?>
+		<br />Area: <?php echo $patient->address->postcode ?>
+		<br />Date: <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($booking->session->date)) ?>
 </p>
 <p>
-	Please transport the patient from the following address to the hospital on <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($transport['date'])) ?>
+	Please transport the patient from the following address to the hospital on <?php echo date(Helper::NHS_DATE_FORMAT, strtotime($booking->session->date)) ?>
 </p>
 <p>
 	<?php echo $patient->fullname ?>
 	<br /><?php echo $patient->address->letterhtml ?>
-	<br /><?php echo 'FIXME: Phone number' ?>
+	<br />Telephone: <?php echo $patient->primary_phone ?>
 </p>
 <p>
-	<?php echo $patient->fullname ?> is due to attend <?php $transport['destination'] ?> at <?php echo $transport['appointment_time'] ?>
+	<?php echo $patient->fullname ?> is due to attend <strong><?php echo $booking->ward->name ?>, <?php echo $booking->ward->site->name ?></strong> at <strong><?php echo date('g:i A', strtotime($booking->admission_time)) ?></strong>
 </p>
 <table>
 	<tr>
