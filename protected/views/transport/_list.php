@@ -11,13 +11,13 @@ if (empty($bookings)) { ?>
     	<tr>
 				<th>Hospital number</th>
 				<th>Patient</th>
-				<th>Session date</th>
-				<th>Session time</th>
+				<th>TCI date</th>
+				<th>Admission time</th>
 				<th>Site</th>
 				<th>Method</th>
 				<th>Firm</th>
 				<th>Specialty</th>
-				<th>Decision date</th>
+				<th>DTA</th>
 				<th>Priority</th>
 				<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
 			</tr>
