@@ -210,6 +210,7 @@ class TheatreController extends BaseController
 					'consultant' => $values['session_consultant'],
 					'paediatric' => $values['session_paediatric'],
 					'anaesthetist' => $values['session_anaesthetist'],
+					'priority' => $values['urgent'] ? 'Urgent' : 'Routine'
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
