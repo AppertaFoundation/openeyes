@@ -194,6 +194,7 @@ class PatientService
 
 		$address = new Address;
 		if (!$patient) {
+			Yii::log('Patient not found in OpenEyes, creating new record: '.$patientData->RM_PATIENT_NO);
 			$patient = new Patient;
 			$patient->id = $patientData->RM_PATIENT_NO;
 		} elseif (!empty($patient->address_id)) {
