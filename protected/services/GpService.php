@@ -109,7 +109,7 @@ class GpService {
 			if (self::is_bad_gp($gp['GP_ID'])) {
 				$errors[] = "Rejected bad GP record: {$gp['GP_ID']}";
 			} else {
-				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}'")->queryRow()) {
+				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}' order by date_fr desc")->queryRow()) {
 					if ($gp = Gp::model()->noPas()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
 						// Update existing GP
 						if ($contact = Contact::model()->findByPk($gp->contact_id)) {
@@ -227,7 +227,6 @@ class GpService {
 	/**
 	 * Load data from PAS into existing GP object and save
 	 * 
-	 * @param string gp_id PAS GP ID (optional)
 	 * @return Gp
 	 * @todo This needs integrating with GetPatientGp and related methods
 	 */
@@ -236,7 +235,11 @@ class GpService {
 			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
 		}
 		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
-		if($pas_gp = PAS_Gp::model()->findByPk($this->gp->obj_prof)) {
+		$pas_query = new CDbCriteria();
+		$pas_query->condition = 'obj_prof = :gp_id';
+		$pas_query->order = 'DATE_FR DESC';
+		$pas_query->params = array(':gp_id' => $this->gp->obj_prof);
+		if($pas_gp = PAS_Gp::model()->find($pas_query)) {
 			$this->gp->nat_id = $pas_gp->NAT_ID;
 			
 			// Contact
