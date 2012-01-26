@@ -1052,7 +1052,7 @@ class ElementOperation extends BaseElement
 	public function getProceduresString() {
 		$procedures = array();
 		foreach($this->procedures as $procedure) {
-			$procedures[] = $procedure->short_format;
+			$procedures[] = $procedure->term;
 		}
 		return implode(', ',$procedures);
 	}
