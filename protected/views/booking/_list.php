@@ -28,6 +28,7 @@ if (!$reschedule) {
 			<tr>
 				<th>Operation list overview</th>
 				<th>Date: <?php echo Helper::convertDate2NHS($session['date']); ?></th>
+				<th>Anaesthetic type</th>
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 				<th>Admission time</th>
@@ -53,6 +54,7 @@ if (!$reschedule) {
 			<tr>
 				<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
 				<td><?php echo $procedureList; ?></td>
+				<td><?php echo $thisOperation->getAnaestheticText()?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
 				<td><?php echo $booking->admission_time ?></td>
 
