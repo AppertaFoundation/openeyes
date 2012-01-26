@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+ _____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -63,13 +63,13 @@ class PAS_Gp extends MultiActiveRecord
 		return parent::model($className);
 	}
 
-        /**
-         * @return string the associated db connection name
-         */
-        public function connectionId()
-        {
-                return 'db_pas';
-        }
+	/**
+	 * @return string the associated db connection name
+	 */
+	public function connectionId()
+	{
+		return 'db_pas';
+	}
 
 	/**
 	 * @return string the associated database table name
@@ -78,16 +78,6 @@ class PAS_Gp extends MultiActiveRecord
 	{
 		return 'SILVER.ENV040_PROFDETS';
 	}
-
-	/**
-	 * @return string primary key for the table
-	 */
-	/* No primary key
-	public function primaryKey()
-	{
-		return 'OBJ_PROF';
-	}
-	*/
 
 	/**
 	 * @return array validation rules for model attributes.
