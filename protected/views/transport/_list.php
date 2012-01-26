@@ -14,6 +14,7 @@ if (empty($bookings)) { ?>
 				<th>TCI date</th>
 				<th>Admission time</th>
 				<th>Site</th>
+				<th>Ward</th>
 				<th>Method</th>
 				<th>Firm</th>
 				<th>Specialty</th>
@@ -49,6 +50,7 @@ if (empty($bookings)) { ?>
 		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
 		<td style="width: 73px;"><?php echo $booking['session_time']?></td>
 		<td style="width: 95px;"><?php echo $booking['location']?></td>
+		<td style="width: 170px;"><?php echo $booking['ward_name']?></td>
 		<td style="width: 53px;"><?php echo $booking['method']?></td>
 		<td style="width: 43px;"><?php echo $booking['firm'] ?></td>
 		<td style="width: 53px;"><?php echo $booking['specialty']?></td>
