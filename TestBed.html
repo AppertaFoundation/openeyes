@@ -10,6 +10,7 @@
         
         <!--   Subclasses loaded according to need -->
         <script language="JavaScript" src="ED_Vitreoretinal.js" type="text/javascript"></script>
+        <script language="JavaScript" src="ED_AntSeg.js" type="text/javascript"></script>
         <script language="JavaScript" src="ED_Glaucoma.js" type="text/javascript"></script>
         
         <!--   This script handles the drawings for the page   -->
@@ -40,10 +41,13 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    drawingEdit.addDoodle('OpticDisk');
-                    drawingEdit.addDoodle('OpticCup');
-                    //drawingEdit.addDoodle('Papilloedema');
-                    //drawingEdit.addDoodle('DiskHaemorrhage');
+                    drawingEdit.addDoodle('Iris');
+                    drawingEdit.addDoodle('Pupil');
+                    
+                    //drawingEdit.addDoodle('Ahmed');
+                    var dood = drawingEdit.addDoodle('Bleb');
+                    dood.baseRadius = 280;
+                    //drawingEdit.addDoodle('Vicryl');
                     
                     //doodleAngleGradeSup = drawingEdit.addDoodle('AngleGrade');
 //                    doodle.rotation = 90 * Math.PI/180;
@@ -61,15 +65,9 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 // Function to detect changes in parameters (eg from mouse dragging)
                 drawingEdit.parameterListener = function()
                 {
-                    if (drawingEdit.selectedDoodle != null && drawingEdit.selectedDoodle.className == 'AngleGrade')
+                    if (drawingEdit.selectedDoodle != null && drawingEdit.selectedDoodle.className == 'Supramid')
                     {
-                        if (drawingEdit.selectedDoodle.rotation == 0)
-                        {
-                            var angleGradeSup = document.getElementById('angleGradeSup');
-                            var grade = drawingEdit.selectedDoodle.getParameter('grade');
-                            angleGradeSup.value = grade;
-                            angleGradeSup.title = "Hello world";
-                        }
+                        console.log(drawingEdit.selectedDoodle.getParameter('endPosition'));
                     }
                 }
             }
@@ -114,7 +112,11 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                             <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskHaemorrhage'); return false;" ><img src="graphics/diskHaemorrhage.gif" /></button>
                             <button class="imgbutton" title="nerveFibreDefect" onclick="drawingEdit.addDoodle('NerveFibreDefect'); return false;" ><img src="graphics/nerveFibreDefect.gif" /></button>
                             <button class="imgbutton" title="Papilloedema" onclick="drawingEdit.addDoodle('Papilloedema'); return false;" ><img src="graphics/papilloedema.gif" /></button>
-                             <br />
+                            <button class="imgbutton" title="Baerveldt" onclick="drawingEdit.addDoodle('Baerveldt'); return false;" ><img src="graphics/baerveldt.gif" /></button>
+                            <button class="imgbutton" title="Ahmed" onclick="drawingEdit.addDoodle('Ahmed'); return false;" ><img src="graphics/ahmed.gif" /></button>
+                            <button class="imgbutton" title="Vicryl suture" onclick="drawingEdit.addDoodle('Vicryl'); return false;" ><img src="graphics/vicryl.gif" /></button>
+                            <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('Supramid'); return false;" ><img src="graphics/supramid.gif" /></button>
+                            <br />
                             
                             <!-- Canvas element -->
                             <canvas id="canvas" class="canvasclass" width="400" height="400" tabindex="2"></canvas>

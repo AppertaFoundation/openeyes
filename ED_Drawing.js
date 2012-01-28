@@ -625,6 +625,10 @@ ED.Drawing.prototype.mousemove = function(_point)
 					if (this.selectedDoodle.isMoveable)
 					{
                         this.selectedDoodle.move(mousePosDoodlePlane.x - lastMousePosDoodlePlane.x, mousePosDoodlePlane.y - lastMousePosDoodlePlane.y);
+                        
+                        // Enforce bounds
+                        this.selectedDoodle.originX = this.selectedDoodle.rangeOfOriginX.constrain(this.selectedDoodle.originX);
+                        this.selectedDoodle.originY = this.selectedDoodle.rangeOfOriginY.constrain(this.selectedDoodle.originY);
 					}
 					// Otherwise rotate it (if isRotatable)
 					else 
@@ -1867,6 +1871,8 @@ ED.Report.prototype.isMacOff = function()
  * @property {Bool} snapToQuadrant True if doodle should snap to a specific position in quadrant (defined in subclass)
  * @property {Bool} willReport True if doodle responds to a report request (can be used to suppress reports when not needed)
  * @property {Float} radius Distance from centre of doodle space, calculated for doodles with isRotable true
+ * @property {Range} rangeOfOriginX Range of allowable scales
+ * @property {Range} rangeOfOriginY Range of allowable scales
  * @property {Range} rangeOfScale Range of allowable scales
  * @property {Range} rangeOfArc Range of allowable Arcs
  * @property {Range} rangeOfApexX Range of allowable values of apexX
@@ -1969,6 +1975,8 @@ ED.Doodle = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _sca
         this.willReport = true;
         
         // Permitted ranges
+        this.rangeOfOriginX = new ED.Range(-1000, +1000);
+        this.rangeOfOriginY = new ED.Range(-1000, +1000);
 		this.rangeOfScale = new ED.Range(+0.5, +4.0);
 		this.rangeOfArc = new ED.Range(Math.PI/6, Math.PI*2);
 		this.rangeOfApexX = new ED.Range(-500, +500);
@@ -2510,6 +2518,44 @@ ED.Doodle.prototype.json = function()
     s = s + '}';
     
     return s;
+}
+
+/**
+ * Draws a circular spot with given parameters
+ *
+ * @param {Object} _ctx Context of canvas
+ * @param {Float} _x X-coordinate of origin
+ * @param {Float} _y Y-coordinate of origin
+ * @param {Float} _r Radius
+ * @param {String} _colour String containing colour
+ */
+ED.Doodle.prototype.drawSpot = function(_ctx, _x, _y, _r, _colour)
+{
+    _ctx.beginPath();
+    _ctx.arc(_x, _y, _r, 0, Math.PI * 2, true);
+    _ctx.fillStyle = _colour;
+    _ctx.fill();    
+}
+
+/**
+ * Draws a line with given parameters
+ *
+ * @param {Object} _ctx Context of canvas
+ * @param {Float} _x1 X-coordinate of origin
+ * @param {Float} _y1 Y-coordinate of origin
+ * @param {Float} _x2 X-coordinate of origin
+ * @param {Float} _y2 Y-coordinate of origin
+ * @param {Float} _w Width of line
+ * @param {String} _colour String containing colour
+ */
+ED.Doodle.prototype.drawLine = function(_ctx, _x1, _y1, _x2, _y2, _w, _colour)
+{
+    _ctx.beginPath();
+    _ctx.moveTo(_x1, _y1);
+    _ctx.lineTo(_x2, _y2);
+    _ctx.lineWidth = _w;
+    _ctx.strokeStyle = _colour;
+    _ctx.stroke();    
 }
 
 /**

@@ -11,6 +11,7 @@ temp*
 .DS_Store
 
 # Folders containing temporary data
+EyeDrawJS/EyeDrawJS.xcodeproj
 
 # Ignore folder containing automatic documentation
 jsdoc-toolkit/out/
