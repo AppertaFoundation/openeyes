@@ -44,9 +44,9 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                     drawingEdit.addDoodle('Iris');
                     drawingEdit.addDoodle('Pupil');
                     
-                    //drawingEdit.addDoodle('Ahmed');
-                    var dood = drawingEdit.addDoodle('Bleb');
-                    dood.baseRadius = 280;
+                    drawingEdit.addDoodle('Molteno');
+                    var dood = drawingEdit.addDoodle('Supramid');
+                    //dood.baseRadius = 280;
                     //drawingEdit.addDoodle('Vicryl');
                     
                     //doodleAngleGradeSup = drawingEdit.addDoodle('AngleGrade');
@@ -55,7 +55,7 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
 //                    doodle.rotation = 180 * Math.PI/180;
 //                    doodle = drawingEdit.addDoodle('AngleGrade');
 //                    doodle.rotation = 270 * Math.PI/180;
-                    //drawingEdit.addDoodle('PigmentedMesh');
+                    //drawingEdit.addDoodle('Patch');
                     drawingEdit.deselectDoodles();
                     //drawingEdit.load(doodleSet);
                     
@@ -67,7 +67,7 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 {
                     if (drawingEdit.selectedDoodle != null && drawingEdit.selectedDoodle.className == 'Supramid')
                     {
-                        console.log(drawingEdit.selectedDoodle.getParameter('endPosition'));
+                        //console.log(drawingEdit.selectedDoodle.getParameter('endPosition'));
                     }
                 }
             }
@@ -103,9 +103,11 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                             <!-- Doodle controls toolbar -->
                             <button class="imgbutton" class="imgbutton" disabled="true" id="moveToFrontRPS" title="Move to front" onclick="drawingEdit.moveToFront(); return false;" ><img src="graphics/moveToFront.gif"/></button>
                             <button class="imgbutton" disabled="true" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="graphics/moveToBack.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="flipVerRPS" title="Flip around vertical axis" onclick="drawingEdit.flipVer(); return false;" ><img src="graphics/flipVer.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="flipHorRPS" title="Flip around horizontal axis" onclick="drawingEdit.flipHor(); return false;" ><img src="graphics/flipHor.gif" /></button>
                             <button class="imgbutton" disabled="true" id="deleteRPS" title="Delete" onclick="drawingEdit.deleteDoodle(); return false;" ><img src="graphics/delete.gif" /></button>
                             <button class="imgbutton" disabled="true" id="lockRPS" title="Lock" onclick="drawingEdit.lock(); return false;" ><img src="graphics/lock.gif" /></button>
-                            <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>                  
+                            <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>
                             <br />
                             
                             <!-- Doodle selection toolbar -->

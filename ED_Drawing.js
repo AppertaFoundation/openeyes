@@ -225,6 +225,8 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
 	// Get reference to button elements
 	this.moveToFrontButton = document.getElementById('moveToFront' + this.IDSuffix);
 	this.moveToBackButton = document.getElementById('moveToBack' + this.IDSuffix);
+	this.flipVerButton = document.getElementById('flipVer' + this.IDSuffix);
+	this.flipHorButton = document.getElementById('flipHor' + this.IDSuffix);
 	this.deleteButton = document.getElementById('delete' + this.IDSuffix);
 	this.lockButton = document.getElementById('lock' + this.IDSuffix);
 	this.unlockButton = document.getElementById('unlock' + this.IDSuffix);
@@ -624,11 +626,29 @@ ED.Drawing.prototype.mousemove = function(_point)
 					// If isMoveable is true, move doodle
 					if (this.selectedDoodle.isMoveable)
 					{
-                        this.selectedDoodle.move(mousePosDoodlePlane.x - lastMousePosDoodlePlane.x, mousePosDoodlePlane.y - lastMousePosDoodlePlane.y);
-                        
-                        // Enforce bounds
-                        this.selectedDoodle.originX = this.selectedDoodle.rangeOfOriginX.constrain(this.selectedDoodle.originX);
-                        this.selectedDoodle.originY = this.selectedDoodle.rangeOfOriginY.constrain(this.selectedDoodle.originY);
+                        // Enforce snap to quadrant
+                        if (this.selectedDoodle.snapToQuadrant)
+                        {
+                            if (mousePosDoodlePlane.x != 0)
+                            {
+                                this.selectedDoodle.originX = this.selectedDoodle.quadrantPoint.x * mousePosDoodlePlane.x/Math.abs(mousePosDoodlePlane.x);
+                            }
+                            if (mousePosDoodlePlane.y != 0)
+                            {
+                                this.selectedDoodle.originY = this.selectedDoodle.quadrantPoint.y * mousePosDoodlePlane.y/Math.abs(mousePosDoodlePlane.y);
+                            }
+                            
+                            // Doodle's move method sets orientation, pass pass origin deltas as zero, since explicity set above
+                            this.selectedDoodle.move(0,0);
+                        }
+                        else
+                        {
+                            this.selectedDoodle.move(mousePosDoodlePlane.x - lastMousePosDoodlePlane.x, mousePosDoodlePlane.y - lastMousePosDoodlePlane.y);
+                            
+                            // Enforce bounds
+                            this.selectedDoodle.originX = this.selectedDoodle.rangeOfOriginX.constrain(this.selectedDoodle.originX);
+                            this.selectedDoodle.originY = this.selectedDoodle.rangeOfOriginY.constrain(this.selectedDoodle.originY);
+                        }
 					}
 					// Otherwise rotate it (if isRotatable)
 					else 
@@ -948,6 +968,38 @@ ED.Drawing.prototype.moveToBack = function()
 			this.doodleArray[i].order = i;
 		}
 		
+		// Refresh canvas
+		this.repaint();
+	}
+}
+
+/**
+ * Flips the doodle around a vertical axis
+ */
+ED.Drawing.prototype.flipVer = function()
+{
+	// Should only be called if a doodle is selected, but check anyway
+	if (this.selectedDoodle != null)
+	{
+        // Vertical axis involved altering sign of scale y
+        this.selectedDoodle.scaleY = this.selectedDoodle.scaleY * -1;
+
+		// Refresh canvas
+		this.repaint();
+	}
+}
+
+/**
+ * Flips the doodle around a horizontal axis
+ */
+ED.Drawing.prototype.flipHor = function()
+{
+	// Should only be called if a doodle is selected, but check anyway
+	if (this.selectedDoodle != null)
+	{
+        // Horizontal axis involved altering sign of scale x
+        this.selectedDoodle.scaleX = this.selectedDoodle.scaleX * -1;
+        
 		// Refresh canvas
 		this.repaint();
 	}
@@ -1519,6 +1571,8 @@ ED.Drawing.prototype.repaint = function()
 	{
 		if (this.moveToFrontButton !== null) this.moveToFrontButton.disabled = false;
 		if (this.moveToBackButton !== null) this.moveToBackButton.disabled = false;
+		if (this.flipVerButton !== null) this.flipVerButton.disabled = false;
+		if (this.flipHorButton !== null) this.flipHorButton.disabled = false;        
 		if (this.deleteButton !== null) this.deleteButton.disabled = false;
 		if (this.lockButton !== null) this.lockButton.disabled = false;
         if (this.squiggleSpan !== null && this.selectedDoodle.isDrawable) this.squiggleSpan.style.display = "inline-block";
@@ -1527,6 +1581,8 @@ ED.Drawing.prototype.repaint = function()
 	{
 		if (this.moveToFrontButton !== null) this.moveToFrontButton.disabled = true;
 		if (this.moveToBackButton !== null) this.moveToBackButton.disabled = true;
+		if (this.flipVerButton !== null) this.flipVerButton.disabled = true;
+		if (this.flipHorButton !== null) this.flipHorButton.disabled = true;   
 		if (this.deleteButton !== null) this.deleteButton.disabled = true;
 		if (this.lockButton !== null) this.lockButton.disabled = true;
         if (this.squiggleSpan !== null) this.squiggleSpan.style.display = "none";
@@ -2071,6 +2127,32 @@ ED.Doodle.prototype.setParameterDefaults = function()
             // Alter orientation of doodle
             this.rotation = angle;
         }
+        
+        // Snap to quadrant position is set in drawing.move method, but set orientation here
+        if (this.snapToQuadrant)
+        {
+            // Alter orientation of doodle
+            if (this.isOrientated)
+            {
+                // This quantity give a unique number for each quadrant
+                var quadrantIdentifier = 2 * this.originX/Math.abs(this.originX) + this.originY/Math.abs(this.originY);
+                switch (quadrantIdentifier)
+                {
+                    case -3:
+                        this.rotation = -Math.PI/4;
+                        break;
+                    case 1:
+                        this.rotation = Math.PI/4;
+                        break;                    
+                    case 3:
+                        this.rotation = 3 * Math.PI/4;
+                        break;
+                    case -1:
+                        this.rotation = -3 *  Math.PI/4;
+                        break;
+                }
+            }
+        }
     }
 }
 
@@ -2098,11 +2180,6 @@ ED.Doodle.prototype.draw = function(_point)
     if (this.snapToGrid)
     {
         ctx.translate(Math.round(this.originX/this.gridSpacing) * this.gridSpacing, Math.round(this.originY/this.gridSpacing) * this.gridSpacing);
-    }
-    else if (this.snapToQuadrant)
-    {
-        //ctx.translate(this.originX, this.originY);
-        ctx.translate(this.quadrantPoint.x * this.originX/Math.abs(this.originX), this.quadrantPoint.y * this.originY/Math.abs(this.originY));
     }
     else
     {
@@ -2556,6 +2633,17 @@ ED.Doodle.prototype.drawLine = function(_ctx, _x1, _y1, _x2, _y2, _w, _colour)
     _ctx.lineWidth = _w;
     _ctx.strokeStyle = _colour;
     _ctx.stroke();    
+}
+
+/**
+ * Outputs doodle information to the console
+ */
+ED.Doodle.prototype.debug = function()
+{
+    console.log('org: ' + this.originX + " : " + this.originY);
+    console.log('apx: ' + this.apexX + " : " + this.apexY);
+    console.log('rot: ' + this.rotation * 180/Math.PI);
+    console.log('arc: ' + this.arc * 180/Math.PI);
 }
 
 /**

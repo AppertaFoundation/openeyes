@@ -2229,12 +2229,15 @@ ED.Supramid.prototype.setHandles = function()
 ED.Supramid.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-	this.isOrientated = false;
+	this.isOrientated = true;
 	this.isScaleable = true;
 	this.isSqueezable = false;
-	this.isMoveable = false;
+	this.isMoveable = true;
 	this.isRotatable = false;
-	this.rangeOfApexY = new ED.Range(-450, -50);
+	this.rangeOfApexX = new ED.Range(-0, +0);
+	this.rangeOfApexY = new ED.Range(-420, -200);
+    this.snapToQuadrant = true;
+    this.quadrantPoint = new ED.Point(10, 10);
 }
 
 /**
@@ -2242,8 +2245,21 @@ ED.Supramid.prototype.setPropertyDefaults = function()
  */
 ED.Supramid.prototype.setParameterDefaults = function()
 {
-    this.apexX = -250;
-    this.apexY = -250;
+    this.apexX = 0;
+    this.apexY = -350;
+    this.originY = -10;
+    
+    // Tubes are usually STQ
+    if(this.drawing.eye == ED.eye.Right)
+    {
+        this.originX = -10;        
+        this.rotation = -Math.PI/4;
+    }
+    else
+    {
+        this.originX = 10;
+        this.rotation = Math.PI/4;
+    }
 }
 
 /**
@@ -2260,17 +2276,12 @@ ED.Supramid.prototype.draw = function(_point)
 	ED.Supramid.superclass.draw.call(this, _point);
 
     // Calculate key points for supramid bezier
-    var startPoint = new ED.Point(this.apexX, this.apexY);
-    var r = Math.sqrt(this.apexX * this.apexX + this.apexY * this.apexY);
-    var northPoint = new ED.Point(0, -100);
-    var angle = northPoint.clockwiseAngleTo(startPoint);
-    var controlPoint1 = new ED.Point(0, 0);
-    controlPoint1.setWithPolars(r + 300, angle);
+    var startPoint = new ED.Point(0, this.apexY);
+    var tubePoint = new ED.Point(0, -450);    
+    var controlPoint1 = new ED.Point(0, -600);
     
     // Calculate mid point x coordinate
-    if (angle > Math.PI) var midPointX = -450;
-    else var midPointX = 450;
-    
+    var midPointX = -450;
     var controlPoint2 = new ED.Point(midPointX, -300);
     var midPoint = new ED.Point(midPointX, 0);
     var controlPoint3 = new ED.Point(midPointX, 300);
@@ -2280,8 +2291,9 @@ ED.Supramid.prototype.draw = function(_point)
 	// Boundary path
 	ctx.beginPath();
     
-    ctx.moveTo(this.apexX, controlPoint1.y);
-    ctx.lineTo(midPointX, controlPoint1.y);
+    // Rectangle around suture
+    ctx.moveTo(this.apexX, tubePoint.y);
+    ctx.lineTo(midPointX, tubePoint.y);
     ctx.lineTo(midPointX, endPoint.y);
     ctx.lineTo(this.apexX, endPoint.y);            
     
@@ -2298,40 +2310,21 @@ ED.Supramid.prototype.draw = function(_point)
 	
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
-	{
-
-        // These three lines lock the apex point to the centre of the Baervelt
-        /*
-        // If a tube is there, get the start point from it
-        var doodle = this.drawing.lastDoodleOfClass("Baerveldt");
-        
-        var startPoint;
-        if (doodle)
-        {
-
-            var r = Math.sqrt(doodle.originX * doodle.originX + doodle.originY * doodle.originY);
-            startPoint = new ED.Point(doodle.originX, doodle.originY);
-            startPoint.setWithPolars(r - 100, doodle.rotation);
-            this.apexX = startPoint.x;
-            this.apexY = startPoint.y;
-        }
-        
-        else startPoint = new ED.Point(-200, -200);
-        */
-        
+	{        
         // Suture
         ctx.beginPath()
         ctx.moveTo(startPoint.x, startPoint.y);
+        ctx.lineTo(tubePoint.x, tubePoint.y);
         ctx.bezierCurveTo(controlPoint1.x, controlPoint1.y, controlPoint2.x, controlPoint2.y, midPoint.x, midPoint.y);
         ctx.bezierCurveTo(controlPoint3.x, controlPoint3.y, controlPoint4.x, controlPoint4.y, endPoint.x, endPoint.y);
         
         ctx.lineWidth = 4;
-        ctx.strokeStyle = "brown";
-        ctx.stroke();        
+        ctx.strokeStyle = "purple";
+        ctx.stroke();
 	}
 	
 	// Coordinates of handles (in canvas plane)
-	this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
+	this.handleArray[4].location = this.transform.transformPoint(new ED.Point(0, this.apexY));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
@@ -2355,8 +2348,8 @@ ED.Supramid.prototype.getParameter = function(_parameter)
         case 'endPosition':
             var r = Math.sqrt(this.apexX * this.apexX + this.apexY * this.apexY);
             
-            if (r < 380 ) returnValue = 'in the AC';
-            else returnValue = ((r - 380)/60).toFixed(0) + 'mm from limbus';
+            if (r < 280 ) returnValue = 'in the AC';
+            else returnValue = ((r - 280)/14).toFixed(0) + 'mm from limbus';
             break;
 
         default:
@@ -2368,29 +2361,15 @@ ED.Supramid.prototype.getParameter = function(_parameter)
 }
 
 /**
- * Calculates position of end of suture as a string
- *
- * @returns {String} position of end of suture
- */
-ED.Supramid.prototype.getParameter = function(_parameter)
-{
-    var returnValue = "";
-    var r = Math.sqrt(this.apexX * this.apexX + this.apexY * this.apexY);
-    
-    if (r < 380 ) returnValue = 'in the AC';
-    else returnValue = ((r - 380)/60).toFixed(0) + ' mm from limbus';
-    
-    return returnValue;
-}
-
-/**
  * Returns a string containing a text description of the doodle
  *
  * @returns {String} Description of doodle
  */
 ED.Supramid.prototype.description = function()
 {
-    var returnString = "Supramid tube";
+    var returnString = "Supramid suture ";
+    
+    returnString += this.getParameter('endPosition');
     
 	return returnString;
 }
@@ -2429,14 +2408,6 @@ ED.Vicryl.prototype.constructor = ED.Vicryl;
 ED.Vicryl.superclass = ED.Doodle.prototype;
 
 /**
- * Sets handle attributes
- */
-ED.Vicryl.prototype.setHandles = function()
-{
-	//this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
-}
-
-/**
  * Sets default dragging attributes
  */
 ED.Vicryl.prototype.setPropertyDefaults = function()
@@ -2454,18 +2425,18 @@ ED.Vicryl.prototype.setPropertyDefaults = function()
  */
 ED.Vicryl.prototype.setParameterDefaults = function()
 {
-    this.originY = -250;
+    this.originY = -240;
     this.apexY = 400;
     
     // Tubes are usually STQ
     if(this.drawing.eye == ED.eye.Right)
     {
-        this.originX = -250;        
+        this.originX = -240;        
         this.rotation = -Math.PI/4;
     }
     else
     {
-        this.originX = 250;
+        this.originX = 240;
         this.rotation = Math.PI/4;
     }
 }
@@ -2487,14 +2458,14 @@ ED.Vicryl.prototype.draw = function(_point)
 	ctx.beginPath();
     
     // Use arcTo to create an ellipsoid
-    ctx.moveTo(-30, 0);
-    ctx.arcTo(0, -30, 30, 0, 42); 
-    ctx.arcTo(0, 30, -30, 0, 42);
+    ctx.moveTo(-20, 0);
+    ctx.arcTo(0, -20, 20, 0, 30); 
+    ctx.arcTo(0, 20, -20, 0, 30);
     
 	// Set line attributes
 	ctx.lineWidth = 4;
 	ctx.fillStyle = "rgba(0, 0, 0, 0)";
-	ctx.strokeStyle = "blue";
+	ctx.strokeStyle = "purple";
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -2504,17 +2475,14 @@ ED.Vicryl.prototype.draw = function(_point)
 	{
         // Ends of suture
         ctx.beginPath();
-        ctx.moveTo(50, -20);
-        ctx.lineTo(30, 0);
-        ctx.lineTo(50, 20); 
+        ctx.moveTo(35, -10);
+        ctx.lineTo(20, 0);
+        ctx.lineTo(35, 10); 
         ctx.stroke();
         
         // Knot
-        this.drawSpot(ctx, 30, 0, 8, "blue");
+        this.drawSpot(ctx, 20, 0, 4, "purple");
  	}
-	
-	// Coordinates of handles (in canvas plane)
-	//this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
@@ -2531,6 +2499,318 @@ ED.Vicryl.prototype.draw = function(_point)
 ED.Vicryl.prototype.description = function()
 {
     var returnString = "Vicryl suture";
+    
+	return returnString;
+}
+
+/**
+ * Molteno tube
+ *
+ * @class Molteno
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Int} _originX
+ * @param {Int} _originY
+ * @param {Float} _radius
+ * @param {Int} _apexX
+ * @param {Int} _apexY
+ * @param {Float} _scaleX
+ * @param {Float} _scaleY
+ * @param {Float} _arc
+ * @param {Float} _rotation
+ * @param {Int} _order
+ */
+ED.Molteno = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+{
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	
+	// Set classname
+	this.className = "Molteno";
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Molteno.prototype = new ED.Doodle;
+ED.Molteno.prototype.constructor = ED.Molteno;
+ED.Molteno.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.Molteno.prototype.setHandles = function()
+{
+	this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.Molteno.prototype.setPropertyDefaults = function()
+{
+	this.isSelectable = true;
+	this.isOrientated = true;
+	this.isScaleable = false;
+	this.isSqueezable = false;
+	this.isMoveable = true;
+	this.isRotatable = false;
+	this.rangeOfApexY = new ED.Range(+100, +500);
+	this.rangeOfApexX = new ED.Range(-0, +0);
+    this.snapToQuadrant = true;
+    this.quadrantPoint = new ED.Point(380, 380);
+}
+
+/**
+ * Sets default parameters
+ */
+ED.Molteno.prototype.setParameterDefaults = function()
+{
+    this.originY = -380;
+    this.apexY = 300;
+    
+    // Tubes are usually STQ
+    if(this.drawing.eye == ED.eye.Right)
+    {
+        this.originX = -380;        
+        this.rotation = -Math.PI/4;
+    }
+    else
+    {
+        this.originX = 380;
+        this.rotation = Math.PI/4;
+    }
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Molteno.prototype.draw = function(_point)
+{
+	// Get context
+	var ctx = this.drawing.context;
+	
+	// Call draw method in superclass
+	ED.Molteno.superclass.draw.call(this, _point);
+	
+	// Boundary path
+	ctx.beginPath();
+    
+    // Scaling factor
+    var s = 0.3;
+    
+    // Plate
+    ctx.arc(0, 0, 310 * s, 0, Math.PI * 2, true);  
+    
+    // Set Attributes
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "rgba(120,120,120,0.75)";
+    ctx.fillStyle = "rgba(220,220,220,0.5)";
+	
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+	
+	// Other stuff here
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
+	{
+        // Inner ring
+        ctx.beginPath();
+        ctx.arc(0, 0, 250 * s, 0, Math.PI * 2, true);
+        ctx.stroke();
+        
+        // Suture holes
+        this.drawSpot(ctx, -200 * s, 200 * s, 5, "rgba(255,255,255,1)");
+        this.drawSpot(ctx, -200 * s, -200 * s, 5, "rgba(255,255,255,1)");
+        this.drawSpot(ctx, 200 * s, -200 * s, 5, "rgba(255,255,255,1)");
+        this.drawSpot(ctx, 200 * s, 200 * s, 5, "rgba(255,255,255,1)");
+        
+        // Tube
+        ctx.beginPath();
+        ctx.moveTo(-20 * s, 240 * s);
+        ctx.lineTo(-20 * s, this.apexY);
+        ctx.lineTo(20 * s, this.apexY);
+        ctx.lineTo(20 * s, 240 * s);
+        
+        ctx.strokeStyle = "rgba(150,150,150,0.5)";
+        ctx.stroke();
+	}
+	
+	// Coordinates of handles (in canvas plane)
+	this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
+	
+	// Draw handles if selected
+	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
+    
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
+ * Returns parameters
+ *
+ * @returns {String} value of parameter
+ */
+ED.Molteno.prototype.getParameter = function(_parameter)
+{
+    var returnValue;
+    var isRE = (this.drawing.eye == ED.eye.Right);
+    
+    switch (_parameter)
+    {
+        // Plate position
+        case 'platePosition':
+            var clockHour = this.clockHour();
+            
+            if (clockHour < 4 ) returnValue = isRE?'SNQ':'STQ';
+            else if (clockHour < 7 ) returnValue = isRE?'INQ':'ITQ';
+            else if (clockHour < 10 ) returnValue = isRE?'ITQ':'INQ';
+            else returnValue = isRE?'STQ':'SNQ';
+            break;
+            
+        case 'plateLimbusDistance':
+            var distance = Math.round((Math.sqrt(this.originX * this.originX + this.originY * this.originY) - 360)/20);
+            returnValue = distance.toFixed(1);
+            break;
+            
+        default:
+            returnValue = "";
+            break;
+    }
+    
+    return returnValue;
+}
+
+/**
+ * Sets derived parameters for this doodle
+ *
+ * @param {String} _parameter Name of parameter
+ * @param {String} _value New value of parameter
+ */
+ED.Molteno.prototype.setParameter = function(_parameter, _value)
+{
+    var isRE = (this.drawing.eye == ED.eye.Right);
+    switch (_parameter)
+    {
+        // Plate position
+        case 'platePosition':
+            switch (_value)
+            {
+                case 'STQ':
+                    if (isRE)
+                    {
+                        this.originX = -380;
+                        this.originY = -380;
+                        this.rotation = -Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = 380;
+                        this.originY = -380;
+                        this.rotation = Math.PI/4;
+                    }
+                    break;
+                case 'ITQ':
+                    if (isRE)
+                    {
+                        this.originX = -380;
+                        this.originY = 380;
+                        this.rotation = -3*Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = 380;
+                        this.originY = 380;
+                        this.rotation = 3*Math.PI/4;
+                    }
+                    break;
+                case 'SNQ':
+                    if (isRE)
+                    {
+                        this.originX = 380;
+                        this.originY = -380;
+                        this.rotation = Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = -380;
+                        this.originY = -380;
+                        this.rotation = -Math.PI/4;
+                    }
+                    break;
+                case 'INQ':
+                    if (isRE)
+                    {
+                        this.originX = 380;
+                        this.originY = 380;
+                        this.rotation = 3*Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = -380;
+                        this.originY = 380;
+                        this.rotation = -3*Math.PI/4;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            break;
+        case 'plateLimbusDistance':
+            
+            // Get angle to origin
+            var origin = new ED.Point(this.originX, this.originY);
+            var north = new ED.Point(0,-100);
+            var angle = 2 * Math.PI - origin.clockwiseAngleTo(north);
+            
+            // Calculate new radius
+            r = _value * 20 + 304;
+            
+            // Set doodle to new radius
+            var newOrigin = new ED.Point()
+            newOrigin.setWithPolars(r, angle);
+            this.originX = newOrigin.x;
+            this.originY = newOrigin.y;
+            
+            break;
+            
+        default:
+            break
+    }
+}
+
+
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.Molteno.prototype.description = function()
+{
+    var returnString = "Molteno tube";
+    
+    // Position
+    var quadrant = this.getParameter('platePosition');
+    var description = "";
+    
+    switch (quadrant)
+    {
+        case 'STQ':
+            description = " in supero-temporal quadrant";
+            break;
+        case 'SNQ':
+            description = " in supero-nasal quadrant";
+            break;
+        case 'INQ':
+            description = " in infero-nasal quadrant";
+            break;            
+        case 'ITQ':
+            description = " in infero-temporal quadrant";
+            break;             
+    }
+    
+    returnString += description;
     
 	return returnString;
 }
@@ -2583,12 +2863,14 @@ ED.Baerveldt.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
 	this.isOrientated = true;
-	this.isScaleable = true;
-	this.isSqueezable = true;
+	this.isScaleable = false;
+	this.isSqueezable = false;
 	this.isMoveable = true;
-	this.isRotatable = true;
+	this.isRotatable = false;
 	this.rangeOfApexY = new ED.Range(+100, +500);
 	this.rangeOfApexX = new ED.Range(-0, +0);
+    this.snapToQuadrant = true;
+    this.quadrantPoint = new ED.Point(380, 380);
 }
 
 /**
@@ -2596,18 +2878,18 @@ ED.Baerveldt.prototype.setPropertyDefaults = function()
  */
 ED.Baerveldt.prototype.setParameterDefaults = function()
 {
-    this.originY = -350;
-    this.apexY = 400;
+    this.originY = -380;
+    this.apexY = 300;
     
     // Tubes are usually STQ
     if(this.drawing.eye == ED.eye.Right)
     {
-        this.originX = -350;        
+        this.originX = -380;        
         this.rotation = -Math.PI/4;
     }
     else
     {
-        this.originX = 350;
+        this.originX = 380;
         this.rotation = Math.PI/4;
     }
 }
@@ -2746,63 +3028,63 @@ ED.Baerveldt.prototype.setParameter = function(_parameter, _value)
             case 'STQ':
                 if (isRE)
                 {
-                    this.originX = -350;
-                    this.originY = -350;
+                    this.originX = -380;
+                    this.originY = -380;
                     this.rotation = -Math.PI/4;
                 }
                 else
                 {
-                    this.originX = 350;
-                    this.originY = -350;
+                    this.originX = 380;
+                    this.originY = -380;
                     this.rotation = Math.PI/4;
                 }
                 break;
             case 'ITQ':
                 if (isRE)
                 {
-                    this.originX = -350;
-                    this.originY = 350;
+                    this.originX = -380;
+                    this.originY = 380;
                     this.rotation = -3*Math.PI/4;
                 }
                 else
                 {
-                    this.originX = 250;
-                    this.originY = 250;
+                    this.originX = 380;
+                    this.originY = 380;
                     this.rotation = 3*Math.PI/4;
                 }
                 break;
             case 'SNQ':
                 if (isRE)
                 {
-                    this.originX = 350;
-                    this.originY = -350;
+                    this.originX = 380;
+                    this.originY = -380;
                     this.rotation = Math.PI/4;
                 }
                 else
                 {
-                    this.originX = -350;
-                    this.originY = -350;
+                    this.originX = -380;
+                    this.originY = -380;
                     this.rotation = -Math.PI/4;
                 }
                 break;
             case 'INQ':
                 if (isRE)
                 {
-                    this.originX = 350;
-                    this.originY = 350;
+                    this.originX = 380;
+                    this.originY = 380;
                     this.rotation = 3*Math.PI/4;
                 }
                 else
                 {
-                    this.originX = -350;
-                    this.originY = 350;
+                    this.originX = -380;
+                    this.originY = 380;
                     this.rotation = -3*Math.PI/4;
                 }
                 break;
             default:
                 break;
         }
-            break;
+        break;
         case 'plateLimbusDistance':
             
             // Get angle to origin
@@ -2835,6 +3117,28 @@ ED.Baerveldt.prototype.setParameter = function(_parameter, _value)
 ED.Baerveldt.prototype.description = function()
 {
     var returnString = "Baerveldt tube";
+    
+    // Position
+    var quadrant = this.getParameter('platePosition');
+    var description = "";
+    
+    switch (quadrant)
+    {
+        case 'STQ':
+            description = " in supero-temporal quadrant";
+            break;
+        case 'SNQ':
+            description = " in supero-nasal quadrant";
+            break;
+        case 'INQ':
+            description = " in infero-nasal quadrant";
+            break;            
+        case 'ITQ':
+            description = " in infero-temporal quadrant";
+            break;             
+    }
+    
+    returnString += description;
     
 	return returnString;
 }
@@ -2887,12 +3191,14 @@ ED.Ahmed.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
 	this.isOrientated = true;
-	this.isScaleable = true;
-	this.isSqueezable = true;
+	this.isScaleable = false;
+	this.isSqueezable = false;
 	this.isMoveable = true;
-	this.isRotatable = true;
+	this.isRotatable = false;
 	this.rangeOfApexY = new ED.Range(+100, +500);
 	this.rangeOfApexX = new ED.Range(-0, +0);
+    this.snapToQuadrant = true;
+    this.quadrantPoint = new ED.Point(380, 380);
 }
 
 /**
@@ -2900,18 +3206,18 @@ ED.Ahmed.prototype.setPropertyDefaults = function()
  */
 ED.Ahmed.prototype.setParameterDefaults = function()
 {
-    this.originY = -350;
-    this.apexY = 400;
+    this.originY = -380;
+    this.apexY = 300;
     
     // Tubes are usually STQ
     if(this.drawing.eye == ED.eye.Right)
     {
-        this.originX = -350;        
+        this.originX = -380;        
         this.rotation = -Math.PI/4;
     }
     else
     {
-        this.originX = 350;
+        this.originX = 380;
         this.rotation = Math.PI/4;
     }
 }
@@ -3062,69 +3368,69 @@ ED.Ahmed.prototype.setParameter = function(_parameter, _value)
     var isRE = (this.drawing.eye == ED.eye.Right);
     switch (_parameter)
     {
-            // Plate position
+        // Plate position
         case 'platePosition':
             switch (_value)
-        {
-            case 'STQ':
-                if (isRE)
-                {
-                    this.originX = -250;
-                    this.originY = -250;
-                    this.rotation = -Math.PI/4;
-                }
-                else
-                {
-                    this.originX = 250;
-                    this.originY = -250;
-                    this.rotation = Math.PI/4;
-                }
-                break;
-            case 'ITQ':
-                if (isRE)
-                {
-                    this.originX = -250;
-                    this.originY = 250;
-                    this.rotation = -3*Math.PI/4;
-                }
-                else
-                {
-                    this.originX = 250;
-                    this.originY = 250;
-                    this.rotation = 3*Math.PI/4;
-                }
-                break;
-            case 'SNQ':
-                if (isRE)
-                {
-                    this.originX = 250;
-                    this.originY = -250;
-                    this.rotation = Math.PI/4;
-                }
-                else
-                {
-                    this.originX = -250;
-                    this.originY = -250;
-                    this.rotation = -Math.PI/4;
-                }
-                break;
-            case 'INQ':
-                if (isRE)
-                {
-                    this.originX = 250;
-                    this.originY = 250;
-                    this.rotation = 3*Math.PI/4;
-                }
-                else
-                {
-                    this.originX = -250;
-                    this.originY = 250;
-                    this.rotation = -3*Math.PI/4;
-                }
-                break;
-            default:
-                break;
-        }
+            {
+                case 'STQ':
+                    if (isRE)
+                    {
+                        this.originX = -380;
+                        this.originY = -380;
+                        this.rotation = -Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = 380;
+                        this.originY = -380;
+                        this.rotation = Math.PI/4;
+                    }
+                    break;
+                case 'ITQ':
+                    if (isRE)
+                    {
+                        this.originX = -380;
+                        this.originY = 380;
+                        this.rotation = -3*Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = 380;
+                        this.originY = 380;
+                        this.rotation = 3*Math.PI/4;
+                    }
+                    break;
+                case 'SNQ':
+                    if (isRE)
+                    {
+                        this.originX = 380;
+                        this.originY = -380;
+                        this.rotation = Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = -380;
+                        this.originY = -380;
+                        this.rotation = -Math.PI/4;
+                    }
+                    break;
+                case 'INQ':
+                    if (isRE)
+                    {
+                        this.originX = 380;
+                        this.originY = 380;
+                        this.rotation = 3*Math.PI/4;
+                    }
+                    else
+                    {
+                        this.originX = -380;
+                        this.originY = 380;
+                        this.rotation = -3*Math.PI/4;
+                    }
+                    break;
+                default:
+                    break;
+            }
             break;
         case 'plateLimbusDistance':
             
@@ -3159,7 +3465,27 @@ ED.Ahmed.prototype.description = function()
 {
     var returnString = "Ahmed tube at ";
     
-    returnString += this.clockHour() + " o'clock";
+    // Position
+    var quadrant = this.getParameter('platePosition');
+    var description = "";
+    
+    switch (quadrant)
+    {
+        case 'STQ':
+            description = " in supero-temporal quadrant";
+            break;
+        case 'SNQ':
+            description = " in supero-nasal quadrant";
+            break;
+        case 'INQ':
+            description = " in infero-nasal quadrant";
+            break;            
+        case 'ITQ':
+            description = " in infero-temporal quadrant";
+            break;             
+    }
+    
+    returnString += description;
     
 	return returnString;
 }
@@ -3227,17 +3553,17 @@ ED.Patch.prototype.setPropertyDefaults = function()
  */
 ED.Patch.prototype.setParameterDefaults = function()
 {
-    this.originY = -240;
+    this.originY = -260;
     
     // Patchs are usually temporal
     if(this.drawing.eye == ED.eye.Right)
     {
-        this.originX = -240;        
+        this.originX = -260;        
         this.rotation = -Math.PI/4;
     }
     else
     {
-        this.originX = 240;
+        this.originX = 260;
         this.rotation = Math.PI/4;
     }
 }
@@ -3258,7 +3584,7 @@ ED.Patch.prototype.draw = function(_point)
     // Boundary path
 	ctx.beginPath();
     
-    ctx.rect(-50, -60, 100, 120);
+    ctx.rect(-50, -70, 100, 140);
     
 	// Close path
 	ctx.closePath();
@@ -3307,9 +3633,7 @@ ED.Patch.prototype.draw = function(_point)
  */
 ED.Patch.prototype.description = function()
 {
-    var returnString = "Scleral patch at ";
-    
-    returnString += this.clockHour() + " o'clock";
+    var returnString = "Scleral patch";
     
 	return returnString;
 }
