@@ -474,6 +474,11 @@ class BookingController extends BaseController
 				OELog::log("Booking cancelled: $model->id, cancelled_booking=$cancellation->id");
 
 				if (!empty($_POST['Booking'])) {
+
+					$wards = $operation->getWardOptions(
+						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
+					$model->ward_id = key($wards);
+
 					$model->attributes = $_POST['Booking'];
 					if (!$model->save()) {
 						throw new SystemException('Unable to save booking: '.print_r($model->getErrors(),true));
