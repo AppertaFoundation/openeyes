@@ -266,6 +266,26 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			}
 		});
 
+		$('input[name^="consultant_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["consultant_"+id] = $(this).is(':checked');
+		});
+
+		$('input[name^="paediatric_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["paediatric_"+id] = $(this).is(':checked');
+		});
+
+		$('input[name^="anaesthetic_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["anaesthetic_"+id] = $(this).is(':checked');
+		});
+
+		$('input[name^="available_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["available_"+id] = $(this).is(':checked');
+		});
+
 		$.ajax({
 			'type': 'POST',
 			'data': data,
@@ -285,6 +305,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 				view_mode();
 				load_table_states();
+				load_purple_states();
 				$('div[id^="buttons_"]').hide();
 			}
 		});
