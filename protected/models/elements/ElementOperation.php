@@ -1145,7 +1145,7 @@ class ElementOperation extends BaseElement
 	 * Contact number/details for health/refuse
 	 */
 	public function getAdmissionContact() {
-		$siteId = $this->site->id;
+		$siteId = $this->booking->ward->site_id;
 		$specialty = $this->event->episode->firm->serviceSpecialtyAssignment->specialty;
 		$contact = array(
 			'refuse' => $specialty->name . ' Admission Coordinator on ',

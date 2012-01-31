@@ -433,6 +433,11 @@ class BookingController extends BaseController
 				if (!empty($_POST['Operation']['comments'])) {
 					$operation->comments = $_POST['Operation']['comments'];
 				}
+				
+				// Update the proposed site for the operation to match the booked site (ward)
+				// This gives better information on the waiting list when it comes to rescheduling
+				$operation->site_id = $model->ward->site_id;
+				
 				if (!$operation->save()) {
 					throw new SystemException('Unable to update operation data: '.print_r($operation->getErrors(),true));
 				}
@@ -538,12 +543,9 @@ class BookingController extends BaseController
 						}
 					}
 
-					$operation = ElementOperation::model()->findByPk($operationId);
-					// we need to update the element_operation with a more accurate site_id based on what /was/ in the operation scheduled before it gets nuked.	this gives better information on the waiting list when it comes to rescheduling
-					$operation->site_id = $model->ward->site->id;
-
 					$model->delete();
 
+					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
 
 					// we've just removed a booking and updated the element_operation status to 'needs rescheduling'
