@@ -97,7 +97,7 @@ DATE:
 <?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.htmlspecialchars($session['procedures']) : 'No procedures'?><br />
 <?php echo htmlspecialchars($session['operationComments']) ?>
 <td><?php echo $session['admissionTime'] ?></td>
-</td></tr>
+</tr>
 <?php
 			}
 		}

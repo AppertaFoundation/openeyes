@@ -116,12 +116,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							</span>
 
 							<button type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
-							<?php $this->endWidget()?>
 						</div>
 
 					</div> <!-- #extra-search -->
-					</form>
 				</div> <!-- #search-options -->
+				<?php $this->endWidget()?>
 
 				<div id="theatreList">
 				</div>

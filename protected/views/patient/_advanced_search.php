@@ -31,11 +31,10 @@ $form=$this->beginWidget('CActiveForm', array(
 			</div>
 		</div>
 		<div class="form_button">
-			<button type="submit" style="margin-top: -33px; float: right; display: block;" class="classy blue tall" id="findPatient_details" tabindex="2"><span class="button-span button-span-blue">Find patient</button>
+			<button type="submit" style="margin-top: -33px; float: right; display: block;" class="classy blue tall" id="findPatient_details" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
 		</div>
 	</div>
-	<?php $this->endWidget();?>
-</form>
+<?php $this->endWidget();?>
 <script type="text/javascript">
 	$('#dob_day').watermark('DD');
 	$('#dob_month').watermark('MM');
