@@ -232,10 +232,27 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$('button[id^="btn_save_"]').die('click').live('click',function() {
 		var data = {}
 
+		var ok = true;
+
 		$('input[name^="admitTime_"]').map(function() {
 			var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-			data["operation_"+m[2]] = $(this).val();
+			var m2 = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+
+			if (!m2) {
+				alert("Please enter a valid admission time, eg 09:30");
+				$(this).select().focus();
+				ok = false;
+				return false;
+			} else {
+				if (m2[1].length <2) {
+					m2[1] = "0"+m2[1];
+				}
+				$(this).val(m2[1]+":"+m2[2]);
+			}
+			data["operation_"+m[2]] = m2[1]+":"+m2[2];
 		});
+
+		if (!ok) return false;
 
 		$('textarea[name^="comments"]').map(function() {
 			var id = $(this).attr('id').match(/[0-9]+/);
