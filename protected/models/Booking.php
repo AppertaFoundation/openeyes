@@ -59,6 +59,7 @@ class Booking extends BaseActiveRecord
 			array('ward_id', 'numerical', 'integerOnly'=>true),
 			array('element_operation_id, session_id', 'length', 'max'=>10),
 			array('element_operation_id, session_id, display_order, ward_id, admission_time', 'safe'),
+			array('admission_time', 'match', 'pattern' => '/^[0-9]{1,2}.*?[0-9]{2}$/'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, element_operation_id, session_id, display_order, ward_id', 'safe', 'on'=>'search'),

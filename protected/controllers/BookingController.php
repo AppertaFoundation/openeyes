@@ -355,6 +355,10 @@ class BookingController extends BaseController
 
 		if (isset($_POST['Booking']))
 		{
+			// This is enforced in the model so no need to if ()
+			preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/',$_POST['Booking']['admission_time'],$m);
+			$_POST['Booking']['admission_time'] = $m[1].":".$m[2];
+
 			$model->attributes=$_POST['Booking'];
 
 			$session = Session::model()->findByPk($model->session_id);
@@ -478,6 +482,10 @@ class BookingController extends BaseController
 					$wards = $operation->getWardOptions(
 						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
 					$model->ward_id = key($wards);
+
+					// This is enforced in the model so no need to if ()
+					preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/',$_POST['Booking']['admission_time'],$m);
+					$_POST['Booking']['admission_time'] = $m[1].":".$m[2];
 
 					$model->attributes = $_POST['Booking'];
 					if (!$model->save()) {

@@ -319,6 +319,10 @@ class TheatreController extends BaseController
 					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
 
 					if (!empty($booking)) {
+						// This is validated in the model and the front-end so doesn't need an if ()
+						preg_match('/^([0-9]{1,2}).*?([0-9]{2})$/',$value,$m2);
+						$value = $m2[1].":".$m2[2];
+
 						$booking->confirmed = (@$_POST['confirm_'.$m[1]] ? 1 : 0);
 						$booking->admission_time = $value;
 						$booking->display_order = $display_order++;
