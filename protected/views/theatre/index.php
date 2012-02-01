@@ -304,7 +304,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 				view_mode();
 				load_table_states();
-				load_purple_states();
+				<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+					load_purple_states();
+				<?php }?>
 				$('div[id^="buttons_"]').hide();
 			}
 		});
