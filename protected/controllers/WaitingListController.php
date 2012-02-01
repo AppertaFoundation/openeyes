@@ -144,6 +144,7 @@ class WaitingListController extends BaseController
 			->from('firm f')
 			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
 			->join('specialty s', 'ssa.specialty_id = s.id')
+			->order('f.name asc')
 			->where('ssa.specialty_id=:id',
 				array(':id'=>$specialtyId))
 			->queryAll();
@@ -212,7 +213,7 @@ class WaitingListController extends BaseController
 			
 			// Don't print GP letter if GP is not defined
 			if($letter_status != ElementOperation::LETTER_GP || $patient->gp) {
-				Yii::log("Printing letter: ".$letter_template);
+				Yii::log("Printing letter: ".$letter_template, 'trace');
 				$this->renderPartial('/letters/'.$letter_template, array(
 					'operation' => $operation,
 					'site' => $site,
@@ -232,10 +233,10 @@ class WaitingListController extends BaseController
 					$operation->confirmLetterPrinted();
 				}
 			} else {
-				Yii::log("Patient has no GP, printing letter supressed: ".$patient->id);
+				Yii::log("Patient has no GP, printing letter supressed: ".$patient->id, 'trace');
 			}
 		} else if($letter_status === null) {
-			Yii::log("No letter is due: ".$patient->id);
+			Yii::log("No letter is due: ".$patient->id, 'trace');
 		} else {
 			throw new CException('Undefined letter status');
 		}

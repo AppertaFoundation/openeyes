@@ -93,7 +93,7 @@
 </p>
 
 <p>
-	It is very important that you let us know immeadiately if you are unable to keep this admission	date.
+	It is very important that you let us know immediately if you are unable to keep this admission	date.
 	Please let us know by return of post, or if necessary, telephone
 	<?php if ($site->id == 5) {
 		// St Georges ?>
@@ -131,7 +131,7 @@
 		<th>Ward:</th>
 		<td><?php if ($specialty->id == 13) {
 			// Refractive laser ?>
-			Refractive waiting room - Cumberlidge Wing 4th Floor
+			Refractive waiting room - Cumberledge Wing 4th Floor
 		<?php } else { ?>
 			<?php echo CHtml::encode($booking->ward->name); ?>
 		<?php } ?>
@@ -159,7 +159,7 @@
 </p>
 
 <p>
-	<strong>It is important that you let us know immeadiately if you wish to cancel or rearrange this admission
+	<strong>It is important that you let us know immediately if you wish to cancel or rearrange this admission
 	date.  
 	<?php if ($site->id == 1 && $specialty->id != 13) {	// City Road and not Refractive ?>
 	You can do this by calling <?php echo $refuseContact ?> within 5 working days.
@@ -192,7 +192,7 @@
 <ul>
 	<li>Bring this letter with you on date of admission</li>
 	<li>Please go directly to <?php if ($specialty->id == 13) {
-		// Refractive laser ?> Refractive waiting room - Cumberlidge Wing 4th
+		// Refractive laser ?> Refractive waiting room - Cumberledge Wing 4th
 		Floor<?php } else { ?><?php echo CHtml::encode($booking->ward->name) ?> ward<?php } ?></li>
 	<li>Please bring with you any medication you are using</li>
 	<li>You must not drive yourself to or from hospital</li>

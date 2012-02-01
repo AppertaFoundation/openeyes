@@ -920,7 +920,7 @@ class ElementOperation extends BaseElement
 
 	public function getNextLetter()
 	{
-		if (!$this->getLastLetter()) {
+		if (is_null($this->getLastLetter())) {
 			return self::LETTER_INVITE;
 		} else {
 			$lastletter = $this->getLastLetter();
@@ -1052,7 +1052,7 @@ class ElementOperation extends BaseElement
 	public function getProceduresString() {
 		$procedures = array();
 		foreach($this->procedures as $procedure) {
-			$procedures[] = $procedure->short_format;
+			$procedures[] = $procedure->term;
 		}
 		return implode(', ',$procedures);
 	}
@@ -1064,7 +1064,7 @@ class ElementOperation extends BaseElement
 		$changeContact = '';
 		$siteId = $this->site->id;
 		$serviceId = $this->event->episode->firm->serviceSpecialtyAssignment->service->id;
-		$firmId = $this->event->episode->firm->id;
+		$firmCode = $this->event->episode->firm->pas_code;
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
@@ -1081,8 +1081,8 @@ class ElementOperation extends BaseElement
 							$changeContact = 'Sarah Veerapatren on 020 7566 2206/2292';
 							break;
 						case 4: // Cataract
-							switch($firmId)  {
-								case 68: // Julian Stevens
+							switch($firmCode)  {
+								case 'STEJ': // Julian Stevens
 									$changeContact = 'Joyce Carmichael on 020 7566 2205/2704';
 									break;
 								default:
@@ -1091,8 +1091,8 @@ class ElementOperation extends BaseElement
 							}
 							break;
 						case 5: // External Disease aka Corneal
-							switch($firmId)  {
-								case 68: // Julian Stevens
+							switch($firmCode)  {
+								case 'STEJ': // Julian Stevens
 									$changeContact = 'Joyce Carmichael on 020 7566 2205/2704';
 									break;
 								default:
@@ -1145,7 +1145,7 @@ class ElementOperation extends BaseElement
 	 * Contact number/details for health/refuse
 	 */
 	public function getAdmissionContact() {
-		$siteId = $this->site->id;
+		$siteId = $this->booking->ward->site_id;
 		$specialty = $this->event->episode->firm->serviceSpecialtyAssignment->specialty;
 		$contact = array(
 			'refuse' => $specialty->name . ' Admission Coordinator on ',
@@ -1166,10 +1166,10 @@ class ElementOperation extends BaseElement
 					case 8: // Medical Retinal
 						$contact['refuse'] .= '020 7566 2258';
 						break;
-					//case 11: // Paediatrics
-						//$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						//$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
-						//break;
+					case 11: // Paediatrics
+						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						break;
 					case 13: // Refractive Laser
 						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
 						$contact['health'] = '020 7253 3411 X4336 and ask Laser Nurse';
@@ -1192,6 +1192,10 @@ class ElementOperation extends BaseElement
 			case 4: // Northwick Park
 				$contact['refuse'] .= '020 8869 3162';
 				//$contact['health'] = 'Sister Titmus on 020 8869 3162';
+			case 5: // St George's
+				$contact['refuse'] .= '020 8725 0060';
+				$contact['health'] = '020 8725 0060';
+				break;
 			case 6: // Mile End
 				switch ($specialty->id) {
 					case 7:	// Glaucoma
@@ -1211,10 +1215,6 @@ class ElementOperation extends BaseElement
 				$contact['refuse'] .= '020 8211 8323';
 				//$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
 				break;
-			//case 5: // St George's
-				//$contact['refuse'] .= '020 8725 0060';
-				//$contact['health'] = '020 8725 0060';
-				//break;
 		}
 		return $contact;
 	}

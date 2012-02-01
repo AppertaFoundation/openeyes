@@ -38,7 +38,7 @@ class BaseElement extends BaseActiveRecord
 	public function __construct($scenario = 'insert', $patientId = null) {
 		if($patientId !== null) {
 			throw new CException('Element constructor called with bad args, old code needs fixing');
-			Yii::log('Element constructor called with bad args, old code needs fixing');
+			Yii::log('Element constructor called with bad args, old code needs fixing', 'warning');
 		}
 		parent::__construct($scenario);
 	}

@@ -193,6 +193,19 @@ class BookingController extends BaseController
 
 					OELog::log("Booking cancelled: $model->id (booking_cancellation=$cancellation->id");
 
+					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+							if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
+								$targets = array(Yii::app()->params['urgent_booking_notify_email']);
+							} else {
+								$targets = Yii::app()->params['urgent_booking_notify_email'];
+							}
+							foreach ($targets as $email) {
+								mail($email, "[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: ".$operation->getDisorder()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: ".Yii::app()->params['urgent_booking_notify_email_from']."\r\n");
+							}
+						}
+					}
+
 					if (!$model->delete()) {
 						throw new SystemException('Unable to save cancelled_booking: '.print_r($model->getErrors(),true));
 					}
@@ -342,6 +355,10 @@ class BookingController extends BaseController
 
 		if (isset($_POST['Booking']))
 		{
+			// This is enforced in the model so no need to if ()
+			preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/',$_POST['Booking']['admission_time'],$m);
+			$_POST['Booking']['admission_time'] = $m[1].":".$m[2];
+
 			$model->attributes=$_POST['Booking'];
 
 			$session = Session::model()->findByPk($model->session_id);
@@ -395,6 +412,19 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
+				if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+					if (strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+						if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
+							$targets = array(Yii::app()->params['urgent_booking_notify_email']);
+						} else {
+							$targets = Yii::app()->params['urgent_booking_notify_email'];
+						}
+						foreach ($targets as $email) {
+							mail($email, "[OpenEyes] Urgent booking made","A patient booking was made with a TCI date within the next 24 hours.\n\nDisorder: ".$operation->getDisorder()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: ".Yii::app()->params['urgent_booking_notify_email_from']."\r\n");
+						}
+					}
+				}
+
 				if ($operation->status == ElementOperation::STATUS_NEEDS_RESCHEDULING) {
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 				} else {
@@ -403,6 +433,11 @@ class BookingController extends BaseController
 				if (!empty($_POST['Operation']['comments'])) {
 					$operation->comments = $_POST['Operation']['comments'];
 				}
+				
+				// Update the proposed site for the operation to match the booked site (ward)
+				// This gives better information on the waiting list when it comes to rescheduling
+				$operation->site_id = $model->ward->site_id;
+				
 				if (!$operation->save()) {
 					throw new SystemException('Unable to update operation data: '.print_r($operation->getErrors(),true));
 				}
@@ -429,7 +464,8 @@ class BookingController extends BaseController
 		if (isset($_POST['booking_id'])) {
 			$model = Booking::model()->findByPk($_POST['booking_id']);
 
-			$operationId = $model->elementOperation->id;
+			$operation = $model->elementOperation;
+			$operationId = $operation->id;
 
 			$reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
 
@@ -447,12 +483,39 @@ class BookingController extends BaseController
 				OELog::log("Booking cancelled: $model->id, cancelled_booking=$cancellation->id");
 
 				if (!empty($_POST['Booking'])) {
+
+					$wards = $operation->getWardOptions(
+						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
+					$model->ward_id = key($wards);
+
+					// This is enforced in the model so no need to if ()
+					preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/',$_POST['Booking']['admission_time'],$m);
+					$_POST['Booking']['admission_time'] = $m[1].":".$m[2];
+
 					$model->attributes = $_POST['Booking'];
 					if (!$model->save()) {
 						throw new SystemException('Unable to save booking: '.print_r($model->getErrors(),true));
 					}
 
 					OELog::log("Booking rescheduled: $model->id, cancelled_booking=$cancellation->id");
+
+					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+							if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
+								$targets = array(Yii::app()->params['urgent_booking_notify_email']);
+							} else {
+								$targets = Yii::app()->params['urgent_booking_notify_email'];
+							}
+							foreach ($targets as $email) {
+								mail($email, "[OpenEyes] Urgent reschedule made","A patient booking was rescheduled with a TCI date within the next 24 hours.\n\nDisorder: ".$operation->getDisorder()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: ".Yii::app()->params['urgent_booking_notify_email_from']."\r\n");
+							}
+						}
+					}
+
+					// Looking for a matching row in transport_list and remove it so the entry in the transport list isn't grey
+					if ($tl = TransportList::model()->find('item_table = ? and item_id = ?',array('booking',$model->id))) {
+						$tl->delete();
+					}
 
 					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
@@ -467,12 +530,22 @@ class BookingController extends BaseController
 						}
 					}
 				} else {
-					$operation = ElementOperation::model()->findByPk($operationId);
-					// we need to update the element_operation with a more accurate site_id based on what /was/ in the operation scheduled before it gets nuked.  this gives better information on the waiting list when it comes to rescheduling
-					$operation->site_id = $model->ward->site->id;
+					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+							if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
+								$targets = array(Yii::app()->params['urgent_booking_notify_email']);
+							} else {
+								$targets = Yii::app()->params['urgent_booking_notify_email'];
+							}
+							foreach ($targets as $email) {
+								mail($email, "[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: ".$operation->getDisorder()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: ".Yii::app()->params['urgent_booking_notify_email_from']."\r\n");
+							}
+						}
+					}
 
 					$model->delete();
 
+					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
 
 					// we've just removed a booking and updated the element_operation status to 'needs rescheduling'

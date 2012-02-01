@@ -116,12 +116,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							</span>
 
 							<button type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
-							<?php $this->endWidget()?>
 						</div>
 
 					</div> <!-- #extra-search -->
-					</form>
 				</div> <!-- #search-options -->
+				<?php $this->endWidget()?>
 
 				<div id="theatreList">
 				</div>
@@ -232,10 +231,27 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$('button[id^="btn_save_"]').die('click').live('click',function() {
 		var data = {}
 
+		var ok = true;
+
 		$('input[name^="admitTime_"]').map(function() {
 			var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-			data["operation_"+m[2]] = $(this).val();
+			var m2 = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+
+			if (!m2) {
+				alert("Please enter a valid admission time, eg 09:30");
+				$(this).select().focus();
+				ok = false;
+				return false;
+			} else {
+				if (m2[1].length <2) {
+					m2[1] = "0"+m2[1];
+				}
+				$(this).val(m2[1]+":"+m2[2]);
+			}
+			data["operation_"+m[2]] = m2[1]+":"+m2[2];
 		});
+
+		if (!ok) return false;
 
 		$('textarea[name^="comments"]').map(function() {
 			var id = $(this).attr('id').match(/[0-9]+/);
@@ -247,6 +263,26 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				var id = $(this).attr('id').match(/[0-9]+/);
 				data["confirm_"+id] = $(this).val();
 			}
+		});
+
+		$('input[name^="consultant_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["consultant_"+id] = $(this).is(':checked');
+		});
+
+		$('input[name^="paediatric_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["paediatric_"+id] = $(this).is(':checked');
+		});
+
+		$('input[name^="anaesthetic_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["anaesthetic_"+id] = $(this).is(':checked');
+		});
+
+		$('input[name^="available_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["available_"+id] = $(this).is(':checked');
 		});
 
 		$.ajax({
@@ -268,6 +304,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 				view_mode();
 				load_table_states();
+				load_purple_states();
 				$('div[id^="buttons_"]').hide();
 			}
 		});

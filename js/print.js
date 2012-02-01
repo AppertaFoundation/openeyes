@@ -26,8 +26,9 @@ function printContent() {
 	});
 }
 
-function printUrl(url) {
-	$('#printable').load(url, function() {
+function printUrl(url, data) {
+	$.post(url, data, function(content) {
+		$('#printable').html(content);
 		printContent();
 	});
 }

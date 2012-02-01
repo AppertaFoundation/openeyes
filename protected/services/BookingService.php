@@ -239,7 +239,7 @@ class BookingService
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed')
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status')
 				->from('session s')
 				->join('sequence q', 's.sequence_id = q.id')
 				->join('theatre t', 't.id = q.theatre_id')
@@ -267,7 +267,7 @@ class BookingService
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed')
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status')
 				->from('session s')
 				->join('sequence q', 's.sequence_id = q.id')
 				->join('theatre t', 't.id = q.theatre_id')

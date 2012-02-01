@@ -664,6 +664,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .waitinglistOrange {background:#f93;}
 .waitinglistRed {background:#e53737;}
 .waitinglistWhite {background:#eee;}
+.waitinglistGrey {background:#999;}
 
 /* ------------------------ PRINT STUFF */
 
@@ -764,3 +765,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 #procedureDiv,
 #enteredDiagnosisText { margin-left: 300px; background: #DAE6F1; }
+
+.purple_rinse { font-family:Georgia Times sans-serif; line-height:1.5; background:#a0f; border:1px solid #fee54f; padding:10px; position:relative; min-height: 50px; color: #fff; }
+.purple_rinse textarea { width: 200px; }
+.session_unavailable { color: #f00; }

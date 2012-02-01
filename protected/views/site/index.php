@@ -41,14 +41,13 @@ $this->layout = 'main'; ?>
 			echo CHtml::label('Search by hospital number:', 'hospital_number');
 			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 		?>
-		<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_id" tabindex="2"><span class="button-span button-span-blue">Find patient</button>
+		<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_id" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
 		<?php //$this->endWidget();?>
 	</div>
 	<?php
 	$this->renderPartial('/patient/_advanced_search');
 	$this->endWidget();
 	?>
-	</form>
 </div><!-- .centralColumn -->
 <div id="search-form" class="">
 </div><!-- search-form -->

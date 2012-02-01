@@ -28,6 +28,7 @@ if (!$reschedule) {
 			<tr>
 				<th>Operation list overview</th>
 				<th>Date: <?php echo Helper::convertDate2NHS($session['date']); ?></th>
+				<th>Anaesthetic type</th>
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 				<th>Admission time</th>
@@ -53,6 +54,7 @@ if (!$reschedule) {
 			<tr>
 				<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
 				<td><?php echo $procedureList; ?></td>
+				<td><?php echo $thisOperation->getAnaestheticText()?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
 				<td><?php echo $booking->admission_time ?></td>
 
@@ -83,6 +85,7 @@ if (!$reschedule) {
 		<div class="label"><strong>Admission Time:</strong></div>
 		<div class="data"> 
 			<input type="text" id="Booking_admission_time" name="Booking[admission_time]" value="<?php echo ($session['start_time'] == '13:30:00') ? '12:00' : date('H:i', strtotime('-1 hour', strtotime($session['start_time']))) ?>" size="6">
+			<span id="Booking_admission_time_error"></span>
 		</div>
 	</div>
 
@@ -156,12 +159,25 @@ if (!$reschedule) {
 		});
 	<?php if ($reschedule) { ?>
 		$('#bookingForm button#confirm_slot').click(function () {
+			if (!$('#Booking_admission_time').val().match(/^[0-9]{1,2}.*?[0-9]{2}$/)) {
+				$('#Booking_admission_time_error').html('Please enter a valid admission time, eg 09:30');
+				$('#Booking_admission_time').select().focus();
+				return false;
+			}
 			if ($('#cancellation_reason option:selected').val() == '') {
 				$('div.errorSummary').html('Please select a reason for reschedule');
 				$('div.errorSummary').show();
 				return false;
 			}
 		});
-	<?php } ?>
+	<?php }else {?>
+		$('#bookingForm button#confirm_slot').click(function () {
+			if (!$('#Booking_admission_time').val().match(/^[0-9]{1,2}.*?[0-9]{2}$/)) {
+				$('#Booking_admission_time_error').html('Please enter a valid admission time, eg 09:30');
+				$('#Booking_admission_time').select().focus();
+				return false;
+			}
+		});
+	<?php }?>
 	</script>
 <?php }?>

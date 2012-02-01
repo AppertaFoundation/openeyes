@@ -74,6 +74,7 @@ DATE:
 <th>AGE</th>
 <th>WARD</th>
 <th>GA or LA</th>
+<th>PRIORITY</th>
 <th>PROCEDURES AND COMMENTS</th>
 <th>ADMISSION TIME</th>
 </tr>
@@ -91,11 +92,12 @@ DATE:
 <td><?php echo htmlspecialchars($session['patientAge']) ?></td>
 <td><?php echo htmlspecialchars($session['ward']) ?></td>
 <td><?php echo htmlspecialchars($session['anaesthetic']) ?></td>
+<td><?php echo $session['priority']?></td>
 <td style="max-width: 500px; word-wrap:break-word; overflow: hidden;">
 <?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.htmlspecialchars($session['procedures']) : 'No procedures'?><br />
 <?php echo htmlspecialchars($session['operationComments']) ?>
 <td><?php echo $session['admissionTime'] ?></td>
-</td></tr>
+</tr>
 <?php
 			}
 		}
