@@ -211,8 +211,8 @@ class BookingController extends BaseController
 					}
 				}
 
-				$this->redirect(array('patient/episodes','id'=>$patientId,
-					'event'=>$operation->event->id));
+				$this->redirect(array('patient/episodes','id'=>$patientId, 'event'=>$operation->event->id));
+				exit;
 			}
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
