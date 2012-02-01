@@ -239,7 +239,7 @@ class BookingService
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status')
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln')
 				->from('session s')
 				->join('sequence q', 's.sequence_id = q.id')
 				->join('theatre t', 't.id = q.theatre_id')
@@ -253,6 +253,8 @@ class BookingService
 				->join('firm f', 'f.id = sfa.firm_id')
 				->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
 				->join('specialty spec', 'spec.id = ssa.specialty_id')
+				->join('user mu','b.last_modified_user_id = mu.id')
+				->join('user cu','b.created_user_id = cu.id')
 				->leftJoin('ward w', 'w.id = b.ward_id')
 				->where($whereSql, $whereParams)
 				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
@@ -267,7 +269,7 @@ class BookingService
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status')
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln')
 				->from('session s')
 				->join('sequence q', 's.sequence_id = q.id')
 				->join('theatre t', 't.id = q.theatre_id')
@@ -279,6 +281,8 @@ class BookingService
 				->leftJoin('patient p', 'p.id = ep.patient_id')
 				->leftJoin('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
 				->leftJoin('ward w', 'w.id = b.ward_id')
+				->join('user mu','b.last_modified_user_id = mu.id')
+				->join('user cu','b.created_user_id = cu.id')
 				->where($whereSql, $whereParams)
 				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
 		}

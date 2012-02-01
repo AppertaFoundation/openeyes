@@ -169,6 +169,7 @@ if (empty($theatres)) {?>
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
 <?php
 					}
+					?><img src="/img/_elements/icons/alerts/booked_user.png" alt="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" title="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" width="17" height="17" /><?php
 				}
 ?>
 								</td>
