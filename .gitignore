@@ -29,3 +29,5 @@ protected/commands/BillCommand.php
 protected/commands/FetchBookings2Command.php
 
 07_edit_operation_optional.html
+07_edit_op_opt_demo1.html
+07_edit_op_opt_demo2.html

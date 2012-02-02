@@ -203,7 +203,7 @@ button.classy span.with-rightarrow		{ background: transparent url(../img/_elemen
 button.mini 							{ height:24px; font-size:13px; width: auto; margin:0 2px; }
 button.mini span						{ padding:0 18px; }
 button.mini span.button-span	  	 	{ display:block; height:24px; line-height:23px; } 
-
+button.mini span.button-span.icon-only	{ padding:0 4px; }
 
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
 button#addNewEvent { width:202px; }
@@ -484,6 +484,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .episode_details > .row  { padding:0 0 2px 2px;  }
 .episode_details > .row .label { display:inline-block; width:130px; font-size:12px; color:#666; }
 
+
 /* ====== EVENT DISPLAY ====== *//
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
@@ -510,8 +511,9 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #event_content .eventHighlight > h4 { color:#000; font-size:16px; padding:0 10px 5px 10px; }
 #event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 /* event detail */
-#event_content .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px;  }
-#event_content .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:15px;  }
+#event_content .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px; position:relative; }
+#event_content .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:15px; }
+#event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;  }
 
 .eventDetail > .data { display:inline-block; }
 .eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
@@ -522,14 +524,23 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .eventDetail .extraDetails { display:block; margin:8px 0; padding-top:8px; border-top:1px dotted #b9c4cd; }
 .extraDetails-margin { margin-left: 310px; }
 
-/* optional elements  */
+/* all optional elements hidden in flow */
+#event_content .eventDetail.optional { border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c; margin-top:6px; margin-bottom: 8px;  }
+
+/* optional elements listed at bottom of edit event */
 #event_content .optionalElements { margin:20px 0; padding-bottom:20px; border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c;}
-#event_content .optionalElements > .eventDetail { margin-bottom:8px; position:relative; }
+#event_content .optionalElements > .eventDetail { margin-bottom:8px; }
 /* viewing (not added) */
 .optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/extra-element_view.png) top right no-repeat; padding:4px 10px; margin:0; border-bottom:1px dotted #fafafa; }
+.optionalElements > .elementMeta:hover 	{ background-color: #3665ff; cursor: pointer; }
+.optionalElements > .elementMeta:active { background-color: #458446; }
+/* element added */
 .optionalElements > .elementMeta.added { background:#aeb8c2 url(../img/_elements/icons/extra-element_added.png) top right no-repeat; }
-.optionalElements > .elementMeta:hover { background-color: #3665ff; cursor: pointer; }
+.optionalElements > .elementMeta.added:hover { background-color: #458446; cursor: default;}
+.elementMeta > .clickHint { font-weight: normal; float: right; padding-right:20px;   }
 .eventDetail .addOptional { position:absolute; top:8px; right:5px; }
+
+
 
 
 /* ====== EVENT GENERAL ====== */
