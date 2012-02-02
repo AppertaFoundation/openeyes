@@ -530,6 +530,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* optional elements listed at bottom of edit event */
 #event_content .optionalElements { margin:20px 0; padding-bottom:20px; border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c;}
 #event_content .optionalElements > .eventDetail { margin-bottom:8px; }
+<<<<<<< HEAD
 /* add remove all */
 .optionalElements > .optionalsAll { font-size:12px; background:#dae6f1; border-bottom:1px dotted #fafafa; }
 .optionalElements > .optionalsAll div { float:right; height:28px; }
@@ -537,6 +538,8 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .optionalElements > .optionalsAll .allButton > a { position:relative; top:2px; }
 
 
+=======
+>>>>>>> 5690c521975ccf7bfd4616aa387445136c67c409
 /* viewing (not added) */
 .optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/extra-element_view.png) top right no-repeat; padding:4px 10px; margin:0; border-bottom:1px dotted #fafafa; }
 .optionalElements > .elementMeta:hover 	{ background-color: #3665ff; cursor: pointer; }
