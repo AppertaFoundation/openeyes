@@ -41,11 +41,20 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    drawingEdit.addDoodle('Iris');
-                    drawingEdit.addDoodle('Pupil');
+                    //drawingEdit.addDoodle('Fundus');
+                    //drawingEdit.addDoodle('RRD');
+                    //drawingEdit.addDoodle('RoundHole');
+
+                    //drawingEdit.addDoodle('OpticDisk');
+                    drawingEdit.addDoodle('OpticCup');
+                    //drawingEdit.addDoodle('OpticDisk');
+                    //drawingEdit.addDoodle('OpticDiskPit');
                     
-                    drawingEdit.addDoodle('Molteno');
-                    var dood = drawingEdit.addDoodle('Supramid');
+                    //drawingEdit.addDoodle('Iris');
+                    //drawingEdit.addDoodle('Pupil');
+                    
+                    //drawingEdit.addDoodle('Molteno');
+                    //var dood = drawingEdit.addDoodle('Supramid');
                     //dood.baseRadius = 280;
                     //drawingEdit.addDoodle('Vicryl');
                     
@@ -118,6 +127,7 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                             <button class="imgbutton" title="Ahmed" onclick="drawingEdit.addDoodle('Ahmed'); return false;" ><img src="graphics/ahmed.gif" /></button>
                             <button class="imgbutton" title="Vicryl suture" onclick="drawingEdit.addDoodle('Vicryl'); return false;" ><img src="graphics/vicryl.gif" /></button>
                             <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('Supramid'); return false;" ><img src="graphics/supramid.gif" /></button>
+                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('OpticDiskPit'); return false;" ><img src="graphics/opticDiskPit.gif" /></button>
                             <br />
                             
                             <!-- Canvas element -->

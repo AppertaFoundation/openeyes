@@ -774,10 +774,30 @@ ED.Drawing.prototype.mousemove = function(_point)
 					this.selectedDoodle.apexY = this.selectedDoodle.rangeOfApexY.constrain(this.selectedDoodle.apexY);
 					break;
 				case ED.Mode.Handles:
-					// Move handles to new position (Stored in first 4 points of a squiggle)
+					// Move handles to new position (Stored in a squiggle)
                     var i = this.selectedDoodle.draggingHandleIndex;
-					this.selectedDoodle.squiggleArray[0].pointsArray[i].x += (mousePosSelectedDoodlePlane.x - lastMousePosSelectedDoodlePlane.x);
-					this.selectedDoodle.squiggleArray[0].pointsArray[i].y += (mousePosSelectedDoodlePlane.y - lastMousePosSelectedDoodlePlane.y);
+                    
+                    
+                    // TEMP testing constraining radius
+                    var p = this.selectedDoodle.squiggleArray[0].pointsArray[i];
+                    if (p.length() < this.selectedDoodle.rangeOfRadius.max)
+                    {
+                        this.selectedDoodle.squiggleArray[0].pointsArray[i].x += (mousePosSelectedDoodlePlane.x - lastMousePosSelectedDoodlePlane.x);
+                        this.selectedDoodle.squiggleArray[0].pointsArray[i].y += (mousePosSelectedDoodlePlane.y - lastMousePosSelectedDoodlePlane.y);
+                    }
+                    else
+                    {
+                        if (p.x * p.x > p.y * p.y)
+                        {
+                            var ax = Math.abs(p.x);
+                            p.x = (ax - 1) * p.x/ax;
+                        }
+                        else
+                        {
+                            var ay = Math.abs(p.y);
+                            p.y = (ay - 1) * p.y/ay;
+                        }
+                    }
 
                     // Enforce bounds
 					this.selectedDoodle.squiggleArray[0].pointsArray[i].x = this.selectedDoodle.rangeOfHandlesXArray[i].constrain(this.selectedDoodle.squiggleArray[0].pointsArray[i].x);
@@ -1684,6 +1704,7 @@ ED.Report = function(_drawing)
     breakClassArray["Dialysis"] = "Dialysis";
     breakClassArray["GRT"] = "GRT";
     breakClassArray["MacularHole"] = "Macular hole";
+    breakClassArray["OuterLeafBreak"] = "Outer Leaf Break";
     
     // Array of RRD doodles
     this.rrdArray = new Array();
@@ -1723,7 +1744,7 @@ ED.Report = function(_drawing)
         {
             // Bearing of break is calculated in two different ways
             var breakBearing = 0;
-            if( doodle.className == "UTear" || doodle.className == "RoundHole")
+            if( doodle.className == "UTear" || doodle.className == "RoundHole" || doodle.className == "OuterLeafBreak")
             {
                 breakBearing = (Math.round(Math.atan2(doodle.originX, -doodle.originY) * 180/Math.PI) + 360) % 360;
             }
@@ -1935,6 +1956,7 @@ ED.Report.prototype.isMacOff = function()
  * @property {Range} rangeOfApexY Range of allowable values of apexY
  * @property {Array} rangeOfHandlesXArray Array of four ranges of allowable values of x coordinate of handle
  * @property {Array} rangeOfHandlesYArray Array of four ranges of allowable values of y coordinate of handle
+ * @property {Range} rangeOfRadius Range of allowable values of radius
  * @property {Bool} isSelected True if doodle is currently selected
  * @property {Bool} isBeingDragged Flag indicating doodle is being dragged
  * @property {Int} draggingHandleIndex index of handle being dragged
@@ -2241,7 +2263,7 @@ ED.Doodle.prototype.drawHandles = function(_point)
 	// Draw corner handles
 	var arc = Math.PI*2;
 	
-	for (var i = 0; i < 5; i++)
+	for (var i = 0; i < this.handleArray.length; i++)
 	{
 		var handle = this.handleArray[i];
 		
@@ -2841,6 +2863,18 @@ ED.Point.prototype.length = function()
 }
 
 /**
+ * Calculates the direction of the point treated as a vector
+ *
+ * @returns {Float} The angle from zero (north) going clockwise
+ */
+ED.Point.prototype.direction = function()
+{
+    var north = new ED.Point(0, -100);
+    
+	return north.clockwiseAngleTo(this);
+}
+
+/**
  * Inner angle to other vector from same origin going round clockwise from vector a to vector b
  *
  * @param {Point} _point
@@ -2857,6 +2891,25 @@ ED.Point.prototype.clockwiseAngleTo = function(_point)
 	{
 		return angle;
 	}
+}
+
+/**
+ *
+ */
+ED.Point.prototype.tangentialControlPoint = function(_phi)
+{
+    // Calculate length of line from origin to point and direction (clockwise from north)
+    var r = this.length();
+    var angle = this.direction();
+    
+    // Calculate length of control point
+    var h = r/Math.cos(_phi);
+    
+    // Create point and set length and direction
+    var point = new ED.Point(0, 0);
+    point.setWithPolars(h, angle + _phi);
+    
+    return point;    
 }
 
 /**

@@ -568,6 +568,7 @@ ED.RoundHole.prototype.draw = function(_point)
     var radius = this.scaleX * Math.sqrt(xco * xco + yco * yco);
     var width = this.scaleX * (oneWidthToRight.x - centre.x);
     this.arc = Math.atan(width/radius);
+    //console.log(this.arc * 180/Math.PI + " + " + this.calculateArc() * 180/Math.PI);
 	
 	// Return value indicating successful hittest
 	return this.isClicked;
@@ -2624,6 +2625,15 @@ ED.OuterLeafBreak.prototype.draw = function(_point)
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
+    
+    // Calculate arc (Arc property not used naturally in this doodle ***TODO** more elegant method of doing this possible!)
+    var centre = this.transform.transformPoint(new ED.Point(0,0));
+    var oneWidthToRight = this.transform.transformPoint(new ED.Point(60,0));
+    var xco = centre.x - this.drawing.canvas.width/2;
+    var yco = centre.y - this.drawing.canvas.height/2;
+    var radius = this.scaleX * Math.sqrt(xco * xco + yco * yco);
+    var width = this.scaleX * (oneWidthToRight.x - centre.x);
+    this.arc = Math.atan(width/radius);
 	
 	// Return value indicating successful hittest
 	return this.isClicked;
