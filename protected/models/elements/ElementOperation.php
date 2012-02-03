@@ -1087,7 +1087,6 @@ class ElementOperation extends BaseElement
 									break;
 								default:
 									$changeContact = 'Ian Johnson on 020 7566 2006';
-									break;
 							}
 							break;
 						case 5: // External Disease aka Corneal
@@ -1097,7 +1096,6 @@ class ElementOperation extends BaseElement
 									break;
 								default:
 									$changeContact = 'Ian Johnson on 020 7566 2006';
-									break;
 							}
 							break;
 						case 6: // Glaucoma
@@ -1110,7 +1108,6 @@ class ElementOperation extends BaseElement
 							break;
 						default: // Medical Retinal, Paediatric, Strabismus
 							$changeContact = 'Sherry Ramos on 0207 566 2258';
-						break;
 					}
 					break;
 				case 3: // Ealing
@@ -1135,7 +1132,6 @@ class ElementOperation extends BaseElement
 					break;
 				default: // St George's
 					$changeContact = 'Naeela Butt on 020 8725 0060';
-				break;
 			}
 		}
 		return $changeContact;
@@ -1192,6 +1188,7 @@ class ElementOperation extends BaseElement
 			case 4: // Northwick Park
 				$contact['refuse'] .= '020 8869 3162';
 				//$contact['health'] = 'Sister Titmus on 020 8869 3162';
+				break;
 			case 5: // St George's
 				$contact['refuse'] .= '020 8725 0060';
 				$contact['health'] = '020 8725 0060';
