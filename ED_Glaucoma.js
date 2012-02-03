@@ -1552,10 +1552,7 @@ ED.OpticDisk.prototype.description = function()
 ED.OpticCup = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {
     // Number of handles (set before superclass call because superclass calles setHandles())
-    this.numberOfHandles = 4;
-    
-    // Flag to simplify sizing of cup
-    this.isBasic = true;
+    this.numberOfHandles = 8;
     
 	// Call superclass constructor
 	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
@@ -1569,14 +1566,11 @@ ED.OpticCup = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _s
     // Add it to squiggle array
     this.squiggleArray.push(squiggle);
 
-    // Add points to the squiggle (stored points get allocated later ***TODO*** check)
-    var i;
-    for (i = 0; i < this.numberOfHandles; i++)
-    {
-        var point = new ED.Point(0, 0);
-        point.setWithPolars(this.radius, i * 2 * Math.PI/this.numberOfHandles);
-        this.addPointToSquiggle(point);
-    }
+    // Flag to simplify sizing of cup
+    this.isBasic = true;
+    
+    // Toggle function loads points if required
+    this.setHandleProperties();
 }
 
 /**
@@ -1591,12 +1585,13 @@ ED.OpticCup.superclass = ED.Doodle.prototype;
  */
 ED.OpticCup.prototype.setHandles = function()
 {
+    // Array of handles for expert mode
     for (var i = 0; i < this.numberOfHandles; i++)
     {
         this.handleArray[i] = new ED.Handle(null, true, ED.Mode.Handles, false);
     }
     
-    // Apex handle for 
+    // Apex handle for basic mode
     this.handleArray[this.numberOfHandles] = new ED.Handle(null, true, ED.Mode.Apex, false);
 }
 
@@ -1628,7 +1623,7 @@ ED.OpticCup.prototype.setParameterDefaults = function()
     this.radius = 200;
     this.apexY = -150;
     this.rangeOfRadius = new ED.Range(50, 280);
-    this.rangeOfApexY = new ED.Range(-280, -50);
+    this.rangeOfApexY = new ED.Range(-280, -20);
 }
 
 /**
@@ -1683,8 +1678,10 @@ ED.OpticCup.prototype.draw = function(_point)
         // Angle of control point from radius line to point (this value makes path a circle Math.PI/12 for 8 points
         var phi = 2 * Math.PI/(3 * this.numberOfHandles);
 
-        //  Start curve
+        // Start curve
         ctx.moveTo(this.squiggleArray[0].pointsArray[0].x, this.squiggleArray[0].pointsArray[0].y);
+        
+        // Complete curve segments
         for (var i = 0; i < this.numberOfHandles; i++)
         {
             // From and to points
@@ -1717,6 +1714,7 @@ ED.OpticCup.prototype.draw = function(_point)
 	// Coordinates of handles (in canvas plane)
     if (this.isBasic)
     {
+        // Location of apex handle and visibility on
         this.handleArray[this.numberOfHandles].location = this.transform.transformPoint(new ED.Point(0, this.apexY));
     }
     else
@@ -1742,17 +1740,26 @@ ED.OpticCup.prototype.draw = function(_point)
 ED.OpticCup.prototype.description = function()
 {
     var returnString = "";
+    var ratio = 0;
     
 	returnString += "Cup/disk ratio: ";
 	
-    // Sum distances of control points from centre
-    var sum = 0;
-    sum = sum - this.squiggleArray[0].pointsArray[0].x;
-    sum = sum - this.squiggleArray[0].pointsArray[1].y;
-    sum = sum + this.squiggleArray[0].pointsArray[2].x;
-    sum = sum + this.squiggleArray[0].pointsArray[3].y;
-    
-    var ratio = Math.round(10 * sum/1200)/10;
+    if (this.isBasic)
+    {
+        ratio = Math.round(10 * -this.apexY/300)/10;
+    }
+    else
+    {
+        // Sum distances of control points from centre
+        var sum = 0;
+        for (var i = 0; i < this.numberOfHandles; i++)
+        {            
+            sum += this.squiggleArray[0].pointsArray[i].length();
+        }
+        
+        // 
+        ratio = Math.round(10 * sum/(300 * this.numberOfHandles))/10;
+    }
     
     returnString += ratio.toString();
 	
@@ -1760,13 +1767,51 @@ ED.OpticCup.prototype.description = function()
 }
 
 /**
- * Returns a string containing a text description of the doodle
- *
- * @returns {String} Description of doodle
+ * Toggles state of doodle from basic to expert mode, setting handle visibility and coordinates accordingly
  */
 ED.OpticCup.prototype.toggleMode = function()
 {
+    // Toggle value
     this.isBasic = this.isBasic?false:true;
+}
+
+/**
+ * Defines handles coordinates and visibility
+ */
+ED.OpticCup.prototype.setHandleProperties = function()
+{
+    // Going from basic to expert
+    if (!this.isBasic)
+    {
+        // Clear array
+        this.squiggleArray[0].pointsArray.length = 0;
+        
+        // Populate with handles at equidistant points around circumference
+        for (var i = 0; i < this.numberOfHandles; i++)
+        {
+            var point = new ED.Point(0, 0);
+            point.setWithPolars(-this.apexY, i * 2 * Math.PI/this.numberOfHandles);
+            this.addPointToSquiggle(point);
+        }
+        
+        // Make handles visible, except for apex handle
+        for (var i = 0; i < this.numberOfHandles; i++)
+        {
+            this.handleArray[i].isVisible = true;
+        }
+        this.handleArray[this.numberOfHandles].isVisible = false;
+        
+    }
+    // Going from expert to basic
+    else
+    {
+        // Make handles invisible, except for apex handle
+        for (var i = 0; i < this.numberOfHandles; i++)
+        {
+            this.handleArray[i].isVisible = false;
+        }
+        this.handleArray[this.numberOfHandles].isVisible = true;        
+    }
 }
 
 /**
@@ -3784,8 +3829,8 @@ ED.OpticDiskPit.prototype.draw = function(_point)
 	ctx.closePath();
 
     // Radial gradient
-    var lightGray = "rgba(200, 200, 200, 1)";
-    var darkGray = "rgba(100, 100, 100, 1)";
+    var lightGray = "rgba(200, 200, 200, 0.75)";
+    var darkGray = "rgba(100, 100, 100, 0.75)";
     var gradient = ctx.createRadialGradient(0, 0, r, 0, 0, 10);
     gradient.addColorStop(0, darkGray);
     gradient.addColorStop(1, lightGray);
@@ -3819,7 +3864,7 @@ ED.OpticDiskPit.prototype.draw = function(_point)
  */
 ED.OpticDiskPit.prototype.description = function()
 {
-    var returnString = "OpticDiskPit suture";
+    var returnString = "Acquired pit of optic nerve";
     
 	return returnString;
 }

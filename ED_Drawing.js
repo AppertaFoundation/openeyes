@@ -2894,7 +2894,10 @@ ED.Point.prototype.clockwiseAngleTo = function(_point)
 }
 
 /**
+ * Creates a control point on a tangent to the radius of the point at an angle of phi from the radius
  *
+ * @param {Float} _phi Angle form the radius to the control point
+ * @returns {Point} The control point
  */
 ED.Point.prototype.tangentialControlPoint = function(_phi)
 {
