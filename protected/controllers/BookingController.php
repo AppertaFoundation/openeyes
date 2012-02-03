@@ -484,15 +484,16 @@ class BookingController extends BaseController
 
 				if (!empty($_POST['Booking'])) {
 
-					$wards = $operation->getWardOptions(
-						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
-					$model->ward_id = key($wards);
-
 					// This is enforced in the model so no need to if ()
 					preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/',$_POST['Booking']['admission_time'],$m);
 					$_POST['Booking']['admission_time'] = $m[1].":".$m[2];
 
 					$model->attributes = $_POST['Booking'];
+
+					$wards = $operation->getWardOptions(
+						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
+					$model->ward_id = key($wards);
+
 					if (!$model->save()) {
 						throw new SystemException('Unable to save booking: '.print_r($model->getErrors(),true));
 					}
