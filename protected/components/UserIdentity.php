@@ -94,7 +94,7 @@ class UserIdentity extends CUserIdentity
 				/**
 				 * User not authenticated via LDAP
 				 */
-				OELog::log("Login failed for user {$this->username}: LDAP authentication failed",$this->username);
+				OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(),$this->username);
 
 				$this->errorCode = self::ERROR_USERNAME_INVALID;
 				return false;
