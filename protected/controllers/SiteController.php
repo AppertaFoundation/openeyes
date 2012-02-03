@@ -87,32 +87,20 @@ class SiteController extends BaseController
 	/**
 	 * This is the action to handle external exceptions.
 	 */
-	public function actionError()
-	{
-		if($error=Yii::app()->errorHandler->error)
-		{
-			if(Yii::app()->request->isAjaxRequest)
+	public function actionError() {
+		if($error = Yii::app()->errorHandler->error) {
+			if(Yii::app()->request->isAjaxRequest) {
 				echo $error['message'];
-			else {
-				switch ($error['code']) {
-					case 404:
-						if (file_exists("error/404.php")) {
-							header('Location: /error/404.php');
-						} else {
-							header('Location: /error/404.sample.php');
-						}
-						exit;
-					case 500:
-					default:
-						error_log("URI: ".@$_SERVER['REQUEST_URI']);
-						error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
-
-						if (file_exists("error/500.php")) {
-							header('Location: /error/500.php');
-						} else {
-							header('Location: /error/500.sample.php');
-						}
-						exit;
+			} else {
+				$error_code = (int) $error['code'];
+				if($error_code != 404) {
+					//error_log("URI: ".@$_SERVER['REQUEST_URI']);
+					//error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
+				}
+				if(($view = $this->getViewFile('/error/error'.$error_code)) !== false) {
+					$this->render('/error/error'.$error_code, $error);
+				} else {
+					$this->render('/error/error', $error);
 				}
 			}
 		}
