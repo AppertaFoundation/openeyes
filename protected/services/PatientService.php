@@ -117,13 +117,16 @@ class PatientService
 				break;
 			}
 
-			foreach ($connection->createCommand("select * from SILVER.PATIENT_ADDRS where RM_PATIENT_NO = $pasPatient->RM_PATIENT_NO order by date_end desc")->queryAll() as $row) {
+			$address = $pasPatient->address;
+			/*
+			foreach ($connection->createCommand("select * from SILVER.PATIENT_ADDRS where RM_PATIENT_NO = $pasPatient->RM_PATIENT_NO and (DATE_END IS NULL or DATE_END > SYSDATE) order by DECODE(ADDR_TYPE, \'H\', 1, \'T\', 2, \'C\', 3, 4), DATE_START DESC")->queryAll() as $row) {
 				$address = PAS_PatientAddress::model();
 				foreach ($row as $key => $value) {
 					$address->{$key} = $value;
 				}
 				break;
 			}
+			*/
 
 			if (isset($address)) {
 				if ($patient = $this->updatePatient($pasPatient, $address, $result, $surname)) {
@@ -407,7 +410,6 @@ class PatientService
 		Yii::log('Pulling Patient data from PAS:'.$this->patient->id, 'trace');
 		if($pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
 			if($hos_num = $pas_patient->hos_number) {
-				// TODO: When does pas_key ever differ from RM_PATIENT_NO ($this->patient->id)?
 				$this->patient->pas_key = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
 				$this->patient->hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
 			}

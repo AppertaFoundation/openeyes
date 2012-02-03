@@ -211,8 +211,8 @@ class BookingController extends BaseController
 					}
 				}
 
-				$this->redirect(array('patient/episodes','id'=>$patientId,
-					'event'=>$operation->event->id));
+				$this->redirect(array('patient/episodes','id'=>$patientId, 'event'=>$operation->event->id));
+				exit;
 			}
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
@@ -484,15 +484,16 @@ class BookingController extends BaseController
 
 				if (!empty($_POST['Booking'])) {
 
-					$wards = $operation->getWardOptions(
-						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
-					$model->ward_id = key($wards);
-
 					// This is enforced in the model so no need to if ()
 					preg_match('/(^[0-9]{1,2}).*?([0-9]{2})$/',$_POST['Booking']['admission_time'],$m);
 					$_POST['Booking']['admission_time'] = $m[1].":".$m[2];
 
 					$model->attributes = $_POST['Booking'];
+
+					$wards = $operation->getWardOptions(
+						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
+					$model->ward_id = key($wards);
+
 					if (!$model->save()) {
 						throw new SystemException('Unable to save booking: '.print_r($model->getErrors(),true));
 					}
@@ -517,8 +518,13 @@ class BookingController extends BaseController
 						$tl->delete();
 					}
 
-					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
+					
+					// Update operation comments
+					if (!empty($_POST['Operation']['comments'])) {
+						$operation->comments = $_POST['Operation']['comments'];
+					}
+					
 					if (!$operation->save()) {
 						throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
 					}
@@ -545,19 +551,16 @@ class BookingController extends BaseController
 
 					$model->delete();
 
-					$operation = ElementOperation::model()->findByPk($operationId);
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
-
+					
 					// we've just removed a booking and updated the element_operation status to 'needs rescheduling'
 					// any time we do that we need to add a new record to date_letter_sent
 					$date_letter_sent = new DateLetterSent();
 					$date_letter_sent->element_operation_id = $operation->id;
 					$date_letter_sent->save();
 
-
 					if (!$operation->save()) {
 						throw new SystemException('Unable to update operation status: '.print_r($operation->getErrors(),true));
-					} else {
 					}
 				}
 

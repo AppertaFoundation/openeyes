@@ -57,13 +57,11 @@ if (empty($theatres)) {?>
 										<?php } ?>
 										<span<?php if (!$session['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<?php if(array_sum($session_metadata)) { ?>
 									<div class="metadata">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $previousSessionId?>" class="consultant" title="Consultant Present">Consultant</div>
 										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $previousSessionId?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $previousSessionId?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 									</div>
-									<?php } ?>
 								</th>
 							</tr>
 						</tfoot>
@@ -169,6 +167,7 @@ if (empty($theatres)) {?>
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
 <?php
 					}
+					?><img src="/img/_elements/icons/alerts/booked_user.png" alt="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" title="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" width="17" height="17" /><?php
 				}
 ?>
 								</td>
@@ -191,13 +190,11 @@ if (empty($theatres)) {?>
 										<?php } ?>
 										<span<?php if (!$previousSession['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<?php if(array_sum($session_metadata)) { ?>
 									<div class="metadata">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $session['sessionId']?>" class="consultant" title="Consultant Present">Consultant</div>
 										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session['sessionId']?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $session['sessionId']?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 									</div>
-									<?php } ?>
 								</th>
 							</tr>
 						</tfoot>
@@ -219,7 +216,9 @@ if (empty($theatres)) {?>
 
 	$(document).ready(function() {
 		load_table_states();
-		load_purple_states();
+		<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+			load_purple_states();
+		<?php }?>
 	});
 
 	function load_table_states() {
