@@ -1,0 +1,8 @@
+For local configuration, copy common.sample.php to common.php and edit as required.
+
+Web, console and test configurations may be overridden separately if required in a similar way.
+
+common.php - Used by main, test and console
+main.php - Used by main only
+test.php - Used by test only
+console.php - Used by console only
