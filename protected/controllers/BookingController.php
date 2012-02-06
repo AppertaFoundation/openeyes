@@ -490,8 +490,10 @@ class BookingController extends BaseController
 
 					$model->attributes = $_POST['Booking'];
 
+					$new_session = Session::Model()->findByPk($model->session_id);
+
 					$wards = $operation->getWardOptions(
-						$model->session->sequence->theatre->site_id, $model->session->sequence->theatre->id);
+						$new_session->sequence->theatre->site_id, $new_session->sequence->theatre->id);
 					$model->ward_id = key($wards);
 
 					if (!$model->save()) {
@@ -517,7 +519,8 @@ class BookingController extends BaseController
 					if ($tl = TransportList::model()->find('item_table = ? and item_id = ?',array('booking',$model->id))) {
 						$tl->delete();
 					}
-
+	
+					$operation->site_id = $new_session->sequence->theatre->site_id;
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 					
 					// Update operation comments
