@@ -253,8 +253,8 @@ class BookingService
 				->join('firm f', 'f.id = sfa.firm_id')
 				->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
 				->join('specialty spec', 'spec.id = ssa.specialty_id')
-				->join('user mu','b.last_modified_user_id = mu.id')
-				->join('user cu','b.created_user_id = cu.id')
+				->leftJoin('user mu','b.last_modified_user_id = mu.id')
+				->leftJoin('user cu','b.created_user_id = cu.id')
 				->leftJoin('ward w', 'w.id = b.ward_id')
 				->where($whereSql, $whereParams)
 				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
@@ -281,8 +281,8 @@ class BookingService
 				->leftJoin('patient p', 'p.id = ep.patient_id')
 				->leftJoin('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
 				->leftJoin('ward w', 'w.id = b.ward_id')
-				->join('user mu','b.last_modified_user_id = mu.id')
-				->join('user cu','b.created_user_id = cu.id')
+				->leftJoin('user mu','b.last_modified_user_id = mu.id')
+				->leftJoin('user cu','b.created_user_id = cu.id')
 				->where($whereSql, $whereParams)
 				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
 		}
