@@ -23,10 +23,11 @@ if ($patient->address === NULL) {
 </div>
 <div class="content">
 	<p>
+		<br />
 		Dear <?php echo $patient->salutationname ?>,
 	</p>
 	<p>
-		<br /><br />
+		<br />
 		<strong>Hospital number reference: <?php echo $patient->hos_num ?>
 			<?php if (!empty($patient->nhs_num)) { ?>
 				<br />NHS number: <?php echo $patient->nhs_num; } ?>
