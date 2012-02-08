@@ -153,10 +153,12 @@
 </p>
 <?php } ?>
 
+<?php if($specialty->id != 13) { // Not Refractive laser ?>
 <p>
 	<strong>All admissions require a Pre-Operative Assessment which you must attend. Non-attendance will cause
 	a delay to your surgery.</strong>
 </p>
+<?php } ?>
 
 <p>
 	<strong>It is important that you let us know immediately if you wish to cancel or rearrange this admission
