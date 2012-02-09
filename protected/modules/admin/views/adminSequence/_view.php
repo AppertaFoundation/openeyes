@@ -42,6 +42,10 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<?php echo !empty($data->week_selection) ? CHtml::encode($data->getWeekText()) : CHtml::encode($data->getFrequencyText()); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('weekday')); ?>:</b>
+	<?php echo CHtml::encode($data->getWeekdayText()); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('consultant')); ?>:</b>
 	<?php echo ($data->consultant) ? 'Yes' : 'No'; ?>
 	<br />
