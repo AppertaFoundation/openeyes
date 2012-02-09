@@ -35,10 +35,28 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
+	<script type="text/javascript" src="/js/print.js"></script>
+	<?php if (Yii::app()->params['google_analytics_account']) {?>
+		<script type="text/javascript">
+
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', '<?php echo Yii::app()->params['google_analytics_account']?>']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+	<?php }?>
 </head> 
  
 <body> 
-	<?php if (Yii::app()->params['watermark']) {?>
+	<?php if (Yii::app()->user->checkAccess('admin')) {?>
+		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
+	<?php } else if (Yii::app()->params['watermark']) {?>
 		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
 	<?php }?>
 
@@ -62,9 +80,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 		</div--><!-- mainmenu -->
 		<div id="content"> 
 			<?php echo $content; ?>
-			<!-- Unused 
-			<div class="printable" id="printable"></div>
-			 -->
 		</div><!-- #content --> 
 		<div id="help" class="clearfix"> 
 			<?php /*
@@ -104,31 +119,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 				}
 			});
 		});
-		/* Unused
-		function printContent() {
-			$('#printable').printElement();
-		}
-		*/
 	</script>
 
-	<?php if (Yii::app()->params['watermark']) {?>
+	<?php if (Yii::app()->user->checkAccess('admin')) {?>
+		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
+	<?php } else if (Yii::app()->params['watermark']) {?>
 		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
-
-	<?php if (Yii::app()->params['google_analytics_account']) {?>
-		<script type="text/javascript">
-
-			var _gaq = _gaq || [];
-			_gaq.push(['_setAccount', '<?php echo Yii::app()->params['google_analytics_account']?>']);
-			_gaq.push(['_trackPageview']);
-
-			(function() {
-				var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-				var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-			})();
-
-		</script>
 	<?php }?>
 </body> 
 </html>

@@ -23,8 +23,6 @@ $form = $this->beginWidget('CActiveForm', array(
 echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
 ?>
-<div id="clinical-update_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
-<ul><li>&nbsp;</li></ul></div>
 <?php
 
 /**
@@ -42,6 +40,8 @@ foreach ($elements as $element) {
 }
 
 ?>
+<div id="clinical-update_es_" class="alertBox" style="display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
 <div class="cleartall"></div>
 <?php
 $this->endWidget(); ?>

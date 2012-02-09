@@ -40,21 +40,21 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 	<div class="row">
 		<?php echo $form->labelEx($model,'start_date'); ?>
 		<?php
-$this->widget('zii.widgets.jui.CJuiDatePicker', array(
-	'model'=>$model,
-	'attribute'=>'start_date',
-    'value'=>$model->start_date,
-    // additional javascript options for the date picker plugin
-    'options'=>array(
-        'showAnim'=>'fold',
-		'minDate'=>'new Date()',
-		'defaultDate'=>$model->start_date,
-		'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
-    ),
-    'htmlOptions'=>array(
-        'style'=>'height:20px;'
-    ),
-)); ?>
+			$this->widget('zii.widgets.jui.CJuiDatePicker', array(
+				'model'=>$model,
+				'attribute'=>'start_date',
+			    'value'=>$model->start_date,
+			    // additional javascript options for the date picker plugin
+			    'options'=>array(
+			        'showAnim'=>'fold',
+					'minDate'=>'new Date()',
+					'defaultDate'=>$model->start_date,
+					'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+			    ),
+			    'htmlOptions'=>array(
+			        'style'=>'height:20px;'
+			    ),
+			)); ?>
 		<?php echo $form->error($model,'start_date'); ?>
 	</div>
 
@@ -113,6 +113,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	</div>
 
 	<div class="row">
+		<?php echo $form->labelEx($model,'repeat_interval'); ?>
+		<?php echo $form->dropDownList($model,'repeat_interval',$model->getFrequencyOptions()); ?>
+		<?php echo $form->error($model,'repeat_interval'); ?>
+	</div>
+
+	<div class="row">
 		<?php echo $form->labelEx($model,'week_selection');
 		$i = 0;
 		foreach ($model->getWeekSelectionOptions() as $value => $name) { ?>
@@ -123,13 +129,23 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		}
 		echo $form->error($model,'week_selection'); ?>
 	</div>
-	
-	<div class="row">
-		<?php echo $form->labelEx($model,'repeat_interval'); ?>
-		<?php echo $form->dropDownList($model,'repeat_interval',$model->getFrequencyOptions()) . ' (Leave as-is if using week selection above)'; ?>
-		<?php echo $form->error($model,'repeat_interval'); ?>
-	</div>
 
+	<script type="text/javascript">
+		$(function() {
+			toggleWeekSelection();
+			$('#Sequence_repeat_interval').change(function() {
+				toggleWeekSelection()
+			});
+		});
+		function toggleWeekSelection() {
+			if($('#Sequence_repeat_interval').val() == 5) {
+				$('#Sequence_week_selection_0').parent().show();
+			} else {
+				$('#Sequence_week_selection_0').parent().hide();
+			}
+		}
+	</script>
+	
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

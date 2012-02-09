@@ -55,14 +55,13 @@ if (empty($theatres)) {?>
 										<?php } else { ?>
 										<?php echo abs($timeAvailable) ?> minutes overbooked
 										<?php } ?>
+										<span<?php if (!$session['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<?php if(array_sum($session_metadata)) { ?>
 									<div class="metadata">
-										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
-										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
-										<?php if($session_metadata['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
+										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $previousSessionId?>" class="consultant" title="Consultant Present">Consultant</div>
+										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $previousSessionId?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div>
+										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $previousSessionId?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 									</div>
-									<?php } ?>
 								</th>
 							</tr>
 						</tfoot>
@@ -80,12 +79,22 @@ if (empty($theatres)) {?>
 					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_<?php echo $session['sessionId']?>" href="#">Edit</a></span>
 				</div>
 				<div class="theatre-sessions whiteBox clearfix">
-					<div class="sessionComments" style="display:block; float:right; width:205px; ">
-						<form>
-							<h4>Comments</h4>
-							<textarea style="display: none;" rows="2" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
-							<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
-						</form>
+					<div style="float: right;">
+						<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+							<div class="purple_rinse" id="purple_rinse_<?php echo $session['sessionId']?>" style="display:none; width:207px;">
+								<input type="checkbox" id="consultant_<?php echo $session['sessionId']?>" name="consultant_<?php echo $session['sessionId']?>" value="1"<?php if ($session['consultant']){?> checked="checked"<?php }?> /> Consultant present<br/>
+								<input type="checkbox" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="1"<?php if ($session['paediatric']){?> checked="checked"<?php }?> /> Paediatric<br/>
+								<input type="checkbox" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['anaesthetist']){?> checked="checked"<?php }?> /> Anaesthetist present<br/>
+								<input type="checkbox" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="1"<?php if ($session['status'] == 0){?> checked="checked"<?php }?> /> Session available<br/>
+							</div>
+						<?php }?>
+						<div class="sessionComments" style="display:block; width:205px;">
+							<form>
+								<h4>Comments</h4>
+								<textarea style="display: none;" rows="2" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
+								<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
+							</form>
+						</div>
 					</div>
 					<table id="theatre_list">
 						<thead>
@@ -93,9 +102,10 @@ if (empty($theatres)) {?>
 								<th>Admit time</th>
 								<th class="th_sort" style="display: none;">Sort</th>
 								<th>Hospital #</th>
-								<th>Confirm</th>
+								<th>Confirmed</th>
 								<th>Patient (Age)</th>
 								<th>[Eye] Operation</th>
+								<th>Priority</th>
 								<th>Anesth</th>
 								<th>Ward</th>
 								<th>Info</th>
@@ -105,6 +115,7 @@ if (empty($theatres)) {?>
 <?php
 					$previousSequenceId = $session['sequenceId'];
 					$previousSessionId = $session['sessionId'];
+					$previousSession = $session;
 					$timeAvailable = $session['sessionDuration'];
 				}
 
@@ -127,6 +138,7 @@ if (empty($theatres)) {?>
 								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
 								<td class="patient leftAlign"><?php echo $session['patientName'] . ' (' . $session['patientAge'] . ')'; ?></td>
 								<td class="operation leftAlign"><?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures'?></td>
+								<td class=""><?php echo $session['priority']?></td>
 								<td class="anesthetic"><?php echo $session['anaesthetic'] ?></td>
 								<td class="ward"><?php echo $session['ward']; ?></td>
 								<td class="alerts">
@@ -155,6 +167,7 @@ if (empty($theatres)) {?>
 							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
 <?php
 					}
+					?><img src="/img/_elements/icons/alerts/booked_user.png" alt="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" title="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" width="17" height="17" /><?php
 				}
 ?>
 								</td>
@@ -175,14 +188,13 @@ if (empty($theatres)) {?>
 										<?php } else { ?>
 										<?php echo abs($timeAvailable) ?> minutes overbooked
 										<?php } ?>
+										<span<?php if (!$previousSession['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<?php if(array_sum($session_metadata)) { ?>
 									<div class="metadata">
-										<?php if($session_metadata['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
-										<?php if($session_metadata['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
-										<?php if($session_metadata['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
+										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $session['sessionId']?>" class="consultant" title="Consultant Present">Consultant</div>
+										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session['sessionId']?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div>
+										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $session['sessionId']?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 									</div>
-									<?php } ?>
 								</th>
 							</tr>
 						</tfoot>
@@ -200,9 +212,13 @@ if (empty($theatres)) {?>
 
 <script type="text/javascript">
 	var table_states = {};
+	var purple_states = {};
 
 	$(document).ready(function() {
 		load_table_states();
+		<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+			load_purple_states();
+		<?php }?>
 	});
 
 	function load_table_states() {
@@ -217,6 +233,47 @@ if (empty($theatres)) {?>
 				$(this).children('tr[id^="oprow_"]').map(function() {
 					table_states[tbody_id].push($(this).attr('id'));
 				});
+			}
+		});
+	}
+
+	function load_purple_states() {
+		purple_states = {};
+
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id').match(/[0-9]+/);
+
+				purple_states[tbody_id] = {};
+
+				purple_states[tbody_id]["consultant"] = $('#consultant_'+tbody_id).is(':checked');
+				purple_states[tbody_id]["paediatric"] = $('#paediatric_'+tbody_id).is(':checked');
+				purple_states[tbody_id]["anaesthetic"] = $('#anaesthetic_'+tbody_id).is(':checked');
+				purple_states[tbody_id]["available"] = $('#available_'+tbody_id).is(':checked');
+
+				if ($('#consultant_'+tbody_id).is(':checked')) {
+					$('#consultant_icon_'+tbody_id).show();
+				} else {
+					$('#consultant_icon_'+tbody_id).hide();
+				}
+
+				if ($('#paediatric_'+tbody_id).is(':checked')) {
+					$('#paediatric_icon_'+tbody_id).show();
+				} else {
+					$('#paediatric_icon_'+tbody_id).hide();
+				}
+
+				if ($('#anaesthetic_'+tbody_id).is(':checked')) {
+					$('#anaesthetist_icon_'+tbody_id).show();
+				} else {
+					$('#anaesthetist_icon_'+tbody_id).hide();
+				}
+
+				if ($('#available_'+tbody_id).is(':checked')) {
+					$('#session_unavailable_'+tbody_id).hide();
+				} else {
+					$('#session_unavailable_'+tbody_id).show();
+				}
 			}
 		});
 	}
@@ -273,11 +330,13 @@ if (empty($theatres)) {?>
 		$('#btn_print').hide();
 		$('input[name^="confirm_"]').attr('disabled',false);
 		$('#buttons_'+selected_tbody_id).show();
+		$('div[id="purple_rinse_'+selected_tbody_id+'"]').show();
+		$('th.footer').attr('colspan','10');
 		return false;
 	});
 
 	$('a.view-sessions').die('click').live('click',function() {
-		view_mode();
+		cancel_edit();
 		return false;
 	});
 
@@ -296,9 +355,17 @@ if (empty($theatres)) {?>
 				}
 			}
 
+			if (purple_states[selected_tbody_id] !== undefined) {
+				$('#consultant_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["consultant"]);
+				$('#paediatric_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["paediatric"]);
+				$('#anaesthetic_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["anaesthetic"]);
+				$('#available_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["available"]);
+			}
+
 			view_mode();
 
 			$('div[id^="buttons_"]').hide();
+			$('th.footer').attr('colspan','9');
 		}
 	}
 
@@ -331,7 +398,91 @@ if (empty($theatres)) {?>
 			$('#comments'+id).val($(this).html());
 		});
 
+		$('div.purple_rinse').hide();
 		$('#btn_print').show();
 		$('input[name^="confirm_"]').attr('disabled',true);
 	}
+
+	$('input[id^="consultant_"]').click(function() {
+		var id = $(this).attr('id').match(/[0-9]+/);
+
+		if (!$(this).is(':checked')) {
+			operations = [];
+
+			$('#tbody_'+id).children('tr').map(function() {
+				if ($(this).attr('id').match(/oprow/)) {
+					operations.push($(this).attr('id').match(/[0-9]+/));
+				}
+			});
+
+			$.ajax({
+				type: "POST",
+				data: "operations[]=" + operations.join("&operations[]="),
+				url: "/theatre/requiresconsultant",
+				success: function(html) {
+					if (html == "1") {
+						$('#consultant_'+id).attr('checked',true);
+						alert("Sorry, you cannot remove the 'Consultant required' flag from this session because there are one or more patients booked into it who require a consultant.");
+						return false;
+					}
+				}
+			});
+		}
+	});
+
+	$('input[id^="paediatric_"]').click(function() {
+		var id = $(this).attr('id').match(/[0-9]+/);
+
+		if (!$(this).is(':checked')) {
+			patients = [];
+
+			$('#tbody_'+id).children('tr').map(function() {
+				$(this).children('td.hospital').map(function() {
+					$(this).children('a').map(function() {
+						patients.push($(this).html());
+					});
+				});
+			});
+
+			$.ajax({
+				type: "POST",
+				data: "patients[]=" + patients.join("&patients[]="),
+				url: "/theatre/ischild",
+				success: function(html) {
+					if (html == "1") {
+						$('#paediatric_'+id).attr('checked',true);
+						alert("Sorry, you cannot remove the 'Paediatric' flag from this session because there are one or more patients booked into it who are paediatric.");
+						return false;
+					}
+				}
+			});
+		}
+	});
+
+	$('input[id^="anaesthetic_"]').click(function() {
+		var id = $(this).attr('id').match(/[0-9]+/);
+
+		if (!$(this).is(':checked')) {
+			operations = [];
+
+			$('#tbody_'+id).children('tr').map(function() {
+				if ($(this).attr('id').match(/oprow/)) {
+					operations.push($(this).attr('id').match(/[0-9]+/));
+				}
+			});
+
+			$.ajax({
+				type: "POST",
+				data: "operations[]=" + operations.join("&operations[]="),
+				url: "/theatre/requiresanaesthetist",
+				success: function(html) {
+					if (html == "1") {
+						$('#anaesthetic_'+id).attr('checked',true);
+						alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
+						return false;
+					}
+				}
+			});
+		}
+	});
 </script>

@@ -81,6 +81,7 @@ td {
 	text-align: left;
 	padding: 2px 4px;
 	vertical-align: top;
+	font-size: 10pt;
 }
 
 table.half td,
@@ -110,7 +111,7 @@ html {
 
 body {
 	font-family: Helvetica, Arial, sans-serif;
-	font-size: 12pt;
+	font-size: 10pt;
 	display: block !important;
 	width: 1050px !important;
 }
@@ -156,4 +157,8 @@ body {
 
 .date {
 	padding-top: 1em;
+}
+
+.toAddress {
+	padding-left:2em;
 }

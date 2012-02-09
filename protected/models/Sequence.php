@@ -41,7 +41,8 @@ class Sequence extends BaseActiveRecord
 	const FREQUENCY_2WEEKS = 2;
 	const FREQUENCY_3WEEKS = 3;
 	const FREQUENCY_4WEEKS = 4;
-
+	const FREQUENCY_MONTHLY = 5;
+	
 	const SELECT_1STWEEK = 1;
 	const SELECT_2NDWEEK = 2;
 	const SELECT_3RDWEEK = 4;
@@ -188,6 +189,7 @@ class Sequence extends BaseActiveRecord
 			self::FREQUENCY_3WEEKS => 'Every 3 weeks',
 			self::FREQUENCY_4WEEKS => 'Every 4 weeks',
 			self::FREQUENCY_ONCE => 'One time',
+			self::FREQUENCY_MONTHLY => 'Monthly',
 		);
 	}
 
@@ -210,23 +212,21 @@ class Sequence extends BaseActiveRecord
 			self::FREQUENCY_3WEEKS => 'Every 3 weeks',
 			self::FREQUENCY_4WEEKS => 'Every 4 weeks',
 			self::FREQUENCY_ONCE => 'One time',
-			(self::FREQUENCY_4WEEKS + self::SELECT_1STWEEK) => '1st in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_2NDWEEK) => '2nd in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_3RDWEEK) => '3rd in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_4THWEEK) => '4th in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_5THWEEK) => '5th in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_1STWEEK) => '1st in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_2NDWEEK) => '2nd in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_3RDWEEK) => '3rd in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_4THWEEK) => '4th in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_5THWEEK) => '5th in month',
 		);
 	}
 
 	public function getSelectedFrequencyWeekOption()
 	{
 		if (!empty($this->week_selection)) {
-			$value = self::FREQUENCY_4WEEKS + $this->week_selection;
+			return self::FREQUENCY_MONTHLY + $this->week_selection;
 		} else {
-			$value = $this->repeat_interval;
+			return $this->repeat_interval;
 		}
-
-		return $value;
 	}
 
 	public function getWeekdayOptions()
@@ -259,7 +259,7 @@ class Sequence extends BaseActiveRecord
 				$selection += $value;
 			}
 			$this->week_selection = $selection;
-			$this->repeat_interval = 0;
+			$this->repeat_interval = self::FREQUENCY_MONTHLY;
 		} else {
 			$this->week_selection = 0;
 		}
@@ -433,6 +433,9 @@ class Sequence extends BaseActiveRecord
 			case self::FREQUENCY_ONCE:
 				$interval = $endTimestamp + 1;
 				break;
+			case self::FREQUENCY_MONTHLY:
+				$interval = $endTimestamp + 1;
+				break;
 		}
 
 		return $interval;
@@ -465,6 +468,9 @@ class Sequence extends BaseActiveRecord
 			case self::FREQUENCY_4WEEKS:
 				$text = 'Every 4 weeks';
 				break;
+			case self::FREQUENCY_MONTHLY:
+				$text = 'Monthly';
+				break;
 			default:
 				$text = 'Unknown';
 				break;
@@ -486,6 +492,15 @@ class Sequence extends BaseActiveRecord
 		$result .= date(' l', strtotime($this->start_date));
 
 		return $result;
+	}
+
+	public function getWeekdayText() {
+		$options = $this->getWeekdayOptions();
+		if(isset($options[$this->weekday])) {
+			return $options[$this->weekday];
+		} else {
+			return '-';
+		}
 	}
 
 	public function getRepeatText()

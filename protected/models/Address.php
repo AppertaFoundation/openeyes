@@ -93,6 +93,14 @@ class Address extends BaseActiveRecord
 	}
 
 	public function getLetterHtml() {
+		return implode('<br />', $this->getLetterArray());
+	}
+	
+	public function getLetterLine() {
+		return implode(', ', $this->getLetterArray());
+	}
+	
+	public function getLetterArray() {
 		$address = array();
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 			if (!empty($this->$field)) {
@@ -102,7 +110,7 @@ class Address extends BaseActiveRecord
 		if(!empty($this->country->name)) {
 			$address[] = CHtml::encode($this->country->name);
 		}
-		return implode('<br />', $address);
+		return $address;
 	}
 	
 	/**

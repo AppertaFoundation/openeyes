@@ -12,8 +12,30 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
-class GpService
-{
+class GpService {
+	
+	public $gp;
+	public $pas_gp;
+	
+	/**
+	 * Create a new instance of the service
+	 *
+	 * @param model $gp Instance of the gp model
+	 * @param model $pas_gp Instance of the PAS gp model
+	 */
+	public function __construct($gp = null, $pas_gp = null) {
+		if (empty($gp)) {
+			$this->gp = new Gp();
+		} else {
+			$this->gp = $gp;
+		}
+		if (empty($pas_gp)) {
+			$this->pas_gp = new PAS_Gp();
+		} else {
+			$this->pas_gp = $pas_gp;
+		}
+	}
+	
 	/**
 	 * Get all the GPs from PAS and either insert or update them in the OE db
 	 *
@@ -64,24 +86,31 @@ class GpService
 		}
 	}
 
+	/**
+	 * Check to see if a GP ID (obj_prof) is on our block list
+	 * @param string $gp_id
+	 * @return boolean
+	 */
+	public static function is_bad_gp($gp_id) {
+		return (in_array($gp_id, Yii::app()->params['bad_gps']));
+	}
+	
 	// Populate the GP for a given patient. $patient_id can also be an array of patient_ids (used by the PopulateGps method above to populate multiple patient GPs at once)
 	public function GetPatientGp($patient_id, $verbose=false) {
 		if (!is_array($patient_id)) {
 			$patient_id = array($patient_id);
 		}
 
-		$bad_gps = Yii::app()->params['bad_gps'];
-
 		$errors = array();
 		foreach (Yii::app()->db_pas->createCommand("select distinct rm_patient_no as patient_id, max(date_from) as latestGP from silver.patient_gps where rm_patient_no in (".implode(',',$patient_id).") group by rm_patient_no order by rm_patient_no")->queryAll() as $latestGP) {
 			$gp = Yii::app()->db_pas->createCommand("select * from silver.patient_gps where rm_patient_no = '{$latestGP['PATIENT_ID']}' and date_from = '{$latestGP['LATESTGP']}'")->queryRow();
 
-			// Exclude bad GP data by obj_prof
-			if (in_array($gp['GP_ID'],$bad_gps)) {
+			// Exclude bad GP data
+			if (self::is_bad_gp($gp['GP_ID'])) {
 				$errors[] = "Rejected bad GP record: {$gp['GP_ID']}";
 			} else {
-				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}'")->queryRow()) {
-					if ($gp = Gp::model()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
+				if ($pasGp = Yii::app()->db_pas->createCommand("select * from silver.ENV040_PROFDETS where obj_prof = '{$gp['GP_ID']}' order by date_fr desc")->queryRow()) {
+					if ($gp = Gp::model()->noPas()->find('obj_prof = ?', array($pasGp['OBJ_PROF']))) {
 						// Update existing GP
 						if ($contact = Contact::model()->findByPk($gp->contact_id)) {
 							if (!$this->populateContact($contact, $pasGp)) {
@@ -130,7 +159,7 @@ class GpService
 					}
 
 					// Update patient
-					if ($patient = Patient::model()->findByPk($latestGP['PATIENT_ID'])) {
+					if ($patient = Patient::Model()->noPas()->findByPk($latestGP['PATIENT_ID'])) {
 						$patient->gp_id = $gp->id;
 						if (!$patient->save()) {
 							$errors[] = "Unable to save patient {$latestGP['PATIENT_ID']}: ".print_r($patient->getErrors(),true);
@@ -167,9 +196,10 @@ class GpService
 
 	public function populateAddress($address, $pasGp)
 	{
-		$address->address1 = $pasGp['ADD_NAM'] . ' ' . $pasGp['ADD_NUM'] . ' ' . $pasGp['ADD_ST'];
-		$address->address2 = $pasGp['ADD_TWN'] . ' ' . $pasGp['ADD_DIS'];
-		$address->city = $pasGp['ADD_CTY'];
+		$address->address1 = trim($pasGp['ADD_NAM'] . ' ' . $pasGp['ADD_NUM'] . ' ' . $pasGp['ADD_ST']);
+		$address->address2 =  $pasGp['ADD_DIS'];
+		$address->city = $pasGp['ADD_TWN'];
+		$address->county = $pasGp['ADD_CTY'];
 		$address->postcode = $pasGp['PC'];
 		$address->country_id = 1;
 
@@ -193,4 +223,59 @@ class GpService
 
 		return true;
 	}
+	
+	/**
+	 * Load data from PAS into existing GP object and save
+	 * 
+	 * @return Gp
+	 * @todo This needs integrating with GetPatientGp and related methods
+	 */
+	public function loadFromPas() {
+		if(!$this->gp->obj_prof) {
+			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
+		}
+		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
+		$pas_query = new CDbCriteria();
+		$pas_query->condition = 'obj_prof = :gp_id';
+		$pas_query->order = 'DATE_FR DESC';
+		$pas_query->params = array(':gp_id' => $this->gp->obj_prof);
+		if($pas_gp = PAS_Gp::model()->find($pas_query)) {
+			$this->gp->nat_id = $pas_gp->NAT_ID;
+			
+			// Contact
+			if(!$contact = $this->gp->contact) {
+				$contact = new Contact();
+			}
+			$contact->first_name = trim($pas_gp->FN1 . ' ' . $pas_gp->FN2);
+			$contact->last_name = $pas_gp->SN;
+			$contact->title = $pas_gp->TITLE;
+			$contact->primary_phone = $pas_gp->TEL_1;
+			
+			// Address
+			if(!$address = $contact->address) {
+				$address = new Address();
+			}
+			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
+			$address->address2 = $pas_gp->ADD_DIS;
+			$address->city = $pas_gp->ADD_TWN;
+			$address->county = $pas_gp->ADD_CTY;
+			$address->postcode = $pas_gp->PC;
+			$address->country_id = 1;
+
+			// Save
+			$address->save();
+			if(!$contact->address) {
+				$contact->address_id = $address->id;
+			}
+			$contact->save();
+			if(!$this->gp->contact) {
+				$this->gp->contact_id = $contact->id;
+			}
+			$this->gp->save();
+			
+		} else {
+			Yii::log('GP not found in PAS: '.$this->gp->obj_prof, 'info');
+		}
+	}
+	
 }

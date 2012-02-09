@@ -86,7 +86,7 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->logActivity('viewed event');
 
@@ -95,7 +95,7 @@ class ClinicalController extends BaseController
 			'elements' => $elements,
 			'eventId' => $id,
 			'editable' => $editable,
-			'site' => $site
+			'currentSite' => $currentSite
 			), false, true);
 	}
 
@@ -292,6 +292,8 @@ class ClinicalController extends BaseController
 					throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
 				}
 
+				OELog::log("Updated event $event->id");
+
 				echo $event->id;
 				return;
 			}
@@ -459,6 +461,8 @@ class ClinicalController extends BaseController
 		if (!$episode->save(false)) {
 			throw new SystemException('Unable to save episode: '.print_r($episode->getErrors(),true));
 		}
+
+		OELog::log("Closed episode $episode->id");
 
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}

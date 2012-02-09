@@ -27,9 +27,18 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string  $nhs_num
  * @property integer $address_id
  * @property string  $primary_phone
+ * @property string  $gp_id
+ * @property string  $created_date
+ * @property string  $last_modified_date
+ * @property string  $created_user_id
+ * @property string  $last_modified_user_id
  */
 class Patient extends BaseActiveRecord
 {
+	
+	// Set to false to supress cache refresh afterFind
+	public $use_pas = true;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -229,7 +238,7 @@ class Patient extends BaseActiveRecord
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
-	public function getGP() {
+	public function loadGP() {
 		if ($this->gp_id === NULL) {
 			if (Yii::app()->params['use_pas']) {
 				$service = new GpService;
@@ -238,7 +247,39 @@ class Patient extends BaseActiveRecord
 				return false;
 			}
 		} else {
-			return Gp::Model()->findByPk($this->gp_id);
+			return Gp::model()->noPas()->findByPk($this->gp_id);
 		}
 	}
+	
+	/**
+	 * Supress PAS call after find
+	 */
+	public function noPas() {
+		$this->use_pas = false;
+		return $this;
+	}
+	
+	/**
+	 * Pass through use_pas flag to allow pas supression
+	 * @see CActiveRecord::instantiate()
+	 */ 
+	protected function instantiate($attributes) {
+		$model = parent::instantiate($attributes);
+		$model->use_pas = $this->use_pas;
+		return $model;
+	}
+	
+	/**
+	 * Update from PAS if enabled
+	 * @see CActiveRecord::afterFind()
+	 */
+	protected function afterFind() {
+		parent::afterFind();
+		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+			Yii::log('Patient details stale', 'trace');
+			$patient_service = new PatientService($this);
+			$patient_service->loadFromPas();
+		}
+	}
+	
 }

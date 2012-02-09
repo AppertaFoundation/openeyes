@@ -24,23 +24,31 @@ class WaitingListService
 	 *	to be rescheduled.
 	 *
 	 * @param int $firmId
-	 * @param int $serviceId
+	 * @param int $specialtyId
 	 * @param int $status
 	 * @return array
 	 */
-	public function getWaitingList($firmId, $serviceId, $status)
+	public function getWaitingList($firmId, $specialtyId, $status, $hos_num=false, $site_id=false)
 	{
 		$whereSql = '';
-
 		// intval() for basic data sanitising
 		if (!empty($firmId)) {
-			$whereSql .= 'AND f.id = ' . intval($firmId);
-		} elseif (!empty($serviceId)) {
-			$whereSql .= 'AND ssa.service_id = ' . intval($serviceId);
+			$whereSql .= ' AND f.id = ' . intval($firmId).' ';
+		} elseif (!empty($specialtyId)) {
+			$whereSql .= ' AND ssa.specialty_id = ' . intval($specialtyId).' ';
+		}
+
+		if ($hos_num && ctype_digit($hos_num)) {
+			$whereSql .= " AND pat.hos_num = '$hos_num' ";
+		}
+
+		if ($site_id && ctype_digit($site_id)) {
+			$whereSql .= " AND eo.site_id = $site_id ";
 		}
 
 		$whereSql2 = $whereSql;
 
+		/*
 		if (!empty($status)) {
 			switch ($status) {
 				case ElementOperation::LETTER_INVITE:
@@ -67,16 +75,19 @@ class WaitingListService
 					break;
 			}
 		}
+		*/
 
 		$sql = '
 			SELECT
 				eo.id AS eoid,
+				eo.decision_date as decision_date,
 				ev.id AS evid,
 				ep.id AS epid,
 				pat.id AS pid,
 				pat.first_name,
 				pat.last_name,
 				pat.hos_num,
+				pat.gp_id,
 				GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
 			FROM
 				element_operation eo,
@@ -111,13 +122,15 @@ class WaitingListService
 		UNION
 			SELECT
 				eo.id AS eoid,
+				eo.decision_date as decision_date,
 				ev.id AS evid,
 				ep.id AS epid,
 				pat.id AS pid,
 				pat.first_name,
 				pat.last_name,
 				pat.hos_num,
-				GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
+				pat.gp_id,
+			GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
 			FROM
 				element_operation eo,
 				event ev,
@@ -151,6 +164,7 @@ class WaitingListService
 			' . $whereSql2 . '
 			GROUP BY
 				opa.operation_id
+			ORDER BY decision_date ASC
 		';
 
 		return Yii::app()->db->createCommand($sql)->query();

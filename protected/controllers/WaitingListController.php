@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -43,6 +43,20 @@ class WaitingListController extends BaseController
 	 */
 	public function actionIndex()
 	{
+		if (empty($_POST)) {
+			// look for values from the session
+			if (Yii::app()->session['waitinglist_searchoptions']) {
+				foreach (Yii::app()->session['waitinglist_searchoptions'] as $key => $value) {
+					$_POST[$key] = $value;
+				}
+			} else {
+				$_POST = array(
+					'firm-id' => Yii::app()->session['selected_firm_id'],
+					'specialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSpecialtyAssignment->specialty_id
+				);
+			}
+		}
+
 		$this->render('index');
 	}
 
@@ -54,9 +68,19 @@ class WaitingListController extends BaseController
 			$specialtyId = !empty($_POST['specialty-id']) ? $_POST['specialty-id'] : null;
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$status = !empty($_POST['status']) ? $_POST['status'] : null;
+			$hos_num = !empty($_POST['hos_num']) && ctype_digit($_POST['hos_num']) ? $_POST['hos_num'] : false;
+			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
+
+			Yii::app()->session['waitinglist_searchoptions'] = array(
+				'specialty-id' => $specialtyId,
+				'firm-id' => $firmId,
+				'status' => $status,
+				'hos_num' => $hos_num,
+				'site_id' => $site_id
+			);
 
 			$service = new WaitingListService;
-			$operations = $service->getWaitingList($firmId, $specialtyId, $status);
+			$operations = $service->getWaitingList($firmId, $specialtyId, $status, $hos_num, $site_id);
 		}
 
 		$this->renderPartial('_list', array('operations' => $operations), false, true);
@@ -68,6 +92,10 @@ class WaitingListController extends BaseController
 	 */
 	public function actionFilterFirms()
 	{
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['specialty-id'] = $_POST['specialty_id'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+
 		echo CHtml::tag('option', array('value'=>''),
 			CHtml::encode('All firms'), true);
 		if (!empty($_POST['specialty_id'])) {
@@ -80,11 +108,33 @@ class WaitingListController extends BaseController
 		}
 	}
 
+	public function actionFilterSetFirm() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['firm-id'] = $_POST['firm_id'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetStatus() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['status'] = $_POST['status'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetSiteId() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['site_id'] = $_POST['site_id'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetHosNum() {
+		$so = Yii::app()->session['waitinglist_searchoptions'];
+		$so['hos_num'] = $_POST['hos_num'];
+		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
 	/**
 	 * Helper method to fetch firms by specialty ID
 	 *
 	 * @param integer $specialtyId
-	 *
 	 * @return array
 	 */
 	protected function getFilteredFirms($specialtyId)
@@ -94,6 +144,7 @@ class WaitingListController extends BaseController
 			->from('firm f')
 			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
 			->join('specialty s', 'ssa.specialty_id = s.id')
+			->order('f.name asc')
 			->where('ssa.specialty_id=:id',
 				array(':id'=>$specialtyId))
 			->queryAll();
@@ -105,4 +156,106 @@ class WaitingListController extends BaseController
 
 		return $firms;
 	}
+	
+	/**
+	 * Prints next pending letter type for requested operations
+	 * Operation IDs are passed as an array (operations[]) via GET or POST
+	 * Invalid operation IDs are ignored
+	 * @throws CHttpException
+	 */
+	public function actionPrintLetters() {
+		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
+		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
+		if(!is_array($operation_ids)) {
+			throw new CHttpException('400', 'Invalid operation list');
+		}
+		$operations = ElementOperation::model()->findAllByPk($operation_ids);
+		
+		// Print a letter for each operation, separated by a page break
+		$break = false;
+		foreach($operations as $operation) {
+			if($break) {
+				$this->printBreak();
+			} else {
+				$break = true;
+			}
+			$this->printLetter($operation, $auto_confirm);
+			
+		}
+	}
+	
+	/**
+	 * Print a page break
+	 */
+	protected function printBreak() {
+		$this->renderPartial("/letters/break");
+	}
+	
+	/**
+	 * Print the next letter for an operation
+	 * @param ElementOperation $operation
+	 */
+	protected function printLetter($operation, $auto_confirm = false) {
+		$letter_status = $operation->getDueLetter();
+		$letter_templates = array(
+			ElementOperation::LETTER_INVITE => 'invitation_letter',
+			ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
+			ElementOperation::LETTER_REMINDER_2 => 'reminder_letter',
+			ElementOperation::LETTER_GP => 'gp_letter',
+			ElementOperation::LETTER_REMOVAL => false,
+		);
+		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
+		$patient = $operation->event->episode->patient;
+		if($letter_template) {
+			$firm = $operation->event->episode->firm;
+			$site = $operation->site;
+			$waitingListContact = $operation->waitingListContact;
+			
+			// Don't print GP letter if GP is not defined
+			if($letter_status != ElementOperation::LETTER_GP || $patient->gp) {
+				Yii::log("Printing letter: ".$letter_template, 'trace');
+				$this->renderPartial('/letters/'.$letter_template, array(
+					'operation' => $operation,
+					'site' => $site,
+					'patient' => $patient,
+					'firm' => $firm,
+					'changeContact' => $waitingListContact,
+				));
+				$this->printBreak();
+				$this->renderPartial("/letters/admission_form", array(
+					'operation' => $operation, 
+					'site' => $site,
+					'patient' => $patient,
+					'firm' => $firm,
+					'emergencyList' => false,
+				));
+				if($auto_confirm) {
+					$operation->confirmLetterPrinted();
+				}
+			} else {
+				Yii::log("Patient has no GP, printing letter supressed: ".$patient->id, 'trace');
+			}
+		} else if($letter_status === null) {
+			Yii::log("No letter is due: ".$patient->id, 'trace');
+		} else {
+			throw new CException('Undefined letter status');
+		}
+	}
+
+	public function actionConfirmPrinted() {
+		foreach ($_POST['operations'] as $operation_id) {
+			if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
+				if (Yii::app()->user->checkAccess('admin') and (isset($_POST['adminconfirmto'])) and ($_POST['adminconfirmto'] != 'OFF') and ($_POST['adminconfirmto'] != '')) {
+					$operation->confirmLetterPrinted($_POST['adminconfirmto'], $_POST['adminconfirmdate']);
+				} else {
+					$operation->confirmLetterPrinted();
+				}
+			}
+		}
+	}
+
+	// to allow admin users to confirm printed up to a given letter 
+	// public function actionAdminConfirmPrinted() {
+			
+	// }
 }

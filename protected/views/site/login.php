@@ -35,7 +35,7 @@ $this->layout = 'simple';
 
 			<div class="loginRow bigInput">
 				<?php echo CHtml::activeLabel($model,'password', array('label'=>'Password:')); ?>
-				<?php echo $form->passwordField($model,'password',array('tabindex' => 2)); ?>
+				<?php echo $form->passwordField($model,'password',array('tabindex' => 2, 'autocomplete' => 'off')); ?>
 				<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
 					<a href="#" tabindex="6"><span class="small">Forgotten your password?</span></a>
 				<?php }?>
@@ -48,7 +48,7 @@ $this->layout = 'simple';
 			</div>
 
 			<div class="row">
-				<button type="submit" name="yt0" class="classy green tall" tabindex="2"><span class="button-span button-span-blue">Login</button>
+				<button type="submit" name="yt0" class="classy green tall" tabindex="2"><span class="button-span button-span-blue">Login</span></button>
 			</div>
 
 		<?php $this->endWidget(); ?>

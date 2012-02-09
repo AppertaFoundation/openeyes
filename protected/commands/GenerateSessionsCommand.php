@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+ _____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -14,48 +14,41 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 class GenerateSessionsCommand extends CConsoleCommand
 {
-	public function getName()
-	{
+	public function getName() {
 		return 'Generate Session Data Command.';
 	}
-	public function getHelp()
-	{
-		$help = "A script to generate session data based on sequences in the database for future dates.\n
-Optional parameters to 1) specify the end date for the script, 2) specify whether output should be returned rather than displayed.\n";
-
-		return $help;
+	
+	public function getHelp() {
+		return "A script to generate session data based on sequences in the database for future dates.\n
+			Optional parameters to 1) specify the end date for the script, 2) specify whether output should be returned rather than displayed.\n";
 	}
 
-	public function run($args)
-	{
+	public function run($args) {
+
 		$output = '';
+		
+		// Get sequences
 		$today = date('Y-m-d');
 		$initialEndDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
 		$sequences = Sequence::model()->findAll(
-			'start_date <= :end_date AND end_date IS NULL or end_date > :today',
-			array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today));
+			'start_date <= :end_date AND (end_date IS NULL or end_date >= :today)',
+		array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today));
 
 		foreach ($sequences as $sequence) {
-			$endDate = $initialEndDate;
 
 			$session = Yii::app()->db->createCommand()
-				->select('date')
-				->from('session')
-				->where('sequence_id=:id', array(':id'=>$sequence->id))
-				->order('date DESC')
-				->queryRow();
+			->select('date')
+			->from('session')
+			->where('sequence_id=:id', array(':id'=>$sequence->id))
+			->order('date DESC')
+			->queryRow();
 
-			// The date of the most recent session for this sequence plus one day, or today if no sessions for this sequence yet
-//			$startDate = empty($session) ? strtotime($today) : strtotime($session['date']) + (60 * 60 * 24);
-
-			// The date of the most recent session for this sequence plus one day, or the seqeunce start date if no sessions
-			//	for this sequence yet
+			// The date of the most recent session for this sequence plus one day, or the seqeunce start date if no sessions for this sequence yet
 			$startDate = empty($session) ? strtotime($sequence->start_date) : strtotime($session['date']) + (60 * 60 * 24);
 
-			// The date to generate sessions until - the sequence end date if there is one, else (the date provided on the command
-			//	line OR 13 months from now).
+			// The date to generate sessions until - the sequence end date if there is one, else (the date provided on the command line OR 13 months from now).
 			$sequenceEnd = empty($sequence->end_date) ? $initialEndDate : strtotime($sequence->end_date);
-
+			$endDate = $initialEndDate;
 			if ($endDate > $sequenceEnd) {
 				// @todo - is this code for anything? endDate is the same as initialEndDate so the above
 				//	ternary operator should make this impossible
@@ -63,7 +56,7 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 			}
 
 			$dateList = array();
-			if (empty($sequence->week_selection)) {
+			if ($sequence->repeat_interval != Sequence::FREQUENCY_MONTHLY && empty($sequence->week_selection)) {
 				// No week selection, e.g. 1st on month, 2nd in month
 				if (empty($sequence['repeat_interval'])) {
 					// No repeat interval means it's one-off, so we only concern ourselves with the start date
@@ -108,12 +101,12 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 
 					while ($time <= $endDate) {
 						$dateList[] = $date;
-	
+
 						$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
 						$time = strtotime($date);
 					}
 				}
-			} else {
+			} else if($sequence->repeat_interval == Sequence::FREQUENCY_MONTHLY && $sequence->week_selection) {
 				$date = date('Y-m-d', $startDate);
 				$time = $startDate;
 				// get the next occurrence of the sequence on/after the start date
@@ -123,6 +116,9 @@ Optional parameters to 1) specify the end date for the script, 2) specify whethe
 				}
 
 				$dateList = $sequence->getWeekOccurrences($sequence->weekday, $sequence->week_selection, $time, $endDate, $date, date('Y-m-d', $endDate));
+			} else {
+				// This should never happen
+				throw new CException("Invalid combination of repeat_interval and week_selection");
 			}
 
 			if (!empty($dateList)) {

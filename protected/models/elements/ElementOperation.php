@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -67,6 +67,15 @@ class ElementOperation extends BaseElement
 	
 	const URGENT = 1;
 	const ROUTINE = 0;
+
+	// these reflect an actual status, relating to actions required rather than letters sent
+	const STATUS_WHITE = 0; // no action required.  the default status.
+	const STATUS_PURPLE = 1; // no invitation letter has been sent
+	const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
+	const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
+	const STATUS_ORANGE = 4; // it's two weeks since 2nd reminder was sent with no further letters going out
+	const STATUS_RED = 5; // it's one week since gp letter was sent and they're still on the list
+	const STATUS_NOTWAITING = null;
 
 	public $service;
 
@@ -135,6 +144,9 @@ class ElementOperation extends BaseElement
 			'cancellation' => array(self::HAS_ONE, 'CancelledOperation', 'element_operation_id'),
 			'cancelledBooking' => array(self::HAS_ONE, 'CancelledBooking', 'element_operation_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'date_letter_sent' => array(self::HAS_ONE, 'DateLetterSent', 'element_operation_id', 'order' => 'date_letter_sent.id DESC'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -433,7 +445,6 @@ class ElementOperation extends BaseElement
 
 	protected function beforeSave()
 	{
-		# echo $_POST['site_id'] . "fish"; exit;
 		$anaesthetistRequired = array(
 			self::ANAESTHETIC_LOCAL_WITH_COVER, self::ANAESTHETIC_LOCAL_WITH_SEDATION,
 			self::ANAESTHETIC_GENERAL
@@ -613,19 +624,19 @@ class ElementOperation extends BaseElement
 				$session['status'] = 'available';
 			}
 
+			$session['date'] = $date;
+
 			// Add bookable field to indicate if session can be booked for this operation
-			$bookable = ($session['time_available'] > 0);
-			if($bookable) {
-				if($this->anaesthetist_required && !$session['anaesthetist']) {
-					$bookable = false;
-				}
-				if($this->consultant_required && !$session['consultant']) {
-					$bookable = false;
-				}
-				$paediatric = ($this->event->episode->patient->getAge() < 16);
-				if($paediatric && !$session['paediatric']) {
-					$bookable = false;
-				}
+			$bookable = true;
+			if($this->anaesthetist_required && !$session['anaesthetist']) {
+				$bookable = false;
+			}
+			if($this->consultant_required && !$session['consultant']) {
+				$bookable = false;
+			}
+			$paediatric = ($this->event->episode->patient->getAge() < 16);
+			if($paediatric && !$session['paediatric']) {
+				$bookable = false;
 			}
 			$session['bookable'] = $bookable;
 			
@@ -817,18 +828,147 @@ class ElementOperation extends BaseElement
 	 *
 	 * Checks to see if it's an operation to be scheduled or an operation to be rescheduled. If it's the former it bases its calculation
 	 *	 on the operation creation date. If it's the latter it bases it on the most recent cancelled_booking creation date.
-  	 *
+		 *
 	 * return int
 	 */
+	public function getWaitingListStatus()
+	{
+		if (is_null($this->getLastLetter())) {
+			return self::STATUS_PURPLE; // no invitation letter has been sent
+		} elseif (
+			is_null($this->date_letter_sent->date_invitation_letter_sent) and
+			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and
+			is_null($this->date_letter_sent->date_gp_letter_sent)
+		) {
+			return self::STATUS_PURPLE; // no invitation letter has been sent
+		}
+
+		$now = new DateTime(); $now->setTime(0,0,0); // $two_weeks_ago = $now->modify('-14 days');
+		$now = new DateTime(); $now->setTime(0,0,0); // $one_week_ago = $now->modify('-7 days');
+
+		// if the last letter was the invitation and it was sent over two weeks ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_invitation_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_INVITE) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+			return self::STATUS_GREEN1;
+		}
+
+		// if the last letter was the 1st reminder and it was sent over two weeks ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_1st_reminder_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_1) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+			return self::STATUS_GREEN2;
+		}
+
+		// if the last letter was the 2nd reminder and it was sent over two weeks ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_2nd_reminder_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_REMINDER_2) and ($now->getTimestamp() - $date_sent->getTimestamp() > 1209600) ) {
+			return self::STATUS_ORANGE;
+		}
+		// if the last letter was the gp letter and it was sent over one week ago from now:
+		$date_sent = new DateTime($this->date_letter_sent->date_gp_letter_sent); $date_sent->setTime(0,0,0);
+		if ( ($this->getLastLetter() == self::LETTER_GP) and ($now->getTimestamp() - $date_sent->getTimestamp() > 604800) ) {
+			return self::STATUS_RED;
+		}
+		return null;
+	}
+
+	public function getWaitingListLetterStatus()
+	{
+		echo var_export($this->date_letter_sent,true); exit;
+	}
+
+	public function getLastLetter()
+	{
+		if (!$this->date_letter_sent) {
+			return null;
+		}
+		if (
+			!is_null($this->date_letter_sent->date_invitation_letter_sent) and 
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and // but no 1st reminder
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // no 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_INVITE;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // but no 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_REMINDER_1;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
+			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
+		) {
+			return self::LETTER_REMINDER_2;
+		}
+		if (
+			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
+			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
+			$this->date_letter_sent->date_gp_letter_sent // and a gp letter
+		) {
+			return self::LETTER_GP;
+		}
+		return null;
+	}
+
+	public function getNextLetter()
+	{
+		if (is_null($this->getLastLetter())) {
+			return self::LETTER_INVITE;
+		} else {
+			$lastletter = $this->getLastLetter();
+			if ($lastletter == self::LETTER_INVITE) {
+				return self::LETTER_REMINDER_1;	
+			} elseif ($lastletter == self::LETTER_REMINDER_1) {
+				return self::LETTER_REMINDER_2;
+			} elseif ($lastletter == self::LETTER_REMINDER_2) {
+				return self::LETTER_GP;
+			} elseif ($lastletter == self::LETTER_GP) {
+				return self::LETTER_REMOVAL;
+			}
+		}
+	}
+
+	public function getDueLetter()
+	{
+		$lastletter = $this->getLastLetter();
+		if (!$this->getWaitingListStatus()) { // if getwaitingliststatus returns null, we're white
+			return $lastletter; // no new letter is due, so we should print the last one
+		}
+		if ($this->getWaitingListStatus() == self::STATUS_PURPLE) {
+			return self::LETTER_INVITE;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_GREEN1) {
+			return self::LETTER_REMINDER_1;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_GREEN2) {
+			return self::LETTER_REMINDER_2;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_ORANGE) {
+			return self::LETTER_GP;
+		} elseif ($this->getWaitingListStatus() == self::STATUS_RED) {
+			return null; // possibly this should return the gp letter, though it's already been sent?
+		} else {
+			return null; // possibly this should return $lastletter ?
+		}
+	}
+
+	// This method is based on faulty logic and should not be called.
 	public function getLetterStatus()
 	{
+		return $this->getDueLetter();
+
 		if ($this->status == self::STATUS_NEEDS_RESCHEDULING && !empty($this->cancelledBooking)) {
 			$criteria = new CDbCriteria;
 			$criteria->addCondition('element_operation_id = :eoid');
 			$criteria->params = array('eoid' => $this->id);
 			$criteria->order = 'id DESC';
 			$criteria->limit = 1;
-                	$cancelledBooking = CancelledBooking::model()->find($criteria);
+			$cancelledBooking = CancelledBooking::model()->find($criteria);
 
 			$datetime = strtotime($cancelledBooking->cancelled_date);
 		} else {
@@ -871,8 +1011,7 @@ class ElementOperation extends BaseElement
 			self::LETTER_INVITE => 'Invitation',
 			self::LETTER_REMINDER_1 => '1st Reminder',
 			self::LETTER_REMINDER_2 => '2nd Reminder',
-			self::LETTER_GP => 'Refer to GP',
-			self::LETTER_REMOVAL => 'To be removed'
+			self::LETTER_GP => 'Refer to GP'
 		);
 	}
 
@@ -906,6 +1045,177 @@ class ElementOperation extends BaseElement
 		}
 	}
 
+	/**
+	 * Get list of procedures (short format) as a string
+	 * @return string
+	 */
+	public function getProceduresString() {
+		$procedures = array();
+		foreach($this->procedures as $procedure) {
+			$procedures[] = $procedure->term;
+		}
+		return implode(', ',$procedures);
+	}
+
+	/**
+	 * Contact number/details for changes
+	 */
+	public function getWaitingListContact() {
+		$changeContact = '';
+		$siteId = $this->site->id;
+		$serviceId = $this->event->episode->firm->serviceSpecialtyAssignment->service->id;
+		$firmCode = $this->event->episode->firm->pas_code;
+		if ($this->event->episode->patient->isChild()) {
+			if ($siteId == 1) {
+				// City Road
+				$changeContact = 'a nurse on 020 7566 2596';
+			} else {
+				// St. George's
+				$changeContact = 'Naeela Butt on 020 8725 0060';
+			}
+		} else {
+			switch ($siteId) {
+				case 1: // City Road
+					switch ($serviceId) {
+						case 2: // Adnexal
+							$changeContact = 'Sarah Veerapatren on 020 7566 2206/2292';
+							break;
+						case 4: // Cataract
+							switch($firmCode)  {
+								case 'STEJ': // Julian Stevens
+									$changeContact = 'Joyce Carmichael on 020 7566 2205/2704';
+									break;
+								default:
+									$changeContact = 'Ian Johnson on 020 7566 2006';
+							}
+							break;
+						case 5: // External Disease aka Corneal
+							switch($firmCode)  {
+								case 'STEJ': // Julian Stevens
+									$changeContact = 'Joyce Carmichael on 020 7566 2205/2704';
+									break;
+								default:
+									$changeContact = 'Ian Johnson on 020 7566 2006';
+							}
+							break;
+						case 6: // Glaucoma
+							$changeContact = 'Karen O\'Connor on 020 7566 2056';
+							//$changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
+							break;
+						case 11: // Vitreoretinal
+							$changeContact = 'Joanna Kuzmidrowicz on 020 7566 2004';
+							//$changeContact = 'Deidre Clarke on 020 7566 2004';
+							break;
+						default: // Medical Retinal, Paediatric, Strabismus
+							$changeContact = 'Sherry Ramos on 0207 566 2258';
+					}
+					break;
+				case 3: // Ealing
+					$changeContact = 'Valerie Giddings on 020 8967 5648';
+					break;
+				case 4: // Northwick Park
+					$changeContact = 'Saroj Mistry on 020 8869 3161';
+					break;
+				case 6: // Mile End
+					if ($serviceId == 4) {
+						// Cataract
+						$changeContact = 'Linda Haslin on 020 7566 2712';
+					} else {
+						$changeContact = 'Eileen Harper on 020 7566 2020';
+					}
+					break;
+				case 7: // Potters Bar
+					$changeContact = 'Sue Harney on 020 7566 2339';
+					break;
+				case 9: // St Anns
+					$changeContact = 'Veronica Brade on 020 7566 2843';
+					break;
+				default: // St George's
+					$changeContact = 'Naeela Butt on 020 8725 0060';
+			}
+		}
+		return $changeContact;
+	}
+
+	/**
+	 * Contact number/details for health/refuse
+	 */
+	public function getAdmissionContact() {
+		$siteId = $this->booking->ward->site_id;
+		$specialty = $this->event->episode->firm->serviceSpecialtyAssignment->specialty;
+		$contact = array(
+			'refuse' => $specialty->name . ' Admission Coordinator on ',
+			'health' => '',
+		);
+		switch ($siteId) {
+			case 1: // City Road
+				switch ($specialty->id) {
+					case 4: // Cataract
+						$contact['refuse'] .= '020 7566 2006';
+						break;
+					case 6: // External Disease
+						$contact['refuse'] .= '020 7566 2006';
+						break;
+					case 7: // Glaucoma
+						$contact['refuse'] .= '020 7566 2056';
+						break;
+					case 8: // Medical Retinal
+						$contact['refuse'] .= '020 7566 2258';
+						break;
+					case 11: // Paediatrics
+						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						break;
+					case 13: // Refractive Laser
+						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
+						$contact['health'] = '020 7253 3411 X4336 and ask Laser Nurse';
+						break;
+					case 14: // Strabismus
+						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
+						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						break;
+					case 8: // Vitreo Retinal
+						$contact['refuse'] .= '020 7566 2004';
+						break;
+					default:
+						$contact['refuse'] .= '020 7566 2206/2292';
+				}
+				break;
+			case 3: // Ealing
+				$contact['refuse'] .= '020 8967 5766';
+				//$contact['health'] = 'Sister Kelly on 020 8967 5766';
+				break;
+			case 4: // Northwick Park
+				$contact['refuse'] .= '020 8869 3162';
+				//$contact['health'] = 'Sister Titmus on 020 8869 3162';
+				break;
+			case 5: // St George's
+				$contact['refuse'] .= '020 8725 0060';
+				$contact['health'] = '020 8725 0060';
+				break;
+			case 6: // Mile End
+				switch ($specialty->id) {
+					case 7:	// Glaucoma
+						$contact['refuse'] .= '020 7566 2020';
+						//$contact['health'] = 'Eileen Harper on 020 7566 2020';
+						break;
+					default:
+						$contact['refuse'] .= '020 7566 2712';
+						//$contact['health'] = 'Linda Haslin on 020 7566 2712';
+				}
+				break;
+			case 7: // Potters Bar
+				$contact['refuse'] .= '01707 646422';
+				//$contact['health'] = 'Potters Bar Admission Team on 01707 646422';
+				break;
+			case 9: // St Anns
+				$contact['refuse'] .= '020 8211 8323';
+				//$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
+				break;
+		}
+		return $contact;
+	}
+	
 	/**
 	 * Returns an array of cancelled bookings
 	 *
@@ -999,4 +1309,77 @@ class ElementOperation extends BaseElement
 		return true;
 	}
 
+	public function confirmLetterPrinted($confirmto = null, $confirmdate = null) {
+		// admin users can set confirmto and confirm up to a specific point, steamrollering whatever else is in there
+		if (!is_null($confirmto)) {
+			if (!$dls = $this->date_letter_sent) {
+				$dls = new DateLetterSent;
+				$dls->element_operation_id = $this->id;
+			}
+			if ($confirmto == self::LETTER_GP) {
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_2nd_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_gp_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+			}
+			if ($confirmto == self::LETTER_INVITE) {
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = null;
+				$dls->date_2nd_reminder_letter_sent = null;
+				$dls->date_gp_letter_sent = null;
+			}
+			if ($confirmto == self::LETTER_REMINDER_1) {
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_2nd_reminder_letter_sent = null;
+				$dls->date_gp_letter_sent = null;
+			}
+			if ($confirmto == self::LETTER_REMINDER_2) {
+				$dls->date_invitation_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_1st_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_2nd_reminder_letter_sent = Helper::convertNHS2MySQL($confirmdate);
+				$dls->date_gp_letter_sent = null;
+			}
+			if ($confirmto == 'noletters') {
+				$dls->date_invitation_letter_sent = null;
+				$dls->date_1st_reminder_letter_sent = null;
+				$dls->date_2nd_reminder_letter_sent = null;
+				$dls->date_gp_letter_sent = null;
+			}
+			$dls->save();
+
+			OELog::log("Letter print confirmed, datelettersent=$dls->id confirmdate='$confirmdate'");
+
+		// Only confirm if letter is actually due
+		} else if ($this->getDueLetter() !== $this->getLastLetter()) {
+			if ($dls = $this->date_letter_sent) {
+				if ($dls->date_invitation_letter_sent == null) {
+					$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_1st_reminder_letter_sent == null) {
+					$dls->date_1st_reminder_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_2nd_reminder_letter_sent == null) {
+					$dls->date_2nd_reminder_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_gp_letter_sent == null) {
+					$dls->date_gp_letter_sent = date('Y-m-d H:i:s');
+				} else if ($dls->date_scheduling_letter_sent == null) {
+					$dls->date_scheduling_letter_sent = date('Y-m-d H:i:s');
+				}
+				if (!$dls->save()) {
+					throw new SystemException("Unable to update date_letter_sent record {$dls->id}: ".print_r($dls->getErrors(),true));
+				}
+
+				OELog::log("Letter print confirmed, datelettersent=$dls->id");
+
+			} else {
+				$dls = new DateLetterSent;
+				$dls->element_operation_id = $this->id;
+				$dls->date_invitation_letter_sent = date('Y-m-d H:i:s');
+				if (!$dls->save()) {
+					throw new SystemException('Unable to save new date_letter_sent record: '.print_r($dls->getErrors(),true));
+				}
+
+				OELog::log("Letter print confirmed, datelettersent=$dls->id");
+			}
+		}
+	}
 }

@@ -176,10 +176,10 @@ class AdminSequenceController extends BaseController
 		if (isset($_GET['Site']))
 			$model->site_id = $_GET['Site']['id'];
 		if (isset($_GET['Sequence']['repeat']) && $_GET['Sequence']['repeat'] != '') {
-			if ($_GET['Sequence']['repeat'] <= 4) {
+			if ($_GET['Sequence']['repeat'] <= Sequence::FREQUENCY_4WEEKS) {
 				$model->repeat_interval = $_GET['Sequence']['repeat'];
-			} elseif ($_GET['Sequence']['repeat'] >= 5) {
-				$model->week_selection = $_GET['Sequence']['repeat'] - Sequence::FREQUENCY_4WEEKS;
+			} elseif ($_GET['Sequence']['repeat'] > Sequence::FREQUENCY_MONTHLY) {
+				$model->week_selection = $_GET['Sequence']['repeat'] - Sequence::FREQUENCY_MONTHLY;
 			}
 		}
 

@@ -25,8 +25,6 @@ echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 ?>
 <span style="display: none;" id="header_text">Operation: <?php echo $patient->first_name?> <?php echo $patient->last_name?></span>
-<div id="clinical-create_es_" class="errorSummary" style="display:none"><p>Please fix the following input errors:</p>
-<ul><li>&nbsp;</li></ul></div>
 <?php
 
 /**
@@ -77,6 +75,9 @@ if (isset($referrals) && is_array($referrals)) {
 			</div>
 	</div>
 
+<div id="clinical-create_es_" class="alertBox" style="display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
+
 	<div class="form_button">
 		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
 		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
@@ -97,6 +98,8 @@ if (isset($referrals) && is_array($referrals)) {
 					displayErrors(data);
 				} catch (e) {
 					$('#event_content').html(data);
+					$('div.action_options_alt').hide();
+					$('div.action_options').hide();
 					return false;
 				}
 			}

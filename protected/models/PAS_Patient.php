@@ -136,8 +136,20 @@ class PAS_Patient extends MultiActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'names'=>array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
+			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'numbers'=>array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
+			'nhs_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
+			'hos_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'), 
 			'addresses'=>array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
+			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
+			'address'=>array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
+				// Address preference is (Home, Temporary, Correspondance), and DATE_START is the tiebreaker
+				// FIXME: We need to support multiple address types
+				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, \'T\', 2, \'C\', 3, 4), "address"."DATE_START" DESC',
+				// Exclude expired addresses
+				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" > SYSDATE)'
+			),
+			//'gp'=>array(self::HAS_ONE, 'PAS_Gp', 'PATIENT_GPS(OBJ_PROF,RM_PATIENT_NO)'),
 		);
 	}
 

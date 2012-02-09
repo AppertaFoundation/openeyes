@@ -26,28 +26,23 @@ if (!empty($operation->booking)) {
 }
 
 $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : 'Not scheduled';
+
+// Calculate next letter to be printed
+$letterTypes = ElementOperation::getLetterOptions();
+$letterType = ($operation->getDueLetter() !== null && isset($letterTypes[$operation->getDueLetter()])) ? $letterTypes[$operation->getDueLetter()] : false;
+$no_gp = ($operation->getDueLetter() == ElementOperation::LETTER_GP && !$operation->event->episode->patient->gp);
 ?>
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
+<?php if ($no_gp) { ?>
+<div class="alertBox">Patient has no GP, please correct in PAS before printing GP letter.</div>
+<?php } ?>
+
+<div class="cols2">
 <!-- Details -->
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/_blank.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
+<h3 class="subsection">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
-<h4>Created by</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->event->user->username ?> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
-</div>
-
-<h4>Last modified by</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->event->usermodified->username?> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
-</div>
-
-<h4>Diagnosis</h4>
-<div class="eventHighlight">
-	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
-</div>
-
+<div class="col1">
 <h4>Operation</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->getEyeText()?> 
@@ -68,44 +63,80 @@ foreach ($elements as $element) {
 }
 ?></h4>
 </div>
+</div>
 
+<div class="col2">
+<h4>Diagnosis</h4>
+<div class="eventHighlight">
+	<?php $disorder = $operation->getDisorder(); ?>
+	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
+</div>
+</div>
+
+<div class="col1">
 <h4>Anaesthetic</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->getAnaestheticText()?></h4>
 </div>
+</div>
 
+<div class="col2">
 <h4>Consultant required?</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->consultant_required ? 'Yes' : 'No'?></h4>
 </div>
+</div>
 
+<div class="col1">
 <h4>Post Operative Stay Required</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->overnight_stay ? 'Yes' : 'No'?></h4>
 </div>
+</div>
 
+<div class="col2">
 <h4>Decision Date</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
 </div>
+</div>
 
+<div class="col1">
 <h4>Operation priority</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->urgent ? 'Urgent' : 'Routine'?></h4>
 </div>
+</div>
 
-<?php if (!empty($operation->comments)) {?>
+<?php if (!empty($operation->comments)) { ?>
+<div class="col2">
 <h4>Operation Comments</h4>
 	<div class="eventHighlight">
 		<h4><?php echo $operation->comments?></h4>
 	</div>
-<?php }?>
+</div>
+<?php } ?>
 
-<?php
+<div class="col1">
+<h4>Operation Created by</h4>
+<div class="eventHighlight">
+<h4><?php echo $operation->event->user->fullname ?> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
+</div>
+</div>
 
-if (!empty($operation->booking)) {
-?>
-<h4>Session</h4>
+<div class="col2">
+<h4>Operation Last modified by</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->event->usermodified->fullname ?> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
+</div>
+</div>
+
+<?php if (!empty($operation->booking)) { ?>
+<!-- Booking -->
+<h3 class="subsection">Booking Details</h3>
+
+<div class="col1">
+<h4>List</h4>
 <div class="eventHighlight">
 <?php $session = $operation->booking->session ?>
 <h4><?php
@@ -113,22 +144,45 @@ if (!empty($operation->booking)) {
 		$firmName = 'Emergency List';
 	} else {
 		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-		$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+			$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
 	}
-
 	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
 ?></h4>
 </div>
+</div>
 
+<div class="col2">
+<h4>Theatre</h4>
+<div class="eventHighlight">
+<h4><?php echo $session->sequence->theatre->name ?> (<?php echo $session->sequence->theatre->site->name ?>)</h4>
+</div>
+</div>
+
+<div class="col1">
 <h4>Admission Time</h4>
 <div class="eventHighlight">
 <h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 </div>
-<?php
-}
+</div>
 
-if (count($cancelledBookings)) {
-?>
+<div class="col1">
+<h4>Booking Created by</h4>
+<div class="eventHighlight">
+<h4><?php echo $operation->booking->user->fullname ?> on <?php echo $operation->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->booking->created_date)) ?></h4>
+</div>
+</div>
+
+<div class="col2">
+<h4>Booking Last modified by</h4>
+<div class="eventHighlight">
+	<h4><?php echo $operation->booking->usermodified->fullname ?> on <?php echo $operation->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->booking->last_modified_date)) ?></h4>
+</div>
+</div>
+
+<?php } ?>
+
+<?php if (count($cancelledBookings)) { ?>
+<div class="col1">
 <h4>Cancelled Bookings</h4>
 <div class="eventHighlight"><h4>
 <?php
@@ -143,58 +197,65 @@ if (count($cancelledBookings)) {
 	}
 ?>
 </h4></div>
-<?php
-}
+</div>
+<?php } ?>
 
-if ($operation->status == $operation::STATUS_CANCELLED && !empty($operation->cancellation)) {
-$co = $operation->cancellation;
+<?php if ($operation->status == $operation::STATUS_CANCELLED && !empty($operation->cancellation)) {
+	$co = $operation->cancellation;
 ?>
+<div class="col1">
 <h4>Cancellation details</h4>
 <div class="eventHighlight"><h4>
 <?php
 	echo 'Cancelled on ' . $co->NHSDate('cancelled_date') . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
 ?>
 </h4></div>
+</div>
 <?php if ($co->cancellation_comment) {?>
+<div class="col1">
 	<h4>Cancellation comments</h4>
 	<div class="eventHighlight">
 		<h4><?php echo str_replace("\n","<br/>",$co->cancellation_comment)?></h4>
 	</div>
-<?php }?>
-<?php
-}
+</div>
+<?php } ?>
+<?php } ?>
 
-if ($operation->status != $operation::STATUS_CANCELLED && $editable) {
-?>
+</div>
+<?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) { ?>
 <!-- editable -->
-<?php
+<div style="margin-top:40px; text-align:center;">
+	<?php
 	if (empty($operation->booking)) {
-		// The operation hasn't been booked yet?>
-		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print invitation letter</span></button>
-			<button type="submit" class="classy blue venti" value="submit" id="btn_print-reminder-letter"><span class="button-span button-span-blue">Print reminder letter</span></button>
-			<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
-			<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
-		</div>
-	<?php } else {?>
-		<div style="margin-top:40px; text-align:center;">
-			<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
-			<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
-			<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
-			<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
-		</div>
+	// The operation hasn't been booked yet
+	if($letterType) {
+		if(!$no_gp) {
+	?>
+	<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print <?php echo $letterType ?> letter</span></button>
+	<?php } else {
+		// Patient has no GP defined ?>
+	<button type="submit" class="classy disabled venti" value="submit" id="btn_print-invitation-letter" disabled="disabled"><span class="button-span">Print <?php echo $letterType ?> letter</span></button>
+	<?php } } ?>
+	<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
+	<?php } else { // The operation has been booked ?>
+	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
+	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
+	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
 	<?php }?>
-<?php }?>
+	<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
+</div>
+<?php } ?>
 
 <script type="text/javascript">
 
-$('#btn_schedule-now').unbind('click').click(function() {
+	$('#btn_schedule-now').unbind('click').click(function() {
 		$.ajax({
 			url: '/booking/schedule',
 			type: "GET",
 			data: {'operation': <?php echo $operation->id?>},
 			success: function(data) {
 				$('#event_content').html(data);
+				$('div.action_options').hide();
 				return false;
 			}
 		});
@@ -207,6 +268,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 			data: {'operation': <?php echo $operation->id?>},
 			success: function(data) {
 				$('#event_content').html(data);
+				$('div.action_options').hide();
 				return false;
 			}
 		});
@@ -219,6 +281,7 @@ $('#btn_schedule-now').unbind('click').click(function() {
 			data: {'operation': <?php echo $operation->id?>},
 			success: function(data) {
 				$('#event_content').html(data);
+				$('div.action_options').hide();
 				return false;
 			}
 		});
@@ -231,207 +294,55 @@ $('#btn_schedule-now').unbind('click').click(function() {
 			data: {'operation': <?php echo $operation->id?>},
 			success: function(data) {
 				$('#event_content').html(data);
+				$('div.action_options').hide();
 				return false;
 			}
 		});
 	});
 
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
-		clearPrintContent();
-		appendPrintContent($('#printcontent_invitationletter').html());
-		appendPrintContent($('#printcontent_form').html());
-		printContent();
-	});
-
-	$('#btn_print-reminder-letter').unbind('click').click(function() {
-		clearPrintContent();
-		appendPrintContent($('#printcontent_reminderletter').html());
-		printContent();
+		printUrl('/waitingList/printletters?confirm=1&operations[]='+<?php echo $operation->id ?>);
 	});
 
 	$('#btn_print-letter').unbind('click').click(function() {
 		clearPrintContent();
-		appendPrintContent($('#printcontent_scheduledletter').html());
-		appendPrintContent($('#printcontent_form').html());
+		appendPrintContent($('#printcontent_admissionletter').html());
 		printContent();
 	});
 
 </script>
-
+<?php if($operation->booking) { ?>
+<div id="printcontent_admissionletter" style="display: none;">
 <?php
-
+	// TODO: This needs moving to a controller so we can pull it in using an ajax call
 	$event = Event::model()->findByPk($eventId);
-	$consultant = $event->episode->firm->getConsultant();
-	if (empty($consultant)) {
-		$consultantName = 'CONSULTANT';
-	} else {
-		$contact = $consultant->contact;
-		$consultantName = CHtml::encode($contact->title . ' ' . $contact->first_name . ' ' . $contact->last_name);
-	}
-
 	$patient = $event->episode->patient;
-
-	$serviceId = $event->episode->firm->serviceSpecialtyAssignment->service->id;
-	$specialty = $event->episode->firm->serviceSpecialtyAssignment->specialty;
-	
-	// Generate change contact
-	$changeContact = '';
-	if ($patient->isChild()) {
-		if ($site->id == 1) {
-			// City Road
-			$changeContact = 'a nurse on 020 7566 2596';
-		} else {
-			// St. George's
-			$changeContact = 'Naeela Butt on 020 8725 0060';
-		}
-	} else {
-		switch ($site->id) {
-			case 1: // City Road
-				switch ($serviceId) {
-					case 2: // Adnexal
-						$changeContact = 'Sarah Veerapatren on 020 7566 2206';
-						break;
-					case 4: // Cataract
-						$changeContact = 'Ian Johnson on 020 7566 2006';
-						break;
-					case 5: // External Disease aka Corneal
-						$changeContact = 'Ian Johnson on 020 7566 2006';
-						break;
-					case 6: // Glaucoma
-						$changeContact = 'Joanna Kuzmidrowicz on 020 7566 2056';
-						break;
-					case 11: // Vitreoretinal
-						$changeContact = 'Deidre Clarke on 020 7566 2004';
-						break;
-					default: // Medical Retinal, Paediatric, Strabismus
-						$changeContact = 'Sherry Ramos on 0207 566 2258';
-					break;
-				}
-				break;
-			case 3: // Ealing
-				$changeContact = 'Valerie Giddings on 020 8967 5648';
-				break;
-			case 4: // Northwick Park
-				$changeContact = 'Saroj Mistry on 020 8869 3161';
-				break;
-			case 6: // Mile End
-				if ($serviceId == 4) {
-					// Cataract
-					$changeContact = 'Linda Haslin on 020 7566 2712';
-				} else {
-					$changeContact = 'Eileen Harper on 020 7566 2020';
-				}
-				break;
-			case 7: // Potters Bar
-				$changeContact = 'Sue Harney on 020 7566 2339';
-				break;
-			case 9: // St Anns
-				$changeContact = 'Veronica Brade on 020 7566 2843';
-				break;
-			default: // St George's
-				$changeContact = 'Naeela Butt on 020 8725 0060';
-			break;
-		}
+	$admissionContact = $operation->getAdmissionContact();
+	$site = $operation->booking->session->sequence->theatre->site;
+	$firm = ($firm_assign = $operation->booking->session->sequence->sequenceFirmAssignment) ? $firm_assign->firm : false;
+	$emergency_list = false;
+	if(!$firm) {
+		$firm = $operation->event->episode->firm;
+		$emergency_list = true;
 	}
-	
-	// Generate refuse and health contacts
-	$refuseContact = '';
-	$healthContact = '';
-	switch ($site->id) {
-		case 1: // City Road
-			$refuseContact = $specialty->name . ' Admission Coordinator on ';
-			switch ($specialty->id) {
-				case 7: // Glaucoma
-					$refuseContact .= '020 7566 2056';
-					break;
-				case 8: // Medical Retinal
-					$refuseContact .= '020 7566 2258';
-					break;
-				case 11: // Paediatrics
-					$refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-					break;
-				case 13: // Refractive Laser
-					$refuseContact = '020 7566 2205 and ask for Joyce Carmichael';
-					$healthContact = '020 7253 3411 X4336 and ask Laser Nurse';
-					break;
-				case 14: // Strabismus
-					$refuseContact = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-					break;
-				default:
-					$refuseContact .= '020 7566 2206';
-			}
-			break;
-		case 3: // Ealing
-			$refuseContact = '020 8967 5766 and ask for Sister Kelly';
-			$healthContact = 'Sister Kelly on 020 8967 5766';
-			break;
-		case 4: // Northwick Park
-			$refuseContact = '020 8869 3161 and ask for Sister Titmus';
-			$healthContact = 'Sister Titmus on 020 8869 3162';
-		case 6: // Mile End
-			switch ($specialty->id) {
-				case 7:	// Glaucoma
-					$refuseContact = '020 7566 2020 and ask for Eileen Harper';
-					$healthContact = 'Eileen Harper on 020 7566 2020';
-					break;
-				default:
-					$refuseContact = '020 7566 2712 and ask for Linda Haslin';
-					$healthContact = 'Linda Haslin on 020 7566 2712';
-			}
-			break;
-		case 7: // Potters Bar
-			$refuseContact = '01707 646422 and ask for Potters Bar Admission Team';
-			$healthContact = 'Potters Bar Admission Team on 01707 646422';
-			break;
-		case 9: // St Anns
-			$refuseContact = '020 8211 8323 and ask for St Ann\'s Team';
-			$healthContact = 'St Ann\'s Team on 020 8211 8323';
-			break;
-		case 5: // St George's
-			$refuseContact = '020 8725 0060 and ask for Naeela Butt';
-			$healthContact = 'Naeela Butt Team on 020 8725 0060';
-			break;
-	}
-
+	$this->renderPartial("/letters/admission_letter", array(
+		'site' => $site,
+		'patient' => $patient,
+		'firm' => $firm,
+		'emergencyList' => $emergency_list,
+		'operation' => $operation,
+		'refuseContact' => $admissionContact['refuse'],
+		'healthContact' => $admissionContact['health'],
+		'cancelledBookings' => $cancelledBookings,
+	));
+	$this->renderPartial("/letters/break");
+	$this->renderPartial("/letters/admission_form", array(
+		'operation' => $operation, 
+		'site' => $site,
+		'patient' => $patient,
+		'firm' => $firm,
+		'emergencyList' => $emergency_list,
+	));
 ?>
-
-<div id="printcontent_form" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/form", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'operation' => $operation, 
-	'event' => $event,
-	'procedureList' => $procedureList,
-)); ?>
 </div>
-<div id="printcontent_invitationletter" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/invitation_letter", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'changeContact' => $changeContact,
-	'operation' => $operation,
-)); ?>
-</div>
-<div id="printcontent_reminderletter" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/reminder_letter", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'changeContact' => $changeContact,
-	'operation' => $operation,
-)); ?>
-</div>
-<div id="printcontent_scheduledletter" style="display: none;">
-<?php $this->renderPartial("/clinical/eventTypeTemplates/view/25/scheduled_letter", array(
-	'site' => $site,
-	'patient' => $patient,
-	'consultantName' => $consultantName,
-	'operation' => $operation,
-	'specialty' => $specialty,
-	'refuseContact' => $refuseContact,
-	'healthContact' => $healthContact,
-	'cancelledBookings' => $cancelledBookings,
-)); ?>
-</div>
+<?php } ?>

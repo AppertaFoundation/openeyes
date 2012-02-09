@@ -208,7 +208,7 @@ button.mini span.button-span.icon-only	{ padding:0 4px; }
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
 button#addNewEvent { width:202px; }
 .button-icon-green { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
-.button-icon-inactive { font-size: 17px; font-weight: bold; width: 5px; float: left; margin-left: 7px; margin-top: 4px; padding-right: 6px; text-shadow: 2px 2px 0px #8b8b8b; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+.button-icon-inactive { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow:-1px -1px 0 #999; }
 
 /* background colours */
 button.classy.green {
@@ -313,6 +313,16 @@ table tr:last-child { border-bottom: none; }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
 /* change properties for closed rows */
 .grid-view table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+
+/* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
+.grid-view-waitinglist table { width:100%; }
+.grid-view-waitinglist table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:16px; padding:6px; border-right:1px solid #bbb;   }
+.grid-view-waitinglist table th:last-child { border-right: none; }
+.grid-view-waitinglist table td { text-align: left; padding:6px; border-right:1px solid #ccc; border-bottom: 1px solid #ccc;}
+.grid-view-waitinglist table th:last-child, .grid-view-waitinglist td:last-child { border-right: none; }
+/* change properties for closed rows */
+.grid-view-waitinglist table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+
 /* hack to help with in page CSS for add Operation */
 table#procedure_list tbody tr { background-color: #edf4f9; }
 
@@ -367,7 +377,7 @@ div.hint:last-child { border-right: none; }
 
 /* mini help in footer:  617px is center */
 #footer {position:relative; }
-#footer .help { position:absolute; top:0; left:342px; width:550px; height:23px; background:#e2dfdb; font-size:11px; text-align: center; padding-top:9px; border-top:1px solid #b3b0ae; -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;  }
+#footer .help { position:absolute; top:0; left:382px; width:660px; height:23px; background:#e2dfdb; font-size:11px; text-align: center; padding-top:9px; border-top:1px solid #b3b0ae; -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;  }
 #footer .help .divider { padding:0 5px; color:#aaa; }
 
 
@@ -506,7 +516,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
-#event_content h4 { color:#666; font-size:12px; padding:5px 10px 0 10px; margin-bottom: 5px; }
+#event_content h4 { color:#666; font-size:14px; padding:5px 10px 0 10px; margin-bottom: 5px; }
 #event_content form > h4 { color:#000; font-size:15px; border-top:2px solid #dae6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 #event_content .eventHighlight > h4 { color:#000; font-size:16px; padding:0 10px 5px 10px; }
 #event_content .eventHighlight > h5 { color:#222; font-size:12px; padding:0 10px 5px 10px; }
@@ -539,6 +549,11 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 
 /* event subsection */
 #event_content > h3.subsection { font-size:14px; color:#111; background:#dae6f1; padding:12px 10px; margin-top: 10px; }
+
+#event_content .cols2:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+#event_content .cols2 .col1 { width: 48%; float: left; clear: left; }
+#event_content .cols2 .col2 { width: 48%; float: right; clear: right; }
+#event_content .cols2 h3.subsection { margin-top: 10px; clear: both; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
 
 .eventDetail > .data { display:inline-block; }
 .eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
@@ -614,8 +629,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation table tbody td.closed { background:#828282; font-size:16px; }
 #operation table tbody td.selected_date { background:#3665ff; font-size:16px; color:#fff; }
 #operation table tbody td.outside_rtt{ background-image: url(../img/_elements/icons/RTT-warning.png); background-position: bottom right; background-repeat: no-repeat; }
-/* hovers all the same */
+#operation table tbody td.inthepast { background:#828282; font-size:16px; }
+
+/* hovers */
 #operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background-color:#3665ff; color:#fff; cursor:pointer; }
+#operation td.inthepast:hover { background-color:#C2C2C2; color: #fff; cursor:pointer; }
+
 /* KEY */
 #operation #day 			.color_box { background:#666; }
 #operation #available 		.color_box { background:#69bd51; }
@@ -632,11 +651,15 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatre-times .sessionTimes .timeBlock { display:inline-block; width:300px; background: #eeeeee; color:#999; border:1px solid #fff; padding:15px 25px 12px 25px; text-align: center; position: relative; }
 #theatre-times .sessionTimes .timeBlock.bookable { background:#69bd51; color:#000; }
 #theatre-times .sessionTimes .timeBlock.bookable:hover { background:#3665ff; color:#fff; cursor:pointer; }
+#theatre-times .sessionTimes .timeBlock.bookable.full { background:#ffda56; color:#000; }
 #theatre-times .sessionTimes .timeBlock.selected_session { background: #3665ff; color: #fff; }
 #theatre-times .sessionTimes .timeBlock .time { font-size: 16px; }
 #theatre-times .sessionTimes .timeBlock .session_id { display: none; }
 #theatre-times .sessionTimes .timeBlock .metadata { position: absolute; bottom: 6px; right: 6px; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
 #theatre-times .sessionTimes .timeBlock .metadata div { opacity: 1; }
+
+#theatre-times .sessionTimes .timeBlock.inthepast { background:#828282; color: #000; }
+#theatre-times .sessionTimes .timeBlock.inthepast:hover { background:#C2C2C2; color: #fff; cursor:pointer; }
 
 /* session details */
 #session_details { margin-top:20px; }
@@ -712,6 +735,8 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table td { text-align: left; padding:10px 5px 10px 10px; border-right:1px solid #ccc;   }
 /* .theatre-sessions table td:last-child { border-right: none; } */
 .theatre-sessions table th.footer { font-size:12px; padding:10px; color: #333; }
+.theatre-sessions table th.footer.available { background: #bde0b3; }
+.theatre-sessions table th.footer.full { background: #ffedb2; }
 /* Control the widths of key tds */
 .theatre-sessions table td.session { width:40px; }
 .theatre-sessions table td.dragsort { width:26px; }
@@ -723,15 +748,27 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table td.alerts	 { width:100px; }
 /* alert icons */
 .theatre-sessions table td.alerts > img {margin-right:3px; }
+.theatre-sessions .timeLeft { float: left; font-size: 14px; }
+.theatre-sessions .metadata { float: right; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
+.theatre-sessions .metadata div { opacity: 1; }
 #waitingList table td.letterStatus > img {margin-right:3px; }
+#waitingList table td.letterStatus { width: 92px; }
 
 
 /* SESSION COMMENTS */
-.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px 10px 20px 10px; margin-bottom: 15px; position:relative; }
+.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px; margin-bottom: 15px; position:relative; min-height: 50px; }
 .sessionComments > .modifyComments { position:absolute; bottom:-20px; right:5px; height:20px; background:#fee54f; padding:3px 10px; }
 .sessionComments > .modifyComments > .date { padding-right:20px; color:#666;}
 .sessionComments > .modifyComments > .edit { float: right; }
+.sessionComments textarea { width: 200px; }
 
+/* waiting list row colour coding */
+.waitinglistPurple {background:#c9c;}
+.waitinglistGreen {background:#8FBC8F;}
+.waitinglistOrange {background:#f93;}
+.waitinglistRed {background:#e53737;}
+.waitinglistWhite {background:#eee;}
+.waitinglistGrey {background:#999;}
 
 /* ------------------------ PRINT STUFF */
 
@@ -760,15 +797,15 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* ====== DIARY (hidden in page) ====== */
 
 #diaryTemplate { display:block; background:#fff; }
-#diaryTemplate #d_title { text-align: center; font-size:14pt; font-weight: bold; border-bottom:2px solid grey; padding-bottom:0.5em; margin-bottom:1em; }
+#diaryTemplate #d_title { text-align: center; font-size:14pt; font-weight: bold; border-bottom:2px solid grey; padding-bottom:0.3em;}
 #diaryTemplate .d_group { padding-bottom:2em; margin-bottom: 2em; border-bottom: 3px solid grey; }
 #diaryTemplate table.d_overview { width:100%; border-collapse: separate;	border-spacing: 0.2em; }
-#diaryTemplate table.d_overview td { border-bottom:1px dotted grey; padding:0.5em 1em; font-size:12pt; }
+#diaryTemplate table.d_overview td { border-bottom:1px dotted grey; padding:0em 1em; font-size:12pt; }
 #diaryTemplate .d_info { display:inline-block; margin-right: 3em; }
 #diaryTemplate .d_info > strong { margin-left: 0.5em; font-size:14pt; }
-#diaryTemplate table.d_data { width:97%; margin-left:1em; margin-top:1em; text-align: left;}
+#diaryTemplate table.d_data { width:97%; margin-left:1em; text-align: left;}
 #diaryTemplate table.d_data th { padding:0.5em 0.75em; font-size:12pt; }
-#diaryTemplate table.d_data td { padding:0.75em 0.25em 1em 0.5em; border:1px solid #CCC; font-size:12pt; }
+#diaryTemplate table.d_data td { padding:0.15em 0.15em 0.15em 0.3em; border:1px solid #CCC; font-size:12pt; }
 
 
 /* ==|== non-semantic helper classes ======================================== */
@@ -819,7 +856,9 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 /* ======================================================================== DEV TEAM Extra styles ================= */
 
+.admin-confirmto {background-color: #DAA520;padding:10px;margin:3px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.h1-watermark-admin { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #DAA520; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
 .h1-watermark-description p { margin-left: 1em; }
 #debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
@@ -828,10 +867,10 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 #LoginForm_siteId { margin-top: 6px; position: absolute; right: 0; top: 0; width: 212px; }
 
-#procedureDiv { background: #DAE6F1; }
+#procedureDiv,
+#enteredDiagnosisText { margin-left: 300px; background: #DAE6F1; }
 
-
-
-
-
-
+.purple_rinse { font-family:Georgia Times sans-serif; line-height:1.5; background:#a0f; border:1px solid #fee54f; padding:10px; position:relative; min-height: 50px; color: #fff; }
+.purple_rinse textarea { width: 200px; }
+.session_unavailable { color: #f00; }
+.toAddress {padding-left:7em;}

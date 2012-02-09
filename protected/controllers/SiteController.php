@@ -164,6 +164,10 @@ class SiteController extends BaseController
 	 */
 	public function actionLogout()
 	{
+		$user = Yii::app()->session['user'];
+
+		OELog::log("User $user->username logged out");
+
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
 	}

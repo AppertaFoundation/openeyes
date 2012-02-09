@@ -9,8 +9,13 @@
 	<br />Fax: <?php echo CHtml::encode($site->fax) ?>
 	<?php } ?>
 </div>
+<?php
+if ($patient->address === NULL) {
+	$patient->address = Address::Model()->findByPk($patient->address_id);
+}
+?>
 <div class="toAddress">
-	<?php echo $patient->addressname ?>
+	<?php echo $patient->addressname?>
 	<br /><?php echo $patient->address->letterhtml ?>
 </div>
 <div class="date">
@@ -18,13 +23,15 @@
 </div>
 <div class="content">
 	<p>
+		<br />
+		Dear <?php echo $patient->salutationname ?>,
+	</p>
+	<p>
+		<br /><br />
 		<strong>Hospital number reference: <?php echo $patient->hos_num ?>
 			<?php if (!empty($patient->nhs_num)) { ?>
 				<br />NHS number: <?php echo $patient->nhs_num; } ?>
 		</strong>
 	</p>
 
-	<p>
-		Dear <?php echo $patient->salutationname ?>,
-	</p>
 

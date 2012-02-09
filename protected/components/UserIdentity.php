@@ -44,14 +44,16 @@ class UserIdentity extends CUserIdentity
 		 */
 		$user = User::model()->find('username = ?', array($this->username));
 		if($user === null) {
+			OELog::log("User not found in local database: $this->username");
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
 		} else if($user->active != 1) {
+			OELog::log("User not active and so cannot login: $this->username");
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
 		}
 
-		if ($user->username == 'admin') {
+		if (in_array($user->username,Yii::app()->params['local_users'])) {
 			Yii::app()->params['auth_source'] = 'BASIC';
 		}
 
@@ -90,8 +92,10 @@ class UserIdentity extends CUserIdentity
 				);
 			} catch (Exception $e){
 				/**
-				 * User isn't in LDAP.
+				 * User not authenticated via LDAP
 				 */
+				OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(),$this->username);
+
 				$this->errorCode = self::ERROR_USERNAME_INVALID;
 				return false;
 			}
@@ -111,17 +115,20 @@ class UserIdentity extends CUserIdentity
 			$user->last_name = $info['sn'][0];
 			$user->email = $info['mail'][0];
 			if (!$user->save()) {
-				throw new SystemException('Unable to update user with details with LDAP: '.print_r($user->getErrors(),true));
+				OELog::log("Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),$this->username);
+				throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(),true));
 			}
 		} else if (Yii::app()->params['auth_source'] == 'BASIC') {
 			if(!$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;
+				OELog::log("Login failed for user {$this->username}: invalid password",$this->username);
 				return false;
 			}
 		} else {
 			/**
 			 * Unknown auth_source, error
 			 */
+			 OELog::log("Login failed for user {$this->username}: unknown auth source: ".Yii::app()->params['auth_source'],$this->username);
 			 throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
 		}
 
@@ -164,6 +171,7 @@ class UserIdentity extends CUserIdentity
 		}
 
 		if (!count($firms)) {
+			OELog::log("Login failed for user {$this->username}: user has no firm rights and cannot use the system",$this->username);
 			throw new Exception('User has no firm rights and cannot use the system.');
 		}
 
@@ -183,6 +191,8 @@ class UserIdentity extends CUserIdentity
 			//	one arbitrarily
 			$app->session['selected_firm_id'] = key($firms);
 		}
+
+		OELog::log("User {$this->username} logged in",$this->username);
 
 		return true;
 	}

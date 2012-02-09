@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -27,16 +27,16 @@ if (empty($model->event_id)) {
 						<div class="data">
 							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
 							<span class="group">
-							<input id="ElementOperation_eye_1" value="0" <?php if (empty($model->eye)) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-							<label for="ElementOperation_eye_1">Left</label>
+							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<label for="ElementOperation_eye_0">Right</label>
 							</span>
 							<span class="group">
 							<input id="ElementOperation_eye_2" value="2" <?php if ($model->eye == '2') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
 							<label for="ElementOperation_eye_2">Both</label>
 							</span>
 							<span class="group">
-							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-							<label for="ElementOperation_eye_0">Right</label>
+							<input id="ElementOperation_eye_1" value="0" <?php if (empty($model->eye)) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+							<label for="ElementOperation_eye_1">Left</label>
 							</span>
 						</div>
 					</div>
@@ -45,20 +45,16 @@ if (empty($model->event_id)) {
 						<div class="label">Add procedure:</div>
 						<div class="data">
 							<?php if (!empty($subsections) || !empty($procedures)) { ?>
-								<div class="data"> <?php
+								<?php
 									if (!empty($subsections)) {
 										echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
 										echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
 									} else {
 										echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
 									} ?> &nbsp;
-								</div>
-							<?php }?>
-						<span class="labelHint"><strong>Click to select</strong> the required procedure<br /><strong>or</strong> type the first few characters of a procedure.</span>
-						</div>
+							<?php } ?>
+							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
 
-						<div class="extraDetails">
-							<?php /*<input style="width: 400px;" id="procedure_id" type="text" name="procedure_id" />*/?>
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'name'=>'procedure_id',
@@ -66,7 +62,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'source'=>"js:function(request, response) {
 								var existingProcedures = [];
 								$('#procedure_list tbody').children().each(function () {
-												var text = $(this).children('td:first').text();
+												var text = $(this).children('td:first').children('span:first').text();
 												existingProcedures.push(text.replace(/ remove$/i, ''));
 								});
 
@@ -98,77 +94,76 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 																'type': 'GET',
 																'data': {'name': ui.item.value},
 																'success': function(data) {
-																				// append selection onto procedure list
-																				$('#procedure_list tbody').append(data);
-																				$('#procedureDiv').show();
-																				$('#procedure_list').show();
+																			// append selection onto procedure list
+																			$('#procedure_list tbody').append(data);
+																			$('#procedureDiv').show();
+																			$('#procedure_list').show();
 
-										updateTotalDuration();
+																			updateTotalDuration();
 
-																				// clear out text field
-																				$('#autocomplete_procedure_id').val('');
+																			// clear out text field
+																			$('#autocomplete_procedure_id').val('');
 
-																				// remove selection from the filter box
-																				if ($('select[name=procedure]').children().length > 0) {
-																								var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
-																								$('select[name=procedure] option').each(function () {
-																												if ($(this).text() == name) {
-																																$(this).remove();
-																												}
-																								});
-																				}
+																			// remove selection from the filter box
+																			if ($('select[name=procedure]').children().length > 0) {
+																							var name = $('#procedure_list tbody').children().children(\":nth-child(2)\").text().replace(/ remove$/i, '');
+																							$('select[name=procedure] option').each(function () {
+																											if ($(this).text() == name) {
+																															$(this).remove();
+																											}
+																							});
+																			}
 																}
 												});
 								}",
 				),
-				'htmlOptions'=>array('style'=>'width: 400px; margin-left: 300px')
+				'htmlOptions'=>array('style'=>'width: 300px;')
 )); ?>
-						</div> <!-- .extraDetails -->
-					</div>
-
-					<div id="procedureDiv"<?php
-					if ($newRecord) { ?> style="display:none;"<?php
-					} ?>>
-						<div class="extraDetails grid-view extraDetails-margin">
-							<table id="procedure_list" class="grid" style="width:100%; background:#e3f0f2;<?php
-						if ($newRecord) { ?> display:none;<?php
-						} ?>" title="Procedure List">
-								<thead>
-									<tr>
-										<th>Procedures Added</th>
-										<th>Duration</th>
-									</tr>
-								</thead>
-								<tbody>
-					<?php
-						$totalDuration = 0;
-						if (!empty($model->procedures)) {
-							foreach ($model->procedures as $procedure) {
-								$display = $procedure['term'] . ' - ' . $procedure['short_format'] .
-									' ' . CHtml::link('remove', '#',
-									array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
-								$totalDuration += $procedure['default_duration']; ?>
-									<tr>
-										<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
-										<td><?php echo $display; ?></td>
-										<td><?php echo $procedure['default_duration']; ?></td>
-									</tr>
-					<?php }
-						} ?>
-								</tbody>
-								<tfoot style="border-top:2px solid #CCC;">
-									<tr>
-										<td class="topPadded">Calculated Total Duration:</td>
-										<td id="projected_duration"><?php echo $totalDuration; ?></td>
-									</tr>
-									<tr>
-										<td>Estimated Total Duration:</td>
-										<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
-									</tr>
-								</tfoot>
-							</table>
 						</div>
+
+						<div id="procedureDiv"<?php if ($newRecord) { ?> style="display:none;"<?php	} ?>>
+							<div class="extraDetails grid-view extraDetails-margin">
+								<table id="procedure_list" class="grid" style="width:100%; background:#e3f0f2;<?php
+							if ($newRecord) { ?> display:none;<?php
+							} ?>" title="Procedure List">
+									<thead>
+										<tr>
+											<th>Procedures Added</th>
+											<th>Duration</th>
+										</tr>
+									</thead>
+									<tbody>
+									<?php
+										$totalDuration = 0;
+										if (!empty($model->procedures)) {
+											foreach ($model->procedures as $procedure) {
+												$display = "<span>".$procedure['term'] . '</span> - <span>' . $procedure['short_format'] .
+													'</span> ' . CHtml::link('remove', '#',
+													array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
+												$totalDuration += $procedure['default_duration']; ?>
+										<tr>
+											<?php echo CHtml::hiddenField('Procedures[]', $procedure['id']); ?>
+											<td><?php echo $display; ?></td>
+											<td><?php echo $procedure['default_duration']; ?></td>
+										</tr>
+									<?php } } ?>
+									</tbody>
+									<tfoot style="border-top:2px solid #CCC;">
+										<tr>
+											<td class="topPadded">Calculated Total Duration:</td>
+											<td id="projected_duration"><?php echo $totalDuration; ?></td>
+										</tr>
+										<tr>
+											<td>Estimated Total Duration:</td>
+											<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+						</div>
+
 					</div>
+					
 					<div id="consultRequired" class="eventDetail">
 						<div class="label">Consultant required?</div>
 						<div class="data">
@@ -303,7 +298,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			if (subsection != 'Select a subsection') {
 				var existingProcedures = [];
 				$('#procedure_list tbody').children().each(function () {
-					var text = $(this).children('td:first').text();
+					var text = $(this).children('td:first').children('span:first').text();
 					existingProcedures.push(text.replace(/ remove$/i, ''));
 				});
 				$.ajax({

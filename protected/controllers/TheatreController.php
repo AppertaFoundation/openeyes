@@ -210,6 +210,10 @@ class TheatreController extends BaseController
 					'consultant' => $values['session_consultant'],
 					'paediatric' => $values['session_paediatric'],
 					'anaesthetist' => $values['session_anaesthetist'],
+					'priority' => $values['urgent'] ? 'Urgent' : 'Routine',
+					'status' => $values['status'],
+					'created_user' => $values['cu_fn'].' '.$values['cu_ln'],
+					'last_modified_user' => $values['mu_fn'].' '.$values['mu_ln']
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
@@ -318,6 +322,10 @@ class TheatreController extends BaseController
 					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
 
 					if (!empty($booking)) {
+						// This is validated in the model and the front-end so doesn't need an if ()
+						preg_match('/^([0-9]{1,2}).*?([0-9]{2})$/',$value,$m2);
+						$value = $m2[1].":".$m2[2];
+
 						$booking->confirmed = (@$_POST['confirm_'.$m[1]] ? 1 : 0);
 						$booking->admission_time = $value;
 						$booking->display_order = $display_order++;
@@ -332,6 +340,50 @@ class TheatreController extends BaseController
 
 					if (!empty($session)) {
 						$session->comments = $value;
+						if (!$session->save()) {
+							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
+						}
+					}
+				}
+
+				if (preg_match('/^consultant_([0-9]+)$/',$key,$m)) {
+					$session = Session::model()->findByPk($m[1]);
+
+					if (!empty($session)) {
+						$session->consultant = ($value == 'true' ? 1 : 0);
+						if (!$session->save()) {
+							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
+						}
+					}
+				}
+
+				if (preg_match('/^paediatric_([0-9]+)$/',$key,$m)) {
+					$session = Session::model()->findByPk($m[1]);
+
+					if (!empty($session)) {
+						$session->paediatric = ($value == 'true' ? 1 : 0);
+						if (!$session->save()) {
+							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
+						}
+					}
+				}
+
+				if (preg_match('/^anaesthetic_([0-9]+)$/',$key,$m)) {
+					$session = Session::model()->findByPk($m[1]);
+
+					if (!empty($session)) {
+						$session->anaesthetist = ($value == 'true' ? 1 : 0);
+						if (!$session->save()) {
+							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
+						}
+					}
+				}
+
+				if (preg_match('/^available_([0-9]+)$/',$key,$m)) {
+					$session = Session::model()->findByPk($m[1]);
+
+					if (!empty($session)) {
+						$session->status= ($value == 'true' ? 0 : 1);
 						if (!$session->save()) {
 							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
 						}
@@ -472,5 +524,50 @@ class TheatreController extends BaseController
 		}
 
 		return $wards;
+	}
+
+	public function actionRequiresConsultant() {
+		if (isset($_POST['operations']) && is_array($_POST['operations'])) {
+			foreach ($_POST['operations'] as $operation_id) {
+				if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
+					if ($operation->consultant_required) {
+						die("1");
+					}
+				} else {
+					throw new SystemException('Operation not found: '.$hos_num);
+				}
+			}
+		}
+		die("0");
+	}
+
+	public function actionIsChild() {
+		if (isset($_POST['patients']) && is_array($_POST['patients'])) {
+			foreach ($_POST['patients'] as $hos_num) {
+				if ($patient = Patient::Model()->find('hos_num = ?',array($hos_num))) {
+					if ($patient->isChild()) {
+						die("1");
+					}
+				} else {
+					throw new SystemException('Patient not found: '.$hos_num);
+				}
+			}
+		}
+		die("0");
+	}
+
+	public function actionRequiresAnaesthetist() {
+		if (isset($_POST['operations']) && is_array($_POST['operations'])) {
+			foreach ($_POST['operations'] as $operation_id) {
+				if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
+					if ($operation->anaesthetist_required) {
+						die("1");
+					}
+				} else {
+					throw new SystemException('Operation not found: '.$hos_num);
+				}
+			}
+		}
+		die("0");
 	}
 }

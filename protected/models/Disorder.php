@@ -109,10 +109,7 @@ class Disorder extends BaseActiveRecord
 		$criteria->compare('fully_specified_name', $this->fully_specified_name, true);
 		$criteria->compare('term', $this->term, true);
 		$criteria->compare('systemic', $this->systemic);
-
-		return new CActiveDataProvider(get_class($this), array(
-															  'criteria' => $criteria,
-														 ));
+		return new CActiveDataProvider(get_class($this), array( 'criteria' => $criteria));
 	}
 
 	/**
@@ -157,8 +154,8 @@ class Disorder extends BaseActiveRecord
 		$disorders = Yii::app()->db->createCommand()
 			->select($select)
 			->from('disorder')
-			->where('(term LIKE :term) AND systemic = 0',
-					array(':term' => $search))
+			->where('(term LIKE :term) AND systemic = 0', array(':term' => $search))
+			->order('disorder.term')
 			->queryAll();
 
 		$data = array();
