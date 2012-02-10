@@ -534,7 +534,7 @@ class TheatreController extends BaseController
 						die("1");
 					}
 				} else {
-					throw new SystemException('Operation not found: '.$hos_num);
+					throw new SystemException('Operation not found: '.$operation_id);
 				}
 			}
 		}
@@ -564,7 +564,7 @@ class TheatreController extends BaseController
 						die("1");
 					}
 				} else {
-					throw new SystemException('Operation not found: '.$hos_num);
+					throw new SystemException('Operation not found: '.$operation_id);
 				}
 			}
 		}
