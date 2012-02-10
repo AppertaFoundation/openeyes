@@ -10,7 +10,7 @@ You should have received a copy of the GNU General Public License along with Ope
 _____________________________________________________________________________
 http://www.openeyes.org.uk   info@openeyes.org.uk
 --
-*/
+ */
 
 /**
  * This is the model class for table "address".
@@ -24,6 +24,11 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $county
  * @property integer $country_id
  * @property string $email
+ * 
+ * The following are the available model relations:
+ * @property Contact[] $contacts
+ * @property Patient[] $patients
+ * @property Country $country
  */
 class Address extends BaseActiveRecord
 {
@@ -52,12 +57,12 @@ class Address extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('address1, address2, city, county', 'length', 'max'=>255),
-			array('postcode', 'length', 'max'=>10),
-			array('email', 'length', 'max'=>255),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, address1, address2, city, postcode, county, email', 'safe', 'on'=>'search'),
+		array('address1, address2, city, county', 'length', 'max'=>255),
+		array('postcode', 'length', 'max'=>10),
+		array('email', 'length', 'max'=>255),
+		// The following rule is used by search().
+		// Please remove those attributes that should not be searched.
+		array('id, address1, address2, city, postcode, county, email', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -69,6 +74,8 @@ class Address extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			// FIXME: An address has_many contacts and patients? Obviously possible, 
+			// but I'm not sure the code ever allows more than one contact/patient to an address 
 			'contacts' => array(self::HAS_MANY, 'Contact', 'address_id'),
 			'patients' => array(self::HAS_MANY, 'Patient', 'address_id'),
 			'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
@@ -81,25 +88,32 @@ class Address extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
 			'address1' => 'Address1',
 			'address2' => 'Address2',
 			'city' => 'City',
 			'postcode' => 'Postcode',
 			'county' => 'County',
-			'country_id' => 'Country',
 			'email' => 'Email',
 		);
 	}
 
+	/**
+	 * @return string Address as formatted HTML (<br/> separated)
+	 */
 	public function getLetterHtml() {
 		return implode('<br />', $this->getLetterArray());
 	}
-	
+
+	/**
+	 * @return string Address as text (, separated) 
+	 */
 	public function getLetterLine() {
 		return implode(', ', $this->getLetterArray());
 	}
-	
+
+	/**
+	 * @return array Address as an array 
+	 */
 	public function getLetterArray() {
 		$address = array();
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
@@ -112,7 +126,7 @@ class Address extends BaseActiveRecord
 		}
 		return $address;
 	}
-	
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

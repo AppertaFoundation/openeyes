@@ -10,7 +10,7 @@ You should have received a copy of the GNU General Public License along with Ope
 _____________________________________________________________________________
 http://www.openeyes.org.uk   info@openeyes.org.uk
 --
-*/
+ */
 
 /**
  * This is the model class for table "patient".
@@ -32,6 +32,12 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string  $last_modified_date
  * @property string  $created_user_id
  * @property string  $last_modified_user_id
+ * 
+ * The followings are the available model relations:
+ * @property Episode[] $episodes
+ * @property Address $address
+ * @property Contact[] $contacts
+ * @property Gp $gp
  */
 class Patient extends BaseActiveRecord
 {
@@ -97,7 +103,6 @@ class Patient extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
 			'pas_key' => 'PAS Key',
 			'title' => 'Title',
 			'first_name' => 'First Name',
@@ -107,7 +112,6 @@ class Patient extends BaseActiveRecord
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
 			'primary_phone' => 'Primary Phone',
-			'address_id' => 'Address'
 		);
 	}
 
@@ -176,10 +180,16 @@ class Patient extends BaseActiveRecord
 		return $age;
 	}
 
+	/**
+	 * @return boolean Is patient a child?
+	 */
 	public function isChild() {
 		return ($this->getAge() < 16);
 	}
 
+	/**
+	 * @return string Patient name for prefixing an address 
+	 */
 	public function getAddressName() {
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->getFullName();
@@ -188,6 +198,9 @@ class Patient extends BaseActiveRecord
 		}	
 	}
 	
+	/**
+	 * @return string Patient name for using as a salutation 
+	 */
 	public function getSalutationName() {
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->first_name . ' ' . $this->last_name;
@@ -196,6 +209,9 @@ class Patient extends BaseActiveRecord
 		}	
 	}
 	
+	/**
+	 * @return string Full name 
+	 */
 	public function getFullName() {
 		return implode(' ',array($this->title, $this->first_name, $this->last_name));
 	}

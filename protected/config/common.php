@@ -18,7 +18,8 @@ $config = array(
 		'application.services.*',
 		'application.modules.*',
 		'application.commands.shell.*',
-		'application.controllers.*'
+		'application.behaviors.*',
+		'application.controllers.*',
 	),
 
 	'modules' => array(

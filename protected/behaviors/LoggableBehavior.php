@@ -24,7 +24,7 @@ class LoggableBehavior extends CActiveRecordBehavior {
 		$oldattributes = $this->getOldAttributes();
 
 		if (!$this->Owner->isNewRecord) {
-			// compare old and new
+			// Compare old and new
 			foreach ($newattributes as $name => $value) {
 				if (!empty($oldattributes)) {
 					$old = $oldattributes[$name];
@@ -42,7 +42,7 @@ class LoggableBehavior extends CActiveRecordBehavior {
 					$log->field = $name;
 					$log->stamp = date('Y-m-d H:i:s');
 					$log->user_id = $userid;
-						
+
 					$log->save();
 				}
 			}
@@ -50,30 +50,29 @@ class LoggableBehavior extends CActiveRecordBehavior {
 			$log=new AuditTrail();
 			$log->old_value = '';
 			$log->new_value = '';
-			$log->action=		'CREATE';
-			$log->model=		get_class($this->Owner);
-			$log->model_id=		 $this->Owner->getPrimaryKey();
-			$log->field=		'N/A';
-			$log->stamp= date('Y-m-d H:i:s');
-			$log->user_id=		 $userid;
-				
+			$log->action = 'CREATE';
+			$log->model = get_class($this->Owner);
+			$log->model_id = $this->Owner->getPrimaryKey();
+			$log->field = 'N/A';
+			$log->stamp = date('Y-m-d H:i:s');
+			$log->user_id = $userid;
+
 			$log->save();
-								
+
 			foreach ($newattributes as $name => $value) {
 				$log=new AuditTrail();
 				$log->old_value = '';
 				$log->new_value = $value;
-				$log->action=		'SET';
-				$log->model=		get_class($this->Owner);
-				$log->model_id=		 $this->Owner->getPrimaryKey();
-				$log->field=		$name;
-				$log->stamp= date('Y-m-d H:i:s');
-				$log->user_id=		 $userid;
+				$log->action = 'SET';
+				$log->model = get_class($this->Owner);
+				$log->model_id = $this->Owner->getPrimaryKey();
+				$log->field = $name;
+				$log->stamp = date('Y-m-d H:i:s');
+				$log->user_id = $userid;
 				$log->save();
 			}
-				
+
 		}
-		return parent::afterSave($event);
 	}
 
 	public function afterDelete($event) {
@@ -96,21 +95,18 @@ class LoggableBehavior extends CActiveRecordBehavior {
 		$log=new AuditTrail();
 		$log->old_value = '';
 		$log->new_value = '';
-		$log->action=		'DELETE';
-		$log->model=		get_class($this->Owner);
-		$log->model_id=		 $this->Owner->getPrimaryKey();
-		$log->field=		'N/A';
-		$log->stamp= date('Y-m-d H:i:s');
-		$log->user_id=		 $userid;
+		$log->action = 'DELETE';
+		$log->model = get_class($this->Owner);
+		$log->model_id = $this->Owner->getPrimaryKey();
+		$log->field = 'N/A';
+		$log->stamp = date('Y-m-d H:i:s');
+		$log->user_id = $userid;
 		$log->save();
-		return parent::afterDelete($event);
 	}
 
 	public function afterFind($event) {
 		// Save old values
 		$this->setOldAttributes($this->Owner->getAttributes());
-
-		return parent::afterFind($event);
 	}
 
 	public function getOldAttributes() {
