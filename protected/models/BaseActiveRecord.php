@@ -27,6 +27,17 @@ class BaseActiveRecord extends CActiveRecord
 	const PAS_CACHE_TIME = 300;
 	
 	/**
+	 * Audit log
+	 */
+	public function behaviors() {
+		return array(
+			'LoggableBehavior' => array(
+				'class' => 'application.behaviors.LoggableBehavior',
+			),
+		);
+	}
+	
+	/**
 	 * Strips all html tags out of attributes to be saved.
 	 *
 	 * @param boolean $runValidation
