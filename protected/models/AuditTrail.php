@@ -93,5 +93,5 @@ class AuditTrail extends CActiveRecord {
 			)
 		);
 	}
-	
+
 }
