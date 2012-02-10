@@ -123,7 +123,7 @@ class ElementOperation extends BaseElement
 	public function behaviors() {
 		return array(
 			'OeDateFormat' => array(
-				'class' => 'application.components.OeDateFormat',
+				'class' => 'application.behaviors.OeDateFormat',
 				'date_columns' => array('decision_date'),
 			),
 		);

@@ -1,10 +1,7 @@
 <?php
 
-class m120209_165900_create_tables_audit_trail extends CDbMigration {
+class m120209_165900_create_audit_trail_table extends CDbMigration {
 
-	/**
-	 * Creates initial version of the audit trail table
-	 */
 	public function up() {
 		$this->createTable('tbl_audit_trail',
 			array(
@@ -15,8 +12,8 @@ class m120209_165900_create_tables_audit_trail extends CDbMigration {
 				'model' => 'varchar(255) NOT NULL',
 				'field' => 'varchar(255) NOT NULL',
 				'stamp' => 'datetime NOT NULL',
-				'user_id' => 'varchar(255)',
-				'model_id' => 'varchar(255) NOT NULL',
+				'user_id' => 'int(10)',
+				'model_id' => 'int(10) NOT NULL',
 			)
 		);
 		$this->createIndex('idx_audit_trail_user_id', 'tbl_audit_trail', 'user_id');
@@ -26,25 +23,14 @@ class m120209_165900_create_tables_audit_trail extends CDbMigration {
 		$this->createIndex('idx_audit_trail_action', 'tbl_audit_trail', 'action');
 	}
 
-	/**
-	 * Drops the audit trail table
-	 */
 	public function down() {
 		$this->dropTable('tbl_audit_trail');
 	}
 
-	/**
-	 * Creates initial version of the audit trail table in a transaction-safe way.
-	 * Uses $this->up to not duplicate code.
-	 */
 	public function safeUp() {
 		$this->up();
 	}
 
-	/**
-	 * Drops the audit trail table in a transaction-safe way.
-	 * Uses $this->down to not duplicate code.
-	 */
 	public function safeDown() {
 		$this->down();
 	}
