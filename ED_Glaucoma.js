@@ -1352,11 +1352,10 @@ ED.OpticDisk.prototype.draw = function(_point)
 	// Close path
 	ctx.closePath();
 	
-	// Set line attributes
+	// Set attributes
 	ctx.lineWidth = 2;
-    var ptrn = ctx.createPattern(this.drawing.imageArray['latticePattern'],'repeat');
     var colour = new ED.Colour(0,0,0,1);
-    colour.setWithHexString('B37135');
+    colour.setWithHexString('DFD989');
     ctx.fillStyle = colour.rgba();
 	ctx.strokeStyle = "gray";
 	
@@ -1366,22 +1365,6 @@ ED.OpticDisk.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        // Disk margin
-        ctx.beginPath();
-        ctx.arc(0, 0, 300, 0, Math.PI*2, true);
-        ctx.closePath();
-        
-        // Set attributes
-        ctx.lineWidth = 2;
-        var colour = new ED.Colour(0,0,0,1);
-        colour.setWithHexString('FFA83C');  // Taken from disk margin of a fundus photo
-        ctx.fillStyle = colour.rgba();
-        ctx.strokeStyle = "gray";
-        
-        // Draw disk margin
-        //ctx.fill();
-        ctx.stroke();
-        
         // Disc vessels
         ctx.beginPath();
         
@@ -1463,7 +1446,6 @@ ED.OpticDisk.prototype.draw = function(_point)
         
         // Draw line
         ctx.stroke();
-
 	}
     
 	// Coordinates of handles (in canvas plane)

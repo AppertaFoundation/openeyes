@@ -3,7 +3,7 @@
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.93
  *
- * Modification date: 23th October 2011
+ * Modification date: 9th February 2012
  * Copyright 2011 OpenEyes
  * 
  * This file is part of OpenEyes.
@@ -198,19 +198,19 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
         this.scale = this.canvas.height/1001;
     }
     
-    // Array of images to be preloaded (Add new images here)
+    // Array of images to be preloaded
     this.imageArray = new Array();
-    this.imageArray['latticePattern'] = new Image();
-    this.imageArray['cribriformPattern'] = new Image();
-    this.imageArray['cryoPattern'] = new Image();
-    this.imageArray['antPVRPattern'] = new Image();
-    this.imageArray['laserPattern'] = new Image();
-    this.imageArray['fuchsPattern'] = new Image();
-    this.imageArray['pscPattern'] = new Image();
-    this.imageArray['meshworkPatternLight'] = new Image();
-    this.imageArray['meshworkPatternMedium'] = new Image();
-    this.imageArray['meshworkPatternHeavy'] = new Image();
-    this.imageArray['newVesselPattern'] = new Image();
+    this.imageArray['LatticePattern'] = new Image();
+    this.imageArray['CribriformPattern'] = new Image();
+    this.imageArray['CryoPattern'] = new Image();
+    this.imageArray['AntPVRPattern'] = new Image();
+    this.imageArray['LaserPattern'] = new Image();
+    this.imageArray['FuchsPattern'] = new Image();
+    this.imageArray['PSCPattern'] = new Image();
+    this.imageArray['MeshworkPatternLight'] = new Image();
+    this.imageArray['MeshworkPatternMedium'] = new Image();
+    this.imageArray['MeshworkPatternHeavy'] = new Image();
+    this.imageArray['NewVesselPattern'] = new Image();
     
 	// Set transform to map from doodle to canvas plane
 	this.transform.translate(this.canvas.width/2, this.canvas.height/2);
@@ -227,7 +227,7 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
 	this.moveToBackButton = document.getElementById('moveToBack' + this.IDSuffix);
 	this.flipVerButton = document.getElementById('flipVer' + this.IDSuffix);
 	this.flipHorButton = document.getElementById('flipHor' + this.IDSuffix);
-	this.deleteButton = document.getElementById('delete' + this.IDSuffix);
+	this.deleteDoodleButton = document.getElementById('delete' + this.IDSuffix);
 	this.lockButton = document.getElementById('lock' + this.IDSuffix);
 	this.unlockButton = document.getElementById('unlock' + this.IDSuffix);
     this.squiggleSpan = document.getElementById('squiggleSpan' + this.IDSuffix);
@@ -345,6 +345,24 @@ ED.Drawing.prototype.checkAllLoaded = function()
 }
 
 /**
+ * Loads doodles from an HTML element
+ *
+ * @param {stromg} _id Id of HTML input element containing JSON data
+ */
+ED.Drawing.prototype.loadDoodles = function(_id)
+{
+    var sourceElement = document.getElementById(_id);
+    
+    // If it contains something, load it (***TODO*** better error checking here)
+    if (sourceElement.value.length > 0)
+    {
+        var doodleSet = window.JSON.parse(sourceElement.value);
+        
+        this.load(doodleSet);        
+    }
+}
+
+/**
  * Loads doodles from passed set in JSON format into doodleArray
  *
  * @param {Set} _doodleSet Set of doodles from server
@@ -420,10 +438,15 @@ ED.Drawing.prototype.save = function()
 ED.Drawing.prototype.json = function()
 {
     var s = "";
+    
+    // Go through each member of doodle array, encoding it
 	for (var i = 0; i < this.doodleArray.length; i++)
 	{
-        s = s + this.doodleArray[i].json() + ", ";
+        s = s + this.doodleArray[i].json() + ",";
     }
+    
+    // Remove last comma
+    s = s.substring(0, s.length - 1);
     
     return s;
 }
@@ -1148,9 +1171,17 @@ ED.Drawing.prototype.deselectDoodles = function()
  */
 ED.Drawing.prototype.addDoodle = function(_className)
 {
-    // Create a new doodle of the specified class
-	var newDoodle = new ED[_className](this);
-    
+    // Check that class exists
+    if (ED.hasOwnProperty(_className))
+    {
+        // Create new doodle of class
+        var newDoodle = new ED[_className](this);
+    }
+    else
+    {
+        return null;
+    }
+
     // Check if one is already there if unique)
     if (!(newDoodle.isUnique && this.hasDoodleOfClass(_className)))
     {
@@ -1593,7 +1624,7 @@ ED.Drawing.prototype.repaint = function()
 		if (this.moveToBackButton !== null) this.moveToBackButton.disabled = false;
 		if (this.flipVerButton !== null) this.flipVerButton.disabled = false;
 		if (this.flipHorButton !== null) this.flipHorButton.disabled = false;        
-		if (this.deleteButton !== null) this.deleteButton.disabled = false;
+		if (this.deleteDoodleButton !== null) this.deleteDoodleButton.disabled = false;
 		if (this.lockButton !== null) this.lockButton.disabled = false;
         if (this.squiggleSpan !== null && this.selectedDoodle.isDrawable) this.squiggleSpan.style.display = "inline-block";
 	}
@@ -1603,7 +1634,7 @@ ED.Drawing.prototype.repaint = function()
 		if (this.moveToBackButton !== null) this.moveToBackButton.disabled = true;
 		if (this.flipVerButton !== null) this.flipVerButton.disabled = true;
 		if (this.flipHorButton !== null) this.flipHorButton.disabled = true;   
-		if (this.deleteButton !== null) this.deleteButton.disabled = true;
+		if (this.deleteDoodleButton !== null) this.deleteDoodleButton.disabled = true;
 		if (this.lockButton !== null) this.lockButton.disabled = true;
         if (this.squiggleSpan !== null) this.squiggleSpan.style.display = "none";
 	}

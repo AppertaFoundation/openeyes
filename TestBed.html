@@ -42,13 +42,13 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    //drawingEdit.addDoodle('Fundus');
-                    //drawingEdit.addDoodle('RRD');
+                    drawingEdit.addDoodle('Fndus');
+                    drawingEdit.addDoodle('RRD');
                     //drawingEdit.addDoodle('RoundHole');
 
                     //drawingEdit.addDoodle('OpticDisk');
-                    doodle = drawingEdit.addDoodle('OpticCup');
-                    drawingEdit.addDoodle('OpticDisk');
+                    //doodle = drawingEdit.addDoodle('OpticCup');
+                    //drawingEdit.addDoodle('OpticDisk');
                     //drawingEdit.addDoodle('OpticDiskPit');
                     
                     //drawingEdit.addDoodle('Iris');
@@ -66,10 +66,10 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
 //                    doodle = drawingEdit.addDoodle('AngleGrade');
 //                    doodle.rotation = 270 * Math.PI/180;
                     //drawingEdit.addDoodle('Patch');
-                    drawingEdit.deselectDoodles();
+                    //drawingEdit.deselectDoodles();
                     //drawingEdit.load(doodleSet);
                     
-                    drawingEdit.drawAllDoodles();
+                    //drawingEdit.drawAllDoodles();
                 }
                 
                 // Function to detect changes in parameters (eg from mouse dragging)
@@ -115,13 +115,13 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                             <button class="imgbutton" disabled="true" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="graphics/moveToBack.gif" /></button>
                             <button class="imgbutton" disabled="true" id="flipVerRPS" title="Flip around vertical axis" onclick="drawingEdit.flipVer(); return false;" ><img src="graphics/flipVer.gif" /></button>
                             <button class="imgbutton" disabled="true" id="flipHorRPS" title="Flip around horizontal axis" onclick="drawingEdit.flipHor(); return false;" ><img src="graphics/flipHor.gif" /></button>
-                            <button class="imgbutton" disabled="true" id="deleteRPS" title="Delete" onclick="drawingEdit.deleteDoodle(); return false;" ><img src="graphics/delete.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="deleteRPS" title="Delete" onclick="drawingEdit.deleteDoodle(); return false;" ><img src="graphics/DeleteDoodle.gif" /></button>
                             <button class="imgbutton" disabled="true" id="lockRPS" title="Lock" onclick="drawingEdit.lock(); return false;" ><img src="graphics/lock.gif" /></button>
                             <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>
                             <br />
                             
                             <!-- Doodle selection toolbar -->
-                            <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskHaemorrhage'); return false;" ><img src="graphics/diskHaemorrhage.gif" /></button>
+                            <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskyHaemorrhage'); return false;" ><img src="graphics/DiskHaemorrhage.gif" /></button>
                             <button class="imgbutton" title="nerveFibreDefect" onclick="drawingEdit.addDoodle('NerveFibreDefect'); return false;" ><img src="graphics/nerveFibreDefect.gif" /></button>
                             <button class="imgbutton" title="Papilloedema" onclick="drawingEdit.addDoodle('Papilloedema'); return false;" ><img src="graphics/papilloedema.gif" /></button>
                             <button class="imgbutton" title="Baerveldt" onclick="drawingEdit.addDoodle('Baerveldt'); return false;" ><img src="graphics/baerveldt.gif" /></button>

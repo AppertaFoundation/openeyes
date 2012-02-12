@@ -1053,7 +1053,7 @@ ED.ACIOL.prototype.draw = function(_point)
     // Draw optic
     ctx.arc(0, 0, r, 0, Math.PI * 2, false);
     
-    // Draw upper haptic (see acIOL.c4D for bezier points)
+    // Draw upper haptic (see ACIOL.c4D for bezier points)
     ctx.moveTo(150, -190);
     ctx.bezierCurveTo(160, -200, 170, -210, 160, -230);
     ctx.bezierCurveTo(150, -250, 100, -280, 50, -290);
