@@ -4,7 +4,7 @@
 <h1>Admission Form</h1>
 <?php
 if ($patient->address === NULL) {
-	$patient->address = Address::Model()->findByPk($patient->address_id);
+	throw new SystemException('patient->address is NULL: '.print_r($patient,true));
 }
 ?>
 <table class="half right">
