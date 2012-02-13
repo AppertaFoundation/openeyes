@@ -1,6 +1,6 @@
 <?php
 /*
-_____________________________________________________________________________
+ _____________________________________________________________________________
 (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
 (C) OpenEyes Foundation, 2011
 This file is part of OpenEyes.
@@ -22,9 +22,20 @@ class BaseActiveRecord extends CActiveRecord
 {
 
 	/**
-	* How long (in seconds) before cached PAS details are considered stale
-	*/
+	 * How long (in seconds) before cached PAS details are considered stale
+	 */
 	const PAS_CACHE_TIME = 300;
+
+	/**
+	 * Audit log
+	 */
+	public function behaviors() {
+		return array(
+			'LoggableBehavior' => array(
+				'class' => 'application.behaviors.LoggableBehavior',
+			),
+		);
+	}
 	
 	/**
 	 * Audit log
@@ -39,23 +50,27 @@ class BaseActiveRecord extends CActiveRecord
 	
 	/**
 	 * Strips all html tags out of attributes to be saved.
-	 *
+	 * @return boolean
+	 */
+	protected function beforeSave() {
+		$primaryKey = $this->tableSchema->primaryKey;
+		foreach ($this->attributes as $name => $value) {
+			// The '!empty' check is to prevent it populating NULL values, e.g. episode.end_date was changing from NULL to 0000-00-00 00:00:00.
+			if(!empty($value) && ($primaryKey !== $name || (is_array($primaryKey) && !in_array($name, $primaryKey)))) {
+				$this->$name = strip_tags($value);
+			}
+		}
+		return parent::beforeSave();
+	}
+	
+	/**
 	 * @param boolean $runValidation
 	 * @param array $attributes
 	 * @param boolean $allow_overriding - if true allows created/modified user/date to be set and saved via the model (otherwise gets overriden)
 	 * @return boolean
 	 */
-	public function save($runValidation=true,$attributes=null,$allow_overriding=false)
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
-		$primaryKey = $this->tableSchema->primaryKey;
-		foreach ($this->attributes as $name => $value) {
-// The '!empty' check is to prevent it populating NULL values, e.g. episode.end_date was changing from NULL to 0000-00-00 00:00:00.
-			if (!empty($value) && ($primaryKey !== $name || 
-				(is_array($primaryKey) && !in_array($name, $primaryKey)))) {
-				$this->$name = strip_tags($value);
-			}
-		}
-
 		$user_id = null;
 
 		try {
@@ -110,5 +125,5 @@ class BaseActiveRecord extends CActiveRecord
 			return Helper::convertMySQL2NHS($value, $empty_string);
 		}
 	}
-	
+
 }

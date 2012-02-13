@@ -212,23 +212,21 @@ class Sequence extends BaseActiveRecord
 			self::FREQUENCY_3WEEKS => 'Every 3 weeks',
 			self::FREQUENCY_4WEEKS => 'Every 4 weeks',
 			self::FREQUENCY_ONCE => 'One time',
-			(self::FREQUENCY_4WEEKS + self::SELECT_1STWEEK) => '1st in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_2NDWEEK) => '2nd in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_3RDWEEK) => '3rd in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_4THWEEK) => '4th in month',
-			(self::FREQUENCY_4WEEKS + self::SELECT_5THWEEK) => '5th in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_1STWEEK) => '1st in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_2NDWEEK) => '2nd in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_3RDWEEK) => '3rd in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_4THWEEK) => '4th in month',
+			(self::FREQUENCY_MONTHLY + self::SELECT_5THWEEK) => '5th in month',
 		);
 	}
 
 	public function getSelectedFrequencyWeekOption()
 	{
 		if (!empty($this->week_selection)) {
-			$value = self::FREQUENCY_4WEEKS + $this->week_selection;
+			return self::FREQUENCY_MONTHLY + $this->week_selection;
 		} else {
-			$value = $this->repeat_interval;
+			return $this->repeat_interval;
 		}
-
-		return $value;
 	}
 
 	public function getWeekdayOptions()
@@ -436,7 +434,7 @@ class Sequence extends BaseActiveRecord
 				$interval = $endTimestamp + 1;
 				break;
 			case self::FREQUENCY_MONTHLY:
-				$interval = 0;
+				$interval = $endTimestamp + 1;
 				break;
 		}
 
@@ -494,6 +492,15 @@ class Sequence extends BaseActiveRecord
 		$result .= date(' l', strtotime($this->start_date));
 
 		return $result;
+	}
+
+	public function getWeekdayText() {
+		$options = $this->getWeekdayOptions();
+		if(isset($options[$this->weekday])) {
+			return $options[$this->weekday];
+		} else {
+			return '-';
+		}
 	}
 
 	public function getRepeatText()
