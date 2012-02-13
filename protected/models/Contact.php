@@ -10,17 +10,29 @@ You should have received a copy of the GNU General Public License along with Ope
 _____________________________________________________________________________
 http://www.openeyes.org.uk   info@openeyes.org.uk
 --
-*/
+ */
 
 /**
  * This is the model class for table "Contact".
  *
- * The followings are the available columns in table 'Contact':
+ * The following are the available columns in table 'Contact':
  * @property string $id
  * @property string $nick_name
- *
- * The followings are the available model relations:
- * @property Firm[] $firms
+ * @property string $primary_phone
+ * @property string $title
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $qualifications
+ * 
+ * The following are the available model relations:
+ * @property Gp $gp
+ * @property Consultant $consultant
+ * @property Address $address
+ * @property UserContactAssignment $userContactAssignment
+ * 
+ * The following are pseudo (calculated) fields
+ * @property string $SalutationName
+ * @property string $FullName
  */
 class Contact extends BaseActiveRecord
 {
@@ -49,10 +61,10 @@ class Contact extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('nick_name', 'length', 'max'=>80),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, nick_name', 'safe', 'on'=>'search'),
+		array('nick_name', 'length', 'max'=>80),
+		// The following rule is used by search().
+		// Please remove those attributes that should not be searched.
+		array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,10 +76,10 @@ class Contact extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firms' => array(self::HAS_MANY, 'Firm', 'contact_id'),
 			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
 			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
 			'address' => array(self::BELONGS_TO, 'Address', 'address_id'),
+			// FIXME: Surely this is a has_many (many_many mapping table). If not they what's the point of the mapping table?
 			'userContactAssignment' => array(self::HAS_ONE, 'UserContactAssignment', 'contact_id')
 		);
 	}
@@ -80,6 +92,11 @@ class Contact extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'nick_name' => 'Nick Name',
+ 			'primary_phone' => 'Primary Phone Number',
+ 			'title' => 'Title',
+ 			'first_name' => 'First Name',
+ 			'last_name' => 'Last Name',
+ 			'qualifications' => 'Qualifications',
 		);
 	}
 
@@ -101,13 +118,19 @@ class Contact extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
+	/**
+	 * @return string Full name
+	 */
 	public function getFullName() {
 		return implode(' ',array($this->title, $this->first_name, $this->last_name));
 	}
 
+	/**
+	 * @return string Salutaion name
+	 */
 	public function getSalutationName() {
 		return $this->title . ' ' . $this->last_name;
 	}
-	
+
 }

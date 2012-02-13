@@ -2,9 +2,6 @@
 	<div class="logo"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></div>
 </div>
 <h1>Admission Form</h1>
-<?php
-$patient->address = Address::Model()->findByPk($patient->address_id);
-?>
 <table class="half right">
 	<tr>
 		<th>Patient Name</th>
