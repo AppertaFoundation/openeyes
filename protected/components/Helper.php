@@ -62,7 +62,15 @@ class Helper {
 			return $empty_string;
 		}
 	}
-	
+
+	public static function convertMySQL2HTML($value, $empty_string = '-') {
+		if(preg_match('/^\d{4}-\d{2}-\d{2}/', $value) && $value != '0000-00-00 00:00:00' && $value != '0000-00-00') {
+			return self::convertDate2HTML($value, $empty_string);
+		} else {
+			return $empty_string;
+		}
+	}
+
 	/**
 	 * Convert date(time) value to NHS format.
 	 * Strings that do not return a valid date return $empty_string.
@@ -79,5 +87,13 @@ class Helper {
 			return $empty_string;
 		}
 	}
-	
+
+	public static function convertDate2HTML($value, $empty_string = '-') {
+		$time = strtotime($value);
+		if ($time) {
+			return '<span class="day">'.date('j',$time).'</span><span class="mth">'.date('M',$time).'</span><span class="yr">'.date('Y',$time).'</span>';
+		} else {
+			return $empty_string;
+		}
+	}
 }

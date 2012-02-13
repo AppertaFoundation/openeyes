@@ -39,7 +39,7 @@ class WaitingListService
 		}
 
 		if ($hos_num && ctype_digit($hos_num)) {
-			$whereSql .= " AND pat.hos_num = '$hos_num' ";
+			$whereSql .= " AND pat.hos_num REGEXP '^[0]*$hos_num$' ";
 		}
 
 		if ($site_id && ctype_digit($site_id)) {
