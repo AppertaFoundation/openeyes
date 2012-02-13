@@ -874,3 +874,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .purple_rinse textarea { width: 200px; }
 .session_unavailable { color: #f00; }
 .toAddress {padding-left:7em;}
+
+div.errorSummary { background-color: #fff; color: #f22; font-weight: bold; text-align: center; padding:10px; border: 1px solid #ff2222; margin-bottom: 2px; position:relative; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+.errorSummary span { background: url(../img/alert_triangle_red.png) no-repeat; padding-left: 32px; padding-bottom: 9px; padding-top: 4px;}
