@@ -243,6 +243,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				ok = false;
 				return false;
 			} else {
+				if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
+					alert("Please enter a valid admission time, eg 09:30");
+					$(this).select().focus();
+					ok = false;
+					return false;
+				}
 				if (m2[1].length <2) {
 					m2[1] = "0"+m2[1];
 				}
