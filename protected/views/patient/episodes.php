@@ -38,7 +38,7 @@
 										$highlight = false;
 									}
 									?>
-									<li id="eventLi<?php echo $event->id ?>"><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDate('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
+									<li id="eventLi<?php echo $event->id ?>"><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
 							<?php
 								}
 							?>

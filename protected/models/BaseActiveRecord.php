@@ -115,4 +115,9 @@ class BaseActiveRecord extends CActiveRecord
 		}
 	}
 
+	public function NHSDateAsHTML($attribute, $empty_string = '-') {
+		if($value = $this->getAttribute($attribute)) {
+			return Helper::convertMySQL2HTML($value, $empty_string);
+		}
+	}
 }
