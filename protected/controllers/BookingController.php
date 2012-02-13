@@ -533,9 +533,9 @@ class BookingController extends BaseController
 					}
 
 					if (!empty($_POST['Session']['comments'])) {
-						$model->session->comments = $_POST['Session']['comments'];
-						if (!$model->session->save()) {
-							throw new SystemException('Unable to save session comments: '.print_r($model->session->getErrors(),true));
+						$new_session->comments = $_POST['Session']['comments'];
+						if (!$new_session->save()) {
+							throw new SystemException('Unable to save session comments: '.print_r($new_session->getErrors(),true));
 						}
 					}
 				} else {
