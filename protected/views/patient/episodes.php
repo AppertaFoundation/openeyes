@@ -29,7 +29,7 @@
 									);
 									$scheduled = false;
 									foreach ($event_elements as $element) {
-										if (get_class($element) == 'ElementOperation' && $element->status == ElementOperation::STATUS_SCHEDULED) {
+										if (get_class($element) == 'ElementOperation' && in_array($element->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED))) {
 											$scheduled = true;
 										}
 									}
