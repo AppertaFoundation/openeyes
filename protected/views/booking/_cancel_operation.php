@@ -17,7 +17,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 	<p>
-		<strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?>
+		Patient: <strong><?php echo $patient->last_name . '</strong>, ' . $patient->first_name . ' (' . $patient->hos_num . ')'; ?>
 	</p>
 	<div id="operation">
 		<h1>Cancel operation</h1>
