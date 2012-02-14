@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -159,27 +159,32 @@ if (!$reschedule) {
 			document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
 			return false;
 		});
-	<?php if ($reschedule) { ?>
+
 		$('#bookingForm button#confirm_slot').click(function () {
-			if (!$('#Booking_admission_time').val().match(/^[0-9]{1,2}.*?[0-9]{2}$/)) {
-				$('#Booking_admission_time_error').html('Please enter a valid admission time, eg 09:30');
+			var errors = [];
+			var m = $('#Booking_admission_time').val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+
+			if (!m || m[1] <0 || m[1] >23 || m[2]<0 || m[2] >59) {
+				errors.push("Please enter a valid admission time, eg 09:30");
 				$('#Booking_admission_time').select().focus();
-				return false;
 			}
-			if ($('#cancellation_reason option:selected').val() == '') {
-				$('div.alertBox ul li').html('Please select a reason for reschedule');
+
+			<?php if ($reschedule) {?>
+				if ($('#cancellation_reason option:selected').val() == '') {
+					errors.push("Please select a reason for reschedule");
+				}
+			<?php }?>
+
+			if (errors.length >0) {
+				var html = '';
+				for (var i in errors) {
+					html += "<li>"+errors[i]+"</li>";
+				}
+
+				$('div.alertBox ul').html(html);
 				$('div.alertBox').show();
 				return false;
 			}
 		});
-	<?php }else {?>
-		$('#bookingForm button#confirm_slot').click(function () {
-			if (!$('#Booking_admission_time').val().match(/^[0-9]{1,2}.*?[0-9]{2}$/)) {
-				$('#Booking_admission_time_error').html('Please enter a valid admission time, eg 09:30');
-				$('#Booking_admission_time').select().focus();
-				return false;
-			}
-		});
-	<?php }?>
 	</script>
 <?php }?>
