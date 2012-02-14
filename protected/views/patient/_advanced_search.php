@@ -32,6 +32,7 @@ $form=$this->beginWidget('CActiveForm', array(
 		</div>
 		<div class="form_button">
 			<button type="submit" style="margin-top: -33px; float: right; display: block;" class="classy blue tall" id="findPatient_details" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
+			<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-right: 10.4em; margin-top: -1.8em; display: none;" />
 		</div>
 	</div>
 <?php $this->endWidget();?>

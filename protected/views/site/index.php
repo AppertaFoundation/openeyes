@@ -42,6 +42,7 @@ $this->layout = 'main'; ?>
 			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 		?>
 		<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_id" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
+		<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-right: 10px; margin-top: 9px; display: none;" />
 		<?php //$this->endWidget();?>
 	</div>
 	<?php
@@ -74,12 +75,14 @@ $this->layout = 'main'; ?>
 			button.children('span').removeClass('button-span-blue').addClass('button-span-inactive');
 			button2.removeClass('blue').addClass('inactive');
 			button2.children('span').removeClass('button-span-blue').addClass('button-span-inactive');
+			$('img.loader').show();
 			button_state = 1;
 		} else {
 			button.removeClass('inactive').addClass('blue');
 			button.children('span').removeClass('button-span-inactive').addClass('button-span-blue');
 			button2.removeClass('inactive').addClass('blue');
 			button2.children('span').removeClass('button-span-inactive').addClass('button-span-blue');
+			$('img.loader').hide();
 			button_state = 0;
 		}
 	}
