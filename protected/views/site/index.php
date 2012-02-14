@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -63,13 +63,38 @@ $this->layout = 'main'; ?>
 		return false;
 	});
 
+	var button_state = 0;
+
+	function buttons_toggle() {
+		var button = $('#findPatient_id');
+		var button2 = $('#findPatient_details');
+
+		if (button_state == 0) {
+			button.removeClass('blue').addClass('inactive');
+			button.children('span').removeClass('button-span-blue').addClass('button-span-inactive');
+			button2.removeClass('blue').addClass('inactive');
+			button2.children('span').removeClass('button-span-blue').addClass('button-span-inactive');
+			button_state = 1;
+		} else {
+			button.removeClass('inactive').addClass('blue');
+			button.children('span').removeClass('button-span-inactive').addClass('button-span-blue');
+			button2.removeClass('inactive').addClass('blue');
+			button2.children('span').removeClass('button-span-inactive').addClass('button-span-blue');
+			button_state = 0;
+		}
+	}
+
 	function patient_search() {
+		if (!$('#findPatient_id').hasClass('blue')) return false;
+
 		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
 			$('#patient-search-error').html('<h3>Please enter either a hospital number or a firstname and lastname.</h3>');
 			$('#patient-search-error').show();
 			$('#patient-list').hide();
 			return false;
 		}
+
+		buttons_toggle();
 
 		$('#patient-search').submit();
 		return false;
