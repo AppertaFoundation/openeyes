@@ -41,6 +41,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 		<div style="height: 0.4em;"></div>
 		<div class="buttonwrapper">
 			<button type="submit" class="classy red venti"><span class="button-span button-span-red">Cancel operation</span></button>
+			<img id="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
 		</div>
 <?php echo CHtml::endForm(); ?>
 	</div>
@@ -49,9 +50,17 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <ul><li>&nbsp;</li></ul></div>
 <script type="text/javascript">
 	$('#cancelForm button[type="submit"]').click(function () {
-		if ('' == $('#cancellation_reason option:selected').val()) {
-			$('div.alertBox ul li').html('Please select a cancellation reason');
-			$('div.alertBox').show();
+		if ($(this).hasClass('red')) {
+			if ('' == $('#cancellation_reason option:selected').val()) {
+				$('div.alertBox ul li').html('Please select a cancellation reason');
+				$('div.alertBox').show();
+				return false;
+			}
+
+			$(this).removeClass('red').addClass('inactive');
+			$(this).children('span').removeClass('button-span-red').addClass('button-span-inactive');
+			$('#loader').show();
+		} else {
 			return false;
 		}
 	});
