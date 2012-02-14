@@ -51,6 +51,10 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 
 		</div> <!-- #theatre-times_tab_<?php echo $i ?> -->
 
+		<div class="alertBox sessionWarning" style="margin-top: 10px; display: none;">
+			You cannot book into this session as it is in the past.
+		</div>
+
 		<?php
 			$i++;
 			}
@@ -65,6 +69,12 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 <script type="text/javascript">
 	$('div.timeBlock.bookable, div.timeBlock.inthepast').unbind('click').click(function() {
 		id = this.id.replace(/bookingSession/,'');
+
+		if ($(this).hasClass('inthepast')) {
+			$('div.sessionWarning').show();
+		} else {
+			$('div.sessionWarning').hide();
+		}
 
 		$.ajax({
      	'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,
