@@ -157,33 +157,44 @@ if (!$reschedule) {
 
 	<script type="text/javascript">
 		$('button#cancel_scheduling').click(function() {
-			document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+			if ($(this).hasClass('red')) {
+				document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+			}
 			return false;
 		});
 
 		$('#bookingForm button#confirm_slot').click(function () {
-			var errors = [];
-			var m = $('#Booking_admission_time').val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+			if ($(this).hasClass('green')) {
+				var errors = [];
+				var m = $('#Booking_admission_time').val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
 
-			if (!m || m[1] <0 || m[1] >23 || m[2]<0 || m[2] >59) {
-				errors.push("Please enter a valid admission time, eg 09:30");
-				$('#Booking_admission_time').select().focus();
-			}
-
-			<?php if ($reschedule) {?>
-				if ($('#cancellation_reason option:selected').val() == '') {
-					errors.push("Please select a reason for reschedule");
-				}
-			<?php }?>
-
-			if (errors.length >0) {
-				var html = '';
-				for (var i in errors) {
-					html += "<li>"+errors[i]+"</li>";
+				if (!m || m[1] <0 || m[1] >23 || m[2]<0 || m[2] >59) {
+					errors.push("Please enter a valid admission time, eg 09:30");
+					$('#Booking_admission_time').select().focus();
 				}
 
-				$('div.alertBox ul').html(html);
-				$('div.alertBox').show();
+				<?php if ($reschedule) {?>
+					if ($('#cancellation_reason option:selected').val() == '') {
+						errors.push("Please select a reason for reschedule");
+					}
+				<?php }?>
+
+				if (errors.length >0) {
+					var html = '';
+					for (var i in errors) {
+						html += "<li>"+errors[i]+"</li>";
+					}
+
+					$('div.alertBox ul').html(html);
+					$('div.alertBox').show();
+					return false;
+				}
+
+				$(this).removeClass('green').addClass('inactive');
+				$(this).children('span').removeClass('button-span-green').addClass('button-span-inactive');
+				$('button#cancel_scheduling').removeClass('red').addClass('inactive');
+				$('button#cancel_scheduling').children('span').removeClass('button-span-red').addClass('button-span-inactive');
+			} else {
 				return false;
 			}
 		});
