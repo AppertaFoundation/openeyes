@@ -33,8 +33,6 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 echo CHtml::form(array('booking/update'), 'post', array('id' => 'cancelForm'));
 echo CHtml::hiddenField('booking_id', $operation->booking->id); ?>
 <p/>
-<div class="errorSummary" style="display:none"></div>
-<p/>
 <?php
 echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
 if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
@@ -59,9 +57,11 @@ echo CHtml::endForm(); ?>
 <script type="text/javascript">
 	$('#cancelForm button[type="submit"]').click(function () {
 		if ('' == $('#cancellation_reason option:selected').val()) {
-			$('div.errorSummary').html('Please select a cancellation reason');
-			$('div.errorSummary').show();
+			$('div.alertBox ul li').html('Please select a cancellation reason');
+			$('div.alertBox').show();
 			return false;
 		}
 	});
 </script>
+<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>

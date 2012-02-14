@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -24,7 +24,6 @@ $patient = $operation->event->episode->patient; ?>
 <?php
 echo CHtml::form(array('booking/cancelOperation'), 'post', array('id' => 'cancelForm'));
 echo CHtml::hiddenField('operation_id', $operation->id); ?>
-		<div class="errorSummary" style="display:none"></div>
 <?php echo CHtml::label('Cancellation reason: ', 'cancellation_reason'); ?>
 <?php if (!empty($operation->booking) && (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date)))) {
 	$listIndex = 3;
@@ -46,11 +45,13 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <?php echo CHtml::endForm(); ?>
 	</div>
 </div>
+<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>
 <script type="text/javascript">
 	$('#cancelForm button[type="submit"]').click(function () {
 		if ('' == $('#cancellation_reason option:selected').val()) {
-			$('div.errorSummary').html('Please select a cancellation reason');
-			$('div.errorSummary').show();
+			$('div.alertBox ul li').html('Please select a cancellation reason');
+			$('div.alertBox').show();
 			return false;
 		}
 	});

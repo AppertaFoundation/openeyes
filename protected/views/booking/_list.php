@@ -110,7 +110,6 @@ if (!$reschedule) {
 
 	<?php if ($reschedule) { ?>
 	<h3>Reason for Reschedule</h3>
-	<div class="errorSummary" style="display:none"><span class="errorSummary"></span></div>
 	<div class="eventDetail clearfix" style="position:relative;">
 		<div class="label"><strong><?php echo CHtml::label('Reschedule Reason: ', 'cancellation_reason'); ?></strong></div>
 		<?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
@@ -152,6 +151,9 @@ if (!$reschedule) {
 	echo CHtml::endForm();
 	?>
 
+	<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
+	<ul><li>&nbsp;</li></ul></div>
+
 	<script type="text/javascript">
 		$('button#cancel_scheduling').click(function() {
 			document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
@@ -165,8 +167,8 @@ if (!$reschedule) {
 				return false;
 			}
 			if ($('#cancellation_reason option:selected').val() == '') {
-				$('span.errorSummary').html('Please select a reason for reschedule');
-				$('div.errorSummary').show();
+				$('div.alertBox ul li').html('Please select a reason for reschedule');
+				$('div.alertBox').show();
 				return false;
 			}
 		});
