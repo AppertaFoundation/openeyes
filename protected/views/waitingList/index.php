@@ -56,7 +56,10 @@
 									<td>
 										<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
 									</td>
-									<td>
+									<td width="20px;" style="margin-left: 50px; border: none;">
+										<img id="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
+									</td>
+									<td style="padding: 0;" width="70px;">
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
 									</td>
 								</tr>
@@ -113,15 +116,26 @@
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	$('#waitingList-filter button[type="submit"]').click(function() {
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
-			'type': 'POST',
-			'data': $('#waitingList-filter').serialize(),
-			'success': function(data) {
-				$('#searchResults').html(data);
-				return false;
-			}
-		});
+		if ($(this).hasClass('green')) {
+			var button = $(this);
+			button.removeClass('green').addClass('inactive');
+			button.children('span').removeClass('button-span-green').addClass('button-span-inactive');
+			$('#loader').show();
+			$('#searchResults').html('<div id="waitingList" class="grid-view-waitinglist"><table><tbody><tr><th>Letters sent</th><th>Patient</th><th>Hospital number</th><th>Location</th><th>Procedure</th><th>Eye</th><th>Firm</th><th>Decision date</th><th>Priority</th><th>Book status (requires...)</th><th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value=""></th></tr><tr><td colspan="7" style="border: none; padding-top: 10px;"><img src="/img/ajax-loader.gif" /> Searching, please wait ...</td></tr></tbody></table></div>');
+
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
+				'type': 'POST',
+				'data': $('#waitingList-filter').serialize(),
+				'success': function(data) {
+					$('#searchResults').html(data);
+					$('#loader').hide();
+					button.children('span').removeClass('button-span-inactive').addClass('button-span-green');
+					button.removeClass('inactive').addClass('green');
+					return false;
+				}
+			});
+		}
 		return false;
 	});
 
