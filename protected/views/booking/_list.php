@@ -32,6 +32,7 @@ if (!$reschedule) {
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 				<th>Admission time</th>
+				<th>Comments</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -57,7 +58,7 @@ if (!$reschedule) {
 				<td><?php echo $thisOperation->getAnaestheticText()?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
 				<td><?php echo $booking->admission_time ?></td>
-
+				<td><?php echo $thisOperation->comments?></td>
 			</tr>
 <?php
 		$counter++;
@@ -65,7 +66,7 @@ if (!$reschedule) {
 	</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="4"><?php echo ($counter - 1) . ' booking';
+				<th colspan="6"><?php echo ($counter - 1) . ' booking';
 	if (($counter - 1) != 1) {
 		echo 's';
 	}
