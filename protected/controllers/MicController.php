@@ -11,6 +11,7 @@ class MicController extends BaseController {
 	}
 	
 	public function actionIndex() {
+		$main_start = microtime(true);
 		
 		$results = array();
 		
@@ -37,5 +38,6 @@ class MicController extends BaseController {
 		$this->render('index', array(
 			'results' => $results,
 		));
+		Yii::log('Total Time: '. (microtime() - $main_start));
 	}
 }
