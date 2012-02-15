@@ -9,12 +9,12 @@ class MicController extends BaseController {
 		}
 		return parent::beforeAction($action);
 	}
-	
+
 	public function actionIndex() {
 		$main_start = microtime(true);
-		
+
 		$results = array();
-		
+
 		// Find
 		$start = microtime(true);
 		for($i = 1; $i <= 100; $i++) {
@@ -23,7 +23,7 @@ class MicController extends BaseController {
 			));
 		}
 		$results['Find 100 patients 100 times'] = microtime(true) - $start;
-		
+
 		// Save
 		$patients = Patient::model()->findAll(array(
 			'limit' => 200
@@ -34,15 +34,16 @@ class MicController extends BaseController {
 			$patient->save();
 		}
 		$results["Save $count patients"] = microtime(true) - $start;
-		
+
 		// Disk write
 		$start = microtime(true);
-		for($i = 1; $i <= 100; $i++) {
+		for($i = 1; $i <= 1000; $i++) {
 			$data = str_repeat(rand(0,9), 1000000);
 			file_put_contents('/tmp/oe-perf-test-'.$i, $data);
+			unlink('/tmp/oe-perf-test-'.$i);
 		}
-		$results["Write 100 random 1MByte files"] = microtime(true) - $start;
-				
+		$results["Write 1000 random 1MByte files"] = microtime(true) - $start;
+
 		$this->render('index', array(
 			'results' => $results,
 		));
