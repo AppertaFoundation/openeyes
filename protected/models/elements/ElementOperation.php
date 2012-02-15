@@ -632,13 +632,16 @@ class ElementOperation extends BaseElement
 			$bookable = true;
 			if($this->anaesthetist_required && !$session['anaesthetist']) {
 				$bookable = false;
+				$session['bookable_reason'] = 'anaesthetist';
 			}
 			if($this->consultant_required && !$session['consultant']) {
 				$bookable = false;
+				$session['bookable_reason'] = 'consultant';
 			}
 			$paediatric = ($this->event->episode->patient->getAge() < 16);
 			if($paediatric && !$session['paediatric']) {
 				$bookable = false;
+				$session['bookable_reason'] = 'paediatric';
 			}
 			$session['bookable'] = $bookable;
 			

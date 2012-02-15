@@ -113,7 +113,7 @@ $patient = $operation->event->episode->patient;
 			});
 			return false;
 		});
-		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast').die('click').live('click', function() {
+		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed').die('click').live('click', function() {
 			$('#sessionDetails').html('');
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');
