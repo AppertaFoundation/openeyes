@@ -35,6 +35,14 @@ class MicController extends BaseController {
 		}
 		$results["Save $count patients"] = microtime(true) - $start;
 		
+		// Disk write
+		$start = microtime(true);
+		for($i = 1; $i <= 100; $i++) {
+			$data = str_repeat(rand(0,9), 1000000);
+			file_put_contents('/tmp/oe-perf-test-'.$i, $data);
+		}
+		$results["Write 100 random 1MByte files"] = microtime(true) - $start;
+				
 		$this->render('index', array(
 			'results' => $results,
 		));
