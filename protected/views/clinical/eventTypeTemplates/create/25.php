@@ -79,7 +79,7 @@ if (isset($referrals) && is_array($referrals)) {
 <ul><li>&nbsp;</li></ul></div>
 
 	<div class="form_button">
-		<img id="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
+		<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
 		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
 		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
 		<button type="submit" class="classy red venti" id="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
@@ -89,8 +89,9 @@ if (isset($referrals) && is_array($referrals)) {
 
 <script type="text/javascript">
 	$('#scheduleNow').unbind('click').click(function() {
-		if ($(this).hasClass('green')) {
+		if (!$(this).hasClass('inactive')) {
 			disableButtons();
+
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
 				'type': 'POST',
@@ -109,9 +110,11 @@ if (isset($referrals) && is_array($referrals)) {
 		}
 		return false;
 	});
+
 	$('#scheduleLater').unbind('click').click(function() {
-		if ($(this).hasClass('green')) {
+		if (!$(this).hasClass('inactive')) {
 			disableButtons();
+
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
 				'type': 'POST',
@@ -133,7 +136,9 @@ if (isset($referrals) && is_array($referrals)) {
 	});
 
 	$('#cancelOperation').unbind('click').click(function() {
-		if ($(this).hasClass('red')) {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
 			if (last_item_type == 'url') {
 				window.location.href = last_item_id;
 			} else if (last_item_type == 'episode') {
@@ -144,26 +149,6 @@ if (isset($referrals) && is_array($referrals)) {
 		}
 		return false;
 	});
-
-	function disableButtons() {
-		$('#scheduleLater').removeClass('green').addClass('inactive');
-		$('#scheduleLater').children('span').removeClass('button-span-green').addClass('button-span-inactive');
-		$('#scheduleNow').removeClass('green').addClass('inactive');
-		$('#scheduleNow').children('span').removeClass('button-span-green').addClass('button-span-inactive');
-		$('#cancelOperation').removeClass('red').addClass('inactive');
-		$('#cancelOperation').children('span').removeClass('button-span-red').addClass('button-span-inactive');
-		$('#loader').show();
-	}
-
-	function enableButtons() {
-		$('#scheduleLater').removeClass('inactive').addClass('green');
-		$('#scheduleLater').children('span').removeClass('button-span-inactive').addClass('button-span-green');
-		$('#scheduleNow').removeClass('inactive').addClass('green');
-		$('#scheduleNow').children('span').removeClass('button-span-inactive').addClass('button-span-green');
-		$('#cancelOperation').removeClass('inactive').addClass('red');
-		$('#cancelOperation').children('span').removeClass('button-span-inactive').addClass('button-span-red');
-		$('#loader').hide();
-	}
 
 	function displayErrors(data) {
 		enableButtons();

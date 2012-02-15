@@ -157,14 +157,15 @@ if (!$reschedule) {
 
 	<script type="text/javascript">
 		$('button#cancel_scheduling').click(function() {
-			if ($(this).hasClass('red')) {
+			if (!$(this).hasClass('inactive')) {
+				disableButtons();
 				document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
 			}
 			return false;
 		});
 
 		$('#bookingForm button#confirm_slot').click(function () {
-			if ($(this).hasClass('green')) {
+			if (!$(this).hasClass('inactive')) {
 				var errors = [];
 				var m = $('#Booking_admission_time').val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
 
@@ -190,10 +191,7 @@ if (!$reschedule) {
 					return false;
 				}
 
-				$(this).removeClass('green').addClass('inactive');
-				$(this).children('span').removeClass('button-span-green').addClass('button-span-inactive');
-				$('button#cancel_scheduling').removeClass('red').addClass('inactive');
-				$('button#cancel_scheduling').children('span').removeClass('button-span-red').addClass('button-span-inactive');
+				disableButtons();
 			} else {
 				return false;
 			}

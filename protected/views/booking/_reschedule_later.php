@@ -50,24 +50,21 @@ echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
 echo '<div style="height: 0.4em;"></div>'?>
 <div class="clear"></div>
 <button type="submit" class="classy red venti"><span class="button-span button-span-red">Confirm reschedule later</span></button>
-<img src="/img/ajax-loader.gif" alt="loading..." style="display: none;" id="loader" />
+<img src="/img/ajax-loader.gif" alt="loading..." style="display: none;" class="loader" />
 <?php
 echo CHtml::endForm(); ?>
 </div>
 </div>
 <script type="text/javascript">
 	$('#cancelForm button[type="submit"]').click(function () {
-		if ($(this).hasClass('red')) {
+		if (!$(this).hasClass('inactive')) {
 			if ('' == $('#cancellation_reason option:selected').val()) {
 				$('div.alertBox ul li').html('Please select a cancellation reason');
 				$('div.alertBox').show();
 				return false;
 			}
 
-			$(this).removeClass('red').addClass('inactive');
-			$(this).children('span').removeClass('button-span-red').addClass('button-span-inactive');
-			$('#loader').show();
-
+			disableButtons();
 		} else {
 			return false;
 		}

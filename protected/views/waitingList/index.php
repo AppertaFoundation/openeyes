@@ -57,7 +57,7 @@
 										<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
 									</td>
 									<td width="20px;" style="margin-left: 50px; border: none;">
-										<img id="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
+										<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
 									</td>
 									<td style="padding: 0;" width="70px;">
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
@@ -116,11 +116,8 @@
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	$('#waitingList-filter button[type="submit"]').click(function() {
-		if ($(this).hasClass('green')) {
-			var button = $(this);
-			button.removeClass('green').addClass('inactive');
-			button.children('span').removeClass('button-span-green').addClass('button-span-inactive');
-			$('#loader').show();
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
 			$('#searchResults').html('<div id="waitingList" class="grid-view-waitinglist"><table><tbody><tr><th>Letters sent</th><th>Patient</th><th>Hospital number</th><th>Location</th><th>Procedure</th><th>Eye</th><th>Firm</th><th>Decision date</th><th>Priority</th><th>Book status (requires...)</th><th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value=""></th></tr><tr><td colspan="7" style="border: none; padding-top: 10px;"><img src="/img/ajax-loader.gif" /> Searching, please wait ...</td></tr></tbody></table></div>');
 
 			$.ajax({
@@ -129,9 +126,7 @@
 				'data': $('#waitingList-filter').serialize(),
 				'success': function(data) {
 					$('#searchResults').html(data);
-					$('#loader').hide();
-					button.children('span').removeClass('button-span-inactive').addClass('button-span-green');
-					button.removeClass('inactive').addClass('green');
+					enableButtons();
 					return false;
 				}
 			});
@@ -140,11 +135,19 @@
 	});
 
 	$('#btn_print').click(function() {
-		print_items_from_selector('input[id^="operation"]:checked');
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			print_items_from_selector('input[id^="operation"]:checked');
+			enableButtons();
+		}
 	});
 
 	$('#btn_print_all').click(function() {
-		print_items_from_selector('input[id^="operation"]:enabled');
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			print_items_from_selector('input[id^="operation"]:enabled');
+			enableButtons();
+		}
 	});
 
 	function print_items_from_selector(sel) {
@@ -198,27 +201,34 @@
 	}
 
 	$('#btn_confirm_selected').click(function() {
-		var data = '';
-		data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();
-		$('input[id^="operation"]:checked').map(function() {
-			if (data.length >0) {
-				data += '&';
-			}
-			data += "operations[]=" + $(this).attr('id').replace(/operation/,'');
-		});
-
-		if (data.length == 0) {
-			alert('No items selected.');
-		} else {
-			$.ajax({
-				url: '/waitingList/confirmPrinted',
-				type: "POST",
-				data: data,
-				success: function(html) {
-					$('#waitingList-filter button[type="submit"]').click();
+		if (!$(this).hasClass('inactive')) {
+			var data = '';
+			data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();
+			$('input[id^="operation"]:checked').map(function() {
+				if (data.length >0) {
+					data += '&';
 				}
+				data += "operations[]=" + $(this).attr('id').replace(/operation/,'');
 			});
+
+			if (data.length == 0) {
+				alert('No items selected.');
+			} else {
+				disableButtons();
+
+				$.ajax({
+					url: '/waitingList/confirmPrinted',
+					type: "POST",
+					data: data,
+					success: function(html) {
+						enableButtons();
+						$('#waitingList-filter button[type="submit"]').click();
+					}
+				});
+			}
 		}
+
+		return false;
 	});
 
 	$(document).ready(function() {

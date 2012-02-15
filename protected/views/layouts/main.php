@@ -36,6 +36,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 	<script type="text/javascript" src="/js/print.js"></script>
+	<script type="text/javascript" src="/js/buttons.js"></script>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 

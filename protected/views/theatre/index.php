@@ -115,7 +115,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							<a href="" id="last_week">Last week</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="next_week">Next week</a>
 							</span>
 
-							<span style="width: 30px; margin-left: 3em;"><img id="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
+							<span style="width: 30px; margin-left: 3em;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
 							<button type="submit" class="classy green tall" style="float: right; position: absolute; top: 10.6em; left: 63em;"><span class="button-span button-span-green">Search</span></button>
 						</div>
 
@@ -181,10 +181,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	function getList() {
 		var button = $('#theatre-filter button[type="submit"]');
 
-		if (button.hasClass('green')) {
-			button.removeClass('green').addClass('inactive');
-			button.children('span').removeClass('button-span-green').addClass('button-span-inactive');
-			$('#loader').show();
+		if (!button.hasClass('inactive')) {
+			disableButtons();
 			$('#theatreList').html('<h3 class="theatre firstTheatre">Please wait...</h3>');
 
 			searchData = $('#theatre-filter').serialize();
@@ -195,9 +193,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'data': searchData,
 				'success': function(data) {
 					$('#theatreList').html(data);
-					$('#loader').hide();
-					button.children('span').removeClass('button-span-inactive').addClass('button-span-green');
-					button.removeClass('inactive').addClass('green');
+					enableButtons();
 					return false;
 				}
 			});

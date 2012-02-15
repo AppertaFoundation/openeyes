@@ -249,67 +249,98 @@ foreach ($elements as $element) {
 <script type="text/javascript">
 
 	$('#btn_schedule-now').unbind('click').click(function() {
-		$.ajax({
-			url: '/booking/schedule',
-			type: "GET",
-			data: {'operation': <?php echo $operation->id?>},
-			success: function(data) {
-				$('#event_content').html(data);
-				$('div.action_options').hide();
-				return false;
-			}
-		});
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
+			$.ajax({
+				url: '/booking/schedule',
+				type: "GET",
+				data: {'operation': <?php echo $operation->id?>},
+				success: function(data) {
+					$('#event_content').html(data);
+					$('div.action_options').hide();
+					return false;
+				}
+			});
+		}
+
+		return false;
 	});
 
 	$('#btn_cancel-operation').unbind('click').click(function() {
-		$.ajax({
-			url: '/booking/cancelOperation',
-			type: "GET",
-			data: {'operation': <?php echo $operation->id?>},
-			success: function(data) {
-				$('#event_content').html(data);
-				$('div.action_options').hide();
-				return false;
-			}
-		});
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
+			$.ajax({
+				url: '/booking/cancelOperation',
+				type: "GET",
+				data: {'operation': <?php echo $operation->id?>},
+				success: function(data) {
+					$('#event_content').html(data);
+					$('div.action_options').hide();
+					return false;
+				}
+			});
+		}
+
+		return false;
 	});
 
 	$('#btn_reschedule-now').unbind('click').click(function() {
-		$.ajax({
-			url: '/booking/reschedule',
-			type: "GET",
-			data: {'operation': <?php echo $operation->id?>},
-			success: function(data) {
-				$('#event_content').html(data);
-				$('div.action_options').hide();
-				return false;
-			}
-		});
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
+			$.ajax({
+				url: '/booking/reschedule',
+				type: "GET",
+				data: {'operation': <?php echo $operation->id?>},
+				success: function(data) {
+					$('#event_content').html(data);
+					$('div.action_options').hide();
+					return false;
+				}
+			});
+		}
+
+		return false;
 	});
 
 	$('#btn_reschedule-later').unbind('click').click(function() {
-		$.ajax({
-			url: '/booking/rescheduleLater',
-			type: "GET",
-			data: {'operation': <?php echo $operation->id?>},
-			success: function(data) {
-				$('#event_content').html(data);
-				$('div.action_options').hide();
-				return false;
-			}
-		});
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
+			$.ajax({
+				url: '/booking/rescheduleLater',
+				type: "GET",
+				data: {'operation': <?php echo $operation->id?>},
+				success: function(data) {
+					$('#event_content').html(data);
+					$('div.action_options').hide();
+					return false;
+				}
+			});
+		}
+
+		return false;
 	});
 
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
-		printUrl('/waitingList/printletters?confirm=1&operations[]='+<?php echo $operation->id ?>);
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			printUrl('/waitingList/printletters?confirm=1&operations[]='+<?php echo $operation->id ?>);
+			enableButtons();
+		}
 	});
 
 	$('#btn_print-letter').unbind('click').click(function() {
-		clearPrintContent();
-		appendPrintContent($('#printcontent_admissionletter').html());
-		printContent();
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			clearPrintContent();
+			appendPrintContent($('#printcontent_admissionletter').html());
+			printContent();
+			enableButtons();
+		}
 	});
-
 </script>
 <?php if($operation->booking) { ?>
 <div id="printcontent_admissionletter" style="display: none;">

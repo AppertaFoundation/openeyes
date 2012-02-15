@@ -64,100 +64,78 @@ $this->layout = 'main'; ?>
 		return false;
 	});
 
-	var button_state = 0;
-
-	function buttons_toggle() {
-		var button = $('#findPatient_id');
-		var button2 = $('#findPatient_details');
-
-		if (button_state == 0) {
-			button.removeClass('blue').addClass('inactive');
-			button.children('span').removeClass('button-span-blue').addClass('button-span-inactive');
-			button2.removeClass('blue').addClass('inactive');
-			button2.children('span').removeClass('button-span-blue').addClass('button-span-inactive');
-			$('img.loader').show();
-			button_state = 1;
-		} else {
-			button.removeClass('inactive').addClass('blue');
-			button.children('span').removeClass('button-span-inactive').addClass('button-span-blue');
-			button2.removeClass('inactive').addClass('blue');
-			button2.children('span').removeClass('button-span-inactive').addClass('button-span-blue');
-			$('img.loader').hide();
-			button_state = 0;
-		}
-	}
-
 	function patient_search() {
-		if (!$('#findPatient_id').hasClass('blue')) return false;
+		if (!$('#findPatient_id').hasClass('inactive')) {
+			if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
+				$('#patient-search-error').html('<h3>Please enter either a hospital number or a firstname and lastname.</h3>');
+				$('#patient-search-error').show();
+				$('#patient-list').hide();
+				return false;
+			}
 
-		if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
-			$('#patient-search-error').html('<h3>Please enter either a hospital number or a firstname and lastname.</h3>');
-			$('#patient-search-error').show();
-			$('#patient-list').hide();
+			disableButtons();
+
+			$('#patient-search').submit();
 			return false;
+
+			var postdata = $('#patient-search').serialize();
+
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',
+				'type': 'POST',
+				'data': postdata,
+				'success': function(data) {
+					try {
+						arr = $.parseJSON(data);
+
+						patientViewUrl = '<?php echo Yii::app()->createUrl('patient/view', array('id' => 'patientId')) ?>';
+
+						if (!$.isEmptyObject(arr)) {
+							if (arr.length == 1) {
+								// One result, forward to the patient summary page
+								patientViewUrl = patientViewUrl.replace(/patientId/, arr[0]['id']);
+
+								window.location.replace(patientViewUrl);
+							} else if (arr.length > 1) {
+								// Multiple results, populate list
+								if ($('#patient-adv-search div.ui-accordion-content:visible').length > 0) {
+									// hide advanced search options, if visible
+									$('#patient-adv-search').accordion('activate', 0);
+								}
+
+								content = '<br /><strong>' + arr.length + " results found</strong><p />\n";
+								content += "<table><tr><th>Patient name</th><th>Date of Birth</th><th>Gender</th><th>NHS Number</th><th>Hospital Number</th></tr>\n";
+
+								$.each(arr, function(index, value) {
+									if (value['gender'] == 'M') {
+										gender = 'Male';
+									} else {
+										gender = 'Female';
+									}
+									content += '<tr><td>' + value['first_name'] + ' ' + value['last_name'] + '</td><td>' + value['dob'] + '</td><td>' + gender;
+									content += '</td><td>' + value['nhs_num'] + '</td><td>';
+									content += '<a href="index.php?r=patient/view&id=' + value['id'];
+									content += '">' + value['hos_num'] + "</a></td></tr>\n";
+								});
+
+								content += "</table>\n";
+
+								$('#patient-list').html(content);
+
+								$('#patient-search-error').hide();
+								$('#patient-list').show();
+							}
+						} else {
+							$('#patient-search-error').html('No patients found matching the selected options. Please choose different options and try again.');
+							$('#patient-search-error').show();
+							$('#patient-list').hide();
+						}
+					} catch (e) {
+					}
+				}
+			});
 		}
 
-		buttons_toggle();
-
-		$('#patient-search').submit();
-		return false;
-
-		var postdata = $('#patient-search').serialize();
-
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',
-			'type': 'POST',
-			'data': postdata,
-			'success': function(data) {
-				try {
-					arr = $.parseJSON(data);
-
-					patientViewUrl = '<?php echo Yii::app()->createUrl('patient/view', array('id' => 'patientId')) ?>';
-
-					if (!$.isEmptyObject(arr)) {
-						if (arr.length == 1) {
-							// One result, forward to the patient summary page
-							patientViewUrl = patientViewUrl.replace(/patientId/, arr[0]['id']);
-
-							window.location.replace(patientViewUrl);
-						} else if (arr.length > 1) {
-							// Multiple results, populate list
-							if ($('#patient-adv-search div.ui-accordion-content:visible').length > 0) {
-								// hide advanced search options, if visible
-								$('#patient-adv-search').accordion('activate', 0);
-							}
-
-							content = '<br /><strong>' + arr.length + " results found</strong><p />\n";
-							content += "<table><tr><th>Patient name</th><th>Date of Birth</th><th>Gender</th><th>NHS Number</th><th>Hospital Number</th></tr>\n";
-
-							$.each(arr, function(index, value) {
-								if (value['gender'] == 'M') {
-									gender = 'Male';
-								} else {
-									gender = 'Female';
-								}
-								content += '<tr><td>' + value['first_name'] + ' ' + value['last_name'] + '</td><td>' + value['dob'] + '</td><td>' + gender;
-								content += '</td><td>' + value['nhs_num'] + '</td><td>';
-								content += '<a href="index.php?r=patient/view&id=' + value['id'];
-								content += '">' + value['hos_num'] + "</a></td></tr>\n";
-							});
-
-							content += "</table>\n";
-
-							$('#patient-list').html(content);
-
-							$('#patient-search-error').hide();
-							$('#patient-list').show();
-						}
-					} else {
-						$('#patient-search-error').html('No patients found matching the selected options. Please choose different options and try again.');
-						$('#patient-search-error').show();
-						$('#patient-list').hide();
-					}
-				} catch (e) {
-				}
-			}
-		});
 		return false;
 	}
 </script>
