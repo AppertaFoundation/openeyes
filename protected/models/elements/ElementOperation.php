@@ -113,6 +113,8 @@ class ElementOperation extends BaseElement
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
+			array('anaesthetic_type', 'checkAnaestheticType'),
+			array('consultant_required', 'checkConsultantRequired')
 		);
 	}
 	
@@ -1379,6 +1381,28 @@ class ElementOperation extends BaseElement
 				}
 
 				OELog::log("Letter print confirmed, datelettersent=$dls->id");
+			}
+		}
+	}
+
+	// Ensure that we haven't changed the anaesthetic type to something that requires an anaesthetist if the patient is already booked into
+	// a session that doesn't have an anaesthetist
+	public function checkAnaestheticType() {
+		if ($booking = $this->booking) {
+			$session = $booking->session;
+
+			if (!in_array($this->anaesthetic_type, array(ElementOperation::ANAESTHETIC_TOPICAL, ElementOperation::ANAESTHETIC_LOCAL))) {
+				$this->addError('anaesthetic_type', 'Unable to change anaesthetic type to '.$this->getAnaestheticText().' - this operation is booked into a session without an anaesthetist.<br/>You will need to first re-schedule the operation.');
+			}
+		}
+	}
+
+	public function checkConsultantRequired() {
+		if ($booking = $this->booking) {
+			$session = $booking->session;
+
+			if ($this->consultant_required && !$session->consultant) {
+				$this->addError('consultant_required', 'Unable to set consultant required - this operation is booked into a session without a consultant.<br/>You will need to first re-schedule the operation.');
 			}
 		}
 	}
