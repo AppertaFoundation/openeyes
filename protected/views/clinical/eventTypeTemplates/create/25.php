@@ -79,6 +79,7 @@ if (isset($referrals) && is_array($referrals)) {
 <ul><li>&nbsp;</li></ul></div>
 
 	<div class="form_button">
+		<img id="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
 		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
 		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
 		<button type="submit" class="classy red venti" id="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
@@ -88,64 +89,80 @@ if (isset($referrals) && is_array($referrals)) {
 
 <script type="text/javascript">
 	$('#scheduleNow').unbind('click').click(function() {
-		disableButtons();
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
-			'type': 'POST',
-			'data': $('#clinical-create').serialize() + '&scheduleNow=true',
-			'success': function(data) {
-				try {
-					displayErrors(data);
-				} catch (e) {
-					$('#event_content').html(data);
-					$('div.action_options_alt').hide();
-					$('div.action_options').hide();
-					return false;
+		if ($(this).hasClass('green')) {
+			disableButtons();
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
+				'type': 'POST',
+				'data': $('#clinical-create').serialize() + '&scheduleNow=true',
+				'success': function(data) {
+					try {
+						displayErrors(data);
+					} catch (e) {
+						$('#event_content').html(data);
+						$('div.action_options_alt').hide();
+						$('div.action_options').hide();
+						return false;
+					}
 				}
-			}
-		});
+			});
+		}
 		return false;
 	});
 	$('#scheduleLater').unbind('click').click(function() {
-		disableButtons();
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
-			'type': 'POST',
-			'data': $('#clinical-create').serialize(),
-			'success': function(data) {
-				if (data.match(/^[0-9]+$/)) {
-					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
-					return false;
+		if ($(this).hasClass('green')) {
+			disableButtons();
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
+				'type': 'POST',
+				'data': $('#clinical-create').serialize(),
+				'success': function(data) {
+					if (data.match(/^[0-9]+$/)) {
+						window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+						return false;
+					}
+					try {
+						displayErrors(data);
+					} catch (e) {
+						return false;
+					}
 				}
-				try {
-					displayErrors(data);
-				} catch (e) {
-					return false;
-				}
-			}
-		});
+			});
+		}
 		return false;
 	});
 
 	$('#cancelOperation').unbind('click').click(function() {
-		if (last_item_type == 'url') {
-			window.location.href = last_item_id;
-		} else if (last_item_type == 'episode') {
-			load_episode_summary(last_item_id);
-		} else if (last_item_type == 'event') {
-			view_event(last_item_id);
+		if ($(this).hasClass('red')) {
+			if (last_item_type == 'url') {
+				window.location.href = last_item_id;
+			} else if (last_item_type == 'episode') {
+				load_episode_summary(last_item_id);
+			} else if (last_item_type == 'event') {
+				view_event(last_item_id);
+			}
 		}
 		return false;
 	});
 
 	function disableButtons() {
-		$('#scheduleLater').attr("disabled", true);
-		$('#scheduleNow').attr("disabled", true);
+		$('#scheduleLater').removeClass('green').addClass('inactive');
+		$('#scheduleLater').children('span').removeClass('button-span-green').addClass('button-span-inactive');
+		$('#scheduleNow').removeClass('green').addClass('inactive');
+		$('#scheduleNow').children('span').removeClass('button-span-green').addClass('button-span-inactive');
+		$('#cancelOperation').removeClass('red').addClass('inactive');
+		$('#cancelOperation').children('span').removeClass('button-span-red').addClass('button-span-inactive');
+		$('#loader').show();
 	}
 
 	function enableButtons() {
-		$('#scheduleLater').attr("disabled", false);
-		$('#scheduleNow').attr("disabled", false);
+		$('#scheduleLater').removeClass('inactive').addClass('green');
+		$('#scheduleLater').children('span').removeClass('button-span-inactive').addClass('button-span-green');
+		$('#scheduleNow').removeClass('inactive').addClass('green');
+		$('#scheduleNow').children('span').removeClass('button-span-inactive').addClass('button-span-green');
+		$('#cancelOperation').removeClass('inactive').addClass('red');
+		$('#cancelOperation').children('span').removeClass('button-span-inactive').addClass('button-span-red');
+		$('#loader').hide();
 	}
 
 	function displayErrors(data) {
