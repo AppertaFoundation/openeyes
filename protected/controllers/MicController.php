@@ -21,11 +21,11 @@ class MicController extends BaseController {
 				'limit' => 100
 			));
 		}
-		$results['Find 100 patients 100 times'] = microtime(true) - $start;
+		$results['Find 100 patients 10 times'] = microtime(true) - $start;
 		
 		// Save
 		$patients = Patient::model()->findAll(array(
-			'limit' => 500
+			'limit' => 100
 		));
 		$count = count($patients);
 		$start = microtime(true);
