@@ -237,8 +237,13 @@ class PatientService
 		if (!empty($nhsNumber)) {
 			$patient->nhs_num = $nhsNumber->NUMBER_ID;
 		}
-		if (!$patient->save()) {
-			throw new SystemException('Unable to update patient: '.print_r($patient->getErrors(),true));
+
+		// At this point we should check that the patient hasn't been created in parallel by another thread
+		// (because PAS queries are occassionally extremely slow
+		if (!Patient::Model()->findByPk($patientData->RM_PATIENT_NO)) {
+			if (!$patient->save()) {
+				throw new SystemException('Unable to update patient: '.print_r($patient->getErrors(),true));
+			}
 		}
 
 		// Pull in the GP associate from PAS if we don't already have it
