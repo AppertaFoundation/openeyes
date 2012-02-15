@@ -195,52 +195,48 @@ class PatientService
 		// Supress auto PAS update
 		$patient = Patient::model()->noPas()->findByPk($patientData->RM_PATIENT_NO);
 
-		$address = new Address;
 		if (!$patient) {
 			Yii::log('Patient not found in OpenEyes, creating new record: '.$patientData->RM_PATIENT_NO);
 			$patient = new Patient;
 			$patient->id = $patientData->RM_PATIENT_NO;
-		} elseif (!empty($patient->address_id)) {
-			$address = Address::model()->findByPk($patient->address_id);
-
-			// This was put here because the migration had some patient records with address_ids that
-			// pointed to non-existent records.
-			if (empty($address)) {
+			$address = new Address;
+		} else {
+			if (!($address = $patient->address)) {
 				$address = new Address;
-				$address->id = $patient->address_id;
 			}
 		}
-		$patient->pas_key = $hosNum;
-		$patient->title = $surname->TITLE;
-		$patient->first_name = $surname->NAME1;
-		$patient->last_name = $surname->SURNAME_ID;
-		$patient->dob = $result['DATE_OF_BIRTH'];
-		$patient->gender = $patientData->SEX;
-		if ($addressData->TEL_NO != 'NONE') {
-			$patient->primary_phone = $addressData->TEL_NO;
-		}
 
-		$address = $this->updateAddress($address, $addressData);
-		if (!$address->save()) {
-			throw new SystemException('Unable to update patient address: '.print_r($address->getErrors(),true));
-		}
-
-		$patient->address_id = $address->id;
-
-		if (preg_match('/^[0-9]+$/',$hosNum)) {
-			$patient->hos_num = $hosNum;
-		}
-
-		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(
-		array('RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
-					'NUM_ID_TYPE' => 'NHS'));
-		if (!empty($nhsNumber)) {
-			$patient->nhs_num = $nhsNumber->NUMBER_ID;
-		}
+		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(array(
+			'RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
+			'NUM_ID_TYPE' => 'NHS'
+		));
 
 		// At this point we should check that the patient hasn't been created in parallel by another thread
 		// (because PAS queries are occassionally extremely slow
 		if (!Patient::Model()->findByPk($patientData->RM_PATIENT_NO)) {
+
+			$patient->pas_key = $hosNum;
+			$patient->title = $surname->TITLE;
+			$patient->first_name = $surname->NAME1;
+			$patient->last_name = $surname->SURNAME_ID;
+			$patient->dob = $result['DATE_OF_BIRTH'];
+			$patient->gender = $patientData->SEX;
+			if ($addressData->TEL_NO != 'NONE') {
+				$patient->primary_phone = $addressData->TEL_NO;
+			}
+
+			$address = $this->updateAddress($address, $addressData);
+			if (!$address->save()) {
+				throw new SystemException('Unable to update patient address: '.print_r($address->getErrors(),true));
+			}
+
+			$patient->address_id = $address->id;
+			$patient->hos_num = $hosNum;
+
+			if ($nhsNumber) {
+				$patient->nhs_num = $nhsNumber->NUMBER_ID;
+			}
+
 			if (!$patient->save()) {
 				throw new SystemException('Unable to update patient: '.print_r($patient->getErrors(),true));
 			}
