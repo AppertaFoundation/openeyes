@@ -38,6 +38,6 @@ class MicController extends BaseController {
 		$this->render('index', array(
 			'results' => $results,
 		));
-		Yii::log('Total Time: '. (microtime() - $main_start));
+		Yii::log('Total Time: '. (microtime(true) - $main_start));
 	}
 }
