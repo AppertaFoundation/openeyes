@@ -25,7 +25,7 @@ class MicController extends BaseController {
 		
 		// Save
 		$patients = Patient::model()->findAll(array(
-			'limit' => 500
+			'limit' => 200
 		));
 		$count = count($patients);
 		$start = microtime(true);
