@@ -18,22 +18,22 @@ class MicController extends BaseController {
 		// Find
 		$start = microtime(true);
 		for($i = 1; $i <= 100; $i++) {
-			$patients = Patient::model()->findAll(array(
+			$disorders = Disorder::model()->findAll(array(
 				'limit' => 100
 			));
 		}
-		$results['Find 100 patients 100 times'] = microtime(true) - $start;
+		$results['Find 100 disorders 100 times'] = microtime(true) - $start;
 
 		// Save
-		$patients = Patient::model()->findAll(array(
+		$disorders = Disorder::model()->findAll(array(
 			'limit' => 200
 		));
-		$count = count($patients);
+		$count = count($disorders);
 		$start = microtime(true);
-		foreach($patients as $patient) {
-			$patient->save();
+		foreach($disorders as $disorder) {
+			$disorder->save();
 		}
-		$results["Save $count patients"] = microtime(true) - $start;
+		$results["Save $count disorders"] = microtime(true) - $start;
 
 		// Disk write
 		$start = microtime(true);
