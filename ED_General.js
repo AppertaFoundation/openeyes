@@ -64,24 +64,24 @@ ED.Template.superclass = ED.Doodle.prototype;
 /**
  * Sets handle attributes
  */
-//ED.Template.prototype.setHandles = function()
-//{
-//    this.handleArray[0] = new ED.Handle(null, true, ED.Mode.Scale, true);
-//}
+ED.Template.prototype.setHandles = function()
+{
+    this.handleArray[0] = new ED.Handle(null, true, ED.Mode.Scale, true);
+}
 
 /**
  * Sets default dragging attributes
  */
-//ED.Template.prototype.setPropertyDefaults = function()
-//{
-//}
+ED.Template.prototype.setPropertyDefaults = function()
+{
+}
 
 /**
  * Sets default parameters
  */
 //ED.Template.prototype.setParameterDefaults = function()
-//{
-//}
+{
+}
 
 /**
  * Draws doodle or performs a hit test if a Point parameter is passed
@@ -107,7 +107,7 @@ ED.Template.prototype.draw = function(_point)
 	
 	// Set line attributes
 	ctx.lineWidth = 2;
-	ctx.fillStyle = "green";
+	ctx.fillStyle = "yellow";
 	ctx.strokeStyle = "blue";
 	
 	// Draw boundary path (also hit testing)
