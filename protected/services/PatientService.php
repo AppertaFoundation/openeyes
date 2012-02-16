@@ -86,8 +86,6 @@ class PatientService
 		$offset = (($page-1) * $num_results) + 1;
 		$limit = $offset + $num_results - 1;
 
-//die("<pre>".print_r($data,true));
-
 		switch ($data['sort_by']) {
 			case 0:
 				// hos_num
@@ -178,16 +176,16 @@ class PatientService
 		$ids = array();
 
 		foreach ($results as $result) {
-			$pasPatient = PAS_Patient::Model()->findByPk($result['RM_PATIENT_NO']);
+			$pasPatient = PAS_Patient::Model();
+			$pasPatient->RM_PATIENT_NO = $result['RM_PATIENT_NO'];
+			$pasPatient->SEX = $result['SEX'];
 
 			$surname = PAS_PatientSurname::model();
 			foreach (array('RM_PATIENT_NO','SURNAME_ID','NAME1','NAME2','TITLE','SURNAME_ID_SOUNDEX','NAME1_SOUNDEX','NAME2_SOUNDEX','HDDR_GROUP','NAME3') as $field) {
 				$surname->{$field} = $result[$field];
 			}
 
-			$address = $pasPatient->address;
-
-			if ($address) {
+			if ($address = $pasPatient->address) {
 				if ($patient = $this->updatePatient($pasPatient, $address, $result, $surname)) {
 					$patients[] = $patient;
 					$ids[] = $patient->hos_num;
