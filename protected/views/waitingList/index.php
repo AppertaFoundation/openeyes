@@ -154,17 +154,14 @@
 		var printurl = '/waitingList/printletters';
 		var operations = new Array();
 
-		var reds = 0;
 		var nogp = 0;
 
 		var operations = $(sel).map(function(i,n) {
-			var is_red = $(n).parent().parent().hasClass('waitinglistRed');
 			var no_gp = $(n).parent().parent().hasClass('waitinglistOrange') && $(n).parent().html().match(/>NO GP</)
 
-			if (is_red) reds += 1;
 			if (no_gp) nogp += 1;
 
-			if (!is_red && !no_gp) {
+			if (!no_gp) {
 				return $(n).attr('id').replace(/operation/,'');
 			}
 		}).get();
@@ -173,25 +170,18 @@
 			if (reds == 0 && nogp == 0) {
 				alert("No items selected for printing.");
 			} else {
-				show_letter_warnings(reds,nogp);
+				show_letter_warnings(nogp);
 			}
 		} else {
-			show_letter_warnings(reds,nogp);
+			show_letter_warnings(nogp);
 			printUrl(printurl, {'operations[]': operations});
 		}
 	}
 
-	function show_letter_warnings(reds, nogp) {
+	function show_letter_warnings(nogp) {
 		var msg = '';
 
-		if (reds >0) {
-			msg += reds+" item"+(reds == 1 ? '' : 's')+" could not be printed as there is no letter due.";
-		}
-
 		if (nogp >0) {
-			if (msg.length >0) {
-				msg += "\n\n";
-			}
 			msg += nogp+" item"+(nogp == 1 ? '' : 's')+" could not be printed as the patient has no GP.";
 		}
 

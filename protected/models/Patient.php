@@ -215,7 +215,11 @@ class Patient extends BaseActiveRecord
 	public function getFullName() {
 		return implode(' ',array($this->title, $this->first_name, $this->last_name));
 	}
-	
+
+	public function getDisplayName() {
+		return '<span class="surname">'.$this->last_name.'</span>, <span class="given">'.$this->first_name.'</span>';
+	}
+
 	private function randomData($field)
 	{
 		if (!Yii::app()->params['pseudonymise_patient_details']) {

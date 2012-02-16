@@ -15,7 +15,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
-<p>Patient: <strong><?php echo $patient->last_name . '</strong>, ' . $patient->first_name . ' (' . $patient->hos_num . ')'; ?></p>
+<p>Patient: <?php echo $patient->getDisplayName()?> (<?php echo $patient->hos_num?>)</p>
 <div id="operation">
 	<input type="hidden" id="booking" value="<?php echo $operation->booking->id; ?>" />
 	<h1>Re-schedule operation</h1><br />
