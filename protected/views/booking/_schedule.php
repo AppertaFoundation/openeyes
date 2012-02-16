@@ -17,7 +17,7 @@ $patient = $operation->event->episode->patient;
 ?>
 <div id="schedule">
 	<div class="patientReminder">
-		<span class="patient"><strong><?php echo $patient->last_name ?></strong>, <?php echo $patient->first_name ?> (<?php echo $patient->hos_num ?>)</span>
+		<span class="patient"><?php echo $patient->getDisplayName()?> (<?php echo $patient->hos_num ?>)</span>
 	</div>
 
 	<h3>Schedule Operation</h3>

@@ -24,7 +24,7 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 ?>
-<span style="display: none;" id="header_text">Operation: <?php echo $patient->first_name?> <?php echo $patient->last_name?></span>
+<span style="display: none;" id="header_text">Operation: <?php echo $patient->getDisplayName()?></span>
 <?php
 
 /**

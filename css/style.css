@@ -420,6 +420,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* .patientReminder > .given:after { color:#444; } */
 .patientReminder > .surname		{ display:inline-block; font-size: 16px; font-weight: bold; }
 .patientReminder > .number		{ display:block; font-size: 12px; margin-top: 2px; }
+span.surname { font-weight: bold; }
 
 /* ------------------------------------------------- POPUP boxes	*/
 
