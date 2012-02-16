@@ -186,14 +186,25 @@ class PatientController extends BaseController
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
-			$criteria = $service->search($this->collateGetData(), $items_per_page, $_GET['page_num']);
 
-			$nr = $service->num_results;
+			if ($service->down) {
+				$model->attributes = $this->collateGetData();
+				$dataProvider = $model->search(array(
+					'currentPage' => (integer)@$_GET['page_num']-1,
+					'items_per_page' => $items_per_page
+				));
 
-			$dataProvider = new CActiveDataProvider('Patient', array(
-				'criteria' => $criteria,
-				'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
-			));
+				$nr = $model->search_nr();
+			} else {
+				$criteria = $service->search($this->collateGetData(), $items_per_page, $_GET['page_num']);
+
+				$nr = $service->num_results;
+
+				$dataProvider = new CActiveDataProvider('Patient', array(
+					'criteria' => $criteria,
+					'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
+				));
+			}
 		} else {
 			$model->attributes = $this->collateGetData();
 			$dataProvider = $model->search(array(
@@ -205,7 +216,11 @@ class PatientController extends BaseController
 		}
 
 		if ($nr == 0) {
-			header('Location: /patient/no-results');
+			if (Yii::app()->params['pas_down']) {
+				header('Location: /patient/no-results-pas');
+			} else {
+				header('Location: /patient/no-results');
+			}
 			exit;
 		}
 

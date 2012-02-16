@@ -34,7 +34,13 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 			<div class="wrapTwo clearfix">
 				<div class="wideColumn">
 					<p><strong><?php echo $total_items?> patients found</strong>, based on <?php echo $based_on?></p>
-					
+
+					<?php if (Yii::app()->params['pas_down']) {?>
+						<div id="pas-error" class="alertBox">
+							<h3>Warning: the PAS is currently down. Search results are likely to be stale.</h3>
+						</div>
+					<?php }?>
+
 					<div class="whiteBox">
 						<?php
 						$from = 1+(($pagen-1)*$items_per_page);

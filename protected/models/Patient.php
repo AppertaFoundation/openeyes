@@ -294,7 +294,9 @@ class Patient extends BaseActiveRecord
 		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
 			Yii::log('Patient details stale', 'trace');
 			$patient_service = new PatientService($this);
-			$patient_service->loadFromPas();
+			if (!$patient_service->down) {
+				$patient_service->loadFromPas();
+			}
 		}
 	}
 	

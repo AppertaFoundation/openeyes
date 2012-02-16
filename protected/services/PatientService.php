@@ -16,6 +16,7 @@ class PatientService
 {
 	public $patient;
 	public $pasPatient;
+	public $down = false;
 
 	/**
 	 * Create a new instance of the service
@@ -25,6 +26,15 @@ class PatientService
 	 */
 	public function __construct($patient = null, $pasPatient = null)
 	{
+		try {
+			$connection = Yii::app()->db_pas;
+		} catch (Exception $e) {
+			$this->down = true;
+			Yii::app()->params['use_pas'] = false;
+			Yii::app()->params['pas_down'] = true;
+			return;
+		}
+
 		if (empty($patient)) {
 			$this->patient = new Patient;
 		} else {
