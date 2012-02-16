@@ -641,6 +641,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* hovers */
 #operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background-color:#3665ff; color:#fff; cursor:pointer; }
 #operation td.inthepast:hover { background-color:#C2C2C2; color: #fff; cursor:pointer; }
+#operation td.closed:hover { background-color:#C2C2C2; color: #fff; cursor:pointer; }
 
 /* KEY */
 #operation #day				.color_box { background:#666; }
