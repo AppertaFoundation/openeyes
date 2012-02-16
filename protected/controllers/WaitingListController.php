@@ -204,6 +204,11 @@ class WaitingListController extends BaseController
 			ElementOperation::LETTER_GP => 'gp_letter',
 			ElementOperation::LETTER_REMOVAL => false,
 		);
+
+		if ($letter_status === null && $operation->getLastLetter() == ElementOperation::LETTER_GP) {
+			$letter_status = ElementOperation::LETTER_GP;
+		}
+
 		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
 		$patient = $operation->event->episode->patient;
 		if($letter_template) {
