@@ -1394,7 +1394,7 @@ class ElementOperation extends BaseElement
 		if ($booking = $this->booking) {
 			$session = $booking->session;
 
-			if (!in_array($this->anaesthetic_type, array(ElementOperation::ANAESTHETIC_TOPICAL, ElementOperation::ANAESTHETIC_LOCAL))) {
+			if (!$session->anaesthetist && !in_array($this->anaesthetic_type, array(ElementOperation::ANAESTHETIC_TOPICAL, ElementOperation::ANAESTHETIC_LOCAL))) {
 				$this->addError('anaesthetic_type', 'Unable to change anaesthetic type to '.$this->getAnaestheticText().' - this operation is booked into a session without an anaesthetist.<br/>You will need to first re-schedule the operation.');
 			}
 		}
