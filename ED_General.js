@@ -29,6 +29,106 @@
 if (ED == null || typeof(ED) != "object") { var ED = new Object();}
 
 /**
+ * An example to be used as a template
+ *
+ * @class Template
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Int} _originX
+ * @param {Int} _originY
+ * @param {Float} _radius
+ * @param {Int} _apexX
+ * @param {Int} _apexY
+ * @param {Float} _scaleX
+ * @param {Float} _scaleY
+ * @param {Float} _arc
+ * @param {Float} _rotation
+ * @param {Int} _order
+ */
+ED.Template = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+{
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	
+	// Set classname
+	this.className = "Template";
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.Template.prototype = new ED.Doodle;
+ED.Template.prototype.constructor = ED.Template;
+ED.Template.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+//ED.Template.prototype.setHandles = function()
+//{
+//    this.handleArray[0] = new ED.Handle(null, true, ED.Mode.Scale, true);
+//}
+
+/**
+ * Sets default dragging attributes
+ */
+//ED.Template.prototype.setPropertyDefaults = function()
+//{
+//}
+
+/**
+ * Sets default parameters
+ */
+//ED.Template.prototype.setParameterDefaults = function()
+//{
+//}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.Template.prototype.draw = function(_point)
+{
+	// Get context
+	var ctx = this.drawing.context;
+	
+	// Call draw method in superclass
+	ED.Template.superclass.draw.call(this, _point);
+    
+	// Boundary path
+	ctx.beginPath();
+	
+	// Template
+	ctx.rect(-50, -50, 100, 100);
+	
+	// Close path
+	ctx.closePath();
+	
+	// Set line attributes
+	ctx.lineWidth = 2;
+	ctx.fillStyle = "green";
+	ctx.strokeStyle = "blue";
+	
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+	
+	// Put other drawing paths in this if block
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
+	{
+	}
+	
+	// Coordinates of handles (in canvas plane)
+	this.handleArray[0].location = this.transform.transformPoint(new ED.Point(-50, 50));
+	
+	// Draw handles if selected
+	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
+	
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+
+/**
  * Freehand drawing
  *
  * @class Freehand
@@ -574,7 +674,7 @@ ED.Slider.prototype.description = function()
 }
 
 /**
- * An example to be used as a template
+ * Point in a line
  *
  * @class PointInLine
  * @property {String} className Name of doodle subclass

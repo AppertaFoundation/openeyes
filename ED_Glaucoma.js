@@ -1864,6 +1864,7 @@ ED.NerveFibreDefect.prototype.setParameterDefaults = function()
     this.arc = 20 * Math.PI/180;
     this.apexY = -460;
     //this.rotation = (this.drawing.eye == ED.eye.Right)?-Math.PI/4:Math.PI/4;
+    this.rotation = Math.PI/4;
 }
 
 /**
