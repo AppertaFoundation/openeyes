@@ -35,80 +35,67 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $DATE_END
  * @property string $HDDR_GROUP
  */
-class PAS_PatientAddress extends MultiActiveRecord
-{
+class PAS_PatientAddress extends MultiActiveRecord {
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PAS_PatientAddress the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated db connection name
 	 */
-	public function connectionId()
-	{
+	public function connectionId() {
 		return 'db_pas';
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'SILVER.PATIENT_ADDRS';
 	}
 
 	/**
 	 * @return string primary key for the table
 	 */
-	public function primaryKey()
-	{
+	public function primaryKey() {
 		return 'RM_PATIENT_NO';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
-			array('RM_PATIENT_NO', 'numerical', 'integerOnly'=>true),
-			array('ADDR_TYPE', 'length', 'max'=>1),
-			array('ADDR_FORMAT, HA_CODE, DWELLING_TYPE, SHARING_ACCOM', 'length', 'max'=>4),
-			array('PROPERTY_NAME, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, TEL_NO', 'length', 'max'=>35),
-			array('PROPERTY_NO', 'length', 'max'=>10),
-			array('POSTCODE', 'length', 'max'=>9),
-			array('HDDR_GROUP', 'length', 'max'=>48),
+			array('RM_PATIENT_NO', 'numerical', 'integerOnly' => true),
+			array('ADDR_TYPE', 'length', 'max' => 1),
+			array('ADDR_FORMAT, HA_CODE, DWELLING_TYPE, SHARING_ACCOM', 'length', 'max' => 4),
+			array('PROPERTY_NAME, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, TEL_NO', 'length', 'max' => 35),
+			array('PROPERTY_NO', 'length', 'max' => 10),
+			array('POSTCODE', 'length', 'max' => 9),
+			array('HDDR_GROUP', 'length', 'max' => 48),
 			array('DATE_START, DATE_END', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('RM_PATIENT_NO, ADDR_TYPE, DATE_START, ADDR_FORMAT, PROPERTY_NAME, PROPERTY_NO, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, POSTCODE, HA_CODE, TEL_NO, DWELLING_TYPE, SHARING_ACCOM, DATE_END, HDDR_GROUP', 'safe', 'on'=>'search'),
+			array('RM_PATIENT_NO, ADDR_TYPE, DATE_START, ADDR_FORMAT, PROPERTY_NAME, PROPERTY_NO, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, POSTCODE, HA_CODE, TEL_NO, DWELLING_TYPE, SHARING_ACCOM, DATE_END, HDDR_GROUP', 'safe', 'on' => 'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
-			'patient'=>array(self::BELONGS_TO, 'PAS_Patient', 'RM_PATIENT_NO')
+			'patient' => array(self::BELONGS_TO, 'PAS_Patient', 'RM_PATIENT_NO')
 		);
 	}
 
 	/**
-	 * @return array customized attribute labels (name=>label)
+	 * @return array customized attribute labels (name => label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'RM_PATIENT_NO' => 'Rm Patient No',
 			'ADDR_TYPE' => 'Addr Type',
@@ -135,11 +122,7 @@ class PAS_PatientAddress extends MultiActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+	public function search() {
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO);
@@ -162,7 +145,8 @@ class PAS_PatientAddress extends MultiActiveRecord
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
+	
 }

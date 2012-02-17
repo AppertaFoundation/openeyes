@@ -51,12 +51,8 @@ class PAS_PatientGps extends MultiActiveRecord {
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules() {
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
 			array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
 			array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe', 'on'=>'search'),
 		);
 	}
@@ -65,9 +61,14 @@ class PAS_PatientGps extends MultiActiveRecord {
 	 * @return array relational rules.
 	 */
 	public function relations() {
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array();
+		return array(
+			'Gp' => array(self::HAS_ONE, 'PAS_Gp', 'OBJ_PROF',
+				// DATE_START is the tiebreaker
+				'order' => 'DATE_FR DESC',
+				// Exclude expired and future gps
+				'condition' => '("Gp"."DATE_TO" IS NULL OR "Gp"."DATE_TO" >= SYSDATE) AND ("Gp"."DATE_FR" IS NULL OR "Gp"."DATE_FR" <= SYSDATE)',
+			),
+		);
 	}
 
 	/**
@@ -89,15 +90,15 @@ class PAS_PatientGps extends MultiActiveRecord {
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
 	public function search() {
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
 		$criteria=new CDbCriteria;
+		
 		$criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO,true);
 		$criteria->compare('DATE_FROM',$this->DATE_FROM,true);
 		$criteria->compare('GP_ID',$this->GP_ID,true);
 		$criteria->compare('PRACTICE_CODE',$this->PRACTICE_CODE,true);
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
 		$criteria->compare('DATE_TO',$this->DATE_TO,true);
+		
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));

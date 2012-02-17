@@ -52,40 +52,33 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $DATE_TO
  * @property string $HDDR_GROUP
  */
-class PAS_Gp extends MultiActiveRecord
-{
+class PAS_Gp extends MultiActiveRecord {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PAS_Gp the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated db connection name
 	 */
-	public function connectionId()
-	{
+	public function connectionId() {
 		return 'db_pas';
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'SILVER.ENV040_PROFDETS';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
 			array('OBJ_TYPE, GRADE, ADD_FORM, COMMS', 'length', 'max'=>4),
 			array('OBJ_PROF, BLEEP, REG_ID, NAT_ID, ADD_NUM, PC, PERS_NO, SURG, C_SPEC', 'length', 'max'=>10),
@@ -94,8 +87,6 @@ class PAS_Gp extends MultiActiveRecord
 			array('TITLE', 'length', 'max'=>5),
 			array('HDDR_GROUP', 'length', 'max'=>48),
 			array('DATE_FR, DATE_TO', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
 			array('OBJ_TYPE, OBJ_PROF, DATE_FR, SN, FN1, FN2, TITLE, JOB_TTL, BLEEP, REG_ID, NAT_ID, GRADE, ADD_FORM, ADD_NAM, ADD_NUM, ADD_ST, ADD_DIS, ADD_TWN, ADD_CTY, ADD_CNT, PC, CONTACT, TEL_1, TEL_2, FAX_1, FAX_2, COMMS, INTER, EMAIL, PERS_NO, COST, SURG, C_SPEC, DATE_TO, HDDR_GROUP', 'safe', 'on'=>'search'),
 		);
 	}
@@ -103,10 +94,7 @@ class PAS_Gp extends MultiActiveRecord
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
 		);
 	}
@@ -114,8 +102,7 @@ class PAS_Gp extends MultiActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'OBJ_TYPE' => 'Obj Type',
 			'OBJ_PROF' => 'Obj Prof',
@@ -159,11 +146,7 @@ class PAS_Gp extends MultiActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+	public function search() {
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('OBJ_TYPE',$this->OBJ_TYPE,true);
@@ -206,4 +189,5 @@ class PAS_Gp extends MultiActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
 }

@@ -66,98 +66,92 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $SMOKER
  * @property string $NOTES
  */
-class PAS_Patient extends MultiActiveRecord
-{
+class PAS_Patient extends MultiActiveRecord {
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PAS_Patient the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated db connection name
 	 */
-	public function connectionId()
-	{
+	public function connectionId() {
 		return 'db_pas';
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'SILVER.PATIENTS';
 	}
 
 	/**
 	 * @return string primary key for the table
 	 */
-	public function primaryKey()
-	{
+	public function primaryKey() {
 		return 'RM_PATIENT_NO';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
-			array('RM_PATIENT_NO, PDS_SCN', 'numerical', 'integerOnly'=>true),
-			array('FICT_CLIENT, DISC_CLIENT, MTEL_CS, EMAIL_CS, PDS_FLAG, PDS_DCPL, CTS_FLAG', 'length', 'max'=>1),
-			array('SEX, BIOLOGICAL_SEX, MARITAL_STAT, RELIGION, BIRTH_NOTIFICATION, PLACE_OF_DEATH, DEATH_NOTIFICATION, OUTCOME_PM, BLOOD_GRP, RHESUS, ETHNIC_GRP, LANGUAGE, OLANG, INTERPRETER_REQD, IMM_STAT, ENG_SPK, STAFF_MEMBER, EMP_CATEGORY, SMOKER', 'length', 'max'=>4),
-			array('TIME_OF_BIRTH, TIME_OF_DEATH, OCCUPATION_CODE', 'length', 'max'=>5),
-			array('PLACE_OF_BIRTH', 'length', 'max'=>30),
-			array('DEATH_CAUSE, OCCUPATION_DESC, DAY_PHONE_NO, WTEL, MTEL', 'length', 'max'=>35),
-			array('HDDR_GROUP', 'length', 'max'=>48),
-			array('NHS_STAT', 'length', 'max'=>2),
-			array('EMAIL', 'length', 'max'=>50),
-			array('CTS_TEXT', 'length', 'max'=>500),
-			array('NOTES', 'length', 'max'=>2000),
+			array('RM_PATIENT_NO, PDS_SCN', 'numerical', 'integerOnly' => true),
+			array('FICT_CLIENT, DISC_CLIENT, MTEL_CS, EMAIL_CS, PDS_FLAG, PDS_DCPL, CTS_FLAG', 'length', 'max' => 1),
+			array('SEX, BIOLOGICAL_SEX, MARITAL_STAT, RELIGION, BIRTH_NOTIFICATION, PLACE_OF_DEATH, DEATH_NOTIFICATION, OUTCOME_PM, BLOOD_GRP, RHESUS, ETHNIC_GRP, LANGUAGE, OLANG, INTERPRETER_REQD, IMM_STAT, ENG_SPK, STAFF_MEMBER, EMP_CATEGORY, SMOKER', 'length', 'max' => 4),
+			array('TIME_OF_BIRTH, TIME_OF_DEATH, OCCUPATION_CODE', 'length', 'max' => 5),
+			array('PLACE_OF_BIRTH', 'length', 'max' => 30),
+			array('DEATH_CAUSE, OCCUPATION_DESC, DAY_PHONE_NO, WTEL, MTEL', 'length', 'max' => 35),
+			array('HDDR_GROUP', 'length', 'max' => 48),
+			array('NHS_STAT', 'length', 'max' => 2),
+			array('EMAIL', 'length', 'max' => 50),
+			array('CTS_TEXT', 'length', 'max' => 500),
+			array('NOTES', 'length', 'max' => 2000),
 			array('DATE_OF_BIRTH, DATE_OF_DEATH, DATE_DOD_NOTIFIED, DATE_POST_MORTEM, DATE_REGISTERED, DATE_REG_SICK_DISABLED, PDS_SYNC', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('RM_PATIENT_NO, DATE_OF_BIRTH', 'safe', 'on'=>'search'),
+			array('RM_PATIENT_NO, DATE_OF_BIRTH', 'safe', 'on' => 'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
-			'names'=>array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
-			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
-			'numbers'=>array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
-			'nhs_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
-			'hos_number'=>array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'), 
-			'addresses'=>array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
-			'name'=>array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
-			'address'=>array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
-				// Address preference is (Home, Temporary, Correspondance), and DATE_START is the tiebreaker
-				// FIXME: We need to support multiple address types
-				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, \'T\', 2, \'C\', 3, 4), "address"."DATE_START" DESC',
-				// Exclude expired addresses
-				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" > SYSDATE)'
+			'names' => array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
+			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
+			'numbers' => array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
+			'nhs_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
+			'hos_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'), 
+			'addresses' => array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO',
+				// Exclude expired and future addresses
+				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" >= SYSDATE) AND ("address"."DATE_START" IS NULL OR "address"."DATE_START" <= SYSDATE)',
 			),
-			//'gp'=>array(self::HAS_ONE, 'PAS_Gp', 'PATIENT_GPS(OBJ_PROF,RM_PATIENT_NO)'),
+			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
+			'address' => array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
+				// Address preference is (Home, Temporary, Correspondance), and DATE_START is the tiebreaker
+				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, \'T\', 2, \'C\', 3, 4), "address"."DATE_START" DESC',
+				// Exclude expired and future addresses
+				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" >= SYSDATE) AND ("address"."DATE_START" IS NULL OR "address"."DATE_START" <= SYSDATE)',
+			),
+			'patientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
+				// DATE_START is the tiebreaker
+				'order' => 'DATE_FROM DESC',
+				// Exclude expired and future gps
+				'condition' => '("patientGp"."DATE_TO" IS NULL OR "patientGp"."DATE_TO" >= SYSDATE) AND ("patientGp"."DATE_FROM" IS NULL OR "patientGp"."DATE_FROM" <= SYSDATE)',
+			),
 		);
 	}
-
+	
 	/**
-	 * @return array customized attribute labels (name=>label)
+	 * @return array customized attribute labels (name => label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'RM_PATIENT_NO' => 'Patient ID',
 			'FICT_CLIENT' => 'Fict Client',
@@ -215,18 +209,11 @@ class PAS_Patient extends MultiActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+	public function search() {
 		$criteria=new CDbCriteria;
-
-		// $criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO);
-		// $criteria->compare('DATE_OF_BIRTH',$this->DATE_OF_BIRTH,true);
-
+		
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
 }

@@ -423,23 +423,46 @@ class PatientService
 				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
 			}
 				
-			// Address
-			if($pas_patient->address) {
+			// Addresses
+			if($pas_patient->addresses) {
 				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
-				if(!$address = $this->patient->address) {
-					$address = new Address();
+				// Matching addresses for update is tricky cos we don't have a primary key on the pas address table,
+				// so we need to keep track of patient address ids as we go
+				$matched_address_ids = array();
+				$patient_addresses = $this->patient->addresses;
+				foreach($pas_patient->addresses as $pas_address) {
+					
+					// Match an address
+					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
+					$address = Address::model()->find(array(
+						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND postcode = :postcode",
+						'params' => array(':patient_id' => $this->patient->id, ':postcode' => $pas_address->POSTCODE),
+					));
+					
+					// Check if we have an address (that we haven't already matched)
+					if(!$address || in_array($address->id, $matched_address_ids)) {
+						Yii::log("patient address not found, creating", 'trace');
+						$address = new Address;
+						$address->parent_id = $this->patient_id;
+						$address->parent_class = 'Patient';
+					}
+					
+					$this->updateAddress($address, $pas_address);
+					$address->save();
+					$matched_address_ids[] = $address->id;
 				}
-				$this->updateAddress($address, $pas_patient->address);
+				
+				// Remove any orphaned addresses (expired?)
+				$orphaned_addresses = Address::model()->deleteAll(array(
+					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND NOT IN(:matched)",
+					'params' => array(':patient_id' => $this->patient->id, ':matched' => implode(',',$matched_address_ids)),
+				));
+				Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
+								
 			}
 				
-			// Get latest GP from PAS
-			$pas_patient_gp = PAS_PatientGps::model()->find(array(
-				'condition' => 'RM_PATIENT_NO = :patient_id',
-				'order' => 'DATE_FROM DESC',
-				'params' => array(
-					':patient_id' => $this->patient->id,
-			),
-			));
+			// Get latest GP mapping from PAS
+			$pas_patient_gp = $pas_patient->PatientGp; 
 			if($pas_patient_gp) {
 				// Check that GP is not on our block list
 				if(GpService::is_bad_gp($pas_patient_gp->GP_ID)) {
