@@ -27,58 +27,54 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * The following are the available model relations:
  * @property Gp $gp
  * @property Consultant $consultant
- * @property Address $address
+ * @property Address[] $addresses
+ * @property Address $address Primary address
+ * @property HomeAddress $address Home address
+ * @property CorrespondAddress $address Correspondence address
  * @property UserContactAssignment $userContactAssignment
  * 
  * The following are pseudo (calculated) fields
  * @property string $SalutationName
  * @property string $FullName
  */
-class Contact extends BaseActiveRecord
-{
+class Contact extends BaseActiveRecord {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Contact the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'contact';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
-		array('nick_name', 'length', 'max'=>80),
-		// The following rule is used by search().
-		// Please remove those attributes that should not be searched.
-		array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on'=>'search'),
+			array('nick_name', 'length', 'max' => 80),
+			array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
 			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
 			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
-			'address' => array(self::BELONGS_TO, 'Address', 'address_id'),
+			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id'),
+			// TODO: Add date filtering and ordering to allow fallbacks
+			'address' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'H'"),
+			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'H'"),
+			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'C'"),
 			// FIXME: Surely this is a has_many (many_many mapping table). If not they what's the point of the mapping table?
 			'userContactAssignment' => array(self::HAS_ONE, 'UserContactAssignment', 'contact_id')
 		);

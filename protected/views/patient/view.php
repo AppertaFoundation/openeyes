@@ -26,9 +26,7 @@ $this->widget('application.extensions.fancybox.EFancyBox', array(
 
 $address_str = '';
 
-// For some horrible reason Yii sometimes doesn't recognise the relationship between the patient and the address even though
-//	the address_id is valid!
-$address = Address::model()->findByPk($model->address_id);
+$address = $model->address;
 
 if (!empty($address)) {
 	$fields = array(

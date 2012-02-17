@@ -16,7 +16,12 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * This is the model class for table "address".
  *
  * The followings are the available columns in table 'address':
- * @property string $id
+ * @property integer $id
+ * @property string $parent_class Class of parent model
+ * @property integer $parent_id ID of parent record
+ * @property string $type Type of address (H = Home, C = Correspondence, T = Temporary)
+ * @property string $date_start Date address is valid from
+ * @property string $date_end Date address is valid to
  * @property string $address1
  * @property string $address2
  * @property string $city
@@ -26,58 +31,44 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property string $email
  * 
  * The following are the available model relations:
- * @property Contact[] $contacts
- * @property Patient[] $patients
+ * @property Parent $parent
  * @property Country $country
  */
-class Address extends BaseActiveRecord
-{
+class Address extends BaseActiveRecord {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Address the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'address';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
-		array('address1, address2, city, county', 'length', 'max'=>255),
-		array('postcode', 'length', 'max'=>10),
-		array('email', 'length', 'max'=>255),
-		// The following rule is used by search().
-		// Please remove those attributes that should not be searched.
-		array('id, address1, address2, city, postcode, county, email', 'safe', 'on'=>'search'),
+			array('address1, address2, city, county', 'length', 'max' => 255),
+			array('postcode', 'length', 'max' => 10),
+			array('email', 'length', 'max' => 255),
+			array('id, address1, address2, city, postcode, county, email', 'safe', 'on' => 'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
-			// FIXME: An address has_many contacts and patients? Obviously possible, 
-			// but I'm not sure the code ever allows more than one contact/patient to an address 
-			'contacts' => array(self::HAS_MANY, 'Contact', 'address_id'),
-			'patients' => array(self::HAS_MANY, 'Patient', 'address_id'),
+			// TODO: Make this work
+			//'parent' => array(self::BELONGS_TO, $this->parent_class, 'parent_id'),
 			'country' => array(self::BELONGS_TO, 'Country', 'country_id'),
 		);
 	}
@@ -85,8 +76,7 @@ class Address extends BaseActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'address1' => 'Address1',
 			'address2' => 'Address2',
