@@ -37,13 +37,13 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 								</tr>
 								<tr class="even">
 									<td>
-										<?php echo CHtml::dropDownList('site-id', '', Site::model()->getList(), array('empty'=>'All sites', 'onChange' => "js:loadTheatres(this.value); loadWards(this.value);"))?>
+										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getList(), array('empty'=>'All sites', 'onChange' => "js:loadTheatresAndWards(this.value);", 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('theatre-id', '', array(), array('empty'=>'All theatres'))?>
+										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty'=>'All theatres', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('specialty-id', $firm->serviceSpecialtyAssignment->specialty_id, Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
+										<?php echo CHtml::dropDownList('specialty-id', @$_POST['specialty-id'], Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
 				if ($('#specialty-id').val() != '') {
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);
@@ -52,16 +52,16 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 					$('#firm-id').html(data);
 				}
 			}",
-		)))?>
+		),'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('firm-id', $firm->id, Firm::model()->getList($firm->serviceSpecialtyAssignment->specialty_id), array('empty'=>'All firms'))?>
+										<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['specialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('ward-id', '', array(), array('empty'=>'All wards'))?>
+										<?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array('empty'=>'All wards', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::checkBox('emergency_list')?>
+										<?php echo CHtml::checkBox('emergency_list', (@$_POST['emergency_list'] == 1))?>
 									</td>
 								</tr>
 								</tbody>
@@ -70,19 +70,19 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 					<div id="extra-search" class="eventDetail clearfix">
 						<div class="data">
 							<span class="group">
-							<input type="radio" name="date-filter" id="date-filter_0" value="today">
+							<input type="radio" name="date-filter" id="date-filter_0" value="today"<?php if (@$_POST['date-filter'] == 'today') {?>checked="checked"<?php }?>>
 							<label for="date-filter_0">Today</label>
 							</span>
 							<span class="group">
-							<input type="radio" name="date-filter" id="date-filter_1" value="week">
+							<input type="radio" name="date-filter" id="date-filter_1" value="week"<?php if (@$_POST['date-filter'] == 'week') {?>checked="checked"<?php }?>>
 							<label for="date-filter_1">Next 7 days</label>
 							</span>
 							<span class="group">
-							<input type="radio" name="date-filter" id="date-filter_2" value="month">
+							<input type="radio" name="date-filter" id="date-filter_2" value="month"<?php if (@$_POST['date-filter'] == 'month') {?>checked="checked"<?php }?>>
 							<label for="date-filter_2">Next 30 days</label>
 							</span>
 							<span class="group">
-							<input type="radio" name="date-filter" id="date-filter_3" value="custom">
+							<input type="radio" name="date-filter" id="date-filter_3" value="custom"<?php if (@$_POST['date-filter'] == 'custom') {?>checked="checked"<?php }?>>
 							<label for="date-filter_3">or select date range:</label>
 <?php
 $this->widget('zii.widgets.jui.CJuiDatePicker', array(
@@ -93,7 +93,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'showAnim'=>'fold',
 									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 								),
-								'value' => '',
+								'value' => @$_POST['date-start'],
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							));
 ?>
@@ -106,7 +106,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 									'showAnim'=>'fold',
 									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 								),
-								'value' => '',
+								'value' => @$_POST['date-end'],
 								'htmlOptions'=>array('style'=>'width: 110px;')
 							));
 ?>
@@ -116,7 +116,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							</span>
 
 							<span style="width: 30px; margin-left: 3em;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
-							<button type="submit" class="classy green tall" style="float: right; position: absolute; top: 10.6em; left: 63em;"><span class="button-span button-span-green">Search</span></button>
+							<button id="search_button" type="submit" class="classy green tall" style="float: right; position: absolute; top: 10.6em; left: 63em;"><span class="button-span button-span-green">Search</span></button>
 						</div>
 
 					</div> <!-- #extra-search -->
@@ -217,23 +217,22 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			$('#ward-id').attr("disabled", false);
 		}
 	});
-	function loadTheatres(siteId) {
+	function loadTheatresAndWards(siteId) {
 		$.ajax({
 			'type': 'POST',
 			'data': {'site_id': siteId},
 			'url': '<?php echo Yii::app()->createUrl('theatre/filterTheatres'); ?>',
 			'success':function(data) {
 				$('#theatre-id').html(data);
-			}
-		});
-	}
-	function loadWards(siteId) {
-		$.ajax({
-			'type': 'POST',
-			'data': {'site_id': siteId},
-			'url': '<?php echo Yii::app()->createUrl('theatre/filterWards'); ?>',
-			'success':function(data) {
-				$('#ward-id').html(data);
+				$.ajax({
+					'type': 'POST',
+					'data': {'site_id': siteId},
+					'url': '<?php echo Yii::app()->createUrl('theatre/filterWards'); ?>',
+					'success':function(data) {
+						$('#ward-id').html(data);
+						$('#search_button').click();
+					}
+				});
 			}
 		});
 	}
@@ -414,7 +413,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			$('#date-start').val(format_date(returnDateWithIntervalFromString(sd, -7)));
 		}
 
+		setFilter('date-start');
+		setFilter('date-end');
+		setFilter('date-filter','');
+		$('input[type="radio"]').setCheck(0);
+
 		// Perform search
+		$('#search_button').click();
 
 		return false;
 	});
@@ -437,6 +442,14 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 			$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 7)));
 		}
+
+		setFilter('date-start');
+		setFilter('date-end');
+		setFilter('date-filter','');
+		$('input[type="radio"]').setCheck(0);
+
+		// Perform search
+		$('#search_button').click();
 
 		return false;
 	});
@@ -480,5 +493,53 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$('#date-end').bind('change',function() {
 		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
+	});
+
+	function ucfirst(str) {
+		return str.charAt(0).toUpperCase() + str.substr(1);
+	}
+
+	function setFilter(field, value) {
+		if (value == null) {
+			value = $('#'+field).val();
+		}
+
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('theatre/setFilter')?>',
+			'type': 'POST',
+			'data': field+'='+value,
+			'success': function(html) {
+			}
+		});
+
+		if (field != 'site-id') {
+			$('#search_button').click();
+		}
+	}
+
+	$('select').change(function() {
+		setFilter($(this).attr('id'));
+	});
+
+	$('#emergency_list').click(function() {
+		if ($(this).is(':checked')) {
+			setFilter('emergency_list',1);
+		} else {
+			setFilter('emergency_list',0);
+		}
+	});
+
+	$('input[type="radio"]').click(function() {
+		setFilter('date-filter',$(this).val());
+		setFilter('date-start');
+		setFilter('date-end');
+	});
+
+	$('#date-start').change(function() {
+		setFilter('date-start');
+	});
+
+	$('#date-end').change(function() {
+		setFilter('date-end');
 	});
 </script>

@@ -108,28 +108,26 @@ class WaitingListController extends BaseController
 		}
 	}
 
-	public function actionFilterSetFirm() {
+	public function setFilter($field, $value) {
 		$so = Yii::app()->session['waitinglist_searchoptions'];
-		$so['firm-id'] = $_POST['firm_id'];
+		$so[$field] = $value;
 		Yii::app()->session['waitinglist_searchoptions'] = $so;
+	}
+
+	public function actionFilterSetFirm() {
+		$this->setFilter('firm-id', $_POST['firm-id']);
 	}
 
 	public function actionFilterSetStatus() {
-		$so = Yii::app()->session['waitinglist_searchoptions'];
-		$so['status'] = $_POST['status'];
-		Yii::app()->session['waitinglist_searchoptions'] = $so;
+		$this->setFilter('status', $_POST['status']);
 	}
 
 	public function actionFilterSetSiteId() {
-		$so = Yii::app()->session['waitinglist_searchoptions'];
-		$so['site_id'] = $_POST['site_id'];
-		Yii::app()->session['waitinglist_searchoptions'] = $so;
+		$this->setFilter('site_id', $_POST['site_id']);
 	}
 
 	public function actionFilterSetHosNum() {
-		$so = Yii::app()->session['waitinglist_searchoptions'];
-		$so['hos_num'] = $_POST['hos_num'];
-		Yii::app()->session['waitinglist_searchoptions'] = $so;
+		$this->setFilter('hos_num', $_POST['hos_num']);
 	}
 	/**
 	 * Helper method to fetch firms by specialty ID

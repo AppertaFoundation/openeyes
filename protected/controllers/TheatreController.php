@@ -47,7 +47,30 @@ class TheatreController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
-		$this->render('index', array('firm' => $firm));
+		$theatres = array();
+		$wards = array();
+
+		if (empty($_POST)) {
+			// look for values from the session
+			if (Yii::app()->session['theatre_searchoptions']) {
+				foreach (Yii::app()->session['theatre_searchoptions'] as $key => $value) {
+					$_POST[$key] = $value;
+				}
+
+				if (isset($_POST['site-id'])) {
+					$wards = $this->getFilteredWards($_POST['site-id']);
+					$theatres = $this->getFilteredTheatres($_POST['site-id']);
+				}
+
+			} else {
+				$_POST = array(
+					'firm-id' => Yii::app()->session['selected_firm_id'],
+					'specialty-id' => $firm->serviceSpecialtyAssignment->specialty_id
+				);
+			}
+		}
+
+		$this->render('index', array('wards'=>$wards, 'theatres'=>$theatres));
 	}
 
 	public function actionPrintList()
@@ -569,5 +592,13 @@ class TheatreController extends BaseController
 			}
 		}
 		die("0");
+	}
+
+	public function actionSetFilter() {
+		$so = Yii::app()->session['theatre_searchoptions'];
+		foreach ($_POST as $key => $value) {
+			$so[$key] = $value;
+		}
+		Yii::app()->session['theatre_searchoptions'] = $so;
 	}
 }
