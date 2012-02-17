@@ -15,7 +15,7 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
-<p><strong>Patient:</strong> <?php echo $patient->first_name . ' ' . $patient->last_name . ' (' . $patient->hos_num . ')'; ?></p>
+<p>Patient: <?php echo $patient->getDisplayName()?> (<?php echo $patient->hos_num?>)</p>
 <div id="operation">
 	<input type="hidden" id="booking" value="<?php echo $operation->booking->id; ?>" />
 	<h1>Re-schedule operation</h1><br />
@@ -33,8 +33,6 @@ if (Yii::app()->user->hasFlash('info')) { ?>
 echo CHtml::form(array('booking/update'), 'post', array('id' => 'cancelForm'));
 echo CHtml::hiddenField('booking_id', $operation->booking->id); ?>
 <p/>
-<div class="errorSummary" style="display:none"></div>
-<p/>
 <?php
 echo CHtml::label('Re-schedule reason: ', 'cancellation_reason');
 if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
@@ -51,17 +49,26 @@ echo '<div style="height: 0.4em;"></div>';
 echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
 echo '<div style="height: 0.4em;"></div>'?>
 <div class="clear"></div>
-<button type="submit" class="classy red venti"><span class="button-span button-span-red">Cancel booking</span></button>
+<button type="submit" class="classy red venti"><span class="button-span button-span-red">Confirm reschedule later</span></button>
+<img src="/img/ajax-loader.gif" alt="loading..." style="display: none;" class="loader" />
 <?php
 echo CHtml::endForm(); ?>
 </div>
 </div>
 <script type="text/javascript">
 	$('#cancelForm button[type="submit"]').click(function () {
-		if ('' == $('#cancellation_reason option:selected').val()) {
-			$('div.errorSummary').html('Please select a cancellation reason');
-			$('div.errorSummary').show();
+		if (!$(this).hasClass('inactive')) {
+			if ('' == $('#cancellation_reason option:selected').val()) {
+				$('div.alertBox ul li').html('Please select a cancellation reason');
+				$('div.alertBox').show();
+				return false;
+			}
+
+			disableButtons();
+		} else {
 			return false;
 		}
 	});
 </script>
+<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
+<ul><li>&nbsp;</li></ul></div>

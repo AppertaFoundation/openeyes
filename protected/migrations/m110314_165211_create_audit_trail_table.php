@@ -1,6 +1,6 @@
 <?php
 
-class m120209_165900_create_audit_trail_table extends CDbMigration {
+class m110314_165211_create_audit_trail_table extends CDbMigration {
 
 	public function up() {
 		$this->createTable('tbl_audit_trail',

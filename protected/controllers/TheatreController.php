@@ -199,7 +199,7 @@ class TheatreController extends BaseController
 					'procedures' => $procedures['List'],
 					'patientHosNum' => $values['hos_num'],
 					'patientId' => $values['patientId'],
-					'patientName' => $values['first_name'] . ' ' . $values['last_name'],
+					'patientName' => '<strong>'.$values['last_name'] . '</strong>, ' . $values['first_name'],
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
 					'ward' => $values['ward'],

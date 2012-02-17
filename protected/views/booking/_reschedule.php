@@ -17,7 +17,7 @@ $patient = $operation->event->episode->patient;
 ?>
 <div id="schedule">
 	<div class="patientReminder">
-		<span class="patient"><strong><?php echo $patient->first_name ?></strong> <?php echo $patient->last_name ?> (<?php echo $patient->hos_num ?>)</span>
+		<span class="patient"><?php echo $patient->getDisplayName()?> (<?php echo $patient->hos_num ?>)</span>
 	</div>
 
 	<h3>Re-schedule Operation</h3>
@@ -124,7 +124,7 @@ $patient = $operation->event->episode->patient;
 			});
 			return false;
 		});
-		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast').die('click').live('click', function() {
+		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed').die('click').live('click', function() {
 			$('#sessionDetails').html('');
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');

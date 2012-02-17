@@ -115,7 +115,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							<a href="" id="last_week">Last week</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="next_week">Next week</a>
 							</span>
 
-							<button type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
+							<span style="width: 30px; margin-left: 3em;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
+							<button type="submit" class="classy green tall" style="float: right; position: absolute; top: 10.6em; left: 63em;"><span class="button-span button-span-green">Search</span></button>
 						</div>
 
 					</div> <!-- #extra-search -->
@@ -178,17 +179,26 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	});*/
 
 	function getList() {
-		searchData = $('#theatre-filter').serialize();
+		var button = $('#theatre-filter button[type="submit"]');
 
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
-			'type': 'POST',
-			'data': searchData,
-			'success': function(data) {
-				$('#theatreList').html(data);
-				return false;
-			}
-		});
+		if (!button.hasClass('inactive')) {
+			disableButtons();
+			$('#theatreList').html('<h3 class="theatre firstTheatre">Please wait...</h3>');
+
+			searchData = $('#theatre-filter').serialize();
+
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
+				'type': 'POST',
+				'data': searchData,
+				'success': function(data) {
+					$('#theatreList').html(data);
+					enableButtons();
+					return false;
+				}
+			});
+		}
+
 		return false;
 	}
 
@@ -243,6 +253,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				ok = false;
 				return false;
 			} else {
+				if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
+					alert("Please enter a valid admission time, eg 09:30");
+					$(this).select().focus();
+					ok = false;
+					return false;
+				}
 				if (m2[1].length <2) {
 					m2[1] = "0"+m2[1];
 				}

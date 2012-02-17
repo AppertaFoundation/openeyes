@@ -24,7 +24,7 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 ?>
-<span style="display: none;" id="header_text">Operation: <?php echo $patient->first_name?> <?php echo $patient->last_name?></span>
+<span style="display: none;" id="header_text">Operation: <?php echo $patient->getDisplayName()?></span>
 <?php
 
 /**
@@ -79,6 +79,7 @@ if (isset($referrals) && is_array($referrals)) {
 <ul><li>&nbsp;</li></ul></div>
 
 	<div class="form_button">
+		<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
 		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
 		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
 		<button type="submit" class="classy red venti" id="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
@@ -88,65 +89,66 @@ if (isset($referrals) && is_array($referrals)) {
 
 <script type="text/javascript">
 	$('#scheduleNow').unbind('click').click(function() {
-		disableButtons();
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
-			'type': 'POST',
-			'data': $('#clinical-create').serialize() + '&scheduleNow=true',
-			'success': function(data) {
-				try {
-					displayErrors(data);
-				} catch (e) {
-					$('#event_content').html(data);
-					$('div.action_options_alt').hide();
-					$('div.action_options').hide();
-					return false;
-				}
-			}
-		});
-		return false;
-	});
-	$('#scheduleLater').unbind('click').click(function() {
-		disableButtons();
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
-			'type': 'POST',
-			'data': $('#clinical-create').serialize(),
-			'success': function(data) {
-				if (data.match(/^[0-9]+$/)) {
-					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
-					return false;
-				}
-				try {
-					displayErrors(data);
-				} catch (e) {
-					return false;
-				}
-			}
-		});
-		return false;
-	});
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
 
-	$('#cancelOperation').unbind('click').click(function() {
-		if (last_item_type == 'url') {
-			window.location.href = last_item_id;
-		} else if (last_item_type == 'episode') {
-			load_episode_summary(last_item_id);
-		} else if (last_item_type == 'event') {
-			view_event(last_item_id);
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
+				'type': 'POST',
+				'data': $('#clinical-create').serialize() + '&scheduleNow=true',
+				'success': function(data) {
+					try {
+						displayErrors(data);
+					} catch (e) {
+						$('#event_content').html(data);
+						$('div.action_options_alt').hide();
+						$('div.action_options').hide();
+						return false;
+					}
+				}
+			});
 		}
 		return false;
 	});
 
-	function disableButtons() {
-		$('#scheduleLater').attr("disabled", true);
-		$('#scheduleNow').attr("disabled", true);
-	}
+	$('#scheduleLater').unbind('click').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
 
-	function enableButtons() {
-		$('#scheduleLater').attr("disabled", false);
-		$('#scheduleNow').attr("disabled", false);
-	}
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
+				'type': 'POST',
+				'data': $('#clinical-create').serialize(),
+				'success': function(data) {
+					if (data.match(/^[0-9]+$/)) {
+						window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+						return false;
+					}
+					try {
+						displayErrors(data);
+					} catch (e) {
+						return false;
+					}
+				}
+			});
+		}
+		return false;
+	});
+
+	$('#cancelOperation').unbind('click').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
+			if (last_item_type == 'url') {
+				window.location.href = last_item_id;
+			} else if (last_item_type == 'episode') {
+				load_episode_summary(last_item_id);
+			} else if (last_item_type == 'event') {
+				view_event(last_item_id);
+			}
+		}
+		return false;
+	});
 
 	function displayErrors(data) {
 		enableButtons();

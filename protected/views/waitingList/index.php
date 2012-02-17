@@ -56,7 +56,10 @@
 									<td>
 										<input type="text" size="12" name="hos_num" id="hos_num" value="<?php echo @$_POST['hos_num']?>" />
 									</td>
-									<td>
+									<td width="20px;" style="margin-left: 50px; border: none;">
+										<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
+									</td>
+									<td style="padding: 0;" width="70px;">
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
 									</td>
 								</tr>
@@ -113,63 +116,109 @@
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	$('#waitingList-filter button[type="submit"]').click(function() {
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
-			'type': 'POST',
-			'data': $('#waitingList-filter').serialize(),
-			'success': function(data) {
-				$('#searchResults').html(data);
-				return false;
-			}
-		});
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			$('#searchResults').html('<div id="waitingList" class="grid-view-waitinglist"><table><tbody><tr><th>Letters sent</th><th>Patient</th><th>Hospital number</th><th>Location</th><th>Procedure</th><th>Eye</th><th>Firm</th><th>Decision date</th><th>Priority</th><th>Book status (requires...)</th><th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value=""></th></tr><tr><td colspan="7" style="border: none; padding-top: 10px;"><img src="/img/ajax-loader.gif" /> Searching, please wait ...</td></tr></tbody></table></div>');
+
+			$.ajax({
+				'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
+				'type': 'POST',
+				'data': $('#waitingList-filter').serialize(),
+				'success': function(data) {
+					$('#searchResults').html(data);
+					enableButtons();
+					return false;
+				}
+			});
+		}
 		return false;
 	});
 
 	$('#btn_print').click(function() {
-		print_items_from_selector('input[id^="operation"]:checked');
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			print_items_from_selector('input[id^="operation"]:checked');
+			enableButtons();
+		}
 	});
 
 	$('#btn_print_all').click(function() {
-		print_items_from_selector('input[id^="operation"]:enabled');
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			print_items_from_selector('input[id^="operation"]:enabled');
+			enableButtons();
+		}
 	});
 
 	function print_items_from_selector(sel) {
 		var printurl = '/waitingList/printletters';
 		var operations = new Array();
-		
+
+		var nogp = 0;
+
 		var operations = $(sel).map(function(i,n) {
-			return $(n).attr('id').replace(/operation/,'');
+			var no_gp = $(n).parent().parent().hasClass('waitinglistOrange') && $(n).parent().html().match(/>NO GP</)
+
+			if (no_gp) nogp += 1;
+
+			if (!no_gp) {
+				return $(n).attr('id').replace(/operation/,'');
+			}
 		}).get();
 
 		if (operations.length == 0) {
-			alert("No items selected for printing.");
+			if (reds == 0 && nogp == 0) {
+				alert("No items selected for printing.");
+			} else {
+				show_letter_warnings(nogp);
+			}
 		} else {
+			show_letter_warnings(nogp);
 			printUrl(printurl, {'operations[]': operations});
 		}
 	}
 
-	$('#btn_confirm_selected').click(function() {
-		var data = '';
-		data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();
-		$('input[id^="operation"]:checked').map(function() {
-			if (data.length >0) {
-				data += '&';
-			}
-			data += "operations[]=" + $(this).attr('id').replace(/operation/,'');
-		});
+	function show_letter_warnings(nogp) {
+		var msg = '';
 
-		if (data.length == 0) {
-			alert('No items selected.');
-		} else {
-			$.ajax({
-				url: '/waitingList/confirmPrinted',
-				type: "POST",
-				data: data,
-				success: function(html) {
-					$('#waitingList-filter button[type="submit"]').click();
-				}
-			});
+		if (nogp >0) {
+			msg += nogp+" item"+(nogp == 1 ? '' : 's')+" could not be printed as the patient has no GP.";
 		}
+
+		if (msg.length >0) {
+			alert(msg);
+		}
+	}
+
+	$('#btn_confirm_selected').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			var data = '';
+			data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();
+			$('input[id^="operation"]:checked').map(function() {
+				if (data.length >0) {
+					data += '&';
+				}
+				data += "operations[]=" + $(this).attr('id').replace(/operation/,'');
+			});
+
+			if (data.length == 0) {
+				alert('No items selected.');
+			} else {
+				disableButtons();
+
+				$.ajax({
+					url: '/waitingList/confirmPrinted',
+					type: "POST",
+					data: data,
+					success: function(html) {
+						enableButtons();
+						$('#waitingList-filter button[type="submit"]').click();
+					}
+				});
+			}
+		}
+
+		return false;
 	});
 
 	$(document).ready(function() {

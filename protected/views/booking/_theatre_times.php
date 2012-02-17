@@ -51,11 +51,30 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 
 		</div> <!-- #theatre-times_tab_<?php echo $i ?> -->
 
+		<?php if (!$session['bookable']) {?>
+			<div class="alertBox" style="margin-top: 10px;">
+				<?php if ($session['bookable_reason'] == 'anaesthetist') {?>
+					The operation requires an anaesthetist, this session doesn't have one and so cannot be booked into.
+				<?php }else if ($session['bookable_reason'] == 'consultant') {?>
+					The operation requires a consultant, this session doesn't have one and so cannot be booked into.
+				<?php }else if ($session['bookable_reason'] == 'paediatric') {?>
+					The operation is for a paediatric patient, this session isn't paediatric and so cannot be booked into.
+				<?php }?>
+			</div>
+		<?php }?>
+
+		<div class="alertBox sessionWarning" style="margin-top: 10px; display: none;">
+			You cannot book into this session as it is in the past.
+		</div>
+
 		<?php
 			$i++;
 			}
 		?>
 
+		<?php if ($i == 0) {?>
+			<h5>Sorry, this firm has no sessions on the selected day.</h5>
+		<?php }?>
 	</div> <!-- #theatre-times -->
 </div> <!-- #theatres -->
 
@@ -65,6 +84,12 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 <script type="text/javascript">
 	$('div.timeBlock.bookable, div.timeBlock.inthepast').unbind('click').click(function() {
 		id = this.id.replace(/bookingSession/,'');
+
+		if ($(this).hasClass('inthepast')) {
+			$('div.sessionWarning').show();
+		} else {
+			$('div.sessionWarning').hide();
+		}
 
 		$.ajax({
      	'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,

@@ -97,6 +97,12 @@
 		<?php if ($booking) { ?>
 		<th>Theatre session:</th>
 		<td><?php echo substr($booking->session->start_time,0,5) . ' - ' . substr($booking->session->end_time,0,5)?></td>
+	</tr>
+	<tr>
+		<th>Theatre:</th>
+		<td><?php echo $booking->session->sequence->theatre->name?></td>
+		<th>Ward:</th>
+		<td><?php echo $booking->ward->name?></td>
 		<?php } ?>
 	</tr>
 	

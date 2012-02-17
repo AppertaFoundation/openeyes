@@ -34,6 +34,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 	<script type="text/javascript" src="/js/print.js"></script>
+	<script type="text/javascript" src="/js/buttons.js"></script>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
@@ -64,13 +65,12 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 			<div id="patientID">
 				<div class="i_patient">
-					<a href="/patient/view/<?php echo $this->model->id?>" class="small">View Summary</a>
+					<a href="/patient/view/<?php echo $this->model->id?>" class="small">Patient Summary</a>
 					<img class="i_patient" src="/img/_elements/icons/patient_small.png" alt="patient_small" width="26" height="30" />
 				</div>
 
 				<div class="patientReminder">
-					<span class="surname"><?php echo $this->model->last_name?></span>,
-					<span class="given"><?php echo $this->model->first_name?></span>
+					<?php echo $this->model->getDisplayName()?>
 					<span class="number">Hospital number: <?php echo $this->model->hos_num?></span>
 				</div>
 			</div> <!-- #patientID -->

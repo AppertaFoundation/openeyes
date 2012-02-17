@@ -1,7 +1,9 @@
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
-			<div id="episodesBanner" class="whiteBox">
-				<form><button style="float: right; margin-right: 1px;" type="submit" id="addNewEvent" class="classy green" tabindex="2"><span class="button-icon-green">+</span><span class="button-span button-span-green">&nbsp;&nbsp;add new Event</span></button></form>
+			<div id="episodesBanner">
+				<form>
+					<button tabindex="2" class="classy green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
+				</form>
 				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<div id="episodes_sidebar">
@@ -27,7 +29,7 @@
 									);
 									$scheduled = false;
 									foreach ($event_elements as $element) {
-										if (get_class($element) == 'ElementOperation' && $element->status == ElementOperation::STATUS_SCHEDULED) {
+										if (get_class($element) == 'ElementOperation' && in_array($element->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED))) {
 											$scheduled = true;
 										}
 									}
@@ -38,7 +40,7 @@
 										$highlight = false;
 									}
 									?>
-									<li id="eventLi<?php echo $event->id ?>"><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event_op_<?php if (!$scheduled) echo 'un'?>scheduled.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDate('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
+									<li id="eventLi<?php echo $event->id ?>"><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) echo '_unscheduled'?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
 							<?php
 								}
 							?>
@@ -64,7 +66,7 @@
 					<?php
 						foreach ($eventTypes as $eventType) {
 ?>
-					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
 <?php
 						}
 ?>

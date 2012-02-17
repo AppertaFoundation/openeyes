@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -32,6 +32,7 @@ if (!$reschedule) {
 				<th>Session time: <?php echo substr($session['start_time'], 0, 5) . ' - '
 				. substr($session['end_time'], 0, 5); ?></th>
 				<th>Admission time</th>
+				<th>Comments</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -52,12 +53,12 @@ if (!$reschedule) {
 		} ?>
 
 			<tr>
-				<td><?php echo "{$counter}. {$patient->first_name} {$patient->last_name}"; ?></td>
+				<td><?php echo $counter?>. <?php echo $patient->getDisplayName()?></td>
 				<td><?php echo $procedureList; ?></td>
 				<td><?php echo $thisOperation->getAnaestheticText()?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
 				<td><?php echo $booking->admission_time ?></td>
-
+				<td><?php echo $thisOperation->comments?></td>
 			</tr>
 <?php
 		$counter++;
@@ -65,7 +66,7 @@ if (!$reschedule) {
 	</tbody>
 		<tfoot>
 			<tr>
-				<th colspan="4"><?php echo ($counter - 1) . ' booking';
+				<th colspan="6"><?php echo ($counter - 1) . ' booking';
 	if (($counter - 1) != 1) {
 		echo 's';
 	}
@@ -111,7 +112,6 @@ if (!$reschedule) {
 	<?php if ($reschedule) { ?>
 	<h3>Reason for Reschedule</h3>
 	<div class="eventDetail clearfix" style="position:relative;">
-		<div class="errorSummary" style="display:none"></div>
 		<div class="label"><strong><?php echo CHtml::label('Reschedule Reason: ', 'cancellation_reason'); ?></strong></div>
 		<?php if (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date))) {
 			$listIndex = 3;
@@ -152,32 +152,49 @@ if (!$reschedule) {
 	echo CHtml::endForm();
 	?>
 
+	<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
+	<ul><li>&nbsp;</li></ul></div>
+
 	<script type="text/javascript">
 		$('button#cancel_scheduling').click(function() {
-			document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+			if (!$(this).hasClass('inactive')) {
+				disableButtons();
+				document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+			}
 			return false;
 		});
-	<?php if ($reschedule) { ?>
+
 		$('#bookingForm button#confirm_slot').click(function () {
-			if (!$('#Booking_admission_time').val().match(/^[0-9]{1,2}.*?[0-9]{2}$/)) {
-				$('#Booking_admission_time_error').html('Please enter a valid admission time, eg 09:30');
-				$('#Booking_admission_time').select().focus();
-				return false;
-			}
-			if ($('#cancellation_reason option:selected').val() == '') {
-				$('div.errorSummary').html('Please select a reason for reschedule');
-				$('div.errorSummary').show();
+			if (!$(this).hasClass('inactive')) {
+				var errors = [];
+				var m = $('#Booking_admission_time').val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+
+				if (!m || m[1] <0 || m[1] >23 || m[2]<0 || m[2] >59) {
+					errors.push("Please enter a valid admission time, eg 09:30");
+					$('#Booking_admission_time').select().focus();
+				}
+
+				<?php if ($reschedule) {?>
+					if ($('#cancellation_reason option:selected').val() == '') {
+						errors.push("Please select a reason for reschedule");
+					}
+				<?php }?>
+
+				if (errors.length >0) {
+					var html = '';
+					for (var i in errors) {
+						html += "<li>"+errors[i]+"</li>";
+					}
+
+					$('div.alertBox ul').html(html);
+					$('div.alertBox').show();
+					return false;
+				}
+
+				disableButtons();
+			} else {
 				return false;
 			}
 		});
-	<?php }else {?>
-		$('#bookingForm button#confirm_slot').click(function () {
-			if (!$('#Booking_admission_time').val().match(/^[0-9]{1,2}.*?[0-9]{2}$/)) {
-				$('#Booking_admission_time_error').html('Please enter a valid admission time, eg 09:30');
-				$('#Booking_admission_time').select().focus();
-				return false;
-			}
-		});
-	<?php }?>
 	</script>
 <?php }?>
