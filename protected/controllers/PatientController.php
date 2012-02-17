@@ -182,7 +182,7 @@ class PatientController extends BaseController
 
 		$model = new Patient;
 
-		$items_per_page = 10;
+		$items_per_page = 20;
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;

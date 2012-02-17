@@ -53,7 +53,7 @@ class PatientService
 	 *
 	 * @param array $data
 	 */
-	public function search($data, $num_results = 10, $page=1) {
+	public function search($data, $num_results = 20, $page=1) {
 		// oracle apparently doesn't do case-insensitivity, so everything is uppercase
 		foreach ($data as $key => &$value) {
 			$value = strtoupper($value);
