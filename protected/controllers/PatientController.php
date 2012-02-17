@@ -184,6 +184,32 @@ class PatientController extends BaseController
 
 		$items_per_page = 20;
 
+		switch ($_GET['sort_by']) {
+			case 0:
+				$sort_by = 'hos_num*1';
+				break;
+			case 1:
+				$sort_by = 'title';
+				break;
+			case 2:
+				$sort_by = 'first_name';
+				break;
+			case 3:
+				$sort_by = 'last_name';
+				break;
+			case 4:
+				$sort_by = 'dob';
+				break;
+			case 5:
+				$sort_by = 'gender';
+				break;
+			case 6:
+				$sort_by = 'nhs_num*1';
+				break;
+		}
+
+		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
 
@@ -191,7 +217,8 @@ class PatientController extends BaseController
 				$model->attributes = $this->collateGetData();
 				$dataProvider = $model->search(array(
 					'currentPage' => (integer)@$_GET['page_num']-1,
-					'items_per_page' => $items_per_page
+					'items_per_page' => $items_per_page,
+					'order' => $sort_by.' '.$sort_dir
 				));
 
 				$nr = $model->search_nr();
@@ -209,7 +236,8 @@ class PatientController extends BaseController
 			$model->attributes = $this->collateGetData();
 			$dataProvider = $model->search(array(
 				'currentPage' => (integer)@$_GET['page_num']-1,
-				'items_per_page' => $items_per_page
+				'items_per_page' => $items_per_page,
+				'order' => $sort_by.' '.$sort_dir
 			));
 
 			$nr = $model->search_nr();

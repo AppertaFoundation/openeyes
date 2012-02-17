@@ -141,7 +141,8 @@ class Patient extends BaseActiveRecord
 		if (!is_array($params)) {
 			$params = array(
 				'items_per_page' => PHP_INT_MAX,
-				'currentPage' => 0
+				'currentPage' => 0,
+				'order' => 'hos_num*1 asc'
 			);
 		}
 
@@ -153,6 +154,8 @@ class Patient extends BaseActiveRecord
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
+
+		$criteria->order = $params['order'];
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
