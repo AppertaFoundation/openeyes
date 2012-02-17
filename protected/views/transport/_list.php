@@ -45,7 +45,7 @@ if (empty($bookings)) { ?>
 	?>
 		<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 		<td class="patient">
-			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/episodes/' . $booking['pid'] . '/event/' . $booking['evid'])?>
+			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/episodes/' . $booking['phash'] . '/event/' . $booking['evid'])?>
 		</td>
 		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
 		<td style="width: 73px;"><?php echo $booking['session_time']?></td>

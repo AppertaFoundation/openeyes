@@ -53,7 +53,7 @@ $this->endWidget(); ?>
 			'data': $('#clinical-update').serialize(),
 			'success': function(data) {
 				if (data.match(/^[0-9]+$/)) {
-					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
+					window.location.href = '/patient/episodes/<?php echo $patient->hash?>/event/'+data;
 					return false;
 				}
 				try {

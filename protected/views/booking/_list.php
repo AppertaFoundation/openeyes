@@ -159,7 +159,7 @@ if (!$reschedule) {
 		$('button#cancel_scheduling').click(function() {
 			if (!$(this).hasClass('inactive')) {
 				disableButtons();
-				document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+				document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->hash?>;
 			}
 			return false;
 		});

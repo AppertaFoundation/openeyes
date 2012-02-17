@@ -86,7 +86,7 @@ if (empty($operations)) { ?>
 ?>
 	</td>
 	<td class="patient">
-		<?php echo CHtml::link(trim("<b>" . $operation['last_name']) . '</b>, ' . $operation['first_name'], '/patient/episodes/' . $operation['pid'] . '/event/' . $operation['evid'])?>
+		<?php echo CHtml::link(trim("<b>" . $operation['last_name']) . '</b>, ' . $operation['first_name'], '/patient/episodes/' . $operation['phash'] . '/event/' . $operation['evid'])?>
 	</td>
 	<td style="width: 53px;"><?php echo $operation['hos_num'] ?></td>
 	<td style="width: 95px;"><?php echo $eo->site->short_name?></td>

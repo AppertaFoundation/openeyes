@@ -237,7 +237,7 @@ class BookingService
 					f.name AS firm_name, spec.name AS specialty_name,
 					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
-					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
+					e.id AS eventId, ep.id AS episodeId, p.id AS patientId, p.hash as patientHash,
 					o.total_duration AS operation_duration, p.first_name,
 					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln')
 				->from('session s')
@@ -267,7 +267,7 @@ class BookingService
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric,
 					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
-					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
+					e.id AS eventId, ep.id AS episodeId, p.id AS patientId, p.hash as patientHash,
 					o.total_duration AS operation_duration, p.first_name,
 					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln')
 				->from('session s')

@@ -64,9 +64,9 @@ class PatientController extends BaseController
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id)
+	public function actionView($hash)
 	{
-		$patient = $this->loadModel($id);
+		$patient = Patient::model()->find('hash = :hash', array(':hash' => $hash));
 
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
@@ -92,24 +92,6 @@ class PatientController extends BaseController
 		$this->render('view', array(
 			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
-	}
-
-	/**
-	 * Redirect to correct patient view by hospital number
-	 * @param string $hos_num
-	 * @throws CHttpException
-	 */
-	public function actionViewhosnum($hos_num) {
-		$hos_num = (int) $hos_num;
-		if(!$hos_num) {
-			throw new CHttpException(400, 'Invalid hospital number');
-		}
-		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
-		if($patient) {
-			$this->redirect('/patient/view/'.$patient->id);
-		} else {
-			throw new CHttpException(404, 'Hospital number not found');
-		}
 	}
 
 	/**
@@ -157,20 +139,17 @@ class PatientController extends BaseController
 				if (Yii::app()->params['use_pas']) {
 					$get_hos_num = str_pad($get_hos_num, 7, '0', STR_PAD_LEFT);
 				}
-			} else {
-				$get_hos_num = '000000';
+				
+				// This will always either match one row or zero, so do the search now and then redirect to the result if there is one.
+				$_GET['hos_num'] = $_POST['Patient']['hos_num'];
+				$this->patientSearch();
+				exit;
 			}
 
 			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
 			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
-			// Get rid of any dashes from nhs_num as PAS doesn't store them
-			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? preg_replace('/-/', '', $_POST['Patient']['nhs_num']) : '0');
-			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
-			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
-			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
-			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
 
-			header("Location: /patient/results/$get_hos_num/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/$get_dob_day/$get_dob_month/$get_dob_year/0/0/1");
+			header("Location: /patient/results/$get_first_name/$get_last_name/0/0/1");
 			setcookie('patient-search-minimum-criteria','1',0,'/');
 			exit;
 		}
@@ -180,6 +159,10 @@ class PatientController extends BaseController
 			exit;
 		}
 
+		$this->patientSearch();
+	}
+
+	function patientSearch() {
 		$model = new Patient;
 
 		$items_per_page = 20;
@@ -226,7 +209,7 @@ class PatientController extends BaseController
 
 		if ($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
-				header('Location: /patient/view/'.$item->id);
+				header('Location: /patient/view/'.$item->hash);
 				exit;
 			}
 		}
@@ -304,7 +287,8 @@ class PatientController extends BaseController
 	{
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
-		$patient = $this->model = $this->loadModel($_GET['id']);
+
+		$patient = $this->model = Patient::model()->find('hash = :hash', array(':hash' => $_GET['hash']));
 
 		$episodes = $patient->episodes;
 

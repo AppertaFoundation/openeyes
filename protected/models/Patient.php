@@ -167,6 +167,16 @@ class Patient extends BaseActiveRecord
 				$this->$property = $randomised;
 			}
 		}
+
+		// If this is a new patient, generate a random hash value to use in urls
+		if (!isset($this->hash) || !preg_match('/^[0-9a-f]{40}$/',$this->hash)) {
+			while (1) {
+				$this->hash = sha1(rand());
+
+				if (!Patient::model()->find('hash = :hash', array(':hash' => $this->hash))) break;
+			}
+		}
+
 		return parent::beforeSave();
 	}
 

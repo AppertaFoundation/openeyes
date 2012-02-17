@@ -160,12 +160,12 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><a href="/patient/episodes/<?php echo $model->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
+					<p><a href="/patient/episodes/<?php echo $model->hash?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('tr.all-episode').unbind('click').click(function() {
-					window.location.href = '/patient/episodes/<?php echo $model->id?>/episode/'+$(this).attr('id');
+					window.location.href = '/patient/episodes/<?php echo $model->hash?>/episode/'+$(this).attr('id');
 					return false;
 				});
 			</script>

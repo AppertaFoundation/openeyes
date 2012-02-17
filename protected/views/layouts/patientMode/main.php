@@ -65,7 +65,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 			<div id="patientID">
 				<div class="i_patient">
-					<a href="/patient/view/<?php echo $this->model->id?>" class="small">Patient Summary</a>
+					<a href="/patient/view/<?php echo $this->model->hash?>" class="small">Patient Summary</a>
 					<img class="i_patient" src="/img/_elements/icons/patient_small.png" alt="patient_small" width="26" height="30" />
 				</div>
 
