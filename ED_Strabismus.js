@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for Strabismus and Orthoptics
+ * @fileOverview Contains doodle subclasses for Strabismus and Orthoptics
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.8
  *

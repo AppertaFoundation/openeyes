@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for the adnexal drawing
+ * @fileOverview Contains doodle subclasses for adnexal
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.8
  *

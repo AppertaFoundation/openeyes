@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for the breast cancer
+ * @fileOverview Contains doodle subclasses for breast cancer
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.9
  *

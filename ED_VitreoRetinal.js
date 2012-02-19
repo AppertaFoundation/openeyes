@@ -1,7 +1,8 @@
 /**
- * @fileOverview Contains doodle Subclasses for surgical retina
+ * @fileOverview Contains doodle subclasses for surgical retina
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.93
+ * @description A description
  *
  * Modification date: 23rd October 2011
  * Copyright 2011 OpenEyes
@@ -44,6 +45,7 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
  * @param {Float} _arc
  * @param {Float} _rotation
  * @param {Int} _order
+ * @constructor
  */
 ED.Square = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
 {

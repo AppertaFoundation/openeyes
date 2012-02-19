@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for the adnexal drawing
+ * @fileOverview Contains doodle subclasses for glaucoma
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.8
  *
@@ -30,9 +30,10 @@ if (ED == null || typeof(ED) != "object") { var ED = new Object();}
 
 /**
  * Radii from out to in (mainly for gonioscopy)
+ * @ignore
  */
 var rsl = 480;
-var rsli = 470
+var rsli = 470;
 var rtmo = 404;
 var rtmi = 304;
 var rcbo = 270;

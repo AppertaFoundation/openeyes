@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for general drawing
+ * @fileOverview Contains doodle subclasses for general use
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.9
  *
@@ -66,7 +66,6 @@ ED.Template.superclass = ED.Doodle.prototype;
  */
 ED.Template.prototype.setHandles = function()
 {
-    this.handleArray[0] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -79,7 +78,7 @@ ED.Template.prototype.setPropertyDefaults = function()
 /**
  * Sets default parameters
  */
-//ED.Template.prototype.setParameterDefaults = function()
+ED.Template.prototype.setParameterDefaults = function()
 {
 }
 
@@ -89,12 +88,12 @@ ED.Template.prototype.setPropertyDefaults = function()
  * @param {Point} _point Optional point in canvas plane, passed if performing hit test
  */
 ED.Template.prototype.draw = function(_point)
-{
-	// Get context
-	var ctx = this.drawing.context;
-	
+{	
 	// Call draw method in superclass
 	ED.Template.superclass.draw.call(this, _point);
+
+    // Get context
+	var ctx = this.drawing.context;
     
 	// Boundary path
 	ctx.beginPath();
@@ -119,7 +118,7 @@ ED.Template.prototype.draw = function(_point)
 	}
 	
 	// Coordinates of handles (in canvas plane)
-	this.handleArray[0].location = this.transform.transformPoint(new ED.Point(-50, 50));
+	//this.handleArray[0].location = this.transform.transformPoint(new ED.Point(-50, 50));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);

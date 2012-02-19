@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for the anterior segment drawing
+ * @fileOverview Contains doodle subclasses for the anterior segment
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.92
  *

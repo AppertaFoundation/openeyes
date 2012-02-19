@@ -307,6 +307,7 @@ ED.Drawing.prototype.preLoadImagesFrom = function(_path)
     // Iterate through array loading each image, calling checking function from onload event
     for (var key in this.imageArray)
     {
+        // This line picked up by javadoc toolkit - @ignore does not work
         this.imageArray[key].onload = function()
         {
             drawing.checkAllLoaded();

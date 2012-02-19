@@ -1,5 +1,5 @@
 /**
- * @fileOverview Contains doodle Subclasses for Medical Retina
+ * @fileOverview Contains doodle subclasses for Medical Retina
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
  * @version 0.9
  *
