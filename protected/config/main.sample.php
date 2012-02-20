@@ -55,7 +55,8 @@ return CMap::mergeArray(
 				'rules' => array(
 					'patient/results/error' => 'site/index',
 					'patient/no-results' => 'site/index',
-					'patient/results/<hos_num:\d+>/<first_name:.*>/<last_name:.*>/<nhs_num:[\d-]+>/<gender:.*>/<dob_day:\d+>/<dob_month:\d+>/<dob_year:\d+>/<page_num:\d+>' => 'patient/results',
+					'patient/no-results-pas' => 'site/index',
+					'patient/results/<first_name:.*>/<last_name:.*>/<sort_by:\d+>/<sort_dir:\d+>/<page_num:\d+>'=>'patient/results',
 					'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
 					'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 					'patient/episodes/<id:\d+>/event/<event:\d+>' => 'patient/episodes',

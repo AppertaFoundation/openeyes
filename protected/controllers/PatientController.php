@@ -157,6 +157,13 @@ class PatientController extends BaseController
 				if (Yii::app()->params['use_pas']) {
 					$get_hos_num = str_pad($get_hos_num, 7, '0', STR_PAD_LEFT);
 				}
+
+				$_GET['hos_num'] = $get_hos_num;
+				$_GET['sort_by'] = 0;
+				$_GET['sort_dir'] = 0;
+				$_GET['page_num'] = 1;
+				$this->patientSearch();
+				exit;
 			} else {
 				$get_hos_num = '000000';
 			}
@@ -170,7 +177,7 @@ class PatientController extends BaseController
 			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
 			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
 
-			header("Location: /patient/results/$get_hos_num/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/$get_dob_day/$get_dob_month/$get_dob_year/1");
+			header("Location: /patient/results/$get_first_name/$get_last_name/0/0/1");
 			setcookie('patient-search-minimum-criteria','1',0,'/');
 			exit;
 		}
@@ -180,32 +187,79 @@ class PatientController extends BaseController
 			exit;
 		}
 
+		$this->patientSearch();
+	}
+
+	function patientSearch() {
 		$model = new Patient;
 
-		$items_per_page = 10;
+		$items_per_page = 20;
+
+		switch ($_GET['sort_by']) {
+			case 0:
+				$sort_by = 'hos_num*1';
+				break;
+			case 1:
+				$sort_by = 'title';
+				break;
+			case 2:
+				$sort_by = 'first_name';
+				break;
+			case 3:
+				$sort_by = 'last_name';
+				break;
+			case 4:
+				$sort_by = 'dob';
+				break;
+			case 5:
+				$sort_by = 'gender';
+				break;
+			case 6:
+				$sort_by = 'nhs_num*1';
+				break;
+		}
+
+		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 
 		if (Yii::app()->params['use_pas']) {
 			$service = new PatientService;
-			$criteria = $service->search($this->collateGetData());
 
-			$nr = Patient::model()->count($criteria);
+			if ($service->down) {
+				$model->attributes = $this->collateGetData();
+				$dataProvider = $model->search(array(
+					'currentPage' => (integer)@$_GET['page_num']-1,
+					'items_per_page' => $items_per_page,
+					'order' => $sort_by.' '.$sort_dir
+				));
 
-			$dataProvider = new CActiveDataProvider('Patient', array(
-				'criteria' => $criteria,
-				'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
-			));
+				$nr = $model->search_nr();
+			} else {
+				$criteria = $service->search($this->collateGetData(), $items_per_page, $_GET['page_num']);
+
+				$nr = $service->num_results;
+
+				$dataProvider = new CActiveDataProvider('Patient', array(
+					'criteria' => $criteria,
+					'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
+				));
+			}
 		} else {
 			$model->attributes = $this->collateGetData();
 			$dataProvider = $model->search(array(
 				'currentPage' => (integer)@$_GET['page_num']-1,
-				'items_per_page' => $items_per_page
+				'items_per_page' => $items_per_page,
+				'order' => $sort_by.' '.$sort_dir
 			));
 
 			$nr = $model->search_nr();
 		}
 
 		if ($nr == 0) {
-			header('Location: /patient/no-results');
+			if (Yii::app()->params['pas_down']) {
+				header('Location: /patient/no-results-pas');
+			} else {
+				header('Location: /patient/no-results');
+			}
 			exit;
 		}
 
@@ -228,15 +282,11 @@ class PatientController extends BaseController
 				'pages' => $pages,
 				'items_per_page' => $items_per_page,
 				'total_items' => $nr,
-				'hos_num' => (integer)$_GET['hos_num'],
 				'first_name' => $_GET['first_name'],
 				'last_name' => $_GET['last_name'],
-				'nhs_num' => (integer)$_GET['nhs_num'],
-				'gender' => $_GET['gender'],
-				'dob_day' => (integer)$_GET['dob_day'],
-				'dob_month' => (integer)$_GET['dob_month'],
-				'dob_year' => (integer)$_GET['dob_year'],
-				'pagen' => (integer)$_GET['page_num']-1
+				'pagen' => (integer)$_GET['page_num'],
+				'sort_by' => (integer)$_GET['sort_by'],
+				'sort_dir' => (integer)$_GET['sort_dir']
 			));
 		}
 	}
