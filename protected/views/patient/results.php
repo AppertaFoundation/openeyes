@@ -55,13 +55,13 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							<table class="items">
 								<thead>
 									<tr>
-										<th id="patient-grid_c0"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/0/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Hospital Number</a></th>
-										<th id="patient-grid_c1"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/1/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Title</a></th>
-										<th id="patient-grid_c2"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/2/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">First name</a></th>
-										<th id="patient-grid_c3"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/3/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Last name</a></th>
-										<th id="patient-grid_c4"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/4/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Date of birth</a></th>
-										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/5/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Gender</a></th>
-										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/6/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">NHS number</a></th>
+										<th id="patient-grid_c0"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/0/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Hospital Number</a></th>
+										<th id="patient-grid_c1"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/1/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Title</a></th>
+										<th id="patient-grid_c2"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/2/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">First name</a></th>
+										<th id="patient-grid_c3"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/3/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Last name</a></th>
+										<th id="patient-grid_c4"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/4/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Date of birth</a></th>
+										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/5/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Gender</a></th>
+										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/6/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">NHS number</a></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -96,7 +96,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 										$to = $total_items;
 									}
 									?>
-									<span class="otherPages"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/<?php echo $sort_by?>/<?php echo $sort_dir?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
+									<span class="otherPages"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $sort_by?>/<?php echo $sort_dir?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
 								<?php }?>
 							<?php }?>
 						</div>
@@ -107,12 +107,8 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 				
 				<div class="narrowColumn">
 					<form id="refine-patient-search" action="/patient/results" method="post">
-						<input type="hidden" name="Patient[hos_num]" value="<?php echo $_GET['hos_num']?>" />
 						<input type="hidden" name="Patient[first_name]" value="<?php echo $_GET['first_name']?>" />
 						<input type="hidden" name="Patient[last_name]" value="<?php echo $_GET['last_name']?>" />
-						<input type="hidden" name="dob_day" value="<?php echo $_GET['dob_day']?>" />
-						<input type="hidden" name="dob_month" value="<?php echo $_GET['dob_month']?>" />
-						<input type="hidden" name="dob_year" value="<?php echo $_GET['dob_year']?>" />
 
 						<div id="refine_patient_details" class="form_greyBox clearfix">
 							<h3>Refine your search</h3>
