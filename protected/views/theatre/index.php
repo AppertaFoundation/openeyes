@@ -37,22 +37,13 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 								</tr>
 								<tr class="even">
 									<td>
-										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getList(), array('empty'=>'All sites', 'onChange' => "js:loadTheatresAndWards(this.value);", 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getList(), array('empty'=>'All sites', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty'=>'All theatres', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('specialty-id', @$_POST['specialty-id'], Specialty::model()->getList(), array('empty'=>'All specialties', 'ajax'=>array('type'=>'POST', 'data'=>array('specialty_id'=>'js:this.value'), 'url'=>Yii::app()->createUrl('theatre/filterFirms'), 'success'=>"js:function(data) {
-				if ($('#specialty-id').val() != '') {
-					$('#firm-id').attr('disabled', false);
-					$('#firm-id').html(data);
-				} else {
-					$('#firm-id').attr('disabled', true);
-					$('#firm-id').html(data);
-				}
-			}",
-		),'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('specialty-id', @$_POST['specialty-id'], Specialty::model()->getList(), array('empty'=>'All specialties', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['specialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
@@ -509,12 +500,29 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			'type': 'POST',
 			'data': field+'='+value,
 			'success': function(html) {
+				if (field == 'site-id') {
+					loadTheatresAndWards(value);
+				} else if (field == 'specialty-id') {
+					$.ajax({
+						'url': '<?php echo Yii::app()->createUrl('theatre/filterFirms')?>',
+						'type': 'POST',
+						'data': 'specialty_id='+$('#specialty-id').val(),
+						'success': function(data) {
+							if ($('#specialty-id').val() != '') {
+								$('#firm-id').attr('disabled', false);
+								$('#firm-id').html(data);
+							} else {
+								$('#firm-id').attr('disabled', true);
+								$('#firm-id').html(data);
+							}
+							$('#search_button').click();
+						}
+					});
+				} else {
+					$('#search_button').click();
+				}
 			}
 		});
-
-		if (field != 'site-id') {
-			$('#search_button').click();
-		}
 	}
 
 	$('select').change(function() {
