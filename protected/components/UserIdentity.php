@@ -181,8 +181,10 @@ class UserIdentity extends CUserIdentity
 		$app->session['firms'] = $firms;
 
 		reset($firms);
-			
-		if (count($user->firms)) {
+
+		if ($user->last_firm_id) {
+			$app->session['selected_firm_id'] = $user->last_firm_id;
+		} else if (count($user->firms)) {
 			// Set the firm to one the user is associated with
 			$userFirms = $user->firms;
 			$app->session['selected_firm_id'] = $userFirms[0]->id;
