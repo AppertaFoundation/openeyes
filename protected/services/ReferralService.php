@@ -61,7 +61,7 @@ class ReferralService
 				if ($referral->save()) {
 					//echo 'Added referral refo ' . $referral->refno . "\n";
 				} else {
-					$errors .= "Unable to save referral refno $referral->refno\n";
+					$errors .= "Unable to save referral refno $referral->refno: ".print_r($referral->getErrors(),true)."\n";
 				}
 			}
 		}

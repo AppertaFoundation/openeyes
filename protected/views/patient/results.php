@@ -8,7 +8,7 @@ OpenEyes is free software: you can redistribute it and/or modify it under the te
 OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
 _____________________________________________________________________________
-http://www.openeyes.org.uk   info@openeyes.org.uk
+http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
 
@@ -34,36 +34,55 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 			<div class="wrapTwo clearfix">
 				<div class="wideColumn">
 					<p><strong><?php echo $total_items?> patients found</strong>, based on <?php echo $based_on?></p>
-					
+
+					<?php if (Yii::app()->params['pas_down']) {?>
+						<div id="pas-error" class="alertBox">
+							<h3>Warning: the PAS is currently down. Search results are likely to be stale.</h3>
+						</div>
+					<?php }?>
+
 					<div class="whiteBox">
 						<?php
-						$from = 1+($pagen*$items_per_page);
-						$to = ($pagen+1)*$items_per_page;
+						$from = 1+(($pagen-1)*$items_per_page);
+						$to = $pagen*$items_per_page;
 						if ($to > $total_items) {
 							$to = $total_items;
 						}
 						?>
 						<h3>Results. You are viewing patients <?php echo $from?> to <?php echo $to?>, of <?php echo $total_items?></h3>
 
-						<?php $this->widget('zii.widgets.grid.CGridView', array(
-							'id'=>'patient-grid',
-							'dataProvider'=>$dataProvider,
-							'template'=>"{items}\n{pager}",
-							'columns'=>array(
-								'hos_num',
-								'title',
-								'first_name',
-								'last_name',
-								'dob',
-								'gender',
-								'nhs_num'
-							)
-						));
-						?>
+						<div id="patient-grid" class="grid-view">
+							<table class="items">
+								<thead>
+									<tr>
+										<th id="patient-grid_c0"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/0/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Hospital Number</a></th>
+										<th id="patient-grid_c1"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/1/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Title</a></th>
+										<th id="patient-grid_c2"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/2/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">First name</a></th>
+										<th id="patient-grid_c3"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/3/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Last name</a></th>
+										<th id="patient-grid_c4"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/4/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Date of birth</a></th>
+										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/5/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Gender</a></th>
+										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/6/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">NHS number</a></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php foreach ($dataProvider->getData() as $i => $result) {?>
+										<tr class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>">
+											<td><?php echo $result->hos_num?></td>
+											<td><?php echo $result->title?></td>
+											<td><?php echo $result->first_name?></td>
+											<td><?php echo $result->last_name?></td>
+											<td><?php echo $result->dob?></td>
+											<td><?php echo $result->gender?></td>
+											<td><?php echo $result->nhs_num?></td>
+										</tr>
+									<?php }?>
+								</tbody>
+							</table>
+						</div>
 
 						<div class="resultsPagination">Viewing patients:
 							<?php for ($i=0; $i<$pages; $i++) {?>
-								<?php if ($i == $pagen) {
+								<?php if ($i == $pagen-1) {
 									$to = ($i+1)*$items_per_page;
 									if ($to > $total_items) {
 										$to = $total_items;
@@ -77,7 +96,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 										$to = $total_items;
 									}
 									?>
-									<span class="otherPages"><a href="/patient/results/<?php echo $hos_num?>/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $dob_day?>/<?php echo $dob_month?>/<?php echo $dob_year?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
+									<span class="otherPages"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $sort_by?>/<?php echo $sort_dir?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
 								<?php }?>
 							<?php }?>
 						</div>
@@ -88,12 +107,8 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 				
 				<div class="narrowColumn">
 					<form id="refine-patient-search" action="/patient/results" method="post">
-						<input type="hidden" name="Patient[hos_num]" value="<?php echo $_GET['hos_num']?>" />
 						<input type="hidden" name="Patient[first_name]" value="<?php echo $_GET['first_name']?>" />
 						<input type="hidden" name="Patient[last_name]" value="<?php echo $_GET['last_name']?>" />
-						<input type="hidden" name="dob_day" value="<?php echo $_GET['dob_day']?>" />
-						<input type="hidden" name="dob_month" value="<?php echo $_GET['dob_month']?>" />
-						<input type="hidden" name="dob_year" value="<?php echo $_GET['dob_year']?>" />
 
 						<div id="refine_patient_details" class="form_greyBox clearfix">
 							<h3>Refine your search</h3>
@@ -120,6 +135,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							</div>
 						
 							<div class="form_button">
+								<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none; margin-right: 10px;" />
 								<button type="submit" class="classy blue tall" id="refinePatient_details"><span class="button-span button-span-blue">Find patient</span></button>
 							</div>
 							
@@ -131,8 +147,15 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 				</div> <!-- .narrowColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
-				$('#patient-grid .items tr').click(function() {
-					window.location.href = '/patient/viewhosnum/'+$(this).children(":first").html();
+				$('#patient-grid .items tr td').click(function() {
+					window.location.href = '/patient/viewhosnum/'+$(this).parent().children(":first").html();
+					return false;
+				});
+				$('#refinePatient_details').click(function() {
+					if ($(this).hasClass('blue')) {
+						disableButtons();
+						return true;
+					}
 					return false;
 				});
 			</script>

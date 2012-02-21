@@ -59,6 +59,12 @@ if (!empty($address)) {
 } ?>
 		<h2>Patient Summary</h2>
 			<div class="wrapTwo clearfix">
+				<?php if (Yii::app()->params['pas_down']) {?>
+					<div id="pas-error" class="alertBox">
+						<h3>Warning: The PAS is currently down. Patient details are likely to be stale.</h3>
+					</div>
+				<?php }?>
+
 				<div class="halfColumnLeft">
  
 					<!-- double re-enforcement of mode change not currently required, but might be needed in the future

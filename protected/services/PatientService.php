@@ -16,6 +16,7 @@ class PatientService
 {
 	public $patient;
 	public $pasPatient;
+	public $down = false;
 
 	/**
 	 * Create a new instance of the service
@@ -25,6 +26,15 @@ class PatientService
 	 */
 	public function __construct($patient = null, $pasPatient = null)
 	{
+		try {
+			$connection = Yii::app()->db_pas;
+		} catch (Exception $e) {
+			$this->down = true;
+			Yii::app()->params['use_pas'] = false;
+			Yii::app()->params['pas_down'] = true;
+			return;
+		}
+
 		if (empty($patient)) {
 			$this->patient = new Patient;
 		} else {
@@ -43,7 +53,7 @@ class PatientService
 	 *
 	 * @param array $data
 	 */
-	public function search($data) {
+	public function search($data, $num_results = 20, $page=1) {
 		// oracle apparently doesn't do case-insensitivity, so everything is uppercase
 		foreach ($data as $key => &$value) {
 			$value = strtoupper($value);
@@ -78,25 +88,94 @@ class PatientService
 			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
 		}
 
+		$sql = "SELECT COUNT(*) as count FROM SILVER.PATIENTS p, SILVER.SURNAME_IDS s, SILVER.NUMBER_IDS n WHERE s.rm_patient_no = p.rm_patient_no AND s.surname_type = 'NO' AND ( n.rm_patient_no = p.rm_patient_no $whereSql) AND LENGTH(TRIM(TRANSLATE(n.num_id_type, '0123456789', ' '))) is null";
+		$connection = Yii::app()->db_pas;
+		$command = $connection->createCommand($sql);
+		foreach ($command->queryAll() as $results) $this->num_results = $results['COUNT'];
+
+		$offset = (($page-1) * $num_results) + 1;
+		$limit = $offset + $num_results - 1;
+
+		switch ($data['sort_by']) {
+			case 0:
+				// hos_num
+				$sort_by = "n.NUM_ID_TYPE||n.NUMBER_ID";
+				break;
+			case 1:
+				// title
+				$sort_by = "s.TITLE";
+				break;
+			case 2:
+				// first_name
+				$sort_by = "s.NAME1";
+				break;
+			case 3:
+				// last_name
+				$sort_by = "s.SURNAME_ID";
+				break;
+			case 4:
+				// date of birth
+				$sort_by = "p.DATE_OF_BIRTH";
+				break;
+			case 5:
+				// gender
+				$sort_by = "p.SEX";
+				break;
+			case 6:
+				// nhs_num
+				$sort_by = "NHS_NUMBER";
+				break;
+		}
+
+		$sort_dir = ($data['sort_dir'] == 0 ? 'ASC' : 'DESC');
+		$sort_rev = ($data['sort_dir'] == 0 ? 'DESC' : 'ASC');
+
 		$sql = "
+				SELECT
+					* from
+					( select a.*, rownum rnum from (
 						SELECT
 							p.rm_patient_no,
+							p.sex,
 							n.num_id_type,
 							n.number_id,
-							TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH
+							TO_CHAR(p.DATE_OF_BIRTH, 'YYYY-MM-DD') AS DATE_OF_BIRTH,
+							s.SURNAME_ID,
+							s.NAME1,
+							s.NAME2,
+							s.NAME3,
+							s.TITLE,
+							s.SURNAME_ID_SOUNDEX,
+							s.NAME1_SOUNDEX,
+							s.NAME2_SOUNDEX,
+							s.HDDR_GROUP,
+							n2.NUMBER_ID as NHS_NUMBER
 						FROM
-							SILVER.PATIENTS p,
-							SILVER.SURNAME_IDS s,
+							SILVER.PATIENTS p
+						JOIN
 							SILVER.NUMBER_IDS n
-						WHERE
+						ON
+							n.rm_patient_no = p.rm_patient_no
+						JOIN
+							SILVER.SURNAME_IDS s
+						ON
 							s.rm_patient_no = p.rm_patient_no
-							AND
-							s.surname_type = 'NO'
-							AND
-							(
-								n.rm_patient_no = p.rm_patient_no
-								" . $whereSql . "
-							)
+						LEFT OUTER JOIN
+							SILVER.NUMBER_IDS n2
+						ON
+							n2.rm_patient_no = p.rm_patient_no and n2.NUM_ID_TYPE = 'NHS'
+						WHERE
+							( s.surname_type = 'NO' $whereSql )
+						AND
+							LENGTH(TRIM(TRANSLATE(n.num_id_type, '0123456789', ' '))) is null
+						ORDER BY
+							$sort_by $sort_dir
+					) a
+					where rownum <= $limit
+					order by rownum $sort_rev
+					)
+					where rnum >= $offset
+					order by rnum $sort_rev
 		";
 
 		$connection = Yii::app()->db_pas;
@@ -107,28 +186,16 @@ class PatientService
 		$ids = array();
 
 		foreach ($results as $result) {
-			$pasPatient = PAS_Patient::model()->findByPk($result['RM_PATIENT_NO']);
+			$pasPatient = PAS_Patient::Model();
+			$pasPatient->RM_PATIENT_NO = $result['RM_PATIENT_NO'];
+			$pasPatient->SEX = $result['SEX'];
 
-			foreach ($connection->createCommand("select s.* from SILVER.PATIENTS p, SILVER.SURNAME_IDS s where p.RM_PATIENT_NO = '{$result['RM_PATIENT_NO']}' and s.surname_type = 'NO' and s.rm_patient_no = p.rm_patient_no")->queryAll() as $row) {
-				$surname = PAS_PatientSurname::model();
-				foreach ($row as $key => $value) {
-					$surname->{$key} = $value;
-				}
-				break;
+			$surname = PAS_PatientSurname::model();
+			foreach (array('RM_PATIENT_NO','SURNAME_ID','NAME1','NAME2','TITLE','SURNAME_ID_SOUNDEX','NAME1_SOUNDEX','NAME2_SOUNDEX','HDDR_GROUP','NAME3') as $field) {
+				$surname->{$field} = $result[$field];
 			}
 
-			$address = $pasPatient->address;
-			/*
-			foreach ($connection->createCommand("select * from SILVER.PATIENT_ADDRS where RM_PATIENT_NO = $pasPatient->RM_PATIENT_NO and (DATE_END IS NULL or DATE_END > SYSDATE) order by DECODE(ADDR_TYPE, \'H\', 1, \'T\', 2, \'C\', 3, 4), DATE_START DESC")->queryAll() as $row) {
-				$address = PAS_PatientAddress::model();
-				foreach ($row as $key => $value) {
-					$address->{$key} = $value;
-				}
-				break;
-			}
-			*/
-
-			if (isset($address)) {
+			if ($address = $pasPatient->address) {
 				if ($patient = $this->updatePatient($pasPatient, $address, $result, $surname)) {
 					$patients[] = $patient;
 					$ids[] = $patient->hos_num;
@@ -136,9 +203,47 @@ class PatientService
 			}
 		}
 
+		switch ($_GET['sort_by']) {
+			case 0:
+				// hos_num
+				$sort_by = "hos_num";
+				break;
+			case 1:
+				// title
+				$sort_by = "title";
+				break;
+			case 2:
+				// first_name
+				$sort_by = "first_name";
+				break;
+			case 3:
+				// last_name
+				$sort_by = "last_name";
+				break;
+			case 4:
+				// date of birth
+				$sort_by = "dob";
+				break;
+			case 5:
+				// gender
+				$sort_by = "gender";
+				break;
+			case 6:
+				// nhs_num
+				$sort_by = "nhs_num";
+				break;
+		}
+
 		// collect all the patients we just created
 		$criteria = new CDbCriteria;
 		$criteria->addInCondition('hos_num', $ids);
+		$criteria->order = "$sort_by $sort_dir";
+
+		if (count($ids) == 0 && $this->num_results == 1) {
+			// Patient likely has no address in pas
+			$this->num_results = 0;
+			$this->no_address = true;
+		}
 
 		return $criteria;
 	}
@@ -190,8 +295,6 @@ class PatientService
 	protected function updatePatient($patientData, $addressData, $result, $surname) {
 		$hosNum = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
 
-		if (!ctype_digit($hosNum)) return false;
-
 		// Supress auto PAS update
 		$patient = Patient::model()->noPas()->findByPk($patientData->RM_PATIENT_NO);
 
@@ -206,11 +309,6 @@ class PatientService
 			}
 		}
 
-		$nhsNumber = PAS_PatientNumber::model()->findByAttributes(array(
-			'RM_PATIENT_NO' => $patientData->RM_PATIENT_NO,
-			'NUM_ID_TYPE' => 'NHS'
-		));
-
 		// At this point we should check that the patient hasn't been created in parallel by another thread
 		// (because PAS queries are occassionally extremely slow
 		if (!Patient::Model()->findByPk($patientData->RM_PATIENT_NO)) {
@@ -221,6 +319,8 @@ class PatientService
 			$patient->last_name = $surname->SURNAME_ID;
 			$patient->dob = $result['DATE_OF_BIRTH'];
 			$patient->gender = $patientData->SEX;
+			$patient->nhs_num = $result['NHS_NUMBER'];
+
 			if ($addressData->TEL_NO != 'NONE') {
 				$patient->primary_phone = $addressData->TEL_NO;
 			}
@@ -232,10 +332,6 @@ class PatientService
 
 			$patient->address_id = $address->id;
 			$patient->hos_num = $hosNum;
-
-			if ($nhsNumber) {
-				$patient->nhs_num = $nhsNumber->NUMBER_ID;
-			}
 
 			if (!$patient->save()) {
 				throw new SystemException('Unable to update patient: '.print_r($patient->getErrors(),true));
