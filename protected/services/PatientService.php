@@ -200,9 +200,9 @@ class PatientService
 				if ($patient = $this->updatePatient($pasPatient, $address, $result, $surname)) {
 					$patients[] = $patient;
 					$ids[] = $patient->hos_num;
-				} else {
-					$patients_with_no_address++;
 				}
+			} else {
+				$patients_with_no_address++;
 			}
 		}
 
