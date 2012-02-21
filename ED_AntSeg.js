@@ -731,7 +731,7 @@ ED.PostSubcapCataract.prototype.draw = function(_point)
 	ctx.lineWidth = 4;
     
     // create pattern
-    var ptrn = ctx.createPattern(this.drawing.imageArray['pscPattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['PSCPattern'],'repeat');
     ctx.fillStyle = ptrn;
     
 	ctx.strokeStyle = "lightgray";
@@ -1822,7 +1822,7 @@ ED.Fuchs.prototype.draw = function(_point)
 	ctx.closePath();
     
     // Create fill pattern
-    var ptrn = ctx.createPattern(this.drawing.imageArray['fuchsPattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['FuchsPattern'],'repeat');
     ctx.fillStyle = ptrn;
     
     // Transparent stroke

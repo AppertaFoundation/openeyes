@@ -463,9 +463,9 @@ ED.Gonioscopy.prototype.draw = function(_point)
         // Pattern
         if (this.apexX < -440)
         {
-            if (this.apexY < -440) ptrn = ctx.createPattern(this.drawing.imageArray['meshworkPatternLight'],'repeat');
-            else if (this.apexY < -420) ptrn = ctx.createPattern(this.drawing.imageArray['meshworkPatternMedium'],'repeat');
-            else ptrn = ctx.createPattern(this.drawing.imageArray['meshworkPatternHeavy'],'repeat');
+            if (this.apexY < -440) ptrn = ctx.createPattern(this.drawing.imageArray['MeshworkPatternLight'],'repeat');
+            else if (this.apexY < -420) ptrn = ctx.createPattern(this.drawing.imageArray['MeshworkPatternMedium'],'repeat');
+            else ptrn = ctx.createPattern(this.drawing.imageArray['MeshworkPatternHeavy'],'repeat');
             ctx.fillStyle = ptrn;
         }
         // Uniform
@@ -839,7 +839,7 @@ ED.AngleNV.prototype.draw = function(_point)
 	ctx.closePath();
     
     // create pattern
-    var ptrn = ctx.createPattern(this.drawing.imageArray['newVesselPattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['NewVesselPattern'],'repeat');
     ctx.fillStyle = ptrn;
 	ctx.strokeStyle = "rgba(255, 255, 255, 0)";
 	
@@ -1687,7 +1687,7 @@ ED.OpticCup.prototype.draw = function(_point)
     
 	// Set line attributes
 	ctx.lineWidth = 2;
-    var ptrn = ctx.createPattern(this.drawing.imageArray['cribriformPattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['CribriformPattern'],'repeat');
     ctx.fillStyle = ptrn;
 	ctx.strokeStyle = "gray";
 	

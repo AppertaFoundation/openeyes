@@ -1804,7 +1804,7 @@ ED.Lattice.prototype.draw = function(_point)
 	ctx.lineWidth = 4;
 
     // create pattern
-    var ptrn = ctx.createPattern(this.drawing.imageArray['latticePattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['LatticePattern'],'repeat');
     ctx.fillStyle = ptrn;
 
 	ctx.strokeStyle = "lightgray";
@@ -1955,7 +1955,7 @@ ED.Cryo.prototype.draw = function(_point)
 	
 	// Set line attributes
 	ctx.lineWidth = 4;
-    var ptrn = ctx.createPattern(this.drawing.imageArray['cryoPattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['CryoPattern'],'repeat');
     ctx.fillStyle = ptrn;
 	ctx.strokeStyle = "rgba(80, 40, 0, 1)";
 	
@@ -2097,7 +2097,7 @@ ED.LaserCircle.prototype.draw = function(_point)
 	{
         // Set line attributes
         ctx.lineWidth = 4;
-        var ptrn = ctx.createPattern(this.drawing.imageArray['laserPattern'],'repeat');
+        var ptrn = ctx.createPattern(this.drawing.imageArray['LaserPattern'],'repeat');
         ctx.fillStyle = ptrn;
         ctx.strokeStyle = "rgba(80, 40, 0, 1)";
         
@@ -2262,7 +2262,7 @@ ED.AntPVR.prototype.draw = function(_point)
 	
 	// Set line attributes
 	ctx.lineWidth = 4;	
-    var ptrn = ctx.createPattern(this.drawing.imageArray['antPVRPattern'],'repeat');
+    var ptrn = ctx.createPattern(this.drawing.imageArray['AntPVRPattern'],'repeat');
     ctx.fillStyle = ptrn;
 	ctx.strokeStyle = "gray";
 	
