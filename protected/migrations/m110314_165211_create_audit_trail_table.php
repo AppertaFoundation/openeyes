@@ -3,6 +3,7 @@
 class m110314_165211_create_audit_trail_table extends CDbMigration {
 
 	public function up() {
+		$this->dropTable('tbl_audit_trail'); 
 		$this->createTable('tbl_audit_trail',
 			array(
 				'id' => 'pk',
