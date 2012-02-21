@@ -184,6 +184,7 @@ class PatientService
 
 		$patients = array();
 		$ids = array();
+		$patients_with_no_address = 0;
 
 		foreach ($results as $result) {
 			$pasPatient = PAS_Patient::Model();
@@ -199,6 +200,8 @@ class PatientService
 				if ($patient = $this->updatePatient($pasPatient, $address, $result, $surname)) {
 					$patients[] = $patient;
 					$ids[] = $patient->hos_num;
+				} else {
+					$patients_with_no_address++;
 				}
 			}
 		}
@@ -239,9 +242,8 @@ class PatientService
 		$criteria->addInCondition('hos_num', $ids);
 		$criteria->order = "$sort_by $sort_dir";
 
-		if (count($ids) == 0 && $this->num_results == 1) {
-			// Patient likely has no address in pas
-			$this->num_results = 0;
+		if ($patients_with_no_address >0) {
+			$this->num_results -= $patients_with_no_address;
 			$this->no_address = true;
 		}
 
