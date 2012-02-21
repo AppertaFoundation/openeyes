@@ -239,6 +239,12 @@ class PatientService
 		$criteria->addInCondition('hos_num', $ids);
 		$criteria->order = "$sort_by $sort_dir";
 
+		if (count($ids) == 0 && $this->num_results == 1) {
+			// Patient likely has no address in pas
+			$this->num_results = 0;
+			$this->no_address = true;
+		}
+
 		return $criteria;
 	}
 

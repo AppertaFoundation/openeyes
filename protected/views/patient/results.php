@@ -55,13 +55,13 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							<table class="items">
 								<thead>
 									<tr>
-										<th id="patient-grid_c0"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/0/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Hospital Number</a></th>
-										<th id="patient-grid_c1"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/1/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Title</a></th>
-										<th id="patient-grid_c2"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/2/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">First name</a></th>
-										<th id="patient-grid_c3"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/3/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Last name</a></th>
-										<th id="patient-grid_c4"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/4/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Date of birth</a></th>
-										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/5/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Gender</a></th>
-										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/6/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">NHS number</a></th>
+										<th id="patient-grid_c0"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/0/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Hospital Number</a></th>
+										<th id="patient-grid_c1"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/1/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Title</a></th>
+										<th id="patient-grid_c2"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/2/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">First name</a></th>
+										<th id="patient-grid_c3"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/3/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Last name</a></th>
+										<th id="patient-grid_c4"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/4/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Date of birth</a></th>
+										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/5/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Gender</a></th>
+										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/6/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">NHS number</a></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -96,7 +96,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 										$to = $total_items;
 									}
 									?>
-									<span class="otherPages"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $sort_by?>/<?php echo $sort_dir?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
+									<span class="otherPages"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $sort_by?>/<?php echo $sort_dir?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
 								<?php }?>
 							<?php }?>
 						</div>
@@ -135,6 +135,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							</div>
 						
 							<div class="form_button">
+								<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none; margin-right: 10px;" />
 								<button type="submit" class="classy blue tall" id="refinePatient_details"><span class="button-span button-span-blue">Find patient</span></button>
 							</div>
 							
@@ -148,6 +149,13 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 			<script type="text/javascript">
 				$('#patient-grid .items tr td').click(function() {
 					window.location.href = '/patient/viewhosnum/'+$(this).parent().children(":first").html();
+					return false;
+				});
+				$('#refinePatient_details').click(function() {
+					if ($(this).hasClass('blue')) {
+						disableButtons();
+						return true;
+					}
 					return false;
 				});
 			</script>

@@ -158,11 +158,19 @@ class PatientController extends BaseController
 					$get_hos_num = str_pad($get_hos_num, 7, '0', STR_PAD_LEFT);
 				}
 
-				$_GET['hos_num'] = $get_hos_num;
-				$_GET['sort_by'] = 0;
-				$_GET['sort_dir'] = 0;
-				$_GET['page_num'] = 1;
+				$_GET = array(
+					'hos_num' => $get_hos_num,
+					'nhs_num' => '',
+					'gender' => '',
+					'sort_by' => 0,
+					'sort_dir' => 0,
+					'page_num' => 1,
+					'first_name' => '',
+					'last_name' => ''
+				);
+
 				$this->patientSearch();
+
 				exit;
 			} else {
 				$get_hos_num = '000000';
@@ -177,7 +185,7 @@ class PatientController extends BaseController
 			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
 			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
 
-			header("Location: /patient/results/$get_first_name/$get_last_name/0/0/1");
+			header("Location: /patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1");
 			setcookie('patient-search-minimum-criteria','1',0,'/');
 			exit;
 		}
@@ -257,6 +265,8 @@ class PatientController extends BaseController
 		if ($nr == 0) {
 			if (Yii::app()->params['pas_down']) {
 				header('Location: /patient/no-results-pas');
+			} else if (isset($service) && @$service->no_address) {
+				header('Location: /patient/no-results-address');
 			} else {
 				header('Location: /patient/no-results');
 			}
@@ -284,6 +294,8 @@ class PatientController extends BaseController
 				'total_items' => $nr,
 				'first_name' => $_GET['first_name'],
 				'last_name' => $_GET['last_name'],
+				'nhs_num' => $_GET['nhs_num'],
+				'gender' => $_GET['gender'],
 				'pagen' => (integer)$_GET['page_num'],
 				'sort_by' => (integer)$_GET['sort_by'],
 				'sort_dir' => (integer)$_GET['sort_dir']
