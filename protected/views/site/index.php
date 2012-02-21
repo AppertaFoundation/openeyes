@@ -29,6 +29,10 @@ $this->layout = 'main'; ?>
 		<div id="pas-error" class="alertBox">
 			<h3>Sorry, the PAS is down. Unable to search for patients.</h3>
 		</div>
+	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results-address') {?>
+		<div id="pas-address-error" class="alertBox">
+			<h3>Sorry, the patient has no address defined in PAS and so cannot be loaded.</h3>
+		</div>
 	<?php }else{?>
 		<div id="patient-search-error" class="alertBox" style="display: none;">
 		</div>
