@@ -50,9 +50,9 @@ class TheatreController extends BaseController
 		$this->render('index', array('firm' => $firm));
 	}
 
-	public function actionPrintList()
+	public function actionPrintDiary()
 	{
-		$this->renderPartial('_print_list', array('theatres'=>$this->getTheatres()), false, true);
+		$this->renderPartial('_print_diary', array('theatres'=>$this->getTheatres()), false, true);
 		/*
 		$pdf = new TheatrePDF;
 
@@ -90,6 +90,10 @@ class TheatreController extends BaseController
 
 		$pdf->build();
 		*/
+	}
+
+	public function actionPrintList() {
+		$this->renderPartial('_print_list', array('bookings'=>$this->getBookingList()), false, true);
 	}
 
 	public function actionSearch()
@@ -199,7 +203,7 @@ class TheatreController extends BaseController
 					'procedures' => $procedures['List'],
 					'patientHosNum' => $values['hos_num'],
 					'patientId' => $values['patientId'],
-					'patientName' => '<strong>'.$values['last_name'] . '</strong>, ' . $values['first_name'],
+					'patientName' => $values['last_name'] . ', ' . $values['first_name'],
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
 					'ward' => $values['ward'],
@@ -234,6 +238,30 @@ class TheatreController extends BaseController
 		}
 
 		return $theatres;
+	}
+
+	public function getBookingList() {
+		$from = Helper::convertNHS2MySQL($_POST['date-start']);
+		$to = Helper::convertNHS2MySQL($_POST['date-end']);
+
+		return Yii::app()->db->createCommand()
+			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as specialty')
+			->from('booking b')
+			->join('session s','b.session_id = s.id')
+			->join('sequence se','s.sequence_id = se.id')
+			->join('theatre t','se.theatre_id = t.id')
+			->join('sequence_firm_assignment sfa','sfa.sequence_id = se.id')
+			->join('firm f','f.id = sfa.firm_id')
+			->join('service_specialty_assignment ssa','ssa.id = f.service_specialty_assignment_id')
+			->join('specialty sp','sp.id = ssa.specialty_id')
+			->join('element_operation eo','b.element_operation_id = eo.id')
+			->join('event e','eo.event_id = e.id')
+			->join('episode ep','e.episode_id = ep.id')
+			->join('patient p','ep.patient_id = p.id')
+			->join('ward w','b.ward_id = w.id')
+			->where('t.site_id = :siteId and sp.id = :specialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo', array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to))
+			->order('s.date ASC')
+			->queryAll();
 	}
 
 	public function get_month_num($month) {
