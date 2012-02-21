@@ -30,7 +30,7 @@ mind at any time, including after you have signed the form.</p>
 
 <hr>
 
-<table>
+<table class="borders">
 	<tr>
 		<td>Patient signature</td>
 		<td></td>
@@ -46,7 +46,7 @@ mind at any time, including after you have signed the form.</p>
 <p><strong>A witness should sign below if the patient is unable to sign but has indicated his or her
 consent. Young people/children may also like a parent to sign here (see notes).</strong></p>
 
-<table>
+<table class="borders">
 	<tr>
 		<td>Witness signature</td>
 		<td></td>
@@ -62,7 +62,7 @@ consent. Young people/children may also like a parent to sign here (see notes).<
 <h2>Statement of interpreter <span>(where appropriate)</span></h2>
 <p>I have interpreted the information above to the patient to the best of my ability and in a way
 in which I believe s/he can understand.</p>
-<table>
+<table class="borders">
 	<tr>
 		<td>Interpreter signature</td>
 		<td></td>
@@ -81,7 +81,7 @@ in which I believe s/he can understand.</p>
 is admitted for the procedure, if the patient has signed the form in advance)</span></h2>
 <p>On behalf of the team treating the patient, I have confirmed with the patient that s/he has
 no further questions and wishes the procedure to go ahead.</p>
-<table>
+<table class="borders">
 	<tr>
 		<td>Health professional signature</td>
 		<td></td>

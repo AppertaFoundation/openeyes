@@ -24,7 +24,7 @@
 </table>
 
 <h2>Admission Information</h2>
-<table>
+<table class="borders">
 
 	<tr>
 		<?php $booking = $operation->booking; ?>
@@ -64,7 +64,7 @@
 
 <h2>Admission Details</h2>
 
-<table>
+<table class="borders">
 
 	<tr>
 		<th>Priority:</th>
@@ -133,14 +133,14 @@
 </table>
 
 <h2>Comments</h2>
-	<table>
+	<table class="borders">
 		<tr>
 			<td height="50"><?php echo nl2br(CHtml::encode($operation->comments)); ?></td>
 		</tr>
 	</table>
 
 <h2>Pre-op Assessment Date</h2>
-	<table>
+	<table class="borders">
 		<tr>
 			<td height="50"></td>
 		</tr>
