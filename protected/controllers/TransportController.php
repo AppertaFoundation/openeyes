@@ -136,7 +136,7 @@ class TransportController extends BaseController
 			echo '"'.$booking['hos_num'].'","'.$booking['last_name'].', '.$booking['first_name'].'","'.$booking['session_date'].'","'.$booking['session_time'].'","'.$booking['location'].'","'.$booking['method'].'","'.$booking['firm'].'","'.$booking['specialty'].'","'.$booking['decision_date'].'","'.($booking['urgent'] ? 'Urgent' : 'Routine').'"'."\n";
 		}
 
-		exit;
+		Yii::app()->end();
 	}
 
 	/**

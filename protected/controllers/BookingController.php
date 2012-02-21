@@ -212,7 +212,7 @@ class BookingController extends BaseController
 				}
 
 				$this->redirect(array('patient/episodes','id'=>$patientId, 'event'=>$operation->event->id));
-				exit;
+				Yii::app()->end();
 			}
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;

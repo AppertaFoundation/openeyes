@@ -148,7 +148,7 @@ class PatientController extends BaseController
 			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
 				header('Location: /patient/results/error');
 				setcookie('patient-search-minimum-criteria','1',0,'/');
-				exit;
+				Yii::app()->end();
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
@@ -172,12 +172,12 @@ class PatientController extends BaseController
 
 			header("Location: /patient/results/$get_hos_num/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/$get_dob_day/$get_dob_month/$get_dob_year/1");
 			setcookie('patient-search-minimum-criteria','1',0,'/');
-			exit;
+			Yii::app()->end();
 		}
 
 		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
 			header('Location: /patient/results/error');
-			exit;
+			Yii::app()->end();
 		}
 
 		$model = new Patient;
@@ -206,13 +206,13 @@ class PatientController extends BaseController
 
 		if ($nr == 0) {
 			header('Location: /patient/no-results');
-			exit;
+			Yii::app()->end();
 		}
 
 		if ($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				header('Location: /patient/view/'.$item->id);
-				exit;
+				Yii::app()->end();
 			}
 		}
 

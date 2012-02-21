@@ -33,7 +33,7 @@ class ReferralService
 
 		if (empty($mid['mrn'])) {
 			echo "There are no referrals in the DB. This would cause every referral from PAS to be fetched.\n";
-			exit;
+			Yii::app()->end();
 		}
 		
 		$results = PAS_Referral::model()->findAll('REFNO > ? AND REF_SPEC <> \'OP\'', array($mid['mrn']));

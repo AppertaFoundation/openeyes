@@ -879,7 +879,8 @@ class ElementOperation extends BaseElement
 
 	public function getWaitingListLetterStatus()
 	{
-		echo var_export($this->date_letter_sent,true); exit;
+		echo var_export($this->date_letter_sent,true);
+		Yii::app()->end();
 	}
 
 	public function getLastLetter()
