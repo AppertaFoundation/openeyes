@@ -233,7 +233,7 @@ class BookingService
 			$command = Yii::app()->db->createCommand()
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
-					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric,
+					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,
 					f.name AS firm_name, spec.name AS specialty_name,
 					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
@@ -264,7 +264,7 @@ class BookingService
 			$command = Yii::app()->db->createCommand()
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
-					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric,
+					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,
 					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,

@@ -233,6 +233,7 @@ class TheatreController extends BaseController
 					'consultant' => $values['session_consultant'],
 					'paediatric' => $values['session_paediatric'],
 					'anaesthetist' => $values['session_anaesthetist'],
+					'general_anaesthetic' => $values['session_general_anaesthetic'],
 					'priority' => $values['urgent'] ? 'Urgent' : 'Routine',
 					'status' => $values['status'],
 					'created_user' => $values['cu_fn'].' '.$values['cu_ln'],
@@ -396,6 +397,17 @@ class TheatreController extends BaseController
 
 					if (!empty($session)) {
 						$session->anaesthetist = ($value == 'true' ? 1 : 0);
+						if (!$session->save()) {
+							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
+						}
+					}
+				}
+
+				if (preg_match('/^general_anaesthetic_([0-9]+)$/',$key,$m)) {
+					$session = Session::model()->findByPk($m[1]);
+
+					if (!empty($session)) {
+						$session->general_anaesthetic = ($value == 'true' ? 1 : 0);
 						if (!$session->save()) {
 							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
 						}
@@ -584,6 +596,21 @@ class TheatreController extends BaseController
 			foreach ($_POST['operations'] as $operation_id) {
 				if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
 					if ($operation->anaesthetist_required) {
+						die("1");
+					}
+				} else {
+					throw new SystemException('Operation not found: '.$operation_id);
+				}
+			}
+		}
+		die("0");
+	}
+
+	public function actionRequiresGeneralAnaesthetic() {
+		if (isset($_POST['operations']) && is_array($_POST['operations'])) {
+			foreach ($_POST['operations'] as $operation_id) {
+				if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
+					if ($operation->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL) {
 						die("1");
 					}
 				} else {

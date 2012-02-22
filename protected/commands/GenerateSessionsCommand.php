@@ -122,9 +122,9 @@ class GenerateSessionsCommand extends CConsoleCommand
 			}
 
 			if (!empty($dateList)) {
-				$insert = 'INSERT IGNORE INTO session (sequence_id, date, start_time, end_time, consultant, anaesthetist, paediatric) VALUES ';
+				$insert = 'INSERT IGNORE INTO session (sequence_id, date, start_time, end_time, consultant, anaesthetist, paediatric, general_anaesthetic) VALUES ';
 				foreach ($dateList as $date) {
-					$insert .= "({$sequence->id}, '$date', '{$sequence->start_time}', '{$sequence->end_time}', '{$sequence->consultant}', '{$sequence->anaesthetist}', '{$sequence->paediatric}')";
+					$insert .= "({$sequence->id}, '$date', '{$sequence->start_time}', '{$sequence->end_time}', '{$sequence->consultant}', '{$sequence->anaesthetist}', '{$sequence->paediatric}', '{$sequence->general_anaesthetic}')";
 					if ($date != end($dateList)) {
 						$insert .= ', ';
 					}

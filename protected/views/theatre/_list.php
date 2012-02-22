@@ -85,6 +85,7 @@ if (empty($theatres)) {?>
 								<input type="checkbox" id="consultant_<?php echo $session['sessionId']?>" name="consultant_<?php echo $session['sessionId']?>" value="1"<?php if ($session['consultant']){?> checked="checked"<?php }?> /> Consultant present<br/>
 								<input type="checkbox" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="1"<?php if ($session['paediatric']){?> checked="checked"<?php }?> /> Paediatric<br/>
 								<input type="checkbox" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['anaesthetist']){?> checked="checked"<?php }?> /> Anaesthetist present<br/>
+								<input type="checkbox" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['general_anaesthetic']){?> checked="checked"<?php }?> /> General anaesthetic available<br/>
 								<input type="checkbox" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="1"<?php if ($session['status'] == 0){?> checked="checked"<?php }?> /> Session available<br/>
 							</div>
 						<?php }?>
@@ -250,6 +251,7 @@ if (empty($theatres)) {?>
 				purple_states[tbody_id]["paediatric"] = $('#paediatric_'+tbody_id).is(':checked');
 				purple_states[tbody_id]["anaesthetic"] = $('#anaesthetic_'+tbody_id).is(':checked');
 				purple_states[tbody_id]["available"] = $('#available_'+tbody_id).is(':checked');
+				purple_states[tbody_id]["general_anaesthetic"] = $('#general_anaesthetic_'+tbody_id).is(':checked');
 
 				if ($('#consultant_'+tbody_id).is(':checked')) {
 					$('#consultant_icon_'+tbody_id).show();
@@ -360,6 +362,7 @@ if (empty($theatres)) {?>
 				$('#paediatric_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["paediatric"]);
 				$('#anaesthetic_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["anaesthetic"]);
 				$('#available_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["available"]);
+				$('#general_anaesthetic_'+selected_tbody_id).attr('checked',purple_states[selected_tbody_id]["general_anaesthetic"]);
 			}
 
 			view_mode();
@@ -479,6 +482,33 @@ if (empty($theatres)) {?>
 					if (html == "1") {
 						$('#anaesthetic_'+id).attr('checked',true);
 						alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
+						return false;
+					}
+				}
+			});
+		}
+	});
+
+	$('input[id^="general_anaesthetic_"]').click(function() {
+		var id = $(this).attr('id').match(/[0-9]+/);
+
+		if (!$(this).is(':checked')) {
+			operations = [];
+
+			$('#tbody_'+id).children('tr').map(function() {
+				if ($(this).attr('id').match(/oprow/)) {
+					operations.push($(this).attr('id').match(/[0-9]+/));
+				}
+			});
+
+			$.ajax({
+				type: "POST",
+				data: "operations[]=" + operations.join("&operations[]="),
+				url: "/theatre/requiresgeneralanaesthetic",
+				success: function(html) {
+					if (html == "1") {
+						$('#general_anaesthetic_'+id).attr('checked',true);
+						alert("Sorry, you cannot remove the 'General anaesthetic available' flag from this session because there are one or more patients booked into it who require a general anaesthetic.");
 						return false;
 					}
 				}

@@ -285,6 +285,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			data["anaesthetic_"+id] = $(this).is(':checked');
 		});
 
+		$('input[name^="general_anaesthetic_"]').map(function() {
+			var id = $(this).attr('id').match(/[0-9]+/);
+			data["general_anaesthetic_"+id] = $(this).is(':checked');
+		});
+
 		$('input[name^="available_"]').map(function() {
 			var id = $(this).attr('id').match(/[0-9]+/);
 			data["available_"+id] = $(this).is(':checked');
