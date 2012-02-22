@@ -9,8 +9,13 @@ class m120217_142952_multiple_addresses extends CDbMigration {
 		$this->addColumn('address', 'date_start', 'datetime');
 		$this->addColumn('address', 'date_end', 'datetime');
 		
+		// Disable audit trail for address migration
+		$audit_trail = Yii::app()->params['audit_trail'];
+		Yii::app()->params['audit_trail'] = false;
+		
 		// Migrate existing patient address relationships
-		$patients = Patient::model()->findAll();
+		echo "Migrating patient addresses...";
+		$patients = Patient::model()->noPas()->findAll();
 		foreach($patients as $patient) {
 			$address = Address::model()->findByPk($patient->address_id);
 			if($address) {
@@ -20,10 +25,12 @@ class m120217_142952_multiple_addresses extends CDbMigration {
 				$address->save();
 			}
 		}
+		echo "done.\n";
 		$this->dropForeignKey('patient_address_id_fk', 'patient');
 		$this->dropColumn('patient', 'address_id');
 
 		// Migrate existing contact address relationships
+		echo "Migrating contact addresses...";
 		$contacts = Contact::model()->findAll();
 		foreach($contacts as $contact) {
 			$address = Address::model()->findByPk($contact->address_id);
@@ -34,8 +41,10 @@ class m120217_142952_multiple_addresses extends CDbMigration {
 				$address->save();
 			}
 		}
+		echo "done.\n";
 		$this->dropColumn('contact', 'address_id');
 		
+		Yii::app()->params['audit_trail'] = $audit_trail;
 	}
 
 	public function down() {

@@ -7,7 +7,6 @@
 .project
 nbproject/
 index.php
-cache/
 error/404.php
 error/500.php
 protected/commands/BillCommand.php
