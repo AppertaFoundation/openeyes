@@ -48,6 +48,13 @@ class PAS_PatientGps extends MultiActiveRecord {
 	}
 
 	/**
+	 * @return string primary key for the table
+	 */
+	public function primaryKey() {
+		return 'RM_PATIENT_NO';
+	}
+	
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules() {
