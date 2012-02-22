@@ -174,7 +174,7 @@ class PatientService
 		foreach ($results as $result) {
 			
 			// Add patient to list of IDs
-			$ids[] = $patient->hos_num;
+			$ids[] = $result['RM_PATIENT_NO'];
 			
 		}
 
@@ -211,7 +211,7 @@ class PatientService
 
 		// collect all the patients we just created
 		$criteria = new CDbCriteria;
-		$criteria->addInCondition('hos_num', $ids);
+		$criteria->addInCondition('id', $ids);
 		$criteria->order = "$sort_by $sort_dir";
 
 		if (count($ids) == 0 && $this->num_results == 1) {
@@ -405,7 +405,7 @@ class PatientService
 				foreach($pas_patient->addresses as $pas_address) {
 					
 					// Match an address
-					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
+					//Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
 					$address = Address::model()->find(array(
 						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode",
 						'params' => array(':patient_id' => $this->patient->id, ':postcode' => str_replace(' ','',$pas_address->POSTCODE)),
@@ -429,7 +429,7 @@ class PatientService
 					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND id NOT IN(:matched)",
 					'params' => array(':patient_id' => $this->patient->id, ':matched' => implode(',',$matched_address_ids)),
 				));
-				Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
+				//Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
 								
 			}
 				
@@ -438,14 +438,14 @@ class PatientService
 			if($pas_patient_gp) {
 				// Check that GP is not on our block list
 				if(GpService::is_bad_gp($pas_patient_gp->GP_ID)) {
-					Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
+					//Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
 					$this->patient->gp_id = null;
 				} else {
 					// Check that the GP is in openeyes
 					$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
 					if(!$gp) {
 						// GP not in openeyes, pulling from PAS
-						Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
+						//Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
 						$gp = new Gp();
 						$gp->obj_prof = $pas_patient_gp->GP_ID;
 						$gp_service = new GpService($gp);
@@ -455,21 +455,21 @@ class PatientService
 	
 					// Update/set patient's GP
 					if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
-						Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
+						//Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
 						$this->patient->gp_id = $gp->id;
 					} else {
-						Yii::log('Patient\'s GP has not changed', 'trace');
+						//Yii::log('Patient\'s GP has not changed', 'trace');
 					}
 				}
 			} else {
-				Yii::log('Patient has no GP in PAS', 'info');
+				//Yii::log('Patient has no GP in PAS', 'info');
 			}
 				
 			// Save
 			$this->patient->save();
 				
 		} else {
-			Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
+			//Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
 		}
 	}
 
