@@ -473,10 +473,6 @@ class PatientService
 			}
 				
 			// Save
-			$address->save();
-			if(!$this->patient->address) {
-				$this->patient->address_id = $address->id;
-			}
 			$this->patient->save();
 				
 		} else {
