@@ -9,7 +9,7 @@
 	</tr>
 	<tr>
 		<th>Address</th>
-		<td><?php echo $patient->address->letterhtml ?></td>
+		<td><?php echo $patient->correspondAddress->letterhtml ?></td>
 	</tr>
 </table>	
 <table class="half">

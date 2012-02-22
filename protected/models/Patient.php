@@ -36,8 +36,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $address Home address
- * @property CorrespondAddress $address Correspondence address
+ * @property HomeAddress $homeAddress Home address
+ * @property CorrespondAddress $correspondAddress Correspondence address
  * @property Contact[] $contacts
  * @property Gp $gp
  */
@@ -83,10 +83,18 @@ class Patient extends BaseActiveRecord {
 		return array(
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id'),
-			// TODO: Add date filtering and ordering to allow fallbacks
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'H'"),
-			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'H'"),
-			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'C'"),
+			// Prefer H records for primary address, but fall back to others
+			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'order' => "FIELD(type,'H') DESC"
+			),
+			// Prefer H records for home address, but fall back to others
+			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'order' => "FIELD(type,'H') DESC"
+			),
+			// Prefer C records for correspond address, but fall back to others
+			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'order' => "FIELD(type,'C') DESC"
+			),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id')
 		);
@@ -256,19 +264,6 @@ class Patient extends BaseActiveRecord {
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
-	public function loadGP() {
-		if ($this->gp_id === NULL) {
-			if (Yii::app()->params['use_pas']) {
-				$service = new GpService;
-				$service->GetPatientGp($this->id);
-			} else {
-				return false;
-			}
-		} else {
-			return Gp::model()->noPas()->findByPk($this->gp_id);
-		}
-	}
-	
 	/**
 	 * Supress PAS call after find
 	 */

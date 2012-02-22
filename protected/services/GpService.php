@@ -38,8 +38,7 @@ class GpService {
 	
 	/**
 	 * Get all the GPs from PAS and either insert or update them in the OE db
-	 *
-	 * @param int $pasKey
+	 * @deprecated
 	 */
 	public function populateGps()
 	{
@@ -95,7 +94,13 @@ class GpService {
 		return (in_array($gp_id, Yii::app()->params['bad_gps']));
 	}
 	
-	// Populate the GP for a given patient. $patient_id can also be an array of patient_ids (used by the PopulateGps method above to populate multiple patient GPs at once)
+	/**
+	 * Populate the GP for a given patient. $patient_id can also be an array of patient_ids
+	 * (used by the PopulateGps method above to populate multiple patient GPs at once)
+	 * @param unknown_type $patient_id
+	 * @param unknown_type $verbose
+	 * @deprecated
+	 */
 	public function GetPatientGp($patient_id, $verbose=false) {
 		if (!is_array($patient_id)) {
 			$patient_id = array($patient_id);
@@ -117,7 +122,7 @@ class GpService {
 								$errors[] = "Failed to populate contact for GP $gp->id: ".print_r($this->errors,true);
 							}
 
-							if ($address = Address::model()->findByPk($contact->address_id)) {
+							if ($address = $contact->address) {
 								if (!$this->populateAddress($address, $pasGp)) {
 									$errors[] = "Failed to populate address for GP $gp->id: ".print_r($this->errors,true);
 								}
@@ -179,7 +184,10 @@ class GpService {
 		return $errors;
 	}
 
-	public function populateContact($contact, $pasGp)
+	/**
+	 * @deprecated
+	 */
+	protected function populateContact($contact, $pasGp)
 	{
 		$contact->title = $pasGp['TITLE'];
 		$contact->first_name = $pasGp['FN1'] . ' ' . $pasGp['FN2'];
@@ -194,7 +202,10 @@ class GpService {
 		return true;
 	}
 
-	public function populateAddress($address, $pasGp)
+	/**
+	 * @deprecated
+	 */
+	protected function populateAddress($address, $pasGp, $contact_id = null)
 	{
 		$address->address1 = trim($pasGp['ADD_NAM'] . ' ' . $pasGp['ADD_NUM'] . ' ' . $pasGp['ADD_ST']);
 		$address->address2 =  $pasGp['ADD_DIS'];
@@ -202,6 +213,9 @@ class GpService {
 		$address->county = $pasGp['ADD_CTY'];
 		$address->postcode = $pasGp['PC'];
 		$address->country_id = 1;
+		if($contact_id) {
+			$address->parent_id = $contact_id;
+		}
 
 		if (!$address->save()) {
 			$this->errors = $address->getErrors();
@@ -211,7 +225,10 @@ class GpService {
 		return true;
 	}
 
-	public function populateGp($gp, $pasGp)
+	/**
+	 * @deprecated
+	 */
+	protected function populateGp($gp, $pasGp)
 	{
 		$gp->obj_prof = $pasGp['OBJ_PROF'];
 		$gp->nat_id = $pasGp['NAT_ID'];
@@ -263,14 +280,10 @@ class GpService {
 			$address->country_id = 1;
 
 			// Save
-			$address->save();
-			if(!$contact->address) {
-				$contact->address_id = $address->id;
-			}
 			$contact->save();
-			if(!$this->gp->contact) {
-				$this->gp->contact_id = $contact->id;
-			}
+			$address->parent_id = $contact->id;
+			$address->save();
+			$this->gp->contact_id = $contact->id;
 			$this->gp->save();
 			
 		} else {

@@ -11,7 +11,7 @@
 </div>
 <div class="toAddress"<?php if (isset($size)) {?> style="font-size: <?php echo $size?>"<?php }?>>
 	<?php echo $patient->addressname?>
-	<br /><?php echo $patient->address->letterhtml ?>
+	<br /><?php echo $patient->correspondAddress->letterhtml ?>
 </div>
 <div class="date"<?php if (isset($size)) {?> style="font-size: <?php echo $size?>"<?php }?>>
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>

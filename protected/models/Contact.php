@@ -29,8 +29,8 @@ http://www.openeyes.org.uk   info@openeyes.org.uk
  * @property Consultant $consultant
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $address Home address
- * @property CorrespondAddress $address Correspondence address
+ * @property HomeAddress $homeAddress Home address
+ * @property CorrespondAddress $correspondAddress Correspondence address
  * @property UserContactAssignment $userContactAssignment
  * 
  * The following are pseudo (calculated) fields
@@ -71,10 +71,18 @@ class Contact extends BaseActiveRecord {
 			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
 			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id'),
-			// TODO: Add date filtering and ordering to allow fallbacks
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'H'"),
-			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'H'"),
-			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id', 'on' => "type = 'C'"),
+			// Prefer H records for primary address, but fall back to others
+			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'order' => "FIELD(type,'H') DESC"
+			),
+			// Prefer H records for home address, but fall back to others
+			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'order' => "FIELD(type,'H') DESC"
+			),
+			// Prefer C records for correspond address, but fall back to others
+			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'order' => "FIELD(type,'C') DESC"
+			),
 			// FIXME: Surely this is a has_many (many_many mapping table). If not they what's the point of the mapping table?
 			'userContactAssignment' => array(self::HAS_ONE, 'UserContactAssignment', 'contact_id')
 		);

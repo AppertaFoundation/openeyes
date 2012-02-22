@@ -12,7 +12,7 @@
 <div class="toAddress" style="font-size: 14pt;">
 	<?php $gp = $patient->gp ?>
 	<?php echo $gp->contact->fullname ?>
-	<br /><?php echo $gp->contact->address->letterhtml ?>
+	<br /><?php echo $gp->contact->correspondAddress->letterhtml ?>
 </div>
 <div class="date" style="font-size: 14pt;">
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>
@@ -25,7 +25,7 @@
 		<div>
 			<strong><?php echo $patient->fullname; ?>
 			<br /><?php echo $patient->NHSDate('dob') ?>, <?php echo ($patient->gender == 'M') ? 'Male' : 'Female'; ?>
-			<br /><?php echo $patient->address->letterline ?></strong>
+			<br /><?php echo $patient->correspondAddress->letterline ?></strong>
 		</div>
 		<?php if (!empty($patient->nhs_num)) { ?>
 		<strong>NHS number: <?php echo $patient->nhs_num; } ?></strong>
