@@ -422,7 +422,7 @@ class PatientService
 					if(!$address || in_array($address->id, $matched_address_ids)) {
 						Yii::log("patient address not found, creating", 'trace');
 						$address = new Address;
-						$address->parent_id = $this->patient_id;
+						$address->parent_id = $this->patient->id;
 						$address->parent_class = 'Patient';
 					}
 					
