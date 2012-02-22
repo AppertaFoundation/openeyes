@@ -221,7 +221,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 					'url': '<?php echo Yii::app()->createUrl('theatre/filterWards'); ?>',
 					'success':function(data) {
 						$('#ward-id').html(data);
-						$('#search_button').click();
 					}
 				});
 			}
@@ -409,9 +408,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		setFilter('date-filter','');
 		$('input[type="radio"]').setCheck(0);
 
-		// Perform search
-		$('#search_button').click();
-
 		return false;
 	});
 
@@ -438,9 +434,6 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		setFilter('date-end');
 		setFilter('date-filter','');
 		$('input[type="radio"]').setCheck(0);
-
-		// Perform search
-		$('#search_button').click();
 
 		return false;
 	});
@@ -515,11 +508,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								$('#firm-id').attr('disabled', true);
 								$('#firm-id').html(data);
 							}
-							$('#search_button').click();
 						}
 					});
-				} else {
-					$('#search_button').click();
 				}
 			}
 		});
