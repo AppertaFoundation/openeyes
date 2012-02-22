@@ -139,11 +139,11 @@ class PAS_Patient extends MultiActiveRecord {
 				// Exclude expired and future addresses
 				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" >= SYSDATE) AND ("address"."DATE_START" IS NULL OR "address"."DATE_START" <= SYSDATE)',
 			),
-			'patientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
+			'PatientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
 				// DATE_START is the tiebreaker
 				'order' => 'DATE_FROM DESC',
 				// Exclude expired and future gps
-				'condition' => '("patientGp"."DATE_TO" IS NULL OR "patientGp"."DATE_TO" >= SYSDATE) AND ("patientGp"."DATE_FROM" IS NULL OR "patientGp"."DATE_FROM" <= SYSDATE)',
+				'condition' => '("PatientGp"."DATE_TO" IS NULL OR "PatientGp"."DATE_TO" >= SYSDATE) AND ("PatientGp"."DATE_FROM" IS NULL OR "PatientGp"."DATE_FROM" <= SYSDATE)',
 			),
 		);
 	}

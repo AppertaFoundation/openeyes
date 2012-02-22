@@ -433,7 +433,7 @@ class PatientService
 				
 				// Remove any orphaned addresses (expired?)
 				$orphaned_addresses = Address::model()->deleteAll(array(
-					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND NOT IN(:matched)",
+					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND id NOT IN(:matched)",
 					'params' => array(':patient_id' => $this->patient->id, ':matched' => implode(',',$matched_address_ids)),
 				));
 				Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
