@@ -407,8 +407,8 @@ class PatientService
 					// Match an address
 					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
 					$address = Address::model()->find(array(
-						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND postcode = :postcode",
-						'params' => array(':patient_id' => $this->patient->id, ':postcode' => $pas_address->POSTCODE),
+						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode",
+						'params' => array(':patient_id' => $this->patient->id, ':postcode' => str_replace(' ','',$pas_address->POSTCODE)),
 					));
 					
 					// Check if we have an address (that we haven't already matched)
