@@ -51,7 +51,11 @@
 										<?php echo CHtml::dropDownList('specialty-id', @$_POST['specialty-id'], Specialty::model()->getList(), array('empty'=>'All specialties', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['specialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php if (!@$_POST['specialty-id']) {?>
+											<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty'=>'All firms', 'disabled' => 'disabled'))?>
+										<?php } else {?>
+											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['specialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php }?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('ward-id', @$_POST['ward-id'], $wards, array('empty'=>'All wards', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
@@ -247,98 +251,84 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	}
 
 	$('button[id^="btn_save_"]').die('click').live('click',function() {
-		var data = {}
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			var selected_tbody_id = $(this).attr('id').match(/[0-9]+/);
+			$('#loader2_'+selected_tbody_id).show();
 
-		var ok = true;
+			var data = {}
 
-		$('input[name^="admitTime_"]').map(function() {
-			var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-			var m2 = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+			var ok = true;
 
-			if (!m2) {
-				alert("Please enter a valid admission time, eg 09:30");
-				$(this).select().focus();
-				ok = false;
-				return false;
-			} else {
-				if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
+			$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.session input[name^="admitTime_"]').map(function() {
+				var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+				var m2 = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+
+				if (!m2) {
 					alert("Please enter a valid admission time, eg 09:30");
 					$(this).select().focus();
 					ok = false;
 					return false;
+				} else {
+					if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
+						alert("Please enter a valid admission time, eg 09:30");
+						$(this).select().focus();
+						ok = false;
+						return false;
+					}
+					if (m2[1].length <2) {
+						m2[1] = "0"+m2[1];
+					}
+					$(this).val(m2[1]+":"+m2[2]);
 				}
-				if (m2[1].length <2) {
-					m2[1] = "0"+m2[1];
-				}
-				$(this).val(m2[1]+":"+m2[2]);
-			}
-			data["operation_"+m[2]] = m2[1]+":"+m2[2];
-		});
+				data["operation_"+m[2]] = m2[1]+":"+m2[2];
+			});
 
-		if (!ok) return false;
+			if (!ok) return false;
 
-		$('textarea[name^="comments"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["comments_"+id] = $(this).val();
-		});
+			data["comments_"+selected_tbody_id] = $('#comments'+selected_tbody_id).val();
 
-		$('input[name^="confirm_"]').map(function() {
-			if ($(this).attr('checked')) {
-				var id = $(this).attr('id').match(/[0-9]+/);
-				data["confirm_"+id] = $(this).val();
-			}
-		});
-
-		$('input[name^="consultant_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["consultant_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="paediatric_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["paediatric_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="anaesthetic_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["anaesthetic_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="general_anaesthetic_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["general_anaesthetic_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="available_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["available_"+id] = $(this).is(':checked');
-		});
-
-		$.ajax({
-			'type': 'POST',
-			'data': data,
-			'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
-			'success': function(data) {
-				$('#updated-flash').show();
-
-				// Apply changes to the read-only values in the dom
-				$('input[name^="admitTime_"]').map(function() {
-					var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-					$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
-				});
-				$('textarea[name^="comments"]').map(function() {
+			$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.confirm input[name^="confirm_"]').map(function() {
+				if ($(this).attr('checked')) {
 					var id = $(this).attr('id').match(/[0-9]+/);
-					$('#comments_ro_'+id).html($(this).val());
-				});
+					data["confirm_"+id] = $(this).val();
+				}
+			});
 
-				view_mode();
-				load_table_states();
-				<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
-					load_purple_states();
-				<?php }?>
-				$('div[id^="buttons_"]').hide();
-			}
-		});
+			data["consultant_"+selected_tbody_id] = $('#consultant_'+selected_tbody_id).val();
+			data["paediatric_"+selected_tbody_id] = $('#paediatric_'+selected_tbody_id).val();
+			data["anaesthetic_"+selected_tbody_id] = $('#anaesthetic_'+selected_tbody_id).val();
+			data["general_anaesthetic_"+selected_tbody_id] = $('#general_anaesthetic_'+selected_tbody_id).val();
+			data["available_"+selected_tbody_id] = $('#available_'+selected_tbody_id).val();
+
+			$.ajax({
+				'type': 'POST',
+				'data': data,
+				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
+				'success': function(data) {
+					$('#updated-flash').show();
+
+					// Apply changes to the read-only values in the dom
+					$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.session input[name^="admitTime_"]').map(function() {
+						var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+						$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
+					});
+
+					$('#comments_ro_'+selected_tbody_id).html($('#comments'+selected_tbody_id).val());
+
+					view_mode();
+					load_table_states();
+					<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+						load_purple_states();
+					<?php }?>
+					$('div[id^="buttons_"]').hide();
+					$('#loader2_'+selected_tbody_id).hide();
+					enableButtons();
+				}
+			});
+		}
+
+		return false;
 	});
 
 	function getmonth(i) {
@@ -386,6 +376,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		$('#date-start').val(format_date(today));
 		$('#date-end').val(format_date(today));
 
+		setFilter({'date-filter':'today','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
+
 		return true;
 	});
 
@@ -393,8 +385,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		today = new Date();
 
 		$('#date-start').val(format_date(today));
-
 		$('#date-end').val(format_date(returnDateWithInterval(today, 6)));
+
+		setFilter({'date-filter':'week','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
 		return true;
 	});
@@ -403,8 +396,9 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		today = new Date();
 
 		$('#date-start').val(format_date(today));
-
 		$('#date-end').val(format_date(returnDateWithInterval(today, 29)));
+
+		setFilter({'date-filter':'month','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
 		return true;
 	});
@@ -427,10 +421,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			$('#date-start').val(format_date(returnDateWithIntervalFromString(sd, -7)));
 		}
 
-		setFilter('date-start');
-		setFilter('date-end');
-		setFilter('date-filter','');
-		$('input[type="radio"]').setCheck(0);
+		setFilter({'date-filter':''});
+		$('input[type="radio"]').attr('checked',false);
 
 		return false;
 	});
@@ -454,10 +446,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 7)));
 		}
 
-		setFilter('date-start');
-		setFilter('date-end');
-		setFilter('date-filter','');
-		$('input[type="radio"]').setCheck(0);
+		setFilter({'date-filter':''});
+		$('input[type="radio"]').attr('checked',false);
 
 		return false;
 	});
@@ -507,15 +497,23 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return str.charAt(0).toUpperCase() + str.substr(1);
 	}
 
-	function setFilter(field, value) {
-		if (value == null) {
-			value = $('#'+field).val();
+	function setFilter(values) {
+		var data = '';
+		var load_theatres_and_wards = false;
+
+		for (var i in values) {
+			if (data.length >0) {
+				data += "&";
+			}
+			data += i + "=" + values[i];
+
+			var field = i;
 		}
 
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('theatre/setFilter')?>',
 			'type': 'POST',
-			'data': field+'='+value,
+			'data': data,
 			'success': function(html) {
 				if (field == 'site-id') {
 					loadTheatresAndWards(value);
@@ -540,28 +538,24 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	}
 
 	$('select').change(function() {
-		setFilter($(this).attr('id'));
+		var hash = {};
+		hash[$(this).attr('id')] = $(this).val();
+		setFilter(hash);
 	});
 
 	$('#emergency_list').click(function() {
 		if ($(this).is(':checked')) {
-			setFilter('emergency_list',1);
+			setFilter({'emergency_list':1});
 		} else {
-			setFilter('emergency_list',0);
+			setFilter({'emergency_list':0});
 		}
 	});
 
-	$('input[type="radio"]').click(function() {
-		setFilter('date-filter',$(this).val());
-		setFilter('date-start');
-		setFilter('date-end');
-	});
-
 	$('#date-start').change(function() {
-		setFilter('date-start');
+		setFilter({'date-start':$(this).val()});
 	});
 
 	$('#date-end').change(function() {
-		setFilter('date-end');
+		setFilter({'date-end':$(this).val()});
 	});
 </script>

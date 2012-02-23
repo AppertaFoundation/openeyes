@@ -66,7 +66,7 @@ if (!empty($address)) {
 			<div class="wrapTwo clearfix">
 				<?php if (Yii::app()->params['pas_down']) {?>
 					<div id="pas-error" class="alertBox">
-						<h3>Warning: The PAS is currently down. Patient details are likely to be stale.</h3>
+						Warning: The PAS is currently down. Patient details are likely to be stale.
 					</div>
 				<?php }?>
 

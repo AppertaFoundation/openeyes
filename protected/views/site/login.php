@@ -53,7 +53,8 @@ $this->layout = 'simple';
 			</div>
 
 			<div class="row">
-				<button type="submit" name="yt0" class="classy green tall" tabindex="2"><span class="button-span button-span-blue">Login</span></button>
+				<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 10px; display: none;" />
+				<button id="login_button" type="submit" name="yt0" class="classy blue tall" tabindex="2"><span class="button-span button-span-blue">Login</span></button>
 			</div>
 
 		<?php $this->endWidget(); ?>
@@ -67,4 +68,13 @@ $this->layout = 'simple';
 		} else {
 			$('#LoginForm_password').select().focus();
 		}
+
+		$('#login_button').unbind('click').click(function() {
+			if (!$(this).hasClass('inactive')) {
+				disableButtons();
+				$('img.loader').show();
+				return true;
+			}
+			return false;
+		});
 	</script>

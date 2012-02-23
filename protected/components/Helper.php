@@ -101,4 +101,19 @@ class Helper {
 			return $empty_string;
 		}
 	}
+	
+	/**
+	 * Calculate age from dob
+	 * @param string $dob
+	 */
+	public static function getAge($dob) {
+		$date = date('Ymd', strtotime($dob));
+		$age = date('Y') - substr($date, 0, 4);
+		$birthDate = substr($date, 4, 2) . substr($date, 6, 2);
+		if (date('md') < $birthDate) {
+			$age--; // birthday hasn't happened yet this year
+		}
+		return $age;
+	}
+	
 }
