@@ -166,19 +166,17 @@ class PatientService
 
 		foreach ($results as $result) {
 			
-			// See if the patient is in openeyes
+			// See if the patient is in openeyes, if not then fetch from PAS
 			$this->patient = Patient::findByPk($result['RM_PATIENT_NO']);
 			if(!$this->patient) {
-				$this->patient = Patient::model();
+				$this->patient = new Patient();
 				$this->patient->id = $result['RM_PATIENT_NO'];
+				$this->loadFromPas();
 			}
-			
-			// Refresh patient from PAS
-			$this->loadFromPas();
 			
 			// Check that patient has an address
 			if($this->patient->address) {
-				$ids[] = $patient->id;
+				$ids[] = $this->patient->id;
 			} else {
 				$patients_with_no_address++;
 			}
@@ -237,6 +235,12 @@ class PatientService
 	 * @return Address
 	 */
 	protected function updateAddress($address, $data) {
+
+		$address1 = '';
+		$address2 = '';
+		$city = '';
+		$county = '';
+		$postcode = '';
 
 		$propertyName = empty($data->PROPERTY_NAME) ? '' : trim($data->PROPERTY_NAME);
 		$propertyNumber = empty($data->PROPERTY_NO) ? '' : trim($data->PROPERTY_NO);
