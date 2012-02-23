@@ -79,6 +79,7 @@
 				//array('label'=>'Systemic Disorders', 'url'=>array('/admin/adminCommonSystemicDisorder/index')),
 				// Removed because the typical admin shouldn't be able to alter site_element_types. Surely they are the domain of the sysadmin?
 				//array('label'=>'Site Element Types', 'url'=>array('/admin/adminSiteElementType')),
+				array('label'=>'Episode status','url'=>array('/admin/adminEpisodeStatus/index')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
 				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
