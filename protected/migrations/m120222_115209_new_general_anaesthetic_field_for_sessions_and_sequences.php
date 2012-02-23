@@ -22,8 +22,10 @@ class m120222_115209_new_general_anaesthetic_field_for_sessions_and_sequences ex
 			$sequences[] = $row['id'];
 		}
 
-		$this->update('sequence',array('general_anaesthetic' => 0),'id in ('.implode(',',$sequences).')');
-		$this->update('session',array('general_anaesthetic' => 0),'sequence_id in ('.implode(',',$sequences).')');
+		if (!empty($sequences)) {
+			$this->update('sequence',array('general_anaesthetic' => 0),'id in ('.implode(',',$sequences).')');
+			$this->update('session',array('general_anaesthetic' => 0),'sequence_id in ('.implode(',',$sequences).')');
+		}
 	}
 
 	public function down()
