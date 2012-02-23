@@ -167,7 +167,7 @@ class PatientService
 		foreach ($results as $result) {
 			
 			// See if the patient is in openeyes, if not then fetch from PAS
-			$this->patient = Patient::findByPk($result['RM_PATIENT_NO']);
+			$this->patient = Patient::model()->findByPk($result['RM_PATIENT_NO']);
 			if(!$this->patient) {
 				$this->patient = new Patient();
 				$this->patient->id = $result['RM_PATIENT_NO'];
