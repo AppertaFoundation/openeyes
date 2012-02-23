@@ -48,10 +48,10 @@ class PAS_PatientGps extends MultiActiveRecord {
 	}
 
 	/**
-	 * @return string primary key for the table
+	 * @return array primary key for the table
 	 */
 	public function primaryKey() {
-		return 'RM_PATIENT_NO';
+		return array('RM_PATIENT_NO','DATE_FROM','GP_ID');
 	}
 	
 	/**

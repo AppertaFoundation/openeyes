@@ -76,10 +76,10 @@ class PAS_Gp extends MultiActiveRecord {
 	}
 
 	/**
-	 * @return string primary key for the table
+	 * @return array primary key for the table
 	 */
 	public function primaryKey() {
-		return 'OBJ_PROF';
+		return array('OBJ_TYPE','OBJ_PROF','DATE_FR');
 	}
 
 	/**

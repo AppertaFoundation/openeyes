@@ -60,7 +60,7 @@ class PAS_PatientSurname extends MultiActiveRecord
 	 */
 	public function primaryKey()
 	{
-		return 'RM_PATIENT_NO';
+		return array('RM_PATIENT_NO','SURNAME_TYPE','SURNAME_ID');
 	}
 
 	/**

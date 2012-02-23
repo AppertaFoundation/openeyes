@@ -60,10 +60,10 @@ class PAS_PatientAddress extends MultiActiveRecord {
 	}
 
 	/**
-	 * @return string primary key for the table
+	 * @return array primary key for the table
 	 */
 	public function primaryKey() {
-		return 'RM_PATIENT_NO';
+		return array('RM_PATIENT_NO','ADDR_TYPE','DATE_START','POSTCODE');
 	}
 
 	/**
