@@ -178,7 +178,7 @@ class PatientService
 			}
 			
 		}
-Yii::log(implode(',',$ids),'trace');
+		
 		switch ($_GET['sort_by']) {
 			case 0:
 				// hos_num
