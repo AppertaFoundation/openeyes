@@ -166,13 +166,19 @@ class PatientService
 
 		foreach ($results as $result) {
 			
-			// Add patient to list of IDs
-
+			// See if the patient is in openeyes
+			$this->patient = Patient::findByPk($result['RM_PATIENT_NO']);
+			if(!$this->patient) {
+				$this->patient = Patient::model();
+				$this->patient->id = $result['RM_PATIENT_NO'];
+			}
+			
+			// Refresh patient from PAS
+			$this->loadFromPas();
+			
 			// Check that patient has an address
-			$pas_patient = PAS_Patient::model();
-			$pas_patient->RM_PATIENT_NO = $result['RM_PATIENT_NO'];
-			if($pas_patient->address) {
-				$ids[] = $result['RM_PATIENT_NO'];
+			if($this->patient->address) {
+				$ids[] = $patient->id;
 			} else {
 				$patients_with_no_address++;
 			}
