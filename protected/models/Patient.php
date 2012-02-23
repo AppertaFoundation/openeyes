@@ -85,15 +85,17 @@ class Patient extends BaseActiveRecord {
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id'),
 			// Prefer H records for primary address, but fall back to others
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(type,'H') DESC"
+				'order' => "FIELD(type,'H') DESC, date_start DESC"
 			),
 			// Prefer H records for home address, but fall back to others
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(type,'H') DESC"
+				'order' => "FIELD(type,'H') DESC, date_start DESC"
 			),
 			// Prefer C records for correspond address, but fall back to others
+			// FIXME: PAS currently stating that only Home addresses are valid
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(type,'C') DESC"
+				//'order' => "FIELD(type,'C') DESC, date_start DESC"
+				'order' => "FIELD(type,'H') DESC, date_start DESC"
 			),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id')
