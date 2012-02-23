@@ -170,11 +170,19 @@ class PatientService
 		$results = $command->queryAll();
 
 		$ids = array();
+		$patients_with_no_address = 0;
 
 		foreach ($results as $result) {
 			
 			// Add patient to list of IDs
 			$ids[] = $result['RM_PATIENT_NO'];
+
+			// Check that patient has an address
+			$pas_patient = new PAS_Patient();
+			$pas_patient->RM_PATIENT_NO =  $result['RM_PATIENT_NO'];
+			if(!$pas_patient->address) {
+				$patients_with_no_address++;
+			}
 			
 		}
 
@@ -214,9 +222,8 @@ class PatientService
 		$criteria->addInCondition('id', $ids);
 		$criteria->order = "$sort_by $sort_dir";
 
-		if (count($ids) == 0 && $this->num_results == 1) {
-			// Patient likely has no address in pas
-			$this->num_results = 0;
+		if ($patients_with_no_address > 0) {
+			$this->num_results -= $patients_with_no_address;
 			$this->no_address = true;
 		}
 

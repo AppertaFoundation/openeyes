@@ -28,7 +28,7 @@
 	<?php } ?>
 </p>
 
-<table>
+<table class="admission_letter">
 	<tr>
 		<th>Date of admission:</th>
 		<td><?php echo date('jS F Y', strtotime($booking->session->date)) ?></td>
@@ -121,10 +121,12 @@
 	<?php } ?>
 </p>
 
-<table>
+<table class="admission_letter">
 	<tr>
 		<th>Date of admission:</th>
 		<td><?php echo date('jS F Y', strtotime($booking->session->date)) ?></td>
+	</tr>
+	<tr>
 		<th>Time to arrive:</th>
 		<td><?php echo date('g:ia',strtotime($booking->admission_time)) ?></td>
 	</tr>
@@ -137,16 +139,24 @@
 			<?php echo CHtml::encode($booking->ward->name); ?>
 		<?php } ?>
 		</td>
+	</tr>
+	<tr>
 		<th>Location:</th>
 		<td><?php echo CHtml::encode($site->name); ?></td>
 	</tr>
 	<tr>
 		<th>Consultant:</th>
 		<td><?php echo $consultantName ?></td>
+	</tr>
+	<tr>
 		<th>Speciality:</th>
 		<td><?php echo $specialty->name ?></td>
 	</tr>
 </table>
+
+<p>
+	Please confirm this is convenient by calling <?php echo $refuseContact?> within 5 working days.
+</p>
 
 <?php if(!$operation->overnight_stay) { ?>
 <p>
@@ -154,38 +164,16 @@
 </p>
 <?php } ?>
 
-<?php if($specialty->id != 13) { // Not Refractive laser ?>
 <p>
-	<strong>All admissions require a Pre-Operative Assessment which you must attend. Non-attendance will cause
-	a delay to your surgery.</strong>
-</p>
-<?php } ?>
-
-<p>
-	<strong>It is important that you let us know immediately if you wish to cancel or rearrange this admission
-	date.  
-	<?php if ($site->id == 1 && $specialty->id != 13) {	// City Road and not Refractive ?>
-	You can do this by calling <?php echo $refuseContact ?> within 5 working days.
-	<?php } else { ?>
-	Please let us know by return of post, or if necessary, telephone <?php echo $refuseContact ?>.
-	<?php } ?>
-	</strong>
+	<strong>All admissions require a Pre-Operative Assessment which you must attend. Non-attendance will cause a delay or possible <span class="red">cancellation</span> to your surgery.</strong>
 </p>
 
 <p>
-	<?php if (!$healthContact) {	// City Road and not Refractive ?>
-	If you are unwell the day before admission, please contact us to ensure that it is still safe and
-	appropriate to do the procedure.
-	<?php } else { ?>
-	If there has been any change in your general health, such as a cough or cold, any infection disease, or any
-	other condition which might affect your fitness for operation, please telephone <?php echo $healthContact ?>
-	for advice.
-	<?php } ?>
+	If you are unwell the day before admission, please contact us to ensure that it is still safe and appropriate to do the procedure. If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor. 
 </p>
 
-<p>
-	If you do not speak English, please arrange for an English speaking adult to stay with you until you reach
-	the ward and have been seen by a Doctor.
+<p class="red">
+	You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/fried/carer who is collecting you to make sure they bring some money to cover the prescription.
 </p>
 
 <p>
@@ -197,11 +185,9 @@
 	<li>Please go directly to <?php if ($specialty->id == 13) {
 		// Refractive laser ?> Refractive waiting room - Cumberledge Wing 4th
 		Floor<?php } else { ?><?php echo CHtml::encode($booking->ward->name) ?> ward<?php } ?></li>
-	<li>Please bring with you any medication you are using</li>
 	<li>You must not drive yourself to or from hospital</li>
-	<li>We would like to request that only 1 person should accompany you in
-		order to ensure that adequate seating area is available for patients
-		coming for surgery</li>
+	<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating area is available for patients coming for surgery</li>
+	<li class="red">Check whether you have to pay or are exempt from prescription charges. If you are exempt, you will need to provide proof that you are exempt every time you collect a prescription. The prescription charge is £7.40 per item.</li>
 </ul>
 
 <?php } // End Adult ?>

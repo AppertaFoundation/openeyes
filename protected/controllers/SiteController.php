@@ -171,6 +171,11 @@ class SiteController extends BaseController
 	{
 		$action = $this->getAction();
 		if ($action->getId() == 'index' && !empty($_POST['selected_firm_id'])) {
+			$user = Yii::app()->session['user'];
+			$user = User::Model()->findByPk(Yii::app()->session['user']->id);
+			$user->last_firm_id = intval($_POST['selected_firm_id']);
+			$user->save(false);
+
 			$session = Yii::app()->session;
 
 			$firms = $session['firms'];
