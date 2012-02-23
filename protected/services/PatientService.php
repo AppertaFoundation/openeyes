@@ -87,8 +87,15 @@ class PatientService
 		if (!empty($data['nhs_num'])) {
 			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
 		}
-
-		$sql = "SELECT COUNT(*) as count FROM SILVER.PATIENTS p, SILVER.SURNAME_IDS s, SILVER.NUMBER_IDS n WHERE s.rm_patient_no = p.rm_patient_no AND s.surname_type = 'NO' AND ( n.rm_patient_no = p.rm_patient_no $whereSql) AND LENGTH(TRIM(TRANSLATE(n.num_id_type, '0123456789', ' '))) is null";
+		
+		$sql = "
+			SELECT COUNT(*) as count
+			FROM SILVER.PATIENTS p,
+			JOIN SILVER.SURNAME_IDS s ON s.rm_patient_no = p.rm_patient_no
+			JOIN SILVER.NUMBER_IDS n ON n.rm_patient_no = p.rm_patient_no
+			WHERE s.surname_type = 'NO' $whereSql
+			AND LENGTH(TRIM(TRANSLATE(n.num_id_type, '0123456789', ' '))) is null
+		";
 		$connection = Yii::app()->db_pas;
 		$command = $connection->createCommand($sql);
 		foreach ($command->queryAll() as $results) $this->num_results = $results['COUNT'];
@@ -135,20 +142,6 @@ class PatientService
 				( select a.*, rownum rnum from (
 					SELECT
 						p.RM_PATIENT_NO,
-						p.SEX,
-						n.NUM_ID_TYPE,
-						n.NUMBER_ID,
-						p.DATE_OF_BIRTH,
-						s.SURNAME_ID,
-						s.NAME1,
-						s.NAME2,
-						s.NAME3,
-						s.TITLE,
-						s.SURNAME_ID_SOUNDEX,
-						s.NAME1_SOUNDEX,
-						s.NAME2_SOUNDEX,
-						s.HDDR_GROUP,
-						n2.NUMBER_ID as NHS_NUMBER
 					FROM SILVER.PATIENTS p
 					JOIN SILVER.NUMBER_IDS n ON n.rm_patient_no = p.rm_patient_no
 					JOIN SILVER.SURNAME_IDS s ON s.rm_patient_no = p.rm_patient_no
@@ -175,12 +168,13 @@ class PatientService
 		foreach ($results as $result) {
 			
 			// Add patient to list of IDs
-			$ids[] = $result['RM_PATIENT_NO'];
 
 			// Check that patient has an address
-			$pas_patient = new PAS_Patient();
-			$pas_patient->RM_PATIENT_NO =  $result['RM_PATIENT_NO'];
-			if(!$pas_patient->address) {
+			$pas_patient = PAS_Patient::model();
+			$pas_patient->RM_PATIENT_NO = $result['RM_PATIENT_NO'];
+			if($pas_patient->address) {
+				$ids[] = $result['RM_PATIENT_NO'];
+			} else {
 				$patients_with_no_address++;
 			}
 			
