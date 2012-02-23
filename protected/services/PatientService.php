@@ -90,7 +90,7 @@ class PatientService
 		
 		$sql = "
 			SELECT COUNT(*) as count
-			FROM SILVER.PATIENTS p,
+			FROM SILVER.PATIENTS p
 			JOIN SILVER.SURNAME_IDS s ON s.rm_patient_no = p.rm_patient_no
 			JOIN SILVER.NUMBER_IDS n ON n.rm_patient_no = p.rm_patient_no
 			WHERE s.surname_type = 'NO' $whereSql
@@ -140,8 +140,7 @@ class PatientService
 		$sql = "
 			SELECT * from
 				( select a.*, rownum rnum from (
-					SELECT
-						p.RM_PATIENT_NO,
+					SELECT p.RM_PATIENT_NO
 					FROM SILVER.PATIENTS p
 					JOIN SILVER.NUMBER_IDS n ON n.rm_patient_no = p.rm_patient_no
 					JOIN SILVER.SURNAME_IDS s ON s.rm_patient_no = p.rm_patient_no
@@ -179,7 +178,7 @@ class PatientService
 			}
 			
 		}
-
+Yii::log(implode(',',$ids),'trace');
 		switch ($_GET['sort_by']) {
 			case 0:
 				// hos_num
