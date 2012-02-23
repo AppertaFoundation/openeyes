@@ -750,7 +750,7 @@ ED.PointInLine.prototype.draw = function(_point)
 	// Boundary path
 	ctx.beginPath();
 	
-	// Round hole
+	// Point
 	ctx.arc(0,0,8,0,Math.PI*2,true);
     
 	// Close path
