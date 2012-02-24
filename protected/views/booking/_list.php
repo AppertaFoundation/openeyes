@@ -187,7 +187,11 @@ if (!$reschedule) {
 					}
 
 					$('div.alertBox ul').html(html);
-					$('div.alertBox').show();
+					$('div.alertBox').map(function() {
+						if (!$(this).hasClass('sessionWarning')) {
+							$(this).show();
+						}
+					});
 					return false;
 				}
 
