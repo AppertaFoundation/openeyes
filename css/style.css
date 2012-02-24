@@ -312,16 +312,13 @@ table tr:last-child { border-bottom: none; }
 .grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;   }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
 /* change properties for closed rows */
-.grid-view table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+.grid-view table .closed > td {  padding:6px 10px; border-right-color: #bbb; color: #666; }
 
-/* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
-.grid-view-waitinglist table { width:100%; }
-.grid-view-waitinglist table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:16px; padding:6px; border-right:1px solid #bbb;   }
-.grid-view-waitinglist table th:last-child { border-right: none; }
-.grid-view-waitinglist table td { text-align: left; padding:6px; border-right:1px solid #ccc; border-bottom: 1px solid #ccc;}
-.grid-view-waitinglist table th:last-child, .grid-view-waitinglist td:last-child { border-right: none; }
-/* change properties for closed rows */
-.grid-view-waitinglist table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
+/* TABLE KEY for <tfoot> */
+tfoot td #key .container { display:inline-block; margin:0 8px 0 5px; }
+tfoot td #key .container .color_box { display:inline-block; height:10px; width:10px; background:#666; }
+tfoot td #key .container .label { display:inline-block; margin-left:4px; }
+
 
 /* hack to help with in page CSS for add Operation */
 table#procedure_list tbody tr { background-color: #edf4f9; }
@@ -619,9 +616,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation table tbody td { width:140px; }
 #operation table tbody td.invalid { color:#999; width:auto;  }
 #operation table tfoot td { padding:10px 0; background:#dae6f1; text-align: center; }
-#operation table tfoot td .container { display:inline-block; margin:0 8px 0 5px; }
-#operation table tfoot td .container .color_box { display:inline-block; height:10px; width:10px; background:#666; }
-#operation table tfoot td .container .label { display:inline-block; margin-left:4px; }
+
 /* COLOURs */
 #operation table tbody td.available { background:#69bd51; font-size:16px; }
 #operation table tbody td.limited { background:#8dbd7f; font-size:16px; }
@@ -635,14 +630,15 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation td.available:hover, #operation td.limited:hover, #operation td.full:hover { background-color:#3665ff; color:#fff; cursor:pointer; }
 #operation td.inthepast:hover { background-color:#C2C2C2; color: #fff; cursor:pointer; }
 
-/* KEY */
-#operation #day 			.color_box { background:#666; }
-#operation #available 		.color_box { background:#69bd51; }
-#operation #limited 		.color_box { background:#8dbd7f; }
-#operation #full 			.color_box { background:#427633; }
-#operation #closed 			.color_box { background:#828282; }
-#operation #selected_date 	.color_box { background:#3665ff; }
-#operation #outside_rtt 	.color_box { background:transparent url(../img/_elements/icons/RTT-warning_tiny.png) top left no-repeat; }
+/* KEY for scheduling session day*/
+#operation #key #day 			.color_box { background:#666; }
+#operation #key #available 		.color_box { background:#69bd51; }
+#operation #key #limited 		.color_box { background:#8dbd7f; }
+#operation #key #full 			.color_box { background:#427633; }
+#operation #key #closed 		.color_box { background:#828282; }
+#operation #key #selected_date 	.color_box { background:#3665ff; }
+#operation #key #outside_rtt 	.color_box { background:transparent url(../img/_elements/icons/RTT-warning_tiny.png) top left no-repeat; }
+
 /* theatres */
 #theatres { margin-top:10px; }
 #theatres > h4 { font-weight: bold; }
@@ -709,7 +705,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #event_display .colorband.category_clinical { background:#fdcc56;}
 #event_display .colorband.category_drugs { background:#acad47;}
 
-
 #event_display h3.withEventIcon { display:inline-block; height:40px; padding:17px 0 0 50px; margin-left:5px; }
 
 /* ====== THEATRE MANAGEMENT & WAITING LIST ====== */
@@ -751,9 +746,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions .timeLeft { float: left; font-size: 14px; }
 .theatre-sessions .metadata { float: right; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
 .theatre-sessions .metadata div { opacity: 1; }
-#waitingList table td.letterStatus > img {margin-right:3px; }
-#waitingList table td.letterStatus { width: 92px; }
-
 
 /* SESSION COMMENTS */
 .sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px; margin-bottom: 15px; position:relative; min-height: 50px; }
@@ -762,13 +754,29 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .sessionComments > .modifyComments > .edit { float: right; }
 .sessionComments textarea { width: 200px; }
 
-/* waiting list row colour coding */
-.waitinglistPurple {background:#c9c;}
-.waitinglistGreen {background:#8FBC8F;}
-.waitinglistOrange {background:#f93;}
-.waitinglistRed {background:#e53737;}
-.waitinglistWhite {background:#eee;}
-.waitinglistGrey {background:#999;}
+/* ====== WAITING LIST ====== */
+/* modified GRID VIEW ... */
+.grid-view table.waiting-list th { min-width:20px; }
+.grid-view table.waiting-list td { padding:5px 10px 6px 8px;  }
+/* coloured send flags  */
+table.waiting-list tr.sendflag-invitation > td:first-child { background-color:none; }
+table.waiting-list tr.sendflag-reminder > td:first-child { background-color:#b8eaa6; }
+table.waiting-list tr.sendflag-GPremoval > td:first-child { background-color:#f7bf8d; }
+table.waiting-list tr.sendflag-remove > td:first-child { background-color:#f08a6f; }
+/* change default hover */
+table.waiting-list .odd:hover, table.waiting-list .even:hover { background-color: #ffd; border-bottom-color: #aaa; }
+/* NO GP flag */
+table.waiting-list td > span.no-GP { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted; }
+/* letters send icons */
+table.waiting-list td.letterStatus > img {margin-right:3px; }
+table.waiting-list td.letterStatus { width: 92px; }
+
+/* KEY  - for Waiting List */
+table.waiting-list #key { margin-top:15px; }
+table.waiting-list #key #sendflag-reminder 		.color_box { background:#b8eaa6; }
+table.waiting-list #key #sendflag-GPremoval		.color_box { background:#f7bf8d; }
+table.waiting-list #key #sendflag-remove 		.color_box { background:#f08a6f; }
+
 
 /* ------------------------ PRINT STUFF */
 
