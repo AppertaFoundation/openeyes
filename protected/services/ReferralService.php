@@ -51,9 +51,27 @@ class ReferralService
 				$referral = new Referral;
 
 				$referral->service_specialty_assignment_id = $ssa->id;
-				$referral->patient_id = $pasReferral->X_CN;
 				$referral->refno = $pasReferral->REFNO;
 	
+				if (!$pasReferral->X_CN) {
+					/* Due to a dodgy migration by some third party company we don't always have the X_CN field containing the patient number, so this is an alternative way to obtain it */
+
+					$sql = "select distinct b.X_CN from SILVER.OUT040_REFDETS a left join SILVER.OUT031_OUTAPPT b on a.REFNO = b.REFNO and a.REF_SPEC = b.CLI_SPEC where a.REFNO = {$pasReferral->REFNO}";
+					$connection = Yii::app()->db_pas;
+					$command = $connection->createCommand($sql);
+
+					foreach ($command->queryAll() as $n => $result) { }
+
+					if ($n == 1) {
+						$referral->patient_id = $result['X_CN'];
+					} else {
+						$errors .= "Unable to save referral refno $referral->refno: missing X_CN, unable to infer from SILVER.OUT031_OUTAPPT.";
+						continue;
+					}
+				} else {
+					$referral->patient_id = $pasReferral->X_CN;
+				}
+
 				if (!empty($pasReferral->DT_CLOSE)) {
 					$referral->closed = 1;
 				}
