@@ -93,7 +93,7 @@ if (empty($theatres)) {?>
 							<form>
 								<h4>Comments</h4>
 								<textarea style="display: none;" rows="2" name="comments<?php echo $session['sessionId'] ?>" id="comments<?php echo $session['sessionId'] ?>"><?php echo $session['comments'] ?></textarea>
-								<div id="comments_ro_<?php echo $session['sessionId']?>"><?php echo strip_tags($session['comments'])?></div>
+								<div id="comments_ro_<?php echo $session['sessionId']?>" title="Modified on <?php echo Helper::convertMySQL2NHS($session['last_modified_date'])?> at <?php echo $session['last_modified_time']?> by <?php echo $session['last_modified_user']?>"><?php echo strip_tags($session['comments'])?></div>
 							</form>
 						</div>
 					</div>
