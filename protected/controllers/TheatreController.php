@@ -242,7 +242,11 @@ class TheatreController extends BaseController
 					'priority' => $values['urgent'] ? 'Urgent' : 'Routine',
 					'status' => $values['status'],
 					'created_user' => $values['cu_fn'].' '.$values['cu_ln'],
-					'last_modified_user' => $values['mu_fn'].' '.$values['mu_ln']
+					'last_modified_user' => $values['mu_fn'].' '.$values['mu_ln'],
+					'last_modified_date' => preg_replace('/ .*$/','',$values['last_modified_date']),
+					'last_modified_time' => preg_replace('/^.* /','',$values['last_modified_date']),
+					'session_first_name' => $values['session_first_name'],
+					'session_last_name' => $values['session_last_name']
 				);
 
 				if (empty($theatreTotals[$values['name']][$values['date']][$values['session_id']])) {
