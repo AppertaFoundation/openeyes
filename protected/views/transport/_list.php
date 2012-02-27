@@ -54,7 +54,7 @@ if (empty($bookings)) { ?>
 		<td style="width: 53px;"><?php echo $booking['method']?></td>
 		<td style="width: 43px;"><?php echo $booking['firm'] ?></td>
 		<td style="width: 53px;"><?php echo $booking['specialty']?></td>
-		<td style="width: 80px;"><?php echo $booking['decision_date'] ?></td>
+		<td style="width: 80px;"><?php echo Helper::convertMySQL2NHS($booking['decision_date']) ?></td>
 		<td><?php echo ($booking['urgent']) ? 'Urgent' : 'Routine' ?></td>
 		<td style="width: 20px;">
 			<?php if ($booking['method'] == 'Cancelled') {?>
