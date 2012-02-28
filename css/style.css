@@ -314,7 +314,7 @@ table tr:last-child { border-bottom: none; }
 
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
 .grid-view table { width:100%; } 
-.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:50px; padding:10px; border-right:1px solid #bbb;		}
+.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 13px; min-width:50px; padding:10px; border-right:1px solid #bbb;	}
 .grid-view table th:last-child { border-right: none; }
 .grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;	 }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
