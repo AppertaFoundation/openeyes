@@ -116,6 +116,11 @@ class SiteController extends BaseController
 	 */
 	public function actionLogin()
 	{
+		if (Yii::app()->session['user']) {
+			header('Location: /');
+			Yii::app()->end();
+		}
+
 		$model=new LoginForm;
 
 		// if it is ajax validation request
