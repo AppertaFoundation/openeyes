@@ -260,7 +260,7 @@ class TheatreController extends BaseController
 			->join('patient p','ep.patient_id = p.id')
 			->join('ward w','b.ward_id = w.id')
 			->where('t.site_id = :siteId and sp.id = :specialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo', array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to))
-			->order('s.date ASC')
+			->order('p.hos_num ASC')
 			->queryAll();
 	}
 
