@@ -335,7 +335,7 @@ if (empty($theatres)) {?>
 		$('td.td_sort').show();
 		$('th.th_sort').show();
 		$('#btn_print').hide();
-		$('input[name^="confirm_"]').attr('disabled',false);
+		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
 		$('#buttons_'+selected_tbody_id).show();
 		$('div[id="purple_rinse_'+selected_tbody_id+'"]').show();
 		$('th.footer').attr('colspan','10');
