@@ -430,7 +430,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		setFilter('date-start');
 		setFilter('date-end');
 		setFilter('date-filter','');
-		$('input[type="radio"]').setCheck(0);
+		$('input[type="radio"]').attr('checked',false);
 
 		return false;
 	});
@@ -457,7 +457,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		setFilter('date-start');
 		setFilter('date-end');
 		setFilter('date-filter','');
-		$('input[type="radio"]').setCheck(0);
+		$('input[type="radio"]').attr('checked',false);
 
 		return false;
 	});
