@@ -83,19 +83,17 @@ class Patient extends BaseActiveRecord {
 		return array(
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id'),
-			// Prefer H records for primary address, but fall back to others
+			// Prefer H records for primary address, but fall back to C and then others (T)
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(type,'H') DESC, date_start DESC"
+				'order' => "FIELD(type,'C','H') DESC, date_start DESC"
 			),
-			// Prefer H records for home address, but fall back to others
+			// Prefer H records for home address, but fall back to C and then others (T)
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(type,'H') DESC, date_start DESC"
+				'order' => "FIELD(type,'C','H') DESC, date_start DESC"
 			),
-			// Prefer C records for correspond address, but fall back to others
-			// FIXME: PAS currently stating that only Home addresses are valid
+			// Prefer C records for correspond address, but fall back to T and then others (H)
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				//'order' => "FIELD(type,'C') DESC, date_start DESC"
-				'order' => "FIELD(type,'H') DESC, date_start DESC"
+				'order' => "FIELD(type,'T','C') DESC, date_start DESC"
 			),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id')
