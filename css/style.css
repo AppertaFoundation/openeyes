@@ -857,7 +857,15 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 	@page { margin: 0.5cm; }
 	p, h2, h3 { orphans: 3; widows: 3; }
 	h2, h3 { page-break-after: avoid; }
-	
+	table {
+		width: 100%;
+	}
+	td,th {
+		text-align: left;
+		padding: 2px 4px;
+		vertical-align: top;
+		font-size: 14pt;
+	}
 	/* PREPAPRE PAGE FOR PRINT */
 	html { height:100%; }
 	.printable { display:block !important; width:1050px !important; }  /* max width 1050px */

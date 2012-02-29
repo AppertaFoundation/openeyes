@@ -131,6 +131,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			</div> <!-- #theatre_display -->
 			<div style="text-align:right; margin-right:10px;">
 				<button type="submit" class="classy blue tall" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
+				<button type="submit" class="classy blue tall" id="btn_print_list"><span class="button-span button-span-blue">Print list</span></button>
 			</div>
 		</div> <!-- .fullWidth -->
 		<div id="iframeprintholder" style="display: none;"></div>
@@ -146,18 +147,31 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$(document).ready(function() {
 		$("#btn_print").click(function() {
-			printElem(
+			printElem('printDiary',
 			{
-						pageTitle:'openeyes printout',
-						printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},
-									overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
-			 });
+				pageTitle:'openeyes printout',
+				printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
+			});
+		});
+
+		$('#btn_print_list').click(function() {
+			if ($('#site-id').val() == '' || $('#specialty-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
+				alert('To print the booking list you must select a site, a specialty and a date range.');
+				scrollTo(0,0);
+				return false;
+			}
+
+			printElem('printList',
+			{
+				pageTitle:'openeyes printout',
+				printBodyOptions:{styleToAdd:'width:auto !important; margin: 0.75em !important;',classNameToAdd : 'openeyesPrintout'},overrideElementCSS:['css/style.css',{href:'css/style.css',media:'print'}]
+			});
 		});
 	});
 
-	function printElem(options){
+	function printElem(method,options){
 		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('theatre/printList'); ?>',
+			'url': '/theatre/'+method,
 			'type': 'POST',
 			'data': searchData,
 			'success': function(data) {
