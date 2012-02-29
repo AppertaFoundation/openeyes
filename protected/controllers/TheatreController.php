@@ -244,6 +244,16 @@ class TheatreController extends BaseController
 		$from = Helper::convertNHS2MySQL($_POST['date-start']);
 		$to = Helper::convertNHS2MySQL($_POST['date-end']);
 
+		if ($_POST['ward-id']) {
+			$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
+			$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to);
+			$order = 'p.hos_num ASC';
+		} else {
+			$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
+			$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
+			$order = 'w.code ASC, p.hos_num ASC';
+		}
+
 		return Yii::app()->db->createCommand()
 			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as specialty')
 			->from('booking b')
@@ -259,8 +269,8 @@ class TheatreController extends BaseController
 			->join('episode ep','e.episode_id = ep.id')
 			->join('patient p','ep.patient_id = p.id')
 			->join('ward w','b.ward_id = w.id')
-			->where('t.site_id = :siteId and sp.id = :specialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo', array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to))
-			->order('p.hos_num ASC')
+			->where($whereSql, $whereParams)
+			->order($order)
 			->queryAll();
 	}
 

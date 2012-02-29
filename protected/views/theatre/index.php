@@ -159,8 +159,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 
 		$('#btn_print_list').click(function() {
-			if ($('#site-id').val() == '' || $('#specialty-id').val() == '' || $('#ward-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
-				alert('To print the booking list you must select a site, a specialty, a ward and a date range.');
+			if ($('#site-id').val() == '' || $('#specialty-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
+				alert('To print the booking list you must select a site, a specialty and a date range.');
 				scrollTo(0,0);
 				return false;
 			}
