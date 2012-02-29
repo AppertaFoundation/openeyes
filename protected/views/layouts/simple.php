@@ -43,6 +43,7 @@
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script src="/js/libs/modernizr-2.0.6.min.js"></script> 
+	<script type="text/javascript" src="/js/buttons.js"></script>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
