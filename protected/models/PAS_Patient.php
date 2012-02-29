@@ -139,8 +139,8 @@ class PAS_Patient extends MultiActiveRecord {
 			),
 			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'address' => array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
-				// Address preference is (Home, other), and DATE_START is the tiebreaker
-				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, 2), "address"."DATE_START" DESC',
+				// Address preference is (Home, Correspond, other), and DATE_START is the tiebreaker
+				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3), "address"."DATE_START" DESC',
 				// Exclude expired and future addresses
 				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" >= SYSDATE) AND ("address"."DATE_START" IS NULL OR "address"."DATE_START" <= SYSDATE)',
 			),
