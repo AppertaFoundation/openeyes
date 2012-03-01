@@ -32,25 +32,18 @@
 			<th>Consultant</th>
 			<th>Specialty</th>
 		</tr>
-		<?php
-		foreach ($bookings as $booking) {
-			$age = date('Y') - substr($booking['dob'], 0, 4);
-			$birthDate = substr($booking['dob'], 5, 2) . substr($booking['dob'], 8, 2);
-			if (date('md') < $birthDate) {
-				$age--; // birthday hasn't happened yet this year
-			}
-			?>
+		<?php foreach ($bookings as $booking) { ?>
 			<tr>
 				<td><?php echo $booking['hos_num']?></td>
 				<td><?php echo $booking['last_name']?>, <?php echo $booking['first_name']?></td>
 				<td><?php echo Helper::convertMySQL2NHS($booking['dob'])?></td>
-				<td><?php echo $age?></td>
+				<td><?php echo Helper::getAge($booking['dob'])?></td>
 				<td><?php echo $booking['gender']?></td>
 				<td><?php echo Helper::convertMySQL2NHS($booking['date'])?></td>
 				<td><?php echo $booking['ward_code']?></td>
 				<td><?php echo $booking['consultant']?></td>
 				<td><?php echo $booking['specialty']?></td>
 			</tr>
-		<?php }?>
+		<?php } ?>
 	</table>
 </div>

@@ -189,7 +189,7 @@ class TheatreController extends BaseController
 
 				$operation->eye = $values['eye'];
 				$operation->anaesthetic_type = $values['anaesthetic_type'];
-				$age = floor((time() - strtotime($values['dob'])) / 60 / 60 / 24 / 365);
+				$age = Helper::getAge($values['dob']);
 
 				$procedures = array('List'=>'');
 
