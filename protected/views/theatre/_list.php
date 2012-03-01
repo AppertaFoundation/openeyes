@@ -103,7 +103,7 @@ if (empty($theatres)) {?>
 						</div>
 					</div>
 					<table id="theatre_list">
-						<thead>
+						<thead id="thead_<?php echo $session['sessionId']?>">
 							<tr>
 								<th>Admit time</th>
 								<th class="th_sort" style="display: none;">Sort</th>
@@ -332,10 +332,10 @@ if (empty($theatres)) {?>
 		$('div.action_options').hide();
 		$('#action_options_'+selected_tbody_id).show();
 		$('#action_options_'+selected_tbody_id).html('<span class="aBtn"><a class="view-sessions" id="view-sessions_'+selected_tbody_id+'" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
-		$('td.td_sort').show();
-		$('th.th_sort').show();
 		$('#btn_print').hide();
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
+		$('tbody[id="tbody_'+selected_tbody_id+'"] td.td_sort').show();
+		$('thead[id="thead_'+selected_tbody_id+'"] th.th_sort').show();
 		$('#buttons_'+selected_tbody_id).show();
 		$('div[id="purple_rinse_'+selected_tbody_id+'"]').show();
 		$('th.footer').attr('colspan','10');
