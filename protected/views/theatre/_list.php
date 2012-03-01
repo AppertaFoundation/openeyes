@@ -32,7 +32,7 @@ if (empty($theatres)) {?>
 	$firstTheatreShown = false;
 	?>
 	<span style="margin-left: 10px; color: #f00; display: none;" id="updated-flash">
-		Sessions updated!
+		Session updated!
 	</span>
 	<?php
 	$tbody = 0;
@@ -72,6 +72,7 @@ if (empty($theatres)) {?>
 						</tfoot>
 					</table>
 					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $previousSessionId?>">
+						<img id="loader2_<?php echo $previousSessionId?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 2px; display: none" />
 						<button type="submit" class="classy green tall" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save</span></button>
 						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
@@ -81,6 +82,7 @@ if (empty($theatres)) {?>
 ?>
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> - <strong><?php echo $name?></strong></h3>
 				<div class="action_options" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
+					<img id="loader_<?php echo $session['sessionId']?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 5px; margin-bottom: 4px; display: none;" />
 					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_<?php echo $session['sessionId']?>" href="#">Edit</a></span>
 				</div>
 				<div class="theatre-sessions whiteBox clearfix">
@@ -310,6 +312,8 @@ if (empty($theatres)) {?>
 	var selected_tbody_id = null;
 
 	$('a.edit-sessions').die('click').live('click',function() {
+		$('#loader_'+selected_tbody_id).show();
+
 		cancel_edit();
 
 		selected_tbody_id = $(this).attr('id').replace(/^edit-sessions_/,'');
@@ -348,9 +352,19 @@ if (empty($theatres)) {?>
 	});
 
 	$('button[id^="btn_cancel_"]').live('click',function() {
-		cancel_edit();
+		if (!$(this).hasClass('inactive')) {
+			$('#loader2_'+$(this).attr('id').match(/[0-9]+/)).show();
+			disableButtons();
+			setTimeout('edit_session_cancel_button('+$(this).attr('id').match(/[0-9]+/)+');',300);
+		}
 		return false;
 	});
+
+	function edit_session_cancel_button(id) {
+		cancel_edit();
+		enableButtons();
+		$('#loader2_'+id).hide();
+	}
 
 	function cancel_edit() {
 		if (selected_tbody_id !== null) {
