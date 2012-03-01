@@ -24,19 +24,19 @@ $this->layout = 'main'; ?>
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
 	<?php if ($_SERVER['REQUEST_URI'] == '/patient/results/error') {?>
 		<div id="patient-search-error" class="alertBox">
-			<h3>Please enter either a valid hospital number or a firstname and lastname.</h3>
+			Please enter either a valid hospital number or a firstname and lastname.
 		</div>
 	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results') {?>
 		<div id="patient-search-error" class="alertBox">
-			<h3>Sorry, No patients found for that search.</h3>
+			Sorry, No patients found for that search.
 		</div>
 	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results-pas') {?>
 		<div id="pas-error" class="alertBox">
-			<h3>Sorry, the PAS is down. Unable to search for patients.</h3>
+			Sorry, the PAS is down. Unable to search for patients.
 		</div>
 	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results-address') {?>
 		<div id="pas-address-error" class="alertBox">
-			<h3>Sorry, the patient has no address defined in PAS and so cannot be loaded.</h3>
+			Sorry, the patient has no address defined in PAS and so cannot be loaded.
 		</div>
 	<?php }else{?>
 		<div id="patient-search-error" class="alertBox" style="display: none;">

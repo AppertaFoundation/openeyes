@@ -94,7 +94,7 @@
 				<?php
 				if (!isset($current_episode)) {?>
 					<div class="alertBox fullWidthEvent">
-						<h4>There are currently no episodes for this patient, please add a new event to open an episode.</h4>
+						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
 				<?php }?>
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
