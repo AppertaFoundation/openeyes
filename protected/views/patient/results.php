@@ -42,7 +42,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 
 					<?php if (Yii::app()->params['pas_down']) {?>
 						<div id="pas-error" class="alertBox">
-							<h3>Warning: the PAS is currently down. Search results are likely to be stale.</h3>
+							Warning: the PAS is currently down. Search results are likely to be stale.
 						</div>
 					<?php }?>
 
