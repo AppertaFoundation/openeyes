@@ -411,7 +411,12 @@ class PatientService
 			if($nhs_number = $pas_patient->nhs_number) {
 				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
 			}
-				
+			
+			// Get primary phone from patient's main address
+			if($pas_patient->address) {
+				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
+			}
+			
 			// Get latest GP mapping from PAS
 			$pas_patient_gp = $pas_patient->PatientGp; 
 			if($pas_patient_gp) {
@@ -451,9 +456,6 @@ class PatientService
 				
 			// Addresses
 			if($pas_patient->addresses) {
-				
-				// Get primary phone from patient's main address
-				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
 				
 				// Matching addresses for update is tricky cos we don't have a primary key on the pas address table,
 				// so we need to keep track of patient address ids as we go
