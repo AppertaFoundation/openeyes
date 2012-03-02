@@ -274,19 +274,6 @@ class ClinicalService
 			':event_type_id' => $eventType->id
 		);
 
-		// If this event_type has first_in_episode_possible set to 1 we have to add an extra criterion
-		if ($eventType->first_in_episode_possible) {
-			if (!isset($episode) || !$episode->hasEventOfType($eventType->id, $event)) {
-				// It's the first of this event type in an episode or a new episode, get site_element_types
-				// that have first_in_episode set to true
-				$criteria->addCondition('first_in_episode = 1');
-			} else {
-				// It's not the first in episode for this event type, get site_element_types that have
-				// first_in_episode set to false
-				$criteria->addCondition('first_in_episode = 0');
-			}
-		}
-
 		return $criteria;
 	}
 }
