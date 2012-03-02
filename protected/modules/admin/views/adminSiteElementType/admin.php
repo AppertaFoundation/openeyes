@@ -64,7 +64,6 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'specialty_id',
 		'view_number',
 		'required',
-		'first_in_episode',
 		array(
 			'class'=>'CButtonColumn',
 		),

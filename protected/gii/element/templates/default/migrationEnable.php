@@ -109,8 +109,7 @@ class <?php echo "$migrationName";?> extends CDbMigration
 			'possible_element_type_id' => $possibleElementType->id,
 			'specialty_id' => $specialty->id,
 			'view_number' => 1,
-			'required' => 1,
-			'first_in_episode' => 1
+			'required' => 1
 			));
 	}
 

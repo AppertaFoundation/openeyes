@@ -31,9 +31,6 @@
                         <tr>
                                 <td>Specialty</td><td><?php echo $data->specialty->name;?></td>
                         </tr>
-                        <tr>
-                                <td>First in episode</td><td><?php if ($data->first_in_episode) {echo 'Yes';} else {echo 'No';} ?></td>
-                        </tr>
                 </table>
 
 

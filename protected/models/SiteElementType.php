@@ -26,7 +26,6 @@
  * @property string $specialty_id
  * @property integer $required
  * @property integer $view_number
- * @property integer $first_in_episode
  *
  * The followings are the available model relations:
  * @property EventTypeElementTypeAssignment $eventTypeElementTypeAssignment
@@ -60,13 +59,12 @@ class SiteElementType extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('possible_element_type_id, specialty_id', 'required'),
-			array('first_in_episode', 'numerical', 'integerOnly'=>true),
 			array('possible_element_type_id, specialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('required', 'safe'),
 			array('view_number', 'safe'),
-			array('id, possible_element_type_id, specialty_id, first_in_episode, required, view_number', 'safe', 'on'=>'search'),
+			array('id, possible_element_type_id, specialty_id, required, view_number', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,7 +90,6 @@ class SiteElementType extends BaseActiveRecord
 			'id' => 'ID',
 			'possible_element_type_id' => 'Possible element type',
 			'specialty_id' => 'Specialty',
-			'first_in_episode' => 'First In Episode',
 			'view_number' => 'View number',
 			'required' => 'Required'
 		);
@@ -112,7 +109,6 @@ class SiteElementType extends BaseActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('possible_element_type_id',$this->possible_element_type_id,true);
 		$criteria->compare('specialty_id',$this->specialty_id,true);
-		$criteria->compare('first_in_episode',$this->first_in_episode);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

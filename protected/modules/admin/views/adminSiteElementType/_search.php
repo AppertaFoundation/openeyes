@@ -50,11 +50,6 @@
 		<?php echo $form->textField($model,'required'); ?>
 	</div>
 
-	<div class="row">
-		<?php echo $form->label($model,'first_in_episode'); ?>
-		<?php echo $form->textField($model,'first_in_episode'); ?>
-	</div>
-
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>
 	</div>

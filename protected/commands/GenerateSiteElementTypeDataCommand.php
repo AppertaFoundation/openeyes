@@ -39,6 +39,9 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 		$specialties = Specialty::Model()->findAll();
 		$possibleElementTypes = PossibleElementType::Model()->with('eventType')->findAll();
 
+		/*
+		the concept of first_in_episode has gone away. this will possibly need refactoring.
+
 		foreach ($specialties as $specialty) {
 			echo $specialty->name . "\n";
 			foreach ($possibleElementTypes as $pet) {
@@ -55,6 +58,7 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 				}
 			}
 		}
+		*/
 		return true;
 	}
 }

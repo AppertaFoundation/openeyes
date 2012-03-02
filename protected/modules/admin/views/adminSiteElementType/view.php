@@ -43,9 +43,6 @@ $this->menu=array(
                         <tr>
                                 <td>Specialty</td><td><?php echo $model->specialty->name;?></td>
                         </tr>
-                        <tr>
-                                <td>First in episode</td><td><?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';} ?></td>
-                        </tr>
                 </table>
 </div>
 
@@ -68,10 +65,6 @@ $this->menu=array(
 
         <b><?php echo CHtml::encode($model->getAttributeLabel('required')); ?>:</b>
         <?php if ($model->required) {echo 'Yes';} else {echo 'No';} ?>
-        <br />
-
-        <b><?php echo CHtml::encode($model->getAttributeLabel('first_in_episode')); ?>:</b>
-        <?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';} ?>
         <br />
 </div>
 
