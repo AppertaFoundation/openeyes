@@ -475,4 +475,15 @@ class PatientController extends BaseController
 
 		return $template;
 	}
+
+	public function actionSetEpisodeStatus($id) {
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		$episode->episode_status_id = $_POST['episode_status_id'];
+		$episode->save();
+	}
 }

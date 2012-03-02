@@ -31,6 +31,14 @@ if (!empty($episode)) {
 ?>
 <h3>Episode Summary (<?php echo $episode->firm->serviceSpecialtyAssignment->specialty->name?>)</h3>
 
+<h4><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></h4>
+<div class="eventHighlight">
+	<h4><?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?></h4>
+	<form>
+		<button id="save_episode_status" type="submit" class="classy blue tall" style="margin-left: 10px; margin-bottom: 10px;"><span class="button-span button-span-blue">Save</span></button>
+	</form>
+</div>
+
 <h4>Start date:</h4>
 <div class="eventHighlight">
 	<h4><?php echo $episode->NHSDate('start_date'); ?></h4>
@@ -143,6 +151,24 @@ if (!empty($episode)) {
 					return false;
 				}
 			});
+
+			return false;
+		});
+
+		$('#save_episode_status').unbind('click').click(function(e) {
+			if (!$(this).hasClass('inactive')) {
+				e.preventDefault();
+				disableButtons();
+
+				$.ajax({
+					type: 'POST',
+					url: '/patient/setepisodestatus/<?php echo $episode->id?>',
+					data: 'episode_status_id='+$('#episode_status_id').val(),
+					success: function(html) {
+						window.location.href = '/patient/episodes/<?php echo $patient->id?>';
+					}
+				});
+			}
 
 			return false;
 		});

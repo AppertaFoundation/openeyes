@@ -40,6 +40,7 @@ $this->menu=array(
 		array(
 			'name'=>'name',
 			'value'=>$model->name
-		)
+		),
+		'order'
 	),
 )); ?>

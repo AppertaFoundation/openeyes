@@ -93,6 +93,7 @@ class Episode extends BaseActiveRecord
 			'firm_id' => 'Firm',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
+			'episode_status_id' => 'Episode Status'
 		);
 	}
 

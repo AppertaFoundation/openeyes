@@ -34,6 +34,11 @@
 		<?php echo $form->textField($model,'name',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
+	<div class="row">
+		<?php echo $form->label($model,'order'); ?>
+		<?php echo $form->textField($model,'order',array('size'=>10,'maxlength'=>10)); ?>
+	</div>
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton('Search'); ?>
 	</div>

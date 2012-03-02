@@ -51,12 +51,12 @@ class EpisodeStatus extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
+			array('name, order', 'required'),
 			array('name', 'length', 'max'=>64),
-			array('name', 'safe'),
+			array('name, order', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -78,7 +78,8 @@ class EpisodeStatus extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name'
+			'name' => 'Name',
+			'order' => 'Order'
 		);
 	}
 
@@ -95,9 +96,20 @@ class EpisodeStatus extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getList() {
+		$episode_statuses = array();
+
+		foreach ($this->findAll(array('order'=>'`order` ASC')) as $episode_status) {
+			$episode_statuses[$episode_status->id] = $episode_status->name;
+		}
+
+		return $episode_statuses;
 	}
 }

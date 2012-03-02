@@ -124,7 +124,7 @@
 					} else {
 						if (isset($current_episode)) {
 							$this->renderPartial('/clinical/episodeSummary',
-								array('episode' => $current_episode)
+								array('episode' => $current_episode, 'patient' => $model)
 							);
 						}
 					}
