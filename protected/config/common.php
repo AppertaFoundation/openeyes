@@ -43,10 +43,11 @@ $config = array(
  		// Gii tool
 		'gii' => array(
 			'class' => 'system.gii.GiiModule',
-			'password' => '',
+			'password' => 'openeyes',
 			'ipFilters'=> array('*')
 		),
 		'admin',
+		'OphTrOperationnote'
 	),
 
 	// Application components
