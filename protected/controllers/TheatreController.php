@@ -72,6 +72,8 @@ class TheatreController extends BaseController
 					'firm-id' => Yii::app()->session['selected_firm_id'],
 					'specialty-id' => $firm->serviceSpecialtyAssignment->specialty_id
 				);
+
+				Yii::app()->session['theatre_searchoptions'] = $_POST;
 			}
 		}
 
