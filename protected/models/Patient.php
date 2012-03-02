@@ -287,7 +287,7 @@ class Patient extends BaseActiveRecord {
 	 */
 	protected function afterFind() {
 		parent::afterFind();
-		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
+		if($this->use_pas && Yii::app()->params['use_pas'] && PasPatientAssignment::isStale($this->id)) {
 			Yii::log('Patient details stale', 'trace');
 			$patient_service = new PatientService($this);
 			if (!$patient_service->down) {

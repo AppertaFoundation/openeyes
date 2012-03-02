@@ -20,16 +20,16 @@
 class PatientService
 {
 	public $patient;
-	public $pasPatient;
+	public $pasAssignment;
 	public $down = false;
 
 	/**
 	 * Create a new instance of the service
 	 *
-	 * @param model $patient			instance of the patient model
-	 * @param model $pasPatient		instance of the PAS patient model
+	 * @param model $patient instance of the patient model
+	 * @param model $pasAssignment instance of the PAS patient assignment model
 	 */
-	public function __construct($patient = null, $pasPatient = null)
+	public function __construct($patient = null, $pasAssignment = null)
 	{
 		try {
 			$connection = Yii::app()->db_pas;
@@ -40,15 +40,17 @@ class PatientService
 			return;
 		}
 
-		if (empty($patient)) {
+		if (!$patient) {
 			$this->patient = new Patient;
 		} else {
 			$this->patient = $patient;
 		}
-		if (empty($pasPatient)) {
-			$this->pasPatient = new PAS_Patient;
+		if (!$pasAssignment) {
+			if($this->patient->id) {
+				$this->pasAssignment = PasPatientAssignment::model()->findByPatientId($patient->id);
+			}
 		} else {
-			$this->pasPatient = $pasPatient;
+			$this->pasAssignment = $pasAssignment;
 		}
 	}
 
@@ -172,10 +174,11 @@ class PatientService
 		foreach ($results as $result) {
 			
 			// See if the patient is in openeyes, if not then fetch from PAS
-			$this->patient = Patient::model()->findByPk($result['RM_PATIENT_NO']);
-			if(!$this->patient) {
+			$assignment = PasPatientAssignment::model()->findByExternalId($result['RM_PATIENT_NO']);
+			if(!$assignment) {
 				$this->patient = new Patient();
-				$this->patient->id = $result['RM_PATIENT_NO'];
+				$this->pasAssignment = new PasPatientAssignment();
+				$this->pasAssignment->external_id = $result['RM_PATIENT_NO'];
 				$this->loadFromPas();
 			}
 			
@@ -388,11 +391,12 @@ class PatientService
 	 * Load data from PAS into existing Patient object and save
 	 */
 	public function loadFromPas() {
-		if(!$this->patient->id) {
-			throw new CException('Patient not linked to PAS patient (id undefined)');
+		Yii::log('Pulling Patient data from PAS:'.$this->patient->id, 'trace');
+		if(!$this->pasAssignment || !$this->pasAssignment->external_id) {
+			// Without a PAS assignment we have no way of looking up the patient in PAS
+			throw new CException('Patient has no PAS assignment');
 		}
-		//Yii::log('Pulling Patient data from PAS:'.$this->patient->id, 'trace');
-		if($pas_patient = PAS_Patient::model()->findByPk($this->patient->id)) {
+		if($pas_patient = $this->pasAssignment->pas_patient) {
 			$this->patient->title = $pas_patient->name->TITLE;
 			$this->patient->first_name = $pas_patient->name->NAME1;
 			$this->patient->last_name = $pas_patient->name->SURNAME_ID;
@@ -420,7 +424,7 @@ class PatientService
 				foreach($pas_patient->addresses as $pas_address) {
 					
 					// Match an address
-					//Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
+					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
 					$address = Address::model()->find(array(
 						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode",
 						'params' => array(':patient_id' => $this->patient->id, ':postcode' => str_replace(' ','',$pas_address->POSTCODE)),
@@ -445,7 +449,7 @@ class PatientService
 					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND id NOT IN($matched_string)",
 					'params' => array(':patient_id' => $this->patient->id),
 				));
-				//Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
+				Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
 								
 			}
 				
@@ -454,14 +458,14 @@ class PatientService
 			if($pas_patient_gp) {
 				// Check that GP is not on our block list
 				if(GpService::is_bad_gp($pas_patient_gp->GP_ID)) {
-					//Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
+					Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
 					$this->patient->gp_id = null;
 				} else {
 					// Check that the GP is in openeyes
 					$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
 					if(!$gp) {
 						// GP not in openeyes, pulling from PAS
-						//Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
+						Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
 						$gp = new Gp();
 						$gp->obj_prof = $pas_patient_gp->GP_ID;
 						$gp_service = new GpService($gp);
@@ -471,21 +475,23 @@ class PatientService
 	
 					// Update/set patient's GP
 					if(!$this->patient->gp || $this->patient->gp_id != $gp->id) {
-						//Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
+						Yii::log('Patient\'s GP changed:'.$gp->obj_prof, 'trace');
 						$this->patient->gp_id = $gp->id;
 					} else {
-						//Yii::log('Patient\'s GP has not changed', 'trace');
+						Yii::log('Patient\'s GP has not changed', 'trace');
 					}
 				}
 			} else {
-				//Yii::log('Patient has no GP in PAS', 'info');
+				Yii::log('Patient has no GP in PAS', 'info');
 			}
 				
 			// Save
 			$this->patient->save();
+			$this->pasAssignment->patient_id = $this->patient->id;
+			$this->pasAssignment->save();
 				
 		} else {
-			//Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
+			Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
 		}
 	}
 
