@@ -174,8 +174,9 @@ class PatientService
 		foreach ($results as $result) {
 			
 			// See if the patient is in openeyes, if not then fetch from PAS
-			$assignment = PasPatientAssignment::model()->findByExternalId($result['RM_PATIENT_NO']);
-			if(!$assignment) {
+			if($assignment = PasPatientAssignment::model()->findByExternalId($result['RM_PATIENT_NO'])) {
+				$this->patient = $assignment->patient;
+			} else {
 				$this->patient = new Patient();
 				$this->pasAssignment = new PasPatientAssignment();
 				$this->pasAssignment->external_id = $result['RM_PATIENT_NO'];
