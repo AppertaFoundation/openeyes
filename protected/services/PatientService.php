@@ -412,48 +412,6 @@ class PatientService
 				$this->patient->nhs_num = $nhs_number->NUMBER_ID;
 			}
 				
-			// Addresses
-			if($pas_patient->addresses) {
-				
-				// Get primary phone from patient's main address
-				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
-				
-				// Matching addresses for update is tricky cos we don't have a primary key on the pas address table,
-				// so we need to keep track of patient address ids as we go
-				$matched_address_ids = array();
-				$patient_addresses = $this->patient->addresses;
-				foreach($pas_patient->addresses as $pas_address) {
-					
-					// Match an address
-					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
-					$address = Address::model()->find(array(
-						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode",
-						'params' => array(':patient_id' => $this->patient->id, ':postcode' => str_replace(' ','',$pas_address->POSTCODE)),
-					));
-					
-					// Check if we have an address (that we haven't already matched)
-					if(!$address || in_array($address->id, $matched_address_ids)) {
-						Yii::log("patient address not found, creating", 'trace');
-						$address = new Address;
-						$address->parent_id = $this->patient->id;
-						$address->parent_class = 'Patient';
-					}
-					
-					$this->updateAddress($address, $pas_address);
-					$address->save();
-					$matched_address_ids[] = $address->id;
-				}
-				
-				// Remove any orphaned addresses (expired?)
-				$matched_string = implode(',',$matched_address_ids);
-				$orphaned_addresses = Address::model()->deleteAll(array(
-					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND id NOT IN($matched_string)",
-					'params' => array(':patient_id' => $this->patient->id),
-				));
-				Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
-								
-			}
-				
 			// Get latest GP mapping from PAS
 			$pas_patient_gp = $pas_patient->PatientGp; 
 			if($pas_patient_gp) {
@@ -491,6 +449,47 @@ class PatientService
 			$this->pasAssignment->patient_id = $this->patient->id;
 			$this->pasAssignment->save();
 				
+			// Addresses
+			if($pas_patient->addresses) {
+				
+				// Get primary phone from patient's main address
+				$this->patient->primary_phone = $pas_patient->address->TEL_NO;
+				
+				// Matching addresses for update is tricky cos we don't have a primary key on the pas address table,
+				// so we need to keep track of patient address ids as we go
+				$matched_address_ids = array();
+				foreach($pas_patient->addresses as $pas_address) {
+					
+					// Match an address
+					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
+					$address = Address::model()->find(array(
+						'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode",
+						'params' => array(':patient_id' => $this->patient->id, ':postcode' => str_replace(' ','',$pas_address->POSTCODE)),
+					));
+					
+					// Check if we have an address (that we haven't already matched)
+					if(!$address || in_array($address->id, $matched_address_ids)) {
+						Yii::log("patient address not found, creating", 'trace');
+						$address = new Address;
+						$address->parent_id = $this->patient->id;
+						$address->parent_class = 'Patient';
+					}
+					
+					$this->updateAddress($address, $pas_address);
+					$address->save();
+					$matched_address_ids[] = $address->id;
+				}
+				
+				// Remove any orphaned addresses (expired?)
+				$matched_string = implode(',',$matched_address_ids);
+				$orphaned_addresses = Address::model()->deleteAll(array(
+					'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND id NOT IN($matched_string)",
+					'params' => array(':patient_id' => $this->patient->id),
+				));
+				Yii::log("$orphaned_addresses orphaned patient addresses deleted", 'trace');
+								
+			}
+		
 		} else {
 			Yii::log('Patient not found in PAS: '.$this->patient->id, 'info');
 		}
