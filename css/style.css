@@ -9,7 +9,7 @@ audio:not([controls]) { display: none; }
 
 html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body { margin: 0; font-size: 13px; line-height: 1.231; }
-body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+body, button, input, select, textarea { font-family: Helvetica,Arial,sans-serif; color: #222; }
 
 ::-moz-selection { background: #faf564; color: #000; text-shadow: none; }
 ::selection { background: #faf564; color: #000; text-shadow: none; }
@@ -289,7 +289,6 @@ border-bottom:2px solid #6b121e;
 button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
 button.smBtn_modify 		{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
 button.smBtn_modify:hover 	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
- 
 
 
 /* ====== TABLES - GENERAL ====== */
