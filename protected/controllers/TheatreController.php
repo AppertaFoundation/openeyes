@@ -281,7 +281,7 @@ class TheatreController extends BaseController
 
 		$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
 		$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
-		$order = 'w.code ASC, p.hos_num ASC';
+		$order = 'w.name ASC, p.hos_num ASC';
 
 		if ($_POST['ward-id']) {
 			$whereSql .= ' and w.id = :wardId';
@@ -295,7 +295,7 @@ class TheatreController extends BaseController
 		}
 
 		return Yii::app()->db->createCommand()
-			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as specialty')
+			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.name as ward_name, f.pas_code as consultant, sp.ref_spec as specialty')
 			->from('booking b')
 			->join('session s','b.session_id = s.id')
 			->join('sequence se','s.sequence_id = se.id')

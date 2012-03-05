@@ -40,7 +40,7 @@
 				<td><?php echo Helper::getAge($booking['dob'])?></td>
 				<td><?php echo $booking['gender']?></td>
 				<td><?php echo Helper::convertMySQL2NHS($booking['date'])?></td>
-				<td><?php echo $booking['ward_code']?></td>
+				<td><?php echo $booking['ward_name']?></td>
 				<td><?php echo $booking['consultant']?></td>
 				<td><?php echo $booking['specialty']?></td>
 			</tr>
