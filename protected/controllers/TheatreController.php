@@ -279,14 +279,19 @@ class TheatreController extends BaseController
 		$from = Helper::convertNHS2MySQL($_POST['date-start']);
 		$to = Helper::convertNHS2MySQL($_POST['date-end']);
 
+		$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
+		$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
+		$order = 'w.code ASC, p.hos_num ASC';
+
 		if ($_POST['ward-id']) {
-			$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
-			$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to);
+			$whereSql .= ' and w.id = :wardId';
+			$whereParams[':wardId'] = $_POST['ward-id'];
 			$order = 'p.hos_num ASC';
-		} else {
-			$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
-			$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
-			$order = 'w.code ASC, p.hos_num ASC';
+		}
+
+		if ($_POST['firm-id']) {
+			$whereSql .= ' and f.id = :firmId';
+			$whereParams[':firmId'] = $_POST['firm-id'];
 		}
 
 		return Yii::app()->db->createCommand()
