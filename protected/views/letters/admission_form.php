@@ -62,7 +62,7 @@
 
 	<tr>
 		<th>Service:</th>
-		<td><?php echo CHtml::encode($firm->serviceSpecialtyAssignment->service->name) ?></td>
+		<td><?php echo CHtml::encode($firm->serviceSubspecialtyAssignment->service->name) ?></td>
 		<th>Patient Telephone:</th>
 		<td><?php echo CHtml::encode($patient->primary_phone) ?></td>
 	</tr>

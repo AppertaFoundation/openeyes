@@ -31,7 +31,7 @@
  * @property DefaultElementType[] $defaultElementTypes
  * @property EventType $eventType
  * @property ElementType $elementType
- * @property PossibleElementTypeSpecialtyAssignment[] $PossibleElementTypeSpecialtyAssignments
+ * @property PossibleElementTypeSubspecialtyAssignment[] $PossibleElementTypeSubspecialtyAssignments
  */
 class PossibleElementType extends BaseActiveRecord
 {
@@ -80,7 +80,7 @@ class PossibleElementType extends BaseActiveRecord
 			'defaultElementTypes' => array(self::HAS_MANY, 'DefaultElementType', 'possible_element_type_id'),
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 			'elementType' => array(self::BELONGS_TO, 'ElementType', 'element_type_id'),
-			'PossibleElementTypeSpecialtyAssignments' => array(self::HAS_MANY, 'PossibleElementTypeSpecialtyAssignment', 'possible_element_type_id'),
+			'PossibleElementTypeSubspecialtyAssignments' => array(self::HAS_MANY, 'PossibleElementTypeSubspecialtyAssignment', 'possible_element_type_id'),
 		);
 	}
 

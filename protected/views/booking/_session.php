@@ -23,7 +23,7 @@ if (!empty($operation->booking)) {
 	$session = $operation->booking->session;
 
 	if (isset($session->sequence->sequenceFirmAssignment->firm)) {
-		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' . $session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->service->name . ')';
+		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' . $session->sequence->sequenceFirmAssignment->firm->serviceSubspecialtyAssignment->service->name . ')';
 	} else {
 		$firmName = 'Emergency List';
 	}

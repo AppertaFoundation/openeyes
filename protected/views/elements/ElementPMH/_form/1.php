@@ -21,7 +21,7 @@
 
 	<div class="row">
 		<label for="ElementPMH_value">Phrase:</label>
-		<?php echo CHtml::dropDownList('ElementPMH[phrase]', '', $model->getPhraseBySpecialtyOptions('PMH'),
+		<?php echo CHtml::dropDownList('ElementPMH[phrase]', '', $model->getPhraseBySubspecialtyOptions('PMH'),
 			array('onChange' => 'appendText($(this), $("#ElementPMH_value"));')); ?>
 	</div>
 

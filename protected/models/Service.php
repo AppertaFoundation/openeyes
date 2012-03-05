@@ -25,7 +25,7 @@
  * @property string $name
  *
  * The followings are the available model relations:
- * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
+ * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
  */
 class Service extends BaseActiveRecord
 {
@@ -70,7 +70,7 @@ class Service extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'service_id'),
+			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'service_id'),
 		);
 	}
 

@@ -21,7 +21,7 @@
 
 	<div class="row">
 		<label for="ElementSocialHistory_value">Phrase:</label>
-		<?php echo CHtml::dropDownList('ElementSocialHistory[phrase]', '', $model->getPhraseBySpecialtyOptions('Social history'),
+		<?php echo CHtml::dropDownList('ElementSocialHistory[phrase]', '', $model->getPhraseBySubspecialtyOptions('Social history'),
 			array('onChange' => 'appendText($(this), $("#ElementSocialHistory_value"));')); ?>
 	</div>
 

@@ -61,7 +61,7 @@ class LetterTemplateController extends BaseController
 		if(isset($_POST['LetterTemplate']))
 		{
 			$model->attributes=$_POST['LetterTemplate'];
-			$model->specialty_id = $this->firm->serviceSpecialtyAssignment->specialty_id;
+			$model->subspecialty_id = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -80,14 +80,14 @@ class LetterTemplateController extends BaseController
 	{
 		$model=$this->loadModel($id);
 
-		if ($model->specialty_id != $this->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($model->subspecialty_id != $this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			throw new CHttpException(403, 'You are not permitted to alter this letter template.');
 		}
 
 		if(isset($_POST['LetterTemplate']))
 		{
 			$model->attributes=$_POST['LetterTemplate'];
-			$model->specialty_id = $this->firm->serviceSpecialtyAssignment->specialty_id;
+			$model->subspecialty_id = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -104,7 +104,7 @@ class LetterTemplateController extends BaseController
 	{
 		$dataProvider=new CActiveDataProvider('LetterTemplate', array(
 			'criteria'=>array(
-				'condition'=>'specialty_id=' . $this->firm->serviceSpecialtyAssignment->specialty_id
+				'condition'=>'subspecialty_id=' . $this->firm->serviceSubspecialtyAssignment->subspecialty_id
 			)
 		));
 
@@ -125,7 +125,7 @@ class LetterTemplateController extends BaseController
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 
-								if ($model->specialty_id != $this->firm->serviceSpecialtyAssignment->specialty_id) {
+								if ($model->subspecialty_id != $this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 												throw new CHttpException(403, 'You are not permitted to view this letter template.');
 								}
 

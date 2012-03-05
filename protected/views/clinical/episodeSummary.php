@@ -29,7 +29,7 @@ if (!empty($episode)) {
 					$text = $diagnosis->disorder->term;
 	}
 ?>
-<h3>Episode Summary (<?php echo $episode->firm->serviceSpecialtyAssignment->specialty->name?>)</h3>
+<h3>Episode Summary (<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>)</h3>
 
 <h4><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></h4>
 <div class="eventHighlight">
@@ -59,9 +59,9 @@ if (!empty($episode)) {
 	<h4><?php echo $text?></h4>
 </div>
 
-<h4>Specialty:</h4>
+<h4>Subspecialty:</h4>
 <div class="eventHighlight">
-	<h4><?php echo $episode->firm->serviceSpecialtyAssignment->specialty->name?></h4>
+	<h4><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h4>
 </div>
 
 <h4>Consultant firm:</h4>
@@ -71,11 +71,11 @@ if (!empty($episode)) {
 <?php
 	try {
 		echo $this->renderPartial(
-			'/clinical/episodeSummaries/' . $episode->firm->serviceSpecialtyAssignment->specialty_id,
+			'/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id,
 			array('episode' => $episode)
 		);
 	} catch (Exception $e) {
-		// If there is no extra episode summary detail page for this specialty we don't care
+		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
 } else {
 	// hide the episode border ?>

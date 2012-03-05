@@ -30,7 +30,7 @@
 			<th>Op. date</th>
 			<th>Ward</th>
 			<th>Consultant</th>
-			<th>Specialty</th>
+			<th>Subspecialty</th>
 		</tr>
 		<?php foreach ($bookings as $booking) { ?>
 			<tr>
@@ -42,7 +42,7 @@
 				<td><?php echo Helper::convertMySQL2NHS($booking['date'])?></td>
 				<td><?php echo $booking['ward_code']?></td>
 				<td><?php echo $booking['consultant']?></td>
-				<td><?php echo $booking['specialty']?></td>
+				<td><?php echo $booking['subspecialty']?></td>
 			</tr>
 		<?php } ?>
 	</table>

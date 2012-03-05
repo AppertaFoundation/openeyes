@@ -69,7 +69,7 @@ class RightsService
 		$results = Yii::app()->db->createCommand()
 			->select('f.id, name, service_id')
 			->from('firm f')
-			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->order('ssa.id, f.name')
 			->queryAll();
 
@@ -86,7 +86,7 @@ class RightsService
 			->select('f.id AS fid, service_id')
 			->from('user_firm_rights ufr')
 			->join('firm f', 'f.id = ufr.firm_id')
-			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->where('user_id = :u', array(':u' => $this->userId))
 			->queryAll();
 

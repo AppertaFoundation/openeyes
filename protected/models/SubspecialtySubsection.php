@@ -18,23 +18,22 @@
  */
 
 /**
- * This is the model class for table "service_specialty_assignment".
+ * This is the model class for table "subspecialty_subsection".
  *
- * The followings are the available columns in table 'service_specialty_assignment':
+ * The followings are the available columns in table 'subspecialty_subsection':
  * @property string $id
- * @property string $service_id
- * @property string $specialty_id
+ * @property string $subspecialty_id
+ * @property string $name
  *
  * The followings are the available model relations:
- * @property Firm[] $firms
- * @property Service $service
- * @property Specialty $specialty
+ * @property Procedure[] $procedures
+ * @property Subspecialty $subspecialty
  */
-class ServiceSpecialtyAssignment extends BaseActiveRecord
+class SubspecialtySubsection extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ServiceSpecialtyAssignment the static model class
+	 * @return ServiceSubsection the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -46,7 +45,7 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'service_specialty_assignment';
+		return 'subspecialty_subsection';
 	}
 
 	/**
@@ -57,11 +56,12 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_id, specialty_id', 'required'),
-			array('service_id, specialty_id', 'length', 'max'=>10),
+			array('subspecialty_id, name', 'required'),
+			array('subspecialty_id', 'length', 'max'=>10),
+			array('name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, service_id, specialty_id', 'safe', 'on'=>'search'),
+			array('id, subspecialty_id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,9 +73,8 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firms' => array(self::HAS_MANY, 'Firm', 'service_specialty_assignment_id'),
-			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+			'procedures' => array(self::MANY_MANY, 'Procedure', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
+			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 		);
 	}
 
@@ -86,8 +85,8 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'service_id' => 'Service',
-			'specialty_id' => 'Specialty',
+			'subspecialty_id' => 'Subspecialty',
+			'name' => 'Name',
 		);
 	}
 
@@ -103,11 +102,30 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('service_id',$this->service_id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
+		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getList($subspecialtyId)
+	{
+		$sections = Yii::app()->db->createCommand()
+			->select('id, name')
+			->from('subspecialty_subsection')
+			->where('subspecialty_id = :id',
+				array(':id'=>$subspecialtyId))
+			->order('name ASC')
+			->queryAll();
+
+		$data = array();
+
+		foreach ($sections as $section) {
+			$data[$section['id']] = $section['name'];
+		}
+
+		return $data;
 	}
 }

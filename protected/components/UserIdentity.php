@@ -163,9 +163,9 @@ class UserIdentity extends CUserIdentity
 
 			// Get firms associated with services
 			foreach ($user->serviceRights as $service) {
-				foreach ($service->serviceSpecialtyAssignments as $ssa) {
+				foreach ($service->serviceSubspecialtyAssignments as $ssa) {
 					foreach (Firm::model()->findAll(
-						'service_specialty_assignment_id = ?', array(
+						'service_subspecialty_assignment_id = ?', array(
 							$ssa->id
 						)
 					) as $firm) {
@@ -206,7 +206,7 @@ class UserIdentity extends CUserIdentity
 
 	public function firmString($firm)
 	{
-		return "{$firm->name} ({$firm->serviceSpecialtyAssignment->specialty->name})";
+		return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
 	}
 
 	public function getId()

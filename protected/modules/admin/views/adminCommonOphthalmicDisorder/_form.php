@@ -54,9 +54,9 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'specialty_id'); ?>
-		<?php echo $form->dropDownList($model,'specialty_id',$model->getSpecialtyOptions()); ?>
-		<?php echo $form->error($model,'specialty_id'); ?>
+		<?php echo $form->labelEx($model,'subspecialty_id'); ?>
+		<?php echo $form->dropDownList($model,'subspecialty_id',$model->getSubspecialtyOptions()); ?>
+		<?php echo $form->error($model,'subspecialty_id'); ?>
 	</div>
 
 	<div class="row buttons">

@@ -58,7 +58,7 @@ class LetterOutService
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		foreach(LetterTemplate::model()->findAll(
-			'specialty_id = ?' , $firm->serviceSpecialtyAssignment->specialty_id
+			'subspecialty_id = ?' , $firm->serviceSubspecialtyAssignment->subspecialty_id
 		) as $letterTemplate) {
 			$sendTo = Contact::model()->findByPk($letterTemplate['send_to']);
 			$cc = Contact::model()->findByPk($letterTemplate['cc']);
@@ -124,12 +124,12 @@ class LetterOutService
 
 		$results = Yii::app()->db->createCommand()
 			->select('phrase, pn.name AS pn_name')
-			->from('phrase_by_specialty p_b_s')
+			->from('phrase_by_subspecialty p_b_s')
 			->join('phrase_name pn', 'p_b_s.phrase_name_id = pn.id')
 			->join('section s', 'p_b_s.section_id = s.id')
-			->where('s.name = :s_name AND section_type_id = 1 AND specialty_id = :s_id', array(
+			->where('s.name = :s_name AND section_type_id = 1 AND subspecialty_id = :s_id', array(
 				':s_name' => $phrase,
-				':s_id' => $firm->serviceSpecialtyAssignment->specialty_id
+				':s_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
 			))
 			->order('pn.name')
 			->queryAll();
@@ -178,8 +178,8 @@ class LetterOutService
 			return $phrase->phrase;
 		}
 
-		$phrase = PhraseBySpecialty::model()->find('specialty_id = ? AND phrase_name_id = ? AND section_id = ?', array(
-			$this->firm->serviceSpecialtyAssignment->specialty_id, $name->id, $section->id
+		$phrase = PhraseBySubspecialty::model()->find('subspecialty_id = ? AND phrase_name_id = ? AND section_id = ?', array(
+			$this->firm->serviceSubspecialtyAssignment->subspecialty_id, $name->id, $section->id
 		));
 
 		if (isset($phrase)) {

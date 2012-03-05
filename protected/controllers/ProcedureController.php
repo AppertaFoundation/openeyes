@@ -105,8 +105,8 @@ class ProcedureController extends Controller
 		if (!empty($_POST['subsection'])) {
 			$criteria = new CDbCriteria;
 			$criteria->select = 't.id, term, short_format';
-			$criteria->join = 'LEFT JOIN proc_specialty_subsection_assignment pssa ON t.id = pssa.proc_id';
-			$criteria->compare('pssa.specialty_subsection_id', $_POST['subsection']);
+			$criteria->join = 'LEFT JOIN proc_subspecialty_subsection_assignment pssa ON t.id = pssa.proc_id';
+			$criteria->compare('pssa.subspecialty_subsection_id', $_POST['subsection']);
 
 			if (!empty($_POST['existing'])) {
 				$criteria->addNotInCondition("CONCAT_WS(' - ', term, short_format)", $_POST['existing']);

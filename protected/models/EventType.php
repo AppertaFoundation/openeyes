@@ -110,16 +110,16 @@ class EventType extends BaseActiveRecord
 	/**
 	 * Retrieves dataobjects for all EventTypes that PossibleElementType/SiteElementType suggest are possible
 	 */
-	public function getAllPossible($specialtyId)
+	public function getAllPossible($subspecialtyId)
 	{
 		$criteria = new CDbCriteria;
 
 		$criteria->distinct=true;
 		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType ON possibleElementType.event_type_id = t.id INNER JOIN site_element_type ON site_element_type.possible_element_type_id=possibleElementType.id';
-		$criteria->addCondition('site_element_type.specialty_id = :specialty_id');
+		$criteria->addCondition('site_element_type.subspecialty_id = :subspecialty_id');
 		$criteria->order = 't.id';
 		$criteria->params = array(
-			':specialty_id' => $specialtyId
+			':subspecialty_id' => $subspecialtyId
 		);
 
 		$eventTypeObjects = EventType::model()->findAll($criteria);

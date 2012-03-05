@@ -29,7 +29,7 @@
 
 // Register javascript to mirror changes in element name to table name
 $class = get_class($model);
-$specialtyCode = strtolower(Yii::app()->params['specialtyCode']);
+$subspecialtyCode = strtolower(Yii::app()->params['subspecialtyCode']);
 Yii::app()->clientScript->registerScript('gii.model',"
 $('#{$class}_tableName').change(function(){
 	$(this).data('changed',$(this).val()!='');
@@ -51,7 +51,7 @@ $('#{$class}_elementName').bind('keyup change', function(){
 		var tablePrefix=$('#{$class}_tablePrefix').val();
 		if(tablePrefix!='' && elementName.indexOf(tablePrefix)==0)
 			elementName=elementName.substring(tablePrefix.length);
-		var tableName='element_' + '{$specialtyCode}' + '_';
+		var tableName='element_' + '{$subspecialtyCode}' + '_';
 		if(elementName.length>0)
 				tableName+=elementName.substring(0).toLowerCase();
 		model.val(tableName);

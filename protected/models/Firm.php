@@ -22,12 +22,12 @@
  *
  * The followings are the available columns in table 'firm':
  * @property string $id
- * @property string $service_specialty_assignment_id
+ * @property string $service_subspecialty_assignment_id
  * @property string $pas_code
  * @property string $name
  *
  * The followings are the available model relations:
- * @property ServiceSpecialtyAssignment $serviceSpecialtyAssignment
+ * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property FirmUserAssignment[] $firmUserAssignments
  * @property LetterPhrase[] $letterPhrases
  */
@@ -58,13 +58,13 @@ class Firm extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_specialty_assignment_id, name', 'required'),
-			array('service_specialty_assignment_id', 'length', 'max'=>10),
+			array('service_subspecialty_assignment_id, name', 'required'),
+			array('service_subspecialty_assignment_id', 'length', 'max'=>10),
 			array('pas_code', 'length', 'max'=>4),
 			array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, service_specialty_assignment_id, pas_code, name', 'safe', 'on'=>'search'),
+			array('id, service_subspecialty_assignment_id, pas_code, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -76,7 +76,7 @@ class Firm extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'serviceSpecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSpecialtyAssignment', 'service_specialty_assignment_id'),
+			'serviceSubspecialtyAssignment' => array(self::BELONGS_TO, 'ServiceSubspecialtyAssignment', 'service_subspecialty_assignment_id'),
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
 			'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
 		);
@@ -89,7 +89,7 @@ class Firm extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'service_specialty_assignment_id' => 'Service Specialty Assignment',
+			'service_subspecialty_assignment_id' => 'Service Subspecialty Assignment',
 			'pas_code' => 'Pas Code',
 			'name' => 'Name',
 		);
@@ -107,7 +107,7 @@ class Firm extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('service_specialty_assignment_id',$this->service_specialty_assignment_id,true);
+		$criteria->compare('service_subspecialty_assignment_id',$this->service_subspecialty_assignment_id,true);
 		$criteria->compare('pas_code',$this->pas_code,true);
 		$criteria->compare('name',$this->name,true);
 
@@ -117,25 +117,25 @@ class Firm extends BaseActiveRecord
 	}
 
 	/**
-	 * Returns an array of the service_specialty names - the service name plus the specialty name.
+	 * Returns an array of the service_subspecialty names - the service name plus the subspecialty name.
 	 */
-	public function getServiceSpecialtyOptions()
+	public function getServiceSubspecialtyOptions()
 	{
 		$sql = 'SELECT
-					service_specialty_assignment.id,
+					service_subspecialty_assignment.id,
 					service.name AS service_name,
-					specialty.name AS specialty_name
+					subspecialty.name AS subspecialty_name
 				FROM
 					service,
-					specialty,
-					service_specialty_assignment
+					subspecialty,
+					service_subspecialty_assignment
 				WHERE
-					service.id = service_specialty_assignment.service_id
+					service.id = service_subspecialty_assignment.service_id
 				AND
-					specialty.id = service_specialty_assignment.specialty_id
+					subspecialty.id = service_subspecialty_assignment.subspecialty_id
 				ORDER BY
 					service.name,
-					specialty.name
+					subspecialty.name
 				';
 
 		$connection = Yii::app()->db;
@@ -145,7 +145,7 @@ class Firm extends BaseActiveRecord
 		$select = array();
 
 		foreach ($results as $result) {
-			$select[$result['id']] = $result['service_name'] . ' - ' . $result['specialty_name'];
+			$select[$result['id']] = $result['service_name'] . ' - ' . $result['subspecialty_name'];
 		}
 
 		return $select;
@@ -153,23 +153,23 @@ class Firm extends BaseActiveRecord
 
 	public function getServiceText()
 	{
-		return $this->serviceSpecialtyAssignment->service->name;
+		return $this->serviceSubspecialtyAssignment->service->name;
 	}
 
-	public function getSpecialtyText()
+	public function getSubspecialtyText()
 	{
-		return $this->serviceSpecialtyAssignment->specialty->name;
+		return $this->serviceSubspecialtyAssignment->subspecialty->name;
 	}
 
 	/**
 	 * Fetch an array of firm IDs and names
 	 * @return array
 	 */
-	public function getList($specialtyId = null)
+	public function getList($subspecialtyId = null)
 	{
 		$result = array();
 
-		if (empty($specialtyId)) {
+		if (empty($subspecialtyId)) {
 			$list = Firm::model()->findAll();
 		
 			foreach ($list as $firm) {
@@ -179,8 +179,8 @@ class Firm extends BaseActiveRecord
 			$list = Yii::app()->db->createCommand()
                         ->select('f.id, f.name')
                         ->from('firm f')
-                        ->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
-			->where('ssa.specialty_id = :sid', array(':sid' => $specialtyId))
+                        ->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->where('ssa.subspecialty_id = :sid', array(':sid' => $subspecialtyId))
                         ->queryAll();
 
 			foreach ($list as $firm) {
@@ -196,17 +196,17 @@ class Firm extends BaseActiveRecord
 	public function getListWithSpecialties()
 	{
 		$firms = Yii::app()->db->createCommand()
-			->select('f.id, f.name, s.name AS specialty')
+			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')
-			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
-			->join('specialty s', 'ssa.specialty_id = s.id')
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->join('subspecialty s', 'ssa.subspecialty_id = s.id')
 			->order('f.name ASC, s.name ASC')
 			->queryAll();
 
 		$data = array();
 
 		foreach ($firms as $firm) {
-			$data[$firm['id']] = $firm['name'] . ' (' . $firm['specialty'] . ')';
+			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
 		}
 
 		natcasesort($data);

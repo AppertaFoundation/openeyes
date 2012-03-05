@@ -241,7 +241,7 @@ class ElementCode extends CCodeModel
 				'migrationName'=>$migrationName,
 				'elementFields'=>$this->elementFields,
 				'eventName'=>Yii::app()->params['eventName'],
-				'subSpecialtyName'=>Yii::app()->params['subSpecialtyName'],
+				'subSubspecialtyName'=>Yii::app()->params['subSubspecialtyName'],
 				'authorName'=>$this->authorName,
 				'authorEmail'=>$this->authorEmail
 			);

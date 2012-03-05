@@ -40,7 +40,7 @@ $form=$this->beginWidget('CActiveForm', array(
 				<td>Element type</td><td><?php echo $model->possibleElementType->elementType->name;?></td>
 			</tr>
 			<tr>
-				<td>Specialty</td><td><?php echo $model->specialty->name;?></td>
+				<td>Subspecialty</td><td><?php echo $model->subspecialty->name;?></td>
 			</tr>
 		</table>
 

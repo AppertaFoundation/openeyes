@@ -70,7 +70,7 @@ class TheatreController extends BaseController
 			} else {
 				$_POST = array(
 					'firm-id' => Yii::app()->session['selected_firm_id'],
-					'specialty-id' => $firm->serviceSpecialtyAssignment->specialty_id
+					'subspecialty-id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
 				);
 			}
 		}
@@ -135,7 +135,7 @@ class TheatreController extends BaseController
 		$theatres = array();
 		if (!empty($_POST)) {
 			$siteId = !empty($_POST['site-id']) ? $_POST['site-id'] : null;
-			$specialtyId = !empty($_POST['specialty-id']) ? $_POST['specialty-id'] : null;
+			$subspecialtyId = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$theatreId = !empty($_POST['theatre-id']) ? $_POST['theatre-id'] : null;
 			$wardId = !empty($_POST['ward-id']) ? $_POST['ward-id'] : null;
@@ -150,7 +150,7 @@ class TheatreController extends BaseController
 
 			if (
 				empty($siteId) &&
-				empty($specialtyId) &&
+				empty($subspecialtyId) &&
 				empty($firmId) &&
 				empty($theatreId) &&
 				empty($wardId) &&
@@ -177,7 +177,7 @@ class TheatreController extends BaseController
 				$endDate,
 				$siteId,
 				$theatreId,
-				$specialtyId,
+				$subspecialtyId,
 				$firmId,
 				$wardId,
 				$emergencyList
@@ -214,7 +214,7 @@ class TheatreController extends BaseController
 					'episodeId' => $values['episodeId'],
 					'eventId' => $values['eventId'],
 					'firm_name' => @$values['firm_name'],
-					'specialty_name' => @$values['specialty_name'],
+					'subspecialty_name' => @$values['subspecialty_name'],
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
 					'sequenceId' => $values['sequence_id'],
@@ -278,25 +278,25 @@ class TheatreController extends BaseController
 		$to = Helper::convertNHS2MySQL($_POST['date-end']);
 
 		if ($_POST['ward-id']) {
-			$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
-			$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to);
+			$whereSql = 't.site_id = :siteId and sp.id = :subspecialtyId and w.id = :wardId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
+			$whereParams = array(':siteId' => $_POST['site-id'], ':subspecialtyId' => $_POST['subspecialty-id'], ':wardId' => $_POST['ward-id'], ':dateFrom' => $from, ':dateTo' => $to);
 			$order = 'p.hos_num ASC';
 		} else {
-			$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
-			$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
+			$whereSql = 't.site_id = :siteId and sp.id = :subspecialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
+			$whereParams = array(':siteId' => $_POST['site-id'], ':subspecialtyId' => $_POST['subspecialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
 			$order = 'w.code ASC, p.hos_num ASC';
 		}
 
 		return Yii::app()->db->createCommand()
-			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as specialty')
+			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as subspecialty')
 			->from('booking b')
 			->join('session s','b.session_id = s.id')
 			->join('sequence se','s.sequence_id = se.id')
 			->join('theatre t','se.theatre_id = t.id')
 			->join('sequence_firm_assignment sfa','sfa.sequence_id = se.id')
 			->join('firm f','f.id = sfa.firm_id')
-			->join('service_specialty_assignment ssa','ssa.id = f.service_specialty_assignment_id')
-			->join('specialty sp','sp.id = ssa.specialty_id')
+			->join('service_subspecialty_assignment ssa','ssa.id = f.service_subspecialty_assignment_id')
+			->join('subspecialty sp','sp.id = ssa.subspecialty_id')
 			->join('element_operation eo','b.element_operation_id = eo.id')
 			->join('event e','eo.event_id = e.id')
 			->join('episode ep','e.episode_id = ep.id')
@@ -316,15 +316,15 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Generates a firm list based on a specialty id provided via POST
+	 * Generates a firm list based on a subspecialty id provided via POST
 	 * echoes form option tags for display
 	 */
 	public function actionFilterFirms()
 	{
 		echo CHtml::tag('option', array('value'=>''),
 			CHtml::encode('All firms'), true);
-		if (!empty($_POST['specialty_id'])) {
-			$firms = $this->getFilteredFirms($_POST['specialty_id']);
+		if (!empty($_POST['subspecialty_id'])) {
+			$firms = $this->getFilteredFirms($_POST['subspecialty_id']);
 
 			foreach ($firms as $id => $name) {
 				echo CHtml::tag('option', array('value'=>$id),
@@ -532,21 +532,21 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Helper method to fetch firms by specialty ID
+	 * Helper method to fetch firms by subspecialty ID
 	 *
-	 * @param integer $specialtyId
+	 * @param integer $subspecialtyId
 	 *
 	 * @return array
 	 */
-	protected function getFilteredFirms($specialtyId)
+	protected function getFilteredFirms($subspecialtyId)
 	{
 		$data = Yii::app()->db->createCommand()
 			->select('f.id, f.name')
 			->from('firm f')
-			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
-			->join('specialty s', 'ssa.service_id = s.id')
-			->where('ssa.specialty_id=:id',
-				array(':id'=>$specialtyId))
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->join('subspecialty s', 'ssa.service_id = s.id')
+			->where('ssa.subspecialty_id=:id',
+				array(':id'=>$subspecialtyId))
 			->queryAll();
 
 		$firms = array();

@@ -146,12 +146,12 @@ class PhraseByFirm extends BaseActiveRecord
 	 */
 	public function getOverrideableNames($sectionId, $firmId)
 	{
-		// we want the overrideable global phrase names plus the overrideable by-specialty phrase names together but then you shouldnt be able to override something that is already overridden which is why we want to subtract them
+		// we want the overrideable global phrase names plus the overrideable by-subspecialty phrase names together but then you shouldnt be able to override something that is already overridden which is why we want to subtract them
 		$firm = Firm::model()->findByPk($firmId);
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
+		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 	
 		$params[':sectionid'] = $sectionId;
-		$params[':specialtyid'] = $specialtyId;
+		$params[':subspecialtyid'] = $subspecialtyId;
 		$params[':firmid'] = $firmId;
 		$sql = 'select t1.id, t1.name from (
 				(
@@ -160,11 +160,11 @@ class PhraseByFirm extends BaseActiveRecord
 					join phrase on phrase_name.id=phrase.phrase_name_id
 					where phrase.section_id=:sectionid
 				) union (
-					-- set of phrase names associated with phrases by specialty defined for the given section and the specialty of the given firm
+					-- set of phrase names associated with phrases by subspecialty defined for the given section and the subspecialty of the given firm
 					select phrase_name.id, phrase_name.name from phrase_name
-					join phrase_by_specialty on phrase_name.id=phrase_by_specialty.phrase_name_id
-					where phrase_by_specialty.section_id=:sectionid
-					and phrase_by_specialty.specialty_id=:specialtyid
+					join phrase_by_subspecialty on phrase_name.id=phrase_by_subspecialty.phrase_name_id
+					where phrase_by_subspecialty.section_id=:sectionid
+					and phrase_by_subspecialty.subspecialty_id=:subspecialtyid
 				)
 			) as t1 left join (
 				-- set of phrase names associated with phrases by firm for the given section and firm; in short we are putting together the first two sets then subtracting this set

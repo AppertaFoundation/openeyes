@@ -18,22 +18,22 @@
 */
 
 /**
- * This is the model class for table "proc_specialty_subsection_assignment".
+ * This is the model class for table "proc_subspecialty_subsection_assignment".
  *
- * The followings are the available columns in table 'proc_specialty_subsection_assignment':
+ * The followings are the available columns in table 'proc_subspecialty_subsection_assignment':
  * @property string $id
  * @property string $proc_id
- * @property string $specialty_subsection_id
+ * @property string $subspecialty_subsection_id
  *
  * The followings are the available model relations:
- * @property SpecialtySubsection $specialtySubsection
+ * @property SubspecialtySubsection $subspecialtySubsection
  * @property Proc $proc
  */
-class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
+class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ProcedureSpecialtySubsectionAssignment the static model class
+	 * @return ProcedureSubspecialtySubsectionAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,7 +45,7 @@ class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'proc_specialty_subsection_assignment';
+		return 'proc_subspecialty_subsection_assignment';
 	}
 
 	/**
@@ -56,11 +56,11 @@ class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('proc_id, specialty_subsection_id', 'required'),
-			array('proc_id, specialty_subsection_id', 'length', 'max'=>10),
+			array('proc_id, subspecialty_subsection_id', 'required'),
+			array('proc_id, subspecialty_subsection_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, proc_id, specialty_subsection_id', 'safe', 'on'=>'search'),
+			array('id, proc_id, subspecialty_subsection_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,7 +72,7 @@ class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'specialtySubsection' => array(self::BELONGS_TO, 'SpecialtySubsection', 'specialty_subsection_id'),
+			'subspecialtySubsection' => array(self::BELONGS_TO, 'SubspecialtySubsection', 'subspecialty_subsection_id'),
 			'proc' => array(self::BELONGS_TO, 'Proc', 'proc_id'),
 		);
 	}
@@ -85,7 +85,7 @@ class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'proc_id' => 'Proc',
-			'specialty_subsection_id' => 'Specialty Subsection',
+			'subspecialty_subsection_id' => 'Subspecialty Subsection',
 		);
 	}
 
@@ -102,7 +102,7 @@ class ProcedureSpecialtySubsectionAssignment extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('proc_id',$this->proc_id,true);
-		$criteria->compare('specialty_subsection_id',$this->specialty_subsection_id,true);
+		$criteria->compare('subspecialty_subsection_id',$this->subspecialty_subsection_id,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -24,13 +24,13 @@
  * @property string $id
  * @property string $name
  * @property string $phrase
- * @property string $specialty_id
+ * @property string $subspecialty_id
  * @property string $send_to
  * @property string $cc
  *
  * The followings are the available model relations:
  * @property ContactType $cc0
- * @property Specialty $specialty
+ * @property Subspecialty $subspecialty
  * @property ContactType $send_to
  */
 class LetterTemplate extends BaseActiveRecord
@@ -60,13 +60,13 @@ class LetterTemplate extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, phrase, specialty_id, send_to, cc', 'required'),
+			array('name, phrase, subspecialty_id, send_to, cc', 'required'),
 			array('name', 'length', 'max'=>255),
 			array('phrase', 'length', 'max'=>2047),
-			array('specialty_id, send_to, cc', 'length', 'max'=>10),
+			array('subspecialty_id, send_to, cc', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, phrase, specialty_id, send_to, cc', 'safe', 'on'=>'search'),
+			array('id, name, phrase, subspecialty_id, send_to, cc', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -79,7 +79,7 @@ class LetterTemplate extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'cc0' => array(self::BELONGS_TO, 'ContactType', 'cc'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'sendTo' => array(self::BELONGS_TO, 'ContactType', 'send_to'),
 		);
 	}
@@ -93,7 +93,7 @@ class LetterTemplate extends BaseActiveRecord
 			'id' => 'ID',
 			'name' => 'Name',
 			'phrase' => 'Phrase',
-			'specialty_id' => 'Specialty',
+			'subspecialty_id' => 'Subspecialty',
 			'send_to' => 'To',
 			'cc' => 'Cc',
 		);
@@ -113,7 +113,7 @@ class LetterTemplate extends BaseActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('phrase',$this->phrase,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 		$criteria->compare('send_to',$this->send_to,true);
 		$criteria->compare('cc',$this->cc,true);
 
@@ -122,9 +122,9 @@ class LetterTemplate extends BaseActiveRecord
 		));
 	}
 
-	public function getSpecialtyText()
+	public function getSubspecialtyText()
 	{
-		return $this->specialty->name;
+		return $this->subspecialty->name;
 	}
 
 	public function getToText()
@@ -137,11 +137,11 @@ class LetterTemplate extends BaseActiveRecord
 		return $this->cc0->name;
 	}
 
-	public function getSpecialtyOptions()
+	public function getSubspecialtyOptions()
 	{
 		$specialties = Yii::app()->db->createCommand()
 			->select('s.id, s.name')
-			->from('specialty s')
+			->from('subspecialty s')
 			->order('name ASC')
 			->queryAll();
 		

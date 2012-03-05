@@ -35,7 +35,7 @@
 								<tr>
 									<th>Site:</th>
 									<th>Theatre:</th>
-									<th>Specialty:</th>
+									<th>Subspecialty:</th>
 									<th>Firm:</th>
 									<th>Ward:</th>
 									<th>Emergency List:</th>
@@ -48,13 +48,13 @@
 										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty'=>'All theatres', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('specialty-id', @$_POST['specialty-id'], Specialty::model()->getList(), array('empty'=>'All specialties', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(), array('empty'=>'All specialties', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
-										<?php if (!@$_POST['specialty-id']) {?>
+										<?php if (!@$_POST['subspecialty-id']) {?>
 											<?php echo CHtml::dropDownList('firm-id', '', array(), array('empty'=>'All firms', 'disabled' => 'disabled'))?>
 										<?php } else {?>
-											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['specialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+											<?php echo CHtml::dropDownList('firm-id', @$_POST['firm-id'], Firm::model()->getList(@$_POST['subspecialty-id']), array('empty'=>'All firms', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 										<?php }?>
 									</td>
 									<td>
@@ -159,8 +159,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 
 		$('#btn_print_list').click(function() {
-			if ($('#site-id').val() == '' || $('#specialty-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
-				alert('To print the booking list you must select a site, a specialty and a date range.');
+			if ($('#site-id').val() == '' || $('#subspecialty-id').val() == '' || $('#date-start').val() == '' || $('#date-end').val() == '') {
+				alert('To print the booking list you must select a site, a subspecialty and a date range.');
 				scrollTo(0,0);
 				return false;
 			}
@@ -219,13 +219,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$('input[name=emergency_list]').change(function() {
 		if ($(this).is(':checked')) {
 			$('#site-id').attr("disabled", true);
-			$('#specialty-id').attr("disabled", true);
+			$('#subspecialty-id').attr("disabled", true);
 			$('#theatre-id').attr("disabled", true);
 			$('#firm-id').attr("disabled", true);
 			$('#ward-id').attr("disabled", true);
 		} else {
 			$('#site-id').attr("disabled", false);
-			$('#specialty-id').attr("disabled", false);
+			$('#subspecialty-id').attr("disabled", false);
 			$('#theatre-id').attr("disabled", false);
 			$('#firm-id').attr("disabled", false);
 			$('#ward-id').attr("disabled", false);
@@ -517,13 +517,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			'success': function(html) {
 				if (field == 'site-id') {
 					loadTheatresAndWards(value);
-				} else if (field == 'specialty-id') {
+				} else if (field == 'subspecialty-id') {
 					$.ajax({
 						'url': '<?php echo Yii::app()->createUrl('theatre/filterFirms')?>',
 						'type': 'POST',
-						'data': 'specialty_id='+$('#specialty-id').val(),
+						'data': 'subspecialty_id='+$('#subspecialty-id').val(),
 						'success': function(data) {
-							if ($('#specialty-id').val() != '') {
+							if ($('#subspecialty-id').val() != '') {
 								$('#firm-id').attr('disabled', false);
 								$('#firm-id').html(data);
 							} else {

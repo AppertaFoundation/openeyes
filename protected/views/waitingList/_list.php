@@ -111,7 +111,7 @@ if (empty($operations)) { ?>
 	<td style="width: 95px;"><?php echo $eo->site->short_name?></td>
 	<td><?php echo $operation['List'] ?></td>
 	<td><?php echo $eo->getEyeText() ?></td>
-	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSpecialtyAssignment->specialty->name ?>)</td>
+	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name ?>)</td>
 	<td style="width: 80px;"><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>
 	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>

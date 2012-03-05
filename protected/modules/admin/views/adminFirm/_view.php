@@ -28,8 +28,8 @@
 	<?php echo CHtml::encode($data->getServiceText()); ?>
 	<br />
 
-	<b>Specialty:</b>
-	<?php echo CHtml::encode($data->getSpecialtyText()); ?>
+	<b>Subspecialty:</b>
+	<?php echo CHtml::encode($data->getSubspecialtyText()); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('pas_code')); ?>:</b>

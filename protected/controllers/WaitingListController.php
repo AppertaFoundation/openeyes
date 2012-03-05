@@ -57,7 +57,7 @@ class WaitingListController extends BaseController
 			} else {
 				$_POST = array(
 					'firm-id' => Yii::app()->session['selected_firm_id'],
-					'specialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSpecialtyAssignment->specialty_id
+					'subspecialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id
 				);
 			}
 		}
@@ -70,14 +70,14 @@ class WaitingListController extends BaseController
 		if (empty($_POST)) {
 			$operations = array();
 		} else {
-			$specialtyId = !empty($_POST['specialty-id']) ? $_POST['specialty-id'] : null;
+			$subspecialtyId = !empty($_POST['subspecialty-id']) ? $_POST['subspecialty-id'] : null;
 			$firmId = !empty($_POST['firm-id']) ? $_POST['firm-id'] : null;
 			$status = !empty($_POST['status']) ? $_POST['status'] : null;
 			$hos_num = !empty($_POST['hos_num']) && ctype_digit($_POST['hos_num']) ? $_POST['hos_num'] : false;
 			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
 
 			Yii::app()->session['waitinglist_searchoptions'] = array(
-				'specialty-id' => $specialtyId,
+				'subspecialty-id' => $subspecialtyId,
 				'firm-id' => $firmId,
 				'status' => $status,
 				'hos_num' => $hos_num,
@@ -85,26 +85,26 @@ class WaitingListController extends BaseController
 			);
 
 			$service = new WaitingListService;
-			$operations = $service->getWaitingList($firmId, $specialtyId, $status, $hos_num, $site_id);
+			$operations = $service->getWaitingList($firmId, $subspecialtyId, $status, $hos_num, $site_id);
 		}
 
 		$this->renderPartial('_list', array('operations' => $operations), false, true);
 	}
 
 	/**
-	 * Generates a firm list based on a specialty id provided via POST
+	 * Generates a firm list based on a subspecialty id provided via POST
 	 * echoes form option tags for display
 	 */
 	public function actionFilterFirms()
 	{
 		$so = Yii::app()->session['waitinglist_searchoptions'];
-		$so['specialty-id'] = $_POST['specialty_id'];
+		$so['subspecialty-id'] = $_POST['subspecialty_id'];
 		Yii::app()->session['waitinglist_searchoptions'] = $so;
 
 		echo CHtml::tag('option', array('value'=>''),
 			CHtml::encode('All firms'), true);
-		if (!empty($_POST['specialty_id'])) {
-			$firms = $this->getFilteredFirms($_POST['specialty_id']);
+		if (!empty($_POST['subspecialty_id'])) {
+			$firms = $this->getFilteredFirms($_POST['subspecialty_id']);
 
 			foreach ($firms as $id => $name) {
 				echo CHtml::tag('option', array('value'=>$id),
@@ -135,21 +135,21 @@ class WaitingListController extends BaseController
 		$this->setFilter('hos_num', $_POST['hos_num']);
 	}
 	/**
-	 * Helper method to fetch firms by specialty ID
+	 * Helper method to fetch firms by subspecialty ID
 	 *
-	 * @param integer $specialtyId
+	 * @param integer $subspecialtyId
 	 * @return array
 	 */
-	protected function getFilteredFirms($specialtyId)
+	protected function getFilteredFirms($subspecialtyId)
 	{
 		$data = Yii::app()->db->createCommand()
 			->select('f.id, f.name')
 			->from('firm f')
-			->join('service_specialty_assignment ssa', 'f.service_specialty_assignment_id = ssa.id')
-			->join('specialty s', 'ssa.specialty_id = s.id')
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->join('subspecialty s', 'ssa.subspecialty_id = s.id')
 			->order('f.name asc')
-			->where('ssa.specialty_id=:id',
-				array(':id'=>$specialtyId))
+			->where('ssa.subspecialty_id=:id',
+				array(':id'=>$subspecialtyId))
 			->queryAll();
 
 		$firms = array();

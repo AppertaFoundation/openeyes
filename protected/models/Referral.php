@@ -24,7 +24,7 @@
  * @property string $id
  * @property string $refno
  * @property string $patient_id
- * @property string $service_specialty_assignment_id
+ * @property string $service_subspecialty_assignment_id
  */
 class Referral extends MultiActiveRecord
 {
@@ -53,11 +53,11 @@ class Referral extends MultiActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('refno, patient_id, service_specialty_assignment_id', 'required'),
-			array('refno, patient_id, service_specialty_assignment_id', 'length', 'max'=>10),
+			array('refno, patient_id, service_subspecialty_assignment_id', 'required'),
+			array('refno, patient_id, service_subspecialty_assignment_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, refno, patient_id, service_specialty_assignment_id', 'safe', 'on'=>'search'),
+			array('id, refno, patient_id, service_subspecialty_assignment_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -81,7 +81,7 @@ class Referral extends MultiActiveRecord
 			'id' => 'ID',
 			'refno' => 'Refno',
 			'patient_id' => 'Patient',
-			'service_specialty_assignment_id' => 'Service',
+			'service_subspecialty_assignment_id' => 'Service',
 		);
 	}
 
@@ -99,7 +99,7 @@ class Referral extends MultiActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('refno',$this->refno,true);
 		$criteria->compare('patient_id',$this->patient_id,true);
-		$criteria->compare('service_specialty_assignment_id',$this->service_specialty_assignment_id,true);
+		$criteria->compare('service_subspecialty_assignment_id',$this->service_subspecialty_assignment_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

@@ -70,7 +70,7 @@
 				array('label'=>'Users', 'url'=>array('/admin/adminUser/index')),
 				array('label'=>'Firms', 'url'=>array('/admin/adminFirm/index')),
 				array('label'=>'Global phrases', 'url'=>array('/admin/adminPhrase/index')),
-				array('label'=>'Phrases by specialty', 'url'=>array('/admin/adminPhraseBySpecialty/index')),
+				array('label'=>'Phrases by subspecialty', 'url'=>array('/admin/adminPhraseBySubspecialty/index')),
 				array('label'=>'Phrases by firm', 'url'=>array('/admin/adminPhraseByFirm/index')),
 				array('label'=>'Letter Templates', 'url'=>array('/admin/adminLetterTemplate/index')),
 				array('label'=>'Sequences', 'url'=>array('/admin/adminSequence/index')),

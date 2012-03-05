@@ -22,7 +22,7 @@
 
 <?php
 $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'phrase-by-specialty-form',
+	'id'=>'phrase-by-subspecialty-form',
 	'enableAjaxValidation'=>false,
 ));
 
@@ -38,7 +38,7 @@ if (isset($_GET['section_id'])) {
 	<?php if (!$model->id) { ?>
 	<div class="row">
 		<?php
-			if ($overrideableNames = PhraseBySpecialty::Model()->getOverrideableNames($_GET['section_id'], $_GET['specialty_id'])) {
+			if ($overrideableNames = PhraseBySubspecialty::Model()->getOverrideableNames($_GET['section_id'], $_GET['subspecialty_id'])) {
 				echo $form->labelEx($model,'phrase_name_id'); 
 				echo $form->dropDownList($model,'phrase_name_id',CHtml::listData($overrideableNames, 'id', 'name'), array('prompt' => 'Override a global phrase name')); 
 				echo $form->error($model,'phrase_name_id');
@@ -83,13 +83,13 @@ if (isset($_GET['section_id'])) {
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'specialty_id'); ?>
+		<?php echo $form->labelEx($model,'subspecialty_id'); ?>
 		<?php if (!$model->id) { ?>
-			<?php echo Specialty::Model()->findByPk($_GET['specialty_id'])->name; ?>
-			<?php echo CHtml::activeHiddenField($model,'specialty_id', array('value'=>$_GET['specialty_id'])); ?>
+			<?php echo Subspecialty::Model()->findByPk($_GET['subspecialty_id'])->name; ?>
+			<?php echo CHtml::activeHiddenField($model,'subspecialty_id', array('value'=>$_GET['subspecialty_id'])); ?>
 		<?php } else { ?>
-			<?php echo Specialty::Model()->findByPk($model->specialty_id)->name; ?>
-			<?php echo CHtml::activeHiddenField($model,'specialty_id', array('value'=>$model->specialty_id)); ?>
+			<?php echo Subspecialty::Model()->findByPk($model->subspecialty_id)->name; ?>
+			<?php echo CHtml::activeHiddenField($model,'subspecialty_id', array('value'=>$model->subspecialty_id)); ?>
 		<?php } ?>
 	</div>
 

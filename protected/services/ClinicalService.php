@@ -59,7 +59,7 @@ class ClinicalService
 
 		/**
 		 * Create the event. First check to see if there is currently an episode for this
-		 * specialty for this patient. If so, add the new event to it. If not, create an
+		 * subspecialty for this patient. If so, add the new event to it. If not, create an
 		 * episode and add it to that.
 		 */
 		$episode = $this->getOrCreateEpisode($firm, $patientId);
@@ -146,7 +146,7 @@ class ClinicalService
 	}
 
 	/**
-	 * Get all the elements for a combination of event type and specialty. If the elements
+	 * Get all the elements for a combination of event type and subspecialty. If the elements
 	 * already exist (i.e. they belong to an event) they are loaded from the db.
 	 *
 	 * @param object $eventType
@@ -200,8 +200,8 @@ class ClinicalService
 	 */
 	public function getOrCreateEpisode($firm, $patientId)
 	{
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty->id;
-		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $patientId);
+		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
+		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
 
 		if (!$episode) {
 			$episode = new Episode();
@@ -260,17 +260,17 @@ class ClinicalService
 	 */
 	public function getCriteria($eventType, $firm, $patientId, $event = null)
 	{
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
-		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $patientId);
+		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
 
 		$criteria = new CDbCriteria;
 		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType
 			ON t.possible_element_type_id = possibleElementType.id';
-		$criteria->addCondition('t.specialty_id = :specialty_id');
+		$criteria->addCondition('t.subspecialty_id = :subspecialty_id');
 		$criteria->addCondition('possibleElementType.event_type_id = :event_type_id');
 		$criteria->order = 'possibleElementType.display_order';
 		$criteria->params = array(
-			':specialty_id' => $specialtyId,
+			':subspecialty_id' => $subspecialtyId,
 			':event_type_id' => $eventType->id
 		);
 

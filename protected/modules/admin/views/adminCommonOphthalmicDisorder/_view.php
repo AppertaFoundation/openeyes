@@ -28,8 +28,8 @@
 	<?php echo CHtml::encode($data->disorder->term); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('specialty_id')); ?>:</b>
-	<?php echo CHtml::encode($data->specialty->name); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('subspecialty_id')); ?>:</b>
+	<?php echo CHtml::encode($data->subspecialty->name); ?>
 	<br />
 
 

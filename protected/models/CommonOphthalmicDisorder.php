@@ -23,11 +23,11 @@
  * The followings are the available columns in table 'common_ophthalmic_disorder':
  * @property string $id
  * @property string $disorder_id
- * @property string $specialty_id
+ * @property string $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
- * @property Specialty $specialty
+ * @property Subspecialty $subspecialty
  */
 class CommonOphthalmicDisorder extends BaseActiveRecord
 {
@@ -56,11 +56,11 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id, specialty_id', 'required'),
-			array('disorder_id, specialty_id', 'length', 'max'=>10),
+			array('disorder_id, subspecialty_id', 'required'),
+			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, specialty_id', 'safe', 'on'=>'search'),
+			array('id, disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,7 +73,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 		);
 	}
 
@@ -85,7 +85,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'disorder_id' => 'Disorder',
-			'specialty_id' => 'Specialty',
+			'subspecialty_id' => 'Subspecialty',
 		);
 	}
 
@@ -102,18 +102,18 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public function getSpecialtyOptions()
+	public function getSubspecialtyOptions()
 	{
 		$specialties = Yii::app()->db->createCommand()
 			->select('s.id, s.name')
-			->from('specialty s')
+			->from('subspecialty s')
 			->order('name ASC')
 			->queryAll();
 
@@ -130,8 +130,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 			->select('t.id AS did, t.term')
 			->from('disorder t')
 			->join('common_ophthalmic_disorder', 't.id = common_ophthalmic_disorder.disorder_id')
-			->where(array('and','common_ophthalmic_disorder.specialty_id = :specialty_id','t.systemic = 0'),
-				array(':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id))
+			->where(array('and','common_ophthalmic_disorder.subspecialty_id = :subspecialty_id','t.systemic = 0'),
+				array(':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id))
 			->order('t.term')
 			->queryAll();
 

@@ -30,7 +30,7 @@
 	} else {
 		$consultantName = 'CONSULTANT';
 	}
-	$specialty = $firm->serviceSpecialtyAssignment->specialty;
+	$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 ?>
 <?php if ($patient->isChild()) {
 	// Start Child ?>
@@ -72,7 +72,7 @@
 		<th>Consultant:</th>
 		<td><?php echo $consultantName ?></td>
 		<th>Speciality:</th>
-		<td><?php echo $specialty->name ?></td>
+		<td><?php echo $subspecialty->name ?></td>
 	</tr>
 </table>
 
@@ -151,7 +151,7 @@
 	</tr>
 	<tr>
 		<th>Ward:</th>
-		<td><?php if ($specialty->id == 13) {
+		<td><?php if ($subspecialty->id == 13) {
 			// Refractive laser ?>
 			Refractive waiting room - Cumberledge Wing 4th Floor
 		<?php } else { ?>
@@ -169,7 +169,7 @@
 	</tr>
 	<tr>
 		<th>Speciality:</th>
-		<td><?php echo $specialty->name ?></td>
+		<td><?php echo $subspecialty->name ?></td>
 	</tr>
 </table>
 
@@ -183,7 +183,7 @@
 </p>
 <?php } ?>
 
-<?php if($specialty->id != 13) { // Not refractive laser ?>
+<?php if($subspecialty->id != 13) { // Not refractive laser ?>
 <p>
 	<strong>All admissions require a Pre-Operative Assessment which you must attend. Non-attendance will cause a delay or possible <span class="red">cancellation</span> to your surgery.</strong>
 </p>
@@ -205,7 +205,7 @@
 
 <ul>
 	<li>Bring this letter with you on date of admission</li>
-	<li>Please go directly to <?php if ($specialty->id == 13) {
+	<li>Please go directly to <?php if ($subspecialty->id == 13) {
 		// Refractive laser ?> Refractive waiting room - Cumberledge Wing 4th
 		Floor<?php } else { ?><?php echo CHtml::encode($booking->ward->name) ?> ward<?php } ?></li>
 	<li>You must not drive yourself to or from hospital</li>

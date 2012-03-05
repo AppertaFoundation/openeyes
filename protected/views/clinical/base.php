@@ -43,9 +43,9 @@ foreach ($this->eventTypes as $eventType) {
 <?php
 
 foreach ($this->episodes as $episode) {
-	$episodeString = "episode: " . $episode->firm->serviceSpecialtyAssignment->specialty->name;
+	$episodeString = "episode: " . $episode->firm->serviceSubspecialtyAssignment->subspecialty->name;
 
-	if ($this->firm->serviceSpecialtyAssignment->specialty_id == $episode->firm->serviceSpecialtyAssignment->specialty_id) {
+	if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 		$episodeString = '<b>' . $episodeString . '</b>';
 	}
 
@@ -69,7 +69,7 @@ foreach ($this->episodes as $episode) {
             );
 		echo('&nbsp;');
 
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id == $event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			echo CHtml::link(
 	                'update',
 	                Yii::app()->createUrl('clinical/update', array(

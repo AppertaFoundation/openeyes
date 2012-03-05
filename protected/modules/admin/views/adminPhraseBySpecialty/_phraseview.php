@@ -31,16 +31,16 @@
 	<?php echo CHtml::encode($data->phrase); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('section_by_specialty_id')); ?>:</b>
-	<?php echo CHtml::encode($data->section_by_specialty_id); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('section_by_subspecialty_id')); ?>:</b>
+	<?php echo CHtml::encode($data->section_by_subspecialty_id); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('display_order')); ?>:</b>
 	<?php echo CHtml::encode($data->display_order); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('specialty_id')); ?>:</b>
-	<?php echo CHtml::encode($data->specialty_id); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('subspecialty_id')); ?>:</b>
+	<?php echo CHtml::encode($data->subspecialty_id); ?>
 	<br />
 </div>
 

@@ -143,7 +143,7 @@ if (!empty($address)) {
 							<?php }else{?>
 								<table class="items">
 									<thead>
-										<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Specialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
+										<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Subspecialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
 									</thead>
 									<tbody>
 										<?php foreach ($episodes as $i => $episode) {?>
@@ -151,7 +151,7 @@ if (!empty($address)) {
 												<td><?php echo $episode->NHSDate('start_date'); ?></td>
 												<td><?php echo $episode->NHSDate('end_date'); ?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
-												<td><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></td>
+												<td><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></td>
 												<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
 												<td><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></td>
 												<td><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis'?></td>

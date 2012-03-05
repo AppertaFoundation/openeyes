@@ -18,18 +18,18 @@
  */
 
 $this->breadcrumbs=array(
-        'Phrase By Specialties' => array('/admin/adminPhraseBySpecialty/index'),
-        $sectionName => array('specialtyIndex', 'section_id'=>$sectionId),
-        $specialtyName => array('phraseIndex', 'section_id'=>$sectionId, 'specialty_id'=>$specialtyId),
+        'Phrase By Specialties' => array('/admin/adminPhraseBySubspecialty/index'),
+        $sectionName => array('subspecialtyIndex', 'section_id'=>$sectionId),
+        $subspecialtyName => array('phraseIndex', 'section_id'=>$sectionId, 'subspecialty_id'=>$subspecialtyId),
 	'Create'
 );
 
 $this->menu=array(
-	array('label'=>'List phrases by specialty', 'url'=>array('index')),
-	array('label'=>'Manage phrases by specialty', 'url'=>array('admin')),
+	array('label'=>'List phrases by subspecialty', 'url'=>array('index')),
+	array('label'=>'Manage phrases by subspecialty', 'url'=>array('admin')),
 );
 ?>
 
-<h1>Create PhraseBySpecialty</h1>
+<h1>Create PhraseBySubspecialty</h1>
 
 <?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

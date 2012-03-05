@@ -84,8 +84,8 @@ class ClinicalController extends BaseController
 		);
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {
 			$editable = true;
@@ -156,10 +156,10 @@ class ClinicalController extends BaseController
 		);		
 		
 		if (!count($elements)) {
-			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
+			throw new CHttpException(403, 'That combination event type and firm subspecialty is not defined.');
 		}
 
-		$specialties = Specialty::model()->findAll();
+		$specialties = Subspecialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create') {
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
@@ -212,14 +212,14 @@ class ClinicalController extends BaseController
 		);
 
 		if ($eventType->name == 'operation') {
-			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
+			$subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
 			$procedures = array();
 			if (empty($subsections)) {
-				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+				$procedures = Procedure::model()->getListBySubspecialty($subspecialty->id);
 			}
 
-			$params['specialty'] = $specialty;
+			$params['subspecialty'] = $subspecialty;
 			$params['subsections'] = $subsections;
 			$params['procedures'] = $procedures;
 		}
@@ -246,21 +246,21 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		// Check the user's firm is of the correct specialty to have the
+		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-			$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
-			throw new CHttpException(403, 'The firm you are using is not associated with the specialty for this event.');
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
 		}
 
 		// eventType, firm and patientId are fetched from the event object.
 		$elements = $this->service->getElements(null, null, null, $this->getUserId(), $event);
 
 		if (!count($elements)) {
-			throw new CHttpException(403, 'That combination event type and firm specialty is not defined.');
+			throw new CHttpException(403, 'That combination event type and firm subspecialty is not defined.');
 		}
 
-		$specialties = Specialty::model()->findAll();
+		$specialties = Subspecialty::model()->findAll();
 
 		$episode = Episode::model()->findByPk($event->episode_id);
 		$patient = Patient::model()->findByPk($episode->patient_id);
@@ -315,14 +315,14 @@ class ClinicalController extends BaseController
 		);
 
 		if ($event->eventType->name == 'operation') {
-			$specialty = $this->firm->serviceSpecialtyAssignment->specialty;
-			$subsections = SpecialtySubsection::model()->getList($specialty->id);
+			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
+			$subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
 			$procedures = array();
 			if (empty($subsections)) {
-				$procedures = Procedure::model()->getListBySpecialty($specialty->id);
+				$procedures = Procedure::model()->getListBySubspecialty($subspecialty->id);
 			}
 
-			$params['specialty'] = $specialty;
+			$params['subspecialty'] = $subspecialty;
 			$params['subsections'] = $subsections;
 			$params['procedures'] = $procedures;
 		}
@@ -349,8 +349,8 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {
 			$editable = true;
@@ -377,8 +377,8 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {
 			$editable = true;
@@ -405,8 +405,8 @@ class ClinicalController extends BaseController
 			$this->episodes = $patient->episodes;
 		}
 
-		$specialtyId = $this->firm->serviceSpecialtyAssignment->specialty_id;
-		$this->eventTypes = EventType::model()->getAllPossible($specialtyId);
+		$subspecialtyId = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
+		$this->eventTypes = EventType::model()->getAllPossible($subspecialtyId);
 	}
 
 	/**
@@ -455,8 +455,8 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-			$episode->firm->serviceSpecialtyAssignment->specialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {
 			$editable = true;

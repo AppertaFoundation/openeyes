@@ -58,9 +58,9 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 		$episode = end($episodes);
 
 		$editable = false;
-		// View the open episode for this firm's specialty, if any
+		// View the open episode for this firm's subspecialty, if any
 		foreach ($episodes as $ep) {
-			if ($ep->firm->serviceSpecialtyAssignment->specialty_id == $firm->serviceSpecialtyAssignment->specialty_id) {
+			if ($ep->firm->serviceSubspecialtyAssignment->subspecialty_id == $firm->serviceSubspecialtyAssignment->subspecialty_id) {
 				$episode = $ep;
 				$editable = true;
 			}

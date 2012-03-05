@@ -18,25 +18,25 @@
  */
 
 /**
- * This is the model class for table "phrase_by_specialty".
+ * This is the model class for table "phrase_by_subspecialty".
  *
- * The followings are the available columns in table 'phrase_by_specialty':
+ * The followings are the available columns in table 'phrase_by_subspecialty':
  * @property string $id
  * @property string $name
  * @property string $phrase
  * @property string $section_id
  * @property string $display_order
- * @property string $specialty_id
+ * @property string $subspecialty_id
  *
  * The followings are the available model relations:
- * @property Specialty $specialty
+ * @property Subspecialty $subspecialty
  * @property Section $section
  */
-class PhraseBySpecialty extends BaseActiveRecord
+class PhraseBySubspecialty extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return PhraseBySpecialty the static model class
+	 * @return PhraseBySubspecialty the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -48,7 +48,7 @@ class PhraseBySpecialty extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'phrase_by_specialty';
+		return 'phrase_by_subspecialty';
 	}
 
 	public function relevantSectionTypes()
@@ -64,11 +64,11 @@ class PhraseBySpecialty extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('section_id, display_order, specialty_id, phrase_name_id', 'length', 'max'=>10),
-			array('phrase, section_id, specialty_id', 'safe'),
+			array('section_id, display_order, subspecialty_id, phrase_name_id', 'length', 'max'=>10),
+			array('phrase, section_id, subspecialty_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, phrase, section_id, display_order, specialty_id', 'safe', 'on'=>'search'),
+			array('id, phrase, section_id, display_order, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -80,7 +80,7 @@ class PhraseBySpecialty extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 			'section' => array(self::BELONGS_TO, 'Section', 'section_id'),
 			'name' => array(self::BELONGS_TO, 'PhraseName', 'phrase_name_id')
 		);
@@ -96,7 +96,7 @@ class PhraseBySpecialty extends BaseActiveRecord
 			'phrase' => 'Phrase',
 			'section_id' => 'Section',
 			'display_order' => 'Display Order',
-			'specialty_id' => 'Specialty',
+			'subspecialty_id' => 'Subspecialty',
 			'phrase_name_id' => 'Name',
 		);
 	}
@@ -109,9 +109,9 @@ class PhraseBySpecialty extends BaseActiveRecord
 	public function ValidatorPhraseNameId($attribute,$params)
 	{
 		// this phrase name id must not exist at this level (not select * from phrase_by_firm where section_id=x and firm_id=y)
-		if (PhraseBySpecialty::model()->findByAttributes(array('section_id' => $this->section_id, 'specialty_id' => $this->specialty_id, 'phrase_name_id' => $this->phrase_name_id))) {
+		if (PhraseBySubspecialty::model()->findByAttributes(array('section_id' => $this->section_id, 'subspecialty_id' => $this->subspecialty_id, 'phrase_name_id' => $this->phrase_name_id))) {
 			if (!$this->id) {
-				$this->addError($attribute,'That phrase name has already been overridden for this section (' . $this->section_id . ') and specialty (' . $this->specialty_id . ')');
+				$this->addError($attribute,'That phrase name has already been overridden for this section (' . $this->section_id . ') and subspecialty (' . $this->subspecialty_id . ')');
 			}
 		}
 	}
@@ -131,7 +131,7 @@ class PhraseBySpecialty extends BaseActiveRecord
 		$criteria->compare('phrase',$this->phrase,true);
 		$criteria->compare('section_id',$this->section_id,true);
 		$criteria->compare('display_order',$this->display_order,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
@@ -141,12 +141,12 @@ class PhraseBySpecialty extends BaseActiveRecord
 	/**
 	 * Retrieves a list of phrase_name models that can be overridden by a user
 	 */
-	public function getOverrideableNames($sectionId, $specialtyId)
+	public function getOverrideableNames($sectionId, $subspecialtyId)
 	{
-		// we want the overrideable global phrase names minus those already defined for the given specialty and section
+		// we want the overrideable global phrase names minus those already defined for the given subspecialty and section
 
 		$params[':sectionid'] = $sectionId;
-		$params[':specialtyid'] = $specialtyId;
+		$params[':subspecialtyid'] = $subspecialtyId;
 
 		$sql = 'select t1.id, t1.name from (
 				-- set of phrase names associated with global phrases defined for the given section
@@ -154,9 +154,9 @@ class PhraseBySpecialty extends BaseActiveRecord
 				join phrase on phrase_name.id=phrase.phrase_name_id
 				where phrase.section_id=:sectionid
 			) as t1 left join (
-				-- set of phrase names associated with phrases by specialty defined for the given section and specialty; in short we are subtracting this set from the previous since you cant override that which is already overridden
+				-- set of phrase names associated with phrases by subspecialty defined for the given section and subspecialty; in short we are subtracting this set from the previous since you cant override that which is already overridden
 				select phrase_name.id, phrase_name.name from phrase_name
-				join phrase_by_specialty on phrase_name.id=phrase_by_specialty.phrase_name_id and phrase_by_specialty.specialty_id=:specialtyid and phrase_by_specialty.section_id=:sectionid
+				join phrase_by_subspecialty on phrase_name.id=phrase_by_subspecialty.phrase_name_id and phrase_by_subspecialty.subspecialty_id=:subspecialtyid and phrase_by_subspecialty.section_id=:sectionid
 			) as t2	
 			on t1.id=t2.id where t2.id is null';
 

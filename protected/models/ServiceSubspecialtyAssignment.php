@@ -18,24 +18,23 @@
  */
 
 /**
- * This is the model class for table "specialty".
+ * This is the model class for table "service_subspecialty_assignment".
  *
- * The followings are the available columns in table 'specialty':
+ * The followings are the available columns in table 'service_subspecialty_assignment':
  * @property string $id
- * @property string $name
- * @property string $class_name
+ * @property string $service_id
+ * @property string $subspecialty_id
  *
  * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSpecialtyAssignment[] $eventTypeElementTypeAssignmentSpecialtyAssignments
- * @property ExamPhrase[] $examPhrases
- * @property LetterTemplate[] $letterTemplates
- * @property ServiceSpecialtyAssignment[] $serviceSpecialtyAssignments
+ * @property Firm[] $firms
+ * @property Service $service
+ * @property Subspecialty $subspecialty
  */
-class Specialty extends BaseActiveRecord
+class ServiceSubspecialtyAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Specialty the static model class
+	 * @return ServiceSubspecialtyAssignment the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -47,7 +46,7 @@ class Specialty extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'specialty';
+		return 'service_subspecialty_assignment';
 	}
 
 	/**
@@ -58,11 +57,11 @@ class Specialty extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, class_name', 'required'),
-			array('name, class_name', 'length', 'max'=>40),
+			array('service_id, subspecialty_id', 'required'),
+			array('service_id, subspecialty_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, class_name', 'safe', 'on'=>'search'),
+			array('id, service_id, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,11 +73,9 @@ class Specialty extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSpecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSpecialtyAssignment', 'specialty_id'),
-			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'specialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'specialty_id'),
-			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'specialty_id'),
-			'serviceSpecialtyAssignments' => array(self::HAS_MANY, 'ServiceSpecialtyAssignment', 'specialty_id'),
+			'firms' => array(self::HAS_MANY, 'Firm', 'service_subspecialty_assignment_id'),
+			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
+			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
 		);
 	}
 
@@ -89,8 +86,8 @@ class Specialty extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
-			'class_name' => 'Class Name',
+			'service_id' => 'Service',
+			'subspecialty_id' => 'Subspecialty',
 		);
 	}
 
@@ -106,27 +103,11 @@ class Specialty extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('class_name',$this->class_name,true);
+		$criteria->compare('service_id',$this->service_id,true);
+		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
-
-        /**
-         * Fetch an array of specialty IDs and names
-         * @return array
-         */
-        public function getList()
-        {
-                $list = Specialty::model()->findAll();
-                $result = array();
-
-                foreach ($list as $specialty) {
-                        $result[$specialty->id] = $specialty->name;
-                }
-
-                return $result;
-        }
 }

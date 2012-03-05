@@ -36,21 +36,21 @@ class GenerateSiteElementTypeDataCommand extends CConsoleCommand
 
 	public function addNew($args)
 	{
-		$specialties = Specialty::Model()->findAll();
+		$specialties = Subspecialty::Model()->findAll();
 		$possibleElementTypes = PossibleElementType::Model()->with('eventType')->findAll();
 
 		/*
 		the concept of first_in_episode has gone away. this will possibly need refactoring.
 
-		foreach ($specialties as $specialty) {
-			echo $specialty->name . "\n";
+		foreach ($specialties as $subspecialty) {
+			echo $subspecialty->name . "\n";
 			foreach ($possibleElementTypes as $pet) {
 				// if there's not an existing record, where first_in_episode is false, make one
-				if (!$existingSiteElementType = SiteElementType::Model()->findAllByAttributes(array('possible_element_type_id' => $pet->id, 'specialty_id' => $specialty->id, 'first_in_episode' => false))) {
-					echo "\tCreating non-first-in-episode site_element_type entry for: possible_element_type id: " . $pet->id . " specialty: " . $specialty->name . " (event type is: " . $pet->eventType->name . ")\n";
+				if (!$existingSiteElementType = SiteElementType::Model()->findAllByAttributes(array('possible_element_type_id' => $pet->id, 'subspecialty_id' => $subspecialty->id, 'first_in_episode' => false))) {
+					echo "\tCreating non-first-in-episode site_element_type entry for: possible_element_type id: " . $pet->id . " subspecialty: " . $subspecialty->name . " (event type is: " . $pet->eventType->name . ")\n";
 					$newSiteElementType = new SiteElementType;
 					$newSiteElementType->possible_element_type_id = $pet->id;
-					$newSiteElementType->specialty_id = $specialty->id;
+					$newSiteElementType->subspecialty_id = $subspecialty->id;
 					$newSiteElementType->view_number = 1;
 					$newSiteElementType->required = 0;
 					$newSiteElementType->first_in_episode = 0;

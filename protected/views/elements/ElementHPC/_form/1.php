@@ -21,31 +21,31 @@
 
 	<div class="row">
 		<label for="ElementHPC_value">History:</label>
-		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySpecialtyOptions('History'),
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySubspecialtyOptions('History'),
 			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementHPC_value">Severity:</label>
-		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySpecialtyOptions('Severity'),
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySubspecialtyOptions('Severity'),
 			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementHPC_value">Onset:</label>
-		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySpecialtyOptions('Onset'),
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySubspecialtyOptions('Onset'),
 			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementHPC_value">Site:</label>
-		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySpecialtyOptions('Site'),
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySubspecialtyOptions('Site'),
 			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementHPC_value">Duration:</label>
-		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySpecialtyOptions('Duration'),
+		<?php echo CHtml::dropDownList('ElementHPC[phrase]', '', $model->getPhraseBySubspecialtyOptions('Duration'),
 			array('onChange' => 'appendText($(this), $("#ElementHPC_value"));')); ?>
 	</div>
 

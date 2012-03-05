@@ -29,7 +29,7 @@
                                 <td>Element type</td><td><?php echo $data->possibleElementType->elementType->name;?></td>
                         </tr>
                         <tr>
-                                <td>Specialty</td><td><?php echo $data->specialty->name;?></td>
+                                <td>Subspecialty</td><td><?php echo $data->subspecialty->name;?></td>
                         </tr>
                 </table>
 

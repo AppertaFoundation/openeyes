@@ -22,7 +22,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false;
 $firm = $operation->event->episode->firm; ?>
 <div class="view">
 	<strong>Service:</strong>
-	<?php echo CHtml::encode($firm->serviceSpecialtyAssignment->service->name); ?>
+	<?php echo CHtml::encode($firm->serviceSubspecialtyAssignment->service->name); ?>
 </div>
 <div class="view">
 	<strong>Firm:</strong>

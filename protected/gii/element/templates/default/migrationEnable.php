@@ -35,7 +35,7 @@
  * - $className: the class name for the model
  * - $migrationName: the migration name
  * - $eventName: name of the enclosing event
- * - $subSpecialtyName: name of the subspecialty for testing
+ * - $subSubspecialtyName: name of the subsubspecialty for testing
  * - $authorName: Name of the file's author
  * - $authorEmail: Email address of the file's author
  */
@@ -101,13 +101,13 @@ class <?php echo "$migrationName";?> extends CDbMigration
             array(':event_type_id'=>$eventType->id,':element_type_id'=>$elementType->id
             ));
 				
-		// Get specialty ***TODO*** build selection of specialty into Gii
-		$specialty = Specialty::model()->find('name=:name',array(':name'=>'<?php echo "$subSpecialtyName";?>'));
+		// Get subspecialty ***TODO*** build selection of subspecialty into Gii
+		$subspecialty = Subspecialty::model()->find('name=:name',array(':name'=>'<?php echo "$subSubspecialtyName";?>'));
 		
 		// Insert entry into site_element
 		$this->insert('site_element_type', array(
 			'possible_element_type_id' => $possibleElementType->id,
-			'specialty_id' => $specialty->id,
+			'subspecialty_id' => $subspecialty->id,
 			'view_number' => 1,
 			'required' => 1
 			));
@@ -118,7 +118,7 @@ class <?php echo "$migrationName";?> extends CDbMigration
 		// Get relevant ids
 		$eventType = EventType::model()->find('name=:name',array(':name'=>'<?php echo "$eventName";?>'));
 		$elementType = ElementType::model()->find('name=:name',array(':name'=>'<?php echo "$elementName";?>'));
-		$specialty = Specialty::model()->find('name=:name',array(':name'=>'<?php echo "$subSpecialtyName";?>'));
+		$subspecialty = Subspecialty::model()->find('name=:name',array(':name'=>'<?php echo "$subSubspecialtyName";?>'));
 		$possibleElementType = PossibleElementType::model()->find(
         	'event_type_id=:event_type_id and element_type_id=:element_type_id',
             array(':event_type_id'=>$eventType->id,':element_type_id'=>$elementType->id

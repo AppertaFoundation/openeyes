@@ -106,7 +106,7 @@ Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
 			array('name'=>'Start Date','value'=>'$data->NHSDate(\'start_date\')'),
 			array('name'=>'End Date','value'=>'$data->NHSDate(\'end_date\')'),
 			array('name'=>'Firm', 'value'=>'$data->firm->name'),
-			array('name'=>'Specialty', 'value'=>'$data->firm->serviceSpecialtyAssignment->specialty->name'),
+			array('name'=>'Subspecialty', 'value'=>'$data->firm->serviceSubspecialtyAssignment->subspecialty->name'),
 			array('name'=>'Eye','value'=>'$data->getPrincipalDiagnosisEyeText()'), // 'diagnosis.location',
 			array('name'=>'Diagnosis','value'=>'$data->getPrincipalDiagnosisDisorderTerm()'), // 'disorder.name'
 //			array('class'=>'CButtonColumn', 'buttons'=>array(

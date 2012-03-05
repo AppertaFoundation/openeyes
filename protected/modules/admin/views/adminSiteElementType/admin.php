@@ -61,7 +61,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'columns'=>array(
 		'id',
 		'possible_element_type_id',
-		'specialty_id',
+		'subspecialty_id',
 		'view_number',
 		'required',
 		array(

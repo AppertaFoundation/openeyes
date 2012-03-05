@@ -28,8 +28,8 @@
  *
  * The followings are the available model relations:
  * @property ElementOperation[] $elementOperations
- * @property Specialty $specialty
- * @property SpecialtySubsection $serviceSubsection
+ * @property Subspecialty $subspecialty
+ * @property SubspecialtySubsection $serviceSubsection
  * @property OpcsCode[] $opcsCodes
  */
 class Procedure extends BaseActiveRecord
@@ -77,8 +77,8 @@ class Procedure extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'operations' => array(self::MANY_MANY, 'ElementOperation', 'operation_procedure_assignment(proc_id, operation_id)'),
-			'specialties' => array(self::MANY_MANY, 'Specialty', 'proc_specialty_assignment(proc_id, specialty_id)'),
-			'specialtySubsections' => array(self::MANY_MANY, 'SpecialtySubsection', 'proc_specialty_subsection_assignment(proc_id, specialty_subsection_id)'),
+			'specialties' => array(self::MANY_MANY, 'Subspecialty', 'proc_subspecialty_assignment(proc_id, subspecialty_id)'),
+			'subspecialtySubsections' => array(self::MANY_MANY, 'SubspecialtySubsection', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
 			'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(proc_id, opcs_code_id)'),
 		);
 	}
@@ -156,14 +156,14 @@ class Procedure extends BaseActiveRecord
 		return $data;
 	}
 
-	public function getListBySpecialty($specialtyId)
+	public function getListBySubspecialty($subspecialtyId)
 	{
 		$procedures = Yii::app()->db->createCommand()
 			->select('proc.id, proc.term')
 			->from('proc')
-			->join('proc_specialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.specialty_id = :id',
-				array(':id'=>$specialtyId))
+			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
+			->where('psa.subspecialty_id = :id',
+				array(':id'=>$subspecialtyId))
 			->order('proc.term ASC')
 			->queryAll();
 
