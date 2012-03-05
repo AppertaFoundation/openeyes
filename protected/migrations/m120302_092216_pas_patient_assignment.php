@@ -80,7 +80,7 @@ class m120302_092216_pas_patient_assignment extends CDbMigration {
 		}
 		
 		// Set auto_increment counter
-		$this->execute('ALTER TABLE `patient` AUTO_INCREMENT = :patient_counter', array(':patient_counter' => $patient_counter));
+		$this->execute('ALTER TABLE `patient` AUTO_INCREMENT = '.$patient_counter);
 		
 		echo "done.\n";
 
