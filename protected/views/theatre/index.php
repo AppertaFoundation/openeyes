@@ -508,6 +508,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			data += i + "=" + values[i];
 
 			var field = i;
+			var value = values[i];
 		}
 
 		$.ajax({
