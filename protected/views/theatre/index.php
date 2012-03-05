@@ -251,98 +251,84 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	}
 
 	$('button[id^="btn_save_"]').die('click').live('click',function() {
-		var data = {}
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			var selected_tbody_id = $(this).attr('id').match(/[0-9]+/);
+			$('#loader2_'+selected_tbody_id).show();
 
-		var ok = true;
+			var data = {}
 
-		$('input[name^="admitTime_"]').map(function() {
-			var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-			var m2 = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+			var ok = true;
 
-			if (!m2) {
-				alert("Please enter a valid admission time, eg 09:30");
-				$(this).select().focus();
-				ok = false;
-				return false;
-			} else {
-				if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
+			$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.session input[name^="admitTime_"]').map(function() {
+				var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+				var m2 = $(this).val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
+
+				if (!m2) {
 					alert("Please enter a valid admission time, eg 09:30");
 					$(this).select().focus();
 					ok = false;
 					return false;
+				} else {
+					if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
+						alert("Please enter a valid admission time, eg 09:30");
+						$(this).select().focus();
+						ok = false;
+						return false;
+					}
+					if (m2[1].length <2) {
+						m2[1] = "0"+m2[1];
+					}
+					$(this).val(m2[1]+":"+m2[2]);
 				}
-				if (m2[1].length <2) {
-					m2[1] = "0"+m2[1];
-				}
-				$(this).val(m2[1]+":"+m2[2]);
-			}
-			data["operation_"+m[2]] = m2[1]+":"+m2[2];
-		});
+				data["operation_"+m[2]] = m2[1]+":"+m2[2];
+			});
 
-		if (!ok) return false;
+			if (!ok) return false;
 
-		$('textarea[name^="comments"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["comments_"+id] = $(this).val();
-		});
+			data["comments_"+selected_tbody_id] = $('#comments'+selected_tbody_id).val();
 
-		$('input[name^="confirm_"]').map(function() {
-			if ($(this).attr('checked')) {
-				var id = $(this).attr('id').match(/[0-9]+/);
-				data["confirm_"+id] = $(this).val();
-			}
-		});
-
-		$('input[name^="consultant_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["consultant_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="paediatric_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["paediatric_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="anaesthetic_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["anaesthetic_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="general_anaesthetic_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["general_anaesthetic_"+id] = $(this).is(':checked');
-		});
-
-		$('input[name^="available_"]').map(function() {
-			var id = $(this).attr('id').match(/[0-9]+/);
-			data["available_"+id] = $(this).is(':checked');
-		});
-
-		$.ajax({
-			'type': 'POST',
-			'data': data,
-			'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
-			'success': function(data) {
-				$('#updated-flash').show();
-
-				// Apply changes to the read-only values in the dom
-				$('input[name^="admitTime_"]').map(function() {
-					var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-					$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
-				});
-				$('textarea[name^="comments"]').map(function() {
+			$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.confirm input[name^="confirm_"]').map(function() {
+				if ($(this).attr('checked')) {
 					var id = $(this).attr('id').match(/[0-9]+/);
-					$('#comments_ro_'+id).html($(this).val());
-				});
+					data["confirm_"+id] = $(this).val();
+				}
+			});
 
-				view_mode();
-				load_table_states();
-				<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
-					load_purple_states();
-				<?php }?>
-				$('div[id^="buttons_"]').hide();
-			}
-		});
+			data["consultant_"+selected_tbody_id] = $('#consultant_'+selected_tbody_id).val();
+			data["paediatric_"+selected_tbody_id] = $('#paediatric_'+selected_tbody_id).val();
+			data["anaesthetic_"+selected_tbody_id] = $('#anaesthetic_'+selected_tbody_id).val();
+			data["general_anaesthetic_"+selected_tbody_id] = $('#general_anaesthetic_'+selected_tbody_id).val();
+			data["available_"+selected_tbody_id] = $('#available_'+selected_tbody_id).val();
+
+			$.ajax({
+				'type': 'POST',
+				'data': data,
+				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
+				'success': function(data) {
+					$('#updated-flash').show();
+
+					// Apply changes to the read-only values in the dom
+					$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.session input[name^="admitTime_"]').map(function() {
+						var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+						$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
+					});
+
+					$('#comments_ro_'+selected_tbody_id).html($('#comments'+selected_tbody_id).val());
+
+					view_mode();
+					load_table_states();
+					<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+						load_purple_states();
+					<?php }?>
+					$('div[id^="buttons_"]').hide();
+					$('#loader2_'+selected_tbody_id).hide();
+					enableButtons();
+				}
+			});
+		}
+
+		return false;
 	});
 
 	function getmonth(i) {
