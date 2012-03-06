@@ -139,8 +139,7 @@ class WaitingListService
 				service_specialty_assignment ssa,
 				patient pat,
 				operation_procedure_assignment opa,
-				proc p,
-				cancelled_booking cb
+				proc p
 			WHERE
 				eo.event_id = ev.id
 			AND
@@ -159,8 +158,6 @@ class WaitingListService
 				ep.end_date IS NULL
 			AND
 				eo.status = ' . ElementOperation::STATUS_NEEDS_RESCHEDULING . '
-			AND
-				cb.element_operation_id = eo.id
 			' . $whereSql2 . '
 			GROUP BY
 				opa.operation_id
