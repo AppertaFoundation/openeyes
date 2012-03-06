@@ -681,9 +681,9 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .display_actions .display_mode.add { background:#58a859; }
 .display_actions .action_options { float:right; }
 .display_actions .action_options .aLabel { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 10px; }
-.display_actions .action_options .aBtn_inactive { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 5px; color:#666; }
+.display_actions .action_options .aBtn_inactive { display:inline-block; height:18px; margin:3px; padding:4px 5px 0 5px; color:#333; }
 .action_options .aBtn { display:inline-block; height:18px; margin:3px;}
-.action_options .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.action_options .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #fffee7; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .action_options .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
 .action_options .aBtn > a:active { border:none; color:#fff; background:#2546b1; }
 .display_actions .action_options_alt { float:right; }
