@@ -17,36 +17,38 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Consolidates all migrations up to 23/02/2012 into a single step
+ * 
+ * This migration will work on a blank database, or a database that has already been migrated up to
+ * or beyond 23/02/2012 (m120222_115209_new_general_anaesthetic_field_for_sessions_and_sequences).
+ * Databases not migrated up to this point are no longer supported
+ */
 class m120223_000000_consolidation extends CDbMigration {
 
 	public function up() {
-		
 		// Check for existing migrations
 		$existing_migrations = $this->getDbConnection()->createCommand("SELECT count(version) FROM `tbl_migration`")->queryScalar();
-		
-		if($existing_migrations == 1) { // This is the first migration
-			
-			// Initialise database
+		if($existing_migrations == 1) {
+			// This is the first migration, so we can safely initialise the database
 			$this->execute("SET foreign_key_checks = 0");
 			echo "Creating tables...";
 			$this->createTables();
 			echo "Initialising data...";
 			$this->initialiseData();
 			$this->execute("SET foreign_key_checks = 1");
-				
-		} else { // Database has existing migrations
-			
-			// Check that last consolidated migration was applied
+		} else {
+			// Database has existing migrations, so check that last migration step to be consolidated was applied
 			$previous_migration = $this->getDbConnection()->createCommand("SELECT * FROM `tbl_migration` WHERE version = 'm120222_115209_new_general_anaesthetic_field_for_sessions_and_sequences'")->execute();
 			if($previous_migration) {
 				// Previous migration was applied, safe to consolidate
 				echo "Consolidating old migration data";
 				$this->execute("DELETE FROM `tbl_migration` WHERE version < 'm120223_000000_consolidation'");
 			} else {
-				// Previous migration was not applied, cannot migrate
-				throw new CException('Cannot perform migration, previous migrations missing or incomplete');
+				// Database is not migrated up to the consolidation point, cannot migrate
+				echo "Previous migrations missing or incomplete, migration not possible\n";
+				return false;
 			}
-			
 		}
 	}
 
