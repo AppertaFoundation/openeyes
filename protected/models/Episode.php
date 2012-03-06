@@ -146,10 +146,10 @@ class Episode extends BaseActiveRecord
 	{
 		$criteria = new CDbCriteria;
 		$criteria->join = 'LEFT JOIN firm ON t.firm_id = firm.id
-			LEFT JOIN service_subspecialty_assignment serviceSubspecialtyAssignment ON
-				serviceSubspecialtyAssignment.id = firm.service_subspecialty_assignment_id
+			LEFT JOIN service_subspecialty_assignment servicesubspecialtyAssignment ON
+				servicesubspecialtyassignment.id = firm.service_subspecialty_assignment_id
 			LEFT JOIN patient ON t.patient_id = patient.id';
-		$criteria->addCondition('serviceSubspecialtyAssignment.subspecialty_id = :subspecialty_id');
+		$criteria->addCondition('servicesubspecialtyAssignment.subspecialty_id = :subspecialty_id');
 		$criteria->addCondition('patient.id = :patient_id');
 		if ($onlyReturnOpen) {
 			$criteria->addCondition('t.end_date IS NULL');

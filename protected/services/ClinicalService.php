@@ -161,10 +161,9 @@ class ClinicalService
 		if (isset($event)) {
 			$eventType = $event->eventType;
 			$firm = $event->episode->firm;
-			$patientId = $event->episode->patient_id;
-			$criteria = $this->getCriteria($eventType, $firm, $patientId, $event);
+			$criteria = $this->getCriteria($eventType, $firm);
 		} else {
-			$criteria = $this->getCriteria($eventType, $firm, $patientId);
+			$criteria = $this->getCriteria($eventType, $firm);
 		}
 
 		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
@@ -258,10 +257,9 @@ class ClinicalService
 	 * @param $patientId
 	 * @return object
 	 */
-	public function getCriteria($eventType, $firm, $patientId, $event = null)
+	public function getCriteria($eventType, $firm) {
 	{
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
 
 		$criteria = new CDbCriteria;
 		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType
