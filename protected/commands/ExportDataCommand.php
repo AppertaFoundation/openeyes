@@ -41,7 +41,7 @@ class ExportDataCommand extends CConsoleCommand {
 			$columns = $connection->createCommand("SHOW COLUMNS FROM `$table`")->queryColumn();
 			$data = $connection->createCommand("SELECT * from `$table`")->queryAll();
 			if($data) {
-				$file_output = fopen($path . '/' . $table . '.csv', 'w+');
+				$file_output = fopen($path . $table . '.csv', 'w+');
 				fputcsv($file_output, $columns, ',', '"');
 				$records = 0;
 				foreach($data as $record) {
