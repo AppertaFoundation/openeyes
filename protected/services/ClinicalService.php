@@ -257,7 +257,7 @@ class ClinicalService
 	 * @param $patientId
 	 * @return object
 	 */
-	public function getCriteria($eventType, $firm) {
+	public function getCriteria($eventType, $firm)
 	{
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 
