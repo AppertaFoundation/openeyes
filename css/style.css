@@ -199,7 +199,7 @@ button.classy span.with-plussign		{ background: transparent url(../img/_elements
 button.classy span.with-leftarrow		{ background: transparent url(../img/_elements/btns/left-arrow.png) no-repeat top left; padding-left:20px; }
 button.classy span.with-rightarrow		{ background: transparent url(../img/_elements/btns/right-arrow.png) no-repeat top right; padding-right:20px; }
 
-/* mini */
+/* mini - just replace 'tall','grande' or 'venti' in button class */
 button.mini 							{ height:24px; font-size:13px; width: auto; margin:0 2px; }
 button.mini span						{ padding:0 18px; }
 button.mini span.button-span	  	 	{ display:block; height:24px; line-height:23px; } 
@@ -551,7 +551,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 #event_content .cols2 .col2 { width: 48%; float: right; clear: right; }
 #event_content .cols2 h3.subsection { margin-top: 10px; clear: both; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
 
-.eventDetail > .data { display:inline-block; }
+.eventDetail > .data { display:inline-block; position:relative; }
 .eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .eventDetail > .data > .group:hover { background:#fff;}
 .eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
@@ -693,6 +693,13 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .action_options_alt .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#2546b1; }
+/* DIARY THEATRE SESSION VIEW / EDIT */
+.display_actions .session_options { float:right; margin-right:8px; }
+.display_actions .session_options .aBtn_inactive { display:inline-block; padding:4px 10px 3px 10px; color:#777; background: #fafafa; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
+.session_options .aBtn { display:inline-block; height:18px; margin:3px;}
+.session_options .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #dadada; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
+.session_options .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
+.session_options .aBtn > a:active { border:none; color:#fff; background:#2546b1; }
 
 /* ====== CATEGORY & EVENT COLOUR ====== */
 #event_display .colorband { height:5px; background:#a29d8a;  }
@@ -728,7 +735,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* .theatre-sessions table th:last-child { border-right: none; } */
 .theatre-sessions table td { text-align: left; padding:10px 5px 10px 10px; border-right:1px solid #ccc;   }
 /* .theatre-sessions table td:last-child { border-right: none; } */
-.theatre-sessions table th.footer { font-size:12px; padding:10px; color: #333; }
+.theatre-sessions table th.footer { font-size:13px; padding:10px; color: #333; }
 .theatre-sessions table th.footer.available { background: #bde0b3; }
 .theatre-sessions table th.footer.full { background: #ffedb2; }
 /* Control the widths of key tds */
@@ -742,16 +749,22 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table td.alerts	 { width:100px; }
 /* alert icons */
 .theatre-sessions table td.alerts > img {margin-right:3px; }
-.theatre-sessions .timeLeft { float: left; font-size: 14px; }
-.theatre-sessions .metadata { float: right; padding: 4px 6px; background: #fff; opacity: 0.7; font-size: 11px; color: #666; text-align: right; border-radius: 5px; }
-.theatre-sessions .metadata div { opacity: 1; }
+/* allocated time for session and specialists present */
+.theatre-sessions .session_timeleft 	{ float: left; }
+.session_timeleft .session_unavailable 	{ color:#f00; }
+.theatre-sessions .specialists 		{ float: right; padding: 4px 6px 4px 15px; font-size: 11px; font-weight:normal; color: #333; text-align: right; background: #fff; opacity: 0.8; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:2px #ccc solid; }
+/* save and cancel buttons for session */
+.theatre-sessions .buttons_for_sessions { text-align:right; margin-top:10px; }
 
 /* SESSION COMMENTS */
-.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:10px; margin-bottom: 15px; position:relative; min-height: 50px; }
+.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:7px 10px 10px 10px; margin-bottom: 15px; position:relative; min-height: 50px; }
+.sessionComments textarea { width: 200px; margin-top:5px; font-family:Georgia Times sans-serif;}
+.sessionComments h4 { font-size:12px; font-style: italic; color:#998a30; margin-bottom:1px; }
+/* the modifyComments class is not currently used: */
 .sessionComments > .modifyComments { position:absolute; bottom:-20px; right:5px; height:20px; background:#fee54f; padding:3px 10px; }
 .sessionComments > .modifyComments > .date { padding-right:20px; color:#666;}
 .sessionComments > .modifyComments > .edit { float: right; }
-.sessionComments textarea { width: 200px; }
+
 
 /* ====== WAITING LIST ====== */
 /* modified GRID VIEW ... */
@@ -879,5 +892,4 @@ table.waiting-list #key #sendflag-remove 		.color_box { background:#f08a6f; }
 
 .purple_rinse { font-family:Georgia Times sans-serif; line-height:1.5; background:#a0f; border:1px solid #fee54f; padding:10px; position:relative; min-height: 50px; color: #fff; }
 .purple_rinse textarea { width: 200px; }
-.session_unavailable { color: #f00; }
 .toAddress {padding-left:7em;}
