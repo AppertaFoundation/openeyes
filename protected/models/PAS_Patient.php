@@ -133,16 +133,22 @@ class PAS_Patient extends MultiActiveRecord {
 			'numbers' => array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
 			'nhs_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
 			'hos_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'), 
-			'addresses' => array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO',
-				// Exclude expired and future addresses
-				'condition' => '("addresses"."DATE_END" IS NULL OR "addresses"."DATE_END" >= SYSDATE) AND ("addresses"."DATE_START" IS NULL OR "addresses"."DATE_START" <= SYSDATE)',
-			),
+			'addresses' => array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
 			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'address' => array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
-				// Address preference is (Home, Correspond, other), and DATE_START is the tiebreaker
-				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3), "address"."DATE_START" DESC',
-				// Exclude expired and future addresses
-				'condition' => '("address"."DATE_END" IS NULL OR "address"."DATE_END" >= SYSDATE) AND ("address"."DATE_START" IS NULL OR "address"."DATE_START" <= SYSDATE)',
+				// Address preference is: addresses which are not expired, Home > Correspond > other, and then DATE_START is the tiebreaker
+				// Ideally we should not return an expired address here, but expired is better than none (normally an admin error) provided it is flagged as such in the UI
+				'order' => '
+					CASE WHEN
+					("address"."DATE_END" is NULL OR "address"."DATE_END" > SYSDATE)
+					AND
+					("address"."DATE_START" is NULL OR "address"."DATE_START" < SYSDATE)
+					THEN 0
+					ELSE 1
+					END,
+					DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3),
+					"address"."DATE_START" DESC
+				',
 			),
 			'PatientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
 				// DATE_START is the tiebreaker
