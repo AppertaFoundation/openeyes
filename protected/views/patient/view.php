@@ -54,10 +54,6 @@ if (!empty($address)) {
 	for ($numLines; $numLines <= 5; $numLines++) {
 		$address_str .= '<br />';
 	}
-	// check that address is current
-	if(!$address->isCurrent) {
-		$address_str .= '<br /><strong>This is the patient\'s last known address, but is not current</strong>';
-	}
 } else {
 	$address_str .= 'Unknown';
 } ?>
@@ -67,7 +63,12 @@ if (!empty($address)) {
 					<div id="pas-error" class="alertBox">
 						<h3>Warning: The PAS is currently down. Patient details are likely to be stale.</h3>
 					</div>
-				<?php }?>
+				<?php } ?>
+				<?php if($address && !$address->isCurrent()) { // No current address available ?>
+					<div id="no-current-address-error" class="alertBox">
+						<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>
+					</div>
+				<?php } ?>
 
 				<div class="halfColumnLeft">
  

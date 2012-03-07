@@ -92,7 +92,7 @@ class Address extends BaseActiveRecord {
 	 * @return boolean
 	 */
 	public function isCurrent() {
-		return (!$this->date_start || strtotime($this->date_start) <= time()) && (!$this->date_end || strtotime($this->date_end) <= time());
+		return (!$this->date_start || strtotime($this->date_start) <= time()) && (!$this->date_end || strtotime($this->date_end) >= time());
 	}
 	
 	/**
