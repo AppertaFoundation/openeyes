@@ -32,32 +32,15 @@ class m120223_094829_ophtroperationnote_eventtype_relationships extends CDbMigra
 		}
 
 		// select the event_type id for 'operationnote'
-		$event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'operationnote'))->queryRow();
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'operationnote'))->queryRow();
 
 		// create an element_type for 'procedurelist' if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'procedurelist'))->queryRow()) {
-			$this->insert('element_type', array('name' => 'procedurelist'));
+			$this->insert('element_type', array('name' => 'procedurelist','event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
 
 		// select the element_type_id for 'procedurelist'
-		$element_type_id = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'procedurelist'))->queryRow();
-
-		// create possible_element_type entries
-		# | id			  | int(10) unsigned | NO   | PRI | NULL		| auto_increment |
-		# | event_type_id	  | int(10) unsigned | NO   | MUL | NULL		|		 |
-		# | element_type_id	  | int(10) unsigned | NO   | MUL | NULL		|		 |
-		# | num_views		  | int(10) unsigned | NO   |	  | 1			|		 |
-		# | display_order	  | int(10)	     | NO   |	  | NULL		|		 |
-		# | last_modified_user_id | int(10) unsigned | NO   | MUL | 1			|		 |
-		# | last_modified_date	  | datetime	     | NO   |	  | 1900-01-01 00:00:00 |		 |
-		# | created_user_id	  | int(10) unsigned | NO   | MUL | 1			|		 |
-		# | created_date	  | datetime	     | NO   |	  | 1900-01-01 00:00:00 |		 |
-
-		// create site_element_type entries
-
-		
-		# NULL, 4,
-
+		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'procedurelist'))->queryRow();
 	}
 
 	public function down()
