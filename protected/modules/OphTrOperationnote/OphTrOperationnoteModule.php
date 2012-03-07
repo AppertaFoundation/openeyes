@@ -11,6 +11,7 @@ class OphTrOperationnoteModule extends CWebModule
 		$this->setImport(array(
 			'OphTrOperationnote.models.*',
 			'OphTrOperationnote.components.*',
+			'OphTrOperationnote.controllers.*',
 		));
 	}
 
