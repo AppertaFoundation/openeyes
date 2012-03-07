@@ -11,11 +11,11 @@ class m120307_144421_add_event_type_id_to_element_type_table extends CDbMigratio
 		$this->addColumn('element_type','display_order','int(10) unsigned NOT NULL DEFAULT 1');
 
 		// retrieve the event_type_id for event_type 'Operation' (booking)
-		$booking_event_type_id = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name' => 'operation'))->queryRow();
-	
+		$booking_event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name' => 'operation'))->queryRow();
+
 		// set the right event_type_id and display_order settings for operation and operationnote - event-type-modules can set these for themselves in future
-		$this->update('element_type',array('event_type_id'=> $booking_event_type_id, 'display_order'=>'1'),"name='Diagnosis'");
-		$this->update('element_type',array('event_type_id'=> $booking_event_type_id, 'display_order'=>'2'),"name='Operation'");
+		$this->update('element_type',array('event_type_id'=> $booking_event_type['id'], 'display_order'=>'1'),"name='Diagnosis'");
+		$this->update('element_type',array('event_type_id'=> $booking_event_type['id'], 'display_order'=>'2'),"name='Operation'");
 	}
 
 	public function down()
