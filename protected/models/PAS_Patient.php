@@ -131,9 +131,19 @@ class PAS_Patient extends MultiActiveRecord {
 			'addresses' => array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
 			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
 			'address' => array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
-				// Address preference is (Home, Correspond, other), addresses which are not expired (DATE_END), and then DATE_START is the tiebreaker
-				// Ideally we should not return an expired address here, but expired is better than none provided it is flagged as such in the UI (normally an admin error)
-				'order' => 'DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3), "address"."DATE_END" DESC, "address"."DATE_START" DESC',
+				// Address preference is: addresses which are not expired, Home > Correspond > other, and then DATE_START is the tiebreaker
+				// Ideally we should not return an expired address here, but expired is better than none (normally an admin error) provided it is flagged as such in the UI
+				'order' => '
+					CASE WHEN
+					("address"."DATE_END" is NULL OR "address"."DATE_END" > SYSDATE)
+					AND
+					("address"."DATE_START" is NULL OR "address"."DATE_START" < SYSDATE)
+					THEN 0
+					ELSE 1
+					END,
+					DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3),
+					"address"."DATE_START" DESC
+				',
 			),
 			'PatientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
 				// DATE_START is the tiebreaker
