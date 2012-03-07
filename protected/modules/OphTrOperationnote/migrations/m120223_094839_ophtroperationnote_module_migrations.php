@@ -1,6 +1,6 @@
 <?php
 
-class m120223_094829_ophtroperationnote_eventtype_relationships extends CDbMigration
+class m120223_094839_ophtroperationnote_module_migrations extends CDbMigration
 {
 	public function up()
 	{
@@ -8,8 +8,8 @@ class m120223_094829_ophtroperationnote_eventtype_relationships extends CDbMigra
 		$this->createTable('element_procedurelist', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
-			'surgeon_id' => int(10) unsigned,
-			'assistant_id' => int(10) unsigned,
+			'surgeon_id' => 'int(10) unsigned',
+			'assistant_id' => 'int(10) unsigned',
 			'anaesthetic_type' => 'varchar(255)',
 			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
@@ -36,7 +36,7 @@ class m120223_094829_ophtroperationnote_eventtype_relationships extends CDbMigra
 
 		// create an element_type for 'procedurelist' if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'procedurelist'))->queryRow()) {
-			$this->insert('element_type', array('name' => 'procedurelist','event_type_id' => $event_type['id'], 'display_order' => 1));
+			$this->insert('element_type', array('name' => 'procedurelist','class_name' => 'ElementProcedureList', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
 
 		// select the element_type_id for 'procedurelist'
