@@ -37,13 +37,8 @@ echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
  */
 
 foreach ($elements as $element) {
-	$elementClassName = get_class($element);
-
 	echo $this->renderPartial(
-		'/elements/' .
-			$elementClassName .
-			'/_form/' .
-			$element->viewNumber,
+		'/elements/' .  get_class($element) .  '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 			'patient' => $patient, 'newRecord' => true, 'subspecialty' => $subspecialty,
 			'subsections' => $subsections, 'procedures' => $procedures, 'patient' => $patient)

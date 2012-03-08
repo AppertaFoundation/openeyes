@@ -356,10 +356,7 @@ class PatientController extends BaseController
 		if (ctype_digit(@$_GET['event'])) {
 			$event = Event::model()->findByPk($_GET['event']);
 
-			// The eventType, firm and patient are fetched from the event object
-			$elements = $this->service->getElements(
-				null, null, null, $event->created_user_id, $event
-			);
+			$elements = $this->service->getDefaultElements($event);
 
 			// Decide whether to display the 'edit' button in the template
 			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -374,7 +371,11 @@ class PatientController extends BaseController
 			$this->logActivity('viewed event');
 		}
 
-		$eventTypes = EventType::model()->getAllPossible($this->firm->serviceSubspecialtyAssignment->subspecialty_id);
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 

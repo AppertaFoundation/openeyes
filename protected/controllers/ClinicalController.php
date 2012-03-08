@@ -78,10 +78,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		// The eventType, firm and patient are fetched from the event object
-		$elements = $this->service->getElements(
-			null, null, null, $this->getUserId(), $event
-		);
+		$elements = $this->service->getDefaultElements($event);
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -151,10 +148,8 @@ class ClinicalController extends BaseController
 			}
 		}
 
-		$elements = $this->service->getElements(
-			$eventType, $this->firm, $patient->id, $this->getUserId()
-		);		
-		
+		$elements = $this->service->getDefaultElements(false,$eventType->id);
+
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm subspecialty is not defined.');
 		}
@@ -253,8 +248,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
 		}
 
-		// eventType, firm and patientId are fetched from the event object.
-		$elements = $this->service->getElements(null, null, null, $this->getUserId(), $event);
+		$elements = $this->service->getDefaultElements($event);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm subspecialty is not defined.');
@@ -405,8 +399,11 @@ class ClinicalController extends BaseController
 			$this->episodes = $patient->episodes;
 		}
 
-		$subspecialtyId = $this->firm->serviceSubspecialtyAssignment->subspecialty_id;
-		$this->eventTypes = EventType::model()->getAllPossible($subspecialtyId);
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$this->eventTypes = array();
+		} else {
+			$this->eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
 	}
 
 	/**

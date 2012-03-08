@@ -28,7 +28,7 @@ foreach ($elements as $element) {
 		$viewNumber = $element->viewNumber;
 
 		echo $this->renderPartial(
-			'/elements/' . get_class($element) . '/_view/' . $viewNumber,
+			'/elements/' . get_class($element) . '/_view',
 			array('data' => $element)
 		);
 	}

@@ -37,8 +37,8 @@ foreach ($elements as $element) {
 	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
-		'/elements/' . $elementClassName . '/_form/' .
-		$element->viewNumber, array('model' => $element, 'form' => $form, 'specialties' => $specialties,
+		'/elements/' . $elementClassName . '/form',
+		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 		'patient' => $patient, 'newRecord' => false, 'subspecialty' => $subspecialty, 'subsections' => $subsections,
 		'procedures' => $procedures)
 	);

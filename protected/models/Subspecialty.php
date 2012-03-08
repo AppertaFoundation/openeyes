@@ -75,7 +75,6 @@ class Subspecialty extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 //			'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
-			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'subspecialty_id'),
 			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
 			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'subspecialty_id'),
 			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),

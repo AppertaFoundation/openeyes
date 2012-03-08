@@ -24,7 +24,7 @@ class ClinicalService
 	 * validate it. If it's not, check for its presence then validate if present.
 	 * If validation passes for all the chosen elements then save them.
 	 *
-	 * @param array $elements   list of element objects
+	 * @param array $elements		list of element objects
 	 * @param array $data		array of data from $_POST to be saved
 	 *
 	 * return eventId => int || false
@@ -81,9 +81,9 @@ class ClinicalService
 	/**
 	 * Update elements based on arrays passed over from $_POST data
 	 *
-	 * @param array   $elements		array of SiteElementTypes
-	 * @param array   $data			$_POST data to update
-	 * @param object $event    		the associated event
+	 * @param array		$elements		array of SiteElementTypes
+	 * @param array		$data			$_POST data to update
+	 * @param object $event				the associated event
 	 *
 	 * @return boolean $success		true if all elements suceeded, false otherwise
 	 */
@@ -146,51 +146,6 @@ class ClinicalService
 	}
 
 	/**
-	 * Get all the elements for a combination of event type and subspecialty. If the elements
-	 * already exist (i.e. they belong to an event) they are loaded from the db.
-	 *
-	 * @param object $eventType
-	 * @param object $firm
-	 * @param int $patientId
-	 * @param object $userId
-	 * @param object $event
-	 * @return array
-	 */
-	public function getElements($eventType, $firm, $patientId, $userId, $event = null)
-	{
-		if (isset($event)) {
-			$eventType = $event->eventType;
-			$firm = $event->episode->firm;
-			$criteria = $this->getCriteria($eventType, $firm);
-		} else {
-			$criteria = $this->getCriteria($eventType, $firm);
-		}
-
-		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
-
-		$elements = array();
-
-		// Loop through the site_element_type objects and create an element object for each one.
-		foreach ($siteElementTypeObjects as $siteElementTypeObject) {
-			$elementClassName = $siteElementTypeObject->possibleElementType->elementType->class_name;
-			$element = null;
-			if ($event) {
-				// Element may already exist
-				$element = $elementClassName::model()->find('event_id = ?', array($event->id));
-			}
-			if (!$element) {
-				$element = new $elementClassName();
-				$element->setDefaultOptions();
-			}
-			$element->setBaseOptions($firm, $patientId, $userId, $siteElementTypeObject->view_number, $siteElementTypeObject->required);
-			$elements[] = $element;
-			unset($element);
-		}
-
-		return $elements;
-	}
-
-	/**
 	 * Find the episode for this event or, if there isn't one, create one.
 	 *
 	 * @param object $firm
@@ -249,29 +204,23 @@ class ClinicalService
 	}
 
 	/**
-	 * Generates the criteria to get the list of site_element_type records
-	 * from the DB.
+	 * Get all the elements for a the current module's event type
 	 *
-	 * @param $eventType
-	 * @param $firm
-	 * @param $patientId
-	 * @return object
+	 * @param $event_type_id
+	 * @return array
 	 */
-	public function getCriteria($eventType, $firm)
-	{
-		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+	public function getDefaultElements($event=false, $event_type_id=false) {
+		return EventTypeController::getDefaultElements($event, $event_type_id);
+	}
 
-		$criteria = new CDbCriteria;
-		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType
-			ON t.possible_element_type_id = possibleElementType.id';
-		$criteria->addCondition('t.subspecialty_id = :subspecialty_id');
-		$criteria->addCondition('possibleElementType.event_type_id = :event_type_id');
-		$criteria->order = 'possibleElementType.display_order';
-		$criteria->params = array(
-			':subspecialty_id' => $subspecialtyId,
-			':event_type_id' => $eventType->id
-		);
-
-		return $criteria;
+	/**
+	 * Get the optional elements for the current module's event type
+	 * This will be overriden by the module
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getOptionalElements($action, $event=false) {
+		return array();
 	}
 }
