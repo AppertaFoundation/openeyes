@@ -167,7 +167,7 @@
 		}).get();
 
 		if (operations.length == 0) {
-			if (reds == 0 && nogp == 0) {
+			if (nogp == 0) {
 				alert("No items selected for printing.");
 			} else {
 				show_letter_warnings(nogp);
