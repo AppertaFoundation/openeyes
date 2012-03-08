@@ -19,8 +19,6 @@
 </div>
 <div class="content" style="font-size: 14pt;">
 
-	<p><strong>Hospital number reference: <?php echo $patient->hos_num ?></strong></p>
-	
 	<div>
 		<div>
 			<strong><?php echo $patient->fullname; ?>
@@ -33,6 +31,10 @@
 
 	<p>
 		Dear <?php echo $gp->contact->salutationname; ?>,
+	</p>
+
+	<p>
+		<strong>Hospital number reference: <?php echo $patient->hos_num ?></strong>
 	</p>
 
 	<p>
