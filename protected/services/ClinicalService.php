@@ -59,7 +59,7 @@ class ClinicalService
 
 		/**
 		 * Create the event. First check to see if there is currently an episode for this
-		 * specialty for this patient. If so, add the new event to it. If not, create an
+		 * subspecialty for this patient. If so, add the new event to it. If not, create an
 		 * episode and add it to that.
 		 */
 		$episode = $this->getOrCreateEpisode($firm, $patientId);
@@ -146,7 +146,7 @@ class ClinicalService
 	}
 
 	/**
-	 * Get all the elements for a combination of event type and specialty. If the elements
+	 * Get all the elements for a combination of event type and subspecialty. If the elements
 	 * already exist (i.e. they belong to an event) they are loaded from the db.
 	 *
 	 * @param object $eventType
@@ -161,10 +161,9 @@ class ClinicalService
 		if (isset($event)) {
 			$eventType = $event->eventType;
 			$firm = $event->episode->firm;
-			$patientId = $event->episode->patient_id;
-			$criteria = $this->getCriteria($eventType, $firm, $patientId, $event);
+			$criteria = $this->getCriteria($eventType, $firm);
 		} else {
-			$criteria = $this->getCriteria($eventType, $firm, $patientId);
+			$criteria = $this->getCriteria($eventType, $firm);
 		}
 
 		$siteElementTypeObjects = SiteElementType::model()->findAll($criteria);
@@ -200,8 +199,8 @@ class ClinicalService
 	 */
 	public function getOrCreateEpisode($firm, $patientId)
 	{
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty->id;
-		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $patientId);
+		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
+		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
 
 		if (!$episode) {
 			$episode = new Episode();
@@ -258,34 +257,20 @@ class ClinicalService
 	 * @param $patientId
 	 * @return object
 	 */
-	public function getCriteria($eventType, $firm, $patientId, $event = null)
+	public function getCriteria($eventType, $firm)
 	{
-		$specialtyId = $firm->serviceSpecialtyAssignment->specialty_id;
-		$episode = Episode::model()->getBySpecialtyAndPatient($specialtyId, $patientId);
+		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 
 		$criteria = new CDbCriteria;
 		$criteria->join = 'LEFT JOIN possible_element_type possibleElementType
 			ON t.possible_element_type_id = possibleElementType.id';
-		$criteria->addCondition('t.specialty_id = :specialty_id');
+		$criteria->addCondition('t.subspecialty_id = :subspecialty_id');
 		$criteria->addCondition('possibleElementType.event_type_id = :event_type_id');
 		$criteria->order = 'possibleElementType.display_order';
 		$criteria->params = array(
-			':specialty_id' => $specialtyId,
+			':subspecialty_id' => $subspecialtyId,
 			':event_type_id' => $eventType->id
 		);
-
-		// If this event_type has first_in_episode_possible set to 1 we have to add an extra criterion
-		if ($eventType->first_in_episode_possible) {
-			if (!isset($episode) || !$episode->hasEventOfType($eventType->id, $event)) {
-				// It's the first of this event type in an episode or a new episode, get site_element_types
-				// that have first_in_episode set to true
-				$criteria->addCondition('first_in_episode = 1');
-			} else {
-				// It's not the first in episode for this event type, get site_element_types that have
-				// first_in_episode set to false
-				$criteria->addCondition('first_in_episode = 0');
-			}
-		}
 
 		return $criteria;
 	}

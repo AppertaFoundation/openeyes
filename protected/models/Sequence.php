@@ -449,7 +449,7 @@ class Sequence extends BaseActiveRecord
 	public function getFirmName()
 	{
 		if (!empty($this->sequenceFirmAssignment)) {
-			return $this->sequenceFirmAssignment->firm->name . ' (' . $this->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+			return $this->sequenceFirmAssignment->firm->name . ' (' . $this->sequenceFirmAssignment->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
 		} else {
 			return 'None';
 		}

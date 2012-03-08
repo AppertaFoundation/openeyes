@@ -42,8 +42,8 @@ $this->menu=array(
 			'value' => CHtml::encode($model->getServiceText())
 		),
 		array(
-			'name' => 'specialty_id',
-			'value' => CHtml::encode($model->getSpecialtyText())
+			'name' => 'subspecialty_id',
+			'value' => CHtml::encode($model->getSubspecialtyText())
 		),
 		'pas_code',
 		'name',

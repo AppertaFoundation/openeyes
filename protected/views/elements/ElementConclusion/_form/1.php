@@ -21,25 +21,25 @@
 
 	<div class="row">
 		<label for="ElementConclusion_value">Conclusion:</label>
-		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySpecialtyOptions('Conclusion'),
+		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySubspecialtyOptions('Conclusion'),
 			array('onChange' => 'appendText($(this), $("#ElementConclusion_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementConclusion_value">Treatment:</label>
-		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySpecialtyOptions('Treatment'),
+		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySubspecialtyOptions('Treatment'),
 			array('onChange' => 'appendText($(this), $("#ElementConclusion_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementConclusion_value">Outcome:</label>
-		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySpecialtyOptions('Outcome'),
+		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySubspecialtyOptions('Outcome'),
 			array('onChange' => 'appendText($(this), $("#ElementConclusion_value"));')); ?>
 	</div>
 
 	<div class="row">
 		<label for="ElementConclusion_value">Timing:</label>
-		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySpecialtyOptions('Timing'),
+		<?php echo CHtml::dropDownList('ElementConclusion[phrase]', '', $model->getPhraseBySubspecialtyOptions('Timing'),
 			array('onChange' => 'appendText($(this), $("#ElementConclusion_value"));')); ?>
 	</div>
 

@@ -32,8 +32,8 @@
 	<?php echo CHtml::encode($data->phrase); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('specialty_id')); ?>:</b>
-	<?php echo CHtml::encode($data->specialty->name); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('subspecialty_id')); ?>:</b>
+	<?php echo CHtml::encode($data->subspecialty->name); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('display_order')); ?>:</b>

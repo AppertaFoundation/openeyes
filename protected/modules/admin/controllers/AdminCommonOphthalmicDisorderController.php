@@ -60,7 +60,7 @@ class AdminCommonOphthalmicDisorderController extends Controller
 				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
-					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
+					$model->subspecialty_id = $_POST['CommonOphthalmicDisorder']['subspecialty_id'];
 
 					if($model->save()) {
 						$this->redirect(array('view','id'=>$model->id));
@@ -94,7 +94,7 @@ class AdminCommonOphthalmicDisorderController extends Controller
 				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
-					$model->specialty_id = $_POST['CommonOphthalmicDisorder']['specialty_id'];
+					$model->subspecialty_id = $_POST['CommonOphthalmicDisorder']['subspecialty_id'];
 
 					if($model->save()) {
 						$this->redirect(array('view','id'=>$model->id));

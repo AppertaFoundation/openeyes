@@ -25,7 +25,7 @@ if (empty($episodes)) {
 	<div class="title">
 		<input type="hidden" name="episode-id" value="<?php echo $episode->id; ?>" />
 		<span class="date"><?php echo $episode->NHSDate('start_date'); ?></span> - <?php
-		echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name); ?></div>
+		echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name); ?></div>
 	<ul class="events">
 <?php
 		foreach ($episode->events as $event) { ?>

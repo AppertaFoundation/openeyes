@@ -47,15 +47,15 @@ class ReferralService
 
 		// Put all new PAS referrals in OE
 		foreach ($results as $pasReferral) {
-			$specialty = Specialty::model()->find('ref_spec = ?', array($pasReferral->REF_SPEC));
+			$subspecialty = Subspecialty::model()->find('ref_spec = ?', array($pasReferral->REF_SPEC));
 
-			if (empty($specialty)) {
-				//echo 'No specialty for ref_spec ' . $pasReferral->REF_SPEC . "\n";
+			if (empty($subspecialty)) {
+				//echo 'No subspecialty for ref_spec ' . $pasReferral->REF_SPEC . "\n";
 			} else {
-				$ssa = ServiceSpecialtyAssignment::model()->find('specialty_id = ?', array($specialty->id));
+				$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id = ?', array($subspecialty->id));
 				$referral = new Referral;
 
-				$referral->service_specialty_assignment_id = $ssa->id;
+				$referral->service_subspecialty_assignment_id = $ssa->id;
 				$referral->refno = $pasReferral->REFNO;
 	
 				if (!$pasReferral->X_CN) {
@@ -97,7 +97,7 @@ class ReferralService
 			->from('patient p')
 			->join('episode ep', 'ep.patient_id = p.id')
 			->join('firm f', 'f.id = ep.firm_id')
-			->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
+			->join('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
 			->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
 			->where('ep.end_date IS NULL');
 
@@ -144,7 +144,7 @@ class ReferralService
 		$referrals = Referral::model()->findAll(
 			array(
 				'order' => 'refno DESC',
-				'condition' => 'patient_id = :p AND service_specialty_assignment_id = :s AND closed = 0',
+				'condition' => 'patient_id = :p AND service_subspecialty_assignment_id = :s AND closed = 0',
 				'params' => array(
 					':p' => $patientId,
 					':s' => $ssaId
@@ -158,8 +158,8 @@ class ReferralService
 			return $referrals[0]->id;
 		}
 
-		// There are no open referrals for this specialty, try and find open referrals for a different
-		// specialty
+		// There are no open referrals for this subspecialty, try and find open referrals for a different
+		// subspecialty
 		$referrals = Referral::model()->findAll(
 			array(
 				'order' => 'refno DESC',

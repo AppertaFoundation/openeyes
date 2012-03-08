@@ -18,8 +18,8 @@
  */
 
 $this->breadcrumbs=array(
-        'Phrase By Specialties' => array('/admin/adminPhraseBySpecialty/index'),
-        $sectionName => array('specialtyIndex', 'section_id'=>$sectionId),
+        'Phrase By Specialties' => array('/admin/adminPhraseBySubspecialty/index'),
+        $sectionName => array('subspecialtyIndex', 'section_id'=>$sectionId),
         $firmName => array('phraseIndex', 'section_id'=>$sectionId, 'firm_id'=>$_GET['firm_id']),
 	'Create'
 );

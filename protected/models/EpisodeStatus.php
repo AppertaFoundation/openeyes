@@ -18,23 +18,17 @@
  */
 
 /**
- * This is the model class for table "service_specialty_assignment".
+ * This is the model class for table "episode_status".
  *
- * The followings are the available columns in table 'service_specialty_assignment':
+ * The followings are the available columns in table 'episode_status':
  * @property string $id
- * @property string $service_id
- * @property string $specialty_id
- *
- * The followings are the available model relations:
- * @property Firm[] $firms
- * @property Service $service
- * @property Specialty $specialty
+ * @property string $name
  */
-class ServiceSpecialtyAssignment extends BaseActiveRecord
+class EpisodeStatus extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ServiceSpecialtyAssignment the static model class
+	 * @return EpisodeStatus the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -46,7 +40,7 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'service_specialty_assignment';
+		return 'episode_status';
 	}
 
 	/**
@@ -57,11 +51,12 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('service_id, specialty_id', 'required'),
-			array('service_id, specialty_id', 'length', 'max'=>10),
+			array('name, order', 'required'),
+			array('name', 'length', 'max'=>64),
+			array('name, order', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, service_id, specialty_id', 'safe', 'on'=>'search'),
+			array('id, name, order', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,9 +68,6 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'firms' => array(self::HAS_MANY, 'Firm', 'service_specialty_assignment_id'),
-			'service' => array(self::BELONGS_TO, 'Service', 'service_id'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
 
@@ -86,8 +78,8 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'service_id' => 'Service',
-			'specialty_id' => 'Specialty',
+			'name' => 'Name',
+			'order' => 'Order'
 		);
 	}
 
@@ -103,11 +95,21 @@ class ServiceSpecialtyAssignment extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('service_id',$this->service_id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('order',$this->order,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getList() {
+		$episode_statuses = array();
+
+		foreach ($this->findAll(array('order'=>'`order` ASC')) as $episode_status) {
+			$episode_statuses[$episode_status->id] = $episode_status->name;
+		}
+
+		return $episode_statuses;
 	}
 }

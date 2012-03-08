@@ -22,12 +22,12 @@
  *
  * The followings are the available columns in table 'firm':
  * @property string $id
- * @property string $service_specialty_assignment_id
+ * @property string $service_subspecialty_assignment_id
  * @property string $pas_code
  * @property string $name
  *
  * The followings are the available model relations:
- * @property ServiceSpecialtyAssignment $serviceSpecialtyAssignment
+ * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
  * @property FirmUserAssignment[] $firmUserAssignments
  * @property LetterPhrase[] $letterPhrases
  */

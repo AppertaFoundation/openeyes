@@ -1074,7 +1074,7 @@ class ElementOperation extends BaseElement
 	public function getWaitingListContact() {
 		$changeContact = '';
 		$siteId = $this->site->id;
-		$serviceId = $this->event->episode->firm->serviceSpecialtyAssignment->service->id;
+		$serviceId = $this->event->episode->firm->serviceSubspecialtyAssignment->service->id;
 		$firmCode = $this->event->episode->firm->pas_code;
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
@@ -1153,14 +1153,14 @@ class ElementOperation extends BaseElement
 	 */
 	public function getAdmissionContact() {
 		$siteId = $this->booking->ward->site_id;
-		$specialty = $this->event->episode->firm->serviceSpecialtyAssignment->specialty;
+		$subspecialty = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
 		$contact = array(
-			'refuse' => $specialty->name . ' Admission Coordinator on ',
+			'refuse' => $subspecialty->name . ' Admission Coordinator on ',
 			'health' => '',
 		);
 		switch ($siteId) {
 			case 1: // City Road
-				switch ($specialty->id) {
+				switch ($subspecialty->id) {
 					case 4: // Cataract
 						$contact['refuse'] .= '020 7566 2006';
 						break;
@@ -1205,7 +1205,7 @@ class ElementOperation extends BaseElement
 				$contact['health'] = '020 8725 0060';
 				break;
 			case 6: // Mile End
-				switch ($specialty->id) {
+				switch ($subspecialty->id) {
 					case 7:	// Glaucoma
 						$contact['refuse'] .= '020 7566 2020';
 						//$contact['health'] = 'Eileen Harper on 020 7566 2020';

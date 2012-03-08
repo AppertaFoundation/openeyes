@@ -30,9 +30,9 @@
 	<?php echo $form->errorSummary($model); ?>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'service_specialty_assignment_id'); ?>
-		<?php echo $form->dropDownList($model,'service_specialty_assignment_id',$model->getServiceSpecialtyOptions()); ?>
-		<?php echo $form->error($model,'service_specialty_assignment_id'); ?>
+		<?php echo $form->labelEx($model,'service_subspecialty_assignment_id'); ?>
+		<?php echo $form->dropDownList($model,'service_subspecialty_assignment_id',$model->getServiceSubspecialtyOptions()); ?>
+		<?php echo $form->error($model,'service_subspecialty_assignment_id'); ?>
 	</div>
 
 	<div class="row">

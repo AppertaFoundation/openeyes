@@ -93,6 +93,7 @@ class Episode extends BaseActiveRecord
 			'firm_id' => 'Firm',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
+			'episode_status_id' => 'Episode Status'
 		);
 	}
 
@@ -134,27 +135,27 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
-	 * Returns the episode for a patient and specialty if there is one.
+	 * Returns the episode for a patient and subspecialty if there is one.
 	 *
-	 * @param integer $specialtyId			id of the specialty
+	 * @param integer $subspecialtyId			id of the subspecialty
 	 * @param integer $patientId			id of the patient
 	 *
 	 * @return object $episode if found, null otherwise
 	 */
-	public function getBySpecialtyAndPatient($specialtyId, $patientId, $onlyReturnOpen = true)
+	public function getBySubspecialtyAndPatient($subspecialtyId, $patientId, $onlyReturnOpen = true)
 	{
 		$criteria = new CDbCriteria;
 		$criteria->join = 'LEFT JOIN firm ON t.firm_id = firm.id
-			LEFT JOIN service_specialty_assignment serviceSpecialtyAssignment ON
-				serviceSpecialtyAssignment.id = firm.service_specialty_assignment_id
+			LEFT JOIN service_subspecialty_assignment servicesubspecialtyAssignment ON
+				servicesubspecialtyassignment.id = firm.service_subspecialty_assignment_id
 			LEFT JOIN patient ON t.patient_id = patient.id';
-		$criteria->addCondition('serviceSpecialtyAssignment.specialty_id = :specialty_id');
+		$criteria->addCondition('servicesubspecialtyAssignment.subspecialty_id = :subspecialty_id');
 		$criteria->addCondition('patient.id = :patient_id');
 		if ($onlyReturnOpen) {
 			$criteria->addCondition('t.end_date IS NULL');
 		}
 		$criteria->params = array(
-			':specialty_id' => $specialtyId,
+			':subspecialty_id' => $subspecialtyId,
 			':patient_id' => $patientId
 		);
 
@@ -209,9 +210,9 @@ class Episode extends BaseActiveRecord
 			->select('e.id AS eid')
 			->from('episode e')
 			->join('firm f', 'e.firm_id = f.id')
-			->join('service_specialty_assignment s_s_a', 'f.service_specialty_assignment_id = s_s_a.id')
-			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.specialty_id = :specialty_id', array(
-				':patient_id' => $patientId, ':specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id
+			->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
+			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+				':patient_id' => $patientId, ':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
 			))
 			->queryRow();
 
@@ -229,8 +230,8 @@ class Episode extends BaseActiveRecord
 			->from('patient a')
 			->join('episode b', 'a.id = b.patient_id')
 			->join('firm c', 'b.firm_id = c.id')
-			->join('service_specialty_assignment d', 'c.service_specialty_assignment_id = d.id')
-			->join('specialty e', 'd.specialty_id = e.id')
+			->join('service_subspecialty_assignment d', 'c.service_subspecialty_assignment_id = d.id')
+			->join('subspecialty e', 'd.subspecialty_id = e.id')
 			->where('a.id = :patient_id', array(':patient_id' => $this->patient_id))
 			->queryRow();
 
@@ -243,7 +244,7 @@ class Episode extends BaseActiveRecord
 			$referral = new Referral;
 			$referral->refno = $row2->REFNO;
 			$referral->patient_id = $this->patient_id;
-			$referral->service_specialty_assignment_id = $patient_data['ssa_id'];
+			$referral->service_subspecialty_assignment_id = $patient_data['ssa_id'];
 			$referral->firm_id = $patient_data['firm_id'];
 			$referral->setIsNewRecord(true);
 			if (!$referral->save()) {

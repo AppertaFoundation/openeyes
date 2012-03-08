@@ -113,8 +113,8 @@ class SequenceFirmAssignment extends BaseActiveRecord
 		$options = Yii::app()->db->createCommand()
 			->select('t.id, t.name, s.name AS sname')
 			->from('firm t')
-			->join('service_specialty_assignment ssa', 'ssa.id = t.service_specialty_assignment_id')
-			->join('specialty s', 's.id = ssa.specialty_id')
+			->join('service_subspecialty_assignment ssa', 'ssa.id = t.service_subspecialty_assignment_id')
+			->join('subspecialty s', 's.id = ssa.subspecialty_id')
 			->order('t.name')
 			->queryAll();
 

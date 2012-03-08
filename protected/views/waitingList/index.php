@@ -42,13 +42,13 @@
 										<tr  class="even">
 													<td>
 														<?php
-														echo CHtml::dropDownList('specialty-id', @$_POST['specialty-id'], Specialty::model()->getList(),
+														echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
 																		array('empty'=>'All specialties', 'ajax'=>array(
 																						'type'=>'POST',
-																						'data'=>array('specialty_id'=>'js:this.value'),
+																						'data'=>array('subspecialty_id'=>'js:this.value'),
 																						'url'=>Yii::app()->createUrl('waitingList/filterFirms'),
 																						'success'=>"js:function(data) {
-																										if ($('#specialty-id').val() != '') {
+																										if ($('#subspecialty-id').val() != '') {
 																														$('#firm-id').attr('disabled', false);
 																														$('#firm-id').html(data);
 																										} else {
@@ -251,11 +251,11 @@
 	$(document).ready(function() {
 		$('#hos_num').focus();
 
-		if ($('#specialty-id').val() != '') {
+		if ($('#subspecialty-id').val() != '') {
 			$.ajax({
 				url: '<?php echo Yii::app()->createUrl('waitingList/filterFirms')?>',
 				type: "POST",
-				data: "specialty_id="+$('#specialty-id').val(),
+				data: "subspecialty_id="+$('#subspecialty-id').val(),
 				success: function(data) {
 					$('#firm-id').attr('disabled', false);
 					$('#firm-id').html(data);

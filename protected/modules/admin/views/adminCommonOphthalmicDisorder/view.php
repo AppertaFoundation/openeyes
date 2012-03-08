@@ -42,8 +42,8 @@ $this->menu=array(
 			'value' => CHtml::encode($model->disorder->term)
 		),
 		array(
-			'name' => 'specialty_id',
-			'value' => CHtml::encode($model->specialty->name)
+			'name' => 'subspecialty_id',
+			'value' => CHtml::encode($model->subspecialty->name)
 		),
 	),
 )); ?>

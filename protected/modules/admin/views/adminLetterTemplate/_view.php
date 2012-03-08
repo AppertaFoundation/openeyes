@@ -24,8 +24,8 @@
 	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('specialty_id')); ?>:</b>
-	<?php echo CHtml::encode($data->getSpecialtyText()); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('subspecialty_id')); ?>:</b>
+	<?php echo CHtml::encode($data->getSubspecialtyText()); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('name')); ?>:</b>

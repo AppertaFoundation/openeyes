@@ -40,10 +40,7 @@ $form=$this->beginWidget('CActiveForm', array(
 				<td>Element type</td><td><?php echo $model->possibleElementType->elementType->name;?></td>
 			</tr>
 			<tr>
-				<td>Specialty</td><td><?php echo $model->specialty->name;?></td>
-			</tr>
-			<tr>
-				<td>First in episode</td><td><?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';} ?></td>
+				<td>Subspecialty</td><td><?php echo $model->subspecialty->name;?></td>
 			</tr>
 		</table>
 
@@ -63,8 +60,6 @@ $form=$this->beginWidget('CActiveForm', array(
 		<?php echo $form->checkBox($model,'required'); ?>
 		<?php echo $form->error($model,'required'); ?>
 	</div>
-
-	<?php echo $form->hiddenField($model,'first_in_episode');?>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>

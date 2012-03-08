@@ -41,8 +41,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'section_by_specialty_id'); ?>
-		<?php echo $form->textField($model,'section_by_specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->label($model,'section_by_subspecialty_id'); ?>
+		<?php echo $form->textField($model,'section_by_subspecialty_id',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
 	<div class="row">
@@ -51,8 +51,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'specialty_id'); ?>
-		<?php echo $form->textField($model,'specialty_id',array('size'=>10,'maxlength'=>10)); ?>
+		<?php echo $form->label($model,'subspecialty_id'); ?>
+		<?php echo $form->textField($model,'subspecialty_id',array('size'=>10,'maxlength'=>10)); ?>
 	</div>
 
 	<div class="row buttons">

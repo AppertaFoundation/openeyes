@@ -154,7 +154,7 @@ foreach ($elements as $element) {
 		$firmName = 'Emergency List';
 	} else {
 		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-			$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+			$session->sequence->sequenceFirmAssignment->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
 	}
 	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
 ?></h4>

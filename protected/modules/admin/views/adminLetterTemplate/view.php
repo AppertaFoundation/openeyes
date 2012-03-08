@@ -38,8 +38,8 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		array(
-			'name' => 'specialty_id',
-			'value' => CHtml::encode($model->getSpecialtyText())
+			'name' => 'subspecialty_id',
+			'value' => CHtml::encode($model->getSubspecialtyText())
 		),
 		'name',
 		array(

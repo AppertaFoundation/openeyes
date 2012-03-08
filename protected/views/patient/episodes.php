@@ -39,7 +39,7 @@
 						<div class="episode_nav">
 							<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
 							<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
-							<h4><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></h4>
+							<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 							<ul class="events">
 								<?php foreach ($episode->events as $event) {?>
 									<?php
@@ -71,7 +71,7 @@
 							<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
 							<div class="row"><span class="label">Principal eye:</span><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></div>
 							<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
-							<div class="row"><span class="label">Specialty:</span><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></div>
+							<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></div>
 							<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></div>
 							<img class="folderIcon" src="/img/_elements/icons/folder_open.png" alt="folder open" />
 						</div>
@@ -124,7 +124,7 @@
 					} else {
 						if (isset($current_episode)) {
 							$this->renderPartial('/clinical/episodeSummary',
-								array('episode' => $current_episode)
+								array('episode' => $current_episode, 'patient' => $model)
 							);
 						}
 					}

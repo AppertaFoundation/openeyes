@@ -202,7 +202,7 @@ class ElementDiagnosis extends BaseElement
 					event ev,
 					episode ep,
 					firm f,
-					service_specialty_assignment ssa
+					service_subspecialty_assignment ssa
 				WHERE
 					ed.event_id = ev.id
 				AND
@@ -212,9 +212,9 @@ class ElementDiagnosis extends BaseElement
 				AND
 					ep.end_date IS NULL
 				AND
-					f.service_specialty_assignment_id = ssa.id
+					f.service_subspecialty_assignment_id = ssa.id
 				AND
-					ssa.specialty_id = :specialty_id
+					ssa.subspecialty_id = :subspecialty_id
 				AND
 					ep.patient_id = :patient_id
 				ORDER BY
@@ -224,7 +224,7 @@ class ElementDiagnosis extends BaseElement
 			';
 
 			$diagnosis = ElementDiagnosis::model()->findBySql($sql, array(
-				'specialty_id' => $firm->serviceSpecialtyAssignment->specialty_id,
+				'subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id,
 				'patient_id' => $patientId
 			));
 

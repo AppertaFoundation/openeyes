@@ -71,10 +71,10 @@ class BaseElement extends BaseActiveRecord
 	 *
 	 * @return array
 	 */
-	public function getPhraseBySpecialtyOptions($section)
+	public function getPhraseBySubspecialtyOptions($section)
 	{
 		$section = Section::Model()->getByType('Exam', $section);
-		return array_merge(array('-' => '-'), CHtml::listData(PhraseBySpecialty::Model()->findAll('specialty_id = ? AND section_id = ?', array($this->firm->serviceSpecialtyAssignment->specialty_id, $section->id)), 'id', 'phrase'));
+		return array_merge(array('-' => '-'), CHtml::listData(PhraseBySubspecialty::Model()->findAll('subspecialty_id = ? AND section_id = ?', array($this->firm->serviceSubspecialtyAssignment->subspecialty_id, $section->id)), 'id', 'phrase'));
 	}
 
 	/**

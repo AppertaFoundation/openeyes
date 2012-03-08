@@ -29,10 +29,7 @@
                                 <td>Element type</td><td><?php echo $data->possibleElementType->elementType->name;?></td>
                         </tr>
                         <tr>
-                                <td>Specialty</td><td><?php echo $data->specialty->name;?></td>
-                        </tr>
-                        <tr>
-                                <td>First in episode</td><td><?php if ($data->first_in_episode) {echo 'Yes';} else {echo 'No';} ?></td>
+                                <td>Subspecialty</td><td><?php echo $data->subspecialty->name;?></td>
                         </tr>
                 </table>
 

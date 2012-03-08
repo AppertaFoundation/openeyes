@@ -18,22 +18,24 @@
  */
 
 /**
- * This is the model class for table "specialty_subsection".
+ * This is the model class for table "subspecialty".
  *
- * The followings are the available columns in table 'specialty_subsection':
+ * The followings are the available columns in table 'subspecialty':
  * @property string $id
- * @property string $specialty_id
  * @property string $name
+ * @property string $class_name
  *
  * The followings are the available model relations:
- * @property Procedure[] $procedures
- * @property Specialty $specialty
+ * @property EventTypeElementTypeAssignmentSubspecialtyAssignment[] $eventTypeElementTypeAssignmentSubspecialtyAssignments
+ * @property ExamPhrase[] $examPhrases
+ * @property LetterTemplate[] $letterTemplates
+ * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
  */
-class SpecialtySubsection extends BaseActiveRecord
+class Subspecialty extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ServiceSubsection the static model class
+	 * @return Subspecialty the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,7 +47,7 @@ class SpecialtySubsection extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'specialty_subsection';
+		return 'subspecialty';
 	}
 
 	/**
@@ -56,12 +58,11 @@ class SpecialtySubsection extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('specialty_id, name', 'required'),
-			array('specialty_id', 'length', 'max'=>10),
-			array('name', 'length', 'max'=>255),
+			array('name, class_name', 'required'),
+			array('name, class_name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, specialty_id, name', 'safe', 'on'=>'search'),
+			array('id, name, class_name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,8 +74,11 @@ class SpecialtySubsection extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'procedures' => array(self::MANY_MANY, 'Procedure', 'proc_specialty_subsection_assignment(proc_id, specialty_subsection_id)'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
+//			'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
+			'siteElementTypes' => array(self::HAS_MANY, 'SiteElementType', 'subspecialty_id'),
+			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
+			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'subspecialty_id'),
+			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),
 		);
 	}
 
@@ -85,8 +89,8 @@ class SpecialtySubsection extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'specialty_id' => 'Specialty',
 			'name' => 'Name',
+			'class_name' => 'Class Name',
 		);
 	}
 
@@ -102,30 +106,27 @@ class SpecialtySubsection extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('specialty_id',$this->specialty_id,true);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('class_name',$this->class_name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public function getList($specialtyId)
-	{
-		$sections = Yii::app()->db->createCommand()
-			->select('id, name')
-			->from('specialty_subsection')
-			->where('specialty_id = :id',
-				array(':id'=>$specialtyId))
-			->order('name ASC')
-			->queryAll();
+        /**
+         * Fetch an array of subspecialty IDs and names
+         * @return array
+         */
+        public function getList()
+        {
+                $list = Subspecialty::model()->findAll();
+                $result = array();
 
-		$data = array();
+                foreach ($list as $subspecialty) {
+                        $result[$subspecialty->id] = $subspecialty->name;
+                }
 
-		foreach ($sections as $section) {
-			$data[$section['id']] = $section['name'];
-		}
-
-		return $data;
-	}
+                return $result;
+        }
 }

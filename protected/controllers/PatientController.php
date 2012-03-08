@@ -362,8 +362,8 @@ class PatientController extends BaseController
 			);
 
 			// Decide whether to display the 'edit' button in the template
-			if ($this->firm->serviceSpecialtyAssignment->specialty_id !=
-				$event->episode->firm->serviceSpecialtyAssignment->specialty_id) {
+			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+				$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 				$editable = false;
 			} else {
 				$editable = true;
@@ -374,7 +374,7 @@ class PatientController extends BaseController
 			$this->logActivity('viewed event');
 		}
 
-		$eventTypes = EventType::model()->getAllPossible($this->firm->serviceSpecialtyAssignment->specialty_id);
+		$eventTypes = EventType::model()->getAllPossible($this->firm->serviceSubspecialtyAssignment->subspecialty_id);
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
@@ -474,5 +474,16 @@ class PatientController extends BaseController
 		}
 
 		return $template;
+	}
+
+	public function actionSetEpisodeStatus($id) {
+		$episode = Episode::model()->findByPk($id);
+
+		if (!isset($episode)) {
+			throw new CHttpException(403, 'Invalid episode id.');
+		}
+
+		$episode->episode_status_id = $_POST['episode_status_id'];
+		$episode->save();
 	}
 }

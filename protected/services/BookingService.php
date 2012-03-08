@@ -184,13 +184,13 @@ class BookingService
 	}
 
 	/**
-	 * Search for theatres/sessions, filtered by site/specialty/firm/theatre
+	 * Search for theatres/sessions, filtered by site/subspecialty/firm/theatre
 	 *
 	 * @param string  $startDate (YYYY-MM-DD)
 	 * @param string  $endDate   (YYYY-MM-DD)
 	 * @param integer $siteId
 	 * @param integer $theatreId
-	 * @param integer $specialtyId
+	 * @param integer $subspecialtyId
 	 * @param integer $firmId
 	 * @param integer $wardId
 	 * @return CDbReader
@@ -200,7 +200,7 @@ class BookingService
 		$endDate,
 		$siteId = null,
 		$theatreId = null,
-		$specialtyId = null,
+		$subspecialtyId = null,
 		$firmId = null,
 		$wardId = null,
 		$emergencyList = null
@@ -222,9 +222,9 @@ class BookingService
 				$whereSql .= ' AND t.id = :theatreId';
 				$whereParams[':theatreId'] = $theatreId;
 			}
-			if (!empty($specialtyId)) {
-				$whereSql .= ' AND spec.id = :specialtyId';
-				$whereParams[':specialtyId'] = $specialtyId;
+			if (!empty($subspecialtyId)) {
+				$whereSql .= ' AND spec.id = :subspecialtyId';
+				$whereParams[':subspecialtyId'] = $subspecialtyId;
 			}
 			if (!empty($firmId)) {
 				$whereSql .= ' AND f.id = :firmId';
@@ -239,7 +239,7 @@ class BookingService
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,
-					f.name AS firm_name, spec.name AS specialty_name,
+					f.name AS firm_name, spec.name AS subspecialty_name,
 					o.eye, o.anaesthetic_type, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
@@ -256,8 +256,8 @@ class BookingService
 				->leftJoin('patient p', 'p.id = ep.patient_id')
 				->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
 				->join('firm f', 'f.id = sfa.firm_id')
-				->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
-				->join('specialty spec', 'spec.id = ssa.specialty_id')
+				->join('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
+				->join('subspecialty spec', 'spec.id = ssa.subspecialty_id')
 				->leftJoin('user mu','b.last_modified_user_id = mu.id')
 				->leftJoin('user cu','b.created_user_id = cu.id')
 				->leftJoin('user su','s.last_modified_user_id = su.id')

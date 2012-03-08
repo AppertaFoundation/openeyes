@@ -62,7 +62,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 	'columns'=>array(
 		'id',
 		'disorder_id',
-		'specialty_id',
+		'subspecialty_id',
 		array(
 			'class'=>'CButtonColumn',
 		),

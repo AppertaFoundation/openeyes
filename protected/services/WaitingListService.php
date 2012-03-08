@@ -29,18 +29,18 @@ class WaitingListService
 	 *	to be rescheduled.
 	 *
 	 * @param int $firmId
-	 * @param int $specialtyId
+	 * @param int $subspecialtyId
 	 * @param int $status
 	 * @return array
 	 */
-	public function getWaitingList($firmId, $specialtyId, $status, $hos_num=false, $site_id=false)
+	public function getWaitingList($firmId, $subspecialtyId, $status, $hos_num=false, $site_id=false)
 	{
 		$whereSql = '';
 		// intval() for basic data sanitising
 		if (!empty($firmId)) {
 			$whereSql .= ' AND f.id = ' . intval($firmId).' ';
-		} elseif (!empty($specialtyId)) {
-			$whereSql .= ' AND ssa.specialty_id = ' . intval($specialtyId).' ';
+		} elseif (!empty($subspecialtyId)) {
+			$whereSql .= ' AND ssa.subspecialty_id = ' . intval($subspecialtyId).' ';
 		}
 
 		if ($hos_num && ctype_digit($hos_num)) {
@@ -99,7 +99,7 @@ class WaitingListService
 				event ev,
 				episode ep,
 				firm f,
-				service_specialty_assignment ssa,
+				service_subspecialty_assignment ssa,
 				patient pat,
 				operation_procedure_assignment opa,
 				proc p
@@ -110,7 +110,7 @@ class WaitingListService
 			AND
 				ep.firm_id = f.id
 			AND
-				f.service_specialty_assignment_id = ssa.id
+				f.service_subspecialty_assignment_id = ssa.id
 			AND
 				ep.patient_id = pat.id
 			AND
@@ -141,7 +141,7 @@ class WaitingListService
 				event ev,
 				episode ep,
 				firm f,
-				service_specialty_assignment ssa,
+				service_subspecialty_assignment ssa,
 				patient pat,
 				operation_procedure_assignment opa,
 				proc p
@@ -152,7 +152,7 @@ class WaitingListService
 			AND
 				ep.firm_id = f.id
 			AND
-				f.service_specialty_assignment_id = ssa.id
+				f.service_subspecialty_assignment_id = ssa.id
 			AND
 				ep.patient_id = pat.id
 			AND

@@ -23,8 +23,8 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'List PhraseBySpecialty', 'url'=>array('index')),
-	array('label'=>'Create PhraseBySpecialty', 'url'=>array('create')),
+	array('label'=>'List PhraseBySubspecialty', 'url'=>array('index')),
+	array('label'=>'Create PhraseBySubspecialty', 'url'=>array('create')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -33,7 +33,7 @@ $('.search-button').click(function(){
 	return false;
 });
 $('.search-form form').submit(function(){
-	$.fn.yiiGridView.update('phrase-by-specialty-grid', {
+	$.fn.yiiGridView.update('phrase-by-subspecialty-grid', {
 		data: $(this).serialize()
 	});
 	return false;
@@ -56,16 +56,16 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'phrase-by-specialty-grid',
+	'id'=>'phrase-by-subspecialty-grid',
 	'dataProvider'=>$model->search(),
 	'filter'=>$model,
 	'columns'=>array(
 		'id',
 		'name',
 		'phrase',
-		'section_by_specialty_id',
+		'section_by_subspecialty_id',
 		'display_order',
-		'specialty_id',
+		'subspecialty_id',
 		array(
 			'class'=>'CButtonColumn',
 		),

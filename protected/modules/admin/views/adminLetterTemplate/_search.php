@@ -31,8 +31,8 @@
 	</div>
 
 	<div class="row">
-		<?php echo $form->label($model,'specialty_id'); ?>
-		<?php echo $form->dropDownList($model,'specialty_id',$model->getSpecialtyOptions()); ?>
+		<?php echo $form->label($model,'subspecialty_id'); ?>
+		<?php echo $form->dropDownList($model,'subspecialty_id',$model->getSubspecialtyOptions()); ?>
 	</div>
 
 	<div class="row">

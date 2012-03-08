@@ -41,10 +41,7 @@ $this->menu=array(
                                 <td>Element type</td><td><?php echo $model->possibleElementType->elementType->name;?></td>
                         </tr>
                         <tr>
-                                <td>Specialty</td><td><?php echo $model->specialty->name;?></td>
-                        </tr>
-                        <tr>
-                                <td>First in episode</td><td><?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';} ?></td>
+                                <td>Subspecialty</td><td><?php echo $model->subspecialty->name;?></td>
                         </tr>
                 </table>
 </div>
@@ -58,8 +55,8 @@ $this->menu=array(
         <?php echo CHtml::encode($model->possible_element_type_id); ?>
         <br />
 
-        <b><?php echo CHtml::encode($model->getAttributeLabel('specialty_id')); ?>:</b>
-        <?php echo CHtml::encode($model->specialty->name); ?>
+        <b><?php echo CHtml::encode($model->getAttributeLabel('subspecialty_id')); ?>:</b>
+        <?php echo CHtml::encode($model->subspecialty->name); ?>
         <br />
 
         <b><?php echo CHtml::encode($model->getAttributeLabel('view_number')); ?>:</b>
@@ -68,10 +65,6 @@ $this->menu=array(
 
         <b><?php echo CHtml::encode($model->getAttributeLabel('required')); ?>:</b>
         <?php if ($model->required) {echo 'Yes';} else {echo 'No';} ?>
-        <br />
-
-        <b><?php echo CHtml::encode($model->getAttributeLabel('first_in_episode')); ?>:</b>
-        <?php if ($model->first_in_episode) {echo 'Yes';} else {echo 'No';} ?>
         <br />
 </div>
 
