@@ -38,6 +38,14 @@
 </div>
 <div class="content" style="font-size: 14pt;">
 
+	<p>
+		Dear <?php echo $gp->contact->salutationname; ?>,
+	</p>
+
+	<p>
+		<strong>Hospital number reference: <?php echo $patient->hos_num ?></strong>
+	</p>
+
 	<div>
 		<div>
 			<strong><?php echo $patient->fullname; ?>
@@ -47,14 +55,6 @@
 		<?php if (!empty($patient->nhs_num)) { ?>
 		<strong>NHS number: <?php echo $patient->nhs_num; } ?></strong>
 	</div>
-
-	<p>
-		Dear <?php echo $gp->contact->salutationname; ?>,
-	</p>
-
-	<p>
-		<strong>Hospital number reference: <?php echo $patient->hos_num ?></strong>
-	</p>
 
 	<p>
 		This patient was recently referred to this hospital and a decision was made that surgery was appropriate under the care of
