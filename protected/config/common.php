@@ -40,7 +40,7 @@ $config = array(
 	),
 
 	'modules' => array(
- 		// Gii tool
+		// Gii tool
 		'gii' => array(
 			'class' => 'system.gii.GiiModule',
 			'password' => 'openeyes',
@@ -159,7 +159,10 @@ $config = array(
 		'log_events' => true,
 		'urgent_booking_notify_hours' => 24,
 		'urgent_booking_notify_email' => array(),
-		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>'
+		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
+		'enabled_modules' => array(
+			'OphTrOperation'
+		)
 	)
 );
 
