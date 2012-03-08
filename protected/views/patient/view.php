@@ -68,7 +68,12 @@ if (!empty($address)) {
 					<div id="pas-error" class="alertBox">
 						Warning: The PAS is currently down. Patient details are likely to be stale.
 					</div>
-				<?php }?>
+				<?php } ?>
+				<?php if($address && !$address->isCurrent()) { // No current address available ?>
+					<div id="no-current-address-error" class="alertBox">
+						<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>
+					</div>
+				<?php } ?>
 
 				<div class="halfColumnLeft">
  

@@ -93,6 +93,14 @@ class Address extends BaseActiveRecord {
 	}
 
 	/**
+	 * Is this a current address (not expired or in the future)?
+	 * @return boolean
+	 */
+	public function isCurrent() {
+		return (!$this->date_start || strtotime($this->date_start) <= time()) && (!$this->date_end || strtotime($this->date_end) >= time());
+	}
+	
+	/**
 	 * @return string Address as formatted HTML (<br/> separated)
 	 */
 	public function getLetterHtml() {
