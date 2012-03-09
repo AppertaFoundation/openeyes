@@ -554,9 +554,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$('#date-start').change(function() {
 		setFilter('date-start');
+		$('input[type="radio"]').attr('checked','');
+		$('#date-filter_3').attr('checked','checked');
 	});
 
 	$('#date-end').change(function() {
 		setFilter('date-end');
+		$('input[type="radio"]').attr('checked','');
+		$('#date-filter_3').attr('checked','checked');
 	});
 </script>
