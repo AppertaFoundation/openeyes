@@ -4,8 +4,8 @@ class m120223_094839_ophtroperationnote_module_migrations extends CDbMigration
 {
 	public function up()
 	{
-		// create element_procedurelist
-		$this->createTable('element_procedurelist', array(
+		// create et_ophtroperationnote_procedurelist
+		$this->createTable('et_ophtroperationnote_procedurelist', array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
 			'surgeon_id' => 'int(10) unsigned',
@@ -18,10 +18,10 @@ class m120223_094839_ophtroperationnote_module_migrations extends CDbMigration
 			'PRIMARY KEY (`id`)',
 			'UNIQUE KEY `event_id` (`event_id`)'
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
-		$this->addForeignKey('element_procedurelist_last_modified_user_id_fk','element_procedurelist','last_modified_user_id','user','id');
-		$this->addForeignKey('element_procedurelist_created_user_id_fk','element_procedurelist','created_user_id','user','id');
-		$this->addForeignKey('element_procedurelist_surgeon_id_fk','element_procedurelist','surgeon_id','consultant','id');
-		$this->addForeignKey('element_procedurelist_assistant_id_fk','element_procedurelist','assistant_id','contact','id');
+		$this->addForeignKey('et_ophtroperationnote_procedurelist_last_modified_user_id_fk','et_ophtroperationnote_procedurelist','last_modified_user_id','user','id');
+		$this->addForeignKey('et_ophtroperationnote_procedurelist_created_user_id_fk','et_ophtroperationnote_procedurelist','created_user_id','user','id');
+		$this->addForeignKey('et_ophtroperationnote_procedurelist_surgeon_id_fk','et_ophtroperationnote_procedurelist','surgeon_id','consultant','id');
+		$this->addForeignKey('et_ophtroperationnote_procedurelist_assistant_id_fk','et_ophtroperationnote_procedurelist','assistant_id','contact','id');
 
 		# (many to many relationship with procedures)
 

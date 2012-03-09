@@ -161,7 +161,8 @@ $config = array(
 		'urgent_booking_notify_email' => array(),
 		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'enabled_modules' => array(
-			'OphTrOperation'
+			'OphTrOperation', 
+			'OphTrOperationnote'
 		)
 	)
 );
