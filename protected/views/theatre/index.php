@@ -314,24 +314,33 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			'data': data,
 			'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
 			'success': function(data) {
-				$('#updated-flash').show();
+				$.ajax({
+					'type': 'POST',
+					'data': 'session_id='+selected_tbody_id,
+					'url': '<?php echo Yii::app()->createUrl('theatre/getSessionTimestamps');?>',
+					'success': function(data2) {
 
-				// Apply changes to the read-only values in the dom
-				$('input[name^="admitTime_"]').map(function() {
-					var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-					$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
-				});
-				$('textarea[name^="comments"]').map(function() {
-					var id = $(this).attr('id').match(/[0-9]+/);
-					$('#comments_ro_'+id).html($(this).val());
-				});
+						$('#updated-flash').show();
 
-				view_mode();
-				load_table_states();
-				<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
-					load_purple_states();
-				<?php }?>
-				$('div[id^="buttons_"]').hide();
+						// Apply changes to the read-only values in the dom
+						$('input[name^="admitTime_"]').map(function() {
+							var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+							$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
+						});
+						$('textarea[name^="comments"]').map(function() {
+							var id = $(this).attr('id').match(/[0-9]+/);
+							$('#comments_ro_'+id).html($(this).val());
+							$('#comments_ro_'+id).attr('title',data2);
+						});
+
+						view_mode();
+						load_table_states();
+						<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+							load_purple_states();
+						<?php }?>
+						$('div[id^="buttons_"]').hide();
+					}
+				});
 			}
 		});
 	});
