@@ -682,4 +682,16 @@ class TheatreController extends BaseController
 		}
 		Yii::app()->session['theatre_searchoptions'] = $so;
 	}
+
+	public function actionGetSessionTimestamps() {
+		if (isset($_POST['session_id'])) {
+			if ($session = Session::model()->findByPk($_POST['session_id'])) {
+				$ex = explode(' ',$session->last_modified_date);
+				$last_modified_date = $ex[0];
+				$last_modified_time = $ex[1];
+				$user = User::model()->findByPk($session->last_modified_user_id);
+				echo "Modified on ".Helper::convertMySQL2NHS($last_modified_date)." at ".$last_modified_time." by ".$user->first_name." ".$user->last_name;
+			}
+		}
+	}
 }
