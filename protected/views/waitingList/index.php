@@ -193,15 +193,17 @@
 	$('#btn_confirm_selected').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			var data = '';
+			var operations = 0;
 			data += "adminconfirmto=" + $('#adminconfirmto').val() + "&adminconfirmdate=" + $('#adminconfirmdate').val();
 			$('input[id^="operation"]:checked').map(function() {
 				if (data.length >0) {
 					data += '&';
 				}
 				data += "operations[]=" + $(this).attr('id').replace(/operation/,'');
+				operations += 1;
 			});
 
-			if (data.length == 0) {
+			if (operations == 0) {
 				alert('No items selected.');
 			} else {
 				disableButtons();
