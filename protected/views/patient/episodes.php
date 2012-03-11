@@ -251,6 +251,11 @@
 				});
 			}
 
+			var eventTypeClasses = new Array();
+			<?php foreach ($eventTypes as $eventType) { ?>
+				eventTypeClasses[<?php echo $eventType->id ?>] = '<?php echo $eventType->class_name ?>';
+			<?php } ?>
+
 			$(document).ready(function(){
 				if ($('#header_text').length >0) {
 					$('.display_mode').html($('#header_text').html());
@@ -283,20 +288,16 @@
 			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
 				eventTypeId = this.id.match(/\d*$/);
 				var firm_id = $('#selected_firm_id option:selected').val();
-				var eventTypeClasses = new Array();
-				<?php foreach ($eventTypes as $eventType) { ?>
-					eventTypeClasses[<?php echo $eventType->id ?>] = '<?php echo $eventType->class_name ?>';
-				<?php } ?>
 
 				var eventTypeName = eventTypeClasses[eventTypeId];
-				var create_address = '';
+				var module_address = '';
 				if (eventTypeName == 'OphTrOperation') {
-					create_address = 'clinical';	
+					module_address = 'clinical';	
 				} else {
-					create_address = eventTypeName + '/Default';
+					module_address = eventTypeName + '/Default';
 				}
 				$.ajax({
-					url: '/' + create_address + '/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>&firm_id='+firm_id,
+					url: '/' + module_address + '/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>&firm_id='+firm_id,
 					success: function(data) {
 						$('.display_mode').removeClass('edit').addClass('add');
 						//$('div.display_actions').hide();
@@ -326,8 +327,15 @@
 			}
 
 			function edit_event(event_id) {
+				var eventTypeName = eventTypeClasses[eventTypeId];
+				var module_address = '';
+				if (eventTypeName == 'OphTrOperation') {
+					module_address = 'clinical';	
+				} else {
+					module_address = eventTypeName + '/Default';
+				}
 				$.ajax({
-					url: '/clinical/update/'+event_id,
+					url: '/' + module_address + '/update/'+event_id,
 					success: function(data) {
 						edit_mode();
 						$('div.display_actions').show();
