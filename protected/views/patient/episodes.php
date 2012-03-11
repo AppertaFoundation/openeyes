@@ -110,15 +110,19 @@
 					<?php
 					if (ctype_digit(@$_GET['event'])) {?>
 						<?php
-						$this->renderPartial(
-							"/clinical/".$this->getTemplateName('view', $event->event_type_id),
-							array(
-								'elements' => $elements,
-								'eventId' => $_GET['event'],
-								'editable' => $editable,
-								'site' => $site
-							), false, true
-						);
+						if ($event->class_name == 'OphTrOperation') {
+							$this->renderPartial(
+								"/clinical/".$this->getTemplateName('view', $event->event_type_id),
+								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
+								false, true
+							);
+						} else {
+							$this->renderPartial(
+								"//".$event->class_name."/views/default/index", 
+								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
+								false, true
+							);
+						}
 					} else {
 						if (isset($current_episode)) {
 							$this->renderPartial('/clinical/episodeSummary',

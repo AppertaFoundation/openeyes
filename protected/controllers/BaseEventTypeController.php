@@ -105,6 +105,6 @@ class BaseEventTypeController extends Controller
 	}
 
 	public function actionCreate() {
-		echo "peas"; exit;
-        }
+       		 
+	}	
 }
