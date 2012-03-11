@@ -201,6 +201,7 @@ class ClinicalController extends BaseController
 		$params = array(
 			'elements' => $elements,
 			'eventTypeId' => $eventTypeId,
+			'eventType' => $eventType,
 			'specialties' => $specialties,
 			'patient' => $patient,
 			'firm' => $this->firm

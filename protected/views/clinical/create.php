@@ -47,6 +47,7 @@ echo CHtml::hiddenField('firm_id', $firm->id);
 foreach ($elements as $element) {
 	$elementClassName = get_class($element);
 
+	echo $eventType->class_name; exit;
 	echo $this->renderPartial(
 		'/elements/' . $elementClassName . '/form',
 		array(

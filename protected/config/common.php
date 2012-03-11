@@ -37,6 +37,8 @@ $config = array(
 		'application.commands.shell.*',
 		'application.behaviors.*',
 		'application.controllers.*',
+		'application.modules.OphTrOperationnote.models.*',
+		'application.modules.OphTrOperationnote.views.*',
 	),
 
 	'modules' => array(
@@ -47,7 +49,7 @@ $config = array(
 			'ipFilters'=> array('*')
 		),
 		'admin',
-		'OphTrOperationnote' => array('class' => 'application.modules.OphTrOperationnote')
+		'OphTrOperationnote' => array('class' => 'application.modules.OphTrOperationnote', 'import' => 'application.modules.OphTrOperationnote.models.*')
 	),
 
 	// Application components
