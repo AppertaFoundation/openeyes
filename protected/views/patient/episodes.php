@@ -83,7 +83,7 @@
 					<?php
 						foreach ($eventTypes as $eventType) {
 ?>
-					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><span id="add-new-event-name-<?php echo $eventType->id ?>"><?php echo $eventType->class_name ?></span></strong></a></p>
+					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
 <?php
 						}
 ?>
@@ -283,7 +283,12 @@
 			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
 				eventTypeId = this.id.match(/\d*$/);
 				var firm_id = $('#selected_firm_id option:selected').val();
-				var eventTypeName = $('#add-new-event-name-'+eventTypeId).text();
+				var eventTypeClasses = new Array();
+				<?php foreach ($eventTypes as $eventType) { ?>
+					eventTypeClasses[<?php echo $eventType->id ?>] = '<?php echo $eventType->class_name ?>';
+				<?php } ?>
+
+				var eventTypeName = eventTypeClasses[eventTypeId];
 				var create_address = '';
 				if (eventTypeName == 'OphTrOperation') {
 					create_address = 'clinical';	
