@@ -1,6 +1,6 @@
 <?php
 
-class OphTrOperationnoteModule extends BaseModule
+class OphTrOperationnoteModule extends BaseEventTypeModule
 {
 	public function init()
 	{

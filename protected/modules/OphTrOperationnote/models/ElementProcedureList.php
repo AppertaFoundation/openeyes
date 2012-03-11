@@ -30,7 +30,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementProcedureList extends BaseElement
+class ElementProcedureList extends BaseEventTypeElement
 {
 	public $service;
 
