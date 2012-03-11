@@ -103,4 +103,8 @@ class BaseEventTypeController extends Controller
 				return $elements;
 		}
 	}
+
+	public function actionCreate() {
+		echo "peas"; exit;
+        }
 }

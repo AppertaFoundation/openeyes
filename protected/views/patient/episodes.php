@@ -83,7 +83,7 @@
 					<?php
 						foreach ($eventTypes as $eventType) {
 ?>
-					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><span id="add-new-event-name-<?php echo $eventType->id ?>"><?php echo $eventType->class_name ?></span></strong></a></p>
 <?php
 						}
 ?>
@@ -283,9 +283,15 @@
 			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
 				eventTypeId = this.id.match(/\d*$/);
 				var firm_id = $('#selected_firm_id option:selected').val();
-
+				var eventTypeName = $('#add-new-event-name-'+eventTypeId).text();
+				var create_address = '';
+				if (eventTypeName == 'OphTrOperation') {
+					create_address = 'clinical';	
+				} else {
+					create_address = eventTypeName + '/Default';
+				}
 				$.ajax({
-					url: '/clinical/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>&firm_id='+firm_id,
+					url: '/' + create_address + '/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>&firm_id='+firm_id,
 					success: function(data) {
 						$('.display_mode').removeClass('edit').addClass('add');
 						//$('div.display_actions').hide();
