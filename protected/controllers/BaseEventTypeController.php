@@ -1,6 +1,6 @@
 <?php
 
-class EventTypeController extends Controller
+class BaseEventTypeController extends Controller
 {
 	public function actionIndex()
 	{
@@ -57,7 +57,7 @@ class EventTypeController extends Controller
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
 				if ($element = $element_class::model()->find('event_id = ?',array($event->id))) {
-					$elements[] = $element;
+					$elements[] = new $element_class;
 				}
 			}
 		} else {
@@ -65,6 +65,7 @@ class EventTypeController extends Controller
 
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
+
 				$elements[] = new $element_class;
 			}
 		}

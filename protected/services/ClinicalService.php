@@ -210,7 +210,7 @@ class ClinicalService
 	 * @return array
 	 */
 	public function getDefaultElements($event=false, $event_type_id=false) {
-		$etc = new EventTypeController(1);
+		$etc = new BaseEventTypeController(1);
 		return $etc->getDefaultElements($event, $event_type_id);
 	}
 

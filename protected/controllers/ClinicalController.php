@@ -25,6 +25,18 @@ class ClinicalController extends BaseController
 	public $service;
 	public $firm;
 
+	public function init()
+	{
+		// FIXME: this is a hack to enable things to continue working until we can call eg: /modulename/create
+		foreach (Yii::app()->params['enabled_modules'] as $module) {
+			if ($module != 'OphTrOperation') {
+				Yii::import('application.modules.'.$module.'.*');
+				Yii::import('application.modules.'.$module.'.models.*');
+				Yii::import('application.modules.'.$module.'.views.*');
+			}
+		}
+	}
+
 	public function filters()
 	{
 		return array('accessControl');

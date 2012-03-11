@@ -1,6 +1,6 @@
 <?php
 
-class OphTrOperationnoteModule extends CWebModule
+class OphTrOperationnoteModule extends BaseModule
 {
 	public function init()
 	{
@@ -8,11 +8,14 @@ class OphTrOperationnoteModule extends CWebModule
 		// you may place code here to customize the module or the application
 
 		// import the module-level models and components
+		echo "fish"; exit;
 		$this->setImport(array(
 			'OphTrOperationnote.models.*',
+			'OphTrOperationnote.views.*',
 			'OphTrOperationnote.components.*',
 			'OphTrOperationnote.controllers.*',
 		));
+		parent::init();
 	}
 
 	public function beforeControllerAction($controller, $action)
