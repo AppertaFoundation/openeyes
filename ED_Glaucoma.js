@@ -3852,3 +3852,206 @@ ED.OpticDiskPit.prototype.description = function()
     
 	return returnString;
 }
+
+/**
+ * Angle configuration
+ *
+ * @class AngleConfiguration
+ * @property {String} className Name of doodle subclass
+ * @param {Drawing} _drawing
+ * @param {Int} _originX
+ * @param {Int} _originY
+ * @param {Float} _radius
+ * @param {Int} _apexX
+ * @param {Int} _apexY
+ * @param {Float} _scaleX
+ * @param {Float} _scaleY
+ * @param {Float} _arc
+ * @param {Float} _rotation
+ * @param {Int} _order
+ */
+ED.AngleConfiguration = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order)
+{
+    // Number of handles (set before superclass call because superclass calles setHandles())
+    this.numberOfHandles = 3;
+    
+	// Call superclass constructor
+	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
+	
+	// Set classname
+	this.className = "AngleConfiguration";
+    
+    // Create a squiggle to store the three control points
+    var squiggle = new ED.Squiggle(this, new ED.Colour(100, 100, 100, 1), 4, true);
+    
+    // Add it to squiggle array
+    this.squiggleArray.push(squiggle);
+    
+    // Add four points to the squiggle
+    this.addPointToSquiggle(new ED.Point(-100, 0));
+    this.addPointToSquiggle(new ED.Point(-20, -220));
+    this.addPointToSquiggle(new ED.Point(250, -350));
+}
+
+/**
+ * Sets superclass and constructor
+ */
+ED.AngleConfiguration.prototype = new ED.Doodle;
+ED.AngleConfiguration.prototype.constructor = ED.AngleConfiguration;
+ED.AngleConfiguration.superclass = ED.Doodle.prototype;
+
+/**
+ * Sets handle attributes
+ */
+ED.AngleConfiguration.prototype.setHandles = function()
+{
+    // Array of handles
+    for (var i = 0; i < this.numberOfHandles; i++)
+    {
+        this.handleArray[i] = new ED.Handle(null, true, ED.Mode.Handles, false);
+    }
+}
+
+/**
+ * Sets default dragging attributes
+ */
+ED.AngleConfiguration.prototype.setPropertyDefaults = function()
+{
+    this.isMoveable = false;
+    this.rangeOfHandlesXArray[0] = new ED.Range(-100, -100);
+    this.rangeOfHandlesYArray[0] = new ED.Range(-200, 0);
+}
+
+/**
+ * Sets default parameters
+ */
+ED.AngleConfiguration.prototype.setParameterDefaults = function()
+{    
+    this.originX = 0;
+    this.originY = 0;
+    this.rotation = Math.PI/4;
+}
+
+/**
+ * Draws doodle or performs a hit test if a Point parameter is passed
+ *
+ * @param {Point} _point Optional point in canvas plane, passed if performing hit test
+ */
+ED.AngleConfiguration.prototype.draw = function(_point)
+{
+	// Get context
+	var ctx = this.drawing.context;
+	
+	// Call draw method in superclass
+	ED.AngleConfiguration.superclass.draw.call(this, _point);
+    
+	// Boundary path
+	ctx.beginPath();
+
+    // Angle of control point from radius line to point (this value makes path a circle Math.PI/12 for 8 points
+    var phi = 2 * Math.PI/(3 * this.numberOfHandles);
+    
+    // Start curve
+    ctx.moveTo(this.squiggleArray[0].pointsArray[0].x, this.squiggleArray[0].pointsArray[0].y);
+    
+    // Add extra height to allow clicking on thick line to select doodle
+    var h = 20;
+    
+    // Square
+    ctx.lineTo(this.squiggleArray[0].pointsArray[0].x, this.squiggleArray[0].pointsArray[2].y - h);
+    ctx.lineTo(this.squiggleArray[0].pointsArray[2].x, this.squiggleArray[0].pointsArray[2].y - h);
+    ctx.lineTo(this.squiggleArray[0].pointsArray[2].x, this.squiggleArray[0].pointsArray[0].y);
+    
+	// Close path
+	ctx.closePath();
+
+    // Set line attributes
+	ctx.lineWidth = 0;
+	ctx.fillStyle = "rgba(0, 0, 0, 0)";
+	ctx.strokeStyle = "white";
+
+	// Draw boundary path (also hit testing)
+	this.drawBoundary(_point);
+	
+	// Other stuff here
+	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
+	{
+        // New path for cornea
+        ctx.beginPath();
+        
+        // From and to points
+        fp = new ED.Point(-300, 300);
+        mp = new ED.Point(-150, 0);
+        tp = new ED.Point(50, -450);
+        
+        // Start curve
+        ctx.moveTo(fp.x, fp.y);
+        
+        // Draw Bezier curve     
+        ctx.bezierCurveTo(fp.x, fp.y - 150, mp.x - 50, mp.y + 50, mp.x, mp.y);       
+        ctx.bezierCurveTo(mp.x, mp.y - 200, tp.x - 200, tp.y + 200, tp.x, tp.y);
+        
+        // Set line attributes
+        ctx.lineWidth = 48;
+        ctx.lineCap = "square";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = "lightgray";
+        
+        // Draw cornea
+        ctx.stroke();
+        
+        // New path for iris
+        ctx.beginPath();
+        
+        // From and to points
+        var fp = this.squiggleArray[0].pointsArray[0];
+        var mp = this.squiggleArray[0].pointsArray[1];
+        var tp = this.squiggleArray[0].pointsArray[2];
+        
+        // Start curve
+        ctx.moveTo(fp.x, fp.y);
+
+        // Draw Bezier curve
+        var d = 0.8;
+        
+        var bg = (tp.y - fp.y)/(tp.x - fp.x);
+        var bd = Math.sqrt((tp.x - fp.x)*(tp.x - fp.x) + (tp.y - fp.y)*(tp.y - fp.y));
+        var dx = 100;
+        
+        ctx.bezierCurveTo(fp.x, fp.y - 50, mp.x - dx, mp.y - bg * dx, mp.x, mp.y);
+        ctx.bezierCurveTo(mp.x + dx, mp.y + bg * dx, tp.x -50, tp.y, tp.x, tp.y);
+
+        // Set line attributes
+        ctx.lineWidth = 48;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.strokeStyle = "brown";
+        
+        // Draw iris
+        ctx.stroke();
+ 	}
+    
+	// Coordinates of handles (in canvas plane)
+    for (var i = 0; i < this.numberOfHandles; i++)
+    {
+        this.handleArray[i].location = this.transform.transformPoint(this.squiggleArray[0].pointsArray[i]);
+    }
+    
+	// Draw handles if selected
+	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
+	
+	// Return value indicating successful hittest
+	return this.isClicked;
+}
+               
+/**
+ * Returns a string containing a text description of the doodle
+ *
+ * @returns {String} Description of doodle
+ */
+ED.AngleConfiguration.prototype.description = function()
+{
+    var returnString = "";
+	
+	return returnString;
+}

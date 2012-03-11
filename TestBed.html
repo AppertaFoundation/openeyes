@@ -3,7 +3,7 @@
     <head>
         <title>EyeDraw</title>
         
-        <link rel="stylesheet" href="styles.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="OEEyeDraw.css" type="text/css" media="screen" />
         
         <!--   Include this file first to establish name space and include key drawing classes -->
         <script language="JavaScript" src="ED_Drawing.js" type="text/javascript"></script>
@@ -13,8 +13,8 @@
 
         <!--
         <script language="JavaScript" src="ED_Vitreoretinal.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_AntSeg.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_Glaucoma.js" type="text/javascript"></script> -->
+        <script language="JavaScript" src="ED_AntSeg.js" type="text/javascript"></script> -->
+        <script language="JavaScript" src="ED_Glaucoma.js" type="text/javascript"></script> 
         
         <!--   This script handles the drawings for the page   -->
         <script type="text/javascript">
@@ -46,7 +46,7 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 drawingEdit.onLoaded = function()
                 {
                     //drawingEdit.addDoodle('Fndus');
-                    drawingEdit.addDoodle('Template');
+                    drawingEdit.addDoodle('AngleConfiguration');
                     //drawingEdit.addDoodle('RoundHole');
 
                     //drawingEdit.addDoodle('OpticDisk');
@@ -118,24 +118,24 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                             <button class="imgbutton" disabled="true" id="moveToBackRPS" title="Move to back" onclick="drawingEdit.moveToBack(); return false;" ><img src="graphics/moveToBack.gif" /></button>
                             <button class="imgbutton" disabled="true" id="flipVerRPS" title="Flip around vertical axis" onclick="drawingEdit.flipVer(); return false;" ><img src="graphics/flipVer.gif" /></button>
                             <button class="imgbutton" disabled="true" id="flipHorRPS" title="Flip around horizontal axis" onclick="drawingEdit.flipHor(); return false;" ><img src="graphics/flipHor.gif" /></button>
-                            <button class="imgbutton" disabled="true" id="deleteDoodleRPS" title="Delete" onclick="drawingEdit.deleteDoodle(); return false;" ><img src="graphics/DeleteDoodle.gif" /></button>
+                            <button class="imgbutton" disabled="true" id="deleteDoodleRPS" title="Delete" onclick="drawingEdit.deleteDoodle(); return false;" ><img src="graphics/deleteDoodle.gif" /></button>
                             <button class="imgbutton" disabled="true" id="lockRPS" title="Lock" onclick="drawingEdit.lock(); return false;" ><img src="graphics/lock.gif" /></button>
                             <button class="imgbutton" disabled="true" id="unlockRPS" title="Unlock" onclick="drawingEdit.unlock(); return false;" ><img src="graphics/unlock.gif" /></button>
                             <br />
                             
                             <!-- Doodle selection toolbar -->
                             <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskyHaemorrhage'); return false;" ><img src="graphics/DiskHaemorrhage.gif" /></button>
-                            <button class="imgbutton" title="nerveFibreDefect" onclick="drawingEdit.addDoodle('NerveFibreDefect'); return false;" ><img src="graphics/nerveFibreDefect.gif" /></button>
-                            <button class="imgbutton" title="Papilloedema" onclick="drawingEdit.addDoodle('Papilloedema'); return false;" ><img src="graphics/papilloedema.gif" /></button>
-                            <button class="imgbutton" title="Baerveldt" onclick="drawingEdit.addDoodle('Baerveldt'); return false;" ><img src="graphics/baerveldt.gif" /></button>
-                            <button class="imgbutton" title="Ahmed" onclick="drawingEdit.addDoodle('Ahmed'); return false;" ><img src="graphics/ahmed.gif" /></button>
-                            <button class="imgbutton" title="Vicryl suture" onclick="drawingEdit.addDoodle('Vicryl'); return false;" ><img src="graphics/vicryl.gif" /></button>
-                            <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('Supramid'); return false;" ><img src="graphics/supramid.gif" /></button>
-                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('OpticDiskPit'); return false;" ><img src="graphics/opticDiskPit.gif" /></button>
+                            <button class="imgbutton" title="NerveFibreDefect" onclick="drawingEdit.addDoodle('NerveFibreDefect'); return false;" ><img src="graphics/NerveFibreDefect.gif" /></button>
+                            <button class="imgbutton" title="Papilloedema" onclick="drawingEdit.addDoodle('Papilloedema'); return false;" ><img src="graphics/Papilloedema.gif" /></button>
+                            <button class="imgbutton" title="Baerveldt" onclick="drawingEdit.addDoodle('Baerveldt'); return false;" ><img src="graphics/Baerveldt.gif" /></button>
+                            <button class="imgbutton" title="Ahmed" onclick="drawingEdit.addDoodle('Ahmed'); return false;" ><img src="graphics/Ahmed.gif" /></button>
+                            <button class="imgbutton" title="Vicryl suture" onclick="drawingEdit.addDoodle('Vicryl'); return false;" ><img src="graphics/Vicryl.gif" /></button>
+                            <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('Supramid'); return false;" ><img src="graphics/Supramid.gif" /></button>
+                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('OpticDiskPit'); return false;" ><img src="graphics/OpticDiskPit.gif" /></button>
                             <br />
                             
                             <!-- Canvas element -->
-                            <canvas id="canvas" class="canvasclass" width="400" height="400" tabindex="2"></canvas>
+                            <canvas id="canvas" class="ed_canvas_edit" width="400" height="400" tabindex="2"></canvas>
                             <br />
                             <button title="Report" onclick="alert(drawingEdit.report()); return false;" >Report</button><br />
                             <button title="Report" onclick="doodle.toggleMode(); doodle.setHandleProperties(); drawingEdit.repaint(); return false;" >Toggle</button><br />
