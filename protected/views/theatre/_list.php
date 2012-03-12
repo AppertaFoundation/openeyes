@@ -493,18 +493,24 @@ if (empty($theatres)) {?>
 				}
 			});
 
-			$.ajax({
-				type: "POST",
-				data: "operations[]=" + operations.join("&operations[]="),
-				url: "/theatre/requiresanaesthetist",
-				success: function(html) {
-					if (html == "1") {
-						$('#anaesthetic_'+id).attr('checked',true);
-						alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
-						return false;
+			if (operations.length >0) {
+				$.ajax({
+					type: "POST",
+					data: "operations[]=" + operations.join("&operations[]="),
+					url: "/theatre/requiresanaesthetist",
+					success: function(html) {
+						if (html == "1") {
+							$('#anaesthetic_'+id).attr('checked',true);
+							alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
+							return false;
+						} else {
+							$('#general_anaesthetic_'+id).attr('checked','false');
+						}
 					}
-				}
-			});
+				});
+			} else {
+				$('#general_anaesthetic_'+id).attr('checked',false);
+			}
 		}
 	});
 
@@ -520,18 +526,22 @@ if (empty($theatres)) {?>
 				}
 			});
 
-			$.ajax({
-				type: "POST",
-				data: "operations[]=" + operations.join("&operations[]="),
-				url: "/theatre/requiresgeneralanaesthetic",
-				success: function(html) {
-					if (html == "1") {
-						$('#general_anaesthetic_'+id).attr('checked',true);
-						alert("Sorry, you cannot remove the 'General anaesthetic available' flag from this session because there are one or more patients booked into it who require a general anaesthetic.");
-						return false;
+			if (operations.length >0) {
+				$.ajax({
+					type: "POST",
+					data: "operations[]=" + operations.join("&operations[]="),
+					url: "/theatre/requiresgeneralanaesthetic",
+					success: function(html) {
+						if (html == "1") {
+							$('#general_anaesthetic_'+id).attr('checked',true);
+							alert("Sorry, you cannot remove the 'General anaesthetic available' flag from this session because there are one or more patients booked into it who require a general anaesthetic.");
+							return false;
+						}
 					}
-				}
-			});
+				});
+			}
+		} else {
+			$('#anaesthetic_'+id).attr('checked',true);
 		}
 	});
 </script>
