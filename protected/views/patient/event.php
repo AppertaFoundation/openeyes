@@ -32,12 +32,12 @@
 					<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 						<div class="episode_nav">
 							<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-							<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
+							<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episodes/<?php echo $episode->patient_id?>" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
 							<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 							<ul class="events">
-								<?php foreach ($episode->events as $event) {?>
+								<?php foreach ($episode->events as $an_event) {?>
 									<?php
-									$event_elements = $this->service->getDefaultElements($event);
+									$event_elements = $this->service->getDefaultElements($an_event);
 									$scheduled = false;
 									foreach ($event_elements as $element) {
 										if (get_class($element) == 'ElementOperation' && in_array($element->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED))) {
@@ -45,13 +45,13 @@
 										}
 									}
 
-									if (ctype_digit(@$_GET['event']) && $_GET['event'] == $event->id) {
+									if ($event->id == $an_event->id) {
 										$highlight = true;
 									} else {
 										$highlight = false;
 									}
 									?>
-									<li id="eventLi<?php echo $event->id ?>"><a href="/patient/event/<?php echo $event->id?>" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
+									<li id="eventLi<?php echo $an_event->id ?>"><a href="/patient/event/<?php echo $an_event->id?>" rel="<?php echo $an_event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $an_event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
 							<?php
 								}
 							?>
@@ -82,16 +82,10 @@
 						}
 ?>
 				</div>
-				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php if (ctype_digit(@$_GET['event'])) echo $_GET['event']?>" />
-				<?php
-				if (!isset($current_episode)) {?>
-					<div class="alertBox fullWidthEvent">
-						There are currently no episodes for this patient, please add a new event to open an episode.
-					</div>
-				<?php }?>
+				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php echo $event->id?>" />
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">Episode summary</div>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
+					<div class="action_options">
 						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
 					</div>
 					<div class="action_options_alt" style="display: none;">
@@ -102,30 +96,21 @@
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;">
 					<?php
-					if (ctype_digit(@$_GET['event'])) {?>
-						<?php
 						$this->renderPartial(
 							"/clinical/".$this->getTemplateName('view', $event->event_type_id),
 							array(
 								'elements' => $elements,
-								'eventId' => $_GET['event'],
+								'eventId' => $event->id,
 								'editable' => $editable,
 								'site' => $site
 							), false, true
 						);
-					} else {
-						if (isset($current_episode)) {
-							$this->renderPartial('/clinical/episodeSummary',
-								array('episode' => $current_episode, 'patient' => $model)
-							);
-						}
-					}
 					?>
 				</div>
 				<!-- #event_content -->
 				<div class="colorband category_treatement"></div>
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
+					<div class="action_options">
 						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
 					</div>
 					<div class="action_options_alt" style="display: none;">
@@ -135,60 +120,6 @@
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
 		<script type="text/javascript">
-		<?php
-			if (ctype_digit(@$_GET['event'])) {
-		?>
-			var currentEvent = <?php echo $_GET['event'] ?>;
-		<?php
-			} else {
-		?>
-			var currentEvent = '';
-		<?php
-			}
-		?>
-
-		<?php if (ctype_digit(@$_GET['event'])) {?>
-			var last_item_type = 'event';
-			var last_item_id = <?php echo $_GET['event']?>;
-		<?php }else if (isset($current_episode)) {?>
-			var last_item_type = 'episode';
-			var last_item_id = <?php echo $current_episode->id?>;
-		<?php }else{?>
-			var last_item_type = 'url';
-			var last_item_id = window.location.href;
-		<?php }?>
-
-			$('a.episode-details').unbind('click').click(function() {
-				load_episode_summary($(this).attr('rel'));
-				return false;
-			});
-
-			function load_episode_summary(id) {
-				$.ajax({
-					url: '/clinical/episodesummary/'+id,
-					success: function(data) {
-						last_item_type = 'episode';
-						last_item_id = id;
-
-						$('div.action_options').hide();
-						$('#event_content').html(data);
-						view_mode();
-
-						if (currentEvent != '') {
-							// An event was highlighted previously so recreate the a it had
-							$('li[id=eventLi' + currentEvent + ']').wrapInner('<a href="#" rel="' + currentEvent + '" class="show-event-details" />');
-							currentEvent = '';
-							var content = $(".viewing").contents()
-							$(".viewing").replaceWith(content);
-						}
-
-						$('.display_mode').html('Episode summary');
-
-					}
-				});
-				return false;
-			}
-
 			$(document).ready(function(){
 				if ($('#header_text').length >0) {
 					$('.display_mode').html($('#header_text').html());

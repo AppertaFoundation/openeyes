@@ -353,24 +353,6 @@ class PatientController extends BaseController
 
 		$episodes = $patient->episodes;
 
-		if (ctype_digit(@$_GET['event'])) {
-			$event = Event::model()->findByPk($_GET['event']);
-
-			$elements = $this->service->getDefaultElements($event);
-
-			// Decide whether to display the 'edit' button in the template
-			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-				$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-				$editable = false;
-			} else {
-				$editable = true;
-			}
-
-			$event_template_name = $this->getTemplateName('view', $event->event_type_id);
-
-			$this->logActivity('viewed event');
-		}
-
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
 			$eventTypes = array();
 		} else {
@@ -380,7 +362,42 @@ class PatientController extends BaseController
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->render('episodes', array(
-			'model' => $patient, 'episodes' => $episodes, 'event' => @$event, 'elements' => @$elements, 'editable' => @$editable, 'event_template_name' => @$event_template_name, 'eventTypes' => $eventTypes, 'site' => $site
+			'model' => $patient, 'episodes' => $episodes, 'eventTypes' => $eventTypes, 'site' => $site
+		));
+	}
+
+	public function actionEvent($id) {
+		$this->layout = '//layouts/patientMode/main';
+		$this->service = new ClinicalService;
+
+		$event = Event::model()->findByPk($id);
+		$patient = $this->model = $event->episode->patient;
+		$episodes = $patient->episodes;
+
+		$elements = $this->service->getDefaultElements($event);
+
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
+		$event_template_name = $this->getTemplateName('view', $event->event_type_id);
+
+		$this->logActivity('viewed event');
+
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
+
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->render('event', array(
+			'model' => $patient, 'episodes' => $episodes, 'event' => $event, 'elements' => $elements, 'editable' => $editable, 'event_template_name' => $event_template_name, 'eventTypes' => $eventTypes, 'site' => $site, 'current_episode' => $event->episode
 		));
 	}
 
