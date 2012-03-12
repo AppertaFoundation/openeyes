@@ -1,38 +1,11 @@
 <?php
 
-class EventTypeController extends Controller
+class BaseEventTypeController extends Controller
 {
 	public function actionIndex()
 	{
 		$this->render('index');
 	}
-
-	// Uncomment the following methods and override them if needed
-	/*
-	public function filters()
-	{
-		// return the filter configuration for this controller, e.g.:
-		return array(
-			'inlineFilterName',
-			array(
-				'class'=>'path.to.FilterClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-
-	public function actions()
-	{
-		// return external action classes, e.g.:
-		return array(
-			'action1'=>'path.to.ActionClass',
-			'action2'=>array(
-				'class'=>'path.to.AnotherActionClass',
-				'propertyName'=>'propertyValue',
-			),
-		);
-	}
-	*/
 
 	/**
 	 * Get all the elements for an event, the current module or an event_type
@@ -40,7 +13,7 @@ class EventTypeController extends Controller
 	 * @return array
 	 */
 	public function getDefaultElements($event=false, $event_type_id=false) {
-		if ($event) {
+		if ($event and isset($event->event_type_id)) {
 			$event_type = EventType::model()->find('id = ?',array($event->event_type_id));
 		} else if ($event_type_id) {
 			$event_type = EventType::model()->find('id = ?',array($event_type_id));
@@ -53,11 +26,11 @@ class EventTypeController extends Controller
 
 		$elements = array();
 
-		if ($event) {
+		if ($event and isset($event->event_type_id)) {
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
 				if ($element = $element_class::model()->find('event_id = ?',array($event->id))) {
-					$elements[] = $element;
+					$elements[] = new $element_class;
 				}
 			}
 		} else {
@@ -65,6 +38,7 @@ class EventTypeController extends Controller
 
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
+
 				$elements[] = new $element_class;
 			}
 		}
@@ -100,6 +74,34 @@ class EventTypeController extends Controller
 				}
 				
 				return $elements;
+		}
+	}
+
+	public function actionCreate() {
+                $this->renderPartial(
+			'create',
+                        array('elements' => $this->getDefaultElements(), 'eventId' => null, 'editable' => true),
+			false, true
+		);
+	}
+
+	public function renderDefaultElements($action, $event=false) {
+		foreach ($this->getDefaultElements($action, $event=false) as $element) {
+                        $this->renderPartial(
+				$action . '_' . get_class($element),
+                        	array(),
+                        	false, true
+			);
+		}
+	}
+
+	public function renderOptionalElements($action, $event=false) {
+		foreach ($this->getOptionalElements($action, $event=false) as $element) {
+                        $this->renderPartial(
+				$action . '_' . get_class($element),
+                        	array(),
+                        	false, true
+			);
 		}
 	}
 }

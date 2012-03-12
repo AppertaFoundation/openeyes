@@ -1,6 +1,6 @@
 <?php
 
-class OphTrOperationnoteModule extends CWebModule
+class OphTrOperationnoteModule extends BaseEventTypeModule
 {
 	public function init()
 	{
@@ -10,9 +10,11 @@ class OphTrOperationnoteModule extends CWebModule
 		// import the module-level models and components
 		$this->setImport(array(
 			'OphTrOperationnote.models.*',
+			'OphTrOperationnote.views.*',
 			'OphTrOperationnote.components.*',
 			'OphTrOperationnote.controllers.*',
 		));
+		parent::init();
 	}
 
 	public function beforeControllerAction($controller, $action)

@@ -104,15 +104,13 @@
 					<?php
 					if (ctype_digit(@$_GET['event'])) {?>
 						<?php
-						$this->renderPartial(
-							"/clinical/".$this->getTemplateName('view', $event->event_type_id),
-							array(
-								'elements' => $elements,
-								'eventId' => $_GET['event'],
-								'editable' => $editable,
-								'site' => $site
-							), false, true
-						);
+						if ($event->eventType->class_name == 'OphTrOperation') {
+							$this->renderPartial(
+								"/clinical/".$this->getTemplateName('view', $event->event_type_id),
+								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
+								false, true
+							);
+						}
 					} else {
 						if (isset($current_episode)) {
 							$this->renderPartial('/clinical/episodeSummary',
@@ -222,8 +220,15 @@
 				eventTypeId = this.id.match(/\d*$/);
 				var firm_id = $('#selected_firm_id option:selected').val();
 
+				var eventTypeName = eventTypeClasses[eventTypeId];
+				var module_address = '';
+				if (eventTypeName == 'OphTrOperation') {
+					module_address = 'clinical';	
+				} else {
+					module_address = eventTypeName + '/Default';
+				}
 				$.ajax({
-					url: '/clinical/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>&firm_id='+firm_id,
+					url: '/' + module_address + '/create?event_type_id=' + eventTypeId + '&patient_id=<?php echo $model->id?>&firm_id='+firm_id,
 					success: function(data) {
 						$('.display_mode').removeClass('edit').addClass('add');
 						//$('div.display_actions').hide();
@@ -253,8 +258,15 @@
 			}
 
 			function edit_event(event_id) {
+				var eventTypeName = eventTypeClasses[eventTypeId];
+				var module_address = '';
+				if (eventTypeName == 'OphTrOperation') {
+					module_address = 'clinical';	
+				} else {
+					module_address = eventTypeName + '/Default';
+				}
 				$.ajax({
-					url: '/clinical/update/'+event_id,
+					url: '/' + module_address + '/update/'+event_id,
 					success: function(data) {
 						edit_mode();
 						$('div.display_actions').show();
