@@ -16,7 +16,8 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-?>Procedure list: <br />
-<p>This is the content of the procedure list element type create view.</p>
+<h2>Procedure list:</h2>
+<p>This is the content of the procedure list element type create view.  You can customise this page by editing <tt><?php echo __FILE__; ?></tt></p>
 
