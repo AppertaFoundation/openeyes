@@ -88,6 +88,11 @@ if (empty($theatres)) {?>
 								<input type="checkbox" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['general_anaesthetic']){?> checked="checked"<?php }?> /> General anaesthetic available<br/>
 								<input type="checkbox" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="1"<?php if ($session['status'] == 0){?> checked="checked"<?php }?> /> Session available<br/>
 							</div>
+						<?php }else{?>
+							<input type="hidden" id="consultant_<?php echo $session['sessionId']?>" name="consultant_<?php echo $session['sessionId']?>" value="<?php if ($session['consultant']){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="<?php if ($session['paediatric']){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['anaesthetist']){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="<?php if ($session['status'] == 0){ echo '1';} else { echo '0';}?>" />
 						<?php }?>
 						<div class="sessionComments" style="display:block; width:205px;">
 							<form>
@@ -219,6 +224,8 @@ if (empty($theatres)) {?>
 		load_table_states();
 		<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
 			load_purple_states();
+		<?php }else{?>
+			display_purple_states();
 		<?php }?>
 	});
 
@@ -272,6 +279,38 @@ if (empty($theatres)) {?>
 				}
 
 				if ($('#available_'+tbody_id).is(':checked')) {
+					$('#session_unavailable_'+tbody_id).hide();
+				} else {
+					$('#session_unavailable_'+tbody_id).show();
+				}
+			}
+		});
+	}
+
+	function display_purple_states() {
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id').match(/[0-9]+/);
+
+				if ($('#consultant_'+tbody_id).val() == 1) {
+					$('#consultant_icon_'+tbody_id).show();
+				} else {
+					$('#consultant_icon_'+tbody_id).hide();
+				}
+
+				if ($('#paediatric_'+tbody_id).val() == 1) {
+					$('#paediatric_icon_'+tbody_id).show();
+				} else {
+					$('#paediatric_icon_'+tbody_id).hide();
+				}
+
+				if ($('#anaesthetic_'+tbody_id).val() == 1) {
+					$('#anaesthetist_icon_'+tbody_id).show();
+				} else {
+					$('#anaesthetist_icon_'+tbody_id).hide();
+				}
+
+				if ($('#available_'+tbody_id).val() == 1) {
 					$('#session_unavailable_'+tbody_id).hide();
 				} else {
 					$('#session_unavailable_'+tbody_id).show();
