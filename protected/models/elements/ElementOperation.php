@@ -648,8 +648,11 @@ class ElementOperation extends BaseElement
 				$bookable = false;
 				$session['bookable_reason'] = 'paediatric';
 			}
+			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL) {
+				$bookable = false;
+				$session['bookable_reason'] = 'general_anaesthetic';
+			}
 			$session['bookable'] = $bookable;
-			
 			$results[$name][] = $session;
 			if (!in_array($name, $names)) {
 				$names[] = $name;

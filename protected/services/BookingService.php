@@ -99,7 +99,7 @@ class BookingService
 
 		$sql = "
 			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
-				s.consultant, s.anaesthetist, s.paediatric,
+				s.consultant, s.anaesthetist, s.paediatric, s.general_anaesthetic,
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
@@ -116,7 +116,7 @@ class BookingService
 			UNION
 			
 			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
-				s.consultant, s.anaesthetist, s.paediatric,
+				s.consultant, s.anaesthetist, s.paediatric, s.general_anaesthetic,
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s`

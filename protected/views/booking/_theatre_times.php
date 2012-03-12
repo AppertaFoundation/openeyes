@@ -64,6 +64,8 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 					The operation requires a consultant, this session doesn't have one and so cannot be booked into.
 				<?php }else if ($session['bookable_reason'] == 'paediatric') {?>
 					The operation is for a paediatric patient, this session isn't paediatric and so cannot be booked into.
+				<?php }else if ($session['bookable_reason'] == 'general_anaesthetic') {?>
+					The operation requires general anaesthetic, this session doesn't have this and so cannot be booked into.
 				<?php }?>
 			</div>
 		<?php }?>
