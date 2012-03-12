@@ -23,6 +23,7 @@
  * The followings are the available columns in table 'session':
  * @property string $id
  * @property string $sequence_id
+ * @property string $theatre_id
  * @property string $date
  * @property string $start_time
  * @property string $end_time
@@ -31,13 +32,18 @@
  * @property boolean $consultant
  * @property boolean $paediatric
  * @property boolean $anaesthetist
+ * @property boolean $general_anaesthetic
+ * @property integer $bookingCount
+ * @property string $firmName
  *
  * The followings are the available model relations:
  * @property Booking[] $bookings
  * @property Sequence $sequence
+ * @property Theatre $theatre
+ * @property Firm $firm
  */
-class Session extends BaseActiveRecord
-{
+class Session extends BaseActiveRecord {
+	
 	const STATUS_AVAILABLE = 0;
 	const STATUS_UNAVAILABLE = 1;
 
@@ -65,14 +71,11 @@ class Session extends BaseActiveRecord
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
 			array('sequence_id, date, start_time, end_time', 'required'),
-			array('sequence_id', 'length', 'max'=>10),
-			array('comments, status, consultant, paediatric, anaesthetist', 'safe'),
+			array('sequence_id', 'length', 'max' => 10),
+			array('comments, status, consultant, paediatric, anaesthetist, general_anaesthetic', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, sequence_id, date, start_time, end_time, comments, status, firm_id, site_id, weekday', 'safe', 'on'=>'search'),
@@ -82,14 +85,14 @@ class Session extends BaseActiveRecord
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
 			'bookings' => array(self::HAS_MANY, 'Booking', 'session_id'),
 			'sequence' => array(self::BELONGS_TO, 'Sequence', 'sequence_id'),
 			'bookingCount' => array(self::STAT, 'Booking', 'session_id'),
+			'theatre' => array(self::BELONGS_TO, 'Theatre', 'theatre_id'),
+			'firmAssignment' => array(self::HAS_ONE, 'SessionFirmAssignment', 'session_id'),
+			'firm' => array(self::HAS_ONE, 'Firm', 'firm_id', 'through' => 'firmAssignment'),
 		);
 	}
 
@@ -131,17 +134,17 @@ class Session extends BaseActiveRecord
 		$criteria->with = array();
 		if ($this->firm_id) {
 			$criteria->together = true;
-			$criteria->with[] = 'sequence';
-			$criteria->with[] = 'sequence.sequenceFirmAssignment';
-			$criteria->compare('sequenceFirmAssignment.firm_id', (int)$this->firm_id);
+			$criteria->with[] = 'firmAssignment';
+			$criteria->compare('firmAssignment.firm_id', (int)$this->firm_id);
+			Yii::log($this->firm_id);
 		}
 		if ($this->site_id) {
 			$criteria->together = true;
-			$criteria->with[] = 'sequence';
-			$criteria->with[] = 'sequence.theatre';
+			$criteria->with[] = 'theatre';
 			$criteria->compare('theatre.site_id', $this->site_id);
 		}
 		if ($this->weekday) {
+			// FIXME: This needs to use session weekday and not sequence
 			$criteria->together = true;
 			$criteria->with[] = 'sequence';
 			$criteria->compare('sequence.weekday', $this->weekday);
@@ -152,10 +155,9 @@ class Session extends BaseActiveRecord
 		));
 	}
 
-	public function getSiteListByFirm($firmId)
-	{
+	public function getSiteListByFirm($firmId) {
 		$sites = Yii::app()->db->createCommand()
-			->select('site.id, site.short_name')
+			->selectDistinct('site.id, site.short_name')
 			->from('site')
 			->join('theatre t', 'site.id = t.site_id')
 			->join('sequence s', 's.theatre_id = t.id')
@@ -163,26 +165,34 @@ class Session extends BaseActiveRecord
 			->where('sfa.firm_id = :id', array(':id'=>$firmId))
 			->order('site.name ASC')
 			->queryAll();
-
 		$data = array();
-
 		foreach ($sites as $site) {
 			$data[$site['id']] = $site['short_name'];
 		}
-
 		return $data;
 	}
-
-	public function getFirmName()
-	{
-		$sequence = $this->sequence;
-		if (!empty($sequence->sequenceFirmAssignment)) {
-			$name = $sequence->sequenceFirmAssignment->firm->name;
-		} else {
-			$name = 'None';
+	
+	public function getFirmOptions() {
+		$options = Yii::app()->db->createCommand()
+			->selectDistinct('t.id, t.name, s.name AS sname')
+			->from('firm t')
+			->join('service_specialty_assignment ssa', 'ssa.id = t.service_specialty_assignment_id')
+			->join('specialty s', 's.id = ssa.specialty_id')
+			->order('t.name')
+			->queryAll();
+		$result = array();
+		foreach ($options as $value) {
+			$result[$value['id']] = $value['name'] . ' (' . $value['sname'] . ')';
 		}
-
-		return $name;
+		return $result;
+	}
+	
+	public function getFirmName() {
+		if($this->firm) {
+			return $this->firm->name;
+		} else {
+			return 'None';
+		}
 	}
 
 	public function getAssociatedBookings()

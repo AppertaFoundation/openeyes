@@ -23,7 +23,7 @@
 	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('firm_id')); ?>:</b>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('firm')); ?>:</b>
 	<?php echo CHtml::encode($data->getFirmName()); ?>
 	<br />
 
@@ -32,11 +32,11 @@
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('start_date')); ?>:</b>
-	<?php echo CHtml::encode($data->start_date . ' (' . date('l', strtotime($data->start_date)) . ')'); ?>
+	<?php echo CHtml::encode($data->start_date . ' (' . $data->WeekdayText . ')'); ?>
 	<br />
 
-	<b><?php echo CHtml::encode('Time:'); ?>:</b>
-	<?php echo CHtml::encode(substr($data->start_time, 0, 5) . '-' . substr($data->end_time, 0, 5)); ?>
+	<b><?php echo CHtml::encode('Time'); ?>:</b>
+	<?php echo CHtml::encode(substr($data->start_time, 0, 5) . ' - ' . substr($data->end_time, 0, 5)); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('end_date')); ?>:</b>
@@ -61,6 +61,10 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetist')); ?>:</b>
 	<?php echo ($data->anaesthetist) ? 'Yes' : 'No'; ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('general_anaesthetic')); ?>:</b>
+	<?php echo ($data->general_anaesthetic) ? 'Yes' : 'No'; ?>
 	<br />
 
 </div>

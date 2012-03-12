@@ -1,0 +1,28 @@
+.form .row {
+	padding-bottom: 10px;
+}
+
+.form .row:before,
+.form .row:after {
+	content: "";
+	display: table;
+}
+
+.form .row:after {
+	clear: both;
+}
+
+.form .row.nolabel {
+	margin-left: 160px;
+}
+
+.form .row > label {
+	float: left;
+	width: 150px;
+	margin-right: 10px;
+	text-align: right;
+}
+
+.form .row .field {
+	float: left;
+}

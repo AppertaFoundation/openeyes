@@ -51,10 +51,25 @@
 	<?php echo ($data->anaesthetist) ? 'Yes' : 'No'; ?>
 	<br />
 	
-	<?php if (!empty($data->comments)) { ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('general_anaesthetic')); ?>:</b>
+	<?php echo ($data->general_anaesthetic) ? 'Yes' : 'No'; ?>
+	<br />
+	
 	<b><?php echo CHtml::encode($data->getAttributeLabel('comments')); ?>:</b>
 	<?php echo CHtml::encode($data->comments); ?>
 	<br/>
-	<?php	}	?>
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('status')); ?>:</b>
+	<?php echo $data->statusText;
+	?>
+	<br/>
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('bookingCount')); ?>:</b>
+	<?php echo CHtml::encode($data->bookingCount); ?>
+	<br/>
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('firmName')); ?>:</b>
+	<?php echo CHtml::encode($data->firmName); ?>
+	<br/>
 	
 </div>

@@ -18,12 +18,12 @@
  */
 
 require_once(Yii::app()->getBasePath() . '/commands/GenerateSessionsCommand.php');
-class AdminSessionController extends Controller
-{
+
+class AdminSessionController extends Controller {
+	
 	public $layout='column2';
 
-	protected function beforeAction($action)
-	{
+	protected function beforeAction($action) {
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {
 			throw new CHttpException(403, 'You are not authorised to perform this action.');
@@ -67,25 +67,36 @@ class AdminSessionController extends Controller
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id)
-	{
-		$model=$this->loadModel($id);
+	public function actionUpdate($id) {
+		$model = $this->loadModel($id);
 
+		if(!$model->firmAssignment) {
+			$model->firmAssignment = new SessionFirmAssignment();
+			$model->firmAssignment->session_id = $model->id;
+		}
+		
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-
-		if(isset($_POST['Session']))
-		{
-			$model->attributes=$_POST['Session'];
-
+		if(isset($_POST['Session'])) {
+			// TODO: Add validation to check collisions etc.
+			$model->attributes = $_POST['Session'];
+			if (!empty($_POST['SessionFirmAssignment']['firm_id'])) {
+				$model->firmAssignment->attributes = $_POST['SessionFirmAssignment'];
+				$firmValid = $model->firmAssignment->save();
+			} else {
+				if($model->firmAssignment->id) {
+					$model->firmAssignment->delete();
+				}
+				$firmValid = true;
+			}
 			if($model->save()) {
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('view','id' => $model->id));
 			}
 		}
 
 		$this->render('update',array(
-			'model'=>$model,
+			'model' => $model,
 		));
 	}
 

@@ -33,14 +33,15 @@
  * @property boolean $consultant
  * @property boolean $paediatric
  * @property boolean $anaesthetist
+ * @property boolean $general_anaesthetic
  *
  * The followings are the available model relations:
  * @property Theatre $theatre
  * @property SequenceFirmAssignment[] $sequenceFirmAssignments
  * @property Session[] $sessions
  */
-class Sequence extends BaseActiveRecord
-{
+class Sequence extends BaseActiveRecord {
+	
 	const FREQUENCY_ONCE = 0;
 	const FREQUENCY_1WEEK = 1;
 	const FREQUENCY_2WEEKS = 2;
@@ -234,6 +235,8 @@ class Sequence extends BaseActiveRecord
 		}
 	}
 
+	
+	
 	public function getWeekdayOptions()
 	{
 		return array(

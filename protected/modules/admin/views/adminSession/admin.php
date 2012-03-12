@@ -64,6 +64,7 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		array(
 			'header'=>'Firm',
 			'value'=>'$data->getFirmName()',
+			// TODO: This filter should probably be limited to firms actually used by sessions
 			'filter'=>CHtml::dropDownList('Firm[id]', $model->firm_id, Firm::model()->getListWithSpecialties(), array('empty' => '')),
 		),
 		array(
