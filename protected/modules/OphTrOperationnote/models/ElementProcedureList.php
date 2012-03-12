@@ -74,6 +74,7 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'elementType' => array(self::BELONGS_TO, 'ElementType', 'element_type_id'),
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			// 'procedures' => array(self::MANY_MANY, 'Procedure', 'operation_procedure_assignment(operation_id, proc_id)', 'order' => 'display_order ASC'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),

@@ -116,13 +116,6 @@
 								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
 								false, true
 							);
-						} else {
-							echo "fish - not getting here, nor should we"; exit;
-							$this->renderPartial(
-								Yii::app()->basePath . DIRECTORY_SEPARATOR . $event->eventType->class_name . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "default" . DIRECTORY_SEPARATOR . "index",
-								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
-								false, true
-							);
 						}
 					} else {
 						if (isset($current_episode)) {

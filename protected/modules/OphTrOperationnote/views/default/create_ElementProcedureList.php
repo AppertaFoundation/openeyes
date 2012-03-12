@@ -18,4 +18,5 @@
  */
 
 ?>Procedure list: <br />
+<p>This is the content of the procedure list element type create view.</p>
 
