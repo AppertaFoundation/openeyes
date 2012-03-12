@@ -105,6 +105,12 @@ class BaseEventTypeController extends Controller
 	}
 
 	public function actionCreate() {
-       		 
+                $this->renderPartial(
+			// Yii::app()->basePath . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $this->getModule()->name . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . 'index.php',
+			'create',
+                        // array('elements' => $this->getDefaultElements(), 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site),
+                        array('elements' => $this->getDefaultElements(), 'eventId' => null, 'editable' => true),
+			false, true
+		);
 	}	
 }

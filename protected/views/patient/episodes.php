@@ -110,15 +110,16 @@
 					<?php
 					if (ctype_digit(@$_GET['event'])) {?>
 						<?php
-						if ($event->class_name == 'OphTrOperation') {
+						if ($event->eventType->class_name == 'OphTrOperation') {
 							$this->renderPartial(
 								"/clinical/".$this->getTemplateName('view', $event->event_type_id),
 								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
 								false, true
 							);
 						} else {
+							echo "fish - not getting here, nor should we"; exit;
 							$this->renderPartial(
-								"//".$event->class_name."/views/default/index", 
+								Yii::app()->basePath . DIRECTORY_SEPARATOR . $event->eventType->class_name . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "default" . DIRECTORY_SEPARATOR . "index",
 								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
 								false, true
 							);
