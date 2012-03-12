@@ -25,7 +25,9 @@
 		'enableAjaxValidation' => false,
 	)); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note">
+		Fields with <span class="required">*</span> are required.
+	</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
@@ -40,7 +42,20 @@
 	<div class="row">
 		<?php echo $form->labelEx($model, 'date'); ?>
 		<div class="field">
-			<?php echo $form->textField($model, 'date'); ?>
+			<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+				'model' => $model,
+				'attribute' => 'date',
+			  'value' => $model->date,
+			  'options' => array(
+			    'showAnim' => 'fold',
+					'minDate' => 'new Date()',
+					'defaultDate' => $model->date,
+					'dateFormat' => Helper::NHS_DATE_FORMAT_JS
+			  ),
+			  'htmlOptions'=>array(
+			  	'style' => 'height: 20px;'
+			  ),
+				)); ?>
 			<?php echo $form->error($model, 'date'); ?>
 		</div>
 	</div>
@@ -123,4 +138,5 @@
 
 	<?php $this->endWidget(); ?>
 
-</div><!-- form -->
+</div>
+<!-- form -->
