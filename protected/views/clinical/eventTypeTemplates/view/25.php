@@ -261,17 +261,7 @@ foreach ($elements as $element) {
 	$('#btn_schedule-now').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-
-			$.ajax({
-				url: '/booking/schedule',
-				type: "GET",
-				data: {'operation': <?php echo $operation->id?>},
-				success: function(data) {
-					$('#event_content').html(data);
-					$('div.action_options').hide();
-					return false;
-				}
-			});
+			window.location.href = '/booking/schedule?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -280,17 +270,7 @@ foreach ($elements as $element) {
 	$('#btn_cancel-operation').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-
-			$.ajax({
-				url: '/booking/cancelOperation',
-				type: "GET",
-				data: {'operation': <?php echo $operation->id?>},
-				success: function(data) {
-					$('#event_content').html(data);
-					$('div.action_options').hide();
-					return false;
-				}
-			});
+			window.location.href = '/booking/cancelOperation?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -299,17 +279,7 @@ foreach ($elements as $element) {
 	$('#btn_reschedule-now').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-
-			$.ajax({
-				url: '/booking/reschedule',
-				type: "GET",
-				data: {'operation': <?php echo $operation->id?>},
-				success: function(data) {
-					$('#event_content').html(data);
-					$('div.action_options').hide();
-					return false;
-				}
-			});
+			window.location.href = '/booking/reschedule?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -318,17 +288,7 @@ foreach ($elements as $element) {
 	$('#btn_reschedule-later').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-
-			$.ajax({
-				url: '/booking/rescheduleLater',
-				type: "GET",
-				data: {'operation': <?php echo $operation->id?>},
-				success: function(data) {
-					$('#event_content').html(data);
-					$('div.action_options').hide();
-					return false;
-				}
-			});
+			window.location.href = '/booking/rescheduleLater?operation=<?php echo $operation->id?>';
 		}
 
 		return false;

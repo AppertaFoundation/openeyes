@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$this->header();
+
 Yii::app()->clientScript->registerCoreScript('jquery');
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
@@ -68,3 +70,4 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 		}
 	});
 </script>
+<?php $this->footer()?>

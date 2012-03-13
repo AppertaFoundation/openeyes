@@ -17,8 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-
 /**
  * Loop through all the element types completed for this event
  */

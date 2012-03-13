@@ -19,6 +19,9 @@
 
 class BookingController extends BaseController
 {
+	public $model;
+	public $firm;
+
 	public function filters()
 	{
 		return array('accessControl');
@@ -216,7 +219,7 @@ class BookingController extends BaseController
 					}
 				}
 
-				$this->redirect(array('patient/episodes','id'=>$patientId, 'event'=>$operation->event->id));
+				$this->redirect(array('patient/event/'.$operation->event->id));
 				Yii::app()->end();
 			}
 		} else {
@@ -373,9 +376,7 @@ class BookingController extends BaseController
 			if (!empty($operation->booking)) {
 				// This operation already has a booking. There must be two users creating an episode at once
 				//	or suchlike. Ignore and return.
-				$this->redirect(array('patient/episodes','id'=>$operation->event->episode->patient->id,
-					'event'=>$operation->event->id));
-
+				$this->redirect(array('patient/event/'.$operation->event->id));
 				return;
 			}
 
@@ -458,8 +459,7 @@ class BookingController extends BaseController
 
 				$this->updateEvent($model->elementOperation->event);
 
-				$this->redirect(array('patient/episodes','id'=>$patientId,
-					'event'=>$model->elementOperation->event->id));
+				$this->redirect(array('patient/event/'.$model->elementOperation->event->id));
 			}
 		}
 	}
@@ -576,8 +576,7 @@ class BookingController extends BaseController
 
 				$this->updateEvent($model->elementOperation->event);
 
-				$this->redirect(array('patient/episodes','id'=>$patientId,
-					'event'=>$model->elementOperation->event->id));
+				$this->redirect(array('patient/event/'.$model->elementOperation->event->id));
 			}
 		}
 	}
@@ -594,5 +593,77 @@ class BookingController extends BaseController
 		if (!$event->save()) {
 			throw new SystemException('Unable to update event datetime: '.print_r($event->getErrors(),true));
 		}
+	}
+
+	public function header($editable=false) {
+		if (!$operation = ElementOperation::model()->findByPk($_GET['operation'])) {
+			throw new SystemException('Operation not found: '.$_GET['operation']);
+		}
+
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		$patient = $this->model = $operation->event->episode->patient;
+
+		$episodes = $patient->episodes;
+
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
+
+		$this->renderPartial('//patient/event_header',array(
+			'episodes'=>$episodes,
+			'eventTypes'=>$eventTypes,
+			'title'=>'Schedule operation',
+			'model'=>$patient,
+			'editable'=>$editable
+		));
+	}
+
+	public function footer($editable=false) {
+		if (!$operation = ElementOperation::model()->findByPk($_GET['operation'])) {
+			throw new SystemException('Operation not found: '.$_GET['operation']);
+		}
+
+		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+
+		$patient = $this->model = $operation->event->episode->patient;
+
+		$episodes = $patient->episodes;
+
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
+
+		$this->renderPartial('//patient/event_footer',array(
+			'episodes'=>$episodes,
+			'eventTypes'=>$eventTypes,
+			'editable'=>$editable
+		));
+	}
+
+	/**
+	 * Get all the elements for a the current module's event type
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getDefaultElements($event=false, $event_type_id=false) {
+		$etc = new BaseEventTypeController(1);
+		return $etc->getDefaultElements($event, $event_type_id);
+	}
+
+	/**
+	 * Get the optional elements for the current module's event type
+	 * This will be overriden by the module
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getOptionalElements($action, $event=false) {
+		return array();
 	}
 }

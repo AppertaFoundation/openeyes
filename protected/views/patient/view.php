@@ -17,9 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-Yii::app()->clientScript->scriptMap['jquery.fancybox-1.3.4.pack.js'] = false;
-Yii::app()->clientScript->scriptMap['jquery.mousewheel-3.0.4.pack.js'] = false;
-
 $patientName = $model->first_name . ' ' . $model->last_name;
 $this->breadcrumbs=array(
 	"{$patientName} ({$model->hos_num})",

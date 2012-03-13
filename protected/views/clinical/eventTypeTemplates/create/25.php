@@ -92,9 +92,9 @@ if (isset($referrals) && is_array($referrals)) {
 
 	<div class="form_button">
 		<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
-		<button type="submit" class="classy green venti" id="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
-		<button type="submit" class="classy green venti" id="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
-		<button type="submit" class="classy red venti" id="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
+		<button type="submit" class="classy green venti" id="scheduleLater" name="scheduleLater"><span class="button-span button-span-green">Save and Schedule later</span></button>
+		<button type="submit" class="classy green venti" id="scheduleNow" name="scheduleNow"><span class="button-span button-span-green">Save and Schedule now</span></button>
+		<button type="submit" class="classy red venti" id="cancelOperation" name="cancelOperation"><span class="button-span button-span-red">Cancel Operation</span></button>
 	</div>
 
 <?php $this->endWidget(); ?>

@@ -16,8 +16,7 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
+?>
 <div class="view">
 	<strong>Eye(s) to be operated on:</strong>
 	<?php echo CHtml::encode($operation->getEyeText()); ?>

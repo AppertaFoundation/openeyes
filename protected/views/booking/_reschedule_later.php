@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$this->header();
+
 Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
@@ -77,3 +79,4 @@ echo CHtml::endForm(); ?>
 </script>
 <div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
 <ul><li>&nbsp;</li></ul></div>
+<?php $this->footer()?>

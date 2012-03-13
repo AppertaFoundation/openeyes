@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$this->header();
+
 $patient = $operation->event->episode->patient;
 
 ?>
@@ -171,16 +173,7 @@ $patient = $operation->event->episode->patient;
 		$('#firmSelect #firmId').die('change').live('change', function() {
 			var firmId = $(this).val();
 			var operation = $('input[id=operation]').val();
-
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('booking/reschedule'); ?>',
-				'type': 'GET',
-				'data': {'operation': operation, 'firmId': firmId},
-				'success': function(data) {
-					$('#schedule').html(data);
-					$('#sessionDetails').html('');
-				}
-			});
+			window.location.href = '<?php echo Yii::app()->createUrl('booking/reschedule'); ?>?operation='+operation+'&firmId='+firmId;
 		});
 	});
 
@@ -205,3 +198,4 @@ $patient = $operation->event->episode->patient;
 		});
 	}
 </script>
+<?php $this->footer()?>

@@ -17,9 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-Yii::app()->clientScript->scriptMap['jquery.js'] = false; ?>
-
-<?php
 $thisMonth = date('Y-m-d', $date);
 $lastMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)-1, 1, date('Y', $date)));
 $nextMonth = date('Y-m-d', mktime(0,0,0, date('m', $date)+1, 1, date('Y', $date)));

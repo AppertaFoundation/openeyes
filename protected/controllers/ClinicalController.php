@@ -170,7 +170,6 @@ class ClinicalController extends BaseController
 		$specialties = Subspecialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create') {
-			file_put_contents("/tmp/debug",print_r($_POST,true));
 			$errors = array();
 			$elementList = array();
 			foreach ($elements as $element) {
@@ -198,7 +197,7 @@ class ClinicalController extends BaseController
 
 					$eventTypeName = ucfirst($eventType->name);
 					Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
-					if (!empty($_POST['scheduleNow'])) {
+					if (isset($_POST['scheduleNow'])) {
 						$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
 						$this->redirect(array('booking/schedule', 'operation' => $operation->id));
 					} else {
