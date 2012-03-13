@@ -46,9 +46,19 @@ foreach ($elements as $element) {
 	);
 }
 
-?>
-<div id="clinical-update_es_" class="alertBox" style="display:none"><p>Please fix the following input errors:</p>
-<ul><li>&nbsp;</li></ul></div>
+if (isset($errors) && !empty($errors)) {?>
+	<div id="clinical-create_es_" class="alertBox">
+		<p>Please fix the following input errors:</p>
+		<?php foreach ($errors as $field => $errs) {?>
+			<ul>
+				<li>
+					<?php echo $field.': '.$errs[0]?>
+				</li>
+			</ul>
+		<?php }?>
+	</div>
+<?php }?>
+
 <div class="cleartall"></div>
 <div class="form_button">
 	<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;

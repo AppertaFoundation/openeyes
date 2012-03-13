@@ -17,18 +17,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-if (!empty($_POST)) {
+if ($this->nopost) {
+	$selected_procedures = $model->procedures;
+} else {
 	$selected_procedures = array();
 
 	if (isset($_POST['Procedures']) && is_array($_POST['Procedures'])) {
 		foreach ($_POST['Procedures'] as $proc_id) {
 			$selected_procedures[] = Procedure::model()->findByPk($proc_id);
 		}
-	} else {
-		$selected_procedures = $model->procedures;
 	}
-} else {
-	$selected_procedures = $model->procedures;
 }
 
 if (!isset($_POST['ElementOperation']['decision_date'])) {

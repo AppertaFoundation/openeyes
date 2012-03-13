@@ -18,6 +18,8 @@
  */
 
 if (empty($_POST)) {
+	$this->nopost = true;
+
 	if (empty($model->event_id)) {
 		// It's a new event so fetch the most recent element_diagnosis
 		$diagnosis = $model->getNewestDiagnosis($patient);
