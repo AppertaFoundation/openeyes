@@ -225,7 +225,7 @@ class ClinicalController extends BaseController
 			$params['errors'] = $errors;
 		}
 
-		if ($eventType->name == 'operation') {
+		if ($eventType->name == 'Operation') {
 			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
 			$subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
 			$procedures = array();
@@ -327,7 +327,7 @@ class ClinicalController extends BaseController
 			'patient' => $patient
 		);
 
-		if ($event->eventType->name == 'operation') {
+		if ($event->eventType->name == 'Operation') {
 			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
 			$subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
 			$procedures = array();
