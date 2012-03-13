@@ -279,6 +279,11 @@ class ClinicalController extends BaseController
 		$patient = Patient::model()->findByPk($episode->patient_id);
 
 		if ($_POST && $_POST['action'] == 'update') {
+			if (isset($_POST['cancelOperation'])) {
+				$this->redirect(array('patient/event/'.$event->id));
+				return;
+			}
+
 			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 				// TODO: This appears to overlap with the service->updateElements functionality
 				// and probably needs rationalising
@@ -312,7 +317,7 @@ class ClinicalController extends BaseController
 
 				OELog::log("Updated event $event->id");
 
-				echo $event->id;
+				$this->redirect(array('patient/event/'.$event->id));
 				return;
 			}
 
@@ -324,7 +329,8 @@ class ClinicalController extends BaseController
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient
+			'patient' => $patient,
+			'event' => $event
 		);
 
 		if ($event->eventType->name == 'Operation') {
@@ -488,7 +494,7 @@ class ClinicalController extends BaseController
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
-	public function header($editable=false) {
+	public function header($editable=false, $passthru=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -500,16 +506,22 @@ class ClinicalController extends BaseController
 			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
 		}
 
-		$this->renderPartial('//patient/event_header',array(
+		$params = array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
 			'title'=>'Create',
 			'model'=>$patient,
 			'editable'=>$editable
-		));
+		);
+
+		if (is_array($passthru)) {
+			$params = array_merge($params,$passthru);
+		}
+
+		$this->renderPartial('//patient/event_header',$params);
 	}
 
-	public function footer($editable=false) {
+	public function footer($editable=false,$passthru=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -521,11 +533,17 @@ class ClinicalController extends BaseController
 			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
 		}
 
-		$this->renderPartial('//patient/event_footer',array(
+		$params = array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
 			'editable'=>$editable
-		));
+		);
+
+		if (is_array($passthru)) {
+			$params = array_merge($params,$passthru);
+		}
+
+		$this->renderPartial('//patient/event_footer',$params);
 	}
 
 	/**

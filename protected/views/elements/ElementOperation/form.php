@@ -24,6 +24,8 @@ if (!empty($_POST)) {
 		foreach ($_POST['Procedures'] as $proc_id) {
 			$selected_procedures[] = Procedure::model()->findByPk($proc_id);
 		}
+	} else {
+		$selected_procedures = $model->procedures;
 	}
 } else {
 	$selected_procedures = $model->procedures;
