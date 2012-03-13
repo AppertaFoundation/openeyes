@@ -512,4 +512,26 @@ class PatientController extends BaseController
 		$episode->episode_status_id = $_POST['episode_status_id'];
 		$episode->save();
 	}
+
+	/**
+	 * Get all the elements for a the current module's event type
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getDefaultElements($event=false, $event_type_id=false) {
+		$etc = new BaseEventTypeController(1);
+		return $etc->getDefaultElements($event, $event_type_id);
+	}
+
+	/**
+	 * Get the optional elements for the current module's event type
+	 * This will be overriden by the module
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getOptionalElements($action, $event=false) {
+		return array();
+	}
 }
