@@ -1,5 +1,5 @@
 <?php
-$this->header();
+$this->header($editable);
 
 $this->breadcrumbs=array(
 	$this->module->id,
@@ -15,4 +15,4 @@ You can customise this page by editing <tt><?php echo __FILE__; ?></tt>
 <?php $this->renderDefaultElements($this->action->id); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
 
-<?php $this->footer();?>
+<?php $this->footer($editable)?>

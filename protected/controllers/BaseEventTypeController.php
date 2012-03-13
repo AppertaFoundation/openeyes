@@ -122,7 +122,7 @@ class BaseEventTypeController extends BaseController
 		}
 	}
 
-	public function header() {
+	public function header($editable=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -137,11 +137,13 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
-			'title'=>'Create'
+			'title'=>'Create',
+			'model'=>$patient,
+			'editable'=>$editable
 		));
 	}
 
-	public function footer() {
+	public function footer($editable) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -155,7 +157,8 @@ class BaseEventTypeController extends BaseController
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes
+			'eventTypes'=>$eventTypes,
+			'editable'=>$editable
 		));
 	}
 }
