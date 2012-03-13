@@ -37,6 +37,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 	<script type="text/javascript" src="/js/print.js"></script>
 	<script type="text/javascript" src="/js/buttons.js"></script>
+	<script type="text/javascript" src="/js/script.js"></script>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
@@ -107,21 +108,6 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 
 	<?php echo $this->renderPartial('/base/_footer',array())?>
  
-	<script type="text/javascript">
-		$('select[id=selected_firm_id]').die('change').live('change', function() {
-			var firmId = $('select[id=selected_firm_id]').val();
-			$.ajax({
-				type: 'post',
-				url: '<?php echo Yii::app()->createUrl('site'); ?>',
-				data: {'selected_firm_id': firmId },
-				success: function(data) {
-					console.log(data);
-					window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
-				}
-			});
-		});
-	</script>
-
 	<?php if (Yii::app()->user->checkAccess('admin')) {?>
 		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
 	<?php } else if (Yii::app()->params['watermark']) {?>
