@@ -489,7 +489,7 @@ class ClinicalController extends BaseController
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
-	public function header() {
+	public function header($editable=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -504,11 +504,13 @@ class ClinicalController extends BaseController
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
-			'title'=>'Create'
+			'title'=>'Create',
+			'model'=>$patient,
+			'editable'=>$editable
 		));
 	}
 
-	public function footer() {
+	public function footer($editable=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -522,7 +524,30 @@ class ClinicalController extends BaseController
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes
+			'eventTypes'=>$eventTypes,
+			'editable'=>$editable
 		));
+	}
+
+	/**
+	 * Get all the elements for a the current module's event type
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getDefaultElements($event=false, $event_type_id=false) {
+		$etc = new BaseEventTypeController(1);
+		return $etc->getDefaultElements($event, $event_type_id);
+	}
+
+	/**
+	 * Get the optional elements for the current module's event type
+	 * This will be overriden by the module
+	 *
+	 * @param $event_type_id
+	 * @return array
+	 */
+	public function getOptionalElements($action, $event=false) {
+		return array();
 	}
 }
