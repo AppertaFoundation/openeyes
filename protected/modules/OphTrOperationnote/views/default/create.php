@@ -1,4 +1,6 @@
 <?php
+$this->header();
+
 $this->breadcrumbs=array(
 	$this->module->id,
 );
@@ -12,3 +14,5 @@ You can customise this page by editing <tt><?php echo __FILE__; ?></tt>
 
 <?php $this->renderDefaultElements($this->action->id); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
+
+<?php $this->footer();?>

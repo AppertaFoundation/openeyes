@@ -24,6 +24,7 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
+	public $model;
 
 	public function init()
 	{
@@ -169,41 +170,43 @@ class ClinicalController extends BaseController
 		$specialties = Subspecialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create') {
-			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-				$valid = true;
-				$elementList = array();
-				foreach ($elements as $element) {
-					$elementClassName = get_class($element);
-					$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-					$elementList[] = $element;
-					if (!$element->validate()) {
-						$valid = false;
+			file_put_contents("/tmp/debug",print_r($_POST,true));
+			$errors = array();
+			$elementList = array();
+			foreach ($elements as $element) {
+				$elementClassName = get_class($element);
+				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
+				$elementList[] = $element;
+				if (!$element->validate()) {
+					foreach ($element->getErrors() as $errormsgs) {
+						foreach ($errormsgs as $error) {
+							$index = preg_replace('/^Element/','',$elementClassName);
+							$errors[$index][] = $error;
+						}
 					}
-				}
-				if (!$valid) {
-					echo CActiveForm::validate($elementList);
-					Yii::app()->end();
 				}
 			}
 
-			// The user has submitted the form to create the event
-			$eventId = $this->service->createElements(
-				$elements, $_POST, $this->firm, $patient->id, $this->getUserId(), $eventType->id
-			);
+			if (empty($errors)) {
+				// The user has submitted the form to create the event
+				$eventId = $this->service->createElements(
+					$elements, $_POST, $this->firm, $patient->id, $this->getUserId(), $eventType->id
+				);
 
-			if ($eventId) {
-				$this->logActivity('created event.');
+				if ($eventId) {
+					$this->logActivity('created event.');
 
-				$eventTypeName = ucfirst($eventType->name);
-				Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
-				if (!empty($_POST['scheduleNow'])) {
-					$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
-					$this->redirect(array('booking/schedule', 'operation' => $operation->id));
-				} else {
-					echo $eventId;
+					$eventTypeName = ucfirst($eventType->name);
+					Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
+					if (!empty($_POST['scheduleNow'])) {
+						$operation = ElementOperation::model()->findByAttributes(array('event_id' => $eventId));
+						$this->redirect(array('booking/schedule', 'operation' => $operation->id));
+					} else {
+						$this->redirect(array('patient/event/'.$eventId));
+					}
+
+					return;
 				}
-
-				return;
 			}
 
 			// If we get here element validation and failed and the array of elements will
@@ -218,6 +221,10 @@ class ClinicalController extends BaseController
 			'patient' => $patient,
 			'firm' => $this->firm
 		);
+
+		if (isset($errors)) {
+			$params['errors'] = $errors;
+		}
 
 		if ($eventType->name == 'operation') {
 			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
@@ -480,5 +487,42 @@ class ClinicalController extends BaseController
 		OELog::log("Closed episode $episode->id");
 
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
+	}
+
+	public function header() {
+		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
+			throw new SystemException('Patient not found: '.$_GET['patient_id']);
+		}
+		$episodes = $patient->episodes;
+
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
+
+		$this->renderPartial('//patient/event_header',array(
+			'episodes'=>$episodes,
+			'eventTypes'=>$eventTypes,
+			'title'=>'Create'
+		));
+	}
+
+	public function footer() {
+		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
+			throw new SystemException('Patient not found: '.$_GET['patient_id']);
+		}
+		$episodes = $patient->episodes;
+
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
+
+		$this->renderPartial('//patient/event_footer',array(
+			'episodes'=>$episodes,
+			'eventTypes'=>$eventTypes
+		));
 	}
 }

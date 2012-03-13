@@ -71,17 +71,7 @@
 				<?php }?>
 			</div> <!-- #episodes_sidebar -->
 			<div id="event_display">
-				<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
-					<h3>Adding New Event</h3>
-					<p><strong>Select event to add:</strong></p>
-					<?php
-						foreach ($eventTypes as $eventType) {
-?>
-					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
-<?php
-						}
-?>
-				</div>
+				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes,'patient'=>$model))?>
 				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php echo $event->id?>" />
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">Episode summary</div>
@@ -120,35 +110,7 @@
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
 		<script type="text/javascript">
-			$(document).ready(function(){
-				if ($('#header_text').length >0) {
-					$('.display_mode').html($('#header_text').html());
-				}
-
-				$collapsed = true;
-
-				$('#addNewEvent').unbind('click').click(function(e) {
-					e.preventDefault();
-					$collapsed = false;
-
-					$('#add-event-select-type').slideToggle(100,function() {
-						if($(this).is(":visible")){
-							$('#addNewEvent').removeClass('green').addClass('inactive');
-							$('#addNewEvent span.button-span-green').removeClass('button-span-green').addClass('button-span-inactive');
-							$('#addNewEvent span.button-icon-green').removeClass('button-icon-green').addClass('button-icon-inactive');
-						} else {
-							$('#addNewEvent').removeClass('inactive').addClass('green');
-							$('#addNewEvent span.button-span-inactive').removeClass('button-span-inactive').addClass('button-span-green');
-							$('#addNewEvent span.button-icon-inactive').removeClass('button-icon-inactive').addClass('button-icon-green');
-							$collapsed = true;
-						}
-						return false;
-					});
-
-					return false;
-				});
-			});
-
+			/*
 			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
 				eventTypeId = this.id.match(/\d*$/);
 				var firm_id = $('#selected_firm_id option:selected').val();
@@ -220,4 +182,5 @@
 
 				$('div.action_options_alt').hide();
 			}
+			*/
 		</script>

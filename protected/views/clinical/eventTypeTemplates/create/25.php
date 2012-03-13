@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$this->header();
+
 $form = $this->beginWidget('CActiveForm', array(
 	'id'=>'clinical-create',
 	'enableAjaxValidation'=>false,
@@ -75,8 +77,18 @@ if (isset($referrals) && is_array($referrals)) {
 			</div>
 	</div>
 
-<div id="clinical-create_es_" class="alertBox" style="display:none"><p>Please fix the following input errors:</p>
-<ul><li>&nbsp;</li></ul></div>
+<?php if (isset($errors) && !empty($errors)) {?>
+	<div id="clinical-create_es_" class="alertBox">
+		<p>Please fix the following input errors:</p>
+		<?php foreach ($errors as $field => $errs) {?>
+			<ul>
+				<li>
+					<?php echo $field.': '.$errs[0]?>
+				</li>
+			</ul>
+		<?php }?>
+	</div>
+<?php }?>
 
 	<div class="form_button">
 		<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
@@ -88,6 +100,7 @@ if (isset($referrals) && is_array($referrals)) {
 <?php $this->endWidget(); ?>
 
 <script type="text/javascript">
+/*
 	$('#scheduleNow').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
@@ -103,30 +116,6 @@ if (isset($referrals) && is_array($referrals)) {
 						$('#event_content').html(data);
 						$('div.action_options_alt').hide();
 						$('div.action_options').hide();
-						return false;
-					}
-				}
-			});
-		}
-		return false;
-	});
-
-	$('#scheduleLater').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
-				'type': 'POST',
-				'data': $('#clinical-create').serialize(),
-				'success': function(data) {
-					if (data.match(/^[0-9]+$/)) {
-						window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
-						return false;
-					}
-					try {
-						displayErrors(data);
-					} catch (e) {
 						return false;
 					}
 				}
@@ -184,4 +173,6 @@ if (isset($referrals) && is_array($referrals)) {
 			return false;
 		});
 	});
+	*/
 </script>
+<?php $this->footer()?>

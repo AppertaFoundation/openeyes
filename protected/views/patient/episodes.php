@@ -45,11 +45,7 @@
 										}
 									}
 
-									if (ctype_digit(@$_GET['event']) && $_GET['event'] == $event->id) {
-										$highlight = true;
-									} else {
-										$highlight = false;
-									}
+									$highlight = false;
 									?>
 									<li id="eventLi<?php echo $event->id ?>"><a href="/patient/event/<?php echo $event->id?>" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
 							<?php
@@ -71,18 +67,7 @@
 				<?php }?>
 			</div> <!-- #episodes_sidebar -->
 			<div id="event_display">
-				<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
-					<h3>Adding New Event</h3>
-					<p><strong>Select event to add:</strong></p>
-					<?php
-						foreach ($eventTypes as $eventType) {
-?>
-					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
-<?php
-						}
-?>
-				</div>
-				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php if (ctype_digit(@$_GET['event'])) echo $_GET['event']?>" />
+				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes,'patient'=>$model))?>
 				<?php
 				if (!isset($current_episode)) {?>
 					<div class="alertBox fullWidthEvent">
@@ -91,8 +76,8 @@
 				<?php }?>
 				<div class="display_actions"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
 					<div class="display_mode">Episode summary</div>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
-						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
+					<div class="action_options" style="display: none;">
+						<span class="aBtn_inactive">View</span><span class="aBtn edit-event" style="display: none;"><a class="edit-event" href="#">Edit</a></span>
 					</div>
 					<div class="action_options_alt" style="display: none;">
 						<span class="aBtn save"><a href="#" class="edit-save">Save</a></span><span class="aBtn cancel"><a href="#" class="edit-cancel">Cancel</a></span>
@@ -102,28 +87,17 @@
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;">
 					<?php
-					if (ctype_digit(@$_GET['event'])) {?>
-						<?php
-						if ($event->eventType->class_name == 'OphTrOperation') {
-							$this->renderPartial(
-								"/clinical/".$this->getTemplateName('view', $event->event_type_id),
-								array( 'elements' => $elements, 'eventId' => $_GET['event'], 'editable' => $editable, 'site' => $site), 
-								false, true
-							);
-						}
-					} else {
-						if (isset($current_episode)) {
-							$this->renderPartial('/clinical/episodeSummary',
-								array('episode' => $current_episode, 'patient' => $model)
-							);
-						}
+					if (isset($current_episode)) {
+						$this->renderPartial('/clinical/episodeSummary',
+							array('episode' => $current_episode, 'patient' => $model)
+						);
 					}
 					?>
 				</div>
 				<!-- #event_content -->
 				<div class="colorband category_treatement"></div>
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!isset($current_episode)) {?> style="display: none;"<?php }?>>
-					<div class="action_options"<?php if (!ctype_digit(@$_GET['event'])){?> style="display: none;"<?php }?>>
+					<div class="action_options" style="display: none;">
 						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$editable){?> style="display: none;"<?php }?>><a class="edit-event" href="#">Edit</a></span>
 					</div>
 					<div class="action_options_alt" style="display: none;">
@@ -133,89 +107,7 @@
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
 		<script type="text/javascript">
-		<?php
-			if (ctype_digit(@$_GET['event'])) {
-		?>
-			var currentEvent = <?php echo $_GET['event'] ?>;
-		<?php
-			} else {
-		?>
-			var currentEvent = '';
-		<?php
-			}
-		?>
-
-		<?php if (ctype_digit(@$_GET['event'])) {?>
-			var last_item_type = 'event';
-			var last_item_id = <?php echo $_GET['event']?>;
-		<?php }else if (isset($current_episode)) {?>
-			var last_item_type = 'episode';
-			var last_item_id = <?php echo $current_episode->id?>;
-		<?php }else{?>
-			var last_item_type = 'url';
-			var last_item_id = window.location.href;
-		<?php }?>
-
-			$('a.episode-details').unbind('click').click(function() {
-				load_episode_summary($(this).attr('rel'));
-				return false;
-			});
-
-			function load_episode_summary(id) {
-				$.ajax({
-					url: '/clinical/episodesummary/'+id,
-					success: function(data) {
-						last_item_type = 'episode';
-						last_item_id = id;
-
-						$('div.action_options').hide();
-						$('#event_content').html(data);
-						view_mode();
-
-						if (currentEvent != '') {
-							// An event was highlighted previously so recreate the a it had
-							$('li[id=eventLi' + currentEvent + ']').wrapInner('<a href="#" rel="' + currentEvent + '" class="show-event-details" />');
-							currentEvent = '';
-							var content = $(".viewing").contents()
-							$(".viewing").replaceWith(content);
-						}
-
-						$('.display_mode').html('Episode summary');
-
-					}
-				});
-				return false;
-			}
-
-			$(document).ready(function(){
-				if ($('#header_text').length >0) {
-					$('.display_mode').html($('#header_text').html());
-				}
-
-				$collapsed = true;
-
-				$('#addNewEvent').unbind('click').click(function(e) {
-					e.preventDefault();
-					$collapsed = false;
-
-					$('#add-event-select-type').slideToggle(100,function() {
-						if($(this).is(":visible")){
-							$('#addNewEvent').removeClass('green').addClass('inactive');
-							$('#addNewEvent span.button-span-green').removeClass('button-span-green').addClass('button-span-inactive');
-							$('#addNewEvent span.button-icon-green').removeClass('button-icon-green').addClass('button-icon-inactive');
-						} else {
-							$('#addNewEvent').removeClass('inactive').addClass('green');
-							$('#addNewEvent span.button-span-inactive').removeClass('button-span-inactive').addClass('button-span-green');
-							$('#addNewEvent span.button-icon-inactive').removeClass('button-icon-inactive').addClass('button-icon-green');
-							$collapsed = true;
-						}
-						return false;
-					});
-
-					return false;
-				});
-			});
-
+			/*
 			$('a[id^="add-new-event-type"]').unbind('click').click(function() {
 				eventTypeId = this.id.match(/\d*$/);
 				var firm_id = $('#selected_firm_id option:selected').val();
@@ -301,4 +193,5 @@
 
 				$('div.action_options_alt').hide();
 			}
+			*/
 		</script>

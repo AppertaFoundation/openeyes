@@ -361,8 +361,13 @@ class PatientController extends BaseController
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
-		$this->render('episodes', array(
-			'model' => $patient, 'episodes' => $episodes, 'eventTypes' => $eventTypes, 'site' => $site
+		$this->render('events_and_episodes', array(
+			'model' => $patient,
+			'title' => empty($episodes) ? '' : 'Episode summary',
+			'episodes' => $episodes,
+			'eventTypes' => $eventTypes,
+			'site' => $site,
+			'current_episode' => empty($episodes) ? false : $episodes[0]
 		));
 	}
 
@@ -376,13 +381,7 @@ class PatientController extends BaseController
 
 		$elements = $this->service->getDefaultElements($event);
 
-		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			$editable = false;
-		} else {
-			$editable = true;
-		}
+		$editable = $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id;
 
 		$event_template_name = $this->getTemplateName('view', $event->event_type_id);
 
@@ -396,8 +395,17 @@ class PatientController extends BaseController
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
-		$this->render('event', array(
-			'model' => $patient, 'episodes' => $episodes, 'event' => $event, 'elements' => $elements, 'editable' => $editable, 'event_template_name' => $event_template_name, 'eventTypes' => $eventTypes, 'site' => $site, 'current_episode' => $event->episode
+		$this->render('events_and_episodes', array(
+			'model' => $patient,
+			'title' => 'your title here',
+			'episodes' => $episodes,
+			'event' => $event,
+			'elements' => $elements,
+			'editable' => $editable,
+			'event_template_name' => $event_template_name,
+			'eventTypes' => $eventTypes,
+			'site' => $site,
+			'current_episode' => $event->episode
 		));
 	}
 
