@@ -10,7 +10,7 @@
 				<ul class="events">
 					<?php foreach ($episode->events as $event) {?>
 						<?php
-						$event_elements = $this->service->getDefaultElements($event);
+						$event_elements = $this->getDefaultElements($event);
 						$scheduled = false;
 						foreach ($event_elements as $element) {
 							if (get_class($element) == 'ElementOperation' && in_array($element->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED))) {
