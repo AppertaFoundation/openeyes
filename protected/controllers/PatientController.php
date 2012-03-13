@@ -367,7 +367,8 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'eventTypes' => $eventTypes,
 			'site' => $site,
-			'current_episode' => empty($episodes) ? false : $episodes[0]
+			'current_episode' => empty($episodes) ? false : $episodes[0],
+			'editable' => false
 		));
 	}
 
