@@ -12,7 +12,9 @@ This is the default <?php echo $this->action->id; ?> view for the <?php echo get
 You can customise this page by editing <tt><?php echo __FILE__; ?></tt>
 </p>
 
+<div>
 <?php $this->renderDefaultElements($this->action->id); ?>
 <?php $this->renderOptionalElements($this->action->id); ?>
+</div>
 
 <?php $this->footer($editable)?>

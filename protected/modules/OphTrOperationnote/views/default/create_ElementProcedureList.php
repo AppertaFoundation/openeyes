@@ -33,7 +33,6 @@
 				</span>
 			<?php }?>
 		</div>
-	</div>
 </div>
 
 <div id="surgeonId" class="eventDetail">
@@ -41,7 +40,6 @@
 		<div class="data">
 			<?php echo CHtml::dropDownList('ElementProcedureList[surgeon_id]', $element->surgeon_id, CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
 		</div>
-	</div>
 </div>
 
 <div id="assistantId" class="eventDetail">
@@ -49,6 +47,5 @@
 		<div class="data">
 			<?php echo CHtml::dropDownList('ElementProcedureList[assistant_id]', $element->assistant_id, CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
 		</div>
-	</div>
 </div>
 
