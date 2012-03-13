@@ -140,7 +140,7 @@ if (empty($theatres)) {?>
 								</td>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
-									'/patient/episodes/' . $session['patientId'] . '/event/' . $session['eventId']
+									'/patient/event/' . $session['eventId']
 								);
 								?></td>
 								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
