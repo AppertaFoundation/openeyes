@@ -17,42 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$disorderId = '';
-$value = '';
-$eye = '';
-$hasDiagnosis = false;
+if (empty($_POST)) {
+	if (empty($model->event_id)) {
+		// It's a new event so fetch the most recent element_diagnosis
+		$diagnosis = $model->getNewestDiagnosis($patient);
 
-if (empty($model->event_id)) {
-	// It's a new event so fetch the most recent element_diagnosis
-	$diagnosis = $model->getNewestDiagnosis($patient);
-
-	if (empty($diagnosis->disorder)) {
-		// There is no diagnosis for this episode, or no episode, or the diagnosis has no disorder (?)
-		$diagnosis = $model;
+		if (!empty($diagnosis->disorder)) {
+			// There is a diagnosis for this episode
+			$_POST['ElementDiagnosis']['disorder_id'] = $diagnosis->disorder->term;
+			$_POST['ElementDiagnosis']['eye'] = $diagnosis->eye;
+		}
 	} else {
-		// There is a diagnosis for this episode
-		$value = $diagnosis->disorder->term;
-		$eye = $diagnosis->eye;
-		$disorderId = $diagnosis->disorder->id;
-		$hasDiagnosis = true;
+		if (isset($model->disorder)) {
+			$_POST['ElementDiagnosis']['disorder_id'] = $model->disorder->term;
+			$_POST['ElementDiagnosis']['eye'] = $model->eye;
+		}
 	}
-} else {
-	if (isset($model->disorder)) {
-		$value = $model->disorder->term;
-		$eye = $model->eye;
-		$disorderId = $model->disorder->id;
-		$hasDiagnosis = true;
-	}
-
-	$diagnosis = $model;
 }
 ?>
-					<!-- Reminder -->
-					<?php /*<div class="patientReminder">
-						<span class="type"><img src="/img/_elements/icons/event_op_unscheduled.png" alt="op" width="16" height="16" /></span>
-						<span class="patient"><strong><?php echo $patient->first_name?></strong> <?php echo $patient->last_name?> (<?php echo $patient->hos_num?>)</span>
-					</div>*/?>
-					<!-- Details -->
 					<?php if (empty($model->event_id)) {?>
 						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Book Operation</h3>
 					<?php }else{?>
@@ -65,15 +47,15 @@ if (empty($model->event_id)) {
 						<div class="data">
 							<input id="ytElementDiagnosis_eye" type="hidden" value="" name="ElementDiagnosis[eye]" />
 							<span class="group">
-							<input id="ElementDiagnosis_eye_0" value="1"<?php if ($diagnosis->eye == '1') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
+							<input id="ElementDiagnosis_eye_0" value="1"<?php if (@$_POST['ElementDiagnosis']['eye'] == '1') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_0">Right</label>
 							</span>
 							<span class="group">
-							<input id="ElementDiagnosis_eye_2" value="2"<?php if ($diagnosis->eye == '2') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
+							<input id="ElementDiagnosis_eye_2" value="2"<?php if (@$_POST['ElementDiagnosis']['eye'] == '2') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_2">Both</label>
 							</span>
 							<span class="group">
-							<input id="ElementDiagnosis_eye_1" value="0"<?php if (empty($diagnosis->eye)) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
+							<input id="ElementDiagnosis_eye_1" value="0"<?php if (!isset($_POST['ElementDiagnosis']['eye']) || empty($_POST['ElementDiagnosis']['eye'])) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
 							<label for="ElementDiagnosis_eye_1">Left</label>
 							</span>
 						</div>
@@ -109,11 +91,11 @@ if (empty($model->event_id)) {
 								),
 							));
 							?>
-							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo $value?>" />
+							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo @$_POST['ElementDiagnosis']['disorder_id']?>" />
 						</div>
 						<div id="enteredDiagnosisText">
 							<div class="extraDetails">
-								<span class="bold" style="margin-right:20px;"><?php echo $value?></span>
+								<span class="bold" style="margin-right:20px;"><?php echo @$_POST['ElementDiagnosis']['disorder_id']?></span>
 							</div>
 						</div>
 					</div>
