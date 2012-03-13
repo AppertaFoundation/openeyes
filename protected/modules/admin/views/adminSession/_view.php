@@ -27,18 +27,22 @@
 	<?php echo CHtml::encode($data->sequence_id); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('date')); ?>:</b>
-	<?php echo CHtml::encode($data->date); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('start_time')); ?>:</b>
-	<?php echo CHtml::encode($data->start_time); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('end_time')); ?>:</b>
-	<?php echo CHtml::encode($data->end_time); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('FirmName')); ?>:</b>
+	<?php echo CHtml::encode($data->FirmName); ?>
 	<br/>
 	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('TheatreName')); ?>:</b>
+	<?php echo CHtml::encode($data->TheatreName); ?>
+	<br/>
+	
+	<b><?php echo CHtml::encode($data->getAttributeLabel('date')); ?>:</b>
+	<?php echo CHtml::encode($data->NHSDate('date')); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('TimeSlot')); ?>:</b>
+	<?php echo CHtml::encode($data->TimeSlot); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('consultant')); ?>:</b>
 	<?php echo ($data->consultant) ? 'Yes' : 'No'; ?>
 	<br />
@@ -66,10 +70,6 @@
 	
 	<b><?php echo CHtml::encode($data->getAttributeLabel('bookingCount')); ?>:</b>
 	<?php echo CHtml::encode($data->bookingCount); ?>
-	<br/>
-	
-	<b><?php echo CHtml::encode($data->getAttributeLabel('firmName')); ?>:</b>
-	<?php echo CHtml::encode($data->firmName); ?>
 	<br/>
 	
 </div>

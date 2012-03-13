@@ -17,8 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-require_once(Yii::app()->getBasePath() . '/commands/GenerateSessionsCommand.php');
-
 class AdminSessionController extends Controller {
 	
 	public $layout='column2';
@@ -44,11 +42,10 @@ class AdminSessionController extends Controller {
 	}
 
 	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 * Bulk creates sessions based on sequence template
 	 */
-	public function actionMassCreate()
-	{
+	public function actionMassCreate() {
+		
 		$runner = new CConsoleCommandRunner;
 		$command = new GenerateSessionsCommand('generateSessions',$runner);
 
@@ -90,7 +87,7 @@ class AdminSessionController extends Controller {
 				}
 				$firmValid = true;
 			}
-			if($model->save()) {
+			if($firmValid && $model->save()) {
 				$this->redirect(array('view','id' => $model->id));
 			}
 		}
@@ -105,8 +102,12 @@ class AdminSessionController extends Controller {
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id)
-	{
+	public function actionDelete($id) {
+		
+		// Deleting not allowed until RBAC properly implemented
+		throw new CHttpException(403, 'You are not authorised to perform this action.');
+		
+		/*
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
@@ -118,6 +119,7 @@ class AdminSessionController extends Controller {
 		else {
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 		}
+		*/
 	}
 
 	/**
@@ -137,17 +139,18 @@ class AdminSessionController extends Controller {
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin()
-	{
+	public function actionAdmin() {
 		$model=new Session('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Session']))
-			$model->attributes=$_GET['Session'];
-		if (isset($_GET['Firm']))
+		$model->unsetAttributes();
+		if(isset($_GET['Session'])) {
+			$model->attributes = $_GET['Session'];
+		}
+		if (isset($_GET['Firm'])) {
 			$model->firm_id = $_GET['Firm']['id'];
-		if (isset($_GET['Site']))
+		}
+		if (isset($_GET['Site'])) {
 			$model->site_id = $_GET['Site']['id'];
-
+		}
 		$this->render('admin',array(
 			'model'=>$model,
 		));
@@ -158,13 +161,11 @@ class AdminSessionController extends Controller {
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer the ID of the model to be loaded
 	 */
-	public function loadModel($id)
-	{
+	public function loadModel($id) {
 		$model=Session::model()->findByPk((int)$id);
 		if($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		}
-
 		return $model;
 	}
 
@@ -172,10 +173,8 @@ class AdminSessionController extends Controller {
 	 * Performs the AJAX validation.
 	 * @param CModel the model to be validated
 	 */
-	protected function performAjaxValidation($model)
-	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='session-form')
-		{
+	protected function performAjaxValidation($model) {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='session-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

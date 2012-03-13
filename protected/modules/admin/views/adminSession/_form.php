@@ -79,8 +79,16 @@
 	<div class="row">
 		<?php echo $form->labelEx($model, 'firm'); ?>
 		<div class="field">
-			<?php echo $form->dropDownList($model->firmAssignment, 'firm_id', $model->getFirmOptions(), array('empty' => 'None')); ?>
+			<?php echo $form->dropDownList($model->firmAssignment, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => 'None')); ?>
 			<?php echo $form->error($model, 'firm'); ?>
+		</div>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'theatre'); ?>
+		<div class="field">
+			<?php echo $form->dropDownList($model,'theatre_id', Theatre::model()->getListWithSites(), array('empty' => '')); ?>
+			<?php echo $form->error($model, 'theatre_id'); ?>
 		</div>
 	</div>
 

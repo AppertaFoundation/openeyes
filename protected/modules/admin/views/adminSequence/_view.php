@@ -23,32 +23,28 @@
 	<?php echo CHtml::link(CHtml::encode($data->id), array('view', 'id'=>$data->id)); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('firm')); ?>:</b>
-	<?php echo CHtml::encode($data->getFirmName()); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('FirmName')); ?>:</b>
+	<?php echo CHtml::encode($data->FirmName); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('theatre_id')); ?>:</b>
-	<?php echo CHtml::encode($data->theatre->site->short_name . ' - ' . $data->theatre->name); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('TheatreName')); ?>:</b>
+	<?php echo CHtml::encode($data->TheatreName); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('start_date')); ?>:</b>
-	<?php echo CHtml::encode($data->start_date . ' (' . $data->WeekdayText . ')'); ?>
+	<?php echo CHtml::encode($data->NHSDate('start_date')); ?>
 	<br />
 
-	<b><?php echo CHtml::encode('Time'); ?>:</b>
-	<?php echo CHtml::encode(substr($data->start_time, 0, 5) . ' - ' . substr($data->end_time, 0, 5)); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('end_date')); ?>:</b>
-	<?php echo CHtml::encode($data->end_date); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('TimeSlot')); ?>:</b>
+	<?php echo CHtml::encode($data->TimeSlot); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('repeat_interval')); ?>:</b>
-	<?php echo !empty($data->week_selection) ? CHtml::encode($data->getWeekText()) : CHtml::encode($data->getFrequencyText()); ?>
+	<?php echo CHtml::encode($data->RepeatText); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('weekday')); ?>:</b>
-	<?php echo CHtml::encode($data->getWeekdayText()); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('end_date')); ?>:</b>
+	<?php echo CHtml::encode($data->NHSDate('end_date')); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('consultant')); ?>:</b>

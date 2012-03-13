@@ -55,16 +55,14 @@ class Session extends BaseActiveRecord {
 	 * Returns the static model of the specified AR class.
 	 * @return Session the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'session';
 	}
 
@@ -99,8 +97,7 @@ class Session extends BaseActiveRecord {
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'id' => 'ID',
 			'sequence_id' => 'Sequence',
@@ -109,8 +106,9 @@ class Session extends BaseActiveRecord {
 			'end_time' => 'End Time',
 			'comments' => 'Comments',
 			'status' => 'Status',
-			'anaesthetist' => 'Anaesthetist present',
-			'consultant' => 'Consultant present',
+			'anaesthetist' => 'Anaesthetist Present',
+			'consultant' => 'Consultant Present',
+			'general_anaesthetic' => 'GA Available',
 		);
 	}
 
@@ -118,19 +116,18 @@ class Session extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('t.sequence_id',$this->sequence_id,true);
+		$criteria->compare('id',$this->id,false);
+		$criteria->compare('t.sequence_id',$this->sequence_id,false);
 		$criteria->compare('date',$this->date,true);
 		$criteria->compare('start_time',$this->start_time,true);
 		$criteria->compare('end_time',$this->end_time,true);
-		$criteria->compare('comments',$this->comments,true);
+		$criteria->compare('status',$this->status,true);
 		$criteria->with = array();
 		if ($this->firm_id) {
 			$criteria->together = true;
@@ -141,13 +138,10 @@ class Session extends BaseActiveRecord {
 		if ($this->site_id) {
 			$criteria->together = true;
 			$criteria->with[] = 'theatre';
-			$criteria->compare('theatre.site_id', $this->site_id);
+			$criteria->compare('theatre.site_id', (int)$this->site_id);
 		}
 		if ($this->weekday) {
-			// FIXME: This needs to use session weekday and not sequence
-			$criteria->together = true;
-			$criteria->with[] = 'sequence';
-			$criteria->compare('sequence.weekday', $this->weekday);
+			$criteria->addCondition('weekday(date) = ' . ($this->weekday - 1));
 		}
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -155,15 +149,16 @@ class Session extends BaseActiveRecord {
 		));
 	}
 
+	// TODO: This probably doesn't belong here
 	public function getSiteListByFirm($firmId) {
 		$sites = Yii::app()->db->createCommand()
 			->selectDistinct('site.id, site.short_name')
 			->from('site')
 			->join('theatre t', 'site.id = t.site_id')
-			->join('sequence s', 's.theatre_id = t.id')
-			->join('sequence_firm_assignment sfa', 'sfa.sequence_id = s.id')
-			->where('sfa.firm_id = :id', array(':id'=>$firmId))
-			->order('site.name ASC')
+			->join('session s', 's.theatre_id = t.id')
+			->join('session_firm_assignment sfa', 'sfa.session_id = s.id')
+			->where('sfa.firm_id = :id', array(':id' => $firmId))
+			->order('site.name')
 			->queryAll();
 		$data = array();
 		foreach ($sites as $site) {
@@ -172,41 +167,26 @@ class Session extends BaseActiveRecord {
 		return $data;
 	}
 	
-	public function getFirmOptions() {
-		$options = Yii::app()->db->createCommand()
-			->selectDistinct('t.id, t.name, s.name AS sname')
-			->from('firm t')
-			->join('service_specialty_assignment ssa', 'ssa.id = t.service_specialty_assignment_id')
-			->join('specialty s', 's.id = ssa.specialty_id')
-			->order('t.name')
-			->queryAll();
-		$result = array();
-		foreach ($options as $value) {
-			$result[$value['id']] = $value['name'] . ' (' . $value['sname'] . ')';
-		}
-		return $result;
-	}
-	
 	public function getFirmName() {
 		if($this->firm) {
-			return $this->firm->name;
+			return $this->firm->name . ' (' . $this->firm->serviceSpecialtyAssignment->specialty->name . ')';
+		} else {
+			return 'Emergency List';
+		}
+	}
+	
+	public function getTheatreName() {
+		if($this->theatre) {
+			return $this->theatre->name . ' (' . $this->theatre->site->short_name . ')';
 		} else {
 			return 'None';
 		}
 	}
 
-	public function getAssociatedBookings()
-	{
-		$results = Yii::app()->db->createCommand()
-			->select('COUNT(b.id) AS bookings_count')
-			->from('session s')
-			->join('booking b', 's.id = b.session_id')
-			->where('s.id = :id' , array(':id' => $this->id))
-			->queryRow();
-
-		return $results['bookings_count'];
+	public function getTimeSlot() {
+		return date('H:i',strtotime($this->start_time)) . ' - ' . date('H:i',strtotime($this->end_time));
 	}
-
+	
 	public function getStatusOptions()
 	{
 		return array(
@@ -228,4 +208,5 @@ class Session extends BaseActiveRecord {
 
 		return $text;
 	}
+
 }

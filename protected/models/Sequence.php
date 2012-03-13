@@ -37,7 +37,7 @@
  *
  * The followings are the available model relations:
  * @property Theatre $theatre
- * @property SequenceFirmAssignment[] $sequenceFirmAssignments
+ * @property SequenceFirmAssignment $firmAssignment
  * @property Session[] $sessions
  */
 class Sequence extends BaseActiveRecord {
@@ -62,24 +62,21 @@ class Sequence extends BaseActiveRecord {
 	 * Returns the static model of the specified AR class.
 	 * @return Sequence the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'sequence';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
+	public function rules() {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
@@ -101,13 +98,13 @@ class Sequence extends BaseActiveRecord {
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
+	public function relations() {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
 			'theatre' => array(self::BELONGS_TO, 'Theatre', 'theatre_id'),
-			'sequenceFirmAssignment' => array(self::HAS_ONE, 'SequenceFirmAssignment', 'sequence_id'),
+			'firmAssignment' => array(self::HAS_ONE, 'SequenceFirmAssignment', 'sequence_id'),
+			'firm' => array(self::HAS_ONE, 'Firm', 'firm_id', 'through' => 'firmAssignment'),
 			'sessions' => array(self::HAS_MANY, 'Session', 'sequence_id'),
 		);
 	}
@@ -115,18 +112,18 @@ class Sequence extends BaseActiveRecord {
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'id' => 'ID',
 			'theatre_id' => 'Theatre',
 			'start_date' => 'Start Date',
-			'start_time' => 'Start Time (HH:MM or HH:MM:SS)',
-			'end_time' => 'End Time (HH:MM or HH:MM:SS)',
+			'start_time' => 'Start Time',
+			'end_time' => 'End Time',
 			'end_date' => 'End Date',
 			'repeat_interval' => 'Repeat',
-			'anaesthetist' => 'Anaesthetist present',
-			'consultant' => 'Consultant present',
+			'anaesthetist' => 'Anaesthetist Present',
+			'consultant' => 'Consultant Present',
+			'general_anaesthetic' => 'GA Available',
 		);
 	}
 
@@ -134,8 +131,7 @@ class Sequence extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
@@ -157,13 +153,13 @@ class Sequence extends BaseActiveRecord {
 		}
 		if ($this->firm_id) {
 			$criteria->together = true;
-			$criteria->with[] = 'sequenceFirmAssignment';
-			$criteria->compare('sequenceFirmAssignment.firm_id', $this->firm_id);
+			$criteria->with[] = 'firmAssignment';
+			$criteria->compare('firmAssignment.firm_id', (int)$this->firm_id);
 		}
 		if ($this->site_id) {
 			$criteria->together = true;
 			$criteria->with[] = 'theatre';
-			$criteria->compare('theatre.site_id', $this->site_id);
+			$criteria->compare('theatre.site_id', (int)$this->site_id);
 		}
 
 		return new CActiveDataProvider(get_class($this), array(
@@ -171,24 +167,7 @@ class Sequence extends BaseActiveRecord {
 		));
 	}
 
-	public function getTheatreOptions()
-	{
-		$options = Yii::app()->db->createCommand()
-			->select('t.id, t.name, s.name AS site')
-			->from('theatre t')
-			->join('site s', 't.site_id = s.id')
-			->queryAll();
-
-		$result = array();
-		foreach ($options as $value) {
-			$result[$value['id']] = $value['site'] . ' - ' . $value['name'];
-		}
-
-		return $result;
-	}
-
-	public function getFrequencyOptions()
-	{
+	public function getFrequencyOptions() {
 		return array(
 			self::FREQUENCY_1WEEK => 'Every week',
 			self::FREQUENCY_2WEEKS => 'Every 2 weeks',
@@ -199,8 +178,7 @@ class Sequence extends BaseActiveRecord {
 		);
 	}
 
-	public function getWeekSelectionOptions()
-	{
+	public function getWeekSelectionOptions() {
 		return array(
 			self::SELECT_1STWEEK => '1st in month',
 			self::SELECT_2NDWEEK => '2nd in month',
@@ -210,8 +188,7 @@ class Sequence extends BaseActiveRecord {
 		);
 	}
 
-	public function getFrequencyAndWeekOptions()
-	{
+	public function getFrequencyAndWeekOptions() {
 		return array(
 			self::FREQUENCY_1WEEK => 'Every week',
 			self::FREQUENCY_2WEEKS => 'Every 2 weeks',
@@ -226,19 +203,15 @@ class Sequence extends BaseActiveRecord {
 		);
 	}
 
-	public function getSelectedFrequencyWeekOption()
-	{
+	public function getSelectedFrequencyWeekOption() {
 		if (!empty($this->week_selection)) {
 			return self::FREQUENCY_MONTHLY + $this->week_selection;
 		} else {
 			return $this->repeat_interval;
 		}
 	}
-
 	
-	
-	public function getWeekdayOptions()
-	{
+	public function getWeekdayOptions() {
 		return array(
 			1 => 'Monday',
 			2 => 'Tuesday',
@@ -250,8 +223,7 @@ class Sequence extends BaseActiveRecord {
 		);
 	}
 
-	protected function beforeSave()
-	{
+	protected function beforeSave() {
 		$startTime = strtotime($this->start_date);
 		$this->start_date = date('Y-m-d', $startTime);
 		$this->weekday = date('N', $startTime);
@@ -275,8 +247,7 @@ class Sequence extends BaseActiveRecord {
 		return parent::beforeSave();
 	}
 
-	public function checkDates()
-	{
+	public function checkDates() {
 		if (!empty($this->end_date)) {
 			$start = strtotime($this->start_date);
 			$end = strtotime($this->end_date);
@@ -287,8 +258,7 @@ class Sequence extends BaseActiveRecord {
 		}
 	}
 
-	public function checkTimes()
-	{
+	public function checkTimes() {
 		$start = strtotime($this->start_time);
 		$end = strtotime($this->end_time);
 
@@ -297,8 +267,7 @@ class Sequence extends BaseActiveRecord {
 		}
 	}
 
-	protected function beforeValidate()
-	{
+	protected function beforeValidate() {
 		$startTimestamp = strtotime($this->start_date);
 		$endTimestamp = !empty($this->end_date) ? strtotime($this->end_date) : strtotime('+100 years');
 
@@ -341,8 +310,7 @@ class Sequence extends BaseActiveRecord {
 		return $valid;
 	}
 
-	protected function getBookedList($theatreId, $weekday, $startDate, $endDate, $startTime, $endTime, $scheduleStartTime, $scheduleEndTime, $endTimeLimit)
-	{
+	protected function getBookedList($theatreId, $weekday, $startDate, $endDate, $startTime, $endTime, $scheduleStartTime, $scheduleEndTime, $endTimeLimit) {
 		$sequences = Yii::app()->db->createCommand()
 			->select('*')
 			->from('sequence s')
@@ -386,8 +354,7 @@ class Sequence extends BaseActiveRecord {
 		return $bookedList;
 	}
 
-	public function getWeekOccurrences($weekday, $weekSelection, $startTimestamp, $endTimestamp, $startDate, $endDate)
-	{
+	public function getWeekOccurrences($weekday, $weekSelection, $startTimestamp, $endTimestamp, $startDate, $endDate) {
 		$dates = array();
 		$monthLength = 60 * 60 * 24 * 30;
 
@@ -423,8 +390,7 @@ class Sequence extends BaseActiveRecord {
 		return array_unique($dates);
 	}
 
-	public function getFrequencyInteger($frequency, $endTimestamp)
-	{
+	public function getFrequencyInteger($frequency, $endTimestamp) {
 		switch($frequency) {
 			case self::FREQUENCY_1WEEK:
 				$interval = 60 * 60 * 24 * 7;
@@ -445,21 +411,30 @@ class Sequence extends BaseActiveRecord {
 				$interval = $endTimestamp + 1;
 				break;
 		}
-
 		return $interval;
 	}
 
-	public function getFirmName()
-	{
-		if (!empty($this->sequenceFirmAssignment)) {
-			return $this->sequenceFirmAssignment->firm->name . ' (' . $this->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
+	public function getFirmName() {
+		if($this->firm) {
+			return $this->firm->name . ' (' . $this->firm->serviceSpecialtyAssignment->specialty->name . ')';
 		} else {
 			return 'None';
 		}
 	}
 
-	public function getFrequencyText()
-	{
+	public function getTheatreName() {
+		if($this->theatre) {
+			return $this->theatre->name . ' (' . $this->theatre->site->short_name . ')';
+		} else {
+			return 'None';
+		}
+	}
+	
+	public function getTimeSlot() {
+		return date('H:i',strtotime($this->start_time)) . ' - ' . date('H:i',strtotime($this->end_time));
+	}
+	
+	public function getFrequencyText() {
 		switch($this->repeat_interval) {
 			case self::FREQUENCY_ONCE:
 				$text = 'Once';
@@ -487,8 +462,7 @@ class Sequence extends BaseActiveRecord {
 		return $text;
 	}
 
-	public function getWeekText()
-	{
+	public function getWeekText() {
 		$weeks = array();
 		foreach ($this->getWeekSelectionOptions() as $id => $text) {
 			if ($this->week_selection & $id) {
@@ -511,28 +485,21 @@ class Sequence extends BaseActiveRecord {
 		}
 	}
 
-	public function getRepeatText()
-	{
-		$text = '';
+	public function getRepeatText() {
 		if (!empty($this->week_selection)) {
-			$text = $this->getWeekText();
+			return $this->getWeekText();
 		} else {
-			$text = $this->getFrequencyText();
+			return $this->getFrequencyText() . ' on ' . $this->getWeekdayText();
 		}
-
-		return $text;
 	}
 
-	public function getAssociatedBookings()
-	{
-		$results = Yii::app()->db->createCommand()
+	public function getBookingCount() {
+		return Yii::app()->db->createCommand()
 			->select('COUNT(b.id) AS bookings_count')
 			->from('sequence q')
 			->join('session s', 'q.id = s.sequence_id')
 			->join('booking b', 's.id = b.session_id')
 			->where('q.id = :id' , array(':id' => $this->id))
-			->queryRow();
-
-		return $results['bookings_count'];
+			->queryScalar();
 	}
 }

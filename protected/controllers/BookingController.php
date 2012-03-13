@@ -187,7 +187,7 @@ class BookingController extends BaseController
 					$cancellation->date = $model->session->date;
 					$cancellation->start_time = $model->session->start_time;
 					$cancellation->end_time = $model->session->end_time;
-					$cancellation->theatre_id = $model->session->sequence->theatre_id;
+					$cancellation->theatre_id = $model->session->theatre_id;
 					$cancellation->cancelled_date = date('Y-m-d H:i:s');
 					$cancellation->cancelled_reason_id = $_POST['cancellation_reason'];
 					$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
@@ -324,9 +324,8 @@ class BookingController extends BaseController
 		$session['id'] = $sessionId;
 
 		$sessionModel = Session::model()->findByPk($session['id']);
-		$sequence = Sequence::model()->findByPk($sessionModel->sequence_id);
-		$theatre = Theatre::model()->findByPk($sequence->theatre_id);
-		$site = Site::model()->findByPk($theatre->site_id);
+		$theatre = $sessionModel->theatre;
+		$site = $theatre->site;
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('session_id', $sessionId);
@@ -384,18 +383,18 @@ class BookingController extends BaseController
 				 * booking into an observational ward, it would be handled here
 				 */
 				$observationWard = Ward::model()->findByAttributes(
-					array('site_id' => $session->sequence->theatre->site_id,
+					array('site_id' => $session->theatre->site_id,
 						'restriction' => Ward::RESTRICTION_OBSERVATION));
 				if (!empty($observationWard)) {
 					$model->ward_id = $observationWard->id;
 				} else {
 					$wards = $operation->getWardOptions(
-						$session->sequence->theatre->site_id, $session->sequence->theatre->id);
+						$session->theatre->site_id, $session->theatre_id);
 					$model->ward_id = key($wards);
 				}
 			} elseif (!empty($operation) && !empty($session)) {
 				$wards = $operation->getWardOptions(
-					$session->sequence->theatre->site_id, $session->sequence->theatre->id);
+					$session->theatre->site_id, $session->theatre_id);
 				$model->ward_id = key($wards);
 			}
 
@@ -479,7 +478,7 @@ class BookingController extends BaseController
 			$cancellation->date = $model->session->date;
 			$cancellation->start_time = $model->session->start_time;
 			$cancellation->end_time = $model->session->end_time;
-			$cancellation->theatre_id = $model->session->sequence->theatre_id;
+			$cancellation->theatre_id = $model->session->theatre_id;
 			$cancellation->cancelled_date = date('Y-m-d H:i:s');
 			$cancellation->cancelled_reason_id = $reason->id;
 			$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
@@ -498,7 +497,7 @@ class BookingController extends BaseController
 					$new_session = Session::Model()->findByPk($model->session_id);
 
 					$wards = $operation->getWardOptions(
-						$new_session->sequence->theatre->site_id, $new_session->sequence->theatre->id);
+						$new_session->theatre->site_id, $new_session->theatre_id);
 					$model->ward_id = key($wards);
 
 					if (!$model->save()) {
@@ -525,7 +524,7 @@ class BookingController extends BaseController
 						$tl->delete();
 					}
 	
-					$operation->site_id = $new_session->sequence->theatre->site_id;
+					$operation->site_id = $new_session->theatre->site_id;
 					$operation->status = ElementOperation::STATUS_RESCHEDULED;
 					
 					// Update operation comments
