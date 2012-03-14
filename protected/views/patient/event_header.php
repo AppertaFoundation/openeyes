@@ -25,13 +25,14 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				<form>
 					<button tabindex="2" class="classy green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
 				</form>
+				<p style="margin-bottom: 0px;">&nbsp;</p>
 			</div>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('episodes'=>$episodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes,'patient'=>$model))?>
 				<div class="display_actions">
 					<div class="display_mode"><?php echo $title?></div>
-					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$this->model))?>
+					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$this->model,'editing'=>@$editing))?>
 				</div>
 				<div class="colorband category_treatement"></div>
 				<!-- EVENT CONTENT HERE -->
