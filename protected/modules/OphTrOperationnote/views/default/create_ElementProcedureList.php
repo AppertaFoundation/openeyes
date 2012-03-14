@@ -18,9 +18,7 @@
  */
 ?>
 
-<h2>Procedure list:</h2>
-
-<p>This is the content of the procedure list element type create view.	You can customise this page by editing <tt><?php echo __FILE__; ?></tt></p>
+<h4>Procedure list</h4>
 
 <div id="anaestheticType" class="eventDetail">
 	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type')); ?>:</div>
