@@ -171,6 +171,11 @@ class ClinicalController extends BaseController
 		$specialties = Subspecialty::model()->findAll();
 
 		if ($_POST && $_POST['action'] == 'create') {
+			if (isset($_POST['cancelOperation'])) {
+				$this->redirect(array('patient/episodes/'.$patient->id));
+				return;
+			}
+
 			$errors = array();
 			$elementList = array();
 			foreach ($elements as $element) {
