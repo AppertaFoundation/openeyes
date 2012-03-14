@@ -123,7 +123,7 @@ class BaseEventTypeController extends BaseController
 		$elements = $this->getDefaultElements(false,$event_type->id);
 
 		if (!count($elements)) {
-			throw new CHttpException(403, 'Gadzooks!  I got me no elements!');
+			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
 		if (!empty($_POST)) {
@@ -167,6 +167,39 @@ class BaseEventTypeController extends BaseController
 			false, true
 		);
 
+	}
+
+	public function actionView($id) {
+		$event = Event::model()->findByPk($id);
+
+		if (!isset($event)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		$elements = $this->service->getDefaultElements($event);
+
+		// Decide whether to display the 'edit' button in the template
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			$editable = false;
+		} else {
+			$editable = true;
+		}
+
+		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->logActivity('viewed event');
+
+		$this->renderPartial(
+			$this->getTemplateName('view', $event->event_type_id), array(
+			'elements' => $elements,
+			'eventId' => $id,
+			'editable' => $editable,
+			'currentSite' => $currentSite
+			), false, true);
+	}
+
+	public function actionUpdate($id) {
 	}
 
 	public function renderDefaultElements($action, $event=false, $data=false) {
