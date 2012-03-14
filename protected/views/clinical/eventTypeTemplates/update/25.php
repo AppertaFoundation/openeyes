@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$this->header(true,array('event'=>$event));
+$this->header(true,array('event'=>$event,'editing'=>true));
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/js/phrase.js');
 
@@ -68,68 +68,20 @@ if (isset($errors) && !empty($errors)) {?>
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
-	$('a.edit-save').unbind('click').click(function() {
-		$.ajax({
-			'url': '<?php echo Yii::app()->createUrl('clinical/update', array('id'=>$id)); ?>',
-			'type': 'POST',
-			'data': $('#clinical-update').serialize(),
-			'success': function(data) {
-				if (data.match(/^[0-9]+$/)) {
-					window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/'+data;
-					return false;
-				}
-				try {
-					displayErrors(data);
-				} catch (e) {
-					return false;
-				}
-			}
-		});
-		return false;
-	});
-
-	function displayErrors(data) {
-		arr = $.parseJSON(data);
-		if (!$.isEmptyObject(arr)) {
-			$('#clinical-update_es_ ul').html('');
-
-			$.each(arr, function(index, value) {
-				element = index.replace('Element', '');
-				element = element.substr(0, element.indexOf('_'));
-				list = '<li>' + element + ': ' + value + '</li>';
-				$('#clinical-update_es_ ul').append(list);
-			});
-			$('#clinical-update_es_').show();
-			return false;
-		} else {
-			$('#clinical-update_es_ ul').html('');
-			$('#clinical-update_es_').hide();
-		}
-	}
-
-	$('a.edit-cancel').unbind('click').click(function() {
-		if (last_item_type == 'url') {
-			window.location.href = last_item_id;
-		} else if (last_item_type == 'episode') {
-			load_episode_summary(last_item_id);
-		} else if (last_item_type == 'event') {
-			view_event(last_item_id);
+	$('#saveOperation').unbind('click').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			return true;
 		}
 		return false;
 	});
 
-	$(document).ready(function() {
-		$('input').change(function() {
-			edited();
-		});
-
-		$('select').change(function() {
-			edited();
-		});
-
-		$('textarea').bind('keyup',function() {
-			edited();
-		});
+	$('#cancelOperation').unbind('click').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			return true;
+		}
+		return false;
 	});
 </script>
-<?php $this->footer(true,array('event'=>$event))?>
+<?php $this->footer(true,array('event'=>$event,'editing'=>true))?>

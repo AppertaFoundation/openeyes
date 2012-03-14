@@ -31,7 +31,7 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes,'patient'=>$model))?>
 				<div class="display_actions">
 					<div class="display_mode"><?php echo $title?></div>
-					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$this->model))?>
+					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$this->model,'editing'=>@$editing))?>
 				</div>
 				<div class="colorband category_treatement"></div>
 				<!-- EVENT CONTENT HERE -->
