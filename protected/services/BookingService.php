@@ -230,6 +230,7 @@ class BookingService
 			}
 
 			$command = Yii::app()->db->createCommand()
+				// TODO: References to sequences need to be removed when possible
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,
@@ -261,6 +262,7 @@ class BookingService
 			$whereSql .= ' AND sfa.id IS NULL';
 
 			$command = Yii::app()->db->createCommand()
+				// TODO: References to sequences need to be removed when possible
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,

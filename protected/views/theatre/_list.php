@@ -46,6 +46,7 @@ if (empty($theatres)) {?>
 			$previousSequenceId = '';
 			$timeAvailable = $sessions[0]['sessionDuration'];
 			foreach ($sessions as $session) {
+				// TODO: References to sequences need to be removed when possible
 				if ($previousSequenceId != $session['sequenceId']) {
 					if ($previousSequenceId != '') {
 ?>

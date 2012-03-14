@@ -219,7 +219,7 @@ class TheatreController extends BaseController
 					'specialty_name' => @$values['specialty_name'],
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
-					'sequenceId' => $values['sequence_id'],
+					'sequenceId' => $values['sequence_id'], // TODO: References to sequences need to be removed when possible
 					'sessionId' => $values['session_id'],
 					'sessionDuration' => $sessionDuration,
 					'operationDuration' => $values['operation_duration'],

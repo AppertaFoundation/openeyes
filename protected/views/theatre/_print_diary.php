@@ -21,6 +21,7 @@ http://www.openeyes.org.uk	 info@openeyes.org.uk
 <div id="d_title">OPERATION LIST FORM</div>
 
 <?php
+// TODO: References to sequences need to be removed when possible
 $previousSequenceId = '';
 
 $firstTheatreShown = false;
