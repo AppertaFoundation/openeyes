@@ -18,6 +18,8 @@
 		<?php $this->renderDefaultElements($this->action->id); ?>
 		<?php $this->renderOptionalElements($this->action->id); ?>
 
+		<?php $this->displayErrors($errors)?>
+
 		<div class="cleartall"></div>
 		<div class="form_button">
 			<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;

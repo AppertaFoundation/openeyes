@@ -319,4 +319,8 @@ class BaseEventTypeController extends BaseController
 
 		return $event;
 	}
+
+	public function displayErrors($errors) {
+		$this->renderPartial('//elements/form_errors',array('errors'=>$errors));
+	}
 }
