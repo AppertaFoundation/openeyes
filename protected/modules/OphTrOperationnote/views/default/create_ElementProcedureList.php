@@ -22,30 +22,18 @@
 
 <p>This is the content of the procedure list element type create view.	You can customise this page by editing <tt><?php echo __FILE__; ?></tt></p>
 
-
 <div id="anaestheticType" class="eventDetail">
 	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type')); ?>:</div>
-		<div class="data">
-			<?php foreach ($element->getAnaestheticOptions() as $id => $value) {?>
-				<span class="group">
-					<input id="ElementProcedureList_anaesthetic_type_<?php echo $id?>" <?php if ($element->anaesthetic_type == $id){?>checked="checked" <?php }?>value="<?php echo $id?>" type="radio" name="ElementProcedureList[anaesthetic_type]" />
-					<label for="ElementProcedureList_anaesthetic_type_<?php echo $id?>"><?php echo $value?></label>
-				</span>
-			<?php }?>
-		</div>
+	<div class="data">
+		<?php foreach ($element->getAnaestheticOptions() as $id => $value) {?>
+			<span class="group">
+				<input id="ElementProcedureList_anaesthetic_type_<?php echo $id?>" <?php if ($element->anaesthetic_type == $id){?>checked="checked" <?php }?>value="<?php echo $id?>" type="radio" name="ElementProcedureList[anaesthetic_type]" />
+				<label for="ElementProcedureList_anaesthetic_type_<?php echo $id?>"><?php echo $value?></label>
+			</span>
+		<?php }?>
+	</div>
 </div>
 
-<div id="surgeonId" class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')); ?>:</div>
-		<div class="data">
-			<?php echo CHtml::dropDownList('ElementProcedureList[surgeon_id]', $element->surgeon_id, CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
-		</div>
-</div>
-
-<div id="assistantId" class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')); ?>:</div>
-		<div class="data">
-			<?php echo CHtml::dropDownList('ElementProcedureList[assistant_id]', $element->assistant_id, CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
-		</div>
-</div>
+<?php echo BaseEventTypeCHtml::renderDropDownList($element, 'ElementProcedureList[surgeon_id]', $element->surgeon_id, BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
+<?php echo BaseEventTypeCHtml::renderDropDownList($element, 'ElementProcedureList[assistant_id]', $element->assistant_id, BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
 

@@ -37,6 +37,7 @@ $config = array(
 		'application.commands.shell.*',
 		'application.behaviors.*',
 		'application.controllers.*',
+		'application.helpers.*',
 	),
 
 	'modules' => array(
