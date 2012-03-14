@@ -21,7 +21,7 @@
 				<!-- #event_content -->
 				<div class="colorband category_treatement"></div>
 				<div id="display_actions_footer" class="display_actions footer">
-					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable))?>
+					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$this->model))?>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->

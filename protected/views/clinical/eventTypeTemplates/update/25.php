@@ -17,6 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$this->header(true,array('event'=>$event));
+
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/js/phrase.js');
 
 $form = $this->beginWidget('CActiveForm', array(
@@ -44,10 +46,25 @@ foreach ($elements as $element) {
 	);
 }
 
-?>
-<div id="clinical-update_es_" class="alertBox" style="display:none"><p>Please fix the following input errors:</p>
-<ul><li>&nbsp;</li></ul></div>
+if (isset($errors) && !empty($errors)) {?>
+	<div id="clinical-create_es_" class="alertBox">
+		<p>Please fix the following input errors:</p>
+		<?php foreach ($errors as $field => $errs) {?>
+			<ul>
+				<li>
+					<?php echo $field.': '.$errs[0]?>
+				</li>
+			</ul>
+		<?php }?>
+	</div>
+<?php }?>
+
 <div class="cleartall"></div>
+<div class="form_button">
+	<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
+	<button type="submit" class="classy green venti" id="saveOperation" name="saveOperation"><span class="button-span button-span-green">Save</span></button>
+	<button type="submit" class="classy red venti" id="cancelOperation" name="cancelOperation"><span class="button-span button-span-red">Cancel</span></button>
+</div>
 <?php
 $this->endWidget(); ?>
 <script type="text/javascript">
@@ -115,3 +132,4 @@ $this->endWidget(); ?>
 		});
 	});
 </script>
+<?php $this->footer(true,array('event'=>$event))?>

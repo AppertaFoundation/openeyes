@@ -40,7 +40,7 @@ echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 
 foreach ($elements as $element) {
 	echo $this->renderPartial(
-		'/elements/' .  get_class($element) .  '/form',
+		'/elements/' .	get_class($element) .  '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 			'patient' => $patient, 'newRecord' => true, 'subspecialty' => $subspecialty,
 			'subsections' => $subsections, 'procedures' => $procedures, 'patient' => $patient)
@@ -100,26 +100,18 @@ if (isset($referrals) && is_array($referrals)) {
 <?php $this->endWidget(); ?>
 
 <script type="text/javascript">
-/*
+	$('#scheduleLater').unbind('click').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			return true;
+		}
+		return false;
+	});
+
 	$('#scheduleNow').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('clinical/create', array('event_type_id'=>$eventTypeId)); ?>',
-				'type': 'POST',
-				'data': $('#clinical-create').serialize() + '&scheduleNow=true',
-				'success': function(data) {
-					try {
-						displayErrors(data);
-					} catch (e) {
-						$('#event_content').html(data);
-						$('div.action_options_alt').hide();
-						$('div.action_options').hide();
-						return false;
-					}
-				}
-			});
+			return true;
 		}
 		return false;
 	});
@@ -127,52 +119,9 @@ if (isset($referrals) && is_array($referrals)) {
 	$('#cancelOperation').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-
-			if (last_item_type == 'url') {
-				window.location.href = last_item_id;
-			} else if (last_item_type == 'episode') {
-				load_episode_summary(last_item_id);
-			} else if (last_item_type == 'event') {
-				view_event(last_item_id);
-			}
+			return true;
 		}
 		return false;
 	});
-
-	function displayErrors(data) {
-		enableButtons();
-		arr = $.parseJSON(data);
-		if (!$.isEmptyObject(arr)) {
-			$('#clinical-create_es_ ul').html('');
-
-			$.each(arr, function(index, value) {
-				element = index.replace('Element', '');
-				element = element.substr(0, element.indexOf('_'));
-				list = '<li>' + element + ': ' + value + '</li>';
-				$('#clinical-create_es_ ul').append(list);
-			});
-			$('#clinical-create_es_').show();
-			return false;
-		} else {
-			$('#clinical-create_es_ ul').html('');
-			$('#clinical-create_es_').hide();
-		}
-	}
-
-	$(document).ready(function() {
-		$('div.action_options').hide();
-		$('div.action_options_alt').show();
-
-		$('a.edit-save').unbind('click').click(function() {
-			$('#scheduleLater').click();
-			return false;
-		});
-
-		$('a.edit-cancel').unbind('click').click(function() {
-			$('#cancelOperation').click();
-			return false;
-		});
-	});
-	*/
 </script>
 <?php $this->footer()?>

@@ -36,7 +36,7 @@
 				<?php }?>
 				<div class="display_actions"<?php if (!$title){?> style="display: none;"<?php }?>>
 					<div class="display_mode"><?php echo $title?></div>
-					<?php $this->renderPartial('edit_controls',array('editable'=>$editable))?>
+					<?php $this->renderPartial('edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$model))?>
 				</div>
 				<div class="colorband category_treatement"<?php if (!$title){?> style="display: none;"<?php }?>></div>
 				<!-- EVENT CONTENT HERE -->
@@ -62,7 +62,7 @@
 				<!-- #event_content -->
 				<div class="colorband category_treatement"<?php if (!$title){?> style="display: none;"<?php }?></div>
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!$title){?> style="display: none;"<?php }?>
-					<?php $this->renderPartial('edit_controls',array('editable'=>$editable))?>
+					<?php $this->renderPartial('edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$model))?>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->

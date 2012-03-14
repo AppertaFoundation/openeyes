@@ -25,6 +25,7 @@ class ClinicalController extends BaseController
 	public $service;
 	public $firm;
 	public $model;
+	public $nopost = false;
 
 	public function init()
 	{
@@ -279,41 +280,47 @@ class ClinicalController extends BaseController
 		$patient = Patient::model()->findByPk($episode->patient_id);
 
 		if ($_POST && $_POST['action'] == 'update') {
-			if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-				// TODO: This appears to overlap with the service->updateElements functionality
-				// and probably needs rationalising
-				$valid = true;
-				$elementList = array();
-				foreach ($elements as $element) {
-					$elementClassName = get_class($element);
-					$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-					$elementList[] = $element;
-					if (!$element->validate()) {
-						$valid = false;
+			if (isset($_POST['cancelOperation'])) {
+				$this->redirect(array('patient/event/'.$event->id));
+				return;
+			}
+
+			// TODO: This appears to overlap with the service->updateElements functionality
+			// and probably needs rationalising
+			$errors = array();
+			$elementList = array();
+			foreach ($elements as $element) {
+				$elementClassName = get_class($element);
+				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
+				$elementList[] = $element;
+				if (!$element->validate()) {
+					foreach ($element->getErrors() as $errormsgs) {
+						foreach ($errormsgs as $error) {
+							$index = preg_replace('/^Element/','',$elementClassName);
+							$errors[$index][] = $error;
+						}
 					}
-				}
-				if (!$valid) {
-					echo CActiveForm::validate($elementList);
-					Yii::app()->end();
 				}
 			}
 
-			$success = $this->service->updateElements($elements, $_POST, $event);
+			if (empty($errors)) {
+				$success = $this->service->updateElements($elements, $_POST, $event);
 
-			if ($success) {
-				$this->logActivity('updated event');
+				if ($success) {
+					$this->logActivity('updated event');
 
-				// Update event to indicate user has made a change
-				$event->datetime = date("Y-m-d H:i:s");
-				$event->user = $this->getUserId();
-				if (!$event->save()) {
-					throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
+					// Update event to indicate user has made a change
+					$event->datetime = date("Y-m-d H:i:s");
+					$event->user = $this->getUserId();
+					if (!$event->save()) {
+						throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
+					}
+
+					OELog::log("Updated event $event->id");
+
+					$this->redirect(array('patient/event/'.$event->id));
+					return;
 				}
-
-				OELog::log("Updated event $event->id");
-
-				echo $event->id;
-				return;
 			}
 
 			// If we get this far element validation has failed, so we render them again.
@@ -324,8 +331,13 @@ class ClinicalController extends BaseController
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient
+			'patient' => $patient,
+			'event' => $event,
 		);
+
+		if (isset($errors)) {
+			$params['errors'] = $errors;
+		}
 
 		if ($event->eventType->name == 'Operation') {
 			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
@@ -488,7 +500,7 @@ class ClinicalController extends BaseController
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
-	public function header($editable=false) {
+	public function header($editable=false, $passthru=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -500,16 +512,22 @@ class ClinicalController extends BaseController
 			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
 		}
 
-		$this->renderPartial('//patient/event_header',array(
+		$params = array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
 			'title'=>'Create',
 			'model'=>$patient,
 			'editable'=>$editable
-		));
+		);
+
+		if (is_array($passthru)) {
+			$params = array_merge($params,$passthru);
+		}
+
+		$this->renderPartial('//patient/event_header',$params);
 	}
 
-	public function footer($editable=false) {
+	public function footer($editable=false,$passthru=false) {
 		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
@@ -521,11 +539,17 @@ class ClinicalController extends BaseController
 			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
 		}
 
-		$this->renderPartial('//patient/event_footer',array(
+		$params = array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
 			'editable'=>$editable
-		));
+		);
+
+		if (is_array($passthru)) {
+			$params = array_merge($params,$passthru);
+		}
+
+		$this->renderPartial('//patient/event_footer',$params);
 	}
 
 	/**
