@@ -301,7 +301,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 		$('select[id=subsection_id]').change(function() {
 			var subsection = $('select[name=subsection_id] option:selected').val();
-			if (subsection != 'Select a subsection') {
+			if (subsection != '') {
 				var existingProcedures = [];
 				$('#procedure_list tbody').children().each(function () {
 					var text = $(this).children('td:first').children('span:first').text();
@@ -317,6 +317,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						$('select[name=select_procedure_id]').show();
 					}
 				});
+			} else {
+				$('#select_procedure_id').hide();
 			}
 		});
 
