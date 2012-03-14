@@ -17,8 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class GenerateSessionsCommand extends CConsoleCommand
-{
+class GenerateSessionsCommand extends CConsoleCommand {
+	
 	public function getName() {
 		return 'Generate Session Data Command.';
 	}
@@ -37,27 +37,26 @@ class GenerateSessionsCommand extends CConsoleCommand
 		$initialEndDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
 		$sequences = Sequence::model()->findAll(
 			'start_date <= :end_date AND (end_date IS NULL or end_date >= :today)',
-		array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today));
+			array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today)
+		);
 
 		foreach ($sequences as $sequence) {
 
 			$session = Yii::app()->db->createCommand()
 			->select('date')
 			->from('session')
-			->where('sequence_id=:id', array(':id'=>$sequence->id))
+			->where('sequence_id=:id', array(':id' => $sequence->id))
 			->order('date DESC')
 			->queryRow();
 
 			// The date of the most recent session for this sequence plus one day, or the seqeunce start date if no sessions for this sequence yet
 			$startDate = empty($session) ? strtotime($sequence->start_date) : strtotime($session['date']) + (60 * 60 * 24);
 
-			// The date to generate sessions until - the sequence end date if there is one, else (the date provided on the command line OR 13 months from now).
-			$sequenceEnd = empty($sequence->end_date) ? $initialEndDate : strtotime($sequence->end_date);
-			$endDate = $initialEndDate;
-			if ($endDate > $sequenceEnd) {
-				// @todo - is this code for anything? endDate is the same as initialEndDate so the above
-				//	ternary operator should make this impossible
-				$endDate = $sequenceEnd;
+			// Sessions should be generated to the smaller of initialEndDate (+13 months or command line) and sequence end date
+			if($sequence->end_date && strtotime($sequence->end_date) < $initialEndDate) {
+				$endDate = strtotime($sequence->end_date);
+			} else {
+				$endDate = $initialEndDate;
 			}
 
 			$dateList = array();
@@ -126,20 +125,32 @@ class GenerateSessionsCommand extends CConsoleCommand
 				throw new CException("Invalid combination of repeat_interval and week_selection");
 			}
 
-			if (!empty($dateList)) {
-				$insert = 'INSERT IGNORE INTO session (sequence_id, date, start_time, end_time, consultant, anaesthetist, paediatric, general_anaesthetic) VALUES ';
-				foreach ($dateList as $date) {
-					$insert .= "({$sequence->id}, '$date', '{$sequence->start_time}', '{$sequence->end_time}', '{$sequence->consultant}', '{$sequence->anaesthetist}', '{$sequence->paediatric}', '{$sequence->general_anaesthetic}')";
-					if ($date != end($dateList)) {
-						$insert .= ', ';
+			if(!empty($dateList)) {
+				
+				// Process dateList into sessions
+				foreach($dateList as $date) {
+					$new_session = new Session();
+					$new_session->attributes = array(
+						'sequence_id' => $sequence->id,
+						'date' => $date,
+						'start_time' => $sequence->start_time,
+						'end_time' => $sequence->end_time,
+						'consultant' => $sequence->consultant,
+						'anaesthetist' => $sequence->anaesthetist,
+						'paediatric' => $sequence->paediatric,
+						'general_anaesthetic' => $sequence->general_anaesthetic,
+						'theatre_id' => $sequence->theatre_id,
+					);
+					$new_session->save();
+					if($sequence->firmAssignment) {
+						$new_firm_assignment = new SessionFirmAssignment();
+						$new_firm_assignment->session_id = $new_session->id;
+						$new_firm_assignment->firm_id = $sequence->firmAssignment->firm_id;
+						$new_firm_assignment->save();
 					}
-					$insert .= "\n";
 				}
-
+				
 				$output .= "\nSequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
-
-				$command = Yii::app()->db->createCommand($insert);
-				$command->execute();
 			}
 		}
 

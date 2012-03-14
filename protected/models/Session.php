@@ -72,11 +72,11 @@ class Session extends BaseActiveRecord {
 	public function rules() {
 		return array(
 			array('sequence_id, date, start_time, end_time', 'required'),
-			array('sequence_id', 'length', 'max' => 10),
+			array('sequence_id, theatre_id', 'length', 'max' => 10),
 			array('comments, status, consultant, paediatric, anaesthetist, general_anaesthetic', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, sequence_id, date, start_time, end_time, comments, status, firm_id, site_id, weekday', 'safe', 'on'=>'search'),
+			array('id, sequence_id, theatre_id, date, start_time, end_time, comments, status, firm_id, site_id, weekday, consultant, paediatric, anaesthetist, general_anaesthetic', 'safe', 'on'=>'search'),
 		);
 	}
 
