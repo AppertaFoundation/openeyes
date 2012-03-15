@@ -354,9 +354,9 @@ class PatientController extends BaseController
 	{
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
-		$patient = $this->model = $this->loadModel($_GET['id']);
+		$this->patient = $this->loadModel($_GET['id']);
 
-		$episodes = $patient->episodes;
+		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
 			$eventTypes = array();
@@ -366,8 +366,9 @@ class PatientController extends BaseController
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
+		$this->title = 'Episode summary';
+
 		$this->render('events_and_episodes', array(
-			'model' => $patient,
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
 			'eventTypes' => $eventTypes,
