@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$patientName = $model->first_name . ' ' . $model->last_name;
+$patientName = $this->patient->first_name . ' ' . $this->patient->last_name;
 $this->breadcrumbs=array(
-	"{$patientName} ({$model->hos_num})",
+	"{$patientName} ({$this->patient->hos_num})",
 );
 $this->widget('application.extensions.fancybox.EFancyBox', array(
 	'target'=>'button.fancybox',
@@ -28,7 +28,7 @@ $this->widget('application.extensions.fancybox.EFancyBox', array(
 
 $address_str = '';
 
-$address = $model->address;
+$address = $this->patient->address;
 
 if (!empty($address)) {
 	$fields = array(
@@ -85,11 +85,11 @@ if (!empty($address)) {
 						<h4>Personal Details:</h4>
 						<div class="data_row">
 							<div class="data_label">First name(s):</div>
-							<div class="data_value"><?php echo $model->first_name?></div>
+							<div class="data_value"><?php echo $this->patient->first_name?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Last name:</div>
-							<div class="data_value"><?php echo $model->last_name?></div>
+							<div class="data_value"><?php echo $this->patient->last_name?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Address:</div>
@@ -97,18 +97,18 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Date of Birth:</div>
-							<div class="data_value"><?php echo $model->NHSDate('dob') . ' (Age '.$model->getAge().')'?></div>
+							<div class="data_value"><?php echo $this->patient->NHSDate('dob') . ' (Age '.$this->patient->getAge().')'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Gender:</div>
-							<div class="data_value"><?php echo $model->gender == 'F' ? 'Female' : 'Male'?></div>
+							<div class="data_value"><?php echo $this->patient->gender == 'F' ? 'Female' : 'Male'?></div>
 						</div>
 					</div> <!-- #personal_details -->
 					<div class="whiteBox" id="contact_details">
 						<h4>Contact Details:</h4>
 						<div class="data_row">
 							<div class="data_label">Telephone:</div>
-							<div class="data_value"><?php echo !empty($model->primary_phone) ? $model->primary_phone : 'Unknown'?></div>
+							<div class="data_value"><?php echo !empty($this->patient->primary_phone) ? $this->patient->primary_phone : 'Unknown'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Email:</div>
@@ -123,15 +123,15 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($model->gp !== null) ? $model->gp->contact->title.' '.$model->gp->contact->first_name.' '.$model->gp->contact->last_name : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Address:</div>
-							<div class="data_value"><?php echo ($model->gp !== null) ? $model->gp->contact->address->address1.' '.$model->gp->contact->address->address2.' '.$model->gp->contact->address->city.' '.$model->gp->contact->address->county.' '.$model->gp->contact->address->postcode : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->address->address1.' '.$this->patient->gp->contact->address->address2.' '.$this->patient->gp->contact->address->city.' '.$this->patient->gp->contact->address->county.' '.$this->patient->gp->contact->address->postcode : 'Unknown'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Telephone:</div>
-							<div class="data_value"><?php echo ($model->gp !== null) ? $model->gp->contact->primary_phone : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
 						</div>
 					</div>
 				</div>	<!-- .halfColumn -->
@@ -165,12 +165,12 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><a href="/patient/episodes/<?php echo $model->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
+					<p><a href="/patient/episodes/<?php echo $this->patient->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('tr.all-episode').unbind('click').click(function() {
-					window.location.href = '/patient/episodes/<?php echo $model->id?>/episode/'+$(this).attr('id');
+					window.location.href = '/patient/episodes/<?php echo $this->patient->id?>/episode/'+$(this).attr('id');
 					return false;
 				});
 			</script>

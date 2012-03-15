@@ -76,15 +76,14 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
-		$patient = $this->loadModel($id);
+		$this->patient = $this->loadModel($id);
 
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
-		$episodes = $patient->episodes;
+		$episodes = $this->patient->episodes;
 
 		$this->layout = '//layouts/patientMode/main';
-		$this->model = $patient;
 
 		$this->logActivity('viewed patient');
 
@@ -100,7 +99,7 @@ class PatientController extends BaseController
 		}
 
 		$this->render('view', array(
-			'model' => $patient, 'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
 	}
 
