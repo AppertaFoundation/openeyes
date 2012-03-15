@@ -21,6 +21,10 @@ class BookingController extends BaseController
 {
 	public $model;
 	public $firm;
+	public $patient;
+	public $title;
+	public $editing;
+	public $event;
 
 	public function filters()
 	{
@@ -79,6 +83,9 @@ class BookingController extends BaseController
 
 		$firmList = Firm::model()->getListWithSpecialties();
 
+		$this->patient = $operation->event->episode->patient;
+		$this->title = 'Schedule';
+
 		$this->renderPartial('/booking/_schedule',
 			array('operation'=>$operation, 'date'=>$minDate,
 				'sessions'=>$sessions, 'firm' => $firm, 'firmList' => $firmList
@@ -117,6 +124,9 @@ class BookingController extends BaseController
 
 		$firmList = Firm::model()->getListWithSpecialties();
 
+		$this->patient = $operation->event->episode->patient;
+		$this->title = 'Reschedule';
+
 		$this->renderPartial('/booking/_reschedule',
 			array(
 				'operation'=>$operation,
@@ -147,6 +157,9 @@ class BookingController extends BaseController
 		$firmId = $operation->event->episode->firm_id;
 		$firm = Firm::model()->findByPk($firmId);
 		$sessions = $operation->getSessions($firm->name == 'Emergency List');
+
+		$this->patient = $operation->event->episode->patient;
+		$this->title = 'Reschedule later';
 
 		$this->renderPartial('/booking/_reschedule_later',
 			array(
@@ -234,6 +247,9 @@ class BookingController extends BaseController
 				$minDate = $thisMonth;
 			}
 		}
+
+		$this->patient = $operation->event->episode->patient;
+		$this->title = 'Cancel operation';
 
 		$this->renderPartial('/booking/_cancel_operation',
 			array('operation'=>$operation, 'date'=>$minDate), false, true);
@@ -651,7 +667,7 @@ class BookingController extends BaseController
 	 * @param $event_type_id
 	 * @return array
 	 */
-	public function getDefaultElements($event=false, $event_type_id=false) {
+	public function getDefaultElements($event_type_id=false, $event=false) {
 		$etc = new BaseEventTypeController(1);
 		$etc->event = $event;
 		return $etc->getDefaultElements($event_type_id);
