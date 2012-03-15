@@ -20,8 +20,8 @@
 class BookingService
 {
 	/**
-	 * Search sequences that match booking requirements, and figure out how
-	 * full the respective sessions would be
+	 * Search sessions that match booking requirements, and figure out how
+	 * full they would be
 	 *
 	 * @return CDbReader
 	 */
@@ -50,9 +50,8 @@ class BookingService
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s`
-			JOIN `sequence` `q` ON s.sequence_id = q.id
-			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `theatre` `t` ON q.theatre_id = t.id
+			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
+			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
@@ -63,9 +62,8 @@ class BookingService
 			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s`
-			JOIN `sequence` `q` ON s.sequence_id = q.id
-			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `theatre` `t` ON q.theatre_id = t.id
+			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
+			JOIN `theatre` `t` ON s.theatre_id = t.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
 				s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
 				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
@@ -104,9 +102,8 @@ class BookingService
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s`
-			JOIN `sequence` `q` ON s.sequence_id = q.id
-			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `theatre` `t` ON q.theatre_id = t.id
+			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
+			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
@@ -120,9 +117,8 @@ class BookingService
 				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				0 AS bookings, 0 AS bookings_duration
 			FROM `session` `s`
-			JOIN `sequence` `q` ON s.sequence_id = q.id
-			LEFT JOIN `sequence_firm_assignment` `f` ON q.id = f.sequence_id
-			JOIN `theatre` `t` ON q.theatre_id = t.id
+			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
+			JOIN `theatre` `t` ON s.theatre_id = t.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
 				AND s.date = '" . $date . "' AND $firmSql
 				AND s.id NOT IN (SELECT DISTINCT (session_id) FROM booking)";
@@ -145,10 +141,9 @@ class BookingService
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration, site.id AS site_id
 			FROM `session` `s`
-			JOIN `sequence` `q` ON s.sequence_id = q.id
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			JOIN `theatre` `t` ON q.theatre_id = t.id
+			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
 			WHERE s.id = '" . $sessionId . "'";
 
@@ -168,8 +163,7 @@ class BookingService
 		$date = Yii::app()->db->createCommand()
 			->select('date')
 			->from('session s')
-			->join('sequence q', 's.sequence_id = q.id')
-			->join('sequence_firm_assignment ssa', 'ssa.sequence_id = q.id')
+			->join('session_firm_assignment ssa', 'ssa.session_id = s.id')
 			->where('firm_id = :fid AND date >= CURDATE()', array(':fid' => $firmId))
 			->order('date ASC')
 			->limit(1)
@@ -236,6 +230,7 @@ class BookingService
 			}
 
 			$command = Yii::app()->db->createCommand()
+				// TODO: References to sequences need to be removed when possible
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,
@@ -246,15 +241,14 @@ class BookingService
 					o.total_duration AS operation_duration, p.first_name,
 					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
-				->join('sequence q', 's.sequence_id = q.id')
-				->join('theatre t', 't.id = q.theatre_id')
+				->join('theatre t', 't.id = s.theatre_id')
 				->leftJoin('site i', 'i.id = t.site_id')
 				->leftJoin('booking b', 'b.session_id = s.id')
 				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
 				->leftJoin('event e', 'e.id = o.event_id')
 				->leftJoin('episode ep', 'ep.id = e.episode_id')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
-				->join('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
+				->join('session_firm_assignment sfa', 'sfa.session_id = s.id')
 				->join('firm f', 'f.id = sfa.firm_id')
 				->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
 				->join('specialty spec', 'spec.id = ssa.specialty_id')
@@ -268,6 +262,7 @@ class BookingService
 			$whereSql .= ' AND sfa.id IS NULL';
 
 			$command = Yii::app()->db->createCommand()
+				// TODO: References to sequences need to be removed when possible
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
 					TIMEDIFF(s.end_time, s.start_time) AS session_duration, s.comments AS session_comments,
 					s.consultant as session_consultant, s.anaesthetist as session_anaesthetist, s.paediatric as session_paediatric, s.general_anaesthetic as session_general_anaesthetic,
@@ -277,15 +272,14 @@ class BookingService
 					o.total_duration AS operation_duration, p.first_name,
 					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
-				->join('sequence q', 's.sequence_id = q.id')
-				->join('theatre t', 't.id = q.theatre_id')
+				->join('theatre t', 't.id = s.theatre_id')
 				->leftJoin('site i', 'i.id = t.site_id')
 				->leftJoin('booking b', 'b.session_id = s.id')
 				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
 				->leftJoin('event e', 'e.id = o.event_id')
 				->leftJoin('episode ep', 'ep.id = e.episode_id')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
-				->leftJoin('sequence_firm_assignment sfa', 'sfa.sequence_id = q.id')
+				->leftJoin('session_firm_assignment sfa', 'sfa.session_id = s.id')
 				->leftJoin('ward w', 'w.id = b.ward_id')
 				->leftJoin('user mu','b.last_modified_user_id = mu.id')
 				->leftJoin('user cu','b.created_user_id = cu.id')

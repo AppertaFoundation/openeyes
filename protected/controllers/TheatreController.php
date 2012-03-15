@@ -219,7 +219,7 @@ class TheatreController extends BaseController
 					'specialty_name' => @$values['specialty_name'],
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
-					'sequenceId' => $values['sequence_id'],
+					'sequenceId' => $values['sequence_id'], // TODO: References to sequences need to be removed when possible
 					'sessionId' => $values['session_id'],
 					'sessionDuration' => $sessionDuration,
 					'operationDuration' => $values['operation_duration'],
@@ -298,9 +298,8 @@ class TheatreController extends BaseController
 			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.name as ward_name, f.pas_code as consultant, sp.ref_spec as specialty')
 			->from('booking b')
 			->join('session s','b.session_id = s.id')
-			->join('sequence se','s.sequence_id = se.id')
-			->join('theatre t','se.theatre_id = t.id')
-			->join('sequence_firm_assignment sfa','sfa.sequence_id = se.id')
+			->join('theatre t','s.theatre_id = t.id')
+			->join('session_firm_assignment sfa','sfa.session_id = s.id')
 			->join('firm f','f.id = sfa.firm_id')
 			->join('service_specialty_assignment ssa','ssa.id = f.service_specialty_assignment_id')
 			->join('specialty sp','sp.id = ssa.specialty_id')

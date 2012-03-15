@@ -20,63 +20,131 @@
 ?>
 <div class="form">
 
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'session-form',
-	'enableAjaxValidation'=>false,
-)); ?>
+	<?php $form = $this->beginWidget('CActiveForm', array(
+		'id' => 'session-form',
+		'enableAjaxValidation' => false,
+	)); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note">
+		Fields with <span class="required">*</span> are required.
+	</p>
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<div class="row"><?php echo $model->sequence_id; ?></div>
-	<div class="row"><?php echo $model->date; ?></div>
-	<div class="row"><?php echo $model->start_time; ?></div>
-	<div class="row"><?php echo $model->end_time; ?></div>
-
 	<div class="row">
-		<input id="Session_consultant" value="1" type="checkbox" name="Session[consultant]" 
-		<?php if($model->consultant) { ?>checked="checked"<?php } ?> />
-		<?php echo $form->labelEx($model,'consultant'); ?>
-		<?php echo $form->error($model,'consultant'); ?>
+		<?php echo $form->labelEx($model,'sequence_id'); ?>
+		<div class="field">
+			<?php echo $form->textField($model, 'sequence_id', array('disabled' => true)); ?>
+			<?php echo $form->error($model, 'sequence_id'); ?>
+		</div>
 	</div>
 	
 	<div class="row">
-		<input id="Session_paediatric" value="1" type="checkbox" name="Session[paediatric]" 
-		<?php if($model->paediatric) { ?>checked="checked"<?php } ?> />
-		<?php echo $form->labelEx($model,'paediatric'); ?>
-		<?php echo $form->error($model,'paediatric'); ?>
-	</div>
-	
-	<div class="row">
-		<input id="Session_anaesthetist" value="1" type="checkbox" name="Session[anaesthetist]" 
-		<?php if($model->anaesthetist) { ?>checked="checked"<?php } ?> />
-		<?php echo $form->labelEx($model,'anaesthetist'); ?>
-		<?php echo $form->error($model,'anaesthetist'); ?>
+		<?php echo $form->labelEx($model, 'date'); ?>
+		<div class="field">
+			<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+				'model' => $model,
+				'attribute' => 'date',
+			  'value' => $model->date,
+			  'options' => array(
+			    'showAnim' => 'fold',
+					'minDate' => 'new Date()',
+					'defaultDate' => $model->date,
+					'dateFormat' => Helper::NHS_DATE_FORMAT_JS
+			  ),
+			  'htmlOptions'=>array(
+			  	'style' => 'height: 20px;'
+			  ),
+				)); ?>
+			<?php echo $form->error($model, 'date'); ?>
+		</div>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'status');
-		$i = 0;
-		foreach ($model->getStatusOptions() as $value => $name) { ?>
-		<input id="Session_status_<?php echo $i; ?>" value="<?php echo $value; ?>" type="radio" name="Session[status]"<?php
-			if ($model->status == $value) {
-				echo ' checked="checked"';
-			} ?> /> <label for="Session_status_<?php echo $i; ?>" style="display: inline; font-weight: normal;"><?php echo $name; ?></label> &nbsp; <?php
-		}
-		echo $form->error($model,'status'); ?>
+		<?php echo $form->labelEx($model, 'start_time'); ?>
+		<div class="field">
+			<?php echo $form->textField($model, 'start_time'); ?>
+			<?php echo $form->error($model, 'start_time'); ?>
+		</div>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'end_time'); ?>
+		<div class="field">
+			<?php echo $form->textField($model, 'end_time'); ?>
+			<?php echo $form->error($model, 'end_time'); ?>
+		</div>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'firm'); ?>
+		<div class="field">
+			<?php echo $form->dropDownList($model->firmAssignment, 'firm_id', Firm::model()->getListWithSpecialties(), array('empty' => 'None')); ?>
+			<?php echo $form->error($model, 'firm'); ?>
+		</div>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model, 'theatre'); ?>
+		<div class="field">
+			<?php echo $form->dropDownList($model,'theatre_id', Theatre::model()->getListWithSites(), array('empty' => '')); ?>
+			<?php echo $form->error($model, 'theatre_id'); ?>
+		</div>
+	</div>
+
+	<div class="row nolabel">
+		<div class="field">
+			<?php echo $form->checkBox($model, 'consultant'); ?>
+			<?php echo $form->labelEx($model,'consultant'); ?>
+			<?php echo $form->error($model,'consultant'); ?>
+		</div>
+	</div>
+	
+	<div class="row nolabel">
+		<div class="field">
+			<?php echo $form->checkBox($model, 'paediatric'); ?>
+			<?php echo $form->labelEx($model,'paediatric'); ?>
+			<?php echo $form->error($model,'paediatric'); ?>
+		</div>
+	</div>
+	
+	<div class="row nolabel">
+		<div class="field">
+			<?php echo $form->checkBox($model, 'anaesthetist'); ?>
+			<?php echo $form->labelEx($model,'anaesthetist'); ?>
+			<?php echo $form->error($model,'anaesthetist'); ?>
+		</div>
+	</div>
+
+	<div class="row nolabel">
+		<div class="field">
+			<?php echo $form->checkBox($model, 'general_anaesthetic'); ?>
+			<?php echo $form->labelEx($model,'general_anaesthetic'); ?>
+			<?php echo $form->error($model,'general_anaesthetic'); ?>
+		</div>
+	</div>
+
+	<div class="row">
+		<?php echo $form->labelEx($model,'status'); ?>
+		<div class="field">
+			<?php echo $form->radioButtonList($model, 'status', $model->getStatusOptions()); ?>
+			<?php echo $form->error($model,'status'); ?>
+		</div>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'comments'); ?>
-		<?php echo $form->textArea($model,'comments', array('rows'=>10, 'cols'=>40)); ?>
-		<?php echo $form->error($model,'comments'); ?>
+		<div class="field">
+			<?php echo $form->textArea($model,'comments', array('rows'=>10, 'cols'=>40)); ?>
+			<?php echo $form->error($model,'comments'); ?>
+		</div>
 	</div>
 
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>
 
-<?php $this->endWidget(); ?>
+	<?php $this->endWidget(); ?>
 
-</div><!-- form -->
+</div>
+<!-- form -->

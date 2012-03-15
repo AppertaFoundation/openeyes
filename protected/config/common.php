@@ -34,6 +34,7 @@ $config = array(
 		'application.components.summaryWidgets.*',
 		'application.services.*',
 		'application.modules.*',
+		'application.commands.*',
 		'application.commands.shell.*',
 		'application.behaviors.*',
 		'application.controllers.*',

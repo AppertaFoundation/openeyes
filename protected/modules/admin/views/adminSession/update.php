@@ -25,7 +25,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Session', 'url'=>array('index')),
-	array('label'=>'Create Sessions', 'url'=>array('massCreate')),
+	array('label'=>'Generate Sessions', 'url'=>array('massCreate')),
 	array('label'=>'View Session', 'url'=>array('view', 'id'=>$model->id)),
 	array('label'=>'Manage Sessions', 'url'=>array('admin')),
 );
