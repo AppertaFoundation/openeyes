@@ -186,7 +186,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getAge() {
-		return Helper::getAge($this->dob);
+		return Helper::getAge($this->dob, $this->date_of_death);
 	}
 
 	/**
