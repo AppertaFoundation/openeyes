@@ -69,6 +69,7 @@ $config = array(
 				'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
 				'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 				'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
+				'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
 				'' => 'site/index', // default action
 				'<controller:\w+>/<id:\d+>' => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
