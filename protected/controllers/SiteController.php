@@ -146,7 +146,7 @@ class SiteController extends BaseController
 			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : '';
 		}
 
-		$sites = Site::model()->findAll();
+		$sites = Site::model()->findAll(array('order' => 'short_name'));
 
 		// display the login form
 		$this->render('login',
