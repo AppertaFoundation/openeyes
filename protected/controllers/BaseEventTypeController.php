@@ -77,17 +77,17 @@ class BaseEventTypeController extends BaseController
 			case 'view':
 				return array();
 			case 'update':
-				$event_type = EventType::model()->find('id = ?',array($event->event_type_id));
+				$event_type = EventType::model()->findByPk($event->event_type_id);
 
 				$criteria = new CDbCriteria;
 				$criteria->compare('event_type_id',$event_type->id);
-				$criteria->compare('default',1);
+				$criteria->compare('`default`',1);
 				$criteria->order = 'display_order asc';
 
 				$elements = array();
 				foreach (ElementType::model()->findAll($criteria) as $element_type) {
 					$element_class = $element_type->class_name;
-					if (!$element_class::model()->find('event_id = ?',array($id))) {
+					if (!$element_class::model()->find('event_id = ?',array($event->id))) {
 						$elements[] = new $element_class;
 					}
 				}
@@ -206,6 +206,88 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function actionUpdate($id) {
+		$event = Event::model()->findByPk($id);
+
+		if (!isset($event)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		$event_type = EventType::model()->findByPk($event->event_type_id);
+		$this->patient = $event->episode->patient;
+
+		// firm changing sanity
+		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
+			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
+			// firms in a different tab. Set the session firm id to the provided firm id.
+
+			$session = Yii::app()->session;
+
+			$firms = $session['firms'];
+			$firmId = intval($_POST['firm_id']);
+
+			if ($firms[$firmId]) {
+				$session['selected_firm_id'] = $firmId;
+				$this->selectedFirmId = $firmId;
+				$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+			} else {
+				// They've supplied a firm id in the post to which they are not entitled??
+				throw new Exception('Invalid firm id on attempting to update event.');
+			}
+		}
+
+		$elements = $this->getDefaultElements(false,$event_type->id);
+
+		if (!count($elements)) {
+			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
+		}
+
+		if (!empty($_POST)) {
+			$elementList = array();
+
+			// validation
+			foreach ($elements as $element) {
+				$elementClassName = get_class($element);
+				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
+				$elementList[] = $element;
+				if (!$element->validate()) {
+					foreach ($element->getErrors() as $errormsgs) {
+						foreach ($errormsgs as $error) {
+							$index = preg_replace('/^Element/','',$elementClassName);
+							$errors[$index][] = $error;
+						}
+					}
+				}
+			}
+
+			// creation
+			if (empty($errors)) {
+				// The user has submitted the form to create the event
+				$eventId = $this->createElements(
+					$elements, $_POST, $this->firm, $this->patient->id, Yii::app()->user->id, $event_type->id
+				);
+
+				if ($eventId) {
+					$this->logActivity('created event.');
+
+					Yii::app()->user->setFlash('success', "{$event_type->name} created.");
+					$this->redirect(array('view/'.$eventId));
+					return;
+				}
+			}
+		}
+
+		$this->renderPartial(
+			'update',
+			array(
+				'event' => $event,
+				'elements' => $this->getDefaultElements(),
+				'event_type' => $event_type,
+				'eventId' => null,
+				'editable' => true,
+				'errors' => @$errors
+			),
+			false, true
+		);
 	}
 
 	public function renderDefaultElements($action, $event=false, $data=false) {
@@ -219,7 +301,7 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function renderOptionalElements($action, $event=false, $data=false) {
-		foreach ($this->getOptionalElements($action, $event=false, $data=false) as $element) {
+		foreach ($this->getOptionalElements($action, $event, $data) as $element) {
 			$this->renderPartial(
 				$action . '_' . get_class($element),
 				array('event' => $event, 'element' => $element, 'data' => $data),
