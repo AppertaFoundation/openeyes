@@ -12,7 +12,7 @@
 						$event_type = EventType::model()->findByPk($event->event_type_id);
 
 						if ($event_type->class_name == 'OphTrOperation') {
-							$event_elements = $this->getDefaultElements($event);
+							$event_elements = $this->getDefaultElements(false,$event);
 
 							$scheduled = false;
 							foreach ($event_elements as $element) {

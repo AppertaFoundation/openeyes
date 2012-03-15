@@ -558,9 +558,10 @@ class ClinicalController extends BaseController
 	 * @param $event_type_id
 	 * @return array
 	 */
-	public function getDefaultElements($event=false, $event_type_id=false) {
+	public function getDefaultElements($event_type_id=false, $event=false) {
 		$etc = new BaseEventTypeController(1);
-		return $etc->getDefaultElements($event, $event_type_id);
+		$etc->event = $event;
+		return $etc->getDefaultElements($event_type_id);
 	}
 
 	/**

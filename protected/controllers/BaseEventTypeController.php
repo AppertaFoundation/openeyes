@@ -35,8 +35,12 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @return array
 	 */
-	public function getDefaultElements($event=false, $event_type_id=false) {
-		if ($event and isset($event->event_type_id)) {
+	public function getDefaultElements($event_type_id=false, $event=false) {
+		if (!$event && isset($this->event)) {
+			$event = $this->event;
+		}
+
+		if (isset($event->event_type_id)) {
 			$event_type = EventType::model()->find('id = ?',array($event->event_type_id));
 		} else if ($event_type_id) {
 			$event_type = EventType::model()->find('id = ?',array($event_type_id));
@@ -49,7 +53,7 @@ class BaseEventTypeController extends BaseController
 
 		$elements = array();
 
-		if ($event and isset($event->event_type_id)) {
+		if (isset($event->event_type_id)) {
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
 
@@ -127,7 +131,7 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements(false,$this->event_type->id);
+		$elements = $this->getDefaultElements($this->event_type->id);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
@@ -162,7 +166,7 @@ class BaseEventTypeController extends BaseController
 					$this->logActivity('created event.');
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array('view/'.$eventId));
+					$this->redirect(array('Default/view/'.$eventId));
 					return;
 				}
 			}
@@ -188,7 +192,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 
-		$elements = $this->getDefaultElements($this->event);
+		$elements = $this->getDefaultElements();
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -246,7 +250,7 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements($this->event);
+		$elements = $this->getDefaultElements();
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
@@ -310,21 +314,21 @@ class BaseEventTypeController extends BaseController
 		);
 	}
 
-	public function renderDefaultElements($action, $event=false, $data=false) {
-		foreach ($this->getDefaultElements($action, $event=false, $data=false) as $element) {
+	public function renderDefaultElements($action, $data=false) {
+		foreach ($this->getDefaultElements() as $element) {
 			$this->renderPartial(
 				$action . '_' . get_class($element),
-				array('event' => $event, 'element' => $element, 'data' => $data),
+				array('element' => $element, 'data' => $data),
 				false, true
 			);
 		}
 	}
 
-	public function renderOptionalElements($action, $event=false, $data=false) {
-		foreach ($this->getOptionalElements($action, $event, $data) as $element) {
+	public function renderOptionalElements($action, $data=false) {
+		foreach ($this->getOptionalElements($action) as $element) {
 			$this->renderPartial(
 				$action . '_' . get_class($element),
-				array('event' => $event, 'element' => $element, 'data' => $data),
+				array('element' => $element, 'data' => $data),
 				false, true
 			);
 		}
