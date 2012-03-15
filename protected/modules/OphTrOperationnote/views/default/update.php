@@ -1,6 +1,6 @@
 <?php
 	$this->breadcrumbs=array($this->module->id);
-	$this->header($editable);
+	$this->header();
 ?>
 
 <h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation_note.png) center left no-repeat;"><?php echo $event_type->name ?></h3>
@@ -15,8 +15,8 @@
 		));
 	?>
 
-		<?php $this->renderDefaultElements($this->action->id, $event); ?>
-		<?php $this->renderOptionalElements($this->action->id, $event); ?>
+		<?php $this->renderDefaultElements($this->action->id); ?>
+		<?php $this->renderOptionalElements($this->action->id); ?>
 
 		<?php $this->displayErrors($errors)?>
 
@@ -29,4 +29,4 @@
 	<?php $this->endWidget(); ?>
 </div>
 
-<?php $this->footer($editable) ?>
+<?php $this->footer() ?>

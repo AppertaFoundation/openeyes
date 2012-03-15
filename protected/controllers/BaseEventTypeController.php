@@ -5,6 +5,9 @@ class BaseEventTypeController extends BaseController
 	public $model;
 	public $firm;
 	public $patient;
+	public $editable;
+	public $editing;
+	public $event;
 
 	public function actionIndex()
 	{
@@ -71,13 +74,13 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @return array
 	 */
-	public function getOptionalElements($action, $event=false) {
+	public function getOptionalElements($action) {
 		switch ($action) {
 			case 'create':
 			case 'view':
 				return array();
 			case 'update':
-				$event_type = EventType::model()->findByPk($event->event_type_id);
+				$event_type = EventType::model()->findByPk($this->event->event_type_id);
 
 				$criteria = new CDbCriteria;
 				$criteria->compare('event_type_id',$event_type->id);
@@ -87,7 +90,7 @@ class BaseEventTypeController extends BaseController
 				$elements = array();
 				foreach (ElementType::model()->findAll($criteria) as $element_type) {
 					$element_class = $element_type->class_name;
-					if (!$element_class::model()->find('event_id = ?',array($event->id))) {
+					if (!$element_class::model()->find('event_id = ?',array($this->event->id))) {
 						$elements[] = new $element_class;
 					}
 				}
@@ -163,57 +166,54 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
+		$this->editable = false;
+
 		$this->renderPartial(
 			'create',
-			array('elements' => $this->getDefaultElements(), 'event_type' => $event_type, 'eventId' => null, 'editable' => false, 'errors' => @$errors),
+			array('elements' => $this->getDefaultElements(), 'event_type' => $event_type, 'eventId' => null, 'errors' => @$errors),
 			false, true
 		);
 
 	}
 
 	public function actionView($id) {
-		$event = Event::model()->findByPk($id);
-
-		if (!isset($event)) {
+		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$event_type = EventType::model()->findByPk($event->event_type_id);
+		$event_type = EventType::model()->findByPk($this->event->event_type_id);
 
-		$elements = $this->getDefaultElements($event);
+		$elements = $this->getDefaultElements($this->event);
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			$editable = false;
+			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			$this->editable = false;
 		} else {
-			$editable = true;
+			$this->editable = true;
 		}
 
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->logActivity('viewed event');
 
-		$this->patient = $event->episode->patient;
+		$this->patient = $this->event->episode->patient;
 
 		$this->renderPartial(
 			'view', array(
 			'elements' => $elements,
 			'eventId' => $id,
-			'editable' => $editable,
 			'event_type' => $event_type,
 			), false, true);
 	}
 
 	public function actionUpdate($id) {
-		$event = Event::model()->findByPk($id);
-
-		if (!isset($event)) {
+		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$event_type = EventType::model()->findByPk($event->event_type_id);
-		$this->patient = $event->episode->patient;
+		$event_type = EventType::model()->findByPk($this->event->event_type_id);
+		$this->patient = $this->event->episode->patient;
 
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
@@ -276,14 +276,13 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
+		$this->editing = true;
+
 		$this->renderPartial(
 			'update',
 			array(
-				'event' => $event,
 				'elements' => $this->getDefaultElements(),
 				'event_type' => $event_type,
-				'eventId' => null,
-				'editable' => true,
 				'errors' => @$errors
 			),
 			false, true
@@ -328,7 +327,7 @@ class BaseEventTypeController extends BaseController
 		));
 	}
 
-	public function footer($editable) {
+	public function footer() {
 		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
@@ -339,8 +338,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes,
-			'editable'=>$editable
+			'eventTypes'=>$eventTypes
 		));
 	}
 

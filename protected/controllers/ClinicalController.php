@@ -24,8 +24,11 @@ class ClinicalController extends BaseController
 	public $eventTypes;
 	public $service;
 	public $firm;
-	public $model;
+	public $patient;
 	public $nopost = false;
+	public $editing;
+	public $editable;
+	public $event;
 
 	public function init()
 	{
@@ -86,17 +89,15 @@ class ClinicalController extends BaseController
 	 */
 	public function actionView($id)
 	{
-		$event = Event::model()->findByPk($id);
-
-		if (!isset($event)) {
+		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$elements = $this->service->getDefaultElements($event);
+		$elements = $this->service->getDefaultElements($this->event);
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {
 			$editable = true;
@@ -107,7 +108,7 @@ class ClinicalController extends BaseController
 		$this->logActivity('viewed event');
 
 		$this->renderPartial(
-			$this->getTemplateName('view', $event->event_type_id), array(
+			$this->getTemplateName('view', $this->event->event_type_id), array(
 			'elements' => $elements,
 			'eventId' => $id,
 			'editable' => $editable,
@@ -243,6 +244,8 @@ class ClinicalController extends BaseController
 			$params['subsections'] = $subsections;
 			$params['procedures'] = $procedures;
 		}
+
+		$this->editable = falsee;
 
 		$this->renderPartial(
 			$this->getTemplateName('create', $eventTypeId),
@@ -505,11 +508,11 @@ class ClinicalController extends BaseController
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
-	public function header($editable=false, $passthru=false) {
-		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
+	public function header($passthru=false) {
+		if (!$this->patient = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
-		$episodes = $patient->episodes;
+		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
 			$eventTypes = array();
@@ -520,9 +523,7 @@ class ClinicalController extends BaseController
 		$params = array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
-			'title'=>'Create',
-			'model'=>$patient,
-			'editable'=>$editable
+			'title'=>'Create'
 		);
 
 		if (is_array($passthru)) {
@@ -533,10 +534,10 @@ class ClinicalController extends BaseController
 	}
 
 	public function footer($editable=false,$passthru=false) {
-		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
+		if (!$this->patient = Patient::Model()->findByPk($_GET['patient_id'])) {
 			throw new SystemException('Patient not found: '.$_GET['patient_id']);
 		}
-		$episodes = $patient->episodes;
+		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
 			$eventTypes = array();

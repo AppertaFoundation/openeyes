@@ -27,7 +27,7 @@
 			</div>
 			<?php $this->renderPartial('episodes_sidebar',array('episodes'=>$episodes))?>
 			<div id="event_display">
-				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes,'patient'=>$model))?>
+				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php
 				if (count($episodes) <1) {?>
 					<div class="alertBox fullWidthEvent">
@@ -36,25 +36,23 @@
 				<?php }?>
 				<div class="display_actions"<?php if (!$title){?> style="display: none;"<?php }?>>
 					<div class="display_mode"><?php echo $title?></div>
-					<?php $this->renderPartial('edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$model))?>
+					<?php $this->renderPartial('edit_controls')?>
 				</div>
 				<div class="colorband category_treatement"<?php if (!$title){?> style="display: none;"<?php }?>></div>
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;<?php if (!$title){?>display: none;<?php }?>">
 					<?php
-					if (isset($event)) {
+					if (isset($this->event)) {
 						$this->renderPartial(
-							"/clinical/".$this->getTemplateName('view', $event->event_type_id),
+							"/clinical/".$this->getTemplateName('view', $this->event->event_type_id),
 							array(
 								'elements' => $elements,
-								'eventId' => $event->id,
-								'editable' => $editable,
 								'site' => $site
 							), false, true
 						);
 					} else if ($current_episode) {
 						$this->renderPartial('/clinical/episodeSummary',
-							array('episode' => $current_episode, 'patient' => $model)
+							array('episode' => $current_episode)
 						);
 					}
 					?>
@@ -62,7 +60,7 @@
 				<!-- #event_content -->
 				<div class="colorband category_treatement"<?php if (!$title){?> style="display: none;"<?php }?></div>
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!$title){?> style="display: none;"<?php }?>
-					<?php $this->renderPartial('edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$model))?>
+					<?php $this->renderPartial('edit_controls')?>
 				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->

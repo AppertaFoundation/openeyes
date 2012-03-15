@@ -29,10 +29,10 @@ $this->renderPartial('//layouts/patientMode/event_header');
 			</div>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('episodes'=>$episodes))?>
 			<div id="event_display">
-				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes,'patient'=>$this->patient))?>
+				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
 				<div class="display_actions">
 					<div class="display_mode"><?php echo $title?></div>
-					<?php $this->renderPartial('//patient/edit_controls',array('editable'=>$editable,'event'=>@$event,'patient'=>$this->patient,'editing'=>@$editing))?>
+					<?php $this->renderPartial('//patient/edit_controls')?>
 				</div>
 				<div class="colorband category_treatement"></div>
 				<!-- EVENT CONTENT HERE -->

@@ -22,9 +22,12 @@ Yii::import('application.controllers.*');
 class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
-	public $model;
+	public $patient;
 	public $service;
 	public $firm;
+	public $editing;
+	public $editable;
+	public $event;
 
 	public function filters()
 	{
@@ -367,8 +370,7 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'eventTypes' => $eventTypes,
 			'site' => $site,
-			'current_episode' => empty($episodes) ? false : $episodes[0],
-			'editable' => false
+			'current_episode' => empty($episodes) ? false : $episodes[0]
 		));
 	}
 
@@ -376,23 +378,23 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
 
-		$event = Event::model()->findByPk($id);
-		$patient = $this->model = $event->episode->patient;
-		$episodes = $patient->episodes;
+		$this->event = Event::model()->findByPk($id);
+		$this->patient = $this->event->episode->patient;
+		$episodes = $this->patient->episodes;
 
-		$elements = $this->service->getDefaultElements($event);
+		$elements = $this->service->getDefaultElements($this->event);
 
-		$editable = $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id;
+		$this->editable = $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id;
 
 		// Should not be able to edit cancelled operations
-		if ($event->event_type_id == 25) {
-			$operation = ElementOperation::model()->find('event_id = ?',array($event->id));
+		if ($this->event->event_type_id == 25) {
+			$operation = ElementOperation::model()->find('event_id = ?',array($this->event->id));
 			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
-				$editable = false;
+				$this->editable = false;
 			}
 		}
 
-		$event_template_name = $this->getTemplateName('view', $event->event_type_id);
+		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
 
 		$this->logActivity('viewed event');
 
@@ -405,16 +407,13 @@ class PatientController extends BaseController
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->render('events_and_episodes', array(
-			'model' => $patient,
 			'title' => 'your title here',
 			'episodes' => $episodes,
-			'event' => $event,
 			'elements' => $elements,
-			'editable' => $editable,
 			'event_template_name' => $event_template_name,
 			'eventTypes' => $eventTypes,
 			'site' => $site,
-			'current_episode' => $event->episode
+			'current_episode' => $this->event->episode
 		));
 	}
 

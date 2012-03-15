@@ -165,7 +165,7 @@ if (!empty($episode)) {
 					url: '/patient/setepisodestatus/<?php echo $episode->id?>',
 					data: 'episode_status_id='+$('#episode_status_id').val(),
 					success: function(html) {
-						window.location.href = '/patient/episodes/<?php echo $patient->id?>';
+						window.location.href = '/patient/episodes/<?php echo $this->patient->id?>';
 					}
 				});
 			}

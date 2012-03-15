@@ -232,7 +232,7 @@ foreach ($elements as $element) {
 <?php } ?>
 
 </div>
-<?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) { ?>
+<?php if ($operation->status != $operation::STATUS_CANCELLED && $this->editable) { ?>
 <!-- editable -->
 <div style="margin-top:40px; text-align:center;">
 	<?php
@@ -316,8 +316,7 @@ foreach ($elements as $element) {
 <div id="printcontent_admissionletter" style="display: none;">
 <?php
 	// TODO: This needs moving to a controller so we can pull it in using an ajax call
-	$event = Event::model()->findByPk($eventId);
-	$patient = $event->episode->patient;
+	$patient = $this->event->episode->patient;
 	$admissionContact = $operation->getAdmissionContact();
 	$site = $operation->booking->session->sequence->theatre->site;
 	$firm = ($firm_assign = $operation->booking->session->sequence->sequenceFirmAssignment) ? $firm_assign->firm : false;

@@ -27,7 +27,7 @@
 						if ($event_type->class_name == 'OphTrOperation') {
 							$event_path = '/patient/event/';
 						} else {
-							$event_path = '/'.$event_type->class_name.'/view/';
+							$event_path = '/'.$event_type->class_name.'/Default/view/';
 						}
 						?>
 						<li id="eventLi<?php echo $event->id ?>"><a href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
