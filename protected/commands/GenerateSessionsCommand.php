@@ -40,8 +40,9 @@ class GenerateSessionsCommand extends CConsoleCommand {
 			array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today)
 		);
 
-		foreach ($sequences as $sequence) {
+		foreach($sequences as $sequence) {
 
+			// Find most recent session for sequence
 			$session = Yii::app()->db->createCommand()
 			->select('date')
 			->from('session')
@@ -49,10 +50,10 @@ class GenerateSessionsCommand extends CConsoleCommand {
 			->order('date DESC')
 			->queryRow();
 
-			// The date of the most recent session for this sequence plus one day, or the seqeunce start date if no sessions for this sequence yet
+			// The date of the most recent session for this sequence plus one day, or the sequence start date if no sessions for this sequence yet
 			$startDate = empty($session) ? strtotime($sequence->start_date) : strtotime($session['date']) + (60 * 60 * 24);
 
-			// Sessions should be generated to the smaller of initialEndDate (+13 months or command line) and sequence end date
+			// Sessions should be generated up to the smaller of initialEndDate (+13 months or command line) and sequence end_date
 			if($sequence->end_date && strtotime($sequence->end_date) < $initialEndDate) {
 				$endDate = strtotime($sequence->end_date);
 			} else {
@@ -60,87 +61,75 @@ class GenerateSessionsCommand extends CConsoleCommand {
 			}
 
 			$dateList = array();
-			if ($sequence->repeat_interval != Sequence::FREQUENCY_MONTHLY && empty($sequence->week_selection)) {
-				// No week selection, e.g. 1st on month, 2nd in month
-				if (empty($sequence['repeat_interval'])) {
-					// No repeat interval means it's one-off, so we only concern ourselves with the start date
-
-					// If a session already exists for this one off there's no point creating another
-					if (empty($session)) {
-						$dateList[] = $sequence->start_date;
-					}
-				} else {
-					// There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
-					//	function below returns 60 * 60 * 24 * 14, i.e. two weeks
-					$interval = $sequence->getFrequencyInteger($sequence['repeat_interval'], $endDate);
-
-					// The number of days in the interval - 14 in the case of two week interval
-					$days = $interval / 24 / 60 / 60;
-
-					// IF there's no session use the sequence start date. If there is use the most recent
-					//	session date plus the interval (e.g. two weeks)
-					if (empty($session)) {
-						$nextStartDate = $startDate;
-					} else {
-						$nextStartDate = $startDate + $interval - 86400;
-					}
-
-					// Convert $nextStartDate (a timestamp of the seqence start date or the most recent session date plus the interval to a date.
-					$date = date('Y-m-d', $nextStartDate);
-
-					// The timestamp of the start date
-					$time = $nextStartDate;
-
-					// get the next occurrence of the sequence on/after the start date
-
-					// Check to see if the day of the week for the time is the same day of the week as the sequence start date
-					//	Process loop if it isn't
-					while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
-						// Set the date to $time + 1 day
-						$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
-
-						// Set the time to the timstamp for the date + 1 day
-						$time = strtotime($date);
-					}
-
-					while ($time <= $endDate) {
-						$dateList[] = $date;
-
-						$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
-						$time = strtotime($date);
-					}
+			if($sequence->repeat_interval == Sequence::FREQUENCY_ONCE) {
+				// NO REPEAT (single session)
+				// If a session already exists for this one off there's no point creating another
+				if (empty($session)) {
+					$dateList[] = $sequence->start_date;
 				}
 			} else if($sequence->repeat_interval == Sequence::FREQUENCY_MONTHLY && $sequence->week_selection) {
+				// MONTHLY REPEAT (weeks x,y of month)
 				$date = date('Y-m-d', $startDate);
 				$time = $startDate;
-				// get the next occurrence of the sequence on/after the start date
+				// Get the next occurrence of the sequence on/after the start date
 				while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
 					$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
 					$time = strtotime($date);
 				}
-
 				$dateList = $sequence->getWeekOccurrences($sequence->weekday, $sequence->week_selection, $time, $endDate, $date, date('Y-m-d', $endDate));
 			} else {
-				// This should never happen
-				throw new CException("Invalid combination of repeat_interval and week_selection");
+				// WEEKLY REPEAT (every x weeks)
+				// There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
+				//	function below returns 60 * 60 * 24 * 14, i.e. two weeks
+				$interval = $sequence->getFrequencyInteger($sequence->repeat_interval, $endDate);
+
+				// The number of days in the interval - 14 in the case of two week interval
+				$days = $interval / 24 / 60 / 60;
+
+				// IF there's no session use the sequence start date. If there is use the most recent
+				//	session date plus the interval (e.g. two weeks)
+				if (empty($session)) {
+					$nextStartDate = $startDate;
+				} else {
+					$nextStartDate = $startDate + $interval - 86400;
+				}
+
+				// Convert $nextStartDate (a timestamp of the seqence start date or the most recent session date plus the interval to a date.
+				$date = date('Y-m-d', $nextStartDate);
+
+				// The timestamp of the start date
+				$time = $nextStartDate;
+
+				// get the next occurrence of the sequence on/after the start date
+
+				// Check to see if the day of the week for the time is the same day of the week as the sequence start date
+				//	Process loop if it isn't
+				while (date('N', $time) != date('N', strtotime($sequence->start_date))) {
+					// Set the date to $time + 1 day
+					$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
+
+					// Set the time to the timstamp for the date + 1 day
+					$time = strtotime($date);
+				}
+
+				while ($time <= $endDate) {
+					$dateList[] = $date;
+
+					$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + $days, date('Y', $time)));
+					$time = strtotime($date);
+				}
 			}
 
 			if(!empty($dateList)) {
-				
 				// Process dateList into sessions
 				foreach($dateList as $date) {
+					// TODO: Check for collisions, maybe in Session validation code
 					$new_session = new Session();
-					$new_session->attributes = array(
-						'sequence_id' => $sequence->id,
-						'date' => $date,
-						'start_time' => $sequence->start_time,
-						'end_time' => $sequence->end_time,
-						'consultant' => $sequence->consultant,
-						'anaesthetist' => $sequence->anaesthetist,
-						'paediatric' => $sequence->paediatric,
-						'general_anaesthetic' => $sequence->general_anaesthetic,
-						'theatre_id' => $sequence->theatre_id,
-					);
+					foreach(array('start_time','end_time','consultant','anaesthetist','paediatric','general_anaesthetic','theatre_id') as $attribute) {
+						$new_session->$attribute = $sequence->$attribute;
+					}
+					$new_session->date = $date;
+					$new_session->sequence_id = $sequence->id;
 					$new_session->save();
 					if($sequence->firmAssignment) {
 						$new_firm_assignment = new SessionFirmAssignment();
@@ -149,8 +138,7 @@ class GenerateSessionsCommand extends CConsoleCommand {
 						$new_firm_assignment->save();
 					}
 				}
-				
-				$output .= "\nSequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
+				$output .= "Sequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
 			}
 		}
 

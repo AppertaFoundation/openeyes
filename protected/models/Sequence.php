@@ -356,38 +356,21 @@ class Sequence extends BaseActiveRecord {
 
 	public function getWeekOccurrences($weekday, $weekSelection, $startTimestamp, $endTimestamp, $startDate, $endDate) {
 		$dates = array();
-		$monthLength = 60 * 60 * 24 * 30;
-
-		// PHP is a moron and if $i = $startTimestamp is in the for loop
-		// below, it assigns it some other random number instead
-		// with the assignation happening here, that doesn't happen
-		$i = $startTimestamp;
-		for ($i; $i <= $endTimestamp; $i += $monthLength) {
-			$firstWeekday = strtotime(date('Y-m-01', $i));
-			$lastMonthday = strtotime(date('Y-m-t', $i));
-			while ($weekday != date('N', $firstWeekday)) {
-				$firstWeekday += 60 * 60 * 24;
-			}
-
-			// now check the 1st-5th instances of the weekday
-			$weekCounter = 1;
-			for ($j = self::SELECT_1STWEEK; $j <= self::SELECT_5THWEEK; $j *= 2) {
-				$weekInUse = $weekSelection & $j;
-
-				if ($weekInUse != 0) {
-					$addDays = ($weekCounter - 1) * 7;
-					$selectedDay = date('Y-m-d', mktime(0,0,0, date('m', $firstWeekday), date('d', $firstWeekday)+$addDays, date('Y', $firstWeekday)));
-					if (strtotime($selectedDay) <= $lastMonthday &&
-						$selectedDay >= $startDate &&
-						(empty($endDate) || $selectedDay <= $endDate)) {
-						$dates[] = $selectedDay;
-					}
+		$month = strtotime(date('Y-m-01',$startTimestamp));
+		$weekday_options = $this->getWeekdayOptions();
+		$weekday_string = $weekday_options[$weekday];
+		while($month <= $endTimestamp) {
+			$day = strtotime("first $weekday_string of", $month);
+			for ($i = self::SELECT_1STWEEK; $i <= self::SELECT_5THWEEK; $i *= 2) {
+				// Only add date if it is between start and end dates, and is a selected week. Also check we haven't rolled over into the next month (4 week months) 
+				if($day >= $startTimestamp && $day <= $endTimestamp && $day <= strtotime('last day of', $month) && ($weekSelection & $i)) {
+					$dates[] = date('Y-m-d',$day);
 				}
-				$weekCounter++;
+				$day = strtotime("+1 week", $day);
 			}
+			$month = strtotime("+1 month", $month);
 		}
-
-		return array_unique($dates);
+		return $dates;
 	}
 
 	public function getFrequencyInteger($frequency, $endTimestamp) {
