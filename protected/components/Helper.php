@@ -111,7 +111,7 @@ class Helper {
 	 */
 	public static function getAge($dob, $date_of_death = null) {
 		$date = date('Ymd', strtotime($dob));
-		$end_date = ($date_of_death) ? $date_of_death : time();
+		$end_date = ($date_of_death) ? strtotime($date_of_death) : time();
 		$age = date('Y',$end_date) - substr($date, 0, 4);
 		$birthDate = substr($date, 4, 2) . substr($date, 6, 2);
 		if (date('md',$end_date) < $birthDate) {
