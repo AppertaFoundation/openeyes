@@ -8,9 +8,10 @@
 				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episodes/<?php echo $episode->patient_id?>" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
 				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 				<ul class="events">
-					<?php foreach ($episode->events as $event) {?>
-						<?php
-						if (EventType::model()->findByPk($event->event_type_id)->class_name == 'OphTrOperation') {
+					<?php foreach ($episode->events as $event) {
+						$event_type = EventType::model()->findByPk($event->event_type_id);
+
+						if ($event_type->class_name == 'OphTrOperation') {
 							$event_elements = $this->getDefaultElements($event);
 
 							$scheduled = false;
@@ -22,8 +23,14 @@
 						}
 
 						$highlight = false;
+
+						if ($event_type->class_name == 'OphTrOperation') {
+							$event_path = '/patient/event/';
+						} else {
+							$event_path = '/'.$event_type->class_name.'/view/';
+						}
 						?>
-						<li id="eventLi<?php echo $event->id ?>"><a href="/patient/event/<?php echo $event->id?>" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
+						<li id="eventLi<?php echo $event->id ?>"><a href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
 				<?php
 					}
 				?>
