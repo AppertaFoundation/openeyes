@@ -27,6 +27,7 @@
  * @property string  $first_name
  * @property string  $last_name
  * @property string  $dob
+ * @property string  $date_of_death
  * @property string  $gender
  * @property string  $hos_num
  * @property string  $nhs_num
@@ -193,6 +194,14 @@ class Patient extends BaseActiveRecord {
 	 */
 	public function isChild() {
 		return ($this->getAge() < 16);
+	}
+
+	/**
+	 * @return boolean Is patient deceased?
+	 */
+	public function isDeceased() {
+		// Assume that if the patient has a date of death then they are actually dead, even if the date is in the future
+		return (!empty($this->date_of_death));
 	}
 
 	/**
