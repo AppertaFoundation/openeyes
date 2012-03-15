@@ -41,7 +41,7 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' . $elementClassName . '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
-		'patient' => $patient, 'newRecord' => false, 'subspecialty' => $subspecialty, 'subsections' => $subsections,
+		'newRecord' => false, 'subspecialty' => $subspecialty, 'subsections' => $subsections,
 		'procedures' => $procedures)
 	);
 }

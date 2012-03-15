@@ -29,6 +29,7 @@ class ClinicalController extends BaseController
 	public $editing;
 	public $editable;
 	public $event;
+	public $title;
 
 	public function init()
 	{
@@ -140,7 +141,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event_type_id.');
 		}
 
-		if (!$patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
+		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
 			throw new CHttpException(403, 'Invalid patient_id.');
 		}
 
@@ -173,7 +174,7 @@ class ClinicalController extends BaseController
 
 		if ($_POST && $_POST['action'] == 'create') {
 			if (isset($_POST['cancelOperation'])) {
-				$this->redirect(array('patient/episodes/'.$patient->id));
+				$this->redirect(array('patient/episodes/'.$this->patient->id));
 				return;
 			}
 
@@ -196,7 +197,7 @@ class ClinicalController extends BaseController
 			if (empty($errors)) {
 				// The user has submitted the form to create the event
 				$eventId = $this->service->createElements(
-					$elements, $_POST, $this->firm, $patient->id, $this->getUserId(), $eventType->id
+					$elements, $_POST, $this->firm, $this->patient->id, $this->getUserId(), $eventType->id
 				);
 
 				if ($eventId) {
@@ -224,7 +225,6 @@ class ClinicalController extends BaseController
 			'eventTypeId' => $eventTypeId,
 			'eventType' => $eventType,
 			'specialties' => $specialties,
-			'patient' => $patient,
 			'firm' => $this->firm
 		);
 
@@ -245,7 +245,8 @@ class ClinicalController extends BaseController
 			$params['procedures'] = $procedures;
 		}
 
-		$this->editable = falsee;
+		$this->editable = false;
+		$this->title = 'Create';
 
 		$this->renderPartial(
 			$this->getTemplateName('create', $eventTypeId),
@@ -263,9 +264,7 @@ class ClinicalController extends BaseController
 	 */
 	public function actionUpdate($id)
 	{
-		$event = Event::model()->findByPk($id);
-
-		if (!isset($event)) {
+		if (!$event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
@@ -285,7 +284,7 @@ class ClinicalController extends BaseController
 		$specialties = Subspecialty::model()->findAll();
 
 		$episode = Episode::model()->findByPk($event->episode_id);
-		$patient = Patient::model()->findByPk($episode->patient_id);
+		$this->patient = Patient::model()->findByPk($episode->patient_id);
 
 		if ($_POST && $_POST['action'] == 'update') {
 			if (isset($_POST['cancelOperation'])) {
@@ -339,7 +338,6 @@ class ClinicalController extends BaseController
 			'id' => $id,
 			'elements' => $elements,
 			'specialties' => $specialties,
-			'patient' => $patient,
 			'event' => $event,
 		);
 
@@ -359,6 +357,8 @@ class ClinicalController extends BaseController
 			$params['subsections'] = $subsections;
 			$params['procedures'] = $procedures;
 		}
+
+		$this->title = 'Update';
 
 		$this->renderPartial(
 			$this->getTemplateName('update', $event->event_type_id),
@@ -509,9 +509,6 @@ class ClinicalController extends BaseController
 	}
 
 	public function header($passthru=false) {
-		if (!$this->patient = Patient::Model()->findByPk($_GET['patient_id'])) {
-			throw new SystemException('Patient not found: '.$_GET['patient_id']);
-		}
 		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
@@ -534,9 +531,6 @@ class ClinicalController extends BaseController
 	}
 
 	public function footer($editable=false,$passthru=false) {
-		if (!$this->patient = Patient::Model()->findByPk($_GET['patient_id'])) {
-			throw new SystemException('Patient not found: '.$_GET['patient_id']);
-		}
 		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {

@@ -28,6 +28,8 @@ class PatientController extends BaseController
 	public $editing;
 	public $editable;
 	public $event;
+	public $event_type;
+	public $title;
 
 	public function filters()
 	{
@@ -379,6 +381,7 @@ class PatientController extends BaseController
 		$this->service = new ClinicalService;
 
 		$this->event = Event::model()->findByPk($id);
+		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->patient = $this->event->episode->patient;
 		$episodes = $this->patient->episodes;
 
@@ -406,8 +409,9 @@ class PatientController extends BaseController
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
+		$this->title = $this->event_type->name;
+
 		$this->render('events_and_episodes', array(
-			'title' => 'your title here',
 			'episodes' => $episodes,
 			'elements' => $elements,
 			'event_template_name' => $event_template_name,

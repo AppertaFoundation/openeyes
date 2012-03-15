@@ -22,7 +22,7 @@ if (empty($_POST)) {
 
 	if (empty($model->event_id)) {
 		// It's a new event so fetch the most recent element_diagnosis
-		$diagnosis = $model->getNewestDiagnosis($patient);
+		$diagnosis = $model->getNewestDiagnosis($this->patient);
 
 		if (!empty($diagnosis->disorder)) {
 			// There is a diagnosis for this episode

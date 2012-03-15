@@ -31,7 +31,7 @@ echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 ?>
-<span style="display: none;" id="header_text">Operation: <?php echo $patient->getDisplayName()?></span>
+<span style="display: none;" id="header_text">Operation: <?php echo $this->patient->getDisplayName()?></span>
 <?php
 
 /**
@@ -42,8 +42,8 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' .	get_class($element) .  '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
-			'patient' => $patient, 'newRecord' => true, 'subspecialty' => $subspecialty,
-			'subsections' => $subsections, 'procedures' => $procedures, 'patient' => $patient)
+			'newRecord' => true, 'subspecialty' => $subspecialty,
+			'subsections' => $subsections, 'procedures' => $procedures)
 	);
 }
 

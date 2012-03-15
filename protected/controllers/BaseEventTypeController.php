@@ -8,6 +8,8 @@ class BaseEventTypeController extends BaseController
 	public $editable;
 	public $editing;
 	public $event;
+	public $event_type;
+	public $title;
 
 	public function actionIndex()
 	{
@@ -100,7 +102,7 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function actionCreate() {
-		$event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
+		$this->event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
 		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
 			throw new CHttpException(403, 'Invalid patient_id.');
 		}
@@ -125,7 +127,7 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements(false,$event_type->id);
+		$elements = $this->getDefaultElements(false,$this->event_type->id);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
@@ -153,13 +155,13 @@ class BaseEventTypeController extends BaseController
 			if (empty($errors)) {
 				// The user has submitted the form to create the event
 				$eventId = $this->createElements(
-					$elements, $_POST, $this->firm, $this->patient->id, Yii::app()->user->id, $event_type->id
+					$elements, $_POST, $this->firm, $this->patient->id, Yii::app()->user->id, $this->event_type->id
 				);
 
 				if ($eventId) {
 					$this->logActivity('created event.');
 
-					Yii::app()->user->setFlash('success', "{$event_type->name} created.");
+					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 					$this->redirect(array('view/'.$eventId));
 					return;
 				}
@@ -167,10 +169,11 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->editable = false;
+		$this->title = 'Create';
 
 		$this->renderPartial(
 			'create',
-			array('elements' => $this->getDefaultElements(), 'event_type' => $event_type, 'eventId' => null, 'errors' => @$errors),
+			array('elements' => $this->getDefaultElements(), 'eventId' => null, 'errors' => @$errors),
 			false, true
 		);
 
@@ -181,7 +184,9 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$event_type = EventType::model()->findByPk($this->event->event_type_id);
+		$this->patient = $this->event->episode->patient;
+
+		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 
 		$elements = $this->getDefaultElements($this->event);
 
@@ -197,13 +202,12 @@ class BaseEventTypeController extends BaseController
 
 		$this->logActivity('viewed event');
 
-		$this->patient = $this->event->episode->patient;
+		$this->title = $this->event_type->name;
 
 		$this->renderPartial(
 			'view', array(
 			'elements' => $elements,
 			'eventId' => $id,
-			'event_type' => $event_type,
 			), false, true);
 	}
 
@@ -212,7 +216,14 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$event_type = EventType::model()->findByPk($this->event->event_type_id);
+		// Check the user's firm is of the correct subspecialty to have the
+		// rights to update this event
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
+		}
+
+		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->patient = $this->event->episode->patient;
 
 		// firm changing sanity
@@ -235,13 +246,18 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements(false,$event_type->id);
+		$elements = $this->getDefaultElements($this->event);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
 		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				$this->redirect(array('Default/view/'.$this->event->id));
+				return;
+			}
+
 			$elementList = array();
 
 			// validation
@@ -261,28 +277,33 @@ class BaseEventTypeController extends BaseController
 
 			// creation
 			if (empty($errors)) {
-				// The user has submitted the form to create the event
-				$eventId = $this->createElements(
-					$elements, $_POST, $this->firm, $this->patient->id, Yii::app()->user->id, $event_type->id
-				);
+				$success = $this->updateElements($elements, $_POST, $this->event);
 
-				if ($eventId) {
-					$this->logActivity('created event.');
+				if ($success) {
+					$this->logActivity('updated event');
 
-					Yii::app()->user->setFlash('success', "{$event_type->name} created.");
-					$this->redirect(array('view/'.$eventId));
+					// Update event to indicate user has made a change
+					$this->event->datetime = date("Y-m-d H:i:s");
+					$this->event->user = Yii::app()->user->id;
+					if (!$this->event->save()) {
+						throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(),true));
+					}
+
+					OELog::log("Updated event {$this->event->id}");
+
+					$this->redirect(array('Default/view/'.$this->event->id));
 					return;
 				}
 			}
 		}
 
 		$this->editing = true;
+		$this->title = 'Update';
 
 		$this->renderPartial(
 			'update',
 			array(
 				'elements' => $this->getDefaultElements(),
-				'event_type' => $event_type,
 				'errors' => @$errors
 			),
 			false, true
@@ -321,7 +342,6 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
-			'title'=>'Create',
 			'model'=>$this->patient,
 			'editable'=>$editable
 		));
@@ -388,6 +408,73 @@ class BaseEventTypeController extends BaseController
 		}
 
 		return $event->id;
+	}
+
+	/**
+	 * Update elements based on arrays passed over from $_POST data
+	 *
+	 * @param array		$elements		array of SiteElementTypes
+	 * @param array		$data			$_POST data to update
+	 * @param object $event				the associated event
+	 *
+	 * @return boolean $success		true if all elements suceeded, false otherwise
+	 */
+	public function updateElements($elements, $data, $event)
+	{
+		$success = true;
+		$toDelete = array();
+		$toSave = array();
+
+		foreach ($elements as $element) {
+			$elementClassName = get_class($element);
+			$needsValidation = false;
+
+			if (isset($data[$elementClassName])) {
+				$element->attributes = Helper::convertNHS2MySQL($data[$elementClassName]);
+
+				$toSave[] = $element;
+
+				$needsValidation = true;
+			} elseif ($element->required) {
+				// The form has failed to provide an array of data for a required element.
+				// This isn't supposed to happen - a required element should at least have the
+				// $data[$elementClassName] present, even if there's nothing in it.
+				$success = false;
+			} elseif ($element->event_id) {
+				// This element already exists, isn't required and has had its data deleted.
+				// Therefore it needs to be deleted.
+				$toDelete[] = $element;
+			}
+
+			if ($needsValidation) {
+				if (!$element->validate()) {
+					$success = false;
+				}
+			}
+		}
+
+		if (!$success) {
+			// An element failed validation or a required element didn't have an
+			// array of data provided for it.
+			return false;
+		}
+
+		foreach ($toSave as $element) {
+			if (!isset($element->event_id)) {
+				$element->event_id = $event->id;
+			}
+
+			if (!$element->save()) {
+				OELog::log("Unable to save element: $element->id ($elementClassName): ".print_r($element->getErrors(),true));
+				throw new SystemException('Unable to save element: '.print_r($element->getErrors(),true));
+			}
+		}
+
+		foreach ($toDelete as $element) {
+			$element->delete();
+		}
+
+		return true;
 	}
 
 	public function getOrCreateEpisode($firm, $patientId)

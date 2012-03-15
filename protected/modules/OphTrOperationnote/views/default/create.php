@@ -3,7 +3,7 @@
 	$this->header();
 ?>
 
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation_note.png) center left no-repeat;"><?php echo $event_type->name ?></h3>
+<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation_note.png) center left no-repeat;"><?php echo $this->event_type->name ?></h3>
 
 <div>
 	<?php
@@ -23,8 +23,8 @@
 		<div class="cleartall"></div>
 		<div class="form_button">
 			<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
-			<button type="submit" class="classy green venti" id="saveOperation" name="saveOperation"><span class="button-span button-span-green">Save</span></button>
-			<button type="submit" class="classy red venti" id="cancelOperation" name="cancelOperation"><span class="button-span button-span-red">Cancel</span></button>
+			<button type="submit" class="classy green venti" id="save" name="save"><span class="button-span button-span-green">Save</span></button>
+			<button type="submit" class="classy red venti" id="cancel" name="cancel"><span class="button-span button-span-red">Cancel</span></button>
 		</div>
 	<?php $this->endWidget(); ?>
 </div>

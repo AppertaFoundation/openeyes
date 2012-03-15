@@ -34,13 +34,13 @@
 						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
 				<?php }?>
-				<div class="display_actions"<?php if (!$title){?> style="display: none;"<?php }?>>
-					<div class="display_mode"><?php echo $title?></div>
+				<div class="display_actions"<?php if (!$this->title){?> style="display: none;"<?php }?>>
+					<div class="display_mode"><?php echo $this->title?></div>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
-				<div class="colorband category_treatement"<?php if (!$title){?> style="display: none;"<?php }?>></div>
+				<div class="colorband category_treatement"<?php if (!$this->title){?> style="display: none;"<?php }?>></div>
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;<?php if (!$title){?>display: none;<?php }?>">
+				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;<?php if (!$this->title){?>display: none;<?php }?>">
 					<?php
 					if (isset($this->event)) {
 						$this->renderPartial(
@@ -58,8 +58,8 @@
 					?>
 				</div>
 				<!-- #event_content -->
-				<div class="colorband category_treatement"<?php if (!$title){?> style="display: none;"<?php }?></div>
-				<div id="display_actions_footer" class="display_actions footer"<?php if (!$title){?> style="display: none;"<?php }?>
+				<div class="colorband category_treatement"<?php if (!$this->title){?> style="display: none;"<?php }?></div>
+				<div id="display_actions_footer" class="display_actions footer"<?php if (!$this->title){?> style="display: none;"<?php }?>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
 			</div><!-- #event_display -->
