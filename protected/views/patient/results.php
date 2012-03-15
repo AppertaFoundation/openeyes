@@ -17,23 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$based_on = '';
-
-if (@$_GET['first_name'] && $_GET['first_name'] != '0') {
-	$based_on = 'FIRST NAME: <strong>"'.$_GET['first_name'].'"</strong>';
-}
+$based_on = array();
 if (@$_GET['last_name'] && $_GET['last_name'] != '0') {
-	if (@$based_on) {
-		$based_on .= ', ';
-	}
-	$based_on .= 'LAST NAME: <strong>"'.$_GET['last_name'].'"</strong>';
+	$based_on[] = 'LAST NAME: <strong>"'.$_GET['last_name'].'"</strong>';
+}
+if (@$_GET['first_name'] && $_GET['first_name'] != '0') {
+	$based_on[] = 'FIRST NAME: <strong>"'.$_GET['first_name'].'"</strong>';
 }
 if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
-	if (@$based_on) {
-		$based_on .= ', ';
-	}
-	$based_on .= 'HOSPITAL NUMBER: <strong>'.$_GET['hos_num']."</strong>";
+	$based_on[] = 'HOSPITAL NUMBER: <strong>'.$_GET['hos_num']."</strong>";
 }
+$based_on = implode(', ', $based_on);
+
 ?>
 			<h2>Search Results</h2>
 			<div class="wrapTwo clearfix">

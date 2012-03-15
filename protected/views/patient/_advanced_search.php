@@ -27,12 +27,12 @@ $form=$this->beginWidget('CActiveForm', array(
 		<div style="margin-bottom: 12px;"><label style="font-size: 17px;">Or, search by patient name:</label></div>
 		<div class="form_column">
 			<div class="inputLayout clearfix">
-				<?php echo CHtml::label('First name:<span class="labelRequired">First name is required</span>', 'first_name');?>
-				<?php echo CHtml::textField('Patient[first_name]', '', array('style'=>'width: 150px;', 'class' => 'topPaddingSmall'));?>
-			</div>
-			<div class="inputLayout clearfix">
 				<?php echo CHtml::label('Last name:<span class="labelRequired">Last name is required</span>', 'last_name');?>
 				<?php echo CHtml::textField('Patient[last_name]', '', array('style'=>'width: 150px;', 'class' => 'topPadding'));?>
+			</div>
+			<div class="inputLayout clearfix">
+				<?php echo CHtml::label('First name:<span class="labelRequired">First name is required</span>', 'first_name');?>
+				<?php echo CHtml::textField('Patient[first_name]', '', array('style'=>'width: 150px;', 'class' => 'topPaddingSmall'));?>
 			</div>
 		</div>
 		<div class="form_button">
