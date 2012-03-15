@@ -46,6 +46,7 @@ class BaseEventTypeController extends BaseController
 		if ($event and isset($event->event_type_id)) {
 			foreach (ElementType::model()->findAll($criteria) as $element_type) {
 				$element_class = $element_type->class_name;
+
 				if ($element = $element_class::model()->find('event_id = ?',array($event->id))) {
 					$elements[] = $element;
 				}
