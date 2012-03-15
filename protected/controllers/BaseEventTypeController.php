@@ -4,6 +4,7 @@ class BaseEventTypeController extends BaseController
 {
 	public $model;
 	public $firm;
+	public $patient;
 
 	public function actionIndex()
 	{
@@ -97,7 +98,7 @@ class BaseEventTypeController extends BaseController
 
 	public function actionCreate() {
 		$event_type = EventType::model()->find('class_name=?', array($this->getModule()->name));
-		if (!$patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
+		if (!$this->patient = Patient::model()->findByPk($_REQUEST['patient_id'])) {
 			throw new CHttpException(403, 'Invalid patient_id.');
 		}
 
@@ -149,7 +150,7 @@ class BaseEventTypeController extends BaseController
 			if (empty($errors)) {
 				// The user has submitted the form to create the event
 				$eventId = $this->createElements(
-					$elements, $_POST, $this->firm, $patient->id, Yii::app()->user->id, $event_type->id
+					$elements, $_POST, $this->firm, $this->patient->id, Yii::app()->user->id, $event_type->id
 				);
 
 				if ($eventId) {
@@ -177,7 +178,9 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$elements = $this->service->getDefaultElements($event);
+		$event_type = EventType::model()->findByPk($event->event_type_id);
+
+		$elements = $this->getDefaultElements($event);
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -191,12 +194,14 @@ class BaseEventTypeController extends BaseController
 
 		$this->logActivity('viewed event');
 
+		$this->patient = $event->episode->patient;
+
 		$this->renderPartial(
-			$this->getTemplateName('view', $event->event_type_id), array(
+			'view', array(
 			'elements' => $elements,
 			'eventId' => $id,
 			'editable' => $editable,
-			'currentSite' => $currentSite
+			'event_type' => $event_type,
 			), false, true);
 	}
 
@@ -224,10 +229,7 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function header($editable=false) {
-		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
-			throw new SystemException('Patient not found: '.$_GET['patient_id']);
-		}
-		$episodes = $patient->episodes;
+		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
 			$eventTypes = array();
@@ -239,16 +241,13 @@ class BaseEventTypeController extends BaseController
 			'episodes'=>$episodes,
 			'eventTypes'=>$eventTypes,
 			'title'=>'Create',
-			'model'=>$patient,
+			'model'=>$this->patient,
 			'editable'=>$editable
 		));
 	}
 
 	public function footer($editable) {
-		if (!$patient = $this->model = Patient::Model()->findByPk($_GET['patient_id'])) {
-			throw new SystemException('Patient not found: '.$_GET['patient_id']);
-		}
-		$episodes = $patient->episodes;
+		$episodes = $this->patient->episodes;
 
 		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
 			$eventTypes = array();

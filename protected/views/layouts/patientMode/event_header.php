@@ -76,13 +76,13 @@
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 			<div id="patientID">
 				<div class="i_patient">
-					<a href="/patient/view/<?php echo $this->model->id?>" class="small">Patient Summary</a>
+					<a href="/patient/view/<?php echo $this->patient->id?>" class="small">Patient Summary</a>
 					<img class="i_patient" src="/img/_elements/icons/patient_small.png" alt="patient_small" width="26" height="30" />
 				</div>
 
 				<div class="patientReminder">
-					<?php echo $this->model->getDisplayName()?>
-					<span class="number">Hospital number: <?php echo $this->model->hos_num?></span>
+					<?php echo $this->patient->getDisplayName()?>
+					<span class="number">Hospital number: <?php echo $this->patient->hos_num?></span>
 				</div>
 			</div> <!-- #patientID -->
 
