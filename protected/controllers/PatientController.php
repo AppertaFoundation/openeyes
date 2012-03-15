@@ -376,6 +376,38 @@ class PatientController extends BaseController
 		));
 	}
 
+	public function actionEpisode($id)
+	{
+		$this->layout = '//layouts/patientMode/main';
+		$this->service = new ClinicalService;
+
+		if (!$episode = Episode::model()->findByPk($id)) {
+			throw new SystemException('Episode not found: '.$id);
+		}
+
+		$this->patient = $episode->patient;
+
+		$episodes = $this->patient->episodes;
+
+		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
+			$eventTypes = array();
+		} else {
+			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
+		}
+
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->title = 'Episode summary';
+
+		$this->render('events_and_episodes', array(
+			'title' => empty($episodes) ? '' : 'Episode summary',
+			'episodes' => $episodes,
+			'eventTypes' => $eventTypes,
+			'site' => $site,
+			'current_episode' => $episode
+		));
+	}
+
 	public function actionEvent($id) {
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;

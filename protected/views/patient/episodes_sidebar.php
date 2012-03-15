@@ -5,7 +5,7 @@
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
 				<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episodes/<?php echo $episode->patient_id?>" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
+				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
 				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 				<ul class="events">
 					<?php foreach ($episode->events as $event) {
