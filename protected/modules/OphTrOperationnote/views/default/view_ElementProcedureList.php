@@ -16,8 +16,26 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+?>
 
-?>Procedure list:<br />
+<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 <div class="view">
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type')); ?></div>
+		<div class="eventHighlight"><?php echo $element->anaesthetic_type; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->surgeon->fullName; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->assistant->fullName; ?></div>
+	</div>
+
 </div>
+

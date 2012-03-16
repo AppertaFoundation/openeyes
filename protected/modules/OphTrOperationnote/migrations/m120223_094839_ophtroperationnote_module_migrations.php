@@ -34,13 +34,13 @@ class m120223_094839_ophtroperationnote_module_migrations extends CDbMigration
 		// select the event_type id for 'operationnote'
 		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'operationnote'))->queryRow();
 
-		// create an element_type for 'procedurelist' if one doesn't already exist
-		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'procedurelist'))->queryRow()) {
-			$this->insert('element_type', array('name' => 'procedurelist','class_name' => 'ElementProcedureList', 'event_type_id' => $event_type['id'], 'display_order' => 1));
+		// create an element_type for 'Procedure list' if one doesn't already exist
+		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'Procedure list'))->queryRow()) {
+			$this->insert('element_type', array('name' => 'Procedure list','class_name' => 'ElementProcedureList', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
 
-		// select the element_type_id for 'procedurelist'
-		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'procedurelist'))->queryRow();
+		// select the element_type_id for 'Procedure list'
+		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'Procedure list'))->queryRow();
 	}
 
 	public function down()
