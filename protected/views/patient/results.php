@@ -106,6 +106,7 @@ $based_on = implode(', ', $based_on);
 				</div>	<!-- .wideColumn -->
 				
 				<div class="narrowColumn">
+					<!--
 					<form id="refine-patient-search" action="/patient/results" method="post">
 						<input type="hidden" name="Patient[first_name]" value="<?php echo $_GET['first_name']?>" />
 						<input type="hidden" name="Patient[last_name]" value="<?php echo $_GET['last_name']?>" />
@@ -114,14 +115,11 @@ $based_on = implode(', ', $based_on);
 							<h3>Refine your search</h3>
 							<h4>Add, or modify, the details below to help you find the patient you are looking for.</h4>
 							
-							<!--
 							<div class="multiInputRight clearfix">
 								<label for="dob">Age range:<span class="labelHint">e.g. 20 to 40</span></label>
 								<input size="2" maxlength="2" type="text" value="00" name="dob_day" id="dob_day" /><strong style="margin:0 5px 0 8px;"> to </strong>
 								<input size="2" maxlength="2" type="text" value="99" name="dob_month" id="dob_month" />
 							</div>
-							-->
-						
 							<div class="inputLayout clearfix">	
 								<label for="nhs_number">NHS #:<span class="labelHint">for example: #111-222-3333</span></label>
 								<input type="text" value="<?php if (@$_GET['nhs_num']!='0') echo @$_GET['nhs_num']?>" name="Patient[nhs_num]" id="Patient_nhs_num" />
@@ -140,9 +138,10 @@ $based_on = implode(', ', $based_on);
 							</div>
 							
 						</div>
-				</form>
+					</form>
+					-->
 				
-				<p><a href="/">Clear this search and <span class="aPush">start a new search</span></a></p>
+					<p><a href="/">Clear this search and <span class="aPush">start a new search</span></a></p>
 				
 				</div> <!-- .narrowColumn -->
 			</div><!-- .wrapTwo -->
