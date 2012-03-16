@@ -92,8 +92,8 @@ class ElementDiagnosis extends BaseElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'disorder_id' => 'Disorder',
-			'eye' => 'Eye',
+			'disorder_id' => 'Diagnosis',
+			'eye' => 'Eye(s)',
 		);
 	}
 
@@ -126,8 +126,8 @@ class ElementDiagnosis extends BaseElement
 	{
 		return array(
 			self::EYE_RIGHT => 'Right',
-			self::EYE_LEFT => 'Left',
 			self::EYE_BOTH => 'Both',
+			self::EYE_LEFT => 'Left'
 		);
 	}
 

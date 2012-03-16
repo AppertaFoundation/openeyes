@@ -166,14 +166,14 @@ class ElementOperation extends BaseElement
 			'id' => 'ID',
 			'event_id' => 'Event',
 			'eye' => 'Eye(s)',
-			'comments' => 'Comments',
-			'total_duration' => 'Total Duration',
-			'consultant_required' => 'Consultant Required',
-			'anaesthetist_required' => 'Anaesthetist Required',
-			'anaesthetic_type' => 'Anaesthetic Type',
-			'overnight_stay' => 'Overnight Stay',
-			'decision_date' => 'Decision Date',
-			'schedule_timeframe' => 'Schedule Timeframe',
+			'comments' => 'Add comments',
+			'total_duration' => 'Total duration',
+			'consultant_required' => 'Consultant required',
+			'anaesthetist_required' => 'Anaesthetist required',
+			'anaesthetic_type' => 'Anaesthetic type',
+			'overnight_stay' => 'Post operative stay required',
+			'decision_date' => 'Decision date',
+			'schedule_timeframe' => 'Schedule timeframe',
 			'urgent' => 'Priority',
 			'site_id' => 'Site that this will be booked for'
 		);
@@ -232,8 +232,8 @@ class ElementOperation extends BaseElement
 	{
 		return array(
 			self::EYE_RIGHT => 'Right',
-			self::EYE_LEFT => 'Left',
 			self::EYE_BOTH => 'Both',
+			self::EYE_LEFT => 'Left'
 		);
 	}
 
@@ -289,8 +289,8 @@ class ElementOperation extends BaseElement
 	 */
 	public function getPriorityOptions() {
 		return array(
-			self::URGENT => 'Urgent',
 			self::ROUTINE => 'Routine',
+			self::URGENT => 'Urgent'
 		);
 	}
 

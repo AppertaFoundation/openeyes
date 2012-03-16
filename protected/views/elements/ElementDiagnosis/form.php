@@ -45,26 +45,20 @@ if (empty($_POST)) {
 					<h4>Select diagnosis</h4>
  
 					<div id="editEyeSelection" class="eventDetail">
-						<div class="label">Eye(s):</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('eye'))?>:</div>
 						<div class="data">
 							<input id="ytElementDiagnosis_eye" type="hidden" value="" name="ElementDiagnosis[eye]" />
-							<span class="group">
-							<input id="ElementDiagnosis_eye_0" value="1"<?php if (@$_POST['ElementDiagnosis']['eye'] == '1') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
-							<label for="ElementDiagnosis_eye_0">Right</label>
-							</span>
-							<span class="group">
-							<input id="ElementDiagnosis_eye_2" value="2"<?php if (@$_POST['ElementDiagnosis']['eye'] == '2') {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
-							<label for="ElementDiagnosis_eye_2">Both</label>
-							</span>
-							<span class="group">
-							<input id="ElementDiagnosis_eye_1" value="0"<?php if (!isset($_POST['ElementDiagnosis']['eye']) || empty($_POST['ElementDiagnosis']['eye'])) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
-							<label for="ElementDiagnosis_eye_1">Left</label>
-							</span>
+							<?php foreach ($model->getEyeOptions() as $value => $name) {?>
+								<span class="group">
+								<input id="ElementDiagnosis_eye_<?php echo $value?>" value="<?php echo $value?>"<?php if (@$_POST['ElementDiagnosis']['eye'] == $value) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
+								<label for="ElementDiagnosis_eye_<?php echo $value?>"><?php echo $name?></label>
+								</span>
+							<?php }?>
 						</div>
 					</div>
- 
+
 					<div id="editDiagnosis" class="eventDetail">
-						<div class="label">Diagnosis:</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('disorder_id'))?>:</div>
 						<div class="data">
 							<?php echo CHtml::dropDownList('ElementDiagnosis[disorder_id]', '', CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)), array('empty' => 'Select a commonly used diagnosis')); ?>
 							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>

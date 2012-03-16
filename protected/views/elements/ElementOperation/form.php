@@ -40,21 +40,15 @@ if (!isset($_POST['ElementOperation']['decision_date'])) {
 					<script type="text/javascript" src="/js/element_operation.js"></script>
 					<h4>Operation details</h4>
 					<div id="editEyeOperation" class="eventDetail">
-						<div class="label">Eye(s):</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('eye'))?>:</div>
 						<div class="data">
 							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
-							<span class="group">
-							<input id="ElementOperation_eye_0" value="1" <?php if ($model->eye == '1') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-							<label for="ElementOperation_eye_0">Right</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_eye_2" value="2" <?php if ($model->eye == '2') {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-							<label for="ElementOperation_eye_2">Both</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_eye_1" value="0" <?php if (empty($model->eye)) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-							<label for="ElementOperation_eye_1">Left</label>
-							</span>
+							<?php foreach ($model->getEyeOptions() as $value => $name) {?>
+								<span class="group">
+								<input id="ElementOperation_eye_<?php echo $value?>" value="<?php echo $value?>" <?php if ($model->eye == $value) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
+								<label for="ElementOperation_eye_<?php echo $value?>"><?php echo $name?></label>
+								</span>
+							<?php }?>
 						</div>
 					</div>
 
@@ -182,21 +176,19 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					</div>
 					
 					<div id="consultRequired" class="eventDetail">
-						<div class="label">Consultant required?</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('consultant_required'))?>?</div>
 						<div class="data">
 							<input id="ytElementOperation_consultant_required" type="hidden" value="<?php echo $model->consultant_required?>" name="ElementOperation[consultant_required]" />
-							<span class="group">
-							<input id="ElementOperation_consultant_required_0" value="1" <?php if ($model->consultant_required) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" />
-							<label for="ElementOperation_consultant_required_0">Yes</label>
-							</span>
-							<span class="group">
-							<input id="ElementOperation_consultant_required_1" value="0" <?php if (!$model->consultant_required) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" />
-							<label for="ElementOperation_consultant_required_1">No</label>
-							</span>
+							<?php foreach ($model->getConsultantOptions() as $value => $name) {?>
+								<span class="group">
+								<input id="ElementOperation_consultant_required_<?php echo $value?>" value="<?php echo $value?>" <?php if ($model->consultant_required == $value) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" />
+								<label for="ElementOperation_consultant_required_<?php echo $value?>"><?php echo $name?></label>
+								</span>
+							<?php }?>
 						</div>
 					</div>
 					<div id="anaestheticType" class="eventDetail">
-						<div class="label">Anaesthetic type:</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('anaesthetic_type'))?>:</div>
 						<div class="data">
 							<?php foreach ($model->getAnaestheticOptions() as $id => $value) {?>
 								<span class="group">
@@ -207,17 +199,15 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 					<div id="overnightStay" class="eventDetail">
-						<div class="label">Post operative stay required?</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('overnight_stay'))?>?</div>
 						<div class="data">
 							<input id="ytElementOperation_overnight_stay" type="hidden" value="" name="ElementOperation[overnight_stay]" />
-							<span class="group">
-								<input id="ElementOperation_overnight_stay_0" value="1" <?php if ($model->overnight_stay == 1){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" />
-								<label for="ElementOperation_overnight_stay_0">Yes</label>
-							</span>
-							<span class="group">
-								<input id="ElementOperation_overnight_stay_1" value="0" <?php if ($model->overnight_stay == 0){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" />
-								<label for="ElementOperation_overnight_stay_1">No</label>
-							</span>
+							<?php foreach ($model->getOvernightOptions() as $value => $name) {?>
+								<span class="group">
+									<input id="ElementOperation_overnight_stay_<?php echo $value?>" value="<?php echo $value?>" <?php if ($model->overnight_stay == $value){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" />
+									<label for="ElementOperation_overnight_stay_<?php echo $value?>"><?php echo $name?></label>
+								</span>
+							<?php }?>
 						</div>
 					</div>
 
@@ -237,22 +227,20 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					</div>
 
 					<div id="urgent" class="eventDetail">
-						<div class="label">Priority</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('urgent'))?>:</div>
 						<div class="data">
 							<input id="ytElementOperation_urgent" type="hidden" value="<?php echo $model->urgent ?>" name="ElementOperation[urgent]" />
-							<span class="group">
-								<input id="ElementOperation_urgent_0" value="0" <?php if(!$model->urgent) { ?>checked="checked" <?php } ?>type="radio" name="ElementOperation[urgent]" />
-								<label for="ElementOperation_urgent_0">Routine</label>
-							</span>
-							<span class="group">
-								<input id="ElementOperation_urgent_1" value="1" <?php if($model->urgent) { ?>checked="checked" <?php } ?>type="radio" name="ElementOperation[urgent]" />
-								<label for="ElementOperation_urgent_1">Urgent</label>
-							</span>
+							<?php foreach ($model->getPriorityOptions() as $value => $name) {?>
+								<span class="group">
+									<input id="ElementOperation_urgent_<?php echo $value?>" value="<?php echo $value?>" <?php if($model->urgent == $value) { ?>checked="checked" <?php } ?>type="radio" name="ElementOperation[urgent]" />
+									<label for="ElementOperation_urgent_<?php echo $value?>"><?php echo $name?></label>
+								</span>
+							<?php }?>
 						</div>
 					</div>
 					
 					<div id="decisionDate" class="eventDetail">
-						<div class="label">Decision Date:</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('decision_date'))?>:</div>
 						<div class="data">
 							<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 								'name'=>'ElementOperation[decision_date]',
@@ -270,7 +258,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					</div>
 
 					<div id="addComments" class="eventDetail">
-						<div class="label">Add comments:</div>
+						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('comments'))?>:</div>
 						<div class="data">
 							<textarea rows="4" cols="50" name="ElementOperation[comments]" id="ElementOperation_comments"><?php echo strip_tags($model->comments)?></textarea>
 						</div>

@@ -46,7 +46,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 <?php
 	if ($data->consultant_required) { ?>
 <div class="view">
-	<strong>Consultant Required</strong>
+	<strong><?php echo CHtml::encode($data->getAttributeLabel('consultant_required'))?></strong>
 	<br />
 </div>
 <?php
@@ -57,7 +57,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 
 	if ($data->anaesthetist_required) { ?>
 	<br />
-	<strong>Anaesthetist Required</strong>
+	<strong><?php echo CHtml::encode($data->getAttributeLabel('anaesthetist_required'))?></strong>
 	<br />
 <?php
 	} ?>
