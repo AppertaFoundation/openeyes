@@ -23,7 +23,7 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 		url: '/',
 		data: {'selected_firm_id': firmId },
 		success: function(data) {
-			console.log(data);
+			//console.log(data);
 			window.location.href = '/';
 		}
 	});
