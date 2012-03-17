@@ -199,6 +199,7 @@ class SiteController extends BaseController
 			$so = Yii::app()->session['theatre_searchoptions'];
 			if (isset($so['firm-id'])) unset($so['firm-id']);
 			if (isset($so['specialty-id'])) unset($so['specialty-id']);
+			if (isset($so['site-id'])) unset($so['site-id']);
 			Yii::app()->session['theatre_searchoptions'] = $so;
 		}
 
