@@ -360,6 +360,12 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .adminMode ul.yiiPager { list-style-type: none; padding: 0px; margin: 0px; padding-top:10px;  }
 .adminMode ul.yiiPager > li { display:inline-block; margin-right: 5px; }
 
+/* purpleUser can edit info as Admin  */
+.purpleUser { line-height:1.5; font-size:11px; color:#ffffde; background:#545065; border:2px solid #602aba; padding:6px; position:relative; min-height: 50px; }
+.purpleUser > input { margin:0 5px 5px 0; }
+.purpleUser textarea { width: 200px; }
+
+
 
 /* ------------------------------------------------- HELP & FOOTER	*/
 
@@ -754,10 +760,10 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .session_timeleft .session_unavailable 	{ color:#f00; }
 .theatre-sessions .specialists 		{ float: right; padding: 4px 6px 4px 15px; font-size: 11px; font-weight:normal; color: #333; text-align: right; background: #fff; opacity: 0.8; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; border:2px #ccc solid; }
 /* save and cancel buttons for session */
-.theatre-sessions .buttons_for_sessions { text-align:right; margin-top:10px; }
+.theatre-sessions .classy_buttons { clear:right; text-align:right; margin-top:10px; }
 
 /* SESSION COMMENTS */
-.sessionComments { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:7px 10px 10px 10px; margin-bottom: 15px; position:relative; min-height: 50px; }
+.sessionComments { display:block; width:205px; font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:7px 10px 10px 10px; margin-bottom: 15px; position:relative; min-height: 50px; }
 .sessionComments textarea { width: 200px; margin-top:5px; font-family:Georgia Times sans-serif;}
 .sessionComments h4 { font-size:12px; font-style: italic; color:#998a30; margin-bottom:1px; }
 /* the modifyComments class is not currently used: */
@@ -890,6 +896,4 @@ table.waiting-list #key #sendflag-remove 		.color_box { background:#f08a6f; }
 #procedureDiv,
 #enteredDiagnosisText { margin-left: 300px; background: #DAE6F1; }
 
-.purple_rinse { font-family:Georgia Times sans-serif; line-height:1.5; background:#a0f; border:1px solid #fee54f; padding:10px; position:relative; min-height: 50px; color: #fff; }
-.purple_rinse textarea { width: 200px; }
 .toAddress {padding-left:7em;}
