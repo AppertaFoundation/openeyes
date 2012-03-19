@@ -556,7 +556,7 @@ if (empty($theatres)) {?>
 							alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
 							return false;
 						} else {
-							$('#general_anaesthetic_'+id).attr('checked','false');
+							$('#general_anaesthetic_'+id).attr('checked',false);
 						}
 					}
 				});
