@@ -131,4 +131,13 @@ class CancelledBooking extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getReasonWithComment() {
+		$return = $this->cancelledReason->text;
+		if($this->cancellation_comment) {
+			$return .= " ($this->cancellation_comment)";
+		}
+		return $return;
+	}
+
 }

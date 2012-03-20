@@ -130,4 +130,5 @@ class CancellationReason extends BaseActiveRecord
 
 		return $result;
 	}
+	
 }
