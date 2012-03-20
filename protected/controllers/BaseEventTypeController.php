@@ -314,21 +314,21 @@ class BaseEventTypeController extends BaseController
 		);
 	}
 
-	public function renderDefaultElements($action, $data=false) {
+	public function renderDefaultElements($action, $form=false, $data=false) {
 		foreach ($this->getDefaultElements() as $element) {
 			$this->renderPartial(
 				$action . '_' . get_class($element),
-				array('element' => $element, 'data' => $data),
+				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, true
 			);
 		}
 	}
 
-	public function renderOptionalElements($action, $data=false) {
+	public function renderOptionalElements($action, $form=false,$data=false) {
 		foreach ($this->getOptionalElements($action) as $element) {
 			$this->renderPartial(
 				$action . '_' . get_class($element),
-				array('element' => $element, 'data' => $data),
+				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, true
 			);
 		}

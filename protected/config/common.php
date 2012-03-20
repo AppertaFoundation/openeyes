@@ -36,6 +36,7 @@ $config = array(
 		'application.modules.*',
 		'application.commands.shell.*',
 		'application.behaviors.*',
+		'application.widgets.*',
 		'application.controllers.*',
 		'application.helpers.*',
 	),

@@ -16,22 +16,12 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-<div id="anaestheticType" class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type')); ?>:</div>
-	<div class="data">
-		<?php foreach ($element->getAnaestheticOptions() as $id => $value) {?>
-			<span class="group">
-				<input id="ElementProcedureList_anaesthetic_type_<?php echo $id?>" <?php if ($element->anaesthetic_type == $id){?>checked="checked" <?php }?>value="<?php echo $id?>" type="radio" name="ElementProcedureList[anaesthetic_type]" />
-				<label for="ElementProcedureList_anaesthetic_type_<?php echo $id?>"><?php echo $value?></label>
-			</span>
-		<?php }?>
-	</div>
-</div>
-
-<?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
-<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
+class BaseEventTypeCActiveForm extends CActiveForm
+{
+	public function dropDownList($model,$attribute,$data,$htmlOptions=array()) {
+		$field = CHtml::activeDropDownList($model,$attribute,$data,$htmlOptions);
+		return Yii::app()->getController()->renderPartial('//base/html_dropdownlist', array('element' => $model, 'field' => $field, 'attribute' => $attribute));
+	}
+}
 
