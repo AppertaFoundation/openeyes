@@ -36,4 +36,15 @@ class BaseEventTypeCActiveForm extends CActiveForm
 	public function datePicker($element,$field,$options,$htmlOptions) {
 		return Yii::app()->getController()->renderPartial('//base/html_datepicker', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
+
+	public function textArea($element,$field,$options=array()) {
+		if (!isset($options['rows'])) {
+			throw new SystemException('textArea requires the rows option to be specified');
+		}
+		if (!isset($options['cols'])) {
+			throw new SystemException('textArea requires the cols option to be specified');
+		}
+
+		return Yii::app()->getController()->renderPartial('//base/html_textarea', array('element' => $element, 'field' => $field, 'rows' => $options['rows'], 'cols' => $options['cols']));
+	}
 }

@@ -62,10 +62,4 @@ if (!$model->site_id) {
 					<?php echo $form->dropDownList($model, 'site_id', CHtml::listData(Site::model()->findAll(array('order' => 'short_name')), 'id', 'short_name'))?>
 					<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
 					<?php echo $form->datePicker($model, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
-
-					<div id="addComments" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('comments'))?>:</div>
-						<div class="data">
-							<textarea rows="4" cols="50" name="ElementOperation[comments]" id="ElementOperation_comments"><?php echo strip_tags($model->comments)?></textarea>
-						</div>
-					</div>
+					<?php echo $form->textArea($model, 'comments', array('rows'=>4,'cols'=>50))?>
