@@ -23,4 +23,9 @@ class BaseEventTypeCHtml extends CHtml
 		$field = parent::dropDownList($name,$select,$data,$htmlOptions=array());
 		echo Yii::app()->getController()->renderPartial('//base/html_dropdownlist', array('element' => $element, 'field' => $field, 'name' => $name));
 	}
+
+	public static function renderRadioButtons($element,$name,$field,$table) {
+		$data = $element->getFormOptions($table);
+		echo Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => $name, 'field' => $field, 'data' => $data));
+	}
 }

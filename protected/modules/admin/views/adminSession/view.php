@@ -24,7 +24,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Sessions', 'url'=>array('index')),
-	array('label'=>'Create Sessions', 'url'=>array('massCreate')),
+	array('label'=>'Generate Sessions', 'url'=>array('massCreate')),
 	array('label'=>'Update Session', 'url'=>array('update', 'id'=>$model->id)),
 	array('label'=>'Manage Sessions', 'url'=>array('admin')),
 );
@@ -37,13 +37,42 @@ $this->menu=array(
 	'attributes'=>array(
 		'id',
 		'sequence_id',
+		'TheatreName',
+		'FirmName',
 		'date',
-		'start_time',
-		'end_time',
 		array(
-			'name'=>'status',
-			'value'=>$model->getStatusText()
+			'name' => 'date',
+			'value' => $model->NHSDate('date'),
+		),
+		array(
+			'name' => 'start_time',
+			'value' => date('H:i',strtotime($model->start_time))
+		),
+		array(
+			'name' => 'end_time',
+			'value' => date('H:i',strtotime($model->end_time))
+		),
+		array(
+			'name' => 'status',
+			'value' => $model->getStatusText(),
 		),
 		'comments',
+		array(
+			'name' => 'anaesthetist',
+			'value' => ($model->anaesthetist) ? 'Yes' : 'No',
+		),
+		array(
+			'name' => 'general_anaesthetic',
+			'value' => ($model->general_anaesthetic) ? 'Yes' : 'No',
+		),
+		array(
+			'name' => 'consultant',
+			'value' => ($model->consultant) ? 'Yes' : 'No',
+		),
+		array(
+			'name' => 'paediatric',
+			'value' => ($model->paediatric) ? 'Yes' : 'No',
+		),
+		'bookingCount',
 	),
 )); ?>

@@ -43,7 +43,7 @@
 					<?php if($session['consultant'] || $session['anaesthetist'] || $session['paediatric']) { ?>
 					<div class="metadata">
 						<?php if($session['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
-						<?php if($session['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
+						<?php if($session['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session['general_anaesthetic']) {?> (GA)<?php }?></div><?php } ?>
 						<?php if($session['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
 					</div>
 					<?php } ?>
@@ -60,6 +60,8 @@
 					The operation requires a consultant, this session doesn't have one and so cannot be booked into.
 				<?php }else if ($session['bookable_reason'] == 'paediatric') {?>
 					The operation is for a paediatric patient, this session isn't paediatric and so cannot be booked into.
+				<?php }else if ($session['bookable_reason'] == 'general_anaesthetic') {?>
+					The operation requires general anaesthetic, this session doesn't have this and so cannot be booked into.
 				<?php }?>
 			</div>
 		<?php }?>

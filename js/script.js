@@ -15,3 +15,16 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+$('select[id=selected_firm_id]').die('change').live('change', function() {
+	var firmId = $('select[id=selected_firm_id]').val();
+	$.ajax({
+		type: 'post',
+		url: '/',
+		data: {'selected_firm_id': firmId },
+		success: function(data) {
+			//console.log(data);
+			window.location.href = '/';
+		}
+	});
+});

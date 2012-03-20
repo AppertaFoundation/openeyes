@@ -119,7 +119,7 @@
 	</tr>
 	<tr>
 		<th>Theatre:</th>
-		<td><?php echo $booking->session->sequence->theatre->name?></td>
+		<td><?php echo $booking->session->TheatreName?></td>
 		<th>Ward:</th>
 		<td><?php echo $booking->ward->name?></td>
 		<?php } ?>

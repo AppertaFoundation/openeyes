@@ -27,12 +27,13 @@ class m120223_094839_ophtroperationnote_module_migrations extends CDbMigration
 
 
 		// create an event_type for 'operationnote' if one doesn't already exist
-		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'operationnote'))->queryRow()) {
-			$this->insert('event_type', array('name' => 'operationnote'));
+		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'Operation note'))->queryRow()) {
+			$group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name',array(':name'=>'Treatment events'))->queryRow();
+			$this->insert('event_type', array('name' => 'Operation note','event_group_id' => $group['id']));
 		}
 
 		// select the event_type id for 'operationnote'
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'operationnote'))->queryRow();
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'Operation note'))->queryRow();
 
 		// create an element_type for 'Procedure list' if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'Procedure list'))->queryRow()) {

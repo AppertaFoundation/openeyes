@@ -46,6 +46,7 @@ if (empty($theatres)) {?>
 			$previousSequenceId = '';
 			$timeAvailable = $sessions[0]['sessionDuration'];
 			foreach ($sessions as $session) {
+				// TODO: References to sequences need to be removed when possible
 				if ($previousSequenceId != $session['sequenceId']) {
 					if ($previousSequenceId != '') {
 ?>
@@ -64,7 +65,7 @@ if (empty($theatres)) {?>
 									</div>
 									<div class="metadata">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $previousSessionId?>" class="consultant" title="Consultant Present">Consultant</div>
-										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $previousSessionId?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div>
+										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $previousSessionId?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session_metadata['general_anaesthetic']) {?> (GA)<?php }?></div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $previousSessionId?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 									</div>
 								</th>
@@ -95,6 +96,12 @@ if (empty($theatres)) {?>
 								<input type="checkbox" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['general_anaesthetic']){?> checked="checked"<?php }?> /> General anaesthetic available<br/>
 								<input type="checkbox" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="1"<?php if ($session['status'] == 0){?> checked="checked"<?php }?> /> Session available<br/>
 							</div>
+						<?php }else{?>
+							<input type="hidden" id="consultant_<?php echo $session['sessionId']?>" name="consultant_<?php echo $session['sessionId']?>" value="<?php if ($session['consultant']){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="<?php if ($session['paediatric']){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['anaesthetist']){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="<?php if ($session['status'] == 0){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['general_anaesthetic']) { echo '1';} else { echo '0';}?>" />
 						<?php }?>
 						<div class="sessionComments" style="display:block; width:205px;">
 							<form>
@@ -182,7 +189,7 @@ if (empty($theatres)) {?>
 							</tr>
 			<?php
 				// Session data is replicated in every "session" record so we need to capture the last one of each group for display in the footer. Now wash your hands...
-				$session_metadata = array_intersect_key($session, array('consultant'=>0,'anaesthetist'=>0,'paediatric'=>0));
+				$session_metadata = array_intersect_key($session, array('consultant'=>0,'anaesthetist'=>0,'paediatric'=>0,'general_anaesthetic'=>0));
 			}
 			?>
 						</tbody>
@@ -200,7 +207,7 @@ if (empty($theatres)) {?>
 									</div>
 									<div class="metadata">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $session['sessionId']?>" class="consultant" title="Consultant Present">Consultant</div>
-										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session['sessionId']?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div>
+										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session['sessionId']?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetisti<?php if ($session_metadata['general_anaesthetic']) {?> (GA)<?php }?></div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $session['sessionId']?>" class="paediatric" title="Paediatric Session">Paediatric</div>
 									</div>
 								</th>
@@ -226,6 +233,8 @@ if (empty($theatres)) {?>
 		load_table_states();
 		<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
 			load_purple_states();
+		<?php }else{?>
+			display_purple_states();
 		<?php }?>
 	});
 
@@ -272,6 +281,12 @@ if (empty($theatres)) {?>
 					$('#paediatric_icon_'+tbody_id).hide();
 				}
 
+				if ($('#general_anaesthetic_'+tbody_id).is(':checked')) {
+					$('#anaesthetist_icon_'+tbody_id).html('Anaesthetist (GA)');
+				} else {
+					$('#anaesthetist_icon_'+tbody_id).html('Anaesthetist');
+				}
+
 				if ($('#anaesthetic_'+tbody_id).is(':checked')) {
 					$('#anaesthetist_icon_'+tbody_id).show();
 				} else {
@@ -279,6 +294,44 @@ if (empty($theatres)) {?>
 				}
 
 				if ($('#available_'+tbody_id).is(':checked')) {
+					$('#session_unavailable_'+tbody_id).hide();
+				} else {
+					$('#session_unavailable_'+tbody_id).show();
+				}
+			}
+		});
+	}
+
+	function display_purple_states() {
+		$('tbody').map(function() {
+			if ($(this).attr('id') !== undefined) {
+				var tbody_id = $(this).attr('id').match(/[0-9]+/);
+
+				if ($('#consultant_'+tbody_id).val() == 1) {
+					$('#consultant_icon_'+tbody_id).show();
+				} else {
+					$('#consultant_icon_'+tbody_id).hide();
+				}
+
+				if ($('#paediatric_'+tbody_id).val() == 1) {
+					$('#paediatric_icon_'+tbody_id).show();
+				} else {
+					$('#paediatric_icon_'+tbody_id).hide();
+				}
+
+				if ($('#general_anaesthetic_'+tbody_id).val() == 1) {
+					$('#anaesthetist_icon_'+tbody_id).html('Anaesthetist (GA)');
+				} else {
+					$('#anaesthetist_icon_'+tbody_id).html('Anaesthetist');
+				}
+
+				if ($('#anaesthetic_'+tbody_id).val() == 1) {
+					$('#anaesthetist_icon_'+tbody_id).show();
+				} else {
+					$('#anaesthetist_icon_'+tbody_id).hide();
+				}
+
+				if ($('#available_'+tbody_id).val() == 1) {
 					$('#session_unavailable_'+tbody_id).hide();
 				} else {
 					$('#session_unavailable_'+tbody_id).show();
@@ -493,18 +546,24 @@ if (empty($theatres)) {?>
 				}
 			});
 
-			$.ajax({
-				type: "POST",
-				data: "operations[]=" + operations.join("&operations[]="),
-				url: "/theatre/requiresanaesthetist",
-				success: function(html) {
-					if (html == "1") {
-						$('#anaesthetic_'+id).attr('checked',true);
-						alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
-						return false;
+			if (operations.length >0) {
+				$.ajax({
+					type: "POST",
+					data: "operations[]=" + operations.join("&operations[]="),
+					url: "/theatre/requiresanaesthetist",
+					success: function(html) {
+						if (html == "1") {
+							$('#anaesthetic_'+id).attr('checked',true);
+							alert("Sorry, you cannot remove the 'Anaesthetist required' flag from this session because there are one or more patients booked into it who require an anaesthetist.");
+							return false;
+						} else {
+							$('#general_anaesthetic_'+id).attr('checked',false);
+						}
 					}
-				}
-			});
+				});
+			} else {
+				$('#general_anaesthetic_'+id).attr('checked',false);
+			}
 		}
 	});
 
@@ -520,18 +579,22 @@ if (empty($theatres)) {?>
 				}
 			});
 
-			$.ajax({
-				type: "POST",
-				data: "operations[]=" + operations.join("&operations[]="),
-				url: "/theatre/requiresgeneralanaesthetic",
-				success: function(html) {
-					if (html == "1") {
-						$('#general_anaesthetic_'+id).attr('checked',true);
-						alert("Sorry, you cannot remove the 'General anaesthetic available' flag from this session because there are one or more patients booked into it who require a general anaesthetic.");
-						return false;
+			if (operations.length >0) {
+				$.ajax({
+					type: "POST",
+					data: "operations[]=" + operations.join("&operations[]="),
+					url: "/theatre/requiresgeneralanaesthetic",
+					success: function(html) {
+						if (html == "1") {
+							$('#general_anaesthetic_'+id).attr('checked',true);
+							alert("Sorry, you cannot remove the 'General anaesthetic available' flag from this session because there are one or more patients booked into it who require a general anaesthetic.");
+							return false;
+						}
 					}
-				}
-			});
+				});
+			}
+		} else {
+			$('#anaesthetic_'+id).attr('checked',true);
 		}
 	});
 </script>
