@@ -112,7 +112,7 @@
 	
 	<tr>
 		<th>Eye:</th>
-		<td><?php echo $operation->getEyeText() ?></td>
+		<td><?php echo $operation->eye->name?></td>
 		<?php if ($booking) { ?>
 		<th>Theatre session:</th>
 		<td><?php echo substr($booking->session->start_time,0,5) . ' - ' . substr($booking->session->end_time,0,5)?></td>
@@ -129,7 +129,7 @@
 		<th>Diagnosis:</th>
 		<td>
 			<?php if ($operation->getDisorder()) {
-				echo $operation->getEyeText() . ' ' . CHtml::encode($operation->getDisorder());
+				echo $operation->eye->name . ' ' . CHtml::encode($operation->getDisorder());
 			} else {
 				echo 'Unknown';
 			} ?>

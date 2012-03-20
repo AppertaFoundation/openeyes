@@ -237,7 +237,7 @@ class TheatreController extends BaseController
 					'overnightStay' => $values['overnight_stay'],
 					'admissionTime' => $values['admission_time'],
 					'timeAvailable' => $sessionDuration,
-					'eye' => substr($operation->getEyeText(), 0, 1),
+					'eye' => substr($operation->eye->name, 0, 1),
 					'anaesthetic' => $operation->getAnaestheticAbbreviation(),
 					'procedures' => $procedures['List'],
 					'patientHosNum' => $values['hos_num'],

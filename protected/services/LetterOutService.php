@@ -387,7 +387,7 @@ class LetterOutService
 
 				if (isset($diagnosis) && $diagnosis) {
 					$this->substitutions['epd'] = $diagnosis->disorder->term;
-					$this->substitutions['eps'] = $diagnosis->getEyeText();
+					$this->substitutions['eps'] = $diagnosis->eye->name;
 				}
 			}
 		}

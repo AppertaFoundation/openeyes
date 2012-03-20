@@ -55,7 +55,7 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 <div class="col1">
 <h4>Operation</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->getEyeText()?> 
+	<h4><?php echo $operation->eye->name?>
 <?php
 foreach ($elements as $element) {
 	// Only display elements that have been completed, i.e. they have an event id

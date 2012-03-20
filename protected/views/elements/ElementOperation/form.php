@@ -39,18 +39,8 @@ if (!isset($_POST['ElementOperation']['decision_date'])) {
 ?>
 					<script type="text/javascript" src="/js/element_operation.js"></script>
 					<h4>Operation details</h4>
-					<div id="editEyeOperation" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('eye'))?>:</div>
-						<div class="data">
-							<input id="ytElementOperation_eye" type="hidden" value="" name="ElementOperation[eye]" />
-							<?php foreach ($model->getEyeOptions() as $value => $name) {?>
-								<span class="group">
-								<input id="ElementOperation_eye_<?php echo $value?>" value="<?php echo $value?>" <?php if ($model->eye == $value) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[eye]" />
-								<label for="ElementOperation_eye_<?php echo $value?>"><?php echo $name?></label>
-								</span>
-							<?php }?>
-						</div>
-					</div>
+
+					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
 					<div id="typeProcedure" class="eventDetail">
 						<div class="label">Add procedure:</div>

@@ -189,7 +189,7 @@ class Episode extends BaseActiveRecord
 
 	public function getPrincipalDiagnosisEyeText() {
 		if ($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->getEyeText();
+			return $diagnosis->eye->name;
 		} else {
 			return 'none';
 		}

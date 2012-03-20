@@ -110,7 +110,7 @@ if (empty($operations)) { ?>
 	<td style="width: 53px;"><?php echo $operation['hos_num'] ?></td>
 	<td style="width: 95px;"><?php echo $eo->site->short_name?></td>
 	<td><?php echo $operation['List'] ?></td>
-	<td><?php echo $eo->getEyeText() ?></td>
+	<td><?php echo $eo->eye->name ?></td>
 	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name ?>)</td>
 	<td style="width: 80px;"><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo ($eo->urgent) ? 'Urgent' : 'Routine' ?></td>

@@ -21,7 +21,7 @@
 
 <div class="view">
 	<strong><?php echo $data->getAttributeLabel('eye'); ?></strong>
-		<?php echo $data->getEyeText(); ?>
+		<?php echo $data->eye->name?>
 	<br />
 	<strong><?php echo CHtml::encode($data->getAttributeLabel('disorder_id')); ?>:</strong>
 	<?php echo CHtml::encode($data->disorder->term); ?>

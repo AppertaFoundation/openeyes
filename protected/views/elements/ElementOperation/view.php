@@ -21,7 +21,7 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 <h3>Operation Details</h3>
 <div class="view">
 	<strong><?php echo $data->getEyeLabelText(); ?></strong>
-	<?php echo $data->getEyeText(); ?>
+	<?php echo $data->eye->name?>
 </div>
 <div class="view"><strong>Procedures:</strong><br />
 <?php

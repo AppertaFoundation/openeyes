@@ -19,7 +19,7 @@
 ?>
 <div class="view">
 	<strong>Eye(s) to be operated on:</strong>
-	<?php echo CHtml::encode($operation->getEyeText()); ?>
+	<?php echo CHtml::encode($operation->eye->name)?>
 </div>
 <div class="view">
 	<strong>Procedure(s) entered:</strong>

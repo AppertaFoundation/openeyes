@@ -44,18 +44,7 @@ if (empty($_POST)) {
 					<?php }?>
 					<h4>Select diagnosis</h4>
  
-					<div id="editEyeSelection" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('eye'))?>:</div>
-						<div class="data">
-							<input id="ytElementDiagnosis_eye" type="hidden" value="" name="ElementDiagnosis[eye]" />
-							<?php foreach ($model->getEyeOptions() as $value => $name) {?>
-								<span class="group">
-								<input id="ElementDiagnosis_eye_<?php echo $value?>" value="<?php echo $value?>"<?php if (@$_POST['ElementDiagnosis']['eye'] == $value) {?> checked="checked"<?php }?> type="radio" name="ElementDiagnosis[eye]" />
-								<label for="ElementDiagnosis_eye_<?php echo $value?>"><?php echo $name?></label>
-								</span>
-							<?php }?>
-						</div>
-					</div>
+ 					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
 					<div id="editDiagnosis" class="eventDetail">
 						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('disorder_id'))?>:</div>

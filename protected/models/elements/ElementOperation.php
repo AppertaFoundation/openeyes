@@ -40,10 +40,6 @@
  */
 class ElementOperation extends BaseEventTypeElement
 {
-	const EYE_LEFT = 0;
-	const EYE_RIGHT = 1;
-	const EYE_BOTH = 2;
-
 	const CONSULTANT_NOT_REQUIRED = 0;
 	const CONSULTANT_REQUIRED = 1;
 
@@ -103,15 +99,15 @@ class ElementOperation extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('eye', 'required', 'message' => 'Please select an eye option'),
-			array('eye', 'matchDiagnosisEye'),
+			array('eye_id', 'required', 'message' => 'Please select an eye option'),
+			array('eye_id', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. '.Helper::NHS_DATE_EXAMPLE.')'),
-			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
-			array('eye, event_id, comments, decision_date, site_id', 'safe'),
+			array('eye_id, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
+			array('eye_id, event_id, comments, decision_date, site_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
+			array('id, event_id, eye_id, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
 			array('anaesthetic_type_id', 'checkAnaestheticType'),
 			array('consultant_required', 'checkConsultantRequired')
 		);
@@ -148,7 +144,8 @@ class ElementOperation extends BaseEventTypeElement
 			'date_letter_sent' => array(self::HAS_ONE, 'DateLetterSent', 'element_operation_id', 'order' => 'date_letter_sent.id DESC'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id')
+			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id')
 		);
 	}
 
@@ -160,7 +157,7 @@ class ElementOperation extends BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'eye' => 'Eye(s)',
+			'eye_id' => 'Eye(s)',
 			'comments' => 'Add comments',
 			'total_duration' => 'Total duration',
 			'consultant_required' => 'Consultant required',
@@ -187,7 +184,7 @@ class ElementOperation extends BaseEventTypeElement
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('eye', $this->eye);
+		$criteria->compare('eye_id', $this->eye_id);
 		$criteria->compare('comments', $this->comments, true);
 		$criteria->compare('total_duration', $this->total_duration);
 		$criteria->compare('consultant_required', $this->consultant_required);
@@ -217,53 +214,6 @@ class ElementOperation extends BaseEventTypeElement
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
 		$this->urgent = self::ROUTINE;
-	}
-
-	/**
-	 * Return list of options for eye
-	 * @return array
-	 */
-	public function getEyeOptions()
-	{
-		return array(
-			self::EYE_RIGHT => 'Right',
-			self::EYE_BOTH => 'Both',
-			self::EYE_LEFT => 'Left'
-		);
-	}
-
-	public function getEyeLabelText()
-	{
-		switch ($this->eye) {
-			case self::EYE_BOTH:
-				$text = 'Eyes:';
-				break;
-			default:
-				$text = 'Eye:';
-				break;
-		}
-
-		return $text;
-	}
-
-	public function getEyeText()
-	{
-		switch ($this->eye) {
-			case self::EYE_LEFT:
-				$text = 'Left';
-				break;
-			case self::EYE_RIGHT:
-				$text = 'Right';
-				break;
-			case self::EYE_BOTH:
-				$text = 'Both';
-				break;
-			default:
-				$text = 'Unknown';
-				break;
-		}
-
-		return $text;
 	}
 
 	/**
@@ -365,15 +315,15 @@ class ElementOperation extends BaseEventTypeElement
 
 	public function matchDiagnosisEye()
 	{
-		if (isset($_POST['ElementDiagnosis']['eye']) &&
-			isset($_POST['ElementOperation']['eye'])
+		if (isset($_POST['ElementDiagnosis']['eye_id']) &&
+			isset($_POST['ElementOperation']['eye_id'])
 		) {
-			$diagnosis = $_POST['ElementDiagnosis']['eye'];
-			$operation = $_POST['ElementOperation']['eye'];
-			if ($diagnosis != ElementDiagnosis::EYE_BOTH &&
+			$diagnosis = $_POST['ElementDiagnosis']['eye_id'];
+			$operation = $_POST['ElementOperation']['eye_id'];
+			if ($diagnosis != 3 &&
 				$diagnosis != $operation
 			) {
-				$this->addError('eye', 'Operation eye must match diagnosis eye!');
+				$this->addError('eye_id', 'Operation eye must match diagnosis eye!');
 			}
 		}
 	}
@@ -421,7 +371,7 @@ class ElementOperation extends BaseEventTypeElement
 	protected function beforeValidate()
 	{
 		if (!empty($_POST['action']) && empty($_POST['Procedures'])) {
-			$this->addError('eye', 'At least one procedure must be entered');
+			$this->addError('eye_id', 'At least one procedure must be entered');
 		}
 
 		return parent::beforeValidate();
@@ -982,7 +932,7 @@ class ElementOperation extends BaseEventTypeElement
 		if (empty($elementDiagnosis)) {
 			return null;
 		} else {
-			return $elementDiagnosis->getEyeText();
+			return $elementDiagnosis->eye->name;
 		}
 	}
 

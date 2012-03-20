@@ -160,7 +160,7 @@ if (!empty($address)) {
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
 												<td><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></td>
 												<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
-												<td><?php echo !empty($diagnosis) ? $diagnosis->getEyeText() : 'No diagnosis' ?></td>
+												<td><?php echo !empty($diagnosis) ? $diagnosis->eye->name : 'No diagnosis' ?></td>
 												<td><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis'?></td>
 											</tr>
 										<?php }?>

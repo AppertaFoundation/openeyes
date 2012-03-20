@@ -30,12 +30,8 @@
  * @property Disorder $disorder
  * @property Event $event
  */
-class ElementDiagnosis extends BaseElement
+class ElementDiagnosis extends BaseEventTypeElement
 {
-	const EYE_LEFT = 0;
-	const EYE_RIGHT = 1;
-	const EYE_BOTH = 2;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementDiagnosis the static model class
@@ -61,13 +57,13 @@ class ElementDiagnosis extends BaseElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('eye', 'required', 'message' => 'Please select an eye option'),
+			array('eye_id', 'required', 'message' => 'Please select an eye option'),
 			array('disorder_id', 'required', 'message' => 'Please enter a valid disorder'),
-			array('eye', 'numerical', 'integerOnly'=>true),
+			array('eye_id', 'numerical', 'integerOnly'=>true),
 			array('disorder_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, eye', 'safe', 'on'=>'search'),
+			array('id, disorder_id, eye_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -81,6 +77,7 @@ class ElementDiagnosis extends BaseElement
 		return array(
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id')
 		);
 	}
 
@@ -93,7 +90,7 @@ class ElementDiagnosis extends BaseElement
 			'id' => 'ID',
 			'event_id' => 'Event',
 			'disorder_id' => 'Diagnosis',
-			'eye' => 'Eye(s)',
+			'eye_id' => 'Eye(s)',
 		);
 	}
 
@@ -111,43 +108,11 @@ class ElementDiagnosis extends BaseElement
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('event_id',$this->event_id,true);
 		$criteria->compare('disorder_id',$this->disorder_id,true);
-		$criteria->compare('eye',$this->eye);
+		$criteria->compare('eye_id',$this->eye_id);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	/**
-	 * Return list of options for eye
-	 * @return array
-	 */
-	public function getEyeOptions()
-	{
-		return array(
-			self::EYE_RIGHT => 'Right',
-			self::EYE_BOTH => 'Both',
-			self::EYE_LEFT => 'Left'
-		);
-	}
-
-	public function getEyeText() {
-		switch ($this->eye) {
-			case self::EYE_LEFT:
-				$text = 'Left';
-				break;
-			case self::EYE_RIGHT:
-				$text = 'Right';
-				break;
-			case self::EYE_BOTH:
-				$text = 'Both';
-				break;
-			default:
-				$text = 'Unknown';
-				break;
-		}
-
-		return $text;
 	}
 
 	/**

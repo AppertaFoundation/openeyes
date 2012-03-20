@@ -24,7 +24,7 @@ if (!empty($episode)) {
 					$eye = 'No diagnosis';
 					$text = 'No diagnosis';
 	} else {
-					$eye = $diagnosis->getEyeText();
+					$eye = $diagnosis->eye->name;
 					$text = $diagnosis->disorder->term;
 	}
 ?>
