@@ -61,24 +61,7 @@ if (!$model->site_id) {
 					<?php echo $form->radioBoolean($model, 'overnight_stay')?>
 					<?php echo $form->dropDownList($model, 'site_id', CHtml::listData(Site::model()->findAll(array('order' => 'short_name')), 'id', 'short_name'))?>
 					<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
-
-					<div id="decisionDate" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('decision_date'))?>:</div>
-						<div class="data">
-							<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-								'name'=>'ElementOperation[decision_date]',
-								'id'=>'ElementOperation_decision_date_0',
-								// additional javascript options for the date picker plugin
-								'options'=>array(
-									'showAnim'=>'fold',
-									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-									'maxDate'=>'today'
-								),
-								'value' => $_POST['ElementOperation']['decision_date'],
-								'htmlOptions'=>array('style'=>'width: 110px;')
-							)); ?>
-						</div>
-					</div>
+					<?php echo $form->datePicker($model, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
 
 					<div id="addComments" class="eventDetail">
 						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('comments'))?>:</div>
