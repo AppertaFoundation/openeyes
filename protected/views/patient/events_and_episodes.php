@@ -58,8 +58,8 @@
 					?>
 				</div>
 				<!-- #event_content -->
-				<div class="colorband category_treatement"<?php if (!$this->title){?> style="display: none;"<?php }?></div>
-				<div id="display_actions_footer" class="display_actions footer"<?php if (!$this->title){?> style="display: none;"<?php }?>
+				<div class="colorband category_treatement"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
+				<div id="display_actions_footer" class="display_actions footer"<?php if (!$this->title){?> style="display: none;"<?php }?>>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
 			</div><!-- #event_display -->

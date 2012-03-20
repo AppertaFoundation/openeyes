@@ -193,24 +193,17 @@ class Firm extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getListWithSpecialties()
-	{
+	public function getListWithSpecialties() {
 		$firms = Yii::app()->db->createCommand()
 			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-			->join('subspecialty s', 'ssa.subspecialty_id = s.id')
-			->order('f.name ASC, s.name ASC')
+			->order('f.name, s.name')
 			->queryAll();
-
 		$data = array();
-
 		foreach ($firms as $firm) {
 			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
 		}
-
-		natcasesort($data);
-
 		return $data;
 	}
 

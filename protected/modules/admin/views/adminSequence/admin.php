@@ -63,35 +63,35 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		array(
 			'header'=>'Firm',
 			'value'=>'$data->getFirmName()',
+			// TODO: This filter should probably be limited to firms actually used by sequences
 			'filter'=>CHtml::dropDownList('Firm[id]', $model->firm_id, Firm::model()->getListWithSpecialties(), array('empty' => '')),
 		),
 		array(
-			'header'=>'Site/Theatre',
-			'value'=>'$data->theatre->site->name . "-" . $data->theatre->name',
+			'header'=>'Theatre (Site)',
+			'value'=>'$data->TheatreName',
 			'filter'=>CHtml::dropDownList('Site[id]', $model->site_id, Site::model()->getList(), array('empty' => '')),
+		),
+		array(
+			'header' => 'Day',
+			'name' => 'weekday',
+			'value' => '$data->WeekdayText',
+			'filter'=>CHtml::dropDownList('Sequence[weekday]', $model->weekday, $model->getWeekdayOptions(), array('empty' => '')),
 		),
 		'start_date',
 		array(
-			'header'=>'Day',
-			'name'=>'weekday',
-			'value'=>'date("l ", strtotime($data->start_date))',
-			'filter'=>CHtml::dropDownList('Sequence[weekday]', $model->weekday, Sequence::model()->getWeekdayOptions(), array('empty' => '')),
+			'name'=>'start_time',
+			'value'=>'date(\'H:i\',strtotime($data->start_time))',
 		),
 		array(
-			'header'=>'Start Time',
-			'name'=>'start_time'
+			'name'=>'end_time',
+			'value'=>'date(\'H:i\',strtotime($data->end_time))',
 		),
-		array(
-			'header'=>'End Time',
-			'name'=>'end_time'
-		),
-		'end_date',
 		array(
 			'name'=>'repeat',
-			'header'=>'Occurrence',
 			'value'=>'$data->getRepeatText()',
 			'filter'=>CHtml::dropDownList('Sequence[repeat]', $model->getSelectedFrequencyWeekOption(), Sequence::model()->getFrequencyAndWeekOptions(), array('empty' => '')),
 		),
+		'end_date',
 		array(
 			'class'=>'CButtonColumn',
 		),

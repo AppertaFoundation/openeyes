@@ -36,8 +36,8 @@
 	<?php }?>
 	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="/favicon.ico"/> 
-	<link rel="stylesheet" href="/css/style.css"> 
-	<link rel="stylesheet" type="text/css" href="/css/jquery.fancybox-1.3.4.css" />
+	<?php Yii::app()->clientScript->registerCssFile('/css/style.css'); ?>
+	<?php Yii::app()->clientScript->registerCssFile('/css/jquery.fancybox-1.3.4.css'); ?>
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php // TODO: These scripts should probably be registered through Yii too ?>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
@@ -47,6 +47,7 @@
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 	<script type="text/javascript" src="/js/print.js"></script>
 	<script type="text/javascript" src="/js/buttons.js"></script>
+	<script type="text/javascript" src="/js/script.js"></script>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
@@ -117,21 +118,6 @@
 
 	<?php echo $this->renderPartial('/base/_footer',array())?>
  
-	<script type="text/javascript">
-		$('select[id=selected_firm_id]').die('change').live('change', function() {
-			var firmId = $('select[id=selected_firm_id]').val();
-			$.ajax({
-				type: 'post',
-				url: '<?php echo Yii::app()->createUrl('site'); ?>',
-				data: {'selected_firm_id': firmId },
-				success: function(data) {
-					console.log(data);
-					window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
-				}
-			});
-		});
-	</script>
-
 	<?php if (Yii::app()->user->checkAccess('admin')) {?>
 		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
 	<?php } else if (Yii::app()->params['watermark']) {?>

@@ -71,6 +71,11 @@ if (!empty($address)) {
 						<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>
 					</div>
 				<?php } ?>
+				<?php if ($model->isDeceased()) {?>
+					<div id="deceased-notice" class="alertBox">
+						This patient is deceased (<?php echo $model->NHSDate('date_of_death'); ?>)
+					</div>
+				<?php } ?>
 
 				<div class="halfColumnLeft">
  

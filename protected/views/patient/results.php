@@ -17,23 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$based_on = '';
-
-if (@$_GET['first_name'] && $_GET['first_name'] != '0') {
-	$based_on = 'FIRST NAME: <strong>"'.$_GET['first_name'].'"</strong>';
-}
+$based_on = array();
 if (@$_GET['last_name'] && $_GET['last_name'] != '0') {
-	if (@$based_on) {
-		$based_on .= ', ';
-	}
-	$based_on .= 'LAST NAME: <strong>"'.$_GET['last_name'].'"</strong>';
+	$based_on[] = 'LAST NAME: <strong>"'.$_GET['last_name'].'"</strong>';
+}
+if (@$_GET['first_name'] && $_GET['first_name'] != '0') {
+	$based_on[] = 'FIRST NAME: <strong>"'.$_GET['first_name'].'"</strong>';
 }
 if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
-	if (@$based_on) {
-		$based_on .= ', ';
-	}
-	$based_on .= 'HOSPITAL NUMBER: <strong>'.$_GET['hos_num']."</strong>";
+	$based_on[] = 'HOSPITAL NUMBER: <strong>'.$_GET['hos_num']."</strong>";
 }
+$based_on = implode(', ', $based_on);
+
 ?>
 			<h2>Search Results</h2>
 			<div class="wrapTwo clearfix">
@@ -111,6 +106,7 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 				</div>	<!-- .wideColumn -->
 				
 				<div class="narrowColumn">
+					<!--
 					<form id="refine-patient-search" action="/patient/results" method="post">
 						<input type="hidden" name="Patient[first_name]" value="<?php echo $_GET['first_name']?>" />
 						<input type="hidden" name="Patient[last_name]" value="<?php echo $_GET['last_name']?>" />
@@ -119,14 +115,11 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							<h3>Refine your search</h3>
 							<h4>Add, or modify, the details below to help you find the patient you are looking for.</h4>
 							
-							<!--
 							<div class="multiInputRight clearfix">
 								<label for="dob">Age range:<span class="labelHint">e.g. 20 to 40</span></label>
 								<input size="2" maxlength="2" type="text" value="00" name="dob_day" id="dob_day" /><strong style="margin:0 5px 0 8px;"> to </strong>
 								<input size="2" maxlength="2" type="text" value="99" name="dob_month" id="dob_month" />
 							</div>
-							-->
-						
 							<div class="inputLayout clearfix">	
 								<label for="nhs_number">NHS #:<span class="labelHint">for example: #111-222-3333</span></label>
 								<input type="text" value="<?php if (@$_GET['nhs_num']!='0') echo @$_GET['nhs_num']?>" name="Patient[nhs_num]" id="Patient_nhs_num" />
@@ -145,9 +138,10 @@ if (@$_GET['hos_num'] && $_GET['hos_num'] != '0') {
 							</div>
 							
 						</div>
-				</form>
+					</form>
+					-->
 				
-				<p><a href="/">Clear this search and <span class="aPush">start a new search</span></a></p>
+					<p><a href="/">Clear this search and <span class="aPush">start a new search</span></a></p>
 				
 				</div> <!-- .narrowColumn -->
 			</div><!-- .wrapTwo -->

@@ -149,22 +149,14 @@ foreach ($elements as $element) {
 <h4>List</h4>
 <div class="eventHighlight">
 <?php $session = $operation->booking->session ?>
-<h4><?php
-	if (empty($session->sequence->sequenceFirmAssignment)) {
-		$firmName = 'Emergency List';
-	} else {
-		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-			$session->sequence->sequenceFirmAssignment->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
-	}
-	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
-?></h4>
+<h4><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
 </div>
 </div>
 
 <div class="col2">
 <h4>Theatre</h4>
 <div class="eventHighlight">
-<h4><?php echo $session->sequence->theatre->name ?> (<?php echo $session->sequence->theatre->site->name ?>)</h4>
+<h4><?php echo $session->TheatreName ?></h4>
 </div>
 </div>
 
@@ -318,8 +310,8 @@ foreach ($elements as $element) {
 	// TODO: This needs moving to a controller so we can pull it in using an ajax call
 	$patient = $this->event->episode->patient;
 	$admissionContact = $operation->getAdmissionContact();
-	$site = $operation->booking->session->sequence->theatre->site;
-	$firm = ($firm_assign = $operation->booking->session->sequence->sequenceFirmAssignment) ? $firm_assign->firm : false;
+	$site = $operation->booking->session->theatre->site;
+	$firm = $operation->booking->session->firm;
 	$emergency_list = false;
 	if(!$firm) {
 		$firm = $operation->event->episode->firm;

@@ -403,6 +403,7 @@ class PatientService
 			$this->patient->last_name = $pas_patient->name->SURNAME_ID;
 			$this->patient->gender = $pas_patient->SEX;
 			$this->patient->dob = $pas_patient->DATE_OF_BIRTH;
+			$this->patient->date_of_death = $pas_patient->DATE_OF_DEATH;
 			if($hos_num = $pas_patient->hos_number) {
 				$hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
 				$this->patient->pas_key = $hos_num;
