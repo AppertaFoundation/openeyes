@@ -36,6 +36,11 @@ if (!isset($_POST['ElementOperation']['decision_date'])) {
 		$_POST['ElementOperation']['decision_date'] = date('j M Y',time());
 	}
 }
+
+if (!$model->site_id) {
+	$model->site_id = Yii::app()->request->cookies['site_id']->value;
+}
+
 ?>
 					<script type="text/javascript" src="/js/element_operation.js"></script>
 					<h4>Operation details</h4>
@@ -54,21 +59,7 @@ if (!isset($_POST['ElementOperation']['decision_date'])) {
 					<?php echo $form->radioBoolean($model, 'consultant_required')?>
 					<?php echo $form->radioButtons($model, 'anaesthetic_type_id', 'anaesthetic_type');?>
 					<?php echo $form->radioBoolean($model, 'overnight_stay')?>
-
-					<div id="site" class="eventDetail">
-						<div class="label"><?php echo $form->label(ElementOperation::model(),'site_id'); ?></div>
-						<div class="data">
-							<?php 
-							if (!$model->site_id) {
-								$active_site_id = Yii::app()->request->cookies['site_id']->value;	
-							} else {
-								$active_site_id = $model->site_id;
-							}
-							echo CHtml::dropDownList('ElementOperation[site_id]', $active_site_id, Site::model()->getList());
-							?>
-						</div>
-					</div>
-
+					<?php echo $form->dropDownList($model, 'site_id', CHtml::listData(Site::model()->findAll(array('order' => 'short_name')), 'id', 'short_name'))?>
 					<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
 
 					<div id="decisionDate" class="eventDetail">
