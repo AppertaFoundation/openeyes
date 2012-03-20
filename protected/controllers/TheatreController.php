@@ -57,7 +57,9 @@ class TheatreController extends BaseController
 
 		if (empty($_POST)) {
 			// look for values from the session
-			if (Yii::app()->session['theatre_searchoptions']) {
+			$theatre_searchoptions = Yii::app()->session['theatre_searchoptions'];
+
+			if (!empty($theatre_searchoptions)) {
 				foreach (Yii::app()->session['theatre_searchoptions'] as $key => $value) {
 					$_POST[$key] = $value;
 				}
@@ -67,8 +69,15 @@ class TheatreController extends BaseController
 					$theatres = $this->getFilteredTheatres($_POST['site-id']);
 				}
 
+				if (!isset($_POST['firm-id'])) {
+					$_POST['firm-id'] = $theatre_searchoptions['firm-id'] = Yii::app()->session['selected_firm_id'];
+					$_POST['specialty-id'] = $theatre_searchoptions['specialty-id'] = $firm->serviceSpecialtyAssignment->specialty_id;
+				}
+
+				Yii::app()->session['theatre_searchoptions'] = $theatre_searchoptions;
+
 			} else {
-				$_POST = array(
+				$_POST = Yii::app()->session['theatre_searchoptions'] = array(
 					'firm-id' => Yii::app()->session['selected_firm_id'],
 					'specialty-id' => $firm->serviceSpecialtyAssignment->specialty_id
 				);

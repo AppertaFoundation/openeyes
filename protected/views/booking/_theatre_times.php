@@ -47,7 +47,7 @@ Yii::app()->clientScript->scriptMap['jquery-ui.min.js'] = false;
 					<?php if($session['consultant'] || $session['anaesthetist'] || $session['paediatric']) { ?>
 					<div class="metadata">
 						<?php if($session['consultant']) { ?><div class="consultant" title="Consultant Present">Consultant</div><?php } ?>
-						<?php if($session['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist</div><?php } ?>
+						<?php if($session['anaesthetist']) { ?><div class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session['general_anaesthetic']) {?> (GA)<?php }?></div><?php } ?>
 						<?php if($session['paediatric']) { ?><div class="paediatric" title="Paediatric Session">Paediatric</div><?php } ?>
 					</div>
 					<?php } ?>

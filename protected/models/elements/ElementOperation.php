@@ -648,7 +648,7 @@ class ElementOperation extends BaseElement
 				$bookable = false;
 				$session['bookable_reason'] = 'paediatric';
 			}
-			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL) {
+			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL && !$session['general_anaesthetic']) {
 				$bookable = false;
 				$session['bookable_reason'] = 'general_anaesthetic';
 			}

@@ -68,7 +68,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'source'=>"js:function(request, response) {
 								var existingProcedures = [];
 								$('#procedure_list tbody').children().each(function () {
-												var text = $(this).children('td:first').children('span:first').text();
+												var text = $(this).children('td:first').children('strong:first').children('span:first').text();
 												existingProcedures.push(text.replace(/ remove$/i, ''));
 								});
 
@@ -143,8 +143,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 										$totalDuration = 0;
 										if (!empty($model->procedures)) {
 											foreach ($model->procedures as $procedure) {
-												$display = "<span>".$procedure['term'] . '</span> - <span>' . $procedure['short_format'] .
-													'</span> ' . CHtml::link('remove', '#',
+												$display = "<strong><span>".$procedure['term'] . '</span> - <span>' . $procedure['short_format'] .
+													'</span></strong> ' . CHtml::link('remove', '#',
 													array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
 												$totalDuration += $procedure['default_duration']; ?>
 										<tr>
