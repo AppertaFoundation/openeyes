@@ -254,7 +254,7 @@ class TheatreController extends BaseController
 					'paediatric' => $values['session_paediatric'],
 					'anaesthetist' => $values['session_anaesthetist'],
 					'general_anaesthetic' => $values['session_general_anaesthetic'],
-					'priority' => $values['urgent'] ? 'Urgent' : 'Routine',
+					'priority' => $values['priority'],
 					'status' => $values['status'],
 					'created_user' => $values['cu_fn'].' '.$values['cu_ln'],
 					'last_modified_user' => $values['mu_fn'].' '.$values['mu_ln'],

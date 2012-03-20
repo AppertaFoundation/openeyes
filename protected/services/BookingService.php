@@ -239,12 +239,13 @@ class BookingService
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
 				->join('theatre t', 't.id = s.theatre_id')
 				->leftJoin('site i', 'i.id = t.site_id')
 				->leftJoin('booking b', 'b.session_id = s.id')
 				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
+				->leftJoin('priority pr','pr.id = o.priority_id')
 				->leftJoin('event e', 'e.id = o.event_id')
 				->leftJoin('episode ep', 'ep.id = e.episode_id')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
@@ -270,12 +271,13 @@ class BookingService
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
 					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, o.urgent, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
+					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
 				->join('theatre t', 't.id = s.theatre_id')
 				->leftJoin('site i', 'i.id = t.site_id')
 				->leftJoin('booking b', 'b.session_id = s.id')
 				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
+				->leftJoin('priority pr','pr.id = o.priority_id')
 				->leftJoin('event e', 'e.id = o.event_id')
 				->leftJoin('episode ep', 'ep.id = e.episode_id')
 				->leftJoin('patient p', 'p.id = ep.patient_id')

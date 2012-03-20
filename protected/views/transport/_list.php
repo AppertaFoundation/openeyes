@@ -74,7 +74,7 @@ if (empty($bookings)) { ?>
 		<td style="width: 43px;"><?php echo $booking['firm'] ?></td>
 		<td style="width: 53px;"><?php echo $booking['subspecialty']?></td>
 		<td style="width: 80px;"><?php echo Helper::convertMySQL2NHS($booking['decision_date']) ?></td>
-		<td><?php echo ($booking['urgent']) ? 'Urgent' : 'Routine' ?></td>
+		<td><?php echo $booking['priority']?></td>
 		<td style="width: 20px;">
 			<?php if ($booking['method'] == 'Cancelled') {?>
 				<input type="checkbox" name="cancelled[]" value="<?php echo $booking['checkid']?>" />

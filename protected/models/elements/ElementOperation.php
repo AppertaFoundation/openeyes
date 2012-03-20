@@ -60,9 +60,6 @@ class ElementOperation extends BaseEventTypeElement
 	const LETTER_GP = 3;
 	const LETTER_REMOVAL = 4;
 	
-	const URGENT = 1;
-	const ROUTINE = 0;
-
 	// these reflect an actual status, relating to actions required rather than letters sent
 	const STATUS_WHITE = 0; // no action required.  the default status.
 	const STATUS_PURPLE = 1; // no invitation letter has been sent
@@ -103,11 +100,11 @@ class ElementOperation extends BaseEventTypeElement
 			array('eye_id', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. '.Helper::NHS_DATE_EXAMPLE.')'),
-			array('eye_id, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
+			array('eye_id, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, priority_id', 'numerical', 'integerOnly' => true),
 			array('eye_id, event_id, comments, decision_date, site_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye_id, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
+			array('id, event_id, eye_id, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, priority_id, site_id', 'safe', 'on' => 'search'),
 			array('anaesthetic_type_id', 'checkAnaestheticType'),
 			array('consultant_required', 'checkConsultantRequired')
 		);
@@ -145,7 +142,8 @@ class ElementOperation extends BaseEventTypeElement
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
-			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id')
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id')
 		);
 	}
 
@@ -166,7 +164,7 @@ class ElementOperation extends BaseEventTypeElement
 			'overnight_stay' => 'Post operative stay required',
 			'decision_date' => 'Decision date',
 			'schedule_timeframe' => 'Schedule timeframe',
-			'urgent' => 'Priority',
+			'priority_id' => 'Priority',
 			'site_id' => 'Site that this will be booked for'
 		);
 	}
@@ -193,7 +191,7 @@ class ElementOperation extends BaseEventTypeElement
 		$criteria->compare('overnight_stay', $this->overnight_stay);
 		$criteria->compare('decision_date', $this->decision_date);
 		$criteria->compare('schedule_timeframe', $this->schedule_timeframe);
-		$criteria->compare('urgent', $this->urgent);
+		$criteria->compare('priority_id', $this->priority_id);
 		$criteria->compare('site_id', $this->site_id);
 		
 		return new CActiveDataProvider(get_class($this), array(
@@ -213,7 +211,7 @@ class ElementOperation extends BaseEventTypeElement
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
-		$this->urgent = self::ROUTINE;
+		$this->urgent = 1;
 	}
 
 	/**

@@ -114,7 +114,7 @@ foreach ($elements as $element) {
 <div class="col1">
 <h4>Operation priority</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->urgent ? 'Urgent' : 'Routine'?></h4>
+	<h4><?php echo $operation->priority->name?></h4>
 </div>
 </div>
 

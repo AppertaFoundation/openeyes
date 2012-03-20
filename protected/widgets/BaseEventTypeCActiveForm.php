@@ -28,5 +28,9 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$data = $element->getFormOptions($table);
 		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data));
 	}
+
+	public function radioBoolean($element,$field) {
+		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No')));
+	}
 }
 

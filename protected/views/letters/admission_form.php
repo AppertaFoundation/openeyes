@@ -87,7 +87,7 @@
 
 	<tr>
 		<th>Priority:</th>
-		<td><?php echo ($operation->urgent) ? 'Urgent' : 'Routine'; ?></td>
+		<td><?php echo $operation->priority->name?></td>
 		<th>Admission category:</th>
 		<td><?php echo ($operation->overnight_stay) ? 'an overnight stay' : 'day case'; ?></td>
 	</tr>

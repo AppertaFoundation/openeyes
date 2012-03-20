@@ -162,34 +162,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								</table>
 							</div>
 						</div>
+					</div>
 
-					</div>
-					
-					<div id="consultRequired" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('consultant_required'))?>?</div>
-						<div class="data">
-							<input id="ytElementOperation_consultant_required" type="hidden" value="<?php echo $model->consultant_required?>" name="ElementOperation[consultant_required]" />
-							<?php foreach ($model->getConsultantOptions() as $value => $name) {?>
-								<span class="group">
-								<input id="ElementOperation_consultant_required_<?php echo $value?>" value="<?php echo $value?>" <?php if ($model->consultant_required == $value) {?>checked="checked" <?php }?>type="radio" name="ElementOperation[consultant_required]" />
-								<label for="ElementOperation_consultant_required_<?php echo $value?>"><?php echo $name?></label>
-								</span>
-							<?php }?>
-						</div>
-					</div>
+					<?php echo $form->radioBoolean($model, 'consultant_required')?>
 					<?php echo $form->radioButtons($model, 'anaesthetic_type_id', 'anaesthetic_type');?>
-					<div id="overnightStay" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('overnight_stay'))?>?</div>
-						<div class="data">
-							<input id="ytElementOperation_overnight_stay" type="hidden" value="" name="ElementOperation[overnight_stay]" />
-							<?php foreach ($model->getOvernightOptions() as $value => $name) {?>
-								<span class="group">
-									<input id="ElementOperation_overnight_stay_<?php echo $value?>" value="<?php echo $value?>" <?php if ($model->overnight_stay == $value){?>checked="checked" <?php }?>type="radio" name="ElementOperation[overnight_stay]" />
-									<label for="ElementOperation_overnight_stay_<?php echo $value?>"><?php echo $name?></label>
-								</span>
-							<?php }?>
-						</div>
-					</div>
+					<?php echo $form->radioBoolean($model, 'overnight_stay')?>
 
 					<div id="site" class="eventDetail">
 						<div class="label"><?php echo $form->label(ElementOperation::model(),'site_id'); ?></div>
@@ -203,22 +180,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 							echo CHtml::dropDownList('ElementOperation[site_id]', $active_site_id, Site::model()->getList());
 							?>
 						</div>
-						
 					</div>
 
-					<div id="urgent" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('urgent'))?>:</div>
-						<div class="data">
-							<input id="ytElementOperation_urgent" type="hidden" value="<?php echo $model->urgent ?>" name="ElementOperation[urgent]" />
-							<?php foreach ($model->getPriorityOptions() as $value => $name) {?>
-								<span class="group">
-									<input id="ElementOperation_urgent_<?php echo $value?>" value="<?php echo $value?>" <?php if($model->urgent == $value) { ?>checked="checked" <?php } ?>type="radio" name="ElementOperation[urgent]" />
-									<label for="ElementOperation_urgent_<?php echo $value?>"><?php echo $name?></label>
-								</span>
-							<?php }?>
-						</div>
-					</div>
-					
+					<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
+
 					<div id="decisionDate" class="eventDetail">
 						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('decision_date'))?>:</div>
 						<div class="data">
