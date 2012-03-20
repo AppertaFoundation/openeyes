@@ -56,7 +56,7 @@
 			var procedure = $('select[name=select_procedure_id] option:selected').text();
 			if (procedure != 'Select a commonly used procedure') {
 				$.ajax({
-					'url': '//procedure/details',
+					'url': '/procedure/details',
 					'type': 'GET',
 					'data': {'name': procedure},
 					'success': function(data) {
