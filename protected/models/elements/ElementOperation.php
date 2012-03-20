@@ -113,12 +113,12 @@ class ElementOperation extends BaseEventTypeElement
 			array('eye', 'matchDiagnosisEye'),
 			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. '.Helper::NHS_DATE_EXAMPLE.')'),
-			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
+			array('eye, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent', 'numerical', 'integerOnly' => true),
 			array('eye, event_id, comments, decision_date, site_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
-			array('anaesthetic_type', 'checkAnaestheticType'),
+			array('id, event_id, eye, comments, total_duration, decision_date, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, urgent, site_id', 'safe', 'on' => 'search'),
+			array('anaesthetic_type_id', 'checkAnaestheticType'),
 			array('consultant_required', 'checkConsultantRequired')
 		);
 	}
@@ -170,7 +170,7 @@ class ElementOperation extends BaseEventTypeElement
 			'total_duration' => 'Total duration',
 			'consultant_required' => 'Consultant required',
 			'anaesthetist_required' => 'Anaesthetist required',
-			'anaesthetic_type' => 'Anaesthetic type',
+			'anaesthetic_type_id' => 'Anaesthetic type',
 			'overnight_stay' => 'Post operative stay required',
 			'decision_date' => 'Decision date',
 			'schedule_timeframe' => 'Schedule timeframe',
@@ -197,7 +197,7 @@ class ElementOperation extends BaseEventTypeElement
 		$criteria->compare('total_duration', $this->total_duration);
 		$criteria->compare('consultant_required', $this->consultant_required);
 		$criteria->compare('anaesthetist_required', $this->anaesthetist_required);
-		$criteria->compare('anaesthetic_type', $this->anaesthetic_type);
+		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
 		$criteria->compare('overnight_stay', $this->overnight_stay);
 		$criteria->compare('decision_date', $this->decision_date);
 		$criteria->compare('schedule_timeframe', $this->schedule_timeframe);
@@ -215,7 +215,7 @@ class ElementOperation extends BaseEventTypeElement
 	public function setDefaultOptions()
 	{
 		$this->consultant_required = self::CONSULTANT_NOT_REQUIRED;
-		$this->anaesthetic_type = self::ANAESTHETIC_TOPICAL;
+		$this->anaesthetic_type_id = 1;
 		$this->overnight_stay = 0;
 		$this->decision_date = date('Y-m-d', time());
 		$this->total_duration = 0;

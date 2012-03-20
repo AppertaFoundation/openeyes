@@ -52,8 +52,8 @@ Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?
 <?php
 	} ?>
 <div class="view">
-	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetic_type')); ?>:</b>
-	<?php echo CHtml::encode($data->getAnaestheticText());
+	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetic_type_id')); ?>:</b>
+	<?php echo CHtml::encode($data->anaesthetic_type->name);
 
 	if ($data->anaesthetist_required) { ?>
 	<br />

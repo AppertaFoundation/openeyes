@@ -32,12 +32,6 @@
  */
 class ElementProcedureList extends BaseEventTypeElement
 {
-	const ANAESTHETIC_TOPICAL = 0;
-	const ANAESTHETIC_LOCAL_WITH_COVER = 1;
-	const ANAESTHETIC_LOCAL = 2;
-	const ANAESTHETIC_LOCAL_WITH_SEDATION = 3;
-	const ANAESTHETIC_GENERAL = 4;
-
 	public $service;
 
 	/**
@@ -65,10 +59,10 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, surgeon_id, assistant_id, anaesthetic_type', 'safe'),
+			array('event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, surgeon_id, assistant_id, anaesthetic_type', 'safe', 'on' => 'search'),
+			array('id, event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -87,6 +81,7 @@ class ElementProcedureList extends BaseEventTypeElement
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id')
 		);
 	}
 
@@ -100,7 +95,7 @@ class ElementProcedureList extends BaseEventTypeElement
 			'event_id' => 'Event',
 			'surgeon_id' => 'Surgeon',
 			'assistant_id' => 'Assistant',
-			'anaesthetic_type' => 'Anaesthetic type'
+			'anaesthetic_type_id' => 'Anaesthetic type'
 		);
 	}
 
@@ -119,7 +114,7 @@ class ElementProcedureList extends BaseEventTypeElement
 		$criteria->compare('event_id', $this->event_id, true);
 		$criteria->compare('surgeon_id', $this->surgeon_id);
 		$criteria->compare('assistant_id', $this->assistant_id);
-		$criteria->compare('anaesthetic_type', $this->anaesthetic_type);
+		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
 		
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
@@ -131,74 +126,7 @@ class ElementProcedureList extends BaseEventTypeElement
 	 */
 	public function setDefaultOptions()
 	{
-		$this->anaesthetic_type = self::ANAESTHETIC_TOPICAL;
-	}
-
-	/**
-	 * Return list of options for anaesthetic type
-	 * @return array
-	 */
-	public function getAnaestheticOptions()
-	{
-		return array(
-			self::ANAESTHETIC_TOPICAL => 'Topical',
-			self::ANAESTHETIC_LOCAL => 'LA',
-			self::ANAESTHETIC_LOCAL_WITH_COVER => 'LAC',
-			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
-			self::ANAESTHETIC_GENERAL => 'GA'
-		);
-	}
-
-	public function getAnaestheticText()
-	{
-		switch ($this->anaesthetic_type) {
-			case self::ANAESTHETIC_TOPICAL:
-				$text = 'Topical';
-				break;
-			case self::ANAESTHETIC_LOCAL:
-				$text = 'LA';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'LAC';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'LAS';
-				break;
-			case self::ANAESTHETIC_GENERAL:
-				$text = 'GA';
-				break;
-			default:
-				$text = 'Unknown';
-				break;
-		}
-
-		return $text;
-	}
-
-	public function getAnaestheticAbbreviation()
-	{
-		switch ($this->anaesthetic_type) {
-			case self::ANAESTHETIC_TOPICAL:
-				$text = 'Topical';
-				break;
-			case self::ANAESTHETIC_LOCAL:
-				$text = 'LA';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'LAC';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'LAS';
-				break;
-			case self::ANAESTHETIC_GENERAL:
-				$text = 'GA';
-				break;
-			default:
-				$text = 'Unknown';
-				break;
-		}
-
-		return $text;
+		$this->anaesthetic_type_id = 1;
 	}
 
 	protected function beforeSave()

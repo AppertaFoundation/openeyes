@@ -187,7 +187,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 							<?php }?>
 						</div>
 					</div>
-					<?php echo BaseEventTypeCHtml::renderRadioButtons($model, 'ElementOperation', 'anaesthetic_type_id', 'anaesthetic_type');?>
+					<?php echo BaseEventTypeCHtml::renderRadioButtons($model, 'ElementOperation[anaesthetic_type_id]', 'anaesthetic_type');?>
 					<div id="overnightStay" class="eventDetail">
 						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('overnight_stay'))?>?</div>
 						<div class="data">

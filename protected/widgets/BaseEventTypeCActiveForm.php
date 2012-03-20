@@ -23,5 +23,10 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$field = CHtml::activeDropDownList($model,$attribute,$data,$htmlOptions);
 		return Yii::app()->getController()->renderPartial('//base/html_dropdownlist', array('element' => $model, 'field' => $field, 'attribute' => $attribute));
 	}
+
+	public function radioButtons($element,$field,$table) {
+		$data = $element->getFormOptions($table);
+		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data));
+	}
 }
 

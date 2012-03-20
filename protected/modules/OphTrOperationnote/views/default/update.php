@@ -7,7 +7,7 @@
 
 <div>
 	<?php
-		$form = $this->beginWidget('CActiveForm', array(
+		$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'sliding'),
@@ -15,8 +15,8 @@
 		));
 	?>
 
-		<?php $this->renderDefaultElements($this->action->id); ?>
-		<?php $this->renderOptionalElements($this->action->id); ?>
+		<?php $this->renderDefaultElements($this->action->id, $form); ?>
+		<?php $this->renderOptionalElements($this->action->id, $form); ?>
 
 		<?php $this->displayErrors($errors)?>
 

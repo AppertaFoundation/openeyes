@@ -23,8 +23,8 @@
 <div class="view">
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetic_type; ?></div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->anaesthetic_type->name ?></div>
 	</div>
 
 	<div class="col1">

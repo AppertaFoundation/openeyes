@@ -199,7 +199,7 @@ class TheatreController extends BaseController
 				$sessionDuration = ($sessionTime[0] * 60) + $sessionTime[1];
 
 				$operation->eye = $values['eye'];
-				$operation->anaesthetic_type = $values['anaesthetic_type'];
+				$operation->anaesthetic_type_id = $values['anaesthetic_type_id'];
 				$age = Helper::getAge($values['dob']);
 
 				$procedures = array('List'=>'');
@@ -671,7 +671,7 @@ class TheatreController extends BaseController
 		if (isset($_POST['operations']) && is_array($_POST['operations'])) {
 			foreach ($_POST['operations'] as $operation_id) {
 				if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
-					if ($operation->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL) {
+					if ($operation->anaesthetic_type->name == 'GA') {
 						die("1");
 					}
 				} else {
