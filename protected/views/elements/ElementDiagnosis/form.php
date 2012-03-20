@@ -46,44 +46,12 @@ if (empty($_POST)) {
  
  					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
-					<div id="editDiagnosis" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('disorder_id'))?>:</div>
-						<div class="data">
-							<?php echo CHtml::dropDownList('ElementDiagnosis[disorder_id]', '', CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)), array('empty' => 'Select a commonly used diagnosis')); ?>
-							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
-							<?php
-							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-								'name'=>'ElementDiagnosis[disorder_id]',
-								'id'=>'ElementDiagnosis_disorder_id_0',
-								'value'=>'',
-								'sourceUrl'=>array('disorder/autocomplete'),
-								'options'=>array(
-									'minLength'=>'3',
-									'select'=>"js:function(event, ui) {
-										var value = ui.item.value;
-										$('#ElementDiagnosis_disorder_id_0').val('');
-										$('#enteredDiagnosisText span').html(value);
-										//$('#editDiagnosis').hide();
-										//$('#enteredDiagnosis').show();
-										$('input[id=savedDiagnosis]').val(value);
-										$('#ElementDiagnosis_disorder_id').focus();
-										return false;
-									}",
-								),
-								'htmlOptions'=>array(
-									'style'=>'width: 300px;'
-									//height:20px;width:350px;font:10pt Arial;'
-								),
-							));
-							?>
-							<input type="hidden" name="ElementDiagnosis[disorder_id]" id="savedDiagnosis" value="<?php echo @$_POST['ElementDiagnosis']['disorder_id']?>" />
-						</div>
-						<div id="enteredDiagnosisText">
-							<div class="extraDetails">
-								<span class="bold" style="margin-right:20px;"><?php echo @$_POST['ElementDiagnosis']['disorder_id']?></span>
-							</div>
-						</div>
-					</div>
+					<?php $this->widget('application.components.DiagnosisSelection',array(
+						'field' => 'disorder_id',
+						'model' => $model,
+						'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))
+					));
+					?>
 
 					<script type="text/javascript">
 						$('input[name="ElementDiagnosis[eye]"]').click(function() {

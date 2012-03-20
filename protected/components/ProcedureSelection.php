@@ -17,19 +17,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class BaseEventTypeCActiveForm extends CActiveForm
-{
-	public function dropDownList($model,$attribute,$data,$htmlOptions=array()) {
-		$field = CHtml::activeDropDownList($model,$attribute,$data,$htmlOptions);
-		return Yii::app()->getController()->renderPartial('//base/html_dropdownlist', array('element' => $model, 'field' => $field, 'attribute' => $attribute));
-	}
+class ProcedureSelection extends CWidget {
+	public $model;
+	public $subsections;
+	public $procedures;
+	public $newRecord;
+	public $selected_procedures;
 
-	public function radioButtons($element,$field,$table) {
-		$data = $element->getFormOptions($table);
-		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data));
-	}
-
-	public function radioBoolean($element,$field) {
-		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No')));
+	public function run() {
+		$this->render('procedureSelection');
 	}
 }
+
+?>
