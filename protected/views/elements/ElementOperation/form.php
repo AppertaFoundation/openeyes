@@ -187,17 +187,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 							<?php }?>
 						</div>
 					</div>
-					<div id="anaestheticType" class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('anaesthetic_type'))?>:</div>
-						<div class="data">
-							<?php foreach ($model->getAnaestheticOptions() as $id => $value) {?>
-								<span class="group">
-								<input id="ElementOperation_anaesthetic_type_<?php echo $id?>" <?php if ($model->anaesthetic_type == $id){?>checked="checked" <?php }?>value="<?php echo $id?>" type="radio" name="ElementOperation[anaesthetic_type]" />
-								<label for="ElementOperation_anaesthetic_type_<?php echo $id?>"><?php echo $value?></label>
-								</span>
-							<?php }?>
-						</div>
-					</div>
+					<?php echo BaseEventTypeCHtml::renderRadioButtons($model, 'ElementOperation', 'anaesthetic_type_id', 'anaesthetic_type');?>
 					<div id="overnightStay" class="eventDetail">
 						<div class="label"><?php echo CHtml::encode($model->getAttributeLabel('overnight_stay'))?>?</div>
 						<div class="data">

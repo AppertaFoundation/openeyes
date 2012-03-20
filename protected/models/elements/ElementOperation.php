@@ -38,7 +38,7 @@
  * @property Event $event
  * @property Procedure[] $procedures
  */
-class ElementOperation extends BaseElement
+class ElementOperation extends BaseEventTypeElement
 {
 	const EYE_LEFT = 0;
 	const EYE_RIGHT = 1;

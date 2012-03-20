@@ -20,6 +20,6 @@
 
 <h4>Procedure list</h4>
 
-<?php echo BaseEventTypeCHtml::renderRadioButtons($element, 'ElementProcedureList', 'anaesthetic_type');?>
+<?php echo BaseEventTypeCHtml::renderRadioButtons($element, 'ElementProcedureList[anaesthetic_type_id]', 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo BaseEventTypeCHtml::renderDropDownList($element, 'ElementProcedureList[surgeon_id]', $element->surgeon_id, BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
 <?php echo BaseEventTypeCHtml::renderDropDownList($element, 'ElementProcedureList[assistant_id]', $element->assistant_id, BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
