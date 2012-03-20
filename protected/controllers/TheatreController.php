@@ -71,7 +71,7 @@ class TheatreController extends BaseController
 
 				if (!isset($_POST['firm-id'])) {
 					$_POST['firm-id'] = $theatre_searchoptions['firm-id'] = Yii::app()->session['selected_firm_id'];
-					$_POST['specialty-id'] = $theatre_searchoptions['specialty-id'] = $firm->serviceSpecialtyAssignment->specialty_id;
+					$_POST['subspecialty-id'] = $theatre_searchoptions['subspecialty-id'] = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 				}
 
 				Yii::app()->session['theatre_searchoptions'] = $theatre_searchoptions;

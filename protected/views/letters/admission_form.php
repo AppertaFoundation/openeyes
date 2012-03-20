@@ -142,7 +142,7 @@
 	
 	<tr>
 		<th>Anaesthesia:</th>
-		<td><?php echo $operation->getAnaestheticText() ?></td>
+		<td><?php echo $operation->anaesthetic_type->name?></td>
 		<?php if ($booking) { ?>
 		<th>Proposed admission date:</th>
 		<td><?php echo $booking->session->NHSDate('date'); ?></td>

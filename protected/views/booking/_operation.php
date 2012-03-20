@@ -40,7 +40,7 @@
 </div>
 <div class="view">
 	<strong>Anaesthetic required:</strong>
-	<?php echo CHtml::encode($operation->getAnaestheticText()); ?>
+	<?php echo CHtml::encode($operation->anaesthetic_type->name)?>
 </div>
 <div class="view">
 	<strong>Overnight stay required?</strong>

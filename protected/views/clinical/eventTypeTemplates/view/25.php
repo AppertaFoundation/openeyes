@@ -86,7 +86,7 @@ foreach ($elements as $element) {
 <div class="col1">
 <h4>Anaesthetic</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->getAnaestheticText()?></h4>
+	<h4><?php echo $operation->anaesthetic_type->name?></h4>
 </div>
 </div>
 

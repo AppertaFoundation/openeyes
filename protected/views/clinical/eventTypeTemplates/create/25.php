@@ -19,7 +19,7 @@
 
 $this->header();
 
-$form = $this->beginWidget('CActiveForm', array(
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'id'=>'clinical-create',
 	'enableAjaxValidation'=>false,
 	'htmlOptions' => array('class'=>'sliding'),

@@ -169,7 +169,7 @@ class Session extends BaseActiveRecord {
 	
 	public function getFirmName() {
 		if($this->firm) {
-			return $this->firm->name . ' (' . $this->firm->serviceSpecialtyAssignment->specialty->name . ')';
+			return $this->firm->name . ' (' . $this->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
 		} else {
 			return 'Emergency List';
 		}

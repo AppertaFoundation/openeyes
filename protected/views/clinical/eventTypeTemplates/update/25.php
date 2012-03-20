@@ -21,7 +21,7 @@ $this->header(true,array('event'=>$event,'editing'=>true));
 
 Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/js/phrase.js');
 
-$form = $this->beginWidget('CActiveForm', array(
+$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'id' => 'clinical-update',
 	'enableAjaxValidation' => true,
 	'htmlOptions' => array('class' => 'sliding')

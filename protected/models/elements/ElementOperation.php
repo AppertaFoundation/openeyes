@@ -28,7 +28,7 @@
  * @property integer $total_duration
  * @property integer $consultant_required
  * @property integer $anaesthetist_required
- * @property integer $anaesthetic_type
+ * @property integer $anaesthetic_type_id
  * @property integer $overnight_stay
  * @property data $decision_date
  * @property integer $schedule_timeframe
@@ -46,12 +46,6 @@ class ElementOperation extends BaseEventTypeElement
 
 	const CONSULTANT_NOT_REQUIRED = 0;
 	const CONSULTANT_REQUIRED = 1;
-
-	const ANAESTHETIC_TOPICAL = 0;
-	const ANAESTHETIC_LOCAL_WITH_COVER = 1;
-	const ANAESTHETIC_LOCAL = 2;
-	const ANAESTHETIC_LOCAL_WITH_SEDATION = 3;
-	const ANAESTHETIC_GENERAL = 4;
 
 	const SCHEDULE_IMMEDIATELY = 0;
 	const SCHEDULE_AFTER_1MO = 1;
@@ -154,6 +148,7 @@ class ElementOperation extends BaseEventTypeElement
 			'date_letter_sent' => array(self::HAS_ONE, 'DateLetterSent', 'element_operation_id', 'order' => 'date_letter_sent.id DESC'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id')
 		);
 	}
 
@@ -309,73 +304,6 @@ class ElementOperation extends BaseEventTypeElement
 	}
 
 	/**
-	 * Return list of options for anaesthetic type
-	 * @return array
-	 */
-	public function getAnaestheticOptions()
-	{
-		return array(
-			self::ANAESTHETIC_TOPICAL => 'Topical',
-			self::ANAESTHETIC_LOCAL => 'LA',
-			self::ANAESTHETIC_LOCAL_WITH_COVER => 'LAC',
-			self::ANAESTHETIC_LOCAL_WITH_SEDATION => 'LAS',
-			self::ANAESTHETIC_GENERAL => 'GA'
-		);
-	}
-
-	public function getAnaestheticText()
-	{
-		switch ($this->anaesthetic_type) {
-			case self::ANAESTHETIC_TOPICAL:
-				$text = 'Topical';
-				break;
-			case self::ANAESTHETIC_LOCAL:
-				$text = 'LA';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'LAC';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'LAS';
-				break;
-			case self::ANAESTHETIC_GENERAL:
-				$text = 'GA';
-				break;
-			default:
-				$text = 'Unknown';
-				break;
-		}
-
-		return $text;
-	}
-
-	public function getAnaestheticAbbreviation()
-	{
-		switch ($this->anaesthetic_type) {
-			case self::ANAESTHETIC_TOPICAL:
-				$text = 'Topical';
-				break;
-			case self::ANAESTHETIC_LOCAL:
-				$text = 'LA';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_COVER:
-				$text = 'LAC';
-				break;
-			case self::ANAESTHETIC_LOCAL_WITH_SEDATION:
-				$text = 'LAS';
-				break;
-			case self::ANAESTHETIC_GENERAL:
-				$text = 'GA';
-				break;
-			default:
-				$text = 'Unknown';
-				break;
-		}
-
-		return $text;
-	}
-
-	/**
 	 * Return list of options for schedule
 	 * @return array
 	 */
@@ -453,10 +381,9 @@ class ElementOperation extends BaseEventTypeElement
 	protected function beforeSave()
 	{
 		$anaesthetistRequired = array(
-			self::ANAESTHETIC_LOCAL_WITH_COVER, self::ANAESTHETIC_LOCAL_WITH_SEDATION,
-			self::ANAESTHETIC_GENERAL
+			'LAC','LAS','GA'
 		);
-		$this->anaesthetist_required = in_array($this->anaesthetic_type, $anaesthetistRequired);
+		$this->anaesthetist_required = in_array($this->anaesthetic_type->name, $anaesthetistRequired);
 
 		if (!empty($_POST['schedule_timeframe2'])) {
 			$this->schedule_timeframe = $_POST['schedule_timeframe2'];
@@ -648,7 +575,7 @@ class ElementOperation extends BaseEventTypeElement
 				$bookable = false;
 				$session['bookable_reason'] = 'paediatric';
 			}
-			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL && !$session['general_anaesthetic']) {
+			if($this->anaesthetic_type->name == 'GA' && !$session['general_anaesthetic']) {
 				$bookable = false;
 				$session['bookable_reason'] = 'general_anaesthetic';
 			}
@@ -1403,10 +1330,10 @@ class ElementOperation extends BaseEventTypeElement
 		if ($booking = $this->booking) {
 			$session = $booking->session;
 
-			if (!$session->anaesthetist && !in_array($this->anaesthetic_type, array(ElementOperation::ANAESTHETIC_TOPICAL, ElementOperation::ANAESTHETIC_LOCAL))) {
-				$this->addError('anaesthetic_type', 'Unable to change anaesthetic type to '.$this->getAnaestheticText().' - this operation is booked into a session without an anaesthetist.<br/>You will need to first re-schedule the operation.');
-			} else if (!$session->general_anaesthetic && $this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL) {
-				$this->addError('anaesthetic_type', 'Unable to change anaesthetic type to '.$this->getAnaestheticText().' - this operation is booked into a session without general anaesthetic.<br/>You will need to first re-schedule the operation.');
+			if (!$session->anaesthetist && !in_array($this->anaesthetic_type->name, array('Topical','LA'))) {
+				$this->addError('anaesthetic_type_id', 'Unable to change anaesthetic type to '.$this->anaesthetic_type->name.' - this operation is booked into a session without an anaesthetist.<br/>You will need to first re-schedule the operation.');
+			} else if (!$session->general_anaesthetic && $this->anaesthetic_type->name == 'GA') {
+				$this->addError('anaesthetic_type_id', 'Unable to change anaesthetic type to '.$this->anaesthetic_type->name.' - this operation is booked into a session without general anaesthetic.<br/>You will need to first re-schedule the operation.');
 			}
 		}
 	}

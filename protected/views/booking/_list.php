@@ -59,7 +59,7 @@ if (!$reschedule) {
 			<tr>
 				<td><?php echo $counter?>. <?php echo $patient->last_name?>, <?php echo $patient->first_name?></td>
 				<td><?php echo $procedureList; ?></td>
-				<td><?php echo $thisOperation->getAnaestheticText()?></td>
+				<td><?php echo $thisOperation->anaesthetic_type->name?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>
 				<td><?php echo $booking->admission_time ?></td>
 				<td><?php echo $thisOperation->comments?></td>
