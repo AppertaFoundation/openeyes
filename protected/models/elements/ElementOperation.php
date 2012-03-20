@@ -648,8 +648,11 @@ class ElementOperation extends BaseEventTypeElement
 				$bookable = false;
 				$session['bookable_reason'] = 'paediatric';
 			}
+			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL && !$session['general_anaesthetic']) {
+				$bookable = false;
+				$session['bookable_reason'] = 'general_anaesthetic';
+			}
 			$session['bookable'] = $bookable;
-			
 			$results[$name][] = $session;
 			if (!in_array($name, $names)) {
 				$names[] = $name;
@@ -1079,7 +1082,7 @@ class ElementOperation extends BaseEventTypeElement
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
-				$changeContact = 'a nurse on 020 7566 2596';
+				$changeContact = 'a nurse on 020 7566 2595';
 			} else {
 				// St. George's
 				$changeContact = 'Naeela Butt on 020 8725 0060';
@@ -1175,7 +1178,7 @@ class ElementOperation extends BaseEventTypeElement
 						break;
 					case 11: // Paediatrics
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						$contact['health'] = '0207 566 2595 and ask to speak to a nurse';
 						break;
 					case 13: // Refractive Laser
 						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
@@ -1183,7 +1186,7 @@ class ElementOperation extends BaseEventTypeElement
 						break;
 					case 14: // Strabismus
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						$contact['health'] = '0207 566 2595 and ask to speak to a nurse';
 						break;
 					case 8: // Vitreo Retinal
 						$contact['refuse'] .= '020 7566 2004';

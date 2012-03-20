@@ -34,6 +34,7 @@ $config = array(
 		'application.components.summaryWidgets.*',
 		'application.services.*',
 		'application.modules.*',
+		'application.commands.*',
 		'application.commands.shell.*',
 		'application.behaviors.*',
 		'application.controllers.*',
@@ -163,7 +164,8 @@ $config = array(
 		'enabled_modules' => array(
 			'OphTrOperation', 
 			'OphTrOperationnote'
-		)
+		),
+		'default_site_code' => '',
 	)
 );
 

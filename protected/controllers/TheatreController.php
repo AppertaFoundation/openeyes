@@ -57,7 +57,9 @@ class TheatreController extends BaseController
 
 		if (empty($_POST)) {
 			// look for values from the session
-			if (Yii::app()->session['theatre_searchoptions']) {
+			$theatre_searchoptions = Yii::app()->session['theatre_searchoptions'];
+
+			if (!empty($theatre_searchoptions)) {
 				foreach (Yii::app()->session['theatre_searchoptions'] as $key => $value) {
 					$_POST[$key] = $value;
 				}
@@ -67,8 +69,15 @@ class TheatreController extends BaseController
 					$theatres = $this->getFilteredTheatres($_POST['site-id']);
 				}
 
+				if (!isset($_POST['firm-id'])) {
+					$_POST['firm-id'] = $theatre_searchoptions['firm-id'] = Yii::app()->session['selected_firm_id'];
+					$_POST['specialty-id'] = $theatre_searchoptions['specialty-id'] = $firm->serviceSpecialtyAssignment->specialty_id;
+				}
+
+				Yii::app()->session['theatre_searchoptions'] = $theatre_searchoptions;
+
 			} else {
-				$_POST = array(
+				$_POST = Yii::app()->session['theatre_searchoptions'] = array(
 					'firm-id' => Yii::app()->session['selected_firm_id'],
 					'subspecialty-id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
 				);
@@ -219,7 +228,7 @@ class TheatreController extends BaseController
 					'subspecialty_name' => @$values['subspecialty_name'],
 					'startTime' => $values['start_time'],
 					'endTime' => $values['end_time'],
-					'sequenceId' => $values['sequence_id'],
+					'sequenceId' => $values['sequence_id'], // TODO: References to sequences need to be removed when possible
 					'sessionId' => $values['session_id'],
 					'sessionDuration' => $sessionDuration,
 					'operationDuration' => $values['operation_duration'],
@@ -297,9 +306,8 @@ class TheatreController extends BaseController
 			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as subspecialty')
 			->from('booking b')
 			->join('session s','b.session_id = s.id')
-			->join('sequence se','s.sequence_id = se.id')
-			->join('theatre t','se.theatre_id = t.id')
-			->join('sequence_firm_assignment sfa','sfa.sequence_id = se.id')
+			->join('theatre t','s.theatre_id = t.id')
+			->join('session_firm_assignment sfa','sfa.session_id = s.id')
 			->join('firm f','f.id = sfa.firm_id')
 			->join('service_subspecialty_assignment ssa','ssa.id = f.service_subspecialty_assignment_id')
 			->join('subspecialty sp','sp.id = ssa.subspecialty_id')
@@ -680,5 +688,17 @@ class TheatreController extends BaseController
 			$so[$key] = $value;
 		}
 		Yii::app()->session['theatre_searchoptions'] = $so;
+	}
+
+	public function actionGetSessionTimestamps() {
+		if (isset($_POST['session_id'])) {
+			if ($session = Session::model()->findByPk($_POST['session_id'])) {
+				$ex = explode(' ',$session->last_modified_date);
+				$last_modified_date = $ex[0];
+				$last_modified_time = $ex[1];
+				$user = User::model()->findByPk($session->last_modified_user_id);
+				echo "Modified on ".Helper::convertMySQL2NHS($last_modified_date)." at ".$last_modified_time." by ".$user->first_name." ".$user->last_name;
+			}
+		}
 	}
 }

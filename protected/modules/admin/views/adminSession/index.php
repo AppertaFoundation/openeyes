@@ -22,7 +22,7 @@ $this->breadcrumbs=array(
 );
 
 $this->menu=array(
-	array('label'=>'Create Sessions', 'url'=>array('massCreate')),
+	array('label'=>'Generate Sessions', 'url'=>array('massCreate')),
 	array('label'=>'Manage Sessions', 'url'=>array('admin')),
 );
 ?>

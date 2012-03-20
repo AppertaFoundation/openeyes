@@ -306,24 +306,32 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'data': data,
 				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
 				'success': function(data) {
-					$('#updated-flash').show();
+					$.ajax({
+						'type': 'POST',
+						'data': 'session_id='+selected_tbody_id,
+						'url': '<?php echo Yii::app()->createUrl('theatre/getSessionTimestamps');?>',
+						'success': function(data2) {
+							$('#updated-flash').show();
 
-					// Apply changes to the read-only values in the dom
-					$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.session input[name^="admitTime_"]').map(function() {
-						var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
-						$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
+							// Apply changes to the read-only values in the dom
+							$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.session input[name^="admitTime_"]').map(function() {
+								var m = $(this).attr('id').match(/^admitTime_([0-9]+)_([0-9]+)$/);
+								$('#admitTime_ro_'+m[1]+'_'+m[2]).html($(this).val());
+							});
+
+							$('#comments_ro_'+selected_tbody_id).html($('#comments'+selected_tbody_id).val());
+							$('#comments_ro_'+selected_tbody_id).attr('title',data2);
+
+							view_mode();
+							load_table_states();
+							<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
+								load_purple_states();
+							<?php }?>
+							$('div[id^="buttons_"]').hide();
+							$('#loader2_'+selected_tbody_id).hide();
+							enableButtons();
+						}
 					});
-
-					$('#comments_ro_'+selected_tbody_id).html($('#comments'+selected_tbody_id).val());
-
-					view_mode();
-					load_table_states();
-					<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
-						load_purple_states();
-					<?php }?>
-					$('div[id^="buttons_"]').hide();
-					$('#loader2_'+selected_tbody_id).hide();
-					enableButtons();
 				}
 			});
 		}
@@ -554,9 +562,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$('#date-start').change(function() {
 		setFilter({'date-start':$(this).val()});
+		$('input[type="radio"]').attr('checked','');
+		$('#date-filter_3').attr('checked','checked');
 	});
 
 	$('#date-end').change(function() {
 		setFilter({'date-end':$(this).val()});
+		$('input[type="radio"]').attr('checked','');
+		$('#date-filter_3').attr('checked','checked');
 	});
 </script>

@@ -131,8 +131,7 @@ class SiteController extends BaseController
 		}
 
 		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
+		if(isset($_POST['LoginForm'])) {
 			$model->attributes=$_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login()) {
@@ -142,11 +141,13 @@ class SiteController extends BaseController
 				$this->redirect(Yii::app()->user->returnUrl);
 			}
 		} else {
-			// Get the site id currently stored in the cookie, if any
-			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : '';
+			// Get the site id currently stored in the cookie, or the default site id
+			$default_site = Site::model()->getDefaultSite();
+			$default_site_id = ($default_site) ? $default_site->id : null;
+			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : $default_site_id;
 		}
 
-		$sites = Site::model()->findAll();
+		$sites = Site::model()->findAll(array('order' => 'short_name'));
 
 		// display the login form
 		$this->render('login',
@@ -194,6 +195,12 @@ class SiteController extends BaseController
 			if ($firms[$firmId]) {
 				$session['selected_firm_id'] = $firmId;
 			}
+
+			$so = Yii::app()->session['theatre_searchoptions'];
+			if (isset($so['firm-id'])) unset($so['firm-id']);
+			if (isset($so['specialty-id'])) unset($so['specialty-id']);
+			if (isset($so['site-id'])) unset($so['site-id']);
+			Yii::app()->session['theatre_searchoptions'] = $so;
 		}
 
 		parent::storeData();

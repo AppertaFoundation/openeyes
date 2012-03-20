@@ -131,6 +131,17 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
+	public function getDefaultSite() {
+		$site = null;
+		if(Yii::app()->params['default_site_code']) {
+			$site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
+		}
+		if(!$site) {
+			$site = $this->find();
+		}
+		return $site;
+	}
+	
 	public function getLetterHtml() {
 		$address = array();
 		foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {

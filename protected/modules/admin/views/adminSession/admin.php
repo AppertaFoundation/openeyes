@@ -24,7 +24,7 @@ $this->breadcrumbs=array(
 
 $this->menu=array(
 	array('label'=>'List Session', 'url'=>array('index')),
-	array('label'=>'Create Sessions', 'url'=>array('massCreate')),
+	array('label'=>'Generate Sessions', 'url'=>array('massCreate')),
 );
 
 Yii::app()->clientScript->registerScript('search', "
@@ -56,35 +56,41 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 </div><!-- search-form -->
 
 <?php $this->widget('zii.widgets.grid.CGridView', array(
-	'id'=>'session-grid',
-	'dataProvider'=>$model->search(),
-	'filter'=>$model,
-	'columns'=>array(
+	'id' => 'session-grid',
+	'dataProvider' => $model->search(),
+	'filter' => $model,
+	'columns' => array(
 		'sequence_id',
 		array(
 			'header'=>'Firm',
 			'value'=>'$data->getFirmName()',
+			// TODO: This filter should probably be limited to firms actually used by sessions
 			'filter'=>CHtml::dropDownList('Firm[id]', $model->firm_id, Firm::model()->getListWithSpecialties(), array('empty' => '')),
 		),
 		array(
-			'header'=>'Site/Theatre',
-			'value'=>'$data->sequence->theatre->site->name . "-" . $data->sequence->theatre->name',
+			'header'=>'Theatre (Site)',
+			'value'=>'$data->TheatreName',
 			'filter'=>CHtml::dropDownList('Site[id]', $model->site_id, Site::model()->getList(), array('empty' => '')),
 		),
 		array(
-			'header'=>'Day',
-			'name'=>'weekday',
-			'value'=>'date("l ", strtotime($data->sequence->start_date))',
-			'filter'=>CHtml::dropDownList('Session[weekday]', $model->weekday, Sequence::model()->getWeekdayOptions(), array('empty' => '')),
+			'header' => 'Day',
+			'name' => 'weekday',
+			'value' => 'date("l ", strtotime($data->date))',
+			'filter' => CHtml::dropDownList('Session[weekday]', $model->weekday, Sequence::model()->getWeekdayOptions(), array('empty' => '')),
 		),
 		'date',
 		array(
 			'name'=>'start_time',
-			'value'=>'substr($data->start_time, 0, 5)',
+			'value'=>'date(\'H:i\',strtotime($data->start_time))',
 		),
 		array(
 			'name'=>'end_time',
-			'value'=>'substr($data->end_time, 0, 5)',
+			'value'=>'date(\'H:i\',strtotime($data->end_time))',
+		),
+		array(
+			'name' => 'status',
+			'value' => '$data->StatusText',
+			'filter' => CHtml::dropDownList('Session[status]', $model->status, $model->getStatusOptions(), array('empty' => '')),
 		),
 		array(
 			'class'=>'CButtonColumn',
