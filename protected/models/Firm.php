@@ -198,6 +198,7 @@ class Firm extends BaseActiveRecord
 			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')
 			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->join('subspecialty s','ssa.subspecialty_id = s.id')
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
