@@ -10,7 +10,7 @@ class m120319_151512_opnote_anaesthetic_types extends CDbMigration
 		$las = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LAS'))->queryRow();
 		$ga = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'GA'))->queryRow();
 
-		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name',array(':name'=>'procedurelist'))->queryRow();
+		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name',array(':name'=>'Procedure list'))->queryRow();
 
 		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$to['id'],'display_order'=>1));
 		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$la['id'],'display_order'=>2));
