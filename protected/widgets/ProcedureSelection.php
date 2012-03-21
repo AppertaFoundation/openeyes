@@ -23,9 +23,10 @@ class ProcedureSelection extends CWidget {
 	public $procedures;
 	public $newRecord;
 	public $selected_procedures;
+	public $form;
 
 	public function run() {
-		$this->render('procedureSelection');
+		$this->render('procedureSelection',get_object_vars($this));
 	}
 }
 

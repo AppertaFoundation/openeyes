@@ -23,11 +23,11 @@ class DiagnosisSelection extends CWidget {
 	public $field;
 	public $options;
 	public $class;
+	public $form;
 
 	public function run() {
 		$this->class = get_class($this->model);
-		$this->render('diagnosisSelection');
+		$this->render('diagnosisSelection',get_object_vars($this));
 	}
 }
-
 ?>
