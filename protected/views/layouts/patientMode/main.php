@@ -83,6 +83,7 @@
 
 				<div class="patientReminder">
 					<?php echo $this->patient->getDisplayName()?>
+					<?php if($this->patient->isDeceased()) { ?>(Deceased)<?php } ?>
 					<span class="number">Hospital number: <?php echo $this->patient->hos_num?></span>
 				</div>
 			</div> <!-- #patientID -->

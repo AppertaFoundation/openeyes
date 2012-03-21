@@ -41,7 +41,8 @@ class ElementNSCGradeTest extends CDbTestCase
 		$this->user = $this->users('user1');
 		$this->firm = $this->firms('firm1');
 		$this->patient = $this->patients('patient1');
-		$this->element = new ElementNSCGrade($this->user->id, $this->firm->id, $this->patient->id);
+		$this->element = new ElementNSCGrade();
+		$this->element->setBaseOptions($this->firm->id, $this->patient->id, $this->user->id);
 	}
 
 	public function dataProvider_Search()
@@ -87,7 +88,7 @@ class ElementNSCGradeTest extends CDbTestCase
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
-			'event_id' => '1',
+			'event_id' => '2',
 			'retinopathy_grade_id' => $this->nscGrades['retinopathy']['id'],
 			'maculopathy_grade_id' => $this->nscGrades['maculopathy']['id']
 		));

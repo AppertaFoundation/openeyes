@@ -59,7 +59,7 @@ class CancelledOperation extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('element_operation_id, cancelled_reason_id', 'required'),
-			array('element_operation_id, cancelled_reason_id', 'length', 'max'=>10),
+			array('element_operation_id, cancelled_reason_id, created_user_id', 'length', 'max'=>10),
 			array('cancelled_date', 'safe'),
 			array('cancellation_comment', 'length', 'max' => 200),
 			// The following rule is used by search().
