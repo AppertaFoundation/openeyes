@@ -22,4 +22,21 @@
 
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName')); ?>
-<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->assistants, 'id', 'FullName')); ?>
+<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->surgeons, 'id', 'FullName')); ?>
+
+<?php
+$subsections = array();
+$procedures = array();
+$selected_procedures = array();
+?>
+
+<?php
+$form->widget('application.widgets.ProcedureSelection',array(
+	'model' => $element,
+	'subsections' => $subsections,
+	'procedures' => $procedures,
+	'newRecord' => true,
+	'selected_procedures' => $selected_procedures,
+	'durations' => false
+));
+?>

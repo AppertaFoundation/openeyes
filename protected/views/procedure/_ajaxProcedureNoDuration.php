@@ -17,54 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * This is the model class for table "eye".
- *
- * The followings are the available columns in table 'eye':
- * @property string $id
- * @property string $name
- * @property string $ShortName
- */
-class Eye extends BaseActiveRecord
-{
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
-
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'eye';
-	}
-
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-		);
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		return array();
-	}
-	
-	public function getShortName() {
-		return substr($this->name, 0, 1);
-	}
-	
-}
+$link = CHtml::link('remove', '#', array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
+$display = "<strong><span>".$data['term'] . '</span> - <span>' . $data['short_format'] . '</span></strong> ' . $link; ?>
+<tr>
+	<?php echo CHtml::hiddenField('Procedures[]', $data['id']); ?>
+	<td><?php echo $display; ?></td>
+</tr>

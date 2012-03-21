@@ -24,5 +24,6 @@ class ProcedureSelection extends BaseCWidget {
 	public $newRecord;
 	public $selected_procedures;
 	public $form;
+	public $durations;
 }
 ?>

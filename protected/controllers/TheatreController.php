@@ -198,8 +198,8 @@ class TheatreController extends BaseController
 				$sessionTime = explode(':', $values['session_duration']);
 				$sessionDuration = ($sessionTime[0] * 60) + $sessionTime[1];
 
-				$operation->eye = $values['eye'];
-				$operation->anaesthetic_type_id = $values['anaesthetic_type_id'];
+				$eye = Eye::model()->findByPk($values['eye_id']);
+				$anaesthetic_type = AnaestheticType::model()->findByPk($values['anaesthetic_type_id']);
 				$age = Helper::getAge($values['dob']);
 
 				$procedures = array('List'=>'');
@@ -237,8 +237,8 @@ class TheatreController extends BaseController
 					'overnightStay' => $values['overnight_stay'],
 					'admissionTime' => $values['admission_time'],
 					'timeAvailable' => $sessionDuration,
-					'eye' => substr($operation->eye->name, 0, 1),
-					'anaesthetic' => $operation->getAnaestheticAbbreviation(),
+					'eye' => ($eye) ? $eye->ShortName : '',
+					'anaesthetic' => ($anaesthetic_type) ? $anaesthetic_type->name : '',
 					'procedures' => $procedures['List'],
 					'patientHosNum' => $values['hos_num'],
 					'patientId' => $values['patientId'],

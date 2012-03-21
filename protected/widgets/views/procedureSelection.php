@@ -47,7 +47,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'minLength'=>'2',
 								'select'=>"js:function(event, ui) {
 												$.ajax({
-																'url': '" . Yii::app()->createUrl('procedure/details') . "',
+																'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."',
 																'type': 'GET',
 																'data': {'name': ui.item.value},
 																'success': function(data) {
@@ -85,7 +85,9 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 									<thead>
 										<tr>
 											<th>Procedures Added</th>
-											<th>Duration</th>
+											<?php if ($durations) {?>
+												<th>Duration</th>
+											<?php }?>
 										</tr>
 									</thead>
 									<tbody>
@@ -104,16 +106,18 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 										</tr>
 									<?php } } ?>
 									</tbody>
-									<tfoot style="border-top:2px solid #CCC;">
-										<tr>
-											<td class="topPadded">Calculated Total Duration:</td>
-											<td id="projected_duration"><?php echo $totalDuration; ?></td>
-										</tr>
-										<tr>
-											<td>Estimated Total Duration:</td>
-											<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
-										</tr>
-									</tfoot>
+									<?php if ($durations) {?>
+										<tfoot style="border-top:2px solid #CCC;">
+											<tr>
+												<td class="topPadded">Calculated Total Duration:</td>
+												<td id="projected_duration"><?php echo $totalDuration; ?></td>
+											</tr>
+											<tr>
+												<td>Estimated Total Duration:</td>
+												<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
+											</tr>
+										</tfoot>
+									<?php }?>
 								</table>
 							</div>
 						</div>
