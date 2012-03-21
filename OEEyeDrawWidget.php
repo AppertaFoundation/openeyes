@@ -120,7 +120,9 @@ class OEEyeDrawWidget extends CWidget
 	 * URL of the widget directory
 	 * @var string
 	 */
-	private $baseWidgetUrl;
+	private $jsPath;
+	private $cssPath;
+	private $imgPath;
 
 	/**
 	 * Array of EyeDraw script files required
@@ -183,7 +185,9 @@ class OEEyeDrawWidget extends CWidget
 <div class="EyeDrawWidget">';
 		
         // Set values of derived properties
-        $this->baseWidgetUrl = Yii::app()->getBaseUrl().'/protected/extensions/widgets/eyeDraw';
+				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.widgets.eyeDraw.css'));
+				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.widgets.eyeDraw.js'));
+				$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.widgets.eyeDraw.graphics')).'/';
         $this->idSuffix = $this->side.$this->identifier;
         $this->drawingName = 'ed_drawing_'.$this->mode.'_'.$this->idSuffix;
         $this->canvasId = 'ed_canvas_'.$this->mode.'_'.$this->idSuffix;
@@ -243,16 +247,16 @@ class OEEyeDrawWidget extends CWidget
 	{
         // Get client script object
 		$cs = Yii::app()->getClientScript();
-        
+ 
         // Register the EyeDraw mandatory scripts
-		$cs->registerScriptFile($this->baseWidgetUrl.'/OEEyeDraw.js', CClientScript::POS_HEAD);
-		$cs->registerScriptFile($this->baseWidgetUrl.'/ED_Drawing.js', CClientScript::POS_HEAD);
-		$cs->registerScriptFile($this->baseWidgetUrl.'/ED_General.js', CClientScript::POS_HEAD);
+		$cs->registerScriptFile($this->jsPath.'/OEEyeDraw.js', CClientScript::POS_HEAD);
+		$cs->registerScriptFile($this->jsPath.'/ED_Drawing.js', CClientScript::POS_HEAD);
+		$cs->registerScriptFile($this->jsPath.'/ED_General.js', CClientScript::POS_HEAD);
         
         // Register the specified optional sub-specialty scripts
         for ($i = 0; $i < count($this->scriptArray); $i++)
         {
-            $cs->registerScriptFile($this->baseWidgetUrl.'/ED_'.$this->scriptArray[$i].'.js', CClientScript::POS_HEAD);
+            $cs->registerScriptFile($this->jsPath.'/ED_'.$this->scriptArray[$i].'.js', CClientScript::POS_HEAD);
         }
 		
         // Make drawing var global so can be accessed by tool bar
@@ -265,7 +269,7 @@ class OEEyeDrawWidget extends CWidget
             'eye'=>$this->eye,
             'idSuffix'=>$this->idSuffix,
             'isEditable'=>$this->isEditable,
-            'graphicsPath'=>$this->baseWidgetUrl.'/graphics/',
+            'graphicsPath'=>$this->imgPath,
             'inputId'=>$this->inputId,
             'onLoadedCommandArray'=>$this->onLoadedCommandArray,
 		);
@@ -280,7 +284,7 @@ class OEEyeDrawWidget extends CWidget
 	 */	
     protected function registerCss()
     {
-        $cssFile = $this->baseWidgetUrl.'/OEEyeDraw.css';
+        $cssFile = $this->cssPath.'/OEEyeDraw.css';
         Yii::app()->getClientScript()->registerCssFile($cssFile);        
     }
     
@@ -361,7 +365,7 @@ class OEEyeDrawWidget extends CWidget
         echo '
 		<button class="ed_img_button" '.$disabled.' id="'.$_action.$this->idSuffix.'" title="'.$_title.'" onclick="'.$this->drawingName.'.'.$_action.'(); return false;">';
         echo '
-			<img src="'.$this->baseWidgetUrl.'/graphics/'.$_action.'.gif"/>';
+			<img src="'.$this->imgPath.$_action.'.gif"/>';
         echo '
 		</button>';
     }
@@ -378,7 +382,7 @@ class OEEyeDrawWidget extends CWidget
         echo '
 		<button class="ed_img_button" id="'.$_className.$this->idSuffix.'" title="'.$_title.'" onclick="'.$this->drawingName.'.addDoodle(\''.$_className.'\'); return false;">';
         echo '
-			<img src="'.$this->baseWidgetUrl.'/graphics/'.$_className.'.gif"/>';
+			<img src="'.$this->imgPath.$_className.'.gif"/>';
         echo '
 		</button>';
     }   
