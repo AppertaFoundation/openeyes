@@ -1,6 +1,6 @@
 <?php echo "<?php\n"; ?>
 
-class DefaultController extends Controller
+class DefaultController extends BaseEventTypeController
 {
 	public function actionIndex()
 	{
