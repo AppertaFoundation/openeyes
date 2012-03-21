@@ -123,7 +123,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 	public static function getList($firm)
 	{
 		if (empty($firm)) {
-			throw new Exception('Firm is required.');
+			throw new CException('Firm is required.');
 		}
 
 		$options = Yii::app()->db->createCommand()

@@ -73,7 +73,6 @@ class PatientTest extends CDbTestCase
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
 			'primary_phone' => 'Primary Phone',
-			'address_id' => 'Address'
 		);
 
 		$this->assertEquals($expected, $this->model->attributeLabels());

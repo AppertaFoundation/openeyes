@@ -53,7 +53,8 @@ class ElementOperationTest extends CDbTestCase
 		$this->user = $this->users('user1');
 		$this->firm = $this->firms('firm1');
 		$this->patient = $this->patients('patient1');
-		$this->element = new ElementOperation($this->user->id, $this->firm->id, $this->patient->id);
+		$this->element = new ElementOperation();
+		$this->element->setBaseOptions($this->firm->id, $this->patient->id, $this->user->id);
 	}
 
 	public function dataProvider_Search()
