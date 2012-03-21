@@ -21,5 +21,5 @@
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
-<?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
-<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
+<?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName')); ?>
+<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->assistants, 'id', 'FullName')); ?>

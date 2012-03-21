@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DiagnosisSelection extends CWidget {
+class DiagnosisSelection extends BaseCWidget {
 	public $model;
 	public $selectedFirmId;
 	public $field;
@@ -27,7 +27,7 @@ class DiagnosisSelection extends CWidget {
 
 	public function run() {
 		$this->class = get_class($this->model);
-		$this->render('diagnosisSelection',get_object_vars($this));
+		parent::run();
 	}
 }
 ?>

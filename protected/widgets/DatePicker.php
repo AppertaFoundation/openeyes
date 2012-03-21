@@ -17,12 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProcedureSelection extends BaseCWidget {
-	public $model;
-	public $subsections;
-	public $procedures;
-	public $newRecord;
-	public $selected_procedures;
-	public $form;
+class DatePicker extends BaseCWidget {
+	public $element;
+	public $name;
+	public $field;
+	public $options;
+	public $htmlOptions;
 }
+
 ?>

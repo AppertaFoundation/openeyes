@@ -21,20 +21,20 @@ class BaseEventTypeCActiveForm extends CActiveForm
 {
 	public function dropDownList($model,$attribute,$data,$htmlOptions=array()) {
 		$field = CHtml::activeDropDownList($model,$attribute,$data,$htmlOptions);
-		return Yii::app()->getController()->renderPartial('//base/html_dropdownlist', array('element' => $model, 'field' => $field, 'attribute' => $attribute));
+		$this->widget('application.widgets.DropDownList',array('element' => $model, 'field' => $field, 'attribute' => $attribute));
 	}
 
 	public function radioButtons($element,$field,$table) {
 		$data = $element->getFormOptions($table);
-		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data));
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data));
 	}
 
 	public function radioBoolean($element,$field) {
-		return Yii::app()->getController()->renderPartial('//base/html_radiobuttonlist', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No')));
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No')));
 	}
 
 	public function datePicker($element,$field,$options,$htmlOptions) {
-		return Yii::app()->getController()->renderPartial('//base/html_datepicker', array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
+		$this->widget('application.widgets.DatePicker',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function textArea($element,$field,$options=array()) {
@@ -45,6 +45,6 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			throw new SystemException('textArea requires the cols option to be specified');
 		}
 
-		return Yii::app()->getController()->renderPartial('//base/html_textarea', array('element' => $element, 'field' => $field, 'rows' => $options['rows'], 'cols' => $options['cols']));
+		$this->widget('application.widgets.TextArea',array('element' => $element, 'field' => $field, 'rows' => $options['rows'], 'cols' => $options['cols']));
 	}
 }
