@@ -100,6 +100,7 @@ if (empty($theatres)) {?>
 							<input type="hidden" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="<?php if ($session['paediatric']){ echo '1';} else { echo '0';}?>" />
 							<input type="hidden" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['anaesthetist']){ echo '1';} else { echo '0';}?>" />
 							<input type="hidden" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="<?php if ($session['status'] == 0){ echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['general_anaesthetic']){ echo '1';} else { echo '0';}?>" />
 						<?php }?>
 						<div class="sessionComments" style="display:block; width:205px;">
 							<form>
