@@ -60,15 +60,49 @@ class m120223_000000_consolidation extends CDbMigration {
 		foreach(glob($path."*.csv") as $file_path) {
 			$table = substr(basename($file_path), 0, -4);
 			echo "Importing $table data...";
-			$query = "
-				LOAD DATA LOCAL INFILE '$file_path' INTO TABLE $table
-				FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
-				LINES TERMINATED BY '\\n'
-				IGNORE 1 LINES;
-			";
-			$row_count = $this->getDbConnection()->createCommand($query)->execute();
+			$fh = fopen($file_path, 'r');
+			$columns = fgetcsv($fh);
+			$row_count = 0;
+			$block_size = 1000;
+			$values = array();
+			while(($record = fgetcsv($fh)) !== false) {
+				$row_count++;
+				$values[] = $record;
+				if(!($row_count % $block_size)) {
+					// Insert values in blocks to better handle very large tables
+					$this->insertBlock($table, $columns, $values);
+					$values = array();
+				}
+			}
+			fclose($fh);
+			if(!empty($values)) {
+				// Insert remaining values
+				$this->insertBlock($table, $columns, $values);
+			}
 			echo "$row_count records, done.\n";
 		}
+	}
+	
+	/**
+	 * Insert a block of records into a table
+	 * @param string $table
+	 * @param array $columns
+	 * @param array $records
+	 */
+	protected function insertBlock($table, $columns, $records) {
+		$db = $this->getDbConnection();
+		foreach($columns as &$column) {
+			$column = $db->quoteColumnName($column);
+		}
+		$insert = array();
+		foreach($records as $record) {
+			foreach($record as &$field) {
+				$field = $db->quoteValue($field);
+			}
+			$insert[] = '('.implode(',', $record).')';
+		}
+		$query = "INSERT INTO ".$db->quoteTableName($table)." (".implode(',',$columns).") VALUES ".implode(',', $insert);
+		$this->getDbConnection()->createCommand($query)->execute();
 	}
 	
 	/**
