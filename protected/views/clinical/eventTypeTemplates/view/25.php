@@ -185,20 +185,20 @@ foreach ($elements as $element) {
 
 <?php if (count($cancelledBookings)) { ?>
 <div class="col1">
-<h4>Cancelled Bookings</h4>
-<div class="eventHighlight"><h4>
-<?php
-	foreach ($cancelledBookings as $cb) {
-		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . $cb->NHSDate('date');
-		echo ', ' . $cb->theatre->name . ' (' . $cb->theatre->site->name . ') ';
-		echo ', cancelled on ' . $cb->NHSDate('cancelled_date') . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text;
-		if ($cb->cancellation_comment) {
-			echo ' ('.$cb->cancellation_comment.')';
-		}
-		echo '<br />';
-	}
-?>
-</h4></div>
+	<h4>Cancelled Bookings</h4>
+	<ul class="eventComments">
+		<?php foreach($cancelledBookings as $cb) { ?>
+		<li>
+			Originally scheduled for <strong><?php echo $cb->NHSDate('date'); ?>,
+			<?php echo date('H:i',strtotime($cb->start_time)); ?> -
+			<?php echo date('H:i',strtotime($cb->end_time)); ?></strong>,
+			in <strong><?php echo $cb->theatre->NameWithSite; ?></strong>.
+			Cancelled on <?php echo $cb->NHSDate('cancelled_date'); ?>
+			by <strong><?php echo $cb->user->FullName; ?></strong>
+			due to <?php echo $cb->ReasonWithComment; ?>
+		</li>
+		<?php } ?>
+	</ul>
 </div>
 <?php } ?>
 

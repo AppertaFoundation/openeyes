@@ -39,9 +39,6 @@ $config = CMap::mergeArray(
 				'password' => '',
 			),
 		),
-		'params'=>array(
-			'auth_source' => 'BASIC',
-		),
 	)
 );
 

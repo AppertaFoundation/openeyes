@@ -135,4 +135,8 @@ class Theatre extends BaseActiveRecord
 		}
 		return $data;
 	}
+	
+	public function getNameWithSite() {
+		return $this->name . ' (' . $this->site->name . ')';
+	}
 }
