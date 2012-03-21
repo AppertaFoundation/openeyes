@@ -102,7 +102,18 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Date of Birth:</div>
-							<div class="data_value"><?php echo $this->patient->NHSDate('dob') . ' (Age '.$this->patient->getAge().')'?></div>
+							<div class="data_value">
+								<?php echo $this->patient->NHSDate('dob') ?>
+							</div>
+						</div>
+						<div class="data_row">
+							<?php if($this->patient->date_of_death) { ?>
+							<div class="data_label">Date of Death:</div>
+							<div class="data_value"><?php echo $this->patient->NHSDate('date_of_death') . ' (Age '.$this->patient->getAge().')' ?></div>
+							<?php } else { ?>
+							<div class="data_label">Age:</div>
+							<div class="data_value"><?php echo $this->patient->getAge() ?></div>
+							<?php } ?>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Gender:</div>

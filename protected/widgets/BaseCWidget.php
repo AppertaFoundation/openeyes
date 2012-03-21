@@ -17,16 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProcedureSelection extends CWidget {
-	public $model;
-	public $subsections;
-	public $procedures;
-	public $newRecord;
-	public $selected_procedures;
+class BaseCWidget extends CWidget
+{
+	public function render($view, $data=null, $return=false) {
+		if (is_array($data)) {
+			$data = array_merge($data,get_object_vars($this));
+		} else {
+			$data = get_object_vars($this);
+		}
+		parent::render($view, $data, $return);
+	}
 
 	public function run() {
-		$this->render('procedureSelection');
+		$this->render(get_class($this));
 	}
 }
-
 ?>

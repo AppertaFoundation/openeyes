@@ -1,0 +1,3 @@
+[submodule "protected/modules/eyeDraw"]
+	path = protected/modules/eyeDraw
+	url = git@github.com:openeyes/EyeDraw.git

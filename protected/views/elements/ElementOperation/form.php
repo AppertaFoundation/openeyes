@@ -47,7 +47,7 @@ if (!$model->site_id) {
 
 					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
-					<?php $this->widget('application.components.ProcedureSelection',array(
+					<?php $form->widget('application.widgets.ProcedureSelection',array(
 						'model' => $model,
 						'subsections' => $subsections,
 						'procedures' => $procedures,

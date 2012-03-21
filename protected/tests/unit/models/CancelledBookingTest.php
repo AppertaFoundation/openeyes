@@ -32,8 +32,8 @@ class CancelledBookingTest extends CDbTestCase
 		return array(
 			array(array('element_operation_id' => 1), 1, array('booking1')),
 			array(array('cancelled_date' => date('Y-m-d', strtotime('-30 days'))), 1, array('booking2')),
-			array(array('user_id' => 1), 1, array('booking1')),
-			array(array('user_id' => 2), 1, array('booking2')),
+			array(array('created_user_id' => 1), 1, array('booking1')),
+			array(array('created_user_id' => 2), 1, array('booking2')),
 			array(array('theatre_id' => 3), 0, array()),
 		);
 	}
@@ -59,9 +59,9 @@ class CancelledBookingTest extends CDbTestCase
 			'end_time' => 'End Time',
 			'theatre_id' => 'Theatre',
 			'cancelled_date' => 'Cancelled Date',
-			'user_id' => 'User',
+			'created_user_id' => 'User',
 			'cancelled_reason_id' => 'Cancelled Reason',
-			'cancellation_comment' => 'Cancellation comment',
+			'cancellation_comment' => 'Cancellation comment'
 		);
 		
 		$this->assertEquals($expected, $this->model->attributeLabels());

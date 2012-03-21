@@ -40,7 +40,8 @@ class ElementAnteriorSegmentTest extends CDbTestCase
 		$this->user = $this->users('user1');
 		$this->firm = $this->firms('firm1');
 		$this->patient = $this->patients('patient1');
-		$this->element = new ElementAnteriorSegment($this->user->id, $this->firm->id, $this->patient->id);
+		$this->element = new ElementAnteriorSegment();
+		$this->element->setBaseOptions($this->firm->id, $this->patient->id, $this->user->id);
 	}
 
 	public function dataProvider_Search()
@@ -81,7 +82,7 @@ class ElementAnteriorSegmentTest extends CDbTestCase
 	{
 		$element = $this->element;
 		$element->setAttributes(array(
-			'event_id' => '1',
+			'event_id' => '2',
 			'description_left' => 'aaa',
 			'description_right' => 'bbb',
 			'image_string_left' => 'ccc',

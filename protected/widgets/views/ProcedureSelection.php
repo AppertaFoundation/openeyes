@@ -1,13 +1,13 @@
 					<div id="typeProcedure" class="eventDetail">
 						<div class="label">Add procedure:</div>
 						<div class="data">
-							<?php if (!empty($this->subsections) || !empty($this->procedures)) { ?>
+							<?php if (!empty($subsections) || !empty($procedures)) { ?>
 								<?php
-									if (!empty($this->subsections)) {
-										echo CHtml::dropDownList('subsection_id', '', $this->subsections, array('empty' => 'Select a subsection'));
+									if (!empty($subsections)) {
+										echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection'));
 										echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none;'));
 									} else {
-										echo CHtml::dropDownList('select_procedure_id', '', $this->procedures, array('empty' => 'Select a commonly used procedure'));
+										echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure'));
 									} ?> &nbsp;
 							<?php } ?>
 							<span style="display:block; margin-top:10px; margin-bottom:10px;"><strong>or</strong></span>
@@ -77,10 +77,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'htmlOptions'=>array('style'=>'width: 300px;')
 )); ?>
 						</div>
-						<div id="procedureDiv"<?php if ($this->newRecord && empty($this->selected_procedures)) {?> style="display:none;"<?php } ?>>
+						<div id="procedureDiv"<?php if ($newRecord && empty($selected_procedures)) {?> style="display:none;"<?php } ?>>
 							<div class="extraDetails grid-view extraDetails-margin">
 								<table id="procedure_list" class="grid" style="width:100%; background:#e3f0f2;<?php
-							if ($this->newRecord && empty($this->selected_procedures)) { ?> display:none;<?php
+							if ($newRecord && empty($selected_procedures)) { ?> display:none;<?php
 							} ?>" title="Procedure List">
 									<thead>
 										<tr>
@@ -91,8 +91,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 									<tbody>
 									<?php
 										$totalDuration = 0;
-										if (!empty($this->selected_procedures)) {
-											foreach ($this->selected_procedures as $procedure) {
+										if (!empty($selected_procedures)) {
+											foreach ($selected_procedures as $procedure) {
 												$display = "<strong><span>".$procedure['term'] . '</span> - <span>' . $procedure['short_format'] .
 													'</span></strong> ' . CHtml::link('remove', '#',
 													array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
@@ -111,7 +111,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 										</tr>
 										<tr>
 											<td>Estimated Total Duration:</td>
-											<td><span></span><?php echo CHtml::activeTextField($this->model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
+											<td><span></span><?php echo CHtml::activeTextField($model, 'total_duration', array('style'=>'width: 40px;')); ?></td>
 										</tr>
 									</tfoot>
 								</table>

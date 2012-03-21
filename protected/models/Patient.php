@@ -115,6 +115,7 @@ class Patient extends BaseActiveRecord {
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
 			'pas_key' => 'PAS Key',
 			'title' => 'Title',
 			'first_name' => 'First Name',

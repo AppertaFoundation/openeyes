@@ -46,7 +46,7 @@ if (empty($_POST)) {
  
  					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
-					<?php $this->widget('application.components.DiagnosisSelection',array(
+					<?php $form->widget('application.widgets.DiagnosisSelection',array(
 						'field' => 'disorder_id',
 						'model' => $model,
 						'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))

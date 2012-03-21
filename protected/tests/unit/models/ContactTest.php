@@ -51,6 +51,11 @@ class ContactTest extends CDbTestCase
 		$expected = array(
 			'id' => 'ID',
 			'nick_name' => 'Nick Name',
+ 			'primary_phone' => 'Primary Phone Number',
+ 			'title' => 'Title',
+ 			'first_name' => 'First Name',
+ 			'last_name' => 'Last Name',
+ 			'qualifications' => 'Qualifications',
 		);
 
 		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
