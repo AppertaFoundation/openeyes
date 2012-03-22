@@ -18,18 +18,12 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "eye".
  *
- * The followings are the available columns in table 'firm':
+ * The followings are the available columns in table 'eye':
  * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
  * @property string $name
- *
- * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property string $ShortName
  */
 class Eye extends BaseActiveRecord
 {
@@ -68,5 +62,9 @@ class Eye extends BaseActiveRecord
 	{
 		return array();
 	}
+	
+	public function getShortName() {
+		return substr($this->name, 0, 1);
+	}
+	
 }
-?>
