@@ -888,3 +888,11 @@ table.waiting-list #key #sendflag-remove 		.color_box { background:#f08a6f; }
 .purple_rinse textarea { width: 200px; }
 .toAddress {padding-left:7em;}
 .red { color: #f00; }
+
+/* waiting list row colour coding */
+.waitinglistPurple {background:#c9c;}
+.waitinglistGreen {background:#8FBC8F;}
+.waitinglistOrange {background:#f93;}
+.waitinglistRed {background:#e53737;}
+.waitinglistWhite {background:#eee;}
+.waitinglistGrey {background:#999;}

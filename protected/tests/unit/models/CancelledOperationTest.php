@@ -31,9 +31,9 @@ class CancelledOperationTest extends CDbTestCase
 		return array(
 			array(array('element_operation_id' => 1), 1, array('operation1')),
 			array(array('cancelled_date' => date('Y-m-d')), 2, array('operation1','operation2')),
-			array(array('user_id' => 1), 1, array('operation1')),
-			array(array('user_id' => 2), 1, array('operation2')),
-			array(array('user_id' => 3), 0, array()),
+			array(array('created_user_id' => 1), 1, array('operation1')),
+			array(array('created_user_id' => 2), 1, array('operation2')),
+			array(array('created_user_id' => 3), 0, array()),
 		);
 	}
 	
@@ -53,7 +53,7 @@ class CancelledOperationTest extends CDbTestCase
 		$expected = array(
 			'element_operation_id' => 'Element Operation',
 			'cancelled_date' => 'Cancelled Date',
-			'user_id' => 'User',
+			'created_user_id' => 'User',
 			'cancelled_reason_id' => 'Cancelled Reason',
 			'cancellation_comment' => 'Cancellation comment',
 		);

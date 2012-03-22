@@ -1082,7 +1082,7 @@ class ElementOperation extends BaseElement
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
-				$changeContact = 'a nurse on 020 7566 2596';
+				$changeContact = 'a nurse on 020 7566 2595';
 			} else {
 				// St. George's
 				$changeContact = 'Naeela Butt on 020 8725 0060';
@@ -1178,7 +1178,7 @@ class ElementOperation extends BaseElement
 						break;
 					case 11: // Paediatrics
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						$contact['health'] = '0207 566 2595 and ask to speak to a nurse';
 						break;
 					case 13: // Refractive Laser
 						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
@@ -1186,7 +1186,7 @@ class ElementOperation extends BaseElement
 						break;
 					case 14: // Strabismus
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						$contact['health'] = '0207 566 2595 and ask to speak to a nurse';
 						break;
 					case 8: // Vitreo Retinal
 						$contact['refuse'] .= '020 7566 2004';
