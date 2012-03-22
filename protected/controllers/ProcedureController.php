@@ -69,7 +69,12 @@ class ProcedureController extends Controller
 						$data['id'] = $id;
 
 						$found = true;
-						$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
+
+						if (@$_GET['durations']) {
+							$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
+						} else {
+							$this->renderPartial('_ajaxProcedureNoDuration', array('data' => $data), false, false);
+						}
 						break;
 					}
 				}
@@ -94,7 +99,11 @@ class ProcedureController extends Controller
 
 					Yii::app()->session['Procedures'] = $list;
 
-					$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
+					if (@$_GET['durations']) {
+						$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
+					} else {
+						$this->renderPartial('_ajaxProcedureNoDuration', array('data' => $data), false, false);
+					}
 				}
 			}
 		}

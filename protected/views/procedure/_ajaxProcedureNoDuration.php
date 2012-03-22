@@ -17,13 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProcedureSelection extends BaseCWidget {
-	public $model;
-	public $subsections;
-	public $procedures;
-	public $newRecord;
-	public $selected_procedures;
-	public $form;
-	public $durations;
-}
-?>
+$link = CHtml::link('remove', '#', array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
+$display = "<strong><span>".$data['term'] . '</span> - <span>' . $data['short_format'] . '</span></strong> ' . $link; ?>
+<tr>
+	<?php echo CHtml::hiddenField('Procedures[]', $data['id']); ?>
+	<td><?php echo $display; ?></td>
+</tr>
