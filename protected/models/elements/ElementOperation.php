@@ -37,6 +37,16 @@
  * The followings are the available model relations:
  * @property Event $event
  * @property Procedure[] $procedures
+ * @property Booking $booking
+ * @property CancelledOperation $cancellation
+ * @property CancelledBooking $cancelledBooking
+ * @property Site $site
+ * @property DateLetterSent $date_letter_sent
+ * @property User $user
+ * @property User $usermodified
+ * @property AnaestheticType $anaesthetic_type
+ * @property Eye $eye
+ * @property Priority $priority
  */
 class ElementOperation extends BaseEventTypeElement
 {

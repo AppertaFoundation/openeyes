@@ -527,4 +527,11 @@ class BaseEventTypeController extends BaseController
 	public function displayErrors($errors) {
 		$this->renderPartial('//elements/form_errors',array('errors'=>$errors));
 	}
+
+	public function init() {
+		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->moduleID.'.css'),true);
+		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->moduleID.'.js'),true);
+		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->moduleID.'.img'),true).'/';
+		parent::init();
+	}
 }

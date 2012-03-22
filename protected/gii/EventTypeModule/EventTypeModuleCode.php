@@ -26,6 +26,7 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 			'regex_error' => 'Field label must be letters, numbers and spaces only.'
 		)
 	);
+	public $cssPath, $jsPath, $imgPath;
 
 	public function rules() {
 		return array(
