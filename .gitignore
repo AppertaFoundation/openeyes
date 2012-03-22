@@ -6,7 +6,6 @@
 .settings/
 .project
 nbproject/
-index.php
 error/404.php
 error/500.php
 protected/commands/BillCommand.php

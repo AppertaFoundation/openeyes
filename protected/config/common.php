@@ -40,6 +40,7 @@ $config = array(
 		'application.widgets.*',
 		'application.controllers.*',
 		'application.helpers.*',
+		'system.gii.generators.module.*',
 	),
 
 	'modules' => array(
