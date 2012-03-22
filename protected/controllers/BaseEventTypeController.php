@@ -10,6 +10,9 @@ class BaseEventTypeController extends BaseController
 	public $event;
 	public $event_type;
 	public $title;
+	public $cssPath;
+	public $jsPath;
+	public $imgPath;
 
 	public function actionIndex()
 	{
@@ -529,9 +532,9 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function init() {
-		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->moduleID.'.css'),true);
-		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->moduleID.'.js'),true);
-		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->moduleID.'.img'),true).'/';
+		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'),true);
+		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'),true);
+		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img'),true).'/';
 		parent::init();
 	}
 }
