@@ -4,6 +4,7 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 	public $moduleID;
 	public $moduleSuffix;
 	public $template = "default";
+	public $cssPath, $jsPath, $imgPath;
 
 	public function rules() {
 		return array(
