@@ -18,9 +18,24 @@
  */
 ?>
 
-<div class="<?php echo $element->elementType->class_name?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(VitrectomyGauge::model()->findAll(),'id','value'))?>
-	<?php echo $form->radioBoolean($element, 'pvd_induced')?>
+<div class="view">
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('gas_type_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->gas_type->name ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('percentage')); ?></div>
+		<div class="eventHighlight"><?php echo $element->percentage ?>%</div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('volume')); ?></div>
+		<div class="eventHighlight"><?php echo $element->volume ?></div>
+	</div>
+
 </div>
+

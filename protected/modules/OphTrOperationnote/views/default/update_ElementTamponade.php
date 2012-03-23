@@ -21,6 +21,7 @@
 <div class="<?php echo $element->elementType->class_name?>">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(VitrectomyGauge::model()->findAll(),'id','value'))?>
-	<?php echo $form->radioBoolean($element, 'pvd_induced')?>
+	<?php echo $form->dropDownList($element, 'gas_type_id', CHtml::listData(GasType::model()->findAll(),'id','name'))?>
+	<?php echo $form->textField($element, 'percentage')?>
+	<?php echo $form->textField($element, 'volume')?>
 </div>
