@@ -235,17 +235,32 @@ class BookingController extends BaseController
 				$this->redirect(array('patient/event/'.$operation->event->id));
 				Yii::app()->end();
 			}
+			$cancellation_reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
+			if(!$cancellation_reason) {
+				throw new CHttpException(500,'Cancellation reason not found');
+			}
+			$comment = (isset($_POST['cancellation_comment'])) ? strip_tags($_POST['cancellation_comment']) : '';
+			$operation->cancel($cancellation_reason->id, $comment);
+			$this->redirect(array(
+				'patient/episodes',
+				'id' => $operation->event->episode->patient->id,
+				'event' => $operation->event->id
+			));
 		} else {
 			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
 			$operation = ElementOperation::model()->findByPk($operationId);
 			if (empty($operation)) {
-				throw new Exception('Operation id is invalid.');
+				throw new CHttpException(500,'Operation not found');
 			}
 			$minDate = $operation->getMinDate();
 			$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
 			if ($minDate < $thisMonth) {
 				$minDate = $thisMonth;
 			}
+			$this->renderPartial('/booking/_cancel_operation', array(
+					'operation' => $operation,
+					'date' => $minDate
+				), false, true);
 		}
 
 		$this->patient = $operation->event->episode->patient;

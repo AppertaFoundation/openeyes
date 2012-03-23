@@ -181,7 +181,9 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><a href="/patient/episodes/<?php echo $this->patient->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
+					<?php if(!$model->isDeceased()) { ?>
+						<p><a href="/patient/episodes/<?php echo $this->patient->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
+					<?php }?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">

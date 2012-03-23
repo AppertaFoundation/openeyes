@@ -20,9 +20,11 @@
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner">
+				<?php if(!$model->isDeceased()) { ?>
 				<form>
 					<button tabindex="2" class="classy green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
 				</form>
+				<?php } ?>
 				<p><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<div id="episodes_sidebar">

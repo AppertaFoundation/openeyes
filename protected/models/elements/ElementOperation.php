@@ -1305,4 +1305,70 @@ class ElementOperation extends BaseEventTypeElement
 			}
 		}
 	}
+	
+	// Cancel operation
+	public function cancel($reason_id, $comment = null) {
+		$cancel = new CancelledOperation();
+		$cancel->element_operation_id = $this->id;
+		$cancel->cancelled_date = date('Y-m-d H:i:s');
+		$cancel->cancelled_reason_id = $reason_id;
+		$cancel->cancellation_comment = $comment;
+		$this->status = self::STATUS_CANCELLED;
+		if(!$cancel->save()) {
+			throw new CException('Unable to cancel operation: '.print_r($cancel->getErrors(), true));
+		}
+		if(!$this->save()) {
+			throw new CException('Unable to cancel operation: '.print_r($this->getErrors(), true));
+		}
+		OELog::log("Operation cancelled: $this->id");
+			
+		// Update event datestamp
+		$event = $this->event;
+		$event->datetime = date("Y-m-d H:i:s");
+		$event->save();
+	
+		// Does the operation have a booking?
+		$booking = $this->booking;
+		if($booking) {
+			$session = $booking->session;
+			$cancellation = new CancelledBooking;
+			$cancellation->element_operation_id = $this->id;
+			$cancellation->date = $session->date;
+			$cancellation->start_time = $session->start_time;
+			$cancellation->end_time = $session->end_time;
+			$cancellation->theatre_id = $session->theatre_id;
+			$cancellation->cancelled_date = date('Y-m-d H:i:s');
+			$cancellation->cancelled_reason_id = $reason_id;
+			$cancellation->cancellation_comment = $comment;
+			if (!$cancellation->save()) {
+				throw new CException('Unable to cancel booking: '.print_r($cancellation->getErrors(), true));
+			}
+			OELog::log("Booking cancelled: $booking->id");
+			
+			// Urgent notification
+			if(Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+				if(strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+					if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
+						$targets = array(Yii::app()->params['urgent_booking_notify_email']);
+					} else {
+						$targets = Yii::app()->params['urgent_booking_notify_email'];
+					}
+					foreach ($targets as $email) {
+						mail(
+							$email,
+							"[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
+								. $this->getDisorder() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME']
+								. "/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
+							"From: " . Yii::app()->params['urgent_booking_notify_email_from']."\r\n"
+						);
+					}
+				}
+			}
+	
+			// Remove booking
+			if (!$booking->delete()) {
+				throw new CException('Unable to remove cancelled booking: '.print_r($booking->getErrors(), true));
+			}
+		}
+	}
 }

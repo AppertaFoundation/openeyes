@@ -55,7 +55,7 @@ if (empty($theatres)) {?>
 							<tr>
 								<?php $status = ($timeAvailable > 0); ?>
 								<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
-									<div class="timeLeft">
+									<div class="session_timeleft">
 										<?php if($status) { ?>
 										<?php echo $timeAvailable ?> minutes unallocated
 										<?php } else { ?>
@@ -63,7 +63,7 @@ if (empty($theatres)) {?>
 										<?php } ?>
 										<span<?php if (!$session['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<div class="metadata">
+									<div class="specialists">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $previousSessionId?>" class="consultant" title="Consultant Present">Consultant</div>
 										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $previousSessionId?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session_metadata['general_anaesthetic']) {?> (GA)<?php }?></div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $previousSessionId?>" class="paediatric" title="Paediatric Session">Paediatric</div>
@@ -72,10 +72,10 @@ if (empty($theatres)) {?>
 							</tr>
 						</tfoot>
 					</table>
-					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $previousSessionId?>">
+					<div style="display: none;" id="buttons_<?php echo $previousSessionId?>" class="classy_buttons">
 						<img id="loader2_<?php echo $previousSessionId?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 2px; display: none" />
-						<button type="submit" class="classy green tall" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save</span></button>
-						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
+						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
+						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
 				</div>
 <?php
@@ -84,12 +84,14 @@ if (empty($theatres)) {?>
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['subspecialty_name']) ? 'for (' . $session['subspecialty_name'] . ')' : '' ?> - <strong><?php echo $name?></strong></h3>
 				<div class="action_options" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
 					<img id="loader_<?php echo $session['sessionId']?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 5px; margin-bottom: 4px; display: none;" />
-					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_<?php echo $session['sessionId']?>" href="#">Edit</a></span>
+					<div class="session_options">
+						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a href="#" id="edit-sessions_<?php echo $session['sessionId']?>" class="edit-sessions">Edit</a></span>
+					</div>
 				</div>
 				<div class="theatre-sessions whiteBox clearfix">
 					<div style="float: right;">
 						<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
-							<div class="purple_rinse" id="purple_rinse_<?php echo $session['sessionId']?>" style="display:none; width:207px;">
+							<div class="purpleUser" id="purple_rinse_<?php echo $session['sessionId']?>" style="display:none; width:207px;">
 								<input type="checkbox" id="consultant_<?php echo $session['sessionId']?>" name="consultant_<?php echo $session['sessionId']?>" value="1"<?php if ($session['consultant']){?> checked="checked"<?php }?> /> Consultant present<br/>
 								<input type="checkbox" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="1"<?php if ($session['paediatric']){?> checked="checked"<?php }?> /> Paediatric<br/>
 								<input type="checkbox" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['anaesthetist']){?> checked="checked"<?php }?> /> Anaesthetist present<br/>
@@ -197,7 +199,7 @@ if (empty($theatres)) {?>
 							<tr>
 								<?php $status = ($timeAvailable > 0); ?>
 								<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
-									<div class="timeLeft">
+									<div class="session_timeleft">
 										<?php if($status) { ?>
 										<?php echo $timeAvailable ?> minutes unallocated
 										<?php } else { ?>
@@ -205,7 +207,7 @@ if (empty($theatres)) {?>
 										<?php } ?>
 										<span<?php if (!$previousSession['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<div class="metadata">
+									<div class="specialists">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $session['sessionId']?>" class="consultant" title="Consultant Present">Consultant</div>
 										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session['sessionId']?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetisti<?php if ($session_metadata['general_anaesthetic']) {?> (GA)<?php }?></div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $session['sessionId']?>" class="paediatric" title="Paediatric Session">Paediatric</div>
@@ -214,9 +216,9 @@ if (empty($theatres)) {?>
 							</tr>
 						</tfoot>
 					</table>
-					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $session['sessionId']?>">
-						<button type="submit" class="classy green tall" id="btn_save_<?php echo $session['sessionId']?>"><span class="button-span button-span-green">Save</span></button>
-						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $session['sessionId']?>"><span class="button-span button-span-red">Cancel</span></button>
+					<div style="display: none;" id="buttons_<?php echo $session['sessionId']?>" class="classy_buttons">
+						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
+						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
 				</div>
 <?php
@@ -365,8 +367,6 @@ if (empty($theatres)) {?>
 	var selected_tbody_id = null;
 
 	$('a.edit-sessions').die('click').live('click',function() {
-		$('#loader_'+selected_tbody_id).show();
-
 		cancel_edit();
 
 		selected_tbody_id = $(this).attr('id').replace(/^edit-sessions_/,'');
@@ -377,18 +377,17 @@ if (empty($theatres)) {?>
 		$('span[id^="admitTime_ro_'+selected_tbody_id+'_"]').hide();
 		$('input[id^="admitTime_'+selected_tbody_id+'_"]').show();
 		enable_sort(selected_tbody_id);
-		$('div.action_options').map(function() {
-			var html = $(this).html();
+		$('div.display_actions').map(function() {
+			var html = $(this).children('div.session_options').html();
 			if (m = html.match(/edit-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 			if (m = html.match(/view-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 		});
-		$('div.action_options').hide();
+		$('div.display_actions').hide();
 		$('#action_options_'+selected_tbody_id).show();
-		$('#action_options_'+selected_tbody_id).html('<span class="aBtn"><a class="view-sessions" id="view-sessions_'+selected_tbody_id+'" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		$('#btn_print').hide();
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.td_sort').show();
@@ -396,6 +395,7 @@ if (empty($theatres)) {?>
 		$('#buttons_'+selected_tbody_id).show();
 		$('div[id="purple_rinse_'+selected_tbody_id+'"]').show();
 		$('th.footer').attr('colspan','10');
+		$('#action_options_'+selected_tbody_id).children('div.session_options').html('<span class="aBtn"><a href="#" id="view-sessions_'+selected_tbody_id+'" class="view-sessions">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		return false;
 	});
 
@@ -450,16 +450,16 @@ if (empty($theatres)) {?>
 		$('span[id^="admitTime_ro_"]').show();
 		$('input[id^="admitTime_"]').hide();
 		disable_sort();
-		$('div.action_options').map(function() {
-			var html = $(this).html();
+		$('div.display_actions').map(function() {
+			var html = $(this).children('div.session_options').html();
 			if (m = html.match(/edit-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 			if (m = html.match(/view-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 		});
-		$('div.action_options').show();
+		$('div.display_actions').show();
 		$('td.td_sort').hide();
 		$('th.th_sort').hide();
 
@@ -473,7 +473,7 @@ if (empty($theatres)) {?>
 			$('#comments'+id).val($(this).html());
 		});
 
-		$('div.purple_rinse').hide();
+		$('div.purpleUser').hide();
 		$('#btn_print').show();
 		$('input[name^="confirm_"]').attr('disabled',true);
 	}
@@ -597,4 +597,45 @@ if (empty($theatres)) {?>
 			$('#anaesthetic_'+id).attr('checked',true);
 		}
 	});
+
+	// create alertIconHelp, using title icon
+	$(document).ready(function(){
+		var offsetY = 28;
+		var offsetX = 10;
+		var tipWidth = 0;
+		
+		$('.alerts img').hover(function(e){
+			// over
+			var titleText = $(this).attr('title');
+			$(this)
+				.data('tipText',titleText)
+				.removeAttr('title');
+			
+			$('<p class="alertIconHelp"></p>')
+				.text(titleText)
+				.appendTo('body');
+			// add icon
+			$('<img />').attr({width:'17',height:'17',src:$(this).attr('src')}).prependTo('.alertIconHelp');
+			// width?
+			tipWidth = $('.alertIconHelp').outerWidth();	
+			// position and fade in
+			$('.alertIconHelp')
+				.css('top', (e.pageY - offsetY) + 'px')
+				.css('left', (e.pageX - (tipWidth + offsetX)) + 'px')
+				.fadeIn('fast');
+			
+			
+		},function(e){
+			// out, reset HTML
+			$(this).attr('title',$(this).data('tipText'));
+			$('.alertIconHelp').remove();
+			
+		}).mousemove( function(e) {
+			// track position
+			$('.alertIconHelp')
+				.css('top', (e.pageY - offsetY) + 'px')
+				.css('left', (e.pageX - (tipWidth + offsetX)) + 'px');
+		});
+	}); // ready
+
 </script>
