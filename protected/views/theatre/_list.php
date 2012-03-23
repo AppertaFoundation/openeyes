@@ -82,9 +82,11 @@ if (empty($theatres)) {?>
 					}
 ?>
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> - <strong><?php echo $name?></strong></h3>
-				<div class="action_options" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
+				<div class="display_actions" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
 					<img id="loader_<?php echo $session['sessionId']?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 5px; margin-bottom: 4px; display: none;" />
-					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_<?php echo $session['sessionId']?>" href="#">Edit</a></span>
+					<div class="session_options">
+						<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a href="#" id="edit-sessions_<?php echo $session['sessionId']?>" class="edit-sessions">Edit</a></span>
+					</div>
 				</div>
 				<div class="theatre-sessions whiteBox clearfix">
 					<div style="float: right;">
@@ -377,18 +379,17 @@ if (empty($theatres)) {?>
 		$('span[id^="admitTime_ro_'+selected_tbody_id+'_"]').hide();
 		$('input[id^="admitTime_'+selected_tbody_id+'_"]').show();
 		enable_sort(selected_tbody_id);
-		$('div.action_options').map(function() {
-			var html = $(this).html();
+		$('div.display_actions').map(function() {
+			var html = $(this).children('div.session_options').html();
 			if (m = html.match(/edit-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 			if (m = html.match(/view-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 		});
-		$('div.action_options').hide();
+		$('div.display_actions').hide();
 		$('#action_options_'+selected_tbody_id).show();
-		$('#action_options_'+selected_tbody_id).html('<span class="aBtn"><a class="view-sessions" id="view-sessions_'+selected_tbody_id+'" href="#">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		$('#btn_print').hide();
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.td_sort').show();
@@ -396,6 +397,7 @@ if (empty($theatres)) {?>
 		$('#buttons_'+selected_tbody_id).show();
 		$('div[id="purple_rinse_'+selected_tbody_id+'"]').show();
 		$('th.footer').attr('colspan','10');
+		$('#action_options_'+selected_tbody_id).children('div.session_options').html('<span class="aBtn"><a href="#" id="view-sessions_'+selected_tbody_id+'" class="view-sessions">View</a></span><span class="aBtn_inactive edit-event">Edit</span>');
 		return false;
 	});
 
@@ -450,16 +452,16 @@ if (empty($theatres)) {?>
 		$('span[id^="admitTime_ro_"]').show();
 		$('input[id^="admitTime_"]').hide();
 		disable_sort();
-		$('div.action_options').map(function() {
-			var html = $(this).html();
+		$('div.display_actions').map(function() {
+			var html = $(this).children('div.session_options').html();
 			if (m = html.match(/edit-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 			if (m = html.match(/view-sessions_([0-9]+)/)) {
-				$(this).html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
+				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 		});
-		$('div.action_options').show();
+		$('div.display_actions').show();
 		$('td.td_sort').hide();
 		$('th.th_sort').hide();
 
