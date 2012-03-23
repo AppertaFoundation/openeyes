@@ -63,7 +63,7 @@ class CancelledBooking extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('element_operation_id, date, start_time, end_time, theatre_id, cancelled_reason_id', 'required'),
-			array('element_operation_id, theatre_id, cancelled_reason_id', 'length', 'max'=>10),
+			array('element_operation_id, theatre_id, cancelled_reason_id, created_user_id', 'length', 'max'=>10),
 			array('element_operation_id, date, start_time, end_time, theatre_id, cancelled_date, cancelled_reason_id', 'safe'),
 			array('cancellation_comment', 'length', 'max' => 200),
 			// The following rule is used by search().

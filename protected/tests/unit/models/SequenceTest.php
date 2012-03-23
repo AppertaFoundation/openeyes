@@ -284,28 +284,16 @@ class SequenceTest extends CDbTestCase
 			'id' => 'ID',
 			'theatre_id' => 'Theatre',
 			'start_date' => 'Start Date',
-			'start_time' => 'Start Time (HH:MM or HH:MM:SS)',
-			'end_time' => 'End Time (HH:MM or HH:MM:SS)',
+			'start_time' => 'Start Time',
+			'end_time' => 'End Time',
 			'end_date' => 'End Date',
 			'repeat_interval' => 'Repeat',
+			'anaesthetist' => 'Anaesthetist Present',
+			'consultant' => 'Consultant Present',
+			'general_anaesthetic' => 'GA Available',
 		);
 
 		$this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should be customised.');
-	}
-
-	public function testGetTheatreOptions_ReturnsCorrectData()
-	{
-		$theatre = $this->theatres['theatre1'];
-		$site1 = $this->sites['site1'];
-		$site2 = $this->sites['site2'];
-
-		$expected = array();
-		foreach ($this->theatres as $theatre) {
-			$site = $theatre['site_id'] == 1 ? $site1 : $site2;
-			$expected[$theatre['id']] = "{$site['name']} - {$theatre['name']}";
-		}
-
-		$this->assertEquals($expected, $this->model->getTheatreOptions(), 'Theatre options should fetch from the database.');
 	}
 
 	public function testGetFrequencyOptions_ReturnsCorrectData()
@@ -316,6 +304,7 @@ class SequenceTest extends CDbTestCase
 			Sequence::FREQUENCY_3WEEKS => 'Every 3 weeks',
 			Sequence::FREQUENCY_4WEEKS => 'Every 4 weeks',
 			Sequence::FREQUENCY_ONCE => 'One time',
+			Sequence::FREQUENCY_MONTHLY => 'Monthly',
 		);
 
 		$this->assertEquals($expected, $this->model->getFrequencyOptions(), 'Frequency options should match the constants.');
