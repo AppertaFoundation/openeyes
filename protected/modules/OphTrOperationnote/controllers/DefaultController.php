@@ -13,4 +13,11 @@ class DefaultController extends BaseEventTypeController
 
 		parent::actionCreate();
 	}
+
+	public function init() {
+		$urlScript = Yii::app()->assetManager->publish(Yii::getPathOfAlias($this->getModule()->name).'/js/module.js', false, -1, true);
+		Yii::app()->clientScript->registerScriptFile($urlScript, CClientScript::POS_HEAD);
+
+		parent::init();
+	}
 }

@@ -545,4 +545,16 @@ class BaseEventTypeController extends BaseController
 		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img'),true).'/';
 		parent::init();
 	}
+
+	public function actionLoadElement() {
+		if (!$element = ElementType::model()->find('class_name = ?',@$_GET['element_name'])) {
+			throw new SystemException('Element not found: '.@$_GET['element_name']);
+		}
+
+		$this->renderPartial(
+			'create' . '_' . get_class($element),
+			array('element' => $element, 'data' => array(), 'form' => null),
+			false, true
+		);
+	}
 }

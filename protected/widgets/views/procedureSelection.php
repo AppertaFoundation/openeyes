@@ -182,6 +182,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	$('#select_procedure_id').change(function() {
 		var procedure = $('select[name=select_procedure_id] option:selected').text();
 		if (procedure != 'Select a commonly used procedure') {
+
+			if (typeof(window.callbackAddProcedure) == 'function') {
+				callbackAddProcedure(procedure);
+			}
+
 			$.ajax({
 				'url': '/procedure/details?durations=<?php echo ($durations?'1':'0')?>',
 				'type': 'GET',

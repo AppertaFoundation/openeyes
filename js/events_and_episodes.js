@@ -22,3 +22,13 @@ $(document).ready(function(){
 		return false;
 	});
 });
+
+function addOptionalElement(element_name) {
+	$.ajax({
+		'url': 'loadElement?element_name='+element_name,
+		'type': 'GET',
+		'success': function(data) {
+			$('#event_content').append(data);
+		}
+	});
+}
