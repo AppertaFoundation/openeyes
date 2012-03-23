@@ -24,6 +24,41 @@ class ProcedureSelection extends BaseCWidget {
 	public $newRecord;
 	public $selected_procedures;
 	public $form;
-	public $durations;
+	public $durations = false;
+	public $class;
+	public $total_duration = 0;
+
+	public function run() {
+		$firm = Firm::model()->findByPK(Yii::app()->session['selected_firm_id']);
+
+		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
+		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+		$this->procedures = array();
+		if (empty($this->subsections)) {
+			$this->procedures = Procedure::model()->getListBySubspecialty($subspecialty->id);
+		}
+
+		if (empty($_POST)) {
+			$this->selected_procedures = $this->model->procedures;
+			if ($this->durations) {
+				$this->total_duration = $this->model->total_duration;
+			}
+		} else {
+			$this->selected_procedures = array();
+
+			if (isset($_POST['Procedures']) && is_array($_POST['Procedures'])) {
+				foreach ($_POST['Procedures'] as $proc_id) {
+					$proc = Procedure::model()->findByPk($proc_id);
+					$this->selected_procedures[] = $proc;
+					if ($this->durations) {
+						$this->total_duration[] = $proc->default_duration;
+					}
+				}
+			}
+		}
+
+		$this->class = get_class($this->model);
+		parent::run();
+	}
 }
 ?>

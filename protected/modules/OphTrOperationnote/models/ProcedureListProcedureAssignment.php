@@ -30,10 +30,8 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementProcedureList extends BaseEventTypeElement
+class ProcedureListProcedureAssignment extends BaseEventTypeElement
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -48,7 +46,7 @@ class ElementProcedureList extends BaseEventTypeElement
 	 */
 	public function tableName()
 	{
-		return 'et_ophtroperationnote_procedurelist';
+		return 'et_ophtroperationnote_procedurelist_procedure_assignment';
 	}
 
 	/**
@@ -59,10 +57,6 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -74,15 +68,6 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'surgeon' => array(self::BELONGS_TO, 'Contact', 'surgeon_id'),
-			'assistant' => array(self::BELONGS_TO, 'Contact', 'assistant_id'),
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
-			'procedures' => array(self::MANY_MANY, 'Procedure', 'et_ophtroperationnote_procedurelist_procedure_assignment(procedurelist_id, proc_id)', 'order' => 'display_order ASC')
 		);
 	}
 
@@ -92,11 +77,6 @@ class ElementProcedureList extends BaseEventTypeElement
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'event_id' => 'Event',
-			'surgeon_id' => 'Surgeon',
-			'assistant_id' => 'Assistant',
-			'anaesthetic_type_id' => 'Anaesthetic type'
 		);
 	}
 
@@ -112,55 +92,10 @@ class ElementProcedureList extends BaseEventTypeElement
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('surgeon_id', $this->surgeon_id);
-		$criteria->compare('assistant_id', $this->assistant_id);
-		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
 			));
 	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-		$this->anaesthetic_type_id = 1;
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		$order = 1;
-
-		if (!empty($_POST['Procedures'])) {
-			// first wipe out any existing procedures so we start from scratch
-			ProcedureListProcedureAssignment::model()->deleteAll('procedurelist_id = :id', array(':id' => $this->id));
-
-			foreach ($_POST['Procedures'] as $id) {
-				$procedure = new ProcedureListProcedureAssignment;
-				$procedure->procedurelist_id = $this->id;
-				$procedure->proc_id = $id;
-				$procedure->display_order = $order;
-				if (!$procedure->save()) {
-					throw new Exception('Unable to save procedure');
-				}
-
-				$order++;
-			}
-		}
-
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
-	}
 }
+?>

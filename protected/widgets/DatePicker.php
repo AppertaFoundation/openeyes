@@ -23,6 +23,21 @@ class DatePicker extends BaseCWidget {
 	public $field;
 	public $options;
 	public $htmlOptions;
+	public $value;
+
+	public function run() {
+		if (empty($_POST)) {
+			if ($this->element->{$this->field}) {
+				$this->value = $this->element->{$this->field};
+			} else {
+				$this->value = date('j M Y');
+			}
+		} else {
+			$this->value = $_POST[get_class($this->element)][$this->field];
+		}
+
+		parent::run();
+	}
 }
 
 ?>
