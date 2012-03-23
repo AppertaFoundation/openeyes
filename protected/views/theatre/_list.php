@@ -74,8 +74,8 @@ if (empty($theatres)) {?>
 					</table>
 					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $previousSessionId?>">
 						<img id="loader2_<?php echo $previousSessionId?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 2px; display: none" />
-						<button type="submit" class="classy green tall" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save</span></button>
-						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
+						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
+						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
 				</div>
 <?php
@@ -217,8 +217,8 @@ if (empty($theatres)) {?>
 						</tfoot>
 					</table>
 					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $session['sessionId']?>">
-						<button type="submit" class="classy green tall" id="btn_save_<?php echo $session['sessionId']?>"><span class="button-span button-span-green">Save</span></button>
-						<button type="submit" class="classy red tall" id="btn_cancel_<?php echo $session['sessionId']?>"><span class="button-span button-span-red">Cancel</span></button>
+						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
+						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
 				</div>
 <?php
@@ -367,8 +367,6 @@ if (empty($theatres)) {?>
 	var selected_tbody_id = null;
 
 	$('a.edit-sessions').die('click').live('click',function() {
-		$('#loader_'+selected_tbody_id).show();
-
 		cancel_edit();
 
 		selected_tbody_id = $(this).attr('id').replace(/^edit-sessions_/,'');
