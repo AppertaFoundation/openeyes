@@ -17,26 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-if ($this->nopost) {
-	$selected_procedures = $model->procedures;
-} else {
-	$selected_procedures = array();
-
-	if (isset($_POST['Procedures']) && is_array($_POST['Procedures'])) {
-		foreach ($_POST['Procedures'] as $proc_id) {
-			$selected_procedures[] = Procedure::model()->findByPk($proc_id);
-		}
-	}
-}
-
-if (!isset($_POST['ElementOperation']['decision_date'])) {
-	if ($model->decision_date) {
-		$_POST['ElementOperation']['decision_date'] = $model->decision_date;
-	} else {
-		$_POST['ElementOperation']['decision_date'] = date('j M Y',time());
-	}
-}
-
 if (!$model->site_id) {
 	$model->site_id = Yii::app()->request->cookies['site_id']->value;
 }
@@ -49,10 +29,8 @@ if (!$model->site_id) {
 
 					<?php $form->widget('application.widgets.ProcedureSelection',array(
 						'model' => $model,
-						'subsections' => $subsections,
-						'procedures' => $procedures,
 						'newRecord' => $newRecord,
-						'selected_procedures' => $selected_procedures
+						'durations' => true
 					));
 					?>
 

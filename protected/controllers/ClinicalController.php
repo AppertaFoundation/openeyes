@@ -232,19 +232,6 @@ class ClinicalController extends BaseController
 			$params['errors'] = $errors;
 		}
 
-		if ($eventType->name == 'Operation') {
-			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
-			$subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
-			$procedures = array();
-			if (empty($subsections)) {
-				$procedures = Procedure::model()->getListBySubspecialty($subspecialty->id);
-			}
-
-			$params['subspecialty'] = $subspecialty;
-			$params['subsections'] = $subsections;
-			$params['procedures'] = $procedures;
-		}
-
 		$this->editable = false;
 		$this->title = 'Create';
 
@@ -343,19 +330,6 @@ class ClinicalController extends BaseController
 
 		if (isset($errors)) {
 			$params['errors'] = $errors;
-		}
-
-		if ($event->eventType->name == 'Operation') {
-			$subspecialty = $this->firm->serviceSubspecialtyAssignment->subspecialty;
-			$subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
-			$procedures = array();
-			if (empty($subsections)) {
-				$procedures = Procedure::model()->getListBySubspecialty($subspecialty->id);
-			}
-
-			$params['subspecialty'] = $subspecialty;
-			$params['subsections'] = $subsections;
-			$params['procedures'] = $procedures;
 		}
 
 		$this->title = 'Update';

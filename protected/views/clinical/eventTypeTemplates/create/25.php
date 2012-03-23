@@ -42,8 +42,7 @@ foreach ($elements as $element) {
 	echo $this->renderPartial(
 		'/elements/' .	get_class($element) .  '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
-			'newRecord' => true, 'subspecialty' => $subspecialty,
-			'subsections' => $subsections, 'procedures' => $procedures)
+			'newRecord' => true)
 	);
 }
 

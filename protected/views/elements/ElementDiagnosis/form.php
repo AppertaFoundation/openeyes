@@ -17,27 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-if (empty($_POST)) {
-	$this->nopost = true;
-
-	if (empty($model->event_id)) {
-		// It's a new event so fetch the most recent element_diagnosis
-		$diagnosis = $model->getNewestDiagnosis($this->patient);
-
-		if (!empty($diagnosis->disorder)) {
-			// There is a diagnosis for this episode
-			$_POST['ElementDiagnosis']['disorder_id'] = $diagnosis->disorder->term;
-			$_POST['ElementDiagnosis']['eye'] = $diagnosis->eye;
-		}
-	} else {
-		if (isset($model->disorder)) {
-			$_POST['ElementDiagnosis']['disorder_id'] = $model->disorder->term;
-			$_POST['ElementDiagnosis']['eye'] = $model->eye;
-		}
-	}
-}
-?>
-					<?php if (empty($model->event_id)) {?>
+					if (empty($model->event_id)) {?>
 						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Book Operation</h3>
 					<?php }else{?>
 						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Edit Operation</h3>

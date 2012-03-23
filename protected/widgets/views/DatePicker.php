@@ -9,7 +9,7 @@
 									'showAnim'=>'fold',
 									'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 								)),
-								'value' => $_POST[get_class($element)][$field],
+								'value' => $value,
 								'htmlOptions'=>$htmlOptions
 							)); ?>
 						</div>

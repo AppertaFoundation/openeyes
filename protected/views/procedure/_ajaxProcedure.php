@@ -17,10 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$link = CHtml::link('remove', '#', array('onClick' => "js:return removeProcedure(this);", 'class'=>'removeLink'));
-$display = "<strong><span>".$data['term'] . '</span> - <span>' . $data['short_format'] . '</span></strong> ' . $link; ?>
-<tr>
-	<?php echo CHtml::hiddenField('Procedures[]', $data['id']); ?>
-	<td><?php echo $display; ?></td>
-	<td><?php echo $data['duration']; ?></td>
-</tr>
+?>
+<div class="procedureItem">
+	<?php
+	echo CHtml::hiddenField('Procedures[]', $data['id']);
+	echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
+	?>
+	&nbsp;
+	<a href="#" class="small removeProcedure"><strong>(remove)</strong></a><span style="float:right;"><?php echo $data['duration']?> mins</span><br />
+</div>

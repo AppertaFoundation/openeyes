@@ -23,3 +23,10 @@
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo $form->dropDownList($element, 'surgeon_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
 <?php echo $form->dropDownList($element, 'assistant_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
+
+<?php
+$form->widget('application.widgets.ProcedureSelection',array(
+	'model' => $element,
+	'newRecord' => true
+));
+?>
