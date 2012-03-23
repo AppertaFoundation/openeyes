@@ -399,7 +399,7 @@ class PatientService
 		}
 		if($pas_patient = $this->pasAssignment->pas_patient) {
 			$this->patient->title = $pas_patient->name->TITLE;
-			$this->patient->first_name = $pas_patient->name->NAME1;
+			$this->patient->first_name = ($pas_patient->name->NAME1) ? $pas_patient->name->NAME1 : '(UNKNOWN)';
 			$this->patient->last_name = $pas_patient->name->SURNAME_ID;
 			$this->patient->gender = $pas_patient->SEX;
 			$this->patient->dob = $pas_patient->DATE_OF_BIRTH;
