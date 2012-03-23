@@ -126,7 +126,7 @@
 				</div>
 				<div class="colorband category_treatement"></div>
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;">
+				<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
 					<?php
 					if (ctype_digit(@$_GET['event'])) {?>
 						<?php
