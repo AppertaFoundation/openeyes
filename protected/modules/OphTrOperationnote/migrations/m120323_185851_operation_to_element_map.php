@@ -26,7 +26,7 @@ class m120323_185851_operation_to_element_map extends CDbMigration
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id = :event_type_id and class_name=:class_name',array(':event_type_id' => $event_type['id'], ':class_name'=>'ElementVitrectomy'))->queryRow();
 
 		$proc = $this->dbConnection->createCommand()->select('id')->from('proc')->where('snomed_term=:snomed',array(':snomed'=>'Vitrectomy'))->queryRow();
-		$this->insert('et_ophtroperationnote_procedure_element',array('id'=>1,'procedure_id'=>$proc['id'],'element_type_id'=>$element_type['id']));
+		$this->insert('et_ophtroperationnote_procedure_element',array('procedure_id'=>$proc['id'],'element_type_id'=>$element_type['id']));
 	}
 
 	public function down()
