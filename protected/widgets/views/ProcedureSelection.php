@@ -130,7 +130,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				totalDuration += parseInt($(this).html().match(/[0-9]+/));
 			});
 		});
-		if ($('input[name=\"<?php echo $class?>[eye]\"]:checked').val() == 2) {
+		if ($('input[name=\"<?php echo $class?>[eye_id]\"]:checked').val() == 3) {
 			$('#projected_duration').text(totalDuration + ' * 2');
 			totalDuration *= 2;
 		}
@@ -209,5 +209,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			});
 		}
 		return false;
+	});
+
+	$(document).ready(function() {
+		if ($('input[name=\"<?php echo $class?>[eye_id]\"]:checked').val() == 3) {
+			$('#projected_duration').html((parseInt($('#projected_duration').html().match(/[0-9]+/)) * 2) + " mins");
+		}
 	});
 </script>

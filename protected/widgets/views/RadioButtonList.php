@@ -3,7 +3,7 @@
 	<div class="data">
 		<?php foreach ($data as $id => $value) {?>
 			<span class="group">
-				<?php echo CHtml::radioButton($name, $element->$field == $id)?>
+				<?php echo CHtml::radioButton($name, $element->$field == $id,array('value' => $id))?>
 				<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $value?></label>
 			</span>
 		<?php }?>
