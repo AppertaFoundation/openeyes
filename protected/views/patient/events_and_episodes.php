@@ -40,7 +40,7 @@
 				</div>
 				<div class="colorband category_treatement"<?php if (!$this->title){?> style="display: none;"<?php }?>></div>
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa;<?php if (!$this->title){?>display: none;<?php }?>">
+				<div id="event_content" class="watermarkBox" style="background:#fafafa;<?php if (!$this->title){?>display: none;<?php }?>">
 					<?php
 					if (isset($this->event)) {
 						$this->renderPartial(
