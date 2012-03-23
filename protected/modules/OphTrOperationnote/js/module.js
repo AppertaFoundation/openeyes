@@ -5,16 +5,34 @@ function callbackAddProcedure(procedure_id) {
 		'url': '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id='+procedure_id,
 		'success': function(html) {
 			if (html.length >0) {
-				$('div.elements').append(html);
+				var m = html.match(/<div class="(Element.*?)"/)
+				if ($('div.'+m[1]).map().length <1) {
+					$('div.elements').append(html);
+				}
 			}
 		}
 	});
 }
 
+/*
+ * Post the removed operation_id and an array of ElementType class names currently in the DOM
+ * This should return any ElementType classes that we should remove.
+ */
+
 function callbackRemoveProcedure(procedure_id) {
+	var procedures = '';
+
+	$('div.procedureItem').children('input[type="hidden"]').map(function() {
+		if (procedures.length >0) {
+			procedures += ',';
+		}
+		procedures += $(this).val();
+	});
+
 	$.ajax({
-		'type': 'GET',
-		'url': '/OphTrOperationnote/Default/getElementsByProcedure?procedure_id='+procedure_id,
+		'type': 'POST',
+		'url': '/OphTrOperationnote/Default/getElementsToDelete',
+		'data': "remaining_procedures="+procedures+"&procedure_id="+procedure_id,
 		'dataType': 'json',
 		'success': function(data) {
 			$.each(data, function(key, val) {

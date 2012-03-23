@@ -149,10 +149,6 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 		var procedure_id = $(this).parent().children('input:first').val();
 
-		if (typeof(window.callbackAddProcedure) == 'function') {
-			callbackRemoveProcedure(procedure_id);
-		}
-
 		$(this).parent().remove();
 
 		<?php if ($durations) {?>
@@ -164,6 +160,10 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			<?php if ($durations) {?>
 				$('div.extraDetails').hide();
 			<?php }?>
+		}
+
+		if (typeof(window.callbackAddProcedure) == 'function') {
+			callbackRemoveProcedure(procedure_id);
 		}
 
 		return false;

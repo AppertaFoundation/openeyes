@@ -43,19 +43,27 @@ class DefaultController extends BaseEventTypeController
 		}
 	}
 
-	public function actionGetElementsByProcedure() {
-		if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
-			throw new SystemException('Procedure not found: '.@$_GET['procedure_id']);
+	public function actionGetElementsToDelete() {
+		if (!$proc = Procedure::model()->findByPk((integer)@$_POST['procedure_id'])) {
+			throw new SystemException('Procedure not found: '.@$_POST['procedure_id']);
 		}
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('procedure_id',$proc->id);
 		$criteria->order = 'display_order asc';
 
+		if (@$_POST['remaining_procedures']) {
+			$procedures = explode(',',$_POST['remaining_procedures']);
+		} else {
+			$procedures = array();
+		}
+
 		$elements = array();
 
 		foreach (ProcedureListOperationElement::model()->findAll($criteria) as $element) {
-			$elements[] = $element->element_type->class_name;
+			if (empty($procedures) || !ProcedureListOperationElement::model()->find('procedure_id in ('.implode(',',$procedures).') and element_type_id = '.$element->element_type->id)) {
+				$elements[] = $element->element_type->class_name;
+			}
 		}
 
 		die(json_encode($elements));
