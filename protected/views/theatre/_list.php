@@ -91,7 +91,7 @@ if (empty($theatres)) {?>
 				<div class="theatre-sessions whiteBox clearfix">
 					<div style="float: right;">
 						<?php if (Yii::app()->user->checkAccess('purplerinse')) {?>
-							<div class="purple_rinse" id="purple_rinse_<?php echo $session['sessionId']?>" style="display:none; width:207px;">
+							<div class="purpleUser" id="purple_rinse_<?php echo $session['sessionId']?>" style="display:none; width:207px;">
 								<input type="checkbox" id="consultant_<?php echo $session['sessionId']?>" name="consultant_<?php echo $session['sessionId']?>" value="1"<?php if ($session['consultant']){?> checked="checked"<?php }?> /> Consultant present<br/>
 								<input type="checkbox" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="1"<?php if ($session['paediatric']){?> checked="checked"<?php }?> /> Paediatric<br/>
 								<input type="checkbox" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="1"<?php if ($session['anaesthetist']){?> checked="checked"<?php }?> /> Anaesthetist present<br/>
@@ -475,7 +475,7 @@ if (empty($theatres)) {?>
 			$('#comments'+id).val($(this).html());
 		});
 
-		$('div.purple_rinse').hide();
+		$('div.purpleUser').hide();
 		$('#btn_print').show();
 		$('input[name^="confirm_"]').attr('disabled',true);
 	}
