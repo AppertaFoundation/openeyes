@@ -16,12 +16,23 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+class TextField extends BaseCWidget {
+	public $element;
+	public $name;
+	public $field;
+	public $htmlOptions;
+	public $value;
+
+	public function run() {
+		if (empty($_POST)) {
+			$this->value = $this->element->{$this->field};
+		} else {
+			$this->value = $_POST[$name];
+		}
+
+		parent::run();
+	}
+}
+
 ?>
-
-<div class="ElementVitrectomy">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-	<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(VitrectomyGauge::model()->findAll(),'id','value'))?>
-	<?php echo $form->radioBoolean($element, 'pvd_induced')?>
-	<?php echo $form->textField($element, 'other_dye')?>
-</div>

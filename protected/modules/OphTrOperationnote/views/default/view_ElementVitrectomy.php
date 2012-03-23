@@ -18,10 +18,24 @@
  */
 ?>
 
-<div class="ElementVitrectomy">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(VitrectomyGauge::model()->findAll(),'id','value'))?>
-	<?php echo $form->radioBoolean($element, 'pvd_induced')?>
-	<?php echo $form->textField($element, 'other_dye')?>
+<div class="view">
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('gauge_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->gauge->value ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('pvd_induced')); ?></div>
+		<div class="eventHighlight"><?php echo $element->pvd_induced ? 'Yes' : 'No'; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('other_dye')); ?></div>
+		<div class="eventHighlight"><?php echo $element->other_dye ?></div>
+	</div>
+
 </div>
+

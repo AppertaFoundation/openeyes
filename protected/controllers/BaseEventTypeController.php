@@ -149,6 +149,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (!empty($_POST)) {
+			$elements = array();
+			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
+				if (isset($_POST[$element_type->class_name])) {
+					$elements[] = new $element_type->class_name;
+				}
+			}
+
 			$elementList = array();
 
 			// validation

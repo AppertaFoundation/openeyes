@@ -47,4 +47,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 
 		$this->widget('application.widgets.TextArea',array('element' => $element, 'field' => $field, 'rows' => $options['rows'], 'cols' => $options['cols']));
 	}
+
+	public function textField($element,$field,$htmlOptions=array()) {
+		$this->widget('application.widgets.TextField',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'htmlOptions' => $htmlOptions));
+	}
 }

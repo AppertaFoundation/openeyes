@@ -5,7 +5,7 @@ class m120323_185851_operation_to_element_map extends CDbMigration
 	public function up()
 	{
 		$this->createTable('et_ophtroperationnote_procedure_element',array(
-				'id' => 'int(10) unsigned NOT NULL',
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'procedure_id' => 'int(10) unsigned NOT NULL',
 				'element_type_id' => 'int(10) unsigned NOT NULL',
 				'display_order' => 'tinyint(3) unsigned NOT NULL DEFAULT 1',

@@ -5,7 +5,7 @@ class m120323_165659_vitrectomy_element extends CDbMigration
 	public function up()
 	{
 		$this->createTable('et_ophtroperationnote_gauge', array(
-				'id' => 'int(10) unsigned NOT NULL',
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'value' => 'varchar(5) COLLATE utf8_bin NOT NULL',
 				'display_order' => 'tinyint(3) unsigned NOT NULL',
 				'PRIMARY KEY (`id`)',
@@ -18,7 +18,7 @@ class m120323_165659_vitrectomy_element extends CDbMigration
 		$this->insert('et_ophtroperationnote_gauge',array('id'=>3,'value'=>'25g','display_order'=>3));
 
 		$this->createTable('et_ophtroperationnote_vitrectomy', array(
-				'id' => 'int(10) unsigned NOT NULL',
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'event_id' => 'int(10) unsigned NOT NULL',
 				'gauge_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'pvd_induced' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
