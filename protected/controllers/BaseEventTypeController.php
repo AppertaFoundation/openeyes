@@ -50,6 +50,14 @@ class BaseEventTypeController extends BaseController
 		} else {
 			$event_type = EventType::model()->find('class_name = ?',array($this->getModule()->name));
 		}
+
+		if ($event_type->class_name != 'OphTrOperation') {
+			// Import the element_type models
+			foreach (ElementType::model()->findAll('event_type_id = ?',array($event_type->id)) as $element_type) {
+				Yii::import('application.modules.'.$event_type->class_name.'.models.'.$element_type->class_name);
+			}
+		}
+
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type->id);
 		$criteria->order = 'display_order asc';

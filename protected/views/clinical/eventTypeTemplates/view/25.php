@@ -52,11 +52,11 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 </div>
 <?php } ?>
 
-<?php if ($operation->status == ElementOperation::STATUS_PENDING || $operation->status == ElementOperation::STATUS_NEEDS_RESCHEDULING) { ?>
-<div class="issueBox">
-	Operation <?php echo $operation->getStatusText() ?>
-</div>
-<?php } ?>
+<?php if ($operation->hasIssue()) {?>
+	<div class="issueBox">
+		<?php echo $operation->getIssueText()?>
+	</div>
+<?php }?>
 
 <!-- Details -->
 

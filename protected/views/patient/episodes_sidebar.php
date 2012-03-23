@@ -9,33 +9,20 @@
 				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 				<ul class="events">
 					<?php foreach ($episode->events as $event) {
-						$event_type = EventType::model()->findByPk($event->event_type_id);
-
-						if ($event_type->class_name == 'OphTrOperation') {
-							$event_elements = $this->getDefaultElements(false,$event);
-
-							$scheduled = false;
-							foreach ($event_elements as $element) {
-								if (get_class($element) == 'ElementOperation' && in_array($element->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED))) {
-									$scheduled = true;
-								}
-							}
-						}
-
 						$highlight = false;
 
-						if ($event_type->class_name == 'OphTrOperation') {
+						if ($event->eventType->class_name == 'OphTrOperation') {
 							$event_path = '/patient/event/';
 						} else {
-							$event_path = '/'.$event_type->class_name.'/Default/view/';
+							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
 						}
 						?>
 						<li id="eventLi<?php echo $event->id ?>">
 							<div class="quicklook" style="display: none; ">
-								<span class="event">FIXME</span>
-								<span class="info">FIXME</span>
-								<?php if(!$scheduled) { ?>
-								<span class="issue">Currently unscheduled</span>
+								<span class="event"><?php echo $event->eventType->name?></span>
+								<span class="info"><?php echo $event->getInfoText()?></span>
+								<?php if($event->hasIssue()) { ?>
+								<span class="issue"><?php echo $event->getIssueText()?></span>
 								<?php } ?>
 							</div>
 							<?php if($highlight) { ?>
@@ -43,7 +30,7 @@
 							<?php } else { ?>
 							<a href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details">
 							<?php } ?>
-									<span class="type<?php if(!$scheduled) { ?> statusflag<?php } ?>"><img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" /></span>
+									<span class="type<?php if($event->hasIssue()) { ?> statusflag<?php } ?>"><img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" /></span>
 									<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
 							<?php if(!$highlight) { ?>
 							</a>
@@ -67,5 +54,20 @@
 		</div> <!-- .episode -->
 	<?php }?>
 </div> <!-- #episodes_sidebar -->
-
-
+	<script type="text/javascript">
+	// basic quicklook animation... 
+	
+			$(document).ready(function(){
+				$('.quicklook').each(function(){
+					var quick = $(this);
+					var iconHover = $(this).parent().find('.type');
+				iconHover.hover(function(e){
+					quick.fadeIn('fast');
+				},function(e){
+					quick.fadeOut('fast');
+				});	
+				});
+									
+				}); // ready
+	
+	</script>

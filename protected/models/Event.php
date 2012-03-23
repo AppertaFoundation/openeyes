@@ -117,4 +117,31 @@ class Event extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	/* Does this event have some kind of issue that the user should know about */
+
+	public function hasIssue() {
+		foreach (Yii::app()->getController()->getDefaultElements(false,$this) as $element) {
+			if ($element->hasIssue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public function getIssueText() {
+		foreach (Yii::app()->getController()->getDefaultElements(false,$this) as $element) {
+			if ($element->hasIssue()) {
+				return $element->getIssueText();
+			}
+		}
+	}
+
+	public function getInfoText() {
+		foreach (Yii::app()->getController()->getDefaultElements(false,$this) as $element) {
+			if ($element->getInfoText()) {
+				return $element->getInfoText();
+			}
+		}
+	}
 }
