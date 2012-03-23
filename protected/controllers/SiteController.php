@@ -98,6 +98,10 @@ class SiteController extends BaseController
 				echo $error['message'];
 			} else {
 				$error_code = (int) $error['code'];
+				if ($error_code == 403) {
+					$this->redirect('/');
+					Yii::app()->exit();
+				}
 				if($error_code != 404) {
 					//error_log("URI: ".@$_SERVER['REQUEST_URI']);
 					//error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
