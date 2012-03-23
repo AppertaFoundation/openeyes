@@ -21,7 +21,7 @@
 <div class="procedureItem">
 	<?php
 	echo CHtml::hiddenField('Procedures[]', $data['id']);
-	echo $data['term'].' - '.$data['short_format'];
+	echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
 	?>
 	&nbsp;
 	<a href="#" class="small removeProcedure"><strong>(remove)</strong></a><br/>
