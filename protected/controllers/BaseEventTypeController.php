@@ -280,6 +280,18 @@ class BaseEventTypeController extends BaseController
 				return;
 			}
 
+			$elements = array();
+			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
+				if (isset($_POST[$element_type->class_name])) {
+					$class_name = $element_type->class_name;
+					if ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+						$elements[] = $element;
+					} else {
+						$elements[] = new $class_name;
+					}
+				}
+			}
+
 			$elementList = array();
 
 			// validation
