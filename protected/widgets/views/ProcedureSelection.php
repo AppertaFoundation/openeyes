@@ -159,14 +159,13 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 	$('select[id=subsection_id]').change(function() {
 		var subsection = $('select[name=subsection_id] option:selected').val();
-		if (subsection != 'Select a subsection') {
+		if (subsection != '') {
 			var existingProcedures = [];
-			$('#procedure_list tbody').children().each(function () {
-				var text = $(this).children('td:first').children('span:first').text();
-				existingProcedures.push(text.replace(/ remove$/i, ''));
+			$('div.procedureItem').map(function() {
+				existingProcedures.push($(this).children('span:first').text().replace(/ remove$/i, ''));
 			});
 			$.ajax({
-				'url': '//procedure/list',
+				'url': '/procedure/list',
 				'type': 'POST',
 				'data': {'subsection': subsection, 'existing': existingProcedures},
 				'success': function(data) {
@@ -175,6 +174,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 					$('select[name=select_procedure_id]').show();
 				}
 			});
+		} else {
+			$('select[name=select_procedure_id]').hide();
 		}
 	});
 
