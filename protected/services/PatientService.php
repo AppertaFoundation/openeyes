@@ -176,6 +176,7 @@ class PatientService
 			// See if the patient is in openeyes, if not then fetch from PAS
 			if($assignment = PasPatientAssignment::model()->findByExternalId($result['RM_PATIENT_NO'])) {
 				$this->patient = $assignment->patient;
+				$this->pasAssignment = $assignment;
 				if($assignment->isStale()) {
 					$this->loadFromPas();
 				}
