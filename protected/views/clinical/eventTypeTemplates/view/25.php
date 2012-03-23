@@ -211,7 +211,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 
 <?php if ($co->cancellation_comment) {?>
 	<h4>Cancellation comments</h4>
-	<div class="eventHighlight">
+	<div class="eventHighlight comments">
 		<h4><?php echo str_replace("\n","<br/>",$co->cancellation_comment)?></h4>
 	</div>
 <?php } ?>
