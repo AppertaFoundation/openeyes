@@ -9,7 +9,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('input[name="ElementOperation[eye]"]').click(function() {
+	$('input[name="ElementOperation[eye_id]"]').click(function() {
 		updateTotalDuration();
 		if ($('input[name="Procedures[]"]').length == 0) {
 			$('input[id="autocomplete_procedure_id"]').focus();
