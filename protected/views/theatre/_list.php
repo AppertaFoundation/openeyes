@@ -55,7 +55,7 @@ if (empty($theatres)) {?>
 							<tr>
 								<?php $status = ($timeAvailable > 0); ?>
 								<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
-									<div class="timeLeft">
+									<div class="session_timeleft">
 										<?php if($status) { ?>
 										<?php echo $timeAvailable ?> minutes unallocated
 										<?php } else { ?>
@@ -63,7 +63,7 @@ if (empty($theatres)) {?>
 										<?php } ?>
 										<span<?php if (!$session['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<div class="metadata">
+									<div class="specialists">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $previousSessionId?>" class="consultant" title="Consultant Present">Consultant</div>
 										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $previousSessionId?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetist<?php if ($session_metadata['general_anaesthetic']) {?> (GA)<?php }?></div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $previousSessionId?>" class="paediatric" title="Paediatric Session">Paediatric</div>
@@ -72,7 +72,7 @@ if (empty($theatres)) {?>
 							</tr>
 						</tfoot>
 					</table>
-					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $previousSessionId?>">
+					<div style="display: none;" id="buttons_<?php echo $previousSessionId?>" class="classy_buttons">
 						<img id="loader2_<?php echo $previousSessionId?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 2px; display: none" />
 						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
 						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
@@ -199,7 +199,7 @@ if (empty($theatres)) {?>
 							<tr>
 								<?php $status = ($timeAvailable > 0); ?>
 								<th colspan="9" class="footer <?php echo ($status) ? 'available' : 'full'; ?> clearfix">
-									<div class="timeLeft">
+									<div class="session_timeleft">
 										<?php if($status) { ?>
 										<?php echo $timeAvailable ?> minutes unallocated
 										<?php } else { ?>
@@ -207,7 +207,7 @@ if (empty($theatres)) {?>
 										<?php } ?>
 										<span<?php if (!$previousSession['status']) {?> style="display: none;"<?php }?> class="session_unavailable" id="session_unavailable_<?php echo $previousSessionId?>"> - session unavailable</span>
 									</div>
-									<div class="metadata">
+									<div class="specialists">
 										<div<?php if(!$session_metadata['consultant']) {?> style="display: none;"<?php }?> id="consultant_icon_<?php echo $session['sessionId']?>" class="consultant" title="Consultant Present">Consultant</div>
 										<div<?php if(!$session_metadata['anaesthetist']) {?> style="display: none;"<?php }?> id="anaesthetist_icon_<?php echo $session['sessionId']?>" class="anaesthetist" title="Anaesthetist Present">Anaesthetisti<?php if ($session_metadata['general_anaesthetic']) {?> (GA)<?php }?></div>
 										<div<?php if(!$session_metadata['paediatric']) {?> style="display: none;"<?php }?> id="paediatric_icon_<?php echo $session['sessionId']?>" class="paediatric" title="Paediatric Session">Paediatric</div>
@@ -216,7 +216,7 @@ if (empty($theatres)) {?>
 							</tr>
 						</tfoot>
 					</table>
-					<div style="text-align:right; margin-right:10px; display: none;" id="buttons_<?php echo $session['sessionId']?>">
+					<div style="display: none;" id="buttons_<?php echo $session['sessionId']?>" class="classy_buttons">
 						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
 						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
@@ -597,4 +597,45 @@ if (empty($theatres)) {?>
 			$('#anaesthetic_'+id).attr('checked',true);
 		}
 	});
+
+	// create alertIconHelp, using title icon
+	$(document).ready(function(){
+		var offsetY = 28;
+		var offsetX = 10;
+		var tipWidth = 0;
+		
+		$('.alerts img').hover(function(e){
+			// over
+			var titleText = $(this).attr('title');
+			$(this)
+				.data('tipText',titleText)
+				.removeAttr('title');
+			
+			$('<p class="alertIconHelp"></p>')
+				.text(titleText)
+				.appendTo('body');
+			// add icon
+			$('<img />').attr({width:'17',height:'17',src:$(this).attr('src')}).prependTo('.alertIconHelp');
+			// width?
+			tipWidth = $('.alertIconHelp').outerWidth();	
+			// position and fade in
+			$('.alertIconHelp')
+				.css('top', (e.pageY - offsetY) + 'px')
+				.css('left', (e.pageX - (tipWidth + offsetX)) + 'px')
+				.fadeIn('fast');
+			
+			
+		},function(e){
+			// out, reset HTML
+			$(this).attr('title',$(this).data('tipText'));
+			$('.alertIconHelp').remove();
+			
+		}).mousemove( function(e) {
+			// track position
+			$('.alertIconHelp')
+				.css('top', (e.pageY - offsetY) + 'px')
+				.css('left', (e.pageX - (tipWidth + offsetX)) + 'px');
+		});
+	}); // ready
+
 </script>
