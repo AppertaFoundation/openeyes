@@ -17,7 +17,11 @@ class m120323_185851_operation_to_element_map extends CDbMigration
 				'KEY `et_ophtroperationnote_pe_procedure_id` (`procedure_id`)',
 				'KEY `et_ophtroperationnote_pe_element_type_id` (`element_type_id`)',
 				'CONSTRAINT `et_ophtroperationnote_pe_procedure_fk` FOREIGN KEY (`procedure_id`) REFERENCES `proc` (`id`)',
-				'CONSTRAINT `et_ophtroperationnote_pe_element_type_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`)'
+				'CONSTRAINT `et_ophtroperationnote_pe_element_type_fk` FOREIGN KEY (`element_type_id`) REFERENCES `element_type` (`id`)',
+				'KEY `et_ophtroperationnote_pe_last_modified_user_id_fk` (`last_modified_user_id`)',
+				'KEY `et_ophtroperationnote_pe_created_user_id_fk` (`created_user_id`)',
+				'CONSTRAINT `et_ophtroperationnote_pe_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `et_ophtroperationnote_pe_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)'
 			),
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);

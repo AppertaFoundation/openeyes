@@ -8,7 +8,15 @@ class m120323_165659_vitrectomy_element extends CDbMigration
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'value' => 'varchar(5) COLLATE utf8_bin NOT NULL',
 				'display_order' => 'tinyint(3) unsigned NOT NULL',
+				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
+				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
+				'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
+				'KEY `et_ophtroperationnote_gauge_last_modified_user_id_fk` (`last_modified_user_id`)',
+				'KEY `et_ophtroperationnote_gauge_created_user_id_fk` (`created_user_id`)',
+				'CONSTRAINT `et_ophtroperationnote_gauge_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `et_ophtroperationnote_gauge_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)'
 			),
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
@@ -30,7 +38,11 @@ class m120323_165659_vitrectomy_element extends CDbMigration
 				'KEY `et_ophtroperationnote_vitrectomy_event_id` (`event_id`)',
 				'KEY `et_ophtroperationnote_vitrectomy_gauge_id` (`gauge_id`)',
 				'CONSTRAINT `et_ophtroperationnote_vitrectomy_event_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
-				'CONSTRAINT `et_ophtroperationnote_vitrectomy_gauge_fk` FOREIGN KEY (`gauge_id`) REFERENCES `et_ophtroperationnote_gauge` (`id`)'
+				'CONSTRAINT `et_ophtroperationnote_vitrectomy_gauge_fk` FOREIGN KEY (`gauge_id`) REFERENCES `et_ophtroperationnote_gauge` (`id`)',
+				'KEY `et_ophtroperationnote_vit_last_modified_user_id_fk` (`last_modified_user_id`)',
+				'KEY `et_ophtroperationnote_vit_created_user_id_fk` (`created_user_id`)',
+				'CONSTRAINT `et_ophtroperationnote_vit_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `et_ophtroperationnote_vit_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)'
 			),
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
