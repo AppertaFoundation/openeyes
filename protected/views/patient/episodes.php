@@ -40,10 +40,10 @@
 					<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 						<div class="episode_nav">
 							<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-							<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
+							<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="#" rel="<?php echo $episode->id?>" class="episode-details">View summary</a></span></div>
 							<h4><?php echo CHtml::encode($episode->firm->serviceSpecialtyAssignment->specialty->name)?></h4>
 							<ul class="events">
-								<?php foreach ($episode->events as $event) {?>
+								<?php foreach ($episode->events as $event) { ?>
 									<?php
 									$event_elements = $this->service->getElements(
 										null, null, null, 0, $event
@@ -61,7 +61,27 @@
 										$highlight = false;
 									}
 									?>
-									<li id="eventLi<?php echo $event->id ?>"><a href="#" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
+									<li id="eventLi<?php echo $event->id ?>">
+										<div class="quicklook" style="display: none; ">
+											<span class="event">Operation</span>
+											<span class="info">Posterior DSAEK</span>
+											<?php if(!$scheduled) { ?>
+											<span class="issue">Currently unscheduled</span>
+											<?php } ?>
+										</div>
+										<?php if($highlight) { ?>
+										<div class="viewing">
+										<?php } else { ?>
+										<a href="#" rel="<?php echo $event->id?>" class="show-event-details">
+										<?php } ?>
+												<span class="type<?php if(!$scheduled) { ?> statusflag<?php } ?>"><img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" /></span>
+												<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
+										<?php if(!$highlight) { ?>
+										</a>
+										<?php } else { ?>
+										</div>
+										<?php } ?>
+									</li>
 							<?php
 								}
 							?>
@@ -84,13 +104,9 @@
 				<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
 					<h3>Adding New Event</h3>
 					<p><strong>Select event to add:</strong></p>
-					<?php
-						foreach ($eventTypes as $eventType) {
-?>
-					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation_unscheduled.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
-<?php
-						}
-?>
+					<?php foreach ($eventTypes as $eventType) { ?>
+					<p><a href="#" id="add-new-event-type<?php echo $eventType->id ?>"><img src="/img/_elements/icons/event/small/treatment_operation.png" alt="operation" width="16" height="16" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+					<?php } ?>
 				</div>
 				<input type="hidden" id="edit-eventid" name="edit-eventid" value="<?php if (ctype_digit(@$_GET['event'])) echo $_GET['event']?>" />
 				<?php
