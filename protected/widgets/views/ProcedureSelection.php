@@ -147,8 +147,9 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	$('a.removeProcedure').live('click',function() {
 		var len = $(this).parent().parent().children('div').length;
 
+		var procedure_id = $(this).parent().children('input:first').val();
+
 		if (typeof(window.callbackAddProcedure) == 'function') {
-			var procedure_id = $(this).parent().children('input:first').val();
 			callbackRemoveProcedure(procedure_id);
 		}
 
