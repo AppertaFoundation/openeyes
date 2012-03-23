@@ -319,7 +319,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				data["general_anaesthetic_"+selected_tbody_id] = ($('#general_anaesthetic_'+selected_tbody_id).val() == 1);
 			}
 
-			if ($('#available_'+selected_tbody_id).is(':checked')) {
+			if ($('#available_'+selected_tbody_id).is(':checkbox')) {
 				data["available_"+selected_tbody_id] = $('#available_'+selected_tbody_id).is(':checked');
 			} else {
 				data["available_"+selected_tbody_id] = ($('#available_'+selected_tbody_id).val() == 1);
