@@ -22,7 +22,6 @@ class m120323_165659_vitrectomy_element extends CDbMigration
 				'event_id' => 'int(10) unsigned NOT NULL',
 				'gauge_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'pvd_induced' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
-				'other_dye' => 'varchar(255) COLLATE utf8_bin NOT NULL',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',

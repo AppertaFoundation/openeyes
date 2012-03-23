@@ -59,10 +59,10 @@ class ElementVitrectomy extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, gauge_id, pvd_induced, other_dye', 'safe'),
+			array('event_id, gauge_id, pvd_induced', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, gauge_id, pvd_induced, other_dye', 'safe', 'on' => 'search'),
+			array('id, event_id, gauge_id, pvd_induced', 'safe', 'on' => 'search'),
 		);
 	}
 	

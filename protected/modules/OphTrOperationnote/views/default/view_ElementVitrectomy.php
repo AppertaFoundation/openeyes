@@ -32,10 +32,5 @@
 		<div class="eventHighlight"><?php echo $element->pvd_induced ? 'Yes' : 'No'; ?></div>
 	</div>
 
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('other_dye')); ?></div>
-		<div class="eventHighlight"><?php echo $element->other_dye ?></div>
-	</div>
-
 </div>
 

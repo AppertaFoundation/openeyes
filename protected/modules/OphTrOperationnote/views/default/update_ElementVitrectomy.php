@@ -23,5 +23,4 @@
 
 	<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(VitrectomyGauge::model()->findAll(),'id','value'))?>
 	<?php echo $form->radioBoolean($element, 'pvd_induced')?>
-	<?php echo $form->textField($element, 'other_dye')?>
 </div>
