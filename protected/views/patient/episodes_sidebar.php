@@ -5,7 +5,7 @@
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
 				<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details">(Episode) summary</a></span></div>
+				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details">View summary</a></span></div>
 				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 				<ul class="events">
 					<?php foreach ($episode->events as $event) {
@@ -30,10 +30,28 @@
 							$event_path = '/'.$event_type->class_name.'/Default/view/';
 						}
 						?>
-						<li id="eventLi<?php echo $event->id ?>"><a href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details"><?php if ($highlight) echo '<div class="viewing">'?><span class="type"><img src="/img/_elements/icons/event/small/treatment_operation<?php if (!@$scheduled) { echo '_unscheduled'; } else { echo '_booked';}?>.png" alt="op" width="16" height="16" /></span><span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span><?php if ($highlight) echo '</div>' ?></a></li>
-				<?php
-					}
-				?>
+						<li id="eventLi<?php echo $event->id ?>">
+							<div class="quicklook" style="display: none; ">
+								<span class="event">FIXME</span>
+								<span class="info">FIXME</span>
+								<?php if(!$scheduled) { ?>
+								<span class="issue">Currently unscheduled</span>
+								<?php } ?>
+							</div>
+							<?php if($highlight) { ?>
+							<div class="viewing">
+							<?php } else { ?>
+							<a href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details">
+							<?php } ?>
+									<span class="type<?php if(!$scheduled) { ?> statusflag<?php } ?>"><img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" /></span>
+									<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
+							<?php if(!$highlight) { ?>
+							</a>
+							<?php } else { ?>
+							</div>
+							<?php } ?>
+						</li>
+						<?php } ?>
 				</ul>
 			</div>
 			<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
@@ -49,3 +67,5 @@
 		</div> <!-- .episode -->
 	<?php }?>
 </div> <!-- #episodes_sidebar -->
+
+
