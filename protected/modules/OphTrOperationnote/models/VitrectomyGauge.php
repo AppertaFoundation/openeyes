@@ -30,10 +30,8 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementVitrectomy extends BaseEventTypeElement
+class VitrectomyGauge extends BaseEventTypeElement
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -48,7 +46,7 @@ class ElementVitrectomy extends BaseEventTypeElement
 	 */
 	public function tableName()
 	{
-		return 'et_ophtroperationnote_vitrectomy';
+		return 'et_ophtroperationnote_gauge';
 	}
 
 	/**
@@ -59,10 +57,6 @@ class ElementVitrectomy extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, gauge_id, pvd_induced, other_dye', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, event_id, gauge_id, pvd_induced, other_dye', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -74,11 +68,6 @@ class ElementVitrectomy extends BaseEventTypeElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'gauge' => array(self::BELONGS_TO, 'VitrectomyGauge', 'gauge_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -88,9 +77,6 @@ class ElementVitrectomy extends BaseEventTypeElement
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'gauge_id' => 'Gauge',
-			'pvd_induced' => 'PVD Induced',
 		);
 	}
 
@@ -106,34 +92,10 @@ class ElementVitrectomy extends BaseEventTypeElement
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('gauge_id', $this->gauge_id);
-		$criteria->compare('pvd_induced', $this->pvd_induced);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
 			));
 	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
-	}
 }
+?>

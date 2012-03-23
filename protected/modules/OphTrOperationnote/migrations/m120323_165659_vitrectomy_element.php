@@ -6,16 +6,16 @@ class m120323_165659_vitrectomy_element extends CDbMigration
 	{
 		$this->createTable('et_ophtroperationnote_gauge', array(
 				'id' => 'int(10) unsigned NOT NULL',
-				'value' => 'tinyint(3) unsigned NOT NULL',
+				'value' => 'varchar(5) COLLATE utf8_bin NOT NULL',
 				'display_order' => 'tinyint(3) unsigned NOT NULL',
 				'PRIMARY KEY (`id`)',
 			),
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
-		$this->insert('et_ophtroperationnote_gauge',array('id'=>1,'value'=>20,'display_order'=>1));
-		$this->insert('et_ophtroperationnote_gauge',array('id'=>2,'value'=>23,'display_order'=>2));
-		$this->insert('et_ophtroperationnote_gauge',array('id'=>3,'value'=>25,'display_order'=>3));
+		$this->insert('et_ophtroperationnote_gauge',array('id'=>1,'value'=>'20g','display_order'=>1));
+		$this->insert('et_ophtroperationnote_gauge',array('id'=>2,'value'=>'23g','display_order'=>2));
+		$this->insert('et_ophtroperationnote_gauge',array('id'=>3,'value'=>'25g','display_order'=>3));
 
 		$this->createTable('et_ophtroperationnote_vitrectomy', array(
 				'id' => 'int(10) unsigned NOT NULL',

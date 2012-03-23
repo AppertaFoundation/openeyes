@@ -28,7 +28,11 @@ function addOptionalElement(element_name) {
 		'url': 'loadElement?element_name='+element_name,
 		'type': 'GET',
 		'success': function(data) {
-			$('#event_content').append(data);
+			$('div.elements').append(data);
 		}
 	});
+}
+
+function removeOptionalElement(element_name) {
+	$('div.'+element_name).remove();
 }
