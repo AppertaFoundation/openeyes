@@ -113,6 +113,12 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 																											}
 																							});
 																			}
+
+																		if (typeof(window.callbackAddProcedure) == 'function') {
+																			m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
+																			var procedure_id = m[1];
+																			callbackAddProcedure(procedure_id);
+																		}
 																}
 												});
 								}",
@@ -142,8 +148,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		var len = $(this).parent().parent().children('div').length;
 
 		if (typeof(window.callbackAddProcedure) == 'function') {
-			var procedure = $(this).parent().children('span:first').text();
-			callbackRemoveProcedure(procedure);
+			var procedure_id = $(this).parent().children('input:first').val();
+			callbackRemoveProcedure(procedure_id);
 		}
 
 		$(this).parent().remove();
@@ -189,7 +195,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 		if (procedure != 'Select a commonly used procedure') {
 
 			if (typeof(window.callbackAddProcedure) == 'function') {
-				callbackAddProcedure(procedure);
+				var procedure_id = $('select[name=select_procedure_id] option:selected').val();
+				callbackAddProcedure(procedure_id);
 			}
 
 			$.ajax({

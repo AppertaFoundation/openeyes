@@ -20,4 +20,44 @@ class DefaultController extends BaseEventTypeController
 
 		parent::init();
 	}
+
+	public function actionLoadElementByProcedure() {
+		if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
+			throw new SystemException('Procedure not found: '.@$_GET['procedure_id']);
+		}
+
+		$form = new BaseEventTypeCActiveForm;
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('procedure_id',$proc->id);
+		$criteria->order = 'display_order asc';
+
+		foreach (ProcedureListOperationElement::model()->findAll($criteria) as $element) {
+			$element = new $element->element_type->class_name;
+
+			$this->renderPartial(
+				'create' . '_' . get_class($element),
+				array('element' => $element, 'data' => array(), 'form' => $form),
+				false, true
+			);
+		}
+	}
+
+	public function actionGetElementsByProcedure() {
+		if (!$proc = Procedure::model()->findByPk((integer)@$_GET['procedure_id'])) {
+			throw new SystemException('Procedure not found: '.@$_GET['procedure_id']);
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('procedure_id',$proc->id);
+		$criteria->order = 'display_order asc';
+
+		$elements = array();
+
+		foreach (ProcedureListOperationElement::model()->findAll($criteria) as $element) {
+			$elements[] = $element->element_type->class_name;
+		}
+
+		die(json_encode($elements));
+	}
 }

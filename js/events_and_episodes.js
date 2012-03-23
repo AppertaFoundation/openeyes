@@ -22,17 +22,3 @@ $(document).ready(function(){
 		return false;
 	});
 });
-
-function addOptionalElement(element_name) {
-	$.ajax({
-		'url': 'loadElement?element_name='+element_name,
-		'type': 'GET',
-		'success': function(data) {
-			$('div.elements').append(data);
-		}
-	});
-}
-
-function removeOptionalElement(element_name) {
-	$('div.'+element_name).remove();
-}
