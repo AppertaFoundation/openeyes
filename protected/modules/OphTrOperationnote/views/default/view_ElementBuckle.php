@@ -37,5 +37,22 @@
 		<div class="eventHighlight"><?php echo $element->deep_suture ? 'Yes' : 'No'; ?></div>
 	</div>
 
+	<div class="col1" style="margin-top: 1em;">
+		<?php
+		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
+			'identifier'=> 'PS',
+			'side'=>'R',
+			'mode'=>'view',
+			'size'=>300,
+			'model'=>$element,
+			'attribute'=>'eyedraw',
+			'doodleToolBarArray'=>array(),
+			'onLoadedCommandArray'=>array(
+				array('addDoodle', array('BuckleOperation')),
+				array('deselectDoodles', array()),
+			),
+		));
+		?>
+	</div>
 </div>
 
