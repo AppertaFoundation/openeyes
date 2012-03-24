@@ -41,3 +41,12 @@ function callbackRemoveProcedure(procedure_id) {
 		}
 	});
 }
+
+/* If this function doesn't exist eyedraw click events default and cause bad behaviour */
+
+function eDparameterListener(_drawing) {
+	if (_drawing.selectedDoodle != null) {
+		//console.log(_drawing.IDSuffix);
+	}
+}
+
