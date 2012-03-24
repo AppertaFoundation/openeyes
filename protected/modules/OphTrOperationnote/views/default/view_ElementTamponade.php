@@ -28,13 +28,13 @@
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('percentage')); ?></div>
-		<div class="eventHighlight"><?php echo $element->percentage ?>%</div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('gas_percentage_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->gas_percentage->value ?>%</div>
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('volume')); ?></div>
-		<div class="eventHighlight"><?php echo $element->volume ?></div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('gas_volume_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->gas_volume->value ?></div>
 	</div>
 
 </div>

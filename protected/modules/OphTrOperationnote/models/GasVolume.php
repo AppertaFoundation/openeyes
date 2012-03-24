@@ -30,10 +30,8 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementTamponade extends BaseEventTypeElement
+class GasVolume extends BaseEventTypeElement
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ElementOperation the static model class
@@ -48,7 +46,7 @@ class ElementTamponade extends BaseEventTypeElement
 	 */
 	public function tableName()
 	{
-		return 'et_ophtroperationnote_tamponade';
+		return 'et_ophtroperationnote_gas_volume';
 	}
 
 	/**
@@ -59,10 +57,6 @@ class ElementTamponade extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, gas_type_id, gas_percentage_id, gas_volume_id', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, event_id, gas_type_id, gas_percentage_id, gas_volume_id', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -74,13 +68,6 @@ class ElementTamponade extends BaseEventTypeElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'gas_type' => array(self::BELONGS_TO, 'GasType', 'gas_type_id'),
-			'gas_percentage' => array(self::BELONGS_TO, 'GasPercentage', 'gas_percentage_id'),
-			'gas_volume' => array(self::BELONGS_TO, 'GasVolume', 'gas_volume_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -90,10 +77,6 @@ class ElementTamponade extends BaseEventTypeElement
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'gas_type_id' => 'Gas type',
-			'gas_percentage_id' => 'Percentage',
-			'gas_volume_id' => 'Volume (PR)'
 		);
 	}
 
@@ -109,35 +92,10 @@ class ElementTamponade extends BaseEventTypeElement
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('gas_type_id', $this->gas_type_id);
-		$criteria->compare('percentage', $this->percentage);
-		$criteria->compare('volume', $this->volume);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
 			));
 	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
-	}
 }
+?>
