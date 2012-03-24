@@ -193,8 +193,8 @@ class OEEyeDrawWidget extends CWidget
         $this->canvasId = 'ed_canvas_'.$this->mode.'_'.$this->idSuffix;
         if (isset($this->model) && isset($this->attribute))
         {
-        	$this->inputName = $this->model->tableName().'['. $this->attribute.']';
-        	$this->inputId = $this->model->tableName().'_'. $this->attribute;
+        	$this->inputName = get_class($this->model).'['. $this->attribute.']';
+        	$this->inputId = get_class($this->model).'_'. $this->attribute;
         }
         
         $this->eye = $this->side == "R"?0:1;		// ***TODO*** may require additional options
