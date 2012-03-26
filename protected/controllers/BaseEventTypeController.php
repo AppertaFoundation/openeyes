@@ -346,6 +346,10 @@ class BaseEventTypeController extends BaseController
 
 	public function renderDefaultElements($action, $form=false, $data=false) {
 		foreach ($this->getDefaultElements() as $element) {
+			if ($action == 'create') {
+				$element->setDefaultOptions();
+			}
+
 			$this->renderPartial(
 				$action . '_' . get_class($element),
 				array('element' => $element, 'data' => $data, 'form' => $form),
@@ -356,6 +360,10 @@ class BaseEventTypeController extends BaseController
 
 	public function renderOptionalElements($action, $form=false,$data=false) {
 		foreach ($this->getOptionalElements($action) as $element) {
+			if ($action == 'create') {
+				$element->setDefaultOptions();
+			}
+
 			$this->renderPartial(
 				$action . '_' . get_class($element),
 				array('element' => $element, 'data' => $data, 'form' => $form),

@@ -127,6 +127,12 @@ class ElementProcedureList extends BaseEventTypeElement
 	 */
 	public function setDefaultOptions()
 	{
+		$user = Yii::app()->session['user'];
+
+		if ($user->is_doctor) {
+			$this->surgeon_id = $user->id;
+		}
+
 		$this->anaesthetic_type_id = 1;
 	}
 
