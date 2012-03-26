@@ -60,6 +60,7 @@ class ElementProcedureList extends BaseEventTypeElement
 		// will receive user inputs.
 		return array(
 			array('event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe'),
+			array('surgeon_id, anaesthetic_type_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe', 'on' => 'search'),
@@ -118,8 +119,8 @@ class ElementProcedureList extends BaseEventTypeElement
 		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
 		
 		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-			));
+			'criteria' => $criteria,
+		));
 	}
 
 	/**
@@ -167,6 +168,10 @@ class ElementProcedureList extends BaseEventTypeElement
 
 	protected function beforeValidate()
 	{
+		if (!empty($_POST) && (!isset($_POST['Procedures']) || empty($_POST['Procedures']))) {
+			$this->addError('no_field', 'At least one procedure must be entered');
+		}
+
 		return parent::beforeValidate();
 	}
 }

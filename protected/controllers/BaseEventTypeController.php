@@ -150,9 +150,12 @@ class BaseEventTypeController extends BaseController
 
 		if (!empty($_POST)) {
 			$elements = array();
+			$element_names = array();
+
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
 				if (isset($_POST[$element_type->class_name])) {
 					$elements[] = new $element_type->class_name;
+					$element_names[$element_type->class_name] = $element_type->name;
 				}
 			}
 
@@ -166,7 +169,7 @@ class BaseEventTypeController extends BaseController
 				if (!$element->validate()) {
 					foreach ($element->getErrors() as $errormsgs) {
 						foreach ($errormsgs as $error) {
-							$index = preg_replace('/^Element/','',$elementClassName);
+							$index = $element_names[$elementClassName]; //preg_replace('/^Element/','',$elementClassName);
 							$errors[$index][] = $error;
 						}
 					}
@@ -346,7 +349,7 @@ class BaseEventTypeController extends BaseController
 
 	public function renderDefaultElements($action, $form=false, $data=false) {
 		foreach ($this->getDefaultElements() as $element) {
-			if ($action == 'create') {
+			if ($action == 'create' && empty($_POST)) {
 				$element->setDefaultOptions();
 			}
 
@@ -360,7 +363,7 @@ class BaseEventTypeController extends BaseController
 
 	public function renderOptionalElements($action, $form=false,$data=false) {
 		foreach ($this->getOptionalElements($action) as $element) {
-			if ($action == 'create') {
+			if ($action == 'create' && empty($_POST)) {
 				$element->setDefaultOptions();
 			}
 
