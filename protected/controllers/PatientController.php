@@ -230,9 +230,10 @@ class PatientController extends BaseController
 		
 		$model = new Patient();
 		$model->attributes = $this->collateGetData();
+		$pageSize = 20;
 		$dataProvider = $model->search(array(
 			'currentPage' => (integer)@$_GET['page_num'],
-			'pageSize' => 20,
+			'pageSize' => $pageSize,
 			'sortBy' => $sort_by,
 			'sortDir'=> $sort_dir,
 		));
@@ -245,11 +246,11 @@ class PatientController extends BaseController
 				$this->redirect('/patient/view/'.$item->id);
 			}
 		} else {
-			$pages = ceil($nr/$items_per_page);
+			$pages = ceil($nr/$pageSize);
 			$this->render('results', array(
 				'dataProvider' => $dataProvider,
 				'pages' => $pages,
-				'items_per_page' => $items_per_page,
+				'items_per_page' => $pageSize,
 				'total_items' => $nr,
 				'first_name' => $_GET['first_name'],
 				'last_name' => $_GET['last_name'],

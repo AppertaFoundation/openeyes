@@ -94,33 +94,32 @@ class PatientService
 
 		$offset = (($page-1) * $num_results) + 1;
 		$limit = $offset + $num_results - 1;
-
 		switch ($data['sortBy']) {
-			case 'hos_num*1':
+			case 'HOS_NUM*1':
 				// hos_num
 				$sort_by = "n.NUM_ID_TYPE||n.NUMBER_ID";
 				break;
-			case 'title':
+			case 'TITLE':
 				// title
 				$sort_by = "s.TITLE";
 				break;
-			case 'first_name':
+			case 'FIRST_NAME':
 				// first_name
 				$sort_by = "s.NAME1";
 				break;
-			case 'last_name':
+			case 'LAST_NAME':
 				// last_name
 				$sort_by = "s.SURNAME_ID";
 				break;
-			case 'dob':
+			case 'DOB':
 				// date of birth
 				$sort_by = "p.DATE_OF_BIRTH";
 				break;
-			case 'gender':
+			case 'GENDER':
 				// gender
 				$sort_by = "p.SEX";
 				break;
-			case 'nhs_num*1':
+			case 'NHS_NUM*1':
 				// nhs_num
 				$sort_by = "NHS_NUMBER";
 				break;

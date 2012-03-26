@@ -22,8 +22,8 @@ class PasObserver {
 			foreach(array('first_name','last_name','hos_num') as $param) {
 				$data[$param] = $params['patient']->$param;
 			}
-			$data['sortBy'] = $params['params']['sortDir'];
-			$data['sortDir'] = $params['params']['sortBy'];
+			$data['sortBy'] = $params['params']['sortBy'];
+			$data['sortDir'] = $params['params']['sortDir'];
 			$params['criteria'] = $patient_service->search($data, $params['params']['pageSize'], $params['params']['currentPage']);
 		}
 	}
