@@ -201,7 +201,6 @@ class PatientController extends BaseController
 	}
 
 	function patientSearch() {
-		$model = new Patient;
 
 		$items_per_page = 20;
 
@@ -230,63 +229,24 @@ class PatientController extends BaseController
 		}
 
 		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+		
+		$model = new Patient();
+		$model->attributes = $this->collateGetData();
+		$dataProvider = $model->search(array(
+			'currentPage' => (integer)@$_GET['page_num']-1,
+			'items_per_page' => $items_per_page,
+			'order' => $sort_by.' '.$sort_dir
+		));
+		$nr = $model->search_nr();
 
-		if (Yii::app()->params['use_pas']) {
-			$service = new PatientService;
-
-			if ($service->down) {
-				$model->attributes = $this->collateGetData();
-				$dataProvider = $model->search(array(
-					'currentPage' => (integer)@$_GET['page_num']-1,
-					'items_per_page' => $items_per_page,
-					'order' => $sort_by.' '.$sort_dir
-				));
-
-				$nr = $model->search_nr();
-			} else {
-				$criteria = $service->search($this->collateGetData(), $items_per_page, $_GET['page_num']);
-
-				$nr = $service->num_results;
-
-				$dataProvider = new CActiveDataProvider('Patient', array(
-					'criteria' => $criteria,
-					'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
-				));
-			}
-		} else {
-			$model->attributes = $this->collateGetData();
-			$dataProvider = $model->search(array(
-				'currentPage' => (integer)@$_GET['page_num']-1,
-				'items_per_page' => $items_per_page,
-				'order' => $sort_by.' '.$sort_dir
-			));
-
-			$nr = $model->search_nr();
-		}
-
-		if ($nr == 0) {
-			if (Yii::app()->params['pas_down']) {
-				$this->redirect('/patient/no-results-pas');
-			} else if (isset($service) && @$service->no_address) {
-				$this->redirect('/patient/no-results-address');
-			} else {
-				$this->redirect('/patient/no-results');
-			}
-		}
-
-		if ($nr == 1) {
+		if($nr == 0) {
+			$this->redirect('/patient/no-results');
+		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect('/patient/view/'.$item->id);
 			}
-		}
-
-		$pages = ceil($nr/$items_per_page);
-
-		if (count($nr) == 0) {
-			$this->render('index', array(
-				'dataProvider' => $dataProvider
-			));
 		} else {
+			$pages = ceil($nr/$items_per_page);
 			$this->render('results', array(
 				'dataProvider' => $dataProvider,
 				'pages' => $pages,

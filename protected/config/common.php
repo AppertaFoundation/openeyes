@@ -52,6 +52,10 @@ $config = array(
 
 	// Application components
 	'components' => array(
+		'event' => array(
+			'class' => 'OEEventManager',
+			'observers' => array(),
+		),
 		'user' => array(
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,

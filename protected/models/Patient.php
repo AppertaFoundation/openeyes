@@ -49,9 +49,6 @@
  */
 class Patient extends BaseActiveRecord {
 	
-	// Set to false to supress cache refresh afterFind
-	public $use_pas = true;
-	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -146,11 +143,7 @@ class Patient extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search($params=false)
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+	public function search($params = false) {
 		if (!is_array($params)) {
 			$params = array(
 				'items_per_page' => PHP_INT_MAX,
@@ -170,10 +163,15 @@ class Patient extends BaseActiveRecord {
 
 		$criteria->order = $params['order'];
 
-		return new CActiveDataProvider(get_class($this), array(
+		Yii::app()->event->dispatch('patient_after_search', array('patient' => $this, 'criteria' => $criteria));
+		
+		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['items_per_page'], 'currentPage' => $params['currentPage'])
 		));
+		
+		
+		return $dataProvider;
 	}
 
 	public function beforeSave()
@@ -276,37 +274,8 @@ class Patient extends BaseActiveRecord {
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
-	/**
-	 * Supress PAS call after find
-	 */
-	public function noPas() {
-		$this->use_pas = false;
-		return $this;
-	}
-	
-	/**
-	 * Pass through use_pas flag to allow pas supression
-	 * @see CActiveRecord::instantiate()
-	 */ 
-	protected function instantiate($attributes) {
-		$model = parent::instantiate($attributes);
-		$model->use_pas = $this->use_pas;
-		return $model;
-	}
-	
-	/**
-	 * Update from PAS if enabled
-	 * @see CActiveRecord::afterFind()
-	 */
 	protected function afterFind() {
 		parent::afterFind();
-		if($this->use_pas && Yii::app()->params['use_pas'] && PasPatientAssignment::isStale($this->id)) {
-			Yii::log('Patient details stale', 'trace');
-			$patient_service = new PatientService($this);
-			if (!$patient_service->down) {
-				$patient_service->loadFromPas();
-			}
-		}
+		Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
 	}
-	
 }
