@@ -18,7 +18,12 @@ class PasObserver {
 	public function searchPas($params) {
 		$patient_service = new PatientService();
 		if(!$patient_service->down) {
-			$params['criteria'] = $patient_service->search($this->collateGetData(), $items_per_page, $_GET['page_num']);
+			$data = array();
+			foreach(array('first_name','last_name','hos_num') as $param) {
+				$data[$param] = $params['patient']->$param;
+			}
+			$data['order'] = $params['params']['order'];
+			$params['criteria'] = $patient_service->search($data, $params['params']['items_per_page'], $_GET['page_num']);
 		}
 	}
 	

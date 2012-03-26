@@ -163,7 +163,7 @@ class Patient extends BaseActiveRecord {
 
 		$criteria->order = $params['order'];
 
-		Yii::app()->event->dispatch('patient_after_search', array('patient' => $this, 'criteria' => $criteria));
+		Yii::app()->event->dispatch('patient_after_search', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
 		
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
