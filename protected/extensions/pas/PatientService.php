@@ -74,27 +74,12 @@ class PatientService
 			$whereSql .= " AND n.num_id_type = substr('" . $hosNum . "',1,1) and n.number_id = substr('" . $hosNum . "',2,6)";
 		}
 
-		// Date of birth
-		if (!empty($data['dob'])) {
-			$whereSql .= " AND DATE_OF_BIRTH = '" . addslashes($data['dob']) . "'";
-		}
-
-		// Gender
-		if (!empty($data['gender'])) {
-			$whereSql .= " AND SEX = '" . addslashes($data['gender']) . "'";
-		}
-
 		// Name
 		if (!empty($data['first_name']) && !empty($data['last_name'])) {
 			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = '" . addslashes($data['first_name'])
 			. "' OR Name2 = '" . addslashes($data['first_name']) . "') AND Surname_ID = '" . addslashes($data['last_name']) . "'))";
 		}
 
-		// NHS Number
-		if (!empty($data['nhs_num'])) {
-			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = '" . addslashes($data['nhs_num']) . "')";
-		}
-		
 		$sql = "
 			SELECT COUNT(*) as count
 			FROM SILVER.PATIENTS p
@@ -110,39 +95,39 @@ class PatientService
 		$offset = (($page-1) * $num_results) + 1;
 		$limit = $offset + $num_results - 1;
 
-		switch ($data['sort_by']) {
-			case 0:
+		switch ($data['sortBy']) {
+			case 'hos_num*1':
 				// hos_num
 				$sort_by = "n.NUM_ID_TYPE||n.NUMBER_ID";
 				break;
-			case 1:
+			case 'title':
 				// title
 				$sort_by = "s.TITLE";
 				break;
-			case 2:
+			case 'first_name':
 				// first_name
 				$sort_by = "s.NAME1";
 				break;
-			case 3:
+			case 'last_name':
 				// last_name
 				$sort_by = "s.SURNAME_ID";
 				break;
-			case 4:
+			case 'dob':
 				// date of birth
 				$sort_by = "p.DATE_OF_BIRTH";
 				break;
-			case 5:
+			case 'gender':
 				// gender
 				$sort_by = "p.SEX";
 				break;
-			case 6:
+			case 'nhs_num*1':
 				// nhs_num
 				$sort_by = "NHS_NUMBER";
 				break;
 		}
 
-		$sort_dir = ($data['sort_dir'] == 0 ? 'ASC' : 'DESC');
-		$sort_rev = ($data['sort_dir'] == 0 ? 'DESC' : 'ASC');
+		$sort_dir = ($data['sortDir'] == 'asc' ? 'ASC' : 'DESC');
+		$sort_rev = ($data['sortDir'] == 'asc' ? 'DESC' : 'ASC');
 
 		$sql = "
 			SELECT * from

@@ -146,30 +146,27 @@ class Patient extends BaseActiveRecord {
 	public function search($params = false) {
 		if (!is_array($params)) {
 			$params = array(
-				'items_per_page' => PHP_INT_MAX,
-				'currentPage' => 0,
-				'order' => 'hos_num*1 asc'
+				'pageSize' => 20,
+				'currentPage' => 1,
+				'sortBy' => 'hos_num*1',
+				'sortDir' => 'asc',
 			);
 		}
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),false);
-		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),false);
-		$criteria->compare('dob',$this->dob,false);
-		$criteria->compare('gender',$this->gender,false);
-		$criteria->compare('hos_num',$this->hos_num,false);
-		$criteria->compare('nhs_num',$this->nhs_num,false);
+		$criteria->compare('LOWER(first_name)',strtolower($this->first_name), false);
+		$criteria->compare('LOWER(last_name)',strtolower($this->last_name), false);
+		$criteria->compare('hos_num',$this->hos_num, false);
 
-		$criteria->order = $params['order'];
+		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
-		Yii::app()->event->dispatch('patient_after_search', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+		Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
 		
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
-			'pagination' => array('pageSize' => $params['items_per_page'], 'currentPage' => $params['currentPage'])
+			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'] - 1)
 		));
-		
 		
 		return $dataProvider;
 	}

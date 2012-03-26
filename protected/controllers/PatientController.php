@@ -201,9 +201,7 @@ class PatientController extends BaseController
 	}
 
 	function patientSearch() {
-
-		$items_per_page = 20;
-
+		
 		switch ($_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
@@ -233,9 +231,10 @@ class PatientController extends BaseController
 		$model = new Patient();
 		$model->attributes = $this->collateGetData();
 		$dataProvider = $model->search(array(
-			'currentPage' => (integer)@$_GET['page_num']-1,
-			'items_per_page' => $items_per_page,
-			'order' => $sort_by.' '.$sort_dir
+			'currentPage' => (integer)@$_GET['page_num'],
+			'pageSize' => 20,
+			'sortBy' => $sort_by,
+			'sortDir'=> $sort_dir,
 		));
 		$nr = $model->search_nr();
 
