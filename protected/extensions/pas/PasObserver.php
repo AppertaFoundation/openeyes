@@ -23,6 +23,8 @@ class PasObserver {
 				$data[$param] = $params['patient']->$param;
 			}
 			$data['order'] = $params['params']['order'];
+			$data['sort_by'] = '';
+			$data['sort_dir'] = '';
 			$params['criteria'] = $patient_service->search($data, $params['params']['items_per_page'], $_GET['page_num']);
 		}
 	}
