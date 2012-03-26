@@ -34,7 +34,7 @@
 
 	<div class="col1">
 		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->assistant->fullName; ?></div>
+		<div class="eventHighlight"><?php echo $element->assistant ? $element->assistant->fullName : 'None'; ?></div>
 	</div>
 
 </div>
