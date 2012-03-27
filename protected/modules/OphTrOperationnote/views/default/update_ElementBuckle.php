@@ -32,7 +32,7 @@
 		'size'=>300,
 		'model'=>$element,
 		'attribute'=>'eyedraw',
-		'doodleToolBarArray'=>array('RRD', 'UTear'),
+		'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
 		'onLoadedCommandArray'=>array(
 			array('addDoodle', array('BuckleOperation')),
 			array('deselectDoodles', array()),
