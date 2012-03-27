@@ -16,28 +16,36 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+class CheckBoxArray extends BaseCWidget {
+	public $fields;
+	public $label;
+	public $options;
+	public $columns = array();
+	public $checked = array();
+
+	public function init() {
+		foreach ($this->fields as $field) {
+			if (empty($_POST)) {
+				if (isset($this->element->{$field})) {
+					$this->checked[$field] = (boolean)$this->element->{$field};
+				}
+			} else {
+				$this->checked[$field] = (boolean)@$_POST[get_class($this->element)][$field];
+			}
+		}
+
+		if (isset($this->options['column_length'])) {
+			$column = 0;
+
+			foreach ($this->fields as $field) {
+				$this->columns[$column][] = $field;
+
+				if (count($this->columns[$column]) >= $this->options['column_length']) {
+					$column++;
+				}
+			}
+		}
+	}
+}
 ?>
-
-<div class="<?php echo $element->elementType->class_name?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-	<?php
-	$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-		'identifier'=> 'PS',
-		'side'=>'R',
-		'mode'=>'edit',
-		'size'=>300,
-		'model'=>$element,
-		'attribute'=>'eyedraw',
-		'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
-		'onLoadedCommandArray'=>array(
-			array('addDoodle', array('BuckleOperation')),
-			array('deselectDoodles', array()),
-		),
-	));
-	?>
-	<?php echo $form->dropDownList($element, 'drainage_type_id', CHtml::listData(DrainageType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->radioBoolean($element, 'drain_haem')?>
-	<?php echo $form->radioBoolean($element, 'deep_suture')?>
-	<?php echo $form->textArea($element, 'report', array('rows'=>8,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate')))?>
-</div>

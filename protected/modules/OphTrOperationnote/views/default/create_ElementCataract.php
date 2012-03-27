@@ -29,15 +29,17 @@
 		'size'=>300,
 		'model'=>$element,
 		'attribute'=>'eyedraw',
-		'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
+		'doodleToolBarArray'=>array('PhakoIncision','SidePort','IrisHook','PCIOL','ACIOL','PI','MattressSuture'),
 		'onLoadedCommandArray'=>array(
-			array('addDoodle', array('BuckleOperation')),
+			array('addDoodle', array('AntSeg')),
 			array('deselectDoodles', array()),
 		),
 	));
 	?>
-	<?php echo $form->dropDownList($element, 'drainage_type_id', CHtml::listData(DrainageType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->radioBoolean($element, 'drain_haem')?>
-	<?php echo $form->radioBoolean($element, 'deep_suture')?>
+	<?php echo $form->dropDownList($element, 'incision_site_id', CHtml::listData(IncisionSite::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
+	<?php echo $form->textField($element, 'length')?>
+	<?php echo $form->textField($element, 'meridian')?>
+	<?php echo $form->dropDownList($element, 'incision_type_id', CHtml::listData(IncisionType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->textArea($element, 'report', array('rows'=>8,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate')))?>
+	<?php echo $form->checkBoxArray($element, 'Complications', array('wound_burn','iris_trauma','zonular_dialysis','pc_rupture','decentered_iol','iol_exchange','dropped_nucleus','op_cancelled','corneal_odema','iris_prolapse','zonular_rupture','vitreous_loss','iol_into_vitreous','other_iol_problem','choroidal_haem'),array('column_length' => 8))?>
 </div>

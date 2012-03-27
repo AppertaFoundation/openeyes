@@ -39,5 +39,5 @@
 	<?php echo $form->dropDownList($element, 'drainage_type_id', CHtml::listData(DrainageType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
 	<?php echo $form->radioBoolean($element, 'drain_haem')?>
 	<?php echo $form->radioBoolean($element, 'deep_suture')?>
-	<?php echo $form->textArea($element, 'report', array('rows'=>4,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate')))?>
+	<?php echo $form->textArea($element, 'report', array('rows'=>8,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate')))?>
 </div>

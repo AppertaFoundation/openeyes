@@ -23,18 +23,23 @@
 <div class="view">
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('drainage_type_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->drainage_type->name ?></div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('incision_site_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->incision_site->name ?></div>
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('drain_haem')); ?></div>
-		<div class="eventHighlight"><?php echo $element->drain_haem ? 'Yes' : 'No'; ?></div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('length')); ?></div>
+		<div class="eventHighlight"><?php echo $element->length; ?></div>
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('deep_suture')); ?></div>
-		<div class="eventHighlight"><?php echo $element->deep_suture ? 'Yes' : 'No'; ?></div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('meridian')); ?></div>
+		<div class="eventHighlight"><?php echo $element->meridian; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('incision_type_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->incision_type->name ?></div>
 	</div>
 
 	<div class="col1">
@@ -53,11 +58,10 @@
 			'attribute'=>'eyedraw',
 			'doodleToolBarArray'=>array(),
 			'onLoadedCommandArray'=>array(
-				array('addDoodle', array('BuckleOperation')),
+				array('addDoodle', array('AntSeg')),
 				array('deselectDoodles', array()),
 			),
 		));
 		?>
 	</div>
 </div>
-

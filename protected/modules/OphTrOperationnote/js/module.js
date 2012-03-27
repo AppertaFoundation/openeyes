@@ -46,21 +46,47 @@ function callbackRemoveProcedure(procedure_id) {
 
 function eDparameterListener(_drawing) {
 	if (_drawing.selectedDoodle != null) {
-		//console.log(_drawing.IDSuffix);
+		if (_drawing.selectedDoodle != null && _drawing.selectedDoodle.className == 'PhakoIncision') {
+			setCataractSelectInput('incision_site',_drawing.selectedDoodle.getParameter('incisionSite'));
+			setCataractSelectInput('incision_type',_drawing.selectedDoodle.getParameter('incisionType'));
+			setCataractInput('length',_drawing.selectedDoodle.getParameter('incisionLength'));
+			setCataractInput('meridian',_drawing.selectedDoodle.getParameter('incisionMeridian'));
+		}
 	}
 }
 
+function setCataractSelectInput(key, value) {
+	$('#ElementCataract_'+key+'_id').children('option').map(function() {
+		if ($(this).text() == value) {
+			$('#ElementCataract_'+key+'_id').val($(this).val());
+		}
+	});
+}
+
+function setCataractInput(key, value) {
+	$('#ElementCataract_'+key).val(value);
+}
+
 $(document).ready(function() {
-	$('#generate_report').unbind('click').click(function(e) {
+	$("button[id$='_generate_report']").unbind('click').click(function(e) {
 		e.preventDefault();
 
+		var buttonClass = $(this).attr('id').replace(/_generate_report$/,'');
 		var text = ed_drawing_edit_RPS.report().replace(/, +$/, '');
 
-		if ($('#ElementBuckle_report').text().length >0) {
+		if ($('#'+buttonClass+'_report').text().length >0) {
 			text += ', '+text;
 		}
 
-		$('#ElementBuckle_report').text($('#ElementBuckle_report').text() + text);
+		$('#'+buttonClass+'_report').text($('#'+buttonClass+'_report').text() + text);
+
+		return false;
+	});
+
+	$('#ElementCataract_incision_site_id').unbind('change').change(function(e) {
+		e.preventDefault();
+
+		ed_drawing_edit_RPS.setParameterForDoodleOfClass('PhakoIncision', 'incisionSite', $(this).children('option:selected').text());
 
 		return false;
 	});
