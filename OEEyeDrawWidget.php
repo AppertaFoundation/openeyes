@@ -35,7 +35,7 @@
  * Usage:
  * <code>
  * <?php
- * $this->widget('ext.widgets.eyeDraw.OEEyeDrawWidget', array(
+ * $this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
  * 	'identifier'=> 'PS',
  * 	'side'=>'R',
  * 	'mode'=>'edit',
@@ -185,18 +185,22 @@ class OEEyeDrawWidget extends CWidget
 <div class="EyeDrawWidget">';
 		
         // Set values of derived properties
-				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.widgets.eyeDraw.css'));
-				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.widgets.eyeDraw.js'));
-				$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('ext.widgets.eyeDraw.graphics')).'/';
+				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.css'));
+				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.js'));
+				$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.graphics')).'/';
         $this->idSuffix = $this->side.$this->identifier;
         $this->drawingName = 'ed_drawing_'.$this->mode.'_'.$this->idSuffix;
         $this->canvasId = 'ed_canvas_'.$this->mode.'_'.$this->idSuffix;
         if (isset($this->model) && isset($this->attribute))
         {
-        	$this->inputName = $this->model->tableName().'['. $this->attribute.']';
-        	$this->inputId = $this->model->tableName().'_'. $this->attribute;
+        	$this->inputName = get_class($this->model).'['. $this->attribute.']';
+        	$this->inputId = get_class($this->model).'_'. $this->attribute;
+
+					if (isset($_POST[get_class($this->model)][$this->attribute])) {
+						$this->model->{$this->attribute} = $_POST[get_class($this->model)][$this->attribute];
+					}
         }
-        
+ 
         $this->eye = $this->side == "R"?0:1;		// ***TODO*** may require additional options
         $this->isEditable = $this->mode == 'edit'?true:false;
         
