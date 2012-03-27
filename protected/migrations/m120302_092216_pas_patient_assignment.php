@@ -3,7 +3,6 @@
 class m120302_092216_pas_patient_assignment extends CDbMigration {
 	public function up() {
 
-		/*
 		// Create new PAS mapping table to hold foreign keys
 		$this->createTable('pas_patient_assignment', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -22,7 +21,6 @@ class m120302_092216_pas_patient_assignment extends CDbMigration {
 
 		// Change patient key to be auto increment and reset counter
 		$this->alterColumn('patient', 'id', 'int(10) unsigned NOT NULL AUTO_INCREMENT');
-		*/
 
 		// Disable audit trail for address migration
 		$audit_trail = Yii::app()->params['audit_trail'];

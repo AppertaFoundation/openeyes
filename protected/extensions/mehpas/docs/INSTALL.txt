@@ -1,0 +1,1 @@
+Add docs/config.php to /protected/config/local/common.php

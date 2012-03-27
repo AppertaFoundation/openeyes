@@ -42,64 +42,6 @@ class GpService {
 	}
 	
 	/**
-	 * Get all the GPs from PAS and either insert or update them in the OE db
-	 * @deprecated
-	 */
-	public function populateGps()
-	{
-		// collect patient ids with no gp
-		$patient_ids = array();
-		$n=0;
-		foreach (Yii::app()->db->createCommand()->select()->from('patient')->queryAll() as $patient) {
-			$patient_ids[$n][] = $patient['id'];
-
-			// pas parameter limit is 1000
-			if (count($patient_ids[$n]) == 1000) $n++;
-		}
-
-		$errors = array();
-
-		// get last gp date from past table for all these patients
-		//select distinct rm_patient_no as patient_id, max(date_from) as latestGP from silver.patient_gps where rm_patient_no in (16218,16219) group by rm_patient_no order by rm_patient_no
-		foreach ($patient_ids as $ids) {
-			$errors = array_merge($errors, $this->GetPatientGp($ids,true));
-		}
-		echo "\n";
-
-		$msg = '';
-
-		if (!empty($errors)) {
-			$msg = implode("\n",$errors)."\n";
-		}
-
-		$patients_with_null_gp = array();
-		foreach (Yii::app()->db->createCommand()->select()->from('patient')->where("gp_id is null")->queryAll() as $patient) {
-			$patients_with_null_gp[] = $patient;
-		}
-
-		if (count($patients_with_null_gp) >0) {
-			$msg .= count($patients_with_null_gp)." patient(s) have a null gp_id:\n";
-			foreach ($patients_with_null_gp as $patient) {
-				$msg .= " - {$patient['first_name']} {$patient['last_name']} (pas_key={$patient['pas_key']}, hos_num={$patient['hos_num']})\n";
-			}
-		}
-
-		if (strlen($msg) >0) {
-			$hostname = trim(`/bin/hostname`);
-			mail(Yii::app()->params['alerts_email'],"[$hostname] FetchGP errors",$msg);
-		}
-	}
-
-	/**
-	 * Check to see if a GP ID (obj_prof) is on our block list
-	 * @param string $gp_id
-	 * @return boolean
-	 */
-	public static function is_bad_gp($gp_id) {
-		return (in_array($gp_id, Yii::app()->params['bad_gps']));
-	}
-	
-	/**
 	 * Populate the GP for a given patient. $patient_id can also be an array of patient_ids
 	 * (used by the PopulateGps method above to populate multiple patient GPs at once)
 	 * @param unknown_type $patient_id
@@ -246,54 +188,5 @@ class GpService {
 		return true;
 	}
 	
-	/**
-	 * Load data from PAS into existing GP object and save
-	 * 
-	 * @return Gp
-	 * @todo This needs integrating with GetPatientGp and related methods
-	 */
-	public function loadFromPas() {
-		if(!$this->gp->obj_prof) {
-			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
-		}
-		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
-		$pas_query = new CDbCriteria();
-		$pas_query->condition = 'obj_prof = :gp_id';
-		$pas_query->order = 'DATE_FR DESC';
-		$pas_query->params = array(':gp_id' => $this->gp->obj_prof);
-		if($pas_gp = PAS_Gp::model()->find($pas_query)) {
-			$this->gp->nat_id = $pas_gp->NAT_ID;
-			
-			// Contact
-			if(!$contact = $this->gp->contact) {
-				$contact = new Contact();
-			}
-			$contact->first_name = trim($pas_gp->FN1 . ' ' . $pas_gp->FN2);
-			$contact->last_name = $pas_gp->SN;
-			$contact->title = $pas_gp->TITLE;
-			$contact->primary_phone = $pas_gp->TEL_1;
-			
-			// Address
-			if(!$address = $contact->address) {
-				$address = new Address();
-			}
-			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
-			$address->address2 = $pas_gp->ADD_DIS;
-			$address->city = $pas_gp->ADD_TWN;
-			$address->county = $pas_gp->ADD_CTY;
-			$address->postcode = $pas_gp->PC;
-			$address->country_id = 1;
-
-			// Save
-			$contact->save();
-			$address->parent_id = $contact->id;
-			$address->save();
-			$this->gp->contact_id = $contact->id;
-			$this->gp->save();
-			
-		} else {
-			Yii::log('GP not found in PAS: '.$this->gp->obj_prof, 'info');
-		}
-	}
 	
 }
