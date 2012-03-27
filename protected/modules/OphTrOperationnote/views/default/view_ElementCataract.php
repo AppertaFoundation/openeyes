@@ -47,6 +47,15 @@
 		<div class="eventHighlight"><?php echo $element->report ?></div>
 	</div>
 
+	<h4>Complications</h4>
+	<?php if (!$element->complications) {?>
+		None
+	<?php }else{
+		foreach ($element->complications as $complication) {?>
+			<?php echo $complication?><br/>
+		<?php }
+	}?>
+
 	<div class="col1" style="margin-top: 1em;">
 		<?php
 		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(

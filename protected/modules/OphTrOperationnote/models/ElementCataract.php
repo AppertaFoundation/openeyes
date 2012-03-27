@@ -33,6 +33,7 @@
 class ElementCataract extends BaseEventTypeElement
 {
 	public $service;
+	public $complication_fields = array('wound_burn','iris_trauma','zonular_dialysis','pc_rupture','decentered_iol','iol_exchange','dropped_nucleus','op_cancelled','corneal_odema','iris_prolapse','zonular_rupture','vitreous_loss','iol_into_vitreous','other_iol_problem','choroidal_haem');
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -152,5 +153,17 @@ class ElementCataract extends BaseEventTypeElement
 	protected function beforeValidate()
 	{
 		return parent::beforeValidate();
+	}
+
+	public function getComplications() {
+		$complications = array();
+
+		foreach ($this->complication_fields as $field) {
+			if ($this->$field) {
+				$complications[] = $this->getAttributeLabel($field);
+			}
+		}
+
+		return $complications;
 	}
 }
