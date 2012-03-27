@@ -493,9 +493,9 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 
 /* Quicklook ... meta overview of Event */
 .episode ul.events li .quicklook { display:none; position:absolute; width:200px; left:140px; top:-5px; z-index:1; padding:5px; border:1px solid #3665ff; background:#fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 2px 2px 2px 0 #999;  -webkit-box-shadow: 2px 2px 2px 0 #999;  box-shadow: 2px 2px 2px 0 #999;  }
-.episode ul.events li .quicklook .event { display:block; font-weight: bold; padding-left:5px; }
+.episode ul.events li .quicklook .event { display:block; font-weight: bold; padding-left:5px; padding-bottom:3px; }
 .episode ul.events li .quicklook .info	{ display:block; font-size:11px; padding-left:5px}
-.episode ul.events li .quicklook .issue	{ display:block; font-size:11px; padding:5px 5px 5px 20px; margin-top:5px; background:#fdf2e5 url(../img/_elements/icons/event/status/alert.png) top left no-repeat;}
+.episode ul.events li .quicklook .issue	{ display:block; font-size:11px; color:#600; padding:5px 5px 5px 20px; margin-top:7px; background:#fdf2e5 url(../img/_elements/icons/event/status/alert.png) top left no-repeat;}
 
 
 /* Viewing...  */
