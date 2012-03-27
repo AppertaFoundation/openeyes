@@ -737,7 +737,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* ====== CATEGORY & EVENT COLOUR ====== */
 #event_display .colorband { height:5px; background:#a29d8a;  }
 #event_display .colorband.category_blank { background:#ccc;}
-#event_display .colorband.category_treatement { background:#fd6892;}
+#event_display .colorband.category_treatment { background:#fd6892;}
 #event_display .colorband.category_communication { background:#86cdff;}
 #event_display .colorband.category_investigation { background:#a5a0a9;}
 #event_display .colorband.category_images { background:#5f5f5f;}
