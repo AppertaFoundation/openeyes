@@ -195,8 +195,12 @@ class OEEyeDrawWidget extends CWidget
         {
         	$this->inputName = get_class($this->model).'['. $this->attribute.']';
         	$this->inputId = get_class($this->model).'_'. $this->attribute;
+
+					if (isset($_POST[get_class($this->model)][$this->attribute])) {
+						$this->model->{$this->attribute} = $_POST[get_class($this->model)][$this->attribute];
+					}
         }
-        
+ 
         $this->eye = $this->side == "R"?0:1;		// ***TODO*** may require additional options
         $this->isEditable = $this->mode == 'edit'?true:false;
         
