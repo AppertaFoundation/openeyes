@@ -60,6 +60,7 @@ class ElementVitrectomy extends BaseEventTypeElement
 		// will receive user inputs.
 		return array(
 			array('event_id, gauge_id, pvd_induced', 'safe'),
+			array('gauge_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, gauge_id, pvd_induced', 'safe', 'on' => 'search'),

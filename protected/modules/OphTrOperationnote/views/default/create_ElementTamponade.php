@@ -21,7 +21,7 @@
 <div class="<?php echo $element->elementType->class_name?>">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<?php echo $form->dropDownList($element, 'gas_type_id', CHtml::listData(GasType::model()->findAll(),'id','name'))?>
-	<?php echo $form->dropDownList($element, 'gas_percentage_id', CHtml::listData(GasPercentage::model()->findAll(),'id','value'))?>
-	<?php echo $form->dropDownList($element, 'gas_volume_id', CHtml::listData(GasVolume::model()->findAll(),'id','value'))?>
+	<?php echo $form->dropDownList($element, 'gas_type_id', CHtml::listData(GasType::model()->findAll(),'id','name'),array('empty'=>'- Please select -'))?>
+	<?php echo $form->dropDownList($element, 'gas_percentage_id', CHtml::listData(GasPercentage::model()->findAll(),'id','value'),array('empty'=>'- Please select -'))?>
+	<?php echo $form->dropDownList($element, 'gas_volume_id', CHtml::listData(GasVolume::model()->findAll(),'id','value'),array('empty'=>'- Please select -'))?>
 </div>
