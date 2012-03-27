@@ -20,16 +20,5 @@
 class TextField extends BaseCWidget {
 	public $name;
 	public $htmlOptions;
-
-	public function run() {
-		if (empty($_POST)) {
-			$this->value = $this->element->{$this->field};
-		} else {
-			$this->value = $_POST[$name];
-		}
-
-		parent::run();
-	}
 }
-
 ?>
