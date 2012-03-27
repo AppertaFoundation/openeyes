@@ -4,7 +4,7 @@ class OEEventManager extends CApplicationComponent {
 	public $observers;
 	
 	public function dispatch($event_id, $params) {
-		$observers = $this->observers[$event_id];
+		$observers = isset($this->observers[$event_id]) ? $this->observers[$event_id] : array();
 		foreach($observers as $observer) {
 			$class_name = $observer['class'];
 			$method = $observer['method'];
