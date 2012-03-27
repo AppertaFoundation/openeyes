@@ -150,6 +150,10 @@ class PatientController extends BaseController
 	{
 		if (!empty($_POST)) {
 
+			foreach ($_POST['Patient'] as $key => $value) {
+				$_POST['Patient'][$key] = trim($value);
+			}
+
 			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
 				setcookie('patient-search-minimum-criteria','1',0,'/');
 				$this->redirect('/patient/results/error');
