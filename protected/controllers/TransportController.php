@@ -89,7 +89,7 @@ class TransportController extends BaseController
 			join patient on episode.patient_id = patient.id
 			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
 			join ward on booking.ward_id = ward.id
-			where cancelled_booking.created_date >= '$from' and cancelled_booking.created_date <= '$to' and element_operation.status = 3
+			where booking.created_date >= '$from' and booking.created_date <= '$to' and element_operation.status = 3
 			UNION
 				select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, element_operation.urgent, specialty.ref_spec as specialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, 'Unknown' as ward_name from cancelled_booking
 			join theatre on cancelled_booking.theatre_id = theatre.id

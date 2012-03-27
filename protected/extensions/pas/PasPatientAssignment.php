@@ -104,9 +104,13 @@ class PasPatientAssignment extends BaseActiveRecord {
 		return $this->find('external_id = :external_id', array(':external_id' => (int) $external_id));
 	}
 	
-	public static function isStale($patient_id) {
+	public function isStale() {
+		return strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME);
+	}
+	
+	public static function is_stale($patient_id) {
 		$record = self::model()->find('patient_id = :patient_id', array(':patient_id' => (int) $patient_id));
-		return $record && (strtotime($record->last_modified_date) < (time() - self::PAS_CACHE_TIME));
+		return $record && $record->isStale();
 	}
 	
 }
