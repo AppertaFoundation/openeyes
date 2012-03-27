@@ -114,11 +114,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							<span class="group">
 							<a href="" id="last_week">Last week</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="" id="next_week">Next week</a>
 							</span>
-
-							<span style="width: 30px; margin-left: 3em;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
-							<button id="search_button" type="submit" class="classy green tall" style="float: right; position: absolute; top: 10.6em; left: 63em;"><span class="button-span button-span-green">Search</span></button>
 						</div>
-
+						<div style="float:right;">
+							<span style="width: 30px;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
+							<button id="search_button" type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
+						</div>
 					</div> <!-- #extra-search -->
 				</div> <!-- #search-options -->
 				<?php $this->endWidget()?>

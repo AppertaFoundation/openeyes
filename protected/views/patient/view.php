@@ -74,6 +74,11 @@ if (!empty($address)) {
 						<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>
 					</div>
 				<?php } ?>
+				<?php if ($model->isDeceased()) {?>
+					<div id="deceased-notice" class="alertBox">
+						This patient is deceased (<?php echo $model->NHSDate('date_of_death'); ?>)
+					</div>
+				<?php } ?>
 
 				<div class="halfColumnLeft">
  
@@ -100,7 +105,18 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Date of Birth:</div>
-							<div class="data_value"><?php echo $model->NHSDate('dob') . ' (Age '.$model->getAge().')'?></div>
+							<div class="data_value">
+								<?php echo $model->NHSDate('dob') ?>
+							</div>
+						</div>
+						<div class="data_row">
+							<?php if($model->date_of_death) { ?>
+							<div class="data_label">Date of Death:</div>
+							<div class="data_value"><?php echo $model->NHSDate('date_of_death') . ' (Age '.$model->getAge().')' ?></div>
+							<?php } else { ?>
+							<div class="data_label">Age:</div>
+							<div class="data_value"><?php echo $model->getAge() ?></div>
+							<?php } ?>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Gender:</div>
@@ -168,7 +184,9 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
+					<?php if(!$model->isDeceased()) { ?>
 					<p><a href="/patient/episodes/<?php echo $model->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
+					<?php } ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">

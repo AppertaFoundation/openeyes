@@ -98,7 +98,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase
 
 	public function testGetList_MissingFirm_ThrowsException()
 	{
-		$this->setExpectedException('Exception', 'Firm is required.');
+		$this->setExpectedException('CException', 'Firm is required.');
 		$this->model->getList(null);
 	}
 

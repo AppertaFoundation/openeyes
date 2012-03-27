@@ -83,11 +83,13 @@ class Address extends BaseActiveRecord {
 	 */
 	public function attributeLabels() {
 		return array(
+			'id' => 'ID',
 			'address1' => 'Address1',
 			'address2' => 'Address2',
 			'city' => 'City',
 			'postcode' => 'Postcode',
 			'county' => 'County',
+			'country_id' => 'Country',
 			'email' => 'Email',
 		);
 	}

@@ -30,17 +30,14 @@ $config = CMap::mergeArray(
 			),
 			'db'=>array(
 				'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-				'username' => 'root',
-				'password' => '',
+				'username' => 'oe',
+				'password' => '_OE_TESTDB_PASSWORD_',
 			),
 			'db_pas' => array(
 				'connectionString' => 'mysql:host=localhost;dbname=openeyestestpas',
-				'username' => 'root',
-				'password' => '',
+				'username' => 'oe',
+				'password' => '_OE_TESTPAS_PASSWORD_',
 			),
-		),
-		'params'=>array(
-			'auth_source' => 'BASIC',
 		),
 	)
 );

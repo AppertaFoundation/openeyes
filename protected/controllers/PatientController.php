@@ -175,7 +175,7 @@ class PatientController extends BaseController
 
 				$this->patientSearch();
 
-				exit;
+				Yii::app()->end();
 			} else {
 				$get_hos_num = '000000';
 			}

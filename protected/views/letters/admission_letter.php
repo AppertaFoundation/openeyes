@@ -84,7 +84,7 @@
 	<?php if ($site ->id != 5) {
 		// City Road ?>
 	<li><strong>Please contact the Children's Ward as soon as possible on 0207
-			566 2595 or 2596 to discuss pre-operative instructions</strong></li>
+			566 2595 to discuss pre-operative instructions</strong></li>
 	<?php } ?>
 	<li>Bring this letter with you on date of admission</li>
 	<?php if ($site->id == 5) {
@@ -102,7 +102,7 @@
 		// St Georges ?>
 	020 8725 0060
 	<?php } else { ?>
-	0207 566 2596 and ask to speak to a nurse
+	0207 566 2595 and ask to speak to a nurse
 	<?php } ?>
 	for advice.
 </p>

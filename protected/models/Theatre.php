@@ -27,6 +27,7 @@
  *
  * The followings are the available model relations:
  * @property Sequence[] $sequences
+ * @property Session[] $sessions
  * @property Site $site
  */
 class Theatre extends BaseActiveRecord
@@ -73,6 +74,7 @@ class Theatre extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'sessions' => array(self::HAS_MANY, 'Session', 'theatre_id'),
 			'sequences' => array(self::HAS_MANY, 'Sequence', 'theatre_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 		);
@@ -120,21 +122,21 @@ class Theatre extends BaseActiveRecord
 		);
 	}
 
-	public function getListWithSites()
-	{
+	public function getListWithSites() {
 		$theatres = Yii::app()->db->createCommand()
-			->select('t.id, t.name, s.name AS site')
+			->select('t.id, t.name, s.short_name AS site')
 			->from('theatre t')
 			->join('site s', 't.site_id = s.id')
-			->order('s.name ASC, t.name ASC')
+			->order('s.short_name, t.name')
 			->queryAll();
-
 		$data = array();
-
 		foreach ($theatres as $theatre) {
-			$data[$theatre['id']] = $theatre['site'] . ' - ' . $theatre['name'];
+			$data[$theatre['id']] = $theatre['name'] . ' (' . $theatre['site'] . ')';
 		}
-
 		return $data;
+	}
+	
+	public function getNameWithSite() {
+		return $this->name . ' (' . $this->site->name . ')';
 	}
 }

@@ -648,7 +648,7 @@ class ElementOperation extends BaseElement
 				$bookable = false;
 				$session['bookable_reason'] = 'paediatric';
 			}
-			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL) {
+			if($this->anaesthetic_type == ElementOperation::ANAESTHETIC_GENERAL && !$session['general_anaesthetic']) {
 				$bookable = false;
 				$session['bookable_reason'] = 'general_anaesthetic';
 			}
@@ -1082,7 +1082,7 @@ class ElementOperation extends BaseElement
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
-				$changeContact = 'a nurse on 020 7566 2596';
+				$changeContact = 'a nurse on 020 7566 2595';
 			} else {
 				// St. George's
 				$changeContact = 'Naeela Butt on 020 8725 0060';
@@ -1178,7 +1178,7 @@ class ElementOperation extends BaseElement
 						break;
 					case 11: // Paediatrics
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						$contact['health'] = '0207 566 2595 and ask to speak to a nurse';
 						break;
 					case 13: // Refractive Laser
 						$contact['refuse'] = '020 7566 2205 and ask for Joyce Carmichael';
@@ -1186,7 +1186,7 @@ class ElementOperation extends BaseElement
 						break;
 					case 14: // Strabismus
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
-						$contact['health'] = '0207 566 2596 and ask to speak to a nurse';
+						$contact['health'] = '0207 566 2595 and ask to speak to a nurse';
 						break;
 					case 8: // Vitreo Retinal
 						$contact['refuse'] .= '020 7566 2004';
@@ -1417,6 +1417,72 @@ class ElementOperation extends BaseElement
 
 			if ($this->consultant_required && !$session->consultant) {
 				$this->addError('consultant_required', 'Unable to set consultant required - this operation is booked into a session without a consultant.<br/>You will need to first re-schedule the operation.');
+			}
+		}
+	}
+	
+	// Cancel operation
+	public function cancel($reason_id, $comment = null) {
+		$cancel = new CancelledOperation();
+		$cancel->element_operation_id = $this->id;
+		$cancel->cancelled_date = date('Y-m-d H:i:s');
+		$cancel->cancelled_reason_id = $reason_id;
+		$cancel->cancellation_comment = $comment;
+		$this->status = self::STATUS_CANCELLED;
+		if(!$cancel->save()) {
+			throw new CException('Unable to cancel operation: '.print_r($cancel->getErrors(), true));
+		}
+		if(!$this->save()) {
+			throw new CException('Unable to cancel operation: '.print_r($this->getErrors(), true));
+		}
+		OELog::log("Operation cancelled: $this->id");
+			
+		// Update event datestamp
+		$event = $this->event;
+		$event->datetime = date("Y-m-d H:i:s");
+		$event->save();
+	
+		// Does the operation have a booking?
+		$booking = $this->booking;
+		if($booking) {
+			$session = $booking->session;
+			$cancellation = new CancelledBooking;
+			$cancellation->element_operation_id = $this->id;
+			$cancellation->date = $session->date;
+			$cancellation->start_time = $session->start_time;
+			$cancellation->end_time = $session->end_time;
+			$cancellation->theatre_id = $session->theatre_id;
+			$cancellation->cancelled_date = date('Y-m-d H:i:s');
+			$cancellation->cancelled_reason_id = $reason_id;
+			$cancellation->cancellation_comment = $comment;
+			if (!$cancellation->save()) {
+				throw new CException('Unable to cancel booking: '.print_r($cancellation->getErrors(), true));
+			}
+			OELog::log("Booking cancelled: $booking->id");
+			
+			// Urgent notification
+			if(Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
+				if(strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
+					if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
+						$targets = array(Yii::app()->params['urgent_booking_notify_email']);
+					} else {
+						$targets = Yii::app()->params['urgent_booking_notify_email'];
+					}
+					foreach ($targets as $email) {
+						mail(
+							$email,
+							"[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
+								. $this->getDisorder() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME']
+								. "/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
+							"From: " . Yii::app()->params['urgent_booking_notify_email_from']."\r\n"
+						);
+					}
+				}
+			}
+	
+			// Remove booking
+			if (!$booking->delete()) {
+				throw new CException('Unable to remove cancelled booking: '.print_r($booking->getErrors(), true));
 			}
 		}
 	}

@@ -44,17 +44,30 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 ?>
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
+<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation.png) center left no-repeat;">Operation</h3>
+
 <?php if ($no_gp) { ?>
-<div class="alertBox">Patient has no GP, please correct in PAS before printing GP letter.</div>
+<div class="alertBox">
+	Patient has no GP, please correct in PAS before printing GP letter.
+</div>
 <?php } ?>
 
-<div class="cols2">
-<!-- Details -->
-<h3 class="subsection">Operation (<?php echo $operation->getStatusText()?>)</h3>
+<?php if ($operation->status == ElementOperation::STATUS_PENDING || $operation->status == ElementOperation::STATUS_NEEDS_RESCHEDULING) { ?>
+<div class="issueBox">
+	Operation <?php echo $operation->getStatusText() ?>
+</div>
+<?php } ?>
 
-<div class="col1">
+<!-- Details -->
+
+<h4>Diagnosis</h4>
+<div class="eventHighlight big">
+	<?php $disorder = $operation->getDisorder(); ?>
+	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
+</div>
+
 <h4>Operation</h4>
-<div class="eventHighlight">
+<div class="eventHighlight priority">
 	<h4><?php echo $operation->getEyeText()?> 
 <?php
 foreach ($elements as $element) {
@@ -73,45 +86,38 @@ foreach ($elements as $element) {
 }
 ?></h4>
 </div>
-</div>
 
-<div class="col2">
-<h4>Diagnosis</h4>
-<div class="eventHighlight">
-	<?php $disorder = $operation->getDisorder(); ?>
-	<h4><?php echo !empty($disorder) ? $operation->getDisorderEyeText() : 'Unknown' ?> <?php echo !empty($disorder) ? $operation->getDisorder() : 'Unknown' ?></h4>
-</div>
-</div>
+<div class="cols2">
 
-<div class="col1">
+<div class="left">
 <h4>Anaesthetic</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->getAnaestheticText()?></h4>
 </div>
 </div>
 
-<div class="col2">
+<div class="right">
 <h4>Consultant required?</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->consultant_required ? 'Yes' : 'No'?></h4>
 </div>
 </div>
 
-<div class="col1">
+<div class="left">
 <h4>Post Operative Stay Required</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->overnight_stay ? 'Yes' : 'No'?></h4>
 </div>
 </div>
 
-<div class="col2">
+<div class="right">
 <h4>Decision Date</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
 </div>
 </div>
 
-<div class="col1">
+<div class="left">
 <h4>Operation priority</h4>
 <div class="eventHighlight">
 	<h4><?php echo $operation->urgent ? 'Urgent' : 'Routine'?></h4>
@@ -119,119 +125,99 @@ foreach ($elements as $element) {
 </div>
 
 <?php if (!empty($operation->comments)) { ?>
-<div class="col2">
+<div class="right">
 <h4>Operation Comments</h4>
-	<div class="eventHighlight">
+	<div class="eventHighlight comments">
 		<h4><?php echo $operation->comments?></h4>
 	</div>
 </div>
 <?php } ?>
 
-<div class="col1">
-<h4>Operation Created by</h4>
-<div class="eventHighlight">
-<h4><?php echo $operation->event->user->fullname ?> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?></h4>
-</div>
 </div>
 
-<div class="col2">
-<h4>Operation Last modified by</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->event->usermodified->fullname ?> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?></h4>
-</div>
+<div class="metaData">
+<span class="info">
+Operation created by <span class="user"><?php echo $operation->event->user->fullname ?></span> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?>
+</span>
+<span class="info">
+Operation last modified by <span class="user"><?php echo $operation->event->usermodified->fullname ?></span> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?>
+</span>
 </div>
 
 <?php if (!empty($operation->booking)) { ?>
 <!-- Booking -->
 <h3 class="subsection">Booking Details</h3>
 
-<div class="col1">
+<div class="cols2">
+<div class="left">
 <h4>List</h4>
 <div class="eventHighlight">
 <?php $session = $operation->booking->session ?>
-<h4><?php
-	if (empty($session->sequence->sequenceFirmAssignment)) {
-		$firmName = 'Emergency List';
-	} else {
-		$firmName = $session->sequence->sequenceFirmAssignment->firm->name . ' (' .
-			$session->sequence->sequenceFirmAssignment->firm->serviceSpecialtyAssignment->specialty->name . ')';
-	}
-	echo $session->NHSDate('date') . ' ' . substr($session->start_time,0,5) . ' - ' . substr($session->end_time,0,5) . ', '.$firmName;
-?></h4>
+<h4><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
 </div>
 </div>
 
-<div class="col2">
+<div class="right">
 <h4>Theatre</h4>
 <div class="eventHighlight">
-<h4><?php echo $session->sequence->theatre->name ?> (<?php echo $session->sequence->theatre->site->name ?>)</h4>
+<h4><?php echo $session->TheatreName ?></h4>
 </div>
 </div>
 
-<div class="col1">
+<div class="left">
 <h4>Admission Time</h4>
 <div class="eventHighlight">
 <h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 </div>
 </div>
-
-<div class="col1">
-<h4>Booking Created by</h4>
-<div class="eventHighlight">
-<h4><?php echo $operation->booking->user->fullname ?> on <?php echo $operation->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->booking->created_date)) ?></h4>
-</div>
 </div>
 
-<div class="col2">
-<h4>Booking Last modified by</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->booking->usermodified->fullname ?> on <?php echo $operation->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->booking->last_modified_date)) ?></h4>
-</div>
+<div class="metaData">
+<span class="info">
+Booking created by <span class="user"><?php echo $operation->booking->user->fullname ?></span> on <?php echo $operation->booking->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->booking->created_date)) ?>
+</span>
+<span class="info">
+Booking last modified by <span class="user"><?php echo $operation->booking->usermodified->fullname ?></span> on <?php echo $operation->booking->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->booking->last_modified_date)) ?>
+</span>
 </div>
 
 <?php } ?>
 
 <?php if (count($cancelledBookings)) { ?>
-<div class="col1">
-<h4>Cancelled Bookings</h4>
-<div class="eventHighlight"><h4>
-<?php
-	foreach ($cancelledBookings as $cb) {
-		echo 'Scheduled for ' . $cb->start_time . ' - ' . $cb->end_time . ', ' . $cb->NHSDate('date');
-		echo ', ' . $cb->theatre->name . ' (' . $cb->theatre->site->name . ') ';
-		echo ', cancelled on ' . $cb->NHSDate('cancelled_date') . ' by user ' . $cb->user->username . ' for reason: ' . $cb->cancelledReason->text;
-		if ($cb->cancellation_comment) {
-			echo ' ('.$cb->cancellation_comment.')';
-		}
-		echo '<br />';
-	}
-?>
-</h4></div>
-</div>
+	<h3 class="subsection">Cancelled Bookings</h3>
+	<ul class="eventComments">
+		<?php foreach($cancelledBookings as $cb) { ?>
+		<li>
+			Originally scheduled for <strong><?php echo $cb->NHSDate('date'); ?>,
+			<?php echo date('H:i',strtotime($cb->start_time)); ?> -
+			<?php echo date('H:i',strtotime($cb->end_time)); ?></strong>,
+			in <strong><?php echo $cb->theatre->NameWithSite; ?></strong>.
+			Cancelled on <?php echo $cb->NHSDate('cancelled_date'); ?>
+			by <strong><?php echo $cb->user->FullName; ?></strong>
+			due to <?php echo $cb->ReasonWithComment; ?>
+		</li>
+		<?php } ?>
+	</ul>
 <?php } ?>
 
 <?php if ($operation->status == $operation::STATUS_CANCELLED && !empty($operation->cancellation)) {
 	$co = $operation->cancellation;
 ?>
-<div class="col1">
-<h4>Cancellation details</h4>
-<div class="eventHighlight"><h4>
-<?php
-	echo 'Cancelled on ' . $co->NHSDate('cancelled_date') . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text . '<br />';
-?>
-</h4></div>
-</div>
-<?php if ($co->cancellation_comment) {?>
-<div class="col1">
-	<h4>Cancellation comments</h4>
+<h3 class="subsection">Cancellation details</h3>
 	<div class="eventHighlight">
+		<h4>Cancelled on <?php echo $co->NHSDate('cancelled_date') . ' by user ' . $co->user->username . ' for reason: ' . $co->cancelledReason->text; ?>
+		</h4>
+	</div>
+
+<?php if ($co->cancellation_comment) {?>
+	<h4>Cancellation comments</h4>
+	<div class="eventHighlight comments">
 		<h4><?php echo str_replace("\n","<br/>",$co->cancellation_comment)?></h4>
 	</div>
-</div>
-<?php } ?>
 <?php } ?>
 
-</div>
+<?php } ?>
+
 <?php if ($operation->status != $operation::STATUS_CANCELLED && $editable) { ?>
 <!-- editable -->
 <div style="margin-top:40px; text-align:center;">
@@ -359,8 +345,8 @@ foreach ($elements as $element) {
 	$event = Event::model()->findByPk($eventId);
 	$patient = $event->episode->patient;
 	$admissionContact = $operation->getAdmissionContact();
-	$site = $operation->booking->session->sequence->theatre->site;
-	$firm = ($firm_assign = $operation->booking->session->sequence->sequenceFirmAssignment) ? $firm_assign->firm : false;
+	$site = $operation->booking->session->theatre->site;
+	$firm = $operation->booking->session->firm;
 	$emergency_list = false;
 	if(!$firm) {
 		$firm = $operation->event->episode->firm;

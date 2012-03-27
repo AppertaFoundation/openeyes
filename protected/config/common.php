@@ -34,6 +34,7 @@ $config = array(
 		'application.components.summaryWidgets.*',
 		'application.services.*',
 		'application.modules.*',
+		'application.commands.*',
 		'application.commands.shell.*',
 		'application.behaviors.*',
 		'application.controllers.*',
@@ -80,8 +81,8 @@ $config = array(
 			'class' => 'CDbConnection',
 			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
+			'username' => 'oe',
+			'password' => '_OE_PASSWORD_',
 			'charset' => 'utf8',
 			'schemaCachingDuration' => 300,
 		),
@@ -89,8 +90,8 @@ $config = array(
 			'class' => 'CDbConnection',
 			'connectionString' => 'mysql:host=localhost;dbname=openeyespas',
 			'emulatePrepare' => true,
-			'username' => 'root',
-			'password' => '',
+			'username' => 'oe',
+			'password' => '_OE_PAS_PASSWORD_',
 			'schemaCachingDuration' => 300,
 		),
 		'authManager' => array(
@@ -158,7 +159,8 @@ $config = array(
 		'log_events' => true,
 		'urgent_booking_notify_hours' => 24,
 		'urgent_booking_notify_email' => array(),
-		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>'
+		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
+		'default_site_code' => '',
 	)
 );
 

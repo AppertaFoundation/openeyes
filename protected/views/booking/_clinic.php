@@ -30,7 +30,7 @@ $firm = $operation->event->episode->firm; ?>
 </div>
 <?php
 if (!empty($operation->booking)) {
-	$theatre = $operation->booking->session->sequence->theatre; ?>
+	$theatre = $operation->booking->session->theatre; ?>
 <div class="view">
 	<strong>Location:</strong>
 	<?php echo CHtml::encode($theatre->site->name) . ' - ' . 

@@ -1,0 +1,29 @@
+id,name,class_name,last_modified_user_id,last_modified_date,created_user_id,created_date
+1,History,ElementHistory,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+2,Past history,ElementPastHistory,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+3,Visual function,ElementVisualFunction,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+4,Visual acuity,ElementVisualAcuity,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+5,Mini-refraction,ElementMiniRefraction,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+6,Visual fields,ElementVisualFields,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+7,Extraocular movements,ElementExtraocularMovements,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+8,Cranial nervers,ElementCranialNerves,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+9,Orbital examination,ElementOrbitalExamination,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+10,Anterior segment,ElementAnteriorSegment,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+12,Gonioscopy,ElementGonioscopy,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+13,Intraocular pressure,ElementIntraocularPressure,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+14,Posterior segment,ElementPosteriorSegment,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+16,Conclusion,ElementConclusion,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+17,POH,ElementPOH,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+18,FOH,ElementFOH,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+19,PMH,ElementPMH,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+20,Allergies,ElementAllergies,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+21,Social History and Smoking,ElementSocialHistory,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+22,Medication,ElementMedication,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+23,HPC,ElementHPC,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+24,Registered blind,ElementRegisteredBlind,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+25,Referred from screening,ElementReferredFromScreening,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+26,Diabetes type,ElementDiabetesType,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+27,NSC grade,ElementNSCGrade,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+29,Operation,ElementOperation,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+30,Letter out,ElementLetterOut,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00
+31,Diagnosis,ElementDiagnosis,1,1900-01-01 00:00:00,1,1900-01-01 00:00:00

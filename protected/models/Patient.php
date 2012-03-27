@@ -27,6 +27,7 @@
  * @property string  $first_name
  * @property string  $last_name
  * @property string  $dob
+ * @property string  $date_of_death
  * @property string  $gender
  * @property string  $hos_num
  * @property string  $nhs_num
@@ -114,6 +115,7 @@ class Patient extends BaseActiveRecord {
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
 			'pas_key' => 'PAS Key',
 			'title' => 'Title',
 			'first_name' => 'First Name',
@@ -185,7 +187,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getAge() {
-		return Helper::getAge($this->dob);
+		return Helper::getAge($this->dob, $this->date_of_death);
 	}
 
 	/**
@@ -193,6 +195,14 @@ class Patient extends BaseActiveRecord {
 	 */
 	public function isChild() {
 		return ($this->getAge() < 16);
+	}
+
+	/**
+	 * @return boolean Is patient deceased?
+	 */
+	public function isDeceased() {
+		// Assume that if the patient has a date of death then they are actually dead, even if the date is in the future
+		return (!empty($this->date_of_death));
 	}
 
 	/**
@@ -290,7 +300,7 @@ class Patient extends BaseActiveRecord {
 	 */
 	protected function afterFind() {
 		parent::afterFind();
-		if($this->use_pas && Yii::app()->params['use_pas'] && PasPatientAssignment::isStale($this->id)) {
+		if($this->use_pas && Yii::app()->params['use_pas'] && PasPatientAssignment::is_stale($this->id)) {
 			Yii::log('Patient details stale', 'trace');
 			$patient_service = new PatientService($this);
 			if (!$patient_service->down) {
