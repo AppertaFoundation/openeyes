@@ -50,3 +50,18 @@ function eDparameterListener(_drawing) {
 	}
 }
 
+$(document).ready(function() {
+	$('#generate_report').unbind('click').click(function(e) {
+		e.preventDefault();
+
+		var text = ed_drawing_edit_RPS.report().replace(/, +$/, '');
+
+		if ($('#ElementBuckle_report').text().length >0) {
+			text += ', '+text;
+		}
+
+		$('#ElementBuckle_report').text($('#ElementBuckle_report').text() + text);
+
+		return false;
+	});
+});

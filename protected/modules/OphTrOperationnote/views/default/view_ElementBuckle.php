@@ -37,6 +37,11 @@
 		<div class="eventHighlight"><?php echo $element->deep_suture ? 'Yes' : 'No'; ?></div>
 	</div>
 
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('Report')); ?></div>
+		<div class="eventHighlight"><?php echo $element->report ?></div>
+	</div>
+
 	<div class="col1" style="margin-top: 1em;">
 		<?php
 		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(

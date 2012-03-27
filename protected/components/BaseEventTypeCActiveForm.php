@@ -44,7 +44,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			throw new SystemException('textArea requires the cols option to be specified');
 		}
 
-		$this->widget('application.widgets.TextArea',array('element' => $element, 'field' => $field, 'rows' => $options['rows'], 'cols' => $options['cols']));
+		$this->widget('application.widgets.TextArea',array('element' => $element, 'field' => $field, 'rows' => $options['rows'], 'cols' => $options['cols'], 'button' => @$options['button']));
 	}
 
 	public function textField($element,$field,$htmlOptions=array()) {
