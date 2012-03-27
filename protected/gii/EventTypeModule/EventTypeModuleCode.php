@@ -38,7 +38,32 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 	public function prepare() {
 		$this->moduleID = ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst($this->moduleSuffix));
 		parent::prepare();
+
+		$this->files=array();
+		$templatePath=$this->templatePath;
+		$modulePath=$this->modulePath;
+		$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
+
+		$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
+
+		$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn'),));
+
+		foreach($files as $file) {
+			if($file!==$moduleTemplateFile) {
+				if(CFileHelper::getExtension($file)==='php') {
+					$content=$this->render($file);
+				// an empty directory
+				} else if(basename($file)==='.yii') {
+					$file=dirname($file);
+					$content=null;
+				} else {
+					$content=file_get_contents($file);
+					$this->files[]=new CCodeFile($modulePath.substr($file,strlen($templatePath)), $content);
+				}
+			}
+		}
 	}
+
 	public function init() {
 		if (isset($_GET['ajax']) && preg_match('/^[a-z_]+$/',$_GET['ajax'])) {
 			Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
