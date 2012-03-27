@@ -2078,6 +2078,11 @@ ED.PhakoIncision = function(_drawing, _originX, _originY, _radius, _apexX, _apex
 	
 	// Set classname
 	this.className = "PhakoIncision";
+    
+    // Default is standard corneal phako wound
+    this.length = 3.5;
+    this.defaultRadius = 334;
+    this.sutureSeparation = 1.5;
 }
 
 /**
@@ -2119,11 +2124,6 @@ ED.PhakoIncision.prototype.setPropertyDefaults = function()
  */
 ED.PhakoIncision.prototype.setParameterDefaults = function()
 {
-    // Default is standard corneal phako wound
-    this.length = 3.5;
-    this.defaultRadius = 334;
-    this.sutureSeparation = 1.5;
-
     // The radius property is changed by movement in rotatable doodles
     this.radius = this.defaultRadius;
 

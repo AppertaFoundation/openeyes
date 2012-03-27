@@ -3,24 +3,26 @@
     <head>
         <title>EyeDraw</title>
         
-        <link rel="stylesheet" href="OEEyeDraw.css" type="text/css" media="screen" />
+        <link rel="stylesheet" href="css/OEEyeDraw.css" type="text/css" media="screen" />
         
         <!--   Include this file first to establish name space and include key drawing classes -->
-        <script language="JavaScript" src="ED_Drawing.js" type="text/javascript"></script>
+        <script language="JavaScript" src="js/ED_Drawing.js" type="text/javascript"></script>
         
         <!--   Subclasses loaded according to need -->
-        <script language="JavaScript" src="ED_General.js" type="text/javascript"></script>
+        <script language="JavaScript" src="js/ED_General.js" type="text/javascript"></script>
 
-        <!--
-        <script language="JavaScript" src="ED_Vitreoretinal.js" type="text/javascript"></script>
-        <script language="JavaScript" src="ED_AntSeg.js" type="text/javascript"></script> -->
-        <script language="JavaScript" src="ED_Glaucoma.js" type="text/javascript"></script> 
+
+        <script language="JavaScript" src="js/ED_VitreoRetinal.js" type="text/javascript"></script>
+        <script language="JavaScript" src="js/ED_AntSeg.js" type="text/javascript"></script>
+        <script language="JavaScript" src="js/ED_Glaucoma.js" type="text/javascript"></script> 
         
         <!--   This script handles the drawings for the page   -->
         <script type="text/javascript">
             
             // This set can be written by PHP and contains doodle data for this drawing from a database
-var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0, "apexX": 0, "apexY": 0, "scaleX": 1.00, "scaleY": 1.00, "arc": 180, "rotation": 0, "order": 0, "squiggleArray": []}, {"subclass": "RRD", "originX": 0, "originY": 0, "radius": 164, "apexX": 0, "apexY": -100, "scaleX": 1.00, "scaleY": 1.00, "arc": 120, "rotation": -26, "order": 1, "squiggleArray": []}, {"subclass": "Lattice", "originX": 0, "originY": 0, "radius": 319, "apexX": 0, "apexY": 0, "scaleX": 1.00, "scaleY": 1.00, "arc": 60, "rotation": 74, "order": 2, "squiggleArray": []}, ]
+//var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0, "apexX": 0, "apexY": 0, "scaleX": 1.00, "scaleY": 1.00, "arc": 180, "rotation": 0, "order": 0, "squiggleArray": []}, {"subclass": "RRD", "originX": 0, "originY": 0, "radius": 164, "apexX": 0, "apexY": -100, "scaleX": 1.00, "scaleY": 1.00, "arc": 120, "rotation": -26, "order": 1, "squiggleArray": []}, {"subclass": "Lattice", "originX": 0, "originY": 0, "radius": 319, "apexX": 0, "apexY": 0, "scaleX": 1.00, "scaleY": 1.00, "arc": 60, "rotation": 74, "order": 2, "squiggleArray": []}, ]
+            
+            var doodleSet = [{"subclass": "AntSeg", "originX": 0, "originY": 0, "radius": 0, "apexX": 0, "apexY": -260, "scaleX": 1.00, "scaleY": 1.00, "arc": 180, "rotation": 0, "order": 0, "squiggleArray": []},{"subclass": "PhakoIncision", "originX": 0, "originY": 0, "radius": 302, "apexX": 0, "apexY": -302, "scaleX": 1.00, "scaleY": 1.00, "arc": 37, "rotation": -21, "order": 1, "squiggleArray": []}]
             
             // Assign a global variable to each drawing on the page
             var drawingEdit;
@@ -46,7 +48,7 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
                 drawingEdit.onLoaded = function()
                 {
                     //drawingEdit.addDoodle('Fndus');
-                    drawingEdit.addDoodle('AngleConfiguration');
+                    //drawingEdit.addDoodle('AngleConfiguration');
                     //drawingEdit.addDoodle('RoundHole');
 
                     //drawingEdit.addDoodle('OpticDisk');
@@ -70,9 +72,9 @@ var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0,
 //                    doodle.rotation = 270 * Math.PI/180;
                     //drawingEdit.addDoodle('Patch');
                     //drawingEdit.deselectDoodles();
-                    //drawingEdit.load(doodleSet);
+                    drawingEdit.load(doodleSet);
                     
-                    //drawingEdit.drawAllDoodles();
+                    drawingEdit.drawAllDoodles();
                 }
                 
                 // Function to detect changes in parameters (eg from mouse dragging)
