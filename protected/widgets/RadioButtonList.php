@@ -18,10 +18,7 @@
  */
 
 class RadioButtonList extends BaseCWidget {
-	public $element;
 	public $name;
-	public $field;
 	public $data;
 }
-
 ?>

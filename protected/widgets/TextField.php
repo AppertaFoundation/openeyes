@@ -18,11 +18,8 @@
  */
 
 class TextField extends BaseCWidget {
-	public $element;
 	public $name;
-	public $field;
 	public $htmlOptions;
-	public $value;
 
 	public function run() {
 		if (empty($_POST)) {

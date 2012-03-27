@@ -18,7 +18,6 @@
  */
 
 class ProcedureSelection extends BaseCWidget {
-	public $model;
 	public $subsections;
 	public $procedures;
 	public $newRecord;
@@ -39,9 +38,9 @@ class ProcedureSelection extends BaseCWidget {
 		}
 
 		if (empty($_POST)) {
-			$this->selected_procedures = $this->model->procedures;
+			$this->selected_procedures = $this->element->procedures;
 			if ($this->durations) {
-				$this->total_duration = $this->model->total_duration;
+				$this->total_duration = $this->element->total_duration;
 			}
 		} else {
 			$this->selected_procedures = array();
@@ -51,13 +50,13 @@ class ProcedureSelection extends BaseCWidget {
 					$proc = Procedure::model()->findByPk($proc_id);
 					$this->selected_procedures[] = $proc;
 					if ($this->durations) {
-						$this->total_duration[] = $proc->default_duration;
+						$this->total_duration += $proc->default_duration;
 					}
 				}
 			}
 		}
 
-		$this->class = get_class($this->model);
+		$this->class = get_class($this->element);
 		parent::run();
 	}
 }

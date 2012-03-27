@@ -28,7 +28,7 @@
 
 					<?php $form->widget('application.widgets.DiagnosisSelection',array(
 						'field' => 'disorder_id',
-						'model' => $model,
+						'element' => $model,
 						'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))
 					));
 					?>

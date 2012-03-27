@@ -18,12 +18,9 @@
  */
 
 class DatePicker extends BaseCWidget {
-	public $element;
 	public $name;
-	public $field;
 	public $options;
 	public $htmlOptions;
-	public $value;
 
 	public function run() {
 		if (empty($_POST)) {

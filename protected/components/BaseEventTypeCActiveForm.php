@@ -19,9 +19,8 @@
 
 class BaseEventTypeCActiveForm extends CActiveForm
 {
-	public function dropDownList($model,$attribute,$data,$htmlOptions=array()) {
-		$field = CHtml::activeDropDownList($model,$attribute,$data,$htmlOptions);
-		$this->widget('application.widgets.DropDownList',array('element' => $model, 'field' => $field, 'attribute' => $attribute));
+	public function dropDownList($model,$field,$data,$htmlOptions=array()) {
+		$this->widget('application.widgets.DropDownList',array('element' => $model, 'field' => $field, 'data' => $data, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function radioButtons($element,$field,$table) {

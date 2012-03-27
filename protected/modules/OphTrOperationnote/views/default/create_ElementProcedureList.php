@@ -26,7 +26,7 @@
 
 <?php
 $form->widget('application.widgets.ProcedureSelection',array(
-	'model' => $element,
+	'element' => $element,
 	'newRecord' => true
 ));
 ?>

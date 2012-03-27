@@ -28,7 +28,7 @@ if (!$model->site_id) {
 					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
 					<?php $form->widget('application.widgets.ProcedureSelection',array(
-						'model' => $model,
+						'element' => $model,
 						'newRecord' => $newRecord,
 						'durations' => true
 					));

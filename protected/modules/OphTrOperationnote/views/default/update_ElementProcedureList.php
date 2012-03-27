@@ -21,12 +21,12 @@
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
-<?php echo $form->dropDownList($element, 'surgeon_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
-<?php echo $form->dropDownList($element, 'assistant_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
+<?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- Please select -')); ?>
+<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
 
 <?php
 $form->widget('application.widgets.ProcedureSelection',array(
-	'model' => $element,
+	'element' => $element,
 	'newRecord' => true
 ));
 ?>

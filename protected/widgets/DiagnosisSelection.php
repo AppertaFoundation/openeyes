@@ -18,29 +18,26 @@
  */
 
 class DiagnosisSelection extends BaseCWidget {
-	public $model;
 	public $selectedFirmId;
-	public $field;
 	public $options;
 	public $class;
 	public $form;
-	public $value;
 
 	public function run() {
-		$this->class = get_class($this->model);
+		$this->class = get_class($this->element);
 
 		if (empty($_POST)) {
-			if (empty($this->model->event_id)) {
+			if (empty($this->element->event_id)) {
 				// It's a new event so fetch the most recent element_diagnosis
-				$diagnosis = $this->model->getNewestDiagnosis(Yii::app()->getController()->patient);
+				$diagnosis = $this->element->getNewestDiagnosis(Yii::app()->getController()->patient);
 
 				if (!empty($diagnosis->disorder)) {
 					// There is a diagnosis for this episode
 					$this->value = $diagnosis->disorder->term;
 				}
 			} else {
-				if (isset($this->model->disorder)) {
-					$this->value = $this->model->disorder->term;
+				if (isset($this->element->disorder)) {
+					$this->value = $this->element->disorder->term;
 				}
 			}
 		} else {

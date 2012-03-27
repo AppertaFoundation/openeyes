@@ -19,6 +19,24 @@
 
 class BaseCWidget extends CWidget
 {
+	public $element;
+	public $field;
+	public $value;
+
+	public function init() {
+		if (empty($_POST)) {
+			if (isset($this->element->{$this->field})) {
+				$this->value = $this->element->{$this->field};
+			}
+		} else {
+			$this->value = @$_POST[get_class($this->element)][$this->field];
+		}
+
+		if ($this->field) {
+			$this->element->{$this->field} = $this->value;
+		}
+	}
+
 	public function render($view, $data=null, $return=false) {
 		if (is_array($data)) {
 			$data = array_merge($data,get_object_vars($this));

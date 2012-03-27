@@ -18,8 +18,6 @@
  */
 
 class TextArea extends BaseCWidget {
-	public $element;
-	public $field;
 	public $rows;
 	public $cols;
 }
