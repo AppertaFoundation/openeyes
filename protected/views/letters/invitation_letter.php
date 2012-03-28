@@ -20,10 +20,9 @@
 <?php $this->renderPartial("/letters/letter_start", array(
 	'site' => $site,
 	'patient' => $patient,
-	'size' => '14pt'
 )); ?>
 
-<p style="font-size: 14pt;">
+<p>
 	I have been asked to arrange your <?php	if ($patient->isChild()) { ?>child's <?php } ?> admission for surgery under the care of
 	<?php 
 		if($consultant = $firm->getConsultant()) {
@@ -43,12 +42,12 @@
 	procedure.
 </p>
 
-<p style="font-size: 14pt;">
+<p>
 	Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree a
 	convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.
 </p>
 
-<p style="font-size: 14pt;">
+<p>
 	Should you<?php if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
 </p>
 
