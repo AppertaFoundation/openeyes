@@ -188,8 +188,6 @@
 </p>
 <?php } ?>
 
-<div style="page-break-after:always"></div>
-
 <p>
 	If you are unwell the day before admission, please contact us to ensure that it is still safe and appropriate to do the procedure. If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor. 
 </p>
@@ -215,4 +213,3 @@
 <?php } // End Adult ?>
 
 <?php $this->renderPartial("/letters/letter_end"); ?>
-<div style="page-break-after:always"></div>
