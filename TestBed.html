@@ -22,12 +22,13 @@
             // This set can be written by PHP and contains doodle data for this drawing from a database
 //var doodleSet = [{"subclass": "Fundus", "originX": 0, "originY": 0, "radius": 0, "apexX": 0, "apexY": 0, "scaleX": 1.00, "scaleY": 1.00, "arc": 180, "rotation": 0, "order": 0, "squiggleArray": []}, {"subclass": "RRD", "originX": 0, "originY": 0, "radius": 164, "apexX": 0, "apexY": -100, "scaleX": 1.00, "scaleY": 1.00, "arc": 120, "rotation": -26, "order": 1, "squiggleArray": []}, {"subclass": "Lattice", "originX": 0, "originY": 0, "radius": 319, "apexX": 0, "apexY": 0, "scaleX": 1.00, "scaleY": 1.00, "arc": 60, "rotation": 74, "order": 2, "squiggleArray": []}, ]
             
-            var doodleSet = [{"subclass": "AntSeg", "originX": 0, "originY": 0, "radius": 0, "apexX": 0, "apexY": -260, "scaleX": 1.00, "scaleY": 1.00, "arc": 180, "rotation": 0, "order": 0, "squiggleArray": []},{"subclass": "PhakoIncision", "originX": 0, "originY": 0, "radius": 302, "apexX": 0, "apexY": -302, "scaleX": 1.00, "scaleY": 1.00, "arc": 37, "rotation": -21, "order": 1, "squiggleArray": []}]
+            var doodleSet = [{"subclass": "PhakoIncision", "originX": 0, "originY": 0, "radius": 250, "apexX": 0, "apexY": -250, "scaleX": 1.00, "scaleY": 1.00, "arc": 90, "rotation": 319, "order": 0, "squiggleArray": []}];
             
             // Assign a global variable to each drawing on the page
             var drawingEdit;
             var doodleAngleGradeSup;
             var doodle;
+            var doodleSet;
             
             // Runs on page load
             function init()
@@ -47,9 +48,9 @@
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    //drawingEdit.addDoodle('Fndus');
-                    //drawingEdit.addDoodle('AngleConfiguration');
-                    //drawingEdit.addDoodle('RoundHole');
+                    drawingEdit.addDoodle('Fundus');
+                    drawingEdit.addDoodle('RRD');
+                    drawingEdit.addDoodle('UTear');
 
                     //drawingEdit.addDoodle('OpticDisk');
                     //doodle = drawingEdit.addDoodle('OpticCup');
@@ -72,7 +73,7 @@
 //                    doodle.rotation = 270 * Math.PI/180;
                     //drawingEdit.addDoodle('Patch');
                     //drawingEdit.deselectDoodles();
-                    drawingEdit.load(doodleSet);
+                    
                     
                     drawingEdit.drawAllDoodles();
                 }
@@ -126,21 +127,21 @@
                             <br />
                             
                             <!-- Doodle selection toolbar -->
-                            <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskyHaemorrhage'); return false;" ><img src="graphics/DiskHaemorrhage.gif" /></button>
+                            <button class="imgbutton" title="Disk haemorrhage" onclick="drawingEdit.addDoodle('DiskHaemorrhage'); return false;" ><img src="graphics/DiskHaemorrhage.gif" /></button>
                             <button class="imgbutton" title="NerveFibreDefect" onclick="drawingEdit.addDoodle('NerveFibreDefect'); return false;" ><img src="graphics/NerveFibreDefect.gif" /></button>
                             <button class="imgbutton" title="Papilloedema" onclick="drawingEdit.addDoodle('Papilloedema'); return false;" ><img src="graphics/Papilloedema.gif" /></button>
                             <button class="imgbutton" title="Baerveldt" onclick="drawingEdit.addDoodle('Baerveldt'); return false;" ><img src="graphics/Baerveldt.gif" /></button>
                             <button class="imgbutton" title="Ahmed" onclick="drawingEdit.addDoodle('Ahmed'); return false;" ><img src="graphics/Ahmed.gif" /></button>
                             <button class="imgbutton" title="Vicryl suture" onclick="drawingEdit.addDoodle('Vicryl'); return false;" ><img src="graphics/Vicryl.gif" /></button>
-                            <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('Supramid'); return false;" ><img src="graphics/Supramid.gif" /></button>
-                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('OpticDiskPit'); return false;" ><img src="graphics/OpticDiskPit.gif" /></button>
+                            <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('AntSeg'); return false;" ><img src="graphics/Supramid.gif" /></button>
+                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('PhakoIncision'); return false;" ><img src="graphics/OpticDiskPit.gif" /></button>
                             <br />
                             
                             <!-- Canvas element -->
                             <canvas id="canvas" class="ed_canvas_edit" width="400" height="400" tabindex="2"></canvas>
                             <br />
-                            <button title="Report" onclick="alert(drawingEdit.report()); return false;" >Report</button><br />
-                            <button title="Report" onclick="doodle.toggleMode(); doodle.setHandleProperties(); drawingEdit.repaint(); return false;" >Toggle</button><br />
+                            <button title="Save" onclick="console.log(drawingEdit.save()); return false;" >Save</button><br />
+                            <button title="Load" onclick="drawingEdit.load(doodleSet); drawingEdit.drawAllDoodles(); return false;" >Load</button><br />
                             <select id="angleGradeSup" onclick="setGrade('doodleAngleGradeSup', this.value);">
                                 <option value="O">O</option>
                                 <option value="I">I</option>

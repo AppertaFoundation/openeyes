@@ -180,7 +180,7 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
 	this.selectedDoodle = null;
 	this.mouseDown = false;
     this.doubleClick = false;
-	this.mode = ED.Mode.Move;
+	this.mode = ED.Mode.None;
 	this.lastMousePosition = new ED.Point(0, 0);
     this.doubleClickMilliSeconds = 250;
     this.onLoadedHasRun = false;
@@ -458,7 +458,6 @@ ED.Drawing.prototype.json = function()
 ED.Drawing.prototype.drawAllDoodles = function()
 {
     // Draw any connecting lines
-
     var ctx = this.context;
     ctx.beginPath();
     var started = false;
@@ -852,9 +851,10 @@ ED.Drawing.prototype.mousemove = function(_point)
  */  
 ED.Drawing.prototype.mouseup = function(_point)
 {
-	// Reset flags
+	// Reset flags and mode
 	this.mouseDown = false;
     this.doubleClick = false;
+    this.mode = ED.Mode.None;
 	
 	// Reset selected doodle's dragging flag
 	if (this.selectedDoodle != null)
@@ -878,8 +878,9 @@ ED.Drawing.prototype.mouseup = function(_point)
  */  
 ED.Drawing.prototype.mouseout = function(_point)
 {
-	// Reset flag
+	// Reset flag and mode
 	this.mouseDown = false;
+    this.mode = ED.Mode.None;
 	
 	// Reset selected doodle's dragging flag
 	if (this.selectedDoodle != null)

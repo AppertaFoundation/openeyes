@@ -2079,10 +2079,15 @@ ED.PhakoIncision = function(_drawing, _originX, _originY, _radius, _apexX, _apex
 	// Set classname
 	this.className = "PhakoIncision";
     
-    // Default is standard corneal phako wound
-    this.length = 3.5;
+    // Set default values for new or loaded doodle
     this.defaultRadius = 334;
     this.sutureSeparation = 1.5;
+    
+    // Set initial value of length according to loaded arc value
+    this.length = this.arc * (6 * this.radius)/this.defaultRadius;
+
+    // Set initial value of apexYDelta according to loaded apexY amd radius value
+    this.apexYDelta = - this.apexY - this.radius;
 }
 
 /**
@@ -2127,11 +2132,16 @@ ED.PhakoIncision.prototype.setParameterDefaults = function()
     // The radius property is changed by movement in rotatable doodles
     this.radius = this.defaultRadius;
 
+    // Default is standard corneal phako wound
+    this.arc = 33 * Math.PI/180;
+    
     // Incision length based on an average corneal radius of 6mm
-    this.arc = this.length/6;
+    this.length = this.arc * (6 * this.radius)/this.defaultRadius;
     
     // ApexY needs to change with radius on movement, so keep a record of the change
-    this.apexY = -this.defaultRadius
+    this.apexY = -this.defaultRadius;
+    
+    // Set initial value of apexYDelta to zero (ie default incision is a pocket)
     this.apexYDelta = 0;
 }
 
