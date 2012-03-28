@@ -52,9 +52,9 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 </div>
 <?php } ?>
 
-<?php if ($operation->hasIssue()) {?>
+<?php if ($operation->event->hasIssue()) {?>
 	<div class="issueBox">
-		<?php echo $operation->getIssueText()?>
+		<?php echo $operation->event->getIssueText()?>
 	</div>
 <?php }?>
 

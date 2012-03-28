@@ -192,6 +192,10 @@ class BookingController extends BaseController
 
 				OELog::log("element_operation $operation->id cancelled");
 
+				foreach (EventIssue::model()->findAll('event_id = ? and issue_id = 1',array($operation->event->id)) as $event_issue) {
+					$event_issue->delete();
+				}
+
 				$patientId = $operation->event->episode->patient->id;
 
 				$this->updateEvent($operation->event);
@@ -257,17 +261,15 @@ class BookingController extends BaseController
 			if ($minDate < $thisMonth) {
 				$minDate = $thisMonth;
 			}
+
+			$this->patient = $operation->event->episode->patient;
+			$this->title = 'Cancel operation';
+
 			$this->renderPartial('/booking/_cancel_operation', array(
 					'operation' => $operation,
 					'date' => $minDate
 				), false, true);
 		}
-
-		$this->patient = $operation->event->episode->patient;
-		$this->title = 'Cancel operation';
-
-		$this->renderPartial('/booking/_cancel_operation',
-			array('operation'=>$operation, 'date'=>$minDate), false, true);
 	}
 
 	public function actionSessions()
@@ -448,6 +450,10 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
+				foreach (EventIssue::model()->findAll('event_id=? and issue_id = 1',array($operation->event->id)) as $event_issue) {
+					$event_issue->delete();
+				}
+
 				if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
 					if (strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
 						if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
@@ -574,6 +580,13 @@ class BookingController extends BaseController
 						}
 					}
 				} else {
+					$event_issue = new EventIssue;
+					$event_issue->event_id = $operation->event->id;
+					$event_issue->issue_id = 1;
+					if (!$event_issue->save()) {
+						throw new SystemException('Unable to save event_issue object for event: '.$operation->event->id);
+					}
+
 					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
 						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
 							if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {

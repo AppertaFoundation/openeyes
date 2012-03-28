@@ -26,13 +26,6 @@ class BaseEventTypeElement extends BaseElement
 		return $options;
 	}
 
-	function hasIssue() {
-		return false;
-	}
-
-	function getIssueText() {
-	}
-
 	function getInfoText() {
 	}
 }

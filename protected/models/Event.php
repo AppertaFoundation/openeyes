@@ -79,6 +79,7 @@ class Event extends BaseActiveRecord
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+			'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
 		);
 	}
 
@@ -121,20 +122,17 @@ class Event extends BaseActiveRecord
 	/* Does this event have some kind of issue that the user should know about */
 
 	public function hasIssue() {
-		foreach (Yii::app()->getController()->getDefaultElements(false,$this) as $element) {
-			if ($element->hasIssue()) {
-				return true;
-			}
-		}
-		return false;
+		return (boolean)$this->issues;
 	}
 
 	public function getIssueText() {
-		foreach (Yii::app()->getController()->getDefaultElements(false,$this) as $element) {
-			if ($element->hasIssue()) {
-				return $element->getIssueText();
-			}
+		$text = '';
+
+		foreach ($this->issues as $issue) {
+			$text .= $issue->text."\n";
 		}
+
+		return $text;
 	}
 
 	public function getInfoText() {
