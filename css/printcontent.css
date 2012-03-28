@@ -157,6 +157,7 @@ body {
 	clear: both;
 	float: right;
 	text-align: right;
+	padding-top:3em;
 }
 
 .date {
@@ -164,7 +165,9 @@ body {
 }
 
 .toAddress {
-	padding-left:2em;
+	padding-left:5em;
+	padding-top:3em;
+	width:200px;
 }
 
 .red {
