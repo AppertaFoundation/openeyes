@@ -51,13 +51,6 @@ class BaseEventTypeController extends BaseController
 			$event_type = EventType::model()->find('class_name = ?',array($this->getModule()->name));
 		}
 
-		if ($event_type->class_name != 'OphTrOperation') {
-			// Import the element_type models
-			foreach (ElementType::model()->findAll('event_type_id = ?',array($event_type->id)) as $element_type) {
-				Yii::import('application.modules.'.$event_type->class_name.'.models.'.$element_type->class_name);
-			}
-		}
-
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type->id);
 		$criteria->order = 'display_order asc';
@@ -337,11 +330,20 @@ class BaseEventTypeController extends BaseController
 				$success = $this->updateElements($elements, $_POST, $this->event);
 
 				if ($success) {
+					$info_text = '';
+					foreach ($elements as $element) {
+						if ($element->infotext) {
+							$info_text .= $element->infotext;
+						}
+					}
+
 					$this->logActivity('updated event');
 
 					// Update event to indicate user has made a change
 					$this->event->datetime = date("Y-m-d H:i:s");
 					$this->event->user = Yii::app()->user->id;
+					$this->event->info = $info_text;
+
 					if (!$this->event->save()) {
 						throw new SystemException('Unable to update event: '.print_r($this->event->getErrors(),true));
 					}
@@ -460,7 +462,7 @@ class BaseEventTypeController extends BaseController
 		 * episode and add it to that.
 		 */
 		$episode = $this->getOrCreateEpisode($firm, $patientId);
-		$event = $this->createEvent($episode, $userId, $eventTypeId);
+		$event = $this->createEvent($episode, $userId, $eventTypeId, $elementsToProcess);
 
 		// Create elements for the event
 		foreach ($elementsToProcess as $element) {
@@ -569,12 +571,22 @@ class BaseEventTypeController extends BaseController
 		return $episode;
 	}
 
-	public function createEvent($episode, $userId, $eventTypeId)
+	public function createEvent($episode, $userId, $eventTypeId, $elementsToProcess)
 	{
+		$info_text = '';
+
+		foreach ($elementsToProcess as $element) {
+			if ($element->infotext) {
+				$info_text .= $element->infotext;
+			}
+		}
+
 		$event = new Event();
 		$event->episode_id = $episode->id;
 		$event->event_type_id = $eventTypeId;
 		$event->datetime = date("Y-m-d H:i:s");
+		$event->info = $info_text;
+
 		if (!$event->save()) {
 			OELog::log("Failed to creat new event for episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
 			throw new Exception('Unable to save event.');

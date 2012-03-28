@@ -20,7 +20,7 @@
 						<li id="eventLi<?php echo $event->id ?>">
 							<div class="quicklook" style="display: none; ">
 								<span class="event"><?php echo $event->eventType->name?></span>
-								<span class="info"><?php echo $event->getInfoText()?></span>
+								<span class="info"><?php echo str_replace("\n","<br/>",$event->info)?></span>
 								<?php if($event->hasIssue()) { ?>
 								<span class="issue"><?php echo $event->getIssueText()?></span>
 								<?php } ?>
