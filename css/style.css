@@ -369,7 +369,6 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 .purpleUser textarea { width: 200px; }
 
 
-
 /* ------------------------------------------------- HELP & FOOTER	*/
 
 /* ====== HELP! ====== */
@@ -477,6 +476,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* nav */
 .episode .episode_nav { width:160px; background: #fff; float:left; padding:5px 6px 10px 5px; margin:3px 1px 3px 0;}
 .episode .episode_nav > h4 { margin-top:5px;  }
+.episode .episode_nav .summary { background: #c2bca5; color:#fff; padding:1px 4px;; position:relative; top:-2px; left:4px;  -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .episode ul.events { list-style-type: none; padding: 0px; margin: 0px;}
 .episode ul.events li { display:block; position: relative; height:19px; margin-bottom:4px; } 
 .episode ul.events li img { vertical-align:middle; margin-left:0; margin-right:0; } 
@@ -736,6 +736,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 /* ====== CATEGORY & EVENT COLOUR ====== */
 #event_display .colorband { height:5px; background:#a29d8a;  }
+#event_display .colorband.episode { background:#c2bca5;  }
 #event_display .colorband.category_blank { background:#ccc;}
 #event_display .colorband.category_treatment { background:#fd6892;}
 #event_display .colorband.category_communication { background:#86cdff;}
@@ -745,6 +746,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #event_display .colorband.category_drugs { background:#acad47;}
 
 #event_display h3.withEventIcon { display:inline-block; height:40px; padding:17px 0 0 50px; margin-left:5px; }
+#event_display h3.episodeTitle { display:inline-block; font-size:23px; height:40px; padding:0 0 0 5px; margin-left:5px; }
 
 /* ====== THEATRE MANAGEMENT & WAITING LIST ====== */
 #theatre_display, #waitinglist_display { padding:10px; }
