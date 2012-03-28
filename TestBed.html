@@ -48,11 +48,10 @@
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    drawingEdit.addDoodle('Fundus');
-                    drawingEdit.addDoodle('RRD');
-                    drawingEdit.addDoodle('UTear');
+                    drawingEdit.addDoodle('OperatingTable');
+                    doodle = drawingEdit.addDoodle('Surgeon');
 
-                    //drawingEdit.addDoodle('OpticDisk');
+
                     //doodle = drawingEdit.addDoodle('OpticCup');
                     //drawingEdit.addDoodle('OpticDisk');
                     //drawingEdit.addDoodle('OpticDiskPit');
@@ -81,29 +80,17 @@
                 // Function to detect changes in parameters (eg from mouse dragging)
                 drawingEdit.parameterListener = function()
                 {
-                    if (drawingEdit.selectedDoodle != null && drawingEdit.selectedDoodle.className == 'Supramid')
+                    if (drawingEdit.selectedDoodle != null && drawingEdit.selectedDoodle.className == 'Surgeon')
                     {
-                        //console.log(drawingEdit.selectedDoodle.getParameter('endPosition'));
+                        document.getElementById('surgPos').value = drawingEdit.selectedDoodle.getParameter('surgeonPosition');
                     }
                 }
             }
             
-            function setGrade(_doodleVarName, _value)
+            function setPosition(_value)
             {
-                var doodle;
-                
-                switch (_doodleVarName)
-                {
-                    case "doodleAngleGradeSup":
-                        doodle = doodleAngleGradeSup;
-                        break;
-                    default:
-                        doodle = null;
-                        break;
-                }
-                
                 // Set new value for doodle
-                drawingEdit.setParameterForDoodle(doodle, 'grade', _value); 
+                drawingEdit.setParameterForDoodle(doodle, 'surgeonPosition', _value); 
             }
             
             </script>
@@ -138,16 +125,16 @@
                             <br />
                             
                             <!-- Canvas element -->
-                            <canvas id="canvas" class="ed_canvas_edit" width="400" height="400" tabindex="2"></canvas>
+                            <canvas id="canvas" class="ed_canvas_edit" width="200" height="200" tabindex="2"></canvas>
                             <br />
                             <button title="Save" onclick="console.log(drawingEdit.save()); return false;" >Save</button><br />
                             <button title="Load" onclick="drawingEdit.load(doodleSet); drawingEdit.drawAllDoodles(); return false;" >Load</button><br />
-                            <select id="angleGradeSup" onclick="setGrade('doodleAngleGradeSup', this.value);">
-                                <option value="O">O</option>
-                                <option value="I">I</option>
-                                <option value="II">II</option>
-                                <option value="III">III</option>
-                                <option value="IV">IV</option>
+                            <select id="surgPos" onclick="setPosition(this.value);">
+                                <option value="Superior">Superior</option>
+                                <option value="Supero-temporal">Supero-temporal</option>
+                                <option value="Temporal">Temporal</option>
+                                <option value="Infero-temporal">Infero-temporal</option>
+                                <option value="Other">Other</option>
                             </select>
                         </span>
                     </div>

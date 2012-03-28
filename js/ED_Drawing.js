@@ -1,9 +1,9 @@
 /**
  * @fileOverview Contains the core classes for EyeDraw
  * @author <a href="mailto:bill.aylward@mac.com">Bill Aylward</a>
- * @version 0.93
+ * @version 0.94
  *
- * Modification date: 9th February 2012
+ * Modification date: 28th March 2012
  * Copyright 2011 OpenEyes
  * 
  * This file is part of OpenEyes.
@@ -661,9 +661,19 @@ ED.Drawing.prototype.mousemove = function(_point)
                                 this.selectedDoodle.originY = this.selectedDoodle.quadrantPoint.y * mousePosDoodlePlane.y/Math.abs(mousePosDoodlePlane.y);
                             }
                             
-                            // Doodle's move method sets orientation, pass pass origin deltas as zero, since explicity set above
+                            // Doodle's move method sets orientation, pass origin deltas as zero, since explicity set above
                             this.selectedDoodle.move(0,0);
                         }
+                        // Enforce snap to points
+                        else if (this.selectedDoodle.snapToPoints)
+                        {
+                            this.selectedDoodle.originX = this.selectedDoodle.nearestPointTo(mousePosDoodlePlane).x;
+                            this.selectedDoodle.originY = this.selectedDoodle.nearestPointTo(mousePosDoodlePlane).y;
+                            
+                            // Doodle's move method sets orientation, pass origin deltas as zero, since explicity set above
+                            this.selectedDoodle.move(0,0);
+                        }
+                        // Normal move
                         else
                         {
                             this.selectedDoodle.move(mousePosDoodlePlane.x - lastMousePosDoodlePlane.x, mousePosDoodlePlane.y - lastMousePosDoodlePlane.y);
@@ -1377,9 +1387,6 @@ ED.Drawing.prototype.deleteDoodlesOfClass = function(_className)
  */
 ED.Drawing.prototype.setParameterForDoodle = function(_doodle, _parameter, _value)
 {
-    // Get pointer to doodle
-    //var doodle = this.firstDoodleOfClass(_class);
-    
     // Determine whether doodle exists
     if (typeof(_doodle[_parameter]) != 'undefined')
     {
@@ -1966,6 +1973,7 @@ ED.Report.prototype.isMacOff = function()
  * @property {AffineTransform} transform Affine transform which handles the doodle's position, scale and rotation
  * @property {AffineTransform} inverseTransform The inverse of transform
  * @property {Bool} isSelectable True if doodle is locked (ie non-selectable)
+ * @property {Bool} isShowHighlight True if doodle shows a highlight when selected
  * @property {Bool} isDeletable True if doodle can be deleted 
  * @property {Bool} isOrientated True if doodle should always point to the centre (default = false)
  * @property {Bool} isScaleable True if doodle can be scaled. If false, doodle increases its arc angle
@@ -1979,6 +1987,8 @@ ED.Report.prototype.isMacOff = function()
  * @property {Bool} isPointInLine True if centre of all doodles with this property should be connected by a line segment
  * @property {Bool} snapToGrid True if doodle should snap to a grid in doodle plane
  * @property {Bool} snapToQuadrant True if doodle should snap to a specific position in quadrant (defined in subclass)
+ * @property {Bool} snapToPoints True if doodle should snap to one of a set of specific points
+ * @property {Array} pointsArray Array of points to snap to
  * @property {Bool} willReport True if doodle responds to a report request (can be used to suppress reports when not needed)
  * @property {Float} radius Distance from centre of doodle space, calculated for doodles with isRotable true
  * @property {Range} rangeOfOriginX Range of allowable scales
@@ -2070,6 +2080,7 @@ ED.Doodle = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _sca
 		
 		// Dragging defaults - set individual values in subclasses
 		this.isSelectable = true;
+        this.isShowHighlight = true;
 		this.isDeletable = true;
 		this.isOrientated = false;
 		this.isScaleable = true;
@@ -2083,6 +2094,7 @@ ED.Doodle = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _sca
         this.isPointInLine = false;
         this.snapToGrid = false;
         this.snapToQuadrant = false;
+        this.snapToPoints = false;
         this.willReport = true;
         
         // Permitted ranges
@@ -2112,6 +2124,9 @@ ED.Doodle = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _sca
 		this.isClicked = false;
 		this.drawFunctionMode = ED.drawFunctionMode.Draw;
         this.isFilled = true;
+        
+        // Array of points to snap to
+        this.pointsArray = new Array();
 
 		// Array of 5 handles
 		this.handleArray = new Array();
@@ -2400,7 +2415,7 @@ ED.Doodle.prototype.drawBoundary = function(_point)
 	else
 	{
 		// Specify highlight attributes
-		if (this.isSelected)
+		if (this.isSelected && this.isShowHighlight)
 		{
 			ctx.shadowColor = "gray";
 			ctx.shadowOffsetX = 0;
