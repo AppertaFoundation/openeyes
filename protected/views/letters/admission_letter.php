@@ -20,7 +20,6 @@
 <?php $this->renderPartial("/letters/letter_start", array(
 	'site' => $site,
 	'patient' => $patient,
-	'size' => '14pt'
 )); ?>
 
 <?php

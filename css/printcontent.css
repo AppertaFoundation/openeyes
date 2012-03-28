@@ -70,12 +70,8 @@ table {
 	border-collapse: collapse;
 }
 
-table.half {
-	width: 50%;
-}
-
-table.borders th,
-table.borders td {
+th,
+td {
 	width: 25%;
 	border: 1px solid #999;
 	text-align: left;
@@ -84,13 +80,12 @@ table.borders td {
 	font-size: 10pt;
 }
 
+table.half {
+	width: 50%;
+}
+
 table.admission_letter th,
 table.admission_letter td {
-	width: 25%;
-	text-align: left;
-	padding: 2px 4px;
-	vertical-align: top;
-	font-size: 14pt;
 }
 
 table.half td,
@@ -176,6 +171,3 @@ body {
 	color: #f00 !important;
 }
 
-li {
-	line-height: 40px;
-}
