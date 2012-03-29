@@ -18,23 +18,23 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+<h4 class="elementTypeName"><?php echo '<?php ';?> echo $element->elementType->name <?php echo '?>'; ?></h4>
 
 <div class="view">
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetic_type->name ?></div>
+		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); <?php echo '?>';?></div>
+		<div class="eventHighlight"><?php echo '<?php ';?> echo $element->anaesthetic_type->name <?php echo '?>';?></div>
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->surgeon->fullName; ?></div>
+		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('surgeon_id')); <?php echo '?>';?></div>
+		<div class="eventHighlight"><?php echo '<?php ';?> echo $element->surgeon->fullName; <?php echo '?>';?></div>
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->assistant->fullName; ?></div>
+		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('assistant_id')); <?php echo '?>';?></div>
+		<div class="eventHighlight"><?php echo '<?php ';?> echo $element->assistant->fullName; <?php echo '?>';?></div>
 	</div>
 
 </div>

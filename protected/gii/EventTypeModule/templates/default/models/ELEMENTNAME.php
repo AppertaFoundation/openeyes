@@ -1,4 +1,4 @@
-<?php
+<?php echo '<?php '?>
 /**
  * OpenEyes
  *
@@ -30,7 +30,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementProcedureList extends BaseEventTypeElement
+class ELEMENTTYPENAME extends BaseEventTypeElement
 {
 	public $service;
 
@@ -144,3 +144,4 @@ class ElementProcedureList extends BaseEventTypeElement
 		return parent::beforeValidate();
 	}
 }
+<?php echo '?>';?>

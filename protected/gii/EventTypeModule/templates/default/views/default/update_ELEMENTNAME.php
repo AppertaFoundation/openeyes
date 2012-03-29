@@ -18,8 +18,8 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+<h4 class="elementTypeName"><?php echo '<?php ';?> echo $element->elementType->name <?php echo '?>'; ?></h4>
 
-<?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
-<?php echo $form->dropDownList($element, 'surgeon_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
-<?php echo $form->dropDownList($element, 'assistant_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); ?>
+<?php echo '<?php ';?> echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');<?php echo '?>'; ?>
+<?php echo '<?php ';?> echo $form->dropDownList($element, 'surgeon_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); <?php echo '?>';?>
+<?php echo '<?php ';?> echo $form->dropDownList($element, 'assistant_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); <?php echo '?>';?>
