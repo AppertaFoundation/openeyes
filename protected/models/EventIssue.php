@@ -16,28 +16,56 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
 
-<div class="<?php echo $element->elementType->class_name?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+/**
+ * This is the model class for table "eye".
+ *
+ * The followings are the available columns in table 'eye':
+ * @property string $id
+ * @property string $name
+ * @property string $ShortName
+ */
+class EventIssue extends BaseActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return Firm the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
 
-	<?php
-	$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-		'identifier'=> 'Buckle',
-		'side'=>'R',
-		'mode'=>'edit',
-		'size'=>300,
-		'model'=>$element,
-		'attribute'=>'eyedraw',
-		'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
-		'onLoadedCommandArray'=>array(
-			array('addDoodle', array('BuckleOperation')),
-			array('deselectDoodles', array()),
-		),
-	));
-	?>
-	<?php echo $form->dropDownList($element, 'drainage_type_id', CHtml::listData(DrainageType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->radioBoolean($element, 'drain_haem')?>
-	<?php echo $form->radioBoolean($element, 'deep_suture')?>
-	<?php echo $form->textArea($element, 'report', array('rows'=>8,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate')))?>
-</div>
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'event_issue';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		return array(
+			'issue' => array(self::BELONGS_TO, 'Issue', 'issue_id')
+		);
+	}
+
+	public function getText() {
+		return $this->issue->name;
+	}
+}

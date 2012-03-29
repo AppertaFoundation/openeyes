@@ -1372,16 +1372,6 @@ class ElementOperation extends BaseEventTypeElement
 		}
 	}
 
-	public function hasIssue() {
-		return !in_array($this->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED));
-	}
-
-	public function getIssueText() {
-		if (!in_array($this->status, array(ElementOperation::STATUS_SCHEDULED, ElementOperation::STATUS_RESCHEDULED))) {
-			return 'Operation requires scheduling';
-		}
-	}
-
 	public function getInfoText() {
 		$text = '';
 		foreach ($this->procedures as $procedure) {

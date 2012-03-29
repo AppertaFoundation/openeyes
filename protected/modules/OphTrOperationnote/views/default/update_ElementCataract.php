@@ -23,7 +23,7 @@
 
 	<?php
 	$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-		'identifier'=> 'PS',
+		'identifier'=> 'Cataract',
 		'side'=>'R',
 		'mode'=>'edit',
 		'size'=>300,

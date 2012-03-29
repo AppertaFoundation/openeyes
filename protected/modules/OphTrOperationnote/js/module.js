@@ -72,7 +72,9 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		var buttonClass = $(this).attr('id').replace(/_generate_report$/,'');
-		var text = ed_drawing_edit_RPS.report().replace(/, +$/, '');
+		var eyeDrawName = buttonClass.replace(/Element/,'');
+
+		var text = window["ed_drawing_edit_R"+eyeDrawName].report().replace(/, +$/, '');
 
 		if ($('#'+buttonClass+'_report').text().length >0) {
 			text += ', '+text;
@@ -86,7 +88,7 @@ $(document).ready(function() {
 	$('#ElementCataract_incision_site_id').unbind('change').change(function(e) {
 		e.preventDefault();
 
-		ed_drawing_edit_RPS.setParameterForDoodleOfClass('PhakoIncision', 'incisionSite', $(this).children('option:selected').text());
+		ed_drawing_edit_RCataract.setParameterForDoodleOfClass('PhakoIncision', 'incisionSite', $(this).children('option:selected').text());
 
 		return false;
 	});

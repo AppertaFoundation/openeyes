@@ -200,6 +200,20 @@ class ClinicalController extends BaseController
 					$elements, $_POST, $this->firm, $this->patient->id, $this->getUserId(), $eventType->id
 				);
 
+				foreach ($elements as $element) {
+					if ($element->infotext) {
+						$event_info .= $element->infotext;
+					}
+				}
+
+				if ($event_info) {
+					$event = Event::model()->findByPk($eventId);
+					$event->info = $event_info;
+					if (!$event->save()) {
+						throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
+					}
+				}
+
 				if ($eventId) {
 					$this->logActivity('created event.');
 
@@ -301,6 +315,21 @@ class ClinicalController extends BaseController
 				$success = $this->service->updateElements($elements, $_POST, $event);
 
 				if ($success) {
+					$event_info = '';
+
+					foreach ($elements as $element) {
+						if ($element->infotext) {
+							$event_info .= $element->infotext;
+						}
+					}
+
+					if ($event_info) {
+						$event->info = $event_info;
+						if (!$event->save()) {
+							throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
+						}
+					}
+
 					$this->logActivity('updated event');
 
 					// Update event to indicate user has made a change
