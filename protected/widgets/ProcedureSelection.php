@@ -34,7 +34,12 @@ class ProcedureSelection extends BaseCWidget {
 		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
 		$this->procedures = array();
 		if (empty($this->subsections)) {
-			$this->procedures = Procedure::model()->getListBySubspecialty($subspecialty->id);
+			$this->procedures = array();
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id) as $proc_id => $name) {
+				if (!@$_POST['Procedures'] || !in_array($proc_id,$_POST['Procedures'])) {
+					$this->procedures[$proc_id] = $name;
+				}
+			}
 		}
 
 		if (empty($_POST)) {

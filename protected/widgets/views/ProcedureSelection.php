@@ -134,7 +134,9 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 <script type="text/javascript">
-	var removed_stack = [];
+	var removed_stack = [<?php foreach ($selected_procedures as $i => $proc) {
+		if ($i) echo ',';
+		echo '{id: '.$proc->id.', name: "'.$proc->term.'"}';}?>];
 
 	function updateTotalDuration() {
 		// update total duration
