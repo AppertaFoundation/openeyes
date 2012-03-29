@@ -193,7 +193,7 @@
 </p>
 
 <p class="red">
-	You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/fried/carer who is collecting you to make sure they bring some money to cover the prescription.
+	You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/friend/carer who is collecting you to make sure they bring some money to cover the prescription.
 </p>
 
 <p>
