@@ -53,10 +53,11 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 		$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn'),));
 
 		foreach($files as $file) {
-			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", strtolower($this->moduleID), $file);
+			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if($file!==$moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php') {
 					if (preg_match("/\/migrations\//", $file)) {
+						# echo "fish"; exit;
 						$content=$this->renderMigrations($file);
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
@@ -71,23 +72,29 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 				} else if(basename($file)==='.yii') {
 					$file=dirname($file);
 					$content=null;
-					$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+					// $this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 				} else {
 					$content=file_get_contents($file);
 					$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 					// $this->files[]=new CCodeFile($modulePath.substr($file,strlen($templatePath)), $content);
 				}
-				$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+				// $this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 			}
 		}
 	}
 
 	# array ( 'Specialty' => array ( 'id' => '1', ), 'EventGroup' => array ( 'id' => '1', ), 'EventTypeModuleCode' => array ( 'moduleSuffix' => 'oij oij oij oij oij oij ', 'template' => 'default', ), 'elementName1' => 'oij oij oij oij ', 'elementName1FieldName1' => 'oij oij ', 'elementName1FieldLabel1' => 'oij oij oij ', 'elementType1FieldType1' => '1', 'elementName1FieldName2' => 'oijoi joij oij ', 'elementName1FieldLabel2' => 'oij oij oij oij ', 'elementType1FieldType2' => '1', 'elementName2' => 'oijoij', 'elementName2FieldName1' => 'oijoij', 'elementName2FieldLabel1' => 'oijoij', 'elementType2FieldType1' => '1', 'elementName2FieldName2' => 'oijoijoij', 'elementName2FieldLabel2' => 'oijoijoij', 'elementType2FieldType2' => '1', 'preview' => 'Preview', )
 	public function renderMigrations($file) {
-		echo $this->moduleSuffix; exit;
+		# echo $this->moduleSuffix; exit;
+		$elements = Array();
 		foreach ($_POST as $key => $value) {
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
 				$field = $matches[0]; $number = $matches[1]; $name = $value;
+				$elements[$number]['name'] = $value;
+				$elements[$number]['class_name'] = 'Element' . preg_replace("/ /", "", ucwords(strtolower($value)));
+				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
+				$elements[$number]['number'] = $number;
+				// $elements[$number]['fields'] = Array();
 
 				$fields = Array();
 				// get all fields for elementNameX
@@ -98,15 +105,19 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 						$field_name = $fields_value;
 						$field_label = $_POST[$field . "FieldLabel".$field_number];
 						$field_type = $_POST["elementType" . $number . "FieldType".$field_number];
-						$fields[$number]['name'] = $field_name;
-						$fields[$number]['number'] = $field_number;
-						$fields[$number]['type'] = $field_type;
+						$elements[$number][$field_number]['name'] = $field_name;
+						$elements[$number][$field_number]['number'] = $field_number;
+						$elements[$number][$field_number]['type'] = $field_type;
+						// $fields[$field_number]['name'] = $field_name;
+						// $fields[$field_number]['number'] = $field_number;
+						// $fields[$field_number]['type'] = $field_type;
 					}
 				}
 
 
 				# Textbox, Textarea, Date picker, Dropdown list, Checkboxes, Radio buttons, Boolean, EyeDraw
 				// generate this element
+				/*
 				$sql = '';
 				foreach (array_keys($fields[$number]) as $f) {
 					if ($f['type'] == 'Textbox') {
@@ -127,9 +138,14 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 						$sql .= '';
 					}
 				}
+				*/
 			}
 		}
-		return $this->render($file);
+		echo "about to render file"; 
+		$params = array(); $params['elements'] = $elements;
+		// echo var_export($elements, true); exit;
+		return $this->render($file, $params);
+		echo "file rendered";
 	}
 
 	public function init() {
