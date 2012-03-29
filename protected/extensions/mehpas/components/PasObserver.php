@@ -9,7 +9,7 @@ class PasObserver {
 		$patient = $params['patient'];
 		$assignment = PasAssignment::model()->findByInternal('Patient', $patient->id);
 		if(!$assignment) {
-			// Try to find PAS patient using hos_num
+			// Assignment doesn't exist yet, try to find PAS patient using hos_num
 			$hos_num = sprintf('%07d',$patient->hos_num);
 			$num_id_type = substr($hos_num,0,1);
 			$number_id = substr($hos_num,1,6);

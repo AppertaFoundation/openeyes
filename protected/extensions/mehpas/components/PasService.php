@@ -102,7 +102,7 @@ class PasService {
 			// Without an external ID we have no way of looking up the patient in PAS
 			throw new CException('Patient assignment has no external ID');
 		}
-		if($pas_patient = $assignment->internal) {
+		if($pas_patient = $assignment->external) {
 			$patient->title = $pas_patient->name->TITLE;
 			$patient->first_name = ($pas_patient->name->NAME1) ? $pas_patient->name->NAME1 : '(UNKNOWN)';
 			$patient->last_name = $pas_patient->name->SURNAME_ID;
@@ -127,7 +127,7 @@ class PasService {
 			$pas_patient_gp = $pas_patient->PatientGp;
 			if($pas_patient_gp) {
 				// Check that GP is not on our block list
-				if(GpService::is_bad_gp($pas_patient_gp->GP_ID)) {
+				if($this->isBadGp($pas_patient_gp->GP_ID)) {
 					Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
 					$patient->gp_id = null;
 				} else {
@@ -136,11 +136,14 @@ class PasService {
 					if(!$gp) {
 						// GP not in openeyes, pulling from PAS
 						Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
+						/*
+						 * FIXME: Move this code to PasService
 						$gp = new Gp();
 						$gp->obj_prof = $pas_patient_gp->GP_ID;
 						$gp_service = new GpService($gp);
 						$gp_service->loadFromPas();
 						$gp = $gp_service->gp;
+						 */
 					}
 
 					// Update/set patient's GP
