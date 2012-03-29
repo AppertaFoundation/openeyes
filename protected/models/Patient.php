@@ -308,5 +308,18 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
-	
+
+	public function getEpisodeForCurrentSubspecialty() {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		$ssa = $firm->serviceSubspecialtyAssignment;
+
+		// Get all firms for the subspecialty
+		$firm_ids = array();
+		foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
+			$firm_ids[] = $firm->id;
+		}
+
+		return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
+	}
 }

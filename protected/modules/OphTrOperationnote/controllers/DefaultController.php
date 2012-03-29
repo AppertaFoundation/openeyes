@@ -3,6 +3,8 @@
 class DefaultController extends BaseEventTypeController
 {
 	public $surgeons;
+	public $selected_procedures;
+	public $selected_eye;
 
 	public function actionCreate() {
 		$criteria = new CDbCriteria;
@@ -10,6 +12,23 @@ class DefaultController extends BaseEventTypeController
 		$criteria->order = 'first_name,last_name asc';
 
 		$this->surgeons = User::model()->findAll($criteria);
+
+		// Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new SystemException('Patient not found: '.@$_GET['patient_id']);
+		}
+
+		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+			if ($booking = $episode->getMostRecentBooking()) {
+				$this->selected_procedures = array();
+
+				foreach ($booking->elementOperation->procedures as $procedure) {
+					$this->selected_procedures[] = $procedure;
+				}
+
+				$this->selected_eye = $booking->elementOperation->eye_id;
+			}
+		}
 
 		parent::actionCreate();
 	}

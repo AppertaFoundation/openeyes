@@ -200,6 +200,8 @@ class ClinicalController extends BaseController
 					$elements, $_POST, $this->firm, $this->patient->id, $this->getUserId(), $eventType->id
 				);
 
+				$event_info = '';
+
 				foreach ($elements as $element) {
 					if ($element->infotext) {
 						$event_info .= $element->infotext;
