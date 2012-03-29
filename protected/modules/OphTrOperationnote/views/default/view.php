@@ -3,7 +3,7 @@
 	$this->header();
 ?>
 
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation_note.png) center left no-repeat;"><?php echo $this->event_type->name ?></h3>
+<h3 class="withEventIcon" style="background:transparent url(<?php echo $this->imgPath?>medium.png) center left no-repeat;"><?php echo $this->event_type->name ?></h3>
 
 <div>
 	<?php $this->renderDefaultElements($this->action->id); ?>
