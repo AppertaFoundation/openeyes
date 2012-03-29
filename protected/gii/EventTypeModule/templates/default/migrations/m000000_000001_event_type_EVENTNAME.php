@@ -1,4 +1,4 @@
-<?php echo '<?php'; ?>
+<?php echo '<?php '; ?>
 class m000000_000001_event_type_<?php echo $this->moduleID; ?> extends CDbMigration
 {
 	public function up() {
@@ -34,6 +34,14 @@ class m000000_000001_event_type_<?php echo $this->moduleID; ?> extends CDbMigrat
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 			'event_id' => 'int(10) unsigned NOT NULL',
 			### FIELDS
+			<?php
+				$number = $element['number'];
+				$count = 1;
+				foreach ($element[$number] as $field) {
+					echo "This is a -" . $field['name'] . "-";
+					$count++;
+				}
+			?>
 			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -41,14 +49,14 @@ class m000000_000001_event_type_<?php echo $this->moduleID; ?> extends CDbMigrat
 			'PRIMARY KEY (`id`)',
 			'UNIQUE KEY `event_id` (`event_id`)'
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
-		$this->addForeignKey('et_ophtroperationnote_procedurelist_last_modified_user_id_fk','et_ophtroperationnote_procedurelist','last_modified_user_id','user','id');
-		$this->addForeignKey('et_ophtroperationnote_procedurelist_created_user_id_fk','et_ophtroperationnote_procedurelist','created_user_id','user','id');
-	<?php
-	}
-	?>
+		$this->addForeignKey('<?php echo $element['table_name'];?>_last_modified_user_id_fk','<?php echo $element['table_name'];?>','last_modified_user_id','user','id');
+		$this->addForeignKey('<?php echo $element['table_name'];?>_created_user_id_fk','<?php echo $element['table_name'];?>','created_user_id','user','id');
+	<?php } ?>
+	<?php } ?>
 
 	public function down() {
 		echo "m000000_000001_event_type_<?php echo $this->moduleID; ?> does not support migration down.\n";
 		return false;
 	}
+
 <?php echo '?>';?>

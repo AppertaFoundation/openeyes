@@ -105,15 +105,13 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 						$field_name = $fields_value;
 						$field_label = $_POST[$field . "FieldLabel".$field_number];
 						$field_type = $_POST["elementType" . $number . "FieldType".$field_number];
-						$elements[$number][$field_number]['name'] = $field_name;
-						$elements[$number][$field_number]['number'] = $field_number;
-						$elements[$number][$field_number]['type'] = $field_type;
-						// $fields[$field_number]['name'] = $field_name;
-						// $fields[$field_number]['number'] = $field_number;
-						// $fields[$field_number]['type'] = $field_type;
+						$elements[$number]['fields'][$field_number] = Array();
+						$elements[$number]['fields'][$field_number]['name'] = $field_name;
+						$elements[$number]['fields'][$field_number]['label'] = $field_label;
+						$elements[$number]['fields'][$field_number]['number'] = $field_number;
+						$elements[$number]['fields'][$field_number]['type'] = $field_type;
 					}
 				}
-
 
 				# Textbox, Textarea, Date picker, Dropdown list, Checkboxes, Radio buttons, Boolean, EyeDraw
 				// generate this element
@@ -141,11 +139,8 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 				*/
 			}
 		}
-		echo "about to render file"; 
 		$params = array(); $params['elements'] = $elements;
-		// echo var_export($elements, true); exit;
 		return $this->render($file, $params);
-		echo "file rendered";
 	}
 
 	public function init() {
