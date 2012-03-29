@@ -59,7 +59,7 @@
 	<div class="col1" style="margin-top: 1em;">
 		<?php
 		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-			'identifier'=> 'PS',
+			'identifier'=> 'Cataract',
 			'side'=>'R',
 			'mode'=>'view',
 			'size'=>300,

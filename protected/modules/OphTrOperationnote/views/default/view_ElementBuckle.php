@@ -45,7 +45,7 @@
 	<div class="col1" style="margin-top: 1em;">
 		<?php
 		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-			'identifier'=> 'PS',
+			'identifier'=> 'Buckle',
 			'side'=>'R',
 			'mode'=>'view',
 			'size'=>300,
