@@ -43,9 +43,11 @@ class ProcedureSelection extends BaseCWidget {
 		}
 
 		if (empty($_POST)) {
-			$this->selected_procedures = $this->element->procedures;
-			if ($this->durations) {
-				$this->total_duration = $this->element->total_duration;
+			if (!$this->selected_procedures) {
+				$this->selected_procedures = $this->element->procedures;
+				if ($this->durations) {
+					$this->total_duration = $this->element->total_duration;
+				}
 			}
 		} else {
 			$this->selected_procedures = array();

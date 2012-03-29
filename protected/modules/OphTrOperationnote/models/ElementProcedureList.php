@@ -97,7 +97,8 @@ class ElementProcedureList extends BaseEventTypeElement
 			'event_id' => 'Event',
 			'surgeon_id' => 'Surgeon',
 			'assistant_id' => 'Assistant',
-			'anaesthetic_type_id' => 'Anaesthetic type'
+			'anaesthetic_type_id' => 'Anaesthetic type',
+			'eye_id' => 'Eye(s)'
 		);
 	}
 
