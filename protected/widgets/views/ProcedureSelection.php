@@ -109,6 +109,12 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 																							$('#select_procedure_id').children().each(function () {
 																											if ($(this).text() == m[1]) {
+
+																															var id = $(this).val();
+																															var name = $(this).text();
+
+																															removed_stack.push({name: name, id: id});
+
 																															$(this).remove();
 																											}
 																							});
@@ -128,6 +134,8 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 						</div>
 					</div>
 <script type="text/javascript">
+	var removed_stack = [];
+
 	function updateTotalDuration() {
 		// update total duration
 		var totalDuration = 0;
@@ -166,8 +174,39 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			callbackRemoveProcedure(procedure_id);
 		}
 
+		var stack = [];
+
+		$.each(removed_stack, function(key, value) {
+			if (value["id"] != procedure_id) {
+				stack.push(value);
+			} else {
+				$('#select_procedure_id').append('<option value="'+value["id"]+'">'+value["name"]+'</option>');
+			}
+		});
+
+		removed_stack = stack;
+
+		sort_procedure_list();
+
 		return false;
 	});
+
+	function selectSort(a, b) {		 
+			if (a.innerHTML == rootItem) {
+					return -1;		
+			}
+			else if (b.innerHTML == rootItem) {
+					return 1;	 
+			}				
+			return (a.innerHTML > b.innerHTML) ? 1 : -1;
+	};
+
+	var rootItem = null;
+
+	function sort_procedure_list() {
+		rootItem = $('#select_procedure_id option:first').text();
+		$('#select_procedure_id option').sort(selectSort).appendTo('#select_procedure_id');
+	}
 
 	$('select[id=subsection_id]').change(function() {
 		var subsection = $('select[name=subsection_id] option:selected').val();
@@ -183,6 +222,18 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'success': function(data) {
 					$('select[name=select_procedure_id]').attr('disabled', false);
 					$('select[name=select_procedure_id]').html(data);
+
+					// remove any items in the removed_stack
+					$('select[name=select_procedure_id] option').map(function() {
+						var obj = $(this);
+
+						$.each(removed_stack, function(key, value) {
+							if (value["id"] == obj.val()) {
+								obj.remove();
+							}
+						});
+					});
+
 					$('select[name=select_procedure_id]').show();
 				}
 			});
@@ -216,6 +267,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 					// clear out text field
 					$('#autocomplete_procedure_id').val('');
+
+					var id = $('select[name=select_procedure_id] option:selected').val();
+					var name = $('select[name=select_procedure_id] option:selected').text();
+
+					removed_stack.push({name: name, id: id});
 
 					// remove the procedure from the options list
 					$('select[name=select_procedure_id] option:selected').remove();
