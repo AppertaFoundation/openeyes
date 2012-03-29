@@ -28,7 +28,7 @@ class PasObserver {
 				// @TODO Push an alert that the patient cannot be mapped
 			}
 		}
-		if(PasAssignment::is_stale('Patient', $patient->id)) {
+		if($assignment->isStale()) {
 			Yii::log('Patient details stale', 'trace');
 			$pas_service = new PasService();
 			if ($pas_service->available) {
@@ -45,11 +45,32 @@ class PasObserver {
 	 */
 	public function updateGpFromPas($params) {
 		$gp = $params['gp'];
-		if(strtotime($gp->last_modified_date) < (time() - PasService::PAS_CACHE_TIME)) {
-			Yii::log('GP details stale', 'trace');
-			$gp_service = new GpService($gp);
-			$gp_service->loadFromPas();
-			// @TODO Push an alert onto the user's screen if PAS is down
+		$assignment = PasAssignment::model()->findByInternal('Gp', $gp->id);
+		if(!$assignment) {
+			// Assignment doesn't exist yet, try to find PAS gp using obj_prof
+			$obj_prof = $gp->obj_prof;
+			$pas_gp = PAS_Gp::model()->find('obj_prof = :obj_prof', array(
+					':obj_prof' => $obj_prof,
+			));
+			if($pas_gp) {
+				$assignment = new PasAssignment();
+				$assignment->internal_id = $gp->id;
+				$assignment->internal_type = 'Gp';
+				$assignment->external_id = $pas_gp->OBJ_PROF;
+				$assignment->external_type = 'PAS_Gp';
+			} else {
+				throw new CException('Cannot map gp');
+				// @TODO Push an alert that the patient cannot be mapped
+			}
+		}
+		if($assignment->isStale()) {
+			Yii::log('Gp details stale', 'trace');
+			$pas_service = new PasService();
+			if ($pas_service->available) {
+				$pas_service->updateGpFromPas($gp, $assignment);
+			} else {
+				// @TODO Push an alert onto the user's screen
+			}
 		}
 	}
 

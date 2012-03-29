@@ -47,30 +47,29 @@ class PasService {
 	 * Update Gp from PAS
 	 * @param Gp $gp
 	 */
-	public function updateGpFromPas($gp) {
-		if(!$this->gp->obj_prof) {
-			throw new CException('GP not linked to PAS GP (obj_prof undefined)');
+	public function updateGpFromPas($gp, $assignment) {
+		Yii::log('Pulling data from PAS for gp ID:'.$gp->id, 'trace');
+		if(!$assignment->external_id) {
+			// Without an external ID we have no way of looking up the gp in PAS
+			throw new CException('GP assignment has no external ID');
 		}
-		Yii::log('Pulling GP data from PAS:'.$this->gp->obj_prof, 'trace');
-		$pas_query = new CDbCriteria();
-		$pas_query->condition = 'obj_prof = :gp_id';
-		$pas_query->order = 'DATE_FR DESC';
-		$pas_query->params = array(':gp_id' => $this->gp->obj_prof);
-		if($pas_gp = PAS_Gp::model()->find($pas_query)) {
-			$this->gp->nat_id = $pas_gp->NAT_ID;
-
+		// FIXME: Check primary key is actually primary - I think it's not
+		if($pas_gp = $assignment->external) {
+			$gp->nat_id = $pas_gp->NAT_ID;
+			
 			// Contact
-			if(!$contact = $this->gp->contact) {
+			if(!$contact = $gp->contact) {
 				$contact = new Contact();
 			}
 			$contact->first_name = trim($pas_gp->FN1 . ' ' . $pas_gp->FN2);
 			$contact->last_name = $pas_gp->SN;
 			$contact->title = $pas_gp->TITLE;
 			$contact->primary_phone = $pas_gp->TEL_1;
-
+			
 			// Address
 			if(!$address = $contact->address) {
 				$address = new Address();
+				$address->parent_class = 'Gp';
 			}
 			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
 			$address->address2 = $pas_gp->ADD_DIS;
@@ -78,17 +77,17 @@ class PasService {
 			$address->county = $pas_gp->ADD_CTY;
 			$address->postcode = $pas_gp->PC;
 			$address->country_id = 1;
-
+			
 			// Save
 			$contact->save();
 			$address->parent_id = $contact->id;
 			$address->save();
-			$this->gp->contact_id = $contact->id;
-			$this->gp->save();
-
+			$gp->contact_id = $contact->id;
+			$gp->save();
+			
 		} else {
-			Yii::log('GP not found in PAS: '.$this->gp->obj_prof, 'info');
-		}
+			Yii::log('GP not found in PAS: '.$gp->id, 'info');
+		}		
 	}
 
 	/**
@@ -136,14 +135,12 @@ class PasService {
 					if(!$gp) {
 						// GP not in openeyes, pulling from PAS
 						Yii::log('GP not in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
-						/*
-						 * FIXME: Move this code to PasService
 						$gp = new Gp();
-						$gp->obj_prof = $pas_patient_gp->GP_ID;
-						$gp_service = new GpService($gp);
-						$gp_service->loadFromPas();
-						$gp = $gp_service->gp;
-						 */
+						$gp_assignment = new PasAssignment();
+						$gp_assignment->internal_type = 'Gp';
+						$gp_assignment->external_id = $pas_patient_gp->GP_ID;
+						$gp_assignment->external_type = 'PAS_Gp';
+						$this->updateGpFromPas($gp, $gp_assignment);
 					}
 
 					// Update/set patient's GP
