@@ -580,10 +580,6 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 
 /* event subsection */
 #event_content > h3.subsection { font-size:14px; color:#111; background:#dae6f1; padding:12px 10px; margin-top: 10px; }
-
-#event_content .cols2:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
-#event_content .cols2 .col1 { width: 48%; float: left; clear: left; }
-#event_content .cols2 .col2 { width: 48%; float: right; clear: right; }
 #event_content .cols2 h3.subsection { margin-top: 10px; clear: both; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
 
 .eventDetail > .data { display:inline-block; position:relative;}
