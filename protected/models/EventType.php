@@ -86,6 +86,9 @@ class EventType extends BaseActiveRecord
 		);
 	}
 
+	public function getEventTypeModules() {
+		return EventType::model()->findAll("class_name in ('".implode("','",array_keys(Yii::app()->getModules()))."') or class_name='OphTrOperation'");
+	}
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.

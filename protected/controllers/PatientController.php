@@ -357,12 +357,6 @@ class PatientController extends BaseController
 
 		$episodes = $this->patient->episodes;
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
@@ -370,7 +364,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'eventTypes' => $eventTypes,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => empty($episodes) ? false : $episodes[0]
 		));
@@ -389,12 +383,6 @@ class PatientController extends BaseController
 
 		$episodes = $this->patient->episodes;
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
@@ -402,7 +390,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
-			'eventTypes' => $eventTypes,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $episode
 		));
@@ -433,12 +421,6 @@ class PatientController extends BaseController
 
 		$this->logActivity('viewed event');
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = $this->event_type->name;
@@ -447,7 +429,7 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'elements' => $elements,
 			'event_template_name' => $event_template_name,
-			'eventTypes' => $eventTypes,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $this->event->episode
 		));

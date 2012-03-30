@@ -34,11 +34,11 @@ class ClinicalController extends BaseController
 	public function init()
 	{
 		// FIXME: this is a hack to enable things to continue working until we can call eg: /modulename/create
-		foreach (Yii::app()->params['enabled_modules'] as $module) {
+		foreach (EventType::model()->getEventTypeModules() as $module) {
 			if ($module != 'OphTrOperation') {
-				Yii::import('application.modules.'.$module.'.*');
-				Yii::import('application.modules.'.$module.'.models.*');
-				Yii::import('application.modules.'.$module.'.views.*');
+				Yii::import('application.modules.'.$module->class_name.'.*');
+				Yii::import('application.modules.'.$module->class_name.'.models.*');
+				Yii::import('application.modules.'.$module->class_name.'.views.*');
 			}
 		}
 	}
@@ -443,11 +443,7 @@ class ClinicalController extends BaseController
 			$this->episodes = $patient->episodes;
 		}
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$this->eventTypes = array();
-		} else {
-			$this->eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
+		$this->eventTypes = EventType::model()->getEventTypeModules();
 	}
 
 	/**
@@ -516,15 +512,9 @@ class ClinicalController extends BaseController
 	public function header($passthru=false) {
 		$episodes = $this->patient->episodes;
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$params = array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes,
+			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'title'=>'Create'
 		);
 
@@ -538,15 +528,9 @@ class ClinicalController extends BaseController
 	public function footer($editable=false,$passthru=false) {
 		$episodes = $this->patient->episodes;
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$params = array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes,
+			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'editable'=>$editable
 		);
 

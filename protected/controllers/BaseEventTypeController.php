@@ -400,15 +400,9 @@ class BaseEventTypeController extends BaseController
 	public function header($editable=false) {
 		$episodes = $this->patient->episodes;
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes,
+			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
 			'editable'=>$editable
 		));
@@ -417,15 +411,9 @@ class BaseEventTypeController extends BaseController
 	public function footer() {
 		$episodes = $this->patient->episodes;
 
-		if (!Yii::app()->params['enabled_modules'] || !is_array(Yii::app()->params['enabled_modules'])) {
-			$eventTypes = array();
-		} else {
-			$eventTypes = EventType::model()->findAll("class_name in ('".implode("','",Yii::app()->params['enabled_modules'])."')");
-		}
-
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
-			'eventTypes'=>$eventTypes
+			'eventTypes'=>EventType::model()->getEventTypeModules()
 		));
 	}
 
