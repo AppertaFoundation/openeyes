@@ -271,6 +271,10 @@ class Patient extends BaseActiveRecord {
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
+	/**
+	 * Raise event to allow external data sources to update patient
+	 * @see CActiveRecord::afterFind()
+	 */
 	protected function afterFind() {
 		parent::afterFind();
 		Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));

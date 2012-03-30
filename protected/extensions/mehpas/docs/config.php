@@ -28,6 +28,16 @@ return array(
 								),
 						),
 				),
+				'db_pas' => array(
+						'connectionString' => 'oci:dbname=remotename:1521/database',
+						'emulatePrepare' => false,
+						'username' => 'root',
+						'password' => '',
+						// Make oracle default date format the same as MySQL (default is DD-MMM-YY)
+						'initSQLs' => array(
+								'ALTER SESSION SET NLS_DATE_FORMAT = \'YYYY-MM-DD\'',
+						),
+				),
 		),
 		'params'=>array(
 				'bad_gps' => array(),

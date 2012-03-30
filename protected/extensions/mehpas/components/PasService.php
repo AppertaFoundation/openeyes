@@ -19,11 +19,6 @@
 
 class PasService {
 
-	/**
-	 * How long (in seconds) before cached PAS details are considered stale
-	 */
-	const PAS_CACHE_TIME = 3;
-
 	public $available = true;
 
 	public function __construct() {
@@ -53,8 +48,8 @@ class PasService {
 			// Without an external ID we have no way of looking up the gp in PAS
 			throw new CException('GP assignment has no external ID');
 		}
-		// FIXME: Check primary key is actually primary - I think it's not
 		if($pas_gp = $assignment->external) {
+			Yii::log('Found GP in PAS obj_prof:'.$pas_gp->OBJ_PROF, 'trace');
 			$gp->nat_id = $pas_gp->NAT_ID;
 			
 			// Contact
@@ -69,7 +64,7 @@ class PasService {
 			// Address
 			if(!$address = $contact->address) {
 				$address = new Address();
-				$address->parent_class = 'Gp';
+				$address->parent_class = 'Contact';
 			}
 			$address->address1 = trim($pas_gp->ADD_NAM . ' ' . $pas_gp->ADD_NUM . ' ' . $pas_gp->ADD_ST);
 			$address->address2 = $pas_gp->ADD_DIS;
@@ -84,7 +79,9 @@ class PasService {
 			$address->save();
 			$gp->contact_id = $contact->id;
 			$gp->save();
-			
+			$assignment->internal_id = $gp->id;
+			$assignment->save();
+				
 		} else {
 			Yii::log('GP not found in PAS: '.$gp->id, 'info');
 		}		
@@ -102,6 +99,7 @@ class PasService {
 			throw new CException('Patient assignment has no external ID');
 		}
 		if($pas_patient = $assignment->external) {
+			Yii::log('Found patient in PAS rm_patient_no:'.$pas_patient->RM_PATIENT_NO, 'trace');
 			$patient->title = $pas_patient->name->TITLE;
 			$patient->first_name = ($pas_patient->name->NAME1) ? $pas_patient->name->NAME1 : '(UNKNOWN)';
 			$patient->last_name = $pas_patient->name->SURNAME_ID;
@@ -130,6 +128,7 @@ class PasService {
 					Yii::log('GP on blocklist, ignoring: '.$pas_patient_gp->GP_ID, 'trace');
 					$patient->gp_id = null;
 				} else {
+					Yii::log('Checking if GP is in openeyes: '.$pas_patient_gp->GP_ID, 'trace');
 					// Check that the GP is in openeyes
 					$gp = Gp::model()->findByAttributes(array('obj_prof' => $pas_patient_gp->GP_ID));
 					if(!$gp) {
@@ -157,7 +156,7 @@ class PasService {
 
 			// Save
 			$patient->save();
-			$assignment->patient_id = $patient->id;
+			$assignment->internal_id = $patient->id;
 			$assignment->save();
 
 			// Addresses
@@ -170,13 +169,14 @@ class PasService {
 
 					// Match an address
 					Yii::log("looking for patient address:".$pas_address->POSTCODE, 'trace');
+					$matched_clause = ($matched_address_ids) ? ' AND id NOT IN ('.implode(',',$matched_address_ids).')' : '';
 					$address = Address::model()->find(array(
-							'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode",
+							'condition' => "parent_id = :patient_id AND parent_class = 'Patient' AND REPLACE(postcode,' ','') = :postcode" . $matched_clause,
 							'params' => array(':patient_id' => $patient->id, ':postcode' => str_replace(' ','',$pas_address->POSTCODE)),
 					));
 
 					// Check if we have an address (that we haven't already matched)
-					if(!$address || in_array($address->id, $matched_address_ids)) {
+					if(!$address) {
 						Yii::log("patient address not found, creating", 'trace');
 						$address = new Address;
 						$address->parent_id = $patient->id;

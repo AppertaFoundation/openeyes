@@ -1,1 +1,3 @@
-Add docs/config.php to /protected/config/local/common.php
+- Add docs/config.php to /protected/config/local/common.php
+- Do migrations:
+	./yiic migrate --migrationPath=ext.mehpas.migrations

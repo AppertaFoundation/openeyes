@@ -160,12 +160,7 @@ class PatientController extends BaseController
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
-				$get_hos_num = $_POST['Patient']['hos_num'];
-
-				if (Yii::app()->params['use_pas']) {
-					$get_hos_num = str_pad($get_hos_num, 7, '0', STR_PAD_LEFT);
-				}
-
+				$get_hos_num = str_pad($_POST['Patient']['hos_num'], 7, '0', STR_PAD_LEFT);
 				$_GET = array(
 					'hos_num' => $get_hos_num,
 					'nhs_num' => '',

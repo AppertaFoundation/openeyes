@@ -92,14 +92,14 @@ class PAS_Gp extends MultiActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('OBJ_TYPE, GRADE, ADD_FORM, COMMS', 'length', 'max'=>4),
-			array('OBJ_PROF, BLEEP, REG_ID, NAT_ID, ADD_NUM, PC, PERS_NO, SURG, C_SPEC', 'length', 'max'=>10),
-			array('SN, JOB_TTL, ADD_NAM, ADD_ST, ADD_DIS, ADD_TWN, ADD_CTY, ADD_CNT, CONTACT, TEL_1, TEL_2, FAX_1, FAX_2, INTER, EMAIL', 'length', 'max'=>35),
-			array('FN1, FN2, COST', 'length', 'max'=>20),
-			array('TITLE', 'length', 'max'=>5),
-			array('HDDR_GROUP', 'length', 'max'=>48),
-			array('DATE_FR, DATE_TO', 'safe'),
-			array('OBJ_TYPE, OBJ_PROF, DATE_FR, SN, FN1, FN2, TITLE, JOB_TTL, BLEEP, REG_ID, NAT_ID, GRADE, ADD_FORM, ADD_NAM, ADD_NUM, ADD_ST, ADD_DIS, ADD_TWN, ADD_CTY, ADD_CNT, PC, CONTACT, TEL_1, TEL_2, FAX_1, FAX_2, COMMS, INTER, EMAIL, PERS_NO, COST, SURG, C_SPEC, DATE_TO, HDDR_GROUP', 'safe', 'on'=>'search'),
+				array('OBJ_TYPE, GRADE, ADD_FORM, COMMS', 'length', 'max'=>4),
+				array('OBJ_PROF, BLEEP, REG_ID, NAT_ID, ADD_NUM, PC, PERS_NO, SURG, C_SPEC', 'length', 'max'=>10),
+				array('SN, JOB_TTL, ADD_NAM, ADD_ST, ADD_DIS, ADD_TWN, ADD_CTY, ADD_CNT, CONTACT, TEL_1, TEL_2, FAX_1, FAX_2, INTER, EMAIL', 'length', 'max'=>35),
+				array('FN1, FN2, COST', 'length', 'max'=>20),
+				array('TITLE', 'length', 'max'=>5),
+				array('HDDR_GROUP', 'length', 'max'=>48),
+				array('DATE_FR, DATE_TO', 'safe'),
+				array('OBJ_TYPE, OBJ_PROF, DATE_FR, SN, FN1, FN2, TITLE, JOB_TTL, BLEEP, REG_ID, NAT_ID, GRADE, ADD_FORM, ADD_NAM, ADD_NUM, ADD_ST, ADD_DIS, ADD_TWN, ADD_CTY, ADD_CNT, PC, CONTACT, TEL_1, TEL_2, FAX_1, FAX_2, COMMS, INTER, EMAIL, PERS_NO, COST, SURG, C_SPEC, DATE_TO, HDDR_GROUP', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -116,42 +116,58 @@ class PAS_Gp extends MultiActiveRecord {
 	 */
 	public function attributeLabels() {
 		return array(
-			'OBJ_TYPE' => 'Obj Type',
-			'OBJ_PROF' => 'Obj Prof',
-			'DATE_FR' => 'Date Fr',
-			'SN' => 'Sn',
-			'FN1' => 'Fn1',
-			'FN2' => 'Fn2',
-			'TITLE' => 'Title',
-			'JOB_TTL' => 'Job Ttl',
-			'BLEEP' => 'Bleep',
-			'REG_ID' => 'Reg',
-			'NAT_ID' => 'Nat',
-			'GRADE' => 'Grade',
-			'ADD_FORM' => 'Add Form',
-			'ADD_NAM' => 'Add Nam',
-			'ADD_NUM' => 'Add Num',
-			'ADD_ST' => 'Add St',
-			'ADD_DIS' => 'Add Dis',
-			'ADD_TWN' => 'Add Twn',
-			'ADD_CTY' => 'Add Cty',
-			'ADD_CNT' => 'Add Cnt',
-			'PC' => 'Pc',
-			'CONTACT' => 'Contact',
-			'TEL_1' => 'Tel 1',
-			'TEL_2' => 'Tel 2',
-			'FAX_1' => 'Fax 1',
-			'FAX_2' => 'Fax 2',
-			'COMMS' => 'Comms',
-			'INTER' => 'Inter',
-			'EMAIL' => 'Email',
-			'PERS_NO' => 'Pers No',
-			'COST' => 'Cost',
-			'SURG' => 'Surg',
-			'C_SPEC' => 'C Spec',
-			'DATE_TO' => 'Date To',
-			'HDDR_GROUP' => 'Hddr Group',
+				'OBJ_TYPE' => 'Obj Type',
+				'OBJ_PROF' => 'Obj Prof',
+				'DATE_FR' => 'Date Fr',
+				'SN' => 'Sn',
+				'FN1' => 'Fn1',
+				'FN2' => 'Fn2',
+				'TITLE' => 'Title',
+				'JOB_TTL' => 'Job Ttl',
+				'BLEEP' => 'Bleep',
+				'REG_ID' => 'Reg',
+				'NAT_ID' => 'Nat',
+				'GRADE' => 'Grade',
+				'ADD_FORM' => 'Add Form',
+				'ADD_NAM' => 'Add Nam',
+				'ADD_NUM' => 'Add Num',
+				'ADD_ST' => 'Add St',
+				'ADD_DIS' => 'Add Dis',
+				'ADD_TWN' => 'Add Twn',
+				'ADD_CTY' => 'Add Cty',
+				'ADD_CNT' => 'Add Cnt',
+				'PC' => 'Pc',
+				'CONTACT' => 'Contact',
+				'TEL_1' => 'Tel 1',
+				'TEL_2' => 'Tel 2',
+				'FAX_1' => 'Fax 1',
+				'FAX_2' => 'Fax 2',
+				'COMMS' => 'Comms',
+				'INTER' => 'Inter',
+				'EMAIL' => 'Email',
+				'PERS_NO' => 'Pers No',
+				'COST' => 'Cost',
+				'SURG' => 'Surg',
+				'C_SPEC' => 'C Spec',
+				'DATE_TO' => 'Date To',
+				'HDDR_GROUP' => 'Hddr Group',
 		);
+	}
+
+	/**
+	 * Find GP by external ID (obj_prof)
+	 * Table has no primary key, so we need to fetch the record with the most recent date_fr and
+	 * exclude records with a date_to < today
+	 * @param unknown_type $id
+	 */
+	public function findByExternalId($id) {
+		return $this->find(array(
+				'condition' => 'OBJ_PROF = :gp_id AND OBJ_TYPE = \'GMP\' AND ("DATE_TO" IS NULL OR "DATE_TO" >= SYSDATE) AND ("DATE_FR" IS NULL OR "DATE_FR" <= SYSDATE)',
+				'order' => 'DATE_FR DESC',
+				'params' => array(
+						':gp_id' => $id
+				),
+		));
 	}
 
 	/**
@@ -198,8 +214,8 @@ class PAS_Gp extends MultiActiveRecord {
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
-	
+
 }

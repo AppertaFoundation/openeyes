@@ -9,6 +9,7 @@ class PasObserver {
 		$patient = $params['patient'];
 		$assignment = PasAssignment::model()->findByInternal('Patient', $patient->id);
 		if(!$assignment) {
+			Yii::log('Creating new patient assignment', 'trace');
 			// Assignment doesn't exist yet, try to find PAS patient using hos_num
 			$hos_num = sprintf('%07d',$patient->hos_num);
 			$num_id_type = substr($hos_num,0,1);
@@ -47,6 +48,7 @@ class PasObserver {
 		$gp = $params['gp'];
 		$assignment = PasAssignment::model()->findByInternal('Gp', $gp->id);
 		if(!$assignment) {
+			Yii::log('Creating new Gp assignment', 'trace');
 			// Assignment doesn't exist yet, try to find PAS gp using obj_prof
 			$obj_prof = $gp->obj_prof;
 			$pas_gp = PAS_Gp::model()->find('obj_prof = :obj_prof', array(

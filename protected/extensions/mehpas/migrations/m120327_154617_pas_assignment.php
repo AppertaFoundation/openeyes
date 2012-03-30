@@ -7,7 +7,7 @@ class m120327_154617_pas_assignment extends CDbMigration {
 		$this->createTable('pas_assignment', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'internal_id' => 'int(10) unsigned NOT NULL',
-				'external_id' => 'int(10) unsigned NOT NULL',
+				'external_id' => 'varchar(40) unsigned NOT NULL',
 				'internal_type' => 'varchar(40) NOT NULL',
 				'external_type' => 'varchar(40) NOT NULL',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',

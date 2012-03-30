@@ -102,6 +102,10 @@ class PAS_Patient extends MultiActiveRecord {
 		return 'RM_PATIENT_NO';
 	}
 
+	public function findByExternalId($id) {
+		return $this->findByPk($id);
+	}
+	
 	/**
 	 * @return array validation rules for model attributes.
 	 */

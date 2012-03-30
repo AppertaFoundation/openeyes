@@ -90,14 +90,6 @@ $config = array(
 			'charset' => 'utf8',
 			'schemaCachingDuration' => 300,
 		),
-		'db_pas' => array(
-			'class' => 'CDbConnection',
-			'connectionString' => 'mysql:host=localhost;dbname=openeyespas',
-			'emulatePrepare' => true,
-			'username' => 'oe',
-			'password' => '_OE_PAS_PASSWORD_',
-			'schemaCachingDuration' => 300,
-		),
 		'authManager' => array(
 			'class' => 'CDbAuthManager',
 			'connectionID' => 'db',

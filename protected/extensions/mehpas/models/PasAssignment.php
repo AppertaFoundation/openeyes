@@ -38,9 +38,9 @@
 class PasAssignment extends BaseActiveRecord {
 	
 	/**
-	 * How long (in seconds) before cached PAS details are considered stale
+	 * Default time (in seconds) before cached PAS details are considered stale
 	 */
-	const PAS_CACHE_TIME = 3;
+	const PAS_CACHE_TIME = 300;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -67,12 +67,20 @@ class PasAssignment extends BaseActiveRecord {
 		);
 	}
 
+	/**
+	 * Get associated internal record
+	 * @return CActiveRecord
+	 */
 	public function getInternal() {
 		return self::model($this->internal_type)->findByPk($this->internal_id);
 	}
 	
+	/**
+	 * Get associated external record
+	 * @return CActiveRecord
+	 */
 	public function getExternal() {
-		return self::model($this->external_type)->findByPk($this->external_id);
+		return self::model($this->external_type)->findByExternalId($this->external_id);
 	}
 	
 	/**
@@ -104,18 +112,38 @@ class PasAssignment extends BaseActiveRecord {
 		));
 	}
 
+	/**
+	 * Find association using internal details
+	 * @param string $internal_type
+	 * @param integer $internal_id
+	 */
 	public function findByInternal($internal_type, $internal_id) {
 		return $this->find('internal_id = :internal_id AND internal_type = :internal_type', array(':internal_id' => (int) $internal_id, ':internal_type' => $internal_type));
 	}
 	
+	/**
+	 * Find association using external details
+	 * @param string $external_type
+	 * @param string $external_id
+	 */
 	public function findByExternal($external_type, $external_id) {
 		return $this->find('external_id = :external_id AND external_type = :external_type', array(':external_id' => (int) $external_id, ':external_type' => $external_type));
 	}
 	
+	/**
+	 * Does this assignment need refreshing from PAS?
+	 * @return boolean
+	 */
 	public function isStale() {
-		return strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME);
+		$cache_time = (isset(Yii::app()->params['mehpas_cache_time'])) ? Yii::app()->params['mehpas_cache_time'] : self::PAS_CACHE_TIME;
+		return strtotime($this->last_modified_date) < (time() - $cache_time);
 	}
 	
+	/**
+	 * Check if record needs refreshing from PAS
+	 * @param string $internal_type
+	 * @param integer $internal_id
+	 */
 	public static function is_stale($internal_type, $internal_id) {
 		$record = self::model()->findByInternal($internal_type, $internal_id);
 		return $record && $record->isStale();

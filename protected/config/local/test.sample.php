@@ -24,10 +24,5 @@ return array(
 			'username' => 'root',
 			'password' => '',
 		),
-		'db_pas' => array(
-			'connectionString' => 'mysql:host=localhost;dbname=openeyestestpas',
-			'username' => 'root',
-			'password' => '',
-		),
 	),
 );
