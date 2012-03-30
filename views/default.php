@@ -27,6 +27,6 @@
 	<?php }?>
 	<canvas id="<?php echo $canvasId?>" class="<?php if ($isEditable) { echo 'edit'; } else { echo 'display'; }?>" width="<?php echo $size?>" height="<?php echo $size?>" tabindex="1"></canvas>
 	<?php if ($isEditable) {?>
-		<input type="hidden" id="<?php echo $inputId?>" name="<?php echo $inputName?>" value="<?php echo $this->model[$this->attribute]?>" />
+		<input type="hidden" id="<?php echo $inputId?>" name="<?php echo $inputName?>" value='<?php echo $this->model[$this->attribute]?>' />
 	<?php }?>
 </div>
