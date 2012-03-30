@@ -970,7 +970,10 @@ ED.Surgeon.prototype.getParameter = function(_parameter)
             if (isRE)
             {
                 if (this.rotation < dial/16 ) returnValue = 'Superior';
-                else if (this.rotation < 9 * dial/16 ) returnValue = 'Other';
+                else if (this.rotation < 3 * dial/16 ) returnValue = 'Supero-nasal';
+                else if (this.rotation < 5 * dial/16 ) returnValue = 'Nasal';
+                else if (this.rotation < 7 * dial/16 ) returnValue = 'Infero-nasal';
+                else if (this.rotation < 9 * dial/16 ) returnValue = 'Inferior';
                 else if (this.rotation < 11 * dial/16) returnValue = 'Infero-temporal';
                 else if (this.rotation < 13 * dial/16) returnValue = 'Temporal';
                 else if (this.rotation < 15 * dial/16) returnValue = 'Supero-temporal';
@@ -982,7 +985,10 @@ ED.Surgeon.prototype.getParameter = function(_parameter)
                 else if (this.rotation < 3 * dial/16 ) returnValue = 'Supero-temporal';
                 else if (this.rotation < 5 * dial/16) returnValue = 'Temporal';
                 else if (this.rotation < 7 * dial/16) returnValue = 'Infero-temporal';
-                else if (this.rotation < 15 * dial/16) returnValue = 'Other';
+                else if (this.rotation < 9 * dial/16) returnValue = 'Inferior';
+                else if (this.rotation < 11 * dial/16) returnValue = 'Infero-nasal';
+                else if (this.rotation < 13 * dial/16) returnValue = 'Nasal';
+                else if (this.rotation < 15 * dial/16) returnValue = 'Supero-nasal';
                 else returnValue = 'Superior';
             }
             break;
@@ -1066,7 +1072,7 @@ ED.Surgeon.prototype.setParameter = function(_parameter, _value)
                     this.rotation = 3 * Math.PI/4;
                 }
                 break;
-            case 'Other':
+            case 'Inferior':
                 if (isRE)
                 {
                     this.originX = 0;
@@ -1078,6 +1084,48 @@ ED.Surgeon.prototype.setParameter = function(_parameter, _value)
                     this.originX = 0;
                     this.originY = 300;
                     this.rotation = Math.PI;
+                }
+                break;
+            case 'Infero-nasal':
+                if (isRE)
+                {
+                    this.originX = 212;
+                    this.originY = 212;
+                    this.rotation = 3 * Math.PI/4;
+                }
+                else
+                {
+                    this.originX = -212;
+                    this.originY = 212;
+                    this.rotation = 5 * Math.PI/4;
+                }
+                break;
+            case 'Nasal':
+                if (isRE)
+                {
+                    this.originX = 300;
+                    this.originY = 0;
+                    this.rotation = 2 * Math.PI/4;
+                }
+                else
+                {
+                    this.originX = -300;
+                    this.originY = 0;
+                    this.rotation = 6 * Math.PI/4;
+                }
+                break;
+            case 'Supero-nasal':
+                if (isRE)
+                {
+                    this.originX = 212;
+                    this.originY = -212;
+                    this.rotation = 1 * Math.PI/4;
+                }
+                else
+                {
+                    this.originX = -212;
+                    this.originY = -212;
+                    this.rotation = 7 * Math.PI/4;
                 }
                 break;
             default:
