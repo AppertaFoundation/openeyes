@@ -325,6 +325,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				data["available_"+selected_tbody_id] = ($('#available_'+selected_tbody_id).val() == 1);
 			}
 
+			$('div.infoBox').hide();
+
 			$.ajax({
 				'type': 'POST',
 				'data': data,
@@ -345,6 +347,19 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 							$('#comments_ro_'+selected_tbody_id).html($('#comments'+selected_tbody_id).val());
 							$('#comments_ro_'+selected_tbody_id).attr('title',data2);
+
+							// apply chnages to the confirmed checkboxes
+							$('#tbody_'+selected_tbody_id+' tr').map(function() {
+								var is_confirmed = $(this).children('td.confirm').children('input').is(':checked');
+
+								if (is_confirmed) {
+									$(this).children('td.alerts').children('img.confirmed').show();
+								} else {
+									$(this).children('td.alerts').children('img.confirmed').hide();
+								}
+							});
+
+							$('#infoBox_'+selected_tbody_id).show();
 
 							view_mode();
 							load_table_states();
