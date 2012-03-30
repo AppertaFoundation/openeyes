@@ -1,5 +1,11 @@
-<div class="EyeDrawWidget">
+<div style="float:left; width: <?php echo ($size+20)?>px; height: <?php echo ($size+20)?>px;">
+	<canvas id="<?php echo $canvasId?>" class="<?php if ($isEditable) { echo 'edit'; } else { echo 'display'; }?>" width="<?php echo $size?>" height="<?php echo $size?>" tabindex="1"></canvas>
 	<?php if ($isEditable) {?>
+		<input type="hidden" id="<?php echo $inputId?>" name="<?php echo $inputName?>" value="<?php echo $this->model[$this->attribute]?>" />
+	<?php }?>
+</div>
+<?php if ($isEditable) {?>
+	<div style="float: left">
 		<div class="ed_toolbar">
 			<button class="ed_img_button" disabled=true id="moveToFront<?php echo $idSuffix?>" title="Move to front" onclick="<?php echo $drawingName?>.moveToFront(); return false;">
 				<img src="<?php echo $imgPath?>moveToFront.gif" />
@@ -24,9 +30,5 @@
 				</button>
 			<?php }?>
 		</div>
-	<?php }?>
-	<canvas id="<?php echo $canvasId?>" class="<?php if ($isEditable) { echo 'edit'; } else { echo 'display'; }?>" width="<?php echo $size?>" height="<?php echo $size?>" tabindex="1"></canvas>
-	<?php if ($isEditable) {?>
-		<input type="hidden" id="<?php echo $inputId?>" name="<?php echo $inputName?>" value="<?php echo $this->model[$this->attribute]?>" />
-	<?php }?>
-</div>
+	</div>
+<?php }?>
