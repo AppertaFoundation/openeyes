@@ -8,6 +8,7 @@ function callbackAddProcedure(procedure_id) {
 				var m = html.match(/<div class="(Element.*?)"/)
 				if ($('div.'+m[1]).map().length <1) {
 					$('div.elements').append(html);
+					$('div.'+m[1]).slideToggle('fast');
 				}
 			}
 		}
@@ -36,7 +37,9 @@ function callbackRemoveProcedure(procedure_id) {
 		'dataType': 'json',
 		'success': function(data) {
 			$.each(data, function(key, val) {
-				$('div.'+val).remove();
+				$('div.'+val).slideToggle('fast',function() {
+					$('div.'+val).remove();
+				});
 			});
 		}
 	});

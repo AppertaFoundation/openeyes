@@ -66,7 +66,7 @@ class DefaultController extends BaseEventTypeController
 
 			$this->renderPartial(
 				'create' . '_' . get_class($element),
-				array('element' => $element, 'data' => array(), 'form' => $form),
+				array('element' => $element, 'data' => array(), 'form' => $form, 'hidden' => true),
 				false, true
 			);
 		}
