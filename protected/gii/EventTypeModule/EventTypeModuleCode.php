@@ -57,7 +57,6 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 			if($file!==$moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php') {
 					if (preg_match("/\/migrations\//", $file)) {
-						# echo "fish"; exit;
 						$content=$this->renderMigrations($file);
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
@@ -83,9 +82,7 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 		}
 	}
 
-	# array ( 'Specialty' => array ( 'id' => '1', ), 'EventGroup' => array ( 'id' => '1', ), 'EventTypeModuleCode' => array ( 'moduleSuffix' => 'oij oij oij oij oij oij ', 'template' => 'default', ), 'elementName1' => 'oij oij oij oij ', 'elementName1FieldName1' => 'oij oij ', 'elementName1FieldLabel1' => 'oij oij oij ', 'elementType1FieldType1' => '1', 'elementName1FieldName2' => 'oijoi joij oij ', 'elementName1FieldLabel2' => 'oij oij oij oij ', 'elementType1FieldType2' => '1', 'elementName2' => 'oijoij', 'elementName2FieldName1' => 'oijoij', 'elementName2FieldLabel1' => 'oijoij', 'elementType2FieldType1' => '1', 'elementName2FieldName2' => 'oijoijoij', 'elementName2FieldLabel2' => 'oijoijoij', 'elementType2FieldType2' => '1', 'preview' => 'Preview', )
-	public function renderMigrations($file) {
-		# echo $this->moduleSuffix; exit;
+	public function getElementsFromPost() {
 		$elements = Array();
 		foreach ($_POST as $key => $value) {
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
@@ -94,53 +91,51 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 				$elements[$number]['class_name'] = 'Element' . preg_replace("/ /", "", ucwords(strtolower($value)));
 				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
 				$elements[$number]['number'] = $number;
-				// $elements[$number]['fields'] = Array();
 
 				$fields = Array();
-				// get all fields for elementNameX
 				foreach ($_POST as $fields_key => $fields_value) {
 					$pattern = '/^' . $field . 'FieldName([0-9]+)$/';
 					if (preg_match($pattern, $fields_key, $field_matches)) {
 						$field_number = $field_matches[1];
-						$field_name = $fields_value;
-						$field_label = $_POST[$field . "FieldLabel".$field_number];
-						$field_type = $_POST["elementType" . $number . "FieldType".$field_number];
 						$elements[$number]['fields'][$field_number] = Array();
-						$elements[$number]['fields'][$field_number]['name'] = $field_name;
-						$elements[$number]['fields'][$field_number]['label'] = $field_label;
+						$elements[$number]['fields'][$field_number]['name'] = $fields_value;
+						$elements[$number]['fields'][$field_number]['label'] = $_POST[$field . "FieldLabel".$field_number];
 						$elements[$number]['fields'][$field_number]['number'] = $field_number;
-						$elements[$number]['fields'][$field_number]['type'] = $field_type;
+						$elements[$number]['fields'][$field_number]['type'] = $_POST["elementType" . $number . "FieldType".$field_number];
 					}
 				}
-
-				# Textbox, Textarea, Date picker, Dropdown list, Checkboxes, Radio buttons, Boolean, EyeDraw
-				// generate this element
-				/*
-				$sql = '';
-				foreach (array_keys($fields[$number]) as $f) {
-					if ($f['type'] == 'Textbox') {
-						$sql .= '';
-					} elseif ($f['type'] == 'Textarea') {
-						$sql .= '';
-					} elseif ($f['type'] == 'Date picker') {
-						$sql .= '';
-					} elseif ($f['type'] == 'Dropdown list') {
-						$sql .= '';
-					} elseif ($f['type'] == 'Checkboxes') {
-						$sql .= '';
-					} elseif ($f['type'] == 'Radio buttons') {
-						$sql .= '';
-					} elseif ($f['type'] == 'Boolean') {
-						$sql .= '';
-					} elseif ($f['type'] == 'EyeDraw') {
-						$sql .= '';
-					}
-				}
-				*/
 			}
 		}
-		$params = array(); $params['elements'] = $elements;
+		return $elements;
+	}
+
+	public function renderMigrations($file) {
+		$params = array(); $params['elements'] = $this->getElementsFromPost();
 		return $this->render($file, $params);
+	}
+
+	public function renderDBField($type, $name, $label) {
+		$sql = '';
+		if ($type == 'Textbox') {
+			$sql = "'{$name}' => 'varchar(255) DEFAULT \'\'', // {$label}\n";
+		} elseif ($type == 'Textarea') {
+			$sql = "'{$name}' => 'text DEFAULT \'\'', // {$label}\n";
+		} elseif ($type == 'Date picker') {
+			$sql = "'{$name}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$label}\n";
+		} elseif ($type == 'Dropdown list') {
+			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
+		} elseif ($type == 'Checkboxes') {
+			// we don't create a field for these, as they'll need to be stored in a linked table
+		} elseif ($type == 'Radio buttons') {
+			// we don't create a field for these, as they'll need to be stored in a linked table
+		} elseif ($type == 'Boolean') {
+			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // {$label}\n";
+		} elseif ($type == 'EyeDraw') {
+			// we create two fields for eyedraw: one for json, and one for the report
+			$sql = "'{$name}_json' => 'text DEFAULT \'\'', // {$label} (eyedraw: json)\n";
+			$sql .="'{$name}_report' => 'text DEFAULT \'\'', // {$label} (eyedraw: report)\n";
+		}
+		return $sql;
 	}
 
 	public function init() {
