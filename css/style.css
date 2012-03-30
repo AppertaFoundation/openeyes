@@ -316,7 +316,7 @@ table tr:last-child { border-bottom: none; }
 
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
 .grid-view table { width:100%; } 
-.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 13px; min-width:50px; padding:10px; border-right:1px solid #bbb;	}
+.grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:50px; padding:10px; border-right:1px solid #bbb;	}
 .grid-view table th:last-child { border-right: none; }
 .grid-view table td { text-align: left; padding:10px; border-right:1px solid #ccc;	 }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
@@ -532,7 +532,7 @@ span.surname { font-weight: bold; }
 #event_content .eventHighlight.medium > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; }
 /* big */
 #event_content .eventHighlight.big {	width:75%; background:#fff; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#event_content .eventHighlight.big > h4 { color:#000; font-size:17px; padding:5px 10px 3px 5px; }
+#event_content .eventHighlight.big > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; }
 /* massive */
 #event_content .eventHighlight.priority {  width:75%; background:#ff0; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #event_content .eventHighlight.priority > h4 { color:#000; font-size:20px; padding:10px 10px 3px 5px; }

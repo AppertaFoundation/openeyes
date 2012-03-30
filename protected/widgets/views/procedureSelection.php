@@ -1,55 +1,20 @@
 					<div class="eventDetail" id="typeProcedure">
 						<div class="label">Procedures:</div>
-						<div class="data limitWidth">
-							<?php
-							$totalDuration = 0;
-							?>
-							<div id="procedureList" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
-								<h4>
-									<?php
-									if (!empty($selected_procedures)) {
-										foreach ($selected_procedures as $procedure) {?>
-											<div class="procedureItem">
-												<?php
-												$totalDuration += $procedure['default_duration'];
-												echo CHtml::hiddenField('Procedures[]', $procedure['id']);
-												echo "<span>".$procedure['term'].'</span> - <span>'.$procedure['short_format']?></span>
-												<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-												<?php if ($durations) {?>
-													<span style="float:right;"><?php echo $procedure['default_duration']?> mins</span><br />
-												<?php }?>
-											</div>
-										<?php	}
-									}
-									?>
-								</h4>
-							</div>
-								
-							<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
-								<table class="grid">
-									<tfoot>
-										<tr>
-											<th>Calculated Total Duration:</th>
-											<th id="projected_duration"><?php echo $totalDuration?> mins</th>
-											<th>Estimated Total Duration:</th>
-											<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration" name="<?php echo $class?>[total_duration]" style="width: 60px;"></th>
-										</tr>
-									</tfoot>
-								</table>
-							</div>
-							
-							<h5 class="normal"><em>Add a procedure:</em></h5>
+						<div class="data split limitWidth">
+							<div class="left">
+								<h5 class="normal"><em>Add a procedure:</em></h5>
 
-							<?php
-							if (!empty($subsections) || !empty($procedures)) {
-								if (!empty($subsections)) {
-									echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 525px; margin-bottom:10px;'));
-									echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 525px; margin-bottom:10px;'));
-								} else {
-									echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 525px; margin-bottom:10px;'));
+								<?php
+								if (!empty($subsections) || !empty($procedures)) {
+									if (!empty($subsections)) {
+										echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 90%; margin-bottom:10px;'));
+										echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 90%; margin-bottom:10px;'));
+									} else {
+										echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 90%; margin-bottom:10px;'));
+									}
 								}
-							}
-							?>
+								?>
+
 <?php
 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 				'name'=>'procedure_id',
@@ -129,8 +94,47 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 												});
 								}",
 				),
-				'htmlOptions'=>array('style'=>'width: 520px;','placeholder'=>'or type the first few characters of a procedure')
+				'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
 )); ?>
+
+							</div>
+							<div class="right">
+								<?php
+								$totalDuration = 0;
+								?>
+								<div id="procedureList" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
+									<h4>
+										<?php
+										if (!empty($selected_procedures)) {
+											foreach ($selected_procedures as $procedure) {?>
+												<div class="procedureItem">
+													<?php
+													$totalDuration += $procedure['default_duration'];
+													echo CHtml::hiddenField('Procedures[]', $procedure['id']);
+													echo "<span>".$procedure['term'].'</span> - <span>'.$procedure['short_format']?></span>
+													<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
+													<?php if ($durations) {?>
+														<span style="float:right;"><?php echo $procedure['default_duration']?> mins</span><br />
+													<?php }?>
+												</div>
+											<?php	}
+										}
+										?>
+									</h4>
+								</div>
+								
+								<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
+									<table class="grid">
+										<tfoot>
+											<tr>
+												<th>Calculated Total Duration:</th>
+												<th id="projected_duration"><?php echo $totalDuration?> mins</th>
+												<th>Estimated Total Duration:</th>
+												<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration" name="<?php echo $class?>[total_duration]" style="width: 60px;"></th>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
 						</div>
 					</div>
 <script type="text/javascript">
