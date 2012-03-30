@@ -29,10 +29,12 @@ return array(
 						),
 				),
 				'db_pas' => array(
+						'class' => 'CDbConnection',
 						'connectionString' => 'oci:dbname=remotename:1521/database',
 						'emulatePrepare' => false,
 						'username' => 'root',
 						'password' => '',
+						'schemaCachingDuration' => 300,
 						// Make oracle default date format the same as MySQL (default is DD-MMM-YY)
 						'initSQLs' => array(
 								'ALTER SESSION SET NLS_DATE_FORMAT = \'YYYY-MM-DD\'',
@@ -43,3 +45,4 @@ return array(
 				'bad_gps' => array(),
 		),
 );
+

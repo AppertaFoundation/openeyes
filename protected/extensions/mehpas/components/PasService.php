@@ -25,6 +25,7 @@ class PasService {
 		try {
 			$connection = Yii::app()->db_pas;
 		} catch (Exception $e) {
+			//Yii::log('PAS is not available: '.$e->getMessage());
 			$this->available = false;
 		}
 	}
@@ -211,6 +212,8 @@ class PasService {
 	 * @param integer $page
 	 */
 	public function search($data, $num_results = 20, $page = 1) {
+		Yii::log('Searching PAS', 'trace');
+		
 		// oracle apparently doesn't do case-insensitivity, so everything is uppercase
 		foreach ($data as $key => &$value) {
 			$value = strtoupper($value);
@@ -241,7 +244,7 @@ class PasService {
 		$connection = Yii::app()->db_pas;
 		$command = $connection->createCommand($sql);
 		foreach ($command->queryAll() as $results) $this->num_results = $results['COUNT'];
-
+		
 		$offset = (($page-1) * $num_results) + 1;
 		$limit = $offset + $num_results - 1;
 		switch ($data['sortBy']) {
@@ -281,7 +284,7 @@ class PasService {
 		$sql = "
 		SELECT * from
 		( select a.*, rownum rnum from (
-		SELECT p.RM_PATIENT_NO
+		SELECT p.RM_PATIENT_NO, n.NUM_ID_TYPE, n.NUMBER_ID
 		FROM SILVER.PATIENTS p
 		JOIN SILVER.NUMBER_IDS n ON n.rm_patient_no = p.rm_patient_no
 		JOIN SILVER.SURNAME_IDS s ON s.rm_patient_no = p.rm_patient_no
@@ -301,29 +304,40 @@ class PasService {
 		$connection = Yii::app()->db_pas;
 		$command = $connection->createCommand($sql);
 		$results = $command->queryAll();
-
+		
 		$ids = array();
 		$patients_with_no_address = 0;
 
 		foreach ($results as $result) {
 
+			$hos_num = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
+			
 			// See if the patient is in openeyes, if not then fetch from PAS
-			if($assignment = PasPatientAssignment::model()->findByExternalId($result['RM_PATIENT_NO'])) {
-				$this->patient = $assignment->patient;
-				$this->pasAssignment = $assignment;
+			if($assignment = PasAssignment::model()->findByExternal('PAS_Patient', $result['RM_PATIENT_NO'])) {
+				// Patient is in OpenEyes and has an existing assignment
+				$patient = $assignment->internal;
 				if($assignment->isStale()) {
-					$this->loadFromPas();
+					$this->updatePatientFromPas($patient, $assignment);
 				}
+			} else if($patient = Patient::model()->findByAttributes(array('hos_num' => $hos_num))) {
+				// Patient is in OpenEyes, but doesn't have an assignment
+				// FIXME: Ideally this step should not be necessary, and could be removed if we prefill the assignment table when the module is setup
+				$assignment = new PasAssignment();
+				$assignment->external_id = $result['RM_PATIENT_NO'];
+				$assignment->external_type = 'PAS_Patient';
+				$this->updatePatientFromPas($patient, $assignment);
 			} else {
-				$this->patient = new Patient();
-				$this->pasAssignment = new PasPatientAssignment();
-				$this->pasAssignment->external_id = $result['RM_PATIENT_NO'];
-				$this->loadFromPas();
+				// Patient is not in OpenEyes
+				$patient = new Patient();
+				$assignment = new PasAssignment();
+				$assignment->external_id = $result['RM_PATIENT_NO'];
+				$assignment->external_type = 'PAS_Patient';
+				$this->updatePatientFromPas($patient, $assignment);
 			}
 
 			// Check that patient has an address
-			if($this->patient->address) {
-				$ids[] = $this->patient->id;
+			if($patient->address) {
+				$ids[] = $patient->id;
 			} else {
 				$patients_with_no_address++;
 			}

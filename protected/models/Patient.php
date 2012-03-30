@@ -136,7 +136,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
 
-		return Patient::model()->count($criteria);
+		return $this->count($criteria);
 	}
 
 	/**
