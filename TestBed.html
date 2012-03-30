@@ -48,8 +48,8 @@
                 // Wait for drawing object to be ready before adding objects or drawings
                 drawingEdit.onLoaded = function()
                 {
-                    drawingEdit.addDoodle('OperatingTable');
-                    doodle = drawingEdit.addDoodle('Surgeon');
+                    drawingEdit.addDoodle('AntSeg');
+                    doodle = drawingEdit.addDoodle('CornealSuture');
 
 
                     //doodle = drawingEdit.addDoodle('OpticCup');
@@ -121,11 +121,11 @@
                             <button class="imgbutton" title="Ahmed" onclick="drawingEdit.addDoodle('Ahmed'); return false;" ><img src="graphics/Ahmed.gif" /></button>
                             <button class="imgbutton" title="Vicryl suture" onclick="drawingEdit.addDoodle('Vicryl'); return false;" ><img src="graphics/Vicryl.gif" /></button>
                             <button class="imgbutton" title="Supramid" onclick="drawingEdit.addDoodle('AntSeg'); return false;" ><img src="graphics/Supramid.gif" /></button>
-                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('PhakoIncision'); return false;" ><img src="graphics/OpticDiskPit.gif" /></button>
+                            <button class="imgbutton" title="Acquired Pit of Optic Nerve" onclick="drawingEdit.addDoodle('CornealSuture'); return false;" ><img src="graphics/OpticDiskPit.gif" /></button>
                             <br />
                             
                             <!-- Canvas element -->
-                            <canvas id="canvas" class="ed_canvas_edit" width="200" height="200" tabindex="2"></canvas>
+                            <canvas id="canvas" class="ed_canvas_edit" width="400" height="400" tabindex="2"></canvas>
                             <br />
                             <button title="Save" onclick="console.log(drawingEdit.save()); return false;" >Save</button><br />
                             <button title="Load" onclick="drawingEdit.load(doodleSet); drawingEdit.drawAllDoodles(); return false;" >Load</button><br />
