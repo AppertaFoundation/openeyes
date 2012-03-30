@@ -135,6 +135,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 										</tfoot>
 									</table>
 								</div>
+							</div>
 						</div>
 					</div>
 <script type="text/javascript">

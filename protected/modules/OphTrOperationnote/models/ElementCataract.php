@@ -60,8 +60,8 @@ class ElementCataract extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'safe'),
-			array('incision_site_id, length, meridian, incision_type_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'required'),
+			array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'safe'),
+			array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'required'),
 			array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
 			array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000.5, 'max' => 180, 'message' => 'Meridian must be 000.5 - 180.0 degrees'),
 			// The following rule is used by search().
@@ -81,6 +81,7 @@ class ElementCataract extends BaseEventTypeElement
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'incision_type' => array(self::BELONGS_TO, 'IncisionType', 'incision_type_id'),
 			'incision_site' => array(self::BELONGS_TO, 'IncisionSite', 'incision_site_id'),
+			'iol_position' => array(self::BELONGS_TO, 'IOLPosition', 'iol_position_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
@@ -95,6 +96,7 @@ class ElementCataract extends BaseEventTypeElement
 			'id' => 'ID',
 			'incision_site_id' => 'Incision site',
 			'incision_type_id' => 'Incision type',
+			'iol_position_id' => 'IOL Position',
 			'length' => 'Length',
 			'meridian' => 'Meridian',
 			'report' => 'Report',

@@ -21,25 +21,34 @@
 <div class="<?php echo $element->elementType->class_name?>">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<?php
-	$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-		'identifier'=> 'Cataract',
-		'side'=>'R',
-		'mode'=>'edit',
-		'size'=>300,
-		'model'=>$element,
-		'attribute'=>'eyedraw',
-		'doodleToolBarArray'=>array('PhakoIncision','SidePort','IrisHook','PCIOL','ACIOL','PI','MattressSuture'),
-		'onLoadedCommandArray'=>array(
-			array('addDoodle', array('AntSeg')),
-			array('deselectDoodles', array()),
-		),
-	));
-	?>
-	<?php echo $form->dropDownList($element, 'incision_site_id', CHtml::listData(IncisionSite::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textField($element, 'length')?>
-	<?php echo $form->textField($element, 'meridian')?>
-	<?php echo $form->dropDownList($element, 'incision_type_id', CHtml::listData(IncisionType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->textArea($element, 'report', array('rows'=>8,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate')))?>
-	<?php echo $form->checkBoxArray($element, 'Complications', array('wound_burn','iris_trauma','zonular_dialysis','pc_rupture','decentered_iol','iol_exchange','dropped_nucleus','op_cancelled','corneal_odema','iris_prolapse','zonular_rupture','vitreous_loss','iol_into_vitreous','other_iol_problem','choroidal_haem'),array('column_length' => 8))?>
+	<div class="splitElement clearfix">
+		<div class="left" style="width:60%;">
+			<?php
+			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
+				'identifier'=> 'Cataract',
+				'template' => 'horizontal1',
+				'side'=>'R',
+				'mode'=>'edit',
+				'size'=>300,
+				'model'=>$element,
+				'attribute'=>'eyedraw',
+				'doodleToolBarArray'=>array('PhakoIncision','SidePort','IrisHook','PCIOL','ACIOL','PI','MattressSuture'),
+				'onLoadedCommandArray'=>array(
+					array('addDoodle', array('AntSeg')),
+					array('deselectDoodles', array()),
+				),
+			));
+			?>
+			<?php echo $form->dropDownList($element, 'incision_site_id', CHtml::listData(IncisionSite::model()->findAll(), 'id', 'name'),array('layout' => 'horizontal', 'empty'=>'- Please select -', 'div_style' => 'margin-left: 320px; margin-top: 100px;'))?>
+			<?php echo $form->textField($element, 'length', array('layout' => 'horizontal', 'div_style' => 'margin-left: 320px;', 'size' => '10'))?>
+			<?php echo $form->textField($element, 'meridian', array('layout' => 'horizontal', 'div_style' => 'margin-left: 320px;', 'size' => '10'))?>
+			<?php echo $form->dropDownList($element, 'incision_type_id', CHtml::listData(IncisionType::model()->findAll(), 'id', 'name'),array('layout' => 'horizontal', 'empty'=>'- Please select -', 'div_style' => 'margin-left: 320px;'))?>
+			<?php echo $form->checkBox($element, 'vision_blue', array('layout' => 'horizontal', 'div_style' => 'margin-left: 320px;'))?>
+			<?php echo $form->textArea($element, 'report', array('rows'=>8,'cols'=>50,'button'=>array('id'=>'generate_report','colour'=>'blue','size'=>'venti','label'=>'Generate',)))?>
+		</div>
+		<div class="right" style="width:40%;">
+			<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
+			<?php echo $form->checkBoxArray($element, 'Complications', array('wound_burn','iris_trauma','zonular_dialysis','pc_rupture','decentered_iol','iol_exchange','dropped_nucleus','op_cancelled','corneal_odema','iris_prolapse','zonular_rupture','vitreous_loss','iol_into_vitreous','other_iol_problem','choroidal_haem'),array('column_length' => 8))?>
+		</div>
+	</div>
 </div>
