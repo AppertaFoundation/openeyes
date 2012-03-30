@@ -59,8 +59,8 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe'),
-			array('surgeon_id, anaesthetic_type_id', 'required'),
+			array('event_id, surgeon_id, assistant_id, eye_id, anaesthetic_type_id', 'safe'),
+			array('surgeon_id, anaesthetic_type_id, eye_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe', 'on' => 'search'),

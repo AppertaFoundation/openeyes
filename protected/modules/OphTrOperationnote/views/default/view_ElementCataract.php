@@ -56,21 +56,33 @@
 		<?php }
 	}?>
 
-	<div class="col1" style="margin-top: 1em;">
-		<?php
-		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-			'identifier'=> 'Cataract',
-			'side'=>'R',
-			'mode'=>'view',
-			'size'=>300,
-			'model'=>$element,
-			'attribute'=>'eyedraw',
-			'doodleToolBarArray'=>array(),
-			'onLoadedCommandArray'=>array(
-				array('addDoodle', array('AntSeg')),
-				array('deselectDoodles', array()),
-			),
-		));
-		?>
+	<div class="clearfix">
+		<div class="left" style="width:60%;">
+			<?php
+			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
+				'identifier'=> 'Cataract',
+				'template' => 'horizontal1',
+				'side'=>'R',
+				'mode'=>'view',
+				'size'=>200,
+				'model'=>$element,
+				'attribute'=>'eyedraw',
+				'doodleToolBarArray'=>array(),
+				'onLoadedCommandArray'=>array(
+					array('addDoodle', array('AntSeg')),
+					array('deselectDoodles', array()),
+				),
+			));
+			?>
+		</div>
+		<div class="right" style="width:40%;">
+			<ul style="list-style-type: none; width:100%">
+				<?php foreach (explode(',',$element->report) as $item) {?>
+					<li>
+						<?php echo trim($item)?>
+					</li>
+				<?php }?>
+			</ul>
+		</div>
 	</div>
 </div>
