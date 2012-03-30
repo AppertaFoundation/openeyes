@@ -157,38 +157,45 @@ class BookingController extends BaseController
 	}
 
 	public function actionCancelOperation() {
+		$errors = array();
+
 		if (isset($_POST['cancellation_reason']) && isset($_POST['operation_id'])) {
 			$operation = ElementOperation::model()->findByPk($_POST['operation_id']);
 			if(!$operation) {
 				throw new CHttpException(500,'Operation not found');
 			}
-			$cancellation_reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
-			if(!$cancellation_reason) {
-				throw new CHttpException(500,'Cancellation reason not found');
+
+			$comment = (isset($_POST['cancellation_comment'])) ? strip_tags(@$_POST['cancellation_comment']) : '';
+			$result = $operation->cancel(@$_POST['cancellation_reason'], $comment);
+
+			if ($result['result']) {
+				die(json_encode(array()));
 			}
-			$comment = (isset($_POST['cancellation_comment'])) ? strip_tags($_POST['cancellation_comment']) : '';
-			$operation->cancel($cancellation_reason->id, $comment);
-			$this->redirect(array(
-				'patient/episodes',
-				'id' => $operation->event->episode->patient->id,
-				'event' => $operation->event->id
-			));
-		} else {
-			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
-			$operation = ElementOperation::model()->findByPk($operationId);
-			if (empty($operation)) {
-				throw new CHttpException(500,'Operation not found');
+
+			foreach ($result['errors'] as $form_errors) {
+				foreach ($form_errors as $error) {
+					$errors[] = $error;
+				}
 			}
-			$minDate = $operation->getMinDate();
-			$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
-			if ($minDate < $thisMonth) {
-				$minDate = $thisMonth;
-			}
-			$this->renderPartial('/booking/_cancel_operation', array(
-					'operation' => $operation,
-					'date' => $minDate
-				), false, true);
+
+			die(json_encode($errors));
 		}
+
+		$operationId = !empty($_REQUEST['operation_id']) ? $_REQUEST['operation_id'] : 0;
+		$operation = ElementOperation::model()->findByPk($operationId);
+		if (empty($operation)) {
+			throw new CHttpException(500,'Operation not found');
+		}
+		$minDate = $operation->getMinDate();
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		if ($minDate < $thisMonth) {
+			$minDate = $thisMonth;
+		}
+		$this->renderPartial('/booking/_cancel_operation', array(
+				'operation' => $operation,
+				'date' => $minDate,
+				'errors' => $errors
+			), false, true);
 	}
 
 	public function actionSessions()
