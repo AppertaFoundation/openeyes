@@ -70,11 +70,6 @@ class m120302_092216_pas_patient_assignment extends CDbMigration {
 				':old_patient_id' => $old_patient_id,
 			));
 			
-			// Insert assignment
-			$association = new PasPatientAssignment();
-			$association->patient_id = $new_patient_id;
-			$association->external_id = $old_patient_id;
-			$association->save();
 			$patient_counter++;
 				
 		}
