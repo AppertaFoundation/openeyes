@@ -59,11 +59,11 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, surgeon_id, assistant_id, supervising_surgeon_id, eye_id, anaesthetic_type_id', 'safe'),
-			array('surgeon_id, anaesthetic_type_id, eye_id', 'required'),
+			array('event_id, surgeon_id, assistant_id, supervising_surgeon_id, eye_id, anaesthetist_id, anaesthetic_type_id', 'safe'),
+			array('surgeon_id, anaesthetic_type_id, eye_id, anaesthetist_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, surgeon_id, assistant_id, supervising_surgeon_id, anaesthetic_type_id', 'safe', 'on' => 'search'),
+			array('id, event_id, surgeon_id, assistant_id, supervising_surgeon_id, anaesthetist_id, anaesthetic_type_id', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -85,6 +85,7 @@ class ElementProcedureList extends BaseEventTypeElement
 			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
 			'procedures' => array(self::MANY_MANY, 'Procedure', 'et_ophtroperationnote_procedurelist_procedure_assignment(procedurelist_id, proc_id)', 'order' => 'display_order ASC'),
 			'supervising_surgeon' => array(self::BELONGS_TO, 'Contact', 'supervising_surgeon_id'),
+			'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
 		);
 	}
 
@@ -100,7 +101,9 @@ class ElementProcedureList extends BaseEventTypeElement
 			'assistant_id' => 'Assistant',
 			'anaesthetic_type_id' => 'Anaesthetic type',
 			'supervising_surgeon_id' => 'Supervising surgeon',
-			'eye_id' => 'Eye(s)'
+			'eye_id' => 'Eye(s)',
+			'anaesthetist_id' => 'Given by',
+			'anaesthetic_delivery_id' => 'Delivery'
 		);
 	}
 
