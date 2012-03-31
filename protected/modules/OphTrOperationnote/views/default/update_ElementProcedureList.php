@@ -23,6 +23,7 @@
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- Please select -')); ?>
 <?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
+<?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
 
 <?php
 $form->widget('application.widgets.ProcedureSelection',array(
