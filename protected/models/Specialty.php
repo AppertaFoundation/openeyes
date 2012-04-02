@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'specialty':
  * @property string $id
  * @property string $name
- * @property string $class_name
+ * @property string $ref_spec
  *
  * The followings are the available model relations:
  * @property EventTypeElementTypeAssignmentSpecialtyAssignment[] $eventTypeElementTypeAssignmentSpecialtyAssignments
@@ -58,11 +58,12 @@ class Specialty extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, class_name', 'required'),
-			array('name, class_name', 'length', 'max'=>40),
-			// The following rule is used by search().
+			array('name, ref_spec', 'required'),
+			array('name', 'length', 'max'=>40),
+			array('ref_spec', 'length', 'max' => 3),
+				// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, class_name', 'safe', 'on'=>'search'),
+			array('id, name, ref_spec', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -90,7 +91,7 @@ class Specialty extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-			'class_name' => 'Class Name',
+			'ref_spec' => 'Ref Spec',
 		);
 	}
 
@@ -107,7 +108,7 @@ class Specialty extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('class_name',$this->class_name,true);
+		$criteria->compare('ref_spec',$this->ref_spec,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

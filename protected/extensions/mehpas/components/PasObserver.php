@@ -98,4 +98,18 @@ class PasObserver {
 		}
 	}
 
+	/**
+	 * Fetch referral from PAS
+	 * @param unknown_type $params
+	 */
+	public function fetchReferralFromPas($params) {
+		$pas_service = new PasService();
+		if($pas_service->available) {
+			$pas_service->fetchReferral($params['episode']);
+		} else {
+			Yii::log('PAS is not available', 'trace');
+			// @TODO Push an alert onto the user's screen
+		}
+	}
+	
 }

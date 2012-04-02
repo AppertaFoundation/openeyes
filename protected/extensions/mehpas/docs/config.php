@@ -26,6 +26,12 @@ return array(
 												'method' => 'updateGpFromPas',
 										),
 								),
+								'episode_after_create' => array(
+										'fetch_pas_referral' => array(
+												'class' => 'PasObserver',
+												'method' => 'fetchReferralFromPas',
+										),
+								),
 						),
 				),
 				'db_pas' => array(

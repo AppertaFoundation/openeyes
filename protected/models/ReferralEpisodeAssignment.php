@@ -25,8 +25,8 @@
  * @property string $referral_id
  * @property string $episode_id
  */
-class ReferralEpisodeAssignment extends MultiActiveRecord
-{
+class ReferralEpisodeAssignment extends BaseActiveRecord {
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ReferralEpisodeAssignment the static model class

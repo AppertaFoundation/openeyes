@@ -24,10 +24,12 @@
  * @property string $id
  * @property string $refno
  * @property string $patient_id
+ * @property string $closed
  * @property string $service_specialty_assignment_id
+ * @property string $firm_id
  */
-class Referral extends MultiActiveRecord
-{
+class Referral extends BaseActiveRecord {
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Referral the static model class
