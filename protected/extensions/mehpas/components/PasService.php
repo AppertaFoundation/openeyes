@@ -48,7 +48,7 @@ class PasService {
 	 * @return boolean
 	 */
 	protected function isBadGp($gp_id) {
-		return (in_array($gp_id, Yii::app()->params['bad_gps']));
+		return (in_array($gp_id, Yii::app()->params['mehpas_bad_gps']));
 	}
 
 	/**

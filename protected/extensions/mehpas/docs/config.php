@@ -43,7 +43,8 @@ return array(
 		),
 		'params'=>array(
 				'mehpas_enabled' => true,
-				'bad_gps' => array(),
+				'mehpas_cache_time' => 300,
+				'mehpas_bad_gps' => array(),
 		),
 );
 
