@@ -599,5 +599,122 @@ class PasService {
 		}
 		
 	}
+
+	/**
+	 * Fetch new referrals from PAS
+	 */
+	public function fetchNewReferrals() {
+		Yii::log('Fetching new referrals from PAS', 'trace');
+		$last_refno = Yii::app()->db->createCommand()
+			->select('MAX(refno) AS mrn')
+			->from('referral')
+			->queryScalar();
+		if (!$last_refno) {
+			echo "There are no referrals in the DB. This would cause every referral from PAS to be fetched.\n";
+			Yii::app()->end();
+		}
+	
+		$pas_referrals = PAS_Referral::model()->findAll(array(
+				'condition' => "REFNO > :last_refno AND REF_SPEC <> 'OP'",
+				'params' => array(
+						':last_refno' => $last_refno,
+				),
+		));
+		$errors = '';
+	
+		// Put all new PAS referrals in OE
+		foreach ($pas_referrals as $pas_referral) {
+			$specialty = Specialty::model()->find(array(
+					'condition' => 'ref_spec = :ref_spec',
+					'params' => array(
+							':ref_spec' => $pas_referral->REF_SPEC,
+					)
+			));
+	
+			if ($specialty) {
+				$ssa = ServiceSpecialtyAssignment::model()->find(array(
+						'condition' => 'specialty_id = :specialty_id',
+						'params' => array(
+								':specialty_id' => $specialty->id,
+						)
+				));
+				$referral = new Referral;
+				$referral->service_specialty_assignment_id = $ssa->id;
+				$referral->refno = $pas_referral->REFNO;
+	
+				if ($pas_referral->X_CN) {
+					$external_id = $pas_referral->X_CN;
+				} else {
+					/*
+					 * Due to a dodgy migration by some third party company we don't always have the X_CN field containing
+					 * the patient number, so this is an alternative way to obtain it.
+					 * TODO: We should probably do something similar for the referral event handler
+					 */
+					$sql = "select distinct b.X_CN from SILVER.OUT040_REFDETS a left join SILVER.OUT031_OUTAPPT b on a.REFNO = b.REFNO and a.REF_SPEC = b.CLI_SPEC where a.REFNO = {$pas_referral->REFNO}";
+					$connection = Yii::app()->db_pas;
+					$command = $connection->createCommand($sql);
+					$extended_referrals = $command->queryAll();
+					if (count($extended_referrals) && $patient_id = $extended_referrals[0]['X_CN']) {
+						$external_id = $patient_id;
+					} else {
+						$errors .= "Unable to save referral refno $referral->refno: due to missing X_CN, and unable to infer from SILVER.OUT031_OUTAPPT too.";
+						continue;
+					}
+				}
+				// TODO: Check/pull in patient before getting referral
+				die;
+				$assignment = PasAssignment::model()->findByExternal('PAS_Patient', $external_id);
+				$referral->patient_id = $assignment->internal_id;
+	
+				if (!empty($pas_referral->DT_CLOSE)) {
+					$referral->closed = 1;
+				}
+	
+				if ($referral->save()) {
+					//echo 'Added referral refo ' . $referral->refno . "\n";
+				} else {
+					$errors .= "Unable to save referral refno $referral->refno: ".print_r($referral->getErrors(),true)."\n";
+				}
+			} else {
+				Yii::log('No specialty for ref_spec ' . $pas_referral->REF_SPEC, 'trace');
+			}
+		}
+	
+		//echo "\nREFERRAL CREATION COMPLETE.\n\n";
+	
+		// Find all the open episodes with no referral
+		$command = Yii::app()->db->createCommand()
+		->select('p.id AS pid, ep.id AS epid, rea.id AS reaid, ssa.id AS ssaid')
+		->from('patient p')
+		->join('episode ep', 'ep.patient_id = p.id')
+		->join('firm f', 'f.id = ep.firm_id')
+		->join('service_specialty_assignment ssa', 'ssa.id = f.service_specialty_assignment_id')
+		->leftJoin('referral_episode_assignment rea', 'rea.episode_id = ep.id')
+		->where('ep.end_date IS NULL');
+	
+		foreach ($command->queryAll() as $result) {
+			if (empty($result['reaid'])) {
+				$referralId = $this->getReferral($result['pid'], $result['ssaid']);
+	
+				if ($referralId) {
+					$rea = new ReferralEpisodeAssignment;
+					$rea->episode_id = $result['epid'];
+					$rea->referral_id = $referralId;
+					if (!$rea->save()) {
+						$errors .= 'Unable to save referral for epid ' . $result['epid'] . ' and referral ' . $referralId . "\n";
+					} else {
+						//echo 'Assignment rea id ' . $rea->id . ' to patient ' . $result['epid'] . ' and referral ' . $referralId . "\n";
+					}
+				}
+			}
+		}
+	
+		if ($errors) {
+			$hostname = trim(`/bin/hostname`);
+			mail(Yii::app()->params['alerts_email'],"[$hostname] Referrals crontab failed",$errors);
+		}
+	
+		//echo "\nREFERRAL ASSIGNMENT COMPLETE.\n\n";
+	}
 	
 }

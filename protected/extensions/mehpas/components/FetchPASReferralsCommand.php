@@ -17,25 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class FetchPASReferralsCommand extends CConsoleCommand
-{
-	public function getName()
-	{
+class FetchPASReferralsCommand extends CConsoleCommand {
+
+	public function getName() {
 		return 'FetchPASReferrals';
 	}
-	public function getHelp()
-	{
+
+	public function getHelp() {
 		return "Fetches the latest referrals from PAS and puts them in the OpenEyes DB.\n";
 	}
 
-	public function run($args)
-	{
-		if (!Yii::app()->params['use_pas']) {
-			echo "To use FetchPASReferrals use_pas must be set to true.\n";
+	public function run($args) {
+		$pas_service = new PasService();
+		if ($pas_service->available) {
+			$pas_service->fetchNewReferrals();
+		} else {
+			echo "PAS is unavailable or module is disabled";
 			return false;
 		}
-
-		$referralService = new ReferralService;
-		$referralService->getNewReferrals();
 	}
+
 }
