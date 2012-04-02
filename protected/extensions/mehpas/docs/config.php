@@ -42,6 +42,7 @@ return array(
 				),
 		),
 		'params'=>array(
+				'mehpas_enabled' => true,
 				'bad_gps' => array(),
 		),
 );

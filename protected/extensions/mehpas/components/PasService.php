@@ -22,14 +22,26 @@ class PasService {
 	public $available = true;
 
 	public function __construct() {
-		try {
-			$connection = Yii::app()->db_pas;
-		} catch (Exception $e) {
-			//Yii::log('PAS is not available: '.$e->getMessage());
-			$this->available = false;
-		}
+		$this->available = $this->isAvailable();
 	}
 
+	/**
+	 * Is PAS enabled and up?
+	 */
+	public function isAvailable() {
+		if(isset(Yii::app()->params['mehpas_enabled']) && Yii::app()->params['mehpas_enabled'] === true) {
+			try {
+				$connection = Yii::app()->db_pas;
+			} catch (Exception $e) {
+				//Yii::log('PAS is not available: '.$e->getMessage());
+				return false;
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	/**
 	 * Check to see if a GP ID (obj_prof) is on our block list
 	 * @param string $gp_id
