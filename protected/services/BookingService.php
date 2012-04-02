@@ -55,6 +55,7 @@ class BookingService
 			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			LEFT JOIN `booking` `a` ON s.id = a.session_id
 			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
 				s.date BETWEEN CAST('$startDate' AS DATE) AND
 				CAST('$monthEnd' AS DATE) AND $firmSql
@@ -97,8 +98,10 @@ class BookingService
 			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			LEFT JOIN `booking` `a` ON s.id = a.session_id
 			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `event`.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
 				AND s.date = '$date' AND $firmSql
+				AND `e`.hidden = 0
 			GROUP BY s.id
 			ORDER BY s.start_time
 		";
@@ -122,9 +125,11 @@ class BookingService
 			FROM `session` `s`
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			JOIN `event` `e` ON `o`.event_id = `event`.id
 			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
-			WHERE s.id = '" . $sessionId . "'";
+			WHERE s.id = '" . $sessionId . "'
+			AND `e`.hidden = 0";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 
@@ -207,6 +212,8 @@ class BookingService
 				$whereSql .= ' AND w.id = :wardId';
 				$whereParams[':wardId'] = $wardId;
 			}
+
+			$whereSql .= ' AND e.hidden = 0';
 
 			$command = Yii::app()->db->createCommand()
 				// TODO: References to sequences need to be removed when possible
