@@ -84,7 +84,8 @@ class PAS_Practice extends MultiActiveRecord {
 		$criteria=new CDbCriteria;
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
+	
 }

@@ -36,7 +36,7 @@
  * @property PAS_Patient $pas_patient
  */
 class PasAssignment extends BaseActiveRecord {
-	
+
 	/**
 	 * Default time (in seconds) before cached PAS details are considered stale
 	 */
@@ -62,8 +62,8 @@ class PasAssignment extends BaseActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('external_id, external_type, internal_id, internal_type', 'required'),
-			array('id, external_id, external_type internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
+				array('external_id, external_type, internal_id, internal_type', 'required'),
+				array('id, external_id, external_type internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,7 +74,7 @@ class PasAssignment extends BaseActiveRecord {
 	public function getInternal() {
 		return self::model($this->internal_type)->findByPk($this->internal_id);
 	}
-	
+
 	/**
 	 * Get associated external record
 	 * @return CActiveRecord
@@ -82,7 +82,7 @@ class PasAssignment extends BaseActiveRecord {
 	public function getExternal() {
 		return self::model($this->external_type)->findByExternalId($this->external_id);
 	}
-	
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -106,9 +106,9 @@ class PasAssignment extends BaseActiveRecord {
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
 
@@ -120,7 +120,7 @@ class PasAssignment extends BaseActiveRecord {
 	public function findByInternal($internal_type, $internal_id) {
 		return $this->find('internal_id = :internal_id AND internal_type = :internal_type', array(':internal_id' => (int) $internal_id, ':internal_type' => $internal_type));
 	}
-	
+
 	/**
 	 * Find association using external details
 	 * @param string $external_type
@@ -129,7 +129,7 @@ class PasAssignment extends BaseActiveRecord {
 	public function findByExternal($external_type, $external_id) {
 		return $this->find('external_id = :external_id AND external_type = :external_type', array(':external_id' => (int) $external_id, ':external_type' => $external_type));
 	}
-	
+
 	/**
 	 * Does this assignment need refreshing from PAS?
 	 * @return boolean
@@ -138,7 +138,7 @@ class PasAssignment extends BaseActiveRecord {
 		$cache_time = (isset(Yii::app()->params['mehpas_cache_time'])) ? Yii::app()->params['mehpas_cache_time'] : self::PAS_CACHE_TIME;
 		return strtotime($this->last_modified_date) < (time() - $cache_time);
 	}
-	
+
 	/**
 	 * Check if record needs refreshing from PAS
 	 * @param string $internal_type
@@ -148,5 +148,5 @@ class PasAssignment extends BaseActiveRecord {
 		$record = self::model()->findByInternal($internal_type, $internal_id);
 		return $record && $record->isStale();
 	}
-	
+
 }

@@ -41,7 +41,7 @@
  * @property string $HDDR_GROUP
  */
 class PAS_PatientAddress extends MultiActiveRecord {
-	
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PAS_PatientAddress the static model class
@@ -76,15 +76,15 @@ class PAS_PatientAddress extends MultiActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('RM_PATIENT_NO', 'numerical', 'integerOnly' => true),
-			array('ADDR_TYPE', 'length', 'max' => 1),
-			array('ADDR_FORMAT, HA_CODE, DWELLING_TYPE, SHARING_ACCOM', 'length', 'max' => 4),
-			array('PROPERTY_NAME, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, TEL_NO', 'length', 'max' => 35),
-			array('PROPERTY_NO', 'length', 'max' => 10),
-			array('POSTCODE', 'length', 'max' => 9),
-			array('HDDR_GROUP', 'length', 'max' => 48),
-			array('DATE_START, DATE_END', 'safe'),
-			array('RM_PATIENT_NO, ADDR_TYPE, DATE_START, ADDR_FORMAT, PROPERTY_NAME, PROPERTY_NO, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, POSTCODE, HA_CODE, TEL_NO, DWELLING_TYPE, SHARING_ACCOM, DATE_END, HDDR_GROUP', 'safe', 'on' => 'search'),
+				array('RM_PATIENT_NO', 'numerical', 'integerOnly' => true),
+				array('ADDR_TYPE', 'length', 'max' => 1),
+				array('ADDR_FORMAT, HA_CODE, DWELLING_TYPE, SHARING_ACCOM', 'length', 'max' => 4),
+				array('PROPERTY_NAME, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, TEL_NO', 'length', 'max' => 35),
+				array('PROPERTY_NO', 'length', 'max' => 10),
+				array('POSTCODE', 'length', 'max' => 9),
+				array('HDDR_GROUP', 'length', 'max' => 48),
+				array('DATE_START, DATE_END', 'safe'),
+				array('RM_PATIENT_NO, ADDR_TYPE, DATE_START, ADDR_FORMAT, PROPERTY_NAME, PROPERTY_NO, ADDR1, ADDR2, ADDR3, ADDR4, ADDR5, POSTCODE, HA_CODE, TEL_NO, DWELLING_TYPE, SHARING_ACCOM, DATE_END, HDDR_GROUP', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -93,7 +93,7 @@ class PAS_PatientAddress extends MultiActiveRecord {
 	 */
 	public function relations() {
 		return array(
-			'patient' => array(self::BELONGS_TO, 'PAS_Patient', 'RM_PATIENT_NO')
+				'patient' => array(self::BELONGS_TO, 'PAS_Patient', 'RM_PATIENT_NO')
 		);
 	}
 
@@ -102,24 +102,24 @@ class PAS_PatientAddress extends MultiActiveRecord {
 	 */
 	public function attributeLabels() {
 		return array(
-			'RM_PATIENT_NO' => 'Rm Patient No',
-			'ADDR_TYPE' => 'Addr Type',
-			'DATE_START' => 'Date Start',
-			'ADDR_FORMAT' => 'Addr Format',
-			'PROPERTY_NAME' => 'Property Name',
-			'PROPERTY_NO' => 'Property No',
-			'ADDR1' => 'Addr1',
-			'ADDR2' => 'Addr2',
-			'ADDR3' => 'Addr3',
-			'ADDR4' => 'Addr4',
-			'ADDR5' => 'Addr5',
-			'POSTCODE' => 'Postcode',
-			'HA_CODE' => 'Ha Code',
-			'TEL_NO' => 'Tel No',
-			'DWELLING_TYPE' => 'Dwelling Type',
-			'SHARING_ACCOM' => 'Sharing Accom',
-			'DATE_END' => 'Date End',
-			'HDDR_GROUP' => 'Hddr Group',
+				'RM_PATIENT_NO' => 'Rm Patient No',
+				'ADDR_TYPE' => 'Addr Type',
+				'DATE_START' => 'Date Start',
+				'ADDR_FORMAT' => 'Addr Format',
+				'PROPERTY_NAME' => 'Property Name',
+				'PROPERTY_NO' => 'Property No',
+				'ADDR1' => 'Addr1',
+				'ADDR2' => 'Addr2',
+				'ADDR3' => 'Addr3',
+				'ADDR4' => 'Addr4',
+				'ADDR5' => 'Addr5',
+				'POSTCODE' => 'Postcode',
+				'HA_CODE' => 'Ha Code',
+				'TEL_NO' => 'Tel No',
+				'DWELLING_TYPE' => 'Dwelling Type',
+				'SHARING_ACCOM' => 'Sharing Accom',
+				'DATE_END' => 'Date End',
+				'HDDR_GROUP' => 'Hddr Group',
 		);
 	}
 
@@ -150,8 +150,8 @@ class PAS_PatientAddress extends MultiActiveRecord {
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
+				'criteria' => $criteria,
 		));
 	}
-	
+
 }

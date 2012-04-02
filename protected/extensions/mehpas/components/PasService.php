@@ -52,7 +52,7 @@ class PasService {
 		if($pas_gp = $assignment->external) {
 			Yii::log('Found GP in PAS obj_prof:'.$pas_gp->OBJ_PROF, 'trace');
 			$gp->nat_id = $pas_gp->NAT_ID;
-			
+				
 			// Contact
 			if(!$contact = $gp->contact) {
 				$contact = new Contact();
@@ -61,7 +61,7 @@ class PasService {
 			$contact->last_name = $pas_gp->SN;
 			$contact->title = $pas_gp->TITLE;
 			$contact->primary_phone = $pas_gp->TEL_1;
-			
+				
 			// Address
 			if(!$address = $contact->address) {
 				$address = new Address();
@@ -73,7 +73,7 @@ class PasService {
 			$address->county = $pas_gp->ADD_CTY;
 			$address->postcode = $pas_gp->PC;
 			$address->country_id = 1;
-			
+				
 			// Save
 			$contact->save();
 			$address->parent_id = $contact->id;
@@ -82,10 +82,10 @@ class PasService {
 			$gp->save();
 			$assignment->internal_id = $gp->id;
 			$assignment->save();
-				
+
 		} else {
 			Yii::log('GP not found in PAS: '.$gp->id, 'info');
-		}		
+		}
 	}
 
 	/**
@@ -213,7 +213,7 @@ class PasService {
 	 */
 	public function search($data, $num_results = 20, $page = 1) {
 		Yii::log('Searching PAS', 'trace');
-		
+
 		// oracle apparently doesn't do case-insensitivity, so everything is uppercase
 		foreach ($data as $key => &$value) {
 			$value = strtoupper($value);
@@ -244,7 +244,7 @@ class PasService {
 		$connection = Yii::app()->db_pas;
 		$command = $connection->createCommand($sql);
 		foreach ($command->queryAll() as $results) $this->num_results = $results['COUNT'];
-		
+
 		$offset = (($page-1) * $num_results) + 1;
 		$limit = $offset + $num_results - 1;
 		switch ($data['sortBy']) {
@@ -304,14 +304,14 @@ class PasService {
 		$connection = Yii::app()->db_pas;
 		$command = $connection->createCommand($sql);
 		$results = $command->queryAll();
-		
+
 		$ids = array();
 		$patients_with_no_address = 0;
 
 		foreach ($results as $result) {
 
 			$hos_num = $result['NUM_ID_TYPE'] . $result['NUMBER_ID'];
-			
+				
 			// See if the patient is in openeyes, if not then fetch from PAS
 			if($assignment = PasAssignment::model()->findByExternal('PAS_Patient', $result['RM_PATIENT_NO'])) {
 				// Patient is in OpenEyes and has an existing assignment

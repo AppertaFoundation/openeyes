@@ -105,25 +105,25 @@ class PAS_Patient extends MultiActiveRecord {
 	public function findByExternalId($id) {
 		return $this->findByPk($id);
 	}
-	
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules() {
 		return array(
-			array('RM_PATIENT_NO, PDS_SCN', 'numerical', 'integerOnly' => true),
-			array('FICT_CLIENT, DISC_CLIENT, MTEL_CS, EMAIL_CS, PDS_FLAG, PDS_DCPL, CTS_FLAG', 'length', 'max' => 1),
-			array('SEX, BIOLOGICAL_SEX, MARITAL_STAT, RELIGION, BIRTH_NOTIFICATION, PLACE_OF_DEATH, DEATH_NOTIFICATION, OUTCOME_PM, BLOOD_GRP, RHESUS, ETHNIC_GRP, LANGUAGE, OLANG, INTERPRETER_REQD, IMM_STAT, ENG_SPK, STAFF_MEMBER, EMP_CATEGORY, SMOKER', 'length', 'max' => 4),
-			array('TIME_OF_BIRTH, TIME_OF_DEATH, OCCUPATION_CODE', 'length', 'max' => 5),
-			array('PLACE_OF_BIRTH', 'length', 'max' => 30),
-			array('DEATH_CAUSE, OCCUPATION_DESC, DAY_PHONE_NO, WTEL, MTEL', 'length', 'max' => 35),
-			array('HDDR_GROUP', 'length', 'max' => 48),
-			array('NHS_STAT', 'length', 'max' => 2),
-			array('EMAIL', 'length', 'max' => 50),
-			array('CTS_TEXT', 'length', 'max' => 500),
-			array('NOTES', 'length', 'max' => 2000),
-			array('DATE_OF_BIRTH, DATE_OF_DEATH, DATE_DOD_NOTIFIED, DATE_POST_MORTEM, DATE_REGISTERED, DATE_REG_SICK_DISABLED, PDS_SYNC', 'safe'),
-			array('RM_PATIENT_NO, DATE_OF_BIRTH', 'safe', 'on' => 'search'),
+				array('RM_PATIENT_NO, PDS_SCN', 'numerical', 'integerOnly' => true),
+				array('FICT_CLIENT, DISC_CLIENT, MTEL_CS, EMAIL_CS, PDS_FLAG, PDS_DCPL, CTS_FLAG', 'length', 'max' => 1),
+				array('SEX, BIOLOGICAL_SEX, MARITAL_STAT, RELIGION, BIRTH_NOTIFICATION, PLACE_OF_DEATH, DEATH_NOTIFICATION, OUTCOME_PM, BLOOD_GRP, RHESUS, ETHNIC_GRP, LANGUAGE, OLANG, INTERPRETER_REQD, IMM_STAT, ENG_SPK, STAFF_MEMBER, EMP_CATEGORY, SMOKER', 'length', 'max' => 4),
+				array('TIME_OF_BIRTH, TIME_OF_DEATH, OCCUPATION_CODE', 'length', 'max' => 5),
+				array('PLACE_OF_BIRTH', 'length', 'max' => 30),
+				array('DEATH_CAUSE, OCCUPATION_DESC, DAY_PHONE_NO, WTEL, MTEL', 'length', 'max' => 35),
+				array('HDDR_GROUP', 'length', 'max' => 48),
+				array('NHS_STAT', 'length', 'max' => 2),
+				array('EMAIL', 'length', 'max' => 50),
+				array('CTS_TEXT', 'length', 'max' => 500),
+				array('NOTES', 'length', 'max' => 2000),
+				array('DATE_OF_BIRTH, DATE_OF_DEATH, DATE_DOD_NOTIFIED, DATE_POST_MORTEM, DATE_REGISTERED, DATE_REG_SICK_DISABLED, PDS_SYNC', 'safe'),
+				array('RM_PATIENT_NO, DATE_OF_BIRTH', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -132,91 +132,91 @@ class PAS_Patient extends MultiActiveRecord {
 	 */
 	public function relations() {
 		return array(
-			'names' => array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
-			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
-			'numbers' => array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
-			'nhs_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
-			'hos_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'), 
-			'addresses' => array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
-			'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
-			'address' => array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
-				// Address preference is: addresses which are not expired, Home > Correspond > other, and then DATE_START is the tiebreaker
-				// Ideally we should not return an expired address here, but expired is better than none (normally an admin error) provided it is flagged as such in the UI
-				'order' => '
-					CASE WHEN
-					("address"."DATE_END" is NULL OR "address"."DATE_END" > SYSDATE)
-					AND
-					("address"."DATE_START" is NULL OR "address"."DATE_START" < SYSDATE)
-					THEN 0
-					ELSE 1
-					END,
-					DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3),
-					"address"."DATE_START" DESC
-				',
-			),
-			'PatientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
-				// DATE_START is the tiebreaker
-				'order' => 'DATE_FROM DESC',
-				// Exclude expired and future gps
-				'condition' => '("PatientGp"."DATE_TO" IS NULL OR "PatientGp"."DATE_TO" >= SYSDATE) AND ("PatientGp"."DATE_FROM" IS NULL OR "PatientGp"."DATE_FROM" <= SYSDATE)',
-			),
+				'names' => array(self::HAS_MANY, 'PAS_PatientSurname', 'RM_PATIENT_NO'),
+				'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
+				'numbers' => array(self::HAS_MANY, 'PAS_PatientNumber', 'RM_PATIENT_NO'),
+				'nhs_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => '"nhs_number"."NUM_ID_TYPE" = \'NHS\''),
+				'hos_number' => array(self::HAS_ONE, 'PAS_PatientNumber', 'RM_PATIENT_NO', 'on' => 'REGEXP_LIKE("hos_number"."NUM_ID_TYPE", \'[[:digit:]]\')'),
+				'addresses' => array(self::HAS_MANY, 'PAS_PatientAddress', 'RM_PATIENT_NO'),
+				'name' => array(self::HAS_ONE, 'PAS_PatientSurname', 'RM_PATIENT_NO', 'on' => '"name"."SURNAME_TYPE" = \'NO\''),
+				'address' => array(self::HAS_ONE, 'PAS_PatientAddress', 'RM_PATIENT_NO',
+						// Address preference is: addresses which are not expired, Home > Correspond > other, and then DATE_START is the tiebreaker
+						// Ideally we should not return an expired address here, but expired is better than none (normally an admin error) provided it is flagged as such in the UI
+						'order' => '
+						CASE WHEN
+						("address"."DATE_END" is NULL OR "address"."DATE_END" > SYSDATE)
+						AND
+						("address"."DATE_START" is NULL OR "address"."DATE_START" < SYSDATE)
+						THEN 0
+						ELSE 1
+						END,
+						DECODE("address"."ADDR_TYPE", \'H\', 1, \'C\', 2, 3),
+						"address"."DATE_START" DESC
+						',
+				),
+				'PatientGp' => array(self::HAS_ONE, 'PAS_PatientGps', 'RM_PATIENT_NO',
+						// DATE_START is the tiebreaker
+						'order' => 'DATE_FROM DESC',
+						// Exclude expired and future gps
+						'condition' => '("PatientGp"."DATE_TO" IS NULL OR "PatientGp"."DATE_TO" >= SYSDATE) AND ("PatientGp"."DATE_FROM" IS NULL OR "PatientGp"."DATE_FROM" <= SYSDATE)',
+				),
 		);
 	}
-	
+
 	/**
 	 * @return array customized attribute labels (name => label)
 	 */
 	public function attributeLabels() {
 		return array(
-			'RM_PATIENT_NO' => 'Patient ID',
-			'FICT_CLIENT' => 'Fict Client',
-			'DISC_CLIENT' => 'Disc Client',
-			'SEX' => 'Gender',
-			'BIOLOGICAL_SEX' => 'Biological Gender',
-			'MARITAL_STAT' => 'Marital Status',
-			'RELIGION' => 'Religion',
-			'DATE_OF_BIRTH' => 'Date Of Birth',
-			'TIME_OF_BIRTH' => 'Time Of Birth',
-			'PLACE_OF_BIRTH' => 'Place Of Birth',
-			'BIRTH_NOTIFICATION' => 'Birth Notification',
-			'DATE_OF_DEATH' => 'Date Of Death',
-			'TIME_OF_DEATH' => 'Time Of Death',
-			'PLACE_OF_DEATH' => 'Place Of Death',
-			'DEATH_NOTIFICATION' => 'Death Notification',
-			'DATE_DOD_NOTIFIED' => 'Date Dod Notified',
-			'DATE_POST_MORTEM' => 'Date Post Mortem',
-			'OUTCOME_PM' => 'Outcome PM',
-			'DEATH_CAUSE' => 'Death Cause',
-			'BLOOD_GRP' => 'Blood Group',
-			'RHESUS' => 'Rhesus',
-			'ETHNIC_GRP' => 'Ethnic Group',
-			'LANGUAGE' => 'Language',
-			'OLANG' => 'Other Language',
-			'INTERPRETER_REQD' => 'Interpreter Required?',
-			'IMM_STAT' => 'Immigration Status',
-			'ENG_SPK' => 'Eng Speaker?',
-			'STAFF_MEMBER' => 'Staff Member',
-			'EMP_CATEGORY' => 'Emp Category',
-			'OCCUPATION_CODE' => 'Occupation Code',
-			'OCCUPATION_DESC' => 'Occupation Description',
-			'DAY_PHONE_NO' => 'Daytime Telephone',
-			'DATE_REGISTERED' => 'Date Registered',
-			'DATE_REG_SICK_DISABLED' => 'Date Registered Sick/Disabled',
-			'HDDR_GROUP' => 'Hddr Group',
-			'NHS_STAT' => 'NHS Stat',
-			'WTEL' => 'Work Telephone',
-			'MTEL' => 'Mobile Telephone',
-			'MTEL_CS' => 'Mtel Cs',
-			'EMAIL' => 'Email',
-			'EMAIL_CS' => 'Email Cs',
-			'PDS_FLAG' => 'Pds Flag',
-			'PDS_SCN' => 'Pds Scn',
-			'PDS_SYNC' => 'Pds Sync',
-			'PDS_DCPL' => 'Pds Dcpl',
-			'CTS_FLAG' => 'Cts Flag',
-			'CTS_TEXT' => 'Cts Text',
-			'SMOKER' => 'Smoker?',
-			'NOTES' => 'Notes',
+				'RM_PATIENT_NO' => 'Patient ID',
+				'FICT_CLIENT' => 'Fict Client',
+				'DISC_CLIENT' => 'Disc Client',
+				'SEX' => 'Gender',
+				'BIOLOGICAL_SEX' => 'Biological Gender',
+				'MARITAL_STAT' => 'Marital Status',
+				'RELIGION' => 'Religion',
+				'DATE_OF_BIRTH' => 'Date Of Birth',
+				'TIME_OF_BIRTH' => 'Time Of Birth',
+				'PLACE_OF_BIRTH' => 'Place Of Birth',
+				'BIRTH_NOTIFICATION' => 'Birth Notification',
+				'DATE_OF_DEATH' => 'Date Of Death',
+				'TIME_OF_DEATH' => 'Time Of Death',
+				'PLACE_OF_DEATH' => 'Place Of Death',
+				'DEATH_NOTIFICATION' => 'Death Notification',
+				'DATE_DOD_NOTIFIED' => 'Date Dod Notified',
+				'DATE_POST_MORTEM' => 'Date Post Mortem',
+				'OUTCOME_PM' => 'Outcome PM',
+				'DEATH_CAUSE' => 'Death Cause',
+				'BLOOD_GRP' => 'Blood Group',
+				'RHESUS' => 'Rhesus',
+				'ETHNIC_GRP' => 'Ethnic Group',
+				'LANGUAGE' => 'Language',
+				'OLANG' => 'Other Language',
+				'INTERPRETER_REQD' => 'Interpreter Required?',
+				'IMM_STAT' => 'Immigration Status',
+				'ENG_SPK' => 'Eng Speaker?',
+				'STAFF_MEMBER' => 'Staff Member',
+				'EMP_CATEGORY' => 'Emp Category',
+				'OCCUPATION_CODE' => 'Occupation Code',
+				'OCCUPATION_DESC' => 'Occupation Description',
+				'DAY_PHONE_NO' => 'Daytime Telephone',
+				'DATE_REGISTERED' => 'Date Registered',
+				'DATE_REG_SICK_DISABLED' => 'Date Registered Sick/Disabled',
+				'HDDR_GROUP' => 'Hddr Group',
+				'NHS_STAT' => 'NHS Stat',
+				'WTEL' => 'Work Telephone',
+				'MTEL' => 'Mobile Telephone',
+				'MTEL_CS' => 'Mtel Cs',
+				'EMAIL' => 'Email',
+				'EMAIL_CS' => 'Email Cs',
+				'PDS_FLAG' => 'Pds Flag',
+				'PDS_SCN' => 'Pds Scn',
+				'PDS_SYNC' => 'Pds Sync',
+				'PDS_DCPL' => 'Pds Dcpl',
+				'CTS_FLAG' => 'Cts Flag',
+				'CTS_TEXT' => 'Cts Text',
+				'SMOKER' => 'Smoker?',
+				'NOTES' => 'Notes',
 		);
 	}
 
@@ -226,9 +226,10 @@ class PAS_Patient extends MultiActiveRecord {
 	 */
 	public function search() {
 		$criteria=new CDbCriteria;
-		
+
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria' => $criteria,
+				'criteria' => $criteria,
 		));
 	}
+	
 }
