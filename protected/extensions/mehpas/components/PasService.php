@@ -101,26 +101,30 @@ class PasService {
 		}
 		if($pas_patient = $assignment->external) {
 			Yii::log('Found patient in PAS rm_patient_no:'.$pas_patient->RM_PATIENT_NO, 'trace');
-			$patient->title = $pas_patient->name->TITLE;
-			$patient->first_name = ($pas_patient->name->NAME1) ? $pas_patient->name->NAME1 : '(UNKNOWN)';
-			$patient->last_name = $pas_patient->name->SURNAME_ID;
-			$patient->gender = $pas_patient->SEX;
-			$patient->dob = $pas_patient->DATE_OF_BIRTH;
-			$patient->date_of_death = $pas_patient->DATE_OF_DEATH;
+			$patient_attrs = array(
+					'title' => $pas_patient->name->TITLE,
+					'first_name' => ($pas_patient->name->NAME1) ? $pas_patient->name->NAME1 : '(UNKNOWN)',
+					'last_name'=> $pas_patient->name->SURNAME_ID,
+					'gender' =>$pas_patient->SEX,
+					'dob' => $pas_patient->DATE_OF_BIRTH,
+					'date_of_death' => $pas_patient->DATE_OF_DEATH,
+			);
 			if($hos_num = $pas_patient->hos_number) {
 				$hos_num = $hos_num->NUM_ID_TYPE . $hos_num->NUMBER_ID;
-				$patient->pas_key = $hos_num;
-				$patient->hos_num = $hos_num;
+				$patient_attrs['pas_key'] = $hos_num;
+				$patient_attrs['hos_num'] = $hos_num;
 			}
 			if($nhs_number = $pas_patient->nhs_number) {
-				$patient->nhs_num = $nhs_number->NUMBER_ID;
+				$patient_attrs['nhs_num'] = $nhs_number->NUMBER_ID;
 			}
-
+			
 			// Get primary phone from patient's main address
 			if($pas_patient->address) {
-				$patient->primary_phone = $pas_patient->address->TEL_NO;
+				$patient_attrs['primary_phone'] = $pas_patient->address->TEL_NO;
 			}
-
+			
+			$patient->attributes = $patient_attrs;
+				
 			// Get latest GP mapping from PAS
 			$pas_patient_gp = $pas_patient->PatientGp;
 			if($pas_patient_gp) {

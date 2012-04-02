@@ -1,6 +1,6 @@
 <?php
 
-class m120315_165615_add_patient_date_of_death extends CDbMigration {
+class m120302_000000_add_patient_date_of_death extends CDbMigration {
 	
 	public function up() {
 		$this->addColumn('patient','date_of_death','date DEFAULT NULL');
