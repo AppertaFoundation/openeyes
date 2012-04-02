@@ -35,6 +35,9 @@
 				'doodleToolBarArray'=>array('PhakoIncision','SidePort','IrisHook','PCIOL','ACIOL','PI','MattressSuture'),
 				'onLoadedCommandArray'=>array(
 					array('addDoodle', array('AntSeg')),
+					array('addDoodle', array('PhakoIncision')),
+					array('addDoodle', array('SidePort')),
+					array('addDoodle', array('PCIOL')),
 					array('deselectDoodles', array()),
 				),
 				'canvasStyle' => 'background-color: #fff; border: 1px solid #000; margin-left: 9px;'
@@ -53,6 +56,7 @@
 			<div class="halfHeight">
 				<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
 				<?php echo $form->multiSelectList($element, $element->complication_fields, array('label' => 'Complications'))?>
+				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
 			</div>
 		</div>
 	</div>

@@ -29,7 +29,6 @@ $form->widget('application.widgets.ProcedureSelection',array(
 	'last' => true
 ));
 ?>
-<div id="procedureSpecificElements"></div>
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'anaesthetist')?>
 <?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery')?>
