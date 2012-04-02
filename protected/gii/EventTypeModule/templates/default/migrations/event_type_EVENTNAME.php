@@ -69,8 +69,29 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 	}
 
 	public function down() {
-		echo "m000000_000001_event_type_<?php echo $this->moduleID; ?> does not support migration down.\n";
-		return false;
+		// --- drop any element related tables ---
+		// --- drop element tables ---
+		<?php
+		if (isset($elements)) {
+			foreach ($elements as $element) {
+		?>
+$this->dropTable('<?php echo $element['table_name']; ?>');
+		<?php }} ?>
+
+		// --- delete event entries ---
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
+		$this->delete('event', 'event_type_id='.$event_type['id']);
+
+		// --- delete entries from element_type ---
+		$this->delete('element_type', 'event_type_id='.$event_type['id']);
+
+		// --- delete entries from event_type ---
+		$this->delete('event_type', 'id='.$event_type['id']);
+
+		// echo "m000000_000001_event_type_<?php echo $this->moduleID; ?> does not support migration down.\n";
+		// return false;
+		echo "If you are removing this module you may also need to remove references to it in your configuration files";
+		return true;
 	}
 }
 <?php echo '?>';?>
