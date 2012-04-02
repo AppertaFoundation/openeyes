@@ -21,25 +21,19 @@
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 <div class="view">
-
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetic_type->name ?></div>
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('eye_id'))?></div>
+		<div class="eventHighlight"><?php echo $element->eye->name?></div>
 	</div>
 
 	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->surgeon->fullName; ?></div>
-	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->assistant ? $element->assistant->fullName : 'None'; ?></div>
-	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullName : 'None'; ?></div>
+		<div class="label">Procedures:</div>
+		<div class="eventHighlight">
+			<ul>
+				<?php foreach ($element->procedures as $procedure) {?>
+					<li><?php echo $procedure->term?></li>
+				<?php }?>
+			</ul>
+		</div>
 	</div>
 </div>
-

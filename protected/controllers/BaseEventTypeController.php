@@ -56,37 +56,34 @@ class BaseEventTypeController extends BaseController
 		$criteria->order = 'display_order asc';
 
 		$elements = array();
-		$element_classes = array();
 
-		if (isset($event->event_type_id)) {
-			foreach (ElementType::model()->findAll($criteria) as $element_type) {
-				$element_class = $element_type->class_name;
+		if (empty($_POST)) {
+			if (isset($event->event_type_id)) {
+				foreach (ElementType::model()->findAll($criteria) as $element_type) {
+					$element_class = $element_type->class_name;
 
-				if ($element = $element_class::model()->find('event_id = ?',array($event->id))) {
-					$elements[] = $element;
-					$element_classes[] = $element_class;
+					if ($element = $element_class::model()->find('event_id = ?',array($event->id))) {
+						$elements[] = $element;
+					}
+				}
+			} else {
+				$criteria->compare('`default`',1);
+
+				foreach (ElementType::model()->findAll($criteria) as $element_type) {
+					$element_class = $element_type->class_name;
+					$elements[] = new $element_class;
 				}
 			}
 		} else {
-			$criteria->compare('`default`',1);
-
-			foreach (ElementType::model()->findAll($criteria) as $element_type) {
-				$element_class = $element_type->class_name;
-
-				$elements[] = new $element_class;
-				$element_classes[] = $element_class;
-			}
-		}
-
-		if (!empty($_POST)) {
 			foreach ($_POST as $key => $value) {
 				if (preg_match('/^Element/',$key)) {
 					if ($element_type = ElementType::model()->find('class_name=?',array($key))) {
-						if ($element_type->default == 0) {
-							$element_class = $element_type->class_name;
-							if (!in_array($element_class,$element_classes)) {
-								$elements[] = new $element_class;
-							}
+						$element_class = $element_type->class_name;
+
+						if (isset($event->event_type_id) && ($element = $element_class::model()->find('event_id = ?',array($event->id)))) {
+							$elements[] = $element;
+						} else {
+							$elements[] = new $element_class;
 						}
 					}
 				}
