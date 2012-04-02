@@ -1,4 +1,4 @@
-					<div class="eventDetail" id="typeProcedure">
+					<div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure">
 						<div class="label">Procedures:</div>
 						<div class="data split limitWidth">
 							<div class="left">
@@ -193,7 +193,7 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 
 		removed_stack = stack;
 
-		sort_procedure_list();
+		sort_selectbox($('#select_procedure_id'));
 
 		return false;
 	});
@@ -207,13 +207,6 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 			}				
 			return (a.innerHTML > b.innerHTML) ? 1 : -1;
 	};
-
-	var rootItem = null;
-
-	function sort_procedure_list() {
-		rootItem = $('#select_procedure_id option:first').text();
-		$('#select_procedure_id option').sort(selectSort).appendTo('#select_procedure_id');
-	}
 
 	$('select[id=subsection_id]').change(function() {
 		var subsection = $('select[name=subsection_id] option:selected').val();

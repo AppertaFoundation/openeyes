@@ -19,7 +19,7 @@
 ?>
 				</div>
 				<!-- #event_content -->
-				<div class="colorband category_treatement"></div>
+				<div class="colorband category_treatment"></div>
 				<div id="display_actions_footer" class="display_actions footer">
 					<?php $this->renderPartial('//patient/edit_controls')?>
 				</div>

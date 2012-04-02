@@ -22,6 +22,7 @@ class BaseCWidget extends CWidget
 	public $element;
 	public $field;
 	public $value;
+	public $assetFolder;
 
 	public function init() {
 		if (empty($_POST)) {
@@ -35,6 +36,11 @@ class BaseCWidget extends CWidget
 		if ($this->field) {
 			$this->element->{$this->field} = $this->value;
 		}
+
+		// if the widget has javascript, load it in
+		if (file_exists("protected/widgets/js/".get_class($this).".js")) {
+			$this->assetFolder = Yii::app()->getAssetManager()->publish('protected/widgets/js');
+		}
 	}
 
 	public function render($view, $data=null, $return=false) {
@@ -43,6 +49,7 @@ class BaseCWidget extends CWidget
 		} else {
 			$data = get_object_vars($this);
 		}
+		parent::render('widgetHeader', $data, $return);
 		parent::render($view, $data, $return);
 	}
 

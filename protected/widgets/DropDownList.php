@@ -20,12 +20,5 @@
 class DropDownList extends BaseCWidget {
 	public $data;
 	public $htmlOptions;
-	public $listHTML;
-
-	public function run() {
-		$this->listHTML = CHtml::activeDropDownList($this->element,$this->field,$this->data,$this->htmlOptions);
-
-		parent::run();
-	}
 }
 ?>

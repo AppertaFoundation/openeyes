@@ -16,11 +16,26 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+class MultiSelectList extends BaseCWidget {
+	public $fields;
+	public $htmlOptions;
+	public $options = array();
+
+	public function run() {
+		if (isset($this->htmlOptions['label'])) {
+			$this->options[''] = '- '.$this->htmlOptions['label'].' -';
+		} else {
+			$this->options[''] = '- Please select -';
+		}
+
+		foreach ($this->fields as $field) {
+			$this->options[$field] = $this->element->getAttributeLabel($field);
+		}
+
+		asort($this->options);
+
+		parent::run();
+	}
+}
 ?>
-
-<div class="<?php echo $element->elementType->class_name?><?php if (@$ondemand){?> ondemand<?php }?>">
-	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-	<?php echo $form->dropDownList($element, 'gauge_id', CHtml::listData(VitrectomyGauge::model()->findAll(),'id','value'),array('empty'=>'- Please select -'))?>
-	<?php echo $form->radioBoolean($element, 'pvd_induced')?>
-</div>

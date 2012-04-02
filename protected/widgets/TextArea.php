@@ -22,5 +22,6 @@ class TextArea extends BaseCWidget {
 	public $cols;
 	public $button;
 	public $div_style;
+	public $layout;
 }
 ?>

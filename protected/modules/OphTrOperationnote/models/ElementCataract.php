@@ -60,7 +60,7 @@ class ElementCataract extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'safe'),
+			array('event_id, incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem, complication_notes', 'safe'),
 			array('incision_site_id, length, meridian, incision_type_id, iol_position_id, eyedraw, report, wound_burn, iris_trauma, zonular_dialysis, pc_rupture, decentered_iol, iol_exchange, dropped_nucleus, op_cancelled, corneal_odema, iris_prolapse, zonular_rupture, vitreous_loss, iol_into_vitreous, other_iol_problem, choroidal_haem', 'required'),
 			array('length', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9](\.[0-9])?$/', 'message' => 'Length must be 0 - 9.9 in increments of 0.1'),
 			array('meridian', 'numerical', 'integerOnly' => false, 'numberPattern' => '/^[0-9]{1,3}(\.[0-9])?$/', 'min' => 000.5, 'max' => 180, 'message' => 'Meridian must be 000.5 - 180.0 degrees'),
@@ -115,6 +115,7 @@ class ElementCataract extends BaseEventTypeElement
 			'iol_into_vitreous' => 'IOL into vitreous',
 			'other_iol_problem' => 'Other IOL problem',
 			'choroidal_haem' => 'Choroidal haem',
+			'complication_notes' => 'Complication notes',
 		);
 	}
 

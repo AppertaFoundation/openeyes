@@ -58,16 +58,35 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <script type="text/javascript">
 	$('#cancelForm button[type="submit"]').click(function () {
 		if (!$(this).hasClass('inactive')) {
-			if ('' == $('#cancellation_reason option:selected').val()) {
-				$('div.alertBox ul li').html('Please select a cancellation reason');
-				$('div.alertBox').show();
-				return false;
-			}
-
 			disableButtons();
-		} else {
-			return false;
+
+			$.ajax({
+				type: 'POST',
+				url: '/booking/cancelOperation',
+				data: $('#cancelForm').serialize(),
+				dataType: 'json',
+				success: function(data) {
+					var n=0;
+					var html = '';
+					$.each(data, function(key, value) {
+						html += '<ul><li>'+value+'</li></ul>';
+						n += 1;
+					});
+
+					if (n == 0) {
+						window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/<?php echo $operation->event->id?>';
+					} else {
+						$('div.alertBox').show();
+						$('div.alertBox').html(html);
+					}
+
+					enableButtons();
+					return false;
+				}
+			});
 		}
+
+		return false;
 	});
 </script>
 <?php $this->footer()?>

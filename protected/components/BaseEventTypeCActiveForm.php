@@ -58,4 +58,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 	public function checkBoxArray($element,$label,$fields, $options=false) {
 		$this->widget('application.widgets.CheckBoxArray',array('element' => $element, 'fields' => $fields, 'label' => $label, 'options' => $options));
 	}
+
+	public function multiSelectList($element, $fields, $htmlOptions=array()) {
+		$this->widget('application.widgets.MultiSelectList', array('element' => $element, 'fields' => $fields, 'htmlOptions' => $htmlOptions));
+	}
 }

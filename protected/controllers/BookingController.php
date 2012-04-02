@@ -172,104 +172,46 @@ class BookingController extends BaseController
 		);
 	}
 
-	public function actionCancelOperation()
-	{
-		if (isset($_POST['cancellation_reason'])) {
-			$operationId = $_POST['operation_id'];
+	public function actionCancelOperation() {
+		$errors = array();
 
-			$cancel = new CancelledOperation;
-			$cancel->element_operation_id = $operationId;
-			$cancel->cancelled_date = date('Y-m-d H:i:s');
-			$cancel->cancelled_reason_id = $_POST['cancellation_reason'];
-			$cancel->cancellation_comment = strip_tags($_POST['cancellation_comment']);
-
-			$operation = ElementOperation::model()->findByPk($operationId);
-			$operation->status = ElementOperation::STATUS_CANCELLED;
-
-			//Booking::model()->deleteAll('element_operation_id = :id', array(':id'=>$operationId));
-
-			if ($cancel->save() && $operation->save()) {
-
-				OELog::log("element_operation $operation->id cancelled");
-
-				foreach (EventIssue::model()->findAll('event_id = ? and issue_id = 1',array($operation->event->id)) as $event_issue) {
-					$event_issue->delete();
-				}
-
-				$patientId = $operation->event->episode->patient->id;
-
-				$this->updateEvent($operation->event);
-
-				if ($model = $operation->booking) {
-					// If there was a booking for this operation, create a CancelledBooking row
-					$cancellation = new CancelledBooking;
-					$cancellation->element_operation_id = $operationId;
-					$cancellation->date = $model->session->date;
-					$cancellation->start_time = $model->session->start_time;
-					$cancellation->end_time = $model->session->end_time;
-					$cancellation->theatre_id = $model->session->theatre_id;
-					$cancellation->cancelled_date = date('Y-m-d H:i:s');
-					$cancellation->cancelled_reason_id = $_POST['cancellation_reason'];
-					$cancellation->cancellation_comment = strip_tags($_POST['cancellation_comment']);
-
-					if (!$cancellation->save()) {
-						throw new SystemException('Unable to save cancelled_booking: '.print_r($cancellation->getErrors(),true));
-					}
-
-					OELog::log("Booking cancelled: $model->id (booking_cancellation=$cancellation->id");
-
-					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
-						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
-							if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
-								$targets = array(Yii::app()->params['urgent_booking_notify_email']);
-							} else {
-								$targets = Yii::app()->params['urgent_booking_notify_email'];
-							}
-							foreach ($targets as $email) {
-								mail($email, "[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: ".$operation->getDisorder()."\n\nPlease see: http://".@$_SERVER['SERVER_NAME']."/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.","From: ".Yii::app()->params['urgent_booking_notify_email_from']."\r\n");
-							}
-						}
-					}
-
-					if (!$model->delete()) {
-						throw new SystemException('Unable to save cancelled_booking: '.print_r($model->getErrors(),true));
-					}
-				}
-
-				$this->redirect(array('patient/event/'.$operation->event->id));
-				Yii::app()->end();
-			}
-			$cancellation_reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
-			if(!$cancellation_reason) {
-				throw new CHttpException(500,'Cancellation reason not found');
-			}
-			$comment = (isset($_POST['cancellation_comment'])) ? strip_tags($_POST['cancellation_comment']) : '';
-			$operation->cancel($cancellation_reason->id, $comment);
-			$this->redirect(array(
-				'patient/episodes',
-				'id' => $operation->event->episode->patient->id,
-				'event' => $operation->event->id
-			));
-		} else {
-			$operationId = !empty($_GET['operation']) ? $_GET['operation'] : 0;
-			$operation = ElementOperation::model()->findByPk($operationId);
-			if (empty($operation)) {
+		if (isset($_POST['cancellation_reason']) && isset($_POST['operation_id'])) {
+			$operation = ElementOperation::model()->findByPk($_POST['operation_id']);
+			if(!$operation) {
 				throw new CHttpException(500,'Operation not found');
 			}
-			$minDate = $operation->getMinDate();
-			$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
-			if ($minDate < $thisMonth) {
-				$minDate = $thisMonth;
+
+			$comment = (isset($_POST['cancellation_comment'])) ? strip_tags(@$_POST['cancellation_comment']) : '';
+			$result = $operation->cancel(@$_POST['cancellation_reason'], $comment);
+
+			if ($result['result']) {
+				die(json_encode(array()));
 			}
 
-			$this->patient = $operation->event->episode->patient;
-			$this->title = 'Cancel operation';
+			foreach ($result['errors'] as $form_errors) {
+				foreach ($form_errors as $error) {
+					$errors[] = $error;
+				}
+			}
 
-			$this->renderPartial('/booking/_cancel_operation', array(
-					'operation' => $operation,
-					'date' => $minDate
-				), false, true);
+			die(json_encode($errors));
 		}
+
+		$operationId = !empty($_REQUEST['operation_id']) ? $_REQUEST['operation_id'] : 0;
+		$operation = ElementOperation::model()->findByPk($operationId);
+		if (empty($operation)) {
+			throw new CHttpException(500,'Operation not found');
+		}
+		$minDate = $operation->getMinDate();
+		$thisMonth = mktime(0,0,0,date('m'),1,date('Y'));
+		if ($minDate < $thisMonth) {
+			$minDate = $thisMonth;
+		}
+		$this->renderPartial('/booking/_cancel_operation', array(
+				'operation' => $operation,
+				'date' => $minDate,
+				'errors' => $errors
+			), false, true);
 	}
 
 	public function actionSessions()
