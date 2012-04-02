@@ -575,7 +575,7 @@ class PasService {
 		
 		// Only create referral if there is a single matching referral in PAS as otherwise we cannot determine which on matches
 		if($pas_referrals && count($pas_referrals) == 1) {
-			Yii::log("Found referral for patient id $episode->patient_id", 'trace');
+			Yii::log("Found referral for patient id $episode->patient_id (rm_patient_no $rm_patient_no)", 'trace');
 			$pas_referral = $pas_referrals[0];
 			$referral = new Referral();
 			$referral->refno = $pas_referral->REFNO;
@@ -583,7 +583,7 @@ class PasService {
 			$referral->service_specialty_assignment_id = $episode->firm->serviceSpecialtyAssignment->id;
 			$referral->firm_id = $episode->firm_id;
 			if (!$referral->save()) {
-				throw new CException("Failed to save referral for patient $episode->patient_id episode $episode->id: " . print_r($referral->getErrors(), true));
+				throw new CException("Failed to save referral for patient id $episode->patient_id (rm_patient_no $rm_patient_no), episode $episode->id: " . print_r($referral->getErrors(), true));
 			}
 			
 			$rea = new ReferralEpisodeAssignment();
@@ -593,9 +593,9 @@ class PasService {
 				throw new CException("Failed to associate referral $referral->id with episode $episode->id: ".print_r($rea->getErrors(), true));
 			}
 		} else if(count($pas_referrals) > 1) {
-			Yii::log('There were '.count($pas_referrals)." referrals found in PAS for patient id $episode->patient_id, so none were imported",'trace');
+			Yii::log('There were '.count($pas_referrals)." referrals found in PAS for patient id $episode->patient_id (rm_patient_no $rm_patient_no), so none were imported",'trace');
 		} else {
-			Yii::log("No referrals found in PAS for patient id $episode->patient_id",'trace');
+			Yii::log("No referrals found in PAS for patient id $episode->patient_id (rm_patient_no $rm_patient_no)",'trace');
 		}
 		
 	}

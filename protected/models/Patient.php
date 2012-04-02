@@ -74,8 +74,8 @@ class Patient extends BaseActiveRecord {
 			array('title', 'length', 'max' => 8),
 			array('first_name, last_name, hos_num, nhs_num, primary_phone', 'length', 'max' => 40),
 			array('gender', 'length', 'max' => 1),
-			array('dob, primary_phone', 'safe'),
-			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone', 'safe', 'on' => 'search'),
+			array('dob, primary_phone, date_of_death', 'safe'),
+			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone, date_of_death', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -118,6 +118,7 @@ class Patient extends BaseActiveRecord {
 			'first_name' => 'First Name',
 			'last_name' => 'Last Name',
 			'dob' => 'Date of Birth',
+			'date_of_death' => 'Date of Death',
 			'gender' => 'Gender',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
