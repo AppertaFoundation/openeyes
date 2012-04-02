@@ -76,7 +76,7 @@ class BaseEventTypeController extends BaseController
 			}
 		} else {
 			foreach ($_POST as $key => $value) {
-				if (preg_match('/^Element/',$key)) {
+				if (preg_match('/^Element|^OEElement/',$key)) {
 					if ($element_type = ElementType::model()->find('class_name=?',array($key))) {
 						$element_class = $element_type->class_name;
 
@@ -151,7 +151,6 @@ class BaseEventTypeController extends BaseController
 				throw new Exception('Invalid firm id on attempting to create event.');
 			}
 		}
-
 		$elements = $this->getDefaultElements($this->event_type->id);
 
 		if (!count($elements)) {

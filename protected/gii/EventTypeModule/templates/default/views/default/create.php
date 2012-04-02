@@ -29,4 +29,4 @@
 	<?php echo '<?php ';?> $this->endWidget(); <?php echo '?>';?>
 </div>
 
- <?php echo '<?php ';?> $this->footer() <?php echo '?>';?>
+<?php echo '<?php ';?> $this->footer(); <?php echo '?>';?>
