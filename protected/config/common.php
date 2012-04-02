@@ -40,6 +40,7 @@ $config = array(
 		'application.widgets.*',
 		'application.controllers.*',
 		'application.helpers.*',
+		'application.gii.*',
 		'system.gii.generators.module.*',
 	),
 
@@ -52,7 +53,6 @@ $config = array(
 		),
 		'admin',
 		'OphTrOperationnote',
-		'ArCiCheesecakeisnice'
 	),
 
 	// Application components

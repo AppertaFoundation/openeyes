@@ -18,25 +18,45 @@
  */
 
 /**
- * This is the model class for table "element_procedurelist".
+ * This is the model class for table "<?php if (isset($element)) echo $element['table_name']; ?>".
  *
- * The followings are the available columns in table 'element_operation':
+ * The followings are the available columns in table:
  * @property string $id
  * @property integer $event_id
- * @property integer $surgeon_id
- * @property integer $assistant_id
- * @property integer $anaesthetic_type
+<?php
+if (isset($element)) {
+	foreach ($element['fields'] as $field) {
+		if ($field['type'] == 'Textbox') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'Textarea') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'Date picker') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'Dropdown list') {
+			echo ' * @property integer $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'Checkboxes') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'Radio buttons') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'Boolean') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		} elseif ($field['type'] == 'EyeDraw') {
+			echo ' * @property string $' . $field['name'] . "\n";
+		}
+	}
+}
+?>
  *
  * The followings are the available model relations:
- * @property Event $event
  */
-class ELEMENTTYPENAME extends BaseEventTypeElement
+
+class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
 {
 	public $service;
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ElementOperation the static model class
+	 * @return the static model class
 	 */
 	public static function model($className = __CLASS__)
 	{
@@ -48,7 +68,7 @@ class ELEMENTTYPENAME extends BaseEventTypeElement
 	 */
 	public function tableName()
 	{
-		return 'et_ophtroperationnote_procedurelist';
+		return '<?php if (isset($element)) echo $element['table_name']; ?>';
 	}
 
 	/**
@@ -60,9 +80,10 @@ class ELEMENTTYPENAME extends BaseEventTypeElement
 		// will receive user inputs.
 		return array(
 			array('event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe'),
+			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe', 'on' => 'search'),
+			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -74,14 +95,11 @@ class ELEMENTTYPENAME extends BaseEventTypeElement
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'surgeon' => array(self::BELONGS_TO, 'Contact', 'surgeon_id'),
-			'assistant' => array(self::BELONGS_TO, 'Contact', 'assistant_id'),
 			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id')
 		);
 	}
 
@@ -93,9 +111,13 @@ class ELEMENTTYPENAME extends BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'surgeon_id' => 'Surgeon',
-			'assistant_id' => 'Assistant',
-			'anaesthetic_type_id' => 'Anaesthetic type'
+<?php
+if (isset($element)) {
+	foreach ($element['fields'] as $field) {
+		echo "'" . $field['name'] . '\' => \'' . $field['label'] . "',\n";
+	}
+}
+?>
 		);
 	}
 
@@ -112,9 +134,14 @@ class ELEMENTTYPENAME extends BaseEventTypeElement
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('surgeon_id', $this->surgeon_id);
-		$criteria->compare('assistant_id', $this->assistant_id);
-		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
+
+<?php
+if (isset($element)) {
+	foreach ($element['fields'] as $field) {
+		echo '$criteria->compare(\'' . $field['name'] . '\', $this->' . $field['name'] . ');' . "\n";
+	}
+}
+?>
 		
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
@@ -126,7 +153,6 @@ class ELEMENTTYPENAME extends BaseEventTypeElement
 	 */
 	public function setDefaultOptions()
 	{
-		$this->anaesthetic_type_id = 1;
 	}
 
 	protected function beforeSave()

@@ -510,7 +510,7 @@ span.surname { font-weight: bold; }
 #event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 #event_display .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
-#event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; }
+#event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; z-index:999 !important;}
 
 /* ------------------------ NEW EVENT - Users selects a New Event to add, these are details needed */
 /* Green PlUS Graphic */

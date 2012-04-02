@@ -1,5 +1,5 @@
 <?php echo '<?php ';?>
-	$this->breadcrumbs=array($this->moduleID);
+	$this->breadcrumbs=array($this->module->id);
 	$this->header();
 <?php echo '?>';?>
 
