@@ -565,7 +565,7 @@ class PasService {
 		}
 		$rm_patient_no = $assignment->external_id;
 		$ref_spec = $episode->firm->serviceSpecialtyAssignment->specialty->ref_spec;
-		$pas_referrals = PAS_Referral::findAll(array(
+		$pas_referrals = PAS_Referral::model()->findAll(array(
 				'condition' => 'x_cn = :rm_patient_no',
 				'params' => array(
 						':rm_patient_no' => $rm_patient_no,
