@@ -517,7 +517,7 @@ span.surname { font-weight: bold; }
 #event_plus_graphic { display:block; position:absolute; top:64px; left:296px; }
  /* event content */ 
 #event_display .addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; }  /* allow gap for graphic - NOT USED! */
-#event_display .fullWidthEvent { width:1050px;	}
+#event_display .fullWidthEvent { width:1030px;	}
 #event_display .miniWidthEvent { width:510px; }
 /* elements of event & episode */
 #event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
@@ -542,10 +542,12 @@ span.surname { font-weight: bold; }
 /* extra summary */
 #event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 /* event detail */
-#event_content .eventDetail { padding:10px; background:#dae6f1; margin-bottom: 2px; position:relative; }
+#event_content .eventDetail { padding:10px; background:#dae6f1; position:relative; }
 #event_content .eventDetail > .label { display:inline-block; width:300px; float:left; font-size:15px; padding-bottom: 20px;  }
 #event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;  }
 #event_content .eventDetail > .label-horizontal { display:inline-block; width:145px; float: left; font-size:15px; }
+#event_content .eventDetailLast { margin-bottom: 2px; }
+
 /* 2 column split - for summary */
 #event_content > .cols2 { padding-bottom:10px; }
 #event_content > .cols2 > .left { clear: left; float: left; width: 48%; }
@@ -600,7 +602,7 @@ span.surname { font-weight: bold; }
 .extraDetails-margin { margin-left: 310px; }
 
 /* ON-DEMAND - wrapper for elements that appear 'on-demand' */
-#event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/extra-element_view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
+#event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/extra-element_view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; display: none; }
 .ondemand > .demandReason { position:absolute; top:0; right:30px; color:#979fa7; font-size:11px; padding:4px 7px 2px 7px; 
 background: -moz-linear-gradient(#c8d3dd, #dae6f1);    
 background: -ms-linear-gradient(#c8d3dd, #dae6f1);  

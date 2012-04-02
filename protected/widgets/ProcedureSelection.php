@@ -26,6 +26,7 @@ class ProcedureSelection extends BaseCWidget {
 	public $durations = false;
 	public $class;
 	public $total_duration = 0;
+	public $last;
 
 	public function run() {
 		$firm = Firm::model()->findByPK(Yii::app()->session['selected_firm_id']);

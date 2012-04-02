@@ -20,6 +20,16 @@
 
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
+<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->selected_eye);?>
+<?php
+$form->widget('application.widgets.ProcedureSelection',array(
+	'element' => $element,
+	'selected_procedures' => $this->selected_procedures,
+	'newRecord' => true,
+	'last' => true
+));
+?>
+<div id="procedureSpecificElements"></div>
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'anaesthetist')?>
 <?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery')?>
@@ -27,11 +37,3 @@
 <?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- Please select -')); ?>
 <?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
 <?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
-<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->selected_eye);?>
-<?php
-$form->widget('application.widgets.ProcedureSelection',array(
-	'element' => $element,
-	'selected_procedures' => $this->selected_procedures,
-	'newRecord' => true
-));
-?>

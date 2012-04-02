@@ -5,10 +5,14 @@ function callbackAddProcedure(procedure_id) {
 		'url': '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id='+procedure_id,
 		'success': function(html) {
 			if (html.length >0) {
-				var m = html.match(/<div class="(Element.*?)"/)
-				if ($('div.'+m[1]).map().length <1) {
-					$('div.elements').append(html);
-					$('div.'+m[1]).slideToggle('fast');
+				var m = html.match(/<div class="(Element.*?)"/);
+				if (m) {
+					m[1] = m[1].replace(/ ondemand$/,'');
+
+					if ($('div.'+m[1]).length <1) {
+						$('div[id="procedureSpecificElements"]').append(html);
+						$('div.'+m[1]).slideToggle('fast');
+					}
 				}
 			}
 		}

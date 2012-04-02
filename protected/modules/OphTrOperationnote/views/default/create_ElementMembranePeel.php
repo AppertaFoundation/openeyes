@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="<?php echo $element->elementType->class_name?>"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
+<div class="<?php echo $element->elementType->class_name?><?php if (@$ondemand){?> ondemand<?php }?>">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 	<?php echo $form->radioBoolean($element, 'membrane_blue')?>
