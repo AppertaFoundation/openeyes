@@ -73,5 +73,4 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		return false;
 	}
 }
-
 <?php echo '?>';?>

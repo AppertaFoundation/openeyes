@@ -57,7 +57,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			if($file!==$moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php') {
 					if (preg_match("/\/migrations\//", $file)) {
-						$migrationid = gmdate('ymd_His');
+						# $matches = Array();
+						if (file_exists($modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$modulePath.'/migrations/'))) {
+							// migration file exists, so overwrite it rather than creating a new timestamped file
+							$migrationid = $matches[1] . '_' . $matches[2];
+						} else {
+							$migrationid = gmdate('ymd_His');
+						}
 						$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', $destination_file);
 						$content=$this->renderMigrations($file, $migrationid);
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
@@ -75,15 +81,22 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				} else if(basename($file)==='.yii') {
 					$file=dirname($file);
 					$content=null;
-					// $this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 				} else {
 					$content=file_get_contents($file);
 					$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
-					// $this->files[]=new CCodeFile($modulePath.substr($file,strlen($templatePath)), $content);
 				}
-				// $this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 			}
 		}
+	}	
+
+	function regExpFile($regExp, $dir) {
+		$open = opendir($dir); $matches = Array();
+		while( ($file = readdir($open)) !== false ) {
+			if ( preg_match($regExp, $file, $matches) ) {
+				return $matches;
+			}
+		}
+		return false;
 	}
 
 	public function getElementsFromPost() {

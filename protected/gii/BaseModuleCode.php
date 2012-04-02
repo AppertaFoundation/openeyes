@@ -38,8 +38,13 @@ return array(
     ......
 );
 EOD;
-
-		return $output.highlight_string($code,true);
+		$output2=<<<EOD
+<p>You will also need to add entries to the event_type and element_type tables, create tables for each element type, and any additional tables you may require. A migration to do this has been created for you which you can run using:</p>
+EOD;
+		$code2=<<<EOD
+./yiic migrate --migrationPath=application.modules.$this->moduleID.migrations
+EOD;
+		return $output.highlight_string($code,true).$output2.highlight_string($code2,true);
 	}
 
 	public function prepare()
