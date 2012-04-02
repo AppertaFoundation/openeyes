@@ -1,5 +1,5 @@
 					<div class="eventDetail"<?php if ($div_style) {?> style="<?php echo $div_style?>"<?php }?>>
-						<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
+						<div class="label<?php if ($layout) { echo '-'.$layout; }?>"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
 						<div class="data">
 							<textarea rows="<?php echo $rows?>" cols="<?php echo $cols?>" name="<?php echo get_class($element)?>[<?php echo $field?>]" id="<?php echo get_class($element)?>_<?php echo $field?>"><?php echo strip_tags($element->$field)?></textarea>
 							<?php if ($button) {?>

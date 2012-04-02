@@ -22,3 +22,20 @@ $(document).ready(function(){
 		return false;
 	});
 });
+
+function selectSort(a, b) {		 
+		if (a.innerHTML == rootItem) {
+				return -1;		
+		}
+		else if (b.innerHTML == rootItem) {
+				return 1;  
+		}				
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+};
+
+var rootItem = null;
+
+function sort_selectbox(element) {
+	rootItem = $('#'+element.attr('id')+' option:first').text();
+	$('#'+element.attr('id')+' option').sort(selectSort).appendTo('#'+element.attr('id'));
+}

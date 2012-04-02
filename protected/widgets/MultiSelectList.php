@@ -17,8 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DropDownList extends BaseCWidget {
-	public $data;
+class MultiSelectList extends BaseCWidget {
+	public $fields;
 	public $htmlOptions;
+	public $options = array();
+
+	public function run() {
+		if (isset($this->htmlOptions['label'])) {
+			$this->options[''] = '- '.$this->htmlOptions['label'].' -';
+		} else {
+			$this->options[''] = '- Please select -';
+		}
+
+		foreach ($this->fields as $field) {
+			$this->options[$field] = $this->element->getAttributeLabel($field);
+		}
+
+		asort($this->options);
+
+		parent::run();
+	}
 }
 ?>
