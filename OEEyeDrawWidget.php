@@ -182,6 +182,13 @@ class OEEyeDrawWidget extends CWidget
 	private $isEditable;
 	
 	/**
+	 * Optional inline styling for the canvas element
+	 * @var string
+	 */
+
+	public $canvasStyle;
+
+	/**
 	 * Initializes the widget.
 	 * This method registers all needed client scripts and renders the EyeDraw content
 	 */
