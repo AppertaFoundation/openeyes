@@ -46,30 +46,22 @@ class BookingService
 			$firmSql = "f.firm_id = $firmId";
 		}
 
-		$sql = "SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
+		$sql = "
+			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s`
-			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			JOIN `theatre` `t` ON s.theatre_id = t.id
-			JOIN `booking` `a` ON s.id = a.session_id
-			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
+			LEFT JOIN `booking` `a` ON s.id = a.session_id
+			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
-				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
-				CAST('" . $monthEnd . "' AS DATE) AND $firmSql
+				s.date BETWEEN CAST('$startDate' AS DATE) AND
+				CAST('$monthEnd' AS DATE) AND $firmSql
 			GROUP BY s.id
-		UNION
-			SELECT s.*, TIMEDIFF(s.end_time, s.start_time) AS session_duration,
-				0 AS bookings, 0 AS bookings_duration
-			FROM `session` `s`
-			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
-			JOIN `theatre` `t` ON s.theatre_id = t.id
-			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
-				s.id NOT IN (SELECT DISTINCT (session_id) FROM booking) AND
-				s.date BETWEEN CAST('" . $startDate . "' AS DATE) AND
-				CAST('" . $monthEnd . "' AS DATE) AND $firmSql
-			ORDER BY WEEKDAY(DATE) ASC";
-
+			ORDER BY WEEKDAY(DATE) ASC
+		";
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 
 		return $sessions;
@@ -102,27 +94,17 @@ class BookingService
 				COUNT(a.id) AS bookings,
 				SUM(o.total_duration) AS bookings_duration
 			FROM `session` `s`
-			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			JOIN `theatre` `t` ON s.theatre_id = t.id
-			JOIN `booking` `a` ON s.id = a.session_id
-			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
+			LEFT JOIN `booking` `a` ON s.id = a.session_id
+			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `event`.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
-				AND s.date = '" . $date . "' AND $firmSql
+				AND s.date = '$date' AND $firmSql
+				AND `e`.hidden = 0
 			GROUP BY s.id
-			
-			UNION
-			
-			SELECT t.*, s.start_time, s.end_time, s.id AS session_id,
-				s.consultant, s.anaesthetist, s.paediatric, s.general_anaesthetic,
-				TIMEDIFF(s.end_time, s.start_time) AS session_duration,
-				0 AS bookings, 0 AS bookings_duration
-			FROM `session` `s`
-			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
-			JOIN `theatre` `t` ON s.theatre_id = t.id
-			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
-				AND s.date = '" . $date . "' AND $firmSql
-				AND s.id NOT IN (SELECT DISTINCT (session_id) FROM booking)";
-
+			ORDER BY s.start_time
+		";
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 
 		return $sessions;
@@ -143,9 +125,11 @@ class BookingService
 			FROM `session` `s`
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
+			JOIN `event` `e` ON `o`.event_id = `event`.id
 			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
-			WHERE s.id = '" . $sessionId . "'";
+			WHERE s.id = '" . $sessionId . "'
+			AND `e`.hidden = 0";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 
@@ -153,7 +137,7 @@ class BookingService
 	}
 
 	/**
-	 * Get the date of the next sessionm for the firm
+	 * Get the date of the next session for the firm
 	 *
 	 * @param int $firmId
 	 * @return string
@@ -228,6 +212,8 @@ class BookingService
 				$whereSql .= ' AND w.id = :wardId';
 				$whereParams[':wardId'] = $wardId;
 			}
+
+			$whereSql .= ' AND e.hidden = 0';
 
 			$command = Yii::app()->db->createCommand()
 				// TODO: References to sequences need to be removed when possible

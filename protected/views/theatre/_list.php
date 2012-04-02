@@ -81,6 +81,10 @@ if (empty($theatres)) {?>
 <?php
 					}
 ?>
+				<div class="infoBox" id="infoBox_<?php echo $session['sessionId']?>" style="display: none;">
+					<strong>Session updated!</strong>
+				</div>
+
 <h3 class="sessionDetails"><span class="date"><strong><?php echo date('d M',$timestamp)?></strong> <?php echo date('Y',$timestamp)?></span> - <strong><span class="day"><?php echo date('l',$timestamp)?></span>, <span class="time"><?php echo substr($session['startTime'], 0, 5)?> - <?php echo substr($session['endTime'], 0, 5)?></span></strong> for <?php echo !empty($session['firm_name']) ? $session['firm_name'] : 'Emergency List' ?> <?php echo !empty($session['specialty_name']) ? 'for (' . $session['specialty_name'] . ')' : '' ?> - <strong><?php echo $name?></strong></h3>
 				<div class="display_actions" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
 					<img id="loader_<?php echo $session['sessionId']?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 5px; margin-bottom: 4px; display: none;" />
@@ -103,7 +107,7 @@ if (empty($theatres)) {?>
 							<input type="hidden" id="paediatric_<?php echo $session['sessionId']?>" name="paediatric_<?php echo $session['sessionId']?>" value="<?php if ($session['paediatric']){ echo '1';} else { echo '0';}?>" />
 							<input type="hidden" id="anaesthetic_<?php echo $session['sessionId']?>" name="anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['anaesthetist']){ echo '1';} else { echo '0';}?>" />
 							<input type="hidden" id="available_<?php echo $session['sessionId']?>" name="available_<?php echo $session['sessionId']?>" value="<?php if ($session['status'] == 0){ echo '1';} else { echo '0';}?>" />
-							<input type="hidden" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['general_anaesthetic']) { echo '1';} else { echo '0';}?>" />
+							<input type="hidden" id="general_anaesthetic_<?php echo $session['sessionId']?>" name="general_anaesthetic_<?php echo $session['sessionId']?>" value="<?php if ($session['general_anaesthetic']){ echo '1';} else { echo '0';}?>" />
 						<?php }?>
 						<div class="sessionComments" style="display:block; width:205px;">
 							<form>
@@ -169,6 +173,8 @@ if (empty($theatres)) {?>
 <img src="/img/_elements/icons/alerts/female.png" alt="female" title="female" width="17" height="17" />
 <?php
 					}
+
+					?><img src="/img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed"<?php if (!$session['confirmed']) {?> style="display: none;"<?php }?>><?php
 
 					if (!empty($session['operationComments']) && preg_match('/\w/', $session['operationComments'])) {
 							?><img src="/img/_elements/icons/alerts/comment.png" alt="<?php echo htmlentities($session['operationComments']) ?>" title="<?php echo htmlentities($session['operationComments']) ?>" width="17" height="17" />
@@ -368,6 +374,8 @@ if (empty($theatres)) {?>
 
 	$('a.edit-sessions').die('click').live('click',function() {
 		cancel_edit();
+
+		$('div.infoBox').hide();
 
 		selected_tbody_id = $(this).attr('id').replace(/^edit-sessions_/,'');
 

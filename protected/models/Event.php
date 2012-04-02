@@ -52,6 +52,17 @@ class Event extends BaseActiveRecord
 	}
 
 	/**
+	 * Sets default scope for events such that we never pull back any rows that have hidden set to 1
+	 * @return array of mandatory conditions
+	 */
+	
+	public function defaultScope() {
+		return array(
+			'condition' => 'hidden=0'
+		);
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()

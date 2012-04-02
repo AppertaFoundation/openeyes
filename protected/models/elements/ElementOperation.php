@@ -1430,10 +1430,16 @@ class ElementOperation extends BaseElement
 		$cancel->cancellation_comment = $comment;
 		$this->status = self::STATUS_CANCELLED;
 		if(!$cancel->save()) {
-			throw new CException('Unable to cancel operation: '.print_r($cancel->getErrors(), true));
+			return array(
+				'result' => false,
+				'errors' => $cancel->getErrors()
+			);
 		}
 		if(!$this->save()) {
-			throw new CException('Unable to cancel operation: '.print_r($this->getErrors(), true));
+			return array(
+				'result' => false,
+				'errors' => $this->getErrors()
+			);
 		}
 		OELog::log("Operation cancelled: $this->id");
 			
@@ -1456,7 +1462,10 @@ class ElementOperation extends BaseElement
 			$cancellation->cancelled_reason_id = $reason_id;
 			$cancellation->cancellation_comment = $comment;
 			if (!$cancellation->save()) {
-				throw new CException('Unable to cancel booking: '.print_r($cancellation->getErrors(), true));
+				return array(
+					'result' => false,
+					'errors' => $cancellation->getErrors()
+				);
 			}
 			OELog::log("Booking cancelled: $booking->id");
 			
@@ -1485,5 +1494,7 @@ class ElementOperation extends BaseElement
 				throw new CException('Unable to remove cancelled booking: '.print_r($booking->getErrors(), true));
 			}
 		}
+
+		return array('result'=>true);
 	}
 }

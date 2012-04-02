@@ -122,6 +122,8 @@ class WaitingListService
 			AND
 				eo.status = ' . ElementOperation::STATUS_PENDING . '
 			' . $whereSql . '
+			AND
+				ev.hidden = 0
 			GROUP BY
 				opa.operation_id
 		UNION
@@ -164,6 +166,8 @@ class WaitingListService
 			AND
 				eo.status = ' . ElementOperation::STATUS_NEEDS_RESCHEDULING . '
 			' . $whereSql2 . '
+			AND
+				ev.hidden = 0
 			GROUP BY
 				opa.operation_id
 			ORDER BY decision_date ASC

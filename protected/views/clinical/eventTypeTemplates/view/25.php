@@ -270,7 +270,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 			$.ajax({
 				url: '/booking/cancelOperation',
 				type: "GET",
-				data: {'operation': <?php echo $operation->id?>},
+				data: {'operation_id': <?php echo $operation->id?>},
 				success: function(data) {
 					$('#event_content').html(data);
 					$('div.action_options').hide();
