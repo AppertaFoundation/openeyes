@@ -29,3 +29,4 @@ $form->widget('application.widgets.ProcedureSelection',array(
 	'last' => true
 ));
 ?>
+<div id="procedureSpecificElements"></div>

@@ -10,7 +10,7 @@ function callbackAddProcedure(procedure_id) {
 					m[1] = m[1].replace(/ ondemand$/,'');
 
 					if ($('div.'+m[1]).length <1) {
-						$('div.elements').append(html);
+						$('#procedureSpecificElements').append(html);
 						$('div.'+m[1]).slideToggle('fast');
 					}
 				}
