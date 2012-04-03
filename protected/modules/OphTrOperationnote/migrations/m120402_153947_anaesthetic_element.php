@@ -48,6 +48,7 @@ class m120402_153947_anaesthetic_element extends CDbMigration
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id = :event_type_id and class_name=:class_name',array(':event_type_id' => $event_type['id'], ':class_name'=>'ElementAnaesthetic'))->queryRow();
 		$pl_element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id = :event_type_id and class_name=:class_name',array(':event_type_id' => $event_type['id'], ':class_name'=>'ElementProcedureList'))->queryRow();
 
+		$this->delete('element_type_anaesthetic_type','element_type_id='.$pl_element_type['id']);
 		$this->delete('element_type_anaesthetist','element_type_id='.$pl_element_type['id']);
 		$this->delete('element_type_anaesthetic_delivery','element_type_id='.$pl_element_type['id']);
 		$this->delete('element_type_anaesthetic_agent','element_type_id='.$pl_element_type['id']);
@@ -91,6 +92,18 @@ class m120402_153947_anaesthetic_element extends CDbMigration
 		$this->insert('element_type_anaesthetic_complication',array('element_type_id'=>$element_type['id'],'anaesthetic_complication_id'=>11,'display_order'=>11));
 
 		$this->dropColumn('et_ophtroperationnote_procedurelist','anaesthetic_comment');
+
+		$to = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'Topical'))->queryRow();
+		$lac = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LAC'))->queryRow();
+		$la = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LA'))->queryRow();
+		$las = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LAS'))->queryRow();
+		$ga = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'GA'))->queryRow();
+
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$to['id'],'display_order'=>1));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$la['id'],'display_order'=>2));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$lac['id'],'display_order'=>3));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$las['id'],'display_order'=>4));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$element_type['id'],'anaesthetic_type_id'=>$ga['id'],'display_order'=>5));
 	}
 
 	public function down()
@@ -103,6 +116,7 @@ class m120402_153947_anaesthetic_element extends CDbMigration
 		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id = :event_type_id and class_name=:class_name',array(':event_type_id' => $event_type['id'], ':class_name'=>'ElementAnaesthetic'))->queryRow();
 		$pl_element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id = :event_type_id and class_name=:class_name',array(':event_type_id' => $event_type['id'], ':class_name'=>'ElementProcedureList'))->queryRow();
 
+		$this->delete('element_type_anaesthetic_type','element_type_id='.$element_type['id']);
 		$this->delete('element_type_anaesthetist','element_type_id='.$element_type['id']);
 		$this->delete('element_type_anaesthetic_delivery','element_type_id='.$element_type['id']);
 		$this->delete('element_type_anaesthetic_agent','element_type_id='.$element_type['id']);
@@ -148,6 +162,18 @@ class m120402_153947_anaesthetic_element extends CDbMigration
 		$this->insert('element_type_anaesthetic_complication',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_complication_id'=>9,'display_order'=>9));
 		$this->insert('element_type_anaesthetic_complication',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_complication_id'=>10,'display_order'=>10));
 		$this->insert('element_type_anaesthetic_complication',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_complication_id'=>11,'display_order'=>11));
+
+		$to = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'Topical'))->queryRow();
+		$lac = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LAC'))->queryRow();
+		$la = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LA'))->queryRow();
+		$las = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'LAS'))->queryRow();
+		$ga = $this->dbConnection->createCommand()->select('id')->from('anaesthetic_type')->where('name=:name',array(':name'=>'GA'))->queryRow();
+
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_type_id'=>$to['id'],'display_order'=>1));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_type_id'=>$la['id'],'display_order'=>2));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_type_id'=>$lac['id'],'display_order'=>3));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_type_id'=>$las['id'],'display_order'=>4));
+		$this->insert('element_type_anaesthetic_type',array('element_type_id'=>$pl_element_type['id'],'anaesthetic_type_id'=>$ga['id'],'display_order'=>5));
 
 		$this->renameTable('et_ophtroperationnote_anaesthetic_anaesthetic_agent','et_ophtroperationnote_procedurelist_anaesthetic_agent');
 		$this->renameTable('et_ophtroperationnote_anaesthetic_anaesthetic_complication','et_ophtroperationnote_procedurelist_anaesthetic_complication');
