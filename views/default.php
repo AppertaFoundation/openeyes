@@ -1,5 +1,5 @@
 <div class="EyeDrawWidget">
-	<?php if ($isEditable) {?>
+	<?php if ($isEditable && $toolbar) {?>
 		<div class="ed_toolbar">
 			<button class="ed_img_button" disabled=true id="moveToFront<?php echo $idSuffix?>" title="Move to front" onclick="<?php echo $drawingName?>.moveToFront(); return false;">
 				<img src="<?php echo $imgPath?>moveToFront.gif" />

@@ -189,6 +189,13 @@ class OEEyeDrawWidget extends CWidget
 	public $canvasStyle;
 
 	/**
+	 * Optional boolean that determines whether to show the toolbar or not
+	 * @var boolean
+	 */
+	
+	public $toolbar = true;
+
+	/**
 	 * Initializes the widget.
 	 * This method registers all needed client scripts and renders the EyeDraw content
 	 */
