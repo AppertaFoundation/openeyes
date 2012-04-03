@@ -99,4 +99,63 @@ $(document).ready(function() {
 
 		return false;
 	});
+
+	$('input[name="ElementProcedureList\[eye_id\]"]').unbind('change').change(function() {
+
+		if (window.ed_drawing_edit_RCataract !== undefined && window.ed_drawing_edit_RCataract.modified == false) {
+			if ($(this).val() == 2) {
+				if (parseInt(ed_drawing_edit_RCataract.doodleArray[3].rotation * (180/Math.PI)) == -90) {
+					et_operationnote_hookDoodle = ed_drawing_edit_RCataract.doodleArray[3];
+					et_operationnote_hookTarget = 90;
+					et_operationnote_hookDirection = 0;
+					opnote_move_eyedraw_element_to_position();
+				}
+			} else if ($(this).val() == 1) {
+				if (parseInt(ed_drawing_edit_RCataract.doodleArray[3].rotation * (180/Math.PI)) == 90) {
+					et_operationnote_hookDoodle = ed_drawing_edit_RCataract.doodleArray[3];
+					et_operationnote_hookTarget = -90;
+					et_operationnote_hookDirection = 1;
+					opnote_move_eyedraw_element_to_position();
+				}
+			}
+		}
+	});
 });
+
+var et_operationnote_hookDoodle = null;
+var et_operationnote_hookTarget = 0;
+var et_operationnote_hookDirection = 0;
+
+function opnote_move_eyedraw_element_to_position() {
+	var target = et_operationnote_hookTarget;
+	var doodle = et_operationnote_hookDoodle;
+	var pos = parseInt(doodle.rotation * (180/Math.PI));
+
+	if (et_operationnote_hookDirection == 0) {
+		if (pos < target) {
+			pos += 10;
+			if (pos > target) {
+				doodle.rotation = target * (Math.PI/180);
+				ed_drawing_edit_RCataract.repaint();
+				ed_drawing_edit_RCataract.modified = false;
+			} else {
+				doodle.rotation = pos * (Math.PI/180);
+				ed_drawing_edit_RCataract.repaint();
+				setTimeout('opnote_move_eyedraw_element_to_position();', 20);
+			}
+		}
+	} else {
+		if (pos > target) {
+			pos -= 10;
+			if (pos < target) {
+				doodle.rotation = target * (Math.PI/180);
+				ed_drawing_edit_RCataract.repaint();
+				ed_drawing_edit_RCataract.modified = false;
+			} else {
+				doodle.rotation = pos * (Math.PI/180);
+				ed_drawing_edit_RCataract.repaint();
+				setTimeout('opnote_move_eyedraw_element_to_position();', 20);
+			}
+		}
+	}
+}
