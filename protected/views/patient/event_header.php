@@ -44,7 +44,7 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				<div class="colorband category_treatment"></div>
 				<!-- EVENT CONTENT HERE -->
 				<?php if ($module == 'OphTrOperation') {?>
-					<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
 				<?php } else {?>
-					<div id="event_content" class="watermarkBox fullWidthEvent" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
 				<?php }?>

@@ -18,10 +18,10 @@
  */
 ?>
 
-<div class="<?php echo $element->elementType->class_name?><?php if (@$ondemand){?> ondemand<?php }?>" style="background-color: #DAE6F1;">
+<div class="<?php echo $element->elementType->class_name?><?php if (@$ondemand){?> ondemand<?php }?>">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-	<div class="splitElement clearfix">
+	<div class="splitElement clearfix" style="background-color: #DAE6F1;">
 		<div class="left" style="width:65%;">
 			<?php
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
