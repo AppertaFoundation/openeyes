@@ -22,20 +22,17 @@
 
 <div class="view">
 
+<?php
+if (isset($element)) {
+	foreach ($element['fields'] as $field) {
+		?>
 	<div class="col1">
-		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); <?php echo '?>';?></div>
-		<div class="eventHighlight"><?php echo '<?php ';?> echo $element->anaesthetic_type->name <?php echo '?>';?></div>
+		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?></div>
+		<div class="eventHighlight"><?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?></div>
 	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('surgeon_id')); <?php echo '?>';?></div>
-		<div class="eventHighlight"><?php echo '<?php ';?> echo $element->surgeon->fullName; <?php echo '?>';?></div>
-	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('assistant_id')); <?php echo '?>';?></div>
-		<div class="eventHighlight"><?php echo '<?php ';?> echo $element->assistant->fullName; <?php echo '?>';?></div>
-	</div>
-
+		<?php
+	}
+}
+?>
 </div>
 

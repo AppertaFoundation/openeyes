@@ -1,5 +1,5 @@
 <?php
-class EventTypeModuleCode extends ModuleCode // CCodeModel
+class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 {
 	public $moduleID;
 	public $moduleName;
@@ -57,12 +57,16 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 			if($file!==$moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php') {
 					if (preg_match("/\/migrations\//", $file)) {
-						$content=$this->renderMigrations($file);
+						$migrationid = gmdate('ymd_His');
+						$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', $destination_file);
+						$content=$this->renderMigrations($file, $migrationid);
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
-						# FIXME: Loop through generating this file for each element type
-						$content=$this->render($file);
-						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+						foreach ($this->getElementsFromPost() as $element) {
+							$destination_file = preg_replace("/ELEMENTNAME|ELEMENTTYPENAME/", $element['class_name'], $file);
+							$params = array(); $params['element'] = $element; $content=$this->render($file, $params);
+							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+						}
 					} else {
 						$content=$this->render($file);
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
@@ -88,7 +92,7 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
 				$field = $matches[0]; $number = $matches[1]; $name = $value;
 				$elements[$number]['name'] = $value;
-				$elements[$number]['class_name'] = 'Element' . preg_replace("/ /", "", ucwords(strtolower($value)));
+				$elements[$number]['class_name'] = 'OEElement' . preg_replace("/ /", "", ucwords(strtolower($value)));
 				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
 				$elements[$number]['number'] = $number;
 
@@ -109,8 +113,8 @@ class EventTypeModuleCode extends ModuleCode // CCodeModel
 		return $elements;
 	}
 
-	public function renderMigrations($file) {
-		$params = array(); $params['elements'] = $this->getElementsFromPost();
+	public function renderMigrations($file, $migrationid) {
+		$params = array(); $params['elements'] = $this->getElementsFromPost(); $params['migrationid'] = $migrationid;
 		return $this->render($file, $params);
 	}
 
