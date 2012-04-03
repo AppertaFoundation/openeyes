@@ -60,7 +60,7 @@ if (isset($element)) {
 <?php
 		} elseif ($field['type'] == 'EyeDraw') {
 ?>
->---<?php echo '<?php '; ?>
+	<?php echo '<?php '; ?>
 		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
 			'identifier'=> 'Buckle',
 			'side'=>'R',
@@ -72,7 +72,7 @@ if (isset($element)) {
 			'onLoadedCommandArray'=>array(
 				array('addDoodle', array('BuckleOperation')),
 				array('deselectDoodles', array()),
-			),
+			)));
 <?php echo '?>'; ?>
 
 			<?php
