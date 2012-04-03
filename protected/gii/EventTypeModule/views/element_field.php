@@ -1,9 +1,9 @@
 <div class="element_field">
-	<label style="display: inline;">Field name: </label>
-	<label style="margin-left: 9.3em; display: inline;">Field label: </label>
+	<label style="display: inline;">Field label: </label>
+	<label style="margin-left: 9.3em; display: inline;">Field name: </label>
 	<br/>
-	<?php echo CHtml::textField('elementName'.$element_num.'FieldName'.$field_num,@$_POST['elementName'.$element_num.'FieldName'.$field_num],array('size'=>30)); ?> 
-	<?php echo CHtml::textField('elementName'.$element_num.'FieldLabel'.$field_num,@$_POST['elementName'.$element_num.'FieldLabel'.$field_num],array('size'=>35)); ?>
+	<?php echo CHtml::textField('elementName'.$element_num.'FieldLabel'.$field_num,@$_POST['elementName'.$element_num.'FieldLabel'.$field_num],array('size'=>30,'class'=>'fieldLabel')); ?>
+	<?php echo CHtml::textField('elementName'.$element_num.'FieldName'.$field_num,@$_POST['elementName'.$element_num.'FieldName'.$field_num],array('size'=>30, 'class'=>'fieldName')); ?> 
 
 	<select name="elementType<?php echo $element_num?>FieldType<?php echo $field_num?>" >
 		<option value="Textbox"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Textbox") {?> selected="selected"<?php }?>>Textbox</option>
