@@ -97,6 +97,11 @@ ED.handleRing =
 	Outer:1
 }
 
+/**
+ * Flag to indicate when the drawing has been modified
+ */
+ED.modified = false;
+
 /*
  * Chris Raettig's function for getting accurate mouse position in all browsers
  *
@@ -1176,6 +1181,14 @@ ED.Drawing.prototype.deselectDoodles = function()
 }
 
 /**
+ * Marks the doodle as 'unmodified' so we can catch an event when it gets modified by the user
+ */
+
+ED.Drawing.prototype.isReady = function() {
+	this.modified = false;
+}
+
+/**
  * Adds a doodle to the drawing
  *
  * @param {String} _className Classname of doodle
@@ -1661,6 +1674,10 @@ ED.Drawing.prototype.repaint = function()
         }
     }
     
+		if (!this.modified) {
+			this.modified = true;
+		}
+
     // Call to optional method to notify changes in doodle parametes
     if (typeof(this.parameterListener) != 'undefined') this.parameterListener();
 }

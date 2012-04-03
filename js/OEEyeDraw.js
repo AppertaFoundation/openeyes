@@ -85,6 +85,9 @@ function eyeDrawInit(_properties)
 	            window[_properties.drawingName][func](args);
 	        }
     	}
+			
+			// Mark the drawing unmodified
+			window[_properties.drawingName]["isReady"]();
     }
     
     // Detects changes in doodle parameters (eg from mouse dragging)
