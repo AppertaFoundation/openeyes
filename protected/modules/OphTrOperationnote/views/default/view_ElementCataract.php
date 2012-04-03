@@ -74,6 +74,22 @@
 				),
 			));
 			?>
+			<?php
+			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
+				'identifier'=> 'Position',
+				'side'=>'R',
+				'mode'=>'view',
+				'size'=>200,
+				'model'=>$element,
+				'attribute'=>'eyedraw2',
+				'doodleToolBarArray'=>array(),
+				'onLoadedCommandArray'=>array(
+					array('addDoodle', array('OperatingTable')),
+					array('addDoodle', array('Surgeon')),
+					array('deselectDoodles', array()),
+				),
+			));
+			?>
 		</div>
 		<div class="right" style="width:40%;">
 			<ul style="list-style-type: none; width:100%">

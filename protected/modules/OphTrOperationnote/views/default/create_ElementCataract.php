@@ -57,6 +57,24 @@
 				<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
 				<?php echo $form->multiSelectList($element, $element->complication_fields, array('label' => 'Complications'))?>
 				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
+				<?php
+				$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
+					'identifier'=> 'Position',
+					'toolbar' => false,
+					'side'=>'R',
+					'mode'=>'edit',
+					'size'=>200,
+					'model'=>$element,
+					'attribute'=>'eyedraw2',
+					'doodleToolBarArray'=>array(),
+					'onLoadedCommandArray'=>array(
+						array('addDoodle', array('OperatingTable')),
+						array('addDoodle', array('Surgeon')),
+						array('deselectDoodles', array()),
+					),
+					'canvasStyle' => 'background-color: #DAE6F1; margin-left: 135px;'
+				));
+				?>
 			</div>
 		</div>
 	</div>
