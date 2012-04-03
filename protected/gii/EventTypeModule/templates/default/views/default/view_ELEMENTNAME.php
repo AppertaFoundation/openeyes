@@ -26,10 +26,13 @@
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
 		?>
-	<div class="col1">
-		<div class="label"><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?></div>
-		<div class="eventHighlight"><?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?></div>
-	</div>
+
+<div class="view">
+	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
+	<br />
+</div>
+
 		<?php
 	}
 }

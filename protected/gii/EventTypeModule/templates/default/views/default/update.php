@@ -3,7 +3,7 @@
 	$this->header();
 <?php echo '?>'; ?>
 
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation_note.png) center left no-repeat;"><?php echo '<?php ';?> echo $this->event_type->name <?php echo '?>';?></h3>
+<h3 class="withEventIcon" style="background:transparent url(<?php echo '<?php '; ?>echo $this->imgPath<?php echo '?>';?>medium.png) center left no-repeat;"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h3>
 
 <div>
 	<?php echo '<?php ';?>
@@ -15,10 +15,10 @@
 		));
 	<?php echo '?>';?>
 
-		<?php echo '<?php ';?> $this->renderDefaultElements($this->action->id, $form); <?php echo '?>'; ?>
-		<?php echo '<?php ';?> $this->renderOptionalElements($this->action->id, $form); <?php echo '?>'; ?>
+	<?php echo '<?php ';?> $this->renderDefaultElements($this->action->id, $form); <?php echo '?>';?>
+	<?php echo '<?php ';?> $this->renderOptionalElements($this->action->id, $form); <?php echo '?>';?>
 
-		<?php echo '<?php ';?> $this->displayErrors($errors)?>
+	<?php echo '<?php ';?> $this->displayErrors($errors)<?php echo '?>';?>
 
 		<div class="cleartall"></div>
 		<div class="form_button">
@@ -26,7 +26,7 @@
 			<button type="submit" class="classy green venti" id="save" name="save"><span class="button-span button-span-green">Save</span></button>
 			<button type="submit" class="classy red venti" id="cancel" name="cancel"><span class="button-span button-span-red">Cancel</span></button>
 		</div>
-	<?php echo '<?php ';?> $this->endWidget(); <?php echo '?>'; ?>
+	<?php echo '<?php ';?> $this->endWidget(); <?php echo '?>';?>
 </div>
 
-<?php echo '<?php ';?> $this->footer(); <?php echo '?>'; ?>
+<?php echo '<?php ';?> $this->footer(); <?php echo '?>';?>

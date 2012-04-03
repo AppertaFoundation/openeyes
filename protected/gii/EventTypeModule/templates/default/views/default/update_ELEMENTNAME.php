@@ -1,4 +1,4 @@
-<?php
+<?php echo '<?php '; ?>
 /**
  * OpenEyes
  *
@@ -16,10 +16,67 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+<?php echo ' ?>'; ?>
+
+<h4 class="elementTypeName"><?php echo '<?php '; ?> echo $element->elementType->name; <?php echo '?>'; ?></h4>
+
+<?php
+if (isset($element)) {
+	foreach ($element['fields'] as $field) {
+		if ($field['type'] == 'Textbox') {
+			?>
+	<?php echo '<?php '; ?>echo $form->textField($element, '<?php echo $field['name']; ?>', array('layout' => 'horizontal', 'size' => '10')); <?php echo '?>' ;?>
+
+<?php
+		} elseif ($field['type'] == 'Textarea') {
 ?>
+	<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']; ?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
 
-<h4 class="elementTypeName"><?php echo '<?php ';?> echo $element->elementType->name <?php echo '?>'; ?></h4>
+<?php
+		} elseif ($field['type'] == 'Date picker') {
+?>
+	(Date picker goes here)
 
-<?php echo '<?php ';?> echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');<?php echo '?>'; ?>
-<?php echo '<?php ';?> echo $form->dropDownList($element, 'surgeon_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); <?php echo '?>';?>
-<?php echo '<?php ';?> echo $form->dropDownList($element, 'assistant_id', BaseEventTypeCHtml::listData(Contact::model()->findAll(), 'id', 'FullName')); <?php echo '?>';?>
+<?php
+		} elseif ($field['type'] == 'Dropdown list') {
+?>
+	<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']; ?>', CHtml::listData(Theatre::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>' ;?>
+
+<?php
+		} elseif ($field['type'] == 'Checkboxes') {
+?>
+	(Checkboxes go here)
+
+<?php
+		} elseif ($field['type'] == 'Radio buttons') {
+?>
+	(Radio buttons go here)
+
+<?php
+		} elseif ($field['type'] == 'Boolean') {
+?>
+	<?php echo '<?php '; ?>echo $form->radioBoolean($element, '<?php echo $field['name']; ?>'); <?php echo '?>' ;?>
+
+<?php
+		} elseif ($field['type'] == 'EyeDraw') {
+?>
+>---<?php echo '<?php '; ?>
+		$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
+			'identifier'=> 'Buckle',
+			'side'=>'R',
+			'mode'=>'edit',
+			'size'=>300,
+			'model'=>$element,
+			'attribute'=>'eyedraw',
+			'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
+			'onLoadedCommandArray'=>array(
+				array('addDoodle', array('BuckleOperation')),
+				array('deselectDoodles', array()),
+			),
+<?php echo '?>'; ?>
+
+			<?php
+		}
+	}
+}
+?>

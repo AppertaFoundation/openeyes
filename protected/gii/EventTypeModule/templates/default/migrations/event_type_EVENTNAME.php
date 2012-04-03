@@ -90,7 +90,7 @@ $this->dropTable('<?php echo $element['table_name']; ?>');
 
 		// echo "m000000_000001_event_type_<?php echo $this->moduleID; ?> does not support migration down.\n";
 		// return false;
-		echo "If you are removing this module you may also need to remove references to it in your configuration files";
+		echo "If you are removing this module you may also need to remove references to it in your configuration files\n";
 		return true;
 	}
 }
