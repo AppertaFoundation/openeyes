@@ -3,7 +3,7 @@
 	$this->header();
 <?php echo '?>'; ?>
 
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation_note.png) center left no-repeat;"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h3>
+<h3 class="withEventIcon" style="background:transparent url(<?php echo '<?php '; ?>echo $this->imgPath<?php echo '?>';?>medium.png) center left no-repeat;"><?php echo '<?php ';?>echo $this->event_type->name <?php echo '?>';?></h3>
 
 <div>
 	<?php echo '<?php ';?>
