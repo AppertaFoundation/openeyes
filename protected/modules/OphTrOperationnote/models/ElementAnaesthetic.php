@@ -23,14 +23,13 @@
  * The followings are the available columns in table 'element_operation':
  * @property string $id
  * @property integer $event_id
- * @property integer $surgeon_id
  * @property integer $assistant_id
  * @property integer $anaesthetic_type
  *
  * The followings are the available model relations:
  * @property Event $event
  */
-class ElementProcedureList extends BaseEventTypeElement
+class ElementAnaesthetic extends BaseEventTypeElement
 {
 	public $service;
 
@@ -48,7 +47,7 @@ class ElementProcedureList extends BaseEventTypeElement
 	 */
 	public function tableName()
 	{
-		return 'et_ophtroperationnote_procedurelist';
+		return 'et_ophtroperationnote_anaesthetic';
 	}
 
 	/**
@@ -59,11 +58,11 @@ class ElementProcedureList extends BaseEventTypeElement
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, eye_id', 'safe'),
-			array('eye_id', 'required'),
+			array('event_id, anaesthetist_id, anaesthetic_type_id, anaesthetic_delivery_id, anaesthetic_comment', 'safe'),
+			array('anaesthetic_type_id, anaesthetist_id, anaesthetic_delivery_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, eye_id', 'safe', 'on' => 'search'),
+			array('id, event_id, anaesthetist_id, anaesthetic_type_id, anaesthetic_delivery_id, anaesthetic_comment', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -81,8 +80,8 @@ class ElementProcedureList extends BaseEventTypeElement
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
-			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-			'procedures' => array(self::MANY_MANY, 'Procedure', 'et_ophtroperationnote_procedurelist_procedure_assignment(procedurelist_id, proc_id)', 'order' => 'display_order ASC'),
+			'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
+			'anaesthetic_delivery' => array(self::BELONGS_TO, 'AnaestheticDelivery', 'anaesthetic_delivery_id'),
 		);
 	}
 
@@ -94,7 +93,9 @@ class ElementProcedureList extends BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'eye_id' => 'Eye',
+			'anaesthetic_type_id' => 'Anaesthetic type',
+			'anaesthetist_id' => 'Given by',
+			'anaesthetic_delivery_id' => 'Delivery'
 		);
 	}
 
@@ -111,42 +112,19 @@ class ElementProcedureList extends BaseEventTypeElement
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-		$criteria->compare('eye_id', $this->eye_id, true);
-
+		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
+		$criteria->compare('anaesthetist_id', $this->anaesthetist_id);
+		$criteria->compare('anaesthetic_type_id', $this->anaesthetic_type_id);
+		
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));
 	}
 
-	protected function afterSave() {
-		$order = 1;
-
-		if (!empty($_POST['Procedures'])) {
-			// first wipe out any existing procedures so we start from scratch
-			ProcedureListProcedureAssignment::model()->deleteAll('procedurelist_id = :id', array(':id' => $this->id));
-
-			foreach ($_POST['Procedures'] as $id) {
-				$procedure = new ProcedureListProcedureAssignment;
-				$procedure->procedurelist_id = $this->id;
-				$procedure->proc_id = $id;
-				$procedure->display_order = $order;
-
-				if (!$procedure->save()) {
-					throw new Exception('Unable to save procedure');
-				}
-
-				$order++;
-			}
-		}
-
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate() {
-		if (!empty($_POST) && (!isset($_POST['Procedures']) || empty($_POST['Procedures']))) {
-			$this->addError('no_field', 'At least one procedure must be entered');
-		}
-
-		return parent::beforeValidate();
+	/**
+	* Set default values for forms on create
+	*/
+	public function setDefaultOptions() {
+		$this->anaesthetic_type_id = 1;
 	}
 }

@@ -20,12 +20,24 @@
 
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->selected_eye);?>
-<?php
-$form->widget('application.widgets.ProcedureSelection',array(
-	'element' => $element,
-	'selected_procedures' => $this->selected_procedures,
-	'newRecord' => true,
-	'last' => true
-));
-?>
+<div class="view">
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->anaesthetic_type->name ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->anaesthetist->name; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->anaesthetic_delivery->name ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment')); ?></div>
+		<div class="eventHighlight"><?php echo $element->anaesthetic_comment?></div>
+	</div>
+</div>

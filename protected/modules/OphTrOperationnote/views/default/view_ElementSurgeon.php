@@ -20,12 +20,19 @@
 
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->selected_eye);?>
-<?php
-$form->widget('application.widgets.ProcedureSelection',array(
-	'element' => $element,
-	'selected_procedures' => $this->selected_procedures,
-	'newRecord' => true,
-	'last' => true
-));
-?>
+<div class="view">
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('surgeon_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->surgeon->fullName; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('assistant_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->assistant ? $element->assistant->fullName : 'None'; ?></div>
+	</div>
+
+	<div class="col1">
+		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('supervising_surgeon_id')); ?></div>
+		<div class="eventHighlight"><?php echo $element->supervising_surgeon ? $element->supervising_surgeon->fullName : 'None'; ?></div>
+	</div>
+</div>
