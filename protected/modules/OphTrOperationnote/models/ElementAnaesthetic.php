@@ -93,9 +93,10 @@ class ElementAnaesthetic extends BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
-			'anaesthetic_type_id' => 'Anaesthetic type',
+			'anaesthetic_type_id' => 'Type',
 			'anaesthetist_id' => 'Given by',
-			'anaesthetic_delivery_id' => 'Delivery'
+			'anaesthetic_delivery_id' => 'Delivery',
+			'anaesthetic_comment' => 'Comments',
 		);
 	}
 

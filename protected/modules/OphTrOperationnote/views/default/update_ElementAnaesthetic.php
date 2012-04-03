@@ -22,5 +22,5 @@
 
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
 <?php echo $form->radioButtons($element, 'anaesthetist_id', 'anaesthetist')?>
-<?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery')?>
-<?php echo $form->textArea($element, 'anaesthetic_comment', array('rows' => 6, 'cols' => 80))?>
+<?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery',false,4)?>
+<?php echo $form->textArea($element, 'anaesthetic_comment', array('rows' => 4, 'cols' => 60))?>

@@ -40,7 +40,7 @@
 					array('addDoodle', array('PCIOL')),
 					array('deselectDoodles', array()),
 				),
-				'canvasStyle' => 'background-color: #fff; border: 1px solid #000;' // margin-left: 9px;'
+				'canvasStyle' => 'background-color: #fff; border: 1px solid #000; margin-left: 9px;'
 			));
 			?>
 			<div class="halfHeight">
