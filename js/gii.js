@@ -1,4 +1,16 @@
 $(document).ready(function() {
+	$(".fieldLabel").live('focusout',function () {
+		// alert("hello");
+		// prepopulate the field name if it is currently empty
+		var myid = $(this).attr('id');
+		var myval = $(this).val();
+		var myvalfield = myval.toLowerCase().replace(/ /g, "_");
+		var nameid = myid.replace("Label","Name");
+		nameval = $('#'+nameid).val();
+		if (nameval.length < 1) {
+			$('#'+nameid).val(myvalfield);
+		}
+	});
 	$('.add_element_field').live('click',function() {
 		var div = $(this).parent().children('div.element_fields');
 
@@ -21,7 +33,7 @@ $(document).ready(function() {
 			'type': 'GET',
 			'success': function(data) {
 				div.append(data);
-				$('#elementName'+element_num+'FieldName'+field_num).focus();
+				$('#elementName'+element_num+'FieldLabel'+field_num).focus();
 				return false;
 			}
 		});
