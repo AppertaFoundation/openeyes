@@ -1182,7 +1182,7 @@ ED. OperatingTable = function(_drawing, _originX, _originY, _radius, _apexX, _ap
 	ED.Doodle.call(this, _drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX, _scaleY, _arc, _rotation, _order);
 	
 	// Set classname
-	this.className = " OperatingTable";
+	this.className = "OperatingTable";
 }
 
 /**
