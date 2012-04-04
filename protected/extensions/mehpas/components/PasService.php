@@ -396,13 +396,6 @@ class PasService {
 			if($assignment->isStale()) {
 				$this->updatePatientFromPas($patient, $assignment);
 			}
-		} else if($patient = Patient::model()->findByAttributes(array('hos_num' => $hos_num))) {
-			// Patient is in OpenEyes, but doesn't have an assignment
-			// FIXME: Ideally this step should not be necessary, and could be removed if we prefill the assignment table when the module is setup
-			$assignment = new PasAssignment();
-			$assignment->external_id = $rm_patient_no;
-			$assignment->external_type = 'PAS_Patient';
-			$this->updatePatientFromPas($patient, $assignment);
 		} else {
 			// Patient is not in OpenEyes
 			$patient = new Patient();

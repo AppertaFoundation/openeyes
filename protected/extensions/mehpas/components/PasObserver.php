@@ -10,27 +10,6 @@ class PasObserver {
 		if ($pas_service->available) {
 			$patient = $params['patient'];
 			$assignment = PasAssignment::model()->findByInternal('Patient', $patient->id);
-			if(!$assignment) {
-				Yii::log('Creating new patient assignment', 'trace');
-				// Assignment doesn't exist yet, try to find PAS patient using hos_num
-				$hos_num = sprintf('%07d',$patient->hos_num);
-				$num_id_type = substr($hos_num,0,1);
-				$number_id = substr($hos_num,1,6);
-				$pas_patient_number = PAS_PatientNumber::model()->find('num_id_type = :num_id_type AND number_id = :number_id', array(
-						':num_id_type' => $num_id_type,
-						':number_id' => $number_id
-				));
-				if($pas_patient_number) {
-					$assignment = new PasAssignment();
-					$assignment->internal_id = $patient->id;
-					$assignment->internal_type = 'Patient';
-					$assignment->external_id = $pas_patient_number->RM_PATIENT_NO;
-					$assignment->external_type = 'PAS_Patient';
-				} else {
-					throw new CException('Cannot map patient');
-					// @TODO Push an alert that the patient cannot be mapped
-				}
-			}
 			if($assignment->isStale()) {
 				Yii::log('Patient details stale', 'trace');
 				$pas_service->updatePatientFromPas($patient, $assignment);
