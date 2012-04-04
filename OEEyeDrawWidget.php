@@ -196,6 +196,13 @@ class OEEyeDrawWidget extends CWidget
 	public $toolbar = true;
 
 	/**
+	 * Whether to focus the canvas element after rendering it on the page
+	 * @var boolean
+	 */
+	
+	public $focus = false;
+
+	/**
 	 * Initializes the widget.
 	 * This method registers all needed client scripts and renders the EyeDraw content
 	 */

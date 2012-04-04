@@ -49,7 +49,9 @@ function eyeDrawInit(_properties)
     window[_properties.drawingName].preLoadImagesFrom(_properties.graphicsPath);
     
     // Set focus to the canvas element
-    canvas.focus();
+		if (_properties.focus) {
+			canvas.focus();
+		}
     
     // Wait for the drawing object to be ready before adding objects or other commands
     window[_properties.drawingName].onLoaded = function()
