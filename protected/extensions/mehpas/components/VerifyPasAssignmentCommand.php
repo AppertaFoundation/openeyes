@@ -49,7 +49,12 @@ class VerifyPasAssignmentCommand extends CConsoleCommand {
 
 		echo "There are ".count($patients)." patient assignments, processing...\n";
 
+		$count = 0;
 		foreach($patients as $patient) {
+			$count++;
+			if($count % 100 == 0) {
+				echo ".";
+			}
 			$rm_patient_no = $patient['external_id'];
 			$pas_patient = PAS_Patient::model()->findAll('rm_patient_no = :rm_patient_no', array(
 					':rm_patient_no' => $rm_patient_no,
@@ -68,7 +73,7 @@ class VerifyPasAssignmentCommand extends CConsoleCommand {
 
 		}
 
-		echo "Done.\n";
+		echo "\nDone.\n";
 	}
 
 }
