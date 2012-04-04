@@ -27,7 +27,7 @@ $form->widget('application.widgets.ProcedureSelection',array(
 	'selected_procedures' => $this->selected_procedures,
 	'newRecord' => true,
 	'last' => true,
-	'hidden' => empty($_POST)
+	'hidden' => !@$_POST['ElementProcedureList']['eye_id']
 ));
 ?>
 <div id="procedureSpecificElements"></div>
