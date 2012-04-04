@@ -50,34 +50,39 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 
 		echo "There are ".count($patients)." without an assignment, processing...\n";
 
-		// Process patients in batches of 100 to avoid excessive queries on PAS
-		$patient_ids = array();
-		$count = 0;
+		$updated = 0;
 		foreach($patients as $patient) {
-			$patient_ids[sprintf('%07d',$patient['hos_num'])] = $patient['id'];
-			$count++;
-			if($count % 100 == 0) {
-				echo "Block $count\n";
-				$hos_nums = array_keys($patient_ids);
-				$hos_num_string = "'" . implode("','", $hos_nums) . "'";
-				$patient_nos = Yii::app()->db_pas->createCommand()
-				->select('CONCAT(num_id_type,number_id) AS hos_num, rm_patient_no')
-				->from('SILVER.NUMBER_IDS')
-				->where("CONCAT(num_id_type,number_id) IN ($hos_num_string)")
-				->queryAll();
-				foreach($patient_nos as $patient_no) {
-					$assignment = new PasAssignment();
-					$assignment->external_id = $patient_no['rm_patient_no'];
-					$assignment->external_type = 'PAS_Patient';
-					$assignment->internal_id = $patient_ids[$patient_no['hos_num']];
-					$assignment->internal_type = 'Patient';
-					$assignement->save();
-				}
-				$patient_ids = array();
+
+			// Find rm_patient_no
+			$hos_num = sprintf('%07d',$patient['hos_num']);
+			$number_id = substr($hos_num, -6);
+			$num_id_type = substr($hos_num, 0, 1);
+			$patient_no = PAS_PatientNumber::model()->findAll('num_id_type = :num_id_type AND number_id = :number_id', array(
+					':num_id_type' => $num_id_type,
+					':number_id' => $number_id,
+			));
+				
+			if(count($patient_no) == 1) {
+				// Found a single match
+				Yii::log("Found match in PAS for hos_num $hos_num, creating assignment and updating patient", 'trace');
+				$assignment = new PasAssignment();
+				$assignment->external_id = $patient_no[0]->RM_PATIENT_NO;
+				$assignment->external_type = 'PAS_Patient';
+				$assignment->internal_id = $patient['id'];
+				$assignment->internal_type = 'Patient';
+				$assignment->save();
+				$updated++;
+			} else if(count($patient_no) > 1) {
+				// Found more than one match
+				echo "Found more than one match in PAS for hos_num $hos_num, cannot create assignment\n";
+			} else {
+				// No match
+				echo "Cannot find match in PAS for hos_num $hos_num, cannot create assignment\n";
 			}
+
 		}
 
-		echo "Created $count patient assignments\n";
+		echo "Created $updated patient assignments\n";
 		echo "Done.\n";
 	}
 
