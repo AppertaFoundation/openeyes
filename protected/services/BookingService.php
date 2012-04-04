@@ -213,7 +213,7 @@ class BookingService
 				$whereParams[':wardId'] = $wardId;
 			}
 
-			$whereSql .= ' AND e.hidden = 0';
+			$whereSql .= ' AND ( e.hidden = 0 OR e.hidden is null ) ';
 
 			$command = Yii::app()->db->createCommand()
 				// TODO: References to sequences need to be removed when possible
