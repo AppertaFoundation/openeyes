@@ -16,8 +16,27 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+class DropDownListRow extends BaseCWidget {
+	public $fields;
+	public $datas;
+	public $htmlOptions;
+	public $values = array();
+
+	public function init() {
+		foreach ($this->fields as $i => $field) {
+			if (empty($_POST)) {
+				if (isset($this->element->$field)) {
+					$this->values[$i] = $this->element->$field;
+				}
+			} else {
+				$this->values[$i] = @$_POST[get_class($this->element)][$field];
+			}
+
+			if ($this->element->hasAttribute($field) && isset($this->values[$i])) {
+				$this->element->{$field} = $this->values[$i];
+			}
+		}
+	}
+}
 ?>
-
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-<?php echo $form->dropDownListRow($element, array('surgeon_id','assistant_id','supervising_surgeon_id'),array(CHtml::listData($this->surgeons, 'id', 'FullName'),CHtml::listData($this->surgeons, 'id', 'FullName'),CHtml::listData($this->surgeons, 'id', 'FullName')),array(array('empty'=>'- Please select -'),array('empty'=>'- None -'),array('empty'=>'- None -')))?>

@@ -20,6 +20,4 @@
 
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-<?php echo $form->dropDownList($element, 'surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- Please select -')); ?>
-<?php echo $form->dropDownList($element, 'assistant_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
-<?php echo $form->dropDownList($element, 'supervising_surgeon_id', CHtml::listData($this->surgeons, 'id', 'FullName'),array('empty'=>'- None -')); ?>
+<?php echo $form->dropDownListRow($element, array('surgeon_id','assistant_id','supervising_surgeon_id'),array(CHtml::listData($this->surgeons, 'id', 'FullName'),CHtml::listData($this->surgeons, 'id', 'FullName'),CHtml::listData($this->surgeons, 'id', 'FullName')),array(array('empty'=>'- Please select -'),array('empty'=>'- None -'),array('empty'=>'- None -'),'div_style'=>'padding-bottom: 28px;'))?>

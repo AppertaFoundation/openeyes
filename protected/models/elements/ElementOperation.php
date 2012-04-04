@@ -171,11 +171,11 @@ class ElementOperation extends BaseEventTypeElement
 			'consultant_required' => 'Consultant required',
 			'anaesthetist_required' => 'Anaesthetist required',
 			'anaesthetic_type_id' => 'Anaesthetic type',
-			'overnight_stay' => 'Post operative stay required',
+			'overnight_stay' => 'Post operative stay',
 			'decision_date' => 'Decision date',
 			'schedule_timeframe' => 'Schedule timeframe',
 			'priority_id' => 'Priority',
-			'site_id' => 'Site that this will be booked for'
+			'site_id' => 'Site'
 		);
 	}
 
