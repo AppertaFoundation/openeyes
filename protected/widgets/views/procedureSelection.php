@@ -1,4 +1,4 @@
-					<div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure">
+					<div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 						<div class="label">Procedures:</div>
 						<div class="data split limitWidth">
 							<div class="left">

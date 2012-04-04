@@ -18,24 +18,33 @@
  */
 
 class MultiSelectList extends BaseCWidget {
-	public $fields;
 	public $htmlOptions;
 	public $options = array();
+	public $filtered_options = array();
+	public $relation;
+	public $selected_ids = array();
+	public $relation_id_field;
 
-	public function run() {
-		if (isset($this->htmlOptions['label'])) {
-			$this->options[''] = '- '.$this->htmlOptions['label'].' -';
+	public function init() {
+		$this->filtered_options = $this->options;
+
+		if (empty($_POST)) {
+			if ($this->element->{$this->relation}) {
+				foreach ($this->element->{$this->relation} as $item) {
+					$this->selected_ids[] = $item->{$this->relation_id_field};
+					unset($this->filtered_options[$item->{$this->relation_id_field}]);
+				}
+			}
 		} else {
-			$this->options[''] = '- Please select -';
+			if (isset($_POST[$this->field])) {
+				foreach ($_POST[$this->field] as $id) {
+					$this->selected_ids[] = $id;
+					unset($this->filtered_options[$id]);
+				}
+			}
 		}
 
-		foreach ($this->fields as $field) {
-			$this->options[$field] = $this->element->getAttributeLabel($field);
-		}
-
-		asort($this->options);
-
-		parent::run();
+		parent::init();
 	}
 }
 ?>

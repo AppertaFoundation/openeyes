@@ -52,7 +52,7 @@
 		None
 	<?php }else{
 		foreach ($element->complications as $complication) {?>
-			<?php echo $complication?><br/>
+			<?php echo $complication->name?><br/>
 		<?php }
 	}?>
 
@@ -62,7 +62,7 @@
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
 				'identifier'=> 'Cataract',
 				'template' => 'horizontal1',
-				'side'=>'R',
+				'side'=>$this->eye,
 				'mode'=>'view',
 				'size'=>200,
 				'model'=>$element,
@@ -77,7 +77,7 @@
 			<?php
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
 				'identifier'=> 'Position',
-				'side'=>'R',
+				'side'=>$this->eye,
 				'mode'=>'view',
 				'size'=>200,
 				'model'=>$element,

@@ -27,7 +27,7 @@
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
 				'identifier'=> 'Cataract',
 				'template' => 'horizontal1',
-				'side'=>'R',
+				'side'=>$this->eye,
 				'mode'=>'edit',
 				'size'=>300,
 				'model'=>$element,
@@ -55,13 +55,13 @@
 		<div class="right" style="width:35%;">
 			<div class="halfHeight">
 				<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-				<?php echo $form->multiSelectList($element, $element->complication_fields, array('label' => 'Complications'))?>
+				<?php echo $form->multiSelectList($element, 'CataractComplications', 'complications', 'complication_id', CHtml::listData(CataractComplications::model()->findAll(), 'id', 'name'), array('empty' => '- Complications -', 'label' => 'Complications'))?>
 				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
 				<?php
 				$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
 					'identifier'=> 'Position',
 					'toolbar' => false,
-					'side'=>'R',
+					'side'=>$this->eye,
 					'mode'=>'edit',
 					'size'=>200,
 					'model'=>$element,

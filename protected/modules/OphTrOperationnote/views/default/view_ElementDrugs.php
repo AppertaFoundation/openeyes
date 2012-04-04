@@ -20,14 +20,12 @@
 
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->selected_eye);?>
-<?php
-$form->widget('application.widgets.ProcedureSelection',array(
-	'element' => $element,
-	'selected_procedures' => $this->selected_procedures,
-	'newRecord' => true,
-	'last' => true,
-	'hidden' => empty($_POST)
-));
-?>
-<div id="procedureSpecificElements"></div>
+<div class="view">
+	<?php if (!$element->drugs) {?>
+		None
+	<?php }else{
+		foreach ($element->drugs as $drug) {?>
+			<?php echo $drug->name?><br/>
+		<?php }
+	}?>
+</div>

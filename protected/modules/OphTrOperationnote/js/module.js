@@ -1,8 +1,10 @@
 
 function callbackAddProcedure(procedure_id) {
+	var eye = ($('input[name="ElementProcedureList\[eye_id\]"]:checked').val() == 2) ? 'R' : 'L';
+
 	$.ajax({
 		'type': 'GET',
-		'url': '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id='+procedure_id,
+		'url': '/OphTrOperationnote/Default/loadElementByProcedure?procedure_id='+procedure_id+'&eye='+eye,
 		'success': function(html) {
 			if (html.length >0) {
 				var m = html.match(/<div class="(Element.*?)"/);
@@ -81,7 +83,7 @@ $(document).ready(function() {
 		var buttonClass = $(this).attr('id').replace(/_generate_report$/,'');
 		var eyeDrawName = buttonClass.replace(/Element/,'');
 
-		var text = window["ed_drawing_edit_R"+eyeDrawName].report().replace(/, +$/, '');
+		var text = window["ed_drawing_edit_"+eyeDrawName].report().replace(/, +$/, '');
 
 		if ($('#'+buttonClass+'_report').text().length >0) {
 			text += ', '+text;
@@ -95,26 +97,30 @@ $(document).ready(function() {
 	$('#ElementCataract_incision_site_id').unbind('change').change(function(e) {
 		e.preventDefault();
 
-		ed_drawing_edit_RCataract.setParameterForDoodleOfClass('PhakoIncision', 'incisionSite', $(this).children('option:selected').text());
+		ed_drawing_edit_Cataract.setParameterForDoodleOfClass('PhakoIncision', 'incisionSite', $(this).children('option:selected').text());
 
 		return false;
 	});
 
 	$('input[name="ElementProcedureList\[eye_id\]"]').unbind('change').change(function() {
 
-		if (window.ed_drawing_edit_RCataract !== undefined && window.ed_drawing_edit_RCataract.modified == false) {
+		if ($('#typeProcedure').is(':hidden')) {
+			$('#typeProcedure').slideToggle('fast');
+		}
+
+		if (window.ed_drawing_edit_Cataract !== undefined) {
 			if ($(this).val() == 2) {
-				if (parseInt(ed_drawing_edit_RCataract.doodleArray[3].rotation * (180/Math.PI)) == -90) {
-					et_operationnote_hookDoodle = ed_drawing_edit_RCataract.doodleArray[3];
-					et_operationnote_hookTarget = 90;
-					et_operationnote_hookDirection = 0;
+				if (parseInt(ed_drawing_edit_Cataract.doodleArray[3].rotation * (180/Math.PI)) == 90) {
+					et_operationnote_hookDoodle = ed_drawing_edit_Cataract.doodleArray[3];
+					et_operationnote_hookTarget = -90;
+					et_operationnote_hookDirection = 1;
 					opnote_move_eyedraw_element_to_position();
 				}
 			} else if ($(this).val() == 1) {
-				if (parseInt(ed_drawing_edit_RCataract.doodleArray[3].rotation * (180/Math.PI)) == 90) {
-					et_operationnote_hookDoodle = ed_drawing_edit_RCataract.doodleArray[3];
-					et_operationnote_hookTarget = -90;
-					et_operationnote_hookDirection = 1;
+				if (parseInt(ed_drawing_edit_Cataract.doodleArray[3].rotation * (180/Math.PI)) == -90) {
+					et_operationnote_hookDoodle = ed_drawing_edit_Cataract.doodleArray[3];
+					et_operationnote_hookTarget = 90;
+					et_operationnote_hookDirection = 0;
 					opnote_move_eyedraw_element_to_position();
 				}
 			}
@@ -136,11 +142,11 @@ function opnote_move_eyedraw_element_to_position() {
 			pos += 10;
 			if (pos > target) {
 				doodle.rotation = target * (Math.PI/180);
-				ed_drawing_edit_RCataract.repaint();
-				ed_drawing_edit_RCataract.modified = false;
+				ed_drawing_edit_Cataract.repaint();
+				ed_drawing_edit_Cataract.modified = false;
 			} else {
 				doodle.rotation = pos * (Math.PI/180);
-				ed_drawing_edit_RCataract.repaint();
+				ed_drawing_edit_Cataract.repaint();
 				setTimeout('opnote_move_eyedraw_element_to_position();', 20);
 			}
 		}
@@ -149,11 +155,11 @@ function opnote_move_eyedraw_element_to_position() {
 			pos -= 10;
 			if (pos < target) {
 				doodle.rotation = target * (Math.PI/180);
-				ed_drawing_edit_RCataract.repaint();
-				ed_drawing_edit_RCataract.modified = false;
+				ed_drawing_edit_Cataract.repaint();
+				ed_drawing_edit_Cataract.modified = false;
 			} else {
 				doodle.rotation = pos * (Math.PI/180);
-				ed_drawing_edit_RCataract.repaint();
+				ed_drawing_edit_Cataract.repaint();
 				setTimeout('opnote_move_eyedraw_element_to_position();', 20);
 			}
 		}

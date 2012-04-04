@@ -4,11 +4,9 @@ $(document).ready(function() {
 
 		$(this).parent().children('div').children('ul').append('<li>'+selected.text()+' (<a href="#" class="MultiSelectRemove '+selected.val()+'">remove</a>)</li>');
 
-		$(this).parent().children('input').map(function() {
-			if ($(this).attr('name').match(new RegExp('^Element[a-zA-Z]+\\['+selected.val()+'\\]$'))) {
-				$(this).val(1);
-			}
-		});
+		var element_class = $(this).attr('name').replace(/\[.*$/,'');
+
+		$(this).parent().children('div').children('ul').append('<input type="hidden" name="'+multiSelectField+'[]" value="'+selected.val()+'" />');
 
 		selected.remove();
 
@@ -20,14 +18,8 @@ $(document).ready(function() {
 	$('a.MultiSelectRemove').die('click').live('click',function(e) {
 		e.preventDefault();
 
-		var value = $(this).attr('class').replace(/^MultiSelectRemove /,'');
-		var text = $(this).parent().text().replace(/ \(.*$/,'');
-
-		$(this).parent().parent().parent().parent().children('input').map(function() {
-			if ($(this).attr('name').match(new RegExp('^Element[a-zA-Z]+\\['+value+'\\]$'))) {
-				$(this).val(0);
-			}
-		});
+		var value = $(this).parent().next().val();
+		var text = $(this).parent().text().trim().replace(/ \(.*$/,'');
 
 		var select = $(this).parent().parent().parent().parent().children('select');
 
@@ -35,6 +27,7 @@ $(document).ready(function() {
 
 		sort_selectbox(select);
 
+		$(this).parent().next().remove();
 		$(this).parent().remove();
 
 		return false;

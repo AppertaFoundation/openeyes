@@ -5,6 +5,8 @@ class DefaultController extends BaseEventTypeController
 	public $surgeons;
 	public $selected_procedures;
 	public $selected_eye;
+	public $eye;
+	public $drugs;
 
 	public function actionCreate() {
 		$criteria = new CDbCriteria;
@@ -30,6 +32,12 @@ class DefaultController extends BaseEventTypeController
 			}
 		}
 
+		if ($this->selected_eye) {
+			$this->eye = ($this->selected_eye == 1 ? 'L' : 'R');
+		}
+
+		$this->drugs = $this->getDrugsBySiteAndSubspecialty();
+
 		parent::actionCreate();
 	}
 
@@ -40,7 +48,17 @@ class DefaultController extends BaseEventTypeController
 
 		$this->surgeons = User::model()->findAll($criteria);
 
+		$this->drugs = $this->getDrugsBySiteAndSubspecialty();
+
 		parent::actionUpdate($id);
+	}
+
+	public function actionView($id) {
+		$pl = ElementProcedureList::model()->find('event_id=?',array($id));
+
+		$this->eye = ($pl->eye_id == 1 ? 'L' : 'R');
+
+		parent::actionView($id);
 	}
 
 	public function init() {
@@ -48,6 +66,19 @@ class DefaultController extends BaseEventTypeController
 		Yii::app()->clientScript->registerScriptFile($urlScript, CClientScript::POS_HEAD);
 
 		parent::init();
+	}
+
+	public function getDrugsBySiteAndSubspecialty() {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+		$site_id = Yii::app()->request->cookies['site_id']->value;
+
+		return CHtml::listData(Yii::app()->db->createCommand()
+			->select('drug.id, drug.name')
+			->from('drug')
+			->join('site_subspecialty_drug','site_subspecialty_drug.drug_id = drug.id')
+			->where('site_subspecialty_drug.subspecialty_id = :subSpecialtyId and site_subspecialty_drug.site_id = :siteId',array(':subSpecialtyId'=>$subspecialty_id,':siteId'=>$site_id))
+			->queryAll(), 'id', 'name');
 	}
 
 	public function actionLoadElementByProcedure() {
@@ -63,6 +94,8 @@ class DefaultController extends BaseEventTypeController
 
 		foreach (ProcedureListOperationElement::model()->findAll($criteria) as $element) {
 			$element = new $element->element_type->class_name;
+
+			$this->eye = @$_GET['eye'];
 
 			$this->renderPartial(
 				'create' . '_' . get_class($element),

@@ -33,7 +33,7 @@ class BaseCWidget extends CWidget
 			$this->value = @$_POST[get_class($this->element)][$this->field];
 		}
 
-		if ($this->field) {
+		if ($this->field && $this->element->hasAttribute($this->field)) {
 			$this->element->{$this->field} = $this->value;
 		}
 
