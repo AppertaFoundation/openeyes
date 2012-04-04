@@ -212,7 +212,7 @@ class OEEyeDrawWidget extends CWidget
 				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.css'));
 				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.js'));
 				$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.graphics')).'/';
-				$this->idSuffix = $this->side.$this->identifier;
+				$this->idSuffix = $this->identifier;
 				$this->drawingName = 'ed_drawing_'.$this->mode.'_'.$this->idSuffix;
 				$this->canvasId = 'ed_canvas_'.$this->mode.'_'.$this->idSuffix;
 				if (isset($this->model) && isset($this->attribute))
