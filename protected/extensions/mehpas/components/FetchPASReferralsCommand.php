@@ -15,6 +15,7 @@
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @todo This command is currently disabled until the referral code is fixed
  */
 
 class FetchPASReferralsCommand extends CConsoleCommand {
@@ -28,6 +29,8 @@ class FetchPASReferralsCommand extends CConsoleCommand {
 	}
 
 	public function run($args) {
+		echo "Disabled until the referral code is fixed";
+		return false;
 		$pas_service = new PasService();
 		if ($pas_service->available) {
 			$pas_service->fetchNewReferrals();

@@ -26,12 +26,14 @@ return array(
 												'method' => 'updateGpFromPas',
 										),
 								),
+								/* Referral code is currently broken
 								'episode_after_create' => array(
 										'fetch_pas_referral' => array(
 												'class' => 'PasObserver',
 												'method' => 'fetchReferralFromPas',
 										),
 								),
+								*/
 						),
 				),
 				'db_pas' => array(

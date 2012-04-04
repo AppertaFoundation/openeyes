@@ -101,8 +101,10 @@ class PasObserver {
 	/**
 	 * Fetch referral from PAS
 	 * @param unknown_type $params
+	 * @todo This method is currently disabled until the referral code is fixed
 	 */
 	public function fetchReferralFromPas($params) {
+		return false;
 		$pas_service = new PasService();
 		if($pas_service->available) {
 			$pas_service->fetchReferral($params['episode']);
