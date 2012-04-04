@@ -67,48 +67,47 @@ class PatientService
 		}
 
 		$whereSql = '';
-		$whereParams = array(
-				':nhs_num' => $data['nhs_num'],
-				':hos_num' => $data['hos_num'],
-				':first_name' => $data['first_name'],
-				':last_name' => $data['last_name'],
-				':gender' => $data['gender'],
-				':dob' => $data['dob'],
-		);
+		$whereParams = array();
 				
 		// Hospital number
 		if (!empty($data['hos_num'])) {
 			$hosNum = preg_replace('/[^\d]/', '0', $data['hos_num']);
-			$whereSql .= " AND n.num_id_type = substr(:hos_num,1,1) and n.number_id = substr(:hos_num,2,6)";
+			$whereSql .= " AND num_id_type = substr(:hos_num,1,1) and number_id = substr(:hos_num,2,6)";
+			$whereParams[':hos_num'] = $hosNum;
 		}
 
 		// Date of birth
 		if (!empty($data['dob'])) {
 			$whereSql .= " AND DATE_OF_BIRTH = :dob";
+			$whereParams[':dob'] = $data['dob'];
 		}
 
 		// Gender
 		if (!empty($data['gender'])) {
 			$whereSql .= " AND SEX = :gender";
+			$whereParams[':gender'] = $data['gender'];
 		}
 
 		// Name
 		if (!empty($data['first_name']) && !empty($data['last_name'])) {
-			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = :first_name
+			$whereSql .= " AND P.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.SURNAME_IDS WHERE Surname_Type = 'NO' AND ((Name1 = :first_name
 			OR Name2 = :first_name) AND Surname_ID = :last_name))";
+			$whereParams[':first_name'] = $data['first_name'];
+			$whereParams[':last_name'] = $data['last_name'];
 		}
 
 		// NHS Number
 		if (!empty($data['nhs_num'])) {
-			$whereSql .= " AND p.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = :nhs_num)";
+			$whereSql .= " AND P.RM_PATIENT_NO IN (SELECT RM_PATIENT_NO FROM SILVER.NUMBER_IDS WHERE NUM_ID_TYPE = 'NHS' AND NUMBER_ID = :nhs_num)";
+			$whereParams[':nhs_num'] = $data['nhs_num'];
 		}
 		
-		$command = Yii::app()->db->createCommand()
+		$command = Yii::app()->db_pas->createCommand()
 			->select('COUNT(*) as count')
-			->from('SILVER.PATIENTS p')
-			->join('SILVER.SURNAME_IDS s', 's.rm_patient_no = p.rm_patient_no')
-			->join('SILVER.NUMBER_IDS n', 'n.rm_patient_no = p.rm_patient_no')
-			->where("s.surname_type = 'NO' $whereSql AND LENGTH(TRIM(TRANSLATE(n.num_id_type, '0123456789', ' '))) is null", $whereParams);
+			->from('SILVER.PATIENTS P')
+			->join('SILVER.SURNAME_IDS S', 'S.rm_patient_no = P.rm_patient_no')
+			->join('SILVER.NUMBER_IDS N', 'N.rm_patient_no = P.rm_patient_no')
+			->where("surname_type = 'NO' $whereSql AND LENGTH(TRIM(TRANSLATE(num_id_type, '0123456789', ' '))) is null", $whereParams);
 			
 		foreach ($command->queryAll() as $results) $this->num_results = $results['COUNT'];
 
