@@ -149,6 +149,14 @@ $(document).ready(function() {
 				$('#anaesthetic_delivery_id').next().slideToggle('fast');
 			}
 		}
+
+		if ($(this).val() == 1) {
+			$('input[name="ElementAnaesthetic\[anaesthetic_delivery_id\]"]').map(function() {
+				if ($(this).val() == 5) {
+					$(this).click();
+				}
+			});
+		}
 	});
 });
 

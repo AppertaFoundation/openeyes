@@ -21,6 +21,12 @@ $(document).ready(function(){
 
 		return false;
 	});
+
+	$('label').die('click').live('click',function() {
+		if ($(this).prev().is('input:radio')) {
+			$(this).prev().click();
+		}
+	});
 });
 
 function selectSort(a, b) {		 
