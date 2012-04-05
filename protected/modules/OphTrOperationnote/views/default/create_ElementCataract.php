@@ -33,18 +33,18 @@
 			));
 			?>
 			<div class="halfHeight">
-				<?php echo $form->dropDownList($element, 'incision_site_id', CHtml::listData(IncisionSite::model()->findAll(), 'id', 'name'),array('layout' => 'horizontal2', 'empty'=>'- Please select -', 'div_style' => 'margin-left: 320px; margin-top: 100px;'))?>
-				<?php echo $form->textField($element, 'length', array('layout' => 'horizontal2', 'div_style' => 'margin-left: 320px;', 'size' => '10'))?>
-				<?php echo $form->textField($element, 'meridian', array('layout' => 'horizontal2', 'div_style' => 'margin-left: 320px;', 'size' => '10'))?>
-				<?php echo $form->dropDownList($element, 'incision_type_id', CHtml::listData(IncisionType::model()->findAll(), 'id', 'name'),array('layout' => 'horizontal2', 'empty'=>'- Please select -', 'div_style' => 'margin-left: 320px;'))?>
-				<?php echo $form->checkBox($element, 'vision_blue', array('layout' => 'horizontal2', 'div_style' => 'margin-left: 320px;'))?>
-				<?php echo $form->textArea($element, 'report', array('rows'=>4,'cols'=>25,'div_style' => 'margin-left: 320px;','layout' => 'horizontal2'))?>
+				<?php echo $form->dropDownList($element, 'incision_site_id', CHtml::listData(IncisionSite::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
+				<?php echo $form->textField($element, 'length', array('size' => '10'))?>
+				<?php echo $form->textField($element, 'meridian', array('size' => '10'))?>
+				<?php echo $form->dropDownList($element, 'incision_type_id', CHtml::listData(IncisionType::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
+				<?php echo $form->checkBox($element, 'vision_blue')?>
+				<?php echo $form->textArea($element, 'report', array('rows'=>4,'cols'=>25))?>
 			</div>
 		</div>
 		<div class="right" style="width:35%;">
 			<div class="halfHeight">
-				<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -','layout' => 'nofloat'))?>
-				<?php echo $form->multiSelectList($element, 'CataractComplications', 'complications', 'complication_id', CHtml::listData(CataractComplications::model()->findAll(), 'id', 'name'), array('empty' => '- Complications -', 'label' => 'Complications','layout' => 'nofloat'))?>
+				<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
+				<?php echo $form->multiSelectList($element, 'CataractComplications', 'complications', 'complication_id', CHtml::listData(CataractComplications::model()->findAll(), 'id', 'name'), array('empty' => '- Complications -', 'label' => 'Complications'))?>
 				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
 				<?php
 				$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetSurgeonPosition', array(

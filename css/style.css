@@ -546,10 +546,8 @@ span.surname { font-weight: bold; }
 #event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;  }
 #event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;  }
 #event_content .eventDetail > .label-horizontal { display:inline-block; width:145px; float: left; font-size:15px; }
-#event_content .eventDetail > .label-horizontal2 { display:inline-block; width:110px; float: left; font-size:15px; }
 #event_content .eventDetail > .labelrow-first { display: inline; float: left; width: 170px; }
 #event_content .eventDetail > .labelrow { margin-left: 20px; display: inline; float: left; }
-#event_content .eventDetail > .label-nofloat { float: none; display: block; font-size:15px; padding-bottom: 4px; }
 
 #event_content .eventDetailLast { margin-bottom: 2px; }
 #event_content .halfHeight .eventDetail { padding: 5px; }
