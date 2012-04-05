@@ -70,13 +70,6 @@ class DefaultController extends BaseEventTypeController
 		parent::actionView($id);
 	}
 
-	public function init() {
-		$urlScript = Yii::app()->assetManager->publish(Yii::getPathOfAlias($this->getModule()->name).'/js/module.js', false, -1, true);
-		Yii::app()->clientScript->registerScriptFile($urlScript, CClientScript::POS_HEAD);
-
-		parent::init();
-	}
-
 	public function getDrugsBySiteAndSubspecialty() {
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 		$subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
