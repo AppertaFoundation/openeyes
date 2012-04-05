@@ -594,8 +594,17 @@ class BaseEventTypeController extends BaseController
 
 		while ($file = readdir($dh)) {
 			if (preg_match('/\.js$/',$file)) {
-				$urlScript = Yii::app()->assetManager->publish(Yii::getPathOfAlias($this->getModule()->name).'/js/'.$file, false, -1, true);
-				Yii::app()->clientScript->registerScriptFile($urlScript, CClientScript::POS_HEAD);
+				Yii::app()->clientScript->registerScriptFile($this->jsPath.'/'.$file);
+			}
+		}
+
+		closedir($dh);
+
+		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
+
+		while ($file = readdir($dh)) {
+			if (preg_match('/\.css$/',$file)) {
+				Yii::app()->getClientScript()->registerCssFile($this->cssPath.'/'.$file);
 			}
 		}
 
