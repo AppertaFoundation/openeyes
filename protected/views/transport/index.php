@@ -28,6 +28,7 @@
 					<a id="tci_previous" href="#">Previous day</a> - 
 					<a id="tci_next" href="#">Next day</a>
 				</div>*/ ?>
+				<button type="submit" class="classy blue grande btn_confirm" style="margin-right: 20px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
 
 				<div id="searchResults" class="whiteBox">
 					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
@@ -35,7 +36,7 @@
 				<!-- Disabled until form finished 
 				<button type="submit" class="classy blue grande" style="float: right;" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
 				 -->
-				<button type="submit" class="classy blue grande" style="margin-right: 20px; float: right;" id="btn_confirm"><span class="button-span button-span-blue">Confirm</span></button>
+				<button type="submit" class="classy blue grande btn_confirm" style="margin-right: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
 				<div>
 					<?php
 					$times = Yii::app()->params['transport_csv_intervals'];
@@ -101,13 +102,20 @@
 		return false;
 	});
 
-	$('#btn_confirm').click(function() {
+	$('button.btn_confirm').click(function() {
 		$.ajax({
 			type: "POST",
 			url: "/transport/confirm",
 			data: $('input[name^="cancelled"]:checked').serialize()+"&"+$('input[name^="booked"]:checked').serialize(),
 			success: function(html) {
-				update_tcis();
+				if (html == "1") {
+					$('input:checked').map(function() {
+						$(this).parent().parent().attr('class','waitinglistGrey');
+						$(this).attr('checked',false);
+					});
+				} else {
+					alert("Something went wrong trying to confirm the transport item.\n\nPlease try again or contact OpenEyes support.");
+				}
 				return false;
 			}
 		});

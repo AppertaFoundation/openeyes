@@ -197,9 +197,13 @@ class TransportController extends BaseController
 					$c->item_table = 'booking';
 					$c->item_id = $booking_id;
 					$c->status = 1;
-					$c->save();
+					if (!$c->save()) {
+						throw new SystemException('Unable to save transport_list item: '.print_r($c->getErrors(),true));
+					}
 				} else {
-					$c->delete();
+					if (!$c->delete()) {
+						throw new SystemException('Unable to delete transport_list item: '.print_r($c->getErrors(),true));
+					}
 				}
 			}
 		}
@@ -213,12 +217,17 @@ class TransportController extends BaseController
 					$c->item_table = 'cancelled_booking';
 					$c->item_id = $cancelled_booking_id;
 					$c->status = 1;
-					$c->save();
+					if (!$c->save()) {
+						throw new SystemException('Unable to save transport_list item: '.print_r($c->getErrors(),true));
+					}
 				} else {
-					$c->delete();
+					if (!$c->delete()) {
+						throw new SystemException('Unable to delete transport_list item: '.print_r($c->getErrors(),true));
+					}
 				}
 			}
 		}
-	}
 
+		die("1");
+	}
 }
