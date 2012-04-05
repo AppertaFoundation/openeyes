@@ -972,3 +972,4 @@ table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; borde
 .waitinglistGrey {background:#999;}
 
 .elements { margin-bottom: 20px; }
+canvas { outline: none; }
