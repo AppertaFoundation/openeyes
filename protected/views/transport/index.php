@@ -21,12 +21,13 @@
 
 		<div class="fullWidth fullBox clearfix">
 		<div id="waitinglist_display">
-			<h3>Patients booked, cancelled and rescheduled on <span id="current_date"><?php echo date('j M Y')?></span></h3>
+			<h3>TCIs for today onwards.</h3>
+			<?php /*<h3>Patients booked, cancelled and rescheduled on <span id="current_date"><?php echo date('j M Y')?></span></h3>*/ ?>
 
-				<div id="tciControls">
+				<?php /*<div id="tciControls">
 					<a id="tci_previous" href="#">Previous day</a> - 
 					<a id="tci_next" href="#">Next day</a>
-				</div>
+				</div>*/ ?>
 
 				<div id="searchResults" class="whiteBox">
 					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
