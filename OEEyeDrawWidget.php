@@ -206,8 +206,7 @@ class OEEyeDrawWidget extends CWidget
 	 * Initializes the widget.
 	 * This method registers all needed client scripts and renders the EyeDraw content
 	 */
-		public function init()
-	{
+		public function init() {
 				// Set values of derived properties
 				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.css'));
 				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyeDraw.js'));
@@ -246,7 +245,7 @@ class OEEyeDrawWidget extends CWidget
 					);
 				}
 
-				$this->render($this->template,get_object_vars($this));
+				$this->render(get_class($this),get_object_vars($this));
 	}
 
 	/**
