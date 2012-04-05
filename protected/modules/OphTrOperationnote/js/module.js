@@ -102,6 +102,14 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('#ElementCataract_incision_type_id').unbind('change').change(function(e) {
+		e.preventDefault();
+
+		ed_drawing_edit_Cataract.setParameterForDoodleOfClass('PhakoIncision', 'incisionType', $(this).children('option:selected').text());
+
+		return false;
+	});
+
 	$('input[name="ElementProcedureList\[eye_id\]"]').unbind('change').change(function() {
 
 		if ($('#typeProcedure').is(':hidden')) {
