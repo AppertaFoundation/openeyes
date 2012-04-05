@@ -54,11 +54,26 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 		$updated = 0;
 		foreach($gps as $gp) {
 
-			// Find a matching gp
 			$obj_prof = $gp['obj_prof'];
+			$gp_id = $gp['id'];
+
+			// Check to see if GP is associated with a patient
+			$patient = Yii::app()->db->createCommand()
+			->select('count(id)')
+			->from('patient')
+			->where('gp_id = :gp_id', array(':gp_id' => $gp_id))
+			->queryScalar();
+			if(!$patient) {
+				// GP is not being used, let's delete it!
+				echo "Deleting unused GP\n";
+				Gp::model()->deleteByPk($gp_id);
+				continue;
+			}
+
+			// Find a matching gp
 			$pas_gps = PAS_Gp::model()->findAll(array(
-					'condition' => 'OBJ_PROF = :obj_prof AND (DATE_TO IS NULL OR DATE_TO >= SYSDATE) AND (DATE_FROM IS NULL OR DATE_FROM <= SYSDATE)',
-					'order' => 'DATE_FROM DESC',
+					'condition' => 'OBJ_PROF = :obj_prof AND (DATE_TO IS NULL OR DATE_TO >= SYSDATE) AND (DATE_FR IS NULL OR DATE_FR <= SYSDATE)',
+					'order' => 'DATE_FR DESC',
 					'params' => array(
 						':obj_prof' => $obj_prof,
 					),
@@ -66,14 +81,11 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 
 			if(count($pas_gps) > 0) {
 				// Found a match
-				if(count($pas_gps) > 1) {
-					echo "Found more than one match in PAS for obj_prof $obj_prof, most recent will be used for importing data\n";
-				}
 				Yii::log("Found match in PAS for obj_prof $obj_prof, creating assignment", 'trace');
 				$assignment = new PasAssignment();
 				$assignment->external_id = $obj_prof;
 				$assignment->external_type = 'PAS_Gp';
-				$assignment->internal_id = $gp['id'];
+				$assignment->internal_id = $gp_id;
 				$assignment->internal_type = 'Gp';
 				$assignment->save();
 				$updated++;
