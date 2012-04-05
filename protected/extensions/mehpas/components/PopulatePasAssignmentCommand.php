@@ -32,10 +32,60 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 		$pas_service = new PasService();
 		if ($pas_service->available) {
 			$this->populatePatientPasAssignment();
+			$this->populateGpPasAssignment();
 		} else {
 			echo "PAS is unavailable or module is disabled";
 			return false;
 		}
+	}
+
+	protected function populateGpPasAssignment() {
+
+		// Find all gps that don't have an assignment
+		$gps = Yii::app()->db->createCommand()
+		->select('gp.id, gp.obj_prof')
+		->from('gp')
+		->leftJoin('pas_assignment', "pas_assignment.internal_id = gp.id AND pas_assignment.internal_type = 'Gp'")
+		->where('pas_assignment.id IS NULL')
+		->queryAll();
+
+		echo "There are ".count($gps)." gps without an assignment, processing...\n";
+		
+		$updated = 0;
+		foreach($gps as $gp) {
+
+			// Find a matching gp
+			$obj_prof = $gp['obj_prof'];
+			$pas_gps = PAS_Gp::model()->findAll(array(
+					'condition' => 'OBJ_PROF = :obj_prof AND (DATE_TO IS NULL OR DATE_TO >= SYSDATE) AND (DATE_FROM IS NULL OR DATE_FROM <= SYSDATE)',
+					'order' => 'DATE_FROM DESC',
+					'params' => array(
+						':obj_prof' => $obj_prof,
+					),
+			));
+
+			if(count($pas_gps) > 0) {
+				// Found a match
+				if(count($pas_gps) > 1) {
+					echo "Found more than one match in PAS for obj_prof $obj_prof, most recent will be used for importing data\n";
+				}
+				Yii::log("Found match in PAS for obj_prof $obj_prof, creating assignment", 'trace');
+				$assignment = new PasAssignment();
+				$assignment->external_id = $obj_prof;
+				$assignment->external_type = 'PAS_Gp';
+				$assignment->internal_id = $gp['id'];
+				$assignment->internal_type = 'Gp';
+				$assignment->save();
+				$updated++;
+			} else {
+				// No match
+				echo "Cannot find match in PAS for obj_prof $obj_prof, cannot create assignment\n";
+			}
+
+		}
+
+		echo "Created $updated gp assignments\n";
+		echo "Done.\n";
 	}
 
 	protected function populatePatientPasAssignment() {
@@ -48,7 +98,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 		->where('pas_assignment.id IS NULL')
 		->queryAll();
 
-		echo "There are ".count($patients)." without an assignment, processing...\n";
+		echo "There are ".count($patients)." patients without an assignment, processing...\n";
 
 		$updated = 0;
 		foreach($patients as $patient) {
@@ -61,10 +111,10 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 					':num_id_type' => $num_id_type,
 					':number_id' => $number_id,
 			));
-				
+
 			if(count($patient_no) == 1) {
 				// Found a single match
-				Yii::log("Found match in PAS for hos_num $hos_num, creating assignment and updating patient", 'trace');
+				Yii::log("Found match in PAS for hos_num $hos_num, creating assignment", 'trace');
 				$assignment = new PasAssignment();
 				$assignment->external_id = $patient_no[0]->RM_PATIENT_NO;
 				$assignment->external_type = 'PAS_Patient';
