@@ -27,9 +27,9 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DropDownListRow',array('element' => $model, 'fields' => $fields, 'datas' => $datas, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function radioButtons($element,$field,$table,$selected_item=false, $maxwidth=false) {
+	public function radioButtons($element,$field,$table,$selected_item=false, $maxwidth=false, $hidden=false) {
 		$data = $element->getFormOptions($table);
-		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth));
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden));
 	}
 
 	public function radioBoolean($element,$field) {
@@ -40,7 +40,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DatePicker',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function textArea($element,$field,$options=array()) {
+	public function textArea($element,$field,$options=array(),$hidden=false) {
 		if (!isset($options['rows'])) {
 			throw new SystemException('textArea requires the rows option to be specified');
 		}
@@ -48,7 +48,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 			throw new SystemException('textArea requires the cols option to be specified');
 		}
 
-		$this->widget('application.widgets.TextArea',array_merge(array('element' => $element, 'field' => $field), $options));
+		$this->widget('application.widgets.TextArea',array_merge(array('element' => $element, 'field' => $field, 'hidden' => $hidden), $options));
 	}
 
 	public function textField($element,$field,$htmlOptions=array()) {

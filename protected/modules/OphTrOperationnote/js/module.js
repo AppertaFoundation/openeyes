@@ -134,6 +134,22 @@ $(document).ready(function() {
 			}
 		}
 	});
+
+	$('input[name="ElementAnaesthetic\[anaesthetic_type_id\]"]').unbind('click').click(function() {
+		if ($(this).val() == 5) {
+			if (!$('#anaesthetist_id').is(':hidden')) {
+				$('#anaesthetist_id').slideToggle('fast');
+				$('#anaesthetic_delivery_id').slideToggle('fast');
+				$('#anaesthetic_delivery_id').next().slideToggle('fast');
+			}
+		} else {
+			if ($('#anaesthetist_id').is(':hidden')) {
+				$('#anaesthetist_id').slideToggle('fast');
+				$('#anaesthetic_delivery_id').slideToggle('fast');
+				$('#anaesthetic_delivery_id').next().slideToggle('fast');
+			}
+		}
+	});
 });
 
 var et_operationnote_hookDoodle = null;

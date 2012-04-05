@@ -7,6 +7,7 @@ class DefaultController extends BaseEventTypeController
 	public $selected_eye;
 	public $eye;
 	public $drugs;
+	public $anaesthetic_hidden;
 
 	public function actionCreate() {
 		$criteria = new CDbCriteria;
@@ -37,6 +38,7 @@ class DefaultController extends BaseEventTypeController
 		}
 
 		$this->drugs = $this->getDrugsBySiteAndSubspecialty();
+		$this->anaesthetic_hidden = (@$_POST['ElementAnaesthetic']['anaesthetic_type_id'] == 5);
 
 		parent::actionCreate();
 	}
@@ -49,6 +51,13 @@ class DefaultController extends BaseEventTypeController
 		$this->surgeons = User::model()->findAll($criteria);
 
 		$this->drugs = $this->getDrugsBySiteAndSubspecialty();
+
+		if (empty($_POST)) {
+			$anaesthetic_element = ElementAnaesthetic::model()->find('event_id=?',array($id));
+			$this->anaesthetic_hidden = ($anaesthetic_element->anaesthetic_type_id == 5);
+		} else {
+			$this->anaesthetic_hidden = (@$_POST['ElementAnaesthetic']['anaesthetic_type_id'] == 5);
+		}
 
 		parent::actionUpdate($id);
 	}

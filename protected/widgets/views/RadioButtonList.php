@@ -1,4 +1,4 @@
-<div id="<?php echo $field?>" class="eventDetail">
+<div id="<?php echo $field?>" class="eventDetail"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field)); ?>:</div>
 	<div class="data">
 		<?php $i=0; ?>

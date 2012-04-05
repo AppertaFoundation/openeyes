@@ -21,6 +21,6 @@
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 <?php echo $form->radioButtons($element, 'anaesthetic_type_id', 'anaesthetic_type');?>
-<?php echo $form->radioButtons($element, 'anaesthetist_id', 'anaesthetist')?>
-<?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery',false,4)?>
-<?php echo $form->textArea($element, 'anaesthetic_comment', array('rows' => 4, 'cols' => 60))?>
+<?php echo $form->radioButtons($element, 'anaesthetist_id', 'anaesthetist', false, false, $this->anaesthetic_hidden);?>
+<?php echo $form->radioButtons($element, 'anaesthetic_delivery_id', 'anaesthetic_delivery',false,4, $this->anaesthetic_hidden);?>
+<?php echo $form->textArea($element, 'anaesthetic_comment', array('rows' => 4, 'cols' => 60), $this->anaesthetic_hidden);?>
