@@ -135,18 +135,30 @@ $(document).ready(function() {
 		}
 	});
 
+	var anaesthetic_type_sliding = false;
+
 	$('input[name="ElementAnaesthetic\[anaesthetic_type_id\]"]').unbind('click').click(function() {
 		if ($(this).val() == 5) {
-			if (!$('#anaesthetist_id').is(':hidden')) {
-				$('#anaesthetist_id').slideToggle('fast');
-				$('#anaesthetic_delivery_id').slideToggle('fast');
-				$('#anaesthetic_delivery_id').next().slideToggle('fast');
+			if (!$('#anaesthetist_id').is(':hidden') && !anaesthetic_type_sliding) {
+				anaesthetic_type_sliding = true;
+				$('#anaesthetist_id').slideToggle('fast',function() {
+					$('#anaesthetic_delivery_id').slideToggle('fast',function() {
+						$('#anaesthetic_delivery_id').next().slideToggle('fast',function() {
+							anaesthetic_type_sliding = false;
+						});
+					});
+				});
 			}
 		} else {
-			if ($('#anaesthetist_id').is(':hidden')) {
-				$('#anaesthetist_id').slideToggle('fast');
-				$('#anaesthetic_delivery_id').slideToggle('fast');
-				$('#anaesthetic_delivery_id').next().slideToggle('fast');
+			if ($('#anaesthetist_id').is(':hidden') && !anaesthetic_type_sliding) {
+				anaesthetic_type_sliding = true;
+				$('#anaesthetist_id').slideToggle('fast',function() {
+					$('#anaesthetic_delivery_id').slideToggle('fast',function() {
+						$('#anaesthetic_delivery_id').next().slideToggle('fast',function() {
+							anaesthetic_type_sliding = false;
+						});
+					});
+				});
 			}
 		}
 
