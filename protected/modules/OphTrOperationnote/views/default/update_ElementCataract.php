@@ -24,22 +24,12 @@
 	<div class="splitElement clearfix" style="background-color: #DAE6F1;">
 		<div class="left" style="width:65%;">
 			<?php
-			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-				'identifier'=> 'Cataract',
-				'template' => 'horizontal1',
+			$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetCataract', array(
 				'side'=>$this->eye,
 				'mode'=>'edit',
 				'size'=>300,
 				'model'=>$element,
 				'attribute'=>'eyedraw',
-				'doodleToolBarArray'=>array('PhakoIncision','SidePort','IrisHook','PCIOL','ACIOL','PI','MattressSuture'),
-				'onLoadedCommandArray'=>array(
-					array('addDoodle', array('AntSeg')),
-					array('addDoodle', array('PhakoIncision')),
-					array('addDoodle', array('SidePort')),
-					array('addDoodle', array('PCIOL')),
-					array('deselectDoodles', array()),
-				),
 				'canvasStyle' => 'background-color: #fff; border: 1px solid #000; margin-left: 9px;'
 			));
 			?>
@@ -58,20 +48,12 @@
 				<?php echo $form->multiSelectList($element, 'CataractComplications', 'complications', 'complication_id', CHtml::listData(CataractComplications::model()->findAll(), 'id', 'name'), array('empty' => '- Complications -', 'label' => 'Complications','layout' => 'nofloat'))?>
 				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
 				<?php
-				$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-					'identifier'=> 'Position',
-					'toolbar' => false,
+				$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetSurgeonPosition', array(
 					'side'=>$this->eye,
 					'mode'=>'edit',
 					'size'=>200,
 					'model'=>$element,
 					'attribute'=>'eyedraw2',
-					'doodleToolBarArray'=>array(),
-					'onLoadedCommandArray'=>array(
-						array('addDoodle', array('OperatingTable')),
-						array('addDoodle', array('Surgeon')),
-						array('deselectDoodles', array()),
-					),
 					'canvasStyle' => 'background-color: #DAE6F1; margin-left: 135px;'
 				));
 				?>

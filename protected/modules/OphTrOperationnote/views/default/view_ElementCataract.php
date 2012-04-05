@@ -59,35 +59,21 @@
 	<div class="clearfix">
 		<div class="left" style="width:60%;">
 			<?php
-			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-				'identifier'=> 'Cataract',
-				'template' => 'horizontal1',
+			$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetCataract', array(
 				'side'=>$this->eye,
 				'mode'=>'view',
 				'size'=>200,
 				'model'=>$element,
 				'attribute'=>'eyedraw',
-				'doodleToolBarArray'=>array(),
-				'onLoadedCommandArray'=>array(
-					array('addDoodle', array('AntSeg')),
-					array('deselectDoodles', array()),
-				),
 			));
 			?>
 			<?php
-			$this->widget('application.modules.eyeDraw.OEEyeDrawWidget', array(
-				'identifier'=> 'Position',
+			$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetSurgeonPosition', array(
 				'side'=>$this->eye,
 				'mode'=>'view',
 				'size'=>200,
 				'model'=>$element,
 				'attribute'=>'eyedraw2',
-				'doodleToolBarArray'=>array(),
-				'onLoadedCommandArray'=>array(
-					array('addDoodle', array('OperatingTable')),
-					array('addDoodle', array('Surgeon')),
-					array('deselectDoodles', array()),
-				),
 			));
 			?>
 		</div>
