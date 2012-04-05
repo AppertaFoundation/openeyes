@@ -30,7 +30,6 @@
 				'size'=>300,
 				'model'=>$element,
 				'attribute'=>'eyedraw',
-				'canvasStyle' => 'background-color: #fff; border: 1px solid #000; margin-left: 9px;'
 			));
 			?>
 			<div class="halfHeight">
@@ -54,7 +53,6 @@
 					'size'=>200,
 					'model'=>$element,
 					'attribute'=>'eyedraw2',
-					'canvasStyle' => 'background-color: #DAE6F1; margin-left: 135px;'
 				));
 				?>
 			</div>
