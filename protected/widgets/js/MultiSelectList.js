@@ -2,15 +2,17 @@ $(document).ready(function() {
 	$('select.MultiSelectList').unbind('change').bind('change',function() {
 		var selected = $(this).children('option:selected');
 
-		$(this).parent().children('div').children('ul').append('<li>'+selected.text()+' (<a href="#" class="MultiSelectRemove '+selected.val()+'">remove</a>)</li>');
+		if (selected.val().length >0) {
+			$(this).parent().children('div').children('ul').append('<li>'+selected.text()+' (<a href="#" class="MultiSelectRemove '+selected.val()+'">remove</a>)</li>');
 
-		var element_class = $(this).attr('name').replace(/\[.*$/,'');
+			var element_class = $(this).attr('name').replace(/\[.*$/,'');
 
-		$(this).parent().children('div').children('ul').append('<input type="hidden" name="'+multiSelectField+'[]" value="'+selected.val()+'" />');
+			$(this).parent().children('div').children('ul').append('<input type="hidden" name="'+multiSelectField+'[]" value="'+selected.val()+'" />');
 
-		selected.remove();
+			selected.remove();
 
-		$(this).val('');
+			$(this).val('');
+		}
 
 		return false;
 	});
