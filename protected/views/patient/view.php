@@ -64,11 +64,7 @@ if (!empty($address)) {
 } ?>
 		<h2>Patient Summary</h2>
 			<div class="wrapTwo clearfix">
-				<?php if (Yii::app()->params['pas_down']) {?>
-					<div id="pas-error" class="alertBox">
-						Warning: The PAS is currently down. Patient details are likely to be stale.
-					</div>
-				<?php } ?>
+				<?php $this->renderPartial('//base/_messages'); ?>
 				<?php if($address && !$address->isCurrent()) { // No current address available ?>
 					<div id="no-current-address-error" class="alertBox">
 						<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>

@@ -46,6 +46,8 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 
 <h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation.png) center left no-repeat;">Operation</h3>
 
+<?php $this->renderPartial('//base/_messages'); ?>
+
 <?php if ($no_gp) { ?>
 <div class="alertBox">
 	Patient has no GP, please correct in PAS before printing GP letter.

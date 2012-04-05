@@ -43,6 +43,14 @@ class PasService {
 	}
 
 	/**
+	 * Push a flash warning that the PAS is down
+	 */
+	public function flashPasDown() {
+		Yii::log('PAS is not available', 'trace');
+		Yii::app()->user->setFlash('warning.pas_unavailable', 'PAS is not available');
+	}
+	
+	/**
 	 * Check to see if a GP ID (obj_prof) is on our block list
 	 * @param string $gp_id
 	 * @return boolean

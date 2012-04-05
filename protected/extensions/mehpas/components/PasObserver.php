@@ -15,8 +15,7 @@ class PasObserver {
 				$pas_service->updatePatientFromPas($patient, $assignment);
 			}
 		} else {
-			Yii::log('PAS is not available', 'trace');
-			// @TODO Push an alert onto the user's screen
+			$pas_service->flashPasDown();
 		}
 	}
 
@@ -52,8 +51,7 @@ class PasObserver {
 				$pas_service->updateGpFromPas($gp, $assignment);
 			}
 		} else {
-			Yii::log('PAS is not available', 'trace');
-			// @TODO Push an alert onto the user's screen
+			$pas_service->flashPasDown();
 		}
 	}
 
@@ -72,8 +70,7 @@ class PasObserver {
 			$data['sortDir'] = $params['params']['sortDir'];
 			$params['criteria'] = $pas_service->search($data, $params['params']['pageSize'], $params['params']['currentPage']);
 		} else {
-			Yii::log('PAS is not available', 'trace');
-			// @TODO Push an alert onto the user's screen
+			$pas_service->flashPasDown();
 		}
 	}
 
@@ -88,8 +85,7 @@ class PasObserver {
 		if($pas_service->available) {
 			$pas_service->fetchReferral($params['episode']);
 		} else {
-			Yii::log('PAS is not available', 'trace');
-			// @TODO Push an alert onto the user's screen
+			$pas_service->flashPasDown();
 		}
 	}
 	
