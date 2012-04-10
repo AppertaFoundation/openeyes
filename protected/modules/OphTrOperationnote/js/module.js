@@ -12,7 +12,7 @@ function callbackAddProcedure(procedure_id) {
 					m[1] = m[1].replace(/ .*$/,'');
 
 					if ($('div.'+m[1]).length <1) {
-						$('#procedureSpecificElements').append(html);
+						$('div.ElementAnaesthetic').before(html);
 						$('div.'+m[1]).attr('style','display: none;');
 						$('div.'+m[1]).removeClass('hidden');
 						$('div.'+m[1]).slideToggle('fast');

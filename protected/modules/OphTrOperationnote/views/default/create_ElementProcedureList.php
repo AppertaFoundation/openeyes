@@ -18,16 +18,17 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+<div class="<?php echo $element->elementType->class_name?>">
+	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->eye->id);?>
-<?php
-$form->widget('application.widgets.ProcedureSelection',array(
-	'element' => $element,
-	'selected_procedures' => $this->selected_procedures,
-	'newRecord' => true,
-	'last' => true,
-	'hidden' => ($this->eye == null && !@$_POST['ElementProcedureList']['eye_id'])
-));
-?>
-<div id="procedureSpecificElements"></div>
+	<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->eye->id);?>
+	<?php
+	$form->widget('application.widgets.ProcedureSelection',array(
+		'element' => $element,
+		'selected_procedures' => $this->selected_procedures,
+		'newRecord' => true,
+		'last' => true,
+		'hidden' => ($this->eye == null && !@$_POST['ElementProcedureList']['eye_id'])
+	));
+	?>
+</div>
