@@ -33,8 +33,8 @@ class Ward extends BaseActiveRecord
 {
 	const RESTRICTION_MALE = 1;
 	const RESTRICTION_FEMALE = 2;
-	const RESTRICTION_UNDER_16 = 4;
-	const RESTRICTION_ATLEAST_16 = 8;
+	const RESTRICTION_CHILD = 4;
+	const RESTRICTION_ADULT = 8;
 	const RESTRICTION_OBSERVATION = 16;
 
 	/**
