@@ -122,6 +122,12 @@
 	<?php } ?>
 </p>
 
+<p>
+	<strong>
+		Please be aware that if your child's appointment at Moorfields Eye Hospital NHS Foundation Trust falls within the London 2012 Olympic and Paralympic Games period (27th July until 9th September) it is envisaged that London will be much busier than usual during this time and journeys may take longer. Please ensure that you leave enough time to travel to your child's appointment, ensuring that you check your route before you travel. Travel routes can be checked via the Transport for London website: www.tfl.gov.uk. Patients travelling by hospital transport will continue to be transported as usual. Based on current information, we anticipate that our main hospital at City Road and our satellite facility at Mile End hospital will be most affected in terms of travel during the games.
+	</strong>
+</p>
+
 <?php
 	} // End Child
 	else { 
@@ -198,7 +204,7 @@
 
 <p>
 	<strong>
-		Please be aware that if your appointment at Moorfields Eye Hospital NHS Foundation Trust falls within the London 2012 Olympic and Paralympic Games period (27th July until 9thSeptember) it is envisaged that London will be much busier than usual during this time and journeys may take longer. Please ensure that you leave enough time to travel to your appointment, ensuring that you check your route before you travel. Travel routes can be checked via the Transport for London website: www.tfl.gov.uk. Patients travelling by hospital transport will continue to be transported as usual. Based on current information, we anticipate that our main hospital at City Road and our satellite facility at Mile End hospital will be most affected in terms of travel during the games.
+		Please be aware that if your appointment at Moorfields Eye Hospital NHS Foundation Trust falls within the London 2012 Olympic and Paralympic Games period (27th July until 9th September) it is envisaged that London will be much busier than usual during this time and journeys may take longer. Please ensure that you leave enough time to travel to your appointment, ensuring that you check your route before you travel. Travel routes can be checked via the Transport for London website: www.tfl.gov.uk. Patients travelling by hospital transport will continue to be transported as usual. Based on current information, we anticipate that our main hospital at City Road and our satellite facility at Mile End hospital will be most affected in terms of travel during the games.
 	</strong>
 </p>
 
