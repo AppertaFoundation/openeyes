@@ -3,11 +3,42 @@
 class DefaultController extends BaseEventTypeController
 {
 	public $surgeons;
-	public $selected_procedures;
+	public $selected_procedures = array();
 	public $selected_eye;
 	public $eye;
 	public $drugs;
 	public $anaesthetic_hidden;
+
+	public function getDefaultElements($action, $event_type_id=false, $event=false) {
+		$elements = parent::getDefaultElements($action, $event_type_id, $event);
+
+		// If we're loading the create form and there are procedures pulled from the booking which map to elements
+		// then we need to include them in the form
+		if ($action == 'create' && empty($_POST)) {
+			$extra_elements = array();
+
+			$new_elements = array(array_shift($elements));
+
+			foreach ($this->selected_procedures as $procedure) {
+				$criteria = new CDbCriteria;
+				$criteria->compare('procedure_id',$procedure->id);
+				$criteria->order = 'display_order asc';
+
+				foreach (ProcedureListOperationElement::model()->findAll($criteria) as $element) {
+					$element = new $element->element_type->class_name;
+
+					if (!in_array(get_class($element),$extra_elements)) {
+						$extra_elements[] = get_class($element);
+						$new_elements[] = $element;
+					}
+				}
+			}
+
+			$elements = array_merge($new_elements, $elements);
+		}
+
+		return $elements;
+	}
 
 	public function actionCreate() {
 		$criteria = new CDbCriteria;
@@ -23,8 +54,6 @@ class DefaultController extends BaseEventTypeController
 
 		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
 			if ($booking = $episode->getMostRecentBooking()) {
-				$this->selected_procedures = array();
-
 				foreach ($booking->elementOperation->procedures as $procedure) {
 					$this->selected_procedures[] = $procedure;
 				}

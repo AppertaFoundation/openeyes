@@ -624,10 +624,10 @@ class BookingController extends BaseController
 	 * @param $event_type_id
 	 * @return array
 	 */
-	public function getDefaultElements($event_type_id=false, $event=false) {
+	public function getDefaultElements($action, $event_type_id=false, $event=false) {
 		$etc = new BaseEventTypeController(1);
 		$etc->event = $event;
-		return $etc->getDefaultElements($event_type_id);
+		return $etc->getDefaultElements($action, $event_type_id);
 	}
 
 	/**

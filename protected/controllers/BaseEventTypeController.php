@@ -38,7 +38,7 @@ class BaseEventTypeController extends BaseController
 	 *
 	 * @return array
 	 */
-	public function getDefaultElements($event_type_id=false, $event=false) {
+	public function getDefaultElements($action, $event_type_id=false, $event=false) {
 		if (!$event && isset($this->event)) {
 			$event = $this->event;
 		}
@@ -151,7 +151,7 @@ class BaseEventTypeController extends BaseController
 				throw new Exception('Invalid firm id on attempting to create event.');
 			}
 		}
-		$elements = $this->getDefaultElements($this->event_type->id);
+		$elements = $this->getDefaultElements('create', $this->event_type->id);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
@@ -207,7 +207,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->renderPartial(
 			'create',
-			array('elements' => $this->getDefaultElements(), 'eventId' => null, 'errors' => @$errors),
+			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
 			false, true
 		);
 
@@ -222,7 +222,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 
-		$elements = $this->getDefaultElements();
+		$elements = $this->getDefaultElements('view');
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -280,7 +280,7 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements();
+		$elements = $this->getDefaultElements('update');
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
@@ -358,7 +358,7 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial(
 			'update',
 			array(
-				'elements' => $this->getDefaultElements(),
+				'elements' => $this->getDefaultElements('update'),
 				'errors' => @$errors
 			),
 			false, true
@@ -366,7 +366,7 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function renderDefaultElements($action, $form=false, $data=false) {
-		foreach ($this->getDefaultElements() as $element) {
+		foreach ($this->getDefaultElements($action) as $element) {
 			if ($action == 'create' && empty($_POST)) {
 				$element->setDefaultOptions();
 			}

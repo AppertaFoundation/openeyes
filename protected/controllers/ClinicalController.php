@@ -94,7 +94,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 
-		$elements = $this->service->getDefaultElements($this->event);
+		$elements = $this->service->getDefaultElements('view', $this->event);
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -164,7 +164,7 @@ class ClinicalController extends BaseController
 			}
 		}
 
-		$elements = $this->service->getDefaultElements(false,$eventType->id);
+		$elements = $this->service->getDefaultElements('create',false,$eventType->id);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm subspecialty is not defined.');
@@ -278,7 +278,7 @@ class ClinicalController extends BaseController
 			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
 		}
 
-		$elements = $this->service->getDefaultElements($event);
+		$elements = $this->service->getDefaultElements('update',$event);
 
 		if (!count($elements)) {
 			throw new CHttpException(403, 'That combination event type and firm subspecialty is not defined.');
@@ -547,10 +547,10 @@ class ClinicalController extends BaseController
 	 * @param $event_type_id
 	 * @return array
 	 */
-	public function getDefaultElements($event_type_id=false, $event=false) {
+	public function getDefaultElements($action, $event_type_id=false, $event=false) {
 		$etc = new BaseEventTypeController(1);
 		$etc->event = $event;
-		return $etc->getDefaultElements($event_type_id);
+		return $etc->getDefaultElements($action, $event_type_id);
 	}
 
 	/**

@@ -409,7 +409,7 @@ class PatientController extends BaseController
 		$this->patient = $this->event->episode->patient;
 		$episodes = $this->patient->episodes;
 
-		$elements = $this->service->getDefaultElements($this->event);
+		$elements = $this->service->getDefaultElements('view', $this->event);
 
 		$this->editable = $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id;
 
@@ -549,10 +549,10 @@ class PatientController extends BaseController
 	 * @param $event_type_id
 	 * @return array
 	 */
-	public function getDefaultElements($event_type_id=false, $event=false) {
+	public function getDefaultElements($action, $event_type_id=false, $event=false) {
 		$etc = new BaseEventTypeController(1);
 		$etc->event = $event;
-		return $etc->getDefaultElements($event_type_id);
+		return $etc->getDefaultElements($action, $event_type_id);
 	}
 
 	/**

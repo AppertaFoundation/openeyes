@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="<?php echo $element->elementType->class_name?> ondemand" style="display: block;">
+<div class="<?php echo $element->elementType->class_name?> ondemand">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 	<div class="splitElement clearfix" style="background-color: #DAE6F1;">

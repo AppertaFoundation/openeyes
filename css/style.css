@@ -609,7 +609,8 @@ span.surname { font-weight: bold; }
 .extraDetails-margin { margin-left: 310px; }
 
 /* ON-DEMAND - wrapper for elements that appear 'on-demand' */
-#event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/extra-element_view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; display: none; }
+#event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/extra-element_view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
+#event_content .hidden { display: none; }
 .ondemand > .demandReason { position:absolute; top:0; right:30px; color:#979fa7; font-size:11px; padding:4px 7px 2px 7px; 
 background: -moz-linear-gradient(#c8d3dd, #dae6f1);    
 background: -ms-linear-gradient(#c8d3dd, #dae6f1);  

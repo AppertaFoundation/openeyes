@@ -18,7 +18,7 @@
  */
 ?>
 
-<div class="<?php echo $element->elementType->class_name?>">
+<div class="<?php echo $element->elementType->class_name?> ondemand">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
 	<?php echo $form->dropDownList($element, 'gas_type_id', CHtml::listData(GasType::model()->findAll(),'id','name'),array('empty'=>'- Please select -'))?>

@@ -9,10 +9,12 @@ function callbackAddProcedure(procedure_id) {
 			if (html.length >0) {
 				var m = html.match(/<div class="(Element.*?)"/);
 				if (m) {
-					m[1] = m[1].replace(/ ondemand$/,'');
+					m[1] = m[1].replace(/ .*$/,'');
 
 					if ($('div.'+m[1]).length <1) {
 						$('#procedureSpecificElements').append(html);
+						$('div.'+m[1]).attr('style','display: none;');
+						$('div.'+m[1]).removeClass('hidden');
 						$('div.'+m[1]).slideToggle('fast');
 					}
 				}

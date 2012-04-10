@@ -147,7 +147,7 @@ class Event extends BaseActiveRecord
 	}
 
 	public function getInfoText() {
-		foreach (Yii::app()->getController()->getDefaultElements(false,$this) as $element) {
+		foreach (Yii::app()->getController()->getDefaultElements('view',false,$this) as $element) {
 			if ($element->getInfoText()) {
 				return $element->getInfoText();
 			}

@@ -217,10 +217,10 @@ class ClinicalService
 	 * @param $event_type_id
 	 * @return array
 	 */
-	public function getDefaultElements($event=false, $event_type_id=false) {
+	public function getDefaultElements($action, $event=false, $event_type_id=false) {
 		$etc = new BaseEventTypeController(1);
 		$etc->event = $event;
-		return $etc->getDefaultElements($event_type_id);
+		return $etc->getDefaultElements($action, $event_type_id);
 	}
 
 	/**
