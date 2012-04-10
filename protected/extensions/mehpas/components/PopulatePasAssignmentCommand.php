@@ -115,9 +115,22 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				$assignment->save();
 				$results['updated']++;
 			} else {
-				// No match
-				$results['skipped']++;
-				echo "Cannot find match in PAS for obj_prof $obj_prof, cannot create assignment\n";
+				// No match, let's check to see if patients using this gp are stale
+				$stale_patients = Patient::model()->findAllByAttributes(array('gp_id',$gp_id));
+				$still_used = false;
+				foreach($stale_patients as $patient) {
+					if($patient->gp_id == $gp_id) {
+						$still_used = true;
+					}
+				}
+				if($still_used) {
+					$results['skipped']++;
+					echo "Cannot find match in PAS for obj_prof $obj_prof, cannot create assignment\n";
+				} else {
+					echo "Deleting unused GP\n";
+					$results['removed']++;
+					Gp::model()->deleteByPk($duplicate_gp_id);
+				}
 			}
 
 		}
