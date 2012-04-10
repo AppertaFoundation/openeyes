@@ -327,11 +327,30 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 			$('div.infoBox').hide();
 
+			$('tr[id^="oprow_"]').children('td').attr('style','');
+
 			$.ajax({
 				'type': 'POST',
 				'data': data,
+				'dataType': 'json',
 				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
 				'success': function(data) {
+					var count = 0;
+
+					$.each(data, function(key, value) {
+						count += 1;
+
+						$('#oprow_'+value["operation_id"]).children('td:first').attr('style','background: #f44;');
+					});
+
+					if (count != 0) {
+						alert(count+" admission time"+(count==1 ? '' : 's')+" requested are outside the times of the booked session.\n\nPlease correct the time"+(count==1 ? '' : 's')+" highlighted in red.");
+
+						$('#loader2_'+selected_tbody_id).hide();
+						enableButtons();
+						return;
+					}
+
 					$.ajax({
 						'type': 'POST',
 						'data': 'session_id='+selected_tbody_id,
