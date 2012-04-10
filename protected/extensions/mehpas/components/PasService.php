@@ -47,8 +47,8 @@ class PasService {
 	 */
 	public function flashPasDown() {
 		Yii::log('PAS is not available, displayed data may be out of date', 'trace');
-		if($user = Yii::app()->user) {
-			$user->setFlash('warning.pas_unavailable', 'PAS is not available');
+		if(Yii::app()->hasComponent('user')) {
+			Yii::app()->user->setFlash('warning.pas_unavailable', 'PAS is not available');
 		}
 	}
 	
