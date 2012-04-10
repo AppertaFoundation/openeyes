@@ -81,9 +81,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				$merged = 0;
 				foreach($duplicate_gps as $duplicate_gp_id) {
 					$gp_patients = Yii::app()->db->createCommand()
-					->update('patient', array('gp_id' => $gp_id))
-					->where('gp_id = :duplicate_gp_id', array(':duplicate_gp_id' => $duplicate_gp_id))
-					->query();
+					->update('patient', array('gp_id' => $gp_id), 'gp_id = :duplicate_gp_id', array(':duplicate_gp_id' => $duplicate_gp_id));
 					$merged += $gp_patients;
 					Gp::model()->deleteByPk($duplicate_gp_id);
 				}
