@@ -4,7 +4,6 @@ class DefaultController extends BaseEventTypeController
 {
 	public $surgeons;
 	public $selected_procedures = array();
-	public $selected_eye;
 	public $eye;
 	public $drugs;
 	public $anaesthetic_hidden;
@@ -58,12 +57,8 @@ class DefaultController extends BaseEventTypeController
 					$this->selected_procedures[] = $procedure;
 				}
 
-				$this->selected_eye = $booking->elementOperation->eye_id;
+				$this->eye = $booking->elementOperation->eye;
 			}
-		}
-
-		if ($this->selected_eye) {
-			$this->eye = ($this->selected_eye == 1 ? 'L' : 'R');
 		}
 
 		$this->drugs = $this->getDrugsBySiteAndSubspecialty();
@@ -126,7 +121,7 @@ class DefaultController extends BaseEventTypeController
 		foreach (ProcedureListOperationElement::model()->findAll($criteria) as $element) {
 			$element = new $element->element_type->class_name;
 
-			$this->eye = @$_GET['eye'];
+			$this->eye = Eye::model()->findByPk(@$_GET['eye']);
 
 			$this->renderPartial(
 				'create' . '_' . get_class($element),

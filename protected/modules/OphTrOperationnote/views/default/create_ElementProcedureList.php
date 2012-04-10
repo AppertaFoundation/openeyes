@@ -20,14 +20,14 @@
 
 <h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
 
-<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->selected_eye);?>
+<?php echo $form->radioButtons($element, 'eye_id', 'eye', $this->eye->id);?>
 <?php
 $form->widget('application.widgets.ProcedureSelection',array(
 	'element' => $element,
 	'selected_procedures' => $this->selected_procedures,
 	'newRecord' => true,
 	'last' => true,
-	'hidden' => ($this->selected_eye == null && !@$_POST['ElementProcedureList']['eye_id'])
+	'hidden' => ($this->eye == null && !@$_POST['ElementProcedureList']['eye_id'])
 ));
 ?>
 <div id="procedureSpecificElements"></div>

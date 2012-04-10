@@ -1,6 +1,6 @@
 
 function callbackAddProcedure(procedure_id) {
-	var eye = ($('input[name="ElementProcedureList\[eye_id\]"]:checked').val() == 2) ? 'R' : 'L';
+	var eye = $('input[name="ElementProcedureList\[eye_id\]"]:checked').val();
 
 	$.ajax({
 		'type': 'GET',
