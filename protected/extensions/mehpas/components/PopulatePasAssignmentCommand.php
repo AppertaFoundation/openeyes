@@ -50,7 +50,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 		->queryAll();
 
 		echo "There are ".count($gps)." gps without an assignment, processing...\n";
-		
+
 		$updated = 0;
 		foreach($gps as $gp) {
 
@@ -70,12 +70,32 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				continue;
 			}
 
+			// Check to see if there is more than one GP with the same obj_prof (duplicates)
+			$duplicate_gps = Yii::app()->db->createCommand()
+			->select('id')
+			->from('gp')
+			->where('obj_prof = :obj_prof AND id != :gp_id', array(':obj_prof' => $obj_prof, ':gp_id' => $gp_id))
+			->queryColumn();
+			if(count($duplicate_gps)) {
+				echo "There are one or more other GPs with obj_prof $obj_prof, attempting to merge\n";
+				$merged = 0;
+				foreach($duplicate_gps as $duplicate_gp_id) {
+					$gp_patients = Yii::app()->db->createCommand()
+					->update('patient', array('gp_id' => $gp_id))
+					->where('gp_id = :duplicate_gp_id', array(':duplicate_gp_id' => $duplicate_gp_id))
+					->query();
+					$merged += $gp_patients;
+					Gp::model()->deleteByPk($duplicate_gp_id);
+				}
+				echo "Removed ".count($duplicate_gps)." duplicate GP(s) and merged $merged patients\n";
+			}
+				
 			// Find a matching gp
 			$pas_gps = PAS_Gp::model()->findAll(array(
 					'condition' => 'OBJ_PROF = :obj_prof AND (DATE_TO IS NULL OR DATE_TO >= SYSDATE) AND (DATE_FR IS NULL OR DATE_FR <= SYSDATE)',
 					'order' => 'DATE_FR DESC',
 					'params' => array(
-						':obj_prof' => $obj_prof,
+							':obj_prof' => $obj_prof,
 					),
 			));
 
