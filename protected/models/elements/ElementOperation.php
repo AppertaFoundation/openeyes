@@ -756,7 +756,7 @@ class ElementOperation extends BaseElement
 
 			$genderRestrict = $ageRestrict = 0;
 			$genderRestrict = ('M' == $patient->gender) ? Ward::RESTRICTION_MALE : Ward::RESTRICTION_FEMALE;
-			$ageRestrict = ($patient->getAge() < 16) ? Ward::RESTRICTION_UNDER_16 : Ward::RESTRICTION_ATLEAST_16;
+			$ageRestrict = ($patient->getAge() < 16) ? Ward::RESTRICTION_CHILD : Ward::RESTRICTION_CHILD;
 
 			$whereSql = 's.id = :id AND
 				(w.restriction & :r1 > 0) AND (w.restriction & :r2 > 0)';
