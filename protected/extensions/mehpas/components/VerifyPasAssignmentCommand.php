@@ -95,16 +95,11 @@ class VerifyPasAssignmentCommand extends CConsoleCommand {
 				echo ".";
 			}
 			$obj_prof = $gp['external_id'];
-			$pas_gp = PAS_Gp::model()->findAll('obj_prof = :obj_prof', array(
-					':obj_prof' => $obj_prof,
-			));
+			$pas_gp = PAS_Gp::model()->findByExternalId($obj_prof);
 
-			if(count($pas_gp) == 1) {
-				// Found a single match
-				Yii::log("Found match in PAS for obj_prof $obj_prof", 'trace');
-			} else if(count($pas_gp) > 1) {
-				// Found more than one match
-				echo "Found more than one match in PAS for obj_prof $obj_prof\n";
+			if($pas_gp) {
+				// Found a match
+				Yii::log("Found a match in PAS for obj_prof $obj_prof", 'trace');
 			} else {
 				// No match
 				echo "Cannot find match in PAS for obj_prof $obj_prof\n";
