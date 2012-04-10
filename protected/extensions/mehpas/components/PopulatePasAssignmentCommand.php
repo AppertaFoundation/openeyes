@@ -51,7 +51,12 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 
 		echo "There are ".count($gps)." gps without an assignment, processing...\n";
 
-		$updated = 0;
+		$results = array(
+				'updated' => 0,
+				'removed' => 0,
+				'duplicates' => 0,
+				'skipped' => 0,
+		);
 		foreach($gps as $gp) {
 
 			$obj_prof = $gp['obj_prof'];
@@ -66,6 +71,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 			if(!$patient) {
 				// GP is not being used, let's delete it!
 				echo "Deleting unused GP\n";
+				$results['removed']++;
 				Gp::model()->deleteByPk($gp_id);
 				continue;
 			}
@@ -82,10 +88,11 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				foreach($duplicate_gps as $duplicate_gp_id) {
 					$gp_patients = Yii::app()->db->createCommand()
 					->update('patient', array('gp_id' => $gp_id), 'gp_id = :duplicate_gp_id', array(':duplicate_gp_id' => $duplicate_gp_id));
-					$merged += $gp_patients;
+					$results['duplicates']++;
+					$results['removed']++;
 					Gp::model()->deleteByPk($duplicate_gp_id);
 				}
-				echo "Removed ".count($duplicate_gps)." duplicate GP(s) and merged $merged patients\n";
+				echo "Removed ".count($duplicate_gps)." duplicate GP(s) and merged their patients\n";
 			}
 				
 			// Find a matching gp
@@ -106,15 +113,20 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				$assignment->internal_id = $gp_id;
 				$assignment->internal_type = 'Gp';
 				$assignment->save();
-				$updated++;
+				$results['updated']++;
 			} else {
 				// No match
+				$results['skipped']++;
 				echo "Cannot find match in PAS for obj_prof $obj_prof, cannot create assignment\n";
 			}
 
 		}
 
-		echo "Created $updated gp assignments\n";
+		echo "Results:\n";
+		echo " - Updated: ".$results['updated']."\n";
+		echo " - Removed: ".$results['removed']."\n";
+		echo " - Duplicates: ".$results['duplicates']."\n";
+		echo " - Skipped: ".$results['skipped']."\n";
 		echo "Done.\n";
 	}
 
