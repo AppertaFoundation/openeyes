@@ -122,7 +122,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 
 		}
 
-		echo "Results:\n";
+		echo "GP Results:\n";
 		echo " - Updated: ".$results['updated']."\n";
 		echo " - Removed: ".$results['removed']."\n";
 		echo " - Duplicates: ".$results['duplicates']."\n";
@@ -142,7 +142,12 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 
 		echo "There are ".count($patients)." patients without an assignment, processing...\n";
 
-		$updated = 0;
+		$results = array(
+				'updated' => 0,
+				'removed' => 0,
+				'duplicates' => 0,
+				'skipped' => 0,
+		);
 		foreach($patients as $patient) {
 
 			// Find rm_patient_no
@@ -163,18 +168,22 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				$assignment->internal_id = $patient['id'];
 				$assignment->internal_type = 'Patient';
 				$assignment->save();
-				$updated++;
+				$results['updated']++;
 			} else if(count($patient_no) > 1) {
 				// Found more than one match
 				echo "Found more than one match in PAS for hos_num $hos_num, cannot create assignment\n";
+				$results['skipped']++;
 			} else {
 				// No match
 				echo "Cannot find match in PAS for hos_num $hos_num, cannot create assignment\n";
+				$results['skipped']++;
 			}
 
 		}
 
-		echo "Created $updated patient assignments\n";
+		echo "Patient Results:\n";
+		echo " - Updated: ".$results['updated']."\n";
+		echo " - Skipped: ".$results['skipped']."\n";
 		echo "Done.\n";
 	}
 

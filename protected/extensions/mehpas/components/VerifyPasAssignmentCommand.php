@@ -32,6 +32,7 @@ class VerifyPasAssignmentCommand extends CConsoleCommand {
 		$pas_service = new PasService();
 		if ($pas_service->available) {
 			$this->verifyPatientPasAssignment();
+			$this->verifyGpPasAssignment();
 		} else {
 			echo "PAS is unavailable or module is disabled";
 			return false;
@@ -63,12 +64,50 @@ class VerifyPasAssignmentCommand extends CConsoleCommand {
 			if(count($pas_patient) == 1) {
 				// Found a single match
 				Yii::log("Found match in PAS for rm_patient_no $rm_patient_no", 'trace');
-			} else if(count($patient_no) > 1) {
+			} else if(count($pas_patient) > 1) {
 				// Found more than one match
 				echo "Found more than one match in PAS for rm_patient_no $rm_patient_no\n";
 			} else {
 				// No match
 				echo "Cannot find match in PAS for rm_patient_no $rm_patient_no\n";
+			}
+
+		}
+
+		echo "\nDone.\n";
+	}
+
+	protected function verifyGpPasAssignment() {
+
+		// Checks all the gp assignments are still valid in PAS
+		$gps = Yii::app()->db->createCommand()
+		->select('external_id')
+		->from('pas_assignment')
+		->where("pas_assignment.internal_type = 'Gp'")
+		->queryAll();
+
+		echo "There are ".count($gps)." gp assignments, processing...\n";
+
+		$count = 0;
+		foreach($gps as $gp) {
+			$count++;
+			if($count % 100 == 0) {
+				echo ".";
+			}
+			$obj_prof = $gp['external_id'];
+			$pas_gp = PAS_Gp::model()->findAll('obj_prof = :obj_prof', array(
+					':obj_prof' => $obj_prof,
+			));
+
+			if(count($pas_gp) == 1) {
+				// Found a single match
+				Yii::log("Found match in PAS for obj_prof $obj_prof", 'trace');
+			} else if(count($pas_gp) > 1) {
+				// Found more than one match
+				echo "Found more than one match in PAS for obj_prof $obj_prof\n";
+			} else {
+				// No match
+				echo "Cannot find match in PAS for obj_prof $obj_prof\n";
 			}
 
 		}
