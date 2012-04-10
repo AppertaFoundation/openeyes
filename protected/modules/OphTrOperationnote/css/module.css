@@ -1,19 +1,15 @@
 
+#event_OphTrOperationnote .ElementCataract .left .halfHeight .eventDetail { margin-left: 320px; }
+#event_OphTrOperationnote .ElementCataract .right .halfHeight .eventDetail { width: 110px !important; }
+
+#event_OphTrOperationnote .ElementCataract .eventDetail .label { background: none !important; }
+
 #ed_canvas_edit_Cataract { background-color: #fff; border: 1px solid #000; margin-left: 9px; }
 #ed_canvas_edit_Position { background-color: #DAE6F1; margin-left: 135px; }
 
-#div_ElementCataract_incision_site_id { margin-left: 320px; margin-top: 100px; }
-#div_ElementCataract_incision_type_id { margin-left: 320px; }
-#div_ElementCataract_length { margin-left: 320px; }
-#div_ElementCataract_meridian { margin-left: 320px; }
-#div_ElementCataract_vision_blue { margin-left: 320px; padding-bottom: 7px !important; }
-#div_ElementCataract_report { margin-left: 320px; }
-
-#div_ElementCataract_incision_site_id .label { width: 110px !important; background: none !important; }
-#div_ElementCataract_incision_type_id .label { width: 110px !important; background: none !important; }
-#div_ElementCataract_length .label { width: 110px !important; background: none !important; }
-#div_ElementCataract_meridian .label { width: 110px !important; background: none !important; }
-#div_ElementCataract_vision_blue .label { width: 110px !important; background: none !important; }
-#div_ElementCataract_report .label { width: 110px !important; background: none !important; }
+#div_ElementCataract_incision_site_id { margin-top: 100px; }
+#div_ElementCataract_vision_blue { padding-bottom: 7px !important; }
 #div_ElementCataract_iol_position_id .label { float: none !important; display: block !important; font-size:15px !important; padding-bottom: 4px !important; }
 #div_ElementCataract_Complications .label { float: none !important; display: block !important; font-size:15px !important; padding-bottom: 4px !important; }
+
+#div_ElementSurgeon { padding-bottom: 28px !important; }
