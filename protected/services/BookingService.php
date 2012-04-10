@@ -98,7 +98,7 @@ class BookingService
 			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			LEFT JOIN `booking` `a` ON s.id = a.session_id
 			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			LEFT JOIN `event` `e` ON `o`.event_id = `event`.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
 				AND s.date = '$date' AND $firmSql
 				AND `e`.hidden = 0
@@ -125,7 +125,7 @@ class BookingService
 			FROM `session` `s`
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			JOIN `event` `e` ON `o`.event_id = `event`.id
+			JOIN `event` `e` ON `o`.event_id = `e`.id
 			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
 			WHERE s.id = '" . $sessionId . "'
