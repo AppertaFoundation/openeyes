@@ -1,4 +1,3 @@
-<script type="text/javascript"> var multiSelectField = '<?php echo $field?>'; </script>
 <input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" />
 <div id="div_<?php echo get_class($element)?>_<?php echo @$htmlOptions['label']?>" class="eventDetail">
 	<div class="label"><?php echo @$htmlOptions['label']?>:</div>

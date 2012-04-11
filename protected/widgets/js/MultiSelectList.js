@@ -7,6 +7,9 @@ $(document).ready(function() {
 
 			var element_class = $(this).attr('name').replace(/\[.*$/,'');
 
+			var m = $(this).parent().parent().prev('input').attr('name').match(/\[MultiSelectList_(.*?)\]/);
+			var multiSelectField = m[1];
+
 			$(this).parent().children('div').children('ul').append('<input type="hidden" name="'+multiSelectField+'[]" value="'+selected.val()+'" />');
 
 			selected.remove();
