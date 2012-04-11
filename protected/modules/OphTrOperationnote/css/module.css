@@ -11,5 +11,6 @@
 #div_ElementCataract_vision_blue { padding-bottom: 7px !important; }
 #div_ElementCataract_iol_position_id .label { float: none !important; display: block !important; font-size:15px !important; padding-bottom: 4px !important; }
 #div_ElementCataract_Complications .label { float: none !important; display: block !important; font-size:15px !important; padding-bottom: 4px !important; }
+#div_ElementCataract_Complications ul.MultiSelectList { width: 185px; }
 
 #div_ElementSurgeon { padding-bottom: 28px !important; }

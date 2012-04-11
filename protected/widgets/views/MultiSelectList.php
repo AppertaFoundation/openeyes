@@ -9,8 +9,8 @@
 				<option value="<?php echo $value?>"><?php echo $option?></option>
 			<?php }?>
 		</select>
-		<div style="background-color: #fff;">
-			<ul style="list-style-type: none; padding-left: 10px;">
+		<div class="MultiSelectList">
+			<ul class="MultiSelectList">
 				<?php foreach ($selected_ids as $id) {?>
 					<li>
 						<?php echo $options[$id]?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)

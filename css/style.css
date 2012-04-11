@@ -972,3 +972,6 @@ table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; borde
 
 .elements { margin-bottom: 20px; }
 canvas { outline: none; }
+
+ul.MultiSelectList { list-style-type: none; padding-left: 10px; }
+div.MultiSelectList { background: #fff; }
