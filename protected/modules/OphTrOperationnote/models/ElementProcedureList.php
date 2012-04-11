@@ -149,4 +149,38 @@ class ElementProcedureList extends BaseEventTypeElement
 
 		return parent::beforeValidate();
 	}
+
+	public function getSelected_procedures() {
+		if (Yii::app()->getController()->getAction()->id == 'create') {
+			// Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
+			if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+				throw new SystemException('Patient not found: '.@$_GET['patient_id']);
+			}
+
+			$selected_procedures = array();
+
+			if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+				if ($booking = $episode->getMostRecentBooking()) {
+					foreach ($booking->elementOperation->procedures as $procedure) {
+						$selected_procedures[] = $procedure;
+					}
+				}
+			}
+
+			return $selected_procedures;
+		}
+	}
+
+	public function getSelectedEye() {
+		// Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new SystemException('Patient not found: '.@$_GET['patient_id']);
+		}
+
+		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+			if ($booking = $episode->getMostRecentBooking()) {
+				return $booking->elementOperation->eye;
+			}
+		}
+	}
 }

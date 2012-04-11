@@ -128,4 +128,17 @@ class ElementAnaesthetic extends BaseEventTypeElement
 	public function setDefaultOptions() {
 		$this->anaesthetic_type_id = 1;
 	}
+
+	public function getHidden() {
+		if (Yii::app()->getController()->getAction()->id == 'create') {
+			return (@$_POST['ElementAnaesthetic']['anaesthetic_type_id'] == 5);
+		} else {
+			if (empty($_POST)) {
+				$anaesthetic_element = ElementAnaesthetic::model()->find('event_id=?',array($this->event_id));
+				$this->anaesthetic_hidden = ($anaesthetic_element->anaesthetic_type_id == 5);
+			} else {
+				$this->anaesthetic_hidden = (@$_POST['ElementAnaesthetic']['anaesthetic_type_id'] == 5);
+			}
+		}
+	}
 }

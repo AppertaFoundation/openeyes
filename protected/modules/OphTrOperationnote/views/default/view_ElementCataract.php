@@ -60,7 +60,7 @@
 		<div class="left" style="width:60%;">
 			<?php
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetCataract', array(
-				'side'=>$this->eye,
+				'side'=>$element->eye->getShortName(),
 				'mode'=>'view',
 				'size'=>200,
 				'model'=>$element,
@@ -69,7 +69,7 @@
 			?>
 			<?php
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetSurgeonPosition', array(
-				'side'=>$this->eye,
+				'side'=>$element->eye->getShortName(),
 				'mode'=>'view',
 				'size'=>200,
 				'model'=>$element,

@@ -33,6 +33,7 @@
 class ElementSurgeon extends BaseEventTypeElement
 {
 	public $service;
+	public $surgeonlist;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -131,5 +132,17 @@ class ElementSurgeon extends BaseEventTypeElement
 		if ($user->is_doctor) {
 			$this->surgeon_id = $user->id;
 		}
+	}
+
+	public function getSurgeons() {
+		if (!$this->surgeonlist) {
+			$criteria = new CDbCriteria;
+			$criteria->compare('is_doctor',1);
+			$criteria->order = 'first_name,last_name asc';
+
+			$this->surgeonlist = User::model()->findAll($criteria);
+		}
+
+		return $this->surgeonlist;
 	}
 }

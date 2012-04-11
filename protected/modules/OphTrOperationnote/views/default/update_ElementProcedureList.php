@@ -25,7 +25,7 @@
 	<?php
 	$form->widget('application.widgets.ProcedureSelection',array(
 		'element' => $element,
-		'selected_procedures' => $this->selected_procedures,
+		'selected_procedures' => $element->selected_procedures,
 		'newRecord' => true,
 		'last' => true
 	));

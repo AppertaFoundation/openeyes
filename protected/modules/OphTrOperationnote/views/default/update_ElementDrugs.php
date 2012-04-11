@@ -20,5 +20,5 @@
 
 <div class="<?php echo $element->elementType->class_name?>">
 	<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-	<?php echo $form->multiSelectList($element, 'Drug', 'drugs', 'drug_id', $this->drugs, array('empty' => '- Drugs -', 'label' => 'Drugs'))?>
+	<?php echo $form->multiSelectList($element, 'Drug', 'drugs', 'drug_id', $element->druglist, array('empty' => '- Drugs -', 'label' => 'Drugs'))?>
 </div>

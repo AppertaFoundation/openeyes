@@ -25,7 +25,7 @@
 		<div class="left" style="width:65%;">
 			<?php
 			$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetCataract', array(
-				'side'=>$this->eye->getShortName(),
+				'side'=>$element->getSelectedEye()->getShortName(),
 				'mode'=>'edit',
 				'size'=>300,
 				'model'=>$element,
@@ -48,7 +48,7 @@
 				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
 				<?php
 				$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetSurgeonPosition', array(
-					'side'=>$this->eye->getShortName(),
+					'side'=>$element->getSelectedEye()->getShortName(),
 					'mode'=>'edit',
 					'size'=>200,
 					'model'=>$element,
