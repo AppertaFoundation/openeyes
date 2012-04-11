@@ -586,6 +586,8 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function init() {
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
+
 		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'),true);
 		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'),true);
 		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img'),true).'/';
