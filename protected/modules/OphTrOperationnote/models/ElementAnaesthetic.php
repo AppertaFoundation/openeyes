@@ -82,6 +82,7 @@ class ElementAnaesthetic extends BaseEventTypeElement
 			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
 			'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
 			'anaesthetic_delivery' => array(self::BELONGS_TO, 'AnaestheticDelivery', 'anaesthetic_delivery_id'),
+			'anaesthetic_agents' => array(self::HAS_MANY, 'OperationAnaestheticAgent', 'et_ophtroperationnote_anaesthetic_id'),
 		);
 	}
 
@@ -93,6 +94,7 @@ class ElementAnaesthetic extends BaseEventTypeElement
 		return array(
 			'id' => 'ID',
 			'event_id' => 'Event',
+			'agents' => 'Agents',
 			'anaesthetic_type_id' => 'Type',
 			'anaesthetist_id' => 'Given by',
 			'anaesthetic_delivery_id' => 'Delivery',
@@ -140,5 +142,53 @@ class ElementAnaesthetic extends BaseEventTypeElement
 
 			return (@$_POST['ElementAnaesthetic']['anaesthetic_type_id'] == 5);
 		}
+	}
+	
+	public function getAnaesthetic_agent_list() {
+		return $this->getAnaestheticAgentsBySiteAndSubspecialty();
+	}
+
+	public function getAnaestheticAgentsBySiteAndSubspecialty($table='site_subspecialty_anaesthetic_agent') {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+		$site_id = Yii::app()->request->cookies['site_id']->value;
+
+		return CHtml::listData(Yii::app()->db->createCommand()
+			->select('anaesthetic_agent.id, anaesthetic_agent.name')
+			->from('anaesthetic_agent')
+			->join($table,$table.'.anaesthetic_agent_id = anaesthetic_agent.id')
+			->where($table.'.subspecialty_id = :subSpecialtyId and '.$table.'.site_id = :siteId',array(':subSpecialtyId'=>$subspecialty_id,':siteId'=>$site_id))
+			->queryAll(), 'id', 'name');
+	}
+
+	public function getAnaesthetic_agent_defaults() {
+		$ids = array();
+		foreach ($this->getAnaestheticAgentsBySiteAndSubspecialty('site_subspecialty_anaesthetic_agent_default') as $id => $anaesthetic_agent) {
+			$ids[] = $id;
+		}
+		return $ids;
+	}
+
+	protected function afterSave() {
+		$order = 1;
+
+		if (!empty($_POST['AnaestheticAgent'])) {
+
+			OperationAnaestheticAgent::model()->deleteAll('et_ophtroperationnote_anaesthetic_id = :anaestheticId', array(':anaestheticId' => $this->id));
+
+			foreach ($_POST['AnaestheticAgent'] as $id) {
+				$anaesthetic_agent = new OperationAnaestheticAgent;
+				$anaesthetic_agent->et_ophtroperationnote_anaesthetic_id = $this->id;
+				$anaesthetic_agent->anaesthetic_agent_id = $id;
+
+				if (!$anaesthetic_agent->save()) {
+					throw new Exception('Unable to save anaesthetic_agent: '.print_r($anaesthetic_agent->getErrors(),true));
+				}
+
+				$order++;
+			}
+		}
+
+		return parent::afterSave();
 	}
 }

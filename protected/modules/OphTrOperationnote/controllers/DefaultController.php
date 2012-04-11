@@ -6,6 +6,10 @@ class DefaultController extends BaseEventTypeController {
 	}
 
 	public function actionUpdate($id) {
+		if (!empty($_POST)) {
+			file_put_contents("/tmp/debug",print_r($_POST,true));
+		}
+
 		parent::actionUpdate($id);
 	}
 

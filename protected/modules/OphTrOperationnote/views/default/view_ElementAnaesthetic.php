@@ -33,6 +33,19 @@
 			</div>
 		</div>
 		<div class="left">
+			<h4><?php echo CHtml::encode($element->getAttributeLabel('agents'))?></h4>
+			<div class="eventHighlight">
+				<?php foreach ($element->anaesthetic_agents as $agent) {?>
+					<h4><?php echo $agent->name?></h4>
+				<?php }?>
+			</div>
+		</div>
+		<div class="right">
+			<h4><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
+			<div class="eventHighlight">
+			</div>
+		</div>
+		<div class="left">
 			<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
 			<div class="eventHighlight">
 				<h4><?php echo $element->anaesthetic_delivery->name?></h4>

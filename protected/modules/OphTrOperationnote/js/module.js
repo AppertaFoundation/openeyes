@@ -143,7 +143,8 @@ $(document).ready(function() {
 				anaesthetic_type_sliding = true;
 				$('#anaesthetist_id').slideToggle('fast');
 				$('#anaesthetic_delivery_id').slideToggle('fast');
-				$('#anaesthetic_delivery_id').next().slideToggle('fast',function() {
+				$('div[id^="div_ElementAnaesthetic_Anaesthetic"]').slideToggle('fast');
+				$('#div_ElementAnaesthetic_anaesthetic_comment').slideToggle('fast',function() {
 					anaesthetic_type_sliding = false;
 				});
 			}
@@ -152,7 +153,8 @@ $(document).ready(function() {
 				anaesthetic_type_sliding = true;
 				$('#anaesthetist_id').slideToggle('fast');
 				$('#anaesthetic_delivery_id').slideToggle('fast');
-				$('#anaesthetic_delivery_id').next().slideToggle('fast',function() {
+				$('div[id^="div_ElementAnaesthetic_Anaesthetic"]').slideToggle('fast');
+				$('#div_ElementAnaesthetic_anaesthetic_comment').slideToggle('fast',function() {
 					anaesthetic_type_sliding = false;
 				});
 			}
