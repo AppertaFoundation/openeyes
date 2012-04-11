@@ -42,6 +42,6 @@ function selectSort(a, b) {
 var rootItem = null;
 
 function sort_selectbox(element) {
-	rootItem = $('#'+element.attr('id')+' option:first').text();
-	$('#'+element.attr('id')+' option').sort(selectSort).appendTo('#'+element.attr('id'));
+	rootItem = element.children('option:first').text();
+	element.append(element.children('option').sort(selectSort));
 }
