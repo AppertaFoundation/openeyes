@@ -148,11 +148,11 @@ class ElementDrugs extends BaseEventTypeElement
 		return parent::beforeValidate();
 	}
 
-	public function getDrugList() {
+	public function getDrug_list() {
 		return $this->getDrugsBySiteAndSubspecialty();
 	}
 
-	public function getDrugsBySiteAndSubspecialty() {
+	public function getDrugsBySiteAndSubspecialty($table='site_subspecialty_drug') {
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 		$subspecialty_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 		$site_id = Yii::app()->request->cookies['site_id']->value;
@@ -160,8 +160,16 @@ class ElementDrugs extends BaseEventTypeElement
 		return CHtml::listData(Yii::app()->db->createCommand()
 			->select('drug.id, drug.name')
 			->from('drug')
-			->join('site_subspecialty_drug','site_subspecialty_drug.drug_id = drug.id')
-			->where('site_subspecialty_drug.subspecialty_id = :subSpecialtyId and site_subspecialty_drug.site_id = :siteId',array(':subSpecialtyId'=>$subspecialty_id,':siteId'=>$site_id))
+			->join($table,$table.'.drug_id = drug.id')
+			->where($table.'.subspecialty_id = :subSpecialtyId and '.$table.'.site_id = :siteId',array(':subSpecialtyId'=>$subspecialty_id,':siteId'=>$site_id))
 			->queryAll(), 'id', 'name');
+	}
+
+	public function getDrug_defaults() {
+		$ids = array();
+		foreach ($this->getDrugsBySiteAndSubspecialty('site_subspecialty_drug_default') as $id => $drug) {
+			$ids[] = $id;
+		}
+		return $ids;
 	}
 }

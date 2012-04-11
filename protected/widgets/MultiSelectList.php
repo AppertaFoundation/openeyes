@@ -20,6 +20,7 @@
 class MultiSelectList extends BaseCWidget {
 	public $htmlOptions;
 	public $options = array();
+	public $default_options = array();
 	public $filtered_options = array();
 	public $relation;
 	public $selected_ids = array();
@@ -33,6 +34,11 @@ class MultiSelectList extends BaseCWidget {
 				foreach ($this->element->{$this->relation} as $item) {
 					$this->selected_ids[] = $item->{$this->relation_id_field};
 					unset($this->filtered_options[$item->{$this->relation_id_field}]);
+				}
+			} else {
+				$this->selected_ids = $this->default_options;
+				foreach ($this->default_options as $id) {
+					unset($this->filtered_options[$id]);
 				}
 			}
 		} else {

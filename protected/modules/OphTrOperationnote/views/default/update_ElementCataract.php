@@ -44,7 +44,7 @@
 		<div class="right" style="width:35%;">
 			<div class="halfHeight">
 				<?php echo $form->dropDownList($element, 'iol_position_id', CHtml::listData(IOLPosition::model()->findAll(), 'id', 'name'),array('empty'=>'- Please select -'))?>
-				<?php echo $form->multiSelectList($element, 'CataractComplications', 'complications', 'complication_id', CHtml::listData(CataractComplications::model()->findAll(), 'id', 'name'), array('empty' => '- Complications -', 'label' => 'Complications'))?>
+				<?php echo $form->multiSelectList($element, 'CataractComplications', 'complications', 'complication_id', CHtml::listData(CataractComplications::model()->findAll(), 'id', 'name'), array(), array('empty' => '- Complications -', 'label' => 'Complications'))?>
 				<?php echo $form->textArea($element, 'complication_notes', array('rows'=>4,'cols'=>25))?>
 				<?php
 				$this->widget('application.modules.eyeDraw.OEEyeDrawWidgetSurgeonPosition', array(
