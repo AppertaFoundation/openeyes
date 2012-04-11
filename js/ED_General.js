@@ -820,7 +820,7 @@ ED.Surgeon.prototype.setHandles = function()
 ED.Surgeon.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-    this.isShowHighlight = false;
+    this.isShowHighlight = true;
 	this.isOrientated = true;
 	this.isScaleable = false;
 	this.isSqueezable = false;
