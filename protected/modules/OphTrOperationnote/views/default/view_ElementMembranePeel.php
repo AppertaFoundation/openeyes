@@ -18,24 +18,22 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+<h4><?php echo $element->elementType->name ?></h4>
 
-<div class="view">
-
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('membrane_blue')); ?></div>
-		<div class="eventHighlight"><?php echo $element->membrane_blue ? 'Yes' : 'No' ?></div>
+<?php if ($element->membrane_blue) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('membrane_blue'))?></h4>
 	</div>
+<?php }?>
 
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue')); ?></div>
-		<div class="eventHighlight"><?php echo $element->brilliant_blue ? 'Yes' : 'No'; ?></div>
+<?php if ($element->brilliant_blue) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('brilliant_blue'))?></h4>
 	</div>
+<?php }?>
 
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('other_dye')); ?></div>
-		<div class="eventHighlight"><?php echo $element->other_dye; ?></div>
+<?php if ($element->other_dye) {?>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::encode($element->getAttributeLabel('other_dye'))?>: <?php echo $element->other_dye?></h4>
 	</div>
-
-</div>
-
+<?php }?>

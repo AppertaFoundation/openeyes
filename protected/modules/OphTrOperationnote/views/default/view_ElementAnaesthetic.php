@@ -18,26 +18,33 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-<div class="view">
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_type_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetic_type->name ?></div>
+<div class="cols2">
+	<div class="left">
+		<h4><?php echo $element->elementType->name ?></h4>
+		<div class="eventHighlight">
+			<h4><?php echo $element->anaesthetic_type->name?></h4>
+		</div>
 	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetist->name; ?></div>
-	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetic_delivery->name ?></div>
-	</div>
-
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment')); ?></div>
-		<div class="eventHighlight"><?php echo $element->anaesthetic_comment?></div>
-	</div>
+	<?php if ($element->anaesthetic_type->name != 'GA') {?>
+		<div class="right">
+			<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetist_id'))?></h4>
+			<div class="eventHighlight">
+				<h4><?php echo $element->anaesthetist->name?></h4>
+			</div>
+		</div>
+		<div class="left">
+			<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_delivery_id'))?></h4>
+			<div class="eventHighlight">
+				<h4><?php echo $element->anaesthetic_delivery->name?></h4>
+			</div>
+		</div>
+		<?php if ($element->anaesthetic_comment) {?>
+			<div class="right">
+				<h4><?php echo CHtml::encode($element->getAttributeLabel('anaesthetic_comment'))?></h4>
+				<div class="eventHighlight">
+					<h4><?php echo $element->anaesthetic_comment?></h4>
+				</div>
+			</div>
+		<?php }?>
+	<?php }?>
 </div>

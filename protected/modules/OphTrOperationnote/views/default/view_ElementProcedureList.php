@@ -18,22 +18,9 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-<div class="view">
-	<div class="col1">
-		<div class="label"><?php echo CHtml::encode($element->getAttributeLabel('eye_id'))?></div>
-		<div class="eventHighlight"><?php echo $element->eye->name?></div>
-	</div>
-
-	<div class="col1">
-		<div class="label">Procedures:</div>
-		<div class="eventHighlight">
-			<ul>
-				<?php foreach ($element->procedures as $procedure) {?>
-					<li><?php echo $procedure->term?></li>
-				<?php }?>
-			</ul>
-		</div>
-	</div>
+<h4><?php echo $element->elementType->name ?></h4>
+<div class="eventHighlight priority">
+	<?php foreach ($element->procedures as $procedure) {?>
+		<h4><?php echo $element->eye->name?> <?php echo $procedure->term?></h4>
+	<?php }?>
 </div>
