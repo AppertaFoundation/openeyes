@@ -134,7 +134,7 @@ $based_on = implode(', ', $based_on);
 						
 							<div class="form_button">
 								<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none; margin-right: 10px;" />
-								<button type="submit" class="classy blue tall" id="refinePatient_details"><span class="button-span button-span-blue">Find patient</span></button>
+								<button type="submit" class="classy blue tall auto" id="refinePatient_details"><span class="button-span button-span-blue">Find patient</span></button>
 							</div>
 							
 						</div>
@@ -148,13 +148,6 @@ $based_on = implode(', ', $based_on);
 			<script type="text/javascript">
 				$('#patient-grid .items tr td').click(function() {
 					window.location.href = '/patient/viewhosnum/'+$(this).parent().children(":first").html();
-					return false;
-				});
-				$('#refinePatient_details').click(function() {
-					if ($(this).hasClass('blue')) {
-						disableButtons();
-						return true;
-					}
 					return false;
 				});
 			</script>

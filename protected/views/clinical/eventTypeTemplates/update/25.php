@@ -61,26 +61,10 @@ if (isset($errors) && !empty($errors)) {?>
 <div class="cleartall"></div>
 <div class="form_button">
 	<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
-	<button type="submit" class="classy green venti" id="saveOperation" name="saveOperation"><span class="button-span button-span-green">Save</span></button>
-	<button type="submit" class="classy red venti" id="cancelOperation" name="cancelOperation"><span class="button-span button-span-red">Cancel</span></button>
+	<button type="submit" class="classy green venti auto" id="saveOperation" name="saveOperation"><span class="button-span button-span-green">Save</span></button>
+	<button type="submit" class="classy red venti auto" id="cancelOperation" name="cancelOperation"><span class="button-span button-span-red">Cancel</span></button>
 </div>
 <?php
-$this->endWidget(); ?>
-<script type="text/javascript">
-	$('#saveOperation').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			return true;
-		}
-		return false;
-	});
-
-	$('#cancelOperation').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			return true;
-		}
-		return false;
-	});
-</script>
-<?php $this->footer(true,array('event'=>$event,'editing'=>true))?>
+$this->endWidget();
+$this->footer(true,array('event'=>$event,'editing'=>true));
+?>

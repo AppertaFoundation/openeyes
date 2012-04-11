@@ -38,3 +38,13 @@ function enableButtons() {
 		$('.loader').hide();
 	}
 }
+
+$(document).ready(function() {
+	$('button.auto').unbind('click').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			return true;
+		}
+		return false;
+	});
+});
