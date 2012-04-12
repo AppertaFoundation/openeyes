@@ -1,0 +1,3 @@
+[submodule "protected/extensions/mehpas"]
+	path = protected/extensions/mehpas
+	url = git@github.com:openeyes/MEHPAS.git
