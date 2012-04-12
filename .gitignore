@@ -1,5 +1,4 @@
 .gitignore
-.gitmodules
 .DS_Store
 .*swp
 .idea
