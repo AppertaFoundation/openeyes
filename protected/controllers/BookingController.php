@@ -197,7 +197,7 @@ class BookingController extends BaseController
 			die(json_encode($errors));
 		}
 
-		$operationId = !empty($_REQUEST['operation_id']) ? $_REQUEST['operation_id'] : 0;
+		$operationId = !empty($_REQUEST['operation']) ? $_REQUEST['operation'] : 0;
 		$operation = ElementOperation::model()->findByPk($operationId);
 		if (empty($operation)) {
 			throw new CHttpException(500,'Operation not found');
@@ -207,6 +207,10 @@ class BookingController extends BaseController
 		if ($minDate < $thisMonth) {
 			$minDate = $thisMonth;
 		}
+
+		$this->patient = $operation->event->episode->patient;
+		$this->title = 'Cancel operation';
+
 		$this->renderPartial('/booking/_cancel_operation', array(
 				'operation' => $operation,
 				'date' => $minDate,

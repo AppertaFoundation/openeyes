@@ -74,7 +74,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 					});
 
 					if (n == 0) {
-						window.location.href = '/patient/episodes/<?php echo $patient->id?>/event/<?php echo $operation->event->id?>';
+						window.location.href = '/patient/event/<?php echo $operation->event->id?>';
 					} else {
 						$('div.alertBox').show();
 						$('div.alertBox').html(html);
