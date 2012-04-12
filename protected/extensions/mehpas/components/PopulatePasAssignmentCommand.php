@@ -116,7 +116,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				$results['updated']++;
 			} else {
 				// No match, let's check to see if patients using this gp are stale
-				$stale_patients = Patient::model()->findAllByAttributes(array('gp_id',$gp_id));
+				$stale_patients = Patient::model()->findAllByAttributes(array('gp_id' => $gp_id));
 				$still_used = false;
 				foreach($stale_patients as $patient) {
 					if($patient->gp_id == $gp_id) {
@@ -129,7 +129,7 @@ class PopulatePasAssignmentCommand extends CConsoleCommand {
 				} else {
 					echo "Deleting unused GP\n";
 					$results['removed']++;
-					Gp::model()->deleteByPk($duplicate_gp_id);
+					Gp::model()->deleteByPk($gp_id);
 				}
 			}
 
