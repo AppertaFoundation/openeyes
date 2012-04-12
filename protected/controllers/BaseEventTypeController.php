@@ -372,7 +372,7 @@ class BaseEventTypeController extends BaseController
 			}
 
 			$this->renderPartial(
-				$action . '_' . get_class($element),
+				$action . '_' . $element->{$action.'_view'},
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, true
 			);
@@ -386,7 +386,7 @@ class BaseEventTypeController extends BaseController
 			}
 
 			$this->renderPartial(
-				$action . '_' . get_class($element),
+				$action . '_' . $element->{$action.'_view'},
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, true
 			);

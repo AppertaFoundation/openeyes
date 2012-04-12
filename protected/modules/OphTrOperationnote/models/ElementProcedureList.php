@@ -169,6 +169,10 @@ class ElementProcedureList extends BaseEventTypeElement
 
 			return $selected_procedures;
 		}
+
+		if (Yii::app()->getController()->getAction()->id == 'update') {
+			return $this->procedures;
+		}
 	}
 
 	public function getSelectedEye() {
