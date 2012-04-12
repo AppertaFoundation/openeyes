@@ -1,9 +1,0 @@
-Add the following to config (local/console) to enable:
-
-	'commandMap' => array(
-		'importsampledata' => 'modules/sample/commands/ImportSampleDataCommand.php',
-	),
-
-Usage:
-
-./yiic importsampledata
