@@ -33,11 +33,6 @@ $config = CMap::mergeArray(
 				'username' => 'oe',
 				'password' => '_OE_TESTDB_PASSWORD_',
 			),
-			'db_pas' => array(
-				'connectionString' => 'mysql:host=localhost;dbname=openeyestestpas',
-				'username' => 'oe',
-				'password' => '_OE_TESTPAS_PASSWORD_',
-			),
 		),
 	)
 );

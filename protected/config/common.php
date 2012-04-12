@@ -57,6 +57,10 @@ $config = array(
 
 	// Application components
 	'components' => array(
+		'event' => array(
+			'class' => 'OEEventManager',
+			'observers' => array(),
+		),
 		'user' => array(
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
@@ -88,14 +92,6 @@ $config = array(
 			'username' => 'oe',
 			'password' => '_OE_PASSWORD_',
 			'charset' => 'utf8',
-			'schemaCachingDuration' => 300,
-		),
-		'db_pas' => array(
-			'class' => 'CDbConnection',
-			'connectionString' => 'mysql:host=localhost;dbname=openeyespas',
-			'emulatePrepare' => true,
-			'username' => 'oe',
-			'password' => '_OE_PAS_PASSWORD_',
 			'schemaCachingDuration' => 300,
 		),
 		'authManager' => array(
@@ -138,7 +134,6 @@ $config = array(
 		),
 	),
 	'params'=>array(
-		'use_pas' => false,
 		'pseudonymise_patient_details' => false,
 		'ab_testing' => false,
 		'auth_source' => 'BASIC', // Options are BASIC or LDAP.
@@ -158,7 +153,6 @@ $config = array(
 		'helpdesk_email' => 'helpdesk@example.com',
 		'helpdesk_phone' => '12345678',
 		'google_analytics_account' => '',
-		'bad_gps' => array(),
 		'local_users' => array(),
 		'log_events' => true,
 		'urgent_booking_notify_hours' => 24,

@@ -58,14 +58,14 @@ class PAS_PatientGps extends MultiActiveRecord {
 	public function primaryKey() {
 		return array('RM_PATIENT_NO','DATE_FROM','GP_ID');
 	}
-	
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules() {
 		return array(
-			array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe'),
-			array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe', 'on'=>'search'),
+				array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe'),
+				array('RM_PATIENT_NO, DATE_FROM, GP_ID, PRACTICE_CODE, HDDR_GROUP, DATE_TO', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,12 +74,12 @@ class PAS_PatientGps extends MultiActiveRecord {
 	 */
 	public function relations() {
 		return array(
-			'Gp' => array(self::HAS_ONE, 'PAS_Gp', 'OBJ_PROF',
-				// DATE_START is the tiebreaker
-				'order' => 'DATE_FR DESC',
-				// Exclude expired and future gps
-				'condition' => '("Gp"."DATE_TO" IS NULL OR "Gp"."DATE_TO" >= SYSDATE) AND ("Gp"."DATE_FR" IS NULL OR "Gp"."DATE_FR" <= SYSDATE)',
-			),
+				'Gp' => array(self::HAS_ONE, 'PAS_Gp', 'OBJ_PROF',
+						// DATE_START is the tiebreaker
+						'order' => 'DATE_FR DESC',
+						// Exclude expired and future gps
+						'condition' => '("Gp"."DATE_TO" IS NULL OR "Gp"."DATE_TO" >= SYSDATE) AND ("Gp"."DATE_FR" IS NULL OR "Gp"."DATE_FR" <= SYSDATE)',
+				),
 		);
 	}
 
@@ -88,12 +88,12 @@ class PAS_PatientGps extends MultiActiveRecord {
 	 */
 	public function attributeLabels() {
 		return array(
- 			'RM_PATIENT_NO' => 'RM Patient No.',
-			'DATE_FROM' => 'Date From',
-			'GP_ID' => 'GP ID',
-			'PRACTICE_CODE' => 'Practice Code',
-			'HDDR_GROUP' => 'HDDR Group',
-			'DATE_TO' => 'Date To',
+				'RM_PATIENT_NO' => 'RM Patient No.',
+				'DATE_FROM' => 'Date From',
+				'GP_ID' => 'GP ID',
+				'PRACTICE_CODE' => 'Practice Code',
+				'HDDR_GROUP' => 'HDDR Group',
+				'DATE_TO' => 'Date To',
 		);
 	}
 
@@ -103,17 +103,17 @@ class PAS_PatientGps extends MultiActiveRecord {
 	 */
 	public function search() {
 		$criteria=new CDbCriteria;
-		
+
 		$criteria->compare('RM_PATIENT_NO',$this->RM_PATIENT_NO,true);
 		$criteria->compare('DATE_FROM',$this->DATE_FROM,true);
 		$criteria->compare('GP_ID',$this->GP_ID,true);
 		$criteria->compare('PRACTICE_CODE',$this->PRACTICE_CODE,true);
 		$criteria->compare('HDDR_GROUP',$this->HDDR_GROUP,true);
 		$criteria->compare('DATE_TO',$this->DATE_TO,true);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
-	
+
 }

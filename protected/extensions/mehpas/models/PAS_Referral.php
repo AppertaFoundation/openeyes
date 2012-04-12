@@ -67,64 +67,58 @@
  * @property string $REF_ORG
  * @property string $RTT
  */
-class PAS_Referral extends MultiActiveRecord
-{
+class PAS_Referral extends MultiActiveRecord {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return PAS_Referral the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
-	* @return string the associated db connection name
-	*/
-	public function connectionId()
-	{
+	 * @return string the associated db connection name
+	 */
+	public function connectionId() {
 		return 'db_pas';
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
+	public function tableName() {
 		return 'SILVER.OUT040_REFDETS';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
+	public function rules() {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('REFNO, X_CN, USED_COUNT', 'numerical', 'integerOnly'=>true),
-			array('TIMEX, TM_CLOSE', 'length', 'max'=>5),
-			array('METHOD, SRCE_REF, S_TYPE, P_TYPE, REASON, PRIORITY, DIAGTYPE, PC_TYPE, USRCODET', 'length', 'max'=>4),
-			array('REC_LOC, SOURCE, REF_PERS, DISCIP, REF_TO, REF_SPEC, DIAGCODE, CLS_PERS, REF_ORG', 'length', 'max'=>10),
-			array('CANCER, RTT', 'length', 'max'=>1),
-			array('CAN_TYPE', 'length', 'max'=>2),
-			array('REF', 'length', 'max'=>17),
-			array('REF_TEXT, DIAGTEXT', 'length', 'max'=>4000),
-			array('CUR_LOC, CLS_REAS', 'length', 'max'=>8),
-			array('HDDR_GROUP', 'length', 'max'=>48),
-			array('USRCODEC_1, USRCODEC_2, USRCODEC_3, USRCODEC_4, USRCODEC_5, USRCODEC_6, USRCODEC_7, USRCODEC_8, USRCODEC_9, USRCODEC_10', 'length', 'max'=>12),
-			array('DATEX, DT_REC, DT_CLOSE', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('REFNO, X_CN, DATEX, TIMEX, METHOD, DT_REC, REC_LOC, SRCE_REF, S_TYPE, SOURCE, P_TYPE, REF_PERS, DISCIP, REASON, PRIORITY, CANCER, CAN_TYPE, REF, REF_TO, REF_SPEC, REF_TEXT, CUR_LOC, DIAGTYPE, DIAGCODE, DIAGTEXT, DT_CLOSE, TM_CLOSE, PC_TYPE, CLS_PERS, CLS_REAS, HDDR_GROUP, USED_COUNT, USRCODET, USRCODEC_1, USRCODEC_2, USRCODEC_3, USRCODEC_4, USRCODEC_5, USRCODEC_6, USRCODEC_7, USRCODEC_8, USRCODEC_9, USRCODEC_10, REF_ORG, RTT', 'safe', 'on'=>'search'),
+				array('REFNO, X_CN, USED_COUNT', 'numerical', 'integerOnly'=>true),
+				array('TIMEX, TM_CLOSE', 'length', 'max'=>5),
+				array('METHOD, SRCE_REF, S_TYPE, P_TYPE, REASON, PRIORITY, DIAGTYPE, PC_TYPE, USRCODET', 'length', 'max'=>4),
+				array('REC_LOC, SOURCE, REF_PERS, DISCIP, REF_TO, REF_SPEC, DIAGCODE, CLS_PERS, REF_ORG', 'length', 'max'=>10),
+				array('CANCER, RTT', 'length', 'max'=>1),
+				array('CAN_TYPE', 'length', 'max'=>2),
+				array('REF', 'length', 'max'=>17),
+				array('REF_TEXT, DIAGTEXT', 'length', 'max'=>4000),
+				array('CUR_LOC, CLS_REAS', 'length', 'max'=>8),
+				array('HDDR_GROUP', 'length', 'max'=>48),
+				array('USRCODEC_1, USRCODEC_2, USRCODEC_3, USRCODEC_4, USRCODEC_5, USRCODEC_6, USRCODEC_7, USRCODEC_8, USRCODEC_9, USRCODEC_10', 'length', 'max'=>12),
+				array('DATEX, DT_REC, DT_CLOSE', 'safe'),
+				// The following rule is used by search().
+				// Please remove those attributes that should not be searched.
+				array('REFNO, X_CN, DATEX, TIMEX, METHOD, DT_REC, REC_LOC, SRCE_REF, S_TYPE, SOURCE, P_TYPE, REF_PERS, DISCIP, REASON, PRIORITY, CANCER, CAN_TYPE, REF, REF_TO, REF_SPEC, REF_TEXT, CUR_LOC, DIAGTYPE, DIAGCODE, DIAGTEXT, DT_CLOSE, TM_CLOSE, PC_TYPE, CLS_PERS, CLS_REAS, HDDR_GROUP, USED_COUNT, USRCODET, USRCODEC_1, USRCODEC_2, USRCODEC_3, USRCODEC_4, USRCODEC_5, USRCODEC_6, USRCODEC_7, USRCODEC_8, USRCODEC_9, USRCODEC_10, REF_ORG, RTT', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
+	public function relations() {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
@@ -134,54 +128,53 @@ class PAS_Referral extends MultiActiveRecord
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
-			'REFNO' => 'Refno',
-			'X_CN' => 'X Cn',
-			'DATEX' => 'Datex',
-			'TIMEX' => 'Timex',
-			'METHOD' => 'Method',
-			'DT_REC' => 'Dt Rec',
-			'REC_LOC' => 'Rec Loc',
-			'SRCE_REF' => 'Srce Ref',
-			'S_TYPE' => 'S Type',
-			'SOURCE' => 'Source',
-			'P_TYPE' => 'P Type',
-			'REF_PERS' => 'Ref Pers',
-			'DISCIP' => 'Discip',
-			'REASON' => 'Reason',
-			'PRIORITY' => 'Priority',
-			'CANCER' => 'Cancer',
-			'CAN_TYPE' => 'Can Type',
-			'REF' => 'Ref',
-			'REF_TO' => 'Ref To',
-			'REF_SPEC' => 'Ref Spec',
-			'REF_TEXT' => 'Ref Text',
-			'CUR_LOC' => 'Cur Loc',
-			'DIAGTYPE' => 'Diagtype',
-			'DIAGCODE' => 'Diagcode',
-			'DIAGTEXT' => 'Diagtext',
-			'DT_CLOSE' => 'Dt Close',
-			'TM_CLOSE' => 'Tm Close',
-			'PC_TYPE' => 'Pc Type',
-			'CLS_PERS' => 'Cls Pers',
-			'CLS_REAS' => 'Cls Reas',
-			'HDDR_GROUP' => 'Hddr Group',
-			'USED_COUNT' => 'Used Count',
-			'USRCODET' => 'Usrcodet',
-			'USRCODEC_1' => 'Usrcodec 1',
-			'USRCODEC_2' => 'Usrcodec 2',
-			'USRCODEC_3' => 'Usrcodec 3',
-			'USRCODEC_4' => 'Usrcodec 4',
-			'USRCODEC_5' => 'Usrcodec 5',
-			'USRCODEC_6' => 'Usrcodec 6',
-			'USRCODEC_7' => 'Usrcodec 7',
-			'USRCODEC_8' => 'Usrcodec 8',
-			'USRCODEC_9' => 'Usrcodec 9',
-			'USRCODEC_10' => 'Usrcodec 10',
-			'REF_ORG' => 'Ref Org',
-			'RTT' => 'Rtt',
+				'REFNO' => 'Refno',
+				'X_CN' => 'X Cn',
+				'DATEX' => 'Datex',
+				'TIMEX' => 'Timex',
+				'METHOD' => 'Method',
+				'DT_REC' => 'Dt Rec',
+				'REC_LOC' => 'Rec Loc',
+				'SRCE_REF' => 'Srce Ref',
+				'S_TYPE' => 'S Type',
+				'SOURCE' => 'Source',
+				'P_TYPE' => 'P Type',
+				'REF_PERS' => 'Ref Pers',
+				'DISCIP' => 'Discip',
+				'REASON' => 'Reason',
+				'PRIORITY' => 'Priority',
+				'CANCER' => 'Cancer',
+				'CAN_TYPE' => 'Can Type',
+				'REF' => 'Ref',
+				'REF_TO' => 'Ref To',
+				'REF_SPEC' => 'Ref Spec',
+				'REF_TEXT' => 'Ref Text',
+				'CUR_LOC' => 'Cur Loc',
+				'DIAGTYPE' => 'Diagtype',
+				'DIAGCODE' => 'Diagcode',
+				'DIAGTEXT' => 'Diagtext',
+				'DT_CLOSE' => 'Dt Close',
+				'TM_CLOSE' => 'Tm Close',
+				'PC_TYPE' => 'Pc Type',
+				'CLS_PERS' => 'Cls Pers',
+				'CLS_REAS' => 'Cls Reas',
+				'HDDR_GROUP' => 'Hddr Group',
+				'USED_COUNT' => 'Used Count',
+				'USRCODET' => 'Usrcodet',
+				'USRCODEC_1' => 'Usrcodec 1',
+				'USRCODEC_2' => 'Usrcodec 2',
+				'USRCODEC_3' => 'Usrcodec 3',
+				'USRCODEC_4' => 'Usrcodec 4',
+				'USRCODEC_5' => 'Usrcodec 5',
+				'USRCODEC_6' => 'Usrcodec 6',
+				'USRCODEC_7' => 'Usrcodec 7',
+				'USRCODEC_8' => 'Usrcodec 8',
+				'USRCODEC_9' => 'Usrcodec 9',
+				'USRCODEC_10' => 'Usrcodec 10',
+				'REF_ORG' => 'Ref Org',
+				'RTT' => 'Rtt',
 		);
 	}
 
@@ -189,8 +182,7 @@ class PAS_Referral extends MultiActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
@@ -243,7 +235,8 @@ class PAS_Referral extends MultiActiveRecord
 		$criteria->compare('RTT',$this->RTT,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
+
 }

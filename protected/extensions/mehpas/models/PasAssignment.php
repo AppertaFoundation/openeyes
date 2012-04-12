@@ -18,22 +18,30 @@
  */
 
 /**
- * This is the model class for table "pas_patient_assignment".
+ * This is the model class for table "pas_assignment".
  *
- * The followings are the available columns in table 'pas_patient_assignment':
+ * The followings are the available columns in table 'pas_assignment':
  * @property string $id
  * @property string $external_id
- * @property string $patient_id
- * @property string  $created_date
- * @property string  $last_modified_date
- * @property string  $created_user_id
- * @property string  $last_modified_user_id
+ * @property string $external_type
+ * @property integer $internal_id
+ * @property string $internal_type
+ * @property string $created_date
+ * @property string $last_modified_date
+ * @property string $created_user_id
+ * @property string $last_modified_user_id
  *
  * The followings are the available model relations:
  * @property Patient $patient
  * @property PAS_Patient $pas_patient
  */
-class PasPatientAssignment extends BaseActiveRecord {
+class PasAssignment extends BaseActiveRecord {
+
+	/**
+	 * Default time (in seconds) before cached PAS details are considered stale
+	 */
+	const PAS_CACHE_TIME = 300;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Phrase the static model class
@@ -46,7 +54,7 @@ class PasPatientAssignment extends BaseActiveRecord {
 	 * @return string the associated database table name
 	 */
 	public function tableName() {
-		return 'pas_patient_assignment';
+		return 'pas_assignment';
 	}
 
 	/**
@@ -54,19 +62,25 @@ class PasPatientAssignment extends BaseActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('external_id, patient_id', 'required'),
-			array('id, external_id, patient_id, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
+				array('external_id, external_type, internal_id, internal_type', 'required'),
+				array('id, external_id, external_type internal_id, internal_type, created_date, last_modified_date, created_user_id, last_modified_user_id', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
-	 * @return array relational rules.
+	 * Get associated internal record
+	 * @return CActiveRecord
 	 */
-	public function relations() {
-		return array(
-			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-			'pas_patient' => array(self::BELONGS_TO, 'PAS_Patient', 'external_id')
-		);
+	public function getInternal() {
+		return self::model($this->internal_type)->findByPk($this->internal_id);
+	}
+
+	/**
+	 * Get associated external record
+	 * @return CActiveRecord
+	 */
+	public function getExternal() {
+		return self::model($this->external_type)->findByExternalId($this->external_id);
 	}
 
 	/**
@@ -84,33 +98,55 @@ class PasPatientAssignment extends BaseActiveRecord {
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('patient_id',$this->patient_id,true);
+		$criteria->compare('internal_id',$this->internal_id,true);
+		$criteria->compare('internal_type',$this->internal_type,true);
 		$criteria->compare('external_id',$this->external_id,true);
+		$criteria->compare('external_type',$this->external_type,true);
 		$criteria->compare('created_date',$this->created_date,true);
 		$criteria->compare('last_modified_date',$this->last_modified_date,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('last_modified_user_id',$this->last_modified_user_id,true);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
 
-	public function findByPatientId($patient_id) {
-		return $this->find('patient_id = :patient_id', array(':patient_id' => (int) $patient_id));
+	/**
+	 * Find association using internal details
+	 * @param string $internal_type
+	 * @param integer $internal_id
+	 */
+	public function findByInternal($internal_type, $internal_id) {
+		return $this->find('internal_id = :internal_id AND internal_type = :internal_type', array(':internal_id' => (int) $internal_id, ':internal_type' => $internal_type));
 	}
-	
-	public function findByExternalId($external_id) {
-		return $this->find('external_id = :external_id', array(':external_id' => (int) $external_id));
+
+	/**
+	 * Find association using external details
+	 * @param string $external_type
+	 * @param string $external_id
+	 */
+	public function findByExternal($external_type, $external_id) {
+		return $this->find('external_id = :external_id AND external_type = :external_type', array(':external_id' => (int) $external_id, ':external_type' => $external_type));
 	}
-	
+
+	/**
+	 * Does this assignment need refreshing from PAS?
+	 * @return boolean
+	 */
 	public function isStale() {
-		return strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME);
+		$cache_time = (isset(Yii::app()->params['mehpas_cache_time'])) ? Yii::app()->params['mehpas_cache_time'] : self::PAS_CACHE_TIME;
+		return strtotime($this->last_modified_date) < (time() - $cache_time);
 	}
-	
-	public static function is_stale($patient_id) {
-		$record = self::model()->find('patient_id = :patient_id', array(':patient_id' => (int) $patient_id));
+
+	/**
+	 * Check if record needs refreshing from PAS
+	 * @param string $internal_type
+	 * @param integer $internal_id
+	 */
+	public static function is_stale($internal_type, $internal_id) {
+		$record = self::model()->findByInternal($internal_type, $internal_id);
 		return $record && $record->isStale();
 	}
-	
+
 }

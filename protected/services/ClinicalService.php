@@ -170,10 +170,8 @@ class ClinicalService
 
 			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
 
-			if (Yii::app()->params['use_pas']) {
-				// Try to fetch a referral from PAS for this episode
-				$episode->fetchPASReferral();
-			}
+			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
+				
 		}
 
 		return $episode;

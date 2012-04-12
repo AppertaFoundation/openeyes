@@ -31,7 +31,7 @@ class m120302_092216_pas_patient_assignment extends CDbMigration {
 
 		// Migrate existing patients
 		echo "Migrating patients...\n";
-		$patients = Patient::model()->noPas()->findAll();
+		$patients = Patient::model()->findAll();
 		
 		// Set patient counter above highest existing ID to avoid collisions
 		$patient_counter = $this->getDbConnection()->createCommand('SELECT MAX(id) FROM `patient`')->queryScalar() + 1;
@@ -70,11 +70,6 @@ class m120302_092216_pas_patient_assignment extends CDbMigration {
 				':old_patient_id' => $old_patient_id,
 			));
 			
-			// Insert assignment
-			$association = new PasPatientAssignment();
-			$association->patient_id = $new_patient_id;
-			$association->external_id = $old_patient_id;
-			$association->save();
 			$patient_counter++;
 				
 		}

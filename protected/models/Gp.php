@@ -32,9 +32,6 @@
 class Gp extends BaseActiveRecord
 {
 	
-	// Set to false to supress cache refresh afterFind
-	public $use_pas = true;
-	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Gp the static model class
@@ -116,34 +113,12 @@ class Gp extends BaseActiveRecord
 	}
 
 	/**
-	 * Supress PAS call after find
-	 */
-	public function noPas() {
-		$this->use_pas = false;
-		return $this;
-	}
-	
-	/**
-	 * Pass through use_pas flag to allow pas supression
-	 * @see CActiveRecord::instantiate()
-	 */ 
-	protected function instantiate($attributes) {
-		$model = parent::instantiate($attributes);
-		$model->use_pas = $this->use_pas;
-		return $model;
-	}
-	
-	/**
-	 * Update from PAS if enabled
+	 * Raise event to allow external data sources to update gp
 	 * @see CActiveRecord::afterFind()
 	 */
 	protected function afterFind() {
 		parent::afterFind();
-		if($this->use_pas && Yii::app()->params['use_pas'] && strtotime($this->last_modified_date) < (time() - self::PAS_CACHE_TIME)) {
-			Yii::log('GP details stale', 'trace');
-			$gp_service = new GpService($this);
-			$gp_service->loadFromPas();
-		}
+		Yii::app()->event->dispatch('gp_after_find', array('gp' => $this));
 	}
 	
 }

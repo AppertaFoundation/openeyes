@@ -27,11 +27,6 @@ class BaseActiveRecord extends CActiveRecord
 {
 
 	/**
-	 * How long (in seconds) before cached PAS details are considered stale
-	 */
-	const PAS_CACHE_TIME = 300;
-
-	/**
 	 * Audit log
 	 */
 	public function behaviors() {

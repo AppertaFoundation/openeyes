@@ -60,6 +60,8 @@ class TransportController extends BaseController
 	}
 
 	public function getTCIEvents($from, $to) {
+		$today = date('Y-m-d');
+
 		$sql = "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method, transport_list.id as transport, booking.created_date as order_date, ward.name as ward_name from booking
 			join session on booking.session_id = session.id
 			join theatre on session.theatre_id = theatre.id
@@ -74,7 +76,9 @@ class TransportController extends BaseController
 			join patient on episode.patient_id = patient.id
 			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
 			join ward on booking.ward_id = ward.id
-			where booking.created_date >= '$from' and booking.created_date <= '$to' and element_operation.status != 3
+			where session.date >= '$today' and ". /*booking.created_date >= '$from' and booking.created_date <= '$to' and*/ "element_operation.status != 3
+			and site.id not in (3,5)
+			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
 			UNION
 				select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, ward.name as ward_name from booking
 			join session on booking.session_id = session.id
@@ -91,7 +95,9 @@ class TransportController extends BaseController
 			join patient on episode.patient_id = patient.id
 			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
 			join ward on booking.ward_id = ward.id
-			where booking.created_date >= '$from' and booking.created_date <= '$to' and element_operation.status = 3
+			where session.date >= '$today' and ". /*booking.created_date >= '$from' and booking.created_date <= '$to' and*/ " element_operation.status = 3
+			and site.id not in (3,5)
+			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
 			UNION
 				select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, 'Unknown' as ward_name from cancelled_booking
 			join theatre on cancelled_booking.theatre_id = theatre.id
@@ -105,7 +111,9 @@ class TransportController extends BaseController
 			join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
 			join patient on episode.patient_id = patient.id
 			left join transport_list on (transport_list.item_table = 'cancelled_booking' and transport_list.item_id = cancelled_booking.id)
-			where cancelled_booking.created_date >= '$from' and cancelled_booking.created_date <= '$to' and element_operation.status != 3
+			where cancelled_booking.date >= '$today' and ". /*cancelled_booking.created_date >= '$from' and cancelled_booking.created_date <= '$to' and*/ " element_operation.status != 3
+			and site.id not in (3,5)
+			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
 			ORDER BY session_date asc, session_time asc, order_date desc";
 
 		return Yii::app()->db->createCommand($sql)->query();
@@ -192,9 +200,15 @@ class TransportController extends BaseController
 					$c->item_table = 'booking';
 					$c->item_id = $booking_id;
 					$c->status = 1;
-					$c->save();
+					if (!$c->save()) {
+						throw new SystemException('Unable to save transport_list item: '.print_r($c->getErrors(),true));
+					}
 				} else {
-					$c->delete();
+					/*
+					if (!$c->delete()) {
+						throw new SystemException('Unable to delete transport_list item: '.print_r($c->getErrors(),true));
+					}
+					*/
 				}
 			}
 		}
@@ -208,12 +222,19 @@ class TransportController extends BaseController
 					$c->item_table = 'cancelled_booking';
 					$c->item_id = $cancelled_booking_id;
 					$c->status = 1;
-					$c->save();
+					if (!$c->save()) {
+						throw new SystemException('Unable to save transport_list item: '.print_r($c->getErrors(),true));
+					}
 				} else {
-					$c->delete();
+					/*
+					if (!$c->delete()) {
+						throw new SystemException('Unable to delete transport_list item: '.print_r($c->getErrors(),true));
+					}
+					*/
 				}
 			}
 		}
-	}
 
+		die("1");
+	}
 }

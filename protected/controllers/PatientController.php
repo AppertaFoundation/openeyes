@@ -164,12 +164,7 @@ class PatientController extends BaseController
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
-				$get_hos_num = $_POST['Patient']['hos_num'];
-
-				if (Yii::app()->params['use_pas']) {
-					$get_hos_num = str_pad($get_hos_num, 7, '0', STR_PAD_LEFT);
-				}
-
+				$get_hos_num = str_pad($_POST['Patient']['hos_num'], 7, '0', STR_PAD_LEFT);
 				$_GET = array(
 					'hos_num' => $get_hos_num,
 					'nhs_num' => '',
@@ -209,10 +204,7 @@ class PatientController extends BaseController
 	}
 
 	function patientSearch() {
-		$model = new Patient;
-
-		$items_per_page = 20;
-
+		
 		switch ($_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
@@ -238,67 +230,30 @@ class PatientController extends BaseController
 		}
 
 		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+		
+		$model = new Patient();
+		$model->attributes = $this->collateGetData();
+		$pageSize = 20;
+		$dataProvider = $model->search(array(
+			'currentPage' => (integer)@$_GET['page_num'],
+			'pageSize' => $pageSize,
+			'sortBy' => $sort_by,
+			'sortDir'=> $sort_dir,
+		));
+		$nr = $model->search_nr();
 
-		if (Yii::app()->params['use_pas']) {
-			$service = new PatientService;
-
-			if ($service->down) {
-				$model->attributes = $this->collateGetData();
-				$dataProvider = $model->search(array(
-					'currentPage' => (integer)@$_GET['page_num']-1,
-					'items_per_page' => $items_per_page,
-					'order' => $sort_by.' '.$sort_dir
-				));
-
-				$nr = $model->search_nr();
-			} else {
-				$criteria = $service->search($this->collateGetData(), $items_per_page, $_GET['page_num']);
-
-				$nr = $service->num_results;
-
-				$dataProvider = new CActiveDataProvider('Patient', array(
-					'criteria' => $criteria,
-					'pagination' => array('pageSize' => $items_per_page, 'currentPage' => (integer)@$_GET['page_num']-1)
-				));
-			}
-		} else {
-			$model->attributes = $this->collateGetData();
-			$dataProvider = $model->search(array(
-				'currentPage' => (integer)@$_GET['page_num']-1,
-				'items_per_page' => $items_per_page,
-				'order' => $sort_by.' '.$sort_dir
-			));
-
-			$nr = $model->search_nr();
-		}
-
-		if ($nr == 0) {
-			if (Yii::app()->params['pas_down']) {
-				$this->redirect('/patient/no-results-pas');
-			} else if (isset($service) && @$service->no_address) {
-				$this->redirect('/patient/no-results-address');
-			} else {
-				$this->redirect('/patient/no-results');
-			}
-		}
-
-		if ($nr == 1) {
+		if($nr == 0) {
+			$this->redirect('/patient/no-results');
+		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect('/patient/view/'.$item->id);
 			}
-		}
-
-		$pages = ceil($nr/$items_per_page);
-
-		if (count($nr) == 0) {
-			$this->render('index', array(
-				'dataProvider' => $dataProvider
-			));
 		} else {
+			$pages = ceil($nr/$pageSize);
 			$this->render('results', array(
 				'dataProvider' => $dataProvider,
 				'pages' => $pages,
-				'items_per_page' => $items_per_page,
+				'items_per_page' => $pageSize,
 				'total_items' => $nr,
 				'first_name' => $_GET['first_name'],
 				'last_name' => $_GET['last_name'],
