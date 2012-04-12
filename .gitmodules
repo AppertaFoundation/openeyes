@@ -4,3 +4,6 @@
 [submodule "protected/modules/eyedraw"]
 	path = protected/modules/eyedraw
 	url = git@github.com:openeyes/EyeDraw.git
+[submodule "protected/modules/OphTrOperationnote"]
+	path = protected/modules/OphTrOperationnote
+	url = git@github.com:openeyes/OphTrOperationnote.git
