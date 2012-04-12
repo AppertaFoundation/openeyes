@@ -28,4 +28,16 @@ class BaseEventTypeElement extends BaseElement
 
 	function getInfoText() {
 	}
+
+	function getCreate_view() {
+		return get_class($this);
+	}
+
+	function getUpdate_view() {
+		return get_class($this);
+	}
+
+	function getView_view() {
+		return get_class($this);
+	}
 }
