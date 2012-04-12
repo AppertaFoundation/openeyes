@@ -49,9 +49,6 @@
  */
 class Patient extends BaseActiveRecord {
 	
-	// Set to false to supress cache refresh afterFind
-	public $use_pas = true;
-	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -77,8 +74,8 @@ class Patient extends BaseActiveRecord {
 			array('title', 'length', 'max' => 8),
 			array('first_name, last_name, hos_num, nhs_num, primary_phone', 'length', 'max' => 40),
 			array('gender', 'length', 'max' => 1),
-			array('dob, primary_phone', 'safe'),
-			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone', 'safe', 'on' => 'search'),
+			array('dob, primary_phone, date_of_death', 'safe'),
+			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone, date_of_death', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -121,6 +118,7 @@ class Patient extends BaseActiveRecord {
 			'first_name' => 'First Name',
 			'last_name' => 'Last Name',
 			'dob' => 'Date of Birth',
+			'date_of_death' => 'Date of Death',
 			'gender' => 'Gender',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
@@ -139,41 +137,39 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
 
-		return Patient::model()->count($criteria);
+		return $this->count($criteria);
 	}
 
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search($params=false)
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+	public function search($params = false) {
 		if (!is_array($params)) {
 			$params = array(
-				'items_per_page' => PHP_INT_MAX,
-				'currentPage' => 0,
-				'order' => 'hos_num*1 asc'
+				'pageSize' => 20,
+				'currentPage' => 1,
+				'sortBy' => 'hos_num*1',
+				'sortDir' => 'asc',
 			);
 		}
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),false);
-		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),false);
-		$criteria->compare('dob',$this->dob,false);
-		$criteria->compare('gender',$this->gender,false);
-		$criteria->compare('hos_num',$this->hos_num,false);
-		$criteria->compare('nhs_num',$this->nhs_num,false);
+		$criteria->compare('LOWER(first_name)',strtolower($this->first_name), false);
+		$criteria->compare('LOWER(last_name)',strtolower($this->last_name), false);
+		$criteria->compare('hos_num',$this->hos_num, false);
 
-		$criteria->order = $params['order'];
+		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
-		return new CActiveDataProvider(get_class($this), array(
+		Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
+		
+		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
-			'pagination' => array('pageSize' => $params['items_per_page'], 'currentPage' => $params['currentPage'])
+			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'] - 1)
 		));
+		
+		return $dataProvider;
 	}
 
 	public function beforeSave()
@@ -277,36 +273,12 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
-	 * Supress PAS call after find
-	 */
-	public function noPas() {
-		$this->use_pas = false;
-		return $this;
-	}
-	
-	/**
-	 * Pass through use_pas flag to allow pas supression
-	 * @see CActiveRecord::instantiate()
-	 */ 
-	protected function instantiate($attributes) {
-		$model = parent::instantiate($attributes);
-		$model->use_pas = $this->use_pas;
-		return $model;
-	}
-	
-	/**
-	 * Update from PAS if enabled
+	 * Raise event to allow external data sources to update patient
 	 * @see CActiveRecord::afterFind()
 	 */
 	protected function afterFind() {
 		parent::afterFind();
-		if($this->use_pas && Yii::app()->params['use_pas'] && PasPatientAssignment::is_stale($this->id)) {
-			Yii::log('Patient details stale', 'trace');
-			$patient_service = new PatientService($this);
-			if (!$patient_service->down) {
-				$patient_service->loadFromPas();
-			}
-		}
+		Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
 	}
 
 	public function getEpisodeForCurrentSubspecialty() {
@@ -322,4 +294,5 @@ class Patient extends BaseActiveRecord {
 
 		return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
 	}
+
 }

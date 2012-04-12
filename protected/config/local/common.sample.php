@@ -24,16 +24,6 @@ return array(
 			'username' => 'root',
 			'password' => '',
 		),
-		'db_pas' => array(
-			'connectionString' => 'oci:dbname=remotename:1521/database',
-			'emulatePrepare' => false,
-			'username' => 'root',
-			'password' => '',
-			// Make oracle default date format the same as MySQL (default is DD-MMM-YY)
-			'initSQLs' => array(
-				'ALTER SESSION SET NLS_DATE_FORMAT = \'YYYY-MM-DD\'',
-			),
-		),
 		/*
 		'log' => array(
 			'routes' => array(
@@ -79,7 +69,6 @@ return array(
 		*/
 	),
 	'params'=>array(
-		'use_pas' => true,
 		//'pseudonymise_patient_details' => false,
 		//'ab_testing' => false,
 		'auth_source' => 'LDAP',
@@ -99,7 +88,6 @@ return array(
 		'helpdesk_email' => 'helpdesk@example.com',
 		'helpdesk_phone' => '12345678',
 		'google_analytics_account' => '',
-		'bad_gps' => array(),
 		'local_users' => array('admin','username'),
 		//'log_events' => true,
 		//'urgent_booking_notify_hours' => 24,

@@ -15,31 +15,29 @@
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * @todo This command is currently disabled until the referral code is fixed
  */
 
-class FetchGpsCommand extends CConsoleCommand
-{
-	public function getName()
-	{
-		return 'FetchGps';
+class FetchPASReferralsCommand extends CConsoleCommand {
+
+	public function getName() {
+		return 'FetchPASReferrals';
 	}
 
-	public function getHelp()
-	{
-		return 'Fetches all the GPs from PAS and puts them in the OpenEyes DB.';
+	public function getHelp() {
+		return "Fetches the latest referrals from PAS and puts them in the OpenEyes DB.\n";
 	}
 
-	public function run($args)
-	{
-		if (!Yii::app()->params['use_pas']) {
-			echo("For this script to run use_pas must be set to true in one of the config files, e.g. params.php\n");
-			Yii::app()->end();
+	public function run($args) {
+		echo "Disabled until the referral code is fixed";
+		return false;
+		$pas_service = new PasService();
+		if ($pas_service->available) {
+			$pas_service->fetchNewReferrals();
+		} else {
+			echo "PAS is unavailable or module is disabled";
+			return false;
+		}
 	}
 
-		echo "Fetching GPs from PAS...\n";
-
-		$service = new GpService;
-
-		$service->PopulateGps();
-	}
 }

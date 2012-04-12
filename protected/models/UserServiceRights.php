@@ -29,8 +29,8 @@
  * @property User $user
  * @property Service $service
  */
-class UserServiceRights extends MultiActiveRecord
-{
+class UserServiceRights extends BaseActiveRecord {
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return UserServiceRights the static model class

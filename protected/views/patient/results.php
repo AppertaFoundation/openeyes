@@ -35,12 +35,8 @@ $based_on = implode(', ', $based_on);
 				<div class="wideColumn">
 					<p><strong><?php echo $total_items?> patients found</strong>, based on <?php echo $based_on?></p>
 
-					<?php if (Yii::app()->params['pas_down']) {?>
-						<div id="pas-error" class="alertBox">
-							Warning: the PAS is currently down. Search results are likely to be stale.
-						</div>
-					<?php }?>
-
+					<?php $this->renderPartial('//base/_messages'); ?>
+					
 					<div class="whiteBox">
 						<?php
 						$from = 1+(($pagen-1)*$items_per_page);

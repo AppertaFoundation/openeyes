@@ -22,6 +22,7 @@ $this->layout = 'main'; ?>
 <h2>Patient search</h2>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
+	<?php $this->renderPartial('//base/_messages'); ?>
 	<?php if ($_SERVER['REQUEST_URI'] == '/patient/results/error') {?>
 		<div id="patient-search-error" class="alertBox">
 			Please enter either a valid hospital number or a firstname and lastname.
