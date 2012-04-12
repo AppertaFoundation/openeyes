@@ -327,11 +327,30 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 			$('div.infoBox').hide();
 
+			$('tr[id^="oprow_"]').children('td').attr('style','');
+
 			$.ajax({
 				'type': 'POST',
 				'data': data,
+				'dataType': 'json',
 				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
 				'success': function(data) {
+					var count = 0;
+
+					$.each(data, function(key, value) {
+						count += 1;
+
+						$('#oprow_'+value["operation_id"]).children('td:first').attr('style','background: #f44;');
+					});
+
+					if (count != 0) {
+						alert(count+" admission time"+(count==1 ? '' : 's')+" requested are outside the times of the booked session.\n\nPlease correct the time"+(count==1 ? '' : 's')+" highlighted in red.");
+
+						$('#loader2_'+selected_tbody_id).hide();
+						enableButtons();
+						return;
+					}
+
 					$.ajax({
 						'type': 'POST',
 						'data': 'session_id='+selected_tbody_id,
@@ -457,13 +476,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		if (sd == '') {
 			// No date-start. Make date-start one week before today, date-end today
 			today = new Date();
-	
-			$('#date-end').val(format_date(today));
-	
-			$('#date-start').val(format_date(returnDateWithInterval(today, -7)));
+
+			$('#date-end').val(format_date(returnDateWithInterval(today, -1)));
+
+			$('#date-start').val(format_date(returnDateWithInterval(today, -8)));
 		} else {
 			// Make date-end date-start, make date-start one week before date-start
-			$('#date-end').val(sd);
+			$('#date-end').val(format_date(returnDateWithIntervalFromString(sd, -1)));
 
 			$('#date-start').val(format_date(returnDateWithIntervalFromString(sd, -7)));
 		}
@@ -488,9 +507,15 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		} else {
 			// Make date-start date-end, make date-end one week after date-end
 
-			$('#date-start').val(ed);
+			today = new Date();
 
-			$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 7)));
+			if (ed == format_date(today)) {
+				$('#date-start').val(format_date(returnDateWithIntervalFromString(ed, 7)));
+				$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 13)));
+			} else {
+				$('#date-start').val(format_date(returnDateWithIntervalFromString(ed, 1)));
+				$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 7)));
+			}
 		}
 
 		setFilter({'date-filter':''});

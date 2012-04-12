@@ -49,6 +49,8 @@
  */
 class Patient extends BaseActiveRecord {
 	
+	const CHILD_AGE_LIMIT = 16;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -190,7 +192,8 @@ class Patient extends BaseActiveRecord {
 	 * @return boolean Is patient a child?
 	 */
 	public function isChild() {
-		return ($this->getAge() < 16);
+		$age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
+		return ($this->getAge() < $age_limit);
 	}
 
 	/**
