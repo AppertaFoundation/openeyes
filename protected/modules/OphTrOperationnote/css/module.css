@@ -14,3 +14,9 @@
 #div_ElementCataract_Complications ul.MultiSelectList { width: 185px; }
 
 #div_ElementSurgeon { padding-bottom: 28px !important; }
+
+div.ElementComments { background-color: #DAE6F1; }
+div.ElementComments > h4 { background-color: #fff; margin-bottom: 5px !important; padding-bottom: 5px !important; }
+
+#div_ElementComments_comments { display: inline-block; }
+#div_ElementComments_postop_instructions { display: inline-block; }
