@@ -22,22 +22,22 @@ return array(
 	'ward1' => array(
 		'site_id' => 1,
 		'name' => 'Male Childrens Ward',
-		'restriction' => Ward::RESTRICTION_MALE + Ward::RESTRICTION_UNDER_16
+		'restriction' => Ward::RESTRICTION_MALE + Ward::RESTRICTION_CHILD
 	),
 	'ward2' => array(
 		'site_id' => 1,
 		'name' => 'Female Childrens Ward',
-		'restriction' => Ward::RESTRICTION_FEMALE + Ward::RESTRICTION_UNDER_16
+		'restriction' => Ward::RESTRICTION_FEMALE + Ward::RESTRICTION_CHILD
 	),
 	'ward3' => array(
 		'site_id' => 1,
 		'name' => 'Male Adult Ward',
-		'restriction' => Ward::RESTRICTION_MALE + Ward::RESTRICTION_ATLEAST_16
+		'restriction' => Ward::RESTRICTION_MALE + Ward::RESTRICTION_ADULT
 	),
 	'ward4' => array(
 		'site_id' => 1,
 		'name' => 'Female Adult Ward',
-		'restriction' => Ward::RESTRICTION_FEMALE + Ward::RESTRICTION_ATLEAST_16
+		'restriction' => Ward::RESTRICTION_FEMALE + Ward::RESTRICTION_ADULT
 	),
 	'ward5' => array(
 		'site_id' => 2,

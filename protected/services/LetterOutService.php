@@ -350,7 +350,7 @@ class LetterOutService
 	public function applySubstitutions($phrase)
 	{
 		if (empty($this->substitutions)) {
-			$age = floor((time() - strtotime($this->patient->dob)) / 60 / 60 / 24 / 365);
+			$age = $this->patient->age;
 
 			$this->substitutions['age'] = $age;
 
@@ -359,7 +359,7 @@ class LetterOutService
 				$this->substitutions['pos'] = 'his';
 				$this->substitutions['pro'] = 'he';
 
-				if ($age < 16) {
+				if ($this->patient->isChild()) {
 					$this->substitutions['sub'] = 'boy';
 				} else {
 					$this->substitutions['sub'] = 'man';
@@ -369,7 +369,7 @@ class LetterOutService
 				$this->substitutions['pos'] = 'her';
 				$this->substitutions['pro'] = 'she';
 
-				if ($age < 16) {
+				if ($this->patient->isChild()) {
 					$this->substitutions['sub'] = 'girl';
 				} else {
 					$this->substitutions['sub'] = 'woman';

@@ -402,6 +402,38 @@ class TheatreController extends BaseController
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 			$display_order = 1;
 
+			$errors = array();
+
+			// validation of theatre times
+			foreach ($_POST as $key => $value) {
+				if (preg_match('/^operation_([0-9]+)$/',$key,$m)) {
+					// This is validated in the model and the front-end so doesn't need an if ()
+					preg_match('/^([0-9]{1,2}).*?([0-9]{2})$/',$value,$m2);
+
+					$booking_ts = mktime($m2[1],$m2[2],0,1,1,date('Y'));
+
+					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
+					$session = Session::model()->findByPk($booking->session_id);
+
+					preg_match('/^([0-9]{2}):([0-9]{2})/',$session->start_time,$m3);
+					preg_match('/^([0-9]{2}):([0-9]{2})/',$session->end_time,$m4);
+
+					$session_from = mktime($m3[1],$m3[2],0,1,1,date('Y'));
+					$session_to = mktime($m4[1],$m4[2],59,1,1,date('Y'));
+
+					if ($booking_ts < $session_from || $booking_ts > $session_to) {
+						$errors[] = array(
+							'operation_id' => $m[1],
+							'message' => "The requested admission time is outside the window for this session."
+						);
+					}
+				}
+			}
+
+			if (!empty($errors)) {
+				die(json_encode($errors));
+			}
+
 			foreach ($_POST as $key => $value) {
 				if (preg_match('/^operation_([0-9]+)$/',$key,$m)) {
 					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
@@ -487,7 +519,7 @@ class TheatreController extends BaseController
 				}
 			}
 
-			return true;
+			die(json_encode(array()));
 		}
 	}
 
