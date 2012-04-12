@@ -1,8 +1,0 @@
-- Ensure code migration is up to date
-- Add docs/common.php and docs/console.php to /protected/config/local/ config files
-- Do migrations:
-	./yiic migrate --migrationPath=ext.mehpas.migrations
-- Map existing Patients and GPs:
-  ./yiic populatepasassignment
-- Verify assignments
-  ./yiic verifypasassignment
