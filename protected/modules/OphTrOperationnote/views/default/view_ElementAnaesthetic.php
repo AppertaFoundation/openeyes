@@ -43,6 +43,9 @@
 		<div class="right">
 			<h4><?php echo CHtml::encode($element->getAttributeLabel('complications'))?></h4>
 			<div class="eventHighlight">
+				<?php foreach ($element->anaesthetic_complications as $complication) {?>
+					<h4><?php echo $complication->name?></h4>
+				<?php }?>
 			</div>
 		</div>
 		<div class="left">

@@ -22,7 +22,6 @@ class RadioButtonList extends BaseCWidget {
 	public $data;
 	public $selected_item;
 	public $maxwidth;
-	public $hidden;
 
 	public function init() {
 		if (empty($_POST)) {

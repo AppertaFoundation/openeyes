@@ -18,14 +18,13 @@
  */
 ?>
 
-<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
-
-<div class="view">
-	<?php if (!$element->drugs) {?>
-		None
-	<?php }else{
-		foreach ($element->drugs as $drug) {?>
-			<?php echo $drug->name?><br/>
-		<?php }
-	}?>
+<div class="cols2">
+	<div class="left">
+		<h4 class="elementTypeName"><?php echo $element->elementType->name ?></h4>
+		<div class="eventHighlight">
+			<?php foreach ($element->drugs as $drug) {?>
+				<h4><?php echo $drug->name?></h4>
+			<?php }?>
+		</div>
+	</div>
 </div>

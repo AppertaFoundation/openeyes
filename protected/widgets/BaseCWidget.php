@@ -23,6 +23,7 @@ class BaseCWidget extends CWidget
 	public $field;
 	public $value;
 	public $assetFolder;
+	public $hidden = false;
 
 	public function init() {
 		if (empty($_POST)) {

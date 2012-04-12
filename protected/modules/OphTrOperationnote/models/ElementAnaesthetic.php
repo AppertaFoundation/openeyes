@@ -83,6 +83,7 @@ class ElementAnaesthetic extends BaseEventTypeElement
 			'anaesthetist' => array(self::BELONGS_TO, 'Anaesthetist', 'anaesthetist_id'),
 			'anaesthetic_delivery' => array(self::BELONGS_TO, 'AnaestheticDelivery', 'anaesthetic_delivery_id'),
 			'anaesthetic_agents' => array(self::HAS_MANY, 'OperationAnaestheticAgent', 'et_ophtroperationnote_anaesthetic_id'),
+			'anaesthetic_complications' => array(self::HAS_MANY, 'AnaestheticComplication', 'et_ophtroperationnote_anaesthetic_id'),
 		);
 	}
 
@@ -170,11 +171,11 @@ class ElementAnaesthetic extends BaseEventTypeElement
 	}
 
 	protected function afterSave() {
-		$order = 1;
-
 		if (!empty($_POST['AnaestheticAgent'])) {
 
 			OperationAnaestheticAgent::model()->deleteAll('et_ophtroperationnote_anaesthetic_id = :anaestheticId', array(':anaestheticId' => $this->id));
+
+			$order = 1;
 
 			foreach ($_POST['AnaestheticAgent'] as $id) {
 				$anaesthetic_agent = new OperationAnaestheticAgent;
@@ -189,6 +190,28 @@ class ElementAnaesthetic extends BaseEventTypeElement
 			}
 		}
 
+		if (!empty($_POST['AnaestheticComplications'])) {
+
+			AnaestheticComplication::model()->deleteAll('et_ophtroperationnote_anaesthetic_id = :anaestheticId', array(':anaestheticId' => $this->id));
+
+			$order = 1;
+
+			foreach ($_POST['AnaestheticComplications'] as $id) {
+				$anaesthetic_complication = new AnaestheticComplication;
+				$anaesthetic_complication->et_ophtroperationnote_anaesthetic_id = $this->id;
+				$anaesthetic_complication->anaesthetic_complication_id = $id;
+
+				if (!$anaesthetic_complication->save()) {
+					throw new Exception('Unable to save anaesthetic_complication: '.print_r($anaesthetic_complication->getErrors(),true));
+				}
+
+				$order++;
+			}
+		}
+
 		return parent::afterSave();
+	}
+
+	public function getAnaesthetic_complication_list() {
 	}
 }
