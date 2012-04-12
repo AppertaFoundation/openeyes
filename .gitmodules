@@ -1,3 +1,6 @@
 [submodule "protected/extensions/mehpas"]
 	path = protected/extensions/mehpas
 	url = git@github.com:openeyes/MEHPAS.git
+[submodule "protected/modules/eyedraw"]
+	path = protected/modules/eyedraw
+	url = git@github.com:openeyes/EyeDraw.git
