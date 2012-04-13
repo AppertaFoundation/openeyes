@@ -1193,7 +1193,7 @@ ED.Drawing.prototype.isReady = function() {
  * @param {String} _className Classname of doodle
  * @returns {Doodle} The newly added doodle
  */
-ED.Drawing.prototype.addDoodle = function(_className)
+ED.Drawing.prototype.addDoodle = function(_className, rotation)
 {
     // Check that class exists
     if (ED.hasOwnProperty(_className))
@@ -1217,7 +1217,11 @@ ED.Drawing.prototype.addDoodle = function(_className)
 
         // Set default parameters
         newDoodle.setParameterDefaults();
-        
+ 
+ 				if (typeof rotation != 'undefined') {
+					newDoodle.rotation = rotation;
+				}
+
         // New doodles are selected by default
         this.selectedDoodle = newDoodle;
         

@@ -32,7 +32,8 @@ class OEEyeDrawWidgetCataract extends OEEyeDrawWidget {
 	public $onLoadedCommandArray = array(
 		array('addDoodle', array('AntSeg')),
 		array('addDoodle', array('PhakoIncision')),
-		array('addDoodle', array('SidePort')),
+		array('addDoodle', array('SidePort',0)),
+		array('addDoodle', array('SidePort',3.1415926535898)),
 		array('addDoodle', array('PCIOL')),
 		array('deselectDoodles', array()),
 	);

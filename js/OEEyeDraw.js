@@ -80,11 +80,9 @@ function eyeDrawInit(_properties)
 	                args += _properties.onLoadedCommandArray[i][1][j] + ","; // ***TODO*** will this work >1 one argument?
 	            }
 	            
-	            // Remove final comma
-	            if (_properties.onLoadedCommandArray[i][1].length > 0) args = args.substring(0, args.length - 1);
-	
-	            // Run function and arguments  ***TODO*** investigate possible bugs from translation of 'this'
-	            window[_properties.drawingName][func](args);
+							args = args.replace(/,$/,'').split(',');
+
+							window[_properties.drawingName][func].apply(window[_properties.drawingName], args);
 	        }
     	}
 			
