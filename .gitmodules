@@ -7,3 +7,6 @@
 [submodule "protected/modules/OphTrOperationnote"]
 	path = protected/modules/OphTrOperationnote
 	url = git@github.com:openeyes/OphTrOperationnote.git
+[submodule "protected/modules/sample"]
+	path = protected/modules/sample
+	url = git@github.com:openeyes/Sample.git
