@@ -108,9 +108,8 @@ ED.modified = false;
  * @param {Object} obj Object to get offset for, usually canvas object
  * @returns {Object} x and y values of offset
  */
-ED.findOffset = function(obj)
+ED.findOffset = function(obj, curleft, curtop)
 {
-    var curleft = curtop = 0;
     if (obj.offsetParent) {
         do {
             curleft += obj.offsetLeft;
@@ -170,7 +169,7 @@ ED.isFirefox = function()
  * @param {String} _IDSuffix String suffix to identify HTML elements related to this drawing
  * @param {Bool} _isEditable Flag indicating whether canvas is editable or not
  */
-ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
+ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable, offset_x, offset_y)
 {
 	// Properties
 	this.canvas = _canvas;
@@ -192,7 +191,7 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
     this.newPointOnClick = false;
     this.completeLine = false;
     this.globalScaleFactor = 1;
-    
+
     // Fit canvas making maximum use of doodle plane
     if (this.canvas.width >= this.canvas.height)
     {
@@ -247,25 +246,25 @@ ED.Drawing = function(_canvas, _eye, _IDSuffix, _isEditable)
         
         // Mouse listeners
         this.canvas.addEventListener('mousedown', function(e) {
-                                var offset = ED.findOffset(this);
+                                var offset = ED.findOffset(this, offset_x, offset_y);
                                 var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
                                 drawing.mousedown(point);
                                  }, false);
         
         this.canvas.addEventListener('mouseup', function(e) { 
-                                var offset = ED.findOffset(this);
+                                var offset = ED.findOffset(this, offset_x, offset_y);
                                 var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
                                 drawing.mouseup(point); 
                                 }, false);
         
         this.canvas.addEventListener('mousemove', function(e) { 
-                                var offset = ED.findOffset(this);
+                                var offset = ED.findOffset(this, offset_x, offset_y);
                                 var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
                                 drawing.mousemove(point); 
                                 }, false);
         
         this.canvas.addEventListener('mouseout', function(e) { 
-                                var offset = ED.findOffset(this);
+                                var offset = ED.findOffset(this, offset_x, offset_y);
                                 var point = new ED.Point(e.pageX-offset.x,e.pageY-offset.y);
                                 drawing.mouseout(point); 
                                 }, false);

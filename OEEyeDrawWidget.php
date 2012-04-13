@@ -203,6 +203,20 @@ class OEEyeDrawWidget extends CWidget
 	public $focus = false;
 
 	/**
+	 * x offset
+	 * @var integer
+	 */
+	
+	public $offset_x = 0;
+
+	/**
+	 * y offset
+	 * @var integer
+	 */
+	
+	public $offset_y = 0;
+
+	/**
 	 * Initializes the widget.
 	 * This method registers all needed client scripts and renders the EyeDraw content
 	 */
@@ -288,6 +302,8 @@ class OEEyeDrawWidget extends CWidget
 						'graphicsPath'=>$this->imgPath,
 						'inputId'=>$this->inputId,
 						'onLoadedCommandArray'=>$this->onLoadedCommandArray,
+						'offset_x'=>$this->offset_x,
+						'offset_y'=>$this->offset_y,
 		);
 		
 		// Encode parameters and pass to a javascript function to set up canvas
