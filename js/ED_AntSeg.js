@@ -52,9 +52,9 @@ ED.AntSeg = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _sca
 	
 	// Set classname
 	this.className = "AntSeg";
-    
-    // Class specific property
-    this.hasPXE = false;
+		
+		// Class specific property
+		this.hasPXE = false;
 }
 
 /**
@@ -78,13 +78,13 @@ ED.AntSeg.prototype.setHandles = function()
 ED.AntSeg.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-    this.isDeletable = false;
+		this.isDeletable = false;
 	this.isOrientated = false;
 	this.isScaleable = false;
 	this.isSqueezable = false;
 	this.isMoveable = false;
 	this.isRotatable = false;
-    this.isUnique = true;
+		this.isUnique = true;
 	this.rangeOfScale = new ED.Range(+1, +4);
 	this.rangeOfArc = new ED.Range(Math.PI/6, Math.PI*2);
 	this.rangeOfApexX = new ED.Range(-0, +0);
@@ -111,25 +111,25 @@ ED.AntSeg.prototype.draw = function(_point)
 	
 	// Call draw method in superclass
 	ED.AntSeg.superclass.draw.call(this, _point);
-    
+		
 	// Radius of limbus
 	var ro = 380;
-    var ri = -this.apexY;
-    //var r = ri + (ro - ri)/2;
+		var ri = -this.apexY;
+		//var r = ri + (ro - ri)/2;
 	
 	// Calculate parameters for arcs
 	var arcStart = 0;
 	var arcEnd = 2 * Math.PI;
-    
+		
 	// Boundary path
 	ctx.beginPath();
-    
+		
 	// Do a 360 arc
 	ctx.arc(0, 0, ro, arcStart, arcEnd, true);
-    
-    // Move to inner circle
-    ctx.moveTo(ri, 0);
-    
+		
+		// Move to inner circle
+		ctx.moveTo(ri, 0);
+		
 	// Arc back the other way
 	ctx.arc(0, 0, ri, arcEnd, arcStart, false);
 	
@@ -144,40 +144,40 @@ ED.AntSeg.prototype.draw = function(_point)
 	// Other paths and drawing here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        // Pseudo exfoliation
-        if (this.hasPXE)
-        {
-            ctx.lineWidth = 8;
-            ctx.strokeStyle = "darkgray";
-            
-            var rl = ri * 0.8;
-            var rp = ri * 1.05;
-            var segments = 36;
-            var i;
-            var phi = Math.PI * 2/segments;
-            
-            // Loop around alternating segments
-            for (i = 0; i < segments; i++)
-            {
-                // PXE on lens
-                ctx.beginPath();
-                ctx.arc(0, 0, rl, i * phi, i * phi + phi/2, false);
-                ctx.stroke();
-                
-                // PXE on pupil
-                ctx.beginPath();
-                ctx.arc(0, 0, rp, i * phi, i * phi + phi/2, false);
-                ctx.stroke();
-            }
-        }
+				// Pseudo exfoliation
+				if (this.hasPXE)
+				{
+						ctx.lineWidth = 8;
+						ctx.strokeStyle = "darkgray";
+						
+						var rl = ri * 0.8;
+						var rp = ri * 1.05;
+						var segments = 36;
+						var i;
+						var phi = Math.PI * 2/segments;
+						
+						// Loop around alternating segments
+						for (i = 0; i < segments; i++)
+						{
+								// PXE on lens
+								ctx.beginPath();
+								ctx.arc(0, 0, rl, i * phi, i * phi + phi/2, false);
+								ctx.stroke();
+								
+								// PXE on pupil
+								ctx.beginPath();
+								ctx.arc(0, 0, rp, i * phi, i * phi + phi/2, false);
+								ctx.stroke();
+						}
+				}
 	}
-    
+		
 	// Coordinates of handles (in canvas plane)
 	this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
-    
+		
 	// Return value indicating successful hit test
 	return this.isClicked;
 }
@@ -189,12 +189,12 @@ ED.AntSeg.prototype.draw = function(_point)
  */
 ED.AntSeg.prototype.getGrade = function()
 {
-    var returnValue = "";
-    if (this.apexY < -200) returnValue = 'Large';
-    else if (this.apexY < -100) returnValue = 'Medium';
-    else returnValue = 'Small';
-    
-    return returnValue;
+		var returnValue = "";
+		if (this.apexY < -200) returnValue = 'Large';
+		else if (this.apexY < -100) returnValue = 'Medium';
+		else returnValue = 'Small';
+		
+		return returnValue;
 }
 
 /**
@@ -204,20 +204,20 @@ ED.AntSeg.prototype.getGrade = function()
  */
 ED.AntSeg.prototype.setGrade = function(_grade)
 {
-    switch (_grade)
-    {
-        case 'Small':
-            this.apexY = -100;
-            break;
-        case 'Medium':
-            this.apexY = -200;
-            break;
-        case 'Large':
-            this.apexY = -260;
-            break;
-        default:
-            break;
-    }
+		switch (_grade)
+		{
+				case 'Small':
+						this.apexY = -100;
+						break;
+				case 'Medium':
+						this.apexY = -200;
+						break;
+				case 'Large':
+						this.apexY = -260;
+						break;
+				default:
+						break;
+		}
 }
 
 /**
@@ -227,7 +227,7 @@ ED.AntSeg.prototype.setGrade = function(_grade)
  */
 ED.AntSeg.prototype.setPXE = function(_value)
 {
-    this.hasPXE = _value;
+		this.hasPXE = _value;
 }
 
 /**
@@ -237,9 +237,9 @@ ED.AntSeg.prototype.setPXE = function(_value)
 */
 ED.AntSeg.prototype.description = function()
 {
-    var returnString = this.getGrade() + " pupil";
-    
-    if (this.hasPXE) returnString += " with pseudoexfoliation";
+		var returnString = this.getGrade() + " pupil";
+		
+		if (this.hasPXE) returnString += " with pseudoexfoliation";
 	
 	return returnString;
 }
@@ -291,13 +291,13 @@ ED.NuclearCataract.prototype.setHandles = function()
 ED.NuclearCataract.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-    this.addAtBack = true;
+		this.addAtBack = true;
 	this.isOrientated = false;
 	this.isScaleable = false;
 	this.isSqueezable = false;
 	this.isMoveable = false;
 	this.isRotatable = false;
-    this.isUnique = true;
+		this.isUnique = true;
 	this.rangeOfApexX = new ED.Range(-0, +0);
 	this.rangeOfApexY = new ED.Range(-180, 0);
 }
@@ -307,9 +307,9 @@ ED.NuclearCataract.prototype.setPropertyDefaults = function()
  */
 ED.NuclearCataract.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
-    this.apexY = -180;
+		this.apexY = -180;
 }
 
 /**
@@ -329,7 +329,7 @@ ED.NuclearCataract.prototype.draw = function(_point)
 	ctx.beginPath();
 	
 	// NuclearCataract
-    ctx.arc(0, 0, 200, 0, Math.PI * 2, true);
+		ctx.arc(0, 0, 200, 0, Math.PI * 2, true);
 	
 	// Close path
 	ctx.closePath();
@@ -337,14 +337,14 @@ ED.NuclearCataract.prototype.draw = function(_point)
 	// Set line attributes
 	ctx.lineWidth = 0;
 
-    // Colors for gradient
-    yellowColour = "rgba(255, 255, 0, 0.75)";
-    var brownColour = "rgba(" + Math.round(120 - this.apexY/2) + ", " + Math.round(60 - this.apexY/2) + ", 0, 0.75)";
-    
-    // Radial gradient
-    var gradient = ctx.createRadialGradient(0, 0, 210, 0, 0, 50);
-    gradient.addColorStop(0, yellowColour);
-    gradient.addColorStop(1, brownColour);
+		// Colors for gradient
+		yellowColour = "rgba(255, 255, 0, 0.75)";
+		var brownColour = "rgba(" + Math.round(120 - this.apexY/2) + ", " + Math.round(60 - this.apexY/2) + ", 0, 0.75)";
+		
+		// Radial gradient
+		var gradient = ctx.createRadialGradient(0, 0, 210, 0, 0, 50);
+		gradient.addColorStop(0, yellowColour);
+		gradient.addColorStop(1, brownColour);
 
 	ctx.fillStyle = gradient;
 	ctx.strokeStyle = "rgba(0,0,0,0)";
@@ -374,12 +374,12 @@ ED.NuclearCataract.prototype.draw = function(_point)
  */
 ED.NuclearCataract.prototype.getGrade = function()
 {
-    var returnValue = "";
-    if (this.apexY < -120) returnValue = 'Mild';
-    else if (this.apexY < -60) returnValue = 'Moderate';
-    else returnValue = 'Brunescent';
-    
-    return returnValue;
+		var returnValue = "";
+		if (this.apexY < -120) returnValue = 'Mild';
+		else if (this.apexY < -60) returnValue = 'Moderate';
+		else returnValue = 'Brunescent';
+		
+		return returnValue;
 }
 
 /**
@@ -389,20 +389,20 @@ ED.NuclearCataract.prototype.getGrade = function()
  */
 ED.NuclearCataract.prototype.setGrade = function(_grade)
 {
-    switch (_grade)
-    {
-        case 'Mild':
-            this.apexY = -180;
-            break;
-        case 'Moderate':
-            this.apexY = -100;
-            break;
-        case 'Brunescent':
-            this.apexY = 0;
-            break;
-        default:
-            break;
-    }
+		switch (_grade)
+		{
+				case 'Mild':
+						this.apexY = -180;
+						break;
+				case 'Moderate':
+						this.apexY = -100;
+						break;
+				case 'Brunescent':
+						this.apexY = 0;
+						break;
+				default:
+						break;
+		}
 }
 
 /**
@@ -482,13 +482,13 @@ ED.CorticalCataract.prototype.setHandles = function()
 ED.CorticalCataract.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-    this.addAtBack = true;
+		this.addAtBack = true;
 	this.isOrientated = false;
 	this.isScaleable = false;
 	this.isSqueezable = false;
 	this.isMoveable = false;
 	this.isRotatable = false;
-    this.isUnique = true;
+		this.isUnique = true;
 	this.rangeOfApexX = new ED.Range(-0, +0);
 	this.rangeOfApexY = new ED.Range(-180, 0);
 }
@@ -498,9 +498,9 @@ ED.CorticalCataract.prototype.setPropertyDefaults = function()
  */
 ED.CorticalCataract.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
-    this.apexY = -180;
+		this.apexY = -180;
 }
 
 /**
@@ -520,14 +520,14 @@ ED.CorticalCataract.prototype.draw = function(_point)
 	ctx.beginPath();
 
 	// CorticalCataract
-    ctx.arc(0, 0, 240, 0, Math.PI * 2, true);
+		ctx.arc(0, 0, 240, 0, Math.PI * 2, true);
 	
 	// Close path
 	ctx.closePath();
 	
 	// Set line attributes
 	ctx.lineWidth = 1;
-    
+		
 	ctx.fillStyle = "rgba(0,0,0,0)";
 	ctx.strokeStyle = "gray";
 	
@@ -537,28 +537,28 @@ ED.CorticalCataract.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        // Parameters
-        var n = 16;                 // Number of cortical spokes
-        var ro = 240;               // Outer radius of cataract
-        var theta = 2 * Math.PI/n;	// Angle of outer arc of cortical shard
-        var phi = theta/2;          // Half theta
-        var ri = -this.apexY;       // Radius of inner clear area
-        ctx.fillStyle = "rgba(200,200,200,0.75)";
-        
-        // Draw cortical spokes
-        var i;
-        for (i = 0; i < n; i++)
-        {
-            ctx.beginPath();
-            var startAngle = i * theta - phi - Math.PI/2;
-            var endAngle = startAngle + theta;
-            ctx.arc(0, 0, ro, startAngle, endAngle, false);
-            var p = new ED.Point(0, 0);
-            p.setWithPolars(ri, i * theta); 
-            ctx.lineTo(p.x, p.y);
-            ctx.closePath();
-            ctx.fill()
-        }
+				// Parameters
+				var n = 16;									// Number of cortical spokes
+				var ro = 240;								// Outer radius of cataract
+				var theta = 2 * Math.PI/n;	// Angle of outer arc of cortical shard
+				var phi = theta/2;					// Half theta
+				var ri = -this.apexY;				// Radius of inner clear area
+				ctx.fillStyle = "rgba(200,200,200,0.75)";
+				
+				// Draw cortical spokes
+				var i;
+				for (i = 0; i < n; i++)
+				{
+						ctx.beginPath();
+						var startAngle = i * theta - phi - Math.PI/2;
+						var endAngle = startAngle + theta;
+						ctx.arc(0, 0, ro, startAngle, endAngle, false);
+						var p = new ED.Point(0, 0);
+						p.setWithPolars(ri, i * theta); 
+						ctx.lineTo(p.x, p.y);
+						ctx.closePath();
+						ctx.fill()
+				}
 	}
 	
 	// Coordinates of handles (in canvas plane)
@@ -578,12 +578,12 @@ ED.CorticalCataract.prototype.draw = function(_point)
  */
 ED.CorticalCataract.prototype.getGrade = function()
 {
-    var returnValue = "";
-    if (this.apexY < -120) returnValue = 'Mild';
-    else if (this.apexY < -60) returnValue = 'Moderate';
-    else returnValue = 'White';
-    
-    return returnValue;
+		var returnValue = "";
+		if (this.apexY < -120) returnValue = 'Mild';
+		else if (this.apexY < -60) returnValue = 'Moderate';
+		else returnValue = 'White';
+		
+		return returnValue;
 }
 
 /**
@@ -593,20 +593,20 @@ ED.CorticalCataract.prototype.getGrade = function()
  */
 ED.CorticalCataract.prototype.setGrade = function(_grade)
 {
-    switch (_grade)
-    {
-        case 'Mild':
-            this.apexY = -180;
-            break;
-        case 'Moderate':
-            this.apexY = -100;
-            break;
-        case 'White':
-            this.apexY = 0;
-            break;
-        default:
-            break;
-    }
+		switch (_grade)
+		{
+				case 'Mild':
+						this.apexY = -180;
+						break;
+				case 'Moderate':
+						this.apexY = -100;
+						break;
+				case 'White':
+						this.apexY = 0;
+						break;
+				default:
+						break;
+		}
 }
 
 /**
@@ -677,7 +677,7 @@ ED.PostSubcapCataract.superclass = ED.Doodle.prototype;
  */
 ED.PostSubcapCataract.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
 }
 
 /**
@@ -686,13 +686,13 @@ ED.PostSubcapCataract.prototype.setHandles = function()
 ED.PostSubcapCataract.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-    this.addAtBack = true;
+		this.addAtBack = true;
 	this.isOrientated = false;
 	this.isScaleable = true;
 	this.isSqueezable = false;
 	this.isMoveable = false;
 	this.isRotatable = false;
-    this.isUnique = true;
+		this.isUnique = true;
 }
 
 /**
@@ -700,7 +700,7 @@ ED.PostSubcapCataract.prototype.setPropertyDefaults = function()
  */
 ED.PostSubcapCataract.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
 }
 
@@ -719,21 +719,21 @@ ED.PostSubcapCataract.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
+		
 	// PostSubcapCataract
-    var r = 50;
+		var r = 50;
 	ctx.arc(0, 0, 50, 0, Math.PI * 2, false);
-    
+		
 	// Close path
 	ctx.closePath();
 	
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // create pattern
-    var ptrn = ctx.createPattern(this.drawing.imageArray['PSCPattern'],'repeat');
-    ctx.fillStyle = ptrn;
-    
+		
+		// create pattern
+		var ptrn = ctx.createPattern(this.drawing.imageArray['PSCPattern'],'repeat');
+		ctx.fillStyle = ptrn;
+		
 	ctx.strokeStyle = "lightgray";
 	
 	// Draw boundary path (also hit testing)
@@ -745,8 +745,8 @@ ED.PostSubcapCataract.prototype.draw = function(_point)
 	}
 	
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0)
-    point.setWithPolars(r, Math.PI/4);
+		var point = new ED.Point(0, 0)
+		point.setWithPolars(r, Math.PI/4);
 	this.handleArray[2].location = this.transform.transformPoint(point);
 	
 	// Draw handles if selected
@@ -824,7 +824,7 @@ ED.PCIOL.superclass = ED.Doodle.prototype;
  */
 ED.PCIOL.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -833,14 +833,14 @@ ED.PCIOL.prototype.setHandles = function()
 ED.PCIOL.prototype.setPropertyDefaults = function()
 {
 	this.isSelectable = true;
-    this.addAtBack = true;
+		this.addAtBack = true;
 	this.isOrientated = false;
 	this.isScaleable = true;
 	this.isSqueezable = false;
 	this.isMoveable = true;
 	this.isRotatable = true;
-    this.isUnique = true;
-    this.addAtBack = true;
+		this.isUnique = true;
+		this.addAtBack = true;
 }
 
 /**
@@ -848,10 +848,10 @@ ED.PCIOL.prototype.setPropertyDefaults = function()
  */
 ED.PCIOL.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
-    this.scaleX = 0.75;
-    this.scaleY = 0.75;
+		this.scaleX = 0.75;
+		this.scaleY = 0.75;
 }
 
 /**
@@ -869,39 +869,39 @@ ED.PCIOL.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    // Radius of IOL optic
-    var r = 240;
-    
-    // Draw optic
-    ctx.arc(0, 0, r, 0, Math.PI * 2, false);
-    
-    // Draw upper haptic
-    ctx.moveTo(150, -190);
-    ctx.bezierCurveTo(160, -200, 190, -350, 160, -380);
-    ctx.bezierCurveTo(90, -440, -150, -410, -220, -370);
-    ctx.bezierCurveTo(-250, -350, -260, -400, -200, -430);
-    ctx.bezierCurveTo(-110, -480, 130, -470, 200, -430);
-    ctx.bezierCurveTo(270, -390, 220, -140, 220, -100);
-    
-    // Draw lower haptic
-    ctx.moveTo(-150, 190);
-    ctx.bezierCurveTo(-160, 200, -190, 350, -160, 380);
-    ctx.bezierCurveTo(-90, 440, 150, 410, 220, 370);
-    ctx.bezierCurveTo(250, 350, 260, 400, 200, 430);
-    ctx.bezierCurveTo(110, 480, -130, 470, -200, 430);
-    ctx.bezierCurveTo(-270, 390, -220, 140, -220, 100);
-    
-    //ctx.closePath();
-    
-    // Colour of fill is white but with transparency
-    ctx.fillStyle = "rgba(255,255,255,0.75)";
-    
+		
+		// Radius of IOL optic
+		var r = 240;
+		
+		// Draw optic
+		ctx.arc(0, 0, r, 0, Math.PI * 2, false);
+		
+		// Draw upper haptic
+		ctx.moveTo(150, -190);
+		ctx.bezierCurveTo(160, -200, 190, -350, 160, -380);
+		ctx.bezierCurveTo(90, -440, -150, -410, -220, -370);
+		ctx.bezierCurveTo(-250, -350, -260, -400, -200, -430);
+		ctx.bezierCurveTo(-110, -480, 130, -470, 200, -430);
+		ctx.bezierCurveTo(270, -390, 220, -140, 220, -100);
+		
+		// Draw lower haptic
+		ctx.moveTo(-150, 190);
+		ctx.bezierCurveTo(-160, 200, -190, 350, -160, 380);
+		ctx.bezierCurveTo(-90, 440, 150, 410, 220, 370);
+		ctx.bezierCurveTo(250, 350, 260, 400, 200, 430);
+		ctx.bezierCurveTo(110, 480, -130, 470, -200, 430);
+		ctx.bezierCurveTo(-270, 390, -220, 140, -220, 100);
+		
+		//ctx.closePath();
+		
+		// Colour of fill is white but with transparency
+		ctx.fillStyle = "rgba(255,255,255,0.75)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "darkgray";
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "darkgray";
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -912,8 +912,8 @@ ED.PCIOL.prototype.draw = function(_point)
 	}
 	
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0)
-    point.setWithPolars(r, Math.PI/4);
+		var point = new ED.Point(0, 0)
+		point.setWithPolars(r, Math.PI/4);
 	this.handleArray[2].location = this.transform.transformPoint(point);
 	
 	// Draw handles if selected
@@ -930,38 +930,38 @@ ED.PCIOL.prototype.draw = function(_point)
  */
 ED.PCIOL.prototype.description = function()
 {
-    var returnValue = "Posterior chamber IOL";
-    
-    // Displacement limit
-    var limit = 40;
-    
-    // ***TODO*** ensure description takes account of side of eye
-    var displacementValue = "";
-    
-    if (this.originY < -limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " superiorly";
-    }
-    if (this.originY > limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " inferiorly";
-    }
-    if (this.originX < -limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " temporally";
-    }
-    if (this.originX > limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " nasally";
-    }
-    
-    // Add displacement description
-    if (displacementValue.length > 0) returnValue += " displaced" + displacementValue;
-    
+		var returnValue = "Posterior chamber IOL";
+		
+		// Displacement limit
+		var limit = 40;
+		
+		// ***TODO*** ensure description takes account of side of eye
+		var displacementValue = "";
+		
+		if (this.originY < -limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " superiorly";
+		}
+		if (this.originY > limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " inferiorly";
+		}
+		if (this.originX < -limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " temporally";
+		}
+		if (this.originX > limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " nasally";
+		}
+		
+		// Add displacement description
+		if (displacementValue.length > 0) returnValue += " displaced" + displacementValue;
+		
 	return returnValue;
 }
 
@@ -1003,7 +1003,7 @@ ED.ACIOL.superclass = ED.Doodle.prototype;
  */
 ED.ACIOL.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -1017,7 +1017,7 @@ ED.ACIOL.prototype.setPropertyDefaults = function()
 	this.isSqueezable = false;
 	this.isMoveable = true;
 	this.isRotatable = true;
-    this.isUnique = true;
+		this.isUnique = true;
 }
 
 /**
@@ -1025,10 +1025,10 @@ ED.ACIOL.prototype.setPropertyDefaults = function()
  */
 ED.ACIOL.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
-    this.scaleX = 0.8;
-    this.scaleY = 0.8;
+		this.scaleX = 0.8;
+		this.scaleY = 0.8;
 }
 
 /**
@@ -1046,59 +1046,59 @@ ED.ACIOL.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    // Radius of IOL optic
-    var r = 240;
-    
-    // Draw optic
-    ctx.arc(0, 0, r, 0, Math.PI * 2, false);
-    
-    // Draw upper haptic (see ACIOL.c4D for bezier points)
-    ctx.moveTo(150, -190);
-    ctx.bezierCurveTo(160, -200, 170, -210, 160, -230);
-    ctx.bezierCurveTo(150, -250, 100, -280, 50, -290);
-    ctx.bezierCurveTo(0, -300, -220, -330, -230, -340);
-    ctx.bezierCurveTo(-250, -360, -220, -420, -200, -430);
-    ctx.bezierCurveTo(-180, -440, -180, -440, -150, -450);
-    ctx.bezierCurveTo(-120, -460, -130, -430, -120, -420);
-    ctx.bezierCurveTo(-110, -410, 110, -410, 120, -420);
-    ctx.bezierCurveTo(130, -430, 120, -460, 150, -450);
-    ctx.bezierCurveTo(180, -440, 180, -440, 200, -430);
-    ctx.bezierCurveTo(220, -420, 180, -400, 150, -390);
-    ctx.bezierCurveTo(120, -380, -120, -380, -150, -390);
-    ctx.bezierCurveTo(-180, -400, -190, -370, -170, -360);
-    ctx.bezierCurveTo(-150, -350, 20, -330, 70, -320);
-    ctx.bezierCurveTo(120, -310, 190, -280, 210, -250);
-    ctx.bezierCurveTo(230, -220, 220, -140, 220, -100);
-    
-    // Draw lower haptic
-    ctx.moveTo(-150, 190);
-    ctx.bezierCurveTo(-160, 200, -170, 210, -160, 230);
-    ctx.bezierCurveTo(-150, 250, -100, 280, -50, 290);
-    ctx.bezierCurveTo(0, 300, 220, 330, 230, 340);
-    ctx.bezierCurveTo(250, 360, 220, 420, 200, 430);
-    ctx.bezierCurveTo(180, 440, 180, 440, 150, 450);
-    ctx.bezierCurveTo(120, 460, 130, 430, 120, 420);
-    ctx.bezierCurveTo(110, 410, -110, 410, -120, 420);
-    ctx.bezierCurveTo(-130, 430, -120, 460, -150, 450);
-    ctx.bezierCurveTo(-180, 440, -180, 440, -200, 430);
-    ctx.bezierCurveTo(-220, 420, -180, 400, -150, 390);
-    ctx.bezierCurveTo(-120, 380, 120, 380, 150, 390);
-    ctx.bezierCurveTo(180, 400, 190, 370, 170, 360);
-    ctx.bezierCurveTo(150, 350, -20, 330, -70, 320);
-    ctx.bezierCurveTo(-120, 310, -190, 280, -210, 250);
-    ctx.bezierCurveTo(-230, 220, -220, 140, -220, 100);
-    
-    //ctx.closePath();
-    
-    // Colour of fill is white but with transparency
-    ctx.fillStyle = "rgba(255,255,255,0.75)";
-    
+		
+		// Radius of IOL optic
+		var r = 240;
+		
+		// Draw optic
+		ctx.arc(0, 0, r, 0, Math.PI * 2, false);
+		
+		// Draw upper haptic (see ACIOL.c4D for bezier points)
+		ctx.moveTo(150, -190);
+		ctx.bezierCurveTo(160, -200, 170, -210, 160, -230);
+		ctx.bezierCurveTo(150, -250, 100, -280, 50, -290);
+		ctx.bezierCurveTo(0, -300, -220, -330, -230, -340);
+		ctx.bezierCurveTo(-250, -360, -220, -420, -200, -430);
+		ctx.bezierCurveTo(-180, -440, -180, -440, -150, -450);
+		ctx.bezierCurveTo(-120, -460, -130, -430, -120, -420);
+		ctx.bezierCurveTo(-110, -410, 110, -410, 120, -420);
+		ctx.bezierCurveTo(130, -430, 120, -460, 150, -450);
+		ctx.bezierCurveTo(180, -440, 180, -440, 200, -430);
+		ctx.bezierCurveTo(220, -420, 180, -400, 150, -390);
+		ctx.bezierCurveTo(120, -380, -120, -380, -150, -390);
+		ctx.bezierCurveTo(-180, -400, -190, -370, -170, -360);
+		ctx.bezierCurveTo(-150, -350, 20, -330, 70, -320);
+		ctx.bezierCurveTo(120, -310, 190, -280, 210, -250);
+		ctx.bezierCurveTo(230, -220, 220, -140, 220, -100);
+		
+		// Draw lower haptic
+		ctx.moveTo(-150, 190);
+		ctx.bezierCurveTo(-160, 200, -170, 210, -160, 230);
+		ctx.bezierCurveTo(-150, 250, -100, 280, -50, 290);
+		ctx.bezierCurveTo(0, 300, 220, 330, 230, 340);
+		ctx.bezierCurveTo(250, 360, 220, 420, 200, 430);
+		ctx.bezierCurveTo(180, 440, 180, 440, 150, 450);
+		ctx.bezierCurveTo(120, 460, 130, 430, 120, 420);
+		ctx.bezierCurveTo(110, 410, -110, 410, -120, 420);
+		ctx.bezierCurveTo(-130, 430, -120, 460, -150, 450);
+		ctx.bezierCurveTo(-180, 440, -180, 440, -200, 430);
+		ctx.bezierCurveTo(-220, 420, -180, 400, -150, 390);
+		ctx.bezierCurveTo(-120, 380, 120, 380, 150, 390);
+		ctx.bezierCurveTo(180, 400, 190, 370, 170, 360);
+		ctx.bezierCurveTo(150, 350, -20, 330, -70, 320);
+		ctx.bezierCurveTo(-120, 310, -190, 280, -210, 250);
+		ctx.bezierCurveTo(-230, 220, -220, 140, -220, 100);
+		
+		//ctx.closePath();
+		
+		// Colour of fill is white but with transparency
+		ctx.fillStyle = "rgba(255,255,255,0.75)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "darkgray";
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "darkgray";
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -1109,8 +1109,8 @@ ED.ACIOL.prototype.draw = function(_point)
 	}
 	
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0)
-    point.setWithPolars(r, Math.PI/4);
+		var point = new ED.Point(0, 0)
+		point.setWithPolars(r, Math.PI/4);
 	this.handleArray[2].location = this.transform.transformPoint(point);
 	
 	// Draw handles if selected
@@ -1127,38 +1127,38 @@ ED.ACIOL.prototype.draw = function(_point)
  */
 ED.ACIOL.prototype.description = function()
 {
-    var returnValue = "Anterior chamber IOL";
-    
-    // Displacement limit
-    var limit = 40;
-    
-    // ***TODO*** ensure description takes account of side of eye
-    var displacementValue = "";
-    
-    if (this.originY < -limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " superiorly";
-    }
-    if (this.originY > limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " inferiorly";
-    }
-    if (this.originX < -limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " temporally";
-    }
-    if (this.originX > limit)
-    {
-        if (displacementValue.length > 0) displacementValue += " and";
-        displacementValue += " nasally";
-    }
-    
-    // Add displacement description
-    if (displacementValue.length > 0) returnValue += " displaced" + displacementValue;
-    
+		var returnValue = "Anterior chamber IOL";
+		
+		// Displacement limit
+		var limit = 40;
+		
+		// ***TODO*** ensure description takes account of side of eye
+		var displacementValue = "";
+		
+		if (this.originY < -limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " superiorly";
+		}
+		if (this.originY > limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " inferiorly";
+		}
+		if (this.originX < -limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " temporally";
+		}
+		if (this.originX > limit)
+		{
+				if (displacementValue.length > 0) displacementValue += " and";
+				displacementValue += " nasally";
+		}
+		
+		// Add displacement description
+		if (displacementValue.length > 0) returnValue += " displaced" + displacementValue;
+		
 	return returnValue;
 }
 
@@ -1186,9 +1186,9 @@ ED.Bleb = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scale
 	
 	// Set classname
 	this.className = "Bleb";
-    
-    // Base radius
-    this.baseRadius = 384;
+		
+		// Base radius
+		this.baseRadius = 384;
 }
 
 /**
@@ -1203,7 +1203,7 @@ ED.Bleb.superclass = ED.Doodle.prototype;
  */
 ED.Bleb.prototype.setHandles = function()
 {
-    //this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
+		//this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -1241,22 +1241,22 @@ ED.Bleb.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    // Draw limbal base
-    var phi = Math.PI/12;
-    ctx.arc(0, 0, this.baseRadius, -phi - Math.PI/2, phi - Math.PI/2, false);
-    ctx.lineTo(this.baseRadius/4, -this.baseRadius * 1.25);
-    ctx.lineTo(-this.baseRadius/4, -this.baseRadius * 1.25);
-    ctx.closePath();
-    
-    // Colour of fill
-    ctx.fillStyle = "rgba(240,240,240,0.9)";
-    
+		
+		// Draw limbal base
+		var phi = Math.PI/12;
+		ctx.arc(0, 0, this.baseRadius, -phi - Math.PI/2, phi - Math.PI/2, false);
+		ctx.lineTo(this.baseRadius/4, -this.baseRadius * 1.25);
+		ctx.lineTo(-this.baseRadius/4, -this.baseRadius * 1.25);
+		ctx.closePath();
+		
+		// Colour of fill
+		ctx.fillStyle = "rgba(240,240,240,0.9)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "rgba(120,120,120,0.75)";;
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "rgba(120,120,120,0.75)";;
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -1264,12 +1264,12 @@ ED.Bleb.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        ctx.beginPath();
-        ctx.moveTo(-40, -this.baseRadius);
-        ctx.lineTo(-40, -this.baseRadius * 1.15);
-        ctx.lineTo(40, -this.baseRadius * 1.15);
-        ctx.lineTo(40, -this.baseRadius);
-        ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(-40, -this.baseRadius);
+				ctx.lineTo(-40, -this.baseRadius * 1.15);
+				ctx.lineTo(40, -this.baseRadius * 1.15);
+				ctx.lineTo(40, -this.baseRadius);
+				ctx.stroke();
 	}
 	
 	// Draw handles if selected
@@ -1286,10 +1286,10 @@ ED.Bleb.prototype.draw = function(_point)
  */
 ED.Bleb.prototype.description = function()
 {
-    var returnString = "Trabeculectomy bleb at ";
-    
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "Trabeculectomy bleb at ";
+		
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
@@ -1317,9 +1317,9 @@ ED.PI = function(_drawing, _originX, _originY, _radius, _apexX, _apexY, _scaleX,
 	
 	// Set classname
 	this.className = "PI";
-    
-    // Class specific properties
-    this.outerRadius = 360;
+		
+		// Class specific properties
+		this.outerRadius = 360;
 }
 
 /**
@@ -1371,21 +1371,21 @@ ED.PI.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    // Draw base
-    var phi = Math.PI/24;
-    ctx.arc(0, 0, this.outerRadius, - phi - Math.PI/2, phi - Math.PI/2, false);
-    ctx.lineTo(0, -this.outerRadius * 0.8);
-    ctx.closePath();
-    
-    // Colour of fill
-    ctx.fillStyle = "rgba(255,255,255,1)";
-    
+		
+		// Draw base
+		var phi = Math.PI/24;
+		ctx.arc(0, 0, this.outerRadius, - phi - Math.PI/2, phi - Math.PI/2, false);
+		ctx.lineTo(0, -this.outerRadius * 0.8);
+		ctx.closePath();
+		
+		// Colour of fill
+		ctx.fillStyle = "rgba(255,255,255,1)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "rgba(120,120,120,0.75)";;
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "rgba(120,120,120,0.75)";;
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -1409,10 +1409,10 @@ ED.PI.prototype.draw = function(_point)
  */
 ED.PI.prototype.description = function()
 {
-    var returnString = "Peripheral iridectomy at ";
-    
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "Peripheral iridectomy at ";
+		
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
@@ -1454,7 +1454,7 @@ ED.RK.superclass = ED.Doodle.prototype;
  */
 ED.RK.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
 	this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
 }
 
@@ -1479,7 +1479,7 @@ ED.RK.prototype.setPropertyDefaults = function()
  */
 ED.RK.prototype.setParameterDefaults = function()
 {
-    this.apexY = -100;
+		this.apexY = -100;
 }
 
 /**
@@ -1494,36 +1494,36 @@ ED.RK.prototype.draw = function(_point)
 	
 	// Call draw method in superclass
 	ED.RK.superclass.draw.call(this, _point);
-    
+		
 	// RK number and size
-    var ro = 320;
-    var ri = -this.apexY;
-    var n = 8;
+		var ro = 320;
+		var ri = -this.apexY;
+		var n = 8;
 	
 	// Calculate parameters for arcs
 	var arcStart = 0;
 	var arcEnd = 2 * Math.PI;
-    
+		
 	// Boundary path
 	ctx.beginPath();
-    
+		
 	// Do a 360 arc
 	ctx.arc(0, 0, ro, arcStart, arcEnd, true);
-    
-    // Move to inner circle
-    ctx.moveTo(ri, 0);
-    
+		
+		// Move to inner circle
+		ctx.moveTo(ri, 0);
+		
 	// Arc back the other way
 	ctx.arc(0, 0, ri, arcEnd, arcStart, false);
 
 	// Close path
 	ctx.closePath();
-    
-    // Create fill pattern
-    ctx.fillStyle = "rgba(155,255,255,0)";
-    
-    // Transparent stroke
-    ctx.lineWidth = 2;
+		
+		// Create fill pattern
+		ctx.fillStyle = "rgba(155,255,255,0)";
+		
+		// Transparent stroke
+		ctx.lineWidth = 2;
 	ctx.strokeStyle = "rgba(100,100,100,0)";
 	
 	// Draw boundary path (also hit testing)
@@ -1532,31 +1532,31 @@ ED.RK.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        var theta = 2 * Math.PI/n;	// Angle between radii
-        ctx.strokeStyle = "rgba(100,100,100,0.7)";
-        
-        // Draw radii spokes
-        ctx.beginPath();
-        var i;
-        for (i = 0; i < n; i++)
-        {
-            var angle = i * theta;
-            var pi = new ED.Point(0, 0);
-            pi.setWithPolars(ri, angle); 
-            var po = new ED.Point(0, 0);
-            po.setWithPolars(ro, angle);            
-            ctx.moveTo(pi.x, pi.y);
-            ctx.lineTo(po.x, po.y);
-            ctx.closePath();
-        }
-        ctx.stroke();
+				var theta = 2 * Math.PI/n;	// Angle between radii
+				ctx.strokeStyle = "rgba(100,100,100,0.7)";
+				
+				// Draw radii spokes
+				ctx.beginPath();
+				var i;
+				for (i = 0; i < n; i++)
+				{
+						var angle = i * theta;
+						var pi = new ED.Point(0, 0);
+						pi.setWithPolars(ri, angle); 
+						var po = new ED.Point(0, 0);
+						po.setWithPolars(ro, angle);						
+						ctx.moveTo(pi.x, pi.y);
+						ctx.lineTo(po.x, po.y);
+						ctx.closePath();
+				}
+				ctx.stroke();
 	}
 	
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0)
-    point.setWithPolars(ro, Math.PI/4);
+		var point = new ED.Point(0, 0)
+		point.setWithPolars(ro, Math.PI/4);
 	this.handleArray[2].location = this.transform.transformPoint(point);
-    this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
+		this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
@@ -1572,8 +1572,8 @@ ED.RK.prototype.draw = function(_point)
  */
 ED.RK.prototype.description = function()
 {
-    var returnString = "Radial keratotomy";
-    
+		var returnString = "Radial keratotomy";
+		
 	return returnString;
 }
 
@@ -1615,7 +1615,7 @@ ED.LasikFlap.superclass = ED.Doodle.prototype;
  */
 ED.LasikFlap.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
 }
 
 /**
@@ -1639,7 +1639,7 @@ ED.LasikFlap.prototype.setPropertyDefaults = function()
  */
 ED.LasikFlap.prototype.setParameterDefaults = function()
 {
-    this.apexY = -100;
+		this.apexY = -100;
 }
 
 /**
@@ -1654,29 +1654,29 @@ ED.LasikFlap.prototype.draw = function(_point)
 	
 	// Call draw method in superclass
 	ED.LasikFlap.superclass.draw.call(this, _point);
-    
+		
 	// LasikFlap
-    var r = 320;
+		var r = 320;
 	
 	// Calculate parameters for arc
-    var angle = Math.PI/6;          // Angle of arc of flap hingle
+		var angle = Math.PI/6;					// Angle of arc of flap hingle
 	var arcStart = -Math.PI/2 - angle;
 	var arcEnd = -Math.PI/2 + angle;
-    
+		
 	// Boundary path
 	ctx.beginPath();
-    
+		
 	// Do an arc
 	ctx.arc(0, 0, r, arcStart, arcEnd, true);
-    
+		
 	// Close path to produce straight line
 	ctx.closePath();
-    
-    // Create transparent fill pattern
-    ctx.fillStyle = "rgba(155,255,255,0)";
-    
-    // Transparent stroke
-    ctx.lineWidth = 2;
+		
+		// Create transparent fill pattern
+		ctx.fillStyle = "rgba(155,255,255,0)";
+		
+		// Transparent stroke
+		ctx.lineWidth = 2;
 	ctx.strokeStyle = "rgba(100,100,100,0.9)";
 	
 	// Draw boundary path (also hit testing)
@@ -1688,8 +1688,8 @@ ED.LasikFlap.prototype.draw = function(_point)
 	}
 
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0)
-    point.setWithPolars(r, angle);
+		var point = new ED.Point(0, 0)
+		point.setWithPolars(r, angle);
 	this.handleArray[2].location = this.transform.transformPoint(point);
 	
 	// Draw handles if selected
@@ -1706,10 +1706,10 @@ ED.LasikFlap.prototype.draw = function(_point)
  */
 ED.LasikFlap.prototype.description = function()
 {
-    var returnString = "";
+		var returnString = "";
 
-    // Get side
-    if(this.drawing.eye == ED.eye.Right)
+		// Get side
+		if(this.drawing.eye == ED.eye.Right)
 	{
 		var isRightSide = true;
 	}
@@ -1717,21 +1717,21 @@ ED.LasikFlap.prototype.description = function()
 	{
 		var isRightSide = false;
 	}
-    
+		
 	// Use trigonometry on rotation field to determine quadrant ***TODO*** push function up to superclass
-    var c = Math.cos(this.rotation);
-    var s = Math.sin(this.rotation);
-    var ac = Math.abs(c);
-    var as = Math.abs(s);
-    
-    var quadrant = "";
-    if (s > c && as > ac) quadrant = isRightSide?"nasal":"temporal";
-    if (s > c && as < ac) quadrant = "inferior";
-    if (s < c && as > ac) quadrant = isRightSide?"temporal":"nasal";
-    if (s < c && as < ac) quadrant = "superior";
-    
+		var c = Math.cos(this.rotation);
+		var s = Math.sin(this.rotation);
+		var ac = Math.abs(c);
+		var as = Math.abs(s);
+		
+		var quadrant = "";
+		if (s > c && as > ac) quadrant = isRightSide?"nasal":"temporal";
+		if (s > c && as < ac) quadrant = "inferior";
+		if (s < c && as > ac) quadrant = isRightSide?"temporal":"nasal";
+		if (s < c && as < ac) quadrant = "superior";
+		
 	returnString = "Lasik flap with " + quadrant + " hinge";
-    
+		
 	return returnString;
 }
 
@@ -1773,7 +1773,7 @@ ED.Fuchs.superclass = ED.Doodle.prototype;
  */
 ED.Fuchs.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
 }
 
 /**
@@ -1794,7 +1794,7 @@ ED.Fuchs.prototype.setPropertyDefaults = function()
  */
 ED.Fuchs.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
 }
 
@@ -1813,19 +1813,19 @@ ED.Fuchs.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
+		
 	// Fuchs
-    var r = 300;
+		var r = 300;
 	ctx.arc(0, 0, r, 0, Math.PI * 2, false);
-    
+		
 	// Close path
 	ctx.closePath();
-    
-    // Create fill pattern
-    var ptrn = ctx.createPattern(this.drawing.imageArray['FuchsPattern'],'repeat');
-    ctx.fillStyle = ptrn;
-    
-    // Transparent stroke
+		
+		// Create fill pattern
+		var ptrn = ctx.createPattern(this.drawing.imageArray['FuchsPattern'],'repeat');
+		ctx.fillStyle = ptrn;
+		
+		// Transparent stroke
 	ctx.strokeStyle = "rgba(255,255,255,0)";
 	
 	// Draw boundary path (also hit testing)
@@ -1837,8 +1837,8 @@ ED.Fuchs.prototype.draw = function(_point)
 	}
 	
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0);
-    point.setWithPolars(r, Math.PI/4);
+		var point = new ED.Point(0, 0);
+		point.setWithPolars(r, Math.PI/4);
 	this.handleArray[2].location = this.transform.transformPoint(point);
 	
 	// Draw handles if selected
@@ -1855,8 +1855,8 @@ ED.Fuchs.prototype.draw = function(_point)
  */
 ED.Fuchs.prototype.description = function()
 {
-    var returnString = "Fuch's Endothelial Dystrophy";
-    
+		var returnString = "Fuch's Endothelial Dystrophy";
+		
 	return returnString;
 }
 
@@ -1904,9 +1904,9 @@ ED.CornealScar = function(_drawing, _originX, _originY, _radius, _apexX, _apexY,
 	
 	// Set classname
 	this.className = "CornealScar";
-    
-    // Doodle specific property
-    this.isInVisualAxis = false;
+		
+		// Doodle specific property
+		this.isInVisualAxis = false;
 }
 
 /**
@@ -1921,7 +1921,7 @@ ED.CornealScar.superclass = ED.Doodle.prototype;
  */
 ED.CornealScar.prototype.setHandles = function()
 {
-    this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
+		this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, false);
 	this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
 }
 
@@ -1936,7 +1936,7 @@ ED.CornealScar.prototype.setPropertyDefaults = function()
 	this.isSqueezable = true;
 	this.isMoveable = true;
 	this.isRotatable = false;
-    this.rangeOfScale = new ED.Range(+0.5, +4);
+		this.rangeOfScale = new ED.Range(+0.5, +4);
 	this.rangeOfApexX = new ED.Range(-0, +0);
 	this.rangeOfApexY = new ED.Range(-100, -10);
 }
@@ -1946,11 +1946,11 @@ ED.CornealScar.prototype.setPropertyDefaults = function()
  */
 ED.CornealScar.prototype.setParameterDefaults = function()
 {
-    this.originX = 0;
+		this.originX = 0;
 	this.originY = 0;
-    this.apexY = -50;
-    this.scaleX = 0.7;
-    this.scaleY = 0.5;
+		this.apexY = -50;
+		this.scaleX = 0.7;
+		this.scaleY = 0.5;
 }
 
 /**
@@ -1968,19 +1968,19 @@ ED.CornealScar.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
+		
 	// CornealScar
-    var r = 100;
+		var r = 100;
 	ctx.arc(0, 0, r, 0, Math.PI * 2, false);
-    
+		
 	// Close path
 	ctx.closePath();
-    
-    // Create fill
-    var alpha = -this.apexY/100;
-    ctx.fillStyle = "rgba(100,100,100," + alpha.toFixed(2) + ")";
-    
-    // Transparent stroke
+		
+		// Create fill
+		var alpha = -this.apexY/100;
+		ctx.fillStyle = "rgba(100,100,100," + alpha.toFixed(2) + ")";
+		
+		// Transparent stroke
 	ctx.strokeStyle = "rgba(100,100,100,0.9)";
 	
 	// Draw boundary path (also hit testing)
@@ -1989,19 +1989,19 @@ ED.CornealScar.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        // Work out whether visual axis is involved
-        var centre = new ED.Point(0,0);
-        var visualAxis = this.drawing.transform.transformPoint(centre);
-        var ctx = this.drawing.context;
-        if (ctx.isPointInPath(visualAxis.x,visualAxis.y)) this.isInVisualAxis = true;
-        else this.isInVisualAxis = false;
+				// Work out whether visual axis is involved
+				var centre = new ED.Point(0,0);
+				var visualAxis = this.drawing.transform.transformPoint(centre);
+				var ctx = this.drawing.context;
+				if (ctx.isPointInPath(visualAxis.x,visualAxis.y)) this.isInVisualAxis = true;
+				else this.isInVisualAxis = false;
 	}
 	
 	// Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0);
-    point.setWithPolars(r, Math.PI/4);
+		var point = new ED.Point(0, 0);
+		point.setWithPolars(r, Math.PI/4);
 	this.handleArray[2].location = this.transform.transformPoint(point);
-    this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
+		this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
 	
 	// Draw handles if selected
 	if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
@@ -2017,20 +2017,20 @@ ED.CornealScar.prototype.draw = function(_point)
  */
 ED.CornealScar.prototype.description = function()
 {
-    var returnString = "";
-    
-    // Calculate size
-    var averageScale = this.scaleX + this.scaleY;
-    
-    // Arbitrary cutoffs
-    if (averageScale < 2) returnString = "Small ";
-    else if (averageScale < 4) returnString = "Medium ";
-    else returnString = "Large ";
-    
-    returnString += "corneal scar";
-    
-    if (this.isInVisualAxis) returnString += " involving visual axis";
-    
+		var returnString = "";
+		
+		// Calculate size
+		var averageScale = this.scaleX + this.scaleY;
+		
+		// Arbitrary cutoffs
+		if (averageScale < 2) returnString = "Small ";
+		else if (averageScale < 4) returnString = "Medium ";
+		else returnString = "Large ";
+		
+		returnString += "corneal scar";
+		
+		if (this.isInVisualAxis) returnString += " involving visual axis";
+		
 	return returnString;
 }
 
@@ -2078,16 +2078,16 @@ ED.PhakoIncision = function(_drawing, _originX, _originY, _radius, _apexX, _apex
 	
 	// Set classname
 	this.className = "PhakoIncision";
-    
-    // Set default values for new or loaded doodle
-    this.defaultRadius = 334;
-    this.sutureSeparation = 1.5;
-    
-    // Set initial value of length according to loaded arc value
-    this.length = this.arc * (6 * this.radius)/this.defaultRadius;
+		
+		// Set default values for new or loaded doodle
+		this.defaultRadius = 334;
+		this.sutureSeparation = 1.5;
+		
+		// Set initial value of length according to loaded arc value
+		this.length = this.arc * (6 * this.radius)/this.defaultRadius;
 
-    // Set initial value of apexYDelta according to loaded apexY amd radius value
-    this.apexYDelta = - this.apexY - this.radius;
+		// Set initial value of apexYDelta according to loaded apexY amd radius value
+		this.apexYDelta = - this.apexY - this.radius;
 }
 
 /**
@@ -2102,7 +2102,7 @@ ED.PhakoIncision.superclass = ED.Doodle.prototype;
  */
 ED.PhakoIncision.prototype.setHandles = function()
 {
-    this.handleArray[3] = new ED.Handle(null, true, ED.Mode.Arc, false);
+		this.handleArray[3] = new ED.Handle(null, true, ED.Mode.Arc, false);
 	this.handleArray[4] = new ED.Handle(null, true, ED.Mode.Apex, false);
 }
 
@@ -2117,11 +2117,11 @@ ED.PhakoIncision.prototype.setPropertyDefaults = function()
 	this.isSqueezable = false;
 	this.isMoveable = false;
 	this.isRotatable = true;
-    this.isArcSymmetrical = true;
-    this.rangeOfArc = new ED.Range(0, Math.PI);
+		this.isArcSymmetrical = true;
+		this.rangeOfArc = new ED.Range(0, Math.PI);
 	this.rangeOfApexX = new ED.Range(-0, +0);
 	this.rangeOfApexY = new ED.Range(-334, -300);
-    this.rangeOfRadius = new ED.Range(250, 450);
+		this.rangeOfRadius = new ED.Range(250, 450);
 }
 
 /**
@@ -2129,20 +2129,30 @@ ED.PhakoIncision.prototype.setPropertyDefaults = function()
  */
 ED.PhakoIncision.prototype.setParameterDefaults = function()
 {
-    // The radius property is changed by movement in rotatable doodles
-    this.radius = this.defaultRadius;
+		// The radius property is changed by movement in rotatable doodles
+		this.radius = this.defaultRadius;
 
-    // Default is standard corneal phako wound
-    this.arc = 33 * Math.PI/180;
-    
-    // Incision length based on an average corneal radius of 6mm
-    this.length = this.arc * (6 * this.radius)/this.defaultRadius;
-    
-    // ApexY needs to change with radius on movement, so keep a record of the change
-    this.apexY = -this.defaultRadius;
-    
-    // Set initial value of apexYDelta to zero (ie default incision is a pocket)
-    this.apexYDelta = 0;
+		// Default is standard corneal phako wound
+		this.arc = 33 * Math.PI/180;
+		
+		// Incision length based on an average corneal radius of 6mm
+		this.length = this.arc * (6 * this.radius)/this.defaultRadius;
+		
+		// ApexY needs to change with radius on movement, so keep a record of the change
+		this.apexY = -this.defaultRadius;
+		
+		// Set initial value of apexYDelta to zero (ie default incision is a pocket)
+		this.apexYDelta = 0;
+
+		// Sideports are usually temporal
+		if(this.drawing.eye == ED.eye.Right)
+		{
+				this.rotation = -Math.PI/2;
+		}
+		else
+		{
+				this.rotation = Math.PI/2;
+		}
 }
 
 /**
@@ -2158,118 +2168,118 @@ ED.PhakoIncision.prototype.draw = function(_point)
 	// Call draw method in superclass
 	ED.PhakoIncision.superclass.draw.call(this, _point);
 	
-    // Radius
-    var r =  this.radius;
-    var d = 40;
-    var ro = r + d;
-    var ri = r - d;
-    
-    // Change incision length according to arc
-    if (this.drawing.mode == ED.Mode.Arc)
-    {
-        this.length = this.arc * (6 * this.radius)/this.defaultRadius;
-        
-        // Limit incision length to range allowed in CND, but with minimum of 1
-        if (this.length > 9.9) this.arc = 9.9 * this.defaultRadius/(6 * this.radius);
-        if (this.length < 1.0) this.arc = 1.0 * this.defaultRadius/(6 * this.radius);
-    }
-    // Otherwise change arc for constant incision length
-    else if (this.drawing.mode == ED.Mode.Move)
-    {
-        this.arc = this.length * this.defaultRadius/(6 * this.radius);
-        this.apexY = -this.radius - this.apexYDelta;
-        this.rangeOfApexY = new ED.Range(-this.radius, -this.radius + 34);
-    }
-    // Changing type of incision
-    else if (this.drawing.mode == ED.Mode.Apex)
-    {
-        this.apexYDelta = - this.apexY - this.radius; 
-    }    
+		// Radius
+		var r =  this.radius;
+		var d = 40;
+		var ro = r + d;
+		var ri = r - d;
+		
+		// Change incision length according to arc
+		if (this.drawing.mode == ED.Mode.Arc)
+		{
+				this.length = this.arc * (6 * this.radius)/this.defaultRadius;
+				
+				// Limit incision length to range allowed in CND, but with minimum of 1
+				if (this.length > 9.9) this.arc = 9.9 * this.defaultRadius/(6 * this.radius);
+				if (this.length < 1.0) this.arc = 1.0 * this.defaultRadius/(6 * this.radius);
+		}
+		// Otherwise change arc for constant incision length
+		else if (this.drawing.mode == ED.Mode.Move)
+		{
+				this.arc = this.length * this.defaultRadius/(6 * this.radius);
+				this.apexY = -this.radius - this.apexYDelta;
+				this.rangeOfApexY = new ED.Range(-this.radius, -this.radius + 34);
+		}
+		// Changing type of incision
+		else if (this.drawing.mode == ED.Mode.Apex)
+		{
+				this.apexYDelta = - this.apexY - this.radius; 
+		}		 
 
-    // Boundary path
+		// Boundary path
 	ctx.beginPath();
-    
-    // Half angle of arc
-    var theta = this.arc/2;
+		
+		// Half angle of arc
+		var theta = this.arc/2;
 
-    // Arc across
-    ctx.arc(0, 0, ro, - Math.PI/2 + theta, - Math.PI/2 - theta, true);
-    
-    // Arc back to mirror image point on the other side
-    ctx.arc(0, 0, ri, - Math.PI/2 - theta, - Math.PI/2 + theta, false);
-    
+		// Arc across
+		ctx.arc(0, 0, ro, - Math.PI/2 + theta, - Math.PI/2 - theta, true);
+		
+		// Arc back to mirror image point on the other side
+		ctx.arc(0, 0, ri, - Math.PI/2 - theta, - Math.PI/2 + theta, false);
+		
 	// Close path
 	ctx.closePath();
-    
-    // Pocket
-    if (this.apexYDelta == 0)
-    {
-        // Colour of fill
-        ctx.fillStyle = "rgba(200,200,200,0.75)";
-        
-        // Set line attributes
-        ctx.lineWidth = 4;
-        
-        // Colour of outer line is dark gray
-        ctx.strokeStyle = "rgba(120,120,120,0.75)";
-    }
-    // Section with sutures
-    else
-    {
-        // Colour of fill
-        ctx.fillStyle = "rgba(200,200,200,0)";
-        
-        // Set line attributes
-        ctx.lineWidth = 4;
-        
-        // Colour of outer line is dark gray
-        ctx.strokeStyle = "rgba(120,120,120,0)";
-    }
+		
+		// Pocket
+		if (this.apexYDelta == 0)
+		{
+				// Colour of fill
+				ctx.fillStyle = "rgba(200,200,200,0.75)";
+				
+				// Set line attributes
+				ctx.lineWidth = 4;
+				
+				// Colour of outer line is dark gray
+				ctx.strokeStyle = "rgba(120,120,120,0.75)";
+		}
+		// Section with sutures
+		else
+		{
+				// Colour of fill
+				ctx.fillStyle = "rgba(200,200,200,0)";
+				
+				// Set line attributes
+				ctx.lineWidth = 4;
+				
+				// Colour of outer line is dark gray
+				ctx.strokeStyle = "rgba(120,120,120,0)";
+		}
 
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
 	
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
-    {
-        // Section with sutures
-        if (this.apexYDelta != 0)
-        {
-            // New path
-            ctx.beginPath();
-            
-            // Arc across
-            ctx.arc(0, 0, r, - Math.PI/2 + theta, - Math.PI/2 - theta, true);
-            
-            // Sutures
-            var sutureSeparationAngle = this.sutureSeparation * this.defaultRadius/(6 * this.radius);
-            var p = new ED.Point(0, 0);
-            var phi = theta - sutureSeparationAngle/2;
-            
-            do
-            {
-                p.setWithPolars(r - d, phi);
-                ctx.moveTo(p.x, p.y);
-                p.setWithPolars(r + d, phi);
-                ctx.lineTo(p.x, p.y);
-                
-                phi = phi - sutureSeparationAngle;
-            } while(phi > -theta);
-            
-            // Set line attributes
-            ctx.lineWidth = 4;
-            
-            // Colour of outer line is dark gray
-            ctx.strokeStyle = "rgba(120,120,120,0.75)";
-            
-            // Draw incision
-            ctx.stroke();
-        }
+		{
+				// Section with sutures
+				if (this.apexYDelta != 0)
+				{
+						// New path
+						ctx.beginPath();
+						
+						// Arc across
+						ctx.arc(0, 0, r, - Math.PI/2 + theta, - Math.PI/2 - theta, true);
+						
+						// Sutures
+						var sutureSeparationAngle = this.sutureSeparation * this.defaultRadius/(6 * this.radius);
+						var p = new ED.Point(0, 0);
+						var phi = theta - sutureSeparationAngle/2;
+						
+						do
+						{
+								p.setWithPolars(r - d, phi);
+								ctx.moveTo(p.x, p.y);
+								p.setWithPolars(r + d, phi);
+								ctx.lineTo(p.x, p.y);
+								
+								phi = phi - sutureSeparationAngle;
+						} while(phi > -theta);
+						
+						// Set line attributes
+						ctx.lineWidth = 4;
+						
+						// Colour of outer line is dark gray
+						ctx.strokeStyle = "rgba(120,120,120,0.75)";
+						
+						// Draw incision
+						ctx.stroke();
+				}
 	}
 
-    // Coordinates of handles (in canvas plane)
-    var point = new ED.Point(0, 0);
-    point.setWithPolars(r, theta);
+		// Coordinates of handles (in canvas plane)
+		var point = new ED.Point(0, 0);
+		point.setWithPolars(r, theta);
 	this.handleArray[3].location = this.transform.transformPoint(point);
 	this.handleArray[4].location = this.transform.transformPoint(new ED.Point(this.apexX, this.apexY));
 
@@ -2287,18 +2297,18 @@ ED.PhakoIncision.prototype.draw = function(_point)
  */
 ED.PhakoIncision.prototype.description = function()
 {
-    var returnString = "";
-    
-    // Incision site
-    if (this.radius > 428) returnString = 'Scleral ';
-    else if (this.radius > 344) returnString = 'Limbal ';
-    else returnString = 'Corneal ';
-    
-    // Incision type
-    returnString += this.apexYDelta == 0?"pocket ":"section "
-    returnString += "incision at ";
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "";
+		
+		// Incision site
+		if (this.radius > 428) returnString = 'Scleral ';
+		else if (this.radius > 344) returnString = 'Limbal ';
+		else returnString = 'Corneal ';
+		
+		// Incision type
+		returnString += this.apexYDelta == 0?"pocket ":"section "
+		returnString += "incision at ";
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
@@ -2309,42 +2319,42 @@ ED.PhakoIncision.prototype.description = function()
  */
 ED.PhakoIncision.prototype.getParameter = function(_parameter)
 {
-    var returnValue;
-    
-    switch (_parameter)
-    {
-        // Incision site (CND 5.13)
-        case 'incisionSite':
-            if (this.radius > 428) returnValue = 'Scleral';
-            else if (this.radius > 344) returnValue = 'Limbal';
-            else returnValue = 'Corneal';
-            break;
-        // Incision length (CND 5.14)
-        case 'incisionLength':
-            // Calculate length of arc in mm
-            var length = this.radius * this.arc * 6/this.defaultRadius;
-            
-            // Round to nearest 0.1mm
-            length = (Math.round(length * 10))/10;
-            returnValue = length.toFixed(1);
-            break;
-            // Incision Meridian (CND 5.15)
-        case 'incisionMeridian':
-            var angle = (((Math.PI * 2 - this.rotation + Math.PI/2) * 180/Math.PI) + 360) % 360;
-            if (angle == 360) angle = 0;
-            returnValue = angle.toFixed(0);
-            break;
-            // Incision Type (Not in CND but infers type of operation)
-        case 'incisionType':
-            returnValue = this.apexYDelta == 0?"Pocket":"Section";
-            break;
-        default:
-            returnValue = "";
-            break;
+		var returnValue;
+		
+		switch (_parameter)
+		{
+				// Incision site (CND 5.13)
+				case 'incisionSite':
+						if (this.radius > 428) returnValue = 'Scleral';
+						else if (this.radius > 344) returnValue = 'Limbal';
+						else returnValue = 'Corneal';
+						break;
+				// Incision length (CND 5.14)
+				case 'incisionLength':
+						// Calculate length of arc in mm
+						var length = this.radius * this.arc * 6/this.defaultRadius;
+						
+						// Round to nearest 0.1mm
+						length = (Math.round(length * 10))/10;
+						returnValue = length.toFixed(1);
+						break;
+						// Incision Meridian (CND 5.15)
+				case 'incisionMeridian':
+						var angle = (((Math.PI * 2 - this.rotation + Math.PI/2) * 180/Math.PI) + 360) % 360;
+						if (angle == 360) angle = 0;
+						returnValue = angle.toFixed(0);
+						break;
+						// Incision Type (Not in CND but infers type of operation)
+				case 'incisionType':
+						returnValue = this.apexYDelta == 0?"Pocket":"Section";
+						break;
+				default:
+						returnValue = "";
+						break;
 
-    }
-    
-    return returnValue;
+		}
+		
+		return returnValue;
 }
 
 /**
@@ -2355,58 +2365,58 @@ ED.PhakoIncision.prototype.getParameter = function(_parameter)
  */
 ED.PhakoIncision.prototype.setParameter = function(_parameter, _value)
 {
-    switch (_parameter)
-    {
-        // Incision site (CND 5.13)
-        case 'incisionSite':
-            switch (_value)
-            {
-                case 'Scleral':
-                    this.radius = 428;
-                    break;
-                case 'Limbal':
-                    this.radius = 376;
-                    break;
-                case 'Corneal':
-                    this.radius = 330;
-                    break;
-                default:
-                    break;
-            }
-            
-            // Correct for change in arc as incision moves
-            this.arc = this.length * this.defaultRadius/(6 * this.radius);
-            
-            break;
-        
-        // Incision length (CND 5.14)
-        case 'incisionLength':
-            this.length = _value;
-            this.arc = this.length * this.defaultRadius/(6 * this.radius);
-            break;
-            
-        // Incision Meridian
-        case 'incisionMeridian':
-            var angle = ((90 - _value) + 360) % 360;
-            this.rotation = angle * Math.PI/180;
-            break;
-            
-        // Incision type
-        case 'incisionType':
-            if (_value == "Pocket")
-            {
-                this.apexYDelta = 0;
-            }
-            else
-            {
-                this.apexYDelta = -34;
-            }
-            this.apexY = -this.radius - this.apexYDelta;
-            break;
+		switch (_parameter)
+		{
+				// Incision site (CND 5.13)
+				case 'incisionSite':
+						switch (_value)
+						{
+								case 'Scleral':
+										this.radius = 428;
+										break;
+								case 'Limbal':
+										this.radius = 376;
+										break;
+								case 'Corneal':
+										this.radius = 330;
+										break;
+								default:
+										break;
+						}
+						
+						// Correct for change in arc as incision moves
+						this.arc = this.length * this.defaultRadius/(6 * this.radius);
+						
+						break;
+				
+				// Incision length (CND 5.14)
+				case 'incisionLength':
+						this.length = _value;
+						this.arc = this.length * this.defaultRadius/(6 * this.radius);
+						break;
+						
+				// Incision Meridian
+				case 'incisionMeridian':
+						var angle = ((90 - _value) + 360) % 360;
+						this.rotation = angle * Math.PI/180;
+						break;
+						
+				// Incision type
+				case 'incisionType':
+						if (_value == "Pocket")
+						{
+								this.apexYDelta = 0;
+						}
+						else
+						{
+								this.apexYDelta = -34;
+						}
+						this.apexY = -this.radius - this.apexYDelta;
+						break;
 
-        default:
-            break
-    }
+				default:
+						break
+		}
 }
 
 /**
@@ -2460,11 +2470,11 @@ ED.SidePort.prototype.setPropertyDefaults = function()
 	this.isSqueezable = false;
 	this.isMoveable = false;
 	this.isRotatable = true;
-    this.isArcSymmetrical = true;
-    this.rangeOfArc = new ED.Range(0, Math.PI);
+		this.isArcSymmetrical = true;
+		this.rangeOfArc = new ED.Range(0, Math.PI);
 	this.rangeOfApexX = new ED.Range(-0, +0);
 	this.rangeOfApexY = new ED.Range(-334, -300);
-    this.rangeOfRadius = new ED.Range(250, 450);
+		this.rangeOfRadius = new ED.Range(250, 450);
 }
 
 /**
@@ -2472,21 +2482,21 @@ ED.SidePort.prototype.setPropertyDefaults = function()
  */
 ED.SidePort.prototype.setParameterDefaults = function()
 {
-    // Default is standard corneal phako wound
-    this.incisionLength = 1.5;
-        
-    // Incision length based on an average corneal radius of 6mm
-    this.arc = this.incisionLength/6;
-    
-    // Sideports are usually temporal
-    if(this.drawing.eye == ED.eye.Right)
-    {
-        this.rotation = -Math.PI/2;
-    }
-    else
-    {
-        this.rotation = Math.PI/2;
-    }
+		// Default is standard corneal phako wound
+		this.incisionLength = 1.5;
+				
+		// Incision length based on an average corneal radius of 6mm
+		this.arc = this.incisionLength/6;
+		
+		// Sideports are usually temporal
+		if(this.drawing.eye == ED.eye.Right)
+		{
+				this.rotation = -Math.PI/2;
+		}
+		else
+		{
+				this.rotation = Math.PI/2;
+		}
 
 }
 
@@ -2503,44 +2513,44 @@ ED.SidePort.prototype.draw = function(_point)
 	// Call draw method in superclass
 	ED.SidePort.superclass.draw.call(this, _point);
 	
-    // Radius
-    var r =  334;
-    var d = 30;
-    var ro = r + d;
-    var ri = r - d;
-    
-    // Boundary path
+		// Radius
+		var r =  334;
+		var d = 30;
+		var ro = r + d;
+		var ri = r - d;
+		
+		// Boundary path
 	ctx.beginPath();
-    
-    // Half angle of arc
-    var theta = this.arc/2;
-    
-    // Arc across
-    ctx.arc(0, 0, ro, - Math.PI/2 + theta, - Math.PI/2 - theta, true);
-    
-    // Arc back to mirror image point on the other side
-    ctx.arc(0, 0, ri, - Math.PI/2 - theta, - Math.PI/2 + theta, false);
-    
+		
+		// Half angle of arc
+		var theta = this.arc/2;
+		
+		// Arc across
+		ctx.arc(0, 0, ro, - Math.PI/2 + theta, - Math.PI/2 - theta, true);
+		
+		// Arc back to mirror image point on the other side
+		ctx.arc(0, 0, ri, - Math.PI/2 - theta, - Math.PI/2 + theta, false);
+		
 	// Close path
 	ctx.closePath();
-    
-    // Colour of fill
-    ctx.fillStyle = "rgba(200,200,200,0.75)";
-    
-    // Set line attributes
-    ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "rgba(120,120,120,0.75)";
-    
+		
+		// Colour of fill
+		ctx.fillStyle = "rgba(200,200,200,0.75)";
+		
+		// Set line attributes
+		ctx.lineWidth = 4;
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "rgba(120,120,120,0.75)";
+		
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
 	
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
-    {
+		{
 	}
-    
+		
 	// Draw handles if selected
 	//if (this.isSelected && !this.isForDrawing) this.drawHandles(_point);
 	
@@ -2555,10 +2565,10 @@ ED.SidePort.prototype.draw = function(_point)
  */
 ED.SidePort.prototype.description = function()
 {
-    var returnString = "Sideport at ";
-    
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "Sideport at ";
+		
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
@@ -2601,7 +2611,7 @@ ED.IrisHook.superclass = ED.Doodle.prototype;
  */
 ED.IrisHook.prototype.setHandles = function()
 {
-    //this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
+		//this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -2622,16 +2632,16 @@ ED.IrisHook.prototype.setPropertyDefaults = function()
  */
 ED.IrisHook.prototype.setParameterDefaults = function()
 {
-    // Make it 90 degress to last one of same class
-    var doodle = this.drawing.lastDoodleOfClass(this.className);
-    if (doodle)
-    {
-        this.rotation = doodle.rotation + Math.PI/2;
-    }
-    else
-    {
-        this.rotation = -Math.PI/4;
-    }
+		// Make it 90 degress to last one of same class
+		var doodle = this.drawing.lastDoodleOfClass(this.className);
+		if (doodle)
+		{
+				this.rotation = doodle.rotation + Math.PI/2;
+		}
+		else
+		{
+				this.rotation = -Math.PI/4;
+		}
 }
 
 /**
@@ -2649,26 +2659,26 @@ ED.IrisHook.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    // Length to inner iris
-    var length = 260;
-    
-    // If iris there, take account of pupil size
-    var doodle = this.drawing.lastDoodleOfClass("AntSeg");
-    if (doodle) length = -doodle.apexY; 
+		
+		// Length to inner iris
+		var length = 260;
+		
+		// If iris there, take account of pupil size
+		var doodle = this.drawing.lastDoodleOfClass("AntSeg");
+		if (doodle) length = -doodle.apexY; 
 
-    ctx.rect(-25, -440, 50, 180 + length);
-    
-    ctx.closePath();
-    
-    // Colour of fill
-    ctx.fillStyle = "rgba(255,255,255,0)";
-    
+		ctx.rect(-25, -440, 50, 180 + length);
+		
+		ctx.closePath();
+		
+		// Colour of fill
+		ctx.fillStyle = "rgba(255,255,255,0)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "rgba(120,120,120,0.0)";;
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "rgba(120,120,120,0.0)";;
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -2676,24 +2686,24 @@ ED.IrisHook.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        // Drawing path
-        ctx.beginPath();
-        
-        // Stem
-        ctx.moveTo(10, -430);
-        ctx.lineTo(10, -length + 10);
-        ctx.lineTo(-10, -length);
-        ctx.lineWidth = 12;
-        ctx.strokeStyle = "rgba(120,120,120,0.75)";
-        ctx.stroke();
-        
-        // Stopper
-        ctx.beginPath();
-        ctx.moveTo(-20, -400);
-        ctx.lineTo(+40, -400);
-        ctx.lineWidth = 24;
-        ctx.strokeStyle = "rgba(255,120,0,0.75)";
-        ctx.stroke();
+				// Drawing path
+				ctx.beginPath();
+				
+				// Stem
+				ctx.moveTo(10, -430);
+				ctx.lineTo(10, -length + 10);
+				ctx.lineTo(-10, -length);
+				ctx.lineWidth = 12;
+				ctx.strokeStyle = "rgba(120,120,120,0.75)";
+				ctx.stroke();
+				
+				// Stopper
+				ctx.beginPath();
+				ctx.moveTo(-20, -400);
+				ctx.lineTo(+40, -400);
+				ctx.lineWidth = 24;
+				ctx.strokeStyle = "rgba(255,120,0,0.75)";
+				ctx.stroke();
 	}
 	
 	// Draw handles if selected
@@ -2720,10 +2730,10 @@ ED.IrisHook.prototype.groupDescription = function()
  */
 ED.IrisHook.prototype.description = function()
 {
-    var returnString = "";
-    
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "";
+		
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
@@ -2766,7 +2776,7 @@ ED.MattressSuture.superclass = ED.Doodle.prototype;
  */
 ED.MattressSuture.prototype.setHandles = function()
 {
-    //this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
+		//this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -2787,10 +2797,10 @@ ED.MattressSuture.prototype.setPropertyDefaults = function()
  */
 ED.MattressSuture.prototype.setParameterDefaults = function()
 {
-    this.defaultRadius = 374;
-    
-    // The radius property is changed by movement in rotatable doodles
-    this.radius = this.defaultRadius;
+		this.defaultRadius = 374;
+		
+		// The radius property is changed by movement in rotatable doodles
+		this.radius = this.defaultRadius;
 }
 
 /**
@@ -2808,20 +2818,20 @@ ED.MattressSuture.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    var r =  this.radius;
-    ctx.rect(-40, -(r + 40), 80, 80);
-    
-    ctx.closePath();
-    
-    // Colour of fill
-    ctx.fillStyle = "rgba(255,255,255,0.0)";
-    
+		
+		var r =  this.radius;
+		ctx.rect(-40, -(r + 40), 80, 80);
+		
+		ctx.closePath();
+		
+		// Colour of fill
+		ctx.fillStyle = "rgba(255,255,255,0.0)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "rgba(120,120,120,0.0)";
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "rgba(120,120,120,0.0)";
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -2829,18 +2839,18 @@ ED.MattressSuture.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        ctx.beginPath();
-        ctx.moveTo(-40, -(r + 40));
-        ctx.lineTo(40, -(r + 40));
-        ctx.lineTo(-40, -(r - 40));
-        ctx.lineTo(40, -(r - 40));
-        ctx.lineTo(-40, -(r + 40));
-        
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = "rgba(0,0,120,0.7)";
-        ctx.closePath();
-        
-        ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(-40, -(r + 40));
+				ctx.lineTo(40, -(r + 40));
+				ctx.lineTo(-40, -(r - 40));
+				ctx.lineTo(40, -(r - 40));
+				ctx.lineTo(-40, -(r + 40));
+				
+				ctx.lineWidth = 2;
+				ctx.strokeStyle = "rgba(0,0,120,0.7)";
+				ctx.closePath();
+				
+				ctx.stroke();
 	}
 	
 	// Draw handles if selected
@@ -2857,10 +2867,10 @@ ED.MattressSuture.prototype.draw = function(_point)
  */
 ED.MattressSuture.prototype.description = function()
 {
-    var returnString = "Mattress suture at ";
-    
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "Mattress suture at ";
+		
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
@@ -2902,7 +2912,7 @@ ED.CornealSuture.superclass = ED.Doodle.prototype;
  */
 ED.CornealSuture.prototype.setHandles = function()
 {
-    //this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
+		//this.handleArray[2] = new ED.Handle(null, true, ED.Mode.Scale, true);
 }
 
 /**
@@ -2923,22 +2933,22 @@ ED.CornealSuture.prototype.setPropertyDefaults = function()
  */
 ED.CornealSuture.prototype.setParameterDefaults = function()
 {
-    this.defaultRadius = 374;
-    
-    // The radius property is changed by movement in rotatable doodles
-    this.radius = this.defaultRadius;
-    
-    // Make it 20 degress to last one of same class
-    var angle = 20 * Math.PI/180;
-    var doodle = this.drawing.lastDoodleOfClass(this.className);
-    if (doodle)
-    {
-        this.rotation = doodle.rotation + angle;
-    }
-    else
-    {
-        this.rotation = -angle/2;
-    }
+		this.defaultRadius = 374;
+		
+		// The radius property is changed by movement in rotatable doodles
+		this.radius = this.defaultRadius;
+		
+		// Make it 20 degress to last one of same class
+		var angle = 20 * Math.PI/180;
+		var doodle = this.drawing.lastDoodleOfClass(this.className);
+		if (doodle)
+		{
+				this.rotation = doodle.rotation + angle;
+		}
+		else
+		{
+				this.rotation = -angle/2;
+		}
 }
 
 /**
@@ -2956,20 +2966,20 @@ ED.CornealSuture.prototype.draw = function(_point)
 	
 	// Boundary path
 	ctx.beginPath();
-    
-    var r =  this.radius;
-    ctx.rect(-20, -(r + 40), 40, 80);
-    
-    ctx.closePath();
-    
-    // Colour of fill
-    ctx.fillStyle = "rgba(255,255,255,0.0)";
-    
+		
+		var r =  this.radius;
+		ctx.rect(-20, -(r + 40), 40, 80);
+		
+		ctx.closePath();
+		
+		// Colour of fill
+		ctx.fillStyle = "rgba(255,255,255,0.0)";
+		
 	// Set line attributes
 	ctx.lineWidth = 4;
-    
-    // Colour of outer line is dark gray
-    ctx.strokeStyle = "rgba(120,120,120,0)";
+		
+		// Colour of outer line is dark gray
+		ctx.strokeStyle = "rgba(120,120,120,0)";
 	
 	// Draw boundary path (also hit testing)
 	this.drawBoundary(_point);
@@ -2977,21 +2987,21 @@ ED.CornealSuture.prototype.draw = function(_point)
 	// Other stuff here
 	if (this.drawFunctionMode == ED.drawFunctionMode.Draw)
 	{
-        ctx.beginPath();
-        ctx.moveTo(0, -r - 40);
-        ctx.lineTo(0, -r + 40);
-        ctx.moveTo(-10, -r + 10);
-        ctx.lineTo(0, -r + 20);
-        ctx.lineTo(-10, -r + 30);
-        
-        ctx.lineWidth = 2;
-        var colour = "rgba(0,0,120,0.7)"
-        ctx.strokeStyle = colour;
-       
-        ctx.stroke();
-        
-        // Knot
-        this.drawSpot(ctx, 0, -r + 20, 4, colour);
+				ctx.beginPath();
+				ctx.moveTo(0, -r - 40);
+				ctx.lineTo(0, -r + 40);
+				ctx.moveTo(-10, -r + 10);
+				ctx.lineTo(0, -r + 20);
+				ctx.lineTo(-10, -r + 30);
+				
+				ctx.lineWidth = 2;
+				var colour = "rgba(0,0,120,0.7)"
+				ctx.strokeStyle = colour;
+			 
+				ctx.stroke();
+				
+				// Knot
+				this.drawSpot(ctx, 0, -r + 20, 4, colour);
 	}
 	
 	// Draw handles if selected
@@ -3008,10 +3018,10 @@ ED.CornealSuture.prototype.draw = function(_point)
  */
 ED.CornealSuture.prototype.description = function()
 {
-    var returnString = "Corneal suture at ";
-    
-    returnString += this.clockHour() + " o'clock";
-    
+		var returnString = "Corneal suture at ";
+		
+		returnString += this.clockHour() + " o'clock";
+		
 	return returnString;
 }
 
