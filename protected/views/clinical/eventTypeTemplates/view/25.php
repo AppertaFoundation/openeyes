@@ -70,7 +70,7 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 
 <h4>Operation</h4>
 <div class="eventHighlight priority">
-	<h4><?php echo $operation->eye->name?>
+	<h4><?php echo $operation->eye->name?> 
 <?php
 foreach ($elements as $element) {
 	// Only display elements that have been completed, i.e. they have an event id
