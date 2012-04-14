@@ -53,18 +53,17 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 		$this->insert('operative_device',array('id'=>7,'name'=>'HPMC'));
 		$this->insert('operative_device',array('id'=>8,'name'=>'Healon 5'));
 
-		$site = $this->dbConnection->createCommand()->select('id')->from('site')->where('name=:name', array(':name'=>'Moorfields City Road'))->queryRow();
 		$ophthalmology = $this->dbConnection->createCommand()->select('id')->from('specialty')->where('name=:name',array(':name'=>'Ophthalmology'))->queryRow();
 		$subspecialty = $this->dbConnection->createCommand()->select('id')->from('subspecialty')->where('name=:name and specialty_id=:specialty_id',array(':name'=>'Cataract',':specialty_id'=>$ophthalmology['id']))->queryRow();
 
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>1,'display_order'=>1,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>2,'display_order'=>2,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>3,'display_order'=>3,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>4,'display_order'=>4,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>5,'display_order'=>5,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>6,'display_order'=>6,'default'=>1));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>7,'display_order'=>7,'default'=>1));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>8,'display_order'=>8,'default'=>0));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>1,'display_order'=>1,'default'=>0));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>2,'display_order'=>2,'default'=>0));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>3,'display_order'=>3,'default'=>0));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>4,'display_order'=>4,'default'=>0));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>5,'display_order'=>5,'default'=>0));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>6,'display_order'=>6,'default'=>1));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>7,'display_order'=>7,'default'=>1));
+		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>8,'display_order'=>8,'default'=>0));
 
 		$this->dropTable('site_subspecialty_drug_default');
 
@@ -105,14 +104,13 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 		$this->dropTable('site_subspecialty_operative_device');
 		$this->dropTable('operative_device');
 
-		$site = $this->dbConnection->createCommand()->select('id')->from('site')->where('name=:name', array(':name'=>'Moorfields City Road'))->queryRow();
 		$specialty = $this->dbConnection->createCommand()->select('id')->from('specialty')->where('code=:code', array(':code'=>'OPH'))->queryRow();
 		$subspecialty = $this->dbConnection->createCommand()->select('id')->from('subspecialty')->where('specialty_id=:specialty_id and ref_spec=:ref_spec', array(':specialty_id'=>$specialty['id'], ':ref_spec'=>'CA'))->queryRow();
 
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4));
 
 		$this->createTable('site_subspecialty_drug_default',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
