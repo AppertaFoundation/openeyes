@@ -80,11 +80,11 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 		$this->insert('drug',array('id'=>4,'name'=>'S/C Dexamethasone'));
 		$this->insert('drug',array('id'=>5,'name'=>'S/C Betnosol'));
 
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1,'display_order'=>1,'default'=>1));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2,'display_order'=>2,'default'=>0));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3,'display_order'=>3,'default'=>0));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4,'display_order'=>4,'default'=>0));
-		$this->insert('site_subspecialty_drug',array('site_id'=>$site['id'],'subspecialty_id'=>$subspecialty['id'],'drug_id'=>5,'display_order'=>5,'default'=>0));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1,'display_order'=>1,'default'=>1));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2,'display_order'=>2,'default'=>0));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3,'display_order'=>3,'default'=>0));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4,'display_order'=>4,'default'=>0));
+		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>5,'display_order'=>5,'default'=>0));
 	}
 
 	public function down()
