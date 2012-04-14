@@ -1,12 +1,12 @@
 [submodule "protected/extensions/mehpas"]
 	path = protected/extensions/mehpas
-	url = git@github.com:openeyes/MEHPAS.git
+	url = https://github.com/openeyes/MEHPAS.git
 [submodule "protected/modules/eyedraw"]
 	path = protected/modules/eyedraw
-	url = git@github.com:openeyes/EyeDraw.git
+	url = https://github.com/openeyes/EyeDraw.git
 [submodule "protected/modules/OphTrOperationnote"]
 	path = protected/modules/OphTrOperationnote
-	url = git@github.com:openeyes/OphTrOperationnote.git
+	url = https://github.com/openeyes/OphTrOperationnote.git
 [submodule "protected/modules/sample"]
 	path = protected/modules/sample
-	url = git@github.com:openeyes/Sample.git
+	url = https://github.com/openeyes/Sample.git
