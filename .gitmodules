@@ -1,8 +1,8 @@
 [submodule "protected/extensions/mehpas"]
 	path = protected/extensions/mehpas
 	url = https://github.com/openeyes/MEHPAS.git
-[submodule "protected/modules/eyedraw"]
-	path = protected/modules/eyedraw
+[submodule "protected/modules/eyeDraw"]
+	path = protected/modules/eyeDraw
 	url = https://github.com/openeyes/EyeDraw.git
 [submodule "protected/modules/OphTrOperationnote"]
 	path = protected/modules/OphTrOperationnote
