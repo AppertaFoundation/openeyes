@@ -406,24 +406,19 @@ class TheatreController extends BaseController
 
 			// validation of theatre times
 			foreach ($_POST as $key => $value) {
-				if (preg_match('/^operation_([0-9]+)$/',$key,$m)) {
+				if (preg_match('/^operation_([0-9]+)$/',$key,$operation_id)) {
 					// This is validated in the model and the front-end so doesn't need an if ()
-					preg_match('/^([0-9]{1,2}).*?([0-9]{2})$/',$value,$m2);
+					preg_match('/^([0-9]{1,2}).*?([0-9]{2})$/',$value,$admission_time);
+					$booking_ts = mktime($admission_time[1],$admission_time[2],0,1,1,date('Y'));
+					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $operation_id[1]));
+					//preg_match('/^([0-9]{2}):([0-9]{2})/',$booking->session->start_time,$session_start_time);
+					preg_match('/^([0-9]{2}):([0-9]{2})/',$booking->session->end_time,$session_end_time);
+					//$session_from = mktime($session_start_time[1],$session_start_time[2],0,1,1,date('Y'));
+					$session_to = mktime($session_end_time[1],$session_end_time[2],59,1,1,date('Y'));
 
-					$booking_ts = mktime($m2[1],$m2[2],0,1,1,date('Y'));
-
-					$booking = Booking::model()->findByAttributes(array('element_operation_id' => $m[1]));
-					$session = Session::model()->findByPk($booking->session_id);
-
-					preg_match('/^([0-9]{2}):([0-9]{2})/',$session->start_time,$m3);
-					preg_match('/^([0-9]{2}):([0-9]{2})/',$session->end_time,$m4);
-
-					$session_from = mktime($m3[1],$m3[2],0,1,1,date('Y'));
-					$session_to = mktime($m4[1],$m4[2],59,1,1,date('Y'));
-
-					if ($booking_ts < $session_from || $booking_ts > $session_to) {
+					if ($booking_ts > $session_to) {
 						$errors[] = array(
-							'operation_id' => $m[1],
+							'operation_id' => $operation_id[1],
 							'message' => "The requested admission time is outside the window for this session."
 						);
 					}

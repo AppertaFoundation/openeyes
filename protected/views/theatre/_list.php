@@ -385,7 +385,7 @@ if (empty($theatres)) {?>
 		$('span[id^="admitTime_ro_'+selected_tbody_id+'_"]').hide();
 		$('input[id^="admitTime_'+selected_tbody_id+'_"]').show();
 		enable_sort(selected_tbody_id);
-		$('div.display_actions').map(function() {
+		$('div.action_options').map(function() {
 			var html = $(this).children('div.session_options').html();
 			if (m = html.match(/edit-sessions_([0-9]+)/)) {
 				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
@@ -394,7 +394,7 @@ if (empty($theatres)) {?>
 				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 		});
-		$('div.display_actions').hide();
+		$('div.action_options').hide();
 		$('#action_options_'+selected_tbody_id).show();
 		$('#btn_print').hide();
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
@@ -458,7 +458,7 @@ if (empty($theatres)) {?>
 		$('span[id^="admitTime_ro_"]').show();
 		$('input[id^="admitTime_"]').hide();
 		disable_sort();
-		$('div.display_actions').map(function() {
+		$('div.action_options').map(function() {
 			var html = $(this).children('div.session_options').html();
 			if (m = html.match(/edit-sessions_([0-9]+)/)) {
 				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
@@ -467,7 +467,7 @@ if (empty($theatres)) {?>
 				$(this).children('div.session_options').html('<span class="aBtn_inactive">View</span><span class="aBtn edit-event"><a class="edit-sessions" id="edit-sessions_'+m[1]+'" href="#">Edit</a></span>');
 			}
 		});
-		$('div.display_actions').show();
+		$('div.action_options').show();
 		$('td.td_sort').hide();
 		$('th.th_sort').hide();
 
