@@ -30,6 +30,16 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
+		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
+			Yii::app()->clientScript->scriptMap = array(
+				'jquery.js' => false,
+				'jquery.min.js' => false,
+				'jquery-ui.js' => false,
+				'jquery-ui.min.js' => false,
+				'module.js' => false,
+			);
+		}
+
 		return parent::beforeAction($action);
 	}
 
@@ -208,6 +218,7 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial(
 			'create',
 			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
+			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
 			false, true
 		);
 
@@ -361,6 +372,7 @@ class BaseEventTypeController extends BaseController
 				'elements' => $this->getDefaultElements('update'),
 				'errors' => @$errors
 			),
+			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
 			false, true
 		);
 	}
@@ -374,7 +386,7 @@ class BaseEventTypeController extends BaseController
 			$this->renderPartial(
 				$action . '_' . $element->{$action.'_view'},
 				array('element' => $element, 'data' => $data, 'form' => $form),
-				false, true
+				false, false 
 			);
 		}
 	}
@@ -388,7 +400,7 @@ class BaseEventTypeController extends BaseController
 			$this->renderPartial(
 				$action . '_' . $element->{$action.'_view'},
 				array('element' => $element, 'data' => $data, 'form' => $form),
-				false, true
+				false, false
 			);
 		}
 	}
