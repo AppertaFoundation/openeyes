@@ -856,6 +856,19 @@ ED.Surgeon.prototype.setPropertyDefaults = function()
 ED.Surgeon.prototype.setParameterDefaults = function()
 {
     this.originY = -300;
+
+		if (this.drawing.eye == ED.eye.Right)
+		{
+				this.originX = 300;
+				this.originY = 0;
+				this.rotation = 2 * Math.PI/4;
+		}
+		else
+		{
+				this.originX = -300;
+				this.originY = 0;
+				this.rotation = 6 * Math.PI/4;
+		}
 }
 
 /**
