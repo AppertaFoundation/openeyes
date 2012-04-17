@@ -184,7 +184,7 @@ if (!empty($address)) {
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('tr.all-episode').unbind('click').click(function() {
-					window.location.href = '/patient/episodes/<?php echo $this->patient->id?>/episode/'+$(this).attr('id');
+					window.location.href = '/patient/event/'+$(this).attr('id');
 					return false;
 				});
 			</script>
