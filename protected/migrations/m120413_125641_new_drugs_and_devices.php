@@ -56,14 +56,16 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 		$ophthalmology = $this->dbConnection->createCommand()->select('id')->from('specialty')->where('name=:name',array(':name'=>'Ophthalmology'))->queryRow();
 		$subspecialty = $this->dbConnection->createCommand()->select('id')->from('subspecialty')->where('name=:name and specialty_id=:specialty_id',array(':name'=>'Cataract',':specialty_id'=>$ophthalmology['id']))->queryRow();
 
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>1,'display_order'=>1,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>2,'display_order'=>2,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>3,'display_order'=>3,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>4,'display_order'=>4,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>5,'display_order'=>5,'default'=>0));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>6,'display_order'=>6,'default'=>1));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>7,'display_order'=>7,'default'=>1));
-		$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>8,'display_order'=>8,'default'=>0));
+		if ($subspecialty) {
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>1,'display_order'=>1,'default'=>0));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>2,'display_order'=>2,'default'=>0));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>3,'display_order'=>3,'default'=>0));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>4,'display_order'=>4,'default'=>0));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>5,'display_order'=>5,'default'=>0));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>6,'display_order'=>6,'default'=>1));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>7,'display_order'=>7,'default'=>1));
+			$this->insert('site_subspecialty_operative_device',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'operative_device_id'=>8,'display_order'=>8,'default'=>0));
+		}
 
 		$this->dropTable('site_subspecialty_drug_default');
 
@@ -80,11 +82,13 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 		$this->insert('drug',array('id'=>4,'name'=>'S/C Dexamethasone'));
 		$this->insert('drug',array('id'=>5,'name'=>'S/C Betnosol'));
 
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1,'display_order'=>1,'default'=>1));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2,'display_order'=>2,'default'=>0));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3,'display_order'=>3,'default'=>0));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4,'display_order'=>4,'default'=>0));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>5,'display_order'=>5,'default'=>0));
+		if ($subspecialty) {
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1,'display_order'=>1,'default'=>1));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2,'display_order'=>2,'default'=>0));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3,'display_order'=>3,'default'=>0));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4,'display_order'=>4,'default'=>0));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>5,'display_order'=>5,'default'=>0));
+		}
 	}
 
 	public function down()
