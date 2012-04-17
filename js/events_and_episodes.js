@@ -27,6 +27,20 @@ $(document).ready(function(){
 			$(this).prev().click();
 		}
 	});
+
+	$('select.dropDownTextSelection').die('change').change(function() {
+		if ($(this).val() != '') {
+			var target_id = $(this).attr('id').replace(/^dropDownTextSelection_/,'');
+
+			if ($('#'+target_id).text().length >0) {
+				$('#'+target_id).text($('#'+target_id).text()+', ');
+			}
+
+			$('#'+target_id).text($('#'+target_id).text()+$(this).children('option:selected').text());
+
+			$(this).children('option:selected').remove();
+		}
+	});
 });
 
 function selectSort(a, b) {		 
