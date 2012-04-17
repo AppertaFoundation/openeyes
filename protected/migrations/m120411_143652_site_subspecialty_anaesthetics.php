@@ -28,12 +28,14 @@ class m120411_143652_site_subspecialty_anaesthetics extends CDbMigration
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
-		$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>1));
-		$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>2));
-		$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>3));
-		$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>4));
-		$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>5));
-		$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>6));
+		if ($subspecialty = $this->dbConnection->createCommand()->select('id')->from('subspecialty')->where('id=:id',array(':id'=>4))->queryRow()) {
+			$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>1));
+			$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>2));
+			$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>3));
+			$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>4));
+			$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>5));
+			$this->insert('site_subspecialty_anaesthetic_agent',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>6));
+		}
 
 		$this->createTable('site_subspecialty_anaesthetic_agent_default',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -59,8 +61,10 @@ class m120411_143652_site_subspecialty_anaesthetics extends CDbMigration
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
-		$this->insert('site_subspecialty_anaesthetic_agent_default',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>1));
-		$this->insert('site_subspecialty_anaesthetic_agent_default',array('site_id'=>1,'subspecialty_id'=>4,'anaesthetic_agent_id'=>2));
+		if ($subspecialty) {
+			$this->insert('site_subspecialty_anaesthetic_agent_default',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>1));
+			$this->insert('site_subspecialty_anaesthetic_agent_default',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'anaesthetic_agent_id'=>2));
+		}
 	}
 
 	public function down()
