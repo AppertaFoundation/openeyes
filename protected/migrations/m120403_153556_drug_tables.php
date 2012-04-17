@@ -52,10 +52,12 @@ class m120403_153556_drug_tables extends CDbMigration
 		$specialty = $this->dbConnection->createCommand()->select('id')->from('specialty')->where('code=:code', array(':code'=>'OPH'))->queryRow();
 		$subspecialty = $this->dbConnection->createCommand()->select('id')->from('subspecialty')->where('specialty_id=:specialty_id and ref_spec=:ref_spec', array(':specialty_id'=>$specialty['id'], ':ref_spec'=>'CA'))->queryRow();
 
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3));
-		$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4));
+		if ($specialty && $subspecialty) {
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>1));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>2));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3));
+			$this->insert('site_subspecialty_drug',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>4));
+		}
 	}
 
 	public function down()

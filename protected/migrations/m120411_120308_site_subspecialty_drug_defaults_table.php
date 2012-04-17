@@ -28,7 +28,9 @@ class m120411_120308_site_subspecialty_drug_defaults_table extends CDbMigration
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
-		$this->insert('site_subspecialty_drug_default',array('site_id'=>1,'subspecialty_id'=>4,'drug_id'=>3));
+		if ($subspecialty = $this->dbConnection->createCommand()->select('id')->from('subspecialty')->where('id=:id',array(':id'=>4))->queryRow()) {
+			$this->insert('site_subspecialty_drug_default',array('site_id'=>1,'subspecialty_id'=>$subspecialty['id'],'drug_id'=>3));
+		}
 	}
 
 	public function down()
