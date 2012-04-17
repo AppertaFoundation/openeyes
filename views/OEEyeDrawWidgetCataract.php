@@ -22,7 +22,11 @@
 			</button>
 		</div>
 		<div class="ed_toolbar">
-			<?php foreach ($doodleToolBarArray as $item) {?>
+			<?php foreach ($doodleToolBarArray as $i => $item) {?>
+				<?php if ($i>0 && $i%5 == 0) {?>
+					</div>
+					<div class="ed_toolbar">
+				<?php }?>
 				<button class="ed_img_button" id="<?php echo $item['classname'].$idSuffix?>" title="<?php echo $item['title']?>" onclick="<?php echo $drawingName?>.addDoodle('<?php echo $item['classname']?>'); return false;">
 					<img src="<?php echo $imgPath.$item['classname']?>.gif" />
 				</button>
