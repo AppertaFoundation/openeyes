@@ -6,6 +6,6 @@
 			<?php foreach ($options as $id => $content) {?>
 				<option value="<?php echo $id?>"><?php echo $content?></option>
 			<?php }?>
-		<?phph }?>
+		</select>
 	</div>
 </div>
