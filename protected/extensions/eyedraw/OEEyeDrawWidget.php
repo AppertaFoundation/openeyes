@@ -35,7 +35,7 @@
  * Usage:
  * <code>
  * <?php
- * $this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+ * $this->widget('application.extensions.eyedraw.OEEyeDrawWidget', array(
  *	'identifier'=> 'PS',
  *	'side'=>'R',
  *	'mode'=>'edit',
@@ -222,9 +222,9 @@ class OEEyeDrawWidget extends CWidget
 	 */
 		public function init() {
 				// Set values of derived properties
-				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyedraw.css'));
-				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyedraw.js'));
-				$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.eyedraw.graphics')).'/';
+				$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.extensions.eyedraw.css'));
+				$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.extensions.eyedraw.js'));
+				$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.extensions.eyedraw.graphics')).'/';
 				$this->idSuffix = $this->identifier;
 				$this->drawingName = 'ed_drawing_'.$this->mode.'_'.$this->idSuffix;
 				$this->canvasId = 'ed_canvas_'.$this->mode.'_'.$this->idSuffix;
