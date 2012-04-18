@@ -15,6 +15,7 @@ protected/commands/FetchUsersCommand.php
 protected/data/*
 protected/models/ElementExample.php
 protected/models/elements/ElementExample.php
+protected/oemodules/*
 protected/runtime/
 protected/tests/report/
 protected/tests/test_results/
