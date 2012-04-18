@@ -15,9 +15,11 @@ protected/commands/FetchUsersCommand.php
 protected/data/*
 protected/models/ElementExample.php
 protected/models/elements/ElementExample.php
-protected/oemodules/*
+protected/modules/*
+!protected/modules/admin
 protected/runtime/
 protected/tests/report/
 protected/tests/test_results/
 protected/views/elements/ElementExample/
 tags
+index.php
