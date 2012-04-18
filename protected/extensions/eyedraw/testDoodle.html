@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <!-- EyeDraw CSS style sheet -->
+        <link rel="stylesheet" href="OEEyeDraw.css" type="text/css" media="screen" />
+        
+        <!-- Mandatory file containing key drawing classes -->
+        <script language="JavaScript" src="ED_Drawing.js" type="text/javascript"></script>
+        
+        <!-- Subclasses loaded according to need -->
+        <script language="JavaScript" src="ED_General.js" type="text/javascript"></script>
+
+        <!-- This script handles the drawings for the page -->
+        <script type="text/javascript">
+            
+            // Assign a global variable to the drawing
+            var drawingEdit;
+            
+            // Runs on page load
+            function init()
+            {
+                // Get reference to the drawing canvas
+                var canvas = document.getElementById('canvas');
+                
+                // Create a drawing linked to the canvas
+                drawingEdit = new ED.Drawing(canvas, ED.eye.Right, 'RPS', true);
+                
+                // Preload any images
+                drawingEdit.preLoadImagesFrom('graphics/');
+                
+                // Wait for drawing object to be ready before adding objects or drawings
+                drawingEdit.onLoaded = function()
+                {
+                    drawingEdit.addDoodle('AngleConfiguration');
+                    drawingEdit.deselectDoodles();
+                }
+            }
+            </script>
+    </head>
+    <body onload="init();">
+                            
+        <!-- Canvas element -->
+        <canvas id="canvas" class="ed_canvas_edit" width="400" height="400" tabindex="2"></canvas>
+
+    </body>
+</html>
