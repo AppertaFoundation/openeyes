@@ -61,7 +61,7 @@ if (isset($element)) {
 		} elseif ($field['type'] == 'EyeDraw') {
 ?>
 >---<?php echo '<?php '; ?>
-		$this->widget('application.modules.eyedraw.OEEyeDrawWidget', array(
+		$this->widget('application.extensions.eyedraw.OEEyeDrawWidget', array(
 			'identifier'=> 'Buckle',
 			'side'=>'R',
 			'mode'=>'edit',
