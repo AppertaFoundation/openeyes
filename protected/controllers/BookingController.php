@@ -456,6 +456,10 @@ class BookingController extends BaseController
 
 			$reason = CancellationReason::model()->findByPk($_POST['cancellation_reason']);
 
+			if (!$reason) {
+				die(json_encode(array('Please enter a cancellation reason')));
+			}
+
 			$cancellation = new CancelledBooking();
 			$cancellation->element_operation_id = $operationId;
 			$cancellation->date = $model->session->date;
@@ -565,8 +569,10 @@ class BookingController extends BaseController
 
 				$this->updateEvent($model->elementOperation->event);
 
-				$this->redirect(array('patient/event/'.$model->elementOperation->event->id));
+				die(json_encode(array()));
 			}
+
+			die(json_encode($cancellation->getErrors(),true));
 		}
 	}
 
