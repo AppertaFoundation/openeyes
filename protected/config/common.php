@@ -52,7 +52,6 @@ $config = array(
 			'ipFilters'=> array('*')
 		),
 		'admin',
-		'OphTrOperationnote',
 	),
 
 	// Application components
