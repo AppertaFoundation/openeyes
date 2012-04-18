@@ -33,7 +33,7 @@ if (!Yii::app()->user->isGuest) {
 
 			<ul id="user_nav">
 				<li><?php if ($_SERVER['REQUEST_URI'] == '/') {?><span class="selected">Home</span><?php }else{?><a href="/">Home</a><?php }?></li>
-				<li><?php if ($_SERVER['REQUEST_URI'] == '/theatre') {?><span class="selected">Diary</span><?php }else{?><a href="/theatre">Diary</a><?php }?></li>
+				<li><?php if ($_SERVER['REQUEST_URI'] == '/theatre') {?><span class="selected">Theatre Diaries</span><?php }else{?><a href="/theatre">Theatre Diaries</a><?php }?></li>
 				<li><?php if ($_SERVER['REQUEST_URI'] == '/waitingList') {?><span class="selected">Partial bookings waiting List</span><?php }else{?><a href="/waitingList">Partial bookings waiting list</a><?php }?></li>
 				<li><a href="/site/logout" class="logout">Logout</a></li>
 			</ul>
