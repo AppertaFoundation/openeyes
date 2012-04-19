@@ -502,7 +502,7 @@ span.surname { font-weight: bold; }
 .episode_details > .row .label { display:inline-block; width:130px; font-size:12px; color:#666; }
 
 
-/* ====== EVENT DISPLAY ====== *//
+/* ====== EVENT DISPLAY ====== */
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
 #event_display .addEvent { border:5px solid #69bd51; }
@@ -751,11 +751,11 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#2546b1; }
 /* DIARY THEATRE SESSION VIEW / EDIT */
-.display_actions .session_options { float:right; margin-right:8px; }
-.display_actions .session_options .aBtn_inactive { display:inline-block; padding:4px 10px 3px 10px; color:#777; background: #fafafa; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
+.session_options { float:right; margin-right:8px; }
+.session_options .aBtn_inactive { display:inline-block; padding:4px 10px 3px 10px; color:#777; background: #fafafa; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
 .session_options .aBtn { display:inline-block; height:18px; margin:3px;}
 .session_options .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #dadada; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
-.session_options .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
+.session_options .aBtn > a:hover { border:none; color:#fff; background:#3665ff; -webkit-border-bottom-left-radius: 0; -webkit-border-bottom-right-radius: 0; border-bottom-left-radius: 0; border-bottom-right-radius: 0; -moz-border-radius-bottomleft: 0; -moz-border-radius-bottomright: 0;}
 .session_options .aBtn > a:active { border:none; color:#fff; background:#2546b1; }
 
 /* ====== CATEGORY & EVENT COLOUR ====== */
