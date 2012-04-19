@@ -227,19 +227,23 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	if (empty($operation->booking)) {
 	// The operation hasn't been booked yet
 	if($letterType) {
-		if(!$no_gp) {
+		if(!$no_gp && $patient->correspondAddress) {
 	?>
 	<button type="submit" class="classy blue venti" value="submit" id="btn_print-invitation-letter"><span class="button-span button-span-blue">Print <?php echo $letterType ?> letter</span></button>
 	<?php } else {
-		// Patient has no GP defined ?>
+		// Patient has no GP defined or doesn't have an address ?>
 	<button type="submit" class="classy disabled venti" value="submit" id="btn_print-invitation-letter" disabled="disabled"><span class="button-span">Print <?php echo $letterType ?> letter</span></button>
 	<?php } } ?>
 	<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
 	<?php } else { // The operation has been booked ?>
-	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
+	<?php if($patient->correspondAddress) { ?>
+	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter" disabled="disabled"><span class="button-span">Print letter</span></button>
+	<?php } else { ?>
+	<button type="submit" class="classy disabled venti" value="submit" id="btn_print-letter"><span class="button-span button-span-blue">Print letter</span></button>
+	<?php } ?>
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
-	<?php }?>
+	<?php } ?>
 	<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
 </div>
 <?php } ?>
@@ -304,33 +308,36 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 <div id="printcontent_admissionletter" style="display: none;">
 <?php
 	// TODO: This needs moving to a controller so we can pull it in using an ajax call
-	$patient = $this->event->episode->patient;
-	$admissionContact = $operation->getAdmissionContact();
-	$site = $operation->booking->session->theatre->site;
-	$firm = $operation->booking->session->firm;
-	$emergency_list = false;
-	if(!$firm) {
-		$firm = $operation->event->episode->firm;
-		$emergency_list = true;
+	// Only render the letter if the patient has an address
+	if($patient->correspondAddress) {
+		$patient = $this->event->episode->patient;
+		$admissionContact = $operation->getAdmissionContact();
+		$site = $operation->booking->session->theatre->site;
+		$firm = $operation->booking->session->firm;
+		$emergency_list = false;
+		if(!$firm) {
+			$firm = $operation->event->episode->firm;
+			$emergency_list = true;
+		}
+		$this->renderPartial("/letters/admission_letter", array(
+			'site' => $site,
+			'patient' => $patient,
+			'firm' => $firm,
+			'emergencyList' => $emergency_list,
+			'operation' => $operation,
+			'refuseContact' => $admissionContact['refuse'],
+			'healthContact' => $admissionContact['health'],
+			'cancelledBookings' => $cancelledBookings,
+		));
+		$this->renderPartial("/letters/break");
+		$this->renderPartial("/letters/admission_form", array(
+			'operation' => $operation, 
+			'site' => $site,
+			'patient' => $patient,
+			'firm' => $firm,
+			'emergencyList' => $emergency_list,
+		));
 	}
-	$this->renderPartial("/letters/admission_letter", array(
-		'site' => $site,
-		'patient' => $patient,
-		'firm' => $firm,
-		'emergencyList' => $emergency_list,
-		'operation' => $operation,
-		'refuseContact' => $admissionContact['refuse'],
-		'healthContact' => $admissionContact['health'],
-		'cancelledBookings' => $cancelledBookings,
-	));
-	$this->renderPartial("/letters/break");
-	$this->renderPartial("/letters/admission_form", array(
-		'operation' => $operation, 
-		'site' => $site,
-		'patient' => $patient,
-		'firm' => $firm,
-		'emergencyList' => $emergency_list,
-	));
 ?>
 </div>
 <?php } ?>
