@@ -95,7 +95,11 @@ DATE:
 <td><?php echo htmlspecialchars($session['anaesthetic']) ?></td>
 <td><?php echo $session['priority']?></td>
 <td style="max-width: 500px; word-wrap:break-word; overflow: hidden;">
-<?php echo !empty($session['procedures']) ? '['.$session['eye'].'] '.htmlspecialchars($session['procedures']) : 'No procedures'?><br />
+<?php 
+	$eye_string = $session['eye_long']. ' eye';
+	if(strtolower($session['eye_long']) == 'both') $eye_string .= 's'; 
+?>
+<?php echo !empty($session['procedures']) ? '['.$eye_string.'] '.htmlspecialchars($session['procedures_long']) : 'No procedures'?><br />
 <?php echo htmlspecialchars($session['operationComments']) ?>
 <td><?php echo $session['admissionTime'] ?></td>
 </tr>
