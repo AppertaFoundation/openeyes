@@ -93,6 +93,28 @@ class Event extends BaseActiveRecord
 			'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
 		);
 	}
+	
+	public function getEditable(){
+		
+		if($this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+			return FALSE;
+		}
+		
+		// Should not be able to edit cancelled operations
+		if ($this->event_type_id == 25) {
+			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
+			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
+				return FALSE;
+			}
+		}
+		
+		if($this->episode->patient->date_of_death){
+			return FALSE;
+		}
+		
+		return TRUE;
+		
+	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)

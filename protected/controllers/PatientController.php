@@ -26,7 +26,6 @@ class PatientController extends BaseController
 	public $service;
 	public $firm;
 	public $editing;
-	public $editable;
 	public $event;
 	public $event_type;
 	public $title;
@@ -365,16 +364,6 @@ class PatientController extends BaseController
 		$episodes = $this->patient->episodes;
 
 		$elements = $this->service->getDefaultElements('view', $this->event);
-
-		$this->editable = $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id;
-
-		// Should not be able to edit cancelled operations
-		if ($this->event->event_type_id == 25) {
-			$operation = ElementOperation::model()->find('event_id = ?',array($this->event->id));
-			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
-				$this->editable = false;
-			}
-		}
 
 		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
 
