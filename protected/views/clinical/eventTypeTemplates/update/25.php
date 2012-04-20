@@ -30,6 +30,15 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
 ?>
+<script type="text/javascript">
+	// When eye selected in diagnosis, reflect the value in operation details
+	$(document).ready(function(){
+		$('input[name="ElementDiagnosis[eye_id]"]').change(function(){
+			id = $('input[name="ElementDiagnosis[eye_id]"]:checked').val();
+			$('#ElementOperation_eye_id input[value="'+id+'"]').attr('checked', true);
+		});
+	});
+</script>
 <?php
 
 /**
