@@ -166,11 +166,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	}
 
 	$('a.removeProcedure').live('click',function() {
-		var len = $(this).parent().parent().children('div').length;
+		var len = $(this).parent().parent().parent().children('div').length;
 
-		var procedure_id = $(this).parent().children('input:first').val();
-
-		$(this).parent().remove();
+		var procedure_id = $(this).parent().parent().children('input:first').val();
+		
+		$(this).parent().parent().remove();
 
 		<?php if ($durations) {?>
 			updateTotalDuration();
