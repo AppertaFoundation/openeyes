@@ -292,7 +292,7 @@ class TheatreController extends BaseController
 		$to = Helper::convertNHS2MySQL($_POST['date-end']);
 
 		$whereSql = 't.site_id = :siteId and sp.id = :specialtyId and eo.status in (1,3) and date >= :dateFrom and date <= :dateTo';
-		$whereParams = array(':siteId' => $_POST['site-id'], ':specialtyId' => $_POST['specialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
+		$whereParams = array(':siteId' => $_POST['site-id'], ':subspecialtyId' => $_POST['subspecialty-id'], ':dateFrom' => $from, ':dateTo' => $to);
 		$order = 'w.name ASC, p.hos_num ASC';
 
 		if ($_POST['ward-id']) {
