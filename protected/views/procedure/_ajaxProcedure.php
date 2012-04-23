@@ -19,10 +19,16 @@
 
 ?>
 <div class="procedureItem">
-	<?php
-	echo CHtml::hiddenField('Procedures[]', $data['id']);
-	echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
-	?>
-	&nbsp;
-	<a href="#" class="small removeProcedure"><strong>(remove)</strong></a><span style="float:right;"><?php echo $data['duration']?> mins</span><br />
+	<span class="left">
+		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
+	</span>
+	<span class="middle">
+		<?php
+		echo CHtml::hiddenField('Procedures[]', $data['id']);
+		echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
+		?>
+	</span>
+	<span class="right">
+		<?php echo $data['duration']?> mins
+	</span>
 </div>

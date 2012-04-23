@@ -8,9 +8,9 @@
 		<?php }else{
 			if (is_object($this->event)) {
 				if ($this->event_type->class_name == 'OphTrOperation') {?>
-					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->editable) {?> style="display: none;"<?php }?>><a class="edit-event" href="/clinical/update/<?php echo $this->event->id?>">Edit</a></span>
+					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->event->editable) {?> style="display: none;"<?php }?>><a class="edit-event" href="/clinical/update/<?php echo $this->event->id?>">Edit</a></span>
 				<?php }else{?>
-					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->editable) {?> style="display: none;"<?php }?>><a class="edit-event" href="/<?php echo $this->event_type->class_name?>/Default/update/<?php echo $this->event->id?>">Edit</a></span>
+					<span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->event->editable) {?> style="display: none;"<?php }?>><a class="edit-event" href="/<?php echo $this->event_type->class_name?>/Default/update/<?php echo $this->event->id?>">Edit</a></span>
 				<?php }
 			}?>
 		<?php }?>

@@ -108,20 +108,26 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 										if (!empty($selected_procedures)) {
 											foreach ($selected_procedures as $procedure) {?>
 												<div class="procedureItem">
-													<?php
-													$totalDuration += $procedure['default_duration'];
-													echo CHtml::hiddenField('Procedures[]', $procedure['id']);
-													echo "<span>".$procedure['term'].'</span> - <span>'.$procedure['short_format']?></span>
-													<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
+													<span class="left">
+														<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
+													</span>
+													<span class="middle<?php echo (!$durations) ? " noDuration" : ""; ?>">
+														<?php
+															$totalDuration += $procedure['default_duration'];
+															echo CHtml::hiddenField('Procedures[]', $procedure['id']);
+															echo "<span>".$procedure['term'].'</span> - <span>'.$procedure['short_format']
+														?></span>
+													</span>
 													<?php if ($durations) {?>
-														<span style="float:right;"><?php echo $procedure['default_duration']?> mins</span><br />
-													<?php }?>
+														<span class="right">
+															<?php echo $procedure['default_duration']?> mins
+														</span>
+													<?php } ?>
 												</div>
 											<?php	}
 										}
 										?>
 									</h4>
-								</div>
 								
 								<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
 									<table class="grid">
@@ -160,11 +166,11 @@ $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 	}
 
 	$('a.removeProcedure').live('click',function() {
-		var len = $(this).parent().parent().children('div').length;
+		var len = $(this).parent().parent().parent().children('div').length;
 
-		var procedure_id = $(this).parent().children('input:first').val();
-
-		$(this).parent().remove();
+		var procedure_id = $(this).parent().parent().children('input:first').val();
+		
+		$(this).parent().parent().remove();
 
 		<?php if ($durations) {?>
 			updateTotalDuration();

@@ -32,6 +32,15 @@ echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 ?>
 <span style="display: none;" id="header_text">Operation: <?php echo $this->patient->getDisplayName()?></span>
+<script type="text/javascript">
+	// When eye selected in diagnosis, reflect the value in operation details
+	$(document).ready(function(){
+		$('input[name="ElementDiagnosis[eye_id]"]').change(function(){
+			id = $('input[name="ElementDiagnosis[eye_id]"]:checked').val();
+			$('#ElementOperation_eye_id input[value="'+id+'"]').attr('checked', true);
+		});
+	});
+</script>
 <?php
 
 /**

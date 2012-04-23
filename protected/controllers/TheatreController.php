@@ -202,10 +202,10 @@ class TheatreController extends BaseController
 				$anaesthetic_type = AnaestheticType::model()->findByPk($values['anaesthetic_type_id']);
 				$age = Helper::getAge($values['dob']);
 
-				$procedures = array('List'=>'');
+				$procedures = array('List'=>'', 'Long' => array());
 
 				foreach (Yii::app()->db->createCommand()
-					->select("p.short_format")
+					->select("p.short_format, p.term")
 					->from("proc p")
 					->join('operation_procedure_assignment opa', 'opa.proc_id = p.id')
 					->where('opa.operation_id = :id',
@@ -216,6 +216,7 @@ class TheatreController extends BaseController
 						$procedures['List'] .= ", ";
 					}
 					$procedures['List'] .= $row['short_format'];
+					$procedures['Long'][] = $row['term'];
 				}
 				
 				$theatreTitle = $values['name'] . ' ('. $values['site_name'] . ')';
@@ -238,8 +239,10 @@ class TheatreController extends BaseController
 					'admissionTime' => $values['admission_time'],
 					'timeAvailable' => $sessionDuration,
 					'eye' => ($eye) ? $eye->ShortName : '',
+					'eye_long' => ($eye) ? $eye->name : '',
 					'anaesthetic' => ($anaesthetic_type) ? $anaesthetic_type->name : '',
 					'procedures' => $procedures['List'],
+					'procedures_long' => (count($procedures['Long'])) ? implode(', ', $procedures['Long']) : '',
 					'patientHosNum' => $values['hos_num'],
 					'patientId' => $values['patientId'],
 					'patientName' => $values['last_name'] . ', ' . $values['first_name'],

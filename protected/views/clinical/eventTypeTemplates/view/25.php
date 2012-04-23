@@ -227,7 +227,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 
 <?php } ?>
 
-<?php if ($operation->status != $operation::STATUS_CANCELLED && $this->editable) { ?>
+<?php if ($operation->status != $operation::STATUS_CANCELLED && $this->event->editable) { ?>
 <!-- editable -->
 <div style="margin-top:40px; text-align:center;">
 	<?php
