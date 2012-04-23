@@ -11,6 +11,10 @@
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 
+						if(isset($this->event) && $this->event->id == $event->id){
+							$highlight = TRUE;
+						}
+						
 						if ($event->eventType->class_name == 'OphTrOperation') {
 							$event_path = '/patient/event/';
 						} else {

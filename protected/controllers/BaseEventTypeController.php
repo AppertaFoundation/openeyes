@@ -408,8 +408,13 @@ class BaseEventTypeController extends BaseController
 	public function header($editable=null) {
 		$episodes = $this->patient->episodes;
 		
-		$editable = ($editable === null) ? $this->event->editable : $editable;
-
+		if($editable === null){
+			if(isset($this->event)){
+				$editable = $this->event->editable;
+			}else{
+				$editable = false;
+			}
+		}
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),

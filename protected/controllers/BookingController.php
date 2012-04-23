@@ -50,7 +50,7 @@ class BookingController extends BaseController
 //		if (!Yii::app()->user->checkAccess('admin')) {
 //			throw new CHttpException(403, 'You are not authorised to perform this action.');
 //		}
-
+		
 		return parent::beforeAction($action);
 	}
 
@@ -85,6 +85,7 @@ class BookingController extends BaseController
 
 		$this->patient = $operation->event->episode->patient;
 		$this->title = 'Schedule';
+		$this->event = $operation->event;
 
 		$this->renderPartial('/booking/_schedule',
 			array('operation'=>$operation, 'date'=>$minDate,

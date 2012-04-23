@@ -371,8 +371,12 @@ class PatientController extends BaseController
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
-		$this->title = $this->event_type->name;
-
+		if(isset($this->event->element_operation->booking->session->date)){
+			$this->title = $this->event_type->name .": ".$this->event->element_operation->booking->session->NHSDate('date'). ", ". $this->patient->first_name. " ". $this->patient->last_name;
+		}else{
+			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
+		}
+		
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
 			'elements' => $elements,

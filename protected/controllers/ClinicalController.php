@@ -362,6 +362,9 @@ class ClinicalController extends BaseController
 		if (isset($errors)) {
 			$params['errors'] = $errors;
 		}
+		
+		$this->event = $event;
+		$this->editing = TRUE;
 
 		$this->title = 'Update';
 

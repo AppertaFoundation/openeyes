@@ -16,6 +16,13 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
+if ($module = $this->getModule()) {
+	$module = $module->getName();
+	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
+} else {
+	$module = 'OphTrOperation';
+}
 ?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
@@ -38,9 +45,13 @@
 					<div class="display_mode"><?php echo $this->title?></div>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
-				<div class="colorband category_treatment"<?php if (!$this->title){?> style="display: none;"<?php }?>></div>
+
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="watermarkBox" style="background:#fafafa;<?php if (!$this->title){?>display: none;<?php }?>">
+				<?php if ($module == 'OphTrOperation') {?>
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
+				<?php } else {?>
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+				<?php }?>
 					<?php
 					if (isset($this->event)) {
 						$this->renderPartial(

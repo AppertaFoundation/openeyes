@@ -451,7 +451,7 @@ span.surname { font-weight: bold; }
 
 /* ====== VIEW EPISODE ====== */
 /* top controls */
-.episodesBanner { }
+#episodesBanner { margin-bottom: 10px; }
 /* corners TR BR */
 #episodes_sidebar > .episode, .episode .episode_nav { -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
 /* container */
@@ -537,7 +537,7 @@ span.surname { font-weight: bold; }
 #event_content .eventHighlight.priority {  width:75%; background:#ff0; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #event_content .eventHighlight.priority > h4 { color:#000; font-size:20px; padding:10px 10px 3px 5px; }
 /* comments */
-#event_content .eventHighlight.comments > h4 { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; padding:3px 5px; margin:5px 10px 5px 5px;  }
+#event_content .eventHighlight.comments > h4 { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; padding:3px 5px; margin:5px 10px 5px 5px; max-height: 150px; overflow-y: auto; }
 
 /* extra summary */
 #event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
@@ -566,7 +566,7 @@ span.surname { font-weight: bold; }
 #event_content ul.eventComments > li { margin-bottom:8px; padding-bottom: 8px; border-bottom:1px dotted #dae6f1; }
 
 /* meta data (creation and modification) */
-#event_content > .metaData { width:75%; font-size:10px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
+#event_content > .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
 #event_content > .metaData .info { margin-right: 15px; }
 #event_content > .metaData .user { color:#666; }
 
@@ -736,7 +736,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 
 
 /* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */
-#event_display .display_actions { background: #eaddaf; border-bottom:2px solid #a29d8a; }
+#event_display .display_actions { background: #eaddaf; border-bottom:5px solid #a29d8a; }
 #event_display .display_actions.footer { height: 35px; border-top:1px solid #a29d8a; border-bottom: none; padding-top:10px; -webkit-border-bottom-left-radius: 8px; -webkit-border-bottom-right-radius: 8px; -moz-border-radius-bottomleft: 8px; -moz-border-radius-bottomright: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}  
 .display_actions .display_mode	{ display:inline-block; color:#fff; font-size:13px; height:20px; margin:3px 0 0 3px; padding:5px 10px 0 10px; background: #a29d8a; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
 .display_actions .display_mode.edit { background:#1e55c1; }

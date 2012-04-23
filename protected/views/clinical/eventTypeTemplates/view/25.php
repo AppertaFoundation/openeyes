@@ -96,7 +96,7 @@ foreach ($elements as $element) {
 ?></h4>
 </div>
 
-<div class="cols2">
+<div class="cols2 clearfix">
 
 <div class="left">
 <h4>Anaesthetic</h4>
@@ -166,14 +166,14 @@ Operation last modified by <span class="user"><?php echo $operation->event->user
 </div>
 </div>
 
-<div class="right">
+<div>
 <h4>Theatre</h4>
 <div class="eventHighlight">
 <h4><?php echo $session->TheatreName ?></h4>
 </div>
 </div>
 
-<div class="left">
+<div>
 <h4>Admission Time</h4>
 <div class="eventHighlight">
 <h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
