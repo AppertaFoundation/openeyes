@@ -36,8 +36,14 @@ echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
 	// When eye selected in diagnosis, reflect the value in operation details
 	$(document).ready(function(){
 		$('input[name="ElementDiagnosis[eye_id]"]').change(function(){
-			id = $('input[name="ElementDiagnosis[eye_id]"]:checked').val();
-			$('#ElementOperation_eye_id input[value="'+id+'"]').attr('checked', true);
+			if($(this).siblings('label').text() != 'Both'){
+				// Set operation eye selection to current diagnosis eye selection
+				id = $('input[name="ElementDiagnosis[eye_id]"]:checked').val();
+				$('#ElementOperation_eye_id input[value="'+id+'"]').attr('checked', true);
+			}else{
+				// Unset operation eye selection if user selected 'Both'
+				$('input[name="ElementOperation[eye_id]"]:checked').attr('checked', false);
+			}
 		});
 	});
 </script>

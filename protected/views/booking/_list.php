@@ -170,40 +170,6 @@ if (!$reschedule) {
 
 		$('#bookingForm button#confirm_slot').click(function () {
 			if (!$(this).hasClass('inactive')) {
-				/*
-				var errors = [];
-				var m = $('#Booking_admission_time').val().match(/^([0-9]{1,2}).*?([0-9]{2})$/);
-*/
-/*
-				if (!m || m[1] <0 || m[1] >23 || m[2]<0 || m[2] >59) {
-					errors.push("Please enter a valid admission time, eg 09:30");
-					$('#Booking_admission_time').select().focus();
-				}
-*/
-
-/*
-				<?php if ($reschedule) {?>
-					if ($('#cancellation_reason option:selected').val() == '') {
-						errors.push("Please select a reason for reschedule");
-					}
-				<?php }?>
-*/
-
-				/*if (errors.length >0) {
-					var html = '';
-					for (var i in errors) {
-						html += "<li>"+errors[i]+"</li>";
-					}
-
-					$('div.alertBox ul').html(html);
-					$('div.alertBox').map(function() {
-						if (!$(this).hasClass('sessionWarning')) {
-							$(this).show();
-						}
-					});
-					return false;
-				}*/
-
 				disableButtons();
 
 				$.ajax({
