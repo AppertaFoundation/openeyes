@@ -244,9 +244,9 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
 	<?php } else { // The operation has been booked ?>
 	<?php if($has_address) { ?>
-	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter" disabled="disabled"><span class="button-span">Print letter</span></button>
+	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span">Print letter</span></button>
 	<?php } else { ?>
-	<button type="submit" class="classy disabled venti" value="submit"><span class="button-span button-span-blue">Print letter</span></button>
+	<button type="submit" class="classy disabled venti" value="submit" disabled="disabled"><span class="button-span button-span-blue">Print letter</span></button>
 	<?php } ?>
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
