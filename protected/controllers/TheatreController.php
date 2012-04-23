@@ -306,7 +306,7 @@ class TheatreController extends BaseController
 		}
 
 		return Yii::app()->db->createCommand()
-			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, f.pas_code as consultant, sp.ref_spec as subspecialty')
+			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, w.name as ward_name, f.pas_code as consultant, sp.ref_spec as subspecialty')
 			->from('booking b')
 			->join('session s','b.session_id = s.id')
 			->join('theatre t','s.theatre_id = t.id')
