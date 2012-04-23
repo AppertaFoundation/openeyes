@@ -11,7 +11,7 @@
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 
-						if($this->event->id == $event->id){
+						if(isset($this->event) && $this->event->id == $event->id){
 							$highlight = TRUE;
 						}
 						
