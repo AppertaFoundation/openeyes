@@ -11,7 +11,7 @@
 										'showAnim'=>'fold',
 										'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 									)),
-									'value' => $value,
+									'value' => (preg_match('/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/',$value) ? Helper::convertMySQL2NHS($value) : $value),
 									'htmlOptions'=>$htmlOptions
 								)); ?>
 								<?php if (!@$htmlOptions['nowrapper']) {?>
