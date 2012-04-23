@@ -119,14 +119,14 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return array Address as an array 
 	 */
-	public function getLetterArray() {
+	public function getLetterArray($include_country=true) {
 		$address = array();
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 			if (!empty($this->$field)) {
 				$address[] = CHtml::encode($this->$field);
 			}
 		}
-		if(!empty($this->country->name)) {
+		if ($include_country && !empty($this->country->name)) {
 			$address[] = CHtml::encode($this->country->name);
 		}
 		return $address;

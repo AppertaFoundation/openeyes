@@ -298,4 +298,13 @@ class Patient extends BaseActiveRecord {
 		return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
 	}
 
+	/* Patient as subject, eg man, woman, boy girl */
+
+	public function getSub() {
+		if ($this->isChild()) {
+			return ($this->gender == 'F' ? 'girl' : 'boy');
+		} else {
+			return ($this->gender == 'M' ? 'man' : 'woman');
+		}
+	}
 }

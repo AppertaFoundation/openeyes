@@ -1,5 +1,5 @@
 					<div class="eventDetail">
-						<div class="label"><?php echo CHtml::encode($label)?>:</div>
+						<div class="label"><?php echo CHtml::encode($labeltext)?>:</div>
 						<?php if (!empty($columns)) {
 							foreach ($columns as $i => $data) {?>
 								<div class="datacol<?php echo $i+1?>">		

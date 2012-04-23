@@ -27,6 +27,10 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DropDownListRow',array('element' => $model, 'fields' => $fields, 'datas' => $datas, 'htmlOptions' => $htmlOptions));
 	}
 
+	public function dropDownListNoPost($id, $options, $htmlOptions=array()) {
+		$this->widget('application.widgets.DropDownListNoPost',array('id' => $id, 'options' => $options, 'htmlOptions' => $htmlOptions));
+	}
+
 	public function radioButtons($element,$field,$table,$selected_item=false, $maxwidth=false, $hidden=false) {
 		$data = $element->getFormOptions($table);
 		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden));
@@ -36,7 +40,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No')));
 	}
 
-	public function datePicker($element,$field,$options,$htmlOptions) {
+	public function datePicker($element,$field,$options,$htmlOptions=array()) {
 		$this->widget('application.widgets.DatePicker',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
@@ -59,8 +63,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.CheckBox',array('element' => $element, 'field' => $field, 'options' => $options));
 	}
 
-	public function checkBoxArray($element,$label,$fields, $options=false) {
-		$this->widget('application.widgets.CheckBoxArray',array('element' => $element, 'fields' => $fields, 'label' => $label, 'options' => $options));
+	public function checkBoxArray($element,$labeltext,$fields, $options=false) {
+		$this->widget('application.widgets.CheckBoxArray',array('element' => $element, 'fields' => $fields, 'labeltext' => $labeltext, 'options' => $options));
 	}
 
 	public function multiSelectList($element, $field, $relation, $relation_id_field, $options, $default_options, $htmlOptions=array(), $hidden=false) {

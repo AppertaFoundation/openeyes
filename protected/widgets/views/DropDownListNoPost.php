@@ -1,0 +1,16 @@
+<?php if (!@$htmlOptions['nowrapper']) {?>
+	<div id="div_<?php echo $id?>" class="eventDetail">
+		<div class="data">
+<?php }?>
+		<select id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?>>
+			<?php if (isset($htmlOptions['empty'])) {?>
+				<option value=""><?php echo $htmlOptions['empty']?></option>
+			<?php }?>
+			<?php foreach ($options as $id => $option) {?>
+				<option value="<?php echo $id?>"><?php echo $option?></option>
+			<?php }?>
+		</select>
+		<?php if (!@$htmlOptions['nowrapper']) {?>
+	</div>
+</div>
+<?php }?>

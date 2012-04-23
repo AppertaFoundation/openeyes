@@ -20,6 +20,7 @@
 class BaseCWidget extends CWidget
 {
 	public $element;
+	public $label = true;
 	public $field;
 	public $value;
 	public $assetFolder;

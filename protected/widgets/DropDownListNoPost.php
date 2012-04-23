@@ -17,34 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class CheckBoxArray extends BaseCWidget {
-	public $fields;
+class DropDownListNoPost extends BaseCWidget {
 	public $options;
-	public $columns = array();
-	public $checked = array();
-
-	public function init() {
-		foreach ($this->fields as $field) {
-			if (empty($_POST)) {
-				if (isset($this->element->{$field})) {
-					$this->checked[$field] = (boolean)$this->element->{$field};
-				}
-			} else {
-				$this->checked[$field] = (boolean)@$_POST[get_class($this->element)][$field];
-			}
-		}
-
-		if (isset($this->options['column_length'])) {
-			$column = 0;
-
-			foreach ($this->fields as $field) {
-				$this->columns[$column][] = $field;
-
-				if (count($this->columns[$column]) >= $this->options['column_length']) {
-					$column++;
-				}
-			}
-		}
-	}
+	public $htmlOptions;
+	public $id;
 }
 ?>
