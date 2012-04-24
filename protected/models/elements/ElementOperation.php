@@ -376,13 +376,13 @@ class ElementOperation extends BaseEventTypeElement
 		return parent::afterSave();
 	}
 
-	protected function beforeValidate()
+	protected function afterValidate()
 	{
 		if (!empty($_POST['action']) && empty($_POST['Procedures'])) {
-			$this->addError('eye_id', 'At least one procedure must be entered');
+			$this->addError('procedures', 'At least one procedure must be entered');
 		}
 
-		return parent::beforeValidate();
+		return parent::afterValidate();
 	}
 
 	public function getMinDate()

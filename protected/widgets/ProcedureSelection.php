@@ -50,7 +50,7 @@ class ProcedureSelection extends BaseCWidget {
 						$this->procedures[$proc_id] = $name;
 					}
 				} else {
-					if (!in_array($proc_id,$_POST['Procedures'])) {
+					if (isset($_POST['Procedures']) && !in_array($proc_id,$_POST['Procedures'])) {
 						$this->procedures[$proc_id] = $name;
 					}
 				}
