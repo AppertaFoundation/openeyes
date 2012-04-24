@@ -87,20 +87,25 @@ class Patient extends BaseActiveRecord {
 	public function relations() {
 		return array(
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
-			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id'),
+			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
+				'on' => "parent_class = 'Patient'"
+			),
 			// Order: Current addresses; prefer H records for primary address, but fall back to C and then others (T); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'on' => "parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_start DESC"
 			),
 			// Order: Current addresses; prefer H records for home address, but fall back to C and then others (T); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'on' => "parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_end DESC, date_start DESC"
 			),
 			// Order: Current addresses; prefer C records for correspond address, but fall back to T and then others (H); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'on' => "parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
 			),
 			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
