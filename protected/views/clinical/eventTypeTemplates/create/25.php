@@ -96,9 +96,11 @@ if (isset($referrals) && is_array($referrals)) {
 		<p>Please fix the following input errors:</p>
 		<?php foreach ($errors as $field => $errs) {?>
 			<ul>
-				<li>
-					<?php echo $field.': '.$errs[0]?>
-				</li>
+				<?php foreach ($errs as $err) {?>
+					<li>
+						<?php echo $field.': '.$err?>
+					</li>
+				<?php }?>
 			</ul>
 		<?php }?>
 	</div>
