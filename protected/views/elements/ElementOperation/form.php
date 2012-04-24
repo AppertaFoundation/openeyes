@@ -21,6 +21,9 @@ if (!$model->site_id) {
 	$model->site_id = Yii::app()->request->cookies['site_id']->value;
 }
 
+if (!$model->eye_id) {
+	$model->eye_id = 1;
+}
 ?>
 					<script type="text/javascript" src="/js/element_operation.js"></script>
 					<h4>Operation details</h4>
