@@ -27,7 +27,7 @@ if (empty($model->event_id)) {
 				}
 }
 ?>
-					<h4>Operation details</h4>
+					<h4>Procedure</h4>
 					<div id="editEyeOperation" class="eventDetail">
 						<div class="label">Eye(s):</div>
 						<div class="data">
