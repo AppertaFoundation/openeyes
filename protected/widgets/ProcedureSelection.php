@@ -34,29 +34,7 @@ class ProcedureSelection extends BaseCWidget {
 		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
 		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
 		$this->procedures = array();
-		if (empty($this->subsections)) {
-			$this->procedures = array();
-			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id) as $proc_id => $name) {
-				if (empty($_POST)) {
-					$found = false;
-					if ($this->selected_procedures) {
-						foreach ($this->selected_procedures as $procedure) {
-							if ($procedure->id == $proc_id) {
-								$found = true; break;
-							}
-						}
-					}
-					if (!$found) {
-						$this->procedures[$proc_id] = $name;
-					}
-				} else {
-					if (isset($_POST['Procedures']) && !in_array($proc_id,$_POST['Procedures'])) {
-						$this->procedures[$proc_id] = $name;
-					}
-				}
-			}
-		}
-
+		
 		if (empty($_POST)) {
 			if (!$this->selected_procedures) {
 				$this->selected_procedures = $this->element->procedures;
@@ -73,6 +51,28 @@ class ProcedureSelection extends BaseCWidget {
 					$this->selected_procedures[] = $proc;
 					if ($this->durations) {
 						$this->total_duration += $proc->default_duration;
+					}
+				}
+			}
+		}
+		
+		if (empty($this->subsections)) {
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id) as $proc_id => $name) {
+				if (empty($_POST)) {
+					$found = false;
+					if ($this->selected_procedures) {
+						foreach ($this->selected_procedures as $procedure) {
+							if ($procedure->id == $proc_id) {
+								$found = true; break;
+							}
+						}
+					}
+					if (!$found) {
+						$this->procedures[$proc_id] = $name;
+					}
+				} else {
+					if (!@$_POST['Procedures'] || !in_array($proc_id,$_POST['Procedures'])) {
+						$this->procedures[$proc_id] = $name;
 					}
 				}
 			}
