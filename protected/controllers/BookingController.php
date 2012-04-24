@@ -442,7 +442,7 @@ class BookingController extends BaseController
 
 				$this->updateEvent($model->elementOperation->event);
 
-				$this->redirect(array('patient/event/'.$model->elementOperation->event->id));
+				die(json_encode(array()));
 			}
 		}
 	}
