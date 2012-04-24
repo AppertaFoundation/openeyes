@@ -17,6 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+if (!$model->eye_id) {
+	$model->eye_id = 1;
+}
 					if (empty($model->event_id)) {?>
 						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Book Operation</h3>
 					<?php }else{?>
