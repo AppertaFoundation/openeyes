@@ -174,7 +174,7 @@ if (!$reschedule) {
 
 				$.ajax({
 					'type': 'POST',
-					'url': '/booking/update',
+					'url': <?php if ($reschedule) {?>'/booking/update',<?php }else{?>'/booking/create',<?php }?>
 					'data': $('#bookingForm').serialize(),
 					'dataType': 'json',
 					'success': function(data) {
