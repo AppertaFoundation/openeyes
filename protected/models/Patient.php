@@ -71,13 +71,11 @@ class Patient extends BaseActiveRecord {
 	 */
 	public function rules() {
 		return array(
-			array('first_name, last_name', 'required'),
 			array('pas_key', 'length', 'max' => 10),
-			array('title', 'length', 'max' => 8),
-			array('first_name, last_name, hos_num, nhs_num, primary_phone', 'length', 'max' => 40),
+			array('hos_num, nhs_num', 'length', 'max' => 40),
 			array('gender', 'length', 'max' => 1),
-			array('dob, primary_phone, date_of_death', 'safe'),
-			array('first_name, last_name, dob, hos_num, nhs_num, primary_phone, date_of_death', 'safe', 'on' => 'search'),
+			array('dob, date_of_death', 'safe'),
+			array('dob, hos_num, nhs_num, date_of_death', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -108,7 +106,9 @@ class Patient extends BaseActiveRecord {
 				'on' => "parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
 			),
-			'contacts' => array(self::MANY_MANY, 'Contact', 'patient_contact_assignment(patient_id, contact_id)'),
+			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
+				'on' => "parent_class = 'Patient'",
+			),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id')
 		);
 	}
@@ -121,24 +121,20 @@ class Patient extends BaseActiveRecord {
 		return array(
 			'id' => 'ID',
 			'pas_key' => 'PAS Key',
-			'title' => 'Title',
-			'first_name' => 'First Name',
-			'last_name' => 'Last Name',
 			'dob' => 'Date of Birth',
 			'date_of_death' => 'Date of Death',
 			'gender' => 'Gender',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
-			'primary_phone' => 'Primary Phone',
 		);
 	}
 
-	public function search_nr()
+	public function search_nr($params)
 	{
 		$criteria=new CDbCriteria;
-
-		$criteria->compare('LOWER(first_name)',strtolower($this->first_name),false);
-		$criteria->compare('LOWER(last_name)',strtolower($this->last_name),false);
+		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
+		$criteria->compare('LOWER(first_name)',strtolower($params['first_name']),false);
+		$criteria->compare('LOWER(last_name)',strtolower($params['last_name']),false);
 		$criteria->compare('dob',$this->dob,false);
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
@@ -162,9 +158,9 @@ class Patient extends BaseActiveRecord {
 		}
 
 		$criteria=new CDbCriteria;
-
-		$criteria->compare('LOWER(first_name)',strtolower($this->first_name), false);
-		$criteria->compare('LOWER(last_name)',strtolower($this->last_name), false);
+		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
+		$criteria->compare('LOWER(contact.first_name)',strtolower($params['first_name']), false);
+		$criteria->compare('LOWER(contact.last_name)',strtolower($params['last_name']), false);
 		$criteria->compare('hos_num',$this->hos_num, false);
 
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
@@ -311,5 +307,21 @@ class Patient extends BaseActiveRecord {
 		} else {
 			return ($this->gender == 'M' ? 'man' : 'woman');
 		}
+	}
+
+	public function getTitle() {
+		return $this->contact->title;
+	}
+
+	public function getFirst_name() {
+		return $this->contact->first_name;
+	}
+
+	public function getLast_name() {
+		return $this->contact->last_name;
+	}
+
+	public function getPrimary_phone() {
+		return $this->contact->primary_phone;
 	}
 }

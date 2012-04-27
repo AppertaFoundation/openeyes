@@ -238,8 +238,13 @@ class PatientController extends BaseController
 			'pageSize' => $pageSize,
 			'sortBy' => $sort_by,
 			'sortDir'=> $sort_dir,
+			'first_name' => @$_GET['first_name'],
+			'last_name' => @$_GET['last_name'],
 		));
-		$nr = $model->search_nr();
+		$nr = $model->search_nr(array(
+			'first_name' => @$_GET['first_name'],
+			'last_name' => @$_GET['last_name'],
+		));
 
 		if($nr == 0) {
 			$this->redirect('/patient/no-results');
