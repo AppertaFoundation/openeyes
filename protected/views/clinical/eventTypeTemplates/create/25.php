@@ -30,7 +30,21 @@ echo CHtml::hiddenField('action', 'create');
 echo CHtml::hiddenField('event_type_id', $eventTypeId);
 echo CHtml::hiddenField('patient_id', $_GET['patient_id']);
 echo CHtml::hiddenField('firm_id', $_GET['firm_id']);
-?>
+
+if (isset($errors) && !empty($errors)) {?>
+	<div id="clinical-create_es_" class="alertBox">
+		<p>Please fix the following input errors:</p>
+		<?php foreach ($errors as $field => $errs) {?>
+			<ul>
+				<?php foreach ($errs as $err) {?>
+					<li>
+						<?php echo $field.': '.$err?>
+					</li>
+				<?php }?>
+			</ul>
+		<?php }?>
+	</div>
+<?php }?>
 <span style="display: none;" id="header_text">Operation: <?php echo $this->patient->getDisplayName()?></span>
 <script type="text/javascript">
 	// When eye selected in diagnosis, reflect the value in operation details
