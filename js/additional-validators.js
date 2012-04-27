@@ -35,7 +35,9 @@ phone_number.match(/^((0|\+44)7(5|6|7|8|9){1}\d{2}\s?\d{6})$/);
 }, 'Please specify a valid mobile number');
 
 jQuery.validator.addMethod("time", function(value, element) {
-	return this.optional(element) || /^(\d|[01]\d|2[0-3])([:\.][0-5]\d){0,2}$/.test(value);
+	// Valid:	00:00 / 7:30 / 17:59 / 23:59
+	// Invalid:	0:00 / 7:3 / 17 / 24:00
+	return this.optional(element) || /^(\d|[01]\d|2[0-3])[:\.]([0-5]\d)$/.test(value);
 }, "Please enter a valid time, between 00:00 and 23:59");
 
 jQuery.validator.addMethod("letterswithbasicpunc", function(value, element) {
