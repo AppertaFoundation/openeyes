@@ -108,7 +108,7 @@ foreach ($elements as $element) {
 <div class="right">
 <h4>Consultant required?</h4>
 <div class="eventHighlight">
-	<h4><?php echo $operation->consultant_required ? 'Yes Consultant' : 'No Consulant'?></h4>
+	<h4><?php echo $operation->consultant_required ? 'Yes Consultant' : 'No Consultant'?></h4>
 </div>
 </div>
 
