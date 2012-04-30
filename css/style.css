@@ -804,6 +804,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table th.footer.full { background: #ffedb2; }
 /* Control the widths of key tds */
 .theatre-sessions table td.session { width:40px; }
+.theatre-sessions table td.session input {width: 38px;}
 .theatre-sessions table td.dragsort { width:26px; }
 .theatre-sessions table td.dragsort:hover { cursor: pointer; background-color:#ffe6b2; }
 .theatre-sessions table td.confirm { width:28px; padding-left:15px; }
