@@ -18,22 +18,24 @@
  */
 
 /**
- * This is the model class for table "consultant".
+ * This is the model class for table "firm".
  *
- * The followings are the available columns in table 'consultant':
+ * The followings are the available columns in table 'firm':
  * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
- * @property string $contact_id
+ * @property string $service_subspecialty_assignment_id
+ * @property string $pas_code
+ * @property string $name
  *
  * The followings are the available model relations:
- * @property Contact $contact
+ * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
+ * @property FirmUserAssignment[] $firmUserAssignments
+ * @property LetterPhrase[] $letterPhrases
  */
-class Consultant extends BaseActiveRecord
+class InstitutionConsultantAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Consultant the static model class
+	 * @return Firm the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,7 +47,7 @@ class Consultant extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'consultant';
+		return 'institution_consultant_assignment';
 	}
 
 	/**
@@ -56,11 +58,10 @@ class Consultant extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('gmc_number, practitioner_code, gender', 'required'),
-			array('gmc_number, practitioner_code, gender', 'length', 'max'=>20),
+			array('institution_id, consultant_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, gmc_number, practitioner_code, gender', 'safe', 'on'=>'search'),
+			array('id, institution_id, consultant_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,9 +73,6 @@ class Consultant extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Consultant'",
-			),
 		);
 	}
 
@@ -84,10 +82,6 @@ class Consultant extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'obj_prof' => 'Obj Prof',
-			'nat_id' => 'Nat',
-			'contact_id' => 'Contact',
 		);
 	}
 
@@ -103,9 +97,7 @@ class Consultant extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('obj_prof',$this->obj_prof,true);
-		$criteria->compare('nat_id',$this->nat_id,true);
-		$criteria->compare('contact_id',$this->contact_id,true);
+		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
