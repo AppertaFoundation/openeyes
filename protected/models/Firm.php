@@ -178,15 +178,15 @@ class Firm extends BaseActiveRecord
 			}
 		} else {
 			$list = Yii::app()->db->createCommand()
-                        ->select('f.id, f.name')
-                        ->from('firm f')
-                        ->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+												->select('f.id, f.name')
+												->from('firm f')
+												->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
 			->where('ssa.subspecialty_id = :sid', array(':sid' => $subspecialtyId))
-                        ->queryAll();
+												->queryAll();
 
 			foreach ($list as $firm) {
-                                $result[$firm['id']] = $firm['name'];
-                        }
+																$result[$firm['id']] = $firm['name'];
+												}
 		}
 
 		natcasesort($result);
@@ -216,18 +216,18 @@ class Firm extends BaseActiveRecord
 	 */
 	public function getConsultant()
 	{
-                $result = Yii::app()->db->createCommand()
-                        ->select('cslt.id AS id')
-                        ->from('consultant cslt')
-                        ->join('contact c', 'cslt.contact_id = c.id')
-                        ->join('user_contact_assignment uca', 'uca.contact_id = c.id')
+		$result = Yii::app()->db->createCommand()
+			->select('cslt.id AS id')
+			->from('consultant cslt')
+			->join('contact c', "c.parent_id = cslt.id and c.parent_class = 'Consultant'")
+			->join('user_contact_assignment uca', 'uca.contact_id = c.id')
 			->join('user u', 'u.id = uca.user_id')
 			->join('firm_user_assignment fua', 'fua.user_id = u.id')
 			->join('firm f', 'f.id = fua.firm_id')
-                        ->where('f.id = :fid', array(
-                                ':fid' => $this->id
-                        ))
-                        ->queryRow();
+			->where('f.id = :fid', array(
+				':fid' => $this->id
+			))
+			->queryRow();
 
 		if (empty($result)) {
 			return null;
