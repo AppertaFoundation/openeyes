@@ -88,4 +88,5 @@
 
 		</div> <!-- #header -->
 
+		<script type="text/javascript"> var et_patient_id = <?php echo $this->patient->id?>; </script>
 		<div id="content">
