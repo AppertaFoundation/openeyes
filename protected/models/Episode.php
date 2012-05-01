@@ -241,4 +241,12 @@ class Episode extends BaseActiveRecord
 		return false;
 	}
 
+	public function getMostRecentEventByType($event_type_id) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('episode_id',$this->id);
+		$criteria->compare('event_type_id',$event_type_id);
+		$criteria->order = 'created_date desc';
+		$criteria->limit = 1;
+		return Event::model()->find($criteria);
+	}
 }

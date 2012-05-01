@@ -309,6 +309,70 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
+	public function getPro() {
+		return ($this->gender == 'F' ? 'she' : 'he');
+	}
+
+	public function getEpd() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+		
+		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
+			return $diagnosis->disorder->term;
+		}
+	}
+
+	public function getEps() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
+			return $diagnosis->eye->name;
+		}
+	}
+
+	public function getObj() {
+		return ($this->gender == 'F' ? 'her' : 'him');
+	}
+
+	public function getOpl() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
+
+		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+			$return = $eo->eye->name.' ';
+
+			foreach ($eo->procedures as $i => $procedure) {
+				if ($i) $return .= ', ';
+				$return .= $procedure->term;
+			}
+
+			return $return;
+		}
+	}
+
+	public function getOpr() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id);
+
+		if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
+			if ($pl = $pl->find('event_id=?',array($event->id))) {
+				$return = $pl->eye->name.' ';
+
+				foreach ($pl->procedures as $i => $procedure) {
+					if ($i) $return .= ', ';
+					$return .= $procedure->term;
+				}
+
+				return $return;
+			}
+		}
+	}
+
+	public function getPos() {
+		return ($this->gender == 'M' ? 'her' : 'his');
+	}
+
 	public function getTitle() {
 		return $this->contact->title;
 	}
