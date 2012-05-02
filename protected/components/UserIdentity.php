@@ -199,6 +199,10 @@ class UserIdentity extends CUserIdentity
 			$app->session['selected_firm_id'] = key($firms);
 		}
 
+		if ($site = Site::model()->findByPk(@$_POST['siteId'])) {
+			$app->session['selected_site_id'] = $site->id;
+		}
+
 		OELog::log("User {$this->username} logged in",$this->username);
 
 		return true;
