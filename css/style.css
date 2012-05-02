@@ -542,7 +542,7 @@ span.surname { font-weight: bold; }
 /* extra summary */
 #event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 /* event detail */
-#event_content .eventDetail { padding:10px; background:#dae6f1;  margin-bottom: 2px; position:relative; }
+#event_content .eventDetail { padding:10px; background:#dae6f1; position:relative; border-bottom:1px solid #ccd6e2; }
 #event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;  }
 #event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;  }
 #event_content .eventDetail > .label-horizontal { display:inline-block; width:145px; float: left; font-size:15px; }
