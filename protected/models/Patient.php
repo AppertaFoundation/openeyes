@@ -339,11 +339,9 @@ class Patient extends BaseActiveRecord {
 		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
 
 		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
-			$return = $eo->eye->name.' ';
-
 			foreach ($eo->procedures as $i => $procedure) {
 				if ($i) $return .= ', ';
-				$return .= $procedure->term;
+				@$return .= $eo->eye->name.' '.$procedure->term;
 			}
 
 			return strtolower($return);
@@ -357,11 +355,25 @@ class Patient extends BaseActiveRecord {
 
 		if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
 			if ($pl = $pl->find('event_id=?',array($event->id))) {
-				$return = $pl->eye->name.' ';
-
 				foreach ($pl->procedures as $i => $procedure) {
 					if ($i) $return .= ', ';
-					$return .= $procedure->term;
+					@$return .= $pl->eye->name.' '.$procedure->term;
+				}
+
+				return strtolower($return);
+			}
+		}
+	}
+
+	public function getOps() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id);
+
+		if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
+			if ($pl = $pl->find('event_id=?',array($event->id))) {
+				foreach ($pl->procedures as $i => $procedure) {
+					@$return .= $pl->eye->name.' '.$procedure->term."\n";
 				}
 
 				return strtolower($return);
@@ -387,5 +399,9 @@ class Patient extends BaseActiveRecord {
 
 	public function getPrimary_phone() {
 		return $this->contact->primary_phone;
+	}
+
+	public function getPre() {
+		return 'NOT IMPLEMENTED';
 	}
 }
