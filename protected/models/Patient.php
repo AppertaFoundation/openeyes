@@ -317,7 +317,7 @@ class Patient extends BaseActiveRecord {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
 		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
-			return $diagnosis->disorder->term;
+			return strtolower($diagnosis->disorder->term);
 		}
 	}
 
@@ -325,7 +325,7 @@ class Patient extends BaseActiveRecord {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
 		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
-			return $diagnosis->eye->name;
+			return strtolower($diagnosis->eye->name);
 		}
 	}
 
@@ -346,7 +346,7 @@ class Patient extends BaseActiveRecord {
 				$return .= $procedure->term;
 			}
 
-			return $return;
+			return strtolower($return);
 		}
 	}
 
@@ -364,7 +364,7 @@ class Patient extends BaseActiveRecord {
 					$return .= $procedure->term;
 				}
 
-				return $return;
+				return strtolower($return);
 			}
 		}
 	}
