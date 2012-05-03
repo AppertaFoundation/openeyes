@@ -110,6 +110,7 @@ class Helper {
 	 * @param string $date_of_death
 	 */
 	public static function getAge($dob, $date_of_death = null) {
+		if (!$dob) return 'Unknown';
 		$date = date('Ymd', strtotime($dob));
 		$end_date = ($date_of_death) ? strtotime($date_of_death) : time();
 		$age = date('Y',$end_date) - substr($date, 0, 4);
