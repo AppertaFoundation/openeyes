@@ -268,12 +268,14 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 					alert("Please enter a valid admission time, eg 09:30");
 					$(this).select().focus();
 					ok = false;
+					enableButtons();
 					return false;
 				} else {
 					if (parseInt(m2[1]) <0 || parseInt(m2[1]) > 23 || parseInt(m2[2]) <0 || parseInt(m2[2]) > 59) {
 						alert("Please enter a valid admission time, eg 09:30");
 						$(this).select().focus();
 						ok = false;
+						enableButtons();
 						return false;
 					}
 					if (m2[1].length <2) {
@@ -289,6 +291,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			data["comments_"+selected_tbody_id] = $('#comments'+selected_tbody_id).val();
 
 			$('tbody[id="tbody_'+selected_tbody_id+'"] tr td.confirm input[name^="confirm_"]').map(function() {
+				// Update state so its reflected in view mode on save
+				$(this).attr('data-ischecked', $(this).is(':checked'));
 				if ($(this).attr('checked')) {
 					var id = $(this).attr('id').match(/[0-9]+/);
 					data["confirm_"+id] = $(this).val();

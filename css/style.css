@@ -838,7 +838,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* ====== WAITING LIST ====== */
 /* modified GRID VIEW ... */
 .grid-view table.waiting-list th { min-width:20px; }
-.grid-view table.waiting-list td { padding:5px 10px 6px 8px;	}
+.grid-view table.waiting-list td { padding: 5px 10px 6px 8px; }
 /* coloured send flags	*/
 table.waiting-list tr.sendflag-invitation > td:first-child { background-color:none; }
 table.waiting-list tr.sendflag-reminder > td:first-child { background-color:#b8eaa6; }
@@ -854,10 +854,11 @@ table.waiting-list td.letterStatus { width: 92px; }
 
 /* KEY	- for Waiting List */
 table.waiting-list #key { margin-top:15px; }
-table.waiting-list #key #sendflag-reminder		.color_box { background:#b8eaa6; border:1px solid #999; position: relative; top:1px;	}
+table.waiting-list #key #sendflag-reminder 		.color_box { background:#b8eaa6; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-GPremoval		.color_box { background:#f7bf8d; border:1px solid #999; position: relative; top:1px;}
-table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; border:1px solid #999; position: relative; top:1px;}
+table.waiting-list #key #sendflag-remove 		.color_box { background:#f08a6f; border:1px solid #999; position: relative; top:1px;}
 
+table.waiting-list tr.hover{ background-color: #ffffdd; }
 
 /* ------------------------ PRINT STUFF */
 
@@ -967,16 +968,17 @@ table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; borde
 .toAddress {padding-left:7em;}
 .red { color: #f00; }
 
-/* waiting list row colour coding */
-.waitinglistPurple {background:#c9c;}
-.waitinglistGreen {background:#8FBC8F;}
-.waitinglistOrange {background:#f93;}
-.waitinglistRed {background:#e53737;}
-.waitinglistWhite {background:#eee;}
-.waitinglistGrey {background:#999;}
+/* [NEW] colours for waiting list */
+.waitinglistOdd{ background-color: #EDF4F9; border-bottom: 1px solid #CCD;}
+.waitinglistEven{ background-color: #E1EEF9; border-bottom: 1px solid #CCD;}
+.waitinglistGreen { background-color: #B8EAA6; }
+.waitinglistRed{ background-color: #F08A6F; }
+.waitinglistOrange{ background-color: #F7BF8D; }
 
 .elements { margin-bottom: 20px; }
 canvas { outline: none; }
 
 ul.MultiSelectList { list-style-type: none; padding-left: 10px; }
 div.MultiSelectList { background: #fff; }
+
+label.error {color: red;}

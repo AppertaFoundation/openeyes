@@ -159,6 +159,8 @@ if (!$reschedule) {
 	<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
 	<ul><li>&nbsp;</li></ul></div>
 
+	<script type="text/javascript" src="/js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="/js/additional-validators.js"></script>
 	<script type="text/javascript">
 		$('button#cancel_scheduling').click(function() {
 			if (!$(this).hasClass('inactive')) {
@@ -167,39 +169,50 @@ if (!$reschedule) {
 			}
 			return false;
 		});
+		
+		$('#bookingForm').validate({
+			rules : {
+				"Booking[admission_time]" : {
+					required: true,
+					time: true
+				},
+				"cancellation_reason" : {
+					required: true
+				}
+			},
+			submitHandler: function(form){
+				if (!$('#bookingForm button#confirm_slot').hasClass('inactive')) {
+					disableButtons();
 
-		$('#bookingForm button#confirm_slot').click(function () {
-			if (!$(this).hasClass('inactive')) {
-				disableButtons();
+					$.ajax({
+						'type': 'POST',
+						'url': <?php if ($reschedule) {?>'/booking/update',<?php }else{?>'/booking/create',<?php }?>
+						'data': $('#bookingForm').serialize(),
+						'dataType': 'json',
+						'success': function(data) {
+							var n=0;
+							var html = '';
+							$.each(data, function(key, value) {
+								html += '<ul><li>'+value+'</li></ul>';
+								n += 1;
+							});
 
-				$.ajax({
-					'type': 'POST',
-					'url': <?php if ($reschedule) {?>'/booking/update',<?php }else{?>'/booking/create',<?php }?>
-					'data': $('#bookingForm').serialize(),
-					'dataType': 'json',
-					'success': function(data) {
-						var n=0;
-						var html = '';
-						$.each(data, function(key, value) {
-							html += '<ul><li>'+value+'</li></ul>';
-							n += 1;
-						});
+							if (n == 0) {
+								window.location.href = '/patient/event/<?php echo $operation->event->id?>';
+							} else {
+								$('div.alertBox').show();
+								$('div.alertBox').html(html);
+							}
 
-						if (n == 0) {
-							window.location.href = '/patient/event/<?php echo $operation->event->id?>';
-						} else {
-							$('div.alertBox').show();
-							$('div.alertBox').html(html);
+							enableButtons();
+							return false;
 						}
+					});
 
-						enableButtons();
-						return false;
-					}
-				});
-
-				return false;
-			} else {
-				return false;
+					return false;
+				} else {
+					return false;
+				}
 			}
 		});
 	</script>
