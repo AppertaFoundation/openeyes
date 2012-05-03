@@ -43,7 +43,7 @@
 											<img src="<?php echo $assetpath?>small.png" alt="op" width="19" height="19" />
 										<?php } ?>
 									</span>
-									<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
+									<span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
 							<?php if(!$highlight) { ?>
 							</a>
 							<?php } else { ?>

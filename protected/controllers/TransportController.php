@@ -62,7 +62,7 @@ class TransportController extends BaseController
 	public function getTCIEvents($from, $to) {
 		$today = date('Y-m-d');
 
-		$sql = "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method, transport_list.id as transport, booking.created_date as order_date, ward.name as ward_name from booking
+		$sql = "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method, transport_list.id as transport, booking.created_date as order_date, ward.name as ward_name from booking
 			join session on booking.session_id = session.id
 			join theatre on session.theatre_id = theatre.id
 			join site on theatre.site_id = site.id
@@ -80,7 +80,7 @@ class TransportController extends BaseController
 			and site.id not in (3,5)
 			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
 			UNION
-				select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, ward.name as ward_name from booking
+				select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, ward.name as ward_name from booking
 			join session on booking.session_id = session.id
 			join cancelled_booking on cancelled_booking.element_operation_id = booking.element_operation_id
 			join theatre on session.theatre_id = theatre.id
@@ -99,11 +99,11 @@ class TransportController extends BaseController
 			and site.id not in (3,5)
 			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
 			UNION
-				select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, 'Unknown' as ward_name from cancelled_booking
+				select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, patient.first_name, patient.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, 'Unknown' as ward_name from cancelled_booking
 			join theatre on cancelled_booking.theatre_id = theatre.id
 			join site on theatre.site_id = site.id
 			join element_operation on element_operation.id = cancelled_booking.element_operation_id
-			join priority on pr.id = element_operation.priority_id
+			join priority pr on pr.id = element_operation.priority_id
 			join event on element_operation.event_id = event.id
 			join episode on event.episode_id = episode.id
 			join firm on episode.firm_id = firm.id

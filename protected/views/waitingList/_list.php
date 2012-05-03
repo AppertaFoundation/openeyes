@@ -18,27 +18,27 @@
  */
 ?>
 <div id="no_gp_warning" class="alertBox" style="display: none;">One or more patients has no GP, please correct in PAS before printing GP letter.</div>
-<div id="waitingList" class="grid-view-waitinglist">
+<div id="waitingList" class="grid-view">
 <?php
 if (empty($operations)) { ?>
 <h2 class="theatre">Partial bookings waiting list empty.</h2>
 <?php
 } else {
 ?>
-	<table>
+	<table class="waiting-list">
 		<tbody>
     	<tr>
 				<th>Letters sent</th>
-				<th>Patient</th>
-				<th>Hospital number</th>
-				<th>Location</th>
+				<th style="width: 120px;">Patient</th>
+				<th style="width: 53px;">Hospital number</th>
+				<th style="width: 95px;">Location</th>
 				<th>Procedure</th>
 				<th>Eye</th>
 				<th>Firm</th>
-				<th>Decision date</th>
+				<th style="width: 80px;">Decision date</th>
 				<th>Priority</th>
 				<th>Book status (requires...)</th>
-				<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
+				<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /> All</th>
 			</tr>
 <?php
 	$i = 0;
@@ -70,8 +70,8 @@ if (empty($operations)) { ?>
 		$tablecolour = "White";
 	}
 ?>
-    <tr class="waitinglist<?php echo $tablecolour ?>">
-	<td class="letterStatus">
+    <tr class="waitinglist<?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; ?>">
+	<td class="letterStatus waitinglist<?php echo $tablecolour ?>">
 <?php
 	$lastletter = $eo->getLastLetter();
 
@@ -107,23 +107,24 @@ if (empty($operations)) { ?>
 	<td class="patient">
 		<?php echo CHtml::link(trim("<b>" . $operation['last_name']) . '</b>, ' . $operation['first_name'], '/patient/event/' . $operation['evid'])?>
 	</td>
-	<td style="width: 53px;"><?php echo $operation['hos_num'] ?></td>
-	<td style="width: 95px;"><?php echo $eo->site->short_name?></td>
+	<td><?php echo $operation['hos_num'] ?></td>
+	<td><?php echo $eo->site->short_name?></td>
 	<td><?php echo $operation['List'] ?></td>
 	<td><?php echo $eo->eye->name ?></td>
 	<td><?php echo $eo->event->episode->firm->name ?> (<?php echo $eo->event->episode->firm->serviceSubspecialtyAssignment->subspecialty->name ?>)</td>
-	<td style="width: 80px;"><?php echo $eo->NHSDate('decision_date') ?></td>
+	<td><?php echo $eo->NHSDate('decision_date') ?></td>
 	<td><?php echo $eo->priority->name?></td>
 	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>
 	<td<?php if ($tablecolour == 'White' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
-		<?php if ($eo->getDueLetter() != ElementOperation::LETTER_GP || $operation['gp_id'] || Yii::app()->user->checkAccess('admin')) { ?>
-			<input<?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
-		<?php }  ?>
 		<?php if($eo->getDueLetter() == ElementOperation::LETTER_GP && !$operation['gp_id'] ) { ?>
 			<script type="text/javascript">
 				$('#no_gp_warning').show();
 			</script>
-			<span style="color:red;">NO GP</span>
+			<span class="no-GP">No GP</span>
+		<?php }else{ ?>
+			<?php if ($eo->getDueLetter() != ElementOperation::LETTER_GP || $operation['gp_id'] || Yii::app()->user->checkAccess('admin')) { ?>
+				<input<?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
+			<?php }  ?>
 		<?php } ?>
 	</td>
 </tr>
@@ -141,6 +142,18 @@ if (empty($operations)) { ?>
 	<?php }
 ?>
 </tbody>
+<tfoot>
+	<tr>
+		<td colspan="11">
+			<div id="key">
+			<span>Colour Key:</span>
+				<div class="container" id="sendflag-reminder"><div class="color_box"></div><div class="label">Send another reminder (2 weeks)</div></div>
+				<div class="container" id="sendflag-GPremoval"><div class="color_box"></div><div class="label">Send GP removal letter</div></div>
+				<div class="container" id="sendflag-remove"><div class="color_box"></div><div class="label">Patient is due to be removed</div></div>
+			</div>
+		</td>
+	</tr>
+</tfoot>
 </table>
 <?php
 }
@@ -149,6 +162,14 @@ if (empty($operations)) { ?>
 <script type="text/javascript">
 $('#checkall').click(function() {
 	$('input[id^="operation"]:enabled').attr('checked',$('#checkall').is(':checked'));
+});
+
+// Row highlighting
+$(".waiting-list td").live('hover', function() {
+    var $tr = $(this).closest("tr");
+
+    //toggle current row
+    $tr.toggleClass('hover');
 });
 </script>
 </div> <!-- #waitingList -->

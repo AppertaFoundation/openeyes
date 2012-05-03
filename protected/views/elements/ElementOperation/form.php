@@ -26,7 +26,7 @@ if (!$model->eye_id) {
 }
 ?>
 					<script type="text/javascript" src="/js/element_operation.js"></script>
-					<h4>Operation details</h4>
+					<h4>Procedure</h4>
 
 					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 

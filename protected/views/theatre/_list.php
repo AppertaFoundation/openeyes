@@ -401,6 +401,10 @@ if (empty($theatres)) {?>
 		$('#action_options_'+selected_tbody_id).show();
 		$('#btn_print').hide();
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').attr('disabled',false);
+		// Save original state
+		$('tbody[id="tbody_'+selected_tbody_id+'"] td.confirm input[name^="confirm_"]').each(function(){
+			$(this).attr('data-ischecked', $(this).is(':checked'));
+		});
 		$('tbody[id="tbody_'+selected_tbody_id+'"] td.td_sort').show();
 		$('thead[id="thead_'+selected_tbody_id+'"] th.th_sort').show();
 		$('#buttons_'+selected_tbody_id).show();
@@ -487,6 +491,13 @@ if (empty($theatres)) {?>
 		$('div.purpleUser').hide();
 		$('#btn_print').show();
 		$('input[name^="confirm_"]').attr('disabled',true);
+		$('input[name^="confirm_"]').each(function(){
+			if($(this).attr('data-ischecked') == "true"){
+				$(this).attr('checked', "checked");
+			}else{
+				$(this).removeAttr('checked');
+			}
+		});
 	}
 
 	$('input[id^="consultant_"]').click(function() {

@@ -26,10 +26,23 @@ $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'enableAjaxValidation' => true,
 	'htmlOptions' => array('class' => 'sliding')
 ));
-
 echo CHtml::hiddenField('action', 'update');
 echo CHtml::hiddenField('event_id', $id);
-?>
+
+if (isset($errors) && !empty($errors)) {?>
+	<div id="clinical-create_es_" class="alertBox">
+		<p>Please fix the following input errors:</p>
+		<?php foreach ($errors as $field => $errs) {?>
+			<ul>
+				<?php foreach ($errs as $err) {?>
+					<li>
+						<?php echo $field.': '.$err?>
+					</li>
+				<?php }?>
+			</ul>
+		<?php }?>
+	</div>
+<?php }?>
 <script type="text/javascript">
 	// When eye selected in diagnosis, reflect the value in operation details
 	$(document).ready(function(){
@@ -65,9 +78,11 @@ if (isset($errors) && !empty($errors)) {?>
 		<p>Please fix the following input errors:</p>
 		<?php foreach ($errors as $field => $errs) {?>
 			<ul>
-				<li>
-					<?php echo $field.': '.$errs[0]?>
-				</li>
+				<?php foreach ($errs as $err) {?>
+					<li>
+						<?php echo $field.': '.$err?>
+					</li>
+				<?php }?>
 			</ul>
 		<?php }?>
 	</div>
