@@ -36,7 +36,6 @@
  * @property Address $address Primary address
  * @property HomeAddress $homeAddress Home address
  * @property CorrespondAddress $correspondAddress Correspondence address
- * @property UserContactAssignment $userContactAssignment
  * 
  * The following are pseudo (calculated) fields
  * @property string $SalutationName
@@ -93,8 +92,6 @@ class Contact extends BaseActiveRecord {
 				'order' => "FIELD(type,'C') DESC, date_start DESC",
 				'on' => "parent_class = 'Contact'",
 			),
-			// FIXME: Surely this is a has_many (many_many mapping table). If not they what's the point of the mapping table?
-			'userContactAssignment' => array(self::HAS_ONE, 'UserContactAssignment', 'contact_id')
 		);
 	}
 
@@ -147,4 +144,19 @@ class Contact extends BaseActiveRecord {
 		return $this->title . ' ' . $this->last_name;
 	}
 
+	public function getLetterAddress() {
+		$address = $this->fullName;
+
+		if (isset($this->qualifications)) {
+			$address .= ' '.$this->qualifications;
+		}
+
+		$address .= "\n";
+
+		if ($this->address) {
+			$address .= implode("\n",$this->address->getLetterArray(false));
+		}
+
+		return $address;
+	}
 }

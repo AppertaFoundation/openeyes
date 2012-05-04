@@ -108,7 +108,9 @@ class User extends BaseActiveRecord
 			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)'),
 			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
 			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
-			'userContactAssignments' => array(self::HAS_ONE, 'UserContactAssignment', 'user_id'),
+			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
+				'on' => "parent_class = 'User'"
+			),
 		);
 	}
 
@@ -259,7 +261,7 @@ class User extends BaseActiveRecord
 		$user = User::model()->findByPk(Yii::app()->id);
 
 		// Set whether they are an internal consultant or not. This gives them the ability to edit macros.
-		if (isset($user->userContactAssignments->contact->consultant)) {
+		if (isset($user->contact->consultant)) {
 			return true;
 		}
 
