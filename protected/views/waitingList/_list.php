@@ -51,8 +51,6 @@ if (empty($operations)) { ?>
 				# echo "match";
 			}
 		}
-//		$consultant = $eo->event->episode->firm->getConsultant();
-//		$user = $consultant->contact->userContactAssignment->user;
 ?>
 
 <?php

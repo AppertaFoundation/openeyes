@@ -397,11 +397,31 @@ class Patient extends BaseActiveRecord {
 		return $this->contact->last_name;
 	}
 
+	public function getNick_name() {
+		return $this->contact->nick_name;
+	}
+
 	public function getPrimary_phone() {
 		return $this->contact->primary_phone;
 	}
 
 	public function getPre() {
 		return 'NOT IMPLEMENTED';
+	}
+
+	public function getLetterAddress() {
+		$address = $this->fullName;
+
+		if (isset($this->qualifications)) {
+			$address .= ' '.$this->qualifications;
+		}
+
+		$address .= "\n";
+		
+		if ($this->address) {
+			$address .= implode("\n",$this->address->getLetterArray(false));
+		}
+		
+		return $address; 
 	}
 }
