@@ -7,7 +7,7 @@
 				<option value=""><?php echo $htmlOptions['empty']?></option>
 			<?php }?>
 			<?php foreach ($options as $id => $option) {?>
-				<option value="<?php echo $id?>"><?php echo $option?></option>
+				<option value="<?php echo $id?>"<?php if ($id == $selected_value) {?> selected="selected"<?php }?>><?php echo $option?></option>
 			<?php }?>
 		</select>
 		<?php if (!@$htmlOptions['nowrapper']) {?>

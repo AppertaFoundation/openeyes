@@ -27,8 +27,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DropDownListRow',array('element' => $model, 'fields' => $fields, 'datas' => $datas, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function dropDownListNoPost($id, $options, $htmlOptions=array()) {
-		$this->widget('application.widgets.DropDownListNoPost',array('id' => $id, 'options' => $options, 'htmlOptions' => $htmlOptions));
+	public function dropDownListNoPost($id, $options, $selected_value, $htmlOptions=array()) {
+		$this->widget('application.widgets.DropDownListNoPost',array('id' => $id, 'options' => $options, 'selected_value' => $selected_value, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function radioButtons($element,$field,$table,$selected_item=false, $maxwidth=false, $hidden=false) {
