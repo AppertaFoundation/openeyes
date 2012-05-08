@@ -198,9 +198,11 @@
 	If you are unwell the day before admission, please contact us to ensure that it is still safe and appropriate to do the procedure. If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor. 
 </p>
 
+<?php if($subspecialty->id != 13){ // Not refractive laser ?>
 <p class="red">
 	You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/friend/carer who is collecting you to make sure they bring some money to cover the prescription.
 </p>
+<?php } ?>
 
 <p>
 	<strong>
