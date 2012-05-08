@@ -848,7 +848,7 @@ table.waiting-list tr.sendflag-remove > td:first-child { background-color:#f08a6
 /* change default hover */
 table.waiting-list .odd:hover, table.waiting-list .even:hover { background-color: #ffd; border-bottom-color: #aaa; }
 /* NO GP flag */
-table.waiting-list td > span.no-GP { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted; }
+table.waiting-list td > .no-GP, table.waiting-list td > .no-Address { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted;}
 /* letters send icons */
 table.waiting-list td.letterStatus > img {margin-right:3px; }
 table.waiting-list td.letterStatus { width: 92px; }

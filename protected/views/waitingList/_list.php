@@ -17,7 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div id="no_gp_warning" class="alertBox" style="display: none;">One or more patients has no GP, please correct in PAS before printing GP letter.</div>
+<div id="pas_warnings" class="alertBox" style="display: none;">
+	<div class="no_gp" style="display: none;">One or more patients has no GP, please correct in PAS before printing GP letter.</div>
+	<div class="no_address" style="display: none;">One or more patients has no Address, please correct in PAS before printing a letter for them.</div>
+</div>
 <div id="waitingList" class="grid-view">
 <?php
 if (empty($operations)) { ?>
@@ -44,6 +47,11 @@ if (empty($operations)) { ?>
 	$i = 0;
 	foreach ($operations as $id => $operation) {
 		$eo = ElementOperation::model()->findByPk($operation['eoid']);
+		
+		$patient = NULL;
+		if(isset($operation['pid'])){
+			$patient = Patient::model()->findByPk($operation['pid']);
+		}
 		if (isset($_POST['status']) and $_POST['status'] != '') {
 			if ($eo->getNextLetter() != $_POST['status']) {
 				continue;
@@ -116,15 +124,27 @@ if (empty($operations)) { ?>
 	<td><?php echo $eo->priority->name?></td>
 	<td><?php echo ucfirst(preg_replace('/^Requires /','',$eo->getStatusText())) ?></td>
 	<td<?php if ($tablecolour == 'White' && Yii::app()->user->checkAccess('admin')) { ?> class="admin-td"<?php } ?>>
-		<?php if($eo->getDueLetter() == ElementOperation::LETTER_GP && !$operation['gp_id'] ) { ?>
+
+		<?php if(($patient && $patient->address) && $operation['eoid'] && ($eo->getDueLetter() != ElementOperation::LETTER_GP || ($eo->getDueLetter() == ElementOperation::LETTER_GP && $operation['gp_id']))) { ?>
+		<div>	
+			<input<?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
+		</div>
+		<?php }?>
+		
+		<?php if(!$operation['gp_id'] ) { ?>
 			<script type="text/javascript">
-				$('#no_gp_warning').show();
+				$('#pas_warnings').show();
+				$('#pas_warnings .no_gp').show();
 			</script>
 			<span class="no-GP">No GP</span>
-		<?php }else{ ?>
-			<?php if ($eo->getDueLetter() != ElementOperation::LETTER_GP || $operation['gp_id'] || Yii::app()->user->checkAccess('admin')) { ?>
-				<input<?php if ($tablecolour == 'White' && !Yii::app()->user->checkAccess('admin')) { ?> disabled="disabled"<?php } ?> type="checkbox" id="operation<?php echo $operation['eoid']?>" value="1" />
-			<?php }  ?>
+		<?php } ?>
+		
+		<?php if($patient && !$patient->address){ ?>
+			<script type="text/javascript">
+				$('#pas_warnings').show();
+				$('#pas_warnings .no_address').show();
+			</script>
+			<span class="no-Address">No Address</span>
 		<?php } ?>
 	</td>
 </tr>
