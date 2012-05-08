@@ -528,8 +528,11 @@ span.surname { font-weight: bold; }
 #event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
-#event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px; }
-#event_content form > h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:2px solid #dae6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
+#event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px;}
+#event_content .elementSubGroup-start { display:block; height:5px; background: blue;}
+#event_content .elementSubGroup-end { display:block; height:5px; background: red;}
+
+#event_content form > h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 #event_content .eventHighlight > h4 { color:#000; font-size:16px; padding:0 10px 5px 10px; }
 #event_content .eventHighlight > h5 { color:#222; font-size:12px; padding:0 10px 5px 10px; }
 /* medium */
@@ -845,7 +848,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .grid-view table.waiting-list th { min-width:20px; }
 .grid-view table.waiting-list td { padding:5px 10px 6px 8px;	}
 /* coloured send flags	*/
-table.waiting-list tr.sendflag-invitation > td:first-child { background-color:none; }
+table.waiting-list tr.sendflag-invitation > td:first-child { background-color:#77b8d3; }
 table.waiting-list tr.sendflag-reminder > td:first-child { background-color:#b8eaa6; }
 table.waiting-list tr.sendflag-GPremoval > td:first-child { background-color:#f7bf8d; }
 table.waiting-list tr.sendflag-remove > td:first-child { background-color:#f08a6f; }
@@ -859,7 +862,8 @@ table.waiting-list td.letterStatus { width: 92px; }
 
 /* KEY	- for Waiting List */
 table.waiting-list #key { margin-top:15px; }
-table.waiting-list #key #sendflag-reminder		.color_box { background:#b8eaa6; border:1px solid #999; position: relative; top:1px;	}
+table.waiting-list #key #sendflag-invitation	.color_box { background:#77b8d3; border:1px solid #999; position: relative; top:1px;}
+table.waiting-list #key #sendflag-reminder		.color_box { background:#b8eaa6; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-GPremoval		.color_box { background:#f7bf8d; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; border:1px solid #999; position: relative; top:1px;}
 
