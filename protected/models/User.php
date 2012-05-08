@@ -108,10 +108,14 @@ class User extends BaseActiveRecord
 			'firms' => array(self::MANY_MANY, 'Firm', 'firm_user_assignment(firm_id, user_id)'),
 			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
 			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'User'"
-			),
+			'contacts' => array(self::MANY_MANY, 'Contact', 'user_contact_assignment(user_id, contact_id)'),
 		);
+	}
+
+	public function getContact() {
+		foreach ($this->contacts as $contact) {
+			return $contact;
+		}
 	}
 
 	/**

@@ -368,15 +368,15 @@ class Patient extends BaseActiveRecord {
 	public function getOps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id);
+		if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
+			if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
+				if ($pl = $pl->find('event_id=?',array($event->id))) {
+					foreach ($pl->procedures as $i => $procedure) {
+						@$return .= $pl->eye->name.' '.$procedure->term."\n";
+					}
 
-		if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
-			if ($pl = $pl->find('event_id=?',array($event->id))) {
-				foreach ($pl->procedures as $i => $procedure) {
-					@$return .= $pl->eye->name.' '.$procedure->term."\n";
+					return strtolower($return);
 				}
-
-				return strtolower($return);
 			}
 		}
 	}
