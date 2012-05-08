@@ -12,4 +12,8 @@ class DefaultController extends BaseEventTypeController {
 	public function actionView($id) {
 		parent::actionView($id);
 	}
+
+	public function actionPrint($id) {
+		parent::actionPrint($id);
+	}
 }
