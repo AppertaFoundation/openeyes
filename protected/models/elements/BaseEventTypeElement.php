@@ -40,4 +40,8 @@ class BaseEventTypeElement extends BaseElement
 	function getView_view() {
 		return get_class($this);
 	}
+
+	function getPrint_view() {
+		return get_class($this);
+	}
 }

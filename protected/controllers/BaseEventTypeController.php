@@ -113,6 +113,7 @@ class BaseEventTypeController extends BaseController
 		switch ($action) {
 			case 'create':
 			case 'view':
+			case 'print':
 				return array();
 			case 'update':
 				$event_type = EventType::model()->findByPk($this->event->event_type_id);
@@ -611,26 +612,62 @@ class BaseEventTypeController extends BaseController
 		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
 		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img')).'/';
 
-		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
+		$ex = explode('/',@$_SERVER['REQUEST_URI']);
 
-		while ($file = readdir($dh)) {
-			if (preg_match('/\.js$/',$file)) {
-				Yii::app()->clientScript->registerScriptFile($this->jsPath.'/'.$file);
+		if ($ex[3] != 'print') {
+			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
+
+			while ($file = readdir($dh)) {
+				if (preg_match('/\.js$/',$file)) {
+					Yii::app()->clientScript->registerScriptFile($this->jsPath.'/'.$file);
+				}
 			}
-		}
 
-		closedir($dh);
+			closedir($dh);
+		}
 
 		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
 
 		while ($file = readdir($dh)) {
 			if (preg_match('/\.css$/',$file)) {
-				Yii::app()->getClientScript()->registerCssFile($this->cssPath.'/'.$file);
+				if ($ex[3] == 'print') {
+					if ($file == 'print.css') {
+						Yii::app()->getClientScript()->registerCssFile($this->cssPath.'/'.$file);
+					}
+				} else {
+					if ($file != 'print.css') {
+						Yii::app()->getClientScript()->registerCssFile($this->cssPath.'/'.$file);
+					}
+				}
 			}
 		}
 
 		closedir($dh);
 
 		parent::init();
+	}
+
+	public function actionPrint($id) {
+		if (!$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		$this->patient = $this->event->episode->patient;
+
+		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
+
+		$elements = $this->getDefaultElements('view');
+
+		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->logActivity('printed event');
+
+		$this->title = $this->event_type->name;
+
+		$this->renderPartial(
+			'print', array(
+			'elements' => $elements,
+			'eventId' => $id,
+			), false, true);
 	}
 }
