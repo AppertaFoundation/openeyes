@@ -87,7 +87,10 @@ class EventType extends BaseActiveRecord
 	}
 
 	public function getEventTypeModules() {
-		return EventType::model()->findAll("class_name in ('".implode("','",array_keys(Yii::app()->getModules()))."') or class_name='OphTrOperation'");
+		$criteria = new CDbCriteria;
+		$criteria->condition = "class_name in ('".implode("','",array_keys(Yii::app()->getModules()))."') or class_name='OphTrOperation'";
+		$criteria->order = "class_name asc";
+		return EventType::model()->findAll($criteria);
 	}
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
