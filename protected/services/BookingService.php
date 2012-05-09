@@ -224,8 +224,8 @@ class BookingService
 					o.eye_id, o.anaesthetic_type_id, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
-					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
+					o.total_duration AS operation_duration, c.first_name,
+					c.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
 				->join('theatre t', 't.id = s.theatre_id')
 				->leftJoin('site i', 'i.id = t.site_id')
@@ -235,6 +235,7 @@ class BookingService
 				->leftJoin('event e', 'e.id = o.event_id')
 				->leftJoin('episode ep', 'ep.id = e.episode_id')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
+				->leftJoin('contact c', "c.parent_id = p.id and c.parent_class = 'Patient'")
 				->join('session_firm_assignment sfa', 'sfa.session_id = s.id')
 				->join('firm f', 'f.id = sfa.firm_id')
 				->join('service_subspecialty_assignment ssa', 'ssa.id = f.service_subspecialty_assignment_id')
@@ -256,8 +257,8 @@ class BookingService
 					o.eye_id, o.anaesthetic_type_id, o.comments, b.admission_time,
 					o.consultant_required, o.overnight_stay,
 					e.id AS eventId, ep.id AS episodeId, p.id AS patientId,
-					o.total_duration AS operation_duration, p.first_name,
-					p.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
+					o.total_duration AS operation_duration, c.first_name,
+					c.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
 				->join('theatre t', 't.id = s.theatre_id')
 				->leftJoin('site i', 'i.id = t.site_id')
@@ -267,6 +268,7 @@ class BookingService
 				->leftJoin('event e', 'e.id = o.event_id')
 				->leftJoin('episode ep', 'ep.id = e.episode_id')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
+				->leftJoin('contact c', "c.parent_id = p.id and c.parent_class = 'Patient'")
 				->leftJoin('session_firm_assignment sfa', 'sfa.session_id = s.id')
 				->leftJoin('ward w', 'w.id = b.ward_id')
 				->leftJoin('user mu','b.last_modified_user_id = mu.id')

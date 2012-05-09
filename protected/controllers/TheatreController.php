@@ -309,7 +309,7 @@ class TheatreController extends BaseController
 		}
 
 		return Yii::app()->db->createCommand()
-			->select('p.hos_num, p.first_name, p.last_name, p.dob, p.gender, s.date, w.code as ward_code, w.name as ward_name, f.pas_code as consultant, sp.ref_spec as subspecialty')
+			->select('p.hos_num, c.first_name, c.last_name, p.dob, p.gender, s.date, w.code as ward_code, w.name as ward_name, f.pas_code as consultant, sp.ref_spec as subspecialty')
 			->from('booking b')
 			->join('session s','b.session_id = s.id')
 			->join('theatre t','s.theatre_id = t.id')
@@ -321,6 +321,7 @@ class TheatreController extends BaseController
 			->join('event e','eo.event_id = e.id')
 			->join('episode ep','e.episode_id = ep.id')
 			->join('patient p','ep.patient_id = p.id')
+			->join('contact c',"c.parent_id = p.id and c.parent_class = 'Patient'")
 			->join('ward w','b.ward_id = w.id')
 			->where($whereSql, $whereParams)
 			->order($order)
