@@ -174,6 +174,17 @@ if (empty($operations)) { ?>
 			</div>
 		</td>
 	</tr>
+	<tr>
+		<td colspan="11" class="small">
+			<div id="letters-key">
+			<span>Letters sent out:</span>&nbsp;&nbsp;
+				<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" height="17" width="17"> - Invitation
+				<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" height="17" width="17"> - 1<sup>st</sup> Reminder
+				<img src="img/_elements/icons/letters/letter2.png" alt="2nd reminder" height="17" width="17"> - 2<sup>nd</sup> Reminder
+				<img src="img/_elements/icons/letters/GP.png" alt="GP" height="17" width="17"> - GP Removal
+			</div>
+		</td>
+	</tr>
 </tfoot>
 </table>
 <?php

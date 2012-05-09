@@ -337,6 +337,9 @@ tfoot td #key .container .label { display:inline-block; margin-left:4px; }
 /* change properties for closed rows */
 .grid-view-waitinglist table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
 
+#letters-key {margin-top:15px;}
+#letters-key img {margin-left: 10px;}
+
 /* hack to help with in page CSS for add Operation */
 table#procedure_list tbody tr { background-color: #edf4f9; }
 
