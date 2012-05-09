@@ -841,7 +841,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .grid-view table.waiting-list th { min-width:20px; }
 .grid-view table.waiting-list td { padding: 5px 10px 6px 8px; }
 /* coloured send flags	*/
-table.waiting-list tr.sendflag-invitation > td:first-child { background-color:none; }
+table.waiting-list tr.sendflag-invitation > td:first-child { background-color:#77B8D3; }
 table.waiting-list tr.sendflag-reminder > td:first-child { background-color:#b8eaa6; }
 table.waiting-list tr.sendflag-GPremoval > td:first-child { background-color:#f7bf8d; }
 table.waiting-list tr.sendflag-remove > td:first-child { background-color:#f08a6f; }
@@ -855,6 +855,7 @@ table.waiting-list td.letterStatus { width: 92px; }
 
 /* KEY	- for Waiting List */
 table.waiting-list #key { margin-top:15px; }
+table.waiting-list #key #sendflag-invitation	.color_box { background:#77B8D3; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-reminder 		.color_box { background:#b8eaa6; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-GPremoval		.color_box { background:#f7bf8d; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-remove 		.color_box { background:#f08a6f; border:1px solid #999; position: relative; top:1px;}
@@ -972,6 +973,7 @@ table.waiting-list tr.hover{ background-color: #ffffdd; }
 /* [NEW] colours for waiting list */
 .waitinglistOdd{ background-color: #EDF4F9; border-bottom: 1px solid #CCD;}
 .waitinglistEven{ background-color: #E1EEF9; border-bottom: 1px solid #CCD;}
+.waitinglistPurple{ background-color: #77B8D3; }
 .waitinglistGreen { background-color: #B8EAA6; }
 .waitinglistRed{ background-color: #F08A6F; }
 .waitinglistOrange{ background-color: #F7BF8D; }

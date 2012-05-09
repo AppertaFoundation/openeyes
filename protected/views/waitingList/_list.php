@@ -167,6 +167,7 @@ if (empty($operations)) { ?>
 		<td colspan="11">
 			<div id="key">
 			<span>Colour Key:</span>
+				<div class="container" id="sendflag-invitation"><div class="color_box"></div><div class="label">Send invitation letter</div></div>
 				<div class="container" id="sendflag-reminder"><div class="color_box"></div><div class="label">Send another reminder (2 weeks)</div></div>
 				<div class="container" id="sendflag-GPremoval"><div class="color_box"></div><div class="label">Send GP removal letter</div></div>
 				<div class="container" id="sendflag-remove"><div class="color_box"></div><div class="label">Patient is due to be removed</div></div>
