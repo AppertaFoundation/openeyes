@@ -529,8 +529,6 @@ span.surname { font-weight: bold; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
 #event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px;}
-#event_content .elementSubGroup-start { display:block; height:5px; background: blue;}
-#event_content .elementSubGroup-end { display:block; height:5px; background: red;}
 
 #event_content form > h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 #event_content .eventHighlight > h4 { color:#000; font-size:16px; padding:0 10px 5px 10px; }
@@ -550,7 +548,10 @@ span.surname { font-weight: bold; }
 /* extra summary */
 #event_content .extraSummary { display:block; background:#eee; padding:10px; margin-top:10px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 /* event detail */
-#event_content .eventDetail { padding:10px; background:#dae6f1 url(../img/_elements/gradients/bg_event_detail.png) top left repeat-x; position:relative; border-bottom:1px solid #d8e4f0; }
+/* GRADIENT background for eventDetail... left it out because it doesn't look right but may need it: url(../img/_elements/gradients/bg_event_detail_bottom.png) bottom left repeat-x; */
+#event_content .eventDetail { padding:10px; background:#dae6f1; position:relative; }
+#event_content .eventDetail.subGroup-start { border-top:1px solid #e7f3ff; margin-top:0; -webkit-border-top-left-radius: 6px; -webkit-border-top-right-radius: 6px; -moz-border-radius-topleft: 6px; -moz-border-radius-topright: 6px; border-top-left-radius: 6px; border-top-right-radius: 6px;}
+#event_content .eventDetail.subGroup-end { border-bottom: 2px solid #d2dde8; margin-bottom:1px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;}
 #event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;  }
 #event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;  }
 #event_content .eventDetail > .label-horizontal { display:inline-block; width:145px; float: left; font-size:15px; }
@@ -633,7 +634,7 @@ background:	linear-gradient(#c8d3dd, #dae6f1);
 -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -moz-border-radius-bottomright: 6px; -moz-border-radius-bottomleft: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px; }
 
 /* all OPTIONAL elements hidden in flow */
-#event_content .eventDetail.optional { border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c; margin-top:6px; margin-bottom: 8px; }
+#event_content .eventDetail.optional { border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c; margin-top:4px; margin-bottom: 5px; }
 
 /* optional elements listed at bottom of edit event */
 #event_content .optionalElements { margin:20px 0; padding-bottom:20px; border-top:2px dotted #8c949c; border-bottom:2px dotted #8c949c;}
