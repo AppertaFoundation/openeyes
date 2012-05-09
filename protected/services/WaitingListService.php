@@ -89,8 +89,8 @@ class WaitingListService
 				ev.id AS evid,
 				ep.id AS epid,
 				pat.id AS pid,
-				pat.first_name,
-				pat.last_name,
+				co.first_name,
+				co.last_name,
 				pat.hos_num,
 				pat.gp_id,
 				GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
@@ -101,6 +101,7 @@ class WaitingListService
 				firm f,
 				service_subspecialty_assignment ssa,
 				patient pat,
+				contact co,
 				operation_procedure_assignment opa,
 				proc p
 			WHERE
@@ -113,6 +114,10 @@ class WaitingListService
 				f.service_subspecialty_assignment_id = ssa.id
 			AND
 				ep.patient_id = pat.id
+			AND
+				co.parent_class = \'Patient\'
+			AND
+				co.parent_id = pat.id
 			AND
 				opa.operation_id = eo.id
 			AND
@@ -133,8 +138,8 @@ class WaitingListService
 				ev.id AS evid,
 				ep.id AS epid,
 				pat.id AS pid,
-				pat.first_name,
-				pat.last_name,
+				co.first_name,
+				co.last_name,
 				pat.hos_num,
 				pat.gp_id,
 			GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
@@ -145,6 +150,7 @@ class WaitingListService
 				firm f,
 				service_subspecialty_assignment ssa,
 				patient pat,
+				contact co,
 				operation_procedure_assignment opa,
 				proc p
 			WHERE
@@ -157,6 +163,10 @@ class WaitingListService
 				f.service_subspecialty_assignment_id = ssa.id
 			AND
 				ep.patient_id = pat.id
+			AND
+				co.parent_class = \'Patient\'
+			AND
+				co.parent_id = pat.id
 			AND
 				opa.operation_id = eo.id
 			AND
