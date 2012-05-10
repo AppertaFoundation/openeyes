@@ -83,6 +83,9 @@ if (!empty($address)) {
 					-->
 
 					<div class="whiteBox" id="personal_details">
+						<div class="patient_actions">
+							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+						</div>
 						<h4>Personal Details:</h4>
 						<div class="data_row">
 							<div class="data_label">First name(s):</div>
@@ -117,6 +120,9 @@ if (!empty($address)) {
 						</div>
 					</div> <!-- #personal_details -->
 					<div class="whiteBox" id="contact_details">
+						<div class="patient_actions">
+							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+						</div>
 						<h4>Contact Details:</h4>
 						<div class="data_row">
 							<div class="data_label">Telephone:</div>
@@ -131,7 +137,48 @@ if (!empty($address)) {
 							<div class="data_value">Unknown</div>
 						</div>
 					</div>
+
+					<div class="whiteBox" id="contact_details">
+						<div class="patient_actions">
+							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+						</div>
+						<h4>Associated contacts:</h4>
+						<div class="data_row">
+							<table class="subtleWhite smallText">
+								<thead>
+									<tr>
+										<th width="33%">Name</th>
+										<th>Location</th>
+										<th>Type</th>
+										<th colspan="2"></th>
+									</tr>
+								</thead>
+								<tbody>	
+									<?php foreach ($this->patient->contacts as $contact) {?>
+										<tr>
+											<td><span class="large"><?php echo $contact->contact->title?> <?php echo $contact->contact->first_name?> <?php echo $contact->contact->last_name?></span><br />FDO</td>
+											<td><?php if ($contact->contact->address) echo $contact->contact->address->address1?></td>
+											<td><?php echo get_class($contact)?></td>
+											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a href="#" class="small"><strong>Remove</strong></a></td>
+										</tr>
+									<?php }?>
+								</tbody>
+							</table>	
+						</div>
+						<?php /*
+						<div class="data_row" align="center">
+							<form>
+								<button class="classy green mini" type="submit" id="save_episode_status"><span class="button-span button-span-green">Add new contact to patient</span></button>
+							</form>
+						</div>
+						*/?>
+					</div>
+
+<?php /*
 					<div class="whiteBox" id="gp_details">
+						<div class="patient_actions">
+							<span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+						</div>
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
@@ -146,6 +193,7 @@ if (!empty($address)) {
 							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
 						</div>
 					</div>
+*/?>
 				</div>	<!-- .halfColumn -->
 
 				<div class="halfColumnRight">
@@ -190,5 +238,5 @@ if (!empty($address)) {
 			</script>
 <?php
 function filter_nulls($data) {
-        return $data !== null;
+				return $data !== null;
 }
