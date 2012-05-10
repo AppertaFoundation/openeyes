@@ -388,7 +388,6 @@ class PatientController extends BaseController
 			'event_template_name' => $event_template_name,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $this->event->episode
 		));
 	}
 

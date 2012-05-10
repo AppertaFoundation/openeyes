@@ -416,11 +416,12 @@ class BaseEventTypeController extends BaseController
 				$editable = false;
 			}
 		}
+
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
-			'editable'=>$editable
+			'editable'=>$editable,
 		));
 	}
 

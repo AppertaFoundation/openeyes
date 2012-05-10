@@ -1,11 +1,9 @@
 <div id="episodes_sidebar">
-	<?php if (is_array($episodes)) foreach ($episodes as $i => $episode) {
-		if (!isset($current_episode) && $i == 0) $current_episode = $episode;
-		?>
+	<?php if (is_array($episodes)) foreach ($episodes as $i => $episode) {?>
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
 				<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details">View summary</a></span></div>
+				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details"><?php if (@$current_episode && $current_episode->id == $episode->id){?><div class="summary"><?php }?>View summary<?php if (@$current_episode && $current_episode->id == $episode->id){?></div><?php }?></a></span></div>
 				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 				<ul class="events">
 					<?php foreach ($episode->events as $event) {
