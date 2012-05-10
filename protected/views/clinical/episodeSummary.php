@@ -21,53 +21,59 @@ if (!empty($episode)) {
 	$diagnosis = $episode->getPrincipalDiagnosis();
 
 	if (empty($diagnosis)) {
-					$eye = 'No diagnosis';
-					$text = 'No diagnosis';
+		$eye = 'No diagnosis';
+		$diagnosis = 'No diagnosis';
 	} else {
-					$eye = $diagnosis->eye->name;
-					$text = $diagnosis->disorder->term;
+		$eye = $diagnosis->eye->name;
+		$diagnosis = $diagnosis->disorder->term;
 	}
 ?>
-<h3>Episode Summary (<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>)</h3>
 
-<h4><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></h4>
-<div class="eventHighlight">
-	<h4><?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?></h4>
-	<form>
-		<button id="save_episode_status" type="submit" class="classy blue tall" style="margin-left: 10px; margin-bottom: 10px;"><span class="button-span button-span-blue">Save</span></button>
-	</form>
-</div>
+	<h3>Summary</h3>
+	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
-<h4>Start date:</h4>
-<div class="eventHighlight">
-	<h4><?php echo $episode->NHSDate('start_date'); ?></h4>
-</div>
+	<h4>Principal diagnosis:</h4>
+	<div class="eventHighlight big">
+		<h4><?php echo $diagnosis?></h4>
+	</div>
 
-<h4>Principal eye:</h4>
-<div class="eventHighlight">
-	<h4><?php echo $eye?></h4>
-</div>
+	<h4>Principal eye:</h4>
+	<div class="eventHighlight big">
+		<h4><?php echo $eye?></h4>
+	</div>
 
-<h4>End date:</h4>
-<div class="eventHighlight">
-	<h4><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'?></h4>
-</div>
+	<!-- divide into two columns -->
+	<div class="cols2 clearfix">
+		<div class="left">
+			<h4>Start Date</h4>
+			<div class="eventHighlight">
+				<h4><?php echo $episode->NHSDate('start_date')?></h4>
+			</div>
+		</div>
+						
+		<div class="right">
+			<h4>End date:</h4>
+			<div class="eventHighlight">
+				<h4><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'?></h4>
+			</div>
+		</div>
+						
+		<div class="left">
+		<h4>Subspecialty:</h4>
+			<div class="eventHighlight">
+				<h4><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h4>
+			</div>
+		</div>
 
-<h4>Principal diagnosis:</h4>
-<div class="eventHighlight">
-	<h4><?php echo $text?></h4>
-</div>
+		<div class="right">
+		<h4>Consultant firm:</h4>
+			<div class="eventHighlight">
+				<h4><?php echo $episode->firm->name?></h4>
+			</div>
+		</div>
+	</div> <!-- end of cols2 (column split) -->
 
-<h4>Subspecialty:</h4>
-<div class="eventHighlight">
-	<h4><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h4>
-</div>
-
-<h4>Consultant firm:</h4>
-<div class="eventHighlight">
-	<h4><?php echo $episode->firm->name?></h4>
-</div>
-<?php
+	<?php
 	try {
 		echo $this->renderPartial(
 			'/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id,
@@ -78,11 +84,33 @@ if (!empty($episode)) {
 	}
 } else {
 	// hide the episode border ?>
-<script type="text/javascript">
-	$('div#episodes_details').hide();
-</script>
-<?php
-} ?>
+	<script type="text/javascript">
+		$('div#episodes_details').hide();
+	</script>
+<?php }?>
+
+<div class="metaData">
+	<span class="info"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
+</div>
+
+<!-- Booking -->
+<h4>Episode Status</h4>
+
+<div class="eventDetail">
+	<div class="label"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></div>
+	<div class="data">
+		<span class="group">
+			<form>
+				<?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?>
+				<button style="margin-left:20px;" class="classy blue mini" type="submit" id="save_episode_status"><span class="button-span button-span-blue">Change status</span></button>
+			</form>
+		</span>
+	</div>
+</div>
+
+<div class="metaData">
+	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
+</div>
 <script type="text/javascript">
 	$('#closelink').click(function() {
 		$('#dialog-confirm').dialog({

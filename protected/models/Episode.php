@@ -79,6 +79,8 @@ class Episode extends BaseActiveRecord
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'events' => array(self::HAS_MANY, 'Event', 'episode_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -93,7 +95,7 @@ class Episode extends BaseActiveRecord
 			'firm_id' => 'Firm',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
-			'episode_status_id' => 'Episode Status'
+			'episode_status_id' => 'Current Status'
 		);
 	}
 
