@@ -314,6 +314,10 @@ table		{ border-collapse: collapse; }
 /* close table */
 table tr:last-child { border-bottom: none; }
 .table_endRow{ background: #ddd; height:15px; }
+/* clickable table row  */
+.clickable:hover { background:#3665ff; color:white; }
+
+
 
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
 table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:5px;}
