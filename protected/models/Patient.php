@@ -109,7 +109,8 @@ class Patient extends BaseActiveRecord {
 			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
 				'on' => "parent_class = 'Patient'",
 			),
-			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id')
+			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
+			'consultantAssignments' => array(self::HAS_MANY, 'PatientConsultantAssignment', 'patient_id'),
 		);
 	}
 
@@ -423,5 +424,20 @@ class Patient extends BaseActiveRecord {
 		}
 		
 		return $address; 
+	}
+
+	/* Return all contacts associated with the patient */
+	public function getContacts() {
+		$contacts = array();
+
+		if ($this->gp) {
+			$contacts[] = $this->gp;
+		}
+
+		foreach ($this->consultantAssignments as $pca) {
+			$contacts[] = $pca->consultant;
+		}
+
+		return $contacts;
 	}
 }

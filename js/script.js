@@ -28,3 +28,21 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 		}
 	});
 });
+
+$(document).ready(function(){
+	$('.sprite.showhide').click( function(e){
+		e.preventDefault();
+		var sprite = $(this).children('span');
+		var whiteBox = $(this).parents('.whiteBox');
+		
+		if(sprite.hasClass('hide')) {
+			whiteBox.children('.data_row').slideUp("fase",'swing');
+			sprite.removeClass('hide');
+			sprite.addClass('show');
+		} else {
+			whiteBox.children('.data_row').slideDown("fase",'swing');
+			sprite.removeClass('show');
+			sprite.addClass('hide');
+		}
+	});
+});
