@@ -274,7 +274,7 @@ if (!empty($address)) {
 									</thead>
 									<tbody>
 										<?php foreach ($episodes as $i => $episode) {?>
-											<tr id="<?php echo $episode->id?>" class="all-episode <?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
+											<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
 												<td><?php echo $episode->NHSDate('start_date'); ?></td>
 												<td><?php echo $episode->NHSDate('end_date'); ?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
