@@ -468,6 +468,11 @@ span.surname { font-weight: bold; }
 .data_row .data_label { float:left; color:#777;  }
 .data_row .data_value { margin-left: 180px; font-size: 15px; }
 
+/* comments... copy of .sessionComments */
+.patientComments { display:block; font-family:Georgia Times sans-serif; font-size:15px; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:7px 10px 10px 10px; }
+.patientComments textarea { width:100%; margin-top:5px; font-family:Georgia Times sans-serif; font-size:15px;}
+
+
 /* ====== VIEW EPISODE ====== */
 /* top controls */
 #episodesBanner { margin-bottom: 10px; }
