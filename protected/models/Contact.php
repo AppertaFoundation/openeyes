@@ -134,7 +134,7 @@ class Contact extends BaseActiveRecord {
 	 * @return string Full name
 	 */
 	public function getFullName() {
-		return implode(' ',array($this->title, $this->first_name, $this->last_name));
+		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
 
 	/**
