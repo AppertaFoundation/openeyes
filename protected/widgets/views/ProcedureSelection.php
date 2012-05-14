@@ -15,87 +15,86 @@
 								}
 								?>
 
-<?php
-$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-				'name'=>'procedure_id',
-				'id'=>'autocomplete_procedure_id',
-				'source'=>"js:function(request, response) {
-								var existingProcedures = [];
-								$('div.procedureItem').map(function() {
+								<?php
+									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+										'name'=>'procedure_id',
+										'id'=>'autocomplete_procedure_id',
+										'source'=>"js:function(request, response) {
+											var existingProcedures = [];
+											$('div.procedureItem').map(function() {
 												var text = $(this).children('span:first').text();
 												existingProcedures.push(text.replace(/ remove$/i, ''));
-								});
+											});
 
-								$.ajax({
+											$.ajax({
 												'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
 												'type':'GET',
 												'data':{'term': request.term},
 												'success':function(data) {
-																data = $.parseJSON(data);
+													data = $.parseJSON(data);
 
-																var result = [];
+													var result = [];
 
-																for (var i = 0; i < data.length; i++) {
-																				var index = $.inArray(data[i], existingProcedures);
-																				if (index == -1) {
-																								result.push(data[i]);
-																				}
-																}
+													for (var i = 0; i < data.length; i++) {
+														var index = $.inArray(data[i], existingProcedures);
+														if (index == -1) {
+															result.push(data[i]);
+														}
+													}
 
-																response(result);
+													response(result);
 												}
-								});
-				}",
-				'options'=>array(
-								'minLength'=>'2',
-								'select'=>"js:function(event, ui) {
+											});
+										}",
+										'options'=>array(
+											'minLength'=>'2',
+											'select'=>"js:function(event, ui) {
 												$.ajax({
-																'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."',
-																'type': 'GET',
-																'data': {'name': ui.item.value},
-																'success': function(data) {
-																			var enableDurations = ".($durations?'true':'false').";
+													'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."',
+													'type': 'GET',
+													'data': {'name': ui.item.value},
+													'success': function(data) {
+														var enableDurations = ".($durations?'true':'false').";
 
-																			// append selection onto procedure list
-																			$('#procedureList').children('h4').append(data);
-																			$('#procedureList').show();
+														// append selection onto procedure list
+														$('#procedureList').children('h4').append(data);
+														$('#procedureList').show();
 
-																			if (enableDurations) {
-																				updateTotalDuration();
-																				$('div.extraDetails').show();
-																			}
+														if (enableDurations) {
+															updateTotalDuration();
+															$('div.extraDetails').show();
+														}
 
-																			// clear out text field
-																			$('#autocomplete_procedure_id').val('');
+														// clear out text field
+														$('#autocomplete_procedure_id').val('');
 
-																			// remove selection from the filter box
-																			if ($('#select_procedure_id').children().length > 0) {
-																							m = data.match(/<span>(.*?)<\/span>/);
+														// remove selection from the filter box
+														if ($('#select_procedure_id').children().length > 0) {
+															m = data.match(/<span>(.*?)<\/span>/);
 
-																							$('#select_procedure_id').children().each(function () {
-																											if ($(this).text() == m[1]) {
+															$('#select_procedure_id').children().each(function () {
+																if ($(this).text() == m[1]) {
+																	var id = $(this).val();
+																	var name = $(this).text();
 
-																															var id = $(this).val();
-																															var name = $(this).text();
+																	removed_stack.push({name: name, id: id});
 
-																															removed_stack.push({name: name, id: id});
-
-																															$(this).remove();
-																											}
-																							});
-																			}
-
-																		if (typeof(window.callbackAddProcedure) == 'function') {
-																			m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
-																			var procedure_id = m[1];
-																			callbackAddProcedure(procedure_id);
-																		}
+																	$(this).remove();
 																}
+															});
+														}
+
+														if (typeof(window.callbackAddProcedure) == 'function') {
+															m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
+															var procedure_id = m[1];
+															callbackAddProcedure(procedure_id);
+														}
+													}
 												});
-								}",
-				),
-				'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
-)); ?>
+											}",
+										),
+									'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
+								)); ?>
 
 							</div>
 							<div class="right">
