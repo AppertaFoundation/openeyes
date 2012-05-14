@@ -18,30 +18,18 @@
  */
 
 /**
- * This is the model class for table "drug".
+ * This is the model class for table "allergy".
  *
- * The followings are the available columns in table 'drug':
+ * The followings are the available columns in table 'allergy':
  * @property string $id
  * @property string $name
- * @property string $description
- * @property string $code
- * @property string $term
- * @property string $dose_unit
- * @property string $default_dose
- * @property integer $preservative_free
- *
- * @property Allergy[] $allergies
- * @property DrugType $type
- * @property DrugForm $form
- * @property DrugRoute $default_route
- * @property DrugFrequency $default_frequency
- * @property DrugDuration $default_duration
+ * @property Drug[] $drugs
  */
-class Drug extends BaseActiveRecord
+class Allergy extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Drug the static model class
+	 * @return Allergy the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -53,7 +41,7 @@ class Drug extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'drug';
+		return 'allergy';
 	}
 
 	/**
@@ -79,12 +67,7 @@ class Drug extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-				'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-				'form' => array(self::BELONGS_TO, 'DrugForm', 'type_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'type_id'),
-				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'type_id'),
-				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'type_id'),
+				'drugs' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(allergy_id, drug_id)'),
 		);
 	}
 
