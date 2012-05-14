@@ -82,7 +82,7 @@ if (!empty($address)) {
 					</div>
 					-->
 
-					<div class="whiteBox" id="personal_details">
+					<div class="whiteBox patientDetails" id="personal_details">
 						<div class="patient_actions">
 							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
@@ -119,7 +119,7 @@ if (!empty($address)) {
 							<div class="data_value"><?php echo $this->patient->gender == 'F' ? 'Female' : 'Male'?></div>
 						</div>
 					</div> <!-- #personal_details -->
-					<div class="whiteBox" id="contact_details">
+					<div class="whiteBox patientDetails" id="contact_details">
 						<div class="patient_actions">
 							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
@@ -138,7 +138,7 @@ if (!empty($address)) {
 						</div>
 					</div>
 
-					<div class="whiteBox" id="gp_details">
+					<div class="whiteBox patientDetails" id="gp_details">
 						<div class="patient_actions">
 							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
@@ -157,7 +157,7 @@ if (!empty($address)) {
 						</div>
 					</div>
 
-					<div class="whiteBox" id="contact_details">
+					<div class="whiteBox patientDetails" id="contact_details">
 						<div class="patient_actions">
 							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
