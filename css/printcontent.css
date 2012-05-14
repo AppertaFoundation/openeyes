@@ -6,6 +6,10 @@
 	-ms-filter: none !important;
 }
 
+.content {
+	font-size: 15px;
+}
+
 a,a:visited {
 	text-decoration: underline;
 }
