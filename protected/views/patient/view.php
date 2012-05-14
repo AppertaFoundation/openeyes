@@ -138,46 +138,9 @@ if (!empty($address)) {
 						</div>
 					</div>
 
-					<div class="whiteBox" id="contact_details">
-						<div class="patient_actions">
-							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
-						</div>
-						<h4>Associated contacts:</h4>
-						<div class="data_row">
-							<table class="subtleWhite smallText">
-								<thead>
-									<tr>
-										<th width="33%">Name</th>
-										<th>Location</th>
-										<th>Type</th>
-										<th colspan="2"></th>
-									</tr>
-								</thead>
-								<tbody>	
-									<?php foreach ($this->patient->contacts as $contact) {?>
-										<tr>
-											<td><span class="large"><?php echo $contact->contact->title?> <?php echo $contact->contact->first_name?> <?php echo $contact->contact->last_name?></span><br />FDO</td>
-											<td><?php if ($contact->contact->address) echo $contact->contact->address->address1?></td>
-											<td><?php echo get_class($contact)?></td>
-											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a href="#" class="small"><strong>Remove</strong></a></td>
-										</tr>
-									<?php }?>
-								</tbody>
-							</table>	
-						</div>
-						<?php /*
-						<div class="data_row" align="center">
-							<form>
-								<button class="classy green mini" type="submit" id="save_episode_status"><span class="button-span button-span-green">Add new contact to patient</span></button>
-							</form>
-						</div>
-						*/?>
-					</div>
-
-<?php /*
 					<div class="whiteBox" id="gp_details">
 						<div class="patient_actions">
-							<span class="aBtn"><a href="#">Edit</a></span><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
@@ -193,8 +156,110 @@ if (!empty($address)) {
 							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
 						</div>
 					</div>
-*/?>
-				</div>	<!-- .halfColumn -->
+
+					<div class="whiteBox" id="contact_details">
+						<div class="patient_actions">
+							<?php /*<span class="aBtn"><a href="#">Edit</a></span>*/?><span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
+						</div>
+						<h4>Associated contacts:</h4>
+						<div class="data_row">
+							<table class="subtleWhite smallText">
+								<thead>
+									<tr>
+										<th width="33%">Name</th>
+										<th>Location</th>
+										<th>Type</th>
+										<th colspan="2"></th>
+									</tr>
+								</thead>
+								<tbody id="patient_contacts">	
+									<?php foreach ($this->patient->contactAssignments as $pca) {?>
+										<tr>
+											<td><span class="large"><?php if ($pca->contact->title) echo $pca->contact->title.' '?><?php echo $pca->contact->first_name?> <?php echo $pca->contact->last_name?></span><br /><?php echo $pca->contact->qualifications?></td>
+											<td><?php if ($pca->contact->address) echo $pca->contact->address->address1?></td>
+											<td><?php echo $pca->contact->parent_class?></td>
+											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>" href="#" class="small"><strong>Remove</strong></a></td>
+										</tr>
+									<?php }?>
+								</tbody>
+							</table>	
+						</div>
+						<div class="data_tow">
+							<span>Add contact:</span>
+							<?php
+							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+								'name'=>"contactname",
+								'id'=>"contactname",
+								'value'=>'',
+								'source'=>"js:function(request, response) {
+									var existingProcedures = [];
+									$('div.procedureItem').map(function() {
+										var text = $(this).children('span:first').text();
+										existingProcedures.push(text.replace(/ remove$/i, ''));
+									});
+
+									var filter = $('#contactfilter').val();
+
+									$.ajax({
+										'url': '" . Yii::app()->createUrl('patient/possiblecontacts') . "',
+										'type':'GET',
+										'data':{'term': request.term, 'filter': filter},
+										'success':function(data) {
+											data = $.parseJSON(data);
+
+											var result = [];
+
+											for (var i = 0; i < data.length; i++) {
+												var index = $.inArray(data[i], currentContacts);
+												if (index == -1) {
+													result.push(data[i]);
+												}
+											}
+
+											response(result);
+										}
+									});
+								}",
+								'options'=>array(
+									'minLength'=>'3',
+									'select'=>"js:function(event, ui) {
+										var value = ui.item.value;
+
+										$('#contactname').val('');
+
+										$.ajax({
+											'type': 'GET',
+											'dataType': 'json',
+											'url': '/patient/associatecontact?patient_id=".$this->patient->id."&text='+value,
+											'success': function(data) {
+												if (data[\"name\"]) {
+													$('#patient_contacts').append('<tr><td><span class=\"large\">'+data[\"name\"]+'</span><br />'+data[\"qualifications\"]+'</td><td>'+data[\"location\"]+'</td><td>'+data[\"type\"]+'<td colspan=\"2\" align=\"right\"><a id=\"removecontact'+data[\"id\"]+'\" href=\"#\" class=\"small\"><strong>Remove</strong></a></td></tr>');
+													currentContacts.push(data[\"name\"]+' ('+data[\"type\"]+')');
+												}
+											}
+										});
+
+										return false;
+									}",
+								),
+								'htmlOptions'=>array(
+									'placeholder' => 'search for contacts'
+								),
+							));
+							?>
+							&nbsp;
+							<script type="text/javascript"> $('#contactname').focus(); </script>
+							&nbsp;&nbsp;
+							<select id="contactfilter" name="contactfilter">
+								<option value="">- Filter -</option>
+								<option value="consultant">Ophthalmologist</option>
+								<option value="gp">GP</option>
+							</select>
+							&nbsp;&nbsp;
+							<button class="classy green mini" type="submit" id="add-contact"><span class="button-span button-span-green">Add contact</span></button>
+						</div>
+					</div>
+				</div>
 
 				<div class="halfColumnRight">
 					<div class="blueBox">
@@ -235,8 +300,54 @@ if (!empty($address)) {
 					window.location.href = '/patient/episode/'+$(this).attr('id');
 					return false;
 				});
+				$('a[id^="removecontact"]').die('click').live('click',function() {
+					var id = $(this).attr('id').match(/[0-9]+/);
+					var el = $(this);
+
+					var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+')';
+
+					$.ajax({
+						'type': 'GET',
+						'url': '/patient/unassociatecontact?patient_id=<?php echo $this->patient->id?>&contact_id='+id,
+						'success': function(resp) {
+							if (resp == "1") {
+								el.parent().parent().remove();
+								
+								var newCurrentContacts = [];
+								for (var i in currentContacts) {
+									if (currentContacts[i] != name) {
+										newCurrentContacts.push(currentContacts[i]);
+									}
+								}
+
+								currentContacts = newCurrentContacts;
+
+								$('#contactname').focus();
+
+							} else {
+								alert("Sorry, something went wrong. Please try again or contact support for assistance.");
+							}
+						}
+					});
+
+					return false;
+				});
+
+				$('#contactfilter').change(function() {
+					$('#contactname').focus();
+				});
+
+				var currentContacts = [];
+
+				<?php if ($this->patient->gp) {?>
+					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' ('.$this->patient->gp->contact->parent_class.')';?>");
+				<?php }?>
+
+				<?php foreach ($this->patient->contactAssignments as $pca) {?>
+					currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.')';?>");
+				<?php }?>
 			</script>
-<?php
-function filter_nulls($data) {
+			<?php
+			function filter_nulls($data) {
 				return $data !== null;
-}
+			}

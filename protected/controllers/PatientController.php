@@ -517,4 +517,119 @@ class PatientController extends BaseController
 	public function getOptionalElements($action, $event=false) {
 		return array();
 	}
+
+	public function actionPossiblecontacts() {
+		$contacts = array();
+
+		$term = '%'.strtolower(trim($_GET['term'])).'%';
+
+		$session = Yii::app()->session['PatientContacts'];
+
+		if (@$_GET['filter'] == 'gp') {
+			$where = "parent_class = 'Gp'";
+		} else if (@$_GET['filter'] == 'consultant') {
+			$where = "parent_class = 'Consultant'";
+		} else {
+			$where = "parent_class in ('Consultant','Gp')";
+		}
+
+		foreach (Yii::app()->db->createCommand()
+			->select('contact.*')
+			->from('contact')
+			->where("(LOWER(title) LIKE :term or LOWER(first_name) LIKE :term or LOWER(last_name) LIKE :term) AND $where", array(':term' => $term))
+			->order('title asc, first_name asc, last_name asc')
+			->queryAll() as $contact) {
+			if ($contact['title']) {
+				$line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'].')';
+			} else {
+				$line = $contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'].')';
+			}
+
+			$contacts[] = $line;
+
+			$session[$line] = $contact['id'];
+		}
+
+		sort($contacts);
+
+		Yii::app()->session['PatientContacts'] = $session;
+
+		echo CJavaScript::jsonEncode($contacts);
+	}
+
+	public function actionAssociatecontact() {
+		$session = Yii::app()->session['PatientContacts'];
+
+		if (!@$_GET['text']) {
+			throw new Exception('Missing text value');
+		}
+
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception('Patient not found: '.@$_GET['patient_id']);
+		}
+
+		if (is_array($session)) {
+			foreach ($session as $text => $id) {
+				if ($text == @$_GET['text']) {
+					if (!$contact = Contact::model()->findByPk($id)) {
+						throw new Exception("Can't find contact: $id");
+					}
+
+					$data = array(
+						'id' => $contact->id,
+						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
+						'qualifications' => $contact->qualifications,
+						'location' => ($contact->address ? $contact->address->address1 : ''),
+						'type' => $contact->parent_class,
+					);
+
+					foreach ($data as $key => $value) {
+						if ($value == null) {
+							$data[$key] = '';
+						}
+					}
+
+					if ($contact->parent_class == 'Gp') {
+						$gp = Gp::model()->findByPk($contact->parent_id);
+						if ($patient->gp->id == $gp->id) {
+							echo json_encode(array());
+							return;
+						}
+					}
+
+					if (!$pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
+						$pca = new PatientContactAssignment;
+						$pca->patient_id = $patient->id;
+						$pca->contact_id = $contact->id;
+						$pca->save();
+					}
+
+					echo json_encode($data);
+					return;
+				}
+			}
+
+			throw new Exception('Contact not found: '.@$_GET['text']);
+		}
+
+		throw new Exception('No contacts found in the session.');
+	}
+
+	public function actionUnassociatecontact() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception('Patient not found: '.@$_GET['patient_id']);
+		}
+		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
+			throw new Exception('Contact not found: '.@$_GET['contact_id']);
+		}
+
+		if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
+			if (!$pca->delete()) {
+				echo "0";
+				return;
+			}
+		}
+
+		echo "1";
+	}
 }

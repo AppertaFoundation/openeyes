@@ -18,18 +18,18 @@
  */
 
 /**
- * This is the model class for table "patient_consultant_assignment".
+ * This is the model class for table "patient_contact_assignment".
  *
- * The followings are the available columns in table 'patient_consultant_assignment':
+ * The followings are the available columns in table 'patient_contact_assignment':
  * @property integer $id
  * @property integer $patient_id
- * @property integer $consultant_id
+ * @property integer $contact_id
  *
  * The followings are the available model relations:
  * @property Patient $patient
- * @property Consultant $consultant
+ * @property Contact $contact
  */
-class PatientConsultantAssignment extends BaseActiveRecord
+class PatientContactAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -45,7 +45,7 @@ class PatientConsultantAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'patient_consultant_assignment';
+		return 'patient_contact_assignment';
 	}
 
 	/**
@@ -71,7 +71,7 @@ class PatientConsultantAssignment extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-			'consultant' => array(self::BELONGS_TO, 'Consultant', 'consultant_id'),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 
@@ -83,7 +83,7 @@ class PatientConsultantAssignment extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'patient_id' => 'Patient',
-			'consultant_id' => 'Consultant',
+			'contact_id' => 'Contact',
 		);
 	}
 
