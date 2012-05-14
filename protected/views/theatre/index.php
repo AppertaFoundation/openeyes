@@ -442,9 +442,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$('#date-filter_0').click(function() {
 		today = new Date();
+		
+		$('#date-start').datepicker('setDate', format_date(today));
+		$('#date-end').datepicker('setDate', format_date(today));
 
-		$('#date-start').val(format_date(today));
-		$('#date-end').val(format_date(today));
+		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
+		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
 
 		setFilter({'date-filter':'today','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
@@ -453,12 +456,15 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$('#date-filter_1').click(function() {
 		today = new Date();
-
-		$('#date-start').val(format_date(today));
-		$('#date-end').val(format_date(returnDateWithInterval(today, 6)));
+		
+		$('#date-start').datepicker('setDate', format_date(today));
+		$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, 6)));
+		
+		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
+		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
 
 		setFilter({'date-filter':'week','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
-
+		
 		return true;
 	});
 
@@ -467,9 +473,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 		$('#date-start').val(format_date(today));
 		$('#date-end').val(format_date(returnDateWithInterval(today, 29)));
+		
+		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
+		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
 
 		setFilter({'date-filter':'month','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
-
+		
 		return true;
 	});
 
@@ -480,20 +489,18 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		if (sd == '') {
 			// No date-start. Make date-start one week before today, date-end today
 			today = new Date();
-
-			$('#date-end').val(format_date(returnDateWithInterval(today, -1)));
-
-			$('#date-start').val(format_date(returnDateWithInterval(today, -8)));
+			$('#date-start').datepicker('setDate', format_date(returnDateWithInterval(today, -8)));
+			$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, -1)));
 		} else {
 			// Make date-end date-start, make date-start one week before date-start
-			$('#date-end').val(format_date(returnDateWithIntervalFromString(sd, -1)));
-
-			$('#date-start').val(format_date(returnDateWithIntervalFromString(sd, -7)));
+			$('#date-end').datepicker('setDate', format_date(returnDateWithIntervalFromString(sd, -1)));
+			$('#date-start').datepicker('setDate', format_date(returnDateWithIntervalFromString(sd, -7)));
 		}
 
 		setFilter({'date-filter':''});
-		$('input[type="radio"]').attr('checked',false);
-
+		$('input[type="radio"]').attr('checked',true);
+		$('#date-start').trigger('change');
+		$('#date-end').trigger('change');
 		return false;
 	});
 
@@ -505,26 +512,26 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			// No date-start. Make date-start one week before today, date-end today
 			today = new Date();
 
-			$('#date-start').val(format_date(today));
-
-			$('#date-end').val(format_date(returnDateWithInterval(today, 7)));
+			$('#date-start').datepicker('setDate', format_date(today));
+			$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, 7)));
 		} else {
 			// Make date-start date-end, make date-end one week after date-end
 
 			today = new Date();
 
 			if (ed == format_date(today)) {
-				$('#date-start').val(format_date(returnDateWithIntervalFromString(ed, 7)));
-				$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 13)));
+				$('#date-start').datepicker('setDate', format_date(returnDateWithIntervalFromString(ed, 7)));
+				$('#date-end').datepicker('setDate', format_date(returnDateWithIntervalFromString(ed, 13)));
 			} else {
-				$('#date-start').val(format_date(returnDateWithIntervalFromString(ed, 1)));
-				$('#date-end').val(format_date(returnDateWithIntervalFromString(ed, 7)));
+				$('#date-start').datepicker('setDate', format_date(returnDateWithIntervalFromString(ed, 1)));
+				$('#date-end').datepicker('setDate', format_date(returnDateWithIntervalFromString(ed, 7)));
 			}
 		}
 
 		setFilter({'date-filter':''});
-		$('input[type="radio"]').attr('checked',false);
-
+		$('input[type="radio"]').attr('checked',true);
+		$('#date-start').trigger('change');
+		$('#date-end').trigger('change');
 		return false;
 	});
 
