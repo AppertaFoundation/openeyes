@@ -189,30 +189,35 @@ cursor:pointer; }
 
 /* widths */
 button.tall			{ width: 125px;	}
-button.grande			{ width: 154px; }
+button.grande		{ width: 154px; }
 button.venti-fixed	{ width: 210px; }
 button.venti		{ width: auto; margin:0 2px; }
-button.venti span		{ padding:0 22px; }
+button.venti span	{ padding:0 22px; }
+
 /* button text */
-button.classy span.button-span				{  display:block; height:32px; line-height:31px; }
+button.classy span.button-span			{  display:block; height:32px; line-height:31px; }
 button.classy span.button-span-green	{  text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
 button.classy span.button-span-blue		{  text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
 button.classy span.button-span-red		{  text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
 /* graphic elements */
-button.classy span.with-plussign		{ background: transparent url(../img/_elements/btns/plus-sign.png) no-repeat top left; padding-left:20px; }
+button.classy span.with-plussign		{ background: transparent url(../img/_elements/btns/plus-sign.png) no-repeat center left; padding-left:40px; }
 button.classy span.with-leftarrow		{ background: transparent url(../img/_elements/btns/left-arrow.png) no-repeat top left; padding-left:20px; }
 button.classy span.with-rightarrow		{ background: transparent url(../img/_elements/btns/right-arrow.png) no-repeat top right; padding-right:20px; }
 
 /* mini - just replace 'tall','grande' or 'venti' in button class */
 button.mini								{ height:24px; font-size:13px; width: auto; margin:0 2px; }
 button.mini span						{ padding:0 18px; }
-button.mini span.button-span				{ display:block; height:24px; line-height:23px; } 
+button.mini span.button-span			{ display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ padding:0 4px; }
 
+
+
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
-button#addNewEvent { width:202px; }
+/*
+---  are now redundant!?
 .button-icon-green { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
 .button-icon-inactive { font-size: 20px; font-weight: bold; position: absolute; top:4px; left:13px; text-shadow:-1px -1px 0 #999; }
+*/
 
 /* background colours */
 button.classy.green {
@@ -299,7 +304,7 @@ border-bottom:2px solid #999999;
 /* small buttons -- graphic */
 button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
 button.smBtn_modify			{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
-button.smBtn_modify:hover		{ background-image: url(../img/_elements/btns/small/modify_o.png); }
+button.smBtn_modify:hover	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
 
 
 /* ====== TABLES - GENERAL ====== */
