@@ -28,7 +28,7 @@ if ($module = $this->getModule()) {
 		<div class="fullWidth fullBox clearfix">
 			<div id="episodesBanner">
 				<form>
-					<button tabindex="2" class="classy <?php echo ($this->patient->date_of_death) ? 'inactive' : 'green'; ?>" id="addNewEvent" type="submit" <?php echo ($this->patient->date_of_death) ? 'disabled="disabled"' : ''; ?> style="float: right; margin-right: 1px;"><span class="button-span <?php echo ($this->patient->date_of_death) ? 'button-span-inactive' : 'button-span-green'; ?> with-plussign">add new Event</span></button>
+					<button tabindex="2" class="classy venti <?php echo ($this->patient->date_of_death) ? 'inactive' : 'green'; ?>" id="addNewEvent" type="submit" <?php echo ($this->patient->date_of_death) ? 'disabled="disabled"' : ''; ?> style="float: right; margin-right: 1px;"><span class="button-span <?php echo ($this->patient->date_of_death) ? 'button-span-inactive' : 'button-span-green'; ?> with-plussign">add new Event</span></button>
 				</form>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
