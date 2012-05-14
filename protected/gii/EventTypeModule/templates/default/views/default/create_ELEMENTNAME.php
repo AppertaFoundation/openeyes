@@ -35,12 +35,11 @@ if (isset($element)) {
 <?php
 		} elseif ($field['type'] == 'Date picker') {
 ?>
-	(Date picker goes here)
-
+	<?php echo '<?php '; ?>echo $form->datePicker($element, '<?php echo $field['name']; ?>', array('maxDate' => 'today'), array('style'=>'width: 110px;')); <?php echo '?>'; ?>
 <?php
 		} elseif ($field['type'] == 'Dropdown list') {
 ?>
-	<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']; ?>', CHtml::listData(Theatre::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>' ;?>
+	<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']; ?>', CHtml::listData(Theatre::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>'; ?>
 
 <?php
 		} elseif ($field['type'] == 'Checkboxes') {

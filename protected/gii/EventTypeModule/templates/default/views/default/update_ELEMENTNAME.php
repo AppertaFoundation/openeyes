@@ -35,8 +35,16 @@ if (isset($element)) {
 <?php
 		} elseif ($field['type'] == 'Date picker') {
 ?>
-	(Date picker goes here)
-
+	<?php echo '<?php '; ?> $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+		'name'=>'<?php echo $field['name']; ?>', 
+		'id'=>'<?php echo $field['name']; ?>', 
+		'options'=>array(
+			'showAnim'=>'fold',
+			'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
+		),
+		'value' => $model->NHSDate('<?php echo $field['name']; ?>',''),
+		'htmlOptions'=>array('style'=>'width: 110px;')
+	)); <?php echo '?>'; ?>
 <?php
 		} elseif ($field['type'] == 'Dropdown list') {
 ?>

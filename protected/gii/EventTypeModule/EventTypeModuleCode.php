@@ -138,7 +138,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		} elseif ($type == 'Textarea') {
 			$sql = "'{$name}' => 'text DEFAULT \'\'', // {$label}\n";
 		} elseif ($type == 'Date picker') {
-			$sql = "'{$name}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$label}\n";
+			// $sql = "'{$name}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$label}\n";
+			$sql = "'{$name}' => 'date DEFAULT NULL', // {$label}\n";
 		} elseif ($type == 'Dropdown list') {
 			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
 		} elseif ($type == 'Checkboxes') {

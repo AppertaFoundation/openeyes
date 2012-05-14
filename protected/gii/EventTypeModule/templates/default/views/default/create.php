@@ -11,7 +11,7 @@
 			'id'=>'clinical-create',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'sliding'),
-			'focus'=>'#procedure_id'
+			// 'focus'=>'#procedure_id'
 		));
 	<?php echo '?>';?>
 
