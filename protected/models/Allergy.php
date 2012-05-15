@@ -52,10 +52,10 @@ class Allergy extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+				array('name', 'required'),
+				// The following rule is used by search().
+				// Please remove those attributes that should not be searched.
+				array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -67,7 +67,7 @@ class Allergy extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'drugs' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(allergy_id, drug_id)'),
+				'drugs' => array(self::MANY_MANY, 'Drug', 'drug_allergy_assignment(allergy_id,drug_id)'),
 		);
 	}
 
@@ -95,7 +95,7 @@ class Allergy extends BaseActiveRecord
 		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
 }

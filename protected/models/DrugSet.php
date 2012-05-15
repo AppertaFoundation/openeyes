@@ -18,100 +18,70 @@
  */
 
 /**
- * This is the model class for table "drug".
+ * This is the model class for table "drug_set".
  *
- * The followings are the available columns in table 'drug':
+ * The followings are the available columns in table 'drug_set':
  * @property integer $id
  * @property string $name
- * @property string $description
- * @property string $label
- * @property string $code
- * @property string $term
- * @property string $dose_unit
- * @property string $default_dose
- * @property integer $preservative_free
- *
- * @property Allergy[] $allergies
- * @property DrugType $type
- * @property DrugForm $form
- * @property DrugRoute $default_route
- * @property DrugFrequency $default_frequency
- * @property DrugDuration $default_duration
+ * @property int $subspecialty_id
+ * @property Subspecialty $subspecialty
+ * @property DrugSetItem[] $items
  */
-class Drug extends BaseActiveRecord
-{
+class DrugSet extends BaseActiveRecord {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Drug the static model class
+	 * @return DrugSet the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
-		return 'drug';
+	public function tableName() {
+		return 'drug_set';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
+	public function rules() {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+				array('name, subspecialty_id', 'required'),
+				// The following rule is used by search().
+				// Please remove those attributes that should not be searched.
+				array('id, name, subspecialty_id', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
+	public function relations() {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-				'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-				'form' => array(self::BELONGS_TO, 'DrugForm', 'type_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'type_id'),
-				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'type_id'),
-				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'type_id'),
+				'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+				'items' => array(self::HAS_MANY, 'DrugSetItem', 'drug_set_id'),
 		);
 	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 		);
 	}
 
-	public function getLabel() {
-		if($this->preservative_free) {
-			return $this->name . ' (PF)';
-		} else {
-			return $this->name;
-		}
-	}
-	
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
@@ -119,9 +89,11 @@ class Drug extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-
+		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
+		
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
+	
 }
