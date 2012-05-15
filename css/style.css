@@ -758,6 +758,15 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #siteSelected > .highlighted, #dateSelected > .highlighted { font-weight:bold; }
 
 /* Correspondence OUT */
+#correspondence_out { width:80%; background:#fff; font-size: 14px; border:1px solid #ccc; padding:30px; -moz-box-shadow: 4px 4px 4px 0 #CCC;	-webkit-box-shadow: 4px 4px 4px 0 #CCC;  box-shadow: 4px 4px 4px 0 #CCC; }
+#correspondence_out.draft {background:#fff url(../img/_elements/gradients/bg_draft.png) top center no-repeat;}
+#correspondence_out p { background:none; padding-left:0;}
+#correspondence_out pre { margin: 0; padding:0; font-family: Helvetica, Arial, sans-serif;  }
+#correspondence_out .banner { background:#fff; padding-bottom:25px; }
+#correspondence_out .banner .seal{ float:left; }
+#correspondence_out .banner .logo{ float:right; }
+#correspondence_out .toAddress { display:inline-block; padding-left:0;} /* padding-left overrides DEV team style */
+#correspondence_out .date { display:inline-block; width:100%; text-align:right; padding-bottom:20px; }
 
 /*
 ---  I think this is redundant ?!?
