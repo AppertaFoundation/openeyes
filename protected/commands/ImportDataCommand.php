@@ -18,13 +18,13 @@
  */
 
 class ImportDataCommand extends CConsoleCommand {
-	
+
 	const DATA_FOLDER = 'data/import';
 
 	public function getName() {
 		return 'Import Data Command.';
 	}
-	
+
 	public function getHelp() {
 		return "Import data from csv into the database.\n";
 	}
@@ -33,64 +33,80 @@ class ImportDataCommand extends CConsoleCommand {
 	 * Parse csv files from Google Docs, process them into the right format for MySQL import, and import them
 	 */
 	public function run($args) {
-		
+
 		// Initialise db
 		$connection = Yii::app()->db;
 		$command = $connection->createCommand("SET foreign_key_checks = 0;");
 		$row_count = $command->execute();
-		
+
 		$path = Yii::app()->basePath . '/' . self::DATA_FOLDER . '/';
 		foreach(glob($path."*.map") as $map_path) {
-			
-			// Convert csv file into format suitable for MySQL import
 			$table = substr(basename($map_path), 0, -4);
+			echo "Importing $table data...";
+				
+			// Truncate existing data
+			$row_count = $connection->createCommand("TRUNCATE $table")->execute();
+
+			// Get mapping info
 			$map = file($map_path);
 			$import_file_path = $path . trim($map[0]);
 			$export_columns = explode(',',trim($map[1]));
-			$tmp_path = $path . 'tmp';
-			if(!file_exists($tmp_path)) {
-				mkdir($path . 'tmp');
-			}
+				
 			$file = file($import_file_path);
-			$file_output = fopen($tmp_path . '/' . $table . '.csv', 'w+');
+			$row_count = 0;
+			$block_size = 1000;
+			$values = array();
 			foreach($file as $index => $line) {
 				if(!$index) {
 					$columns = str_getcsv($line, ',', '"');
-					fputcsv($file_output, $export_columns, ',', '"');
 				} else {
-					$output = array(); 
+					$row_count++;
+					$output = array();
 					$record = str_getcsv($line, ',', '"');
 					foreach($export_columns as $column) {
 						$column_index = array_search($column, $columns);
-						// FIXME: This is probably bad
 						$output[] = $record[$column_index];
 					}
-					fputcsv($file_output, $output, ',', '"');
+					$values[] = $output;
+					if(!($row_count % $block_size)) {
+						// Insert values in blocks to better handle very large tables
+						$this->insertBlock($table, $export_columns, $values);
+						$values = array();
+					}
 				}
 			}
-			fclose($file_output);
-			
-			// Import file into database
-			$columns_string = implode(',', $export_columns);
-			$query = "
-			LOAD DATA LOCAL INFILE '$tmp_path/$table.csv' INTO TABLE $table
-			FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'
-			LINES TERMINATED BY '\\n'
-			IGNORE 1 LINES
-			($columns_string);
-			";
-			
-			// Truncate table
-			$command = $connection->createCommand("TRUNCATE $table");
-			$row_count = $command->execute();
-				
-			// Import records
-			$command = $connection->createCommand($query);
-			$row_count = $command->execute();
-			
-			// Remove import file
-			unlink("$tmp_path/$table.csv");
-			
+			if(!empty($values)) {
+				// Insert remaining values
+				$this->insertBlock($table, $export_columns, $values);
+			}
+			echo "imported $row_count records, done.\n";
 		}
 	}
+
+	/**
+	 * Insert a block of records into a table
+	 * @param string $table
+	 * @param array $columns
+	 * @param array $records
+	 */
+	protected function insertBlock($table, $columns, $records) {
+		$db = Yii::app()->db;
+		foreach($columns as &$column) {
+			$column = $db->quoteColumnName($column);
+		}
+		$insert = array();
+		foreach($records as $record) {
+			foreach($record as &$field) {
+				if($field == '') {
+					$field = 'NULL';
+				} else {
+					$field = $db->quoteValue($field);
+				}
+			}
+			$insert[] = '('.implode(',', $record).')';
+		}
+		$query = "INSERT INTO ".$db->quoteTableName($table)." (".implode(',',$columns).") VALUES ".implode(',', $insert);
+		$db->createCommand($query)->execute();
+	}
+
 }
