@@ -198,10 +198,7 @@ class ClinicalService
 
 		OELog::log("Created new event for episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
 
-		$event_issue = new EventIssue();
-		$event_issue->event_id = $event->id;
-		$event_issue->issue_id = 1; // needs scheduling
-		if (!$event_issue->save()) {
+		if (!$event->addIssue('Operation requires scheduling')) {
 			OELog::log("Failed to mark new event as requiring scheduling in the event_issue table: episode_id=$episode->id, event_type_id=$eventTypeId, datetime='$event->datetime'");
 			throw new Exception('Unable to store event_issue');
 		}

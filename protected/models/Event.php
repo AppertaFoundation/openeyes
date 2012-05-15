@@ -175,4 +175,38 @@ class Event extends BaseActiveRecord
 			}
 		}
 	}
+
+	public function addIssue($text) {
+		if (!$issue = Issue::model()->find('name=?',array($text))) {
+			$issue = new Issue;
+			$issue->name = $text;
+			if (!$issue->save()) {
+				return false;
+			}
+		}
+
+		if (!EventIssue::model()->find('event_id=? and issue_id=?',array($this->id,$issue->id))) {
+			$ei = new EventIssue;
+			$ei->event_id = $this->id;
+			$ei->issue_id = $issue->id;
+
+			if (!$ei->save()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public function deleteIssue($name) {
+		if (!$issue = Issue::model()->find('name=?',array($name))) {
+			return false;
+		}
+
+		foreach (EventIssue::model()->findAll('event_id=? and issue_id = ?',array($this->id, $issue->id)) as $event_issue) {
+			$event_issue->delete();
+		}
+
+		return true;
+	}
 }

@@ -397,9 +397,7 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
-				foreach (EventIssue::model()->findAll('event_id=? and issue_id = 1',array($operation->event->id)) as $event_issue) {
-					$event_issue->delete();
-				}
+				$operation->event->deleteIssue('Operation requires scheduling');
 
 				if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
 					if (strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
@@ -531,10 +529,7 @@ class BookingController extends BaseController
 						}
 					}
 				} else {
-					$event_issue = new EventIssue;
-					$event_issue->event_id = $operation->event->id;
-					$event_issue->issue_id = 1;
-					if (!$event_issue->save()) {
+					if (!$operation->event->addIssue('Operation requires scheduling')) {
 						throw new SystemException('Unable to save event_issue object for event: '.$operation->event->id);
 					}
 
