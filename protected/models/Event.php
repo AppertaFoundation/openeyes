@@ -209,4 +209,10 @@ class Event extends BaseActiveRecord
 
 		return true;
 	}
+
+	public function deleteIssues() {
+		foreach (EventIssue::model()->findAll('event_id=?',array($this->id)) as $event_issue) {
+			$event_issue->delete();
+		}
+	}
 }

@@ -397,7 +397,7 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
-				$operation->event->deleteIssue('Operation requires scheduling');
+				$operation->event->deleteIssues();
 
 				if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
 					if (strtotime($session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
