@@ -25,10 +25,13 @@ class PatientController extends BaseController
 	public $patient;
 	public $service;
 	public $firm;
+	public $editable;
 	public $editing;
 	public $event;
 	public $event_type;
 	public $title;
+	public $event_type_id;
+	public $episode;
 
 	public function filters()
 	{
@@ -365,7 +368,8 @@ class PatientController extends BaseController
 
 		$this->event = Event::model()->findByPk($id);
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$this->patient = $this->event->episode->patient;
+		$this->episode = $this->event->episode;
+		$this->patient = $this->episode->patient;
 		$episodes = $this->patient->episodes;
 
 		$elements = $this->service->getDefaultElements('view', $this->event);
@@ -381,7 +385,21 @@ class PatientController extends BaseController
 		}else{
 			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
 		}
-		
+
+		$this->editable = $this->event->editable;
+
+		// Should not be able to edit cancelled operations
+		if ($this->event_type_id == 25) {
+			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
+			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
+				return FALSE;
+			}
+		}
+	 
+		if($this->episode->patient->date_of_death){
+			return FALSE;
+		}
+
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
 			'elements' => $elements,
