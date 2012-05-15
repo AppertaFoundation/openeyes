@@ -25,7 +25,11 @@ class DatePicker extends BaseCWidget {
 	public function run() {
 		if (empty($_POST)) {
 			if ($this->element->{$this->field}) {
-				$this->value = $this->element->{$this->field};
+				if (preg_match('/^[0-9]+ [a-zA-Z]+ [0-9]+$/',$this->element->{$this->field})) {
+					$this->value = $this->element->{$this->field};
+				} else {
+					$this->value = date('j M Y',strtotime($this->element->{$this->field}));
+				}
 			} else {
 				$this->value = date('j M Y');
 			}
