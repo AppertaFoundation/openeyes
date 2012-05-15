@@ -248,7 +248,6 @@ if (!empty($address)) {
 							));
 							?>
 							&nbsp;
-							<script type="text/javascript"> $('#contactname').focus(); </script>
 							&nbsp;&nbsp;
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
