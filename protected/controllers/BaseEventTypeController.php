@@ -244,6 +244,16 @@ class BaseEventTypeController extends BaseController
 			$this->editable = true;
 		}
 
+		// Allow elements to override the editable status
+		if ($this->editable) {
+			foreach ($elements as $element) {
+				if (!$element->isEditable()) {
+					$this->editable = false;
+					break;
+				}
+			}
+		}
+
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->logActivity('viewed event');

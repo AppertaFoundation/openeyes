@@ -44,4 +44,8 @@ class BaseEventTypeElement extends BaseElement
 	function getPrint_view() {
 		return get_class($this);
 	}
+
+	function isEditable() {
+		return true;
+	}
 }
