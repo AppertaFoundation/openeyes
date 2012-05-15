@@ -1,0 +1,22 @@
+
+div.ElementLetter > .row > span.left { display: inline-block; width: 180px; }
+div.ElementLetter .row { background-color: #DAE6F1; }
+div.ElementLetter select,textarea,input { margin: 10px !important; }
+div.ElementLetter select { width: 160px; }
+div.ElementLetter textarea,input { font-family: courier !important; }
+
+#ElementLetter_re { font-weight: bold; }
+#dialog-confirm-cancel { display: none; }
+
+#ElementLetter_date_0 { font-size: 13px; }
+
+/* Correspondence OUT */
+#correspondence_out { width:80%; background:#fff; font-size: 14px; border:1px solid #ccc; padding:30px; -moz-box-shadow: 4px 4px 4px 0 #CCC;	-webkit-box-shadow: 4px 4px 4px 0 #CCC;  box-shadow: 4px 4px 4px 0 #CCC; }
+#correspondence_out.draft {background:#fff url(../img/_elements/gradients/bg_draft.png) top center no-repeat;}
+#correspondence_out p { background:none; padding-left:0;}
+#correspondence_out pre { margin: 0; padding:0; font-family: Helvetica, Arial, sans-serif;	}
+#correspondence_out .banner { background:#fff; padding-bottom:25px; }
+#correspondence_out .banner .seal{ float:left; }
+#correspondence_out .banner .logo{ float:right; }
+#correspondence_out .toAddress { display:inline-block; padding-left:0;} /* padding-left overrides DEV team style */
+#correspondence_out .date { display:inline-block; width:100%; text-align:right; padding-bottom:20px; }
