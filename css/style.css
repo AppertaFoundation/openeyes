@@ -462,11 +462,16 @@ span.surname { font-weight: bold; }
 #patient-adv-search { display:none; }
 
 /* ====== PATIENT - SUMMARY ====== */ 
-.patientDetails h4 { padding:3px 0 8px 0; font-size:12px; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
-.data_row  {	background:inherit;  border-bottom:1px dotted #ccc; padding:10px 0; }
-.data_row:last-child { border-bottom:none; margin-bottom: 0; }
-.data_row .data_label { float:left; color:#777;  }
-.data_row .data_value { margin-left: 180px; font-size: 15px; }
+.whiteBox.patientDetails h4 { padding:3px 0 8px 0; font-size:12px; color:#e49f10; border-bottom:1px dotted #ccc; margin-bottom: 0; }
+.whiteBox .data_row  {	background:inherit;  border-bottom:1px dotted #ccc; padding:10px 0; }
+.whiteBox .data_row:last-child { border-bottom:none; margin-bottom: 0; }
+.whiteBox .data_row .data_label { float:left; color:#777;  }
+.whiteBox .data_row .data_value { margin-left: 180px; font-size: 15px; }
+/* Clinicians only info */
+.whiteBox.forClinicians { border:1px solid #999; position:relative;}
+.whiteBox.forClinicians h4 { display:inline-block; padding:5px 10px 5px 45px; font-size:12px; color:#fff; background:#333; margin-bottom: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;  }
+
 
 /* comments... copy of .sessionComments */
 .patientComments { display:block; font-family:Georgia Times sans-serif; font-size:15px; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:7px 10px 10px 10px; }
