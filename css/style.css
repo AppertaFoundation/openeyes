@@ -758,7 +758,10 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #session_details #dateSelected { display:block; padding:10px; background:#dae6f1; font-size:15px; margin-top:3px; }
 #siteSelected > .highlighted, #dateSelected > .highlighted { font-weight:bold; }
 
-/* Correspondence Outgoing */
+/* Correspondence OUT */
+
+/*
+---  I think this is redundant ?!?
 #evt_correspondence table { width:100%; margin:20px 0; }
 #evt_correspondence tr td:first-child		{ width:30%; padding-right:20px; text-align: right; }
 #evt_correspondence tr td:last-child	{ width:70%; background: #fff; padding:0 20px 5px 20px; border-left:2px solid #888; border-right:2px solid #888;	}
@@ -766,6 +769,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #evt_correspondence tr td.pageEnd	{ height:20px; border-bottom:2px solid #888; } 
 #evt_correspondence select	{ display:block; margin-bottom:10px; width:220px; float:right;	}
 #evt_correspondence textarea { border: 1px dotted #999; }
+*/
 
 
 /* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */
