@@ -409,7 +409,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getPos() {
-		return ($this->gender == 'M' ? 'her' : 'his');
+		return ($this->gender == 'M' ? 'his' : 'her');
 	}
 
 	public function getTitle() {
