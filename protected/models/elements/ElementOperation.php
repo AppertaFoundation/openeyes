@@ -528,7 +528,7 @@ class ElementOperation extends BaseEventTypeElement
 				$bookable = false;
 				$session['bookable_reason'] = 'consultant';
 			}
-			$paediatric = ($this->event->episode->patient->getAge() < 16);
+			$paediatric = ($this->event->episode->patient->isChild());
 			if($paediatric && !$session['paediatric']) {
 				$bookable = false;
 				$session['bookable_reason'] = 'paediatric';
@@ -641,7 +641,7 @@ class ElementOperation extends BaseEventTypeElement
 
 			$genderRestrict = $ageRestrict = 0;
 			$genderRestrict = ('M' == $patient->gender) ? Ward::RESTRICTION_MALE : Ward::RESTRICTION_FEMALE;
-			$ageRestrict = ($patient->getAge() < 16) ? Ward::RESTRICTION_CHILD : Ward::RESTRICTION_ADULT;
+			$ageRestrict = ($patient->isChild()) ? Ward::RESTRICTION_CHILD : Ward::RESTRICTION_ADULT;
 
 			$whereSql = 's.id = :id AND
 				(w.restriction & :r1 > 0) AND (w.restriction & :r2 > 0)';
