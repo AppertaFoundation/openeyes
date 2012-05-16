@@ -13,13 +13,15 @@ Ophthalmic units of any size, from a single practitioner to a large eye hospital
 Resources
 ---------
 
+This is the main repository for development of the core OpenEyes framework.  Event type modules are being developed in other repositories both by ourselves and third party developers.  (EG: [OphCoCorrespondence](https://github.com/openeyes/OphCoCorrespondence)).  You may also be interested in our [EyeDraw repository](https://github.com/openeyes/EyeDraw) - this code is used by OpenEyes but may also be used independently.
+
 The principal source of information on OpenEyes is [the OpenEyes website](http://www.openeyes.org.uk)
 
 If you're interested in the OpenEyes project, join our announcements mailing list by sending a blank email to: <announcements+subscribe@openeyes.org.uk>
 
 You can also send general enquiries to our main email address: <info@openeyes.org.uk>
 
-You can find us on twitter at: [http://twitter.com/openeyes_oef]
+You can find us on twitter at: http://twitter.com/openeyes_oef
 
 A demo version of OpenEyes featuring fictional patient data for testing purposes is available at: <http://staging.openeyes.org.uk>
 
@@ -30,11 +32,13 @@ Developers can request to join our discussion list for third party developers by
 
 If you need to share repositories with members of the core development team, you can find them listed as _organizational members_ at: <https://github.com/openeyes>
 
-FIXME: checking out the code, which branch, etc
-FIXME: links to installation documentation
-FIXME: coding guidelines
-FIXME: working with the core team - information on process and pull requests, etc
-FIXME: guide to writing modules
+We will be moving shortly to the 'development' branch becoming a stable basis for development to pivot around and will make clear when our recommendation changes to this branch.  Meanwhile we currently recommend that developers checkout the release/0.10.0-moorfields branch if they plan to work on the code.
+
+Setup and installation documentation is available from the [documentation section of the website](http://www.openeyes.org.uk/documentation.html)
+
+We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/openeyes/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines) and our [module development guide](https://github.com/openeyes/OpenEyes/wiki/Module-Development-Guide).
+
+Issues in the core should be logged through the [github issues system](https://github.com/openeyes/OpenEyes/issues) for the moment.  Though we will be making our internal JIRA system available in due course, and will transition logged issues across to this so that we can keep everything in one place  Links for this will follow when this becomes available.
 
 News
 ----
