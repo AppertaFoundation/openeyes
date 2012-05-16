@@ -50,3 +50,60 @@ function printUrl(url, data) {
 		printContent();
 	});
 }
+
+/**
+ * Chromium 'Ignoring too frequent calls to print().' work around.
+ * Is a wrapper around the printContent() function.
+ */
+if(navigator.userAgent.toLowerCase().indexOf("chrome") >  -1) {
+	// wrap private vars in a closure
+	(function() {
+		var realPrintFunc = window.printContent;
+		var interval = 35000; // 35 secs
+		var timeout_id = null;
+		
+//		var timing_id = null;
+
+		var nextAvailableTime = +new Date(); // when we can safely print again
+
+		var runPrint = function(){
+			realPrintFunc();
+			timeout_id = null;
+			nextAvailableTime += interval;
+		}
+
+//		var timing = function(){
+//			now = +new Date();
+//			console.log(nextAvailableTime - now);
+//			timing_id = setTimeout(function(){timing();}, 1000);
+//		}
+
+		// overwrite window.printContent function
+		window.printContent = function() {
+			var now = +new Date();
+			
+//			if(timing_id !== null){
+//				clearTimeout(timing_id);
+//			}
+//			
+			// if the next available time is in the past, print now
+			if(now > nextAvailableTime) {
+				realPrintFunc();
+				nextAvailableTime = now + interval;
+			} else {
+				// Skip if setTimeout has already been called (prevents user from calling print multiple times)
+				if(timeout_id !== null){
+					console.log('Skipping print as count down already started '+(nextAvailableTime - now)/1000+'s left until next print');
+					alert("New print request has been queued. "+Math.floor((nextAvailableTime - now)/1000)+"secs until print.");
+					return;
+				}else{
+					// print when next available
+					timeout_id = setTimeout(runPrint, nextAvailableTime - now);
+					alert("Print request has been queued. "+Math.floor((nextAvailableTime - now)/1000)+"secs until print.");
+//					timing();
+				}
+			}
+		}
+
+	})();
+}
