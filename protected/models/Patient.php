@@ -46,6 +46,7 @@
  * @property CorrespondAddress $correspondAddress Correspondence address
  * @property Contact[] $contacts
  * @property Gp $gp
+ * @property Allergy[] $allergies
  */
 class Patient extends BaseActiveRecord {
 	
@@ -111,6 +112,7 @@ class Patient extends BaseActiveRecord {
 			),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
+			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)'),
 		);
 	}
 
@@ -198,6 +200,30 @@ class Patient extends BaseActiveRecord {
 		return ($this->getAge() < $age_limit);
 	}
 
+	/**
+	 * @param integer $drug_id
+	 * @return boolean Is patient allergic?
+	 */
+	public function hasAllergy($drug_id = null) {
+		if($drug_id) {
+			if($this->allergies) {
+				$criteria = new CDbCriteria();
+				$criteria->select = 't.id';
+				$criteria->condition = 'paa.patient_id = :patient_id';
+				$join = array();
+				$join[] = 'JOIN drug_allergy_assignment daa ON daa.drug_id = t.id';
+				$join[] = 'JOIN patient_allergy_assignment paa ON paa.allergy_id = daa.allergy_id';
+				$criteria->join = implode(' ', $join); 
+				$criteria->params = array(':patient_id' => $this->id);
+				return (bool) Drug::model()->findByPk($drug_id, $criteria);
+			} else {
+				return false;
+			}
+		} else {
+			return (bool) $this->allergies;
+		}
+	}
+	
 	/**
 	 * @return boolean Is patient deceased?
 	 */

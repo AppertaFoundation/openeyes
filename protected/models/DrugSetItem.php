@@ -18,110 +18,86 @@
  */
 
 /**
- * This is the model class for table "drug".
+ * This is the model class for table "drug_set_item".
  *
- * The followings are the available columns in table 'drug':
+ * The followings are the available columns in table 'drug_set_item':
  * @property integer $id
- * @property string $name
- * @property string $description
- * @property string $label
- * @property string $code
- * @property string $term
- * @property string $dose_unit
- * @property string $default_dose
- * @property integer $preservative_free
- *
- * @property Allergy[] $allergies
- * @property DrugType $type
- * @property DrugForm $form
- * @property DrugRoute $default_route
- * @property DrugFrequency $default_frequency
- * @property DrugDuration $default_duration
+ * @property integer $drug_set_id
+ * @property integer $drug_id
+ * @property integer $default_frequency_id
+ * @property integer $default_duration_id
  */
-class Drug extends BaseActiveRecord
-{
+class DrugSetItem extends BaseActiveRecord {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Drug the static model class
+	 * @return DrugSetItem the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
-		return 'drug';
+	public function tableName() {
+		return 'drug_set_item';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
+	public function rules() {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+				array('drug_set_id, drug_id, default_frequency_id, default_duration_id', 'required'),
+				// The following rule is used by search().
+				// Please remove those attributes that should not be searched.
+				array('id, drug_set_id, drug_id, default_frequency_id, default_duration_id', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
+	public function relations() {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-				'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-				'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
+				'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
+				'drug_set' => array(self::BELONGS_TO, 'DrugSet', 'drug_set_id'),
 				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
-				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
 		);
 	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 		);
 	}
 
-	public function getLabel() {
-		if($this->preservative_free) {
-			return $this->name . ' (PF)';
-		} else {
-			return $this->name;
-		}
-	}
-	
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-
+		$criteria->compare('drug_set_id',$this->drug_set_id,true);
+		$criteria->compare('drug_id',$this->drug_id,true);
+		$criteria->compare('default_frequency_id',$this->default_frequency_id,true);
+		$criteria->compare('default_duration_id',$this->default_duration_id,true);
+		
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+				'criteria'=>$criteria,
 		));
 	}
+
 }
