@@ -74,4 +74,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 	public function dropDownTextSelection($element, $text_field, $options) {
 		$this->widget('application.widgets.DropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options));
 	}
+
+	public function hiddenInput($element, $field, $value) {
+		$this->widget('application.widgets.HiddenField', array('element' => $element, 'field' => $field, 'value' => $value));
+	}
 }

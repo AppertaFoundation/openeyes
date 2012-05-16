@@ -25,6 +25,7 @@ class BookingController extends BaseController
 	public $title;
 	public $editing;
 	public $event;
+	public $editable;
 
 	public function filters()
 	{
@@ -592,6 +593,7 @@ class BookingController extends BaseController
 		}
 
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
+		$this->editable = $editable;
 
 		$patient = $this->model = $operation->event->episode->patient;
 
@@ -602,7 +604,6 @@ class BookingController extends BaseController
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'title'=>'Schedule operation',
 			'model'=>$patient,
-			'editable'=>$editable
 		));
 	}
 
