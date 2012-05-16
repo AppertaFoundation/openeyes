@@ -36,7 +36,7 @@ We will be moving shortly to the 'development' branch becoming a stable basis fo
 
 Setup and installation documentation is available from the [documentation section of the website](http://www.openeyes.org.uk/documentation.html)
 
-We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/openeyes/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines) and our [module development guide](https://github.com/openeyes/OpenEyes/wiki/Module-Development-Guide).
+We are beginning to evolve some documentation for developers on [our github wiki](https://github.com/openeyes/OpenEyes/wiki) including [coding guidelines](https://github.com/openeyes/OpenEyes/wiki/Coding-Guidelines) and our [Event type module development guide](https://github.com/openeyes/OpenEyes/wiki/Event-Type-Module-Development-Guide).
 
 Issues in the core should be logged through the [github issues system](https://github.com/openeyes/OpenEyes/issues) for the moment.  Though we will be making our internal JIRA system available in due course, and will transition logged issues across to this so that we can keep everything in one place  Links for this will follow when this becomes available.
 
