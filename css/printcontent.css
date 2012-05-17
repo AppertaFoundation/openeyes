@@ -152,8 +152,7 @@ body {
 	width: 250px;
 }
 
-.fromAddress,
-.date {
+.fromAddress {
 	padding-top:3em;
 	clear: both;
 	float: right;
@@ -161,8 +160,13 @@ body {
 	padding-top:3em;
 }
 
+
 .date {
 	padding-top: 1em;
+	clear: both;
+	float: left;
+	text-align: left;
+	padding-top:3em;
 }
 
 .toAddress {
