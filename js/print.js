@@ -50,9 +50,9 @@ function printContent(dateleft) {
 	});
 }
 
-function printUrl(url, data) {
+function printUrl(url, data, dateleft) {
 	$.post(url, data, function(content) {
 		$('#printable').html(content);
-		printContent();
+		printContent(dateleft);
 	});
 }
