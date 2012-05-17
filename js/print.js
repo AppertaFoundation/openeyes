@@ -28,7 +28,13 @@ function appendPrintContent(content) {
 	$('#printable').append(content);
 }
 
-function printContent() {
+function printContent(dateleft) {
+	if (dateleft) {
+		var css = '/css/printcontent-left.css';
+	} else {
+		var css = '/css/printcontent.css';
+	}
+
 	$('#printable').printElement({
 		pageTitle : 'OpenEyes printout',
 		//leaveOpen: true,
@@ -38,7 +44,7 @@ function printContent() {
 			classNameToAdd : 'openeyesPrintout'
 		},
 		overrideElementCSS : [ {
-			href : '/css/printcontent.css',
+			href : css,
 			media : 'all'
 		} ]
 	});
