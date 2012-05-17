@@ -175,3 +175,22 @@ body {
 	color: #f00 !important;
 }
 
+.watermark {
+	display: block;
+	position: fixed;
+	z-index: -1;
+	width: 100%;
+	height: 100%;
+}
+
+.watermark div {
+	position: absolute;
+	font-size: 72pt;
+	-webkit-transform: rotate(-45deg);
+	text-align: center;
+	left: 0;
+	top: 50%;
+	opacity: 0.1;
+	font-weight: bold;
+	width: 99%;
+}

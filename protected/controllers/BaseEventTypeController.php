@@ -5,6 +5,7 @@ class BaseEventTypeController extends BaseController
 	public $model;
 	public $firm;
 	public $patient;
+	public $site;
 	public $editable;
 	public $editing;
 	public $event;
@@ -669,7 +670,7 @@ class BaseEventTypeController extends BaseController
 
 		$elements = $this->getDefaultElements('view');
 
-		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$this->site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->logActivity('printed event');
 
@@ -679,6 +680,6 @@ class BaseEventTypeController extends BaseController
 			'print', array(
 			'elements' => $elements,
 			'eventId' => $id,
-			), false, true);
+		), false, true);
 	}
 }
