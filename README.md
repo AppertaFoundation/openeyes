@@ -32,7 +32,7 @@ Developers can request to join our discussion list for third party developers by
 
 If you need to share repositories with members of the core development team, you can find them listed as _organizational members_ at: <https://github.com/openeyes>
 
-We will be moving shortly to the 'development' branch becoming a stable basis for development to pivot around and will make clear when our recommendation changes to this branch.  Meanwhile we currently recommend that developers checkout the [release/0.10.0-moorfields](https://github.com/openeyes/OpenEyes/tree/release/0.10.0-moorfields) branch if they plan to work on the code.
+We will be moving shortly to the 'development' branch becoming a stable basis for development to pivot around and will make clear when our recommendation changes to this branch.  Meanwhile we currently recommend that developers checkout the [release/0.10.0-moorfields](https://github.com/openeyes/OpenEyes/tree/release/0.10.0-moorfields) branch if they plan to work on the code.  You can find a test dataset compatible with the 0.10.0-moorfields branch at the [dumps directory of the sample repository](https://github.com/openeyes/Sample/tree/master/dump)
 
 Setup and installation documentation is available from the [documentation section of the website](http://www.openeyes.org.uk/documentation.html)
 
