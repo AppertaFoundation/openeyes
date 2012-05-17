@@ -29,15 +29,15 @@ if (!empty($episode)) {
 	}
 ?>
 <h3>Episode Summary (<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>)</h3>
-
-<h4><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></h4>
-<div class="eventHighlight">
-	<h4><?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?></h4>
-	<form>
-		<button id="save_episode_status" type="submit" class="classy blue tall" style="margin-left: 10px; margin-bottom: 10px;"><span class="button-span button-span-blue">Save</span></button>
-	</form>
-</div>
-
+<?php if (Yii::app()->user->checkAccess('admin')) { ?>
+	<h4><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></h4>
+	<div class="eventHighlight">
+		<h4><?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?></h4>
+		<form>
+			<button id="save_episode_status" type="submit" class="classy blue tall" style="margin-left: 10px; margin-bottom: 10px;"><span class="button-span button-span-blue">Save</span></button>
+		</form>
+	</div>
+<?php } ?>
 <h4>Start date:</h4>
 <div class="eventHighlight">
 	<h4><?php echo $episode->NHSDate('start_date'); ?></h4>
