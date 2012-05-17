@@ -644,11 +644,11 @@ class BaseEventTypeController extends BaseController
 			if (preg_match('/\.css$/',$file)) {
 				if ($ex[3] == 'print') {
 					if ($file == 'print.css') {
-						Yii::app()->getClientScript()->registerCssFile($this->cssPath.'/'.$file);
+						OECClientScript::registerCssFile($this->cssPath.'/'.$file);
 					}
 				} else {
 					if ($file != 'print.css') {
-						Yii::app()->getClientScript()->registerCssFile($this->cssPath.'/'.$file);
+						OECClientScript::registerCssFile($this->cssPath.'/'.$file);
 					}
 				}
 			}

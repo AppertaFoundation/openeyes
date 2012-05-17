@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,43 +17,49 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function() {
-	$('body').append('<div class="printable" id="printable"></div>');
-});
-
-function clearPrintContent() {
-	$('#printable').empty();
-}
-
-function appendPrintContent(content) {
-	$('#printable').append(content);
-}
-
-function printContent(dateleft) {
-	if (dateleft) {
-		var css = '/css/printcontent-left.css';
-	} else {
-		var css = '/css/printcontent.css';
+/**
+ * This is the model class for table "eye".
+ *
+ * The followings are the available columns in table 'eye':
+ * @property string $id
+ * @property string $name
+ * @property string $ShortName
+ */
+class SiteSubspecialtyDrug extends BaseActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return Firm the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
 	}
 
-	$('#printable').printElement({
-		pageTitle : 'OpenEyes printout',
-		//leaveOpen: true,
-		//printMode: 'popup',
-		printBodyOptions : {
-			styleToAdd : 'width: auto !important; margin: 0.75em !important;',
-			classNameToAdd : 'openeyesPrintout'
-		},
-		overrideElementCSS : [ {
-			href : css,
-			media : 'all'
-		} ]
-	});
-}
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'site_subspecialty_drug';
+	}
 
-function printUrl(url, data, dateleft) {
-	$.post(url, data, function(content) {
-		$('#printable').html(content);
-		printContent(dateleft);
-	});
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		return array();
+	}
 }

@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,43 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function() {
-	$('body').append('<div class="printable" id="printable"></div>');
-});
+class OECClientScript {
+	/**
+	 * Registers a CSS file and munges image asset paths as it goes
+	 * @param string $url URL of the CSS file
+	 * @param string $media media that the CSS file should be applied to. If empty, it means all media types.
+	 * @return CClientScript the CClientScript object itself (to support method chaining, available since version 1.1.5).
+	 */
+	static public function registerCssFile($url,$media='')
+	{
+		$return = Yii::app()->clientScript->registerCssFile($url,$media);
 
-function clearPrintContent() {
-	$('#printable').empty();
-}
+		if (file_exists(getcwd().$url)) {
+			$imgpath = Yii::app()->getController()->imgPath;
 
-function appendPrintContent(content) {
-	$('#printable').append(content);
-}
+			file_put_contents(getcwd().$url, str_replace('/IMAGEASSETS/',$imgpath,file_get_contents(getcwd().$url)));
+		}
 
-function printContent(dateleft) {
-	if (dateleft) {
-		var css = '/css/printcontent-left.css';
-	} else {
-		var css = '/css/printcontent.css';
+		return $return;
 	}
-
-	$('#printable').printElement({
-		pageTitle : 'OpenEyes printout',
-		//leaveOpen: true,
-		//printMode: 'popup',
-		printBodyOptions : {
-			styleToAdd : 'width: auto !important; margin: 0.75em !important;',
-			classNameToAdd : 'openeyesPrintout'
-		},
-		overrideElementCSS : [ {
-			href : css,
-			media : 'all'
-		} ]
-	});
 }
-
-function printUrl(url, data, dateleft) {
-	$.post(url, data, function(content) {
-		$('#printable').html(content);
-		printContent(dateleft);
-	});
-}
+?>
