@@ -2,7 +2,7 @@
 	<div id="div_<?php echo $id?>" class="eventDetail">
 		<div class="data">
 <?php }?>
-		<select id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?>>
+		<select id="<?php echo $id?>"<?php if (@$htmlOptions['class']) {?> class="<?php echo $htmlOptions['class']?>"<?php }?><?php if (@$htmlOptions['disabled']) {?> disabled="disabled"<?php }?><?php if (@$htmlOptions['title']) {?> title="<?php echo $htmlOptions['title']?>"<?php }?>>
 			<?php if (isset($htmlOptions['empty'])) {?>
 				<option value=""><?php echo $htmlOptions['empty']?></option>
 			<?php }?>
