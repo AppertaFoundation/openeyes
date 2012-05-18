@@ -31,7 +31,7 @@
  * @property FirmUserAssignment[] $firmUserAssignments
  * @property LetterPhrase[] $letterPhrases
  */
-class InstitutionConsultantAssignment extends BaseActiveRecord
+class SiteConsultantAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -47,7 +47,7 @@ class InstitutionConsultantAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'institution_consultant_assignment';
+		return 'site_consultant_assignment';
 	}
 
 	/**
@@ -58,10 +58,10 @@ class InstitutionConsultantAssignment extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('institution_id, consultant_id', 'required'),
+			array('site_id, consultant_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, institution_id, consultant_id', 'safe', 'on'=>'search'),
+			array('id, site_id, consultant_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,7 +73,7 @@ class InstitutionConsultantAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 		);
 	}
 
