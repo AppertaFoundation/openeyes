@@ -290,6 +290,7 @@ if (!empty($address)) {
 					<?php if(!$this->patient->isDeceased()) { ?>
 						<p><a href="/patient/episodes/<?php echo $this->patient->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
 					<?php }?>
+					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">

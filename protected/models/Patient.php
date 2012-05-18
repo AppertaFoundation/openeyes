@@ -112,7 +112,7 @@ class Patient extends BaseActiveRecord {
 			),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
-			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)'),
+			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 		);
 	}
 
@@ -451,4 +451,61 @@ class Patient extends BaseActiveRecord {
 		
 		return $address; 
 	}
+	
+
+	public function addAllergy($allergy_id) {
+		$query = 'SELECT id from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';
+		$command = $this->getDbConnection()->createCommand($query);
+		if(!$command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id))) {
+			// Allergy not already set, so we can insert
+			$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
+			$command = $this->getDbConnection()->createCommand($query);
+			$command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id));
+		}
+	}
+	
+	public function removeAllergy($allergy_id) {
+		$query = 'SELECT id from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';
+		$command = $this->getDbConnection()->createCommand($query);
+		if($command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id))) {
+			// Allergy is set so we can remove
+			$query = 'DELETE FROM `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';
+			$command = $this->getDbConnection()->createCommand($query);
+			$command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id));
+		}
+	}
+	
+	public function assignAllergies($allergy_ids) {
+		$add_allergy_ids = $allergy_ids;
+		$remove_allergy_ids = array();
+		
+		// Check existing allergies
+		foreach($this->allergies as $allergy) {
+			if(($key = array_search($allergy->id, $insert_allergy_ids)) !== false) {
+				// Allergy unchanged, don't remove or insert
+				unset($insert_allergy_ids[$key]);
+			} else {
+				// Allergy removed
+				$remove_allergy_ids[] = $allergy->id;
+			}
+		}
+		
+		// Insert new allergies
+		$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
+		$command = Yii::app()->db->createCommand($query);
+		$command->bindValue('patient_id', $this->id);
+		foreach($insert_allergy_ids as $allergy_id) {
+			$command->bindValue('allergy_id', $allergy_id);
+			$command->execute();
+		}
+		
+		// Delete removed allergies
+		$query = 'DELETE from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id IN (:allergy_ids)';
+		$command = Yii::app()->db->createCommand($query);
+		$command->bindValue('patient_id', $this->id);
+		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
+		$command->execute();
+		
+	}
+	
 }
