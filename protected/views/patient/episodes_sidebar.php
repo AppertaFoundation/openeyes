@@ -24,7 +24,7 @@
 								<span class="event"><?php echo $event->eventType->name?></span>
 								<span class="info"><?php echo str_replace("\n","<br/>",$event->info)?></span>
 								<?php if($event->hasIssue()) { ?>
-								<span class="issue"><?php echo $event->getIssueText()?></span>
+									<span class="issue"><?php echo $event->getIssueText()?></span>
 								<?php } ?>
 							</div>
 							<?php if($highlight) { ?>
