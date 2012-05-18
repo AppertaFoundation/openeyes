@@ -28,9 +28,9 @@ function appendPrintContent(content) {
 	$('#printable').append(content);
 }
 
-function printContent(dateleft) {
-	if (dateleft) {
-		var css = '/css/printcontent-left.css';
+function printContent(csspath) {
+	if (csspath) {
+		var css = csspath+'/print.css';
 	} else {
 		var css = '/css/printcontent.css';
 	}
@@ -50,9 +50,9 @@ function printContent(dateleft) {
 	});
 }
 
-function printUrl(url, data, dateleft) {
+function printUrl(url, data, csspath) {
 	$.post(url, data, function(content) {
 		$('#printable').html(content);
-		printContent(dateleft);
+		printContent(csspath);
 	});
 }
