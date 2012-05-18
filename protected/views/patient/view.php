@@ -254,8 +254,6 @@ if (!empty($address)) {
 								<option value="consultant">Ophthalmologist</option>
 								<option value="gp">GP</option>
 							</select>
-							&nbsp;&nbsp;
-							<button class="classy green mini" type="submit" id="add-contact"><span class="button-span button-span-green">Add contact</span></button>
 						</div>
 					</div>
 				</div>
