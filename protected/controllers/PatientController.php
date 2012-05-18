@@ -557,15 +557,45 @@ class PatientController extends BaseController
 			->where("(LOWER(title) LIKE :term or LOWER(first_name) LIKE :term or LOWER(last_name) LIKE :term) AND $where", array(':term' => $term))
 			->order('title asc, first_name asc, last_name asc')
 			->queryAll() as $contact) {
+
 			if ($contact['title']) {
-				$line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'].')';
+				$line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'];
 			} else {
-				$line = $contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'].')';
+				$line = $contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'];
 			}
 
-			$contacts[] = $line;
+			if ($contact['parent_class'] == 'Consultant') {
+				$institutions = array();
 
-			$session[$line] = $contact['id'];
+				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
+					if (!in_array($sca->site->institution_id,$institutions)) {
+						$institutions[] = $sca->site->institution_id;
+					}
+
+					$contact_line = $contacts[] = $line.', '.$sca->site->name.')';
+					$session[$contact_line] = array(
+						'contact_id' => $contact['id'],
+						'site_id' => $sca->site_id,
+					);
+				}
+
+				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->institution_id,$institutions)) {
+						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
+						$session[$contact_line] = array(
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
+						);
+					}
+				}
+			} else {
+				$contact = Contact::model()->findByPk($contact['id']);
+
+				$contact_line = $contacts[] = $line.($contact->address ? ', '.$contact->address->address1 : '').')';
+				$session[$contact_line] = array(
+					'contact_id' => $contact['id'],
+				);
+			}
 		}
 
 		sort($contacts);
@@ -587,19 +617,26 @@ class PatientController extends BaseController
 		}
 
 		if (is_array($session)) {
-			foreach ($session as $text => $id) {
+			foreach ($session as $text => $params) {
 				if ($text == @$_GET['text']) {
-					if (!$contact = Contact::model()->findByPk($id)) {
-						throw new Exception("Can't find contact: $id");
+					if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
+						throw new Exception("Can't find contact: ".$params['contact_id']);
 					}
 
 					$data = array(
 						'id' => $contact->id,
 						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
 						'qualifications' => $contact->qualifications,
-						'location' => ($contact->address ? $contact->address->address1 : ''),
 						'type' => $contact->parent_class,
 					);
+
+					if (isset($params['site_id'])) {
+						$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+					} else if (isset($params['institution_id'])) {
+						$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+					} else if ($contact->address) {
+						$data['location'] = $contact->address->address1;
+					}
 
 					foreach ($data as $key => $value) {
 						if ($value == null) {
@@ -619,6 +656,12 @@ class PatientController extends BaseController
 						$pca = new PatientContactAssignment;
 						$pca->patient_id = $patient->id;
 						$pca->contact_id = $contact->id;
+						if (isset($params['site_id'])) {
+							$pca->site_id = $params['site_id'];
+						}
+						if (isset($params['institution_id'])) {
+							$pca->institution_id = $params['institution_id'];
+						}
 						$pca->save();
 					}
 
