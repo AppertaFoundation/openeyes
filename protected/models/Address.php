@@ -123,7 +123,11 @@ class Address extends BaseActiveRecord {
 		$address = array();
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 			if (!empty($this->$field)) {
-				$address[] = CHtml::encode($this->$field);
+				if ($field == 'address1') {
+					$address[] = CHtml::encode(str_replace(',','',$this->$field));
+				} else {
+					$address[] = CHtml::encode($this->$field);
+				}
 			}
 		}
 		if ($include_country && !empty($this->country->name)) {
