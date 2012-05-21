@@ -32,7 +32,7 @@ $address = $this->patient->address;
 
 if (!empty($address)) {
 	$fields = array(
-		'address1' => $address->address1,
+		'address1' => str_replace(',','',$address->address1),
 		'address2' => $address->address2,
 		'city' => $address->city,
 		'county' => $address->county,
@@ -182,7 +182,7 @@ if (!empty($address)) {
 												<?php } else if ($pca->institution) {?>
 													<?php echo $pca->institution->name?>
 												<?php } else if ($pca->contact->address) {?>
-													<?php echo $pca->contact->address->address1?>
+													<?php echo str_replace(',','',$pca->contact->address->address1)?>
 												<?php }?>
 											</td>
 											<td><?php echo $pca->contact->parent_class?></td>
