@@ -81,6 +81,7 @@ class Site extends BaseActiveRecord
 		return array(
 			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
+			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 		);
 	}
 
@@ -150,5 +151,25 @@ class Site extends BaseActiveRecord
 			}
 		}
 		return implode('<br />', $address);
+	}
+
+	public function getLetterArray() {
+		$address = array();
+		foreach (array('address1', 'address2', 'address3', 'postcode') as $field) {
+			if (!empty($this->$field)) {
+				if ($field == 'address1') {
+					$address[] = CHtml::encode(str_replace(',','',$this->$field));
+				} else {
+					$address[] = CHtml::encode($this->$field);
+				}
+			}
+		}
+		return $address;
+	}
+
+	public function getLetterAddress() {
+		$address = "$this->name\n";
+
+		return $address . implode("\n",$this->getLetterArray(false));
 	}
 }

@@ -355,6 +355,9 @@ tfoot td #key .container .label { display:inline-block; margin-left:4px; }
 /* change properties for closed rows */
 .grid-view-waitinglist table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
 
+#letters-key {margin-top:15px;}
+#letters-key img {margin-left: 10px;}
+
 /* hack to help with in page CSS for add Operation */
 table#procedure_list tbody tr { background-color: #edf4f9; }
 
@@ -859,6 +862,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table th.footer.full { background: #ffedb2; }
 /* Control the widths of key tds */
 .theatre-sessions table td.session { width:40px; }
+.theatre-sessions table td.session input {width: 38px;}
 .theatre-sessions table td.dragsort { width:26px; }
 .theatre-sessions table td.dragsort:hover { cursor: pointer; background-color:#ffe6b2; }
 .theatre-sessions table td.confirm { width:28px; padding-left:15px; }
@@ -902,7 +906,7 @@ table.waiting-list tr.sendflag-remove > td:first-child { background-color:#f08a6
 /* change default hover */
 table.waiting-list .odd:hover, table.waiting-list .even:hover { background-color: #ffd; border-bottom-color: #aaa; }
 /* NO GP flag */
-table.waiting-list td > span.no-GP { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted; }
+table.waiting-list td > .no-GP, table.waiting-list td > .no-Address { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted;}
 /* letters send icons */
 table.waiting-list td.letterStatus > img {margin-right:3px; }
 table.waiting-list td.letterStatus { width: 92px; }
@@ -1027,6 +1031,7 @@ table.waiting-list tr.hover{ background-color: #ffffdd; }
 /* [NEW] colours for waiting list */
 .waitinglistOdd{ background-color: #EDF4F9; border-bottom: 1px solid #CCD;}
 .waitinglistEven{ background-color: #E1EEF9; border-bottom: 1px solid #CCD;}
+.waitinglistPurple{ background-color: #77B8D3; }
 .waitinglistGreen { background-color: #B8EAA6; }
 .waitinglistRed{ background-color: #F08A6F; }
 .waitinglistOrange{ background-color: #F7BF8D; }

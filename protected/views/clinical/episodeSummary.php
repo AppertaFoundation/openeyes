@@ -28,7 +28,6 @@ if (!empty($episode)) {
 		$diagnosis = $diagnosis->disorder->term;
 	}
 ?>
-
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 

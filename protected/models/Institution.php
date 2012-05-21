@@ -73,6 +73,9 @@ class Institution extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'on' => "parent_class = 'Institution'",
+			),
 		);
 	}
 
@@ -102,5 +105,15 @@ class Institution extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getLetterAddress() {
+		$address = "$this->name\n";
+
+		if ($this->address) {
+			$address .= implode("\n",$this->address->getLetterArray(false));
+		}
+
+		return $address;
 	}
 }

@@ -198,15 +198,11 @@
 	If you are unwell the day before admission, please contact us to ensure that it is still safe and appropriate to do the procedure. If you do not speak English, please arrange for an English speaking adult to stay with you until you reach the ward and have been seen by a Doctor. 
 </p>
 
+<?php if($subspecialty->id != 13){ // Not refractive laser ?>
 <p class="red">
 	You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/friend/carer who is collecting you to make sure they bring some money to cover the prescription.
 </p>
-
-<p>
-	<strong>
-		Please be aware that if your surgery at Moorfields Eye Hospital NHS Foundation Trust falls within the London 2012 Olympic and Paralympic Games period (27th July until 9th September) it is envisaged that London will be much busier than usual during this time and journeys may take longer. Please ensure that you leave enough time to travel to your surgery, ensuring that you check your route before you travel. Travel routes can be checked via the Transport for London website: www.tfl.gov.uk. Patients travelling by hospital transport will continue to be transported as usual. Based on current information, we anticipate that our main hospital at City Road and our satellite facility at Mile End hospital will be most affected in terms of travel during the games.
-	</strong>
-</p>
+<?php } ?>
 
 <p>
 	<strong>
