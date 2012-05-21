@@ -52,6 +52,8 @@ class Patient extends BaseActiveRecord {
 	
 	const CHILD_AGE_LIMIT = 16;
 	
+	public $use_pas = TRUE;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Patient the static model class
@@ -303,6 +305,24 @@ class Patient extends BaseActiveRecord {
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
+	/**
+	* Supress PAS call after find
+	*/
+	public function noPas() {
+			$this->use_pas = false;
+			return $this;
+	}
+	
+	/**
+	* Pass through use_pas flag to allow pas supression
+	* @see CActiveRecord::instantiate()
+	*/
+	protected function instantiate($attributes) {
+			$model = parent::instantiate($attributes);
+			$model->use_pas = $this->use_pas;
+			return $model;
+	}
+	
 	/**
 	 * Raise event to allow external data sources to update patient
 	 * @see CActiveRecord::afterFind()
