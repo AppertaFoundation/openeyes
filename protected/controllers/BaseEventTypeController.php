@@ -321,6 +321,7 @@ class BaseEventTypeController extends BaseController
 			}
 
 			$elements = array();
+			$element_names = array();
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
 				if (isset($_POST[$element_type->class_name])) {
 					$class_name = $element_type->class_name;
@@ -329,9 +330,10 @@ class BaseEventTypeController extends BaseController
 					} else {
 						$elements[] = new $class_name;
 					}
+					$element_names[$element_type->class_name] = $element_type->name;
 				}
 			}
-
+			
 			$elementList = array();
 
 			// validation
@@ -342,7 +344,7 @@ class BaseEventTypeController extends BaseController
 				if (!$element->validate()) {
 					foreach ($element->getErrors() as $errormsgs) {
 						foreach ($errormsgs as $error) {
-							$index = preg_replace('/^Element/','',$elementClassName);
+							$index = $element_names[$elementClassName]; //preg_replace('/^Element/','',$elementClassName);
 							$errors[$index][] = $error;
 						}
 					}
