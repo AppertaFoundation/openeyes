@@ -693,4 +693,55 @@ class PatientController extends BaseController
 
 		echo "1";
 	}
+
+	/**
+	 * Add patient/allergy assignment
+	 * @param integer $patient_id
+	 * @param integer $allergy_id
+	 * @throws Exception
+	 */
+	public function actionAddAllergy() {
+		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+			throw new Exception('Patient ID required');
+		}
+		if(!$patient = Patient::model()->findByPk($patient_id)) {
+			throw new Exception('Patient not found: '.$patient_id);
+		}
+		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+			throw new Exception('Allergy ID required');
+		}
+		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
+			throw new Exception('Allergy not found: '.$allergy_id);
+		}
+		$patient->addAllergy($allergy_id);
+	}
+	
+	/**
+	 * Remove patient/allergy assignment
+	 * @param integer $patient_id
+	 * @param integer $allergy_id
+	 * @throws Exception
+	 */
+	public function actionRemoveAllergy() {
+		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+			throw new Exception('Patient ID required');
+		}
+		if(!$patient = Patient::model()->findByPk($patient_id)) {
+			throw new Exception('Patient not found: '.$patient_id);
+		}
+		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+			throw new Exception('Allergy ID required');
+		}
+		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
+			throw new Exception('Allergy not found: '.$allergy_id);
+		}
+		$patient->removeAllergy($allergy_id);
+	}
+	
+	/**
+	 * List of allergies
+	 */
+	public function allergyList() {
+		return Allergy::model()->findAll(array('order' => 'name'));
+	}
 }
