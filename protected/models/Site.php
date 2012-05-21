@@ -81,6 +81,7 @@ class Site extends BaseActiveRecord
 		return array(
 			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
+			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 		);
 	}
 
@@ -150,5 +151,15 @@ class Site extends BaseActiveRecord
 			}
 		}
 		return implode('<br />', $address);
+	}
+
+	public function getLetterAddress() {
+		$address = "$this->name\n";
+
+		if ($this->institution->address) {
+			$address .= implode("\n",$this->institution->address->getLetterArray(false));
+		}
+
+		return $address;
 	}
 }
