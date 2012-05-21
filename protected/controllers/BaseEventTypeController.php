@@ -170,6 +170,11 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (!empty($_POST)) {
+			if (isset($_POST['cancel'])) {
+				$this->redirect(array('/patient/view/'.$this->patient->id));
+				return;
+			}
+			
 			$elements = array();
 			$element_names = array();
 

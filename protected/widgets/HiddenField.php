@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,43 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function() {
-	$('body').append('<div class="printable" id="printable"></div>');
-});
-
-function clearPrintContent() {
-	$('#printable').empty();
+class HiddenField extends BaseCWidget {
 }
-
-function appendPrintContent(content) {
-	$('#printable').append(content);
-}
-
-function printContent(csspath) {
-	if (csspath) {
-		var css = csspath+'/print.css';
-	} else {
-		var css = '/css/printcontent.css';
-	}
-
-	$('#printable').printElement({
-		pageTitle : 'OpenEyes printout',
-		//leaveOpen: true,
-		//printMode: 'popup',
-		printBodyOptions : {
-			styleToAdd : 'width: auto !important; margin: 0.75em !important;',
-			classNameToAdd : 'openeyesPrintout'
-		},
-		overrideElementCSS : [ {
-			href : css,
-			media : 'all'
-		} ]
-	});
-}
-
-function printUrl(url, data, csspath) {
-	$.post(url, data, function(content) {
-		$('#printable').html(content);
-		printContent(csspath);
-	});
-}
+?>

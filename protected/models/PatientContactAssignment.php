@@ -72,6 +72,8 @@ class PatientContactAssignment extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 		);
 	}
 

@@ -176,7 +176,15 @@ if (!empty($address)) {
 									<?php foreach ($this->patient->contactAssignments as $pca) {?>
 										<tr>
 											<td><span class="large"><?php if ($pca->contact->title) echo $pca->contact->title.' '?><?php echo $pca->contact->first_name?> <?php echo $pca->contact->last_name?></span><br /><?php echo $pca->contact->qualifications?></td>
-											<td><?php if ($pca->contact->address) echo $pca->contact->address->address1?></td>
+											<td>
+												<?php if ($pca->site) {?>
+													<?php echo $pca->site->name?>
+												<?php } else if ($pca->institution) {?>
+													<?php echo $pca->institution->name?>
+												<?php } else if ($pca->contact->address) {?>
+													<?php echo $pca->contact->address->address1?>
+												<?php }?>
+											</td>
 											<td><?php echo $pca->contact->parent_class?></td>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>" href="#" class="small"><strong>Remove</strong></a></td>
 										</tr>
@@ -192,11 +200,6 @@ if (!empty($address)) {
 								'id'=>"contactname",
 								'value'=>'',
 								'source'=>"js:function(request, response) {
-									var existingProcedures = [];
-									$('div.procedureItem').map(function() {
-										var text = $(this).children('span:first').text();
-										existingProcedures.push(text.replace(/ remove$/i, ''));
-									});
 
 									var filter = $('#contactfilter').val();
 
@@ -234,7 +237,12 @@ if (!empty($address)) {
 											'success': function(data) {
 												if (data[\"name\"]) {
 													$('#patient_contacts').append('<tr><td><span class=\"large\">'+data[\"name\"]+'</span><br />'+data[\"qualifications\"]+'</td><td>'+data[\"location\"]+'</td><td>'+data[\"type\"]+'<td colspan=\"2\" align=\"right\"><a id=\"removecontact'+data[\"id\"]+'\" href=\"#\" class=\"small\"><strong>Remove</strong></a></td></tr>');
-													currentContacts.push(data[\"name\"]+' ('+data[\"type\"]+')');
+
+													if (data[\"location\"].length >0) {
+														currentContacts.push(data[\"name\"]+' ('+data[\"type\"]+', '+data[\"location\"]+')');
+													} else {
+														currentContacts.push(data[\"name\"]+' ('+data[\"type\"]+')');
+													}
 												}
 											}
 										});
@@ -254,8 +262,6 @@ if (!empty($address)) {
 								<option value="consultant">Ophthalmologist</option>
 								<option value="gp">GP</option>
 							</select>
-							&nbsp;&nbsp;
-							<button class="classy green mini" type="submit" id="add-contact"><span class="button-span button-span-green">Add contact</span></button>
 						</div>
 					</div>
 				</div>
@@ -292,6 +298,7 @@ if (!empty($address)) {
 					<?php if(!$this->patient->isDeceased()) { ?>
 						<p><a href="/patient/episodes/<?php echo $this->patient->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
 					<?php }?>
+					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
@@ -303,7 +310,11 @@ if (!empty($address)) {
 					var id = $(this).attr('id').match(/[0-9]+/);
 					var el = $(this);
 
-					var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+')';
+					if ($(this).parent().parent().children('td:nth-child(2)').length >0) {
+						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+', '+$(this).parent().parent().children('td:nth-child(2)').html()+')';
+					} else {
+						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+')';
+					}
 
 					$.ajax({
 						'type': 'GET',
@@ -339,11 +350,17 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' ('.$this->patient->gp->contact->parent_class.')';?>");
+					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->address1 : '').')';?>");
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
-					currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.')';?>");
+					<?php if ($pca->site) {?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->site->name.')';?>");
+					<?php } else if ($pca->institution) {?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
+					<?php } else {?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->address1 : '').')';?>");
+					<?php }?>
 				<?php }?>
 			</script>
 			<?php

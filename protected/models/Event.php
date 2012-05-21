@@ -162,7 +162,25 @@ class Event extends BaseActiveRecord
 		$text = '';
 
 		foreach ($this->issues as $issue) {
-			$text .= $issue->text."\n";
+			$text .= $this->expandIssueText($issue->text)."\n";
+		}
+
+		return $text;
+	}
+
+	public function expandIssueText($text) {
+		if (preg_match_all('/\{(.*?)\}/',$text,$m)) {
+			foreach ($m[0] as $i => $match) {
+				if (preg_match('/^\{(.*?)\+([0-9]+)H:(.*)\}/',$match,$n)) {
+					$field = $n[1];
+					$hours = $n[2];
+					$dateformat = $n[3];
+
+					$text = str_replace($match,date($dateformat,strtotime($this->{$field}) + 3600 * $hours),$text);
+				} else if ($this->hasProperty($m[1][$i])) {
+					$text = str_replace($match,$this->{$m[1][$i]},$text);
+				}
+			}
 		}
 
 		return $text;
