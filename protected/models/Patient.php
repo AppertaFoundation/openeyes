@@ -453,15 +453,15 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getPre() {
-		$episode = $this->getEpisodeForCurrentSubspecialty();
-
-		if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphDrPrescription'))->id)) {
-			if ($details = ModuleAPI::getmodel('OphDrPrescription','Element_OphDrPrescription_Details')) {
-				$details->find('event_id=?',array($event->id));
+		if($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			if($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphDrPrescription'))->id)) {
+				if($details_model = ModuleAPI::getmodel('OphDrPrescription','Element_OphDrPrescription_Details')) {
+					$details = $details_model->find('event_id=?',array($event->id));
+					return $details->getLetterText();
+				}
 			}
 		}
-
-		return 'NOT IMPLEMENTED';
+		return '';
 	}
 
 	public function getLetterAddress() {
