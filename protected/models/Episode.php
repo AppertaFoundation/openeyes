@@ -165,12 +165,10 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
-	 * Return the eye of the most recent diagnosis for the episode
-	 *
-	 * return @string
+	 * Get the principle diagnosis for this episode
+	 * @return ElementDiagnosis
 	 */
-	public function getPrincipalDiagnosis()
-	{
+	public function getPrincipalDiagnosis() {
 		$result = Yii::app()->db->createCommand()
 			->select('ed.id AS id')
 			->from('element_diagnosis ed')
@@ -189,9 +187,19 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
+	/**
+	 * Get the principle eye for this episode
+	 * @return Eye
+	 */
+	public function getPrincipleEye() {
+		if($diagnosis = $this->getPrincipalDiagnosis()) {
+			return $diagnosis->eye;
+		}
+	}
+	
 	public function getPrincipalDiagnosisEyeText() {
-		if ($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->eye->name;
+		if ($eye = $this->getPrincipleEye()) {
+			return $eye->name;
 		} else {
 			return 'none';
 		}
