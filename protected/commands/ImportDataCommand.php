@@ -97,15 +97,14 @@ class ImportDataCommand extends CConsoleCommand {
 		$insert = array();
 		foreach($records as $record) {
 			foreach($record as &$field) {
-				if($field == '') {
-					$field = 'NULL';
-				} else {
+				if($field != 'NULL') {
 					$field = $db->quoteValue($field);
 				}
 			}
 			$insert[] = '('.implode(',', $record).')';
 		}
 		$query = "INSERT INTO ".$db->quoteTableName($table)." (".implode(',',$columns).") VALUES ".implode(',', $insert);
+		//echo "$query\n";
 		$db->createCommand($query)->execute();
 	}
 

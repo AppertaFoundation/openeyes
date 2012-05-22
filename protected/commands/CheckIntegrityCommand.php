@@ -19,7 +19,7 @@
 
 class CheckIntegrityCommand extends CConsoleCommand {
 
-	var $db_name = 'openeyes';
+	var $db_name = 'oedevelopment';
 
 	public function getName() {
 		return 'Check Integrity Command.';
@@ -43,16 +43,16 @@ class CheckIntegrityCommand extends CConsoleCommand {
 
 		foreach($keys as $key) {
 			$command = $connection->createCommand();
-			$command->select('*');
-			$command->from("{$key['TABLE_NAME']} AS REFERRING");
-			$command->leftJoin("{$key['REFERENCED_TABLE_NAME']} AS REFERENCED", "REFERRING.{$key['COLUMN_NAME']} = REFERENCED.{$key['REFERENCED_COLUMN_NAME']}");
+			$command->select('REFERRING.*');
+			$command->from("{$key['TABLE_NAME']} REFERRING");
+			$command->leftJoin("{$key['REFERENCED_TABLE_NAME']} REFERENCED", "REFERRING.{$key['COLUMN_NAME']} = REFERENCED.{$key['REFERENCED_COLUMN_NAME']}");
 			$command->where("REFERRING.{$key['COLUMN_NAME']} IS NOT NULL");
 			$command->where("REFERENCED.{$key['REFERENCED_COLUMN_NAME']} IS NULL");
 			$broken = $command->queryAll();
 			if($count = count($broken)) {
 				echo "{$key['TABLE_NAME']}.{$key['COLUMN_NAME']} contains $count broken keys\n";
-				foreach($broken as $line) {
-					//echo implode(',',$line)."\n";
+				foreach($broken as $key => $line) {
+					echo "{$line['id']}\n";
 				}
 			}
 		}
