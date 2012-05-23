@@ -133,7 +133,7 @@ class BaseEventTypeController extends BaseController
 						$elements[] = new $element_class;
 					}
 				}
-				
+
 				return $elements;
 		}
 	}
@@ -174,7 +174,7 @@ class BaseEventTypeController extends BaseController
 				$this->redirect(array('/patient/view/'.$this->patient->id));
 				return;
 			}
-			
+
 			$elements = array();
 			$element_names = array();
 
@@ -242,6 +242,7 @@ class BaseEventTypeController extends BaseController
 
 		$elements = $this->getDefaultElements('view');
 
+		echo "fish"; exit;
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
 			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
@@ -333,7 +334,7 @@ class BaseEventTypeController extends BaseController
 					$element_names[$element_type->class_name] = $element_type->name;
 				}
 			}
-			
+
 			$elementList = array();
 
 			// validation
@@ -405,7 +406,7 @@ class BaseEventTypeController extends BaseController
 			$this->renderPartial(
 				$action . '_' . $element->{$action.'_view'},
 				array('element' => $element, 'data' => $data, 'form' => $form),
-				false, false 
+				false, false
 			);
 		}
 	}
@@ -426,7 +427,7 @@ class BaseEventTypeController extends BaseController
 
 	public function header($editable=null) {
 		$episodes = $this->patient->episodes;
-		
+
 		if($editable === null){
 			if(isset($this->event)){
 				$editable = $this->event->editable;

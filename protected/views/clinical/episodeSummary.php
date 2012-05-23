@@ -27,6 +27,14 @@ if (!empty($episode)) {
 		$eye = $diagnosis->eye->name;
 		$diagnosis = $diagnosis->disorder->term;
 	}
+
+	$audit = new Audit;
+	$audit->action = "view";
+	$audit->target_type = "episode summary";
+	$audit->patient_id = $this->patient->id;
+	$audit->episode_id = $episode->id;
+	$audit->user_id = Yii::app()->user->id;
+	$audit->save();
 ?>
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
@@ -49,14 +57,14 @@ if (!empty($episode)) {
 				<h4><?php echo $episode->NHSDate('start_date')?></h4>
 			</div>
 		</div>
-						
+
 		<div class="right">
 			<h4>End date:</h4>
 			<div class="eventHighlight">
 				<h4><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'?></h4>
 			</div>
 		</div>
-						
+
 		<div class="left">
 		<h4>Subspecialty:</h4>
 			<div class="eventHighlight">

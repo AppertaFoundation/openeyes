@@ -71,7 +71,7 @@ class ClinicalController extends BaseController
 				'jquery-ui.min.js' => false,
 			);
 		}
-		
+
 		// Sample code to be used when RBAC is fully implemented.
 		/*
 		if (!Yii::app()->user->checkAccess('admin')) {
@@ -105,7 +105,17 @@ class ClinicalController extends BaseController
 		}
 
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		echo "fish"; exit;
 
+        $audit = new Audit;
+        $audit->action = "view";
+        $audit->target_type = "event (route 2)";
+        $audit->patient_id = $this->patient->id;
+        $audit->episode_id = $this->episode->id;
+        $audit->user_id = Yii::app()->user->id;
+        $audit->save();
+
+		// this shouldn't get called
 		$this->logActivity('viewed event');
 
 		$this->renderPartial(
@@ -119,6 +129,7 @@ class ClinicalController extends BaseController
 
 	public function actionIndex()
 	{
+		// this shouldn't get called
 		$this->logActivity('viewed patient index');
 
 		$this->render('index');
@@ -362,7 +373,7 @@ class ClinicalController extends BaseController
 		if (isset($errors)) {
 			$params['errors'] = $errors;
 		}
-		
+
 		$this->event = $event;
 		$this->editing = TRUE;
 
