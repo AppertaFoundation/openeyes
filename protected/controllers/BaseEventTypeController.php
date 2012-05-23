@@ -690,4 +690,33 @@ class BaseEventTypeController extends BaseController
 			'eventId' => $id,
 		), false, true);
 	}
+
+	public function actionDelete($id) {
+		if (!$this->event = Event::model()->findByPk($id)) {
+			throw new CHttpException(403, 'Invalid event id.');
+		}
+
+		// Only the event creator can delete the event, and only 24 hours after its initial creation
+		if (!$this->event->canDelete()) {
+			return $this->redirect(array('Default/view/'.$this->event->id));
+		}
+
+		if (!empty($_POST)) {
+			$this->event->deleted = 1;
+			$this->event->save();
+
+			return header('Location: /patient/episodes/'.$this->event->episode->patient->id);
+		}
+
+		$this->patient = $this->event->episode->patient;
+
+		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
+
+		$this->title = "Delete ".$this->event_type->name;
+
+		$this->renderPartial(
+			'delete', array(
+			'eventId' => $id,
+			), false, true);
+	}
 }

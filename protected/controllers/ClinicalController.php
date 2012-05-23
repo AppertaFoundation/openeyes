@@ -555,6 +555,34 @@ class ClinicalController extends BaseController
 		$this->renderPartial('//patient/event_footer',$params);
 	}
 
+	public function actionDeleteevent($id) {
+		$errors = array();
+
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new CHttpException(500,'Event not found: '.$id);
+		}
+
+		// Only the event creator can delete the event, and only 24 hours after its initial creation
+		if ($event->created_user_id != Yii::app()->session['user']->id || (time() - strtotime($event->created_date)) > 86400) {
+			return $this->redirect(array('patient/event/'.$event->id));
+		}
+
+		if (!empty($_POST) && @$_POST['event_id'] == $event->id) {
+			$event->deleted = 1;
+			$event->save();
+
+			$this->redirect(array('patient/episodes/'.$event->episode->patient->id));
+		}
+
+		$this->patient = $event->episode->patient;
+		$this->title = 'Delete event';
+
+		$this->renderPartial('/clinical/deleteEvent', array(
+				'event' => $event,
+				'errors' => $errors
+			), false, true);
+	}
+
 	/**
 	 * Get all the elements for a the current module's event type
 	 *

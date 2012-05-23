@@ -52,13 +52,13 @@ class Event extends BaseActiveRecord
 	}
 
 	/**
-	 * Sets default scope for events such that we never pull back any rows that have hidden set to 1
+	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
 	 * @return array of mandatory conditions
 	 */
 	
 	public function defaultScope() {
 		return array(
-			'condition' => 'hidden=0'
+			'condition' => 'deleted=0',
 		);
 	}
 
@@ -232,5 +232,10 @@ class Event extends BaseActiveRecord
 		foreach (EventIssue::model()->findAll('event_id=?',array($this->id)) as $event_issue) {
 			$event_issue->delete();
 		}
+	}
+
+	// Only the event creator can delete the event, and only 24 hours after its initial creation
+	public function canDelete() {
+		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
 	}
 }

@@ -55,7 +55,7 @@ if ($module = $this->getModule()) {
 					<?php
 					if (isset($this->event)) {
 						$this->renderPartial(
-							"/clinical/".$this->getTemplateName('view', $this->event->event_type_id),
+							"/clinical/".$event_template_name,
 							array(
 								'elements' => $elements,
 								'site' => $site

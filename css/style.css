@@ -80,6 +80,8 @@ body { width:1230px; margin:0 auto; }
 
 /* HEADER structure */
 #brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
+#brand.olympic { background-image: url(../img/_structure/openeyes_olympic.png); }
+
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
 #user_panel { width:500px; right:10px; }
 #patientID	{ width:340px; right:540px; }
@@ -119,8 +121,10 @@ em { font-style: italic; color:#333; }
 .small	{ font-size: 11px; font-weight: normal; }
 .normal { font-size: 13px; font-weight: normal; }
 .large 	{ font-size: 14px; font-weight: normal; }
-.bold		{ font-size: 15px; font-weight: bolder; }
+.bold	{ font-size: 15px; font-weight: bolder; }
+.big	{ font-size: 18px; font-weight: normal; }
 .caps		{ font-variant: small-caps; }
+.dull * { opacity: 0.7; }
 
 /* ====== BOXES ====== */
 #content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
@@ -324,6 +328,7 @@ table tr:last-child { border-bottom: none; }
 
 
 
+
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
 table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:5px;}
 table.subtleWhite tbody tr:hover { background-color: #fffbda; }
@@ -469,10 +474,16 @@ span.surname { font-weight: bold; }
 .whiteBox .data_row:last-child { border-bottom:none; margin-bottom: 0; }
 .whiteBox .data_row .data_label { float:left; color:#777;  }
 .whiteBox .data_row .data_value { margin-left: 180px; font-size: 15px; }
+.whiteBox .data_row .group { padding-bottom:10px; }
+.whiteBox .data_row .group > select { margin-right: 10px; }
 /* Clinicians only info */
 .whiteBox.forClinicians { border:1px solid #999; position:relative;}
-.whiteBox.forClinicians h4 { display:inline-block; padding:5px 10px 5px 45px; font-size:12px; color:#fff; background:#333; margin-bottom: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+.whiteBox.forClinicians h4 { display:inline-block; padding:5px 10px 5px 45px; font-size:12px; color:#fff; background:#999; margin-bottom: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
 .whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;  }
+.whiteBox.forClinicians .fuzzyDate { font-family:Georgia Times sans-serif; font-style: italic;  color:#666; }
+
+/* for fullWidth Episode Summary, need to control the vertical spacing in case of 2+ rows */
+td.eventIcons > img { margin-bottom:10px; }
 
 
 /* comments... copy of .sessionComments */
@@ -555,18 +566,29 @@ span.surname { font-weight: bold; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
 #event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px;}
-
 #event_content form > h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
-#event_content .eventHighlight > h4 { color:#000; font-size:16px; padding:0 10px 5px 10px; }
-#event_content .eventHighlight > h5 { color:#222; font-size:12px; padding:0 10px 5px 10px; }
+
+/* ---  Viewing a canvas element */
+canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
+
+/* ---  eventHighlight ---  should rename this to elementHighlight really! */
+#event_content .eventHighlight { width:75%; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding:2px 5px; margin-bottom:10px;}
+/* eventHighlight within a colsplit */
+#event_content .colsX .eventHighlight { width:90%; } 
+
+/* General Typography set up */
+#event_content .eventHighlight > h4 { color:#000; font-size:16px; padding:0 10px 5px 5px; line-height: 1.5; }
+#event_content .eventHighlight > h5 { color:#222; font-size:12px; padding:0 10px 5px 5px; }
+/* none */
+#event_content .eventHighlight.none > h4 { color:#999; font-size:15px; font-family:Georgia Times sans-serif; font-style: italic; padding:5px 10px 3px 5px; }
 /* medium */
-#event_content .eventHighlight.medium {  width:75%; background:#fff; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#event_content .eventHighlight.medium > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; }
+#event_content .eventHighlight.medium { background:#fff; }
+#event_content .eventHighlight.medium > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; line-height:1.5; }
 /* big */
-#event_content .eventHighlight.big {	width:75%; background:#fff; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#event_content .eventHighlight.big > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; }
-/* massive */
-#event_content .eventHighlight.priority {  width:75%; background:#ff0; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#event_content .eventHighlight.big { background:#fff; }
+#event_content .eventHighlight.big > h4 { color:#000; font-size:18px; padding:5px 10px 3px 5px; position: relative; top:1px; }
+/* massive */ 
+#event_content .eventHighlight.priority { background:#ff0; }
 #event_content .eventHighlight.priority > h4 { color:#000; font-size:20px; padding:10px 10px 3px 5px; }
 /* comments */
 #event_content .eventHighlight.comments > h4 { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; padding:3px 5px; margin:5px 10px 5px 5px; max-height: 150px; overflow-y: auto; }
@@ -589,11 +611,16 @@ span.surname { font-weight: bold; }
 #event_content .halfHeight .eventDetail > .label { padding-bottom: 10px; }
 
 /* 2 column split - for summary */
-#event_content .cols2 { padding-bottom:10px; }
+#event_content .cols2 { padding-bottom:30px; }
 #event_content .cols2 > .left { clear: left; width: 48%; }
 #event_content .cols2 > .right { clear: right; float: right; width: 48%; }
 /* reduced labels on two column split */
 #event_content .cols2 > .left > h4, #event_content > .cols2 > .right > h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px; }
+
+#event_content .colsX { padding-bottom:10px; clear:right; }
+#event_content .colsX > .colStack { float: left; width:20%; }
+#event_content .colsX > .colThird { float: left; width:33%; }
+
 
 /* event comments - cancellations */
 #event_content ul.eventComments { font-size:12px; }
@@ -759,17 +786,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #session_details #siteSelected { display:block; padding:10px; background:#dae6f1; font-size:15px; margin-top:10px; }
 #session_details #dateSelected { display:block; padding:10px; background:#dae6f1; font-size:15px; margin-top:3px; }
 #siteSelected > .highlighted, #dateSelected > .highlighted { font-weight:bold; }
-
-/*
----  I think this is redundant ?!?
-#evt_correspondence table { width:100%; margin:20px 0; }
-#evt_correspondence tr td:first-child		{ width:30%; padding-right:20px; text-align: right; }
-#evt_correspondence tr td:last-child	{ width:70%; background: #fff; padding:0 20px 5px 20px; border-left:2px solid #888; border-right:2px solid #888;	}
-#evt_correspondence tr td.pageStart { height:20px; border-top:2px solid #888; } 
-#evt_correspondence tr td.pageEnd	{ height:20px; border-bottom:2px solid #888; } 
-#evt_correspondence select	{ display:block; margin-bottom:10px; width:220px; float:right;	}
-#evt_correspondence textarea { border: 1px dotted #999; }
-*/
 
 /* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */
 #event_display .display_actions { background: #eaddaf; border-bottom:5px solid #a29d8a; }
@@ -1043,3 +1059,6 @@ ul.MultiSelectList { list-style-type: none; padding-left: 10px; }
 div.MultiSelectList { background: #fff; }
 
 label.error {color: red;}
+
+#delete_event h1 { margin-left: 10px; }
+#delete_event h2 { color: #f00; font-size: 16px; background: none; display: block; padding-left: 0; margin-left: 10px; padding-top: 20px;}
