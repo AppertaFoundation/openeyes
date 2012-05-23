@@ -121,6 +121,7 @@ em { font-style: italic; color:#333; }
 .large 	{ font-size: 14px; font-weight: normal; }
 .bold		{ font-size: 15px; font-weight: bolder; }
 .caps		{ font-variant: small-caps; }
+.dull * { opacity: 0.7; }
 
 /* ====== BOXES ====== */
 #content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
@@ -321,6 +322,7 @@ table tr:last-child { border-bottom: none; }
 .table_endRow{ background: #ddd; height:15px; }
 /* clickable table row  */
 .clickable:hover { background:#3665ff; color:white; }
+
 
 
 
@@ -565,9 +567,9 @@ span.surname { font-weight: bold; }
 #event_content .eventHighlight.medium > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; }
 /* big */
 #event_content .eventHighlight.big {	width:75%; background:#fff; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#event_content .eventHighlight.big > h4 { color:#000; font-size:15px; padding:5px 10px 3px 5px; }
-/* massive */
-#event_content .eventHighlight.priority {  width:75%; background:#ff0; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#event_content .eventHighlight.big > h4 { color:#000; font-size:18px; padding:5px 10px 3px 5px; position: relative; top:1px; }
+/* massive */ 
+#event_content .eventHighlight.priority { width:75%; background:#ff0; padding:2px 5px; margin-bottom:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 #event_content .eventHighlight.priority > h4 { color:#000; font-size:20px; padding:10px 10px 3px 5px; }
 /* comments */
 #event_content .eventHighlight.comments > h4 { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; padding:3px 5px; margin:5px 10px 5px 5px; max-height: 150px; overflow-y: auto; }
