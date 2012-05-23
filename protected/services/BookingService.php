@@ -101,7 +101,7 @@ class BookingService
 			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
 				AND s.date = '$date' AND $firmSql
-				AND (`e`.hidden = 0 or `e`.hidden is null)
+				AND (`e`.deleted = 0 or `e`.deleted is null)
 			GROUP BY s.id
 			ORDER BY s.start_time
 		";
@@ -129,7 +129,7 @@ class BookingService
 			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
 			WHERE s.id = '" . $sessionId . "'
-			AND (`e`.hidden = 0 or `e`.hidden is null)";
+			AND (`e`.deleted = 0 or `e`.deleted is null)";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 
@@ -213,7 +213,7 @@ class BookingService
 				$whereParams[':wardId'] = $wardId;
 			}
 
-			$whereSql .= ' AND ( e.hidden = 0 OR e.hidden is null ) ';
+			$whereSql .= ' AND ( e.deleted = 0 OR e.deleted is null ) ';
 
 			$command = Yii::app()->db->createCommand()
 				// TODO: References to sequences need to be removed when possible
