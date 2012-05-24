@@ -105,7 +105,7 @@ class ClinicalController extends BaseController
 		}
 
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-		echo "fish"; exit;
+		// echo "fish"; exit;
 
         $audit = new Audit;
         $audit->action = "view";

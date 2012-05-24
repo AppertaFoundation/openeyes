@@ -242,7 +242,7 @@ class BaseEventTypeController extends BaseController
 
 		$elements = $this->getDefaultElements('view');
 
-		echo "fish"; exit;
+		// echo "fish"; exit;
 		// Decide whether to display the 'edit' button in the template
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
 			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
