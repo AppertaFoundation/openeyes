@@ -252,9 +252,6 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
 	<?php } ?>
 	<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
-	<?php if ($operation->event->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($operation->event->created_date)) <= 86400) {?>
-		<button type="submit" class="classy red venti" value="submit" id="btn_delete-event"><span class="button-span button-span-red">Delete</span></button>
-	<?php }?>
 </div>
 <?php } ?>
 
@@ -311,13 +308,6 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 			appendPrintContent($('#printcontent_admissionletter').html());
 			printContent();
 			enableButtons();
-		}
-	});
-
-	$('#btn_delete-event').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			window.location.href = '/clinical/deleteevent/<?php echo $operation->event->id?>';
 		}
 	});
 </script>
