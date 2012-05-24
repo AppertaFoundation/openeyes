@@ -12,4 +12,11 @@
 	<div class="cleartall"></div>
 </div>
 
+<div class="form_button">
+	<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
+	<?php if ($this->event->canDelete()) {?>
+		<button type="submit" class="classy red venti" id="et_delete" name="delete"><span class="button-span button-span-red">Delete event</span></button>
+	<?php }?>
+</div>
+
 <?php $this->footer() ?>

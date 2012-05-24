@@ -105,6 +105,53 @@ class PatientController extends BaseController
 		));
 	}
 
+	public function actionEvent($id) {
+		$this->layout = '//layouts/patientMode/main';
+		$this->service = new ClinicalService;
+
+		$this->event = Event::model()->findByPk($id);
+		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
+		$this->episode = $this->event->episode;
+		$this->patient = $this->episode->patient;
+		$episodes = $this->patient->episodes;
+
+		$elements = $this->service->getDefaultElements('view', $this->event);
+
+		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
+
+		$this->logActivity('viewed event');
+
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		if(isset($this->event->element_operation->booking->session->date)){
+			$this->title = $this->event_type->name .": ".$this->event->element_operation->booking->session->NHSDate('date'). ", ". $this->patient->first_name. " ". $this->patient->last_name;
+		}else{
+			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
+		}
+
+		$this->editable = $this->event->editable;
+
+		// Should not be able to edit cancelled operations
+		if ($this->event_type_id == 25) {
+			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
+			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
+				return FALSE;
+			}
+		}
+	
+		if($this->episode->patient->date_of_death){
+			return FALSE;
+		}
+
+		$this->render('events_and_episodes', array(
+			'episodes' => $episodes,
+			'elements' => $elements,
+			'event_template_name' => $event_template_name,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
+			'site' => $site,
+		));
+	}
+
 	/**
 	 * Redirect to correct patient view by hospital number
 	 * @param string $hos_num
@@ -362,53 +409,6 @@ class PatientController extends BaseController
 		));
 	}
 
-	public function actionEvent($id) {
-		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
-
-		$this->event = Event::model()->findByPk($id);
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$this->episode = $this->event->episode;
-		$this->patient = $this->episode->patient;
-		$episodes = $this->patient->episodes;
-
-		$elements = $this->service->getDefaultElements('view', $this->event);
-
-		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
-
-		$this->logActivity('viewed event');
-
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-
-		if(isset($this->event->element_operation->booking->session->date)){
-			$this->title = $this->event_type->name .": ".$this->event->element_operation->booking->session->NHSDate('date'). ", ". $this->patient->first_name. " ". $this->patient->last_name;
-		}else{
-			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
-		}
-
-		$this->editable = $this->event->editable;
-
-		// Should not be able to edit cancelled operations
-		if ($this->event_type_id == 25) {
-			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
-			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
-				return FALSE;
-			}
-		}
-	 
-		if($this->episode->patient->date_of_death){
-			return FALSE;
-		}
-
-		$this->render('events_and_episodes', array(
-			'episodes' => $episodes,
-			'elements' => $elements,
-			'event_template_name' => $event_template_name,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
-			'site' => $site,
-		));
-	}
-
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
@@ -569,23 +569,23 @@ class PatientController extends BaseController
 
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
-						$institutions[] = $sca->site->institution_id;
+	$institutions[] = $sca->site->institution_id;
 					}
 
 					$contact_line = $contacts[] = $line.', '.$sca->site->name.')';
 					$session[$contact_line] = array(
-						'contact_id' => $contact['id'],
-						'site_id' => $sca->site_id,
+	'contact_id' => $contact['id'],
+	'site_id' => $sca->site_id,
 					);
 				}
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
 					if (!in_array($ica->institution_id,$institutions)) {
-						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
-						$session[$contact_line] = array(
-							'contact_id' => $contact['id'],
-							'institution_id' => $ica->institution_id,
-						);
+	$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
+	$session[$contact_line] = array(
+		'contact_id' => $contact['id'],
+		'institution_id' => $ica->institution_id,
+	);
 					}
 				}
 			} else {
@@ -620,49 +620,49 @@ class PatientController extends BaseController
 			foreach ($session as $text => $params) {
 				if ($text == @$_GET['text']) {
 					if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
-						throw new Exception("Can't find contact: ".$params['contact_id']);
+	throw new Exception("Can't find contact: ".$params['contact_id']);
 					}
 
 					$data = array(
-						'id' => $contact->id,
-						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
-						'qualifications' => $contact->qualifications,
-						'type' => $contact->parent_class,
+	'id' => $contact->id,
+	'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
+	'qualifications' => $contact->qualifications,
+	'type' => $contact->parent_class,
 					);
 
 					if (isset($params['site_id'])) {
-						$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+	$data['location'] = Site::model()->findByPk($params['site_id'])->name;
 					} else if (isset($params['institution_id'])) {
-						$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+	$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
 					} else if ($contact->address) {
-						$data['location'] = $contact->address->address1;
+	$data['location'] = $contact->address->address1;
 					}
 
 					foreach ($data as $key => $value) {
-						if ($value == null) {
-							$data[$key] = '';
-						}
+	if ($value == null) {
+		$data[$key] = '';
+	}
 					}
 
 					if ($contact->parent_class == 'Gp') {
-						$gp = Gp::model()->findByPk($contact->parent_id);
-						if ($patient->gp->id == $gp->id) {
-							echo json_encode(array());
-							return;
-						}
+	$gp = Gp::model()->findByPk($contact->parent_id);
+	if ($patient->gp->id == $gp->id) {
+		echo json_encode(array());
+		return;
+	}
 					}
 
 					if (!$pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
-						$pca = new PatientContactAssignment;
-						$pca->patient_id = $patient->id;
-						$pca->contact_id = $contact->id;
-						if (isset($params['site_id'])) {
-							$pca->site_id = $params['site_id'];
-						}
-						if (isset($params['institution_id'])) {
-							$pca->institution_id = $params['institution_id'];
-						}
-						$pca->save();
+	$pca = new PatientContactAssignment;
+	$pca->patient_id = $patient->id;
+	$pca->contact_id = $contact->id;
+	if (isset($params['site_id'])) {
+		$pca->site_id = $params['site_id'];
+	}
+	if (isset($params['institution_id'])) {
+		$pca->institution_id = $params['institution_id'];
+	}
+	$pca->save();
 					}
 
 					echo json_encode($data);

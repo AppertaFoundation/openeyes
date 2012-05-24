@@ -233,4 +233,9 @@ class Event extends BaseActiveRecord
 			$event_issue->delete();
 		}
 	}
+
+	// Only the event creator can delete the event, and only 24 hours after its initial creation
+	public function canDelete() {
+		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
+	}
 }
