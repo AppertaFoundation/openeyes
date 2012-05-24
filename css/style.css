@@ -477,6 +477,9 @@ span.surname { font-weight: bold; }
 .whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;  }
 .whiteBox.forClinicians .fuzzyDate { font-family:Georgia Times sans-serif; font-style: italic;  color:#666; }
 
+/* for fullWidth Episode Summary, need to control the vertical spacing in case of 2+ rows */
+td.eventIcons > img { margin-bottom:10px; }
+
 
 /* comments... copy of .sessionComments */
 .patientComments { display:block; font-family:Georgia Times sans-serif; font-size:15px; line-height:1.5; background:#fff0a0; border:1px solid #fee54f; padding:7px 10px 10px 10px; }
