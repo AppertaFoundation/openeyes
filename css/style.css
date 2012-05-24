@@ -80,6 +80,8 @@ body { width:1230px; margin:0 auto; }
 
 /* HEADER structure */
 #brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
+#brand.olympic { background-image: url(../img/_structure/openeyes_olympic.png); }
+
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
 #user_panel { width:500px; right:10px; }
 #patientID	{ width:340px; right:540px; }
