@@ -29,24 +29,21 @@ function appendPrintContent(content) {
 }
 
 function printContent(csspath) {
+	
+	var css = [ { href: '/css/printcontent.css', media: 'all' } ];
 	if (csspath) {
-		var css = csspath + '/print.css';
-	} else {
-		var css = '/css/printcontent.css';
+		css = [ { href: csspath + '/print.css', media: 'all' } ];
 	}
 
 	$('#printable').printElement({
 		pageTitle : 'OpenEyes printout',
-		// leaveOpen: true,
-		// printMode: 'popup',
+		//leaveOpen: true,
+		//printMode: 'popup',
 		printBodyOptions : {
 			styleToAdd : 'width: auto !important; margin: 0.75em !important;',
 			classNameToAdd : 'openeyesPrintout'
 		},
-		overrideElementCSS : [ {
-			href : css,
-			media : 'all'
-		} ]
+		overrideElementCSS : css,
 	});
 }
 
