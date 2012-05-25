@@ -480,6 +480,13 @@ class Patient extends BaseActiveRecord {
 		return $address; 
 	}
 	
+	public function getAllergiesString() {
+		$allergies = array();
+		foreach($this->allergies as $allergy) {
+			$allergies[] = $allergy->name;
+		}
+		return implode(', ',$allergies);		
+	}
 
 	public function addAllergy($allergy_id) {
 		$query = 'SELECT id from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';

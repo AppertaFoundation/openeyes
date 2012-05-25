@@ -169,6 +169,12 @@ class SiteController extends BaseController
 	{
 		$user = Yii::app()->session['user'];
 
+		$audit = new Audit;
+		$audit->action = "logout";
+		$audit->target_type = "logout";
+		$audit->user_id = Yii::app()->user->id;
+		$audit->save();
+
 		OELog::log("User $user->username logged out");
 
 		Yii::app()->user->logout();

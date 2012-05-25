@@ -87,6 +87,13 @@ class PatientController extends BaseController
 
 		$this->layout = '//layouts/patientMode/main';
 
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "patient summary";
+		$audit->patient_id = $this->patient->id;
+		$audit->user_id = Yii::app()->user->id;
+		$audit->save();
+
 		$this->logActivity('viewed patient');
 
 		$episodes_open = 0;
@@ -119,6 +126,16 @@ class PatientController extends BaseController
 
 		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
 
+        $audit = new Audit;
+        $audit->action = "view";
+        $audit->target_type = "event";
+        $audit->patient_id = $this->patient->id;
+        $audit->episode_id = $this->episode->id;
+        $audit->event_id = $this->event->id;
+        $audit->user_id = Yii::app()->user->id;
+        $audit->save();
+
+
 		$this->logActivity('viewed event');
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
@@ -138,7 +155,7 @@ class PatientController extends BaseController
 				return FALSE;
 			}
 		}
-	
+
 		if($this->episode->patient->date_of_death){
 			return FALSE;
 		}
@@ -202,12 +219,18 @@ class PatientController extends BaseController
 	public function actionResults($page=false)
 	{
 		if (!empty($_POST)) {
-
 			foreach ($_POST['Patient'] as $key => $value) {
 				$_POST['Patient'][$key] = trim($value);
 			}
 
+
 			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
+				$audit = new Audit;
+				$audit->action = "search-error";
+				$audit->target_type = "search";
+				$audit->user_id = Yii::app()->user->id;
+				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
+				$audit->save();
 				setcookie('patient-search-minimum-criteria','1',0,'/');
 				$this->redirect('/patient/results/error');
 			}
@@ -246,6 +269,12 @@ class PatientController extends BaseController
 		}
 
 		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
+			$audit = new Audit;
+			$audit->action = "search-error";
+			$audit->target_type = "search";
+			$audit->user_id = Yii::app()->user->id;
+			$audit->data = var_export($_POST['Patient'],true) . ": Error";
+			$audit->save();
 			$this->redirect('/patient/results/error');
 		}
 
@@ -253,7 +282,7 @@ class PatientController extends BaseController
 	}
 
 	function patientSearch() {
-		
+
 		switch ($_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
@@ -279,7 +308,7 @@ class PatientController extends BaseController
 		}
 
 		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
-		
+
 		$model = new Patient();
 		$model->attributes = $this->collateGetData();
 		$pageSize = 20;
@@ -297,6 +326,12 @@ class PatientController extends BaseController
 		));
 
 		if($nr == 0) {
+			$audit = new Audit;
+			$audit->action = "search-results";
+			$audit->target_type = "search";
+			$audit->user_id = Yii::app()->user->id;
+			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
+			$audit->save();
 			$this->redirect('/patient/no-results');
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
@@ -715,7 +750,7 @@ class PatientController extends BaseController
 		}
 		$patient->addAllergy($allergy_id);
 	}
-	
+
 	/**
 	 * Remove patient/allergy assignment
 	 * @param integer $patient_id
@@ -737,7 +772,7 @@ class PatientController extends BaseController
 		}
 		$patient->removeAllergy($allergy_id);
 	}
-	
+
 	/**
 	 * List of allergies
 	 */

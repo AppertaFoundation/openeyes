@@ -49,10 +49,20 @@ class UserIdentity extends CUserIdentity
 		 */
 		$user = User::model()->find('username = ?', array($this->username));
 		if($user === null) {
+			$audit = new Audit;
+			$audit->action = "login-failed";
+			$audit->target_type = "login";
+			$audit->data = "User not found in local database: $this->username";
+			$audit->save();
 			OELog::log("User not found in local database: $this->username");
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
 		} else if($user->active != 1) {
+			$audit = new Audit;
+			$audit->action = "login-failed";
+			$audit->target_type = "login";
+			$audit->data = "User not active and so cannot login: $this->username";
+			$audit->save();
 			OELog::log("User not active and so cannot login: $this->username");
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
@@ -99,6 +109,11 @@ class UserIdentity extends CUserIdentity
 				/**
 				 * User not authenticated via LDAP
 				 */
+				$audit = new Audit;
+				$audit->action = "login-failed";
+				$audit->target_type = "login";
+				$audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage().": ".$this->username;
+				$audit->save();
 				OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(),$this->username);
 
 				$this->errorCode = self::ERROR_USERNAME_INVALID;
@@ -120,12 +135,22 @@ class UserIdentity extends CUserIdentity
 			$user->last_name = $info['sn'][0];
 			$user->email = $info['mail'][0];
 			if (!$user->save()) {
+				$audit = new Audit;
+				$audit->action = "login-failed";
+				$audit->target_type = "login";
+				$audit->data = "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true).": ".$this->username;
+				$audit->save();
 				OELog::log("Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),$this->username);
 				throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(),true));
 			}
 		} else if (Yii::app()->params['auth_source'] == 'BASIC') {
 			if(!$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;
+				$audit = new Audit;
+				$audit->action = "login-failed";
+				$audit->target_type = "login";
+				$audit->data = "Login failed for user {$this->username}: invalid password";
+				$audit->save();
 				OELog::log("Login failed for user {$this->username}: invalid password",$this->username);
 				return false;
 			}
@@ -133,8 +158,13 @@ class UserIdentity extends CUserIdentity
 			/**
 			 * Unknown auth_source, error
 			 */
-			 OELog::log("Login failed for user {$this->username}: unknown auth source: ".Yii::app()->params['auth_source'],$this->username);
-			 throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
+			$audit = new Audit;
+			$audit->action = "login-failed";
+			$audit->target_type = "login";
+			$audit->data = "Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source'];
+			$audit->save();
+			OELog::log("Login failed for user {$this->username}: unknown auth source: ".Yii::app()->params['auth_source'],$this->username);
+			throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
 		}
 
 		$this->_id = $user->id;
@@ -176,6 +206,11 @@ class UserIdentity extends CUserIdentity
 		}
 
 		if (!count($firms)) {
+			$audit = new Audit;
+			$audit->action = "login-failed";
+			$audit->target_type = "login";
+			$audit->data = "Login failed for user {$this->username}: user has no firm rights and cannot use the system";
+			$audit->save();
 			OELog::log("Login failed for user {$this->username}: user has no firm rights and cannot use the system",$this->username);
 			throw new Exception('User has no firm rights and cannot use the system.');
 		}
@@ -203,6 +238,11 @@ class UserIdentity extends CUserIdentity
 			$app->session['selected_site_id'] = $site->id;
 		}
 
+		$audit = new Audit;
+		$audit->action = "login-successful";
+		$audit->target_type = "login";
+		$audit->data = "User {$this->username} logged in";
+		$audit->save();
 		OELog::log("User {$this->username} logged in",$this->username);
 
 		return true;
