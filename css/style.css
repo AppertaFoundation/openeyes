@@ -988,3 +988,5 @@ ul.MultiSelectList { list-style-type: none; padding-left: 10px; }
 div.MultiSelectList { background: #fff; }
 
 label.error {color: red;}
+.goldenrod {background-color: goldenrod; width: 200px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.goldenrod > h4 {color: #000 !important;}
