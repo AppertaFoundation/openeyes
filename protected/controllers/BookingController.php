@@ -398,6 +398,12 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
+				// Update episode status to 'listed'
+				$operation->event->episode->episode_status_id = 3;
+				if (!$operation->event->episode->save()) {
+					throw new Exception('Unable to change episode status id for episode '.$operation->event->episode->id);
+				}
+
 				$operation->event->deleteIssues();
 
 				if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
@@ -493,6 +499,11 @@ class BookingController extends BaseController
 
 					OELog::log("Booking rescheduled: $model->id, cancelled_booking=$cancellation->id");
 
+					$operation->event->episode->episode_status_id = 3;
+					if (!$operation->event->episode->save()) {
+						throw new Exception('Unable to change episode status for episode '.$operation->event->episode->id);
+					}
+
 					if (Yii::app()->params['urgent_booking_notify_hours'] && Yii::app()->params['urgent_booking_notify_email']) {
 						if (strtotime($model->session->date) <= (strtotime(date('Y-m-d')) + (Yii::app()->params['urgent_booking_notify_hours'] * 3600))) {
 							if (!is_array(Yii::app()->params['urgent_booking_notify_email'])) {
@@ -547,7 +558,15 @@ class BookingController extends BaseController
 						}
 					}
 
-					$model->delete();
+					if (!$model->delete()) {
+						throw new Exception('Unable to delete booking: '.print_r($model->getErrors(),true));
+					}
+
+					$operation->event->episode->episode_status_id = 3;
+
+					if (!$operation->event->episode->save()) {
+						throw new Exception('Unable to update episode status for episode '.$operation->event->episode->id);
+					}
 
 					$operation->status = ElementOperation::STATUS_NEEDS_RESCHEDULING;
 					
