@@ -136,7 +136,7 @@ em { font-style: italic; color:#333; }
 #content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
 #content .issueBox 	{ background: #fdf2e5 url(../img/_elements/icons/box/issue.png) top left no-repeat; border:#f3c160 1px solid; padding:10px 10px 10px 50px; }
 #content .infoBox 	{ background: #e0f2db url(../img/_elements/icons/box/info.png) top left no-repeat; border:#9c9 1px solid; padding:10px 10px 10px 50px; }
-#content .questionBox 	{ background: #d6e0ff url(../img/_elements/icons/box/question.png) top left no-repeat; border:#90aaff 2px solid; padding:10px 10px 10px 50px; }
+#content .questionBox 	{ background: #d6e0ff; border:#999 1px solid; padding:15px 10px 10px 10px; }
 #content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
 #content .fullBox	{ background: #dae6f1; }
 /* specific content */
@@ -199,7 +199,7 @@ cursor:pointer; }
 button.tall			{ width: 125px;	}
 button.grande		{ width: 154px; }
 button.venti-fixed	{ width: 210px; }
-button.venti		{ width: auto; margin:0 2px; }
+button.venti		{ width: auto; margin:0 4px 0 0; }
 button.venti span	{ padding:0 22px; }
 
 /* button text */
