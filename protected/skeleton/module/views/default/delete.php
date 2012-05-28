@@ -11,7 +11,9 @@
 
 <div id="delete_event">
 	<h1>Delete event</h1>
-	<h2><strong>WARNING: This will permanently delete the event and remove it from view.<br/><br/>THIS ACTION CANNOT BE UNDONE.</strong></h2>
+	<div class="alertBox" style="margin-top: 10px;">
+		<strong>WARNING: This will permanently delete the event and remove it from view.<br><br>THIS ACTION CANNOT BE UNDONE.</strong>
+	</div>
 	<p>
 		<strong>Are you sure you want to proceed?</strong>
 	</p>
