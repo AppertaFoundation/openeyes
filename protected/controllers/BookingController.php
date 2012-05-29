@@ -187,6 +187,8 @@ class BookingController extends BaseController
 			$result = $operation->cancel(@$_POST['cancellation_reason'], $comment);
 
 			if ($result['result']) {
+				$operation->event->deleteIssues();
+
 				die(json_encode(array()));
 			}
 

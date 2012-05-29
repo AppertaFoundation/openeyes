@@ -1077,3 +1077,6 @@ label.error {color: red;}
 
 #delete_event h1 { margin-left: 10px; }
 #delete_event h2 { color: #f00; font-size: 16px; background: none; display: block; padding-left: 0; margin-left: 10px; padding-top: 20px;}
+
+.goldenrod {background-color: goldenrod; width: 200px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.goldenrod > h4 {color: #000 !important;}
