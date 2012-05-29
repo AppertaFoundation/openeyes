@@ -124,4 +124,14 @@ class BaseActiveRecord extends CActiveRecord
 			return Helper::convertMySQL2HTML($value, $empty_string);
 		}
 	}
+
+	public function getAuditAttributes() {
+		$attributes = array();
+
+		foreach ($this->getAttributes() as $key => $value) {
+			$attributes[$key] = $this->{$key};
+		}
+
+		return serialize($attributes);
+	}
 }

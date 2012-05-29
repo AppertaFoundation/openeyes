@@ -212,6 +212,24 @@ class BaseEventTypeController extends BaseController
 				if ($eventId) {
 					$this->logActivity('created event.');
 
+					$event = Event::model()->findByPk($eventId);
+
+					$audit_data = array('event' => $event->getAuditAttributes());
+
+					foreach ($elements as $element) {
+						$audit_data[get_class($element)] = $element->getAuditAttributes();
+					}
+
+					$audit = new Audit;
+					$audit->action = "create";
+					$audit->target_type = "event";
+					$audit->patient_id = $event->episode->patient->id;
+					$audit->episode_id = $event->episode_id;
+					$audit->event_id = $event->id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->data = serialize($audit_data);
+					$audit->save();
+
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
 					$this->redirect(array('Default/view/'.$eventId));
 					return;
@@ -264,6 +282,15 @@ class BaseEventTypeController extends BaseController
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->logActivity('viewed event');
+
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "event";
+		$audit->patient_id = $this->event->episode->patient->id;
+		$audit->episode_id = $this->event->episode_id;
+		$audit->event_id = $this->event->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
 
 		$this->title = $this->event_type->name;
 
@@ -365,6 +392,22 @@ class BaseEventTypeController extends BaseController
 					}
 
 					$this->logActivity('updated event');
+
+					$audit_data = array('event' => $this->event->getAuditAttributes());
+
+					foreach ($elements as $element) {
+						$audit_data[get_class($element)] = $element->getAuditAttributes();
+					}
+
+					$audit = new Audit;
+					$audit->action = "update";
+					$audit->target_type = "event";
+					$audit->patient_id = $this->event->episode->patient->id;
+					$audit->episode_id = $this->event->episode_id;
+					$audit->event_id = $this->event->id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->data = serialize($audit_data);
+					$audit->save();
 
 					// Update event to indicate user has made a change
 					$this->event->datetime = date("Y-m-d H:i:s");
@@ -586,6 +629,15 @@ class BaseEventTypeController extends BaseController
 
 			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
 
+			$audit = new Audit;
+			$audit->action = "create";
+			$audit->target_type = "episode";
+			$audit->patient_id = $episode->patient->id;
+			$audit->episode_id = $episode->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $episode->getAuditAttributes();
+			$audit->save();
+
 			if (Yii::app()->params['use_pas']) {
 				// Try to fetch a referral from PAS for this episode
 				$episode->fetchPASReferral();
@@ -682,6 +734,15 @@ class BaseEventTypeController extends BaseController
 
 		$this->logActivity('printed event');
 
+		$audit = new Audit;
+		$audit->action = "print";
+		$audit->target_type = "event";
+		$audit->patient_id = $this->event->episode->patient->id;
+		$audit->episode_id = $this->event->episode_id;
+		$audit->event_id = $this->event->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
+
 		$this->title = $this->event_type->name;
 
 		$this->renderPartial(
@@ -704,6 +765,15 @@ class BaseEventTypeController extends BaseController
 		if (!empty($_POST)) {
 			$this->event->deleted = 1;
 			$this->event->save();
+
+			$audit = new Audit;
+			$audit->action = "delete";
+			$audit->target_type = "event";
+			$audit->patient_id = $this->event->episode->patient->id;
+			$audit->episode_id = $this->event->episode_id;
+			$audit->event_id = $this->event->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->save();
 
 			return header('Location: /patient/episodes/'.$this->event->episode->patient->id);
 		}

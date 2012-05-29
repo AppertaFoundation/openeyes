@@ -259,4 +259,24 @@ class Episode extends BaseActiveRecord
 		$criteria->limit = 1;
 		return Event::model()->find($criteria);
 	}
+
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	{
+		$previous = Episode::model()->findByPk($this->id);
+
+		if (parent::save($runValidation, $attributes)) {
+			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
+				$audit = new Audit;
+				$audit->action = "change status";
+				$audit->target_type = "episode";
+				$audit->patient_id = $this->patient_id;
+				$audit->episode_id = $this->id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+				$audit->data = $this->episode_status_id;
+				$audit->save();
+			}
+			return true;
+		}
+		return false;
+	}
 }

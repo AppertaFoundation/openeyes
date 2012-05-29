@@ -91,7 +91,7 @@ class PatientController extends BaseController
 		$audit->action = "view";
 		$audit->target_type = "patient summary";
 		$audit->patient_id = $this->patient->id;
-		$audit->user_id = Yii::app()->user->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
 
 		$this->logActivity('viewed patient');
@@ -126,15 +126,14 @@ class PatientController extends BaseController
 
 		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
 
-        $audit = new Audit;
-        $audit->action = "view";
-        $audit->target_type = "event";
-        $audit->patient_id = $this->patient->id;
-        $audit->episode_id = $this->episode->id;
-        $audit->event_id = $this->event->id;
-        $audit->user_id = Yii::app()->user->id;
-        $audit->save();
-
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "event";
+		$audit->patient_id = $this->patient->id;
+		$audit->episode_id = $this->episode->id;
+		$audit->event_id = $this->event->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
 
 		$this->logActivity('viewed event');
 
@@ -228,7 +227,7 @@ class PatientController extends BaseController
 				$audit = new Audit;
 				$audit->action = "search-error";
 				$audit->target_type = "search";
-				$audit->user_id = Yii::app()->user->id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
 				$audit->save();
 				setcookie('patient-search-minimum-criteria','1',0,'/');
@@ -272,7 +271,7 @@ class PatientController extends BaseController
 			$audit = new Audit;
 			$audit->action = "search-error";
 			$audit->target_type = "search";
-			$audit->user_id = Yii::app()->user->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = var_export($_POST['Patient'],true) . ": Error";
 			$audit->save();
 			$this->redirect('/patient/results/error');
@@ -329,7 +328,7 @@ class PatientController extends BaseController
 			$audit = new Audit;
 			$audit->action = "search-results";
 			$audit->target_type = "search";
-			$audit->user_id = Yii::app()->user->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
 			$audit->save();
 			$this->redirect('/patient/no-results');

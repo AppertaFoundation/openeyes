@@ -71,7 +71,7 @@ class ElementOperation extends BaseEventTypeElement
 	const LETTER_REMOVAL = 4;
 	
 	// these reflect an actual status, relating to actions required rather than letters sent
-	const STATUS_WHITE = 0; // no action required.  the default status.
+	const STATUS_WHITE = 0; // no action required.	the default status.
 	const STATUS_PURPLE = 1; // no invitation letter has been sent
 	const STATUS_GREEN1 = 2; // it's two weeks since an invitation letter was sent with no further letters going out
 	const STATUS_GREEN2 = 3; // it's two weeks since 1st reminder was sent with no further letters going out
@@ -783,7 +783,7 @@ class ElementOperation extends BaseEventTypeElement
 		}
 		if (
 			!is_null($this->date_letter_sent->date_invitation_letter_sent) and 
-			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_invitation_letter_sent and	// an invitation letter has been sent
 			is_null($this->date_letter_sent->date_1st_reminder_letter_sent) and // but no 1st reminder
 			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // no 2nd reminder
 			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
@@ -791,7 +791,7 @@ class ElementOperation extends BaseEventTypeElement
 			return self::LETTER_INVITE;
 		}
 		if (
-			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_invitation_letter_sent and	// an invitation letter has been sent
 			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
 			is_null($this->date_letter_sent->date_2nd_reminder_letter_sent) and // but no 2nd reminder
 			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
@@ -799,7 +799,7 @@ class ElementOperation extends BaseEventTypeElement
 			return self::LETTER_REMINDER_1;
 		}
 		if (
-			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_invitation_letter_sent and	// an invitation letter has been sent
 			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
 			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
 			is_null($this->date_letter_sent->date_gp_letter_sent) // no gp letter
@@ -807,7 +807,7 @@ class ElementOperation extends BaseEventTypeElement
 			return self::LETTER_REMINDER_2;
 		}
 		if (
-			$this->date_letter_sent->date_invitation_letter_sent and  // an invitation letter has been sent
+			$this->date_letter_sent->date_invitation_letter_sent and	// an invitation letter has been sent
 			$this->date_letter_sent->date_1st_reminder_letter_sent and // and a 1st reminder
 			$this->date_letter_sent->date_2nd_reminder_letter_sent and // and a 2nd reminder
 			$this->date_letter_sent->date_gp_letter_sent // and a gp letter
