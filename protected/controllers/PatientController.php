@@ -654,49 +654,49 @@ class PatientController extends BaseController
 			foreach ($session as $text => $params) {
 				if ($text == @$_GET['text']) {
 					if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
-	throw new Exception("Can't find contact: ".$params['contact_id']);
+						throw new Exception("Can't find contact: ".$params['contact_id']);
 					}
 
 					$data = array(
-	'id' => $contact->id,
-	'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
-	'qualifications' => $contact->qualifications,
-	'type' => $contact->parent_class,
+						'id' => $contact->id,
+						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
+						'qualifications' => $contact->qualifications,
+						'type' => $contact->parent_class,
 					);
 
 					if (isset($params['site_id'])) {
-	$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+						$data['location'] = Site::model()->findByPk($params['site_id'])->name;
 					} else if (isset($params['institution_id'])) {
-	$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+						$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
 					} else if ($contact->address) {
-	$data['location'] = $contact->address->address1;
+						$data['location'] = $contact->address->address1;
 					}
 
 					foreach ($data as $key => $value) {
-	if ($value == null) {
-		$data[$key] = '';
-	}
+						if ($value == null) {
+							$data[$key] = '';
+						}
 					}
 
 					if ($contact->parent_class == 'Gp') {
-	$gp = Gp::model()->findByPk($contact->parent_id);
-	if ($patient->gp->id == $gp->id) {
-		echo json_encode(array());
-		return;
-	}
+						$gp = Gp::model()->findByPk($contact->parent_id);
+						if ($patient->gp->id == $gp->id) {
+							echo json_encode(array());
+							return;
+						}
 					}
 
 					if (!$pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
-	$pca = new PatientContactAssignment;
-	$pca->patient_id = $patient->id;
-	$pca->contact_id = $contact->id;
-	if (isset($params['site_id'])) {
-		$pca->site_id = $params['site_id'];
-	}
-	if (isset($params['institution_id'])) {
-		$pca->institution_id = $params['institution_id'];
-	}
-	$pca->save();
+						$pca = new PatientContactAssignment;
+						$pca->patient_id = $patient->id;
+						$pca->contact_id = $contact->id;
+						if (isset($params['site_id'])) {
+							$pca->site_id = $params['site_id'];
+						}
+						if (isset($params['institution_id'])) {
+							$pca->institution_id = $params['institution_id'];
+						}
+						$pca->save();
 					}
 
 					echo json_encode($data);
