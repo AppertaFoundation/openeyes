@@ -662,12 +662,16 @@ class PatientController extends BaseController
 						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
 						'qualifications' => $contact->qualifications,
 						'type' => $contact->parent_class,
+						'site_id' => '',
+						'institution_id' => '',
 					);
 
 					if (isset($params['site_id'])) {
 						$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+						$data['site_id'] = $params['site_id'];
 					} else if (isset($params['institution_id'])) {
 						$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+						$data['institution_id'] = $params['institution_id'];
 					} else if ($contact->address) {
 						$data['location'] = $contact->address->address1;
 					}
@@ -686,7 +690,19 @@ class PatientController extends BaseController
 						}
 					}
 
-					if (!$pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
+					$whereClause = 'patient_id=? and contact_id=?';
+					$whereParams = array($patient->id,$contact->id);
+
+					if (isset($params['site_id'])) {
+						$whereClause .= ' and site_id=?';
+						$whereParams[] = $params['site_id'];
+					}
+					if (isset($params['institution_id'])) {
+						$whereClause .= ' and institution_id=?';
+						$whereParams[] = $params['institution_id'];
+					}
+
+					if (!$pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
 						$pca = new PatientContactAssignment;
 						$pca->patient_id = $patient->id;
 						$pca->contact_id = $contact->id;
@@ -697,6 +713,14 @@ class PatientController extends BaseController
 							$pca->institution_id = $params['institution_id'];
 						}
 						$pca->save();
+
+						$audit = new Audit;
+						$audit->action = "associate contact";
+						$audit->target_type = "patient";
+						$audit->patient_id = $patient->id;
+						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+						$audit->data = $pca->getAuditAttributes();
+						$audit->save();
 					}
 
 					echo json_encode($data);
@@ -718,11 +742,43 @@ class PatientController extends BaseController
 			throw new Exception('Contact not found: '.@$_GET['contact_id']);
 		}
 
-		if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
+		if (@$_GET['site_id']) {
+			if (!$site = Site::model()->findByPk($_GET['site_id'])) {
+				throw new Exception('Site not found: '.$_GET['site_id']);
+			}
+		}
+
+		if (@$_GET['institution_id']) {
+			if (!$institution = Institution::model()->findByPk($_GET['institution_id'])) {
+				throw new Exception('Institution not found: '.$_GET['institution_id']);
+			}
+		}
+
+		$whereClause = 'patient_id=? and contact_id=?';
+		$whereParams = array($patient->id,$contact->id);
+
+		if (isset($site)) {
+			$whereClause .= ' and site_id=?';
+			$whereParams[] = $site->id;
+		}
+		if (isset($institution)) {
+			$whereClause .= ' and institution_id=?';
+			$whereParams[] = $institution->id;
+		}
+
+		if ($pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
 			if (!$pca->delete()) {
 				echo "0";
 				return;
 			}
+
+			$audit = new Audit;
+			$audit->action = "unassociate contact";
+			$audit->target_type = "patient";
+			$audit->patient_id = $patient->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $pca->getAuditAttributes();
+			$audit->save();
 		}
 
 		echo "1";
