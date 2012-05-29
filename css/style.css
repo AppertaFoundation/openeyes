@@ -339,7 +339,7 @@ table tr:last-child { border-bottom: none; }
 
 
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
-table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:5px;}
+table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:20px;}
 table.subtleWhite tbody tr:hover { background-color: #fffbda; }
 table.subtleWhite th { text-align:left; font-size:11px; color:#ccc; padding:10px 10px 2px 10px; }
 table.subtleWhite td { font-size:15px; padding:10px; }
@@ -641,12 +641,12 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 #event_content ul.eventComments > li { margin-bottom:8px; padding-bottom: 8px; border-bottom:1px dotted #dae6f1; }
 
 /* meta data (creation and modification) */
-#event_content > .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
-#event_content > .metaData .info { margin-right: 15px; }
-#event_content > .metaData .user { color:#666; }
+#event_content .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
+#event_content .metaData .info { margin-right: 15px; }
+#event_content .metaData .user { color:#666; }
 
 /* event subsection */
-#event_content > h3.subsection { font-size:14px; color:#111; background:#dae6f1; padding:12px 10px; margin-top: 10px; }
+#event_content h3.subsection { font-size:14px; color:#111; background:#dae6f1; padding:12px 10px; margin-top: 10px; }
 #event_content .cols2 h3.subsection { margin-top: 10px; clear: both; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
 
 #event_content .splitElement { padding:10px 0; margin:10px 0; border-top:5px solid #dae6f1; border-bottom:5px solid #dae6f1; }
