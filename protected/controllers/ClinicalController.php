@@ -223,12 +223,18 @@ class ClinicalController extends BaseController
 					$event = Event::model()->findByPk($eventId);
 					$event->info = $event_info;
 					if (!$event->save()) {
-						throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
+						throw new SystemException('Unable to create event: '.print_r($event->getErrors(),true));
 					}
 				}
 
 				if ($eventId) {
 					$this->logActivity('created event.');
+
+					$episode = Episode::model()->findByPk($event->episode_id);
+					$episode->episode_status_id = 3;
+					if (!$episode->save()) {
+						throw new Exception('Unable to save episode status for episode '.$episode->id);
+					}
 
 					$eventTypeName = ucfirst($eventType->name);
 					Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
