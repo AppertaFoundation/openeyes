@@ -104,49 +104,19 @@ class TheatreController extends BaseController
 
 	public function actionPrintDiary()
 	{
+		$audit = new Audit;
+		$audit->action = "print";
+		$audit->target_type = "diary";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		$this->renderPartial('_print_diary', array('theatres'=>$this->getTheatres()), false, true);
-		/*
-		$pdf = new TheatrePDF;
-
-		$_POST = $_GET;
-
-		$previousSequenceId = false;
-
-		foreach ($this->getTheatres() as $name => $dates) {
-			foreach ($dates as $date => $sessions) {
-				foreach ($sessions as $session) {
-					if ($session['sequenceId'] != $previousSequenceId) {
-						$pdf->add_page(array(
-							'theatre_no' => $name,
-							'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
-							'surgical_firm' => empty($session['firm_name']) ? 'Emergency list' : $session['firm_name'],
-							'anaesthetist' => '', // todo: wtf
-							'date' => Helper::convertDate2NHS($date)
-						));
-					}
-
-					if (!empty($session['patientId'])) {
-						$procedures = !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures';
-
-						if ($session['operationComments']) {
-							$procedures .= "\n".$session['operationComments'];
-						}
-
-						$pdf->add_row($session['patientHosNum'], $session['patientName'], $session['patientAge'], $session['ward'], $session['anaesthetic'], $procedures, $session['admissionTime']);
-					}
-
-					$previousSequenceId = $session['sequenceId'];
-				}
-			}
-		}
-
-		$pdf->build();
-		*/
 	}
 
 	public function actionPrintList() {
 		$audit = new Audit;
-		$audit->action = "print";
+		$audit->action = "print list";
 		$audit->target_type = "diary";
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->data = serialize($_POST);
