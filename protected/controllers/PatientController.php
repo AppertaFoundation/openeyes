@@ -281,6 +281,9 @@ class PatientController extends BaseController
 	}
 
 	function patientSearch() {
+		if (!isset($_GET['sort_by'])) {
+			return $this->redirect('/');
+		}
 
 		switch ($_GET['sort_by']) {
 			case 0:
