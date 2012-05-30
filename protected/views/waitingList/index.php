@@ -164,7 +164,7 @@
 	$('#btn_print').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			print_items_from_selector('input[id^="operation"]:checked');
+			print_items_from_selector('input[id^="operation"]:checked',false);
 			enableButtons();
 		}
 	});
@@ -172,13 +172,18 @@
 	$('#btn_print_all').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			print_items_from_selector('input[id^="operation"]:enabled');
+			print_items_from_selector('input[id^="operation"]:enabled',true);
 			enableButtons();
 		}
 	});
 
-	function print_items_from_selector(sel) {
-		var printurl = '/waitingList/printletters';
+	function print_items_from_selector(sel,all) {
+		if (all) {
+			var printurl = '/waitingList/printletters';
+		} else {
+			var printurl = '/waitingList/printletters';
+		}
+
 		var operations = new Array();
 
 		var nogp = 0;
@@ -201,7 +206,7 @@
 			}
 		} else {
 			show_letter_warnings(nogp);
-			printUrl(printurl, {'operations[]': operations});
+			printUrl(printurl, {'operations[]': operations, 'all': all});
 		}
 	}
 
