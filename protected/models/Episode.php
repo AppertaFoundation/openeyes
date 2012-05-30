@@ -267,7 +267,7 @@ class Episode extends BaseActiveRecord
 		if (parent::save($runValidation, $attributes)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
 				$audit = new Audit;
-				$audit->action = "change status";
+				$audit->action = "change-status";
 				$audit->target_type = "episode";
 				$audit->patient_id = $this->patient_id;
 				$audit->episode_id = $this->id;

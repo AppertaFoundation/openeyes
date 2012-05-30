@@ -498,7 +498,7 @@ class Patient extends BaseActiveRecord {
 			}
 
 			$audit = new Audit;
-			$audit->action = "add allergy";
+			$audit->action = "add-allergy";
 			$audit->target_type = "patient";
 			$audit->patient_id = $this->id;
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
@@ -514,7 +514,7 @@ class Patient extends BaseActiveRecord {
 			}
 
 			$audit = new Audit;
-			$audit->action = "remove allergy";
+			$audit->action = "remove-allergy";
 			$audit->target_type = "patient";
 			$audit->patient_id = $this->id;
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);

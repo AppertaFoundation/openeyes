@@ -715,7 +715,7 @@ class PatientController extends BaseController
 						$pca->save();
 
 						$audit = new Audit;
-						$audit->action = "associate contact";
+						$audit->action = "associate-contact";
 						$audit->target_type = "patient";
 						$audit->patient_id = $patient->id;
 						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
@@ -773,7 +773,7 @@ class PatientController extends BaseController
 			}
 
 			$audit = new Audit;
-			$audit->action = "unassociate contact";
+			$audit->action = "unassociate-contact";
 			$audit->target_type = "patient";
 			$audit->patient_id = $patient->id;
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
