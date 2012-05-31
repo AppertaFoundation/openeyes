@@ -601,7 +601,7 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 #event_content .eventHighlight.big { background:#fff; }
 #event_content .eventHighlight.big > h4 { color:#000; font-size:18px; padding:5px 10px 3px 5px; position: relative; top:1px; }
 /* massive */ 
-#event_content .eventHighlight.priority { background:#ff0; }
+#event_content .eventHighlight.priority { background:#f4f400; }
 #event_content .eventHighlight.priority > h4 { color:#000; font-size:20px; padding:10px 10px 3px 5px; }
 /* comments */
 #event_content .eventHighlight.comments > h4 { font-family:Georgia Times sans-serif; line-height:1.5; background:#fff0a0; padding:3px 5px; margin:5px 10px 5px 5px; max-height: 150px; overflow-y: auto; }
