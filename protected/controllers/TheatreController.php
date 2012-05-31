@@ -20,9 +20,9 @@
 class TheatreController extends BaseController
 {
 	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
+		* @var string the default layout for the views. Defaults to '//layouts/column2', meaning
+		* using two-column layout. See 'protected/views/layouts/column2.php'.
+		*/
 	public $layout='//layouts/main';
  
 	public function filters()
@@ -84,6 +84,19 @@ class TheatreController extends BaseController
 
 				Yii::app()->session['theatre_searchoptions'] = $_POST;
 			}
+
+			$audit = new Audit;
+			$audit->action = "view";
+			$audit->target_type = "diary";
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->save();
+		} else {
+			$audit = new Audit;
+			$audit->action = "search";
+			$audit->target_type = "diary";
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = serialize($_POST);
+			$audit->save();
 		}
 
 		$this->render('index', array('wards'=>$wards, 'theatres'=>$theatres));
@@ -91,52 +104,36 @@ class TheatreController extends BaseController
 
 	public function actionPrintDiary()
 	{
+		$audit = new Audit;
+		$audit->action = "print";
+		$audit->target_type = "diary";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		$this->renderPartial('_print_diary', array('theatres'=>$this->getTheatres()), false, true);
-		/*
-		$pdf = new TheatrePDF;
-
-		$_POST = $_GET;
-
-		$previousSequenceId = false;
-
-		foreach ($this->getTheatres() as $name => $dates) {
-			foreach ($dates as $date => $sessions) {
-				foreach ($sessions as $session) {
-					if ($session['sequenceId'] != $previousSequenceId) {
-						$pdf->add_page(array(
-							'theatre_no' => $name,
-							'session' => substr($session['startTime'], 0, 5).' - '.substr($session['endTime'], 0, 5),
-							'surgical_firm' => empty($session['firm_name']) ? 'Emergency list' : $session['firm_name'],
-							'anaesthetist' => '', // todo: wtf
-							'date' => Helper::convertDate2NHS($date)
-						));
-					}
-
-					if (!empty($session['patientId'])) {
-						$procedures = !empty($session['procedures']) ? '['.$session['eye'].'] '.$session['procedures'] : 'No procedures';
-
-						if ($session['operationComments']) {
-							$procedures .= "\n".$session['operationComments'];
-						}
-
-						$pdf->add_row($session['patientHosNum'], $session['patientName'], $session['patientAge'], $session['ward'], $session['anaesthetic'], $procedures, $session['admissionTime']);
-					}
-
-					$previousSequenceId = $session['sequenceId'];
-				}
-			}
-		}
-
-		$pdf->build();
-		*/
 	}
 
 	public function actionPrintList() {
+		$audit = new Audit;
+		$audit->action = "print list";
+		$audit->target_type = "diary";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		$this->renderPartial('_print_list', array('bookings'=>$this->getBookingList()), false, true);
 	}
 
 	public function actionSearch()
 	{
+		$audit = new Audit;
+		$audit->action = "search";
+		$audit->target_type = "diary";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		$this->renderPartial('_list', array('theatres' => $this->getTheatres()), false, true);
 	}
 
@@ -337,9 +334,9 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Generates a firm list based on a subspecialty id provided via POST
-	 * echoes form option tags for display
-	 */
+		* Generates a firm list based on a subspecialty id provided via POST
+		* echoes form option tags for display
+		*/
 	public function actionFilterFirms()
 	{
 		echo CHtml::tag('option', array('value'=>''),
@@ -355,9 +352,9 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Generates a theatre list based on a site id provided via POST
-	 * echoes form option tags for display
-	 */
+		* Generates a theatre list based on a site id provided via POST
+		* echoes form option tags for display
+		*/
 	public function actionFilterTheatres()
 	{
 		echo CHtml::tag('option', array('value'=>''),
@@ -373,9 +370,9 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Generates a theatre list based on a site id provided via POST
-	 * echoes form option tags for display
-	 */
+		* Generates a theatre list based on a site id provided via POST
+		* echoes form option tags for display
+		*/
 	public function actionFilterWards()
 	{
 		echo CHtml::tag('option', array('value'=>''),
@@ -451,6 +448,16 @@ class TheatreController extends BaseController
 						if (!$booking->save()) {
 							throw new SystemException('Unable to save booking: '.print_r($booking->getErrors(),true));
 						}
+
+						$audit = new Audit;
+						$audit->action = "update (diary)";
+						$audit->target_type = "booking";
+						$audit->patient_id = $booking->elementOperation->event->episode->patient_id;
+						$audit->episode_id = $booking->elementOperation->event->episode_id;
+						$audit->event_id = $booking->elementOperation->event_id;
+						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+						$audit->data = $booking->getAuditAttributes();
+						$audit->save();
 					}
 				}
 
@@ -459,64 +466,35 @@ class TheatreController extends BaseController
 
 					if (!empty($session)) {
 						$session->comments = $value;
+
+						foreach ($_POST as $key => $value) {
+							if (preg_match('/^consultant_([0-9]+)$/',$key,$n) && $m[1] == $n[1]) {
+								$session->consultant = ($value == 'true' ? 1 : 0);
+							}
+							if (preg_match('/^paediatric_([0-9]+)$/',$key,$n) && $m[1] == $n[1]) {
+								$session->paediatric = ($value == 'true' ? 1 : 0);
+							}
+							if (preg_match('/^anaesthetic_([0-9]+)$/',$key,$n) && $m[1] == $n[1]) {
+								$session->anaesthetist = ($value == 'true' ? 1 : 0);
+							}
+							if (preg_match('/^general_anaesthetic_([0-9]+)$/',$key,$n) && $m[1] == $n[1]) {
+								$session->general_anaesthetic = ($value == 'true' ? 1 : 0);
+							}
+							if (preg_match('/^available_([0-9]+)$/',$key,$n) && $m[1] == $n[1]) {
+								$session->status= ($value == 'true' ? 0 : 1);
+							}
+						}
+
 						if (!$session->save()) {
 							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
 						}
-					}
-				}
 
-				if (preg_match('/^consultant_([0-9]+)$/',$key,$m)) {
-					$session = Session::model()->findByPk($m[1]);
-
-					if (!empty($session)) {
-						$session->consultant = ($value == 'true' ? 1 : 0);
-						if (!$session->save()) {
-							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
-						}
-					}
-				}
-
-				if (preg_match('/^paediatric_([0-9]+)$/',$key,$m)) {
-					$session = Session::model()->findByPk($m[1]);
-
-					if (!empty($session)) {
-						$session->paediatric = ($value == 'true' ? 1 : 0);
-						if (!$session->save()) {
-							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
-						}
-					}
-				}
-
-				if (preg_match('/^anaesthetic_([0-9]+)$/',$key,$m)) {
-					$session = Session::model()->findByPk($m[1]);
-
-					if (!empty($session)) {
-						$session->anaesthetist = ($value == 'true' ? 1 : 0);
-						if (!$session->save()) {
-							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
-						}
-					}
-				}
-
-				if (preg_match('/^general_anaesthetic_([0-9]+)$/',$key,$m)) {
-					$session = Session::model()->findByPk($m[1]);
-
-					if (!empty($session)) {
-						$session->general_anaesthetic = ($value == 'true' ? 1 : 0);
-						if (!$session->save()) {
-							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
-						}
-					}
-				}
-
-				if (preg_match('/^available_([0-9]+)$/',$key,$m)) {
-					$session = Session::model()->findByPk($m[1]);
-
-					if (!empty($session)) {
-						$session->status= ($value == 'true' ? 0 : 1);
-						if (!$session->save()) {
-							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
-						}
+						$audit = new Audit;
+						$audit->action = "update (diary)";
+						$audit->target_type = "session";
+						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+						$audit->data = $session->getAuditAttributes();
+						$audit->save();
 					}
 				}
 			}
@@ -525,67 +503,13 @@ class TheatreController extends BaseController
 		}
 	}
 
-	/*public function actionUpdateAdmitTime()
-	{
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			if (!empty($_POST['id']) && !empty($_POST['admission_time'])) {
-				$booking = Booking::model()->findByAttributes(array('element_operation_id' => $_POST['id']));
-
-				if (!empty($booking)) {
-					$booking->admission_time = $_POST['admission_time'];
-					$booking->save();
-				}
-			}
-			return true;
-		}
-	}*/
-
-	public function actionMoveOperation()
-	{
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			if (!empty($_POST['id'])) {
-				$operation = ElementOperation::model()->findByPk($_POST['id']);
-
-				if ($operation->move($_POST['up'])) {
-					echo CJavaScript::jsonEncode(1);
-				} else {
-					return CJavaScript::jsonEncode(1);;
-				}
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public function actionConfirmOperation()
-	{
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			if (!empty($_POST['id'])) {
-				$operation = ElementOperation::model()->findByPk($_POST['id']);
-
-				$operation->booking->confirmed = 1;
-				if (!$operation->booking->save()) {
-					throw new SystemException('Unable to save booking: '.print_r($operation->booking->getErrors(),true));
-				}
-
-				echo CJavaScript::jsonEncode(1);
-
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	/**
-	 * Helper method to fetch firms by subspecialty ID
-	 *
-	 * @param integer $subspecialtyId
-	 *
-	 * @return array
-	 */
+		* Helper method to fetch firms by subspecialty ID
+		*
+		* @param integer $subspecialtyId
+		*
+		* @return array
+		*/
 	protected function getFilteredFirms($subspecialtyId)
 	{
 		$data = Yii::app()->db->createCommand()
@@ -608,12 +532,12 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Helper method to fetch theatres by site ID
-	 *
-	 * @param integer $siteId
-	 *
-	 * @return array
-	 */
+		* Helper method to fetch theatres by site ID
+		*
+		* @param integer $siteId
+		*
+		* @return array
+		*/
 	protected function getFilteredTheatres($siteId)
 	{
 		$data = Yii::app()->db->createCommand()
@@ -632,12 +556,12 @@ class TheatreController extends BaseController
 	}
 
 	/**
-	 * Helper method to fetch theatres by site ID
-	 *
-	 * @param integer $siteId
-	 *
-	 * @return array
-	 */
+		* Helper method to fetch theatres by site ID
+		*
+		* @param integer $siteId
+		*
+		* @return array
+		*/
 	protected function getFilteredWards($siteId)
 	{
 		$data = Yii::app()->db->createCommand()

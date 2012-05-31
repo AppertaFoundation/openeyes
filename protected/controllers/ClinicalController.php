@@ -105,15 +105,14 @@ class ClinicalController extends BaseController
 		}
 
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-		// echo "fish"; exit;
 
-        $audit = new Audit;
-        $audit->action = "view";
-        $audit->target_type = "event (route 2)";
-        $audit->patient_id = $this->patient->id;
-        $audit->episode_id = $this->episode->id;
-        $audit->user_id = Yii::app()->user->id;
-        $audit->save();
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "event (route 2)";
+		$audit->patient_id = $this->patient->id;
+		$audit->episode_id = $this->episode->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
 
 		// this shouldn't get called
 		$this->logActivity('viewed event');
@@ -219,16 +218,40 @@ class ClinicalController extends BaseController
 					}
 				}
 
-				if ($event_info) {
-					$event = Event::model()->findByPk($eventId);
-					$event->info = $event_info;
-					if (!$event->save()) {
-						throw new SystemException('Unable to update event: '.print_r($event->getErrors(),true));
-					}
-				}
-
 				if ($eventId) {
+					$event = Event::model()->findByPk($eventId);
+
+					if ($event_info) {
+						$event->info = $event_info;
+						if (!$event->save()) {
+							throw new SystemException('Unable to create event: '.print_r($event->getErrors(),true));
+						}
+					}
+
 					$this->logActivity('created event.');
+
+					$audit_data = array('event' => $event->getAuditAttributes());
+
+					foreach ($elements as $element) {
+						$audit_data[get_class($element)] = $element->getAuditAttributes();
+					}
+
+					$audit = new Audit;
+					$audit->action = "create";
+					$audit->target_type = "event";
+					$audit->patient_id = $this->patient->id;
+					$audit->episode_id = $event->episode_id;
+					$audit->event_id = $event->id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->data = serialize($audit_data);
+					$audit->save();
+
+					$episode = Episode::model()->findByPk($event->episode_id);
+					$episode->episode_status_id = 3;
+
+					if (!$episode->save()) {
+						throw new Exception('Unable to save episode status for episode '.$episode->id);
+					}
 
 					$eventTypeName = ucfirst($eventType->name);
 					Yii::app()->user->setFlash('success', "{$eventTypeName} created.");
@@ -345,6 +368,22 @@ class ClinicalController extends BaseController
 
 					$this->logActivity('updated event');
 
+					$audit_data = array('event' => $event->getAuditAttributes());
+
+					foreach ($elements as $element) {
+						$audit_data[get_class($element)] = $element->getAuditAttributes();
+					}
+
+					$audit = new Audit;
+					$audit->action = "update";
+					$audit->target_type = "event";
+					$audit->patient_id = $this->patient->id;
+					$audit->episode_id = $event->episode_id;
+					$audit->event_id = $event->id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->data = serialize($audit_data);
+					$audit->save();
+
 					// Update event to indicate user has made a change
 					$event->datetime = date("Y-m-d H:i:s");
 					$event->user = $this->getUserId();
@@ -408,6 +447,14 @@ class ClinicalController extends BaseController
 			$editable = true;
 		}
 
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "episode summary (route 2)";
+		$audit->patient_id = $this->patient->id;
+		$audit->episode_id = $episode->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
+
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
@@ -437,6 +484,14 @@ class ClinicalController extends BaseController
 		}
 
 		$this->logActivity('viewed patient summary');
+
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "episode summary (route 3)";
+		$audit->patient_id = $episode->patient_id;
+		$audit->episode_id = $episode->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
 
 		$this->renderPartial('summary', array(
 			'episode' => $episode,
@@ -520,6 +575,14 @@ class ClinicalController extends BaseController
 
 		OELog::log("Closed episode $episode->id");
 
+		$audit = new Audit;
+		$audit->action = "close";
+		$audit->target_type = "episode";
+		$audit->patient_id = $episode->patient_id;
+		$audit->episode_id = $episode->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
+
 		$this->renderPartial('episodeSummary', array('episode' => $episode, 'editable' => $editable), false, true);
 	}
 
@@ -570,6 +633,15 @@ class ClinicalController extends BaseController
 		if (!empty($_POST) && @$_POST['event_id'] == $event->id) {
 			$event->deleted = 1;
 			$event->save();
+
+			$audit = new Audit;
+			$audit->action = "delete";
+			$audit->target_type = "event";
+			$audit->patient_id = $event->episode->patient->id;
+			$audit->episode_id = $event->episode_id;
+			$audit->event_id = $event->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->save();
 
 			$this->redirect(array('patient/episodes/'.$event->episode->patient->id));
 		}

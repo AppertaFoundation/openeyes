@@ -172,7 +172,7 @@ class SiteController extends BaseController
 		$audit = new Audit;
 		$audit->action = "logout";
 		$audit->target_type = "logout";
-		$audit->user_id = Yii::app()->user->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
 
 		OELog::log("User $user->username logged out");
@@ -196,6 +196,13 @@ class SiteController extends BaseController
 			$user = User::Model()->findByPk(Yii::app()->session['user']->id);
 			$user->last_firm_id = intval($_POST['selected_firm_id']);
 			$user->save(false);
+
+			$audit = new Audit;
+			$audit->action = "change-firm";
+			$audit->target_type = "user";
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $user->last_firm_id;
+			$audit->save();
 
 			$session = Yii::app()->session;
 

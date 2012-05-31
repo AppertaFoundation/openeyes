@@ -48,76 +48,107 @@ class TransportController extends BaseController
 	 */
 	public function actionIndex()
 	{
-		$bookings = $this->getTCIEvents(date('Y-m-d')." 00:00:00", date('Y-m-d')." 23:59:59");
-
-		$this->render('index',array('bookings' => $bookings));
+		$this->render('index',array('bookings' => $this->getBookings()));
 	}
 
-	public function actionList() {
-		$bookings = $this->getTCIEvents(date('Y-m-d',strtotime($_POST['date']))." 00:00:00", date('Y-m-d',strtotime($_POST['date']))." 23:59:59");
+	public function getBookings() {
+		if (!empty($_POST)) {
+			if (preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/',@$_POST['date_from']) &&
+				preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/',@$_POST['date_to'])) {
 
-		$this->renderPartial('/transport/_list',array('bookings' => $bookings));
+				$date_from = Helper::convertNHS2MySQL($_POST['date_from'])." 00:00:00";
+				$date_to = Helper::convertNHS2MySQL($_POST['date_to'])." 23:59:59";
+			}
+		} else {
+			$_POST['include_bookings'] = 1;
+			$_POST['include_reschedules'] = 1;
+			$_POST['include_cancellations'] = 1;
+		}
+
+		if (!@$_POST['include_bookings'] && !@$_POST['include_reschedules'] && !@$_POST['include_cancellations']) {
+			$_POST['include_bookings'] = 1;
+		}
+
+		return $this->getTCIEvents(@$date_from, @$date_to, (boolean)@$_POST['include_bookings'], (boolean)@$_POST['include_reschedules'], (boolean)@$_POST['include_cancellations']);
 	}
 
-	public function getTCIEvents($from, $to) {
+	public function getTCIEvents($from, $to, $include_bookings, $include_reschedules, $include_cancellations) {
 		$today = date('Y-m-d');
 
-		$sql = "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, contact.first_name, contact.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method, transport_list.id as transport, booking.created_date as order_date, ward.name as ward_name from booking
-			join session on booking.session_id = session.id
-			join theatre on session.theatre_id = theatre.id
-			join site on theatre.site_id = site.id
-			join element_operation on element_operation.id = booking.element_operation_id
-			join priority pr on pr.id = element_operation.priority_id
-			join event on element_operation.event_id = event.id
-			join episode on event.episode_id = episode.id
-			join firm on episode.firm_id = firm.id
-			join service_subspecialty_assignment on firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
-			join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
-			join patient on episode.patient_id = patient.id
-			join contact on contact.parent_id = patient.id and contact.parent_class = 'Patient'
-			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
-			join ward on booking.ward_id = ward.id
-			where session.date >= '$today' and ". /*booking.created_date >= '$from' and booking.created_date <= '$to' and*/ "element_operation.status != 3
-			and site.id not in (3,5)
-			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
-			UNION
-				select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, contact.first_name, contact.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, ward.name as ward_name from booking
-			join session on booking.session_id = session.id
-			join cancelled_booking on cancelled_booking.element_operation_id = booking.element_operation_id
-			join theatre on session.theatre_id = theatre.id
-			join site on theatre.site_id = site.id
-			join element_operation on element_operation.id = booking.element_operation_id
-			join priority pr on pr.id = element_operation.priority_id
-			join event on element_operation.event_id = event.id
-			join episode on event.episode_id = episode.id
-			join firm on episode.firm_id = firm.id
-			join service_subspecialty_assignment on firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
-			join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
-			join patient on episode.patient_id = patient.id
-			join contact on contact.parent_id = patient.id and contact.parent_class = 'Patient'
-			left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
-			join ward on booking.ward_id = ward.id
-			where session.date >= '$today' and ". /*booking.created_date >= '$from' and booking.created_date <= '$to' and*/ " element_operation.status = 3
-			and site.id not in (3,5)
-			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
-			UNION
-				select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, contact.first_name, contact.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, 'Unknown' as ward_name from cancelled_booking
-			join theatre on cancelled_booking.theatre_id = theatre.id
-			join site on theatre.site_id = site.id
-			join element_operation on element_operation.id = cancelled_booking.element_operation_id
-			join priority pr on pr.id = element_operation.priority_id
-			join event on element_operation.event_id = event.id
-			join episode on event.episode_id = episode.id
-			join firm on episode.firm_id = firm.id
-			join service_subspecialty_assignment on firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
-			join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
-			join patient on episode.patient_id = patient.id
-			join contact on contact.parent_id = patient.id and contact.parent_class = 'Patient'
-			left join transport_list on (transport_list.item_table = 'cancelled_booking' and transport_list.item_id = cancelled_booking.id)
-			where cancelled_booking.date >= '$today' and ". /*cancelled_booking.created_date >= '$from' and cancelled_booking.created_date <= '$to' and*/ " element_operation.status != 3
-			and site.id not in (3,5)
-			and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')
-			ORDER BY session_date asc, session_time asc, order_date desc";
+		if ($from && $to) {
+			$wheresql1 = " and session.date >= '$from' and session.date <= '$to' ";
+			$wheresql2 = " and cancelled_booking.date >= '$from' and cancelled_booking.date <= '$to' ";
+		} else {
+			$wheresql1 = $wheresql2 = null;
+		}
+
+		$sql = '';
+
+		if ($include_bookings) {
+			$sql = "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, contact.first_name, contact.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Booked' as method, transport_list.id as transport, booking.created_date as order_date, ward.name as ward_name from booking
+				join session on booking.session_id = session.id
+				join theatre on session.theatre_id = theatre.id
+				join site on theatre.site_id = site.id
+				join element_operation on element_operation.id = booking.element_operation_id
+				join priority pr on pr.id = element_operation.priority_id
+				join event on element_operation.event_id = event.id
+				join episode on event.episode_id = episode.id
+				join firm on episode.firm_id = firm.id
+				join service_subspecialty_assignment on firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
+				join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
+				join patient on episode.patient_id = patient.id
+				join contact on contact.parent_id = patient.id and contact.parent_class = 'Patient'
+				left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
+				join ward on booking.ward_id = ward.id
+				where session.date >= '$today' $wheresql1 and element_operation.status != 3
+				and site.id not in (3,5)
+				and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')";
+		}
+
+		if ($include_reschedules) {
+			if ($sql) $sql .= " UNION ";
+			$sql .= "select element_operation.id as eoid, booking.id as checkid, patient.id as pid, event.id as evid, contact.first_name, contact.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, session.date as session_date, session.start_time as session_time, element_operation.status, 'Rescheduled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, ward.name as ward_name from booking
+				join session on booking.session_id = session.id
+				join cancelled_booking on cancelled_booking.element_operation_id = booking.element_operation_id
+				join theatre on session.theatre_id = theatre.id
+				join site on theatre.site_id = site.id
+				join element_operation on element_operation.id = booking.element_operation_id
+				join priority pr on pr.id = element_operation.priority_id
+				join event on element_operation.event_id = event.id
+				join episode on event.episode_id = episode.id
+				join firm on episode.firm_id = firm.id
+				join service_subspecialty_assignment on firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
+				join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
+				join patient on episode.patient_id = patient.id
+				join contact on contact.parent_id = patient.id and contact.parent_class = 'Patient'
+				left join transport_list on (transport_list.item_table = 'booking' and transport_list.item_id = booking.id)
+				join ward on booking.ward_id = ward.id
+				where session.date >= '$today' $wheresql1 and element_operation.status = 3
+				and site.id not in (3,5)
+				and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')";
+		}
+
+		if ($include_cancellations) {
+			if ($sql) $sql .= " UNION ";
+			$sql .= "select element_operation.id as eoid, cancelled_booking.id as checkid, patient.id as pid, event.id as evid, contact.first_name, contact.last_name, patient.hos_num, site.short_name as location, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, pr.name as priority, subspecialty.ref_spec as subspecialty, cancelled_booking.date as session_date, cancelled_booking.start_time as session_time, element_operation.status, 'Cancelled' as method, transport_list.id as transport, cancelled_booking.created_date as order_date, 'Unknown' as ward_name from cancelled_booking
+				join theatre on cancelled_booking.theatre_id = theatre.id
+				join site on theatre.site_id = site.id
+				join element_operation on element_operation.id = cancelled_booking.element_operation_id
+				join priority pr on pr.id = element_operation.priority_id
+				join event on element_operation.event_id = event.id
+				join episode on event.episode_id = episode.id
+				join firm on episode.firm_id = firm.id
+				join service_subspecialty_assignment on firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id
+				join subspecialty on service_subspecialty_assignment.subspecialty_id = subspecialty.id
+				join patient on episode.patient_id = patient.id
+				join contact on contact.parent_id = patient.id and contact.parent_class = 'Patient'
+				left join transport_list on (transport_list.item_table = 'cancelled_booking' and transport_list.item_id = cancelled_booking.id)
+				where cancelled_booking.date >= '$today' $wheresql2 and element_operation.status != 3
+				and site.id not in (3,5)
+				and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')";
+		}
+
+		$sql .= " ORDER BY session_date asc, session_time asc, order_date desc";
 
 		return Yii::app()->db->createCommand($sql)->query();
 	}
@@ -239,5 +270,18 @@ class TransportController extends BaseController
 		}
 
 		die("1");
+	}
+
+	public function actionDownloadcsv() {
+		header("Content-type: application/csv");
+		header("Content-Disposition: attachment; filename=transport.csv");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+
+		echo "Hospital number,First name,Last name,TCI date,Admission time,Site,Ward,Method,Firm,Specialty,DTA,Priority\n";
+
+		foreach ($this->getBookings() as $row) {
+			echo '"'.$row['hos_num'].'","'.trim($row['first_name']).'","'.trim($row['last_name']).'","'.$row['session_date'].'","'.$row['session_time'].'","'.$row['location'].'","'.$row['ward_name'].'","'.$row['method'].'","'.$row['firm'].'","'.$row['subspecialty'].'","'.$row['decision_date'].'","'.$row['priority'].'"'."\n";
+		}
 	}
 }

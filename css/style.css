@@ -127,12 +127,16 @@ em { font-style: italic; color:#333; }
 .dull * { opacity: 0.7; }
 
 /* ====== BOXES ====== */
-#content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#content .whiteBox > p, #content .alertBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px; }
+#content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .questionBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+/* box Paragraphs */
+#content .whiteBox > p, #content .redBox > p, #content .alertBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px; }
+/* box specifics */
 #content .whiteBox 	{ background: #fafafa; padding:10px; position:relative; }
+#content .redBox 	{ border:#fc621f 4px solid; color:#000; font-weight: bold; padding:7px 10px; margin-bottom: 15px;  }
 #content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
 #content .issueBox 	{ background: #fdf2e5 url(../img/_elements/icons/box/issue.png) top left no-repeat; border:#f3c160 1px solid; padding:10px 10px 10px 50px; }
 #content .infoBox 	{ background: #e0f2db url(../img/_elements/icons/box/info.png) top left no-repeat; border:#9c9 1px solid; padding:10px 10px 10px 50px; }
+#content .questionBox 	{ background: #d6e0ff; border:#999 1px solid; padding:15px 10px 10px 10px; }
 #content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
 #content .fullBox	{ background: #dae6f1; }
 /* specific content */
@@ -195,7 +199,7 @@ cursor:pointer; }
 button.tall			{ width: 125px;	}
 button.grande		{ width: 154px; }
 button.venti-fixed	{ width: 210px; }
-button.venti		{ width: auto; margin:0 2px; }
+button.venti		{ width: auto; margin:0 4px 0 0; }
 button.venti span	{ padding:0 22px; }
 
 /* button text */
@@ -213,6 +217,8 @@ button.mini								{ height:24px; font-size:13px; width: auto; margin:0 2px; }
 button.mini span						{ padding:0 18px; }
 button.mini span.button-span			{ display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ padding:0 4px; }
+
+
 
 
 
@@ -310,6 +316,9 @@ button.smBtn_modify			{ display:inline-block; width:102px; height:28px; }
 button.smBtn_modify			{ background:transparent url(../img/_elements/btns/small/modify.png) no-repeat; }
 button.smBtn_modify:hover	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
 
+/* for buttons where clicking on the wrong one could be devasterous!  */
+.spaceOutButtons button {margin-right:40px;} 
+
 
 /* ====== TABLES - GENERAL ====== */
 table		{ border-collapse: collapse; }
@@ -330,7 +339,7 @@ table tr:last-child { border-bottom: none; }
 
 
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
-table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:5px;}
+table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:20px;}
 table.subtleWhite tbody tr:hover { background-color: #fffbda; }
 table.subtleWhite th { text-align:left; font-size:11px; color:#ccc; padding:10px 10px 2px 10px; }
 table.subtleWhite td { font-size:15px; padding:10px; }
@@ -425,8 +434,14 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 .patientReminder > .given			{ display:inline-block; font-size: 16px; }
 /* .patientReminder > .given:after { color:#444; } */
 .patientReminder > .surname		{ display:inline-block; font-size: 16px; font-weight: bold; }
-.patientReminder > .number		{ display:block; font-size: 12px; margin-top: 2px; }
+.patientReminder > .number		{ display:block; font-size: 12px; margin-top:1px; }
+.patientReminder > .nhs			{ display:inline-block; font-size: 12px; color:#fff; background: #107ebd url(../img/_elements/icons/nhs_tiny.png) center left no-repeat;  margin-top: 1px; padding:1px 4px 1px 35px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+
+/* generic surname */
 span.surname { font-weight: bold; }
+
+/* Drop information for Patient */
+#patientID > .patient_quick { position:absolute; left:0; bottom:-20px; }
 
 /* ------------------------------------------------- POPUP boxes	*/
 
@@ -566,7 +581,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
 #event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px;}
-#event_content form > h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
+#event_content form h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 
 /* ---  Viewing a canvas element */
 canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
@@ -628,12 +643,12 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 #event_content ul.eventComments > li { margin-bottom:8px; padding-bottom: 8px; border-bottom:1px dotted #dae6f1; }
 
 /* meta data (creation and modification) */
-#event_content > .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
-#event_content > .metaData .info { margin-right: 15px; }
-#event_content > .metaData .user { color:#666; }
+#event_content .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
+#event_content .metaData .info { margin-right: 15px; }
+#event_content .metaData .user { color:#666; }
 
 /* event subsection */
-#event_content > h3.subsection { font-size:14px; color:#111; background:#dae6f1; padding:12px 10px; margin-top: 10px; }
+#event_content h3.subsection { font-size:14px; color:#111; background:#dae6f1; padding:12px 10px; margin-top: 10px; }
 #event_content .cols2 h3.subsection { margin-top: 10px; clear: both; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
 
 #event_content .splitElement { padding:10px 0; margin:10px 0; border-top:5px solid #dae6f1; border-bottom:5px solid #dae6f1; }
@@ -650,8 +665,8 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 .eventDetail > .data.limitWidth .procedureItem .middle {width: 350px; display: inline-block;}
 .eventDetail > .data.limitWidth .procedureItem .middle.noDuration {width: 410px;}
 .eventDetail > .data.limitWidth .procedureItem .right {width: 60px; display: inline-block; float: right; text-align: right;}
-.eventDetail > .data > .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; margin-bottom:4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
-.eventDetail > .data > .group:hover { background:#fff;}
+.eventDetail > .data .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; margin-bottom:4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.eventDetail > .data .group:hover { background:#fff;}
 .eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
 .eventDetail > .data > .labelHint { width: 280px; }
 .eventDetail > .datarow-first { float: left; }
@@ -1062,3 +1077,6 @@ label.error {color: red;}
 
 #delete_event h1 { margin-left: 10px; }
 #delete_event h2 { color: #f00; font-size: 16px; background: none; display: block; padding-left: 0; margin-left: 10px; padding-top: 20px;}
+
+.goldenrod {background-color: goldenrod; width: 200px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
+.goldenrod > h4 {color: #000 !important;}

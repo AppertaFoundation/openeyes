@@ -186,7 +186,7 @@ if (!empty($address)) {
 												<?php }?>
 											</td>
 											<td><?php echo $pca->contact->parent_class?></td>
-											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>" href="#" class="small"><strong>Remove</strong></a></td>
+											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
 										</tr>
 									<?php }?>
 								</tbody>
@@ -236,7 +236,7 @@ if (!empty($address)) {
 											'url': '/patient/associatecontact?patient_id=".$this->patient->id."&text='+value,
 											'success': function(data) {
 												if (data[\"name\"]) {
-													$('#patient_contacts').append('<tr><td><span class=\"large\">'+data[\"name\"]+'</span><br />'+data[\"qualifications\"]+'</td><td>'+data[\"location\"]+'</td><td>'+data[\"type\"]+'<td colspan=\"2\" align=\"right\"><a id=\"removecontact'+data[\"id\"]+'\" href=\"#\" class=\"small\"><strong>Remove</strong></a></td></tr>');
+													$('#patient_contacts').append('<tr><td><span class=\"large\">'+data[\"name\"]+'</span><br />'+data[\"qualifications\"]+'</td><td>'+data[\"location\"]+'</td><td>'+data[\"type\"]+'<td colspan=\"2\" align=\"right\"><a id=\"removecontact'+data[\"id\"]+'_'+data[\"site_id\"]+'_'+data[\"institution_id\"]+'\" href=\"#\" class=\"small\"><strong>Remove</strong></a></td></tr>');
 
 													if (data[\"location\"].length >0) {
 														currentContacts.push(data[\"name\"]+' ('+data[\"type\"]+', '+data[\"location\"]+')');
@@ -307,7 +307,12 @@ if (!empty($address)) {
 					return false;
 				});
 				$('a[id^="removecontact"]').die('click').live('click',function() {
-					var id = $(this).attr('id').match(/[0-9]+/);
+					var e = $(this).attr('id').replace(/^removecontact/,'').split('_');
+
+					var id = e[0];
+					var site_id = e[1];
+					var institution_id = e[2];
+
 					var el = $(this);
 
 					if ($(this).parent().parent().children('td:nth-child(2)').length >0) {
@@ -318,7 +323,7 @@ if (!empty($address)) {
 
 					$.ajax({
 						'type': 'GET',
-						'url': '/patient/unassociatecontact?patient_id=<?php echo $this->patient->id?>&contact_id='+id,
+						'url': '/patient/unassociatecontact?patient_id=<?php echo $this->patient->id?>&contact_id='+id+'&site_id='+site_id+'&institution_id='+institution_id,
 						'success': function(resp) {
 							if (resp == "1") {
 								el.parent().parent().remove();

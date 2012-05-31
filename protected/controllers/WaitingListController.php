@@ -20,9 +20,9 @@
 class WaitingListController extends BaseController
 {
 	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
+		* @var string the default layout for the views. Defaults to '//layouts/column2', meaning
+		* using two-column layout. See 'protected/views/layouts/column2.php'.
+		*/
 	public $layout='//layouts/main';
 
 	public function filters()
@@ -44,8 +44,8 @@ class WaitingListController extends BaseController
 	}
 
 	/**
-	 * Lists all models.
-	 */
+		* Lists all models.
+		*/
 	public function actionIndex()
 	{
 		if (empty($_POST)) {
@@ -60,6 +60,19 @@ class WaitingListController extends BaseController
 					'subspecialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id
 				);
 			}
+
+			$audit = new Audit;
+			$audit->action = "view";
+			$audit->target_type = "waiting list";
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->save();
+		} else {
+			$audit = new Audit;
+			$audit->action = "search";
+			$audit->target_type = "waiting list";
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = serialize($_POST);
+			$audit->save();
 		}
 
 		$this->render('index');
@@ -67,6 +80,13 @@ class WaitingListController extends BaseController
 
 	public function actionSearch()
 	{
+		$audit = new Audit;
+		$audit->action = "search";
+		$audit->target_type = "waiting list";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		if (empty($_POST)) {
 			$operations = array();
 		} else {
@@ -92,9 +112,9 @@ class WaitingListController extends BaseController
 	}
 
 	/**
-	 * Generates a firm list based on a subspecialty id provided via POST
-	 * echoes form option tags for display
-	 */
+		* Generates a firm list based on a subspecialty id provided via POST
+		* echoes form option tags for display
+		*/
 	public function actionFilterFirms()
 	{
 		$so = Yii::app()->session['waitinglist_searchoptions'];
@@ -135,11 +155,11 @@ class WaitingListController extends BaseController
 		$this->setFilter('hos_num', $_POST['hos_num']);
 	}
 	/**
-	 * Helper method to fetch firms by subspecialty ID
-	 *
-	 * @param integer $subspecialtyId
-	 * @return array
-	 */
+		* Helper method to fetch firms by subspecialty ID
+		*
+		* @param integer $subspecialtyId
+		* @return array
+		*/
 	protected function getFilteredFirms($subspecialtyId)
 	{
 		$data = Yii::app()->db->createCommand()
@@ -161,12 +181,23 @@ class WaitingListController extends BaseController
 	}
 	
 	/**
-	 * Prints next pending letter type for requested operations
-	 * Operation IDs are passed as an array (operations[]) via GET or POST
-	 * Invalid operation IDs are ignored
-	 * @throws CHttpException
-	 */
+		* Prints next pending letter type for requested operations
+		* Operation IDs are passed as an array (operations[]) via GET or POST
+		* Invalid operation IDs are ignored
+		* @throws CHttpException
+		*/
 	public function actionPrintLetters() {
+		$audit = new Audit;
+		if (@$_REQUEST['all'] == 'true') {
+			$audit->action = "print all";
+		} else {
+			$audit->action = "print selected";
+		}
+		$audit->target_type = "waiting list";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
 		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
 		if(!is_array($operation_ids)) {
@@ -188,16 +219,16 @@ class WaitingListController extends BaseController
 	}
 	
 	/**
-	 * Print a page break
-	 */
+		* Print a page break
+		*/
 	protected function printBreak() {
 		$this->renderPartial("/letters/break");
 	}
 	
 	/**
-	 * Print the next letter for an operation
-	 * @param ElementOperation $operation
-	 */
+		* Print the next letter for an operation
+		* @param ElementOperation $operation
+		*/
 	protected function printLetter($operation, $auto_confirm = false) {
 		$letter_status = $operation->getDueLetter();
 		$letter_templates = array(
@@ -251,6 +282,13 @@ class WaitingListController extends BaseController
 	}
 
 	public function actionConfirmPrinted() {
+		$audit = new Audit;
+		$audit->action = "confirm";
+		$audit->target_type = "waiting list";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = serialize($_POST);
+		$audit->save();
+
 		foreach ($_POST['operations'] as $operation_id) {
 			if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
 				if (Yii::app()->user->checkAccess('admin') and (isset($_POST['adminconfirmto'])) and ($_POST['adminconfirmto'] != 'OFF') and ($_POST['adminconfirmto'] != '')) {
@@ -261,9 +299,4 @@ class WaitingListController extends BaseController
 			}
 		}
 	}
-
-	// to allow admin users to confirm printed up to a given letter 
-	// public function actionAdminConfirmPrinted() {
-			
-	// }
 }

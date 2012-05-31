@@ -55,23 +55,23 @@ class Patient extends BaseActiveRecord {
 	public $use_pas = TRUE;
 	
 	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Patient the static model class
-	 */
+		* Returns the static model of the specified AR class.
+		* @return Patient the static model class
+		*/
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
-	 * @return string the associated database table name
-	 */
+		* @return string the associated database table name
+		*/
 	public function tableName() {
 		return 'patient';
 	}
 
 	/**
-	 * @return array validation rules for model attributes.
-	 */
+		* @return array validation rules for model attributes.
+		*/
 	public function rules() {
 		return array(
 			array('pas_key', 'length', 'max' => 10),
@@ -83,8 +83,8 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
-	 * @return array relational rules.
-	 */
+		* @return array relational rules.
+		*/
 	public function relations() {
 		return array(
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
@@ -119,8 +119,8 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
+		* @return array customized attribute labels (name=>label)
+		*/
 	public function attributeLabels()
 	{
 		return array(
@@ -149,9 +149,9 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
+		* Retrieves a list of models based on the current search/filter conditions.
+		* @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+		*/
 	public function search($params = false) {
 		if (!is_array($params)) {
 			$params = array(
@@ -195,17 +195,17 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
-	 * @return boolean Is patient a child?
-	 */
+		* @return boolean Is patient a child?
+		*/
 	public function isChild() {
 		$age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
 		return ($this->getAge() < $age_limit);
 	}
 
 	/**
-	 * @param integer $drug_id
-	 * @return boolean Is patient allergic?
-	 */
+		* @param integer $drug_id
+		* @return boolean Is patient allergic?
+		*/
 	public function hasAllergy($drug_id = null) {
 		if($drug_id) {
 			if($this->allergies) {
@@ -227,16 +227,16 @@ class Patient extends BaseActiveRecord {
 	}
 	
 	/**
-	 * @return boolean Is patient deceased?
-	 */
+		* @return boolean Is patient deceased?
+		*/
 	public function isDeceased() {
 		// Assume that if the patient has a date of death then they are actually dead, even if the date is in the future
 		return (!empty($this->date_of_death));
 	}
 
 	/**
-	 * @return string Patient name for prefixing an address 
-	 */
+		* @return string Patient name for prefixing an address 
+		*/
 	public function getAddressName() {
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->getFullName();
@@ -246,8 +246,8 @@ class Patient extends BaseActiveRecord {
 	}
 	
 	/**
-	 * @return string Patient name for using as a salutation 
-	 */
+		* @return string Patient name for using as a salutation 
+		*/
 	public function getSalutationName() {
 		if ($this->isChild()) {
 			return 'Parent/Guardian of ' . $this->first_name . ' ' . $this->last_name;
@@ -257,8 +257,8 @@ class Patient extends BaseActiveRecord {
 	}
 	
 	/**
-	 * @return string Full name 
-	 */
+		* @return string Full name 
+		*/
 	public function getFullName() {
 		return implode(' ',array($this->title, $this->first_name, $this->last_name));
 	}
@@ -324,9 +324,9 @@ class Patient extends BaseActiveRecord {
 	}
 	
 	/**
-	 * Raise event to allow external data sources to update patient
-	 * @see CActiveRecord::afterFind()
-	 */
+		* Raise event to allow external data sources to update patient
+		* @see CActiveRecord::afterFind()
+		*/
 	protected function afterFind() {
 		parent::afterFind();
 		Yii::app()->event->dispatch('patient_after_find', array('patient' => $this));
@@ -489,31 +489,44 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function addAllergy($allergy_id) {
-		$query = 'SELECT id from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';
-		$command = $this->getDbConnection()->createCommand($query);
-		if(!$command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id))) {
-			// Allergy not already set, so we can insert
-			$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
-			$command = $this->getDbConnection()->createCommand($query);
-			$command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id));
+		if (!PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
+			$paa = new PatientAllergyAssignment;
+			$paa->patient_id = $this->id;
+			$paa->allergy_id = $allergy_id;
+			if (!$paa->save()) {
+				throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
+			}
+
+			$audit = new Audit;
+			$audit->action = "add-allergy";
+			$audit->target_type = "patient";
+			$audit->patient_id = $this->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $paa->getAuditAttributes();
+			$audit->save();
 		}
 	}
 	
 	public function removeAllergy($allergy_id) {
-		$query = 'SELECT id from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';
-		$command = $this->getDbConnection()->createCommand($query);
-		if($command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id))) {
-			// Allergy is set so we can remove
-			$query = 'DELETE FROM `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id = :allergy_id';
-			$command = $this->getDbConnection()->createCommand($query);
-			$command->execute(array(':patient_id' => $this->id, ':allergy_id' => $allergy_id));
+		if ($paa = PatientAllergyAssignment::model()->find('patient_id=? and allergy_id=?',array($this->id,$allergy_id))) {
+			if (!$paa->delete()) {
+				throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
+			}
+
+			$audit = new Audit;
+			$audit->action = "remove-allergy";
+			$audit->target_type = "patient";
+			$audit->patient_id = $this->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $paa->getAuditAttributes();
+			$audit->save();
 		}
 	}
-	
+
 	public function assignAllergies($allergy_ids) {
 		$add_allergy_ids = $allergy_ids;
 		$remove_allergy_ids = array();
-		
+
 		// Check existing allergies
 		foreach($this->allergies as $allergy) {
 			if(($key = array_search($allergy->id, $insert_allergy_ids)) !== false) {
@@ -524,7 +537,7 @@ class Patient extends BaseActiveRecord {
 				$remove_allergy_ids[] = $allergy->id;
 			}
 		}
-		
+
 		// Insert new allergies
 		$query = 'INSERT INTO `patient_allergy_assignment` (patient_id,allergy_id) VALUES (:patient_id, :allergy_id)';
 		$command = Yii::app()->db->createCommand($query);
@@ -533,14 +546,12 @@ class Patient extends BaseActiveRecord {
 			$command->bindValue('allergy_id', $allergy_id);
 			$command->execute();
 		}
-		
+
 		// Delete removed allergies
 		$query = 'DELETE from `patient_allergy_assignment` WHERE patient_id = :patient_id AND allergy_id IN (:allergy_ids)';
 		$command = Yii::app()->db->createCommand($query);
 		$command->bindValue('patient_id', $this->id);
 		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
 		$command->execute();
-		
 	}
-	
 }

@@ -23,7 +23,7 @@ You can also send general enquiries to our main email address: <info@openeyes.or
 
 You can find us on twitter at: http://twitter.com/openeyes_oef
 
-A demo version of OpenEyes featuring fictional patient data for testing purposes is available at: <http://staging.openeyes.org.uk>
+A demo version of OpenEyes featuring fictional patient data for testing purposes is available at: <http://staging.openeyes.org.uk> and you can access the original prototype for OpenEyes at <http://aylwards.co.uk/demo/login.php> with username: johnsaunders and password: secret
 
 Developers, developers, developers!
 -----------------------------------

@@ -53,6 +53,14 @@ class BaseActiveRecord extends CActiveRecord
 				$this->$name = strip_tags($value);
 			}
 		}
+
+		// Detect nullable foreign keys and replace "" with null (to fix html dropdowns breaking contraints)
+		foreach ($this->tableSchema->foreignKeys as $field => $stuff) {
+			if ($this->tableSchema->columns[$field]->allowNull && !$this->{$field}) {
+				$this->{$field} = null;
+			}
+		}
+
 		return parent::beforeSave();
 	}
 	
@@ -123,5 +131,15 @@ class BaseActiveRecord extends CActiveRecord
 		if($value = $this->getAttribute($attribute)) {
 			return Helper::convertMySQL2HTML($value, $empty_string);
 		}
+	}
+
+	public function getAuditAttributes() {
+		$attributes = array();
+
+		foreach ($this->getAttributes() as $key => $value) {
+			$attributes[$key] = $this->{$key};
+		}
+
+		return serialize($attributes);
 	}
 }

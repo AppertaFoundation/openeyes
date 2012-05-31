@@ -91,7 +91,7 @@ class PatientController extends BaseController
 		$audit->action = "view";
 		$audit->target_type = "patient summary";
 		$audit->patient_id = $this->patient->id;
-		$audit->user_id = Yii::app()->user->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
 
 		$this->logActivity('viewed patient');
@@ -126,15 +126,14 @@ class PatientController extends BaseController
 
 		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
 
-        $audit = new Audit;
-        $audit->action = "view";
-        $audit->target_type = "event";
-        $audit->patient_id = $this->patient->id;
-        $audit->episode_id = $this->episode->id;
-        $audit->event_id = $this->event->id;
-        $audit->user_id = Yii::app()->user->id;
-        $audit->save();
-
+		$audit = new Audit;
+		$audit->action = "view";
+		$audit->target_type = "event";
+		$audit->patient_id = $this->patient->id;
+		$audit->episode_id = $this->episode->id;
+		$audit->event_id = $this->event->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
 
 		$this->logActivity('viewed event');
 
@@ -228,7 +227,7 @@ class PatientController extends BaseController
 				$audit = new Audit;
 				$audit->action = "search-error";
 				$audit->target_type = "search";
-				$audit->user_id = Yii::app()->user->id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
 				$audit->save();
 				setcookie('patient-search-minimum-criteria','1',0,'/');
@@ -272,7 +271,7 @@ class PatientController extends BaseController
 			$audit = new Audit;
 			$audit->action = "search-error";
 			$audit->target_type = "search";
-			$audit->user_id = Yii::app()->user->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = var_export($_POST['Patient'],true) . ": Error";
 			$audit->save();
 			$this->redirect('/patient/results/error');
@@ -282,6 +281,9 @@ class PatientController extends BaseController
 	}
 
 	function patientSearch() {
+		if (!isset($_GET['sort_by'])) {
+			return $this->redirect('/');
+		}
 
 		switch ($_GET['sort_by']) {
 			case 0:
@@ -329,7 +331,7 @@ class PatientController extends BaseController
 			$audit = new Audit;
 			$audit->action = "search-results";
 			$audit->target_type = "search";
-			$audit->user_id = Yii::app()->user->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
 			$audit->save();
 			$this->redirect('/patient/no-results');
@@ -655,49 +657,73 @@ class PatientController extends BaseController
 			foreach ($session as $text => $params) {
 				if ($text == @$_GET['text']) {
 					if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
-	throw new Exception("Can't find contact: ".$params['contact_id']);
+						throw new Exception("Can't find contact: ".$params['contact_id']);
 					}
 
 					$data = array(
-	'id' => $contact->id,
-	'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
-	'qualifications' => $contact->qualifications,
-	'type' => $contact->parent_class,
+						'id' => $contact->id,
+						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
+						'qualifications' => $contact->qualifications,
+						'type' => $contact->parent_class,
+						'site_id' => '',
+						'institution_id' => '',
 					);
 
 					if (isset($params['site_id'])) {
-	$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+						$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+						$data['site_id'] = $params['site_id'];
 					} else if (isset($params['institution_id'])) {
-	$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+						$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+						$data['institution_id'] = $params['institution_id'];
 					} else if ($contact->address) {
-	$data['location'] = $contact->address->address1;
+						$data['location'] = $contact->address->address1;
 					}
 
 					foreach ($data as $key => $value) {
-	if ($value == null) {
-		$data[$key] = '';
-	}
+						if ($value == null) {
+							$data[$key] = '';
+						}
 					}
 
 					if ($contact->parent_class == 'Gp') {
-	$gp = Gp::model()->findByPk($contact->parent_id);
-	if ($patient->gp->id == $gp->id) {
-		echo json_encode(array());
-		return;
-	}
+						$gp = Gp::model()->findByPk($contact->parent_id);
+						if ($patient->gp->id == $gp->id) {
+							echo json_encode(array());
+							return;
+						}
 					}
 
-					if (!$pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
-	$pca = new PatientContactAssignment;
-	$pca->patient_id = $patient->id;
-	$pca->contact_id = $contact->id;
-	if (isset($params['site_id'])) {
-		$pca->site_id = $params['site_id'];
-	}
-	if (isset($params['institution_id'])) {
-		$pca->institution_id = $params['institution_id'];
-	}
-	$pca->save();
+					$whereClause = 'patient_id=? and contact_id=?';
+					$whereParams = array($patient->id,$contact->id);
+
+					if (isset($params['site_id'])) {
+						$whereClause .= ' and site_id=?';
+						$whereParams[] = $params['site_id'];
+					}
+					if (isset($params['institution_id'])) {
+						$whereClause .= ' and institution_id=?';
+						$whereParams[] = $params['institution_id'];
+					}
+
+					if (!$pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
+						$pca = new PatientContactAssignment;
+						$pca->patient_id = $patient->id;
+						$pca->contact_id = $contact->id;
+						if (isset($params['site_id'])) {
+							$pca->site_id = $params['site_id'];
+						}
+						if (isset($params['institution_id'])) {
+							$pca->institution_id = $params['institution_id'];
+						}
+						$pca->save();
+
+						$audit = new Audit;
+						$audit->action = "associate-contact";
+						$audit->target_type = "patient";
+						$audit->patient_id = $patient->id;
+						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+						$audit->data = $pca->getAuditAttributes();
+						$audit->save();
 					}
 
 					echo json_encode($data);
@@ -719,11 +745,43 @@ class PatientController extends BaseController
 			throw new Exception('Contact not found: '.@$_GET['contact_id']);
 		}
 
-		if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
+		if (@$_GET['site_id']) {
+			if (!$site = Site::model()->findByPk($_GET['site_id'])) {
+				throw new Exception('Site not found: '.$_GET['site_id']);
+			}
+		}
+
+		if (@$_GET['institution_id']) {
+			if (!$institution = Institution::model()->findByPk($_GET['institution_id'])) {
+				throw new Exception('Institution not found: '.$_GET['institution_id']);
+			}
+		}
+
+		$whereClause = 'patient_id=? and contact_id=?';
+		$whereParams = array($patient->id,$contact->id);
+
+		if (isset($site)) {
+			$whereClause .= ' and site_id=?';
+			$whereParams[] = $site->id;
+		}
+		if (isset($institution)) {
+			$whereClause .= ' and institution_id=?';
+			$whereParams[] = $institution->id;
+		}
+
+		if ($pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
 			if (!$pca->delete()) {
 				echo "0";
 				return;
 			}
+
+			$audit = new Audit;
+			$audit->action = "unassociate-contact";
+			$audit->target_type = "patient";
+			$audit->patient_id = $patient->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $pca->getAuditAttributes();
+			$audit->save();
 		}
 
 		echo "1";

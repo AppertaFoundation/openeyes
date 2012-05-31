@@ -28,15 +28,62 @@
 					<a id="tci_previous" href="#">Previous day</a> - 
 					<a id="tci_next" href="#">Next day</a>
 				</div>*/ ?>
-				<button type="submit" class="classy blue grande btn_confirm" style="margin-right: 20px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
+				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Download CSV</span></button>
+				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Print list</span></button>
+				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
 
 				<div id="searchResults" class="whiteBox">
+					<form id="transport_form" method="post" action="/transport">
+						<label for="date_from">
+							From:
+						</label>
+						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+							'name' => 'date_from',
+							'id' => 'date_from',
+							'options' => array(
+								'showAnim'=>'fold',
+								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+							),
+							'value' => @$_POST['date_from'],
+							'htmlOptions' => array('style' => "width: 95px;"),
+						))?>
+						<label for="date_to">
+							To:
+						</label>
+						<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+							'name' => 'date_to',
+							'id' => 'date_to',
+							'options' => array(
+								'showAnim'=>'fold',
+								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+							),
+							'value' => @$_POST['date_to'],
+							'htmlOptions' => array('style' => "width: 95px;"),
+						))?>
+						<button type="submit" class="classy blue mini btn_filter auto"><span class="button-span button-span-blue">Filter</span></button>
+						<button type="submit" class="classy blue mini btn_viewall"><span class="button-span button-span-blue">View all</span></button>
+						<img src="/img/ajax-loader.gif" id="loader" style="display: none;" />
+						<div style="height: 0.4em;"></div>
+						<label>
+							Include:
+						</label>
+						&nbsp;
+						<input type="checkbox" name="include_bookings" value="1"<?php if (@$_POST['include_bookings']){?> checked="checked"<?php }?> /> Bookings
+						<input type="checkbox" name="include_reschedules" value="1"<?php if (@$_POST['include_reschedules']){?> checked="checked"<?php }?> /> Reschedules
+						<input type="checkbox" name="include_cancellations" value="1"<?php if (@$_POST['include_cancellations']){?> checked="checked"<?php }?> /> Cancellations
+					</form>
+					<form id="csvform" method="post" action="/transport/downloadcsv">
+						<input type="hidden" name="date_from" value="<?php echo @$_POST['date_from']?>" />
+						<input type="hidden" name="date_to" value="<?php echo @$_POST['date_to']?>" />
+						<input type="hidden" name="include_bookings" value="<?php echo (@$_POST['include_bookings'] ? 1 : 0)?>" />
+						<input type="hidden" name="include_reschedules" value="<?php echo (@$_POST['include_reschedules'] ? 1 : 0)?>" />
+						<input type="hidden" name="include_cancellations" value="<?php echo (@$_POST['include_cancellations'] ? 1 : 0)?>" />
+					</form>
 					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
 				</div> <!-- #searchResults -->
-				<!-- Disabled until form finished 
-				<button type="submit" class="classy blue grande" style="float: right;" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
-				 -->
-				<button type="submit" class="classy blue grande btn_confirm" style="margin-right: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
+				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Download CSV</span></button>
+				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Print list</span></button>
+				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
 				<div>
 					<?php
 					$times = Yii::app()->params['transport_csv_intervals'];
@@ -123,15 +170,37 @@
 		return false;
 	});
 
-	$('#btn_print').click(function() {
-		var booked = $('input[name^="booked"]:checked').map(function(i,n) {
-			return $(n).val();
-		}).get();
-		if (booked.length == 0) {
-			alert("No items selected for printing.");
-		} else {
-			printUrl('/transport/print', {'booked': booked});
+	$('button.btn_print').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			printContent(null);
+			enableButtons();
 		}
 		return false;
 	});
+
+	$('button.btn_viewall').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			$('#loader').show();
+			window.location.href = '/transport';
+		}
+		return false;
+	});
+
+	$('button.btn_filter').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+			$('#loader').show();
+			return true;
+		}
+		return false;
+	});
+	
+	$('button.btn_download').click(function() {
+		if (!$(this).hasClass('inactive')) {
+			$('#csvform').submit();
+		}
+	});
+
 </script>

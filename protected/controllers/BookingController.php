@@ -187,6 +187,17 @@ class BookingController extends BaseController
 			$result = $operation->cancel(@$_POST['cancellation_reason'], $comment);
 
 			if ($result['result']) {
+				$operation->event->deleteIssues();
+
+				$audit = new Audit;
+				$audit->action = "cancel";
+				$audit->target_type = "event";
+				$audit->patient_id = $operation->event->episode->patient_id;
+				$audit->episode_id = $operation->event->episode_id;
+				$audit->event_id = $operation->event_id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+				$audit->save();
+
 				die(json_encode(array()));
 			}
 
@@ -398,6 +409,16 @@ class BookingController extends BaseController
 			if ($model->save()) {
 				OELog::log("Booking made $model->id");
 
+				$audit = new Audit;
+				$audit->action = "create";
+				$audit->target_type = "booking";
+				$audit->patient_id = $operation->event->episode->patient->id;
+				$audit->episode_id = $operation->event->episode_id;
+				$audit->event_id = $operation->event_id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+				$audit->data = $model->getAuditAttributes();
+				$audit->save();
+
 				// Update episode status to 'listed'
 				$operation->event->episode->episode_status_id = 3;
 				if (!$operation->event->episode->save()) {
@@ -499,6 +520,16 @@ class BookingController extends BaseController
 
 					OELog::log("Booking rescheduled: $model->id, cancelled_booking=$cancellation->id");
 
+					$audit = new Audit;
+					$audit->action = "reschedule";
+					$audit->target_type = "booking";
+					$audit->patient_id = $operation->event->episode->patient_id;
+					$audit->episode_id = $operation->event->episode_id;
+					$audit->event_id = $operation->event_id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->data = $model->getAuditAttributes();
+					$audit->save();
+
 					$operation->event->episode->episode_status_id = 3;
 					if (!$operation->event->episode->save()) {
 						throw new Exception('Unable to change episode status for episode '.$operation->event->episode->id);
@@ -561,6 +592,16 @@ class BookingController extends BaseController
 					if (!$model->delete()) {
 						throw new Exception('Unable to delete booking: '.print_r($model->getErrors(),true));
 					}
+
+					$audit = new Audit;
+					$audit->action = "delete";
+					$audit->target_type = "booking";
+					$audit->patient_id = $operation->event->episode->patient_id;
+					$audit->episode_id = $operation->event->episode_id;
+					$audit->event_id = $operation->event_id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->data = $model->id;
+					$audit->save();
 
 					$operation->event->episode->episode_status_id = 3;
 
