@@ -203,4 +203,11 @@
 		}
 	});
 
+	$('#date_from').bind('change',function() {
+		$('#date_to').datepicker('option','minDate',$('#date_from').datepicker('getDate'));
+	});
+
+	$('#date_to').bind('change',function() {
+		$('#date_from').datepicker('option','maxDate',$('#date_to').datepicker('getDate'));
+	});
 </script>
