@@ -914,6 +914,20 @@ class ElementOperation extends BaseEventTypeElement
 		);
 	}
 
+	public function getName() {
+		if(in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))) { // Not Ozurdex
+			return 'Ozurdex injection';
+		}
+	}
+	
+	public function showPreopWarning() {
+		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
+	}
+	
+	public function showPrescriptionWarning() {
+		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
+	}
+	
 	/**
 	 * Get the diagnosis for this operation. Used by the booking event type template to create the admission form.
 	 *
@@ -1059,7 +1073,11 @@ class ElementOperation extends BaseEventTypeElement
 						$contact['refuse'] .= '020 7566 2056';
 						break;
 					case 8: // Medical Retinal
-						$contact['refuse'] .= '020 7566 2258';
+						if($this->booking->session->theatre->code == 'CRZ') {
+							$contact['refuse'] = 'Admission Coordinator on 020 7566 2311';
+						} else {
+							$contact['refuse'] .= '020 7566 2258';
+						}
 						break;
 					case 11: // Paediatrics
 						$contact['refuse'] = 'Paediatrics and Strabismus Admission Coordinator on 020 7566 2258';
@@ -1081,8 +1099,12 @@ class ElementOperation extends BaseEventTypeElement
 				}
 				break;
 			case 3: // Ealing
-				$contact['refuse'] .= '020 8967 5766';
-				//$contact['health'] = 'Sister Kelly on 020 8967 5766';
+				if($this->booking->session->theatre->code == 'BRZ') {
+					$contact['refuse'] = 'Admission Coordinator on 020 8967 5648';
+				} else {
+					$contact['refuse'] .= '020 8967 5766';
+					//$contact['health'] = 'Sister Kelly on 020 8967 5766';
+				}
 				break;
 			case 4: // Northwick Park
 				$contact['refuse'] .= '020 8869 3162';
