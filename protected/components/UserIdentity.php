@@ -61,6 +61,7 @@ class UserIdentity extends CUserIdentity
 			$audit = new Audit;
 			$audit->action = "login-failed";
 			$audit->target_type = "login";
+			$audit->user_id = $user->id;
 			$audit->data = "User not active and so cannot login: $this->username";
 			$audit->save();
 			OELog::log("User not active and so cannot login: $this->username");
@@ -112,6 +113,7 @@ class UserIdentity extends CUserIdentity
 				$audit = new Audit;
 				$audit->action = "login-failed";
 				$audit->target_type = "login";
+				$audit->user_id = $user->id;
 				$audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage().": ".$this->username;
 				$audit->save();
 				OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(),$this->username);
@@ -138,6 +140,7 @@ class UserIdentity extends CUserIdentity
 				$audit = new Audit;
 				$audit->action = "login-failed";
 				$audit->target_type = "login";
+				$audit->user_id = $user->id;
 				$audit->data = "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true).": ".$this->username;
 				$audit->save();
 				OELog::log("Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),$this->username);
@@ -149,6 +152,7 @@ class UserIdentity extends CUserIdentity
 				$audit = new Audit;
 				$audit->action = "login-failed";
 				$audit->target_type = "login";
+				$audit->user_id = $user->id;
 				$audit->data = "Login failed for user {$this->username}: invalid password";
 				$audit->save();
 				OELog::log("Login failed for user {$this->username}: invalid password",$this->username);
@@ -161,6 +165,7 @@ class UserIdentity extends CUserIdentity
 			$audit = new Audit;
 			$audit->action = "login-failed";
 			$audit->target_type = "login";
+			$audit->user_id = $user->id;
 			$audit->data = "Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source'];
 			$audit->save();
 			OELog::log("Login failed for user {$this->username}: unknown auth source: ".Yii::app()->params['auth_source'],$this->username);
@@ -209,6 +214,7 @@ class UserIdentity extends CUserIdentity
 			$audit = new Audit;
 			$audit->action = "login-failed";
 			$audit->target_type = "login";
+			$audit->user_id = $user->id;
 			$audit->data = "Login failed for user {$this->username}: user has no firm rights and cannot use the system";
 			$audit->save();
 			OELog::log("Login failed for user {$this->username}: user has no firm rights and cannot use the system",$this->username);
@@ -234,13 +240,14 @@ class UserIdentity extends CUserIdentity
 			$app->session['selected_firm_id'] = key($firms);
 		}
 
-		if ($site = Site::model()->findByPk(@$_POST['siteId'])) {
+		if ($site = Site::model()->findByPk(@$_POST['LoginForm']['siteId'])) {
 			$app->session['selected_site_id'] = $site->id;
 		}
 
 		$audit = new Audit;
 		$audit->action = "login-successful";
 		$audit->target_type = "login";
+		$audit->user_id = $user->id;
 		$audit->data = "User {$this->username} logged in";
 		$audit->save();
 		OELog::log("User {$this->username} logged in",$this->username);

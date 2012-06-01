@@ -178,15 +178,33 @@ class Firm extends BaseActiveRecord
 			}
 		} else {
 			$list = Yii::app()->db->createCommand()
-												->select('f.id, f.name')
-												->from('firm f')
-												->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-			->where('ssa.subspecialty_id = :sid', array(':sid' => $subspecialtyId))
-												->queryAll();
+				->select('f.id, f.name')
+				->from('firm f')
+				->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+				->where('ssa.subspecialty_id = :sid', array(':sid' => $subspecialtyId))
+				->queryAll();
 
 			foreach ($list as $firm) {
-																$result[$firm['id']] = $firm['name'];
-												}
+				$result[$firm['id']] = $firm['name'];
+			}
+		}
+
+		natcasesort($result);
+
+		return $result;
+	}
+
+	public function getListWithoutDupes() {
+		$result = array();
+
+		if (empty($subspecialtyId)) {
+			$list = Firm::model()->findAll();
+	 
+			foreach ($list as $firm) {
+				if (!in_array($firm->name,$result)) {
+					$result[$firm->id] = $firm->name;
+				}
+			}
 		}
 
 		natcasesort($result);
