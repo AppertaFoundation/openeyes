@@ -481,6 +481,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		
 		return true;
 	});
+	
+	$('#date-filter_3').click(function() {
+
+		setFilter({'date-filter':'custom','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
+		
+		return true;
+	});
 
 	$('#last_week').click(function() {
 		// Calculate week before custom date or week before today if no custom date
