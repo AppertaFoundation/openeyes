@@ -1,4 +1,4 @@
-<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail">
+<div id="div_<?php echo get_class($element)?>_<?php echo $field?>_TextSelection" class="eventDetail">
 	<div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>
 	<div class="data">
 		<select class="dropDownTextSelection" id="dropDownTextSelection_<?php echo get_class($element) ?>_<?php echo $field ?>">
