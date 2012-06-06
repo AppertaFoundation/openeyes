@@ -144,9 +144,9 @@ class Audit extends BaseActiveRecord
 		$this->server_name = $_SERVER['SERVER_NAME'];
 		$this->request_uri = $_SERVER['REQUEST_URI'];
 		if ($this->user) {
-			$this->site_id = Yii::app()->request->cookies['site_id']->value;
+			$this->site_id = (isset(Yii::app()->request->cookies['site_id']) ? Yii::app()->request->cookies['site_id']->value : null);
 			$this->firm_id = Yii::app()->session['selected_firm_id'];
 		}
-		parent::save($runValidation, $attributes);
+		parent::save($runValidation, $attributes, $allow_overriding);
 	}
 }
