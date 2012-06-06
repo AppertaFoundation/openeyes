@@ -162,8 +162,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$sql = "'{$name}' => 'date DEFAULT NULL', // {$label}\n";
 		} elseif ($type == 'Dropdown list') {
 			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
-		} elseif ($type == 'Checkboxes') {
-			// we don't create a field for these, as they'll need to be stored in a linked table
+		} elseif ($type == 'Checkbox') {
+			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL', // {$label}\n";
 		} elseif ($type == 'Radio buttons') {
 			// we don't create a field for these, as they'll need to be stored in a linked table
 		} elseif ($type == 'Boolean') {
