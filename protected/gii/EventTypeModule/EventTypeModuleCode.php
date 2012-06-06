@@ -129,6 +129,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$elements[$number]['fields'][$field_number]['label'] = $_POST[$field . "FieldLabel".$field_number];
 						$elements[$number]['fields'][$field_number]['number'] = $field_number;
 						$elements[$number]['fields'][$field_number]['type'] = $_POST["elementType" . $number . "FieldType".$field_number];
+						$elements[$number]['fields'][$field_number]['required'] = (boolean)@$_POST['isRequiredField'.$number.'_'.$field_number];
 					}
 				}
 			}

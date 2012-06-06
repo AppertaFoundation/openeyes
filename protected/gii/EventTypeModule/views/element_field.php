@@ -12,6 +12,8 @@
 	</select>
 
 	<input type="submit" class="remove_element_field" name="removeElementField<?php echo $element_num?>_<?php echo $field_num?>" value="remove" /><br />
+	<input type="checkbox" name="isRequiredField<?php echo $element_num?>_<?php echo $field_num?>" value="1" <?php if (@$_POST['isRequiredField'.$element_num.'_'.$field_num]) {?> checked="checked" <?php }?>/> Required<br/>
+
 	<?php if (isset($this->form_errors['elementName'.$element_num.'FieldName'.$field_num])) {?>
 		<span style="color: #f00;"><?php echo $this->form_errors['elementName'.$element_num.'FieldName'.$field_num]?></span><br/>
 	<?php }?>

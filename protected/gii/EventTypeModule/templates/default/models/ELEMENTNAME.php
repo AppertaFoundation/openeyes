@@ -79,8 +79,8 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, surgeon_id, assistant_id, anaesthetic_type_id', 'safe'),
 			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe'),
+			array('<?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['required']) { echo $field['name'] . ", "; } } } ?>', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
