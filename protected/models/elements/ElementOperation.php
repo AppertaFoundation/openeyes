@@ -924,6 +924,10 @@ class ElementOperation extends BaseEventTypeElement
 		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
 	}
 	
+	public function showSeatingWarning() {
+		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
+	}
+	
 	public function showPrescriptionWarning() {
 		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
 	}
