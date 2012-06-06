@@ -25,56 +25,55 @@
 <?php
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
-		if ($field['type'] == 'Textbox') {
-		?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'Textarea') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'Date picker') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo CHtml::encode($this->getNHSDate($element-><?php echo $field['name']; ?>)); <?php echo '?>'; ?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'Dropdown list') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'Checkbox') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'Radio buttons') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'Boolean') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } elseif ($field['type'] == 'EyeDraw') { ?>
-<div class="view">
-	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-	<br />
-</div>
-<?php } ?>
+		if ($field['type'] == 'Textbox') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'Textarea') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'Date picker') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo CHtml::encode($this->getNHSDate($element-><?php echo $field['name']; ?>)); <?php echo '?>'; ?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'Dropdown list') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'Checkbox') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> ? 'Yes' : 'No' <?php echo '?>';?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'Radio buttons') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'Boolean') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> ? 'Yes' : 'No' <?php echo '?>';?>
+				<br />
+			</div>
+			<?php } elseif ($field['type'] == 'EyeDraw') {?>
+			<div class="view">
+				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
+				<br />
+			</div>
+			<?php }?>
 
 		<?php
 	}
