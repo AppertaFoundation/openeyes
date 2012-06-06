@@ -221,7 +221,7 @@
 		Floor<?php } else { ?><?php echo CHtml::encode($booking->ward->name) ?> ward<?php } ?></li>
 	<li>You must not drive yourself to or from hospital</li>
 	<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating is available for patients</li>
-	<?php if($operation->showPrescriptionWarning()) { ?>
+	<?php if($subspecialty->id != 13 && $operation->showPrescriptionWarning()) { ?>
 	<li class="red">Check whether you have to pay or are exempt from prescription charges. If you are exempt, you will need to provide proof that you are exempt every time you collect a prescription. The prescription charge is £7.40 per item.</li>
 	<?php } ?>
 </ul>
