@@ -109,6 +109,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
 				$elements[$number]['number'] = $number;
 
+				$elements[$number]['last_modified_user_key'] = $elements[$number]['table_name'] . '_last_modified_user_id_fk';
+				$elements[$number]['created_user_key'] = $elements[$number]['table_name'] . '_created_user_id_fk';
+				$elements[$number]['event_key'] = $elements[$number]['table_name'] . '_event_id_fk';
+
+				if (strlen($elements[$number]['last_modified_user_key']) >64 || strlen($elements[$number]['created_user_key']) >64 || strlen($elements[$number]['event_key']) >64) {
+					$elements[$number]['last_modified_user_key'] = $this->generateKeyName('last_modified_user_id',$value);
+					$elements[$number]['created_user_key'] = $this->generateKeyName('created_user_id',$value);
+					$elements[$number]['event_key'] = $this->generateKeyName('event_id',$value);
+				}
+
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
 					$pattern = '/^' . $field . 'FieldName([0-9]+)$/';
@@ -124,6 +134,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		}
 		return $elements;
+	}
+
+	public function generateKeyName($field, $elementName) {
+		$key = 'et_' . strtolower($this->moduleID) . '_';
+
+		foreach (explode(' ',$elementName) as $segment) {
+			$key .= strtolower($segment[0]);
+		}
+
+		return $key . '_'.$field.'_fk';
 	}
 
 	public function renderMigrations($file, $migrationid) {

@@ -52,15 +52,18 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 					$count++;
 				}
 			?>
-'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+			'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 			'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 			'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 			'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 			'PRIMARY KEY (`id`)',
-			'UNIQUE KEY `event_id` (`event_id`)'
+			'KEY `<?php echo $element['last_modified_user_key']?>` (`last_modified_user_id`)',
+			'KEY `<?php echo $element['created_user_key']?>` (`created_user_id`)',
+			'KEY `<?php echo $element['event_key']?>` (`event_id`)',
+			'CONSTRAINT `<?php echo $element['last_modified_user_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `<?php echo $element['created_user_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+			'CONSTRAINT `<?php echo $element['event_key']?>` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
-		$this->addForeignKey('<?php echo $element['table_name'];?>_last_modified_user_id_fk','<?php echo $element['table_name'];?>','last_modified_user_id','user','id');
-		$this->addForeignKey('<?php echo $element['table_name'];?>_created_user_id_fk','<?php echo $element['table_name'];?>','created_user_id','user','id');
 	<?php } ?>
 	<?php } ?>
 

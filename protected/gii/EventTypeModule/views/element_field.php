@@ -6,14 +6,9 @@
 	<?php echo CHtml::textField('elementName'.$element_num.'FieldName'.$field_num,@$_POST['elementName'.$element_num.'FieldName'.$field_num],array('size'=>30, 'class'=>'fieldName')); ?> 
 
 	<select name="elementType<?php echo $element_num?>FieldType<?php echo $field_num?>" >
-		<option value="Textbox"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Textbox") {?> selected="selected"<?php }?>>Textbox</option>
-		<option value="Textarea"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Textarea") {?> selected="selected"<?php }?>>Textarea</option>
-		<option value="Date picker"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Date picker") {?> selected="selected"<?php }?>>Date picker</option>
-		<option value="Dropdown list"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Dropdown list") {?> selected="selected"<?php }?>>Dropdown list</option>
-		<option value="Checkboxes"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Checkboxes") {?> selected="selected"<?php }?>>Checkboxes</option>
-		<option value="Radio buttons"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Radio buttons") {?> selected="selected"<?php }?>>Radio buttons</option>
-		<option value="Boolean"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "Boolean") {?> selected="selected"<?php }?>>Boolean</option>
-		<option value="EyeDraw"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == "EyeDraw") {?> selected="selected"<?php }?>>EyeDraw</option>
+		<?php foreach (array('Textbox','Textarea','Date picker','Dropdown list','Checkbox','Radio buttons','Boolean','EyeDraw') as $field) {?>
+			<option value="<?php echo $field?>"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == $field) {?> selected="selected"<?php }?>><?php echo $field?></option>
+		<?php }?>
 	</select>
 
 	<input type="submit" class="remove_element_field" name="removeElementField<?php echo $element_num?>_<?php echo $field_num?>" value="remove" /><br />

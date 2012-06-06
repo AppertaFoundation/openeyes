@@ -50,7 +50,7 @@ if (isset($element)) {
 	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
 	<br />
 </div>
-<?php } elseif ($field['type'] == 'Checkboxes') { ?>
+<?php } elseif ($field['type'] == 'Checkbox') { ?>
 <div class="view">
 	<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
 	<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
