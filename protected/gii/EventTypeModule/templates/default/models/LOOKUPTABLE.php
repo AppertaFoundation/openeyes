@@ -18,42 +18,17 @@
  */
 
 /**
- * This is the model class for table "<?php if (isset($element)) echo $element['table_name']; ?>".
+ * This is the model class for table "<?php if (isset($lookup_table)) echo $lookup_table['name']?>".
  *
  * The followings are the available columns in table:
  * @property string $id
- * @property integer $event_id
-<?php
-if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		if ($field['type'] == 'Textbox') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Textarea') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Date picker') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Dropdown list') {
-			echo ' * @property integer $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Checkboxes') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Radio buttons') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Boolean') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'EyeDraw') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		}
-	}
-}
-?>
+ * @property string $name
  *
  * The followings are the available model relations:
  */
 
-class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
+class <?php if (isset($lookup_table)) echo $lookup_table['class']?> extends BaseActiveRecord
 {
-	public $service;
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return the static model class
@@ -68,7 +43,7 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 	 */
 	public function tableName()
 	{
-		return '<?php if (isset($element)) echo $element['table_name']; ?>';
+		return '<?php if (isset($lookup_table)) echo $lookup_table['name']; ?>';
 	}
 
 	/**
@@ -79,11 +54,11 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe'),
-			array('<?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['required']) { echo $field['name'] . ", "; } } } ?>', 'required'),
+			array('name', 'safe'),
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
+			array('id, name', 'safe', 'on' => 'search'),
 		);
 	}
 	
@@ -100,9 +75,6 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			<?php if (isset($element)) foreach ($element['relations'] as $relation) {?>
-			'<?php echo $relation['name']?>' => array(self::BELONGS_TO, '<?php echo $relation['class']?>', '<?php echo $relation['field']?>'),
-			<?php }?>
 		);
 	}
 
@@ -113,14 +85,7 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 	{
 		return array(
 			'id' => 'ID',
-			'event_id' => 'Event',
-<?php
-if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		echo "'" . $field['name'] . '\' => \'' . $field['label'] . "',\n";
-	}
-}
-?>
+			'name' => 'Name',
 		);
 	}
 
@@ -136,16 +101,8 @@ if (isset($element)) {
 		$criteria = new CDbCriteria;
 
 		$criteria->compare('id', $this->id, true);
-		$criteria->compare('event_id', $this->event_id, true);
+		$criteria->compare('name', $this->name, true);
 
-<?php
-if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		echo '$criteria->compare(\'' . $field['name'] . '\', $this->' . $field['name'] . ');' . "\n";
-	}
-}
-?>
-		
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria' => $criteria,
 			));

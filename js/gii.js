@@ -76,4 +76,95 @@ $(document).ready(function() {
 		$(this).parent().parent().parent().remove();
 		return false;
 	});
+
+	$('.selectFieldType').live('change',function() {
+		var m = $(this).attr('name').match(/^elementType([0-9]+)FieldType([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		var selected = $(this).children('option:selected').text();
+
+		switch (selected) {
+			case 'Dropdown list':
+				$.ajax({
+					'url': '/gii/EventTypeModule?ajax=extraDropdownList&element_num='+element+'&field_num='+field,
+					'type': 'GET',
+					'success': function(html) {
+						$('#extraDataElement'+element+'Field'+field).html(html);
+					}
+				});
+				break;
+			case 'Textbox':
+			case 'Textarea':
+			case 'Date picker':
+			case 'Dropdown list':
+			case 'Checkbox':
+			case 'Radio buttons':
+			case 'Boolean':
+			case 'EyeDraw':
+				$('#extraDataElement'+element+'Field'+field).html('');
+				break;
+		}
+
+		return true;
+	});
+
+	$('.dropDownMethodSelector').live('click',function() {
+		var m = $(this).attr('name').match(/^dropDownMethod([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() == 0) {
+			var view = 'extraDropdownListEnterValues';
+		} else {
+			var view = 'extraDropdownListPointAtSQLTable';
+		}
+
+		$.ajax({
+			'url': '/gii/EventTypeModule?ajax='+view+'&element_num='+element+'&field_num='+field,
+			'type': 'GET',
+			'success': function(html) {
+				$('#dropDownMethodFields'+element+'Field'+field).html(html);
+				$('input[name="dropDownFieldValue'+element+'Field'+field+'_1"]').select().focus();
+			}
+		});
+	});
+
+	$('.dropDownFieldValuesAddValue').live('click',function() {
+		var m = $(this).attr('name').match(/^dropDownFieldValuesAddValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		var i = 1;
+
+		$(this).prev().children('input[type="text"]').map(function() {
+			var m = $(this).attr('name').match(/_([0-9]+)$/);
+			if (parseInt(m[1]) > i) {
+				i = parseInt(m[1]);
+			}
+		});
+
+		i += 1;
+
+		$('#dropDownFieldValues'+element+'Field'+field).append('<input type="text" name="dropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="dropDownFieldValuesRemoveValue" value="remove"><br/>');
+		$('input[name="dropDownFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
+
+		return false;
+	});
+
+	$('.dropDownFieldValuesRemoveValue').live('click',function() {
+		var prevText = $(this).prev().prev().prev();
+		if (prevText.attr('type') == 'submit') {
+			prevText = prevText.prev();
+		}
+		$(this).prev().remove();
+		$(this).next().remove();
+		$(this).remove();
+		prevText.select().focus();
+		return false;
+	});
 });
+
+
+
+

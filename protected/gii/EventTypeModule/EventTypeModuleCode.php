@@ -70,8 +70,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
 						foreach ($this->getElementsFromPost() as $element) {
 							$destination_file = preg_replace("/ELEMENTNAME|ELEMENTTYPENAME/", $element['class_name'], $file);
-							$params = array(); $params['element'] = $element; $content=$this->render($file, $params);
+							$content = $this->render($file, array('element'=>$element));
 							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+						}
+					} elseif (preg_match('/LOOKUPTABLE/',$file)) {
+						foreach ($this->getElementsFromPost() as $element) {
+							foreach ($element['lookup_tables'] as $lookup_table) {
+								$destination_file = preg_replace('/LOOKUPTABLE/',$lookup_table['class'],$file);
+								$content = $this->render($file, array('lookup_table'=>$lookup_table));
+								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							}
 						}
 					} else {
 						$content=$this->render($file);
@@ -100,6 +108,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function getElementsFromPost() {
+		file_put_contents("/tmp/debug",print_r($_POST,true));
+
 		$elements = Array();
 		foreach ($_POST as $key => $value) {
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
@@ -119,6 +129,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$elements[$number]['event_key'] = $this->generateKeyName('event_id',$value);
 				}
 
+				$elements[$number]['foreign_keys'] = array();
+				$elements[$number]['lookup_tables'] = array();
+
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
 					$pattern = '/^' . $field . 'FieldName([0-9]+)$/';
@@ -130,6 +143,67 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$elements[$number]['fields'][$field_number]['number'] = $field_number;
 						$elements[$number]['fields'][$field_number]['type'] = $_POST["elementType" . $number . "FieldType".$field_number];
 						$elements[$number]['fields'][$field_number]['required'] = (boolean)@$_POST['isRequiredField'.$number.'_'.$field_number];
+						$elements[$number]['fields'][$field_number]['relations'] = array();
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Dropdown list') {
+							// Dropdown list fields should end with _id
+							if (!preg_match('/_id$/',$fields_value)) {
+								$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
+							}
+
+							if ($_POST['dropDownMethod'.$number.'Field'.$field_number] == 0) {
+								$elements[$number]['fields'][$field_number]['method'] = 'Manual';
+
+								// Manually-entered values
+								$field_values = array();
+
+								foreach ($_POST as $value_key => $value_value) {
+									if (preg_match('/^dropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+										$field_values[] = $value_value;
+									}
+								}
+
+								$lookup_table = array(
+									'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+								);
+
+								$key_name = $lookup_table['name'].'_fk';
+
+								if (strlen($key_name) >64) {
+									$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+								}
+
+								$elements[$number]['foreign_keys'][] = array(
+									'field' => $elements[$number]['fields'][$field_number]['name'],
+									'name' => $key_name,
+									'table' => $lookup_table['name']
+								);
+
+								$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
+								$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
+								$lookup_table['values'] = $field_values;
+
+								if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
+									$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
+									$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
+								}
+
+								$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+
+								$elements[$number]['lookup_tables'][] = $lookup_table;
+
+								$elements[$number]['relations'][] = array(
+									'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+									'class' => $lookup_table['class'],
+									'field' => $elements[$number]['fields'][$field_number]['name'],
+								);
+
+							} else {
+								$elements[$number]['fields'][$field_number]['method'] = 'Table';
+
+								// Point at table
+							}
+						}
 					}
 				}
 			}
@@ -178,7 +252,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function init() {
-		if (isset($_GET['ajax']) && preg_match('/^[a-z_]+$/',$_GET['ajax'])) {
+		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z_]+$/',$_GET['ajax'])) {
 			Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
 			exit;
 		}

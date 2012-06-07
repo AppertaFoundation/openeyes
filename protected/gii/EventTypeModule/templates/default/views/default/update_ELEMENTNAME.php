@@ -24,44 +24,39 @@
 	<?php
 	if (isset($element)) {
 		foreach ($element['fields'] as $field) {
-			if ($field['type'] == 'Textbox') {
-				?>
+	if ($field['type'] == 'Textbox') {?>
 		<?php echo '<?php '; ?>echo $form->textField($element, '<?php echo $field['name']; ?>', array('size' => '10')); <?php echo '?>' ;?>
 
-	<?php
-			} elseif ($field['type'] == 'Textarea') {
-	?>
+	<?php } elseif ($field['type'] == 'Textarea') {?>
+
 		<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']; ?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
 
-	<?php
-			} elseif ($field['type'] == 'Date picker') {
-	?>
-		<?php echo '<?php '; ?> echo $form->datePicker($element, '<?php echo $field['name']; ?>', array('maxDate' => 'today'), array('style'=>'width: 110px;')); <?php echo '?>'; ?>
+	<?php } elseif ($field['type'] == 'Date picker') {?>
 
-	<?php
-			} elseif ($field['type'] == 'Dropdown list') {
-	?>
-		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']; ?>', CHtml::listData(Theatre::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>' ;?>
+		<?php echo '<?php '; ?>echo $form->datePicker($element, '<?php echo $field['name']; ?>', array('maxDate' => 'today'), array('style'=>'width: 110px;')); <?php echo '?>'; ?>
 
-	<?php
-			} elseif ($field['type'] == 'Checkbox') {
-	?>
+	<?php } elseif ($field['type'] == 'Dropdown list') {
+
+		if ($field['method'] == 'Manual') {?>
+			<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>'; ?>
+		<?php }else{?>
+			// TODO
+		<?php }?>
+
+	<?php } elseif ($field['type'] == 'Checkbox') {?>
+
 		<?php echo '<?php '; ?>echo $form->checkBox($element, '<?php echo $field['name']; ?>'); <?php echo '?>'; ?>
 
-	<?php
-			} elseif ($field['type'] == 'Radio buttons') {
-	?>
+	<?php } elseif ($field['type'] == 'Radio buttons') {?>
+
 		(Radio buttons go here)
 
-	<?php
-			} elseif ($field['type'] == 'Boolean') {
-	?>
+	<?php } elseif ($field['type'] == 'Boolean') {?>
+
 		<?php echo '<?php '; ?>echo $form->radioBoolean($element, '<?php echo $field['name']; ?>'); <?php echo '?>' ;?>
 
-	<?php
-			} elseif ($field['type'] == 'EyeDraw') {
-	?>
-	>---<?php echo '<?php '; ?>
+	<?php } elseif ($field['type'] == 'EyeDraw') {?>
+		<?php echo '<?php '; ?>
 			$this->widget('application.extensions.eyedraw.OEEyeDrawWidget', array(
 				'identifier'=> 'Buckle',
 				'side'=>'R',
@@ -73,7 +68,7 @@
 				'onLoadedCommandArray'=>array(
 					array('addDoodle', array('BuckleOperation')),
 					array('deselectDoodles', array()),
-				),
+				)));
 	<?php echo '?>'; ?>
 
 				<?php

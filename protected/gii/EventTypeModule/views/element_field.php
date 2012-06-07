@@ -5,7 +5,7 @@
 	<?php echo CHtml::textField('elementName'.$element_num.'FieldLabel'.$field_num,@$_POST['elementName'.$element_num.'FieldLabel'.$field_num],array('size'=>30,'class'=>'fieldLabel')); ?>
 	<?php echo CHtml::textField('elementName'.$element_num.'FieldName'.$field_num,@$_POST['elementName'.$element_num.'FieldName'.$field_num],array('size'=>30, 'class'=>'fieldName')); ?> 
 
-	<select name="elementType<?php echo $element_num?>FieldType<?php echo $field_num?>" >
+	<select name="elementType<?php echo $element_num?>FieldType<?php echo $field_num?>" class="selectFieldType">
 		<?php foreach (array('Textbox','Textarea','Date picker','Dropdown list','Checkbox','Radio buttons','Boolean','EyeDraw') as $field) {?>
 			<option value="<?php echo $field?>"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == $field) {?> selected="selected"<?php }?>><?php echo $field?></option>
 		<?php }?>
@@ -13,6 +13,12 @@
 
 	<input type="submit" class="remove_element_field" name="removeElementField<?php echo $element_num?>_<?php echo $field_num?>" value="remove" /><br />
 	<input type="checkbox" name="isRequiredField<?php echo $element_num?>_<?php echo $field_num?>" value="1" <?php if (@$_POST['isRequiredField'.$element_num.'_'.$field_num]) {?> checked="checked" <?php }?>/> Required<br/>
+
+	<div id="extraDataElement<?php echo $element_num?>Field<?php echo $field_num?>">
+		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Dropdown list') {
+			$this->renderPartial('extraDropdownList',array('element_num'=>$element_num,'field_num'=>$field_num));
+		}?>
+	</div>
 
 	<?php if (isset($this->form_errors['elementName'.$element_num.'FieldName'.$field_num])) {?>
 		<span style="color: #f00;"><?php echo $this->form_errors['elementName'.$element_num.'FieldName'.$field_num]?></span><br/>
