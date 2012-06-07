@@ -19,8 +19,8 @@
 
 class BaseEventTypeCActiveForm extends CActiveForm
 {
-	public function dropDownList($model,$field,$data,$htmlOptions=array()) {
-		$this->widget('application.widgets.DropDownList',array('element' => $model, 'field' => $field, 'data' => $data, 'htmlOptions' => $htmlOptions));
+	public function dropDownList($model,$field,$data,$htmlOptions=array(),$hidden=false) {
+		$this->widget('application.widgets.DropDownList',array('element' => $model, 'field' => $field, 'data' => $data, 'htmlOptions' => $htmlOptions, 'hidden' => $hidden));
 	}
 
 	public function dropDownListRow($model, $fields, $datas, $htmlOptions=array()) {

@@ -163,4 +163,12 @@ class Contact extends BaseActiveRecord {
 
 		return $address;
 	}
+
+	public function findAllByParentClass($parent_class) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('parent_class',$parent_class);
+		$criteria->order = 'first_name, last_name';
+
+		return Contact::Model()->findAll($criteria);
+	}
 }

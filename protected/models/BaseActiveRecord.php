@@ -53,6 +53,14 @@ class BaseActiveRecord extends CActiveRecord
 				$this->$name = strip_tags($value);
 			}
 		}
+
+		// Detect nullable foreign keys and replace "" with null (to fix html dropdowns breaking contraints)
+		foreach ($this->tableSchema->foreignKeys as $field => $stuff) {
+			if ($this->tableSchema->columns[$field]->allowNull && !$this->{$field}) {
+				$this->{$field} = null;
+			}
+		}
+
 		return parent::beforeSave();
 	}
 	

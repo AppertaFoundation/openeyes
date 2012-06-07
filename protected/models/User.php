@@ -279,4 +279,14 @@ class User extends BaseActiveRecord
 
 		return false;
 	}
+
+	public function getList() {
+		$users = array();
+
+		foreach (User::Model()->findAll(array('order'=>'first_name,last_name')) as $user) {
+			$users[$user->id] = $user->first_name.' '.$user->last_name;
+		}
+
+		return $users;
+	}
 }
