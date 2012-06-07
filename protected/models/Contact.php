@@ -136,6 +136,10 @@ class Contact extends BaseActiveRecord {
 	public function getFullName() {
 		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
+	
+	public function getReversedFullName() {
+		return trim(implode(' ',array($this->title, $this->last_name, $this->first_name)));
+	}
 
 	/**
 	 * @return string Salutaion name
