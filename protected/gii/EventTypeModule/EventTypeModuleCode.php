@@ -131,6 +131,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 				$elements[$number]['foreign_keys'] = array();
 				$elements[$number]['lookup_tables'] = array();
+				$elements[$number]['relations'] = array();
 
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
@@ -143,7 +144,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$elements[$number]['fields'][$field_number]['number'] = $field_number;
 						$elements[$number]['fields'][$field_number]['type'] = $_POST["elementType" . $number . "FieldType".$field_number];
 						$elements[$number]['fields'][$field_number]['required'] = (boolean)@$_POST['isRequiredField'.$number.'_'.$field_number];
-						$elements[$number]['fields'][$field_number]['relations'] = array();
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Dropdown list') {
 							// Dropdown list fields should end with _id
@@ -202,6 +202,26 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								$elements[$number]['fields'][$field_number]['method'] = 'Table';
 
 								// Point at table
+
+								$lookup_table = $_POST['dropDownFieldSQLTable'.$number.'Field'.$field_number];
+
+								$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
+
+								if (strlen($key_name) >64) {
+									$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+								}
+
+								$elements[$number]['foreign_keys'][] = array(
+									'field' => $elements[$number]['fields'][$field_number]['name'],
+									'name' => $key_name,
+									'table' => $lookup_table,
+								);
+
+								$elements[$number]['relations'][] = array(
+									'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+									'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
+									'field' => $elements[$number]['fields'][$field_number]['name'],
+								);
 							}
 						}
 					}
@@ -209,6 +229,56 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		}
 		return $elements;
+	}
+
+	public function findModelClassForTable($table, $path=false) {
+		if (!$path) {
+			$path = Yii::app()->basePath.'/models';
+		}
+
+		$dh = opendir($path);
+
+		while ($file = readdir($dh)) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				if (is_dir($path.'/'.$file)) {
+					if ($class = $this->findModelClassForTable($table, $path.'/'.$file)) {
+						return $class;
+					}
+				} else {
+					if (preg_match('/\.php$/',$file)) {
+						$blob = file_get_contents($path.'/'.$file);
+
+						if (preg_match('/public function tableName\(\).*?\{.*?return \'(.*?)\';/s',$blob,$m)) {
+							if ($m[1] == $table) {
+								return preg_replace('/\.php$/','',$file);
+							}
+						}
+					}
+				}
+			}
+		}
+
+		closedir($dh);
+
+		if ($path == Yii::app()->basePath.'/models') {
+			$path = Yii::app()->basePath.'/modules';
+
+			$dh = opendir($path);
+
+			while ($file = readdir($dh)) {
+				if (!preg_match('/^\.\.?$/',$file)) {
+					if (file_exists($path.'/'.$file.'/models')) {
+						if ($class = $this->findModelClassForTable($table, $path.'/'.$file.'/models')) {
+							return $class;
+						}
+					}
+				}
+			}
+
+			closedir($dh);
+		}
+
+		return false;
 	}
 
 	public function generateKeyName($field, $elementName) {
@@ -253,7 +323,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 	public function init() {
 		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z_]+$/',$_GET['ajax'])) {
-			Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+			if ($_GET['ajax'] == 'table_fields') {
+				EventTypeModuleCode::dump_table_fields($_GET['table']);
+			} else {
+				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+			}
 			exit;
 		}
 
@@ -262,6 +336,23 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		parent::init();
+	}
+
+	static public function dump_table_fields($table, $selected=false) {
+		echo '<option value="">- Please select a field -</option>';
+
+		$tableSchema = Yii::app()->getDb()->getSchema()->getTable($table);
+
+		$columns = $tableSchema->getColumnNames();
+		sort($columns);
+
+		foreach ($columns as $column) {
+			$schema = $tableSchema->getColumn($column);
+
+			if (preg_match('/^varchar/',$schema->dbType) && $column != 'parent_class') {
+				echo '<option value="'.$column.'"'.($selected == $column ? ' selected="selected"' : '').'>'.$column.'</option>';
+			}
+		}
 	}
 
 	public function validate_form() {

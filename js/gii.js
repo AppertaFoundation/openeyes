@@ -163,8 +163,28 @@ $(document).ready(function() {
 		prevText.select().focus();
 		return false;
 	});
+
+	$('.dropDownFieldSQLTable').live('change',function() {
+		var m = $(this).attr('name').match(/^dropDownFieldSQLTable([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() == '') {
+			$('#dropDownFieldSQLTableFieldDiv'+element+'Field'+field).hide();
+			$('select[name="dropDownFieldSQLTableField'+element+'Field'+field+'"]').html('');
+		} else {
+			var table = $(this).val();
+			$('.loader').show();
+
+			$.ajax({
+				'type': 'GET',
+				'url': '/gii/EventTypeModule?ajax=table_fields&table='+table,
+				'success': function(html) {
+					$('select[name="dropDownFieldSQLTableField'+element+'Field'+field+'"]').html(html);
+					$('#dropDownFieldSQLTableFieldDiv'+element+'Field'+field).show();
+					$('.loader').hide();
+				}
+			});
+		}
+	});
 });
-
-
-
-
