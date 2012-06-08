@@ -10,7 +10,7 @@
 		<span style="color: #f00;"><?php echo $this->form_errors['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]?></span><br/>
 	<?php }?>
 	<div id="dropDownFieldSQLTableFieldDiv<?php echo $element_num?>Field<?php echo $field_num?>"<?php if (!@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]) {?> style="display: none;"<?php }?>>
-		Field: <select name="dropDownFieldSQLTableField<?php echo $element_num?>Field<?php echo $field_num?>">
+		Field: <select name="dropDownFieldSQLTableField<?php echo $element_num?>Field<?php echo $field_num?>" class="dropDownFieldSQLTableField">
 			<?php if (@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]) {?>
 				<?php EventTypeModuleCode::dump_table_fields(@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num],@$_POST['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num])?>
 			<?php }?>
@@ -18,5 +18,12 @@
 		<?php if (isset($this->form_errors['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num])) {?>
 			<span style="color: #f00;"><?php echo $this->form_errors['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num]?></span><br/>
 		<?php }?>
+		<div id="dropDownFieldSQLTableDefaultValueDiv<?php echo $element_num?>Field<?php echo $field_num?>"<?php if (!@$_POST['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num]) {?> style="display: none;"<?php }?>>
+			Default value: <select name="dropDownFieldValueTextInputDefault<?php echo $element_num?>Field<?php echo $field_num?>">
+				<?php if (@$_POST['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num]) {?>
+					<?php EventTypeModuleCode::dump_field_unique_values(@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num],@$_POST['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num],@$_POST['dropDownFieldValueTextInputDefault'.$element_num.'Field'.$field_num])?>
+				<?php }?>
+			</select><br/>
+		</div>
 	</div>
 </div>

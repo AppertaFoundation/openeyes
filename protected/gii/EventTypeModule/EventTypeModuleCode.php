@@ -368,6 +368,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z_]+$/',$_GET['ajax'])) {
 			if ($_GET['ajax'] == 'table_fields') {
 				EventTypeModuleCode::dump_table_fields($_GET['table']);
+			} else if ($_GET['ajax'] == 'field_unique_values') {
+				EventTypeModuleCode::dump_field_unique_values($_GET['table'],$_GET['field']);
 			} else {
 				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
 			}
@@ -395,6 +397,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			if (preg_match('/^varchar/',$schema->dbType) && $column != 'parent_class') {
 				echo '<option value="'.$column.'"'.($selected == $column ? ' selected="selected"' : '').'>'.$column.'</option>';
 			}
+		}
+	}
+
+	static public function dump_field_unique_values($table, $field, $selected=false) {
+		echo '<option value="">- No default value -</option>';
+
+		foreach (Yii::app()->db->createCommand()
+			->selectDistinct("$table.id, $table.$field")
+			->from($table)
+			->order("$table.$field")
+			->queryAll() as $row) {
+			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
 		}
 	}
 

@@ -295,5 +295,30 @@ $(document).ready(function() {
 		return true;
 	});
 
+	$('.dropDownFieldSQLTableField').live('change',function() {
+		var m = $(this).attr('name').match(/^dropDownFieldSQLTableField([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() == '') {
+			$('#dropDownFieldSQLTableDefaultValueDiv'+element+'Field'+field).hide();
+			$('select[name="dropDownFieldValueTextInputDefault'+element+'Field'+field+'"]').html('');
+		} else {
+			var table = $('select[name="dropDownFieldSQLTable'+element+'Field'+field+'"]').val();
+			var fieldval = $(this).val();
+			$('.loader').show();
+
+			$.ajax({
+				'type': 'GET',
+				'url': '/gii/EventTypeModule?ajax=field_unique_values&table='+table+'&field='+fieldval,
+				'success': function(html) {
+					$('select[name="dropDownFieldValueTextInputDefault'+element+'Field'+field+'"]').html(html);
+					$('#dropDownFieldSQLTableDefaultValueDiv'+element+'Field'+field).show();
+					$('.loader').hide();
+				}
+			});
+		}
+	});
+
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
