@@ -1,16 +1,4 @@
 $(document).ready(function() {
-	$(".fieldLabel").live('focusout',function () {
-		// alert("hello");
-		// prepopulate the field name if it is currently empty
-		var myid = $(this).attr('id');
-		var myval = $(this).val();
-		var myvalfield = myval.toLowerCase().replace(/ /g, "_");
-		var nameid = myid.replace("Label","Name");
-		nameval = $('#'+nameid).val();
-		if (nameval.length < 1) {
-			$('#'+nameid).val(myvalfield);
-		}
-	});
 	$('.add_element_field').live('click',function() {
 		var div = $(this).parent().children('div.element_fields');
 
@@ -200,4 +188,55 @@ $(document).ready(function() {
 
 		return true;
 	});
+
+	$('.elementNameTextField').live('keypress',function(e) {
+		var element = $(this).attr('name').match(/[0-9]+/);
+
+		if (e.keyCode == 13) {
+			$('input[name="addElementField'+element+'"]').click();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('.fieldLabel').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^elementName([0-9]+)FieldLabel([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('input[name="elementName'+element+'FieldName'+field+'"]').select();
+			return false;
+		}
+
+		return true;
+	});
+
+	$(".fieldLabel").live('focusout',function () {
+		var m = $(this).attr('name').match(/^elementName([0-9]+)FieldLabel([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($('#elementName'+element+'FieldName'+field).val() == '') {
+			$('#elementName'+element+'FieldName'+field).val($(this).val().toLowerCase().replace(/ /g, "_"));
+		}
+
+		$('#elementName'+element+'FieldName'+field).select().focus();
+	});
+
+	$('.fieldName').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^elementName([0-9]+)FieldName([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+		
+		if (e.keyCode == 13) {
+			$('input[name="addElementField'+element+'"]').click();
+			return false;
+		}
+		
+		return true;
+	});
+
+	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
