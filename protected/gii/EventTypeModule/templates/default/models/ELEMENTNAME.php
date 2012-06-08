@@ -156,6 +156,11 @@ if (isset($element)) {
 	 */
 	public function setDefaultOptions()
 	{
+		<?php if (isset($element)) {
+			foreach ($element['defaults'] as $property => $value) {
+				echo '$this->'.$property.' = '.$value.';';
+			}
+		}?>
 	}
 
 	protected function beforeSave()

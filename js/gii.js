@@ -144,7 +144,7 @@ $(document).ready(function() {
 
 		i += 1;
 
-		$('#dropDownFieldValues'+element+'Field'+field).append('<input type="text" class="dropDownFieldValueTextInput" name="dropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="dropDownFieldValuesRemoveValue" value="remove"><br/>');
+		$('#dropDownFieldValues'+element+'Field'+field).append('<input type="radio" class="dropDownFieldValueTextInputDefault" name="dropDownFieldValueTextInputDefault'+element+'Field'+field+'" value="'+i+'" /> <input type="text" class="dropDownFieldValueTextInput" name="dropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="dropDownFieldValuesRemoveValue" value="remove"><br/>');
 		$('input[name="dropDownFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
 
 		return false;

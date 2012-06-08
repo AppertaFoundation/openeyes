@@ -132,6 +132,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['foreign_keys'] = array();
 				$elements[$number]['lookup_tables'] = array();
 				$elements[$number]['relations'] = array();
+				$elements[$number]['defaults'] = array();
 
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
@@ -151,7 +152,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
 							}
 
-							if ($_POST['dropDownMethod'.$number.'Field'.$field_number] == 0) {
+							$elements[$number]['fields'][$field_number]['empty'] = @$_POST['dropDownUseEmpty'.$number.'Field'.$field_number];
+
+							if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
+								$elements[$number]['defaults'][$fields_value] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
+							}
+
+							if (@$_POST['dropDownMethod'.$number.'Field'.$field_number] == 0) {
 								$elements[$number]['fields'][$field_number]['method'] = 'Manual';
 
 								// Manually-entered values
@@ -416,6 +423,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$errors[$key] = $this->validation_rules['element_field_label']['required_error'];
 				} else if (!preg_match($this->validation_rules['element_field_label']['regex'],$value)) {
 					$errors[$key] = $this->validation_rules['element_field_label']['regex_error'];
+				}
+			}
+
+			if (preg_match('/^elementType([0-9]+)FieldType([0-9]+)$/',$key,$m)) {
+				if ($value == 'Dropdown list') {
+					if (!isset($_POST['dropDownMethod'.$m[1].'Field'.$m[2]])) {
+						$errors['dropDownMethod'.$m[1].'Field'.$m[2]] = "Please select a dropdown list method";
+					}
 				}
 			}
 
