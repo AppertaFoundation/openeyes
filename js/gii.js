@@ -146,7 +146,7 @@ $(document).ready(function() {
 
 		i += 1;
 
-		$('#dropDownFieldValues'+element+'Field'+field).append('<input type="text" name="dropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="dropDownFieldValuesRemoveValue" value="remove"><br/>');
+		$('#dropDownFieldValues'+element+'Field'+field).append('<input type="text" class="dropDownFieldValueTextInput" name="dropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="dropDownFieldValuesRemoveValue" value="remove"><br/>');
 		$('input[name="dropDownFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
 
 		return false;
@@ -186,5 +186,18 @@ $(document).ready(function() {
 				}
 			});
 		}
+	});
+
+	$('.dropDownFieldValueTextInput').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^dropDownFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('input[name="dropDownFieldValuesAddValue'+element+'Field'+field+'"]').click();
+			return false;
+		}
+
+		return true;
 	});
 });
