@@ -6,11 +6,17 @@
 			<option value="<?php echo $table?>"<?php if (@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num] == $table) {?> selected="selected"<?php }?>><?php echo $table?></option>
 		<?php }?>
 	</select>&nbsp;<img src="/img/ajax-loader.gif" class="loader" alt="loading..." style="display: none;" /><br/>
+	<?php if (isset($this->form_errors['dropDownFieldSQLTable'.$element_num.'Field'.$field_num])) {?>
+		<span style="color: #f00;"><?php echo $this->form_errors['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]?></span><br/>
+	<?php }?>
 	<div id="dropDownFieldSQLTableFieldDiv<?php echo $element_num?>Field<?php echo $field_num?>"<?php if (!@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]) {?> style="display: none;"<?php }?>>
 		Field: <select name="dropDownFieldSQLTableField<?php echo $element_num?>Field<?php echo $field_num?>">
 			<?php if (@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num]) {?>
 				<?php EventTypeModuleCode::dump_table_fields(@$_POST['dropDownFieldSQLTable'.$element_num.'Field'.$field_num],@$_POST['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num])?>
 			<?php }?>
-		</select>
+		</select><br/>
+		<?php if (isset($this->form_errors['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num])) {?>
+			<span style="color: #f00;"><?php echo $this->form_errors['dropDownFieldSQLTableField'.$element_num.'Field'.$field_num]?></span><br/>
+		<?php }?>
 	</div>
 </div>

@@ -6,7 +6,7 @@
 	<?php echo CHtml::textField('elementName'.$element_num.'FieldName'.$field_num,@$_POST['elementName'.$element_num.'FieldName'.$field_num],array('size'=>30, 'class'=>'fieldName')); ?> 
 
 	<select name="elementType<?php echo $element_num?>FieldType<?php echo $field_num?>" class="selectFieldType">
-		<?php foreach (array('Textbox','Textarea','Date picker','Dropdown list','Checkbox','Radio buttons','Boolean','EyeDraw') as $field) {?>
+		<?php foreach (array('Textbox','Textarea','Date picker','Dropdown list','Textarea with dropdown','Checkbox','Radio buttons','Boolean','EyeDraw') as $field) {?>
 			<option value="<?php echo $field?>"<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == $field) {?> selected="selected"<?php }?>><?php echo $field?></option>
 		<?php }?>
 	</select>
@@ -17,6 +17,9 @@
 	<div id="extraDataElement<?php echo $element_num?>Field<?php echo $field_num?>">
 		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Dropdown list') {
 			$this->renderPartial('extraDropdownList',array('element_num'=>$element_num,'field_num'=>$field_num));
+		}?>
+		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Textarea with dropdown') {
+			$this->renderPartial('extraTextAreaWithDropdown',array('element_num'=>$element_num,'field_num'=>$field_num));
 		}?>
 	</div>
 

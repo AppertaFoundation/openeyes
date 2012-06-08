@@ -224,6 +224,40 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								);
 							}
 						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea with dropdown') {
+							// Manually-entered values
+							$field_values = array();
+
+							foreach ($_POST as $value_key => $value_value) {
+								if (preg_match('/^textAreaDropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+									$field_values[] = $value_value;
+								}
+							}
+
+							$lookup_table = array(
+								'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+							);
+
+							$key_name = $lookup_table['name'].'_fk';
+
+							if (strlen($key_name) >64) {
+								$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+							}
+
+							$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
+							$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
+							$lookup_table['values'] = $field_values;
+
+							if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
+								$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
+								$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
+							}
+
+							$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+
+							$elements[$number]['lookup_tables'][] = $lookup_table;
+						}
 					}
 				}
 			}
@@ -307,6 +341,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$sql = "'{$name}' => 'date DEFAULT NULL', // {$label}\n";
 		} elseif ($type == 'Dropdown list') {
 			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
+		} elseif ($type == 'Textarea with dropdown') {
+			$sql = "'{$name}' => 'text NOT NULL', // {$label}\n";
 		} elseif ($type == 'Checkbox') {
 			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL', // {$label}\n";
 		} elseif ($type == 'Radio buttons') {
@@ -380,6 +416,17 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$errors[$key] = $this->validation_rules['element_field_label']['required_error'];
 				} else if (!preg_match($this->validation_rules['element_field_label']['regex'],$value)) {
 					$errors[$key] = $this->validation_rules['element_field_label']['regex_error'];
+				}
+			}
+
+			if (preg_match('/^dropDownMethod([0-9]+)Field([0-9]+)$/',$key,$m)) {
+				if ($value == 1) {
+					if (!@$_POST['dropDownFieldSQLTable'.$m[1].'Field'.$m[2]]) {
+						$errors['dropDownFieldSQLTable'.$m[1].'Field'.$m[2]] = "Please select a table";
+					}
+					if (!@$_POST['dropDownFieldSQLTableField'.$m[1].'Field'.$m[2]]) {
+						$errors['dropDownFieldSQLTableField'.$m[1].'Field'.$m[2]] = "Please select a field";
+					}
 				}
 			}
 		}
