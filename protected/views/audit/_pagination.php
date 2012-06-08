@@ -23,13 +23,7 @@ if ($data['page'] >1) {?>
 &laquo; previous&nbsp;&nbsp;
 <?php }
 
-for ($i=1; $i<=$data['pages']; $i++) {
-	if ($i==$data['page']) {
-		echo $i."&nbsp;&nbsp;";
-	} else {?>
-		<a href="#" class="changePage" id="page<?php echo $i?>"><?php echo $i?></a>&nbsp;&nbsp;
-	<?php }
-}
+echo $data['page'].'&nbsp;&nbsp;';
 
 if ($data['page'] < $data['pages']) {?>
 	<a href="#" class="changePage" id="page<?php echo ($data['page']+1)?>">next &raquo;</a>&nbsp;&nbsp;
