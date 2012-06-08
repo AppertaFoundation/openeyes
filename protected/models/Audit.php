@@ -147,7 +147,7 @@ class Audit extends BaseActiveRecord
 			$this->site_id = Yii::app()->session['selected_site_id'];
 			$this->firm_id = Yii::app()->session['selected_firm_id'];
 		}
-		parent::save($runValidation, $attributes);
+		parent::save($runValidation, $attributes, $allow_overriding);
 	}
 
 	public function getColour() {
