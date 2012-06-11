@@ -44,7 +44,7 @@
 								'showAnim'=>'fold',
 								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 							),
-							'value' => @$_POST['date_from'],
+							'value' => @$_REQUEST['date_from'],
 							'htmlOptions' => array('style' => "width: 95px;"),
 						))?>
 						<label for="date_to">
@@ -57,7 +57,7 @@
 								'showAnim'=>'fold',
 								'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
 							),
-							'value' => @$_POST['date_to'],
+							'value' => @$_REQUEST['date_to'],
 							'htmlOptions' => array('style' => "width: 95px;"),
 						))?>
 						<button type="submit" class="classy blue mini btn_filter auto"><span class="button-span button-span-blue">Filter</span></button>
@@ -68,18 +68,20 @@
 							Include:
 						</label>
 						&nbsp;
-						<input type="checkbox" name="include_bookings" value="1"<?php if (@$_POST['include_bookings']){?> checked="checked"<?php }?> /> Bookings
-						<input type="checkbox" name="include_reschedules" value="1"<?php if (@$_POST['include_reschedules']){?> checked="checked"<?php }?> /> Reschedules
-						<input type="checkbox" name="include_cancellations" value="1"<?php if (@$_POST['include_cancellations']){?> checked="checked"<?php }?> /> Cancellations
+						<input type="checkbox" name="include_bookings" class="filter" value="1"<?php if (@$_REQUEST['include_bookings']){?> checked="checked"<?php }?> /> Bookings
+						<input type="checkbox" name="include_reschedules" class="filter" value="1"<?php if (@$_REQUEST['include_reschedules']){?> checked="checked"<?php }?> /> Reschedules
+						<input type="checkbox" name="include_cancellations" class="filter" value="1"<?php if (@$_REQUEST['include_cancellations']){?> checked="checked"<?php }?> /> Cancellations
 					</form>
 					<form id="csvform" method="post" action="/transport/downloadcsv">
-						<input type="hidden" name="date_from" value="<?php echo @$_POST['date_from']?>" />
-						<input type="hidden" name="date_to" value="<?php echo @$_POST['date_to']?>" />
-						<input type="hidden" name="include_bookings" value="<?php echo (@$_POST['include_bookings'] ? 1 : 0)?>" />
-						<input type="hidden" name="include_reschedules" value="<?php echo (@$_POST['include_reschedules'] ? 1 : 0)?>" />
-						<input type="hidden" name="include_cancellations" value="<?php echo (@$_POST['include_cancellations'] ? 1 : 0)?>" />
+						<input type="hidden" name="date_from" value="<?php echo @$_REQUEST['date_from']?>" />
+						<input type="hidden" name="date_to" value="<?php echo @$_REQUEST['date_to']?>" />
+						<input type="hidden" name="include_bookings" value="<?php echo (@$_REQUEST['include_bookings'] ? 1 : 0)?>" />
+						<input type="hidden" name="include_reschedules" value="<?php echo (@$_REQUEST['include_reschedules'] ? 1 : 0)?>" />
+						<input type="hidden" name="include_cancellations" value="<?php echo (@$_REQUEST['include_cancellations'] ? 1 : 0)?>" />
 					</form>
+					<?php echo $this->renderPartial('/transport/_pagination')?>
 					<?php echo $this->renderPartial('/transport/_list',array('bookings' => $bookings))?>
+					<?php echo $this->renderPartial('/transport/_pagination')?>
 				</div> <!-- #searchResults -->
 				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Download CSV</span></button>
 				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Print list</span></button>
@@ -150,22 +152,29 @@
 	});
 
 	$('button.btn_confirm').click(function() {
-		$.ajax({
-			type: "POST",
-			url: "/transport/confirm",
-			data: $('input[name^="cancelled"]:checked').serialize()+"&"+$('input[name^="booked"]:checked').serialize(),
-			success: function(html) {
-				if (html == "1") {
-					$('input:checked').map(function() {
-						$(this).parent().parent().attr('class','waitinglistGrey');
-						$(this).attr('checked',false);
-					});
-				} else {
-					alert("Something went wrong trying to confirm the transport item.\n\nPlease try again or contact OpenEyes support.");
+		if (!$(this).hasClass('inactive')) {
+			disableButtons();
+
+			$.ajax({
+				type: "POST",
+				url: "/transport/confirm",
+				data: $('input[name^="cancelled"]:checked').serialize()+"&"+$('input[name^="booked"]:checked').serialize(),
+				success: function(html) {
+					if (html == "1") {
+						$('input:checked').map(function() {
+							if ($(this).attr('class') != 'filter') {
+								$(this).parent().parent().attr('class','waitinglistGrey');
+								$(this).attr('checked',false);
+							}
+						});
+					} else {
+						alert("Something went wrong trying to confirm the transport item.\n\nPlease try again or contact OpenEyes support.");
+					}
+					enableButtons();
+					return false;
 				}
-				return false;
-			}
-		});
+			});
+		}
 
 		return false;
 	});
