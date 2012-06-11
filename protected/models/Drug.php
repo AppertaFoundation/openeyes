@@ -100,7 +100,7 @@ class Drug extends BaseActiveRecord
 
 	public function getLabel() {
 		if($this->preservative_free) {
-			return $this->name . ' (PF)';
+			return $this->name . ' (No Preservative)';
 		} else {
 			return $this->name;
 		}

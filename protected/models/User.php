@@ -250,8 +250,16 @@ class User extends BaseActiveRecord
 		return implode(' ', array($this->first_name, $this->last_name));
 	}
 	
+	public function getReversedFullName() {
+		return implode(' ', array($this->last_name, $this->first_name));
+	}
+	
 	public function getFullNameAndTitle() {
 		return implode(' ', array($this->title, $this->first_name, $this->last_name));
+	}
+	
+	public function getReversedFullNameAndTitle() {
+		return implode(' ', array($this->title, $this->last_name, $this->first_name));
 	}
 
 	/**
@@ -270,5 +278,15 @@ class User extends BaseActiveRecord
 		}
 
 		return false;
+	}
+
+	public function getList() {
+		$users = array();
+
+		foreach (User::Model()->findAll(array('order'=>'first_name,last_name')) as $user) {
+			$users[$user->id] = $user->first_name.' '.$user->last_name;
+		}
+
+		return $users;
 	}
 }
