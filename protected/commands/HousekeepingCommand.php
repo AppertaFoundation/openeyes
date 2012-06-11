@@ -31,7 +31,7 @@ class HousekeepingCommand extends CConsoleCommand {
 
 	public function run($args) {
 		$this->deceasedPatients();
-		$this->archiveAudit();
+		$this->archiveAuditTrail();
 	}
 
 	// Check for operations where patient is deceased and cancel them
@@ -68,7 +68,7 @@ class HousekeepingCommand extends CConsoleCommand {
 		
 		$connection = Yii::app()->db;
 		$path = Yii::app()->basePath . '/' . self::ARCHIVE_FOLDER . '/';
-		if(!exists($path)) {
+		if(!file_exists($path)) {
 			if(!mkdir($path)) {
 				throw new CException('Could not create archive folder');
 			}
