@@ -139,13 +139,15 @@ class Audit extends BaseActiveRecord
 	}
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
-		$this->remote_addr = $_SERVER['REMOTE_ADDR'];
-		$this->http_user_agent = $_SERVER['HTTP_USER_AGENT'];
-		$this->server_name = $_SERVER['SERVER_NAME'];
-		$this->request_uri = $_SERVER['REQUEST_URI'];
-		if ($this->user) {
-			$this->site_id = Yii::app()->session['selected_site_id'];
-			$this->firm_id = Yii::app()->session['selected_firm_id'];
+		if(isset($_SERVER['REMOTE_ADDR'])) {
+			$this->remote_addr = $_SERVER['REMOTE_ADDR'];
+			$this->http_user_agent = $_SERVER['HTTP_USER_AGENT'];
+			$this->server_name = $_SERVER['SERVER_NAME'];
+			$this->request_uri = $_SERVER['REQUEST_URI'];
+			if ($this->user) {
+				$this->site_id = Yii::app()->session['selected_site_id'];
+				$this->firm_id = Yii::app()->session['selected_firm_id'];
+			}
 		}
 		parent::save($runValidation, $attributes, $allow_overriding);
 	}
