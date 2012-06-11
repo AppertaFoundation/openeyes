@@ -85,6 +85,9 @@ class HousekeepingCommand extends CConsoleCommand {
 			fclose($file_output);
 			$data = $connection->createCommand("DELETE from `tbl_audit_trail` WHERE stamp < '$to_date'")->query();
 			echo "$records records archived.\n";
+			echo "compressing...";
+			exec("bzip2 ${path}tbl_audit_trail${to_date}.csv");
+			echo "done.\n";
 		} else {
 			echo "no records to archive\n";
 		}
