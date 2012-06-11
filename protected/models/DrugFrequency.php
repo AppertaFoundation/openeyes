@@ -23,6 +23,7 @@
  * The followings are the available columns in table 'drug_frequency':
  * @property string $id
  * @property string $name
+ * @property string $long_name
  */
 class DrugFrequency extends BaseActiveRecord
 {
@@ -51,10 +52,10 @@ class DrugFrequency extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
+			array('name, long_name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, long_name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,7 +92,8 @@ class DrugFrequency extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-
+		$criteria->compare('long_name',$this->long_name,true);
+		
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
