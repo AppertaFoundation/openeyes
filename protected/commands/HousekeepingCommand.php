@@ -61,7 +61,7 @@ class HousekeepingCommand extends CConsoleCommand {
 		
 	}
 
-	// Archive audit trail records older than 60 days
+	// Archive audit trail records older than 2 months
 	protected function archiveAuditTrail() {
 
 		echo "Archiving old audit trail records (> 2 months)...\n";
