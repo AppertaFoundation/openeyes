@@ -46,13 +46,12 @@ class CheckIntegrityCommand extends CConsoleCommand {
 			$command->select('REFERRING.*');
 			$command->from("{$key['TABLE_NAME']} REFERRING");
 			$command->leftJoin("{$key['REFERENCED_TABLE_NAME']} REFERENCED", "REFERRING.{$key['COLUMN_NAME']} = REFERENCED.{$key['REFERENCED_COLUMN_NAME']}");
-			$command->where("REFERRING.{$key['COLUMN_NAME']} IS NOT NULL");
-			$command->where("REFERENCED.{$key['REFERENCED_COLUMN_NAME']} IS NULL");
+			$command->where("REFERRING.{$key['COLUMN_NAME']} IS NOT NULL AND REFERENCED.{$key['REFERENCED_COLUMN_NAME']} IS NULL");
 			$broken = $command->queryAll();
 			if($count = count($broken)) {
 				echo "{$key['TABLE_NAME']}.{$key['COLUMN_NAME']} contains $count broken keys\n";
 				foreach($broken as $key => $line) {
-					echo "{$line['id']}\n";
+					echo implode(',',$line)."\n";
 				}
 			}
 		}
