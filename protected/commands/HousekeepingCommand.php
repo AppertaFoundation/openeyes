@@ -64,19 +64,26 @@ class HousekeepingCommand extends CConsoleCommand {
 	// Archive audit trail records older than 60 days
 	protected function archiveAuditTrail() {
 
-		echo "Archiving old audit trail records (> 60 days)...\n";
+		echo "Archiving old audit trail records (> 2 months)...\n";
 		
 		$connection = Yii::app()->db;
+		
 		$path = Yii::app()->basePath . '/' . self::ARCHIVE_FOLDER . '/';
 		if(!file_exists($path)) {
 			if(!mkdir($path)) {
 				throw new CException('Could not create archive folder');
 			}
 		}
+		
 		$to_date = date('Y-m-d', mktime(0, 0, 0, date("m") - 2, date("d"),   date("Y")));
+		$file_path = $path . 'tbl_audit_trail.' . $to_date . '.csv';
+		if(file_exists($file_path)) {
+			throw new CException("Archive file already exists for $to_date");
+		}
+		
 		$data = $connection->createCommand("SELECT * from `tbl_audit_trail` WHERE stamp < '$to_date'")->queryAll();
 		if($data) {
-			$file_output = fopen($path . 'tbl_audit_trail.' . $to_date . '.csv', 'w+');
+			$file_output = fopen($file_path, 'w+');
 			$records = 0;
 			foreach($data as $record) {
 				fputcsv($file_output, $record, ',', '"');
@@ -86,7 +93,7 @@ class HousekeepingCommand extends CConsoleCommand {
 			$data = $connection->createCommand("DELETE from `tbl_audit_trail` WHERE stamp < '$to_date'")->query();
 			echo "$records records archived.\n";
 			echo "compressing...";
-			exec("bzip2 ${path}tbl_audit_trail${to_date}.csv");
+			exec("bzip2 $file_path");
 			echo "done.\n";
 		} else {
 			echo "no records to archive\n";
