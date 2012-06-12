@@ -19,7 +19,7 @@
 ?>
 
 <?php
-$uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.@$_REQUEST['include_bookings'].'/'.@$_REQUEST['include_reschedules'].'/'.@$_REQUEST['include_cancellations'];
+$uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.(@$_REQUEST['include_bookings']?'1':'0').'/'.(@$_REQUEST['include_reschedules']?'1':'0').'/'.(@$_REQUEST['include_cancellations']?'1':'0');
 ?>
 
 <div class="transport_pagination">
