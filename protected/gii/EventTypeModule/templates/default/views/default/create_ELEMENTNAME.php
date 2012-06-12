@@ -50,7 +50,7 @@
 
 	<?php } elseif ($field['type'] == 'Radio buttons') {?>
 
-		(Radio buttons go here)
+		<?php echo '<?php '; ?>echo $form->radioButtons($element, '<?php echo $field['name']?>', '<?php echo $field['lookup_table']?>'); <?php echo '?>'; ?>
 
 	<?php } elseif ($field['type'] == 'Boolean') {?>
 

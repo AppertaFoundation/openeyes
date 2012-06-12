@@ -37,7 +37,12 @@
 
 	<?php } elseif ($field['type'] == 'Dropdown list') {?>
 
-		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>'; ?>
+		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','name')<?php if (@$field['empty']) {?>,array('empty'=>'- Please select -')<?php }?>); <?php echo '?>'; ?>
+
+	<?php } elseif ($field['type'] == 'Textarea with dropdown') {?>
+
+		<?php echo '<?php '; ?>echo $form->dropDownListNoPost('<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','name'),'',array('empty'=>'- <?php echo ucfirst($field['label'])?> -','class'=>'populate_textarea')); <?php echo '?>'; ?>
+		<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
 
 	<?php } elseif ($field['type'] == 'Checkbox') {?>
 
@@ -45,7 +50,7 @@
 
 	<?php } elseif ($field['type'] == 'Radio buttons') {?>
 
-		(Radio buttons go here)
+		<?php echo '<?php '; ?>echo $form->radioButtons($element, '<?php echo $field['name']?>', '<?php echo $field['lookup_table']?>'); <?php echo '?>'; ?>
 
 	<?php } elseif ($field['type'] == 'Boolean') {?>
 

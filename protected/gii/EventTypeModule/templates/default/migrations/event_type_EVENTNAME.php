@@ -40,6 +40,7 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		$this->createTable('<?php echo $lookup_table['name']?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(128) COLLATE utf8_bin NOT NULL',
+				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
@@ -51,8 +52,8 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'CONSTRAINT `<?php echo $lookup_table['created_user_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
-			<?php foreach ($lookup_table['values'] as $value) {?>
-			$this->insert('<?php echo $lookup_table['name']?>',array('name'=>'<?php echo str_replace("'","\\'",$value)?>'));
+			<?php foreach ($lookup_table['values'] as $i => $value) {?>
+			$this->insert('<?php echo $lookup_table['name']?>',array('name'=>'<?php echo str_replace("'","\\'",$value)?>','display_order'=><?php echo ($i+1)?>));
 			<?php }?>
 				<?php }?>
 

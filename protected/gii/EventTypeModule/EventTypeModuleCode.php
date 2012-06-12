@@ -147,128 +147,233 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$elements[$number]['fields'][$field_number]['required'] = (boolean)@$_POST['isRequiredField'.$number.'_'.$field_number];
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Dropdown list') {
-							// Dropdown list fields should end with _id
-							if (!preg_match('/_id$/',$fields_value)) {
-								$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
-							}
-
-							$elements[$number]['fields'][$field_number]['empty'] = @$_POST['dropDownUseEmpty'.$number.'Field'.$field_number];
-
-							if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
-								$elements[$number]['defaults'][$fields_value] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
-							}
-
-							if (@$_POST['dropDownMethod'.$number.'Field'.$field_number] == 0) {
-								$elements[$number]['fields'][$field_number]['method'] = 'Manual';
-
-								// Manually-entered values
-								$field_values = array();
-
-								foreach ($_POST as $value_key => $value_value) {
-									if (preg_match('/^dropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
-										$field_values[] = $value_value;
-									}
-								}
-
-								$lookup_table = array(
-									'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
-								);
-
-								$key_name = $lookup_table['name'].'_fk';
-
-								if (strlen($key_name) >64) {
-									$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
-								}
-
-								$elements[$number]['foreign_keys'][] = array(
-									'field' => $elements[$number]['fields'][$field_number]['name'],
-									'name' => $key_name,
-									'table' => $lookup_table['name']
-								);
-
-								$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
-								$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
-								$lookup_table['values'] = $field_values;
-
-								if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
-									$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
-									$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
-								}
-
-								$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
-
-								$elements[$number]['lookup_tables'][] = $lookup_table;
-
-								$elements[$number]['relations'][] = array(
-									'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
-									'class' => $lookup_table['class'],
-									'field' => $elements[$number]['fields'][$field_number]['name'],
-								);
-
-							} else {
-								$elements[$number]['fields'][$field_number]['method'] = 'Table';
-
-								// Point at table
-
-								$lookup_table = $_POST['dropDownFieldSQLTable'.$number.'Field'.$field_number];
-
-								$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
-
-								if (strlen($key_name) >64) {
-									$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
-								}
-
-								$elements[$number]['foreign_keys'][] = array(
-									'field' => $elements[$number]['fields'][$field_number]['name'],
-									'name' => $key_name,
-									'table' => $lookup_table,
-								);
-
-								$elements[$number]['relations'][] = array(
-									'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
-									'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
-									'field' => $elements[$number]['fields'][$field_number]['name'],
-								);
-							}
+							$elements = $this->extraElementFieldWrangling_DropdownList($elements, $number, $field_number, $fields_value);
 						}
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea with dropdown') {
-							// Manually-entered values
-							$field_values = array();
+							$elements = $this->extraElementFieldWrangling_TextareaWithDropdown($elements, $number, $field_number, $fields_value);
+						}
 
-							foreach ($_POST as $value_key => $value_value) {
-								if (preg_match('/^textAreaDropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
-									$field_values[] = $value_value;
-								}
-							}
-
-							$lookup_table = array(
-								'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
-							);
-
-							$key_name = $lookup_table['name'].'_fk';
-
-							if (strlen($key_name) >64) {
-								$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
-							}
-
-							$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
-							$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
-							$lookup_table['values'] = $field_values;
-
-							if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
-								$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
-								$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
-							}
-
-							$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
-
-							$elements[$number]['lookup_tables'][] = $lookup_table;
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Radio buttons') {
+							$elements = $this->extraElementFieldWrangling_RadioButtons($elements, $number, $field_number, $fields_value);
 						}
 					}
 				}
 			}
 		}
+
+		return $elements;
+	}
+
+	public function extraElementFieldWrangling_DropdownList($elements, $number, $field_number, $fields_value) {
+		// Dropdown list fields should end with _id
+		if (!preg_match('/_id$/',$fields_value)) {
+			$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
+		}
+
+		$elements[$number]['fields'][$field_number]['empty'] = @$_POST['dropDownUseEmpty'.$number.'Field'.$field_number];
+
+		if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
+			$elements[$number]['defaults'][$fields_value] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
+		}
+
+		if (@$_POST['dropDownMethod'.$number.'Field'.$field_number] == 0) {
+			$elements[$number]['fields'][$field_number]['method'] = 'Manual';
+
+			// Manually-entered values
+			$field_values = array();
+
+			foreach ($_POST as $value_key => $value_value) {
+				if (preg_match('/^dropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+					$field_values[] = $value_value;
+				}
+			}
+
+			$lookup_table = array(
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+			);
+
+			$key_name = $lookup_table['name'].'_fk';
+
+			if (strlen($key_name) >64) {
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			}
+
+			$elements[$number]['foreign_keys'][] = array(
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+				'name' => $key_name,
+				'table' => $lookup_table['name']
+			);
+
+			$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
+			$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
+			$lookup_table['values'] = $field_values;
+
+			if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
+				$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
+				$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
+			}
+
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+
+			$elements[$number]['lookup_tables'][] = $lookup_table;
+
+			$elements[$number]['relations'][] = array(
+				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'class' => $lookup_table['class'],
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+			);
+
+		} else {
+			$elements[$number]['fields'][$field_number]['method'] = 'Table';
+
+			// Point at table
+
+			$lookup_table = $_POST['dropDownFieldSQLTable'.$number.'Field'.$field_number];
+
+			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
+
+			if (strlen($key_name) >64) {
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			}
+
+			$elements[$number]['foreign_keys'][] = array(
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+				'name' => $key_name,
+				'table' => $lookup_table,
+			);
+
+			$elements[$number]['relations'][] = array(
+				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+			);
+		}
+
+		return $elements;
+	}
+
+	public function extraElementFieldWrangling_TextareaWithDropdown($elements, $number, $field_number, $fields_value) {
+		// Manually-entered values
+		$field_values = array();
+
+		foreach ($_POST as $value_key => $value_value) {
+			if (preg_match('/^textAreaDropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+				$field_values[] = $value_value;
+			}
+		}
+
+		$lookup_table = array(
+			'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+		);
+
+		$key_name = $lookup_table['name'].'_fk';
+
+		if (strlen($key_name) >64) {
+			$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+		}
+
+		$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
+		$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
+		$lookup_table['values'] = $field_values;
+
+		if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
+			$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
+			$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
+		}
+
+		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+
+		$elements[$number]['lookup_tables'][] = $lookup_table;
+
+		return $elements;
+	}
+
+	public function extraElementFieldWrangling_RadioButtons($elements, $number, $field_number, $fields_value) {
+		// Radio button fields should end with _id
+		if (!preg_match('/_id$/',$fields_value)) {
+			$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
+		}
+
+		if (@$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
+			$elements[$number]['defaults'][$fields_value] = @$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number];
+		}
+
+		if (@$_POST['radioButtonMethod'.$number.'Field'.$field_number] == 0) {
+			$elements[$number]['fields'][$field_number]['method'] = 'Manual';
+
+			// Manually-entered values
+			$field_values = array();
+
+			foreach ($_POST as $value_key => $value_value) {
+				if (preg_match('/^radioButtonFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+					$field_values[] = $value_value;
+				}
+			}
+
+			$lookup_table = array(
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+			);
+
+			$key_name = $lookup_table['name'].'_fk';
+
+			if (strlen($key_name) >64) {
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			}
+
+			$elements[$number]['foreign_keys'][] = array(
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+				'name' => $key_name,
+				'table' => $lookup_table['name']
+			);
+
+			$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
+			$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
+			$lookup_table['values'] = $field_values;
+
+			if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
+				$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
+				$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
+			}
+
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+
+			$elements[$number]['lookup_tables'][] = $lookup_table;
+
+			$elements[$number]['relations'][] = array(
+				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'class' => $lookup_table['class'],
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+			);
+
+		} else {
+			$elements[$number]['fields'][$field_number]['method'] = 'Table';
+
+			// Point at table
+
+			$lookup_table = $_POST['radioButtonFieldSQLTable'.$number.'Field'.$field_number];
+
+			$elements[$number]['fields'][$field_number]['lookup_table'] = $lookup_table;
+
+			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
+
+			if (strlen($key_name) >64) {
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			}
+
+			$elements[$number]['foreign_keys'][] = array(
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+				'name' => $key_name,
+				'table' => $lookup_table,
+			);
+
+			$elements[$number]['relations'][] = array(
+				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+			);
+		}
+
 		return $elements;
 	}
 
@@ -353,7 +458,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		} elseif ($type == 'Checkbox') {
 			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL', // {$label}\n";
 		} elseif ($type == 'Radio buttons') {
-			// we don't create a field for these, as they'll need to be stored in a linked table
+			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
 		} elseif ($type == 'Boolean') {
 			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // {$label}\n";
 		} elseif ($type == 'EyeDraw') {

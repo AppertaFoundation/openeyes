@@ -12,15 +12,25 @@ class BaseEventTypeElement extends BaseElement
 	function getFormOptions($table) {
 		$options = array();
 
-		foreach (Yii::app()->db->createCommand()
-			->select("$table.*")
-			->from($table)
-			->join("element_type_$table","element_type_$table.{$table}_id = $table.id")
-			->where("element_type_id = ".$this->getElementType()->id)
-			->order("display_order asc")
-			->queryAll() as $option) {
+		if (Yii::app()->getDb()->getSchema()->getTable("element_type_$table")) {
+			foreach (Yii::app()->db->createCommand()
+				->select("$table.*")
+				->from($table)
+				->join("element_type_$table","element_type_$table.{$table}_id = $table.id")
+				->where("element_type_id = ".$this->getElementType()->id)
+				->order("display_order asc")
+				->queryAll() as $option) {
 
-			$options[$option['id']] = $option['name'];
+				$options[$option['id']] = $option['name'];
+			}
+		} else {
+			foreach (Yii::app()->db->createCommand()
+				->select("$table.*")
+				->from($table)
+				->queryAll() as $option) {
+
+				$options[$option['id']] = $option['name'];
+			}
 		}
 
 		return $options;
