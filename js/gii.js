@@ -84,14 +84,14 @@ $(document).ready(function() {
 			case 'EyeDraw':
 				loadExtraFieldView('extraEyedraw',element,field);
 				break;
+			case 'Radio buttons':
+				loadExtraFieldView('extraRadioButtons',element,field);
+				break;
 			case 'Textbox':
 			case 'Textarea':
 			case 'Date picker':
 			case 'Dropdown list':
 			case 'Checkbox':
-			case 'Radio buttons':
-				loadExtraFieldView('extraRadioButtons',element,field);
-				break;
 			case 'Boolean':
 				$('#extraDataElement'+element+'Field'+field).html('');
 				break;
