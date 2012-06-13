@@ -55,7 +55,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		foreach($files as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if($file!==$moduleTemplateFile) {
-				if(CFileHelper::getExtension($file)==='php') {
+				if(CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
 					if (preg_match("/\/migrations\//", $file)) {
 						# $matches = Array();
 						if (file_exists($modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$modulePath.'/migrations/'))) {
@@ -81,6 +81,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 							}
 						}
+					} elseif (preg_match('/\.js$/',$file)) {
+						$content=$this->render($file,array('elements'=>$this->getElementsFromPost()));
+						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 					} else {
 						$content=$this->render($file);
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
@@ -108,8 +111,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function getElementsFromPost() {
-		file_put_contents("/tmp/debug",print_r($_POST,true));
-
 		$elements = Array();
 		foreach ($_POST as $key => $value) {
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
@@ -156,6 +157,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Radio buttons') {
 							$elements = $this->extraElementFieldWrangling_RadioButtons($elements, $number, $field_number, $fields_value);
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'EyeDraw') {
+							$elements = $this->extraElementFieldWrangling_EyeDraw($elements, $number, $field_number, $fields_value);
 						}
 					}
 				}
@@ -377,6 +382,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $elements;
 	}
 
+	public function extraElementFieldWrangling_EyeDraw($elements, $number, $field_number, $fields_value) {
+		$elements[$number]['fields'][$field_number]['eyedraw_class'] = @$_POST['eyedrawClass'.$number.'Field'.$field_number];
+		$elements[$number]['fields'][$field_number]['eyedraw_size'] = @$_POST['eyedrawSize'.$number.'Field'.$field_number];
+		$elements[$number]['add_selected_eye'] = true;
+
+		if (@$_POST['eyedrawExtraReport'.$number.'Field'.$field_number]) {
+			$elements[$number]['fields'][$field_number]['extra_report'] = true;
+		}
+
+		return $elements;
+	}
+
 	public function findModelClassForTable($table, $path=false) {
 		if (!$path) {
 			$path = Yii::app()->basePath.'/models';
@@ -442,29 +459,31 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $this->render($file, $params);
 	}
 
-	public function renderDBField($type, $name, $label) {
+	public function renderDBField($field) {
 		$sql = '';
-		if ($type == 'Textbox') {
-			$sql = "'{$name}' => 'varchar(255) DEFAULT \'\'', // {$label}\n";
-		} elseif ($type == 'Textarea') {
-			$sql = "'{$name}' => 'text DEFAULT \'\'', // {$label}\n";
-		} elseif ($type == 'Date picker') {
-			// $sql = "'{$name}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$label}\n";
-			$sql = "'{$name}' => 'date DEFAULT NULL', // {$label}\n";
-		} elseif ($type == 'Dropdown list') {
-			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
-		} elseif ($type == 'Textarea with dropdown') {
-			$sql = "'{$name}' => 'text NOT NULL', // {$label}\n";
-		} elseif ($type == 'Checkbox') {
-			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL', // {$label}\n";
-		} elseif ($type == 'Radio buttons') {
-			$sql = "'{$name}' => 'int(10) unsigned NOT NULL', // {$label}\n";
-		} elseif ($type == 'Boolean') {
-			$sql = "'{$name}' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // {$label}\n";
-		} elseif ($type == 'EyeDraw') {
+		if ($field['type'] == 'Textbox') {
+			$sql = "'{$field['name']}' => 'varchar(255) DEFAULT \'\'', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Textarea') {
+			$sql = "'{$field['name']}' => 'text DEFAULT \'\'', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Date picker') {
+			// $sql = "'{$field['name']}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$field['label']}\n";
+			$sql = "'{$field['name']}' => 'date DEFAULT NULL', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Dropdown list') {
+			$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Textarea with dropdown') {
+			$sql = "'{$field['name']}' => 'text NOT NULL', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Checkbox') {
+			$sql = "'{$field['name']}' => 'tinyint(1) unsigned NOT NULL', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Radio buttons') {
+			$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
+		} elseif ($field['type'] == 'Boolean') {
+			$sql = "'{$field['name']}' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // {$field['label']}\n";
+		} elseif ($field['type'] == 'EyeDraw') {
 			// we create two fields for eyedraw: one for json, and one for the report
-			$sql = "'{$name}_json' => 'text DEFAULT \'\'', // {$label} (eyedraw: json)\n";
-			$sql .="'{$name}_report' => 'text DEFAULT \'\'', // {$label} (eyedraw: report)\n";
+			$sql = "'{$field['name']}' => 'varchar(4096) COLLATE utf8_bin NOT NULL',// {$field['label']} (eyedraw)\n";
+			if (@$field['extra_report']) {
+				$sql .= "'{$field['name']}2' => 'varchar(4096) COLLATE utf8_bin NOT NULL',// {$field['label']} (eyedraw)\n";
+			}
 		}
 		return $sql;
 	}
@@ -523,7 +542,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		if (file_exists(Yii::app()->basePath.'/modules/eyedraw/OEEyeDrawWidget'.$class.'.php')) {
 			foreach (@file(Yii::app()->basePath.'/modules/eyedraw/OEEyeDrawWidget'.$class.'.php') as $line) {
 				if (preg_match('/public[\s\t]+\$size[\s\t]*=[\s\t]*([0-9]+)/',$line,$m)) {
-					return $m[1];
+					echo $m[1];
 				}
 			}
 		}
@@ -561,6 +580,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				if ($value == 'Dropdown list') {
 					if (!isset($_POST['dropDownMethod'.$m[1].'Field'.$m[2]])) {
 						$errors['dropDownMethod'.$m[1].'Field'.$m[2]] = "Please select a dropdown list method";
+					}
+				}
+				if ($value == 'EyeDraw') {
+					if (!@$_POST['eyedrawClass'.$m[1].'Field'.$m[2]]) {
+						$errors['eyedrawClass'.$m[1].'Field'.$m[2]] = "Please select an eyedraw type";
+					}
+					if (!@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]]) {
+						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Please enter a size (in pixels)";
+					} else if (!ctype_digit(@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]])) {
+						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Size must be specified as a number of pixels";
 					}
 				}
 			}

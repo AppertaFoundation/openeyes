@@ -5,6 +5,17 @@ $(document).ready(function() {
 	$('#et_save').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
+
+			<?php if (isset($elements)) { file_put_contents("/tmp/debug",print_r($elements,true)); foreach ($elements as $element) {
+				foreach ($element['fields'] as $field) {
+					if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {?>
+			if ($('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').length >0) {
+				$('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').val(ed_drawing_edit_<?php echo $field['eyedraw_class']?>.report());
+			}
+					<?php }
+				}
+			} }?>
+
 			return true;
 		}
 		return false;
@@ -61,3 +72,9 @@ $(document).ready(function() {
 });
 
 function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
+
+function eDparameterListener(_drawing) {
+	if (_drawing.selectedDoodle != null) {
+		// handle event
+	}
+}

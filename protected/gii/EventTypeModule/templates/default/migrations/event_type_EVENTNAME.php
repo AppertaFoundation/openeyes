@@ -64,11 +64,7 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				<?php
 					$number = $element['number']; $count = 1;
 					foreach ($element['fields'] as $field => $value) {
-						$type = $element['fields'][$count]['type'];
-						$name = $element['fields'][$count]['name'];
-						$label = $element['fields'][$count]['label'];
-
-				echo preg_replace("/\n/", "\n\t\t\t", $this->renderDBField($type, $name, $label));
+						echo preg_replace("/\n/", "\n\t\t\t", $this->renderDBField($element['fields'][$count]));
 						$count++;
 					}
 				?>

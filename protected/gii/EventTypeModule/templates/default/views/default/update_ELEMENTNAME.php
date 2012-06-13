@@ -58,18 +58,16 @@
 
 	<?php } elseif ($field['type'] == 'EyeDraw') {?>
 		<?php echo '<?php '; ?>
-			$this->widget('application.extensions.eyedraw.OEEyeDrawWidget', array(
-				'identifier'=> 'Buckle',
-				'side'=>'R',
+			$this->widget('application.modules.eyedraw.OEEyeDrawWidget<?php echo $field['eyedraw_class']?>', array(
+				'side'=>$element->getSelectedEye()->getShortName(),
 				'mode'=>'edit',
-				'size'=>300,
+				'size'=><?php echo $field['eyedraw_size']?>,
 				'model'=>$element,
-				'attribute'=>'eyedraw',
-				'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
-				'onLoadedCommandArray'=>array(
-					array('addDoodle', array('BuckleOperation')),
-					array('deselectDoodles', array()),
-				)));
+				'attribute'=>'<?php echo $field['name']?>',
+			));
+			<?php if (@$field['extra_report']) {?>
+			echo $form->hiddenInput($element, '<?php echo $field['name']?>2', $element-><?php echo $field['name']?>2);
+			<?php }?>
 	<?php echo '?>'; ?>
 
 				<?php

@@ -69,12 +69,23 @@ if (isset($element)) {
 			</div>
 			<?php } elseif ($field['type'] == 'EyeDraw') {?>
 			<div class="view">
-				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
-				<br />
+				<?php echo '<?php ';?>
+				$this->widget('application.modules.eyedraw.OEEyeDrawWidget<?php echo $field['eyedraw_class']?>', array(
+					'side'=>$element->eye->getShortName(),
+					'mode'=>'view',
+					'size'=><?php echo $field['eyedraw_size']?>,
+					'model'=>$element,
+					'attribute'=>'<?php echo $field['name']?>',
+				));
+				<?php echo '?>';?>
+			</div>
+			<?php if (@$field['extra_report']) {?>
+			<div class="view">
+				<b>Report:</b>
+				<?php echo '<?php ';?> echo $element-><?php echo $field['name']?>2<?php echo '?>';?>
 			</div>
 			<?php }?>
-
+			<?php }?>
 		<?php
 	}
 }
