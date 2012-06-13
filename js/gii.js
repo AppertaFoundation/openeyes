@@ -81,6 +81,9 @@ $(document).ready(function() {
 					$('input[name="textAreaDropDownFieldValue'+element+'Field'+field+'_1"]').select().focus();
 				});
 				break;
+			case 'EyeDraw':
+				loadExtraFieldView('extraEyedraw',element,field);
+				break;
 			case 'Textbox':
 			case 'Textarea':
 			case 'Date picker':
@@ -90,7 +93,6 @@ $(document).ready(function() {
 				loadExtraFieldView('extraRadioButtons',element,field);
 				break;
 			case 'Boolean':
-			case 'EyeDraw':
 				$('#extraDataElement'+element+'Field'+field).html('');
 				break;
 		}
@@ -424,6 +426,20 @@ $(document).ready(function() {
 			'success': function(html) {
 				$('#radioButtonMethodFields'+element+'Field'+field).html(html);
 				$('input[name="radioButtonFieldValue'+element+'Field'+field+'_1"]').select().focus();
+			}
+		});
+	});
+
+	$('.eyeDrawClassSelect').live('change',function() {
+		var m = $(this).attr('name').match(/^eyedrawClass([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		$.ajax({
+			'url': '/gii/EventTypeModule?ajax=getEyedrawSize&class='+$(this).children('option:selected').val(),
+			'type': 'GET',
+			'success': function(size) {
+				$('input[name="eyedrawSize'+element+'Field'+field+'"]').val(size).select().focus();
 			}
 		});
 	});

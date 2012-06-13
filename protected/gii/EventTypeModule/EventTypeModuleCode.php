@@ -475,6 +475,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				EventTypeModuleCode::dump_table_fields($_GET['table']);
 			} else if ($_GET['ajax'] == 'field_unique_values') {
 				EventTypeModuleCode::dump_field_unique_values($_GET['table'],$_GET['field']);
+			} else if ($_GET['ajax'] == 'getEyedrawSize') {
+				EventTypeModuleCode::getEyedrawSize($_GET['class']);
 			} else {
 				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
 			}
@@ -514,6 +516,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			->order("$table.$field")
 			->queryAll() as $row) {
 			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
+		}
+	}
+
+	static public function getEyedrawSize($class) {
+		if (file_exists(Yii::app()->basePath.'/modules/eyedraw/OEEyeDrawWidget'.$class.'.php')) {
+			foreach (@file(Yii::app()->basePath.'/modules/eyedraw/OEEyeDrawWidget'.$class.'.php') as $line) {
+				if (preg_match('/public[\s\t]+\$size[\s\t]*=[\s\t]*([0-9]+)/',$line,$m)) {
+					return $m[1];
+				}
+			}
 		}
 	}
 
