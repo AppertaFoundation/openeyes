@@ -101,7 +101,7 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			<?php if (isset($element)) foreach ($element['relations'] as $relation) {?>
-			'<?php echo $relation['name']?>' => array(self::BELONGS_TO, '<?php echo $relation['class']?>', '<?php echo $relation['field']?>'),
+			'<?php echo $relation['name']?>' => array(self::<?php echo $relation['type']?>, '<?php echo $relation['class']?>', '<?php echo $relation['field']?>'),
 			<?php }?>
 		);
 	}
@@ -191,6 +191,18 @@ if (isset($element)) {
 	}
 	<?php }?>
 
+	<?php if (isset($element) && !empty($element['defaults_methods'])) {
+		foreach ($element['defaults_methods'] as $default_method) {?>
+	public function get<?php echo $default_method['method']?>() {
+		$ids = array();
+		foreach (<?php echo $default_method['class']?>::model()->findAll('`default` = ?',array(1)) as $item) {
+			$ids[] = $item->id;
+		}
+		return $ids;
+	}
+		<?}?>
+	<?php }?>
+
 	protected function beforeSave()
 	{
 		return parent::beforeSave();
@@ -198,6 +210,42 @@ if (isset($element)) {
 
 	protected function afterSave()
 	{
+		<?php if (isset($element) && !empty($element['after_save'])) {
+			foreach ($element['after_save'] as $after_save) {
+				if ($after_save['type'] == 'MultiSelect') {?>
+		if (!empty($_POST['<?php echo $after_save['post_var']?>'])) {
+
+			$existing_ids = array();
+
+			foreach (<?php echo $after_save['mapping_table_class']?>::model()->findAll('element_id = :elementId', array(':elementId' => $this->id)) as $item) {
+				$existing_ids[] = $item-><?php echo $after_save['lookup_table_field_id']?>;
+			}
+
+			foreach ($_POST['<?php echo $after_save['post_var']?>'] as $id) {
+				if (!in_array($id,$existing_ids)) {
+					$item = new <?php echo $after_save['mapping_table_class']?>;
+					$item->element_id = $this->id;
+					$item-><?php echo $after_save['lookup_table_field_id']?> = $id;
+
+					if (!$item->save()) {
+						throw new Exception('Unable to save MultiSelect item: '.print_r($item->getErrors(),true));
+					}
+				}
+			}
+
+			foreach ($existing_ids as $id) {
+				if (!in_array($id,$_POST['<?php echo $after_save['post_var']?>'])) {
+					$item = <?php echo $after_save['mapping_table_class']?>::model()->find('element_id = :elementId and <?php echo $after_save['lookup_table_field_id']?> = :lookupfieldId',array(':elementId' => $this->id, ':lookupfieldId' => $id));
+					if (!$item->delete()) {
+						throw new Exception('Unable to delete MultiSelect item: '.print_r($item->getErrors(),true));
+					}
+				}
+			}
+		}
+				<? }
+			}
+		}?>
+
 		return parent::afterSave();
 	}
 

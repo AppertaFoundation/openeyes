@@ -5,7 +5,7 @@
 	<?php echo CHtml::textField('elementName'.$element_num.'FieldLabel'.$field_num,@$_POST['elementName'.$element_num.'FieldLabel'.$field_num],array('size'=>30,'class'=>'fieldLabel')); ?>
 	<?php echo CHtml::textField('elementName'.$element_num.'FieldName'.$field_num,@$_POST['elementName'.$element_num.'FieldName'.$field_num],array('size'=>30, 'class'=>'fieldName')); ?> 
 	<?php
-	$field_types = array('Textbox','Textarea','Date picker','Dropdown list','Textarea with dropdown','Checkbox','Radio buttons','Boolean');
+	$field_types = array('Textbox','Textarea','Date picker','Dropdown list','Textarea with dropdown','Checkbox','Radio buttons','Boolean','Multi select');
 	
 	if (file_exists(Yii::app()->basePath.'/modules/eyedraw')) {
 		$field_types[] = 'EyeDraw';
@@ -33,6 +33,9 @@
 		}?>
 		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'EyeDraw') {
 			$this->renderPartial('extraEyedraw',array('element_num'=>$element_num,'field_num'=>$field_num));
+		}?>
+		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Multi select') {
+			$this->renderPartial('extraMultiSelect',array('element_num'=>$element_num,'field_num'=>$field_num));
 		}?>
 	</div>
 

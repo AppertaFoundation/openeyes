@@ -41,19 +41,22 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(128) COLLATE utf8_bin NOT NULL',
 				'display_order' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				<?php if (isset($lookup_table['defaults'])) {?>
+				'default' => 'tinyint(1) unsigned NOT NULL DEFAULT 0',
+				<?php }?>
 				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
-				'KEY `<?php echo $lookup_table['last_modified_user_key']?>` (`last_modified_user_id`)',
-				'KEY `<?php echo $lookup_table['created_user_key']?>` (`created_user_id`)',
-				'CONSTRAINT `<?php echo $lookup_table['last_modified_user_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $lookup_table['created_user_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'KEY `<?php echo $lookup_table['name']?>_lmui_fk` (`last_modified_user_id`)',
+				'KEY `<?php echo $lookup_table['name']?>_cui_fk` (`created_user_id`)',
+				'CONSTRAINT `<?php echo $lookup_table['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $lookup_table['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
 			<?php foreach ($lookup_table['values'] as $i => $value) {?>
-			$this->insert('<?php echo $lookup_table['name']?>',array('name'=>'<?php echo str_replace("'","\\'",$value)?>','display_order'=><?php echo ($i+1)?>));
+			$this->insert('<?php echo $lookup_table['name']?>',array('name'=>'<?php echo str_replace("'","\\'",$value)?>','display_order'=><?php echo ($i+1)?><?php if (isset($lookup_table['defaults']) && in_array(($i+1),$lookup_table['defaults'])) {?>,'default' => 1<?php }?>));
 			<?php }?>
 				<?php }?>
 
@@ -73,19 +76,40 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
-				'KEY `<?php echo $element['last_modified_user_key']?>` (`last_modified_user_id`)',
-				'KEY `<?php echo $element['created_user_key']?>` (`created_user_id`)',
-				'KEY `<?php echo $element['event_key']?>` (`event_id`)',
+				'KEY `<?php echo $element['name']?>_lmui_fk` (`last_modified_user_id`)',
+				'KEY `<?php echo $element['name']?>_cui_fk` (`created_user_id`)',
+				'KEY `<?php echo $element['name']?>_ev_fk` (`event_id`)',
 				<?php foreach ($element['foreign_keys'] as $foreign_key) {?>
 				'KEY `<?php echo $foreign_key['name']?>` (`<?php echo $foreign_key['field']?>`)',
 				<?php }?>
-				'CONSTRAINT `<?php echo $element['last_modified_user_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $element['created_user_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $element['event_key']?>` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+				'CONSTRAINT `<?php echo $element['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $element['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $element['name']?>_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
 				<?php foreach ($element['foreign_keys'] as $foreign_key) {?>
 				'CONSTRAINT `<?php echo $foreign_key['name']?>` FOREIGN KEY (`<?php echo $foreign_key['field']?>`) REFERENCES `<?php echo $foreign_key['table']?>` (`id`)',
 				<?php }?>
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+
+			<?php foreach ($element['mapping_tables'] as $mapping_table) {?>
+		$this->createTable('<?php echo $mapping_table['name'];?>', array(
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+				'element_id' => 'int(10) unsigned NOT NULL',
+				'<?php echo $mapping_table['lookup_table']?>_id' => 'int(10) unsigned NOT NULL',
+				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+				'PRIMARY KEY (`id`)',
+				'KEY `<?php echo $mapping_table['name']?>_lmui_fk` (`last_modified_user_id`)',
+				'KEY `<?php echo $mapping_table['name']?>_cui_fk` (`created_user_id`)',
+				'KEY `<?php echo $mapping_table['name']?>_ele_fk` (`element_id`)',
+				'KEY `<?php echo $mapping_table['name']?>_lku_fk` (`<?php echo $mapping_table['lookup_table']?>_id`)',
+				'CONSTRAINT `<?php echo $mapping_table['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $mapping_table['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $mapping_table['name']?>_ele_fk` FOREIGN KEY (`element_id`) REFERENCES `<?php echo $element['table_name']?>` (`id`)',
+				'CONSTRAINT `<?php echo $mapping_table['name']?>_lku_fk` FOREIGN KEY (`<?php echo $mapping_table['lookup_table']?>_id`) REFERENCES `<?php echo $mapping_table['lookup_table']?>` (`id`)',
+			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+			<?php }?>
 	<?php } ?>
 	<?php } ?>
 	}
@@ -96,8 +120,10 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		<?php
 		if (isset($elements)) {
 			foreach ($elements as $element) {
-		?>
-$this->dropTable('<?php echo $element['table_name']; ?>');
+				foreach ($element['mapping_tables'] as $mapping_table) {?>
+		$this->dropTable('<?php echo $mapping_table['name']?>');
+				<?php }?>
+		$this->dropTable('<?php echo $element['table_name']; ?>');
 
 		<?php foreach ($element['lookup_tables'] as $lookup_table) {?>
 		$this->dropTable('<?php echo $lookup_table['name']?>');

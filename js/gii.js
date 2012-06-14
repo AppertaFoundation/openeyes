@@ -87,6 +87,9 @@ $(document).ready(function() {
 			case 'Radio buttons':
 				loadExtraFieldView('extraRadioButtons',element,field);
 				break;
+			case 'Multi select':
+				loadExtraFieldView('extraMultiSelect',element,field);
+				break;
 			case 'Textbox':
 			case 'Textarea':
 			case 'Date picker':
@@ -235,6 +238,19 @@ $(document).ready(function() {
 
 		if (e.keyCode == 13) {
 			$('input[name="radioButtonFieldValuesAddValue'+element+'Field'+field+'"]').click();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('.multiSelectFieldValueTextInput').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^multiSelectFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('input[name="multiSelectFieldValuesAddValue'+element+'Field'+field+'"]').click();
 			return false;
 		}
 
@@ -430,6 +446,27 @@ $(document).ready(function() {
 		});
 	});
 
+	$('.multiSelectMethodSelector').live('click',function() {
+		var m = $(this).attr('name').match(/^multiSelectMethod([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() == 0) {
+			var view = 'extraMultiSelectEnterValues';
+		} else {
+			var view = 'extraMultiSelectPointAtSQLTable';
+		}
+
+		$.ajax({
+			'url': '/gii/EventTypeModule?ajax='+view+'&element_num='+element+'&field_num='+field,
+			'type': 'GET',
+			'success': function(html) {
+				$('#multiSelectMethodFields'+element+'Field'+field).html(html);
+				$('input[name="multiSelectFieldValue'+element+'Field'+field+'_1"]').select().focus();
+			}
+		});
+	});
+
 	$('.eyeDrawClassSelect').live('change',function() {
 		var m = $(this).attr('name').match(/^eyedrawClass([0-9]+)Field([0-9]+)$/);
 		var element = m[1];
@@ -460,6 +497,28 @@ $(document).ready(function() {
 			$('input[name="eyedrawSize'+element+'Field'+field+'"]').val('');
 			$('#eyeDrawExtraReportFieldDiv'+element+'Field'+field).html('');
 		}
+	});
+
+	$('.multiSelectFieldValuesAddValue').live('click',function() {
+		var m = $(this).attr('name').match(/^multiSelectFieldValuesAddValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		var i = 1;
+
+		$(this).prev().children('input[type="text"]').map(function() {
+			var m = $(this).attr('name').match(/_([0-9]+)$/);
+			if (parseInt(m[1]) > i) {
+				i = parseInt(m[1]);
+			}
+		});
+
+		i += 1;
+
+		$('#multiSelectFieldValues'+element+'Field'+field).append('<input type="checkbox" class="multiSelectFieldValueTextInputDefault" name="multiSelectFieldValueTextInputDefault'+element+'Field'+field+'_'+i+'" value="1" /> <input type="text" class="multiSelectFieldValueTextInput" name="multiSelectFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="multiSelectFieldValuesRemoveValue" value="remove"><br/>');
+		$('input[name="multiSelectFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
+
+		return false;
 	});
 
 	$('#EventTypeModuleCode_moduleSuffix').focus();

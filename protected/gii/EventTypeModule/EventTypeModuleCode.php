@@ -81,6 +81,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 							}
 						}
+					} elseif (preg_match('/MAPPINGTABLE/',$file)) {
+						foreach ($this->getElementsFromPost() as $element) {
+							foreach ($element['mapping_tables'] as $mapping_table) {
+								$destination_file = preg_replace('/MAPPINGTABLE/',$mapping_table['class'],$file);
+								$content = $this->render($file, array('mapping_table'=>$mapping_table));
+								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							}
+						}
 					} elseif (preg_match('/\.js$/',$file)) {
 						$content=$this->render($file,array('elements'=>$this->getElementsFromPost()));
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
@@ -119,21 +127,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['class_name'] = 'OEElement' . preg_replace("/ /", "", ucwords(strtolower($value)));
 				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
 				$elements[$number]['number'] = $number;
-
-				$elements[$number]['last_modified_user_key'] = $elements[$number]['table_name'] . '_last_modified_user_id_fk';
-				$elements[$number]['created_user_key'] = $elements[$number]['table_name'] . '_created_user_id_fk';
-				$elements[$number]['event_key'] = $elements[$number]['table_name'] . '_event_id_fk';
-
-				if (strlen($elements[$number]['last_modified_user_key']) >64 || strlen($elements[$number]['created_user_key']) >64 || strlen($elements[$number]['event_key']) >64) {
-					$elements[$number]['last_modified_user_key'] = $this->generateKeyName('last_modified_user_id',$value);
-					$elements[$number]['created_user_key'] = $this->generateKeyName('created_user_id',$value);
-					$elements[$number]['event_key'] = $this->generateKeyName('event_id',$value);
-				}
-
 				$elements[$number]['foreign_keys'] = array();
 				$elements[$number]['lookup_tables'] = array();
 				$elements[$number]['relations'] = array();
 				$elements[$number]['defaults'] = array();
+				$elements[$number]['mapping_tables'] = array();
+				$elements[$number]['defaults_methods'] = array();
+				$elements[$number]['after_save'] = array();
 
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
@@ -161,6 +161,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'EyeDraw') {
 							$elements = $this->extraElementFieldWrangling_EyeDraw($elements, $number, $field_number, $fields_value);
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Multi select') {
+							$elements = $this->extraElementFieldWrangling_MultiSelect($elements, $number, $field_number, $fields_value);
 						}
 					}
 				}
@@ -210,20 +214,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				'table' => $lookup_table['name']
 			);
 
-			$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
-			$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
 			$lookup_table['values'] = $field_values;
-
-			if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
-				$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
-				$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
-			}
-
 			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
 
 			$elements[$number]['lookup_tables'][] = $lookup_table;
 
 			$elements[$number]['relations'][] = array(
+				'type' => 'BELONGS_TO',
 				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
 				'class' => $lookup_table['class'],
 				'field' => $elements[$number]['fields'][$field_number]['name'],
@@ -249,6 +246,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$elements[$number]['relations'][] = array(
+				'type' => 'BELONGS_TO',
 				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
 				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
 				'field' => $elements[$number]['fields'][$field_number]['name'],
@@ -278,15 +276,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 		}
 
-		$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
-		$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
 		$lookup_table['values'] = $field_values;
-
-		if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
-			$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
-			$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
-		}
-
 		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
 
 		$elements[$number]['lookup_tables'][] = $lookup_table;
@@ -332,20 +322,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				'table' => $lookup_table['name']
 			);
 
-			$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_last_modified_user_id_fk';
-			$lookup_table['created_user_key'] = $lookup_table['name'] . '_created_user_id_fk';
 			$lookup_table['values'] = $field_values;
-
-			if (strlen($lookup_table['last_modified_user_key']) >64 || strlen($lookup_table['created_user_key']) >64) {
-				$lookup_table['last_modified_user_key'] = $lookup_table['name'] . '_lmui_fk';
-				$lookup_table['created_user_key'] = $lookup_table['name'] . '_cui_fk';
-			}
-
 			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
 
 			$elements[$number]['lookup_tables'][] = $lookup_table;
 
 			$elements[$number]['relations'][] = array(
+				'type' => 'BELONGS_TO',
 				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
 				'class' => $lookup_table['class'],
 				'field' => $elements[$number]['fields'][$field_number]['name'],
@@ -373,6 +356,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$elements[$number]['relations'][] = array(
+				'type' => 'BELONGS_TO',
 				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
 				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
 				'field' => $elements[$number]['fields'][$field_number]['name'],
@@ -389,6 +373,99 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		if (@$_POST['eyedrawExtraReport'.$number.'Field'.$field_number]) {
 			$elements[$number]['fields'][$field_number]['extra_report'] = true;
+		}
+
+		return $elements;
+	}
+
+	public function extraElementFieldWrangling_MultiSelect($elements, $number, $field_number, $fields_value) {
+		if (@$_POST['multiSelectMethod'.$number.'Field'.$field_number] == 0) {
+			$elements[$number]['fields'][$field_number]['method'] = 'Manual';
+
+			// Manually-entered values
+			$field_values = array();
+
+			foreach ($_POST as $value_key => $value_value) {
+				if (preg_match('/^multiSelectFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+					$field_values[] = $value_value;
+				}
+			}
+
+			$lookup_table = array(
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name']
+			);
+
+			$lookup_table['values'] = $field_values;
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+			$lookup_table['defaults'] = array();
+
+			foreach ($_POST as $key => $value) {
+				if (preg_match('/^multiSelectFieldValueTextInputDefault([0-9]+)Field([0-9]+)_([0-9]+)$/',$key,$m) && $m[1] == $number && $m[2] == $field_number && $value == 1) {
+					$lookup_table['defaults'][] = $m[3];
+				}
+			}
+
+			$elements[$number]['lookup_tables'][] = $lookup_table;
+			$elements[$number]['defaults_methods'][] = array(
+				'method' => $lookup_table['name'].'_defaults',
+				'class' => $lookup_table['class'],
+			);
+
+			$mapping_table = array(
+				'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name'],
+				'lookup_table' => $lookup_table['name'],
+				'lookup_class' => $lookup_table['class'],
+				'element_class' => $elements[$number]['class_name'],
+			);
+
+			$mapping_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name'])));
+
+			$elements[$number]['mapping_tables'][] = $mapping_table;
+
+			$elements[$number]['relations'][] = array(
+				'type' => 'HAS_MANY',
+				'name' => $elements[$number]['fields'][$field_number]['name'].'s',
+				'class' => str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name']))),
+				'field' => 'element_id',
+			);
+
+			$elements[$number]['fields'][$field_number]['multiselect_relation'] = $elements[$number]['fields'][$field_number]['name'].'s';
+			$elements[$number]['fields'][$field_number]['multiselect_field'] = $lookup_table['name'].'_id';
+			$elements[$number]['fields'][$field_number]['multiselect_lookup_class'] = $lookup_table['class'];
+			$elements[$number]['fields'][$field_number]['multiselect_lookup_table'] = $lookup_table['name'];
+
+			$elements[$number]['after_save'][] = array(
+				'type' => 'MultiSelect',
+				'post_var' => 'MultiSelect_'.$elements[$number]['fields'][$field_number]['name'],
+				'mapping_table_class' => $mapping_table['class'],
+				'lookup_table_field_id' => $lookup_table['name'].'_id',
+			);
+
+		} else {
+			$elements[$number]['fields'][$field_number]['method'] = 'Table';
+
+			// Point at table
+
+			$lookup_table = $_POST['dropDownFieldSQLTable'.$number.'Field'.$field_number];
+
+			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
+
+			if (strlen($key_name) >64) {
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			}
+
+			$elements[$number]['foreign_keys'][] = array(
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+				'name' => $key_name,
+				'table' => $lookup_table,
+			);
+
+			$elements[$number]['relations'][] = array(
+				'type' => 'BELONGS_TO',
+				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
+				'field' => $elements[$number]['fields'][$field_number]['name'],
+			);
 		}
 
 		return $elements;
@@ -484,6 +561,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			if (@$field['extra_report']) {
 				$sql .= "'{$field['name']}2' => 'varchar(4096) COLLATE utf8_bin NOT NULL',// {$field['label']} (eyedraw)\n";
 			}
+		} elseif ($field['type'] == 'Multi select') {
+			// Nothing, this is stored in additional tables
 		}
 		return $sql;
 	}

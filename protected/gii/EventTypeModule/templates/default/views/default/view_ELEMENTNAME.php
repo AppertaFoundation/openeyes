@@ -85,6 +85,21 @@ if (isset($element)) {
 				<?php echo '<?php ';?> echo $element-><?php echo $field['name']?>2<?php echo '?>';?>
 			</div>
 			<?php }?>
+			<?php } elseif ($field['type'] == 'Multi select') {?>
+				<div class="colThird">
+					<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
+					<div class="eventHighlight medium">
+						<?php echo '<?php ';?> if (!$element-><?php echo $field['multiselect_relation']?>) {<?php echo '?>';?>
+							<h4>None</h4>
+						<?php echo '<?php ';?> } else {<?php echo '?>';?>
+							<h4>
+								<?php echo '<?php ';?> foreach ($element-><?php echo $field['multiselect_relation']?> as $item) {<?php echo '?>';?>
+									<?php echo '<?php ';?> echo $item-><?php echo $field['multiselect_lookup_table']?>->name<?php echo '?>';?><br/>
+								<?php echo '<?php ';?> }<?php echo '?>';?>
+							</h4>
+						<?php echo '<?php ';?> }<?php echo '?>';?>
+					</div>
+				</div>
 			<?php }?>
 		<?php
 	}
