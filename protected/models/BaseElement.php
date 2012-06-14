@@ -17,23 +17,43 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI {
-	
-	static public function getmodel($module, $model) {
-		Yii::import('application.modules.'.$module.'.models.*');
-		return new $model;
+/**
+ * Base class for all elements
+ *
+ * The followings are the available columns in table 'base_element':
+ * @property integer $id
+ * @property integer $event_id
+ * @property string $element_class
+ */
+class BaseElement extends BaseActiveRecord {
+
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return DrugDuration the static model class
+	 */
+	public static function model($className=__CLASS__) {
+		return parent::model($className);
 	}
 
-	static public function getConfigs($environment) {
-		$configs = array();
-		$module_path = Yii::app()->getModulePath();
-		$modules = Yii::app()->modules;
-		foreach($modules as $module) {
-			if(file_exists($module_path.'/config/'.$environment.'.php')) {
-				$configs[] = $module_path.'/config/'.$environment.'.php';
-			}
-		}
-		return $configs;
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName() {
+		return 'base_element';
 	}
-	
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations() {
+		return array(
+				'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+		);
+	}
+
+	public function getElement() {
+		$element_class = $this->element_class;
+		return $element_class::model()->find('base_id = ?', array($this->id));
+	}
+
 }

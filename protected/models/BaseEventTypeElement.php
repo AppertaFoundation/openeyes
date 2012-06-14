@@ -20,8 +20,8 @@
 /**
  * A class that all clinical elements should extend from.
  */
-class BaseElement extends BaseActiveRecord
-{
+class BaseEventTypeElement extends BaseElement {
+
 	public $firm;
 	public $userId;
 	public $patientId;
@@ -36,7 +36,7 @@ class BaseElement extends BaseActiveRecord
 	/**
 	 * Temporary override to catch any bad constructor calls that may be lurking in the code.
 	 * Should now be using {@link setBaseOptions} after construction instead
-	 * 
+	 *
 	 * @param string $scenario
 	 * @fixme This can be removed once we are sure that it is not throwing errors
 	 */
@@ -47,7 +47,52 @@ class BaseElement extends BaseActiveRecord
 		}
 		parent::__construct($scenario);
 	}
-	
+
+	/**
+	 * Clear BaseElement method
+	 * @see BaseElement::tableName()
+	 */
+	public function tableName() {
+		return get_class($this);
+	}
+
+	/**
+	 * Clear BaseElement method
+	 * @see BaseElement::relations()
+	 */
+	public function relations() {
+		return array();
+	}
+	/**
+	 * Clear BaseElement method
+	 * @see BaseElement::getElement()
+	 */
+	public function getElement() {
+	}
+
+	function getElementType() {
+		return ElementType::model()->find('class_name=?', array(get_class($this)));
+	}
+
+	function render($action) {
+		$this->Controller->renderPartial();
+	}
+
+	function getFormOptions($table) {
+		$options = array();
+		foreach (Yii::app()->db->createCommand()
+				->select("$table.*")
+				->from($table)
+				->join("element_type_$table","element_type_$table.{$table}_id = $table.id")
+				->where("element_type_id = ".$this->getElementType()->id)
+				->order("display_order asc")
+				->queryAll() as $option) {
+
+			$options[$option['id']] = $option['name'];
+		}
+		return $options;
+	}
+
 	/**
 	 * Here we need to provide default options for when the element is instantiated
 	 * by findByPk in ClinicalService->getElements().
@@ -65,14 +110,13 @@ class BaseElement extends BaseActiveRecord
 		$this->viewNumber = $viewNumber;
 		$this->required = $required;
 	}
-	
+
 	/**
 	 * Returns a list of Exam Phrases to be used by the element form.
 	 *
 	 * @return array
 	 */
-	public function getPhraseBySubspecialtyOptions($section)
-	{
+	public function getPhraseBySubspecialtyOptions($section) {
 		$section = Section::Model()->getByType('Exam', $section);
 		return array_merge(array('-' => '-'), CHtml::listData(PhraseBySubspecialty::Model()->findAll('subspecialty_id = ? AND section_id = ?', array($this->firm->serviceSubspecialtyAssignment->subspecialty_id, $section->id)), 'id', 'phrase'));
 	}
@@ -81,8 +125,31 @@ class BaseElement extends BaseActiveRecord
 	 * Stubbed method to set default options
 	 * Used by child objects to set defaults for forms on create
 	 */
-	public function setDefaultOptions()
-	{
+	public function setDefaultOptions() {
 		return null;
 	}
+
+	public function getInfoText() {
+	}
+
+	public function getCreate_view() {
+		return get_class($this);
+	}
+
+	public function getUpdate_view() {
+		return get_class($this);
+	}
+
+	public function getView_view() {
+		return get_class($this);
+	}
+
+	public function getPrint_view() {
+		return get_class($this);
+	}
+
+	public function isEditable() {
+		return true;
+	}
+
 }

@@ -161,11 +161,27 @@ $config = array(
 	)
 );
 
+$other_configs = array();
+
+// Check for module configs
+$module_path = Yii::app()->getBasePath() . '/' . Yii::app()->getModulePath();
+Yii::log($module_path);
+$modules = Yii::app()->modules;
+foreach($modules as $module) {
+	if(file_exists($module_path.'/config/common.php')) {
+		$other_configs[] = $module_path.'/config/common.php';
+	}
+}
+
 // Check for local main config
-$local_common = dirname(__FILE__).'/local/common.php';
-$config = CMap::mergeArray(
-	$config,
-	require($local_common)
-);
+$other_configs[] = dirname(__FILE__).'/local/common.php';
+
+// Merge configs
+foreach($other_configs as $other_config) {
+	$config = CMap::mergeArray(
+		$config,
+		require($other_config)
+	);
+}
 
 return $config;
