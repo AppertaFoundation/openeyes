@@ -73,7 +73,7 @@
 				<?php
 			} elseif ($field['type'] == 'Multi select') {?>
 		<?php echo '<?php '; ?>
-			echo $form->multiSelectList($element, 'MultiSelect_<?php echo $field['name']?>', '<?php echo $field['multiselect_relation']?>', '<?php echo $field['multiselect_field']?>', CHtml::listData(<?php echo $field['multiselect_lookup_class']?>::model()->findAll(array('order'=>'display_order asc')),'id','name'), $element-><?php echo $field['multiselect_lookup_table']?>_defaults, array('empty' => '- Please select -', 'label' => '<?php echo $field['label']?>'));
+			echo $form->multiSelectList($element, 'MultiSelect_<?php echo $field['name']?>', '<?php echo @$field['multiselect_relation']?>', '<?php echo @$field['multiselect_field']?>', CHtml::listData(<?php echo @$field['multiselect_lookup_class']?>::model()->findAll(array('order'=>'display_order asc')),'id','name'), $element-><?php echo @$field['multiselect_lookup_table']?>_defaults, array('empty' => '- Please select -', 'label' => '<?php echo $field['label']?>'));
 		<?php echo '?>'; ?>
 			<? }
 		}

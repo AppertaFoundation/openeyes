@@ -248,7 +248,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$elements[$number]['relations'][] = array(
 				'type' => 'BELONGS_TO',
 				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
-				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
+				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = EventTypeModuleCode::findModelClassForTable($lookup_table),
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 			);
 		}
@@ -358,7 +358,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$elements[$number]['relations'][] = array(
 				'type' => 'BELONGS_TO',
 				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
-				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
+				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = EventTypeModuleCode::findModelClassForTable($lookup_table),
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 			);
 		}
@@ -442,6 +442,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 		} else {
+			/*
 			$elements[$number]['fields'][$field_number]['method'] = 'Table';
 
 			// Point at table
@@ -466,12 +467,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 			);
+			*/
 		}
 
 		return $elements;
 	}
 
-	public function findModelClassForTable($table, $path=false) {
+	static public function findModelClassForTable($table, $path=false) {
 		if (!$path) {
 			$path = Yii::app()->basePath.'/models';
 		}
@@ -481,7 +483,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		while ($file = readdir($dh)) {
 			if (!preg_match('/^\.\.?$/',$file)) {
 				if (is_dir($path.'/'.$file)) {
-					if ($class = $this->findModelClassForTable($table, $path.'/'.$file)) {
+					if ($class = EventTypeModuleCode::findModelClassForTable($table, $path.'/'.$file)) {
 						return $class;
 					}
 				} else {
@@ -508,7 +510,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			while ($file = readdir($dh)) {
 				if (!preg_match('/^\.\.?$/',$file)) {
 					if (file_exists($path.'/'.$file.'/models')) {
-						if ($class = $this->findModelClassForTable($table, $path.'/'.$file.'/models')) {
+						if ($class = EventTypeModuleCode::findModelClassForTable($table, $path.'/'.$file.'/models')) {
 							return $class;
 						}
 					}
@@ -573,6 +575,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				EventTypeModuleCode::dump_table_fields($_GET['table']);
 			} else if ($_GET['ajax'] == 'field_unique_values') {
 				EventTypeModuleCode::dump_field_unique_values($_GET['table'],$_GET['field']);
+			} else if ($_GET['ajax'] == 'dump_field_unique_values_multi') {
+				EventTypeModuleCode::dump_field_unique_values_multi($_GET['table'],$_GET['field']);
 			} else if ($_GET['ajax'] == 'getEyedrawSize') {
 				EventTypeModuleCode::getEyedrawSize($_GET['class']);
 			} else {
@@ -614,6 +618,22 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			->order("$table.$field")
 			->queryAll() as $row) {
 			echo '<option value="'.$row['id'].'"'.($selected == $row['id'] ? ' selected="selected"' : '').'>'.$row[$field].'</option>';
+		}
+	}
+
+	static public function dump_field_unique_values_multi($table, $field, $selected=false) {
+		if (!$selected) $selected = array();
+
+		echo '<option value="">- Select default values -</option>';
+
+		foreach (Yii::app()->db->createCommand()
+			->selectDistinct("$table.id, $table.$field")
+			->from($table)
+			->order("$table.$field")
+			->queryAll() as $row) {
+			if (!in_array($row['id'],$selected)) {
+				echo '<option value="'.$row['id'].'">'.$row[$field].'</option>';
+			}
 		}
 	}
 

@@ -194,6 +194,30 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.multiSelectFieldSQLTable').live('change',function() {
+		var m = $(this).attr('name').match(/^multiSelectFieldSQLTable([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() == '') {
+			$('#multiSelectFieldSQLTableFieldDiv'+element+'Field'+field).hide();
+			$('select[name="multiSelectFieldSQLTableField'+element+'Field'+field+'"]').html('');
+		} else {
+			var table = $(this).val();
+			$('.loader').show();
+
+			$.ajax({
+				'type': 'GET',
+				'url': '/gii/EventTypeModule?ajax=table_fields&table='+table,
+				'success': function(html) {
+					$('select[name="multiSelectFieldSQLTableField'+element+'Field'+field+'"]').html(html);
+					$('#multiSelectFieldSQLTableFieldDiv'+element+'Field'+field).show();
+					$('.loader').hide();
+				}
+			});
+		}
+	});
+
 	$('.radioButtonFieldSQLTable').live('change',function() {
 		var m = $(this).attr('name').match(/^radioButtonFieldSQLTable([0-9]+)Field([0-9]+)$/);
 		var element = m[1];
@@ -425,6 +449,61 @@ $(document).ready(function() {
 		}
 	});
 
+	$('.multiSelectFieldSQLTableField').live('change',function() {
+		var m = $(this).attr('name').match(/^multiSelectFieldSQLTableField([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() == '') {
+			$('#multiSelectFieldSQLTableDefaultValueDiv'+element+'Field'+field).hide();
+			$('select[name="multiSelectFieldValueTextInputDefault'+element+'Field'+field+'"]').html('');
+		} else {
+			var table = $('select[name="multiSelectFieldSQLTable'+element+'Field'+field+'"]').val();
+			var fieldval = $(this).val();
+			$('.loader').show();
+
+			$.ajax({
+				'type': 'GET',
+				'url': '/gii/EventTypeModule?ajax=dump_field_unique_values_multi&table='+table+'&field='+fieldval,
+				'success': function(html) {
+					$('select[name="multiSelectFieldValueDefault'+element+'Field'+field+'"]').html(html);
+					$('#multiSelectFieldSQLTableDefaultValueDiv'+element+'Field'+field).show();
+					$('.loader').hide();
+				}
+			});
+		}
+	});
+
+	$('.multiSelectFieldValueDefault').live('change',function() {
+		var m = $(this).attr('name').match(/^multiSelectFieldValueDefault([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if ($(this).val() != '') {
+			$('#multiSelectFieldValueDefaultsDiv'+element+'Field'+field).append('<div><input type="hidden" name="multiSelectFieldValueDefaults'+element+'Field'+field+'[]" value="'+$(this).children('option:selected').val()+'" /><span>'+$(this).children('option:selected').text()+'</span> <a href="#" class="multiSelectFieldValueDefaultsRemove">(remove)</a></div>');
+
+			$(this).children('option:selected').remove();
+			$(this).val('');
+		}
+	});
+
+	$('.multiSelectFieldValueDefaultsRemove').live('click',function() {
+		var val = $(this).parent().children('input').val();
+		var text = $(this).parent().children('span').text();
+		var m = $(this).parent().children('input').attr('name').match(/^multiSelectFieldValueDefaults([0-9]+)Field([0-9]+)/);
+		var element = m[1];
+		var field = m[2];
+
+		$(this).parent().remove();
+
+		var select = $('select[name="multiSelectFieldValueDefault'+element+'Field'+field+'"]');
+
+		select.append('<option value="'+val+'">'+text+'</option>');
+		sort_selectbox(select);
+
+		return false;
+	});
+
 	$('.radioButtonMethodSelector').live('click',function() {
 		var m = $(this).attr('name').match(/^radioButtonMethod([0-9]+)Field([0-9]+)$/);
 		var element = m[1];
@@ -535,4 +614,21 @@ function loadExtraFieldView(view_name,element,field,callback) {
 			}
 		}
 	});
+}
+
+function selectSort(a, b) {
+		if (a.innerHTML == rootItem) {
+				return -1;
+		}
+		else if (b.innerHTML == rootItem) {
+				return 1;
+		}
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+};
+
+var rootItem = null;
+
+function sort_selectbox(element) {
+	rootItem = element.children('option:first').text();
+	element.append(element.children('option').sort(selectSort));
 }
