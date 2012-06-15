@@ -18,5 +18,4 @@
 */
 
 require dirname(__FILE__).'/OEConfig.php';
-//var_dump(OEConfig::getMergedConfig('main')); die;
 return OEConfig::getMergedConfig('main');

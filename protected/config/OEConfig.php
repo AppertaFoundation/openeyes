@@ -41,7 +41,7 @@ class OEConfig {
 		}
 
 		// Get module configs
-		$modules_path = dirname(__FILE__) . "/.." . Yii::app()->getModulePath() . "/";
+		$modules_path = dirname(__FILE__) . "/../modules/";
 		foreach(array_unique($active_modules) as $module_key => $module_name) {
 			if(is_array($module_name)) {
 				$module_name = $module_key;
