@@ -19,7 +19,7 @@
 	</select>
 
 	<input type="submit" class="remove_element_field" name="removeElementField<?php echo $element_num?>_<?php echo $field_num?>" value="remove" /><br />
-	<input type="checkbox" name="isRequiredField<?php echo $element_num?>_<?php echo $field_num?>" value="1" <?php if (@$_POST['isRequiredField'.$element_num.'_'.$field_num]) {?> checked="checked" <?php }?>/> Required<br/>
+	<input type="checkbox" name="isRequiredField<?php echo $element_num?>_<?php echo $field_num?>" value="1" <?php if (empty($_POST) || @$_POST['isRequiredField'.$element_num.'_'.$field_num]) {?> checked="checked" <?php }?>/> Required<br/>
 
 	<div id="extraDataElement<?php echo $element_num?>Field<?php echo $field_num?>">
 		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Dropdown list') {
