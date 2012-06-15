@@ -320,7 +320,9 @@ $(document).ready(function() {
 		var field = m[2];
 
 		if (e.keyCode == 13) {
-			$('input[name="elementName'+element+'FieldName'+field+'"]').select();
+			if ($(this).val() != '') {
+				$('input[name="elementName'+element+'FieldName'+field+'"]').select();
+			}
 			return false;
 		}
 
@@ -336,7 +338,9 @@ $(document).ready(function() {
 			$('#elementName'+element+'FieldName'+field).val($(this).val().toLowerCase().replace(/ /g, "_"));
 		}
 
-		$('#elementName'+element+'FieldName'+field).select().focus();
+		if ($(this).val() != '') {
+			$('#elementName'+element+'FieldName'+field).select().focus();
+		}
 	});
 
 	$('.fieldName').live('keypress',function(e) {
