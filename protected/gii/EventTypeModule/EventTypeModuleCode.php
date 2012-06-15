@@ -204,7 +204,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$field_values = array();
 
 			foreach ($_POST as $value_key => $value_value) {
-				if (preg_match('/^dropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+				if (preg_match('/^dropDownFieldValue'.$number.'Field'.$field_number.'_/',$value_key)) {
 					$field_values[] = $value_value;
 				}
 			}
@@ -274,7 +274,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$field_values = array();
 
 		foreach ($_POST as $value_key => $value_value) {
-			if (preg_match('/^textAreaDropDownFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+			if (preg_match('/^textAreaDropDownFieldValue'.$number.'Field'.$field_number.'_/',$value_key)) {
 				$field_values[] = $value_value;
 			}
 		}
@@ -316,7 +316,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$field_values = array();
 
 			foreach ($_POST as $value_key => $value_value) {
-				if (preg_match('/^radioButtonFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+				if (preg_match('/^radioButtonFieldValue'.$number.'Field'.$field_number.'_/',$value_key)) {
 					$field_values[] = $value_value;
 				}
 			}
@@ -403,7 +403,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$field_values = array();
 
 			foreach ($_POST as $value_key => $value_value) {
-				if (preg_match('/^multiSelectFieldValue'.$number.'Field'.$field_number.'/',$value_key)) {
+				if (preg_match('/^multiSelectFieldValue'.$number.'Field'.$field_number.'_/',$value_key)) {
 					$field_values[] = $value_value;
 				}
 			}
