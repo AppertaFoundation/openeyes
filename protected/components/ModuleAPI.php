@@ -24,16 +24,4 @@ class ModuleAPI {
 		return new $model;
 	}
 
-	static public function getConfigs($environment) {
-		$configs = array();
-		$module_path = Yii::app()->getModulePath();
-		$modules = Yii::app()->modules;
-		foreach($modules as $module) {
-			if(file_exists($module_path.'/config/'.$environment.'.php')) {
-				$configs[] = $module_path.'/config/'.$environment.'.php';
-			}
-		}
-		return $configs;
-	}
-	
 }
