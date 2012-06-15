@@ -17,5 +17,6 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
-require dirname(__FILE__).'/functions.php';
-return getConfig('main');
+require dirname(__FILE__).'/OEConfig.php';
+//var_dump(OEConfig::getMergedConfig('main')); die;
+return OEConfig::getMergedConfig('main');
