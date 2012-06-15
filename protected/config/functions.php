@@ -22,7 +22,7 @@
  */
 function getConfig($environment) {
 	$configs = array();
-	$config_path = dirname(__FILE__) . '/../config/';
+	$config_path = dirname(__FILE__) . '/';
 
 	// Get core and local configs and extract active modules
 	$active_modules = array();
