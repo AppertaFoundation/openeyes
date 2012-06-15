@@ -132,7 +132,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
 				$field = $matches[0]; $number = $matches[1]; $name = $value;
 				$elements[$number]['name'] = $value;
-				$elements[$number]['class_name'] = 'OEElement' . preg_replace("/ /", "", ucwords(strtolower($value)));
+				$elements[$number]['class_name'] = 'Element_'.$this->moduleID.'_'.preg_replace("/ /", "", ucwords(strtolower($value)));
 				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
 				$elements[$number]['number'] = $number;
 				$elements[$number]['foreign_keys'] = array();
@@ -143,6 +143,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['mapping_tables'] = array();
 				$elements[$number]['defaults_methods'] = array();
 				$elements[$number]['after_save'] = array();
+
+				$elements[$number] = $this->generateKeyNames($elements[$number],array('lmui','cui','ev'));
 
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
@@ -217,6 +219,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 			}
 
+			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
+
 			$elements[$number]['foreign_keys'][] = array(
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 				'name' => $key_name,
@@ -285,6 +289,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 		}
 
+		$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
+
 		$lookup_table['values'] = $field_values;
 		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
 
@@ -324,6 +330,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			if (strlen($key_name) >64) {
 				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 			}
+
+			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
 
 			$elements[$number]['foreign_keys'][] = array(
 				'field' => $elements[$number]['fields'][$field_number]['name'],
@@ -408,6 +416,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
 			$lookup_table['defaults'] = array();
 
+			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
+
 			foreach ($_POST as $key => $value) {
 				if (preg_match('/^multiSelectFieldValueTextInputDefault([0-9]+)Field([0-9]+)_([0-9]+)$/',$key,$m) && $m[1] == $number && $m[2] == $field_number && $value == 1) {
 					$lookup_table['defaults'][] = $m[3];
@@ -428,6 +438,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$mapping_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name'])));
+
+			$mapping_table = $this->generateKeyNames($mapping_table,array('lmui','cui','ele','lku'));
 
 			$elements[$number]['mapping_tables'][] = $mapping_table;
 
@@ -475,6 +487,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			$defaults_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$defaults_table['name'])));
 
+			$defaults_table = $this->generateKeyNames($defaults_table,array('lmui','cui'));
+
 			$elements[$number]['defaults_tables'][] = $defaults_table;
 
 			$elements[$number]['defaults_methods'][] = array(
@@ -491,6 +505,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$mapping_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name'])));
+
+			$mapping_table = $this->generateKeyNames($mapping_table,array('lmui','cui','ele','lku'));
 
 			$elements[$number]['mapping_tables'][] = $mapping_table;
 
@@ -517,6 +533,25 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		return $elements;
+	}
+
+	public function generateKeyNames($table, $keys) {
+		foreach ($keys as $key) {
+			$table[$key.'_key'] = $table['name'].'_'.$key.'_fk';
+
+			if (strlen($table[$key.'_key']) >64) {
+				$ex = explode('_',$table['name']);
+				$table[$key.'_key'] = array_shift($ex).'_';
+
+				foreach ($ex as $segment) {
+					$table[$key.'_key'] .= $segment[0];
+				}
+
+				$table[$key.'_key'] .= '_'.$key.'_fk';
+			}
+		}
+
+		return $table;
 	}
 
 	static public function findModelClassForTable($table, $path=false) {

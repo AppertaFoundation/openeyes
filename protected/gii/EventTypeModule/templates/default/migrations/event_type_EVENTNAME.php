@@ -21,7 +21,7 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				foreach ($elements as $element) {
 				?>
 		// create an element_type entry for this element type name if one doesn't already exist
-		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'<?php echo $element['name'];?>'))->queryRow()) {
+		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'<?php echo $element['name'];?>',':eventTypeId'=>$event_type['id']))->queryRow()) {
 			$this->insert('element_type', array('name' => '<?php echo $element['name'];?>','class_name' => '<?php echo $element['class_name'];?>', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
 		// select the element_type_id for this element type name
@@ -49,10 +49,10 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
-				'KEY `<?php echo $lookup_table['name']?>_lmui_fk` (`last_modified_user_id`)',
-				'KEY `<?php echo $lookup_table['name']?>_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `<?php echo $lookup_table['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $lookup_table['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'KEY `<?php echo $lookup_table['lmui_key']?>` (`last_modified_user_id`)',
+				'KEY `<?php echo $lookup_table['cui_key']?>` (`created_user_id`)',
+				'CONSTRAINT `<?php echo $lookup_table['lmui_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $lookup_table['cui_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
 			<?php foreach ($lookup_table['values'] as $i => $value) {?>
@@ -70,10 +70,10 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 						'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 						'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 						'PRIMARY KEY (`id`)',
-						'KEY `<?php echo $default_table['name']?>_lmui_fk` (`last_modified_user_id`)',
-						'KEY `<?php echo $default_table['name']?>_cui_fk` (`created_user_id`)',
-						'CONSTRAINT `<?php echo $default_table['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-						'CONSTRAINT `<?php echo $default_table['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+						'KEY `<?php echo $default_table['lmui_key']?>` (`last_modified_user_id`)',
+						'KEY `<?php echo $default_table['cui_key']?>` (`created_user_id`)',
+						'CONSTRAINT `<?php echo $default_table['lmui_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+						'CONSTRAINT `<?php echo $default_table['cui_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 					), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 
 					<?php foreach ($default_table['values'] as $value) {?>
@@ -97,15 +97,15 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
-				'KEY `<?php echo $element['name']?>_lmui_fk` (`last_modified_user_id`)',
-				'KEY `<?php echo $element['name']?>_cui_fk` (`created_user_id`)',
-				'KEY `<?php echo $element['name']?>_ev_fk` (`event_id`)',
+				'KEY `<?php echo $element['lmui_key']?>` (`last_modified_user_id`)',
+				'KEY `<?php echo $element['cui_key']?>` (`created_user_id`)',
+				'KEY `<?php echo $element['ev_key']?>` (`event_id`)',
 				<?php foreach ($element['foreign_keys'] as $foreign_key) {?>
 				'KEY `<?php echo $foreign_key['name']?>` (`<?php echo $foreign_key['field']?>`)',
 				<?php }?>
-				'CONSTRAINT `<?php echo $element['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $element['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $element['name']?>_ev_fk` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
+				'CONSTRAINT `<?php echo $element['lmui_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $element['cui_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $element['ev_key']?>` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`)',
 				<?php foreach ($element['foreign_keys'] as $foreign_key) {?>
 				'CONSTRAINT `<?php echo $foreign_key['name']?>` FOREIGN KEY (`<?php echo $foreign_key['field']?>`) REFERENCES `<?php echo $foreign_key['table']?>` (`id`)',
 				<?php }?>
@@ -121,14 +121,14 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
-				'KEY `<?php echo $mapping_table['name']?>_lmui_fk` (`last_modified_user_id`)',
-				'KEY `<?php echo $mapping_table['name']?>_cui_fk` (`created_user_id`)',
-				'KEY `<?php echo $mapping_table['name']?>_ele_fk` (`element_id`)',
-				'KEY `<?php echo $mapping_table['name']?>_lku_fk` (`<?php echo $mapping_table['lookup_table']?>_id`)',
-				'CONSTRAINT `<?php echo $mapping_table['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $mapping_table['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `<?php echo $mapping_table['name']?>_ele_fk` FOREIGN KEY (`element_id`) REFERENCES `<?php echo $element['table_name']?>` (`id`)',
-				'CONSTRAINT `<?php echo $mapping_table['name']?>_lku_fk` FOREIGN KEY (`<?php echo $mapping_table['lookup_table']?>_id`) REFERENCES `<?php echo $mapping_table['lookup_table']?>` (`id`)',
+				'KEY `<?php echo $mapping_table['lmui_key']?>` (`last_modified_user_id`)',
+				'KEY `<?php echo $mapping_table['cui_key']?>` (`created_user_id`)',
+				'KEY `<?php echo $mapping_table['ele_key']?>` (`element_id`)',
+				'KEY `<?php echo $mapping_table['lku_key']?>` (`<?php echo $mapping_table['lookup_table']?>_id`)',
+				'CONSTRAINT `<?php echo $mapping_table['lmui_key']?>` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $mapping_table['cui_key']?>` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `<?php echo $mapping_table['ele_key']?>` FOREIGN KEY (`element_id`) REFERENCES `<?php echo $element['table_name']?>` (`id`)',
+				'CONSTRAINT `<?php echo $mapping_table['lku_key']?>` FOREIGN KEY (`<?php echo $mapping_table['lookup_table']?>_id`) REFERENCES `<?php echo $mapping_table['lookup_table']?>` (`id`)',
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 			<?php }?>
 	<?php } ?>

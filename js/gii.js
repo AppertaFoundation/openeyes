@@ -604,8 +604,6 @@ $(document).ready(function() {
 		return false;
 	});
 
-	setTimeout('preventSessionExpiry();',120000);
-
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
 
@@ -637,14 +635,4 @@ var rootItem = null;
 function sort_selectbox(element) {
 	rootItem = element.children('option:first').text();
 	element.append(element.children('option').sort(selectSort));
-}
-
-function preventSessionExpiry() {
-	$.ajax({
-		'type': 'GET',
-		'url': '/gii/default/index',
-		'success': function(html) {
-			setTimeout('preventSessionExpiry();',120000);
-		}
-	});
 }
