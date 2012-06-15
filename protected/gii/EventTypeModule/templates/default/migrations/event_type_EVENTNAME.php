@@ -60,6 +60,27 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 			<?php }?>
 				<?php }?>
 
+				<?php foreach ($element['defaults_tables'] as $default_table) {?>
+					// defaults table
+					$this->createTable('<?php echo $default_table['name']?>', array(
+						'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+						'value_id' => 'int(10) unsigned NOT NULL',
+						'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+						'last_modified_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+						'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
+						'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
+						'PRIMARY KEY (`id`)',
+						'KEY `<?php echo $default_table['name']?>_lmui_fk` (`last_modified_user_id`)',
+						'KEY `<?php echo $default_table['name']?>_cui_fk` (`created_user_id`)',
+						'CONSTRAINT `<?php echo $default_table['name']?>_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+						'CONSTRAINT `<?php echo $default_table['name']?>_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+					), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+
+					<?php foreach ($default_table['values'] as $value) {?>
+						$this->insert('<?php echo $default_table['name']?>',array('value_id'=><?php echo $value?>));
+					<?php }?>
+				<?php }?>
+
 		// create the table for this element type: et_modulename_elementtypename
 		$this->createTable('<?php echo $element['table_name'];?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -124,6 +145,10 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		$this->dropTable('<?php echo $mapping_table['name']?>');
 				<?php }?>
 		$this->dropTable('<?php echo $element['table_name']; ?>');
+
+		<?php foreach ($element['defaults_tables'] as $defaults_table) {?>
+		$this->dropTable('<?php echo $defaults_table['name']?>');
+		<?php }?>
 
 		<?php foreach ($element['lookup_tables'] as $lookup_table) {?>
 		$this->dropTable('<?php echo $lookup_table['name']?>');

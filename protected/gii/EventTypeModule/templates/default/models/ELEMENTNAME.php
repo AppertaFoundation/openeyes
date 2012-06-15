@@ -192,7 +192,16 @@ if (isset($element)) {
 	<?php }?>
 
 	<?php if (isset($element) && !empty($element['defaults_methods'])) {
-		foreach ($element['defaults_methods'] as $default_method) {?>
+		foreach ($element['defaults_methods'] as $default_method) {
+			if (@$default_method['is_defaults_table']) {?>
+	public function get<?php echo $default_method['method']?>() {
+		$ids = array();
+		foreach (<?php echo $default_method['class']?>::model()->findAll() as $item) {
+			$ids[] = $item->value_id;
+		}
+		return $ids;
+	}
+	<?php }else{?>
 	public function get<?php echo $default_method['method']?>() {
 		$ids = array();
 		foreach (<?php echo $default_method['class']?>::model()->findAll('`default` = ?',array(1)) as $item) {
@@ -201,6 +210,7 @@ if (isset($element)) {
 		return $ids;
 	}
 		<?}?>
+	<?php }?>
 	<?php }?>
 
 	protected function beforeSave()

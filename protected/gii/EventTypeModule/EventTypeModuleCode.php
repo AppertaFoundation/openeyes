@@ -89,6 +89,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 							}
 						}
+					} elseif (preg_match('/DEFAULTSTABLE/',$file)) {
+						foreach ($this->getElementsFromPost() as $element) {
+							foreach ($element['defaults_tables'] as $defaults_table) {
+								$destination_file = preg_replace('/DEFAULTSTABLE/',$defaults_table['class'],$file);
+								$content = $this->render($file, array('defaults_table'=>$defaults_table));
+								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							}
+						}
 					} elseif (preg_match('/\.js$/',$file)) {
 						$content=$this->render($file,array('elements'=>$this->getElementsFromPost()));
 						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
@@ -129,6 +137,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['number'] = $number;
 				$elements[$number]['foreign_keys'] = array();
 				$elements[$number]['lookup_tables'] = array();
+				$elements[$number]['defaults_tables'] = array();
 				$elements[$number]['relations'] = array();
 				$elements[$number]['defaults'] = array();
 				$elements[$number]['mapping_tables'] = array();
@@ -433,6 +442,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$elements[$number]['fields'][$field_number]['multiselect_field'] = $lookup_table['name'].'_id';
 			$elements[$number]['fields'][$field_number]['multiselect_lookup_class'] = $lookup_table['class'];
 			$elements[$number]['fields'][$field_number]['multiselect_lookup_table'] = $lookup_table['name'];
+			$elements[$number]['fields'][$field_number]['multiselect_table_field_name'] = 'name';
+			$elements[$number]['fields'][$field_number]['multiselect_order_field'] = 'display_order';
 
 			$elements[$number]['after_save'][] = array(
 				'type' => 'MultiSelect',
@@ -442,32 +453,67 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 		} else {
-			/*
 			$elements[$number]['fields'][$field_number]['method'] = 'Table';
 
-			// Point at table
+			$lookup_table = array(
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = @$_POST['multiSelectFieldSQLTable'.$number.'Field'.$field_number],
+			);
 
-			$lookup_table = $_POST['dropDownFieldSQLTable'.$number.'Field'.$field_number];
+			$lookup_table['class'] = EventTypeModuleCode::findModelClassForTable($lookup_table['name']);
 
-			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
-
-			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			if (@$_POST['multiSelectFieldValueDefaults'.$number.'Field'.$field_number]) {
+				$defaults = @$_POST['multiSelectFieldValueDefaults'.$number.'Field'.$field_number];
+			} else {
+				$defaults = array();
 			}
 
-			$elements[$number]['foreign_keys'][] = array(
-				'field' => $elements[$number]['fields'][$field_number]['name'],
-				'name' => $key_name,
-				'table' => $lookup_table,
+			$defaults_table = array(
+				'name' => $elements[$number]['table_name'].'_'.$lookup_table['name'].'_defaults',
+				'method' => $lookup_table['name'].'_defaults',
+				'values' => $defaults,
 			);
 
-			$elements[$number]['relations'][] = array(
-				'type' => 'BELONGS_TO',
-				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
-				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = $this->findModelClassForTable($lookup_table),
-				'field' => $elements[$number]['fields'][$field_number]['name'],
+			$defaults_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$defaults_table['name'])));
+
+			$elements[$number]['defaults_tables'][] = $defaults_table;
+
+			$elements[$number]['defaults_methods'][] = array(
+				'method' => $lookup_table['name'].'_defaults',
+				'class' => $defaults_table['class'],
+				'is_defaults_table' => true,
 			);
-			*/
+
+			$mapping_table = array(
+				'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name'],
+				'lookup_table' => $lookup_table['name'],
+				'lookup_class' => $lookup_table['class'],
+				'element_class' => $elements[$number]['class_name'],
+			);
+
+			$mapping_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name'])));
+
+			$elements[$number]['mapping_tables'][] = $mapping_table;
+
+			$elements[$number]['relations'][] = array(
+				'type' => 'HAS_MANY',
+				'name' => $elements[$number]['fields'][$field_number]['name'].'s',
+				'class' => str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name']))),
+				'field' => 'element_id',
+			);
+
+			$elements[$number]['fields'][$field_number]['multiselect_relation'] = $elements[$number]['fields'][$field_number]['name'].'s';
+			$elements[$number]['fields'][$field_number]['multiselect_field'] = $lookup_table['name'].'_id';
+			$elements[$number]['fields'][$field_number]['multiselect_lookup_class'] = $lookup_table['class'];
+			$elements[$number]['fields'][$field_number]['multiselect_lookup_table'] = $lookup_table['name'];
+			$elements[$number]['fields'][$field_number]['multiselect_table_field_name'] = @$_POST['multiSelectFieldSQLTableField'.$number.'Field'.$field_number];
+			$elements[$number]['fields'][$field_number]['multiselect_order_field'] = @$_POST['multiSelectFieldSQLTableField'.$number.'Field'.$field_number];
+
+			$elements[$number]['after_save'][] = array(
+				'type' => 'MultiSelect',
+				'post_var' => 'MultiSelect_'.$elements[$number]['fields'][$field_number]['name'],
+				'mapping_table_class' => $mapping_table['class'],
+				'lookup_table_field_id' => $lookup_table['name'].'_id',
+			);
 		}
 
 		return $elements;
