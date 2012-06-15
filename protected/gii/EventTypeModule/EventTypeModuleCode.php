@@ -536,11 +536,17 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function generateKeyNames($table, $keys) {
+		if (isset($table['table_name'])) {
+			$table_name = $table['table_name'];
+		} else {
+			$table_name = $table['name'];
+		}
+
 		foreach ($keys as $key) {
-			$table[$key.'_key'] = $table['name'].'_'.$key.'_fk';
+			$table[$key.'_key'] = $table_name.'_'.$key.'_fk';
 
 			if (strlen($table[$key.'_key']) >64) {
-				$ex = explode('_',$table['name']);
+				$ex = explode('_',$table_name);
 				$table[$key.'_key'] = array_shift($ex).'_';
 
 				foreach ($ex as $segment) {
