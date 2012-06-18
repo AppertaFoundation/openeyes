@@ -37,11 +37,11 @@
 
 	<?php } elseif ($field['type'] == 'Dropdown list') {?>
 
-		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','name')<?php if (@$field['empty']) {?>,array('empty'=>'- Please select -')<?php }?>); <?php echo '?>'; ?>
+		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(array('order'=> '<?php echo $field['lookup_field']?> asc')),'id','<?php echo $field['lookup_field']?>')<?php if (@$field['empty']) {?>,array('empty'=>'- Please select -')<?php }?>); <?php echo '?>'; ?>
 
 	<?php } elseif ($field['type'] == 'Textarea with dropdown') {?>
 
-		<?php echo '<?php '; ?>echo $form->dropDownListNoPost('<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','name'),'',array('empty'=>'- <?php echo ucfirst($field['label'])?> -','class'=>'populate_textarea')); <?php echo '?>'; ?>
+		<?php echo '<?php '; ?>echo $form->dropDownListNoPost('<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','<?php echo $field['lookup_field']?>'),'',array('empty'=>'- <?php echo ucfirst($field['label'])?> -','class'=>'populate_textarea')); <?php echo '?>'; ?>
 
 		<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
 

@@ -46,7 +46,7 @@ if (isset($element)) {
 			<?php } elseif ($field['type'] == 'Dropdown list') {?>
 			<div class="view">
 				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
-				<?php echo '<?php ';?> echo $element-><?php echo preg_replace('/_id$/','',$field['name'])?> ? $element-><?php echo preg_replace('/_id$/','',$field['name'])?>->name : 'None'<?php echo '?>';?>
+				<?php echo '<?php ';?> echo $element-><?php echo preg_replace('/_id$/','',$field['name'])?> ? $element-><?php echo preg_replace('/_id$/','',$field['name'])?>-><?php echo $field['lookup_field']?> : 'None'<?php echo '?>';?>
 				<br />
 			</div>
 			<?php } elseif ($field['type'] == 'Checkbox') {?>

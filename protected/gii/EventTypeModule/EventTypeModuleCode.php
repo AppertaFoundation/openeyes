@@ -194,7 +194,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$elements[$number]['fields'][$field_number]['empty'] = @$_POST['dropDownUseEmpty'.$number.'Field'.$field_number];
 
 		if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
-			$elements[$number]['defaults'][$fields_value] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
+			$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
 		}
 
 		if (@$_POST['dropDownMethod'.$number.'Field'.$field_number] == 0) {
@@ -252,6 +252,12 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 			}
 
+			$elements[$number]['fields'][$field_number]['lookup_field'] = $_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
+
+			if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
+				$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
+			}
+
 			$elements[$number]['foreign_keys'][] = array(
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 				'name' => $key_name,
@@ -306,7 +312,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		if (@$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
-			$elements[$number]['defaults'][$fields_value] = @$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number];
+			$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number];
 		}
 
 		if (@$_POST['radioButtonMethod'.$number.'Field'.$field_number] == 0) {
@@ -635,13 +641,21 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			// $sql = "'{$field['name']}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$field['label']}\n";
 			$sql = "'{$field['name']}' => 'date DEFAULT NULL', // {$field['label']}\n";
 		} elseif ($field['type'] == 'Dropdown list') {
-			$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
+			if (isset($field['default_value'])) {
+				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL DEFAULT {$field['default_value']}', // {$field['label']}\n";
+			} else {
+				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
+			}
 		} elseif ($field['type'] == 'Textarea with dropdown') {
 			$sql = "'{$field['name']}' => 'text NOT NULL', // {$field['label']}\n";
 		} elseif ($field['type'] == 'Checkbox') {
 			$sql = "'{$field['name']}' => 'tinyint(1) unsigned NOT NULL', // {$field['label']}\n";
 		} elseif ($field['type'] == 'Radio buttons') {
-			$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
+			if (isset($field['default_value'])) {
+				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL DEFAULT {$field['default_value']}', // {$field['label']}\n";
+			} else {
+				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
+			}
 		} elseif ($field['type'] == 'Boolean') {
 			$sql = "'{$field['name']}' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // {$field['label']}\n";
 		} elseif ($field['type'] == 'EyeDraw') {
