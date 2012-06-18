@@ -158,7 +158,7 @@ if (isset($element)) {
 	{
 		<?php if (isset($element)) {
 			foreach ($element['defaults'] as $property => $value) {
-				echo '$this->'.$property.' = '.$value.';';
+				echo '$this->'.$property.' = '.$value.";\n";
 			}
 		}?>
 	}
