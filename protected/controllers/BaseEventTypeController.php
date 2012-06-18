@@ -231,7 +231,7 @@ class BaseEventTypeController extends BaseController
 					$audit->save();
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array('Default/view/'.$eventId));
+					$this->redirect(array('default/view/'.$eventId));
 					return;
 				}
 			}
@@ -344,7 +344,7 @@ class BaseEventTypeController extends BaseController
 
 		if (!empty($_POST)) {
 			if (isset($_POST['cancel'])) {
-				$this->redirect(array('Default/view/'.$this->event->id));
+				$this->redirect(array('default/view/'.$this->event->id));
 				return;
 			}
 
@@ -420,7 +420,7 @@ class BaseEventTypeController extends BaseController
 
 					OELog::log("Updated event {$this->event->id}");
 
-					$this->redirect(array('Default/view/'.$this->event->id));
+					$this->redirect(array('default/view/'.$this->event->id));
 					return;
 				}
 			}
@@ -759,7 +759,7 @@ class BaseEventTypeController extends BaseController
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->event->canDelete()) {
-			return $this->redirect(array('Default/view/'.$this->event->id));
+			return $this->redirect(array('default/view/'.$this->event->id));
 		}
 
 		if (!empty($_POST)) {

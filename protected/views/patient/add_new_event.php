@@ -7,7 +7,7 @@
 		<?php }else{
 			$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.img').'/').'/';
 			?>
-			<p><a href="/<?php echo $eventType->class_name?>/Default/create?patient_id=<?php echo $this->patient->id?>"><img src="<?php echo $assetpath?>small.png" alt="operation" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+			<p><a href="/<?php echo $eventType->class_name?>/default/create?patient_id=<?php echo $this->patient->id?>"><img src="<?php echo $assetpath?>small.png" alt="operation" /> - <strong><?php echo $eventType->name ?></strong></a></p>
 		<?php }?>
 	<?php }?>
 </div>

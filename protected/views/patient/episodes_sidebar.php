@@ -16,7 +16,7 @@
 						if ($event->eventType->class_name == 'OphTrOperation') {
 							$event_path = '/patient/event/';
 						} else {
-							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
+							$event_path = '/'.$event->eventType->class_name.'/default/view/';
 						}
 						?>
 						<li id="eventLi<?php echo $event->id ?>">
