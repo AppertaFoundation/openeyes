@@ -31,7 +31,7 @@ if (isset($element)) {
 				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
 				<br />
 			</div>
-			<?php } elseif ($field['type'] == 'Textarea') {?>
+			<?php } elseif ($field['type'] == 'Textarea' || $field['type'] == 'Textarea with dropdown') {?>
 			<div class="view">
 				<b><?php echo '<?php ';?> echo CHtml::encode($element->getAttributeLabel('<?php echo $field['name']; ?>')); <?php echo '?>';?>:</b>
 				<?php echo '<?php ';?> echo $element-><?php echo $field['name']; ?> <?php echo '?>';?>
