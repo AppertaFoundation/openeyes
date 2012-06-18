@@ -156,11 +156,6 @@ if (isset($element)) {
 	 */
 	public function setDefaultOptions()
 	{
-		<?php if (isset($element)) {
-			foreach ($element['defaults'] as $property => $value) {
-				echo '$this->'.$property.' = '.$value.";\n";
-			}
-		}?>
 	}
 
 	<?php if (@$element['add_selected_eye']) {?>
