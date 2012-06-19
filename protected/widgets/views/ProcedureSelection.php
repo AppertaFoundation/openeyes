@@ -50,11 +50,12 @@
 											'minLength'=>'2',
 											'select'=>"js:function(event, ui) {
 												$.ajax({
-													'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."',
+													'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."&short_version=".($short_version?'1':'0')."',
 													'type': 'GET',
 													'data': {'name': ui.item.value},
 													'success': function(data) {
 														var enableDurations = ".($durations?'true':'false').";
+														var shortVersion = ".($short_version?'true':'false').";
 
 														// append selection onto procedure list
 														$('#procedureList').children('h4').append(data);
@@ -114,7 +115,10 @@
 														<?php
 															$totalDuration += $procedure['default_duration'];
 															echo CHtml::hiddenField('Procedures[]', $procedure['id']);
-															echo "<span>".$procedure['term'].'</span> - <span>'.$procedure['short_format']
+															echo "<span>".$procedure['term'];
+															if ($short_version) {
+																echo '</span> - <span>'.$procedure['short_format'];
+															}
 														?></span>
 													</span>
 													<?php if ($durations) {?>
@@ -259,7 +263,7 @@
 			}
 
 			$.ajax({
-				'url': '/procedure/details?durations=<?php echo ($durations?'1':'0')?>',
+				'url': '/procedure/details?durations=<?php echo ($durations?'1':'0')?>&short_version=<?php echo $short_version?'1':'0'?>',
 				'type': 'GET',
 				'data': {'name': procedure},
 				'success': function(data) {
