@@ -611,12 +611,13 @@ class BaseEventTypeController extends BaseController
 		return true;
 	}
 
-	public function getOrCreateEpisode($firm, $patientId)
-	{
+	public function getEpisode($firm, $patientId) {
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
-		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
-
-		if (!$episode) {
+		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+	}
+	
+	public function getOrCreateEpisode($firm, $patientId) {
+		if (!$episode = $this->getEpisode($firm, $patientId)) {
 			$episode = new Episode();
 			$episode->patient_id = $patientId;
 			$episode->firm_id = $firm->id;
