@@ -1149,3 +1149,6 @@ div.auditDetailEvenRed div { line-height: 20px; }
 div.auditDetailOddRed div { line-height: 20px; }
 
 span.auditDetailLabel { width: 100px; }
+
+input.widgetSlider { vertical-align: middle; width: 770px; }
+span.widgetSliderValue { vertical-align: middle; margin-right: 10px; width: 45px; display: inline-block; }

@@ -78,4 +78,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 	public function hiddenInput($element, $field, $value=false) {
 		$this->widget('application.widgets.HiddenField', array('element' => $element, 'field' => $field, 'value' => $value));
 	}
+
+	public function slider($element, $field, $options) {
+		$this->widget('application.widgets.Slider', array('element' => $element, 'field' => $field, 'min' => $options['min'], 'max' => $options['max'], 'step' => $options['step'], 'force_dp' => @$options['force_dp'], 'prefix_positive' => @$options['prefix_positive']));
+	}
 }

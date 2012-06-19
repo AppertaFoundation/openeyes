@@ -59,3 +59,59 @@ function sort_selectbox(element) {
 	rootItem = element.children('option:first').text();
 	element.append(element.children('option').sort(selectSort));
 }
+
+function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
+
+WidgetSlider.prototype = {
+	init : function(params) {
+		for (var i in params) {
+			this[i] = params[i];
+		}
+
+		var thiz = this;
+
+		$(document).ready(function() {
+			thiz.bindElement();
+		});
+	},
+
+	bindElement : function() {
+		var thiz = this;
+
+		$('#'+this.range_id).change(function() {
+			thiz.handleChange($(this));
+		});
+	},
+
+	handleChange : function(element) {
+		var val = element.val();
+
+		if (val == '10.25') {
+			val = '10.5';
+		} else if (val == '-10.25') {
+			val = '-10.5';
+		}
+
+		if (this.force_dp) {
+			if (!val.match(/\./)) {
+				val += '.';
+				for (var i in this.force_dp) {
+					val += '00';
+				}
+			} else {
+				var dp = val.replace(/^.*?\./,'');
+
+				while (dp.length < this.force_dp) {
+					dp += '0';
+					val += '0';
+				}
+			} 
+		}
+
+		if (this.prefix_positive && parseFloat(val) >0) {
+			var val = this.prefix_positive + val;
+		}
+
+		$('#'+this.range_id+'_value_span').text(val);
+	}
+}
