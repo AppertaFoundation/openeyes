@@ -92,16 +92,7 @@ class Event extends BaseActiveRecord
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 			'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
 			'element_operation' => array(self::HAS_ONE, 'ElementOperation', 'event_id'),
-			'base_elements' => array(self::HAS_MANY, 'BaseElement', 'event_id'),
 		);
-	}
-	
-	public function getElements() {
-		$elements = array();
-		foreach($this->base_elements as $base_element) {
-			$elements[] = $base_element->element;
-		}
-		return $elements;
 	}
 	
 	public function getEditable(){

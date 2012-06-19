@@ -19,41 +19,6 @@
 
 /**
  * Base class for all elements
- *
- * The followings are the available columns in table 'base_element':
- * @property integer $id
- * @property integer $event_id
- * @property string $element_class
  */
 class BaseElement extends BaseActiveRecord {
-
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return DrugDuration the static model class
-	 */
-	public static function model($className=__CLASS__) {
-		return parent::model($className);
-	}
-
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName() {
-		return 'base_element';
-	}
-
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations() {
-		return array(
-				'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-		);
-	}
-
-	public function getElement() {
-		$element_class = $this->element_class;
-		return $element_class::model()->find('base_id = ?', array($this->id));
-	}
-
 }

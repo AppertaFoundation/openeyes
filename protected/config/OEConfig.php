@@ -46,6 +46,17 @@ class OEConfig {
 			if(is_array($module_name)) {
 				$module_name = $module_key;
 			}
+			
+			// Import event type module's models folder
+			// FIXME: We need a better way of handling this
+			if(substr($module_name, 0, 3) == 'Oph') {
+				$configs['modules'][] = array(
+						'import' => array(
+								'application.modules.' . $module_name .'.models.*',
+						),
+				);
+			}
+			
 			if(file_exists($modules_path . $module_name . "/config/common.php")) {
 				$configs['modules'][] = include $modules_path . $module_name . "/config/common.php";
 			}
