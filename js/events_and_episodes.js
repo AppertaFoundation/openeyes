@@ -32,11 +32,13 @@ $(document).ready(function(){
 		if ($(this).val() != '') {
 			var target_id = $(this).attr('id').replace(/^dropDownTextSelection_/,'');
 
-			if ($('#'+target_id).text().length >0) {
-				$('#'+target_id).text($('#'+target_id).text()+', ');
+			var currentVal = $('#'+target_id).val();
+
+			if (currentVal.length >0) {
+				currentVal += ', ';
 			}
 
-			$('#'+target_id).text($('#'+target_id).text()+$(this).children('option:selected').text());
+			$('#'+target_id).val(currentVal+$(this).children('option:selected').text());
 
 			$(this).children('option:selected').remove();
 		}
