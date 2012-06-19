@@ -90,6 +90,10 @@ $(document).ready(function() {
 			case 'Multi select':
 				loadExtraFieldView('extraMultiSelect',element,field);
 				break;
+			case 'Slider':
+				loadExtraFieldView('extraSlider',element,field);
+				$('#sliderMinValue'+element+'Field'+field).select().focus();
+				break;
 			case 'Textbox':
 			case 'Textarea':
 			case 'Date picker':

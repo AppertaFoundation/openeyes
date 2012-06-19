@@ -177,6 +177,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Multi select') {
 							$elements = $this->extraElementFieldWrangling_MultiSelect($elements, $number, $field_number, $fields_value);
 						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Slider') {
+							$elements[$number]['fields'][$field_number]['slider_min_value'] = @$_POST['sliderMinValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['slider_max_value'] = @$_POST['sliderMaxValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['slider_default_value'] = @$_POST['sliderDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['slider_stepping'] = @$_POST['sliderStepping'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['slider_dp'] = @$_POST['sliderForceDP'.$number.'Field'.$field_number];
+						}
 					}
 				}
 			}
@@ -666,7 +674,25 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		} elseif ($field['type'] == 'Multi select') {
 			// Nothing, this is stored in additional tables
+		} elseif ($field['type'] == 'Slider') {
+			$default = $field['slider_default_value'] ? " DEFAULT \'{$field['slider_default_value']}\'" : '';
+
+			if ($field['slider_dp'] <1) {
+				$sql .= "'{$field['name']}' => 'int(10) NOT NULL$default',// {$field['label']}\n";
+			} else {
+				$maxlen = strlen(preg_replace('/\..*?$/','',preg_replace('/^\-/','',$field['slider_max_value'])));
+				$minlen = strlen(preg_replace('/\..*?$/','',preg_replace('/^\-/','',$field['slider_min_value'])));
+				if (strlen($maxlen) > strlen($minlen)) {
+					$size = $maxlen;
+				} else {
+					$size = $minlen;
+				}
+				$size += (integer)$field['slider_dp'];
+
+				$sql .= "'{$field['name']}' => 'decimal ($size,{$field['slider_dp']}) NOT NULL$default',// {$field['label']}\n";
+			}
 		}
+
 		return $sql;
 	}
 
@@ -790,6 +816,29 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Please enter a size (in pixels)";
 					} else if (!ctype_digit(@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]])) {
 						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Size must be specified as a number of pixels";
+					}
+				}
+				if ($value == 'Slider') {
+					if (!@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) {
+						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Please enter a minimum value";
+					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMinValue'.$m[1].'Field'.$m[2]])) {
+						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
+					}
+					if (!@$_POST['sliderMaxValue'.$m[1].'Field'.$m[2]]) {
+						$errors['sliderMaxValue'.$m[1].'Field'.$m[2]] = "Please enter a maximum value";
+					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMaxValue'.$m[1].'Field'.$m[2]])) {
+						$errors['sliderMaxValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
+					}
+					if (@$_POST['sliderDefaultValue'.$m[1].'Field'.$m[2]] && !preg_match('/^\-?[0-9\.]+$/',$_POST['sliderDefaultValue'.$m[1].'Field'.$m[2]])) {
+						$errors['sliderDefaultValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
+					}
+					if (!@$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) {
+						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Please enter a stepping value";
+					} else if (!preg_match('/^[0-9\.]+$/',$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) || $_POST['sliderStepping'.$m[1].'Field'.$m[2]] == 0) {
+						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Must be a positive integer or floating point number";
+					}
+					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !preg_match('/^[0-9]+$/',$_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
+						$errors['sliderForceDP'.$m[1].'Field'.$m[2]] = "Must be a positive integer";
 					}
 				}
 			}
