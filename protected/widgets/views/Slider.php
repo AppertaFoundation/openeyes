@@ -5,7 +5,6 @@
 			remap_<?php echo get_class($element)?>_<?php echo $field?>['<?php echo $value?>'] = '<?php echo $remap?>';
 		<?php }
 	}?>
-
 	var widgetSlider_<?php echo get_class($element)?>_<?php echo $field?> = new WidgetSlider({
 		'prefix_positive': '<?php echo $prefix_positive?>',
 		'range_id': '<?php echo get_class($element)?>_<?php echo $field?>',
