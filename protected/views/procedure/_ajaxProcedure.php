@@ -22,13 +22,18 @@
 	<span class="left">
 		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
 	</span>
-	<span class="middle">
+	<span class="middle<?php if (!$durations) {?> noDuration<?php }?>">
 		<?php
 		echo CHtml::hiddenField('Procedures[]', $data['id']);
-		echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
+		echo "<span>".$data['term'].'</span>';
+		if ($short_version) {
+			echo ' - <span>'.$data['short_format']."</span>";
+		}
 		?>
 	</span>
-	<span class="right">
-		<?php echo $data['duration']?> mins
-	</span>
+	<?php if ($durations) {?>
+		<span class="right">
+			<?php echo $data['duration']?> mins
+		</span>
+	<?php }?>
 </div>
