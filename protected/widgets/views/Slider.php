@@ -1,8 +1,8 @@
 <script type="text/javascript">
 	var remap_<?php echo get_class($element)?>_<?php echo $field?> = {};
 	<?php if (is_array($remap_values) && !empty($remap_values)) {
-		foreach ($remap_values as $value => $remap) {?>
-			remap_<?php echo get_class($element)?>_<?php echo $field?>['<?php echo $value?>'] = '<?php echo $remap?>';
+		foreach ($remap_values as $remap_value => $remap) {?>
+			remap_<?php echo get_class($element)?>_<?php echo $field?>['<?php echo $remap_value?>'] = '<?php echo $remap?>';
 		<?php }
 	}?>
 	var widgetSlider_<?php echo get_class($element)?>_<?php echo $field?> = new WidgetSlider({
