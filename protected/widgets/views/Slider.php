@@ -1,8 +1,16 @@
 <script type="text/javascript">
+	var remap_<?php echo get_class($element)?>_<?php echo $field?> = {};
+	<?php if (is_array($remap_values) && !empty($remap_values)) {
+		foreach ($remap_values as $value => $remap) {?>
+			remap_<?php echo get_class($element)?>_<?php echo $field?>['<?php echo $value?>'] = '<?php echo $remap?>';
+		<?php }
+	}?>
+
 	var widgetSlider_<?php echo get_class($element)?>_<?php echo $field?> = new WidgetSlider({
 		'prefix_positive': '<?php echo $prefix_positive?>',
 		'range_id': '<?php echo get_class($element)?>_<?php echo $field?>',
-		'force_dp': '<?php echo $force_dp?>'
+		'force_dp': '<?php echo $force_dp?>',
+		'remap': remap_<?php echo get_class($element)?>_<?php echo $field?>
 	});
 </script>
 <div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>

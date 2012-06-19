@@ -86,10 +86,10 @@ WidgetSlider.prototype = {
 	handleChange : function(element) {
 		var val = element.val();
 
-		if (val == '10.25') {
-			val = '10.5';
-		} else if (val == '-10.25') {
-			val = '-10.5';
+		for (var value in this.remap) {
+			if (val == value) {
+				val = this.remap[value];
+			}
 		}
 
 		if (this.force_dp) {

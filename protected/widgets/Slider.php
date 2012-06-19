@@ -23,5 +23,6 @@ class Slider extends BaseCWidget {
 	public $step;
 	public $force_dp = false;
 	public $prefix_positive = false;
+	public $remap_values = false;
 }
 ?>
