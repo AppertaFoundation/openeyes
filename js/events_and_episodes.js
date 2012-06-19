@@ -105,6 +105,11 @@ WidgetSlider.prototype = {
 					dp += '0';
 					val += '0';
 				}
+				
+				while (dp.length > this.force_dp) {
+					dp = dp.replace(/.$/,'');
+					val = val.replace(/.$/,'');
+				}
 			} 
 		}
 
