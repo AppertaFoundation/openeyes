@@ -1149,3 +1149,6 @@ div.auditDetailEvenRed div { line-height: 20px; }
 div.auditDetailOddRed div { line-height: 20px; }
 
 span.auditDetailLabel { width: 100px; }
+
+/* Temporary fix for OpNote post-op instructions dropbox resizing */
+#div_ElementComments_postop_instructions_TextSelection select{width: 181px;}
