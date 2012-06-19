@@ -22,8 +22,8 @@
 										'source'=>"js:function(request, response) {
 											var existingProcedures = [];
 											$('div.procedureItem').map(function() {
-												var text = $(this).children('span:first').text();
-												existingProcedures.push(text.replace(/ remove$/i, ''));
+												var text = $.trim($(this).children('span:nth-child(2)').text());
+												existingProcedures.push(text.replace(/ - .*?$/,''));
 											});
 
 											$.ajax({
@@ -218,8 +218,10 @@
 		if (subsection != '') {
 			var existingProcedures = [];
 			$('div.procedureItem').map(function() {
-				existingProcedures.push($(this).children('span:first').text().replace(/ remove$/i, ''));
+				var text = $.trim($(this).children('span:nth-child(2)').text());
+				existingProcedures.push(text.replace(/ - .*?$/,''));
 			});
+
 			$.ajax({
 				'url': '/procedure/list',
 				'type': 'POST',
