@@ -76,11 +76,11 @@
 		<?php echo '<?php '; ?>
 			echo $form->multiSelectList($element, 'MultiSelect_<?php echo $field['name']?>', '<?php echo @$field['multiselect_relation']?>', '<?php echo @$field['multiselect_field']?>', CHtml::listData(<?php echo @$field['multiselect_lookup_class']?>::model()->findAll(array('order'=>'<?php echo $field['multiselect_order_field']?> asc')),'id','<?php echo $field['multiselect_table_field_name']?>'), $element-><?php echo @$field['multiselect_lookup_table']?>_defaults, array('empty' => '- Please select -', 'label' => '<?php echo $field['label']?>'));
 		<?php echo '?>'; ?>
-			<? } elseif ($field['type'] == 'Slider') {?>
+			<?php } elseif ($field['type'] == 'Slider') {?>
 		<?php echo '<?php '; ?>
 			echo $form->slider($element, '<?php echo $field['name']?>', array('min' => <?php echo $field['slider_min_value']?>, 'max' => <?php echo $field['slider_max_value']?>, 'step' => <?php echo $field['slider_stepping']?><?php if ($field['slider_dp']){?>, 'force_dp' => <?php echo $field['slider_dp']?><?php }?>));
 			<?php echo '?>'; ?>
-			<? }
+			<?php }
 		}
 	}
 	?>
