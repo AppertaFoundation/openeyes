@@ -33,43 +33,6 @@ class BaseEventTypeElement extends BaseElement {
 	// Used during creation and updating of elements
 	public $required = false;
 
-	/**
-	 * Temporary override to catch any bad constructor calls that may be lurking in the code.
-	 * Should now be using {@link setBaseOptions} after construction instead
-	 *
-	 * @param string $scenario
-	 * @fixme This can be removed once we are sure that it is not throwing errors
-	 */
-	public function __construct($scenario = 'insert', $patientId = null) {
-		if($patientId !== null) {
-			throw new CException('Element constructor called with bad args, old code needs fixing');
-			Yii::log('Element constructor called with bad args, old code needs fixing', 'warning');
-		}
-		parent::__construct($scenario);
-	}
-
-	/**
-	 * Clear BaseElement method
-	 * @see BaseElement::tableName()
-	 */
-	public function tableName() {
-		return get_class($this);
-	}
-
-	/**
-	 * Clear BaseElement method
-	 * @see BaseElement::relations()
-	 */
-	public function relations() {
-		return array();
-	}
-	/**
-	 * Clear BaseElement method
-	 * @see BaseElement::getElement()
-	 */
-	public function getElement() {
-	}
-
 	function getElementType() {
 		return ElementType::model()->find('class_name=?', array(get_class($this)));
 	}
