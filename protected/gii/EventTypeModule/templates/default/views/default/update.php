@@ -15,7 +15,10 @@
 		));
 	<?php echo '?>';?>
 
+	<?php echo '<?php ';?> $this->displayErrors($errors)<?php echo '?>';?>
+
 	<?php echo '<?php ';?> $this->renderDefaultElements($this->action->id, $form); <?php echo '?>';?>
+
 	<?php echo '<?php ';?> $this->renderOptionalElements($this->action->id, $form); <?php echo '?>';?>
 
 	<?php echo '<?php ';?> $this->displayErrors($errors)<?php echo '?>';?>
