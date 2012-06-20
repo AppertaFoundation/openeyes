@@ -120,3 +120,33 @@ WidgetSlider.prototype = {
 		$('#'+this.range_id+'_value_span').text(val);
 	}
 }
+
+function WidgetSliderTable() {if (this.init) this.init.apply(this, arguments); }
+
+WidgetSliderTable.prototype = {
+	init : function(params) {
+		for (var i in params) {
+			this[i] = params[i];
+		}
+
+		var thiz = this;
+
+		$(document).ready(function() {
+			thiz.bindElement();
+		});
+	},
+
+	bindElement : function() {
+		var thiz = this;
+
+		$('#'+this.range_id).change(function() {
+			thiz.handleChange($(this));
+		});
+	},
+
+	handleChange : function(element) {
+		var val = element.val();
+
+		$('#'+this.range_id+'_value_span').text(this.data[val]);
+	}
+}
