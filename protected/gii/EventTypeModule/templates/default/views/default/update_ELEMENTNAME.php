@@ -37,7 +37,7 @@
 
 	<?php } elseif ($field['type'] == 'Dropdown list') {?>
 
-		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(array('order'=> '<?php echo $field['lookup_field']?> asc')),'id','<?php echo $field['lookup_field']?>')<?php if (@$field['empty']) {?>,array('empty'=>'- Please select -')<?php }?>); <?php echo '?>'; ?>
+		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(array('order'=> '<?php echo $field['order_field']?> asc')),'id','<?php echo $field['lookup_field']?>')<?php if (@$field['empty']) {?>,array('empty'=>'- Please select -')<?php }?>); <?php echo '?>'; ?>
 
 	<?php } elseif ($field['type'] == 'Textarea with dropdown') {?>
 

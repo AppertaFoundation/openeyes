@@ -237,6 +237,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			$lookup_table['values'] = $field_values;
 			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+			$elements[$number]['fields'][$field_number]['lookup_field'] = 'name';
+			$elements[$number]['fields'][$field_number]['order_field'] = 'display_order';
 
 			$elements[$number]['lookup_tables'][] = $lookup_table;
 
@@ -260,7 +262,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 			}
 
-			$elements[$number]['fields'][$field_number]['lookup_field'] = $_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
+			$elements[$number]['fields'][$field_number]['lookup_field'] = $elements[$number]['fields'][$field_number]['order_field'] = $_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
 
 			if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
 				$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
