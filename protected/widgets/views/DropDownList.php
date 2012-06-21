@@ -2,7 +2,15 @@
 	<?php echo CHtml::activeDropDownList($element,$field,$data,$htmlOptions)?>
 <?php }else{?>
 	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
-		<?php if (!@$htmlOptions['nolabel']){?><div class="label"><?php echo $element->getAttributeLabel($field)?>:</div><?php }?>
+		<?php if (@$htmlOptions['layout'] == 'vertical') {?>
+			<div class="label"></div>
+			<div class="DropDownLabelVertical">
+				<?php echo $element->getAttributeLabel($field)?>
+			</div>
+			<div class="label"></div>
+		<?php }else{?>
+			<?php if (!@$htmlOptions['nolabel']){?><div class="label"><?php echo $element->getAttributeLabel($field)?>:</div><?php }?>
+		<?php }?>
 		<div class="data">
 			<?php if (@$htmlOptions['divided']) {?>
 				<select name="<?php echo get_class($element)?>[<?php echo $field?>]" id="<?php echo get_class($element)?>_<?php echo $field?>">

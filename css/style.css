@@ -1155,3 +1155,5 @@ span.widgetSliderValue { vertical-align: middle; margin-right: 10px; width: 45px
 
 /* Temporary fix for OpNote post-op instructions dropbox resizing */
 #div_ElementComments_postop_instructions_TextSelection select{width: 181px;}
+
+div.DropDownLabelVertical { margin-bottom: 10px; }
