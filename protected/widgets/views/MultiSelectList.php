@@ -10,11 +10,13 @@
 		</select>
 		<div class="MultiSelectList">
 			<ul class="MultiSelectList">
-				<?php foreach ($selected_ids as $id) {?>
-					<li>
-						<?php echo $options[$id]?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
-					</li>
-					<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>" />
+				<?php foreach ($selected_ids as $id) {
+					if (isset($options[$id])) {?>
+						<li>
+							<?php echo $options[$id]?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
+						</li>
+						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>" />
+					<?php }?>
 				<?php }?>
 			</ul>
 		</div>
