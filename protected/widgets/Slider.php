@@ -24,5 +24,24 @@ class Slider extends BaseCWidget {
 	public $force_dp = false;
 	public $prefix_positive = false;
 	public $remap_values = false;
+	public $null;
+	public $value_display;
+
+	public function init() {
+		parent::init();
+
+		if ($this->null) {
+			$this->max += 1;
+
+			if ($this->value === null) {
+				$this->value = 0;
+				$this->value_display = 'NR';
+			} else {
+				$this->value_display = $this->value++;
+			}
+		} else {
+			$this->value_display = $this->value;
+		}
+	}
 }
 ?>

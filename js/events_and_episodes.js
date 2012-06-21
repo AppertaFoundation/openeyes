@@ -94,29 +94,49 @@ WidgetSlider.prototype = {
 			}
 		}
 
-		if (this.force_dp) {
-			if (!val.match(/\./)) {
-				val += '.';
-				for (var i in this.force_dp) {
-					val += '00';
-				}
+		if (this.null.length >0) {
+			if (val.match(/\./)) {
+				val = String(parseFloat(val) - 1);
 			} else {
-				var dp = val.replace(/^.*?\./,'');
-
-				while (dp.length < this.force_dp) {
-					dp += '0';
-					val += '0';
-				}
-				
-				while (dp.length > this.force_dp) {
-					dp = dp.replace(/.$/,'');
-					val = val.replace(/.$/,'');
-				}
-			} 
+				val = String(parseInt(val) - 1);
+			}
 		}
 
-		if (this.prefix_positive && parseFloat(val) >0) {
-			var val = this.prefix_positive + val;
+		var min = $('#'+this.range_id).attr('min');
+
+		if (min.match(/\./)) {
+			min = parseFloat(min);
+		} else {
+			min = parseInt(min);
+		}
+
+		if (val < min && this.null.length >0) {
+			val = this.null;
+		} else {
+			if (this.force_dp) {
+				if (!val.match(/\./)) {
+					val += '.';
+					for (var i in this.force_dp) {
+						val += '00';
+					}
+				} else {
+					var dp = val.replace(/^.*?\./,'');
+
+					while (dp.length < this.force_dp) {
+						dp += '0';
+						val += '0';
+					}
+					
+					while (dp.length > this.force_dp) {
+						dp = dp.replace(/.$/,'');
+						val = val.replace(/.$/,'');
+					}
+				} 
+			}
+
+			if (this.prefix_positive && parseFloat(val) >0) {
+				var val = this.prefix_positive + val;
+			}
 		}
 
 		$('#'+this.range_id+'_value_span').text(val);
