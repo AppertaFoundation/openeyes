@@ -19,6 +19,8 @@
 
 class HousekeepingCommand extends CConsoleCommand {
 
+	const ARCHIVE_FOLDER = 'data/archive';
+
 	public function getName() {
 		return 'Housekeeping Command.';
 	}
@@ -29,11 +31,14 @@ class HousekeepingCommand extends CConsoleCommand {
 
 	public function run($args) {
 		$this->deceasedPatients();
+		$this->archiveAuditTrail();
 	}
 
 	// Check for operations where patient is deceased and cancel them
 	protected function deceasedPatients() {
 
+		echo "Cancelling operations for deceased patients...";
+		
 		// TODO: This needs to be made more robust
 		$cancellation_reason = CancellationReason::model()->find("text = 'Patient has died'");
 		if(!$cancellation_reason) {
@@ -42,16 +47,58 @@ class HousekeepingCommand extends CConsoleCommand {
 
 		// We only want to cancel operations that have not been booked, or have a current booking
 		$operations = ElementOperation::model()->findAll(array(
-			'condition' => "(session.date > NOW() OR session.date IS NULL) AND t.status != :cancelled AND patient.date_of_death IS NOT NULL AND patient.date_of_death < NOW()",
-			'with' => array('event', 'event.episode', 'event.episode.patient', 'booking', 'booking.session'),
-			'params' => array(
-				':cancelled' => ElementOperation::STATUS_CANCELLED,
-		),
+				'condition' => "(session.date > NOW() OR session.date IS NULL) AND t.status != :cancelled AND patient.date_of_death IS NOT NULL AND patient.date_of_death < NOW()",
+				'with' => array('event', 'event.episode', 'event.episode.patient', 'booking', 'booking.session'),
+				'params' => array(
+						':cancelled' => ElementOperation::STATUS_CANCELLED,
+				),
 		));
 		foreach($operations as $operation) {
 			$operation->cancel($cancellation_reason->id, 'Booking cancelled automatically');
 		}
+		
+		echo "done.\n";
+		
+	}
 
+	// Archive audit trail records older than 2 months
+	protected function archiveAuditTrail() {
+
+		echo "Archiving old audit trail records (> 2 months)...\n";
+		
+		$connection = Yii::app()->db;
+		
+		$path = Yii::app()->basePath . '/' . self::ARCHIVE_FOLDER . '/';
+		if(!file_exists($path)) {
+			if(!mkdir($path)) {
+				throw new CException('Could not create archive folder');
+			}
+		}
+		
+		$to_date = date('Y-m-d', mktime(0, 0, 0, date("m") - 2, date("d"),   date("Y")));
+		$file_path = $path . 'tbl_audit_trail.' . $to_date . '.csv';
+		if(file_exists($file_path)) {
+			throw new CException("Archive file already exists for $to_date");
+		}
+		
+		$data = $connection->createCommand("SELECT * from `tbl_audit_trail` WHERE stamp < '$to_date'")->queryAll();
+		if($data) {
+			$file_output = fopen($file_path, 'w+');
+			$records = 0;
+			foreach($data as $record) {
+				fputcsv($file_output, $record, ',', '"');
+				$records++;
+			}
+			fclose($file_output);
+			$data = $connection->createCommand("DELETE from `tbl_audit_trail` WHERE stamp < '$to_date'")->query();
+			echo "$records records archived.\n";
+			echo "compressing...";
+			exec("bzip2 $file_path");
+			echo "done.\n";
+		} else {
+			echo "no records to archive\n";
+		}
+		echo "done.\n";
 	}
 
 }

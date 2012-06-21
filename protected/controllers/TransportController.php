@@ -48,32 +48,39 @@ class TransportController extends BaseController
 	 */
 	public function actionIndex()
 	{
+		if (ctype_digit(@$_GET['page'])) $this->page = $_GET['page'];
+
 		$this->render('index',array('bookings' => $this->getBookings()));
 	}
 
 	public function getBookings() {
-		if (!empty($_POST)) {
-			if (preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/',@$_POST['date_from']) &&
-				preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/',@$_POST['date_to'])) {
+		if (!empty($_REQUEST)) {
+			if (preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/',@$_REQUEST['date_from']) &&
+				preg_match('/^[0-9]+ [a-zA-Z]{3} [0-9]{4}$/',@$_REQUEST['date_to'])) {
 
-				$date_from = Helper::convertNHS2MySQL($_POST['date_from'])." 00:00:00";
-				$date_to = Helper::convertNHS2MySQL($_POST['date_to'])." 23:59:59";
+				$date_from = Helper::convertNHS2MySQL($_REQUEST['date_from'])." 00:00:00";
+				$date_to = Helper::convertNHS2MySQL($_REQUEST['date_to'])." 23:59:59";
 			}
 		} else {
-			$_POST['include_bookings'] = 1;
-			$_POST['include_reschedules'] = 1;
-			$_POST['include_cancellations'] = 1;
+			$_REQUEST['include_bookings'] = 1;
+			$_REQUEST['include_reschedules'] = 1;
+			$_REQUEST['include_cancellations'] = 1;
 		}
 
-		if (!@$_POST['include_bookings'] && !@$_POST['include_reschedules'] && !@$_POST['include_cancellations']) {
-			$_POST['include_bookings'] = 1;
+		if (!@$_REQUEST['include_bookings'] && !@$_REQUEST['include_reschedules'] && !@$_REQUEST['include_cancellations']) {
+			$_REQUEST['include_bookings'] = 1;
 		}
 
-		return $this->getTCIEvents(@$date_from, @$date_to, (boolean)@$_POST['include_bookings'], (boolean)@$_POST['include_reschedules'], (boolean)@$_POST['include_cancellations']);
+		return $this->getTCIEvents(@$date_from, @$date_to, (boolean)@$_REQUEST['include_bookings'], (boolean)@$_REQUEST['include_reschedules'], (boolean)@$_REQUEST['include_cancellations']);
 	}
 
 	public function getTCIEvents($from, $to, $include_bookings, $include_reschedules, $include_cancellations) {
 		$today = date('Y-m-d');
+
+		if (!$include_bookings && !$include_reschedules && !$include_cancellations) {
+			$this->total_items = $this->pages = 0;
+			return array('bookings' => array(), 'bookings_all' => array());
+		}
 
 		if ($from && $to) {
 			$wheresql1 = " and session.date >= '$from' and session.date <= '$to' ";
@@ -148,9 +155,24 @@ class TransportController extends BaseController
 				and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today')";
 		}
 
+		$offset = ($this->items_per_page * ($this->page-1));
+
 		$sql .= " ORDER BY session_date asc, session_time asc, order_date desc";
 
-		return Yii::app()->db->createCommand($sql)->query();
+		$data = array();
+		$data_all = array();
+
+		foreach (Yii::app()->db->createCommand($sql)->query() as $i => $row) {
+			if ($i >= $offset && count($data) < $this->items_per_page) {
+				$data[] = $row;
+			}
+			$data_all[] = $row;
+		}
+
+		$this->total_items = count($data_all);
+		$this->pages = ceil($this->total_items / $this->items_per_page);
+
+		return array('bookings' => $data, 'bookings_all' => $data_all);
 	}
 
 	public function actionDigest() {
@@ -180,7 +202,7 @@ class TransportController extends BaseController
 
 		echo "Hospital number,Patient,Session date,Session time,Site,Method,Firm,Subspecialty,Decision date,Priority\n";
 
-		foreach ($bookings as $booking) {
+		foreach ($bookings['bookings_all'] as $booking) {
 			echo '"'.$booking['hos_num'].'","'.$booking['last_name'].', '.$booking['first_name'].'","'.$booking['session_date'].'","'.$booking['session_time'].'","'.$booking['location'].'","'.$booking['method'].'","'.$booking['firm'].'","'.$booking['subspecialty'].'","'.$booking['decision_date'].'","'.$booking['priority'].'"'."\n";
 		}
 
@@ -225,8 +247,8 @@ class TransportController extends BaseController
 	}
 
 	public function actionConfirm() {
-		if (isset($_POST['booked']) && is_array($_POST['booked'])) {
-			foreach ($_POST['booked'] as $booking_id) {
+		if (isset($_REQUEST['booked']) && is_array($_REQUEST['booked'])) {
+			foreach ($_REQUEST['booked'] as $booking_id) {
 				$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('booking',$booking_id,1));
 
 				if (!$c) {
@@ -247,8 +269,8 @@ class TransportController extends BaseController
 			}
 		}
 
-		if (isset($_POST['cancelled']) && is_array($_POST['cancelled'])) {
-			foreach ($_POST['cancelled'] as $cancelled_booking_id) {
+		if (isset($_REQUEST['cancelled']) && is_array($_REQUEST['cancelled'])) {
+			foreach ($_REQUEST['cancelled'] as $cancelled_booking_id) {
 				$c = TransportList::Model()->find('item_table = ? and item_id = ? and status = ?',array('cancelled_booking',$cancelled_booking_id,1));
 
 				if (!$c) {
@@ -280,7 +302,9 @@ class TransportController extends BaseController
 
 		echo "Hospital number,First name,Last name,TCI date,Admission time,Site,Ward,Method,Firm,Specialty,DTA,Priority\n";
 
-		foreach ($this->getBookings() as $row) {
+		$data = $this->getBookings();
+
+		foreach ($data['bookings_all'] as $row) {
 			echo '"'.$row['hos_num'].'","'.trim($row['first_name']).'","'.trim($row['last_name']).'","'.$row['session_date'].'","'.$row['session_time'].'","'.$row['location'].'","'.$row['ward_name'].'","'.$row['method'].'","'.$row['firm'].'","'.$row['subspecialty'].'","'.$row['decision_date'].'","'.$row['priority'].'"'."\n";
 		}
 	}

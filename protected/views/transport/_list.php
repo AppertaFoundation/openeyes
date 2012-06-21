@@ -16,14 +16,12 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$p_bookings = array();
 ?>
 <div id="no_gp_warning" class="alertBox" style="display: none;">One or more patients has no GP, please correct in PAS before printing GP letter.</div>
 <div id="waitingList" class="grid-view-waitinglist">
 <?php
-if (empty($bookings)) { ?>
-<h2 class="theatre">No bookings have been made today.</h2>
+if (empty($bookings['bookings'])) { ?>
+<h3>No bookings match your search criteria.</h3>
 <?php
 } else {
 ?>
@@ -46,9 +44,7 @@ if (empty($bookings)) { ?>
 <?php
 	$i = 0;
 	if ($bookings) {
-		foreach ($bookings as $id => $booking) {
-			$p_bookings[] = $booking;
-
+		foreach ($bookings['bookings'] as $id => $booking) {
 			if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;
 	?>
 
@@ -68,7 +64,7 @@ if (empty($bookings)) { ?>
 	?>
 		<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 		<td class="patient">
-			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/episodes/' . $booking['pid'] . '/event/' . $booking['evid'])?>
+			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/event/' . $booking['evid'])?>
 		</td>
 		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
 		<td style="width: 73px;"><?php echo $booking['session_time']?></td>
@@ -127,7 +123,7 @@ if (empty($bookings)) { ?>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($p_bookings as $id => $booking) {?>
+				<?php foreach ($bookings['bookings_all'] as $id => $booking) {?>
 					<tr>
 						<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 						<td>

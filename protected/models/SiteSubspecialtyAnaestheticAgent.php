@@ -17,15 +17,49 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?>
-<div class="procedureItem">
-	<span class="left">
-		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-	</span>
-	<span class="middle noDuration">
-		<?php
-		echo CHtml::hiddenField('Procedures[]', $data['id']);
-		echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
-		?>
-	</span>
-</div>
+/**
+ * This is the model class for table "eye".
+ *
+ * The followings are the available columns in table 'eye':
+ * @property string $id
+ * @property string $name
+ * @property string $ShortName
+ */
+class SiteSubspecialtyAnaestheticAgent extends BaseActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return Firm the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'site_subspecialty_anaesthetic_agent';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		return array();
+	}
+}

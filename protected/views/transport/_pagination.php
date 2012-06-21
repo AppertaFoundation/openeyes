@@ -16,24 +16,30 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
-<div class="procedureItem">
-	<span class="left">
-		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-	</span>
-	<span class="middle<?php if (!$durations) {?> noDuration<?php }?>">
-		<?php
-		echo CHtml::hiddenField('Procedures[]', $data['id']);
-		echo "<span>".$data['term'].'</span>';
-		if ($short_version) {
-			echo ' - <span>'.$data['short_format']."</span>";
-		}
-		?>
-	</span>
-	<?php if ($durations) {?>
-		<span class="right">
-			<?php echo $data['duration']?> mins
-		</span>
+
+<?php
+$uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.(@$_REQUEST['include_bookings']?'1':'0').'/'.(@$_REQUEST['include_reschedules']?'1':'0').'/'.(@$_REQUEST['include_cancellations']?'1':'0');
+?>
+
+<div class="transport_pagination">
+	<?php if ($this->page >1) {?>
+		<a href="/transport/<?php echo ($this->page-1).$uri_append?>">&laquo; back</a>
+	<?php }else{?>
+		&laquo; back
+	<?php }?>
+	&nbsp;
+	<?php for ($i=1;$i<=$this->pages;$i++) {?>
+		<?php if ($i == $this->page) {?>
+			<?php echo $i?>
+		<?php }else{?>
+			<a href="/transport/<?php echo $i.$uri_append?>"><?php echo $i?></a>
+		<?php }?>
+		&nbsp;
+	<?php }?>
+	<?php if ($this->page < $this->pages) {?>
+		<a href="/transport/<?php echo ($this->page+1).$uri_append?>">next &raquo;</a>
+	<?php }else{?>
+		next &raquo;
 	<?php }?>
 </div>
