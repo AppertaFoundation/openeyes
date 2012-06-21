@@ -94,6 +94,8 @@
 			$('div.sessionWarning').hide();
 		}
 
+		$('#sessionDetails').html('<div style="margin-top: 10px;">&nbsp;<img src="/img/ajax-loader.gif" />&nbsp;&nbsp;Please wait ...</div>');
+
 		$.ajax({
      	'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,
       'type': 'POST',
@@ -103,6 +105,7 @@
 				$('#sessionDetails').show();
       }
     });
+
 		return true;
 	});
 </script>
