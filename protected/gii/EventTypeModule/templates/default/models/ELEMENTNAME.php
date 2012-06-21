@@ -247,7 +247,7 @@ if (isset($element)) {
 				}
 			}
 		}
-				<? }
+				<?php }
 			}
 		}?>
 
