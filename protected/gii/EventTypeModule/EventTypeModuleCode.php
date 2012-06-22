@@ -18,8 +18,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		'element_field_name' => array(
 			'required' => true,
 			'required_error' => 'Please enter a field name.',
-			'regex' => '/^[a-z_]+$/',
-			'regex_error' => 'Field name must be a-z and underscores only.'
+			'regex' => '/^[a-z][a-z0-9_]+$/',
+			'regex_error' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.'
 		),
 		'element_field_label' => array(
 			'required' => true,
@@ -309,6 +309,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		$lookup_table['values'] = $field_values;
 		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+		$elements[$number]['fields'][$field_number]['lookup_field'] = 'name';
 
 		$elements[$number]['lookup_tables'][] = $lookup_table;
 

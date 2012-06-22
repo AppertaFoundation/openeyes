@@ -79,11 +79,11 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; if ($field['type'] == 'EyeDraw' && @$field['extra_report']) { echo $field['name'].'2, '; } } } ?>', 'safe'),
-			array('<?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['required']) { echo $field['name'] . ", "; } } } ?>', 'required'),
+			array('event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; if ($field['type'] == 'EyeDraw' && @$field['extra_report']) { echo $field['name'].'2, '; } } } ?>', 'safe'),
+			array('<?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['required'] && $field['type'] != 'Multi select') { echo $field['name'] . ", "; } } } ?>', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
+			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
 		);
 	}
 	

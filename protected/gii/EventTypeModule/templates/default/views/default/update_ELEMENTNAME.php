@@ -58,18 +58,20 @@
 		<?php echo '<?php '; ?>echo $form->radioBoolean($element, '<?php echo $field['name']; ?>'); <?php echo '?>' ;?>
 
 	<?php } elseif ($field['type'] == 'EyeDraw') {?>
-		<?php echo '<?php '; ?>
-			$this->widget('application.modules.eyedraw.OEEyeDrawWidget<?php echo $field['eyedraw_class']?>', array(
-				'side'=>$element->getSelectedEye()->getShortName(),
-				'mode'=>'edit',
-				'size'=><?php echo $field['eyedraw_size']?>,
-				'model'=>$element,
-				'attribute'=>'<?php echo $field['name']?>',
-			));
-			<?php if (@$field['extra_report']) {?>
-			echo $form->hiddenInput($element, '<?php echo $field['name']?>2', $element-><?php echo $field['name']?>2);
-			<?php }?>
-	<?php echo '?>'; ?>
+		<div class="clearfix" style="background-color: #DAE6F1;">
+			<?php echo '<?php '; ?>
+				$this->widget('application.modules.eyedraw.OEEyeDrawWidget<?php echo $field['eyedraw_class']?>', array(
+					'side'=>$element->getSelectedEye()->getShortName(),
+					'mode'=>'edit',
+					'size'=><?php echo $field['eyedraw_size']?>,
+					'model'=>$element,
+					'attribute'=>'<?php echo $field['name']?>',
+				));
+				<?php if (@$field['extra_report']) {?>
+				echo $form->hiddenInput($element, '<?php echo $field['name']?>2', $element-><?php echo $field['name']?>2);
+				<?php }?>
+			<?php echo '?>'; ?>
+		</div>
 
 				<?php
 			} elseif ($field['type'] == 'Multi select') {?>
