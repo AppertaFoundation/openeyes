@@ -75,7 +75,15 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options));
 	}
 
-	public function hiddenInput($element, $field, $value) {
+	public function hiddenInput($element, $field, $value=false) {
 		$this->widget('application.widgets.HiddenField', array('element' => $element, 'field' => $field, 'value' => $value));
+	}
+
+	public function slider($element, $field, $options) {
+		$this->widget('application.widgets.Slider', array('element' => $element, 'field' => $field, 'min' => $options['min'], 'max' => $options['max'], 'step' => $options['step'], 'force_dp' => @$options['force_dp'], 'prefix_positive' => @$options['prefix_positive'], 'remap_values' => @$options['remap'], 'null' => @$options['null']));
+	}
+
+	public function sliderTable($element, $field, $data) {
+		$this->widget('application.widgets.SliderTable', array('element' => $element, 'field' => $field, 'data' => $data));
 	}
 }

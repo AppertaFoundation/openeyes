@@ -17,15 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+class Slider extends BaseCWidget {
+	public $min;
+	public $max;
+	public $step;
+	public $force_dp = false;
+	public $prefix_positive = false;
+	public $remap_values = false;
+	public $null;
+	public $value_display;
+
+	public function init() {
+		parent::init();
+
+		if ($this->null) {
+			$this->max += 1;
+
+			if ($this->value === null) {
+				$this->value = 0;
+				$this->value_display = 'NR';
+			} else {
+				$this->value_display = $this->value++;
+			}
+		} else {
+			$this->value_display = $this->value;
+		}
+	}
+}
 ?>
-<div class="procedureItem">
-	<span class="left">
-		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-	</span>
-	<span class="middle noDuration">
-		<?php
-		echo CHtml::hiddenField('Procedures[]', $data['id']);
-		echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
-		?>
-	</span>
-</div>

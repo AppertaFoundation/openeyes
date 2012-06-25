@@ -61,6 +61,11 @@ class ProcedureController extends Controller
 	{
 		$list = Yii::app()->session['Procedures'];
 		$found = false;
+
+		if (!isset($_GET['short_version'])) {
+			$_GET['short_version'] = true;
+		}
+
 		if (!empty($_GET['name'])) {
 			if (!empty($list)) {
 				foreach ($list as $id => $procedure) {
@@ -70,11 +75,7 @@ class ProcedureController extends Controller
 
 						$found = true;
 
-						if (@$_GET['durations']) {
-							$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
-						} else {
-							$this->renderPartial('_ajaxProcedureNoDuration', array('data' => $data), false, false);
-						}
+						$this->renderPartial('_ajaxProcedure', array('data' => $data, 'durations' => @$_GET['durations'], 'short_version' => $_GET['short_version']), false, false);
 						break;
 					}
 				}
@@ -99,11 +100,7 @@ class ProcedureController extends Controller
 
 					Yii::app()->session['Procedures'] = $list;
 
-					if (@$_GET['durations']) {
-						$this->renderPartial('_ajaxProcedure', array('data' => $data), false, false);
-					} else {
-						$this->renderPartial('_ajaxProcedureNoDuration', array('data' => $data), false, false);
-					}
+					$this->renderPartial('_ajaxProcedure', array('data' => $data, 'durations' => @$_GET['durations'], 'short_version' => $_GET['short_version']), false, false);
 				}
 			}
 		}
