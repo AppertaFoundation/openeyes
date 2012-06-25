@@ -616,22 +616,20 @@ $(document).ready(function() {
 
 	$('input.EventTypeModuleMode').click(function() {
 		if ($(this).val() == 0) {
-			$.ajax({
-				'type': 'GET',
-				'url': '/gii/EventTypeModule?ajax=EventTypeModuleGenerate_GenerateNew',
-				'success': function(html) {
-					$('#EventTypeModuleGenerateDiv').html(html);
-				}
-			});
+			var view = 'EventTypeModuleGenerate_GenerateNew';
 		} else {
-			$.ajax({
-				'type': 'GET',
-				'url': '/gii/EventTypeModule?ajax=EventTypeModuleGenerate_ModifyExisting',
-				'success': function(html) {
-					$('#EventTypeModuleGenerateDiv').html(html);
-				}
-			});
+			var view = 'EventTypeModuleGenerate_ModifyExisting';
 		}
+
+		$.ajax({
+			'type': 'GET',
+			'url': '/gii/EventTypeModule?ajax=EventTypeModuleGenerate_GenerateNew',
+			'success': function(html) {
+				$('#EventTypeModuleGenerateDiv').html(html);
+				$('input[name="generate"]').remove();
+				$('div.feedback').remove();
+			}
+		});
 	});
 
 	$('select.EventTypeModuleEventType').live('change',function() {
