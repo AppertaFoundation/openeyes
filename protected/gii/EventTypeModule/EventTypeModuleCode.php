@@ -50,7 +50,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
 
-		$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn'),));
+		$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
 
 		foreach($files as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
@@ -709,6 +709,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				EventTypeModuleCode::dump_field_unique_values_multi($_GET['table'],$_GET['field']);
 			} else if ($_GET['ajax'] == 'getEyedrawSize') {
 				EventTypeModuleCode::getEyedrawSize($_GET['class']);
+			} else if ($_GET['ajax'] == 'event_type_properties') {
+				EventTypeModuleCode::eventTypeProperties($_GET['event_type_id']);
 			} else {
 				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
 			}
@@ -720,6 +722,28 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		parent::init();
+	}
+
+	static public function eventTypeProperties($event_type_id) {
+		$event_type = EventType::model()->findByPk($event_type_id);
+
+		if (empty($_POST)) {
+			if (!preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-zA-Z]+)$/',$event_type->class_name,$m)) {
+				die("ERROR: $event_type->class_name");
+			}
+
+			$specialty_id = Specialty::model()->find('code=?',array(strtoupper($m[1])))->id;
+			$event_group_id = EventGroup::model()->find('code=?',array($m[2]))->id;
+		} else {
+			$specialty_id = @$_REQUEST['Specialty']['id'];
+			$event_group_id = @$_REQUEST['EventGroup']['id'];
+		}
+		?>
+		<label>Specialty: </label>
+		<?php echo CHtml::dropDownList('Specialty[id]',$specialty_id, CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br/>
+		<label>Event group: </label><?php echo CHtml::dropDownList('EventGroup[id]', $event_group_id, CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
+		<label>Name of event type: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleSuffix]',$event_type->name,array('size'=>65)); ?><br />
+		<?
 	}
 
 	static public function dump_table_fields($table, $selected=false) {

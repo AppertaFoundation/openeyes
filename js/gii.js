@@ -42,11 +42,17 @@ $(document).ready(function() {
 
 		element_num += 1;
 
+		if ($('#EventTypeModuleModeRadioGenerateNew').is(':checked')) {
+			var target = 'elementsGenerateNew';
+		} else {
+			var target = 'elementsModifyExisting';
+		}
+
 		$.ajax({
 			'url': '/gii/EventTypeModule?ajax=element&element_num='+element_num,
 			'type': 'GET',
 			'success': function(data) {
-				$('#elements').append(data);
+				$('#'+target).append(data);
 				$('#elementName'+element_num).focus();
 				return false;
 			}
@@ -606,6 +612,40 @@ $(document).ready(function() {
 		$('input[name="multiSelectFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
 
 		return false;
+	});
+
+	$('input.EventTypeModuleMode').click(function() {
+		if ($(this).val() == 0) {
+			$.ajax({
+				'type': 'GET',
+				'url': '/gii/EventTypeModule?ajax=EventTypeModuleGenerate_GenerateNew',
+				'success': function(html) {
+					$('#EventTypeModuleGenerateDiv').html(html);
+				}
+			});
+		} else {
+			$.ajax({
+				'type': 'GET',
+				'url': '/gii/EventTypeModule?ajax=EventTypeModuleGenerate_ModifyExisting',
+				'success': function(html) {
+					$('#EventTypeModuleGenerateDiv').html(html);
+				}
+			});
+		}
+	});
+
+	$('select.EventTypeModuleEventType').live('change',function() {
+		if ($(this).val() != '') {
+			$.ajax({
+				'url': '/gii/EventTypeModule?ajax=event_type_properties&event_type_id='+$(this).val(),
+				'type': 'GET',
+				'success': function(html) {
+					$('#EventTypeModuleEventTypeProperties').html(html);
+					$('#EventTypeModuleEventTypeElementTypes').show();
+					$('#EventType_name').select().focus();
+				}
+			});
+		}
 	});
 
 	$('#EventTypeModuleCode_moduleSuffix').focus();
