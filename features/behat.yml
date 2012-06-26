@@ -1,0 +1,5 @@
+default:
+  context:
+    parameters:
+      base_url: http://openeyes-dev.adrian.local/
+      browser: chrome
