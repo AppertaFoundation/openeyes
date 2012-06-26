@@ -7,6 +7,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public $eventGroupName;
 	public $template = "default";
 	public $form_errors = array();
+	public $mode;
 
 	private $validation_rules = array(
 		'element_name' => array(
@@ -57,16 +58,23 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			if($file!==$moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
 					if (preg_match("/\/migrations\//", $file)) {
-						# $matches = Array();
-						if (file_exists($modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$modulePath.'/migrations/'))) {
-							// migration file exists, so overwrite it rather than creating a new timestamped file
-							$migrationid = $matches[1] . '_' . $matches[2];
-						} else {
+						if (preg_match('/_create\.php$/',$file) && $this->mode == 'create') {
+							# $matches = Array();
+							if (file_exists($modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$modulePath.'/migrations/'))) {
+								// migration file exists, so overwrite it rather than creating a new timestamped file
+								$migrationid = $matches[1] . '_' . $matches[2];
+							} else {
+								$migrationid = gmdate('ymd_His');
+							}
+							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', $destination_file);
+							$content=$this->renderMigrations($file, $migrationid);
+							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+						} else if (preg_match('/_update\.php$/',$file) && $this->mode == 'update') {
 							$migrationid = gmdate('ymd_His');
+							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_update/','',$destination_file));
+							$content=$this->renderMigrations($file, $migrationid);
+							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 						}
-						$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', $destination_file);
-						$content=$this->renderMigrations($file, $migrationid);
-						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
 						foreach ($this->getElementsFromPost() as $element) {
 							$destination_file = preg_replace("/ELEMENTNAME|ELEMENTTYPENAME/", $element['class_name'], $file);
@@ -700,6 +708,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function init() {
+		$this->mode = @$_POST['EventTypeModuleMode'] ? 'update' : 'create';
+
 		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z_]+$/',$_GET['ajax'])) {
 			if ($_GET['ajax'] == 'table_fields') {
 				EventTypeModuleCode::dump_table_fields($_GET['table']);
@@ -801,6 +811,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
+	public function elementExists($name) {
+		return ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>$_POST['EventTypeModuleEventType'],':elementName'=>$name));
+	}
+
 	public function validate_form() {
 		$errors = array();
 
@@ -810,6 +824,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$errors[$key] = $this->validation_rules['element_name']['required_error'];
 				} else if (!preg_match($this->validation_rules['element_name']['regex'],$value)) {
 					$errors[$key] = $this->validation_rules['element_name']['regex_error'];
+				} else if ($this->mode == 'update' && $this->elementExists($value)) {
+					$errors[$key] = "This element name is already in use, please choose another";
 				}
 			}
 
