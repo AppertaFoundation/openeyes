@@ -234,6 +234,18 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
+	public function getBookingsForToday() {
+		return Yii::app()->db->createCommand()
+			->select('b.id')
+			->from('booking b')
+			->join('element_operation eo','eo.id = b.element_operation_id')
+			->join('event e','eo.event_id = e.id')
+			->join('session s','b.session_id = s.id')
+			->where('e.episode_id = :episode_id and s.date = :todaysDate', array(':episode_id' => $this->id,':todaysDate' => date('Y-m-d')))
+			->order('b.last_modified_date desc')
+			->queryAll();
+	}
+
 	public function getMostRecentBooking() {
 		if ($booking = Yii::app()->db->createCommand()
 			->select('b.id')
