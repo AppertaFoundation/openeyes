@@ -1,4 +1,4 @@
-<?php
+<?phn
 /**
  * OpenEyes
  *
@@ -232,6 +232,17 @@ class Episode extends BaseActiveRecord
 		}
 
 		return Episode::model()->findByPk($episode['eid']);
+	}
+
+	public function getBookings() {
+		return Yii::app()->db->createCommand()
+			->select('b.id')
+			->from('booking b')
+			->join('element_operation eo','eo.id = b.element_operation_id')
+			->join('event e','eo.event_id = e.id')
+			->where('e.episode_id = :episode_id', array(':episode_id' => $this->id))
+			->order('b.last_modified_date desc')
+			->queryAll();
 	}
 
 	public function getMostRecentBooking() {
