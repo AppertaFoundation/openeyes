@@ -39,19 +39,84 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function prepare() {
-		$this->moduleID = ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst($this->moduleSuffix));
-		parent::prepare();
+		if ($this->mode == 'create') {
+			$this->moduleID = ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
+			parent::prepare();
 
-		$this->moduleName = $this->moduleID;
-		$this->eventGroupName = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->name;
-		$this->files=array();
-		$templatePath=$this->templatePath;
-		$modulePath=$this->modulePath;
-		$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
+			$this->moduleName = $this->moduleID;
+			$this->eventGroupName = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->name;
+			$this->files=array();
+			$templatePath=$this->templatePath;
+			$modulePath=$this->modulePath;
+			$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
 
-		$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
+			$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
 
-		$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
+			$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
+		} else {
+			$event_type = EventType::model()->findByPk(@$_POST['EventTypeModuleEventType']);
+			$event_group = $event_type->event_group;
+			$this->moduleID = $event_type->class_name;
+			parent::prepare();
+
+			$this->moduleName = $this->moduleID;
+			$this->eventGroupName = $event_type->name;
+			$this->files=array();
+			$templatePath=$this->templatePath;
+			$modulePath=$this->modulePath;
+			$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
+
+			$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
+
+			$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
+		}
+
+		if ($this->mode == 'update') {
+			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
+			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
+
+			$current_class = $event_type->class_name;
+			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($specialty->code)) . ucfirst(strtolower($event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
+
+			if ($current_class != $target_class && @$_POST['generate'] == 'Generate') {
+				/*
+				// this is where things get a bit gnarles barkeley
+
+				@rename(Yii::app()->basePath.'/modules/'.$current_class,Yii::app()->basePath.'/modules/'.$target_class);
+
+				$event_type->name = $_POST['EventTypeModuleCode']['moduleSuffix'];
+				$event_type->class_name = $target_class;
+
+				Yii::app()->db->createCommand("UPDATE event_type SET name = '$event_type->name',class_name = '$target_class',event_group_id=$event_group->id WHERE id = $event_type->id")->query();
+
+				foreach (ElementType::model()->findAll('event_type_id=:eventTypeId',array(':eventTypeId'=>$event_type->id)) as $element_type) {
+					$element_class_name = 'Element_'.$target_class.'_'.preg_replace("/ /", "", ucwords(strtolower($element_type->name)));
+					Yii::app()->db->createCommand("UPDATE element_type SET class_name = '$element_class_name' WHERE id = $element_type->id")->query();
+				}
+
+				foreach (Yii::app()->db->createCommand()->select('version')->from('tbl_migration')->where("version like '%_$current_class'")->queryAll() as $tbl_migration) {
+					$version = str_replace($current_class,$target_class,$tbl_migration['version']);
+					Yii::app()->db->createCommand("UPDATE tbl_migration SET version='$version' where version='{$tbl_migration['version']}'")->query();
+				}
+
+				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$current_class,$target_class);
+				$this->updateMigrationsAfterEventNameChange(Yii::app()->basePath.'/modules/'.$target_class,$event_type->name,$event_group->name);
+
+				$this->moduleName = $this->moduleID = $target_class;
+				parent::prepare();
+
+				$this->eventGroupName = $event_group->name;
+				$this->files=array();
+				$templatePath=$this->templatePath;
+				$modulePath=$this->modulePath;
+				$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
+
+				$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
+
+				$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
+				*/
+			}
+		}
 
 		foreach($files as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
@@ -66,14 +131,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							} else {
 								$migrationid = gmdate('ymd_His');
 							}
-							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', $destination_file);
+							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_create/','',$destination_file));
 							$content=$this->renderMigrations($file, $migrationid);
 							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 						} else if (preg_match('/_update\.php$/',$file) && $this->mode == 'update') {
-							$migrationid = gmdate('ymd_His');
-							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_update/','',$destination_file));
-							$content=$this->renderMigrations($file, $migrationid);
-							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							if (isset($_POST['elementName1'])) {
+								$migrationid = gmdate('ymd_His');
+								$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_update/','',$destination_file));
+								$content=$this->renderMigrations($file, $migrationid);
+								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							}
 						}
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
 						foreach ($this->getElementsFromPost() as $element) {
@@ -123,6 +190,28 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		}
 	}	
+
+	function changeAllInstancesOfString($path, $from, $to) {
+		$dh = opendir($path);
+
+		while ($file = readdir($dh)) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				if (strstr($file,$from)) {
+					$target = str_replace($from,$to,$file);
+					@rename($path.'/'.$file,$path.'/'.$target);
+					$file = $target;
+				}
+
+				if (is_file($path.'/'.$file)) {
+					file_put_contents($path.'/'.$file,str_replace($from,$to,file_get_contents($path.'/'.$file)));
+				} else if (is_dir($path.'/'.$file)) {
+					$this->changeAllInstancesOfString($path.'/'.$file,$from,$to);
+				}
+			}
+		}
+
+		closedir($dh);
+	}
 
 	function regExpFile($regExp, $dir) {
 		$open = opendir($dir); $matches = Array();
@@ -744,15 +833,17 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			$specialty_id = Specialty::model()->find('code=?',array(strtoupper($m[1])))->id;
 			$event_group_id = EventGroup::model()->find('code=?',array($m[2]))->id;
+			$event_type_name = $event_type->name;
 		} else {
 			$specialty_id = @$_REQUEST['Specialty']['id'];
 			$event_group_id = @$_REQUEST['EventGroup']['id'];
+			$event_type_name = @$_REQUEST['EventTypeModuleCode']['moduleSuffix'];
 		}
 		?>
 		<label>Specialty: </label>
 		<?php echo CHtml::dropDownList('Specialty[id]',$specialty_id, CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br/>
 		<label>Event group: </label><?php echo CHtml::dropDownList('EventGroup[id]', $event_group_id, CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
-		<label>Name of event type: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleSuffix]',$event_type->name,array('size'=>65)); ?><br />
+		<label>Name of event type: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleSuffix]',$event_type_name,array('size'=>65)); ?><br />
 		<?
 	}
 

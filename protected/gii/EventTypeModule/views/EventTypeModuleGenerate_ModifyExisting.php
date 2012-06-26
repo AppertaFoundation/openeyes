@@ -1,3 +1,6 @@
+		<?php if ($this->target_class) {?>
+			<input type="hidden" id="target_event_class" value="<?php echo $this->target_class?>" />
+		<?php }?>
 		<h3>Select an event type:</h3>
 		<select class="EventTypeModuleEventType" name="EventTypeModuleEventType">
 			<option value="">- Please select -</option>

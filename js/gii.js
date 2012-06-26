@@ -646,6 +646,16 @@ $(document).ready(function() {
 		}
 	});
 
+	if ($('#target_event_class').length >0) {
+		$('td.file').map(function() {
+			var path = $(this).children('a').text();
+			var s = path.split('/');
+			var r = new RegExp(s[1],'g');
+			var destination = path.replace(r,$('#target_event_class').val());
+			$(this).parent().after('<tr class="new"><td class="file" style="color: #f00;"> - rename to: '+destination+'</td><td class="confirm">renamed</td></tr>');
+		});
+	}
+
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
 
