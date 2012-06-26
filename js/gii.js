@@ -623,7 +623,7 @@ $(document).ready(function() {
 
 		$.ajax({
 			'type': 'GET',
-			'url': '/gii/EventTypeModule?ajax=EventTypeModuleGenerate_GenerateNew',
+			'url': '/gii/EventTypeModule?ajax='+view,
 			'success': function(html) {
 				$('#EventTypeModuleGenerateDiv').html(html);
 				$('input[name="generate"]').remove();
