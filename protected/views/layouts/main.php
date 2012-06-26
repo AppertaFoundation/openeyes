@@ -45,6 +45,7 @@
 	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
+	<script type="text/javascript" src="/js/jquery.autosize-min.js"></script>
 	<script type="text/javascript" src="/js/print.js"></script>
 	<script type="text/javascript" src="/js/buttons.js"></script>
 	<script type="text/javascript" src="/js/script.js"></script>
