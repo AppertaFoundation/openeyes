@@ -11,13 +11,17 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		<?php
 			if (isset($elements)) {
 				foreach ($elements as $element) {
+					if ($element['mode'] == 'create') {
 				?>
 		// create an element_type entry for this element type name if one doesn't already exist
 		if (!$this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name and event_type_id=:eventTypeId', array(':name'=>'<?php echo $element['name'];?>',':eventTypeId'=>$event_type['id']))->queryRow()) {
 			$this->insert('element_type', array('name' => '<?php echo $element['name'];?>','class_name' => '<?php echo $element['class_name'];?>', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
+				<?php 
+					}
+				?>
 		// select the element_type_id for this element type name
-		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'<?php echo $element['name'];?>'))->queryRow();
+		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name', array(':eventTypeId'=>$event_type['id'],':name'=>'<?php echo $element['name'];?>'))->queryRow();
 				<?php
 				}
 			}
@@ -73,6 +77,8 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 					<?php }?>
 				<?php }?>
 
+				<?php
+				if ($element['mode'] == 'create') {?>
 		// create the table for this element type: et_modulename_elementtypename
 		$this->createTable('<?php echo $element['table_name'];?>', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -80,7 +86,14 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				<?php
 					$number = $element['number']; $count = 1;
 					foreach ($element['fields'] as $field => $value) {
-						echo preg_replace("/\n/", "\n\t\t\t", $this->renderDBField($element['fields'][$count]));
+						$field_name = $element['fields'][$count]['name'];
+						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
+						if ($field_type) {?>
+				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field['label']?>
+						<?php }
+						if (isset($field['extra_report'])) {?>
+				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field['label']?>2
+						<?php }
 						$count++;
 					}
 				?>
@@ -102,6 +115,32 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				'CONSTRAINT `<?php echo $foreign_key['name']?>` FOREIGN KEY (`<?php echo $foreign_key['field']?>`) REFERENCES `<?php echo $foreign_key['table']?>` (`id`)',
 				<?php }?>
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+
+				<?php }else {?>
+			// update the element type table with the new fields
+					<?php
+						// TODO
+						$number = $element['number']; $count = 1;
+						foreach ($element['fields'] as $field => $value) {
+							$field_name = $element['fields'][$count]['name'];
+							$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
+							if ($field_type) {
+							?>
+			$this->addColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>','<?php echo $field_type?>');
+							<? }
+							if (isset($field['extra_report'])) {?>
+			$this->addColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>2','<?php echo $field_type?>');
+							<? }
+							foreach ($element['foreign_keys'] as $foreign_key) {
+								if ($foreign_key['field'] == $field_name) {?>
+			$this->createIndex('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>','<?php echo $field_name?>');
+			$this->addForeignKey('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>','<?php echo $field_name?>','<?php echo $foreign_key['table']?>','id');
+								<? }
+							}
+							$count++;
+						}
+					?>
+				<?php }?>
 
 			<?php foreach ($element['mapping_tables'] as $mapping_table) {?>
 		$this->createTable('<?php echo $mapping_table['name'];?>', array(
@@ -135,8 +174,34 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 			foreach ($elements as $element) {
 				foreach ($element['mapping_tables'] as $mapping_table) {?>
 		$this->dropTable('<?php echo $mapping_table['name']?>');
-				<?php }?>
+				<?php }
+				if ($element['mode'] == 'create') {?>
 		$this->dropTable('<?php echo $element['table_name']; ?>');
+				<?php }else {?>
+			// update the element type table with the new fields
+				<?php
+					// TODO
+					$number = $element['number']; $count = 1;
+					foreach ($element['fields'] as $field => $value) {
+						$field_name = $element['fields'][$count]['name'];
+						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
+						if ($field_type) {
+							foreach ($element['foreign_keys'] as $foreign_key) {
+								if ($foreign_key['field'] == $field_name) {?>
+		$this->dropForeignKey('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>');
+		$this->dropIndex('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>');
+								<? }
+							}
+							?>
+		$this->dropColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>');
+						<? }
+						if (isset($field['extra_report'])) {?>
+		$this->dropColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>2');
+						<? }
+						$count++;
+					}
+				?>
+			<?php }?>
 
 		<?php foreach ($element['defaults_tables'] as $defaults_table) {?>
 		$this->dropTable('<?php echo $defaults_table['name']?>');
@@ -147,22 +212,6 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		<?php }?>
 
 		<?php }} ?>
-
-		// --- delete event entries ---
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
-
-		foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where('event_type_id=:event_type_id', array(':event_type_id'=>$event_type['id']))->queryAll() as $row) {
-			$this->delete('audit', 'event_id='.$row['id']);
-			$this->delete('event', 'id='.$row['id']);
-		}
-
-		// --- delete entries from element_type ---
-		$this->delete('element_type', 'event_type_id='.$event_type['id']);
-
-		// echo "m000000_000001_event_type_<?php echo $this->moduleID; ?> does not support migration down.\n";
-		// return false;
-		echo "If you are removing this module you may also need to remove references to it in your configuration files\n";
-		return true;
 	}
 }
 <?php echo '?>';?>

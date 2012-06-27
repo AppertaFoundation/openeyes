@@ -61,6 +61,50 @@ $(document).ready(function() {
 		return false;
 	});
 
+	$('.add_field').live('click',function() {
+		var element_num = 0;
+
+		$('input[type="text"]').map(function() {
+			if (m = $(this).attr('name').match(/^elementName([0-9]+)$/)) {
+				if (parseInt(m[1]) > element_num) {
+					element_num = parseInt(m[1]);
+				}
+			}
+		});
+
+		element_num += 1;
+
+		if ($('#EventTypeModuleModeRadioGenerateNew').is(':checked')) {
+			var target = 'elementsGenerateNew';
+		} else {
+			var target = 'elementsModifyExisting';
+		}
+
+		var event_type_id = $('select[name="EventTypeModuleEventType"]').val();
+
+		$.ajax({
+			'url': '/gii/EventTypeModule?ajax=elementfields&element_num='+element_num+'&event_type_id='+event_type_id,
+			'type': 'GET',
+			'success': function(data) {
+				$('#'+target).append(data);
+				$('#elementName'+element_num).focus();
+				return false;
+			}
+		});
+
+		return false;
+	});
+
+	$('.elementToAddFieldsTo').live('change',function() {
+		var id = $(this).attr('name').replace(/^elementId/,'');
+
+		if ($(this).val() == '') {
+			$('input[name="addElementField'+id+'"]').hide();
+		} else {
+			$('input[name="addElementField'+id+'"]').show();
+		}
+	});
+
 	$('.remove_element_field').live('click',function() {
 		$(this).parent().remove();
 		return false;

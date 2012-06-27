@@ -75,11 +75,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
 			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
 
+			/*
 			$current_class = $event_type->class_name;
 			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($specialty->code)) . ucfirst(strtolower($event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
 
 			if ($current_class != $target_class && @$_POST['generate'] == 'Generate') {
-				/*
 				// this is where things get a bit gnarles barkeley
 
 				@rename(Yii::app()->basePath.'/modules/'.$current_class,Yii::app()->basePath.'/modules/'.$target_class);
@@ -114,9 +114,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
 
 				$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
-				*/
 			}
+			*/
 		}
+
+file_put_contents("/tmp/debug",print_r($_POST,true));
 
 		foreach($files as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
@@ -135,7 +137,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$content=$this->renderMigrations($file, $migrationid);
 							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
 						} else if (preg_match('/_update\.php$/',$file) && $this->mode == 'update') {
-							if (isset($_POST['elementName1'])) {
+							$elements_have_changed = false;
+							foreach ($_POST as $key => $value) {
+								if (preg_match('/^elementName[0-9]+$/',$key) || preg_match('/^elementId[0-9]+$/',$key)) {
+									$elements_have_changed = true;
+								}
+							}
+
+							if ($elements_have_changed) {
 								$migrationid = gmdate('ymd_His');
 								$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_update/','',$destination_file));
 								$content=$this->renderMigrations($file, $migrationid);
@@ -226,9 +235,22 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public function getElementsFromPost() {
 		$elements = Array();
 		foreach ($_POST as $key => $value) {
-			if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
+			if (preg_match('/^elementName([0-9]+)$/',$key, $matches) || preg_match('/^elementId([0-9]+)$/',$key,$matches)) {
 				$field = $matches[0]; $number = $matches[1]; $name = $value;
-				$elements[$number]['name'] = $value;
+
+				if (preg_match('/^elementName([0-9]+)$/',$key, $matches)) {
+					$elements[$number]['mode'] = 'create';
+					$elements[$number]['name'] = $value;
+				} else {
+					$elements[$number]['mode'] = 'update';
+					$elements[$number]['id'] = $value;
+
+					$element_type = ElementType::model()->findByPk($value);
+
+					$elements[$number]['name'] = $value = $element_type->name;
+					$field = 'elementName'.$number;
+				}
+
 				$elements[$number]['class_name'] = 'Element_'.$this->moduleID.'_'.preg_replace("/ /", "", ucwords(strtolower($value)));
 				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
 				$elements[$number]['number'] = $number;
@@ -287,6 +309,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		}
 
+file_put_contents("/tmp/debug2",print_r($elements,true));
 		return $elements;
 	}
 
@@ -739,47 +762,36 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $this->render($file, $params);
 	}
 
-	public function renderDBField($field) {
-		$sql = '';
-		if ($field['type'] == 'Textbox') {
-			$sql = "'{$field['name']}' => 'varchar(255) DEFAULT \'\'', // {$field['label']}\n";
-		} elseif ($field['type'] == 'Textarea') {
-			$sql = "'{$field['name']}' => 'text DEFAULT \'\'', // {$field['label']}\n";
-		} elseif ($field['type'] == 'Date picker') {
-			// $sql = "'{$field['name']}' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'', // {$field['label']}\n";
-			$sql = "'{$field['name']}' => 'date DEFAULT NULL', // {$field['label']}\n";
-		} elseif ($field['type'] == 'Dropdown list') {
-			if (isset($field['default_value'])) {
-				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL DEFAULT {$field['default_value']}', // {$field['label']}\n";
-			} else {
-				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
-			}
-		} elseif ($field['type'] == 'Textarea with dropdown') {
-			$sql = "'{$field['name']}' => 'text NOT NULL', // {$field['label']}\n";
-		} elseif ($field['type'] == 'Checkbox') {
-			$sql = "'{$field['name']}' => 'tinyint(1) unsigned NOT NULL', // {$field['label']}\n";
-		} elseif ($field['type'] == 'Radio buttons') {
-			if (isset($field['default_value'])) {
-				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL DEFAULT {$field['default_value']}', // {$field['label']}\n";
-			} else {
-				$sql = "'{$field['name']}' => 'int(10) unsigned NOT NULL', // {$field['label']}\n";
-			}
-		} elseif ($field['type'] == 'Boolean') {
-			$sql = "'{$field['name']}' => 'tinyint(1) unsigned NOT NULL DEFAULT 0', // {$field['label']}\n";
-		} elseif ($field['type'] == 'EyeDraw') {
-			// we create two fields for eyedraw: one for json, and one for the report
-			$sql = "'{$field['name']}' => 'varchar(4096) COLLATE utf8_bin NOT NULL',// {$field['label']} (eyedraw)\n";
-			if (@$field['extra_report']) {
-				$sql .= "'{$field['name']}2' => 'varchar(4096) COLLATE utf8_bin NOT NULL',// {$field['label']} (eyedraw)\n";
-			}
-		} elseif ($field['type'] == 'Multi select') {
-			// Nothing, this is stored in additional tables
-		} elseif ($field['type'] == 'Slider') {
-			$default = $field['slider_default_value'] ? " DEFAULT \'{$field['slider_default_value']}\'" : '';
+	//public function renderDBField($field) {
+	public function getDBFieldSQLType($field) {
+		switch ($field['type']) {
+			case 'Textbox':
+				return "varchar(255) DEFAULT \'\'";
+			case 'Textarea':
+				return "text DEFAULT \'\'";
+			case 'Date picker':
+			 	return "date DEFAULT NULL";
+			case 'Dropdown list':
+				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
+			case 'Textarea with dropdown':
+				return "text NOT NULL";
+			case 'Checkbox':
+				return "tinyint(1) unsigned NOT NULL";
+			case 'Radio buttons':
+				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
+			case 'Boolean':
+				return "tinyint(1) unsigned NOT NULL DEFAULT 0";
+			case 'EyeDraw':
+				return "varchar(4096) COLLATE utf8_bin NOT NULL";
+			case 'Multi select':
+				return false;
+			case 'Slider':
+				$default = $field['slider_default_value'] ? " DEFAULT \'{$field['slider_default_value']}\'" : '';
 
-			if ($field['slider_dp'] <1) {
-				$sql .= "'{$field['name']}' => 'int(10) NOT NULL$default',// {$field['label']}\n";
-			} else {
+				if ($field['slider_dp'] <1) {
+					return "int(10) NOT NULL$default";
+				}
+
 				$maxlen = strlen(preg_replace('/\..*?$/','',preg_replace('/^\-/','',$field['slider_max_value'])));
 				$minlen = strlen(preg_replace('/\..*?$/','',preg_replace('/^\-/','',$field['slider_min_value'])));
 				if (strlen($maxlen) > strlen($minlen)) {
@@ -789,11 +801,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				}
 				$size += (integer)$field['slider_dp'];
 
-				$sql .= "'{$field['name']}' => 'decimal ($size,{$field['slider_dp']}) NOT NULL$default',// {$field['label']}\n";
-			}
+				return "decimal ($size,{$field['slider_dp']}) NOT NULL$default";
 		}
 
-		return $sql;
+		return false;
 	}
 
 	public function init() {

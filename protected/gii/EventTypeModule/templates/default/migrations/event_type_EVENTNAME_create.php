@@ -25,7 +25,7 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 			$this->insert('element_type', array('name' => '<?php echo $element['name'];?>','class_name' => '<?php echo $element['class_name'];?>', 'event_type_id' => $event_type['id'], 'display_order' => 1));
 		}
 		// select the element_type_id for this element type name
-		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('name=:name', array(':name'=>'<?php echo $element['name'];?>'))->queryRow();
+		$element_type = $this->dbConnection->createCommand()->select('id')->from('element_type')->where('event_type_id=:eventTypeId and name=:name', array(':eventTypeId'=>$event_type['id'],':name'=>'<?php echo $element['name'];?>'))->queryRow();
 				<?php
 				}
 			}
@@ -88,7 +88,14 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 				<?php
 					$number = $element['number']; $count = 1;
 					foreach ($element['fields'] as $field => $value) {
-						echo preg_replace("/\n/", "\n\t\t\t", $this->renderDBField($element['fields'][$count]));
+						$field_name = $element['fields'][$count]['name'];
+						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
+						if ($field_type) {?>
+				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field['label']?>
+						<?php }
+						if (isset($field['extra_report'])) {?>
+				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field['label']?>2
+						<?php }
 						$count++;
 					}
 				?>
