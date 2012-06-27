@@ -690,13 +690,27 @@ $(document).ready(function() {
 		}
 	});
 
-	if ($('#target_event_class').length >0) {
+	/*if ($('#target_event_class').length >0) {
 		$('td.file').map(function() {
 			var path = $(this).children('a').text();
 			var s = path.split('/');
 			var r = new RegExp(s[1],'g');
 			var destination = path.replace(r,$('#target_event_class').val());
 			$(this).parent().after('<tr class="new"><td class="file" style="color: #f00;"> - rename to: '+destination+'</td><td class="confirm">renamed</td></tr>');
+		});
+	}*/
+
+	if ($('#EventTypeModuleModeRadioModifyExisting').is(':checked')) {
+		$('tr.overwrite').map(function() {
+			var file = $(this).children('td.file').children('a:first').text();
+
+			$(this).children('td.confirm').map(function() {
+				var s = $(this).children('label').attr('for').split('_');
+				$(this).children('input').remove();
+				$(this).append('<input type="checkbox" name="updatefile['+s[1]+']" value="1" checked="checked" />');
+				$(this).append('<input type="hidden" name="filename['+s[1]+']" value="'+file+'" />');
+				$(this).children('label').text('update');
+			});
 		});
 	}
 

@@ -24,65 +24,7 @@
 	<?php
 	if (isset($element)) {
 		foreach ($element['fields'] as $field) {
-	if ($field['type'] == 'Textbox') {?>
-		<?php echo '<?php '; ?>echo $form->textField($element, '<?php echo $field['name']; ?>', array('size' => '10')); <?php echo '?>' ;?>
-
-	<?php } elseif ($field['type'] == 'Textarea') {?>
-
-		<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']; ?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
-
-	<?php } elseif ($field['type'] == 'Date picker') {?>
-
-		<?php echo '<?php '; ?>echo $form->datePicker($element, '<?php echo $field['name']; ?>', array('maxDate' => 'today'), array('style'=>'width: 110px;')); <?php echo '?>'; ?>
-
-	<?php } elseif ($field['type'] == 'Dropdown list') {?>
-
-		<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(array('order'=> '<?php echo $field['order_field']?> asc')),'id','<?php echo $field['lookup_field']?>')<?php if (@$field['empty']) {?>,array('empty'=>'- Please select -')<?php }?>); <?php echo '?>'; ?>
-
-	<?php } elseif ($field['type'] == 'Textarea with dropdown') {?>
-
-		<?php echo '<?php '; ?>echo $form->dropDownListNoPost('<?php echo $field['name']?>', CHtml::listData(<?php echo $field['lookup_class']?>::model()->findAll(),'id','<?php echo $field['lookup_field']?>'),'',array('empty'=>'- <?php echo ucfirst($field['label'])?> -','class'=>'populate_textarea')); <?php echo '?>'; ?>
-
-		<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
-
-	<?php } elseif ($field['type'] == 'Checkbox') {?>
-
-		<?php echo '<?php '; ?>echo $form->checkBox($element, '<?php echo $field['name']; ?>'); <?php echo '?>'; ?>
-
-	<?php } elseif ($field['type'] == 'Radio buttons') {?>
-
-		<?php echo '<?php '; ?>echo $form->radioButtons($element, '<?php echo $field['name']?>', '<?php echo $field['lookup_table']?>'); <?php echo '?>'; ?>
-
-	<?php } elseif ($field['type'] == 'Boolean') {?>
-
-		<?php echo '<?php '; ?>echo $form->radioBoolean($element, '<?php echo $field['name']; ?>'); <?php echo '?>' ;?>
-
-	<?php } elseif ($field['type'] == 'EyeDraw') {?>
-		<div class="clearfix" style="background-color: #DAE6F1;">
-			<?php echo '<?php '; ?>
-				$this->widget('application.modules.eyedraw.OEEyeDrawWidget<?php echo $field['eyedraw_class']?>', array(
-					'side'=>$element->getSelectedEye()->getShortName(),
-					'mode'=>'edit',
-					'size'=><?php echo $field['eyedraw_size']?>,
-					'model'=>$element,
-					'attribute'=>'<?php echo $field['name']?>',
-				));
-				<?php if (@$field['extra_report']) {?>
-				echo $form->hiddenInput($element, '<?php echo $field['name']?>2', $element-><?php echo $field['name']?>2);
-				<?php }?>
-			<?php echo '?>'; ?>
-		</div>
-
-				<?php
-			} elseif ($field['type'] == 'Multi select') {?>
-		<?php echo '<?php '; ?>
-			echo $form->multiSelectList($element, 'MultiSelect_<?php echo $field['name']?>', '<?php echo @$field['multiselect_relation']?>', '<?php echo @$field['multiselect_field']?>', CHtml::listData(<?php echo @$field['multiselect_lookup_class']?>::model()->findAll(array('order'=>'<?php echo $field['multiselect_order_field']?> asc')),'id','<?php echo $field['multiselect_table_field_name']?>'), $element-><?php echo @$field['multiselect_lookup_table']?>_defaults, array('empty' => '- Please select -', 'label' => '<?php echo $field['label']?>'));
-		<?php echo '?>'; ?>
-			<?php } elseif ($field['type'] == 'Slider') {?>
-		<?php echo '<?php '; ?>
-			echo $form->slider($element, '<?php echo $field['name']?>', array('min' => <?php echo $field['slider_min_value']?>, 'max' => <?php echo $field['slider_max_value']?>, 'step' => <?php echo $field['slider_stepping']?><?php if ($field['slider_dp']){?>, 'force_dp' => <?php echo $field['slider_dp']?><?php }?>));
-			<?php echo '?>'; ?>
-			<?php }
+			$this->getHTMLField($field, 'update');
 		}
 	}
 	?>
