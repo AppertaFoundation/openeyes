@@ -118,8 +118,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			*/
 		}
 
-file_put_contents("/tmp/debug",print_r($_POST,true));
-
 		foreach($files as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if($file!==$moduleTemplateFile) {
@@ -309,7 +307,6 @@ file_put_contents("/tmp/debug",print_r($_POST,true));
 			}
 		}
 
-file_put_contents("/tmp/debug2",print_r($elements,true));
 		return $elements;
 	}
 

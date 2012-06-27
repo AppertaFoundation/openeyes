@@ -90,9 +90,11 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 						$field_type = $this->getDBFieldSQLType($element['fields'][$count]);
 						if ($field_type) {?>
 				'<?php echo $field_name?>' => '<?php echo $field_type?>', // <?php echo $field['label']?>
+
 						<?php }
 						if (isset($field['extra_report'])) {?>
 				'<?php echo $field_name?>2' => '<?php echo $field_type?>', // <?php echo $field['label']?>2
+
 						<?php }
 						$count++;
 					}
@@ -127,14 +129,18 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 							if ($field_type) {
 							?>
 			$this->addColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>','<?php echo $field_type?>');
+
 							<? }
 							if (isset($field['extra_report'])) {?>
 			$this->addColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>2','<?php echo $field_type?>');
+
 							<? }
 							foreach ($element['foreign_keys'] as $foreign_key) {
 								if ($foreign_key['field'] == $field_name) {?>
 			$this->createIndex('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>','<?php echo $field_name?>');
+
 			$this->addForeignKey('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>','<?php echo $field_name?>','<?php echo $foreign_key['table']?>','id');
+
 								<? }
 							}
 							$count++;
@@ -169,6 +175,9 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 	public function down() {
 		// --- drop any element related tables ---
 		// --- drop element tables ---
+
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
+
 		<?php
 		if (isset($elements)) {
 			foreach ($elements as $element) {
@@ -189,14 +198,18 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 							foreach ($element['foreign_keys'] as $foreign_key) {
 								if ($foreign_key['field'] == $field_name) {?>
 		$this->dropForeignKey('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>');
+
 		$this->dropIndex('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>');
+
 								<? }
 							}
 							?>
 		$this->dropColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>');
+
 						<? }
 						if (isset($field['extra_report'])) {?>
 		$this->dropColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>2');
+
 						<? }
 						$count++;
 					}
@@ -209,6 +222,10 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 
 		<?php foreach ($element['lookup_tables'] as $lookup_table) {?>
 		$this->dropTable('<?php echo $lookup_table['name']?>');
+		<?php }?>
+
+		<?php if ($element['mode'] == 'create') {?>
+		$this->delete('element_type','event_type_id='.$event_type['id']." and class_name = '<?php echo $element['class_name']?>'");
 		<?php }?>
 
 		<?php }} ?>
