@@ -72,6 +72,35 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		if ($this->mode == 'update') {
+			if (@$_POST['generate'] == 'Generate') {
+				foreach ($this->getElementsFromPost() as $num => $element) {
+
+					$model = "modules/$this->moduleID/models/{$element['class_name']}.php";
+
+					if ($this->shouldUpdateFile($model)) {
+						$this->updateModel(Yii::app()->basePath.'/'.$model, $element);
+					}
+
+					$create = "modules/$this->moduleID/views/default/create_{$element['class_name']}.php";
+
+					if ($this->shouldUpdateFile($create)) {
+						$this->updateFormView(Yii::app()->basePath.'/'.$create, $element, 'create');
+					}
+
+					$update = "modules/$this->moduleID/views/default/update_{$element['class_name']}.php";
+
+					if ($this->shouldUpdateFile($update)) {
+						$this->updateFormView(Yii::app()->basePath.'/'.$update, $element, 'update');
+					}
+
+					$view = "modules/$this->moduleID/views/default/view_{$element['class_name']}.php";
+
+					if ($this->shouldUpdateFile($update)) {
+						$this->updateViewView(Yii::app()->basePath.'/'.$view, $element, 'view');
+					}
+				}
+			}
+
 			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
 			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
 
@@ -767,7 +796,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Textarea':
 				return "text DEFAULT \'\'";
 			case 'Date picker':
-			 	return "date DEFAULT NULL";
+				return "date DEFAULT NULL";
 			case 'Dropdown list':
 				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
 			case 'Textarea with dropdown':
@@ -998,5 +1027,278 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		Yii::app()->getController()->form_errors = $errors;
+	}
+
+	// the <?'s here are deliberately broken apart to prevent annoying syntax highlighting issues with vim
+	public function getHTMLField($field, $mode) {
+		if ($mode == 'view') {
+			return $this->getHTMLFieldView($field);
+		}
+
+		switch ($field['type']) {
+			case 'Textbox':
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \'10\'))?'.'>';
+			case 'Textarea':
+				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
+			case 'Date picker':
+				return '<?php echo $form->datePicker($element, \''.$field['name'].'\', array(\'maxDate\' => \'today\'), array(\'style\'=>\'width: 110px;\'))?'.'>';
+			case 'Dropdown list':
+				return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'- Please select -\')' : '').')?'.'>';
+			case 'Textarea with dropdown':
+				return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>';
+			case 'Checkbox':
+				return '<?php echo $form->checkBox($element, \''.$field['name'].'\')?'.'>';
+			case 'Radio buttons':
+				return '<?php echo $form->radioButtons($element, \''.$field['name'].'\', \''.$field['lookup_table'].'\')?'.'>';
+			case 'Boolean':
+				return '<?php echo $form->radioBoolean($element, \''.$field['name'].'\')?'.'>';
+			case 'EyeDraw':
+				return '<div class="clearfix" style="background-color: #DAE6F1;">
+		<?php
+			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\'), array(
+				\'side\'=>$element->getSelectedEye()->getShortName(),
+				\'mode\'=>\'edit\',
+				\'size\'=>'.$field['eyedraw_size'].',
+				\'model\'=>$element,
+				\'attribute\'=>\''.$field['name'].'\',
+			));
+			'.(@$field['extra_report'] ? 'echo $form->hiddenInput($element, \''.$field['name'].'2\', '.($mode=='create' ? '\'\'' : '$element->'.$field['name'].'2').');' : '').'
+		?>
+	</div>';
+			case 'Multi select':
+				return '<?php echo $form->multiSelectList($element, \'MultiSelect_'.$field['name'].'\', \''.@$field['multiselect_relation'].'\', \''.@$field['multiselect_field'].'\', CHtml::listData('.@$field['multiselect_lookup_class'].'::model()->findAll(array(\'order\'=>\''.$field['multiselect_order_field'].' asc\')),\'id\',\''.$field['multiselect_table_field_name'].'\'), $element->'.@$field['multiselect_lookup_table'].'_defaults, array(\'empty\' => \'- Please select -\', \'label\' => \''.$field['label'].'\'));';
+			case 'Slider':
+				return '<?php echo $form->slider($element, \''.$field['name'].'\', array(\'min\' => '.$field['slider_min_value'].', \'max\' => '.$field['slider_max_value'].', \'step\' => '.$field['slider_stepping'].($field['slider_dp'] ? ', \'force_dp\' => '.$field['slider_dp'] : '').'));';
+		}
+	}
+
+	public function getHTMLFieldView($field) {
+		switch ($field['type']) {
+			case 'Textbox':
+			case 'Textarea':
+			case 'Textarea with dropdown':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+			</tr>';
+			case 'Date picker':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></span></td>
+			</tr>';
+			case 'Dropdown list':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></span></td>
+			</tr>';
+			case 'Checkbox':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+			</tr>';
+			case 'Radio buttons':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->name : \'None\'?'.'></span></td>
+			</tr>';
+			case 'Boolean':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</td>
+				<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+			</tr>';
+			case 'EyeDraw':
+				return '			<tr>
+				<td colspan="2">
+					<?php
+						$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\', array(
+							\'side\'=>$element->eye->getShortName(),
+							\'mode\'=>\'view\',
+							\'size\'=>'.$field['eyedraw_size'].',
+							\'model\'=>$element,
+							\'attribute\'=>\''.$field['name'].'\',
+						));
+					?>
+				</td>
+			</tr>
+			'.(@$field['extra_report'] ? '<tr>
+				<td width="30%">Report:</td>
+				<td><span class="big"><?php echo $element->'.$field['name'].'2?'.'></span></td>
+			</tr>' : '');
+			case 'Multi select':
+				return '			<tr>
+				<td colspan="2">
+					<div class="colThird">
+						<b><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</b>
+						<div class="eventHighlight medium">
+							<?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
+								<h4>None</h4>
+							<?php }else{?'.'>
+								<h4>
+									<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
+										echo $item->'.@$field['multiselect_lookup_table'].'->name?'.'><br/>
+									<?php }?'.'>
+								</h4>
+							<?php }?'.'>
+						</div>
+					</div>
+				</td>
+			</tr>';
+			case 'Slider':
+				return '			<tr>
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+			</tr>';
+
+		}
+	}
+
+	public function updateModel($model_path, $element) {
+		$data = file_get_contents($model_path);
+
+		if (preg_match('/public function rules.*?\}/si',$data,$m)) {
+			$replace = '';
+
+			foreach (explode(chr(10),$m[0]) as $line) {
+				if (preg_match('/array\(([a-zA-Z0-9_ ,\']+),[\s\t]*\'safe\'\),/',$line,$n)) {
+					$fields = preg_replace('/[, \']+$/','',preg_replace('/^[ ,\']+/','',$n[1]));
+
+					foreach ($element['fields'] as $num => $field) {
+						if ($field['type'] != 'Multi select') {
+							$fields .= ", ".$field['name'];
+						}
+					}
+
+					$replace .= "\t\t\tarray('$fields', 'safe'),\n";
+				} else if (preg_match('/array\(([a-zA-Z0-9_ ,\']+),[\s\t]*\'required\'\),/',$line,$n)) {
+					$fields = preg_replace('/[, \']+$/','',preg_replace('/^[ ,\']+/','',$n[1]));
+
+					foreach ($element['fields'] as $num => $field) {
+						if ($field['required'] && $field['type'] != 'Multi select') {
+							$fields .= ", ".$field['name'];
+						}
+					}
+
+					$replace .= "\t\t\tarray('$fields', 'required'),\n";
+				} else if (preg_match('/array\(([a-zA-Z0-9_ ,\']+),[\s\t]*\'safe\',[\s\t]*\'on\'[\s\t]*=>[\s\t]*\'search\'\),/',$line,$n)) {
+					$fields = preg_replace('/[, \']+$/','',preg_replace('/^[ ,\']+/','',$n[1]));
+
+					foreach ($element['fields'] as $num => $field) {
+						if ($field['type'] != 'Multi select') {
+							$fields .= ", ".$field['name'];
+						}
+					}
+
+					$replace .= "\t\t\tarray('$fields', 'safe', 'on' => 'search'),\n";
+				} else {
+					$replace .= $line."\n";
+				}
+			}
+
+			$data = str_replace($m[0],$replace,$data);
+		}
+
+		if (preg_match('/public function relations.*?\}/si',$data,$m)) {
+			$relations = "public function relations()\n\t{\n\t\t// NOTE: you may need to adjust the relation name and the related\n\t\t// class name for the relations automatically generated below.\n\t\treturn array(\n";
+
+			foreach (explode(chr(10),$m[0]) as $line) {
+				if (preg_match('/\(self::/',$line)) {
+					$relations .= $line."\n";
+				}
+			}
+
+			foreach ($element['relations'] as $relation) {
+				$relations .= "\t\t\t'{$relation['name']}' => array(self::{$relation['type']}, '{$relation['class']}', '{$relation['field']}'),\n";
+			}
+
+			$relations .= "\t\t);\n\t}";
+
+			$data = str_replace($m[0],$relations,$data);
+		}
+
+		if (preg_match('/public function attributeLabels.*?\}/si',$data,$m)) {
+			$labels = "public function attributeLabels()\n\t{\n\t\treturn array(\n";
+
+			foreach (explode(chr(10),$m[0]) as $line) {
+				if (preg_match('/=>/',$line)) {
+					$labels .= "\t\t\t".preg_replace('/^[\s\t]+/','',$line)."\n";
+				}
+			}
+
+			foreach ($element['fields'] as $field) {
+				$labels .= "\t\t\t'{$field['name']}' => '{$field['label']}',\n";
+			}
+
+			$labels .= "\t\t);\n\t}";
+
+			$data = str_replace($m[0],$labels,$data);
+		}
+
+		file_put_contents($model_path, $data);
+	}
+
+	public function shouldUpdateFile($model) {
+		if (isset($_POST['updatefile'])) {
+			foreach ($_POST['updatefile'] as $hash => $value) {
+				if ($_POST['filename'][$hash] == $model) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public function updateFormView($view_path, $element, $mode) {
+		$data = file_get_contents($view_path);
+
+		if (preg_match('/<div.*<\/div>/si',$data,$m)) {
+			$lines = explode(chr(10),$m[0]);
+
+			$open_div = array_shift($lines);
+			$close_div = array_pop($lines);
+
+			$replace = $open_div."\n";
+
+			foreach ($lines as $line) {
+				if (trim($line)) {
+					$replace .= $line."\n";
+				}
+			}
+
+			foreach ($element['fields'] as $field) {
+				$replace .= "\t\t".$this->getHTMLField($field, $mode)."\n";
+			}
+
+			$replace .= $close_div."\n";
+
+			file_put_contents($view_path, str_replace($m[0],$replace,$data));
+		}
+	}
+
+	public function updateViewView($view_path, $element) {
+		$data = file_get_contents($view_path);
+
+		if (preg_match('/<tbody.*<\/tbody>/si',$data,$m)) {
+			$lines = explode(chr(10),$m[0]);
+
+			$open_tbody = array_shift($lines);
+			$close_tbody = array_pop($lines);
+
+			$replace = $open_tbody."\n";
+
+			foreach ($lines as $line) {
+				if (trim($line)) {
+					$replace .= $line."\n";
+				}
+			}
+
+			foreach ($element['fields'] as $field) {
+				$replace .= "\t\t".$this->getHTMLField($field, 'view')."\n";
+			}
+
+			$replace .= $close_tbody."\n";
+
+			file_put_contents($view_path, str_replace($m[0],$replace,$data));
+		}
 	}
 }
