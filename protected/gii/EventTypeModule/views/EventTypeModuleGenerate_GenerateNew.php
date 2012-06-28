@@ -1,8 +1,8 @@
 		<h3>Describe your event type:</h3>
 		<label>Specialty:</label>
-		<?php echo CHtml::dropDownList('Specialty[id]',@$_REQUEST['Specialty']['id'], CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
+		<?php echo CHtml::dropDownList('Specialty[id]',empty($_REQUEST) ? Specialty::model()->find('code=?',array('OPH'))->id : @$_REQUEST['Specialty']['id'], CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
 		<label>Event group:</label>
-		<?php echo CHtml::dropDownList('EventGroup[id]', @$_REQUEST['EventGroup']['id'], CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
+		<?php echo CHtml::dropDownList('EventGroup[id]', empty($_REQUEST) ? EventGroup::model()->find('code=?',array('Mi'))->id : @$_REQUEST['EventGroup']['id'], CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
 		<label>Name of event type:</label>
 		<input type="text" name="EventTypeModuleCode[moduleSuffix]" value="<?php echo @$_POST['EventTypeModuleCode']['moduleSuffix']?>" size="65" /><br/>
 
