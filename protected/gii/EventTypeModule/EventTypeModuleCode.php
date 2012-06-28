@@ -807,6 +807,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
 			case 'Boolean':
 				return "tinyint(1) unsigned NOT NULL DEFAULT 0";
+			case 'Integer':
+				return "int(10) unsigned NOT NULL DEFAULT 0";
 			case 'EyeDraw':
 				return "varchar(4096) COLLATE utf8_bin NOT NULL";
 			case 'Multi select':
@@ -1037,6 +1039,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		switch ($field['type']) {
 			case 'Textbox':
+			case 'Integer':
 				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \'10\'))?'.'>';
 			case 'Textarea':
 				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
@@ -1077,6 +1080,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Textbox':
 			case 'Textarea':
 			case 'Textarea with dropdown':
+			case 'Integer':
 				return '			<tr>
 				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
 				<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
