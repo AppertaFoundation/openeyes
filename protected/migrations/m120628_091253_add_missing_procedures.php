@@ -18,6 +18,8 @@ class m120628_091253_add_missing_procedures extends CDbMigration
 
 	public function down()
 	{
-		$this->delete('proc',"snomed_code in ('".implode("','",array('172311004','231590007','231603008','231788008','239385005','265281004','118912008','172189002','440587008','419222003'))."')");
+		foreach ($this->dbConnection->createCommand()->select('id')->from('proc')->order('id desc')->limit(10)->queryAll() as $i => $row) {
+			$this->delete('proc','id='.$row['id']);
+		}
 	}
 }
