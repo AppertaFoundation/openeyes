@@ -26,28 +26,41 @@
 <?php
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
-		if ($field['type'] == 'Textbox') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Textarea') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Date picker') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Dropdown list') {
-			echo ' * @property integer $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Checkboxes') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Radio buttons') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Boolean') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'EyeDraw') {
-			echo ' * @property string $' . $field['name'] . "\n";
+		switch ($field['type']) {
+			case 'Textbox':
+			case 'Textarea':
+			case 'Date picker':
+				echo ' * @property string $' . $field['name'] . "\n";
+				break;
+			case 'Integer':
+			case 'Dropdown list':
+			case 'Checkbox':
+			case 'Radio buttons':
+			case 'Boolean':
+			case 'Slider':
+				echo ' * @property integer $' . $field['name'] . "\n";
+				break;
+			case 'Textarea with dropdown':
+				echo ' * @property string $' . $field['name'] . "\n";
+				if (@$field['extra_report']) {
+					echo ' * @property string $' . $field['name'] . "2\n";
+				}
+				break;
 		}
 	}
 }
 ?>
  *
  * The followings are the available model relations:
+ *
+ * @property ElementType $element_type
+ * @property EventType $eventType
+ * @property Event $event
+ * @property User $user
+ * @property User $usermodified
+<?php if (isset($element)) foreach ($element['relations'] as $relation) {
+	echo " * @property {$relation['class']} \${$relation['name']}\n";
+}?>
  */
 
 class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement

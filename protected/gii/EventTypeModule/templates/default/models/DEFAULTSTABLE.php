@@ -25,6 +25,13 @@
  * @property string $name
  *
  * The followings are the available model relations:
+ *
+ * @property ElementType $element_type
+ * @property EventType $eventType
+ * @property Event $event
+ * @property User $user
+ * @property User $usermodified
+ *
  */
 
 class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends BaseActiveRecord
