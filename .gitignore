@@ -12,6 +12,12 @@ protected/commands/BillCommand.php
 protected/commands/FetchBookingsCommand.php
 protected/commands/FetchBookings2Command.php
 protected/commands/FetchUsersCommand.php
+protected/commands/AssociateConsultantsWithSitesCommand.php
+protected/commands/CorrespondenceDataCommand.php
+protected/commands/DumpProcElementsCommand.php
+protected/commands/ImportConsultantsCommand.php
+protected/commands/ImportInstitutionsCommand.php
+protected/commands/OpnoteDataCommand.php
 protected/data/*
 protected/models/ElementExample.php
 protected/models/elements/ElementExample.php
