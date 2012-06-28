@@ -72,7 +72,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		if ($this->mode == 'update') {
-			//if (@$_POST['generate'] == 'Generate') {
+			if (@$_POST['generate'] == 'Generate') {
 				foreach ($this->getElementsFromPost() as $num => $element) {
 
 					$model = "modules/$this->moduleID/models/{$element['class_name']}.php";
@@ -84,10 +84,22 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$create = "modules/$this->moduleID/views/default/create_{$element['class_name']}.php";
 
 					if ($this->shouldUpdateFile($create)) {
-						$this->updateCreateView(Yii::app()->basePath.'/'.$create, $element);
+						$this->updateFormView(Yii::app()->basePath.'/'.$create, $element, 'create');
+					}
+
+					$update = "modules/$this->moduleID/views/default/update_{$element['class_name']}.php";
+
+					if ($this->shouldUpdateFile($update)) {
+						$this->updateFormView(Yii::app()->basePath.'/'.$update, $element, 'update');
+					}
+
+					$view = "modules/$this->moduleID/views/default/view_{$element['class_name']}.php";
+
+					if ($this->shouldUpdateFile($update)) {
+						$this->updateViewView(Yii::app()->basePath.'/'.$view, $element, 'view');
 					}
 				}
-			// }
+			}
 
 			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
 			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
@@ -1133,7 +1145,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			</tr>';
 			case 'Slider':
 				return '			<tr>
-
+				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+				<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+			</tr>';
 
 		}
 	}
@@ -1219,25 +1233,25 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$data = str_replace($m[0],$labels,$data);
 		}
 
-		// file_put_contents($model_path, $data);
+		file_put_contents($model_path, $data);
 	}
 
 	public function shouldUpdateFile($model) {
-		foreach ($_POST['updatefile'] as $hash => $value) {
-			if ($_POST['filename'][$hash] == $model) {
-				return true;
+		if (isset($_POST['updatefile'])) {
+			foreach ($_POST['updatefile'] as $hash => $value) {
+				if ($_POST['filename'][$hash] == $model) {
+					return true;
+				}
 			}
 		}
 
 		return false;
 	}
 
-	public function updateCreateView($view_path, $element) {
+	public function updateFormView($view_path, $element, $mode) {
 		$data = file_get_contents($view_path);
 
 		if (preg_match('/<div.*<\/div>/si',$data,$m)) {
-			echo "<pre>".htmlentities($m[0])."</pre>";
-
 			$lines = explode(chr(10),$m[0]);
 
 			$open_div = array_shift($lines);
@@ -1252,14 +1266,39 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			foreach ($element['fields'] as $field) {
+				$replace .= "\t\t".$this->getHTMLField($field, $mode)."\n";
 			}
 
 			$replace .= $close_div."\n";
 
-			//echo htmlentities($open_div)."<br/>".htmlentities($close_div)."<br/>";
-
-			echo "<pre>".htmlentities($replace)."</pre>";
+			file_put_contents($view_path, str_replace($m[0],$replace,$data));
 		}
+	}
 
+	public function updateViewView($view_path, $element) {
+		$data = file_get_contents($view_path);
+
+		if (preg_match('/<tbody.*<\/tbody>/si',$data,$m)) {
+			$lines = explode(chr(10),$m[0]);
+
+			$open_tbody = array_shift($lines);
+			$close_tbody = array_pop($lines);
+
+			$replace = $open_tbody."\n";
+
+			foreach ($lines as $line) {
+				if (trim($line)) {
+					$replace .= $line."\n";
+				}
+			}
+
+			foreach ($element['fields'] as $field) {
+				$replace .= "\t\t".$this->getHTMLField($field, 'view')."\n";
+			}
+
+			$replace .= $close_tbody."\n";
+
+			file_put_contents($view_path, str_replace($m[0],$replace,$data));
+		}
 	}
 }

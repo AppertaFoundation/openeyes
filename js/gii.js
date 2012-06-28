@@ -40,6 +40,14 @@ $(document).ready(function() {
 			}
 		});
 
+		$('select.elementToAddFieldsTo').map(function() {
+			if (m = $(this).attr('name').match(/^elementId([0-9]+)$/)) {
+				if (parseInt(m[1]) > element_num) {
+					element_num = parseInt(m[1]);
+				}
+			}
+		});
+
 		element_num += 1;
 
 		if ($('#EventTypeModuleModeRadioGenerateNew').is(':checked')) {
@@ -66,6 +74,14 @@ $(document).ready(function() {
 
 		$('input[type="text"]').map(function() {
 			if (m = $(this).attr('name').match(/^elementName([0-9]+)$/)) {
+				if (parseInt(m[1]) > element_num) {
+					element_num = parseInt(m[1]);
+				}
+			}
+		});
+
+		$('select.elementToAddFieldsTo').map(function() {
+			if (m = $(this).attr('name').match(/^elementId([0-9]+)$/)) {
 				if (parseInt(m[1]) > element_num) {
 					element_num = parseInt(m[1]);
 				}

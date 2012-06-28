@@ -24,7 +24,7 @@
 	<?php
 	if (isset($element)) {
 		foreach ($element['fields'] as $field) {
-			$this->getHTMLField($field, 'update');
+			echo $this->getHTMLField($field, 'update')."\n";
 		}
 	}
 	?>
