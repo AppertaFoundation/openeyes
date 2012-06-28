@@ -3,16 +3,7 @@ Feature: Header
 	As an OpenEyes user
 	I need a header containing links
 
-	Scenario Outline: Header displays logged in users first and last name
-		Given I am on "/"
-		When I log in as "<username>:<password>"
-		Then I should see "Hi <firstname> <lastname>" in the "#user_id" element
-
-	Examples:
-	|	username	|	password	|	firstname	|	lastname	|
-	|	admin		|	admin		|	Enoch		|	Root		|
-	|	username	|	username	|	User		|	User		|
-
+	@sample-data
 	Scenario: Header displays firm dropdown
 		Given I am on "/"
 		When I log in as "admin:admin:Enoch:Root"
@@ -31,4 +22,63 @@ Feature: Header
 	|	Home							|	/theatre	|	/				|	Patient search					|
 	|	Theatre Diaries					|	/			|	/theatre		|	Theatre Schedules				|
 	|	Partial bookings waiting list	|	/			|	/waitingList	|	Partial bookings waiting List	|
+
+	@regression @regression:1 @sample-data @javascript
+	Scenario Outline: 1.22 Firm selection is sticky as you navigate
+		Given I am logged in as "admin:admin:Enoch:Root"
+		And firm "Minihan Miriam (Vitreoretinal)" is selected
+		When I wait "0.5" seconds
+		And I go to "<url>"
+		Then I should see "Minihan Miriam (Vitreoretinal)" in the "#selected_firm_id" dropdown
+
+	Examples:
+	|	url				|
+	|	/theatre		|
+	|	/waitingList	|
+
+	@regression @regression:1 @sample-data @javascript
+	Scenario Outline: 1.15|1.21 Check firm selection is saved after logout and log back in
+		Given I am logged in as "admin:admin:Enoch:Root"
+		And I am on "/"
+		When I select "<firmselect>" firm
+		And I follow "Logout"
+		And I log in as "admin:admin:Enoch:Root"
+		Then I should see "<firmselect>" in the "#selected_firm_id" dropdown
+
+	Examples:
+	|	firmselect							|
+	|	Abou-Rayyah Yassir (Adnexal)		|
+	|	Aylward Bill (Accident & Emergency)	|
+	|	Bessant David (Primary Care)		|
+	|	Child Christopher (Strabismus)		|
+	|	Cunningham Carol (Cataract)			|
+	|	Dart John (External)				|
+	|	Ezra Eric (Paediatrics)				|
+	|	Ficker Linda (Refractive)			|
+	|	Horgan Simon (Medical Retinal)		|
+	|	Minihan Miriam (Vitreoretinal)		|
+	|	Okhravi Narciss (Uveitis)			|
+	|	Viswanathan Ananth (Glaucoma)		|
+
+	@regression @regression:1 @sample-data @javascript
+	Scenario Outline: 1.16 Select firm and make sure it stays the same
+		Given I am logged in as "admin:admin:Enoch:Root"
+		And I am on "/"
+		When I select "<firmselect>" firm
+		Then I should see "<firmselect>" in the "#selected_firm_id" dropdown
+
+	Examples:
+	|	firmselect							|
+	|	Abou-Rayyah Yassir (Adnexal)		|
+	|	Aylward Bill (Accident & Emergency)	|
+	|	Bessant David (Primary Care)		|
+	|	Child Christopher (Strabismus)		|
+	|	Cunningham Carol (Cataract)			|
+	|	Dart John (External)				|
+	|	Ezra Eric (Paediatrics)				|
+	|	Ficker Linda (Refractive)			|
+	|	Horgan Simon (Medical Retinal)		|
+	|	Minihan Miriam (Vitreoretinal)		|
+	|	Okhravi Narciss (Uveitis)			|
+	|	Viswanathan Ananth (Glaucoma)		|
 

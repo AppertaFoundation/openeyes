@@ -3,3 +3,5 @@ default:
     parameters:
       base_url: http://openeyes-dev.adrian.local/
       browser: chrome
+      default_session: webdriver
+      javascript_session: webdriver

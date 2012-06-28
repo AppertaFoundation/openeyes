@@ -189,7 +189,7 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
 	 */
 	public function firmIsSelected($firm) {
 		$firm = str_replace('\\"', '"', $firm);
-		$this->getSession()->getPage()->selectFieldOption("selected_firm_id", $firm, true);
+		$this->iSelectFirm($firm);
 	}
 
 	/**
@@ -221,5 +221,37 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
 		}
 		
 	}
+
+	/**
+	* @Then /^I should see "([^"]*)" in the "([^"]*)" dropdown$/
+	*/
+	public function iShouldSeeInTheDropdown($value, $field){
+		$el = $this->getSession()->getPage()->find('css', $field);
+		if(!$el){
+			throw new exception('Dropdown "'.$field.'" not found on page');
+		}
+		$selectedValue = $el->getValue();
+		$selectedLabel = $el->getSelectedText();
+		if ($selectedValue != $value && $selectedLabel != $value) {
+			throw new exception('Value/Label "'.$value.'" not selected in "'.$field.'" dropdown');
+		}
+	}
+
+	/**
+	* @When /^I wait "([^"]*)" second/
+	*/
+	public function iWaitSeconds($value){
+		$value = floatval($value);
+		$this->getMink()->getSession()->wait($value * 1000);
+	}
+
+    /**
+     * @When /^I select "([^"]*)" firm$/
+     */
+    public function iSelectFirm($firm)
+    {
+        $this->getSession()->getPage()->selectFieldOption('selected_firm_id', $firm);
+        $this->getSession()->wait(50, '$("#selected_firm_id").trigger("change")');
+    }
 
 }
