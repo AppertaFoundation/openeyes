@@ -260,6 +260,7 @@ if (!empty($address)) {
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
 								<option value="consultant">Ophthalmologist</option>
+								<option value="specialist">Non-ophthalmic specialist</option>
 								<option value="gp">GP</option>
 							</select>
 						</div>
