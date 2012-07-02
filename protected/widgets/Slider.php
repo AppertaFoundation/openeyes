@@ -26,6 +26,7 @@ class Slider extends BaseCWidget {
 	public $remap_values = false;
 	public $null;
 	public $value_display;
+	public $append = '';
 
 	public function init() {
 		parent::init();
