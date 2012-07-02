@@ -18,15 +18,11 @@
 						<option value=""><?php echo $htmlOptions['empty']?></option>
 					<?php }?>
 					<?php foreach ($data as $i => $optgroup) {?>
-						<?php if ($i>0) {?>
-							<optgroup label="--------">
-						<?php }?>
+						<optgroup label="---------------">
 							<?php foreach ($optgroup as $id => $option) {?>
 								<option value="<?php echo $id?>"<?php if ($id == $value) {?> selected="selected"<?php }?>><?php echo $option?></option>
 							<?php }?>
-						<?php if ($i>0) {?>
-							</optgroup>
-						<?php }?>
+						</optgroup>
 					<?php }?>
 				</select>
 			<?php }else{?>

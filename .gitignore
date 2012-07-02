@@ -27,6 +27,13 @@ protected/runtime/
 protected/tests/report/
 protected/tests/test_results/
 protected/views/elements/ElementExample/
+protected/commands/AssociateConsultantsWithSitesCommand.php
+protected/commands/CorrespondenceDataCommand.php
+protected/commands/DumpProcElementsCommand.php
+protected/commands/ImportConsultantsCommand.php
+protected/commands/ImportInstitutionsCommand.php
+protected/commands/OpnoteDataCommand.php
+
 tags
 index.php
 
