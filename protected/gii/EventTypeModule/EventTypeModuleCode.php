@@ -992,7 +992,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					}
 				}
 				if ($value == 'Slider') {
-					if (!@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) {
+					if (strlen(@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) == 0) {
 						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Please enter a minimum value";
 					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMinValue'.$m[1].'Field'.$m[2]])) {
 						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
