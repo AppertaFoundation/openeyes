@@ -32,6 +32,7 @@
 <?php if (isset($mapping_table)) {?>
  * @property <?php echo $mapping_table['element_class']?> $element
  * @property <?php echo $mapping_table['lookup_class']?> $<?php echo $mapping_table['lookup_table']?>
+
 <?php }?>
  * @property User $user
  * @property User $usermodified 
