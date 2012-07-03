@@ -104,7 +104,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
 			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
 
-			/*
 			$current_class = $event_type->class_name;
 			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($specialty->code)) . ucfirst(strtolower($event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
 
@@ -129,7 +128,56 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				}
 
 				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$current_class,$target_class);
-				$this->updateMigrationsAfterEventNameChange(Yii::app()->basePath.'/modules/'.$target_class,$event_type->name,$event_group->name);
+
+				$from_table_prefix = 'et_'.strtolower($current_class).'_';
+				$to_table_prefix = 'et_'.strtolower($target_class).'_';
+
+				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$from_table_prefix,$to_table_prefix);
+
+				// introspect the database and fix all table, index and foreign key names
+				foreach (Yii::app()->getDb()->getSchema()->getTables() as $table_name => $table) {
+					if (strncmp($table_name,$from_table_prefix,strlen($from_table_prefix)) == 0) {
+						$foreign_keys = $this->getTableForeignKeys($table_name);
+
+						foreach ($foreign_keys as $foreign_key) {
+							if (strncmp($foreign_key['name'],$from_table_prefix,strlen($from_table_prefix)) == 0) {
+								$new_key_name = str_replace($from_table_prefix,$to_table_prefix,$foreign_key['name']);
+
+								$this->rawSQLQuery("ALTER TABLE `$table_name` DROP FOREIGN KEY `{$foreign_key['name']}`;");
+								$this->rawSQLQuery("DROP INDEX `{$foreign_key['name']}` ON `$table_name`;");
+								$this->rawSQLQuery("CREATE INDEX `$new_key_name` ON `$table_name` (`{$foreign_key['field']}`);");
+								$this->rawSQLQuery("ALTER TABLE `$table_name` ADD FOREIGN KEY `$new_key_name` (`{$foreign_key['field']}`) REFERENCES `{$foreign_key['remote_table']}` (`{$foreign_key['remote_field']}`);");
+							}
+						}
+
+						$new_table_name = str_replace($from_table_prefix,$to_table_prefix,$table_name);
+
+						Yii::app()->db->createCommand("RENAME TABLE `$table_name` TO `$new_table_name`")->query();
+					}
+				}
+
+				// update the event_type name in the migrations
+				$path = Yii::app()->basePath.'/modules/'.$target_class.'/migrations';
+
+				$dh = opendir($path);
+
+				while ($file = readdir($dh)) {
+					if (!preg_match('/^\.\.?$/',$file)) {
+						$data = file_get_contents($path."/".$file);
+
+						if (preg_match_all('/\$event_type[\s\t]*=[\s\t]*.*?->queryRow\(\);/',$data,$m)) {
+							foreach ($m[0] as $blob) {
+								if (preg_match('/\(\':name\'[\s\t]*=>[\s\t]*\'.*?\'\)/',$blob,$b)) {
+									$newblob = str_replace($b[0],"(':name'=>'$event_type->name')",$blob);
+									$data = str_replace($blob,$newblob,$data);
+									file_put_contents($path."/".$file,$data);
+								}
+							}
+						}
+					}
+				}
+
+				closedir($dh);
 
 				$this->moduleName = $this->moduleID = $target_class;
 				parent::prepare();
@@ -144,7 +192,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 				$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
 			}
-			*/
 		}
 
 		foreach($files as $file) {
@@ -1304,5 +1351,28 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			file_put_contents($view_path, str_replace($m[0],$replace,$data));
 		}
+	}
+
+	public function getTableForeignKeys($table) {
+		$foreign_keys = array();
+
+		foreach (Yii::app()->db->createCommand("show create table `$table`")->queryAll() as $row) {
+			foreach (explode(chr(10),$row['Create Table']) as $line) {
+				if (preg_match('/CONSTRAINT `(.*?)` FOREIGN KEY \(`(.*?)`\) REFERENCES `(.*?)` \(`(.*?)`\)/',$line,$m)) {
+					$foreign_keys[] = array(
+						'name' => $m[1],
+						'field' => $m[2],
+						'remote_table' => $m[3],
+						'remote_field' => $m[4],
+					);
+				}
+			}
+		}
+
+		return $foreign_keys;
+	}
+
+	public function rawSQLQuery($sql) {
+		Yii::app()->db->createCommand($sql)->query();
 	}
 }
