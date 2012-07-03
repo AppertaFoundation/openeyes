@@ -21,10 +21,10 @@
 <div class="<?php echo '<?php '; ?>echo $element->elementType->class_name<?php echo '?>'; ?>">
 	<h4 class="elementTypeName"><?php echo '<?php '; ?> echo $element->elementType->name; <?php echo '?>'; ?></h4>
 
-	<?php
+<?php
 	if (isset($element)) {
 		foreach ($element['fields'] as $field) {
-			echo $this->getHTMLField($field, 'update')."\n";
+			echo "\t".$this->getHTMLField($field, 'update')."\n";
 		}
 	}
 	?>
