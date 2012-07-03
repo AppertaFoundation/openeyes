@@ -25,6 +25,7 @@
 	</div>
 
 	<div id="waitinglist_display">
+	<p><?php echo Yii::app()->db->createCommand("select count(distinct data) from audit where action='login-successful' and created_date > '2012-07-02 23:59:59'")->queryScalar(); ?> unique users since 3rd July 2012</p>
 		<form method="post" action="/audit/search" id="auditList-filter">
 			<input type="hidden" id="page" name="page" value="1" />
 			<div id="search-options">
