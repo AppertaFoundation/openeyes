@@ -576,7 +576,7 @@ class PatientController extends BaseController
 	public function actionPossiblecontacts() {
 		$contacts = array();
 
-		$term = '%'.strtolower(trim($_GET['term'])).'%';
+		$term = strtolower(trim($_GET['term'])).'%';
 
 		$session = Yii::app()->session['PatientContacts'];
 
@@ -593,7 +593,7 @@ class PatientController extends BaseController
 		foreach (Yii::app()->db->createCommand()
 			->select('contact.*')
 			->from('contact')
-			->where("(LOWER(title) LIKE :term or LOWER(first_name) LIKE :term or LOWER(last_name) LIKE :term) AND $where", array(':term' => $term))
+			->where("LOWER(last_name) LIKE :term AND $where", array(':term' => $term))
 			->order('title asc, first_name asc, last_name asc')
 			->queryAll() as $contact) {
 
