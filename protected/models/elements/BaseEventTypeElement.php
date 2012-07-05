@@ -2,7 +2,7 @@
 class BaseEventTypeElement extends BaseElement
 {
 	function getElementType() {
-		return ElementType::model()->find('class_name=? and event_type_id=?', array(get_class($this),$this->event->event_type_id));
+		return ElementType::model()->find('class_name=?', array(get_class($this)));
 	}
 
 	function render($action) {
