@@ -628,14 +628,25 @@ class PatientController extends BaseController
 					}
 				}
 			} else if ($contact['parent_class'] == 'Specialist') {
-				$institutions = array();
+				$sites = array();
 
-				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->institution_id,$institutions)) {
-						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
+				foreach (SiteSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->site_id,$sites)) {
+						if ($contact['title']) {
+							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+						} else {
+							$contact_line = $contact['first_name'].' '.$contact['last_name'];
+						}
+
+						$specialist = Specialist::model()->findByPk($contact['parent_id']);
+
+						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->site->name.")";
+
+						$contacts[] = $contact_line;
+
 						$session[$contact_line] = array(
 							'contact_id' => $contact['id'],
-							'institution_id' => $ica->institution_id,
+							'site_id' => $ica->site_id,
 						);
 					}
 				}
@@ -674,11 +685,18 @@ class PatientController extends BaseController
 						throw new Exception("Can't find contact: ".$params['contact_id']);
 					}
 
+					if ($contact->parent_class == 'Specialist') {
+						$specialist = Specialist::model()->findByPk($contact->parent_id);
+						$type = $specialist->specialist_type->name;
+					} else {
+						$type = $contact->parent_class;
+					}
+
 					$data = array(
 						'id' => $contact->id,
 						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
 						'qualifications' => $contact->qualifications,
-						'type' => $contact->parent_class,
+						'type' => $type,
 						'site_id' => '',
 						'institution_id' => '',
 					);

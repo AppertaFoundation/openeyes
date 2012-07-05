@@ -185,7 +185,15 @@ if (!empty($address)) {
 													<?php echo str_replace(',','',$pca->contact->address->address1)?>
 												<?php }?>
 											</td>
-											<td><?php echo $pca->contact->parent_class?></td>
+											<td>
+												<?php
+												if ($pca->contact->parent_class != 'Specialist') {
+													echo $pca->contact->parent_class;
+												} else {
+													$specialist = Specialist::model()->findByPk($pca->contact->parent_id);
+													echo $specialist->specialist_type->name;
+												}?>
+											</td>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
 										</tr>
 									<?php }?>
@@ -360,8 +368,14 @@ if (!empty($address)) {
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
-					<?php if ($pca->site) {?>
-						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->site->name.')';?>");
+					<?php if ($pca->site) {
+						if ($pca->contact->parent_class == 'Specialist') {
+							$specialist = Specialist::model()->findByPk($pca->contact->parent_id);
+							?>
+							currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$specialist->specialist_type->name.', '.$pca->site->name.')';?>");
+						<?php }else{?>
+							currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->site->name.')';?>");
+						<?php }?>
 					<?php } else if ($pca->institution) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
 					<?php } else {?>
