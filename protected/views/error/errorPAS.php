@@ -32,3 +32,4 @@
 		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
 	</a></li>
 </ul>
+<a href="/">Click here to go back to the search page</a>
