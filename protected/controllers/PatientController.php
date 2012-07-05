@@ -597,14 +597,14 @@ class PatientController extends BaseController
 			->order('title asc, first_name asc, last_name asc')
 			->queryAll() as $contact) {
 
-			if ($contact['title']) {
-				$line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'];
-			} else {
-				$line = $contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'];
-			}
+			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
 
 			if ($contact['parent_class'] == 'Consultant') {
 				$institutions = array();
+
+				if ($contact['title']) {
+					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
+				}
 
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
@@ -688,6 +688,8 @@ class PatientController extends BaseController
 					if ($contact->parent_class == 'Specialist') {
 						$specialist = Specialist::model()->findByPk($contact->parent_id);
 						$type = $specialist->specialist_type->name;
+					} else if ($contact->parent_class == 'Consultant') {
+						$type = 'Consultant Ophthalmologist';
 					} else {
 						$type = $contact->parent_class;
 					}

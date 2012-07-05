@@ -187,12 +187,17 @@ if (!empty($address)) {
 											</td>
 											<td>
 												<?php
-												if ($pca->contact->parent_class != 'Specialist') {
-													echo $pca->contact->parent_class;
-												} else {
-													$specialist = Specialist::model()->findByPk($pca->contact->parent_id);
-													echo $specialist->specialist_type->name;
-												}?>
+												switch ($pca->contact->parent_class) {
+													case 'Specialist':
+														echo Specialist::model()->findByPk($pca->contact->parent_id)->specialist_type->name;
+														break;
+													case 'Consultant':
+														echo 'Consultant Ophthalmologist';
+														break;
+													default:
+														echo $pca->contact->parent_class;
+												}
+												?>
 											</td>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
 										</tr>
@@ -267,7 +272,7 @@ if (!empty($address)) {
 							&nbsp;&nbsp;
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
-								<option value="consultant">Ophthalmologist</option>
+								<option value="consultant">Consultant Ophthalmologist</option>
 								<option value="specialist">Non-ophthalmic specialist</option>
 								<option value="gp">GP</option>
 							</select>
@@ -369,13 +374,19 @@ if (!empty($address)) {
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
 					<?php if ($pca->site) {
-						if ($pca->contact->parent_class == 'Specialist') {
-							$specialist = Specialist::model()->findByPk($pca->contact->parent_id);
-							?>
-							currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$specialist->specialist_type->name.', '.$pca->site->name.')';?>");
-						<?php }else{?>
-							currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->site->name.')';?>");
-						<?php }?>
+						switch ($pca->contact->parent_class) {
+							case 'Specialist':
+								$type = Specialist::model()->findByPk($pca->contact->parent_id)->specialist_type->name;
+								break;
+							case 'Consultant':
+								$type = 'Consultant Ophthalmologist';
+								break;
+							default:
+								$type = $pca->contact->parent_class;
+								break;
+						}
+						?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$type.', '.$pca->site->name.')';?>");
 					<?php } else if ($pca->institution) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
 					<?php } else {?>
