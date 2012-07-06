@@ -70,11 +70,11 @@ class Event extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('episode_id, event_type_id', 'required'),
+			array('event_type_id', 'required'),
 			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, episode_id, event_type_id, datetime', 'safe', 'on'=>'search'),
+			array('id, episode_id, event_type_id, datetime, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -96,7 +96,10 @@ class Event extends BaseActiveRecord
 	}
 	
 	public function getEditable(){
-		
+	
+		if (!$this->episode->firm) {
+			return FALSE;
+		}	
 		if($this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
 			return FALSE;
 		}

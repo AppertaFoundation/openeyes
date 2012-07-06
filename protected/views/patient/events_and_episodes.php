@@ -16,7 +16,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 if ($module = $this->getModule()) {
 	$module = $module->getName();
 	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
@@ -32,7 +31,7 @@ if ($module = $this->getModule()) {
 				</form>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
-			<?php $this->renderPartial('episodes_sidebar',array('episodes'=>$episodes,'current_episode'=>@$current_episode))?>
+			<?php $this->renderPartial('episodes_sidebar',array('episodes'=>$episodes,'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php

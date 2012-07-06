@@ -87,7 +87,12 @@ class Patient extends BaseActiveRecord {
 		*/
 	public function relations() {
 		return array(
-			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+				'condition' => "legacy=1"
+			),
+			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+				'condition' => "legacy=0 or legacy is null"
+			),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
 				'on' => "parent_class = 'Patient'"
 			),
