@@ -2,8 +2,6 @@
 class BaseEventTypeElement extends BaseElement
 {
 	function getElementType() {
-		echo $this->tableSchema->name."\n";
-
 		$model_path = $this->find_model(Yii::app()->basePath, $this->tableSchema->name);
 
 		if (preg_match('/\/modules\/(.*?)\//',$model_path,$m)) {
