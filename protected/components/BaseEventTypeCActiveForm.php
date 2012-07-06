@@ -80,7 +80,7 @@ class BaseEventTypeCActiveForm extends CActiveForm
 	}
 
 	public function slider($element, $field, $options) {
-		$this->widget('application.widgets.Slider', array('element' => $element, 'field' => $field, 'min' => $options['min'], 'max' => $options['max'], 'step' => $options['step'], 'force_dp' => @$options['force_dp'], 'prefix_positive' => @$options['prefix_positive'], 'remap_values' => @$options['remap'], 'null' => @$options['null']));
+		$this->widget('application.widgets.Slider', array('element' => $element, 'field' => $field, 'min' => $options['min'], 'max' => $options['max'], 'step' => $options['step'], 'force_dp' => @$options['force_dp'], 'prefix_positive' => @$options['prefix_positive'], 'remap_values' => @$options['remap'], 'null' => @$options['null'], 'append' => @$options['append']));
 	}
 
 	public function sliderTable($element, $field, $data) {

@@ -706,7 +706,7 @@ $(document).ready(function() {
 		}
 	});
 
-	/*if ($('#target_event_class').length >0) {
+	if ($('#target_event_class').length >0) {
 		$('td.file').map(function() {
 			var path = $(this).children('a').text();
 			var s = path.split('/');
@@ -714,7 +714,7 @@ $(document).ready(function() {
 			var destination = path.replace(r,$('#target_event_class').val());
 			$(this).parent().after('<tr class="new"><td class="file" style="color: #f00;"> - rename to: '+destination+'</td><td class="confirm">renamed</td></tr>');
 		});
-	}*/
+	}
 
 	if ($('#EventTypeModuleModeRadioModifyExisting').is(':checked')) {
 		$('tr.overwrite').map(function() {

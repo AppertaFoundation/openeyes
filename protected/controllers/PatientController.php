@@ -589,8 +589,10 @@ class PatientController extends BaseController
 			$where = "parent_class = 'Gp'";
 		} else if (@$_GET['filter'] == 'consultant') {
 			$where = "parent_class = 'Consultant'";
+		} else if (@$_GET['filter'] == 'specialist') {
+			$where = "parent_class = 'Specialist'";
 		} else {
-			$where = "parent_class in ('Consultant','Gp')";
+			$where = "parent_class in ('Consultant','Gp','Specialist')";
 		}
 
 		foreach (Yii::app()->db->createCommand()
@@ -611,23 +613,35 @@ class PatientController extends BaseController
 
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
-	$institutions[] = $sca->site->institution_id;
+						$institutions[] = $sca->site->institution_id;
 					}
 
 					$contact_line = $contacts[] = $line.', '.$sca->site->name.')';
 					$session[$contact_line] = array(
-	'contact_id' => $contact['id'],
-	'site_id' => $sca->site_id,
+						'contact_id' => $contact['id'],
+						'site_id' => $sca->site_id,
 					);
 				}
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
 					if (!in_array($ica->institution_id,$institutions)) {
-	$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
-	$session[$contact_line] = array(
-		'contact_id' => $contact['id'],
-		'institution_id' => $ica->institution_id,
-	);
+						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
+						$session[$contact_line] = array(
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
+						);
+					}
+				}
+			} else if ($contact['parent_class'] == 'Specialist') {
+				$institutions = array();
+
+				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->institution_id,$institutions)) {
+						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
+						$session[$contact_line] = array(
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
+						);
 					}
 				}
 			} else {

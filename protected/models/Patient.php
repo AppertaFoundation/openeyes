@@ -368,7 +368,7 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
+		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
 			return strtolower($diagnosis->disorder->term);
 		}
 	}
@@ -420,7 +420,7 @@ class Patient extends BaseActiveRecord {
 	public function getOps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
+		if ($episode && $event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
 			if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
 				if ($pl = $pl->find('event_id=?',array($event->id))) {
 					foreach ($pl->procedures as $i => $procedure) {

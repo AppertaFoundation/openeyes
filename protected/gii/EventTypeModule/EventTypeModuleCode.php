@@ -104,7 +104,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
 			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
 
-			/*
 			$current_class = $event_type->class_name;
 			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($specialty->code)) . ucfirst(strtolower($event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
 
@@ -129,7 +128,56 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				}
 
 				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$current_class,$target_class);
-				$this->updateMigrationsAfterEventNameChange(Yii::app()->basePath.'/modules/'.$target_class,$event_type->name,$event_group->name);
+
+				$from_table_prefix = 'et_'.strtolower($current_class).'_';
+				$to_table_prefix = 'et_'.strtolower($target_class).'_';
+
+				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$from_table_prefix,$to_table_prefix);
+
+				// introspect the database and fix all table, index and foreign key names
+				foreach (Yii::app()->getDb()->getSchema()->getTables() as $table_name => $table) {
+					if (strncmp($table_name,$from_table_prefix,strlen($from_table_prefix)) == 0) {
+						$foreign_keys = $this->getTableForeignKeys($table_name);
+
+						foreach ($foreign_keys as $foreign_key) {
+							if (strncmp($foreign_key['name'],$from_table_prefix,strlen($from_table_prefix)) == 0) {
+								$new_key_name = str_replace($from_table_prefix,$to_table_prefix,$foreign_key['name']);
+
+								$this->rawSQLQuery("ALTER TABLE `$table_name` DROP FOREIGN KEY `{$foreign_key['name']}`;");
+								$this->rawSQLQuery("DROP INDEX `{$foreign_key['name']}` ON `$table_name`;");
+								$this->rawSQLQuery("CREATE INDEX `$new_key_name` ON `$table_name` (`{$foreign_key['field']}`);");
+								$this->rawSQLQuery("ALTER TABLE `$table_name` ADD FOREIGN KEY `$new_key_name` (`{$foreign_key['field']}`) REFERENCES `{$foreign_key['remote_table']}` (`{$foreign_key['remote_field']}`);");
+							}
+						}
+
+						$new_table_name = str_replace($from_table_prefix,$to_table_prefix,$table_name);
+
+						Yii::app()->db->createCommand("RENAME TABLE `$table_name` TO `$new_table_name`")->query();
+					}
+				}
+
+				// update the event_type name in the migrations
+				$path = Yii::app()->basePath.'/modules/'.$target_class.'/migrations';
+
+				$dh = opendir($path);
+
+				while ($file = readdir($dh)) {
+					if (!preg_match('/^\.\.?$/',$file)) {
+						$data = file_get_contents($path."/".$file);
+
+						if (preg_match_all('/\$event_type[\s\t]*=[\s\t]*.*?->queryRow\(\);/',$data,$m)) {
+							foreach ($m[0] as $blob) {
+								if (preg_match('/\(\':name\'[\s\t]*=>[\s\t]*\'.*?\'\)/',$blob,$b)) {
+									$newblob = str_replace($b[0],"(':name'=>'$event_type->name')",$blob);
+									$data = str_replace($blob,$newblob,$data);
+									file_put_contents($path."/".$file,$data);
+								}
+							}
+						}
+					}
+				}
+
+				closedir($dh);
 
 				$this->moduleName = $this->moduleID = $target_class;
 				parent::prepare();
@@ -144,7 +192,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 				$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
 			}
-			*/
 		}
 
 		foreach($files as $file) {
@@ -992,7 +1039,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					}
 				}
 				if ($value == 'Slider') {
-					if (!@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) {
+					if (strlen(@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) == 0) {
 						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Please enter a minimum value";
 					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMinValue'.$m[1].'Field'.$m[2]])) {
 						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
@@ -1048,7 +1095,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Dropdown list':
 				return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'- Please select -\')' : '').')?'.'>';
 			case 'Textarea with dropdown':
-				return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>';
+				return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>'."\n".
+					'<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
 			case 'Checkbox':
 				return '<?php echo $form->checkBox($element, \''.$field['name'].'\')?'.'>';
 			case 'Radio buttons':
@@ -1058,7 +1106,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'EyeDraw':
 				return '<div class="clearfix" style="background-color: #DAE6F1;">
 		<?php
-			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\'), array(
+			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\', array(
 				\'side\'=>$element->getSelectedEye()->getShortName(),
 				\'mode\'=>\'edit\',
 				\'size\'=>'.$field['eyedraw_size'].',
@@ -1069,9 +1117,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		?>
 	</div>';
 			case 'Multi select':
-				return '<?php echo $form->multiSelectList($element, \'MultiSelect_'.$field['name'].'\', \''.@$field['multiselect_relation'].'\', \''.@$field['multiselect_field'].'\', CHtml::listData('.@$field['multiselect_lookup_class'].'::model()->findAll(array(\'order\'=>\''.$field['multiselect_order_field'].' asc\')),\'id\',\''.$field['multiselect_table_field_name'].'\'), $element->'.@$field['multiselect_lookup_table'].'_defaults, array(\'empty\' => \'- Please select -\', \'label\' => \''.$field['label'].'\'));';
+				return '<?php echo $form->multiSelectList($element, \'MultiSelect_'.$field['name'].'\', \''.@$field['multiselect_relation'].'\', \''.@$field['multiselect_field'].'\', CHtml::listData('.@$field['multiselect_lookup_class'].'::model()->findAll(array(\'order\'=>\''.$field['multiselect_order_field'].' asc\')),\'id\',\''.$field['multiselect_table_field_name'].'\'), $element->'.@$field['multiselect_lookup_table'].'_defaults, array(\'empty\' => \'- Please select -\', \'label\' => \''.$field['label'].'\'))?'.'>';
 			case 'Slider':
-				return '<?php echo $form->slider($element, \''.$field['name'].'\', array(\'min\' => '.$field['slider_min_value'].', \'max\' => '.$field['slider_max_value'].', \'step\' => '.$field['slider_stepping'].($field['slider_dp'] ? ', \'force_dp\' => '.$field['slider_dp'] : '').'));';
+				return '<?php echo $form->slider($element, \''.$field['name'].'\', array(\'min\' => '.$field['slider_min_value'].', \'max\' => '.$field['slider_max_value'].', \'step\' => '.$field['slider_stepping'].($field['slider_dp'] ? ', \'force_dp\' => '.$field['slider_dp'] : '').'))?'.'>';
 		}
 	}
 
@@ -1081,78 +1129,77 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Textarea':
 			case 'Textarea with dropdown':
 			case 'Integer':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-				<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
-			</tr>';
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+		</tr>';
 			case 'Date picker':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-				<td><span class="big"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></span></td>
-			</tr>';
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo CHtml::encode($element->NHSDate(\''.$field['name'].'\'))?'.'></span></td>
+		</tr>';
 			case 'Dropdown list':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-				<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></span></td>
-			</tr>';
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->'.$field['lookup_field'].' : \'None\'?'.'></span></td>
+		</tr>';
 			case 'Checkbox':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-				<td><span class="big"><?php $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
-			</tr>';
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+		</tr>';
 			case 'Radio buttons':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-				<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->name : \'None\'?'.'></span></td>
-			</tr>';
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.preg_replace('/_id$/','',$field['name']).' ? $element->'.preg_replace('/_id$/','',$field['name']).'->name : \'None\'?'.'></span></td>
+		</tr>';
 			case 'Boolean':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</td>
-				<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
-			</tr>';
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</td>
+			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+		</tr>';
 			case 'EyeDraw':
-				return '			<tr>
-				<td colspan="2">
-					<?php
-						$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\', array(
-							\'side\'=>$element->eye->getShortName(),
-							\'mode\'=>\'view\',
-							\'size\'=>'.$field['eyedraw_size'].',
-							\'model\'=>$element,
-							\'attribute\'=>\''.$field['name'].'\',
-						));
-					?>
-				</td>
-			</tr>
-			'.(@$field['extra_report'] ? '<tr>
-				<td width="30%">Report:</td>
-				<td><span class="big"><?php echo $element->'.$field['name'].'2?'.'></span></td>
-			</tr>' : '');
+				return '		<tr>
+			<td colspan="2">
+				<?php
+					$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\', array(
+						\'side\'=>$element->eye->getShortName(),
+						\'mode\'=>\'view\',
+						\'size\'=>'.$field['eyedraw_size'].',
+						\'model\'=>$element,
+						\'attribute\'=>\''.$field['name'].'\',
+					));
+				?>
+			</td>
+		</tr>
+		'.(@$field['extra_report'] ? '<tr>
+			<td width="30%">Report:</td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'2?'.'></span></td>
+		</tr>' : '');
 			case 'Multi select':
-				return '			<tr>
-				<td colspan="2">
-					<div class="colThird">
-						<b><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</b>
-						<div class="eventHighlight medium">
-							<?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
-								<h4>None</h4>
-							<?php }else{?'.'>
-								<h4>
-									<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
-										echo $item->'.@$field['multiselect_lookup_table'].'->name?'.'><br/>
-									<?php }?'.'>
-								</h4>
-							<?php }?'.'>
-						</div>
+				return '		<tr>
+			<td colspan="2">
+				<div class="colThird">
+					<b><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'>:</b>
+					<div class="eventHighlight medium">
+						<?php if (!$element->'.@$field['multiselect_relation'].') {?'.'>
+							<h4>None</h4>
+						<?php }else{?'.'>
+							<h4>
+								<?php foreach ($element->'.@$field['multiselect_relation'].' as $item) {
+									echo $item->'.@$field['multiselect_lookup_table'].'->name?'.'><br/>
+								<?php }?'.'>
+							</h4>
+						<?php }?'.'>
 					</div>
-				</td>
-			</tr>';
+				</div>
+			</td>
+		</tr>';
 			case 'Slider':
-				return '			<tr>
-				<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-				<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
-			</tr>';
-
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
+		</tr>';
 		}
 	}
 
@@ -1304,5 +1351,28 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			file_put_contents($view_path, str_replace($m[0],$replace,$data));
 		}
+	}
+
+	public function getTableForeignKeys($table) {
+		$foreign_keys = array();
+
+		foreach (Yii::app()->db->createCommand("show create table `$table`")->queryAll() as $row) {
+			foreach (explode(chr(10),$row['Create Table']) as $line) {
+				if (preg_match('/CONSTRAINT `(.*?)` FOREIGN KEY \(`(.*?)`\) REFERENCES `(.*?)` \(`(.*?)`\)/',$line,$m)) {
+					$foreign_keys[] = array(
+						'name' => $m[1],
+						'field' => $m[2],
+						'remote_table' => $m[3],
+						'remote_field' => $m[4],
+					);
+				}
+			}
+		}
+
+		return $foreign_keys;
+	}
+
+	public function rawSQLQuery($sql) {
+		Yii::app()->db->createCommand($sql)->query();
 	}
 }

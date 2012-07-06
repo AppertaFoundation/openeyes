@@ -1,4 +1,4 @@
-<?php echo '<?php '?>
+<?php
 /**
  * OpenEyes
  *
@@ -18,33 +18,24 @@
  */
 
 /**
- * This is the model class for table "<?php if (isset($mapping_table)) echo $mapping_table['name']?>".
+ * This is the model class for table "specialist".
  *
- * The followings are the available columns in table:
+ * The followings are the available columns in table 'specialist':
  * @property string $id
- * @property integer $element_id
-<?php if (isset($mapping_table)) {?>
- * @property integer $<?php echo $mapping_table['lookup_table']?>_id
-<?php }?>
+ * @property string $obj_prof
+ * @property string $nat_id
+ * @property string $contact_id
  *
  * The followings are the available model relations:
- *
-<?php if (isset($mapping_table)) {?>
- * @property <?php echo $mapping_table['element_class']?> $element
- * @property <?php echo $mapping_table['lookup_class']?> $<?php echo $mapping_table['lookup_table']?>
-
-<?php }?>
- * @property User $user
- * @property User $usermodified 
+ * @property Contact $contact
  */
-
-class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends BaseActiveRecord
+class Specialist extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return the static model class
+	 * @return Specialist the static model class
 	 */
-	public static function model($className = __CLASS__)
+	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -54,7 +45,7 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	 */
 	public function tableName()
 	{
-		return '<?php if (isset($mapping_table)) echo $mapping_table['name']; ?>';
+		return 'specialist';
 	}
 
 	/**
@@ -65,14 +56,14 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'safe'),
-			array('element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'required'),
+			array('gmc_number, practitioner_code, gender', 'required'),
+			array('gmc_number, practitioner_code, gender', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, element_id, <?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id', 'safe', 'on' => 'search'),
+			array('id, gmc_number, practitioner_code, gender', 'safe', 'on'=>'search'),
 		);
 	}
-	
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -81,10 +72,9 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'element' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) echo $mapping_table['element_class']?>', 'element_id'),
-			'<?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>' => array(self::BELONGS_TO, '<?php if (isset($mapping_table)) echo $mapping_table['lookup_class']?>', '<?php if (isset($mapping_table)) echo $mapping_table['lookup_table']?>_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
+				'on' => "parent_class = 'Specialist'",
+			),
 		);
 	}
 
@@ -95,7 +85,9 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 	{
 		return array(
 			'id' => 'ID',
-			'name' => 'Name',
+			'obj_prof' => 'Obj Prof',
+			'nat_id' => 'Nat',
+			'contact_id' => 'Contact',
 		);
 	}
 
@@ -108,36 +100,15 @@ class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends Ba
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria = new CDbCriteria;
+		$criteria=new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('name', $this->name, true);
+		$criteria->compare('id',$this->id,true);
+		$criteria->compare('obj_prof',$this->obj_prof,true);
+		$criteria->compare('nat_id',$this->nat_id,true);
+		$criteria->compare('contact_id',$this->contact_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-			));
-	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
+			'criteria'=>$criteria,
+		));
 	}
 }
-<?php echo '?>';?>
