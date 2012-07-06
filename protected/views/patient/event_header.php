@@ -16,7 +16,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 if ($module = $this->getModule()) {
 	$module = $module->getName();
 	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
@@ -34,7 +33,7 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				</form>
 				<p style="margin-bottom: 0px;">&nbsp;</p>
 			</div>
-			<?php $this->renderPartial('//patient/episodes_sidebar',array('episodes'=>$episodes))?>
+			<?php $this->renderPartial('//patient/episodes_sidebar',array('episodes'=>$episodes, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
 				<div class="display_actions">

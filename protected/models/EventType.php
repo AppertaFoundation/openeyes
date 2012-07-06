@@ -110,4 +110,14 @@ class EventType extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getSpecialty() {
+		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
+		return Specialty::model()->find('code=?',array(strtoupper($m[1])));
+	}
+
+	public function getEvent_group() {
+		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
+		return EventGroup::model()->find('code=?',array($m[2]));
+	}
 }
