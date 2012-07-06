@@ -23,8 +23,8 @@ Feature: Header
 	|	Theatre Diaries					|	/			|	/theatre		|	Theatre Schedules				|
 	|	Partial bookings waiting list	|	/			|	/waitingList	|	Partial bookings waiting List	|
 
-	@regression @regression:1 @sample-data @javascript
-	Scenario Outline: 1.22 Firm selection is sticky as you navigate
+	@regression @regression:1 @regression:2 @sample-data @javascript
+	Scenario Outline: 1.22|2.6 Firm selection is sticky as you navigate
 		Given I am logged in as "admin:admin:Enoch:Root"
 		And firm "Minihan Miriam (Vitreoretinal)" is selected
 		When I wait "0.5" seconds
@@ -32,9 +32,11 @@ Feature: Header
 		Then I should see "Minihan Miriam (Vitreoretinal)" in the "#selected_firm_id" dropdown
 
 	Examples:
-	|	url				|
-	|	/theatre		|
-	|	/waitingList	|
+	|	url						|
+	|	/theatre				|
+	|	/waitingList			|
+	|	/patient/view/19434		|
+	|	/patient/episodes/19434	|
 
 	@regression @regression:1 @sample-data @javascript
 	Scenario Outline: 1.15|1.21 Check firm selection is saved after logout and log back in
@@ -81,4 +83,6 @@ Feature: Header
 	|	Minihan Miriam (Vitreoretinal)		|
 	|	Okhravi Narciss (Uveitis)			|
 	|	Viswanathan Ananth (Glaucoma)		|
+
+
 

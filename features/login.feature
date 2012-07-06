@@ -3,18 +3,6 @@ Feature: Login
 	As a OpenEyes user
 	I need to be able to login
 
-	####
-	# 1.2 - not testable
-	# 1.3 - not testable
-	# 1.8 - don't understand
-	# 1.9 - need to emulate connection throttling (charles does it)
-	# 1.11 - skipping
-	# 1.13 / 1.17 - Found in PBWL feature
-	# 1.14 / 1.18 / 1.19 - Found in Theatre Diary feature
-	# 1.15 / 1.16 / 1.22 - Found in Header feature
-	# 
-	####
-
 	@regression @regression:1
 	Scenario: 1.1 Login fields are present
 		Given I am logged out

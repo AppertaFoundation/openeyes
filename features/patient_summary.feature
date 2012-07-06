@@ -7,6 +7,7 @@ Feature: Patient Summary
 	Background:
 		Given I am logged in as "admin:admin:Enoch:Root"
 
+	@sample-data
 	Scenario Outline: Confirm correct details for known alive patients
 		Given I am on "/"
 		When I search for patient "<firstname>:<lastname>"
@@ -34,6 +35,7 @@ Feature: Patient Summary
 	|	Iris		|	Treffry		|	/patient/view/10010	|	14, Penberthy Lane Wigtoft Countywide Greater Manchester WG33 1GJ	|	27 Jan 1922	|	90	|	Female	|	02746 8129676	|	Iris.Treffry@hotmail.com		|	Unknown		|	Dr Yuri Zhivago	|	75, Condict Crescent Weeley Wiltshire VY54 2JV			|	0123 456 789	|
 	|	Michael		|	Broadbent	|	/patient/view/10057	|	17, Golding Crescent Welford-on-Avon RD60 8JF						|	10 Oct 1920	|	91	|	Male	|	06881 4873577	|	Michael.Broadbent@hotmail.com	|	Unknown		|	Dr A Who		|	42, Abbott Crescent Kilwinning Hertfordshire DL71 6VO	|	0123 456 789	|
 
+	@sample-data
 	Scenario Outline: Confirm correct details for known deceased patients
 		Given I am on "/"
 		When I search for patient "<firstname>:<lastname>"

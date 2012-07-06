@@ -3,7 +3,8 @@
 use Behat\Behat\Context\ClosuredContextInterface,
 	Behat\Behat\Context\TranslatedContextInterface,
 	Behat\Behat\Context\BehatContext,
-	Behat\Behat\Exception\PendingException;
+	Behat\Behat\Exception\PendingException,
+	Behat\Behat\Context\Step;
 use Behat\Gherkin\Node\PyStringNode,
 	Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Exception\ResponseTextException;
@@ -33,15 +34,30 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
 	/**
 	 * @When /^I search for patient "([^"]*)"$/
 	 */
-	public function iSearchForPatient($argument1) {
-		$parts = explode(':', $argument1);
-		if (count($parts) == 2) {
+	public function iSearchForPatient($patient) {
+		if (is_numeric($patient)) {
+			$field = str_replace('\\"', '"', "Patient[hos_num]");
+			$value = str_replace('\\"', '"', (int) $patient);
+			$this->getSession()->getPage()->fillField($field, $value);
+
+			$button = str_replace('\\"', '"', "findPatient_details");
+			$this->getSession()->getPage()->pressButton($button);
+		} elseif (strstr($patient, ":")) {
+			$name = explode(":", $patient);
 			$this->getSession()->visit($this->locatePath('/'));
-			$this->getSession()->getPage()->fillField('Patient[first_name]', $parts[0]);
-			$this->getSession()->getPage()->fillField('Patient[last_name]', $parts[1]);
-			$this->getSession()->getPage()->pressButton('findPatient_details');
+
+			$field = str_replace('\\"', '"', "Patient[first_name]");
+			$value = str_replace('\\"', '"', $name[0]);
+			$this->getSession()->getPage()->fillField($field, $value);
+
+			$field = str_replace('\\"', '"', "Patient[last_name]");
+			$value = str_replace('\\"', '"', $name[1]);
+			$this->getSession()->getPage()->fillField($field, $value);
+
+			$button = str_replace('\\"', '"', "findPatient_details");
+			$this->getSession()->getPage()->pressButton($button);
 		} else {
-			throw new ResponseTextException("Argument passed incorrectly, expected 'firstname:surname'", $this->getSession());
+			throw new ResponseTextException("Argument passed incorrectly, expected 'firstname:lastname' OR 'hos_num'", $this->getSession());
 		}
 	}
 
@@ -138,9 +154,9 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
 			$button = str_replace('\\"', '"', "findPatient_details");
 			$this->getSession()->getPage()->pressButton($button);
 		} else {
-			throw new ResponseTextException("Argument passed incorrectly, expected 'firstname:lastname' OR 'id'", $this->getSession());
+			throw new ResponseTextException("Argument passed incorrectly, expected 'firstname:lastname' OR 'hos_num'", $this->getSession());
 		}
-
+		$this->iWaitSeconds("0.5");
 		$actual = parse_url($this->getSession()->getCurrentUrl(), PHP_URL_PATH);
 
 		try {
@@ -189,7 +205,16 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
 	 */
 	public function firmIsSelected($firm) {
 		$firm = str_replace('\\"', '"', $firm);
-		$this->iSelectFirm($firm);
+		
+		$el = $this->getSession()->getPage()->find('css', "#selected_firm_id");
+		if(!$el){
+			throw new exception('Dropdown "'.$field.'" not found on page');
+		}
+		$selectedValue = $el->getValue();
+		$selectedLabel = $el->getSelectedText();
+		if ($selectedValue != $firm && $selectedLabel != $firm) {
+			$this->iSelectFirm($firm);
+		}
 	}
 
 	/**
@@ -198,8 +223,8 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
 	public function iSelectTheRadioButton($radio_label) {
 		$radio_button = $this->getSession()->getPage()->findField($radio_label);
 		if (null === $radio_button) {
-			throw new ElementNotFoundException(
-					$this->getSession(), 'form field', 'id|name|label|value', $field
+			throw new Exception(
+					"Radio button '$radio_label' not found"
 			);
 		}
 		$value = $radio_button->getAttribute('value');
@@ -253,5 +278,115 @@ class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
         $this->getSession()->getPage()->selectFieldOption('selected_firm_id', $firm);
         $this->getSession()->wait(50, '$("#selected_firm_id").trigger("change")');
     }
+	
+    /**
+     * @Given /^patient "([^"]*)" has a scheduled operation booking$/
+     */
+    public function patientHasAScheduledOperationBooking($patient)
+    {
+		$this->firmIsSelected('Aylward Bill (Vitreoretinal)');
+		$this->patientExists($patient);
+		$this->getSession()->getPage()->clickLink('Create or View Episodes and Events');
+		// Ugly! Hopefully will get changed with the new frontend
+		$script = <<<JS
+links = [];
+jQuery('#episodes_sidebar .events li').each(function(){
+	if(jQuery(this).find('.quicklook .event').text() === "Operation"){
+		links.push(jQuery(this).children('a').attr('href'));
+	}
+});
+
+return links;
+JS;
+		$operations = $this->getSession()->evaluateScript($script);
+		
+		if(!empty($operations)){
+			$booked = FALSE;
+			foreach($operations as $link){
+				$this->getSession()->visit($this->locatePath($link));
+				$node = $this->getSession()->getPage()->find('css', '#event_content h3');
+				if(strstr($node->getText(), 'Operation (Scheduled)')){
+					$booked = TRUE;
+					break;
+				}
+			}
+			
+			if($booked){
+				return;
+			}
+		}
+		
+		$this->getSession()->getPage()->pressButton('addNewEvent');
+		$this->getSession()->getPage()->clickLink('Operation');
+
+		$this->iWaitSeconds("5");
+
+		$this->getSession()->getPage()->selectFieldOption('ElementDiagnosis_disorder_id', 'Myopia');
+		$this->getSession()->wait(50, '$("#ElementDiagnosis_disorder_id").trigger("change")');
+
+		$this->getSession()->getPage()->selectFieldOption('select_procedure_id', 'Removal of IOL');
+		$this->getSession()->wait(50, '$("#select_procedure_id").trigger("click").trigger("change").trigger("select")');
+		
+		// Normally defaulted, but bug in OE-Dev
+		$this->checkOption('ElementOperation_anaesthetic_type_id_1');
+		$this->checkOption('ElementOperation_priority_id_1');
+		$this->iWaitSeconds("1");
+		
+		$this->getSession()->wait(50, '$("#scheduleNow").trigger("click")');
+		$this->iWaitSeconds("2");
+
+		$availableSlots = $this->getSession()->getPage()->findAll('css', 'td.available');
+		if(!$availableSlots || count($availableSlots) < 1){
+			do{
+				$this->getSession()->getPage()->pressButton('next_month');
+				$this->iWaitSeconds("2");
+				$availableSlots = $this->getSession()->getPage()->findAll('css', 'td.available');
+			}while (count($availableSlots) < 1);
+		}
+		$slot = $availableSlots[0];
+		$slot->click();
+		$this->iWaitSeconds("2");
+		
+		$timeBlocks = $this->getSession()->getPage()->findAll('css', 'div.timeBlock');
+		if(!$timeBlocks || count($timeBlocks) < 1){
+			throw new exception('not implemented looping through timeblocks yet');
+		}
+		
+		$block = $timeBlocks[0];
+		$block->click();
+		$this->iWaitSeconds("1");
+		$this->getSession()->getPage()->pressButton('confirm_slot');
+		$this->iWaitSeconds("3");
+    }
+	
+    /**
+     * @Given /^patient "([^"]*)" has an episode$/
+     */
+	public function patientHasAnEpisode($patient){
+		new Step\Given("patient '$patient' exists"); // Leave us on the patient summary page
+		
+		// .all-episodes = table row for 'All Episodes'
+		$rows = $this->getSession()->getPage()->findAll('css', '.all-episodes');
+		if(!$rows || count($rows) < 1){
+			throw new ElementNotFoundException($this->getSession(), 'element: .all-episodes ');
+		}
+	}
+	
+
+    /**
+     * @When /^I press the "([^"]*)" key "([^"]*)" times on the "([^"]*)" element/
+     */
+    public function iPressTheKeyTimesOnTheElement($key, $times, $element)
+    {
+        $el = $this->getSession()->getPage()->findField($element);
+		if(!$el){
+			throw new exception('Element "'.$element.'" not found on page');
+		}
+		$el->focus();
+		
+		for($i = 0; $i <= $times; $i++){
+			$el->keyPress($key);
+		}
+    }	
 
 }
