@@ -97,13 +97,16 @@ class ClinicalController extends BaseController
 		$elements = $this->service->getDefaultElements('view', $this->event);
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if (!$this->event->episode->firm) {
 			$editable = false;
 		} else {
-			$editable = true;
+			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+				$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+				$editable = false;
+			} else {
+				$editable = true;
+			}
 		}
-
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$audit = new Audit;
@@ -440,13 +443,15 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if (!$episode->firm) {
 			$editable = false;
 		} else {
-			$editable = true;
+			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+				$editable = false;
+			} else {
+				$editable = true;
+			}
 		}
-
 		$audit = new Audit;
 		$audit->action = "view";
 		$audit->target_type = "episode summary (route 2)";

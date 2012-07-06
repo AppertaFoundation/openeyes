@@ -1,4 +1,4 @@
-<?php echo '<?php '?>
+<?php
 /**
  * OpenEyes
  *
@@ -18,29 +18,19 @@
  */
 
 /**
- * This is the model class for table "<?php if (isset($defaults_table)) echo $defaults_table['name']?>".
+ * This is the model class for table "specialist_type".
  *
- * The followings are the available columns in table:
+ * The followings are the available columns in table 'specialist_type':
  * @property string $id
  * @property string $name
- *
- * The followings are the available model relations:
- *
- * @property ElementType $element_type
- * @property EventType $eventType
- * @property Event $event
- * @property User $user
- * @property User $usermodified
- *
  */
-
-class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends BaseActiveRecord
+class SpecialistType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return the static model class
+	 * @return SpecialistType the static model class
 	 */
-	public static function model($className = __CLASS__)
+	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -50,7 +40,7 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends 
 	 */
 	public function tableName()
 	{
-		return '<?php if (isset($defaults_table)) echo $defaults_table['name']; ?>';
+		return 'specialist_type';
 	}
 
 	/**
@@ -61,14 +51,13 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends 
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('value_id', 'safe'),
-			array('value_id', 'required'),
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on' => 'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
-	
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -77,11 +66,6 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends 
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'element_type' => array(self::HAS_ONE, 'ElementType', 'id','on' => "element_type.class_name='".get_class($this)."'"),
-			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
-			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -91,6 +75,8 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends 
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
+			'name' => 'Name',
 		);
 	}
 
@@ -103,36 +89,13 @@ class <?php if (isset($defaults_table)) echo $defaults_table['class']?> extends 
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria = new CDbCriteria;
+		$criteria=new CDbCriteria;
 
-		$criteria->compare('id', $this->id, true);
-		$criteria->compare('name', $this->name, true);
+		$criteria->compare('id',$this->id,true);
+		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-			));
-	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-	}
-
-	protected function beforeSave()
-	{
-		return parent::beforeSave();
-	}
-
-	protected function afterSave()
-	{
-		return parent::afterSave();
-	}
-
-	protected function beforeValidate()
-	{
-		return parent::beforeValidate();
+			'criteria'=>$criteria,
+		));
 	}
 }
-<?php echo '?>';?>

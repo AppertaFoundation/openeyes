@@ -253,22 +253,21 @@ class BaseEventTypeController extends BaseController
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
-
 		$this->patient = $this->event->episode->patient;
-
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 
 		$elements = $this->getDefaultElements('view');
 
-		// echo "fish"; exit;
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if (!$this->event->episode->firm) {
 			$this->editable = false;
-		} else {
-			$this->editable = true;
+		} else {	
+			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+				$this->editable = false;
+			} else {
+				$this->editable = true;
+			}
 		}
-
 		// Allow elements to override the editable status
 		if ($this->editable) {
 			foreach ($elements as $element) {
@@ -280,7 +279,6 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-
 		$this->logActivity('viewed event');
 
 		$audit = new Audit;
@@ -474,6 +472,7 @@ class BaseEventTypeController extends BaseController
 
 	public function header($editable=null) {
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		if($editable === null){
 			if(isset($this->event)){
@@ -485,6 +484,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
+			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
 			'editable'=>$editable,
@@ -493,9 +493,11 @@ class BaseEventTypeController extends BaseController
 
 	public function footer() {
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
+			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules()
 		));
 	}

@@ -26,28 +26,41 @@
 <?php
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
-		if ($field['type'] == 'Textbox') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Textarea') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Date picker') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Dropdown list') {
-			echo ' * @property integer $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Checkboxes') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Radio buttons') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'Boolean') {
-			echo ' * @property string $' . $field['name'] . "\n";
-		} elseif ($field['type'] == 'EyeDraw') {
-			echo ' * @property string $' . $field['name'] . "\n";
+		switch ($field['type']) {
+			case 'Textbox':
+			case 'Textarea':
+			case 'Date picker':
+				echo ' * @property string $' . $field['name'] . "\n";
+				break;
+			case 'Integer':
+			case 'Dropdown list':
+			case 'Checkbox':
+			case 'Radio buttons':
+			case 'Boolean':
+			case 'Slider':
+				echo ' * @property integer $' . $field['name'] . "\n";
+				break;
+			case 'Textarea with dropdown':
+				echo ' * @property string $' . $field['name'] . "\n";
+				if (@$field['extra_report']) {
+					echo ' * @property string $' . $field['name'] . "2\n";
+				}
+				break;
 		}
 	}
 }
 ?>
  *
  * The followings are the available model relations:
+ *
+ * @property ElementType $element_type
+ * @property EventType $eventType
+ * @property Event $event
+ * @property User $user
+ * @property User $usermodified
+<?php if (isset($element)) foreach ($element['relations'] as $relation) {
+	echo " * @property {$relation['class']} \${$relation['name']}\n";
+}?>
  */
 
 class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEventTypeElement
@@ -100,9 +113,9 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
-			<?php if (isset($element)) foreach ($element['relations'] as $relation) {?>
+<?php if (isset($element)) foreach ($element['relations'] as $relation) {?>
 			'<?php echo $relation['name']?>' => array(self::<?php echo $relation['type']?>, '<?php echo $relation['class']?>', '<?php echo $relation['field']?>'),
-			<?php }?>
+<?php }?>
 		);
 	}
 
@@ -158,7 +171,7 @@ if (isset($element)) {
 	{
 	}
 
-	<?php if (@$element['add_selected_eye']) {?>
+<?php if (@$element['add_selected_eye']) {?>
 	public function getSelectedEye() {
 		if (Yii::app()->getController()->getAction()->id == 'create') {
 			// Get the procedure list and eye from the most recent booking for the episode of the current user's subspecialty
@@ -184,9 +197,9 @@ if (isset($element)) {
 		// Insert your code to retrieve the current eye here
 		return new Eye;
 	}
-	<?php }?>
+<?php }?>
 
-	<?php if (isset($element) && !empty($element['defaults_methods'])) {
+<?php if (isset($element) && !empty($element['defaults_methods'])) {
 		foreach ($element['defaults_methods'] as $default_method) {
 			if (@$default_method['is_defaults_table']) {?>
 	public function get<?php echo $default_method['method']?>() {
@@ -196,7 +209,7 @@ if (isset($element)) {
 		}
 		return $ids;
 	}
-	<?php }else{?>
+<?php }else{?>
 	public function get<?php echo $default_method['method']?>() {
 		$ids = array();
 		foreach (<?php echo $default_method['class']?>::model()->findAll('`default` = ?',array(1)) as $item) {
@@ -204,9 +217,9 @@ if (isset($element)) {
 		}
 		return $ids;
 	}
-		<?}?>
-	<?php }?>
-	<?php }?>
+<?}?>
+<?php }?>
+<?php }?>
 
 	protected function beforeSave()
 	{
@@ -215,7 +228,7 @@ if (isset($element)) {
 
 	protected function afterSave()
 	{
-		<?php if (isset($element) && !empty($element['after_save'])) {
+<?php if (isset($element) && !empty($element['after_save'])) {
 			foreach ($element['after_save'] as $after_save) {
 				if ($after_save['type'] == 'MultiSelect') {?>
 		if (!empty($_POST['<?php echo $after_save['post_var']?>'])) {
@@ -247,7 +260,7 @@ if (isset($element)) {
 				}
 			}
 		}
-				<?php }
+<?php }
 			}
 		}?>
 

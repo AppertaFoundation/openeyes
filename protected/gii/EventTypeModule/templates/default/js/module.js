@@ -6,7 +6,7 @@ $(document).ready(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 
-			<?php if (isset($elements)) { file_put_contents("/tmp/debug",print_r($elements,true)); foreach ($elements as $element) {
+			<?php if (isset($elements)) { foreach ($elements as $element) {
 				foreach ($element['fields'] as $field) {
 					if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {?>
 			if ($('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').length >0) {

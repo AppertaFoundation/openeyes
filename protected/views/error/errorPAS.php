@@ -1,4 +1,4 @@
-<?php echo '<?php '; ?>
+<?php
 /**
  * OpenEyes
  *
@@ -16,16 +16,20 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-<?php echo ' ?>'; ?>
-
-<div class="<?php echo '<?php '; ?>echo $element->elementType->class_name<?php echo '?>'; ?>">
-	<h4 class="elementTypeName"><?php echo '<?php '; ?> echo $element->elementType->name; <?php echo '?>'; ?></h4>
-
-<?php
-	if (isset($element)) {
-		foreach ($element['fields'] as $field) {
-			echo "\t".$this->getHTMLField($field,'create')."\n";
-		}
-	}
 ?>
-</div>
+<?php
+	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
+	$helpdesk_email = Yii::app()->params['helpdesk_email'];
+	$this->layout = 'error';
+?>
+<h3>Merged patient record</h3>
+<p><strong>The patient record you requested cannot be accessed due to an inconsistency in the PAS system.</strong></p>
+<p>Please contact OpenEyes support for assistance:</p>
+<h4>Support Options</h4>
+<ul>
+	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
+	<li>Less urgent issues email <a
+		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
+	</a></li>
+</ul>
+<a href="/">Click here to go back to the search page</a>

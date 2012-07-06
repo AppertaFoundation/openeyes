@@ -84,6 +84,7 @@ class PatientController extends BaseController
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$this->layout = '//layouts/patientMode/main';
 
@@ -108,7 +109,7 @@ class PatientController extends BaseController
 		}
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
 	}
 
@@ -121,6 +122,7 @@ class PatientController extends BaseController
 		$this->episode = $this->event->episode;
 		$this->patient = $this->episode->patient;
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$elements = $this->service->getDefaultElements('view', $this->event);
 
@@ -161,6 +163,7 @@ class PatientController extends BaseController
 
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
+			'legacyepisodes' => $legacyepisodes,
 			'elements' => $elements,
 			'event_template_name' => $event_template_name,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
@@ -406,14 +409,14 @@ class PatientController extends BaseController
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
-
+		$legacyepisodes = $this->patient->legacyepisodes;
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
-
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => empty($episodes) ? false : $episodes[0]
@@ -432,6 +435,7 @@ class PatientController extends BaseController
 		$this->patient = $episode->patient;
 
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
@@ -440,6 +444,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $episode
@@ -576,7 +581,7 @@ class PatientController extends BaseController
 	public function actionPossiblecontacts() {
 		$contacts = array();
 
-		$term = '%'.strtolower(trim($_GET['term'])).'%';
+		$term = strtolower(trim($_GET['term'])).'%';
 
 		$session = Yii::app()->session['PatientContacts'];
 
@@ -584,45 +589,70 @@ class PatientController extends BaseController
 			$where = "parent_class = 'Gp'";
 		} else if (@$_GET['filter'] == 'consultant') {
 			$where = "parent_class = 'Consultant'";
+		} else if (@$_GET['filter'] == 'specialist') {
+			$where = "parent_class = 'Specialist'";
 		} else {
-			$where = "parent_class in ('Consultant','Gp')";
+			$where = "parent_class in ('Consultant','Gp','Specialist')";
 		}
 
 		foreach (Yii::app()->db->createCommand()
 			->select('contact.*')
 			->from('contact')
-			->where("(LOWER(title) LIKE :term or LOWER(first_name) LIKE :term or LOWER(last_name) LIKE :term) AND $where", array(':term' => $term))
+			->where("LOWER(last_name) LIKE :term AND $where", array(':term' => $term))
 			->order('title asc, first_name asc, last_name asc')
 			->queryAll() as $contact) {
 
-			if ($contact['title']) {
-				$line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'];
-			} else {
-				$line = $contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class'];
-			}
+			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
 
 			if ($contact['parent_class'] == 'Consultant') {
 				$institutions = array();
 
+				if ($contact['title']) {
+					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
+				}
+
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
-	$institutions[] = $sca->site->institution_id;
+						$institutions[] = $sca->site->institution_id;
 					}
 
 					$contact_line = $contacts[] = $line.', '.$sca->site->name.')';
 					$session[$contact_line] = array(
-	'contact_id' => $contact['id'],
-	'site_id' => $sca->site_id,
+						'contact_id' => $contact['id'],
+						'site_id' => $sca->site_id,
 					);
 				}
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
 					if (!in_array($ica->institution_id,$institutions)) {
-	$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
-	$session[$contact_line] = array(
-		'contact_id' => $contact['id'],
-		'institution_id' => $ica->institution_id,
-	);
+						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
+						$session[$contact_line] = array(
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
+						);
+					}
+				}
+			} else if ($contact['parent_class'] == 'Specialist') {
+				$sites = array();
+
+				foreach (SiteSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->site_id,$sites)) {
+						if ($contact['title']) {
+							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+						} else {
+							$contact_line = $contact['first_name'].' '.$contact['last_name'];
+						}
+
+						$specialist = Specialist::model()->findByPk($contact['parent_id']);
+
+						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->site->name.")";
+
+						$contacts[] = $contact_line;
+
+						$session[$contact_line] = array(
+							'contact_id' => $contact['id'],
+							'site_id' => $ica->site_id,
+						);
 					}
 				}
 			} else {
@@ -660,11 +690,20 @@ class PatientController extends BaseController
 						throw new Exception("Can't find contact: ".$params['contact_id']);
 					}
 
+					if ($contact->parent_class == 'Specialist') {
+						$specialist = Specialist::model()->findByPk($contact->parent_id);
+						$type = $specialist->specialist_type->name;
+					} else if ($contact->parent_class == 'Consultant') {
+						$type = 'Consultant Ophthalmologist';
+					} else {
+						$type = $contact->parent_class;
+					}
+
 					$data = array(
 						'id' => $contact->id,
 						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
 						'qualifications' => $contact->qualifications,
-						'type' => $contact->parent_class,
+						'type' => $type,
 						'site_id' => '',
 						'institution_id' => '',
 					);

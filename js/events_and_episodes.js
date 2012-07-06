@@ -139,7 +139,7 @@ WidgetSlider.prototype = {
 			}
 		}
 
-		$('#'+this.range_id+'_value_span').text(val);
+		$('#'+this.range_id+'_value_span').text(val+this.append);
 	}
 }
 

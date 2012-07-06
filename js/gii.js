@@ -40,19 +40,85 @@ $(document).ready(function() {
 			}
 		});
 
+		$('select.elementToAddFieldsTo').map(function() {
+			if (m = $(this).attr('name').match(/^elementId([0-9]+)$/)) {
+				if (parseInt(m[1]) > element_num) {
+					element_num = parseInt(m[1]);
+				}
+			}
+		});
+
 		element_num += 1;
+
+		if ($('#EventTypeModuleModeRadioGenerateNew').is(':checked')) {
+			var target = 'elementsGenerateNew';
+		} else {
+			var target = 'elementsModifyExisting';
+		}
 
 		$.ajax({
 			'url': '/gii/EventTypeModule?ajax=element&element_num='+element_num,
 			'type': 'GET',
 			'success': function(data) {
-				$('#elements').append(data);
+				$('#'+target).append(data);
 				$('#elementName'+element_num).focus();
 				return false;
 			}
 		});
 
 		return false;
+	});
+
+	$('.add_field').live('click',function() {
+		var element_num = 0;
+
+		$('input[type="text"]').map(function() {
+			if (m = $(this).attr('name').match(/^elementName([0-9]+)$/)) {
+				if (parseInt(m[1]) > element_num) {
+					element_num = parseInt(m[1]);
+				}
+			}
+		});
+
+		$('select.elementToAddFieldsTo').map(function() {
+			if (m = $(this).attr('name').match(/^elementId([0-9]+)$/)) {
+				if (parseInt(m[1]) > element_num) {
+					element_num = parseInt(m[1]);
+				}
+			}
+		});
+
+		element_num += 1;
+
+		if ($('#EventTypeModuleModeRadioGenerateNew').is(':checked')) {
+			var target = 'elementsGenerateNew';
+		} else {
+			var target = 'elementsModifyExisting';
+		}
+
+		var event_type_id = $('select[name="EventTypeModuleEventType"]').val();
+
+		$.ajax({
+			'url': '/gii/EventTypeModule?ajax=elementfields&element_num='+element_num+'&event_type_id='+event_type_id,
+			'type': 'GET',
+			'success': function(data) {
+				$('#'+target).append(data);
+				$('#elementName'+element_num).focus();
+				return false;
+			}
+		});
+
+		return false;
+	});
+
+	$('.elementToAddFieldsTo').live('change',function() {
+		var id = $(this).attr('name').replace(/^elementId/,'');
+
+		if ($(this).val() == '') {
+			$('input[name="addElementField'+id+'"]').hide();
+		} else {
+			$('input[name="addElementField'+id+'"]').show();
+		}
 	});
 
 	$('.remove_element_field').live('click',function() {
@@ -607,6 +673,62 @@ $(document).ready(function() {
 
 		return false;
 	});
+
+	$('input.EventTypeModuleMode').click(function() {
+		if ($(this).val() == 0) {
+			var view = 'EventTypeModuleGenerate_GenerateNew';
+		} else {
+			var view = 'EventTypeModuleGenerate_ModifyExisting';
+		}
+
+		$.ajax({
+			'type': 'GET',
+			'url': '/gii/EventTypeModule?ajax='+view,
+			'success': function(html) {
+				$('#EventTypeModuleGenerateDiv').html(html);
+				$('input[name="generate"]').remove();
+				$('div.feedback').remove();
+			}
+		});
+	});
+
+	$('select.EventTypeModuleEventType').live('change',function() {
+		if ($(this).val() != '') {
+			$.ajax({
+				'url': '/gii/EventTypeModule?ajax=event_type_properties&event_type_id='+$(this).val(),
+				'type': 'GET',
+				'success': function(html) {
+					$('#EventTypeModuleEventTypeProperties').html(html);
+					$('#EventTypeModuleEventTypeElementTypes').show();
+					$('#EventType_name').select().focus();
+				}
+			});
+		}
+	});
+
+	if ($('#target_event_class').length >0) {
+		$('td.file').map(function() {
+			var path = $(this).children('a').text();
+			var s = path.split('/');
+			var r = new RegExp(s[1],'g');
+			var destination = path.replace(r,$('#target_event_class').val());
+			$(this).parent().after('<tr class="new"><td class="file" style="color: #f00;"> - rename to: '+destination+'</td><td class="confirm">renamed</td></tr>');
+		});
+	}
+
+	if ($('#EventTypeModuleModeRadioModifyExisting').is(':checked')) {
+		$('tr.overwrite').map(function() {
+			var file = $(this).children('td.file').children('a:first').text();
+
+			$(this).children('td.confirm').map(function() {
+				var s = $(this).children('label').attr('for').split('_');
+				$(this).children('input').remove();
+				$(this).append('<input type="checkbox" name="updatefile['+s[1]+']" value="1" checked="checked" />');
+				$(this).append('<input type="hidden" name="filename['+s[1]+']" value="'+file+'" />');
+				$(this).children('label').text('update');
+			});
+		});
+	}
 
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });

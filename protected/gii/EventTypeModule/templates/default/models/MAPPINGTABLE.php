@@ -22,8 +22,20 @@
  *
  * The followings are the available columns in table:
  * @property string $id
+ * @property integer $element_id
+<?php if (isset($mapping_table)) {?>
+ * @property integer $<?php echo $mapping_table['lookup_table']?>_id
+<?php }?>
  *
  * The followings are the available model relations:
+ *
+<?php if (isset($mapping_table)) {?>
+ * @property <?php echo $mapping_table['element_class']?> $element
+ * @property <?php echo $mapping_table['lookup_class']?> $<?php echo $mapping_table['lookup_table']?>
+
+<?php }?>
+ * @property User $user
+ * @property User $usermodified 
  */
 
 class <?php if (isset($mapping_table)) echo $mapping_table['class']?> extends BaseActiveRecord
