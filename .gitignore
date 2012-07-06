@@ -23,5 +23,5 @@ protected/tests/test_results/
 protected/views/elements/ElementExample/
 tags
 index.php
-
+features/cache/
 e0_Com_contacts.html
