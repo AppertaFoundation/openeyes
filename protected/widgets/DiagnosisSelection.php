@@ -22,6 +22,7 @@ class DiagnosisSelection extends BaseCWidget {
 	public $options;
 	public $class;
 	public $form;
+	public $label;
 
 	public function run() {
 		$this->class = get_class($this->element);
@@ -33,18 +34,22 @@ class DiagnosisSelection extends BaseCWidget {
 
 				if (!empty($diagnosis->disorder)) {
 					// There is a diagnosis for this episode
-					$this->value = $diagnosis->disorder->term;
+					$this->value = $diagnosis->disorder->id;
+					$this->label = $diagnosis->disorder->term;
 				}
 			} else {
 				if (isset($this->element->disorder)) {
-					$this->value = $this->element->disorder->term;
+					$this->value = $this->element->disorder->id;
+					$this->label = $this->element->disorder->term;
 				}
 			}
 		} else {
 			$this->value = $_POST[$this->class][$this->field];
+			if($disorder = Disorder::model()->findByPk($this->value)) {
+				$this->label = $disorder->term;
+			}
 		}
 
 		parent::run();
 	}
 }
-?>
