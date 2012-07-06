@@ -165,10 +165,11 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
-	 * Get the principle diagnosis for this episode
-	 * @return ElementDiagnosis
+	 * Get the principal diagnosis for this episode
+	 * @fixme this needs rewriting to account for multiple diagnosis element types
+	 * @return mixed
 	 */
-	public function getPrincipalDiagnosis() {
+	protected function getPrincipalDiagnosis() {
 		$result = Yii::app()->db->createCommand()
 			->select('ed.id AS id')
 			->from('element_diagnosis ed')
@@ -187,18 +188,33 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
+	public function hasPrincipalDiagnosis() {
+		$diagnosis = $this->getPrincipalDiagnosis();
+		return ($diagnosis != null);
+	}
+	
 	/**
-	 * Get the principle eye for this episode
+	 * Get the principal disorder for this episode
+	 * @return Disorder
+	 */
+	public function getPrincipalDisorder() {
+		if($diagnosis = $this->getPrincipalDiagnosis()) {
+			return $diagnosis->disorder;
+		}
+	}
+	
+	/**
+	 * Get the principal eye for this episode
 	 * @return Eye
 	 */
-	public function getPrincipleEye() {
+	public function getPrincipalEye() {
 		if($diagnosis = $this->getPrincipalDiagnosis()) {
 			return $diagnosis->eye;
 		}
 	}
 	
 	public function getPrincipalDiagnosisEyeText() {
-		if ($eye = $this->getPrincipleEye()) {
+		if ($eye = $this->getPrincipalEye()) {
 			return $eye->name;
 		} else {
 			return 'none';
@@ -206,8 +222,8 @@ class Episode extends BaseActiveRecord
 	}
 
 	public function getPrincipalDiagnosisDisorderTerm() {
-		if ($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->disorder->term;
+		if ($disorder = $this->getPrincipalDisorder()) {
+			return $disorder->term;
 		} else {
 			return 'none';
 		}

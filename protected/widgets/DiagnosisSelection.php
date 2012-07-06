@@ -18,6 +18,7 @@
  */
 
 class DiagnosisSelection extends BaseCWidget {
+	
 	public $selectedFirmId;
 	public $options;
 	public $class;
@@ -26,16 +27,17 @@ class DiagnosisSelection extends BaseCWidget {
 
 	public function run() {
 		$this->class = get_class($this->element);
-
 		if (empty($_POST)) {
 			if (empty($this->element->event_id)) {
 				// It's a new event so fetch the most recent element_diagnosis
-				$diagnosis = $this->element->getNewestDiagnosis(Yii::app()->getController()->patient);
-
-				if (!empty($diagnosis->disorder)) {
+				$firmId = Yii::app()->session['selected_firm_id'];
+				$firm = Firm::model()->findByPk($firmId);
+				$patientId = Yii::app()->getController()->patient->id;
+				$episode = Episode::getCurrentEpisodeByFirm($patientId, $firm);
+				if ($disorder = $episode->getPrincipalDisorder()) {
 					// There is a diagnosis for this episode
-					$this->value = $diagnosis->disorder->id;
-					$this->label = $diagnosis->disorder->term;
+					$this->value = $disorder->id;
+					$this->label = $disorder->term;
 				}
 			} else {
 				if (isset($this->element->disorder)) {
@@ -49,7 +51,7 @@ class DiagnosisSelection extends BaseCWidget {
 				$this->label = $disorder->term;
 			}
 		}
-
 		parent::run();
 	}
+	
 }
