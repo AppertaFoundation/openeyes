@@ -1,7 +1,20 @@
 default:
-  context:
-    parameters:
+  extensions:
+    Behat\MinkExtension\Extension:
+      selenium2:
+        browser: chrome
+      selenium: ~
+      sahi: ~
+      zombie: ~
       base_url: http://openeyes-dev.adrian.local/
-      browser: chrome
-      default_session: webdriver
-      javascript_session: webdriver
+      default_session: selenium2
+      javascript_session: selenium2
+  paths:
+    features:  /Volumes/CaseSensitive/www/openeyes-dev/features
+    bootstrap: %behat.paths.features%/bootstrap
+annotations:
+  paths:
+    features: %behat.paths.features%/annotations
+closures:
+  paths:
+    features: %behat.paths.features%/closures

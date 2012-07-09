@@ -14,12 +14,12 @@ use Behat\Mink\Exception\ResponseTextException;
 //
 require_once 'PHPUnit/Autoload.php';
 require_once 'PHPUnit/Framework/Assert/Functions.php';
-require_once 'mink/autoload.php';
+//require_once 'mink/vendor/autoload.php';
 
 /**
  * Features context.
  */
-class FeatureContext extends Behat\Mink\Behat\Context\MinkContext {
+class FeatureContext extends Behat\MinkExtension\Context\MinkContext {
 
 	/**
 	 * Initializes context.
