@@ -18,7 +18,7 @@
  */
 
 if (!empty($episode)) {
-	if ($episode->hasDiagnosis()) {
+	if ($episode->hasPrincipalDiagnosis()) {
 		$eye = $episode->getPrincipalDiagnosisEyeText();
 		$diagnosis = $episode->getPrincipalDiagnosisDisorderTerm();
 	} else {

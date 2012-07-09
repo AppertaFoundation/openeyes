@@ -34,7 +34,7 @@ class DiagnosisSelection extends BaseCWidget {
 				$firm = Firm::model()->findByPk($firmId);
 				$patientId = Yii::app()->getController()->patient->id;
 				$episode = Episode::getCurrentEpisodeByFirm($patientId, $firm);
-				if ($disorder = $episode->getPrincipalDisorder()) {
+				if ($episode && $disorder = $episode->getPrincipalDisorder()) {
 					// There is a diagnosis for this episode
 					$this->value = $disorder->id;
 					$this->label = $disorder->term;

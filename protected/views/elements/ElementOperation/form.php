@@ -16,31 +16,31 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
+?>
+<?php
+if ($this->action->id == 'create' && empty($_POST)) {
+	$model->setDefaultOptions();
+}
 if (!$model->site_id) {
 	$model->site_id = Yii::app()->request->cookies['site_id']->value;
 }
-
-if (!$model->eye_id) {
-	$model->eye_id = 1;
-}
 ?>
-					<script type="text/javascript" src="/js/element_operation.js"></script>
-					<h4>Procedure</h4>
+<script type="text/javascript" src="/js/element_operation.js"></script>
+<h4>Procedure</h4>
 
-					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
+<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
-					<?php $form->widget('application.widgets.ProcedureSelection',array(
-						'element' => $model,
-						'newRecord' => $newRecord,
-						'durations' => true
-					));
-					?>
+<?php $form->widget('application.widgets.ProcedureSelection',array(
+	'element' => $model,
+	'newRecord' => $newRecord,
+	'durations' => true
+));
+?>
 
-					<?php echo $form->radioBoolean($model, 'consultant_required')?>
-					<?php echo $form->radioButtons($model, 'anaesthetic_type_id', 'anaesthetic_type');?>
-					<?php echo $form->radioBoolean($model, 'overnight_stay')?>
-					<?php echo $form->dropDownList($model, 'site_id', CHtml::listData(Site::model()->findAll(array('order' => 'short_name')), 'id', 'short_name'))?>
-					<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
-					<?php echo $form->datePicker($model, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
-					<?php echo $form->textArea($model, 'comments', array('rows'=>4,'cols'=>50))?>
+<?php echo $form->radioBoolean($model, 'consultant_required')?>
+<?php echo $form->radioButtons($model, 'anaesthetic_type_id', 'anaesthetic_type');?>
+<?php echo $form->radioBoolean($model, 'overnight_stay')?>
+<?php echo $form->dropDownList($model, 'site_id', CHtml::listData(Site::model()->findAll(array('order' => 'short_name')), 'id', 'short_name'))?>
+<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
+<?php echo $form->datePicker($model, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
+<?php echo $form->textArea($model, 'comments', array('rows'=>4,'cols'=>50))?>

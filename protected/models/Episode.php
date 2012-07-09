@@ -166,26 +166,31 @@ class Episode extends BaseActiveRecord
 
 	/**
 	 * Get the principal diagnosis for this episode
-	 * @fixme this needs rewriting to account for multiple diagnosis element types
 	 * @return mixed
 	 */
 	protected function getPrincipalDiagnosis() {
-		$result = Yii::app()->db->createCommand()
-			->select('ed.id AS id')
-			->from('element_diagnosis ed')
-			->join('event ev', 'ed.event_id = ev.id')
-			->join('episode ep', 'ev.episode_id = ep.id')
-			->where('ep.id = :ep_id', array(
-				':ep_id' => $this->id
-			))
-			->order('ed.id DESC')
-			->queryRow();
-
-		if (empty($result)) {
-			return null;
-		} else {
-			return ElementDiagnosis::model()->findByPk($result['id']);
+		$element_classes = array(
+				'' => 'ElementDiagnosis',
+				'OphCiExamination' => 'Element_OphCiExamination_Diagnosis',
+		);
+		$diagnosis = null;
+		foreach($element_classes as $element_module => $element_class) {
+			if($element_module) {
+				$element_model = ModuleAPI::getmodel($element_module, $element_class);
+			} else {
+				$element_model = ModuleAPI::getmodel($element_module, $element_class);
+			}
+			$criteria = new CDbCriteria();
+			$criteria->join = 'JOIN event ev ON t.event_id = ev.id';
+			$criteria->addCondition('ev.episode_id = :episode_id');
+			$criteria->params = array(':episode_id' => $this->id);
+			$criteria->order = 't.created_date DESC, t.id DESC';
+			$element = $element_model->find($criteria);
+			if($element && (!$diagnosis || strtotime($element->created_date) > strtotime($diagnosis->created_date))) {
+				$diagnosis = $element;
+			}
 		}
+		return $diagnosis;
 	}
 
 	public function hasPrincipalDiagnosis() {

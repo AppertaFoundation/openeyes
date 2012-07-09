@@ -40,7 +40,7 @@ class DisorderController extends Controller {
 	 * Lists all disorders for a given search term.
 	 */
 	public function actionAutocomplete() {
-		//if(Yii::app()->request->isAjaxRequest) {
+		if(Yii::app()->request->isAjaxRequest) {
 			$criteria = new CDbCriteria();
 			$params = array();
 			if(isset($_GET['term']) && $term = $_GET['term']) {
@@ -49,6 +49,8 @@ class DisorderController extends Controller {
 			}
 			$criteria->order = 'term';
 			$criteria->params = $params;
+			// Limit results
+			$criteria->limit = '200';
 			$disorders = Disorder::model()->findAll($criteria);
 			$return = array();
 			foreach($disorders as $disorder) {
@@ -59,22 +61,20 @@ class DisorderController extends Controller {
 				);
 			}
 			echo CJSON::encode($return);
-		//}
+		}
 	}
+
 	public function actionDetails() {
 		if (!isset($_REQUEST['name'])) {
 			echo CJavaScript::jsonEncode(false);
-			return;
+		} else {
+			$disorder = Disorder::model()->find('fully_specified_name = ? OR term = ?', array($_REQUEST['name'], $_REQUEST['name']));
+			if($disorder) {
+				echo $disorder->id;
+			} else {
+				echo CJavaScript::jsonEncode(false);
+			}
 		}
-
-		$disorder = Disorder::model()->find('fully_specified_name = ? OR term = ?', array($_REQUEST['name'], $_REQUEST['name']));
-
-		if (!isset($disorder)) {
-			echo CJavaScript::jsonEncode(false);
-			return;
-		}
-
-		echo $disorder->id;
 	}
 
 }
