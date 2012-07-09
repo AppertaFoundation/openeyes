@@ -559,4 +559,16 @@ class Patient extends BaseActiveRecord {
 		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
 		$command->execute();
 	}
+
+	public function getAdm() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
+
+		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+			if ($booking = $eo->booking) {
+				return $booking->session->NHSDate('date');
+			}
+		}
+	}
 }
