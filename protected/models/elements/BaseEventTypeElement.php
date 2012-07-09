@@ -44,10 +44,6 @@ class BaseEventTypeElement extends BaseElement
 		return false;
 	}
 
-	function getElementType() {
-		return ElementType::model()->find('class_name=? and event_type_id=?', array(get_class($this),$this->event->event_type_id));
-	}
-
 	function render($action) {
 		$this->Controller->renderPartial();
 	}
