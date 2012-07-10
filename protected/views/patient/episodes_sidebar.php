@@ -1,11 +1,10 @@
 <div id="episodes_sidebar">
 	<?php if (is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
-	<div class="episode clearfix" style="display:block;border: 1px solid red;">
+	<div class="episode clearfix" style="display:block;">
 <div class="patient_actions">
-		<span class="aBtn"><a class="episode showhide" href="#"><span
-				class="hide"></span> </a> </span>
 	</div>
 		<div class="episode_nav" style="background-color:#eee">
+		<span class="aBtn"><a class="episode sprite showhide" href="#"><span class="hide"></span> </a> </span>
 			<div class="small"></div>
 			<h4 style="color:#999;">Legacy events</h4>
 			<ul class="events">
