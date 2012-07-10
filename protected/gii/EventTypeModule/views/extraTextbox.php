@@ -1,7 +1,7 @@
 <div style="margin-top: 8px;">
 	<table>
 		<tr>
-			<td>Size:</td>
+			<td>Field size:</td>
 			<td><input type="text" id="textBoxSize<?php echo $element_num?>Field<?php echo $field_num?>" name="textBoxSize<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo empty($_POST) ? '10' : @$_POST['textBoxSize'.$element_num.'Field'.$field_num]?>" /></td>
 		</tr>
 		<?php if (isset($this->form_errors['textBoxSize'.$element_num.'Field'.$field_num])) {?>
