@@ -1,4 +1,5 @@
 $(document).ready(function() {
+	/*
 	$('input[name^="sliderMinValue"]').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^sliderMinValue([0-9]+)Field([0-9]+)$/);
 		var element = m[1];
@@ -54,4 +55,5 @@ $(document).ready(function() {
 	$('input[name^="sliderForceDP"]').die('keypress').live('keypress',function(e) {
 		return (e.keyCode != 13);
 	});
+	*/
 });

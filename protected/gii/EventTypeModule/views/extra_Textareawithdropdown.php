@@ -2,7 +2,7 @@
 	<table>
 		<tr>
 			<td>Rows:</td>
-			<td><input type="text" id="textAreaDropDownRows<?php echo $element_num?>Field<?php echo $field_num?>" name="textAreaDropDownRows<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo empty($_POST) ? '6' : @$_POST['textAreaDropDownRows'.$element_num.'Field'.$field_num]?>" /></td>
+			<td><input type="text" class="returnnext" id="textAreaDropDownRows<?php echo $element_num?>Field<?php echo $field_num?>" name="textAreaDropDownRows<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo empty($_POST) ? '6' : @$_POST['textAreaDropDownRows'.$element_num.'Field'.$field_num]?>" /></td>
 		</tr>
 		<?php if (isset($this->form_errors['textAreaDropDownRows'.$element_num.'Field'.$field_num])) {?>
 			<tr>

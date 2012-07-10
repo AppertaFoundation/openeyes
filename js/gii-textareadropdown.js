@@ -1,17 +1,4 @@
 $(document).ready(function() {
-	$('input[id^="textAreaDropDownRows"]').die('keypress').live('keypress',function(e) {
-		var m = $(this).attr('id').match(/^textAreaDropDownRows([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
-		if (e.keyCode == 13) {
-			$('#textAreaDropDownCols'+element+'Field'+field).select().focus();
-			return false;
-		}
-
-		return true;
-	});
-
 	$('input[id^="textAreaDropDownCols"]').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('id').match(/^textAreaDropDownCols([0-9]+)Field([0-9]+)$/);
 		var element = m[1];

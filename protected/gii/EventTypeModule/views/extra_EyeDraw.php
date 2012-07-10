@@ -29,7 +29,7 @@ closedir($dh);
 		<?php }?>
 	</div>
 	<div style="height: 0.4em;"></div>
-	Size: <input type="text" name="eyedrawSize<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo @$_POST['eyedrawSize'.$element_num.'Field'.$field_num]?>" /><br/>
+	Size: <input type="text" class="noreturn" name="eyedrawSize<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo @$_POST['eyedrawSize'.$element_num.'Field'.$field_num]?>" /><br/>
 	<?php if (isset($this->form_errors['eyedrawSize'.$element_num.'Field'.$field_num])) {?>
 		<span style="color: #f00;"><?php echo $this->form_errors['eyedrawSize'.$element_num.'Field'.$field_num]?></span><br/>
 	<?php }?>

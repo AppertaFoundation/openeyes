@@ -266,6 +266,19 @@ $(document).ready(function() {
 		$('div.buttons').after('<span style="color: #f00;">Please fix the errors indicated in red above.</span>');
 	}
 
+	$('input.noreturn').die('keypress').live('keypress',function(e) {
+		return (e.keyCode != 13);
+	});
+
+	$('input.returnnext').die('keypress').live('keypress',function(e) {
+		if (e.keyCode == 13) {
+			$(this).parent().parent().next().children('td:nth-child(2)').children('input').select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
 

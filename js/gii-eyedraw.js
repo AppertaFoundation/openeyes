@@ -1,8 +1,4 @@
 $(document).ready(function() {
-	$('input[name^="eyedrawSize"]').die('keypress').live('keypress',function(e) {
-		return (e.keyCode != 13);
-	});
-
 	$('.eyeDrawClassSelect').live('change',function() {
 		var m = $(this).attr('name').match(/^eyedrawClass([0-9]+)Field([0-9]+)$/);
 		var element = m[1];
