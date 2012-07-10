@@ -1,4 +1,12 @@
 <script type="text/javascript" src="/js/gii.js"></script>
+<?php
+$dh = opendir("js");
+while ($file = readdir($dh)) {
+	if (preg_match('/^gii-.*\.js$/',$file)) {?>
+<script type="text/javascript" src="/js/<?php echo $file?>"></script>
+<?php } }
+closedir($dh);
+?>
 
 <h1>Event type module Generator</h1>
 
