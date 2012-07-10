@@ -391,6 +391,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['textbox_size'] = @$_POST['textBoxSize'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['textbox_max_length'] = @$_POST['textBoxMaxLength'.$number.'Field'.$field_number];
 						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea') {
+							$elements[$number]['fields'][$field_number]['textarea_rows'] = @$_POST['textAreaRows'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textarea_cols'] = @$_POST['textAreaCols'.$number.'Field'.$field_number];
+						}
 					}
 				}
 			}
@@ -1134,6 +1139,26 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						}
 					}
 				}
+				if ($value == 'Textarea') {
+					if (strlen(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows is required";
+					} else {
+						if (!ctype_digit(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]])) {
+							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be an integer";
+						} else if (@$_POST['textAreaRows'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols is required";
+					} else {
+						if (!ctype_digit(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]])) {
+							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be an integer";
+						} else if (@$_POST['textAreaCols'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be 1 or greater";
+						}
+					}
+				}
 			}
 
 			if (preg_match('/^dropDownMethod([0-9]+)Field([0-9]+)$/',$key,$m)) {
@@ -1163,7 +1188,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Integer':
 				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['integer_size'].'\''.($field['integer_max_length'] ? ',\'maxlength\' => \''.$field['integer_max_length'].'\'' : '').'))?'.'>';
 			case 'Textarea':
-				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
+				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
 			case 'Date picker':
 				return '<?php echo $form->datePicker($element, \''.$field['name'].'\', array(\'maxDate\' => \'today\'), array(\'style\'=>\'width: 110px;\'))?'.'>';
 			case 'Dropdown list':

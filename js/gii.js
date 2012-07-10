@@ -172,6 +172,10 @@ $(document).ready(function() {
 				});
 				break;
 			case 'Textarea':
+				loadExtraFieldView('extraTextArea',element,field,function() {
+					$('#textAreaRows'+element+'Field'+field).select().focus();
+				});
+				break;
 			case 'Date picker':
 			case 'Dropdown list':
 			case 'Checkbox':
