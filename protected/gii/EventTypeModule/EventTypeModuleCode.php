@@ -378,6 +378,12 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['slider_stepping'] = @$_POST['sliderStepping'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_dp'] = @$_POST['sliderForceDP'.$number.'Field'.$field_number];
 						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Integer') {
+							$elements[$number]['fields'][$field_number]['integer_min_value'] = @$_POST['integerMinValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_max_value'] = @$_POST['integerMaxValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
+						}
 					}
 				}
 			}
@@ -855,7 +861,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Boolean':
 				return "tinyint(1) unsigned NOT NULL DEFAULT 0";
 			case 'Integer':
-				return "int(10) unsigned NOT NULL DEFAULT 0";
+				$default = $field['integer_default_value'] ? " DEFAULT {$field['integer_default_value']}" : ' DEFAULT 0';
+				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
 				return "varchar(4096) COLLATE utf8_bin NOT NULL";
 			case 'Multi select':
@@ -1057,8 +1064,32 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					} else if (!preg_match('/^[0-9\.]+$/',$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) || $_POST['sliderStepping'.$m[1].'Field'.$m[2]] == 0) {
 						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Must be a positive integer or floating point number";
 					}
-					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !preg_match('/^[0-9]+$/',$_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
+					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !ctype_digit($_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
 						$errors['sliderForceDP'.$m[1].'Field'.$m[2]] = "Must be a positive integer";
+					}
+				}
+				if ($value == 'Integer') {
+					if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMinValue'.$m[1].'Field'.$m[2]] = "Minimum value must be an integer";
+						}
+					}
+					if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMaxValue'.$m[1].'Field'.$m[2]] = "Maximum value must be an integer";
+						}
+					}
+					if (strlen(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be an integer";
+						} else {
+							if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] < @$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) {
+								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be >= minimum value";
+							}
+							if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] > @$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) {
+								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be <= maximum value";
+							}
+						}
 					}
 				}
 			}

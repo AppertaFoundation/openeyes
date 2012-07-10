@@ -157,8 +157,14 @@ $(document).ready(function() {
 				loadExtraFieldView('extraMultiSelect',element,field);
 				break;
 			case 'Slider':
-				loadExtraFieldView('extraSlider',element,field);
-				$('#sliderMinValue'+element+'Field'+field).select().focus();
+				loadExtraFieldView('extraSlider',element,field,function() {
+					$('#sliderMinValue'+element+'Field'+field).select().focus();
+				});
+				break;
+			case 'Integer':
+				loadExtraFieldView('extraInteger',element,field,function() {
+					$('#integerMinValue'+element+'Field'+field).select().focus();
+				});
 				break;
 			case 'Textbox':
 			case 'Textarea':
@@ -731,6 +737,11 @@ $(document).ready(function() {
 		});
 	}
 
+	if ($('#has_errors').val() == 1) {
+		$('input[name="generate"]').hide();
+		$('div.buttons').after('<span style="color: #f00;">Please fix the errors indicated in red above.</span>');
+	}
+
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
 
@@ -748,13 +759,13 @@ function loadExtraFieldView(view_name,element,field,callback) {
 }
 
 function selectSort(a, b) {
-		if (a.innerHTML == rootItem) {
-				return -1;
-		}
-		else if (b.innerHTML == rootItem) {
-				return 1;
-		}
-		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+	if (a.innerHTML == rootItem) {
+		return -1;
+	}
+	else if (b.innerHTML == rootItem) {
+		return 1;
+	}
+	return (a.innerHTML > b.innerHTML) ? 1 : -1;
 };
 
 var rootItem = null;
