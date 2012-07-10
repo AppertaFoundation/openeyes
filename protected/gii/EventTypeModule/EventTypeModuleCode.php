@@ -383,6 +383,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['integer_min_value'] = @$_POST['integerMinValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_max_value'] = @$_POST['integerMaxValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_size'] = @$_POST['integerSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_max_length'] = @$_POST['integerMaxLength'.$number.'Field'.$field_number];
 						}
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Textbox') {
@@ -850,7 +852,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public function getDBFieldSQLType($field) {
 		switch ($field['type']) {
 			case 'Textbox':
-				return "varchar(255) DEFAULT \'\'";
+				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
+				return "varchar($size) DEFAULT \'\'";
 			case 'Textarea':
 				return "text DEFAULT \'\'";
 			case 'Date picker':
@@ -866,7 +869,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Boolean':
 				return "tinyint(1) unsigned NOT NULL DEFAULT 0";
 			case 'Integer':
-				$default = $field['integer_default_value'] ? " DEFAULT {$field['integer_default_value']}" : ' DEFAULT 0';
+				$default = strlen($field['integer_default_value'])>0 ? " DEFAULT {$field['integer_default_value']}" : '';
 				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
 				return "varchar(4096) COLLATE utf8_bin NOT NULL";
@@ -1096,6 +1099,22 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					}
+					if (strlen(@$_POST['integerSize'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size is required";
+					} else {
+						if (!ctype_digit(@$_POST['integerSize'.$m[1].'Field'.$m[2]])) {
+							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
+						} else if ($_POST['integerSize'.$m[1].'Field'.$m[2]] <1) {
+							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['integerMaxLength'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit($_POST['integerMaxLength'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
+						} else if ($_POST['integerMaxLength'.$m[1].'Field'.$m[2]] <1) {
+							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
+						}
+					}
 				}
 				if ($value == 'Textbox') {
 					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
@@ -1142,7 +1161,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Textbox':
 				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['textbox_size'].'\''.($field['textbox_max_length'] ? ',\'maxlength\' => \''.$field['textbox_max_length'].'\'' : '').'))?'.'>';
 			case 'Integer':
-				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \'10\'))?'.'>';
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['integer_size'].'\''.($field['integer_max_length'] ? ',\'maxlength\' => \''.$field['integer_max_length'].'\'' : '').'))?'.'>';
 			case 'Textarea':
 				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
 			case 'Date picker':

@@ -36,5 +36,29 @@
 				</td>
 			</tr>
 		<?php }?>
+		<tr>
+			<td>Field size:</td>
+			<td><input type="text" id="integerSize<?php echo $element_num?>Field<?php echo $field_num?>" name="integerSize<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo empty($_POST) ? '10' : @$_POST['integerSize'.$element_num.'Field'.$field_num]?>" /></td>
+		</tr>
+		<?php if (isset($this->form_errors['integerSize'.$element_num.'Field'.$field_num])) {?>
+			<tr>
+				<td></td>
+				<td>
+					<span style="color: #f00;"><?php echo $this->form_errors['integerSize'.$element_num.'Field'.$field_num]?></span>
+				</td>
+			</tr>
+		<?php }?>
+		<tr>
+			<td>Max length:</td>
+			<td><input type="text" id="integerMaxLength<?php echo $element_num?>Field<?php echo $field_num?>" name="integerMaxLength<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo @$_POST['integerMaxLength'.$element_num.'Field'.$field_num]?>" /></td>
+		</tr>
+		<?php if (isset($this->form_errors['integerMaxLength'.$element_num.'Field'.$field_num])) {?>
+			<tr>
+				<td></td>
+				<td>
+					<span style="color: #f00;"><?php echo $this->form_errors['integerMaxLength'.$element_num.'Field'.$field_num]?></span>
+				</td>
+			</tr>
+		<?php }?>
 	</table>
 </div>
