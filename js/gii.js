@@ -136,53 +136,18 @@ $(document).ready(function() {
 		var element = m[1];
 		var field = m[2];
 
-		var selected = $(this).children('option:selected').text();
-
-		switch (selected) {
-			case 'Dropdown list':
-				loadExtraFieldView('extraDropdownList',element,field);
-				break;
-			case 'Textarea with dropdown':
-				loadExtraFieldView('extraTextAreaWithDropdown',element,field,function() {
-					$('#textAreaDropDownRows'+element+'Field'+field).select().focus();
-				});
-				break;
-			case 'EyeDraw':
-				loadExtraFieldView('extraEyedraw',element,field);
-				break;
-			case 'Radio buttons':
-				loadExtraFieldView('extraRadioButtons',element,field);
-				break;
-			case 'Multi select':
-				loadExtraFieldView('extraMultiSelect',element,field);
-				break;
-			case 'Slider':
-				loadExtraFieldView('extraSlider',element,field,function() {
-					$('#sliderMinValue'+element+'Field'+field).select().focus();
-				});
-				break;
-			case 'Integer':
-				loadExtraFieldView('extraInteger',element,field,function() {
-					$('#integerMinValue'+element+'Field'+field).select().focus();
-				});
-				break;
-			case 'Textbox':
-				loadExtraFieldView('extraTextbox',element,field,function() {
-					$('#textBoxSize'+element+'Field'+field).select().focus();
-				});
-				break;
-			case 'Textarea':
-				loadExtraFieldView('extraTextArea',element,field,function() {
-					$('#textAreaRows'+element+'Field'+field).select().focus();
-				});
-				break;
-			case 'Date picker':
-			case 'Dropdown list':
-			case 'Checkbox':
-			case 'Boolean':
-				$('#extraDataElement'+element+'Field'+field).html('');
-				break;
-		}
+		$.ajax({
+			'url': '/gii/EventTypeModule?ajax=extra_'+$(this).children('option:selected').text().replace(/ /g,'')+'&element_num='+element+'&field_num='+field,
+			'type': 'GET',
+			'success': function(html) {
+				if (html.length >0) {
+					$('#extraDataElement'+element+'Field'+field).html(html);
+					$('#extraDataElement'+element+'Field'+field+' input[type="text"]:first').select().focus();
+				} else {
+					$('#extraDataElement'+element+'Field'+field).html('');
+				}
+			}
+		});
 
 		return true;
 	});
@@ -193,9 +158,9 @@ $(document).ready(function() {
 		var field = m[2];
 
 		if ($(this).val() == 0) {
-			var view = 'extraDropdownListEnterValues';
+			var view = 'extra_Dropdownlist_entervalues';
 		} else {
-			var view = 'extraDropdownListPointAtSQLTable';
+			var view = 'extra_Dropdownlist_pointatsqltable';
 		}
 
 		$.ajax({
@@ -814,9 +779,9 @@ $(document).ready(function() {
 		var field = m[2];
 
 		if ($(this).val() == 0) {
-			var view = 'extraRadioButtonEnterValues';
+			var view = 'extra_Radiobuttons_entervalues';
 		} else {
-			var view = 'extraRadioButtonPointAtSQLTable';
+			var view = 'extra_Radiobuttons_pointatsqltable';
 		}
 
 		$.ajax({
@@ -835,9 +800,9 @@ $(document).ready(function() {
 		var field = m[2];
 
 		if ($(this).val() == 0) {
-			var view = 'extraMultiSelectEnterValues';
+			var view = 'extra_Multiselect_entervalues';
 		} else {
-			var view = 'extraMultiSelectPointAtSQLTable';
+			var view = 'extra_Multiselect_pointatsqltable';
 		}
 
 		$.ajax({
@@ -968,19 +933,6 @@ $(document).ready(function() {
 
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
-
-function loadExtraFieldView(view_name,element,field,callback) {
-	$.ajax({
-		'url': '/gii/EventTypeModule?ajax='+view_name+'&element_num='+element+'&field_num='+field,
-		'type': 'GET',
-		'success': function(html) {
-			$('#extraDataElement'+element+'Field'+field).html(html);
-			if (callback) {
-				callback();
-			}
-		}
-	});
-}
 
 function selectSort(a, b) {
 	if (a.innerHTML == rootItem) {

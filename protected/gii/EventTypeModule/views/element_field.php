@@ -24,32 +24,8 @@
 	<input type="checkbox" name="isRequiredField<?php echo $element_num?>_<?php echo $field_num?>" value="1" <?php if (empty($_POST) || @$_POST['isRequiredField'.$element_num.'_'.$field_num]) {?> checked="checked" <?php }?>/> Required<br/>
 
 	<div id="extraDataElement<?php echo $element_num?>Field<?php echo $field_num?>">
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Dropdown list') {
-			$this->renderPartial('extraDropdownList',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Textarea with dropdown') {
-			$this->renderPartial('extraTextAreaWithDropdown',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Radio buttons') {
-			$this->renderPartial('extraRadioButtons',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'EyeDraw') {
-			$this->renderPartial('extraEyedraw',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Multi select') {
-			$this->renderPartial('extraMultiSelect',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Slider') {
-			$this->renderPartial('extraSlider',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Integer') {
-			$this->renderPartial('extraInteger',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Textbox') {
-			$this->renderPartial('extraTextbox',array('element_num'=>$element_num,'field_num'=>$field_num));
-		}?>
-		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Textarea') {
-			$this->renderPartial('extraTextArea',array('element_num'=>$element_num,'field_num'=>$field_num));
+		<?php if (file_exists("protected/gii/EventTypeModule/views/extra_".str_replace(" ","",@$_POST['elementType'.$element_num.'FieldType'.$field_num]).".php")) {
+			$this->renderPartial('extra_'.str_replace(" ","",@$_POST['elementType'.$element_num.'FieldType'.$field_num]));
 		}?>
 	</div>
 

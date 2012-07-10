@@ -919,9 +919,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			} else if ($_GET['ajax'] == 'event_type_properties') {
 				EventTypeModuleCode::eventTypeProperties($_GET['event_type_id']);
 			} else {
-				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+				if (file_exists("protected/gii/EventTypeModule/views/{$_GET['ajax']}.php")) {
+					Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+				}
 			}
-			exit;
+			Yii::app()->end();
 		}
 
 		if (!empty($_POST)) {

@@ -10,9 +10,9 @@
 	<div style="height: 0.4em;"></div>
 	<div id="multiSelectMethodFields<?php echo $element_num?>Field<?php echo $field_num?>">
 		<?php if (@$_POST['multiSelectMethod'.$element_num.'Field'.$field_num] === '0') {
-			$this->renderPartial('extraMultiSelectEnterValues',array('element_num'=>$element_num,'field_num'=>$field_num));
+			$this->renderPartial('extraMultiselect_entervalues',array('element_num'=>$element_num,'field_num'=>$field_num));
 		} else if (@$_POST['multiSelectMethod'.$element_num.'Field'.$field_num] === '1') {
-			$this->renderPartial('extraMultiSelectPointAtSQLTable',array('element_num'=>$element_num,'field_num'=>$field_num));
+			$this->renderPartial('extraMultiselect_pointatsqltable',array('element_num'=>$element_num,'field_num'=>$field_num));
 		}?>
 	</div>
 </div>
