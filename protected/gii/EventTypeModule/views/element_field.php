@@ -45,6 +45,9 @@
 		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Integer') {
 			$this->renderPartial('extraInteger',array('element_num'=>$element_num,'field_num'=>$field_num));
 		}?>
+		<?php if (@$_POST['elementType'.$element_num.'FieldType'.$field_num] == 'Textbox') {
+			$this->renderPartial('extraTextbox',array('element_num'=>$element_num,'field_num'=>$field_num));
+		}?>
 	</div>
 
 	<?php if (isset($this->form_errors['elementName'.$element_num.'FieldName'.$field_num])) {?>

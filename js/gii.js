@@ -167,6 +167,10 @@ $(document).ready(function() {
 				});
 				break;
 			case 'Textbox':
+				loadExtraFieldView('extraTextbox',element,field,function() {
+					$('#textBoxSize'+element+'Field'+field).select().focus();
+				});
+				break;
 			case 'Textarea':
 			case 'Date picker':
 			case 'Dropdown list':

@@ -384,6 +384,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['integer_max_value'] = @$_POST['integerMaxValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
 						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textbox') {
+							$elements[$number]['fields'][$field_number]['textbox_size'] = @$_POST['textBoxSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textbox_max_length'] = @$_POST['textBoxMaxLength'.$number.'Field'.$field_number];
+						}
 					}
 				}
 			}
@@ -1092,6 +1097,24 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						}
 					}
 				}
+				if ($value == 'Textbox') {
+					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size is required";
+					} else {
+						if (!ctype_digit(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]])) {
+							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
+						} else if ($_POST['textBoxSize'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]])) {
+							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
+						} else if ($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
+						}
+					}
+				}
 			}
 
 			if (preg_match('/^dropDownMethod([0-9]+)Field([0-9]+)$/',$key,$m)) {
@@ -1117,6 +1140,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		switch ($field['type']) {
 			case 'Textbox':
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['textbox_size'].'\''.($field['textbox_max_length'] ? ',\'maxlength\' => \''.$field['textbox_max_length'].'\'' : '').'))?'.'>';
 			case 'Integer':
 				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \'10\'))?'.'>';
 			case 'Textarea':
