@@ -636,6 +636,7 @@ $(document).ready(function() {
 					switch(selected) {
 						case 'Buckle':
 						case 'Cataract':
+						case 'Vitrectomy':
 							if (!$('#eyeDrawExtraReportFieldDiv'+element+'Field'+field).html().match(/eyedrawExtraReport/)) {
 								$('#eyeDrawExtraReportFieldDiv'+element+'Field'+field).html('<input type="checkbox" name="eyedrawExtraReport'+element+'Field'+field+'" value="1" /> Store eyedraw report data in hidden input<br/>');
 							}

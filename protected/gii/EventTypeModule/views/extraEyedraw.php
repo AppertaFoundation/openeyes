@@ -24,7 +24,7 @@ closedir($dh);
 	<?php }?>
 	<div style="height: 0.4em;"></div>
 	<div id="eyeDrawExtraReportFieldDiv<?php echo $element_num?>Field<?php echo $field_num?>">
-		<?php if (in_array(@$_POST['eyedrawClass'.$element_num.'Field'.$field_num],array('Cataract','Buckle'))) {?>
+		<?php if (in_array(@$_POST['eyedrawClass'.$element_num.'Field'.$field_num],array('Cataract','Buckle','Vitrectomy'))) {?>
 			<input type="checkbox" name="eyedrawExtraReport<?php echo $element_num?>Field<?php echo $field_num?>" value="1"<?php if (@$_POST['eyedrawExtraReport'.$element_num.'Field'.$field_num]){?> checked="checked"<?php }?> /> Store eyedraw report data in hidden input<br/>
 		<?php }?>
 	</div>
