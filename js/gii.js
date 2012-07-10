@@ -144,7 +144,7 @@ $(document).ready(function() {
 				break;
 			case 'Textarea with dropdown':
 				loadExtraFieldView('extraTextAreaWithDropdown',element,field,function() {
-					$('input[name="textAreaDropDownFieldValue'+element+'Field'+field+'_1"]').select().focus();
+					$('#textAreaDropDownRows'+element+'Field'+field).select().focus();
 				});
 				break;
 			case 'EyeDraw':
@@ -326,7 +326,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.dropDownFieldValueTextInput').live('keypress',function(e) {
+	$('.dropDownFieldValueTextInput').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^dropDownFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
 		var element = m[1];
 		var field = m[2];
@@ -339,7 +339,223 @@ $(document).ready(function() {
 		return true;
 	});
 
-	$('.radioButtonFieldValueTextInput').live('keypress',function(e) {
+	$('input[id^="textAreaDropDownRows"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('id').match(/^textAreaDropDownRows([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#textAreaDropDownCols'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[id^="textAreaDropDownCols"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('id').match(/^textAreaDropDownCols([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('input[name="textAreaDropDownFieldValue'+element+'Field'+field+'_1"]').select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[id^="textAreaRows"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('id').match(/^textAreaRows([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#textAreaCols'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[id^="textAreaCols"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('id').match(/^textAreaCols([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+		
+		if (e.keyCode == 13) {
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="eyedrawSize"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^eyedrawSize([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="integerMinValue"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^integerMinValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#integerMaxValue'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="integerMaxValue"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^integerMaxValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#integerDefaultValue'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="integerDefaultValue"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^integerDefaultValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#integerSize'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="textBoxSize"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^textBoxSize([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#textBoxMaxLength'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="textBoxMaxLength"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^textBoxMaxLength([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="integerSize"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^integerSize([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#integerMaxLength'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="integerMaxLength"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^integerMaxLength([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="sliderMinValue"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^sliderMinValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#sliderMaxValue'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="sliderMaxValue"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^sliderMaxValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#sliderDefaultValue'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+	
+	$('input[name^="sliderDefaultValue"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^sliderDefaultValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#sliderStepping'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="sliderStepping"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^sliderStepping([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			$('#sliderForceDP'+element+'Field'+field).select().focus();
+			return false;
+		}
+
+		return true;
+	});
+
+	$('input[name^="sliderForceDP"]').die('keypress').live('keypress',function(e) {
+		var m = $(this).attr('name').match(/^sliderForceDP([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+
+		if (e.keyCode == 13) {
+			return false;
+		}
+
+		return true;
+	});
+
+	$('.radioButtonFieldValueTextInput').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^radioButtonFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
 		var element = m[1];
 		var field = m[2];
@@ -352,7 +568,7 @@ $(document).ready(function() {
 		return true;
 	});
 
-	$('.multiSelectFieldValueTextInput').live('keypress',function(e) {
+	$('.multiSelectFieldValueTextInput').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^multiSelectFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
 		var element = m[1];
 		var field = m[2];
@@ -387,7 +603,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('.elementNameTextField').live('keypress',function(e) {
+	$('.elementNameTextField').die('keypress').live('keypress',function(e) {
 		var element = $(this).attr('name').match(/[0-9]+/);
 
 		if (e.keyCode == 13) {
@@ -398,7 +614,7 @@ $(document).ready(function() {
 		return true;
 	});
 
-	$('.fieldLabel').live('keypress',function(e) {
+	$('.fieldLabel').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^elementName([0-9]+)FieldLabel([0-9]+)$/);
 		var element = m[1];
 		var field = m[2];
@@ -427,7 +643,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('.fieldName').live('keypress',function(e) {
+	$('.fieldName').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^elementName([0-9]+)FieldName([0-9]+)$/);
 		var element = m[1];
 		var field = m[2];
@@ -474,7 +690,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('.textAreaDropDownFieldValueTextInput').live('keypress',function(e) {
+	$('.textAreaDropDownFieldValueTextInput').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^textAreaDropDownFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
 		var element = m[1];
 		var field = m[2];

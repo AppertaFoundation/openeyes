@@ -1,5 +1,31 @@
 <div style="margin-top: 8px;">
-	<div id="textAreaDropDownMethodFields<?php echo $element_num?>Field<?php echo $field_num?>">
+	<table>
+		<tr>
+			<td>Rows:</td>
+			<td><input type="text" id="textAreaDropDownRows<?php echo $element_num?>Field<?php echo $field_num?>" name="textAreaDropDownRows<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo empty($_POST) ? '6' : @$_POST['textAreaDropDownRows'.$element_num.'Field'.$field_num]?>" /></td>
+		</tr>
+		<?php if (isset($this->form_errors['textAreaDropDownRows'.$element_num.'Field'.$field_num])) {?>
+			<tr>
+				<td></td>
+				<td>
+					<span style="color: #f00;"><?php echo $this->form_errors['textAreaDropDownRows'.$element_num.'Field'.$field_num]?></span>
+				</td>
+			</tr>
+		<?php }?>
+		<tr>
+			<td>Columns:</td>
+			<td><input type="text" id="textAreaDropDownCols<?php echo $element_num?>Field<?php echo $field_num?>" name="textAreaDropDownCols<?php echo $element_num?>Field<?php echo $field_num?>" value="<?php echo empty($_POST) ? '80' : @$_POST['textAreaDropDownCols'.$element_num.'Field'.$field_num]?>" /></td>
+		</tr>
+		<?php if (isset($this->form_errors['textAreaDropDownCols'.$element_num.'Field'.$field_num])) {?>
+			<tr>
+				<td></td>
+				<td>
+					<span style="color: #f00;"><?php echo $this->form_errors['textAreaDropDownCols'.$element_num.'Field'.$field_num]?></span>
+				</td>
+			</tr>
+		<?php }?>
+	</table>
+	<div id="textAreaDropDownDropDownMethodFields<?php echo $element_num?>Field<?php echo $field_num?>">
 		<div id="textAreaDropDownFieldValues<?php echo $element_num?>Field<?php echo $field_num?>">
 			<?php if (isset($_POST['textAreaDropDownFieldValue'.$element_num.'Field'.$field_num.'_1'])) {
 				foreach ($_POST as $key => $value) {
