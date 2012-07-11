@@ -36,11 +36,11 @@ $(document).ready(function(){
 		var whiteBox = $(this).parents('.whiteBox');
 		
 		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fase",'swing');
+			whiteBox.children('.data_row').slideUp("fast",'swing');
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			whiteBox.children('.data_row').slideDown("fase",'swing');
+			whiteBox.children('.data_row').slideDown("fast",'swing');
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}
@@ -53,13 +53,20 @@ $(document).ready(function(){
 		var events = $('ul.events');
 	 
 		if(sprite.hasClass('hide')) {
-			small.children().slideUp('fase','swing');
-			events.children().slideUp('fase','swing');
+			events.children('li').slideUp('fast','swing');
+			small.slideUp('fast','swing');
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			small.children().slideDown('fase','swing');
-			events.children().slideDown('fase','swing');
+			small.slideDown('fast','swing');
+			events.children('li').slideDown('fast','swing',function() {
+				events.children('li').map(function() {
+					if ($(this).children('div:nth-child(2)').hasClass('viewing')) {
+						$(this).children('div:nth-child(2)').removeClass('viewing');
+						$(this).children('div:nth-child(2)').addClass('viewing');
+					}
+				});
+			});
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}
