@@ -843,6 +843,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .aBtn a.sprite.showhide > .show { background-position: bottom left; }
 .aBtn a:hover.sprite.showhide > .show { background-position: bottom right; }
 
+.aBtn a.sprite.showhide2 > span { display:inline-block; width:11px; height:11px; background:transparent url(../img/_elements/icons/_sprites/showhide2_icon.png) no-repeat top left; }
+.aBtn a.sprite.showhide2 > .hide { background-position: top left; }
+.aBtn a:hover.sprite.showhide2 > .hide { background-position: top right; }
+.aBtn a.sprite.showhide2 > .show { background-position: bottom left; }
+.aBtn a:hover.sprite.showhide2 > .show { background-position: bottom right; }
+
 
 /* PATIENT HUB VIEW / EDIT */
 .patient_actions { position:absolute; top:0; right:0; }

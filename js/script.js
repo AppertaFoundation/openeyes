@@ -45,4 +45,23 @@ $(document).ready(function(){
 			sprite.addClass('hide');
 		}
 	});
+
+	$('.sprite.showhide2').click( function(e){
+		e.preventDefault();
+		var sprite = $(this).children('span');
+		var small = $('div.episodeDate');
+		var events = $('ul.events');
+	 
+		if(sprite.hasClass('hide')) {
+			small.children().slideUp('fase','swing');
+			events.children().slideUp('fase','swing');
+			sprite.removeClass('hide');
+			sprite.addClass('show');
+		} else {
+			small.children().slideDown('fase','swing');
+			events.children().slideDown('fase','swing');
+			sprite.removeClass('show');
+			sprite.addClass('hide');
+		}
+	});
 });
