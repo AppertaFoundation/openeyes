@@ -583,8 +583,6 @@ class PatientController extends BaseController
 
 		$term = strtolower(trim($_GET['term'])).'%';
 
-		$session = Yii::app()->session['PatientContacts'];
-
 		if (@$_GET['filter'] == 'gp') {
 			$where = "parent_class = 'Gp'";
 		} else if (@$_GET['filter'] == 'consultant') {
@@ -616,8 +614,8 @@ class PatientController extends BaseController
 						$institutions[] = $sca->site->institution_id;
 					}
 
-					$contact_line = $contacts[] = $line.', '.$sca->site->name.')';
-					$session[$contact_line] = array(
+					$contacts[] = array(
+						'line' => $line.', '.$sca->site->name.')',
 						'contact_id' => $contact['id'],
 						'site_id' => $sca->site_id,
 					);
@@ -625,8 +623,9 @@ class PatientController extends BaseController
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
 					if (!in_array($ica->institution_id,$institutions)) {
-						$contact_line = $contacts[] = $line.', '.$ica->institution->name.')';
-						$session[$contact_line] = array(
+
+						$contacts[] = array(
+							'line' => $line.', '.$ica->institution->name.')',
 							'contact_id' => $contact['id'],
 							'institution_id' => $ica->institution_id,
 						);
@@ -647,9 +646,8 @@ class PatientController extends BaseController
 
 						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->site->name.")";
 
-						$contacts[] = $contact_line;
-
-						$session[$contact_line] = array(
+						$contacts[] = array(
+							'line' => $contact_line,
 							'contact_id' => $contact['id'],
 							'site_id' => $ica->site_id,
 						);
@@ -658,8 +656,8 @@ class PatientController extends BaseController
 			} else {
 				$contact = Contact::model()->findByPk($contact['id']);
 
-				$contact_line = $contacts[] = $line.($contact->address ? ', '.$contact->address->address1 : '').')';
-				$session[$contact_line] = array(
+				$contacts[] = array(
+					'line' => $line.($contact->address ? ', '.$contact->address->address1 : '').')',
 					'contact_id' => $contact['id'],
 				);
 			}
@@ -667,113 +665,96 @@ class PatientController extends BaseController
 
 		sort($contacts);
 
-		Yii::app()->session['PatientContacts'] = $session;
-
 		echo CJavaScript::jsonEncode($contacts);
 	}
 
 	public function actionAssociatecontact() {
-		$session = Yii::app()->session['PatientContacts'];
-
-		if (!@$_GET['text']) {
-			throw new Exception('Missing text value');
-		}
-
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception('Patient not found: '.@$_GET['patient_id']);
 		}
 
-		if (is_array($session)) {
-			foreach ($session as $text => $params) {
-				if ($text == @$_GET['text']) {
-					if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
-						throw new Exception("Can't find contact: ".$params['contact_id']);
-					}
+		$params = $_GET;
 
-					if ($contact->parent_class == 'Specialist') {
-						$specialist = Specialist::model()->findByPk($contact->parent_id);
-						$type = $specialist->specialist_type->name;
-					} else if ($contact->parent_class == 'Consultant') {
-						$type = 'Consultant Ophthalmologist';
-					} else {
-						$type = $contact->parent_class;
-					}
-
-					$data = array(
-						'id' => $contact->id,
-						'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
-						'qualifications' => $contact->qualifications,
-						'type' => $type,
-						'site_id' => '',
-						'institution_id' => '',
-					);
-
-					if (isset($params['site_id'])) {
-						$data['location'] = Site::model()->findByPk($params['site_id'])->name;
-						$data['site_id'] = $params['site_id'];
-					} else if (isset($params['institution_id'])) {
-						$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
-						$data['institution_id'] = $params['institution_id'];
-					} else if ($contact->address) {
-						$data['location'] = $contact->address->address1;
-					}
-
-					foreach ($data as $key => $value) {
-						if ($value == null) {
-							$data[$key] = '';
-						}
-					}
-
-					if ($contact->parent_class == 'Gp') {
-						$gp = Gp::model()->findByPk($contact->parent_id);
-						if ($patient->gp->id == $gp->id) {
-							echo json_encode(array());
-							return;
-						}
-					}
-
-					$whereClause = 'patient_id=? and contact_id=?';
-					$whereParams = array($patient->id,$contact->id);
-
-					if (isset($params['site_id'])) {
-						$whereClause .= ' and site_id=?';
-						$whereParams[] = $params['site_id'];
-					}
-					if (isset($params['institution_id'])) {
-						$whereClause .= ' and institution_id=?';
-						$whereParams[] = $params['institution_id'];
-					}
-
-					if (!$pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
-						$pca = new PatientContactAssignment;
-						$pca->patient_id = $patient->id;
-						$pca->contact_id = $contact->id;
-						if (isset($params['site_id'])) {
-							$pca->site_id = $params['site_id'];
-						}
-						if (isset($params['institution_id'])) {
-							$pca->institution_id = $params['institution_id'];
-						}
-						$pca->save();
-
-						$audit = new Audit;
-						$audit->action = "associate-contact";
-						$audit->target_type = "patient";
-						$audit->patient_id = $patient->id;
-						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-						$audit->data = $pca->getAuditAttributes();
-						$audit->save();
-					}
-
-					echo json_encode($data);
-					return;
-				}
-			}
-
-			throw new Exception('Contact not found: '.@$_GET['text']);
+		if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
+			throw new Exception("Can't find contact: ".$params['contact_id']);
 		}
 
-		throw new Exception('No contacts found in the session.');
+		if ($contact->parent_class == 'Specialist') {
+			$specialist = Specialist::model()->findByPk($contact->parent_id);
+			$type = $specialist->specialist_type->name;
+		} else if ($contact->parent_class == 'Consultant') {
+			$type = 'Consultant Ophthalmologist';
+		} else {
+			$type = $contact->parent_class;
+		}
+
+		$data = array(
+			'id' => $contact->id,
+			'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
+			'qualifications' => $contact->qualifications,
+			'type' => $type,
+			'site_id' => '',
+			'institution_id' => '',
+		);
+
+		if (isset($params['site_id'])) {
+			$data['location'] = Site::model()->findByPk($params['site_id'])->name;
+			$data['site_id'] = $params['site_id'];
+		} else if (isset($params['institution_id'])) {
+			$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
+			$data['institution_id'] = $params['institution_id'];
+		} else if ($contact->address) {
+			$data['location'] = $contact->address->address1;
+		}
+
+		foreach ($data as $key => $value) {
+			if ($value == null) {
+				$data[$key] = '';
+			}
+		}
+
+		if ($contact->parent_class == 'Gp') {
+			$gp = Gp::model()->findByPk($contact->parent_id);
+			if ($patient->gp->id == $gp->id) {
+				echo json_encode(array());
+				return;
+			}
+		}
+
+		$whereClause = 'patient_id=? and contact_id=?';
+		$whereParams = array($patient->id,$contact->id);
+
+		if (isset($params['site_id'])) {
+			$whereClause .= ' and site_id=?';
+			$whereParams[] = $params['site_id'];
+		}
+		if (isset($params['institution_id'])) {
+			$whereClause .= ' and institution_id=?';
+			$whereParams[] = $params['institution_id'];
+		}
+
+		if (!$pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
+			$pca = new PatientContactAssignment;
+			$pca->patient_id = $patient->id;
+			$pca->contact_id = $contact->id;
+			if (isset($params['site_id'])) {
+				$pca->site_id = $params['site_id'];
+			}
+			if (isset($params['institution_id'])) {
+				$pca->institution_id = $params['institution_id'];
+			}
+			$pca->save();
+
+			$audit = new Audit;
+			$audit->action = "associate-contact";
+			$audit->target_type = "patient";
+			$audit->patient_id = $patient->id;
+			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+			$audit->data = $pca->getAuditAttributes();
+			$audit->save();
+		}
+
+		echo json_encode($data);
 	}
 
 	public function actionUnassociatecontact() {
