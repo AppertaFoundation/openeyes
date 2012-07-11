@@ -76,6 +76,9 @@ class Institution extends BaseActiveRecord
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Institution'",
 			),
+			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
+				'order' => 'name asc',
+			),
 		);
 	}
 
