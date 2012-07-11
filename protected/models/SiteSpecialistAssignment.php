@@ -31,7 +31,7 @@
  * @property FirmUserAssignment[] $firmUserAssignments
  * @property LetterPhrase[] $letterPhrases
  */
-class Institution extends BaseActiveRecord
+class SiteSpecialistAssignment extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -47,7 +47,7 @@ class Institution extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'institution';
+		return 'site_specialist_assignment';
 	}
 
 	/**
@@ -58,10 +58,10 @@ class Institution extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, code', 'required'),
+			array('site_id, specialist_id', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, code', 'safe', 'on'=>'search'),
+			array('id, site_id, specialist_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,12 +73,7 @@ class Institution extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Institution'",
-			),
-			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
-				'order' => 'name asc',
-			),
+			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 		);
 	}
 
@@ -108,15 +103,5 @@ class Institution extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	public function getLetterAddress() {
-		$address = "$this->name\n";
-
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray(false));
-		}
-
-		return $address;
 	}
 }

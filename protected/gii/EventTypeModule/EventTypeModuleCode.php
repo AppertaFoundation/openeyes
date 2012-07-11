@@ -357,6 +357,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea with dropdown') {
 							$elements = $this->extraElementFieldWrangling_TextareaWithDropdown($elements, $number, $field_number, $fields_value);
+							$elements[$number]['fields'][$field_number]['textarea_rows'] = @$_POST['textAreaDropDownRows'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textarea_cols'] = @$_POST['textAreaDropDownCols'.$number.'Field'.$field_number];
 						}
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Radio buttons') {
@@ -377,6 +379,24 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['slider_default_value'] = @$_POST['sliderDefaultValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_stepping'] = @$_POST['sliderStepping'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_dp'] = @$_POST['sliderForceDP'.$number.'Field'.$field_number];
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Integer') {
+							$elements[$number]['fields'][$field_number]['integer_min_value'] = @$_POST['integerMinValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_max_value'] = @$_POST['integerMaxValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_size'] = @$_POST['integerSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_max_length'] = @$_POST['integerMaxLength'.$number.'Field'.$field_number];
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textbox') {
+							$elements[$number]['fields'][$field_number]['textbox_size'] = @$_POST['textBoxSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textbox_max_length'] = @$_POST['textBoxMaxLength'.$number.'Field'.$field_number];
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea') {
+							$elements[$number]['fields'][$field_number]['textarea_rows'] = @$_POST['textAreaRows'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textarea_cols'] = @$_POST['textAreaCols'.$number.'Field'.$field_number];
 						}
 					}
 				}
@@ -839,7 +859,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public function getDBFieldSQLType($field) {
 		switch ($field['type']) {
 			case 'Textbox':
-				return "varchar(255) DEFAULT \'\'";
+				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
+				return "varchar($size) DEFAULT \'\'";
 			case 'Textarea':
 				return "text DEFAULT \'\'";
 			case 'Date picker':
@@ -855,7 +876,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Boolean':
 				return "tinyint(1) unsigned NOT NULL DEFAULT 0";
 			case 'Integer':
-				return "int(10) unsigned NOT NULL DEFAULT 0";
+				$default = strlen($field['integer_default_value'])>0 ? " DEFAULT {$field['integer_default_value']}" : '';
+				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
 				return "varchar(4096) COLLATE utf8_bin NOT NULL";
 			case 'Multi select':
@@ -897,9 +919,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			} else if ($_GET['ajax'] == 'event_type_properties') {
 				EventTypeModuleCode::eventTypeProperties($_GET['event_type_id']);
 			} else {
-				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+				if (file_exists("protected/gii/EventTypeModule/views/{$_GET['ajax']}.php")) {
+					Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+				}
 			}
-			exit;
+			Yii::app()->end();
 		}
 
 		if (!empty($_POST)) {
@@ -1057,8 +1081,86 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					} else if (!preg_match('/^[0-9\.]+$/',$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) || $_POST['sliderStepping'.$m[1].'Field'.$m[2]] == 0) {
 						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Must be a positive integer or floating point number";
 					}
-					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !preg_match('/^[0-9]+$/',$_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
+					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !ctype_digit($_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
 						$errors['sliderForceDP'.$m[1].'Field'.$m[2]] = "Must be a positive integer";
+					}
+				}
+				if ($value == 'Integer') {
+					if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMinValue'.$m[1].'Field'.$m[2]] = "Minimum value must be an integer";
+						}
+					}
+					if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMaxValue'.$m[1].'Field'.$m[2]] = "Maximum value must be an integer";
+						}
+					}
+					if (strlen(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be an integer";
+						} else {
+							if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] < @$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) {
+								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be >= minimum value";
+							}
+							if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] > @$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) {
+								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be <= maximum value";
+							}
+						}
+					}
+					if (strlen(@$_POST['integerSize'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size is required";
+					} else {
+						if (!ctype_digit(@$_POST['integerSize'.$m[1].'Field'.$m[2]])) {
+							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
+						} else if ($_POST['integerSize'.$m[1].'Field'.$m[2]] <1) {
+							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['integerMaxLength'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit($_POST['integerMaxLength'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
+						} else if ($_POST['integerMaxLength'.$m[1].'Field'.$m[2]] <1) {
+							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
+						}
+					}
+				}
+				if ($value == 'Textbox') {
+					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size is required";
+					} else {
+						if (!ctype_digit(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]])) {
+							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
+						} else if ($_POST['textBoxSize'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]])) {
+							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
+						} else if ($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
+						}
+					}
+				}
+				if ($value == 'Textarea') {
+					if (strlen(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows is required";
+					} else {
+						if (!ctype_digit(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]])) {
+							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be an integer";
+						} else if (@$_POST['textAreaRows'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols is required";
+					} else {
+						if (!ctype_digit(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]])) {
+							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be an integer";
+						} else if (@$_POST['textAreaCols'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be 1 or greater";
+						}
 					}
 				}
 			}
@@ -1086,17 +1188,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		switch ($field['type']) {
 			case 'Textbox':
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['textbox_size'].'\''.($field['textbox_max_length'] ? ',\'maxlength\' => \''.$field['textbox_max_length'].'\'' : '').'))?'.'>';
 			case 'Integer':
-				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \'10\'))?'.'>';
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['integer_size'].'\''.($field['integer_max_length'] ? ',\'maxlength\' => \''.$field['integer_max_length'].'\'' : '').'))?'.'>';
 			case 'Textarea':
-				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
+				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
 			case 'Date picker':
 				return '<?php echo $form->datePicker($element, \''.$field['name'].'\', array(\'maxDate\' => \'today\'), array(\'style\'=>\'width: 110px;\'))?'.'>';
 			case 'Dropdown list':
 				return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'- Please select -\')' : '').')?'.'>';
 			case 'Textarea with dropdown':
 				return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>'."\n".
-					'<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
+					'<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
 			case 'Checkbox':
 				return '<?php echo $form->checkBox($element, \''.$field['name'].'\')?'.'>';
 			case 'Radio buttons':

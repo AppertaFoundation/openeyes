@@ -18,24 +18,17 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "specialist_type".
  *
- * The followings are the available columns in table 'firm':
+ * The followings are the available columns in table 'specialist_type':
  * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
  * @property string $name
- *
- * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
  */
-class Institution extends BaseActiveRecord
+class SpecialistType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return SpecialistType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -47,7 +40,7 @@ class Institution extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'institution';
+		return 'specialist_type';
 	}
 
 	/**
@@ -58,10 +51,10 @@ class Institution extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, code', 'required'),
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, code', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,12 +66,6 @@ class Institution extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Institution'",
-			),
-			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
-				'order' => 'name asc',
-			),
 		);
 	}
 
@@ -88,6 +75,8 @@ class Institution extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
+			'name' => 'Name',
 		);
 	}
 
@@ -108,15 +97,5 @@ class Institution extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	public function getLetterAddress() {
-		$address = "$this->name\n";
-
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray(false));
-		}
-
-		return $address;
 	}
 }

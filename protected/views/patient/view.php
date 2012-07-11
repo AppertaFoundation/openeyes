@@ -185,7 +185,20 @@ if (!empty($address)) {
 													<?php echo str_replace(',','',$pca->contact->address->address1)?>
 												<?php }?>
 											</td>
-											<td><?php echo $pca->contact->parent_class?></td>
+											<td>
+												<?php
+												switch ($pca->contact->parent_class) {
+													case 'Specialist':
+														echo Specialist::model()->findByPk($pca->contact->parent_id)->specialist_type->name;
+														break;
+													case 'Consultant':
+														echo 'Consultant Ophthalmologist';
+														break;
+													default:
+														echo $pca->contact->parent_class;
+												}
+												?>
+											</td>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
 										</tr>
 									<?php }?>
@@ -203,6 +216,8 @@ if (!empty($address)) {
 
 									var filter = $('#contactfilter').val();
 
+									$('img.loader').show();
+
 									$.ajax({
 										'url': '" . Yii::app()->createUrl('patient/possiblecontacts') . "',
 										'type':'GET',
@@ -212,14 +227,19 @@ if (!empty($address)) {
 
 											var result = [];
 
+											contactCache = {};
+
 											for (var i = 0; i < data.length; i++) {
-												var index = $.inArray(data[i], currentContacts);
+												var index = $.inArray(data[i]['line'], currentContacts);
 												if (index == -1) {
-													result.push(data[i]);
+													result.push(data[i]['line']);
+													contactCache[data[i]['line']] = data[i];
 												}
 											}
 
 											response(result);
+
+											$('img.loader').hide();
 										}
 									});
 								}",
@@ -230,10 +250,20 @@ if (!empty($address)) {
 
 										$('#contactname').val('');
 
+										var querystr = 'patient_id=".$this->patient->id."&contact_id='+contactCache[value]['contact_id'];
+
+										if (contactCache[value]['site_id']) {
+											querystr += '&site_id='+contactCache[value]['site_id'];
+										}
+
+										if (contactCache[value]['institution_id']) {
+											querystr += '&institution_id'+contactCache[value]['institution_id'];
+										}
+
 										$.ajax({
 											'type': 'GET',
 											'dataType': 'json',
-											'url': '/patient/associatecontact?patient_id=".$this->patient->id."&text='+value,
+											'url': '/patient/associatecontact?'+querystr,
 											'success': function(data) {
 												if (data[\"name\"]) {
 													$('#patient_contacts').append('<tr><td><span class=\"large\">'+data[\"name\"]+'</span><br />'+data[\"qualifications\"]+'</td><td>'+data[\"location\"]+'</td><td>'+data[\"type\"]+'<td colspan=\"2\" align=\"right\"><a id=\"removecontact'+data[\"id\"]+'_'+data[\"site_id\"]+'_'+data[\"institution_id\"]+'\" href=\"#\" class=\"small\"><strong>Remove</strong></a></td></tr>');
@@ -259,10 +289,12 @@ if (!empty($address)) {
 							&nbsp;&nbsp;
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
-								<option value="consultant">Ophthalmologist</option>
+								<option value="consultant">Consultant Ophthalmologist</option>
 								<option value="specialist">Non-ophthalmic specialist</option>
 								<option value="gp">GP</option>
 							</select>
+							&nbsp;
+							<img src="/img/ajax-loader.gif" class="loader" alt="loading..." style="display: none;" />
 						</div>
 					</div>
 				</div>
@@ -360,14 +392,28 @@ if (!empty($address)) {
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
-					<?php if ($pca->site) {?>
-						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->site->name.')';?>");
+					<?php if ($pca->site) {
+						switch ($pca->contact->parent_class) {
+							case 'Specialist':
+								$type = Specialist::model()->findByPk($pca->contact->parent_id)->specialist_type->name;
+								break;
+							case 'Consultant':
+								$type = 'Consultant Ophthalmologist';
+								break;
+							default:
+								$type = $pca->contact->parent_class;
+								break;
+						}
+						?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$type.', '.$pca->site->name.')';?>");
 					<?php } else if ($pca->institution) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
 					<?php } else {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->address1 : '').')';?>");
 					<?php }?>
 				<?php }?>
+
+				var contactCache = {};
 			</script>
 			<?php
 			function filter_nulls($data) {
