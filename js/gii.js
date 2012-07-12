@@ -282,6 +282,57 @@ $(document).ready(function() {
 	$('#EventTypeModuleCode_moduleSuffix').focus();
 });
 
+$.fn.extend({
+	ajaxCall: function(ajaxMethod, values, callback) {
+		var m = this.getFieldProperties();
+
+		if (m) {
+			var giiElement = m[1];
+			var giiField = m[2];
+
+			var queryStr = '/gii/EventTypeModule?ajax='+ajaxMethod+'&element_num='+giiElement+'&field_num='+giiField;
+
+			if (values) {
+				for (var key in values) {
+					queryStr += '&'+key+'='+values[key];
+				}
+			}
+
+			$('.loader').show();
+
+			$.ajax({
+				'url': queryStr,
+				'type': 'GET',
+				'success': function(html) {
+					if (callback) {
+						callback(html,giiElement,giiField);
+						$('.loader').hide();
+					}
+				}
+			});
+		}
+	},
+	getFieldProperties: function() {
+		var m = $(this).attr('name').match(/^[a-zA-Z]+([0-9]+)Field([0-9]+)_([0-9]+)$/);
+		if (!m) {
+			var m = $(this).attr('name').match(/^[a-zA-Z]+([0-9]+)Field([0-9]+)$/);
+		}
+		return m;
+	},
+	getElement: function() {
+		var m = this.getFieldProperties();
+		if (m) {
+			return m[1];
+		}
+	},
+	getField: function() {
+		var m = this.getFieldProperties();
+		if (m) {
+			return m[2];
+		}
+	}
+});
+
 function selectSort(a, b) {
 	if (a.innerHTML == rootItem) {
 		return -1;

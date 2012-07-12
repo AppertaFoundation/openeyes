@@ -12,47 +12,28 @@ $(document).ready(function() {
 	});
 
 	$('.radioButtonFieldSQLTable').live('change',function() {
-		var m = $(this).attr('name').match(/^radioButtonFieldSQLTable([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		if ($(this).val() == '') {
-			$('#radioButtonFieldSQLTableFieldDiv'+element+'Field'+field).hide();
-			$('select[name="radioButtonFieldSQLTableField'+element+'Field'+field+'"]').html('');
+			$('#radioButtonFieldSQLTableFieldDiv'+$(this).getElement()+'Field'+$(this).getField()).hide();
+			$('select[name="radioButtonFieldSQLTableField'+$(this).getElement()+'Field'+$(this).getField()+'"]').html('');
 		} else {
 			var table = $(this).val();
-			$('.loader').show();
 
-			$.ajax({
-				'type': 'GET',
-				'url': '/gii/EventTypeModule?ajax=table_fields&table='+table,
-				'success': function(html) {
-					$('select[name="radioButtonFieldSQLTableField'+element+'Field'+field+'"]').html(html);
-					$('#radioButtonFieldSQLTableFieldDiv'+element+'Field'+field).show();
-					$('.loader').hide();
-				}
+			$(this).ajaxCall('table_fields',{"table":table},function(html,element,field) {
+				$('select[name="radioButtonFieldSQLTableField'+element+'Field'+field+'"]').html(html);
+				$('#radioButtonFieldSQLTableFieldDiv'+element+'Field'+field).show();
 			});
 		}
 	});
 
 	$('.radioButtonFieldValueTextInput').die('keypress').live('keypress',function(e) {
-		var m = $(this).attr('name').match(/^radioButtonFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
-		var element = m[1];
-		var field = m[2];
-
 		if (e.keyCode == 13) {
-			$('input[name="radioButtonFieldValuesAddValue'+element+'Field'+field+'"]').click();
+			$('input[name="radioButtonFieldValuesAddValue'+$(this).getElement()+'Field'+$(this).getField()+'"]').click();
 			return false;
 		}
-
 		return true;
 	});
 
 	$('.radioButtonFieldValuesAddValue').live('click',function() {
-		var m = $(this).attr('name').match(/^radioButtonFieldValuesAddValue([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		var i = 1;
 
 		$(this).prev().children('input[type="text"]').map(function() {
@@ -64,55 +45,37 @@ $(document).ready(function() {
 
 		i += 1;
 
-		$('#radioButtonFieldValues'+element+'Field'+field).append('<input type="radio" class="radioButtonFieldValueTextInputDefault" name="radioButtonFieldValueTextInputDefault'+element+'Field'+field+'" value="1" /> <input type="text" class="radioButtonFieldValueTextInput" name="radioButtonFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="radioButtonFieldValuesRemoveValue" value="remove"><br/>');
-		$('input[name="radioButtonFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
+		$('#radioButtonFieldValues'+$(this).getElement()+'Field'+$(this).getField()).append('<input type="radio" class="radioButtonFieldValueTextInputDefault" name="radioButtonFieldValueTextInputDefault'+$(this).getElement()+'Field'+$(this).getField()+'" value="1" /> <input type="text" class="radioButtonFieldValueTextInput" name="radioButtonFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_'+i+'" value="Enter value" /><input type="submit" class="radioButtonFieldValuesRemoveValue" value="remove"><br/>');
+		$('input[name="radioButtonFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_'+i+'"]').select().focus();
 
 		return false;
 	});
 
 	$('.radioButtonFieldSQLTableField').live('change',function() {
-		var m = $(this).attr('name').match(/^radioButtonFieldSQLTableField([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		if ($(this).val() == '') {
-			$('#radioButtonFieldSQLTableDefaultValueDiv'+element+'Field'+field).hide();
-			$('select[name="radioButtonFieldValueTextInputDefault'+element+'Field'+field+'"]').html('');
+			$('#radioButtonFieldSQLTableDefaultValueDiv'+$(this).getElement()+'Field'+$(this).getField()).hide();
+			$('select[name="radioButtonFieldValueTextInputDefault'+$(this).getElement()+'Field'+$(this).getField()+'"]').html('');
 		} else {
-			var table = $('select[name="radioButtonFieldSQLTable'+element+'Field'+field+'"]').val();
+			var table = $('select[name="radioButtonFieldSQLTable'+$(this).getElement()+'Field'+$(this).getField()+'"]').val();
 			var fieldval = $(this).val();
-			$('.loader').show();
 
-			$.ajax({
-				'type': 'GET',
-				'url': '/gii/EventTypeModule?ajax=field_unique_values&table='+table+'&field='+fieldval,
-				'success': function(html) {
-					$('select[name="radioButtonFieldValueTextInputDefault'+element+'Field'+field+'"]').html(html);
-					$('#radioButtonFieldSQLTableDefaultValueDiv'+element+'Field'+field).show();
-					$('.loader').hide();
-				}
+			$(this).ajaxCall('field_unique_values',{"table":table,"field":fieldval},function(html,element,field) {
+				$('select[name="radioButtonFieldValueTextInputDefault'+element+'Field'+field+'"]').html(html);
+				$('#radioButtonFieldSQLTableDefaultValueDiv'+element+'Field'+field).show();
 			});
 		}
 	});
 
 	$('.radioButtonMethodSelector').live('click',function() {
-		var m = $(this).attr('name').match(/^radioButtonMethod([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		if ($(this).val() == 0) {
 			var view = 'extra_Radiobuttons_entervalues';
 		} else {
 			var view = 'extra_Radiobuttons_pointatsqltable';
 		}
 
-		$.ajax({
-			'url': '/gii/EventTypeModule?ajax='+view+'&element_num='+element+'&field_num='+field,
-			'type': 'GET',
-			'success': function(html) {
-				$('#radioButtonMethodFields'+element+'Field'+field).html(html);
-				$('input[name="radioButtonFieldValue'+element+'Field'+field+'_1"]').select().focus();
-			}
+		$(this).ajaxCall(view,'',function(html,element,field) {
+			$('#radioButtonMethodFields'+element+'Field'+field).html(html);
+			$('input[name="radioButtonFieldValue'+element+'Field'+field+'_1"]').select().focus();
 		});
 	});
 });
