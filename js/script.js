@@ -49,24 +49,24 @@ $(document).ready(function(){
 	$('.sprite.showhide2').click( function(e){
 		e.preventDefault();
 		var sprite = $(this).children('span');
-		var small = $('div.episodeDate');
+		var small = $(this).parent().parent().next('div.episodeDate');
 		var events = $(this).parent().parent().next('div').next('ul.events');
 	 
 		if(sprite.hasClass('hide')) {
-			events.children('li').slideUp('fast','swing');
-			small.slideUp('fast','swing');
+			events.children('li').hide(); //slideUp('fast','swing');
+			small.hide(); //slideUp('fast','swing');
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			small.slideDown('fast','swing');
-			events.children('li').slideDown('fast','swing',function() {
+			small.show(); //slideDown('fast','swing');
+			events.children('li').show(); /*slideDown('fast','swing',function() {
 				events.children('li').map(function() {
 					if ($(this).children('div:nth-child(2)').hasClass('viewing')) {
 						$(this).children('div:nth-child(2)').removeClass('viewing');
 						$(this).children('div:nth-child(2)').addClass('viewing');
 					}
 				});
-			});
+			});*/
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}
