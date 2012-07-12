@@ -50,7 +50,7 @@ $(document).ready(function(){
 		e.preventDefault();
 		var sprite = $(this).children('span');
 		var small = $('div.episodeDate');
-		var events = $('ul.events');
+		var events = $(this).parent().parent().next('div').next('ul.events');
 	 
 		if(sprite.hasClass('hide')) {
 			events.children('li').slideUp('fast','swing');
