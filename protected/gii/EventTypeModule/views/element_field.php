@@ -25,7 +25,7 @@
 
 	<div id="extraDataElement<?php echo $element_num?>Field<?php echo $field_num?>">
 		<?php if (file_exists("protected/gii/EventTypeModule/views/extra_".str_replace(" ","",@$_POST['elementType'.$element_num.'FieldType'.$field_num]).".php")) {
-			$this->renderPartial('extra_'.str_replace(" ","",@$_POST['elementType'.$element_num.'FieldType'.$field_num]));
+			$this->renderPartial('extra_'.str_replace(' ','',@$_POST['elementType'.$element_num.'FieldType'.$field_num]),array('element_num'=>$field_num,'field_num'=>$field_num));
 		}?>
 	</div>
 
