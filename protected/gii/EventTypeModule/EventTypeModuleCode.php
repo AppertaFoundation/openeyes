@@ -13,26 +13,144 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public $event_group;
 	public $specialty;
 
-	private $validation_rules = array(
-		'element_name' => array(
-			'required' => true,
-			'required_error' => 'Please enter an element name.',
-			'regex' => '/^[a-zA-Z\s]+$/',
-			'regex_error' => 'Element name must be letters and spaces only.'
-		),
-		'element_field_name' => array(
-			'required' => true,
-			'required_error' => 'Please enter a field name.',
-			'regex' => '/^[a-z][a-z0-9_]+$/',
-			'regex_error' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.'
-		),
-		'element_field_label' => array(
-			'required' => true,
-			'required_error' => 'Please enter a field label.',
-			'regex' => '/^[a-zA-Z0-9\s]+$/',
-			'regex_error' => 'Field label must be letters, numbers and spaces only.'
-		)
+	private $validation_methods = array(
+		'/^elementName[0-9]+$/' => 'ElementName',
+		'/^elementName[0-9]+FieldName[0-9]+$/' => 'ElementFieldName',
+		'/^elementName[0-9]+FieldLabel[0-9]+$/' => 'ElementFieldLabel',
 	);
+
+	private $validation_regex = array(
+		'ElementName' => array(
+			'regex' => '/^[a-zA-Z\s]+$/',
+			'message' => 'Element name must be letters and spaces only',
+		),
+		'ElementFieldName' => array(
+			'regex' => '/^[a-z][a-z0-9_]+$/',
+			'message' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.',
+		),
+		'ElementFieldLabel' => array(
+			'regex' => '/^[a-zA-Z0-9\s]+$/',
+			'message' => 'Field label must be letters, numbers and spaces only.',
+		),
+	);
+
+	private $validation_rules = array(
+		'Dropdown list' => array(
+			array(
+				'type' => 'required',
+				'field' => 'dropDownMethod{$element_num}Field{$field_num}',
+				'message' => 'Please select a dropdown method',
+			),
+		),
+		'EyeDraw' => array(
+			array(
+				'type' => 'required',
+				'field' => 'eyedrawClass{$element_num}Field{$field_num}',
+				'message' => 'Please select an eyedraw type',
+			),
+			array(
+				'type' => 'required',
+				'field' => 'eyedrawSize{$element_num}Field{$field_num}',
+				'message' => 'Please enter a size (in pixels)',
+			),
+			array(
+				'type' => 'integer_positive',
+				'field' => 'eyedrawSize{$element_num}Field{$field_num}',
+				'message' => 'Size must be specified as a number of pixels',
+			),
+		),
+		'Slider' => array(
+			array(
+				'type' => 'required',
+				'field' => 'sliderMinValue{$element_num}Field{$field_num}',
+				'message' => 'Please enter a minimum value',
+			),
+			array(
+				'type' => 'number',
+				'field' => 'sliderMinValue{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'required',
+				'field' => 'sliderMaxValue{$element_num}Field{$field_num}',
+				'message' => 'Please enter a maximum value',
+			),
+			array(
+				'type' => 'number',
+				'field' => 'sliderMaxValue{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'number',
+				'field' => 'sliderDefaultValue{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'required',
+				'field' => 'sliderStepping{$element_num}Field{$field_num}',
+				'message' => 'Please enter a stepping value',
+			),
+			array(
+				'type' => 'number_positive',
+				'field' => 'sliderStepping{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'integer_positive',
+				'field' => 'sliderForceDP{$element_num}Field{$field_num}',
+			),
+		),
+		'Integer' => array(
+			array(
+				'type' => 'integer',
+				'field' => 'integerMinValue{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'integerMaxValue{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'integerDefaultValue{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'integerDefaultValue{$element_num}Field{$field_num}',
+				'compare_field' => 'integerMinValue{$element_num}Field{$field_num}',
+				'message' => 'Default value must be greater or equal to minimum value',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'lower_equal',
+				'field' => 'integerDefaultValue{$element_num}Field{$field_num}',
+				'compare_field' => 'integerMaxValue{$element_num}Field{$field_num}',
+				'message' => 'Default value must be lower or equal to maximum value',
+			),
+			array(
+				'type' => 'required',
+				'field' => 'integerSize{$element_num}Field{$field_num}',
+				'message' => 'Please enter a field size',
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'integerSize{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'integerSize{$element_num}Field{$field_num}',
+				'compare_value' => 1,
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'integerMaxLength{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'integerMaxLength{$element_num}Field{$field_num}',
+				'compare_value' => 1,
+			),
+		),
+	);
+
 	public $cssPath, $jsPath, $imgPath;
 
 	public function rules() {
@@ -913,111 +1031,26 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$errors = array();
 
 		foreach ($_POST as $key => $value) {
-			if (preg_match('/^elementName[0-9]+$/',$key)) {
-				if ($this->validation_rules['element_name']['required'] && strlen($value) <1) {
-					$errors[$key] = $this->validation_rules['element_name']['required_error'];
-				} else if (!preg_match($this->validation_rules['element_name']['regex'],$value)) {
-					$errors[$key] = $this->validation_rules['element_name']['regex_error'];
-				} else if ($this->mode == 'update' && $this->elementExists($value)) {
-					$errors[$key] = "This element name is already in use, please choose another";
-				}
-			}
-
-			if (preg_match('/^elementName[0-9]+FieldName[0-9]+$/',$key)) {
-				if ($this->validation_rules['element_field_name']['required'] && strlen($value) <1) {
-					$errors[$key] = $this->validation_rules['element_field_name']['required_error'];
-				} else if (!preg_match($this->validation_rules['element_field_name']['regex'],$value)) {
-					$errors[$key] = $this->validation_rules['element_field_name']['regex_error'];
-				}
-			}
-
-			if (preg_match('/^elementName[0-9]+FieldLabel[0-9]+$/',$key)) {
-				if ($this->validation_rules['element_field_label']['required'] && strlen($value) <1) {
-					$errors[$key] = $this->validation_rules['element_field_label']['required_error'];
-				} else if (!preg_match($this->validation_rules['element_field_label']['regex'],$value)) {
-					$errors[$key] = $this->validation_rules['element_field_label']['regex_error'];
+			foreach ($this->validation_methods as $match => $method) {
+				if (preg_match($match, $key)) {
+					$method = 'validate'.$method;
+					if ($error = $this->{$method}($value)) {
+						$errors[$key] = $error;
+					}
 				}
 			}
 
 			if (preg_match('/^elementType([0-9]+)FieldType([0-9]+)$/',$key,$m)) {
-				if ($value == 'Dropdown list') {
-					if (!isset($_POST['dropDownMethod'.$m[1].'Field'.$m[2]])) {
-						$errors['dropDownMethod'.$m[1].'Field'.$m[2]] = "Please select a dropdown list method";
-					}
+				/*$method = 'validate'.str_replace(' ','',$value);
+
+				if ($error = $this->{$method}($value,$m[1],$m[2])) {
+					$errors = array_merge($errors,$error);
+				}*/
+
+				if ($error = $this->validateElementField($value,$m[1],$m[2])) {
+					$errors = array_merge($errors,$error);
 				}
-				if ($value == 'EyeDraw') {
-					if (!@$_POST['eyedrawClass'.$m[1].'Field'.$m[2]]) {
-						$errors['eyedrawClass'.$m[1].'Field'.$m[2]] = "Please select an eyedraw type";
-					}
-					if (!@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]]) {
-						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Please enter a size (in pixels)";
-					} else if (!ctype_digit(@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]])) {
-						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Size must be specified as a number of pixels";
-					}
-				}
-				if ($value == 'Slider') {
-					if (strlen(@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Please enter a minimum value";
-					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMinValue'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
-					}
-					if (!@$_POST['sliderMaxValue'.$m[1].'Field'.$m[2]]) {
-						$errors['sliderMaxValue'.$m[1].'Field'.$m[2]] = "Please enter a maximum value";
-					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMaxValue'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderMaxValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
-					}
-					if (@$_POST['sliderDefaultValue'.$m[1].'Field'.$m[2]] && !preg_match('/^\-?[0-9\.]+$/',$_POST['sliderDefaultValue'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderDefaultValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
-					}
-					if (!@$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) {
-						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Please enter a stepping value";
-					} else if (!preg_match('/^[0-9\.]+$/',$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) || $_POST['sliderStepping'.$m[1].'Field'.$m[2]] == 0) {
-						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Must be a positive integer or floating point number";
-					}
-					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !ctype_digit($_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderForceDP'.$m[1].'Field'.$m[2]] = "Must be a positive integer";
-					}
-				}
-				if ($value == 'Integer') {
-					if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]])) {
-							$errors['integerMinValue'.$m[1].'Field'.$m[2]] = "Minimum value must be an integer";
-						}
-					}
-					if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]])) {
-							$errors['integerMaxValue'.$m[1].'Field'.$m[2]] = "Maximum value must be an integer";
-						}
-					}
-					if (strlen(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]])) {
-							$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be an integer";
-						} else {
-							if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] < @$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) {
-								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be >= minimum value";
-							}
-							if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] > @$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) {
-								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be <= maximum value";
-							}
-						}
-					}
-					if (strlen(@$_POST['integerSize'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size is required";
-					} else {
-						if (!ctype_digit(@$_POST['integerSize'.$m[1].'Field'.$m[2]])) {
-							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
-						} else if ($_POST['integerSize'.$m[1].'Field'.$m[2]] <1) {
-							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
-						}
-					}
-					if (strlen(@$_POST['integerMaxLength'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit($_POST['integerMaxLength'.$m[1].'Field'.$m[2]])) {
-							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
-						} else if ($_POST['integerMaxLength'.$m[1].'Field'.$m[2]] <1) {
-							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
-						}
-					}
-				}
+
 				if ($value == 'Textbox') {
 					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
 						$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size is required";
@@ -1071,6 +1104,106 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 
 		Yii::app()->getController()->form_errors = $errors;
+	}
+
+	public function validateElementName($value) {
+		if (strlen($value) <1) {
+			return "Please enter an element name";
+		}
+		
+		if (!preg_match($this->validation_regex['ElementName']['regex'],$value)) {
+			return $this->validation_regex['ElementName']['message'];
+		}
+
+		if ($this->mode == 'update' && $this->elementExists($value)) {
+			return "This element name is already in use, please choose another";
+		}
+	}
+
+	public function validateElementFieldName($value) {
+		if (strlen($value) <1) {
+			return "Please enter a field name";
+		}
+
+		if (!preg_match($this->validation_regex['ElementFieldName']['regex'],$value)) {
+			return $this->validation_regex['ElementFieldName']['message'];
+		}
+	}
+
+	public function validateElementFieldLabel($value) {
+		if (strlen($value) <1) {
+			return "Please enter a field label";
+		}
+
+		if (!preg_match($this->validation_regex['ElementFieldLabel']['regex'],$value)) {
+			return $this->validation_regex['ElementFieldLabel']['message'];
+		}
+	}
+
+	public function validateElementField($field_type,$element_num,$field_num) {
+		$errors = array();
+
+		foreach ($this->validation_rules[$field_type] as $rule) {
+			$key = $this->substitutePostValue($rule['field'],$element_num,$field_num);
+
+			if (isset($errors[$key])) continue;
+
+			if ($rule['type'] == 'required') {
+				if (strlen(@$_POST[$key]) <1) {
+					$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
+					continue;
+				}
+			} else if (strlen(@$_POST[$key]) <1) continue;
+
+			switch ($rule['type']) {
+				case 'integer':
+					if (!preg_match('/^\-?[0-9]+$/',$_POST[$key])) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be an integer';
+					}
+					break;
+				case 'integer_positive':
+					if (!ctype_digit($_POST[$key])) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive integer';
+					}
+					break;
+				case 'number':
+					if (!preg_match('/^\-?[0-9\.]+$/',$_POST[$key])) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a number';
+					}
+					break;
+				case 'number_positive':
+					if (!preg_match('/^[0-9\.]+$/',$_POST[$key])) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive number';
+					}
+					break;
+				case 'compare':
+					if (isset($rule['compare_field'])) {
+						$compare = $this->substitutePostValue($rule['compare_field'],$element_num,$field_num);
+					} else {
+						$compare = $rule['compare_value'];
+					}
+
+					switch ($rule['operator']) {
+						case 'greater_equal':
+							if ($_POST[$key] < $compare) {
+								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be greater than or equal to '.$compare;
+							}
+							break;
+						case 'lesser_equal':
+							if ($_POST[$key] > $compare) {
+								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be lower than or equal to '.$compare;
+							}
+							break;
+					}
+					break
+			}
+		}
+
+		return $errors;
+	}
+
+	public function substitutePostValue($field,$element_num,$field_num) {
+		return str_replace('{element_num}',$element_num,str_replace('{field_num}',$field_num,$field));
 	}
 
 	// the <?'s here are deliberately broken apart to prevent annoying syntax highlighting issues with vim
