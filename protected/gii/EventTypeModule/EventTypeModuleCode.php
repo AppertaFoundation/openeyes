@@ -149,6 +149,65 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				'compare_value' => 1,
 			),
 		),
+		'Textbox' => array(
+			array(
+				'type' => 'required',
+				'field' => 'textBoxSize{$element_num}Field{$field_num}',
+				'message' => 'Please enter a field size',
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'textBoxSize{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'textBoxSize{$element_num}Field{$field_num}',
+				'compare_value' => 1,
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'textBoxMaxLength{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'textBoxMaxLength{$element_num}Field{$field_num}',
+				'compare_value' => 1,
+			),
+		),
+		'Textarea' => array(
+			array(
+				'type' => 'required',
+				'field' => 'textAreaRows{$element_num}Field{$field_num}',
+				'message' => 'Please enter a number of rows',
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'textAreaRows{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'textAreaRows{$element_num}Field{$field_num}',
+				'compare_value' => 1,
+			),
+			array(
+				'type' => 'required',
+				'field' => 'textAreaCols{$element_num}Field{$field_num}',
+				'message' => 'Please enter a number of columns',
+			),
+			array(
+				'type' => 'integer',
+				'field' => 'textAreaCols{$element_num}Field{$field_num}',
+			),
+			array(
+				'type' => 'compare',
+				'operator' => 'greater_equal',
+				'field' => 'textAreaCols{$element_num}Field{$field_num}',
+				'compare_value' => 1,
+			),
+		),
 	);
 
 	public $cssPath, $jsPath, $imgPath;
@@ -1041,53 +1100,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			if (preg_match('/^elementType([0-9]+)FieldType([0-9]+)$/',$key,$m)) {
-				/*$method = 'validate'.str_replace(' ','',$value);
-
-				if ($error = $this->{$method}($value,$m[1],$m[2])) {
-					$errors = array_merge($errors,$error);
-				}*/
-
 				if ($error = $this->validateElementField($value,$m[1],$m[2])) {
 					$errors = array_merge($errors,$error);
-				}
-
-				if ($value == 'Textbox') {
-					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size is required";
-					} else {
-						if (!ctype_digit(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]])) {
-							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
-						} else if ($_POST['textBoxSize'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
-						}
-					}
-					if (strlen(@$_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]])) {
-							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
-						} else if ($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
-						}
-					}
-				}
-				if ($value == 'Textarea') {
-					if (strlen(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows is required";
-					} else {
-						if (!ctype_digit(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]])) {
-							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be an integer";
-						} else if (@$_POST['textAreaRows'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be 1 or greater";
-						}
-					}
-					if (strlen(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols is required";
-					} else {
-						if (!ctype_digit(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]])) {
-							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be an integer";
-						} else if (@$_POST['textAreaCols'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be 1 or greater";
-						}
-					}
 				}
 			}
 
@@ -1186,12 +1200,12 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					switch ($rule['operator']) {
 						case 'greater_equal':
 							if ($_POST[$key] < $compare) {
-								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be greater than or equal to '.$compare;
+								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or greater';
 							}
 							break;
 						case 'lesser_equal':
 							if ($_POST[$key] > $compare) {
-								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be lower than or equal to '.$compare;
+								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or lower';
 							}
 							break;
 					}
