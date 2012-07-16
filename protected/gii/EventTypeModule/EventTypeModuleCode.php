@@ -12,256 +12,23 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public $event_type;
 	public $event_group;
 	public $specialty;
+	public $cssPath;
+	public $jsPath;
+	public $imgPath;
+	public $validation_rules_path = "protected/gii/EventTypeModule/validation";
+	public $validation_rules = array();
 
-	private $validation_rules = array(
-		'/^EventTypeModuleCode$/' => array(
-			array(
-				'type' => 'required',
-				'field' => 'EventTypeModuleCode',
-				'field_property' => 'moduleSuffix',
-				'message' => 'Please enter an event name',
-			),
-		),
-		'/^elementName([0-9]+)$/' => array(
-			array(
-				'type' => 'required',
-				'field' => 'elementName{$element_num}',
-				'message' => 'Please enter an element name',
-			),
-			array(
-				'type' => 'regex',
-				'field' => 'elementName{$element_num}',
-				'regex' => '/^[a-zA-Z\s]+$/',
-				'message' => 'Element name must be letters and spaces only.',
-			),
-			array(
-				'type' => 'exists',
-				'field' => 'elementName{$element_num}',
-				'exists_method' => 'elementExists',
-				'message' => 'Element name is already in use',
-			),
-		),
-		'/^elementName([0-9]+)FieldName([0-9]+)$/' => array(
-			array(
-				'type' => 'required',
-				'field' => 'elementName{$element_num}FieldName{$field_num}',
-				'message' => 'Please enter an element name',
-			),
-			array(
-				'type' => 'regex',
-				'field' => 'elementName{$element_num}FieldName{$field_num}',
-				'regex' => '/^[a-z][a-z0-9_]+$/',
-				'message' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.',
-			),
-		),
-		'/^elementName([0-9]+)FieldLabel([0-9]+)$/' => array(
-			array(
-				'type' => 'required',
-				'field' => 'elementName{$element_num}FieldLabel{$field_num}',
-				'message' => 'Please enter a field label',
-			),
-			array(
-				'type' => 'regex',
-				'field' => 'elementName{$element_num}FieldLabel{$field_num}',
-				'regex' => '/^[a-zA-Z0-9\s]+$/',
-				'message' => 'Field label must be letters, numbers and spaces only.',
-			),
-		),
-		'Dropdown list' => array(
-			array(
-				'type' => 'required',
-				'field' => 'dropDownMethod{$element_num}Field{$field_num}',
-				'message' => 'Please select a dropdown method',
-			),
-			array(
-				'type' => 'required',
-				'condition' => array(
-					'field' => 'dropDownMethod{$element_num}Field{$field_num}',
-					'value' => '1',
-				),
-				'field' => 'dropDownFieldSQLTable{$element_num}Field{$field_num}',
-				'message' => 'Please select a table',
-			),
-			array(
-				'type' => 'required',
-				'condition' => array(
-					'field' => 'dropDownMethod{$element_num}Field{$field_num}',
-					'value' => '1',
-				),
-				'field' => 'dropDownFieldSQLTableField{$element_num}Field{$field_num}',
-				'message' => 'Please select a field',
-			),
-		),
+	public function __construct() {
+		$dh = dir($this->validation_rules_path);
 
-		'EyeDraw' => array(
-			array(
-				'type' => 'required',
-				'field' => 'eyedrawClass{$element_num}Field{$field_num}',
-				'message' => 'Please select an eyedraw type',
-			),
-			array(
-				'type' => 'required',
-				'field' => 'eyedrawSize{$element_num}Field{$field_num}',
-				'message' => 'Please enter a size (in pixels)',
-			),
-			array(
-				'type' => 'integer_positive',
-				'field' => 'eyedrawSize{$element_num}Field{$field_num}',
-				'message' => 'Size must be specified as a number of pixels',
-			),
-		),
-		'Slider' => array(
-			array(
-				'type' => 'required',
-				'field' => 'sliderMinValue{$element_num}Field{$field_num}',
-				'message' => 'Please enter a minimum value',
-			),
-			array(
-				'type' => 'number',
-				'field' => 'sliderMinValue{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'required',
-				'field' => 'sliderMaxValue{$element_num}Field{$field_num}',
-				'message' => 'Please enter a maximum value',
-			),
-			array(
-				'type' => 'number',
-				'field' => 'sliderMaxValue{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'number',
-				'field' => 'sliderDefaultValue{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'required',
-				'field' => 'sliderStepping{$element_num}Field{$field_num}',
-				'message' => 'Please enter a stepping value',
-			),
-			array(
-				'type' => 'number_positive',
-				'field' => 'sliderStepping{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'integer_positive',
-				'field' => 'sliderForceDP{$element_num}Field{$field_num}',
-			),
-		),
-		'Integer' => array(
-			array(
-				'type' => 'integer',
-				'field' => 'integerMinValue{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'integerMaxValue{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'integerDefaultValue{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'integerDefaultValue{$element_num}Field{$field_num}',
-				'compare_field' => 'integerMinValue{$element_num}Field{$field_num}',
-				'message' => 'Default value must be greater or equal to minimum value',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'lower_equal',
-				'field' => 'integerDefaultValue{$element_num}Field{$field_num}',
-				'compare_field' => 'integerMaxValue{$element_num}Field{$field_num}',
-				'message' => 'Default value must be lower or equal to maximum value',
-			),
-			array(
-				'type' => 'required',
-				'field' => 'integerSize{$element_num}Field{$field_num}',
-				'message' => 'Please enter a field size',
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'integerSize{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'integerSize{$element_num}Field{$field_num}',
-				'compare_value' => 1,
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'integerMaxLength{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'integerMaxLength{$element_num}Field{$field_num}',
-				'compare_value' => 1,
-			),
-		),
-		'Textbox' => array(
-			array(
-				'type' => 'required',
-				'field' => 'textBoxSize{$element_num}Field{$field_num}',
-				'message' => 'Please enter a field size',
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'textBoxSize{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'textBoxSize{$element_num}Field{$field_num}',
-				'compare_value' => 1,
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'textBoxMaxLength{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'textBoxMaxLength{$element_num}Field{$field_num}',
-				'compare_value' => 1,
-			),
-		),
-		'Textarea' => array(
-			array(
-				'type' => 'required',
-				'field' => 'textAreaRows{$element_num}Field{$field_num}',
-				'message' => 'Please enter a number of rows',
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'textAreaRows{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'textAreaRows{$element_num}Field{$field_num}',
-				'compare_value' => 1,
-			),
-			array(
-				'type' => 'required',
-				'field' => 'textAreaCols{$element_num}Field{$field_num}',
-				'message' => 'Please enter a number of columns',
-			),
-			array(
-				'type' => 'integer',
-				'field' => 'textAreaCols{$element_num}Field{$field_num}',
-			),
-			array(
-				'type' => 'compare',
-				'operator' => 'greater_equal',
-				'field' => 'textAreaCols{$element_num}Field{$field_num}',
-				'compare_value' => 1,
-			),
-		),
-	);
+		while ($file = $dh->read()) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				$this->validation_rules = array_merge($this->validation_rules,require($this->validation_rules_path."/$file"));
+			}
+		}
 
-	public $cssPath, $jsPath, $imgPath;
+		parent::__construct();
+	}
 
 	public function rules() {
 		return array(
@@ -1165,82 +932,89 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public function validateRule($field_type,$element_num,$field_num) {
 		$errors = array();
 
-		foreach ($this->validation_rules[$field_type] as $rule) {
-			if (isset($rule['field_property'])) {
-				$key = $rule['field'].'['.$rule['field_property'].']';
-				$value = @$_POST[$rule['field']][$rule['field_property']];
-			} else {
-				$key = $this->substitutePostValue($rule['field'],$element_num,$field_num);
-				$value = @$_POST[$key];
-			}
+		if (!isset($this->validation_rules[$field_type])) {
+			return $errors;
+		}
 
-			if (isset($errors[$key])) continue;
-
-			if ($rule['type'] == 'required') {
-				if (isset($rule['condition'])) {
-					$condition_key = $this->substitutePostValue($rule['condition']['field'],$element_num,$field_num);
-					if (@$_POST[$condition_key] != $rule['condition']['value']) continue;
+		foreach ($this->validation_rules[$field_type] as $field => $rules) {
+			foreach ($rules as $rule) {
+				if (isset($rule['field_property'])) {
+					$key = $field.'['.$rule['field_property'].']';
+					$value = @$_POST[$field][$rule['field_property']];
+				} else {
+					$key = $this->substitutePostValue($field,$element_num,$field_num);
+					$value = @$_POST[$key];
 				}
-				if (strlen($value) <1) {
-					$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
-					continue;
-				}
-			} else if (strlen($value) <1) continue;
 
-			switch ($rule['type']) {
-				case 'integer':
-					if (!preg_match('/^\-?[0-9]+$/',$value)) {
-						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be an integer';
-					}
-					break;
-				case 'integer_positive':
-					if (!ctype_digit($value)) {
-						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive integer';
-					}
-					break;
-				case 'number':
-					if (!preg_match('/^\-?[0-9\.]+$/',$value)) {
-						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a number';
-					}
-					break;
-				case 'number_positive':
-					if (!preg_match('/^[0-9\.]+$/',$value)) {
-						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive number';
-					}
-					break;
-				case 'compare':
-					if (isset($rule['compare_field'])) {
-						$compare = $this->substitutePostValue($rule['compare_field'],$element_num,$field_num);
-					} else {
-						$compare = $rule['compare_value'];
-					}
+				if (isset($errors[$key])) continue;
 
-					switch ($rule['operator']) {
-						case 'greater_equal':
-							if ($value < $compare) {
-								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or greater';
-							}
-							break;
-						case 'lesser_equal':
-							if ($value > $compare) {
-								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or lower';
-							}
-							break;
+				if ($rule['type'] == 'required') {
+					if (isset($rule['condition'])) {
+						$condition_key = $this->substitutePostValue($rule['condition']['field'],$element_num,$field_num);
+						if (@$_POST[$condition_key] != $rule['condition']['value']) continue;
 					}
-					break;
-				case 'regex':
-					if (!preg_match($rule['regex'],$value)) {
-						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Invalid characters in input';
+					if (strlen($value) <1) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
+						$errors[$key] .= ' ('.$value.') ['.$key.']';
+						continue;
 					}
-					break;
-				case 'exists':
-					if (isset($rule['exists_method'])) {
-						$method = $rule['exists_method'];
-						if ($this->{$method}($value)) {
-							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Already exists';
+				} else if (strlen($value) <1) continue;
+
+				switch ($rule['type']) {
+					case 'integer':
+						if (!preg_match('/^\-?[0-9]+$/',$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be an integer';
 						}
-					}
-					break;
+						break;
+					case 'integer_positive':
+						if (!ctype_digit($value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive integer';
+						}
+						break;
+					case 'number':
+						if (!preg_match('/^\-?[0-9\.]+$/',$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a number';
+						}
+						break;
+					case 'number_positive':
+						if (!preg_match('/^[0-9\.]+$/',$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive number';
+						}
+						break;
+					case 'compare':
+						if (isset($rule['compare_field'])) {
+							$compare = $this->substitutePostValue($rule['compare_field'],$element_num,$field_num);
+						} else {
+							$compare = $rule['compare_value'];
+						}
+
+						switch ($rule['operator']) {
+							case 'greater_equal':
+								if ($value < $compare) {
+									$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or greater';
+								}
+								break;
+							case 'lesser_equal':
+								if ($value > $compare) {
+									$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or lower';
+								}
+								break;
+						}
+						break;
+					case 'regex':
+						if (!preg_match($rule['regex'],$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Invalid characters in input';
+						}
+						break;
+					case 'exists':
+						if (isset($rule['exists_method'])) {
+							$method = $rule['exists_method'];
+							if ($this->{$method}($value)) {
+								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Already exists';
+							}
+						}
+						break;
+				}
 			}
 		}
 
