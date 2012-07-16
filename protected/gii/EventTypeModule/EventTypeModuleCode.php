@@ -743,7 +743,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $this->render($file, $params);
 	}
 
-	//public function renderDBField($field) {
 	public function getDBFieldSQLType($field) {
 		switch ($field['type']) {
 			case 'Textbox':
