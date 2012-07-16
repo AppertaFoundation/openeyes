@@ -13,35 +13,86 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public $event_group;
 	public $specialty;
 
-	private $validation_methods = array(
-		'/^elementName[0-9]+$/' => 'ElementName',
-		'/^elementName[0-9]+FieldName[0-9]+$/' => 'ElementFieldName',
-		'/^elementName[0-9]+FieldLabel[0-9]+$/' => 'ElementFieldLabel',
-	);
-
-	private $validation_regex = array(
-		'ElementName' => array(
-			'regex' => '/^[a-zA-Z\s]+$/',
-			'message' => 'Element name must be letters and spaces only',
-		),
-		'ElementFieldName' => array(
-			'regex' => '/^[a-z][a-z0-9_]+$/',
-			'message' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.',
-		),
-		'ElementFieldLabel' => array(
-			'regex' => '/^[a-zA-Z0-9\s]+$/',
-			'message' => 'Field label must be letters, numbers and spaces only.',
-		),
-	);
-
 	private $validation_rules = array(
+		'/^EventTypeModuleCode$/' => array(
+			array(
+				'type' => 'required',
+				'field' => 'EventTypeModuleCode',
+				'field_property' => 'moduleSuffix',
+				'message' => 'Please enter an event name',
+			),
+		),
+		'/^elementName([0-9]+)$/' => array(
+			array(
+				'type' => 'required',
+				'field' => 'elementName{$element_num}',
+				'message' => 'Please enter an element name',
+			),
+			array(
+				'type' => 'regex',
+				'field' => 'elementName{$element_num}',
+				'regex' => '/^[a-zA-Z\s]+$/',
+				'message' => 'Element name must be letters and spaces only.',
+			),
+			array(
+				'type' => 'exists',
+				'field' => 'elementName{$element_num}',
+				'exists_method' => 'elementExists',
+				'message' => 'Element name is already in use',
+			),
+		),
+		'/^elementName([0-9]+)FieldName([0-9]+)$/' => array(
+			array(
+				'type' => 'required',
+				'field' => 'elementName{$element_num}FieldName{$field_num}',
+				'message' => 'Please enter an element name',
+			),
+			array(
+				'type' => 'regex',
+				'field' => 'elementName{$element_num}FieldName{$field_num}',
+				'regex' => '/^[a-z][a-z0-9_]+$/',
+				'message' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.',
+			),
+		),
+		'/^elementName([0-9]+)FieldLabel([0-9]+)$/' => array(
+			array(
+				'type' => 'required',
+				'field' => 'elementName{$element_num}FieldLabel{$field_num}',
+				'message' => 'Please enter a field label',
+			),
+			array(
+				'type' => 'regex',
+				'field' => 'elementName{$element_num}FieldLabel{$field_num}',
+				'regex' => '/^[a-zA-Z0-9\s]+$/',
+				'message' => 'Field label must be letters, numbers and spaces only.',
+			),
+		),
 		'Dropdown list' => array(
 			array(
 				'type' => 'required',
 				'field' => 'dropDownMethod{$element_num}Field{$field_num}',
 				'message' => 'Please select a dropdown method',
 			),
+			array(
+				'type' => 'required',
+				'condition' => array(
+					'field' => 'dropDownMethod{$element_num}Field{$field_num}',
+					'value' => '1',
+				),
+				'field' => 'dropDownFieldSQLTable{$element_num}Field{$field_num}',
+				'message' => 'Please select a table',
+			),
+			array(
+				'type' => 'required',
+				'condition' => array(
+					'field' => 'dropDownMethod{$element_num}Field{$field_num}',
+					'value' => '1',
+				),
+				'field' => 'dropDownFieldSQLTableField{$element_num}Field{$field_num}',
+				'message' => 'Please select a field',
+			),
 		),
+
 		'EyeDraw' => array(
 			array(
 				'type' => 'required',
@@ -545,7 +596,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 			}
 
-			$elements[$number]['fields'][$field_number]['lookup_field'] = $elements[$number]['fields'][$field_number]['order_field'] = $_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
+			$elements[$number]['fields'][$field_number]['lookup_field'] = $elements[$number]['fields'][$field_number]['order_field'] = @$_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
 
 			if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
 				$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
@@ -1083,36 +1134,27 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function elementExists($name) {
-		return ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>$_POST['EventTypeModuleEventType'],':elementName'=>$name));
+		if ($this->mode == 'update') {
+			return ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>$this->event_type->id,':elementName'=>$name));
+		}
+		return false;
 	}
 
 	public function validate_form() {
 		$errors = array();
 
 		foreach ($_POST as $key => $value) {
-			foreach ($this->validation_methods as $match => $method) {
-				if (preg_match($match, $key)) {
-					$method = 'validate'.$method;
-					if ($error = $this->{$method}($value)) {
-						$errors[$key] = $error;
+			foreach ($this->validation_rules as $regex => $rule) {
+				if (@preg_match($regex, $key, $m)) {
+					if ($error = $this->validateRule($regex, @$m[1], @$m[2])) {
+						$errors = array_merge($errors,$error);
 					}
 				}
 			}
 
 			if (preg_match('/^elementType([0-9]+)FieldType([0-9]+)$/',$key,$m)) {
-				if ($error = $this->validateElementField($value,$m[1],$m[2])) {
+				if ($error = $this->validateRule($value,$m[1],$m[2])) {
 					$errors = array_merge($errors,$error);
-				}
-			}
-
-			if (preg_match('/^dropDownMethod([0-9]+)Field([0-9]+)$/',$key,$m)) {
-				if ($value == 1) {
-					if (!@$_POST['dropDownFieldSQLTable'.$m[1].'Field'.$m[2]]) {
-						$errors['dropDownFieldSQLTable'.$m[1].'Field'.$m[2]] = "Please select a table";
-					}
-					if (!@$_POST['dropDownFieldSQLTableField'.$m[1].'Field'.$m[2]]) {
-						$errors['dropDownFieldSQLTableField'.$m[1].'Field'.$m[2]] = "Please select a field";
-					}
 				}
 			}
 		}
@@ -1120,73 +1162,49 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		Yii::app()->getController()->form_errors = $errors;
 	}
 
-	public function validateElementName($value) {
-		if (strlen($value) <1) {
-			return "Please enter an element name";
-		}
-		
-		if (!preg_match($this->validation_regex['ElementName']['regex'],$value)) {
-			return $this->validation_regex['ElementName']['message'];
-		}
-
-		if ($this->mode == 'update' && $this->elementExists($value)) {
-			return "This element name is already in use, please choose another";
-		}
-	}
-
-	public function validateElementFieldName($value) {
-		if (strlen($value) <1) {
-			return "Please enter a field name";
-		}
-
-		if (!preg_match($this->validation_regex['ElementFieldName']['regex'],$value)) {
-			return $this->validation_regex['ElementFieldName']['message'];
-		}
-	}
-
-	public function validateElementFieldLabel($value) {
-		if (strlen($value) <1) {
-			return "Please enter a field label";
-		}
-
-		if (!preg_match($this->validation_regex['ElementFieldLabel']['regex'],$value)) {
-			return $this->validation_regex['ElementFieldLabel']['message'];
-		}
-	}
-
-	public function validateElementField($field_type,$element_num,$field_num) {
+	public function validateRule($field_type,$element_num,$field_num) {
 		$errors = array();
 
 		foreach ($this->validation_rules[$field_type] as $rule) {
-			$key = $this->substitutePostValue($rule['field'],$element_num,$field_num);
+			if (isset($rule['field_property'])) {
+				$key = $rule['field'].'['.$rule['field_property'].']';
+				$value = @$_POST[$rule['field']][$rule['field_property']];
+			} else {
+				$key = $this->substitutePostValue($rule['field'],$element_num,$field_num);
+				$value = @$_POST[$key];
+			}
 
 			if (isset($errors[$key])) continue;
 
 			if ($rule['type'] == 'required') {
-				if (strlen(@$_POST[$key]) <1) {
+				if (isset($rule['condition'])) {
+					$condition_key = $this->substitutePostValue($rule['condition']['field'],$element_num,$field_num);
+					if (@$_POST[$condition_key] != $rule['condition']['value']) continue;
+				}
+				if (strlen($value) <1) {
 					$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
 					continue;
 				}
-			} else if (strlen(@$_POST[$key]) <1) continue;
+			} else if (strlen($value) <1) continue;
 
 			switch ($rule['type']) {
 				case 'integer':
-					if (!preg_match('/^\-?[0-9]+$/',$_POST[$key])) {
+					if (!preg_match('/^\-?[0-9]+$/',$value)) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be an integer';
 					}
 					break;
 				case 'integer_positive':
-					if (!ctype_digit($_POST[$key])) {
+					if (!ctype_digit($value)) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive integer';
 					}
 					break;
 				case 'number':
-					if (!preg_match('/^\-?[0-9\.]+$/',$_POST[$key])) {
+					if (!preg_match('/^\-?[0-9\.]+$/',$value)) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a number';
 					}
 					break;
 				case 'number_positive':
-					if (!preg_match('/^[0-9\.]+$/',$_POST[$key])) {
+					if (!preg_match('/^[0-9\.]+$/',$value)) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive number';
 					}
 					break;
@@ -1199,17 +1217,30 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 					switch ($rule['operator']) {
 						case 'greater_equal':
-							if ($_POST[$key] < $compare) {
+							if ($value < $compare) {
 								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or greater';
 							}
 							break;
 						case 'lesser_equal':
-							if ($_POST[$key] > $compare) {
+							if ($value > $compare) {
 								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or lower';
 							}
 							break;
 					}
-					break
+					break;
+				case 'regex':
+					if (!preg_match($rule['regex'],$value)) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Invalid characters in input';
+					}
+					break;
+				case 'exists':
+					if (isset($rule['exists_method'])) {
+						$method = $rule['exists_method'];
+						if ($this->{$method}($value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Already exists';
+						}
+					}
+					break;
 			}
 		}
 
@@ -1217,7 +1248,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function substitutePostValue($field,$element_num,$field_num) {
-		return str_replace('{element_num}',$element_num,str_replace('{field_num}',$field_num,$field));
+		return str_replace('{$element_num}',$element_num,str_replace('{$field_num}',$field_num,$field));
 	}
 
 	// the <?'s here are deliberately broken apart to prevent annoying syntax highlighting issues with vim
