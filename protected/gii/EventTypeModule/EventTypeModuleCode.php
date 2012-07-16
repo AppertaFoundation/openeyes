@@ -2,12 +2,16 @@
 class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 {
 	public $moduleID;
-	public $moduleName;
 	public $moduleSuffix;
 	public $eventGroupName;
 	public $template = "default";
 	public $form_errors = array();
 	public $mode;
+	public $moduleTemplateFile;
+	public $files_to_process;
+	public $event_type;
+	public $event_group;
+	public $specialty;
 
 	private $validation_rules = array(
 		'element_name' => array(
@@ -38,170 +42,59 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		);
 	}
 
+	public function initialise($properties=false) {
+		if ($properties) {
+			foreach ($properties as $key => $value) {
+				$this->{$key} = $value;
+			}
+		}
+
+		parent::prepare();
+
+		$this->files = array();
+		$this->moduleTemplateFile = $this->templatePath.DIRECTORY_SEPARATOR.'module.php';
+		$this->files[]=new CCodeFile($this->modulePath.'/'.$this->moduleClass.'.php', $this->render($this->moduleTemplateFile));
+		$this->files_to_process = CFileHelper::findFiles($this->templatePath,array('exclude'=>array('.svn')));
+	}
+
 	public function prepare() {
 		if ($this->mode == 'create') {
-			$this->moduleID = ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
-			parent::prepare();
+			$this->initialise(array(
+				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix))),
+				'eventGroupName' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->name,
+			));
+		} else if ($this->mode == 'update') {
+			$this->event_type = EventType::model()->findByPk(@$_POST['EventTypeModuleEventType']);
 
-			$this->moduleName = $this->moduleID;
-			$this->eventGroupName = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->name;
-			$this->files=array();
-			$templatePath=$this->templatePath;
-			$modulePath=$this->modulePath;
-			$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
-
-			$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
-
-			$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
-		} else {
-			$event_type = EventType::model()->findByPk(@$_POST['EventTypeModuleEventType']);
-			$event_group = $event_type->event_group;
-			$this->moduleID = $event_type->class_name;
-			parent::prepare();
-
-			$this->moduleName = $this->moduleID;
-			$this->eventGroupName = $event_type->name;
-			$this->files=array();
-			$templatePath=$this->templatePath;
-			$modulePath=$this->modulePath;
-			$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
-
-			$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
-
-			$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
+			$this->initialise(array(
+				'moduleID' => $this->event_type->class_name,
+				'event_group' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']),
+				'specialty' => Specialty::model()->findByPk($_REQUEST['Specialty']['id']),
+				'eventGroupName' => $this->event_type->name,
+			));
 		}
 
 		if ($this->mode == 'update') {
+			$current_class = $this->event_type->class_name;
+			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($this->specialty->code)) . ucfirst(strtolower($this->event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
+
 			if (@$_POST['generate'] == 'Generate') {
-				foreach ($this->getElementsFromPost() as $num => $element) {
+				$this->handleViewChanges();
 
-					$model = "modules/$this->moduleID/models/{$element['class_name']}.php";
-
-					if ($this->shouldUpdateFile($model)) {
-						$this->updateModel(Yii::app()->basePath.'/'.$model, $element);
-					}
-
-					$create = "modules/$this->moduleID/views/default/create_{$element['class_name']}.php";
-
-					if ($this->shouldUpdateFile($create)) {
-						$this->updateFormView(Yii::app()->basePath.'/'.$create, $element, 'create');
-					}
-
-					$update = "modules/$this->moduleID/views/default/update_{$element['class_name']}.php";
-
-					if ($this->shouldUpdateFile($update)) {
-						$this->updateFormView(Yii::app()->basePath.'/'.$update, $element, 'update');
-					}
-
-					$view = "modules/$this->moduleID/views/default/view_{$element['class_name']}.php";
-
-					if ($this->shouldUpdateFile($update)) {
-						$this->updateViewView(Yii::app()->basePath.'/'.$view, $element, 'view');
-					}
+				if ($current_class != $target_class) {
+					$this->handleModuleNameChange($current_class, $target_class);
 				}
-			}
-
-			$specialty = Specialty::model()->findByPk($_REQUEST['Specialty']['id']);
-			$event_group = EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']);
-
-			$current_class = $event_type->class_name;
-			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($specialty->code)) . ucfirst(strtolower($event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
-
-			if ($current_class != $target_class && @$_POST['generate'] == 'Generate') {
-				// this is where things get a bit gnarles barkeley
-
-				@rename(Yii::app()->basePath.'/modules/'.$current_class,Yii::app()->basePath.'/modules/'.$target_class);
-
-				$event_type->name = $_POST['EventTypeModuleCode']['moduleSuffix'];
-				$event_type->class_name = $target_class;
-
-				Yii::app()->db->createCommand("UPDATE event_type SET name = '$event_type->name',class_name = '$target_class',event_group_id=$event_group->id WHERE id = $event_type->id")->query();
-
-				foreach (ElementType::model()->findAll('event_type_id=:eventTypeId',array(':eventTypeId'=>$event_type->id)) as $element_type) {
-					$element_class_name = 'Element_'.$target_class.'_'.preg_replace("/ /", "", ucwords(strtolower($element_type->name)));
-					Yii::app()->db->createCommand("UPDATE element_type SET class_name = '$element_class_name' WHERE id = $element_type->id")->query();
-				}
-
-				foreach (Yii::app()->db->createCommand()->select('version')->from('tbl_migration')->where("version like '%_$current_class'")->queryAll() as $tbl_migration) {
-					$version = str_replace($current_class,$target_class,$tbl_migration['version']);
-					Yii::app()->db->createCommand("UPDATE tbl_migration SET version='$version' where version='{$tbl_migration['version']}'")->query();
-				}
-
-				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$current_class,$target_class);
-
-				$from_table_prefix = 'et_'.strtolower($current_class).'_';
-				$to_table_prefix = 'et_'.strtolower($target_class).'_';
-
-				$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$from_table_prefix,$to_table_prefix);
-
-				// introspect the database and fix all table, index and foreign key names
-				foreach (Yii::app()->getDb()->getSchema()->getTables() as $table_name => $table) {
-					if (strncmp($table_name,$from_table_prefix,strlen($from_table_prefix)) == 0) {
-						$foreign_keys = $this->getTableForeignKeys($table_name);
-
-						foreach ($foreign_keys as $foreign_key) {
-							if (strncmp($foreign_key['name'],$from_table_prefix,strlen($from_table_prefix)) == 0) {
-								$new_key_name = str_replace($from_table_prefix,$to_table_prefix,$foreign_key['name']);
-
-								$this->rawSQLQuery("ALTER TABLE `$table_name` DROP FOREIGN KEY `{$foreign_key['name']}`;");
-								$this->rawSQLQuery("DROP INDEX `{$foreign_key['name']}` ON `$table_name`;");
-								$this->rawSQLQuery("CREATE INDEX `$new_key_name` ON `$table_name` (`{$foreign_key['field']}`);");
-								$this->rawSQLQuery("ALTER TABLE `$table_name` ADD FOREIGN KEY `$new_key_name` (`{$foreign_key['field']}`) REFERENCES `{$foreign_key['remote_table']}` (`{$foreign_key['remote_field']}`);");
-							}
-						}
-
-						$new_table_name = str_replace($from_table_prefix,$to_table_prefix,$table_name);
-
-						Yii::app()->db->createCommand("RENAME TABLE `$table_name` TO `$new_table_name`")->query();
-					}
-				}
-
-				// update the event_type name in the migrations
-				$path = Yii::app()->basePath.'/modules/'.$target_class.'/migrations';
-
-				$dh = opendir($path);
-
-				while ($file = readdir($dh)) {
-					if (!preg_match('/^\.\.?$/',$file)) {
-						$data = file_get_contents($path."/".$file);
-
-						if (preg_match_all('/\$event_type[\s\t]*=[\s\t]*.*?->queryRow\(\);/',$data,$m)) {
-							foreach ($m[0] as $blob) {
-								if (preg_match('/\(\':name\'[\s\t]*=>[\s\t]*\'.*?\'\)/',$blob,$b)) {
-									$newblob = str_replace($b[0],"(':name'=>'$event_type->name')",$blob);
-									$data = str_replace($blob,$newblob,$data);
-									file_put_contents($path."/".$file,$data);
-								}
-							}
-						}
-					}
-				}
-
-				closedir($dh);
-
-				$this->moduleName = $this->moduleID = $target_class;
-				parent::prepare();
-
-				$this->eventGroupName = $event_group->name;
-				$this->files=array();
-				$templatePath=$this->templatePath;
-				$modulePath=$this->modulePath;
-				$moduleTemplateFile=$templatePath.DIRECTORY_SEPARATOR.'module.php';
-
-				$this->files[]=new CCodeFile($modulePath.'/'.$this->moduleClass.'.php', $this->render($moduleTemplateFile));
-
-				$files=CFileHelper::findFiles($templatePath,array('exclude'=>array('.svn')));
 			}
 		}
 
-		foreach($files as $file) {
+		foreach($this->files_to_process as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
-			if($file!==$moduleTemplateFile) {
+			if($file!==$this->moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php' || CFileHelper::getExtension($file)==='js') {
 					if (preg_match("/\/migrations\//", $file)) {
 						if (preg_match('/_create\.php$/',$file) && $this->mode == 'create') {
 							# $matches = Array();
-							if (file_exists($modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$modulePath.'/migrations/'))) {
+							if (file_exists($this->modulePath.'/migrations/') and ($matches = $this->regExpFile("/m([0-9]+)\_([0-9]+)\_event_type_".$this->moduleID."/",$this->modulePath.'/migrations/'))) {
 								// migration file exists, so overwrite it rather than creating a new timestamped file
 								$migrationid = $matches[1] . '_' . $matches[2];
 							} else {
@@ -209,7 +102,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 							$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_create/','',$destination_file));
 							$content=$this->renderMigrations($file, $migrationid);
-							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 						} else if (preg_match('/_update\.php$/',$file) && $this->mode == 'update') {
 							$elements_have_changed = false;
 							foreach ($_POST as $key => $value) {
@@ -222,21 +115,21 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 								$migrationid = gmdate('ymd_His');
 								$destination_file = preg_replace("/\/migrations\//", '/migrations/m'.$migrationid.'_', preg_replace('/_update/','',$destination_file));
 								$content=$this->renderMigrations($file, $migrationid);
-								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+								$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 							}
 						}
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
 						foreach ($this->getElementsFromPost() as $element) {
 							$destination_file = preg_replace("/ELEMENTNAME|ELEMENTTYPENAME/", $element['class_name'], $file);
 							$content = $this->render($file, array('element'=>$element));
-							$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+							$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 						}
 					} elseif (preg_match('/LOOKUPTABLE/',$file)) {
 						foreach ($this->getElementsFromPost() as $element) {
 							foreach ($element['lookup_tables'] as $lookup_table) {
 								$destination_file = preg_replace('/LOOKUPTABLE/',$lookup_table['class'],$file);
 								$content = $this->render($file, array('lookup_table'=>$lookup_table));
-								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+								$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 							}
 						}
 					} elseif (preg_match('/MAPPINGTABLE/',$file)) {
@@ -244,7 +137,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							foreach ($element['mapping_tables'] as $mapping_table) {
 								$destination_file = preg_replace('/MAPPINGTABLE/',$mapping_table['class'],$file);
 								$content = $this->render($file, array('mapping_table'=>$mapping_table));
-								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+								$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 							}
 						}
 					} elseif (preg_match('/DEFAULTSTABLE/',$file)) {
@@ -252,15 +145,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							foreach ($element['defaults_tables'] as $defaults_table) {
 								$destination_file = preg_replace('/DEFAULTSTABLE/',$defaults_table['class'],$file);
 								$content = $this->render($file, array('defaults_table'=>$defaults_table));
-								$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+								$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 							}
 						}
 					} elseif (preg_match('/\.js$/',$file)) {
 						$content=$this->render($file,array('elements'=>$this->getElementsFromPost()));
-						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+						$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 					} else {
 						$content=$this->render($file);
-						$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+						$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 					}
 				// an empty directory
 				} else if(basename($file)==='.yii') {
@@ -268,7 +161,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$content=null;
 				} else {
 					$content=file_get_contents($file);
-					$this->files[]=new CCodeFile($modulePath.substr($destination_file,strlen($templatePath)), $content);
+					$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 				}
 			}
 		}
@@ -357,6 +250,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea with dropdown') {
 							$elements = $this->extraElementFieldWrangling_TextareaWithDropdown($elements, $number, $field_number, $fields_value);
+							$elements[$number]['fields'][$field_number]['textarea_rows'] = @$_POST['textAreaDropDownRows'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textarea_cols'] = @$_POST['textAreaDropDownCols'.$number.'Field'.$field_number];
 						}
 
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Radio buttons') {
@@ -377,6 +272,24 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['slider_default_value'] = @$_POST['sliderDefaultValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_stepping'] = @$_POST['sliderStepping'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_dp'] = @$_POST['sliderForceDP'.$number.'Field'.$field_number];
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Integer') {
+							$elements[$number]['fields'][$field_number]['integer_min_value'] = @$_POST['integerMinValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_max_value'] = @$_POST['integerMaxValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_size'] = @$_POST['integerSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['integer_max_length'] = @$_POST['integerMaxLength'.$number.'Field'.$field_number];
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textbox') {
+							$elements[$number]['fields'][$field_number]['textbox_size'] = @$_POST['textBoxSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textbox_max_length'] = @$_POST['textBoxMaxLength'.$number.'Field'.$field_number];
+						}
+
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Textarea') {
+							$elements[$number]['fields'][$field_number]['textarea_rows'] = @$_POST['textAreaRows'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['textarea_cols'] = @$_POST['textAreaCols'.$number.'Field'.$field_number];
 						}
 					}
 				}
@@ -839,7 +752,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public function getDBFieldSQLType($field) {
 		switch ($field['type']) {
 			case 'Textbox':
-				return "varchar(255) DEFAULT \'\'";
+				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
+				return "varchar($size) DEFAULT \'\'";
 			case 'Textarea':
 				return "text DEFAULT \'\'";
 			case 'Date picker':
@@ -855,7 +769,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Boolean':
 				return "tinyint(1) unsigned NOT NULL DEFAULT 0";
 			case 'Integer':
-				return "int(10) unsigned NOT NULL DEFAULT 0";
+				$default = strlen($field['integer_default_value'])>0 ? " DEFAULT {$field['integer_default_value']}" : '';
+				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
 				return "varchar(4096) COLLATE utf8_bin NOT NULL";
 			case 'Multi select':
@@ -897,9 +812,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			} else if ($_GET['ajax'] == 'event_type_properties') {
 				EventTypeModuleCode::eventTypeProperties($_GET['event_type_id']);
 			} else {
-				Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+				if (file_exists("protected/gii/EventTypeModule/views/{$_GET['ajax']}.php")) {
+					Yii::app()->getController()->renderPartial($_GET['ajax'],$_GET);
+				}
 			}
-			exit;
+			Yii::app()->end();
 		}
 
 		if (!empty($_POST)) {
@@ -1057,8 +974,86 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					} else if (!preg_match('/^[0-9\.]+$/',$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) || $_POST['sliderStepping'.$m[1].'Field'.$m[2]] == 0) {
 						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Must be a positive integer or floating point number";
 					}
-					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !preg_match('/^[0-9]+$/',$_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
+					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !ctype_digit($_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
 						$errors['sliderForceDP'.$m[1].'Field'.$m[2]] = "Must be a positive integer";
+					}
+				}
+				if ($value == 'Integer') {
+					if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMinValue'.$m[1].'Field'.$m[2]] = "Minimum value must be an integer";
+						}
+					}
+					if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMaxValue'.$m[1].'Field'.$m[2]] = "Maximum value must be an integer";
+						}
+					}
+					if (strlen(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]])) {
+							$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be an integer";
+						} else {
+							if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] < @$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) {
+								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be >= minimum value";
+							}
+							if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] > @$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) {
+								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be <= maximum value";
+							}
+						}
+					}
+					if (strlen(@$_POST['integerSize'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size is required";
+					} else {
+						if (!ctype_digit(@$_POST['integerSize'.$m[1].'Field'.$m[2]])) {
+							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
+						} else if ($_POST['integerSize'.$m[1].'Field'.$m[2]] <1) {
+							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['integerMaxLength'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit($_POST['integerMaxLength'.$m[1].'Field'.$m[2]])) {
+							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
+						} else if ($_POST['integerMaxLength'.$m[1].'Field'.$m[2]] <1) {
+							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
+						}
+					}
+				}
+				if ($value == 'Textbox') {
+					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size is required";
+					} else {
+						if (!ctype_digit(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]])) {
+							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
+						} else if ($_POST['textBoxSize'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]]) >0) {
+						if (!ctype_digit($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]])) {
+							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
+						} else if ($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
+						}
+					}
+				}
+				if ($value == 'Textarea') {
+					if (strlen(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows is required";
+					} else {
+						if (!ctype_digit(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]])) {
+							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be an integer";
+						} else if (@$_POST['textAreaRows'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be 1 or greater";
+						}
+					}
+					if (strlen(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]]) == 0) {
+						$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols is required";
+					} else {
+						if (!ctype_digit(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]])) {
+							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be an integer";
+						} else if (@$_POST['textAreaCols'.$m[1].'Field'.$m[2]] <1) {
+							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be 1 or greater";
+						}
 					}
 				}
 			}
@@ -1086,17 +1081,18 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 		switch ($field['type']) {
 			case 'Textbox':
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['textbox_size'].'\''.($field['textbox_max_length'] ? ',\'maxlength\' => \''.$field['textbox_max_length'].'\'' : '').'))?'.'>';
 			case 'Integer':
-				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \'10\'))?'.'>';
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['integer_size'].'\''.($field['integer_max_length'] ? ',\'maxlength\' => \''.$field['integer_max_length'].'\'' : '').'))?'.'>';
 			case 'Textarea':
-				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
+				return '<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
 			case 'Date picker':
 				return '<?php echo $form->datePicker($element, \''.$field['name'].'\', array(\'maxDate\' => \'today\'), array(\'style\'=>\'width: 110px;\'))?'.'>';
 			case 'Dropdown list':
 				return '<?php echo $form->dropDownList($element, \''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(array(\'order\'=> \''.$field['order_field'].' asc\')),\'id\',\''.$field['lookup_field'].'\')'.(@$field['empty'] ? ',array(\'empty\'=>\'- Please select -\')' : '').')?'.'>';
 			case 'Textarea with dropdown':
 				return '<?php echo $form->dropDownListNoPost(\''.$field['name'].'\', CHtml::listData('.$field['lookup_class'].'::model()->findAll(),\'id\',\''.$field['lookup_field'].'\'),\'\',array(\'empty\'=>\'- '.ucfirst($field['label']).' -\',\'class\'=>\'populate_textarea\'))?'.'>'."\n".
-					'<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => 6, \'cols\' => 80))?'.'>';
+					'<?php echo $form->textArea($element, \''.$field['name'].'\', array(\'rows\' => '.$field['textarea_rows'].', \'cols\' => '.$field['textarea_cols'].'))?'.'>';
 			case 'Checkbox':
 				return '<?php echo $form->checkBox($element, \''.$field['name'].'\')?'.'>';
 			case 'Radio buttons':
@@ -1287,6 +1283,34 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		file_put_contents($model_path, $data);
 	}
 
+	public function handleViewChanges() {
+		foreach ($this->getElementsFromPost() as $num => $element) {
+			$model = "modules/$this->moduleID/models/{$element['class_name']}.php";
+
+			if ($this->shouldUpdateFile($model)) {
+				$this->updateModel(Yii::app()->basePath.'/'.$model, $element);
+			}
+
+			$create = "modules/$this->moduleID/views/default/create_{$element['class_name']}.php";
+
+			if ($this->shouldUpdateFile($create)) {
+				$this->updateFormView(Yii::app()->basePath.'/'.$create, $element, 'create');
+			}
+
+			$update = "modules/$this->moduleID/views/default/update_{$element['class_name']}.php";
+
+			if ($this->shouldUpdateFile($update)) {
+				$this->updateFormView(Yii::app()->basePath.'/'.$update, $element, 'update');
+			}
+
+			$view = "modules/$this->moduleID/views/default/view_{$element['class_name']}.php";
+
+			if ($this->shouldUpdateFile($update)) {
+				$this->updateViewView(Yii::app()->basePath.'/'.$view, $element, 'view');
+			}
+		}
+	}
+
 	public function shouldUpdateFile($model) {
 		if (isset($_POST['updatefile'])) {
 			foreach ($_POST['updatefile'] as $hash => $value) {
@@ -1374,5 +1398,81 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 	public function rawSQLQuery($sql) {
 		Yii::app()->db->createCommand($sql)->query();
+	}
+
+	public function handleModuleNameChange($current_class, $target_class) {
+		@rename(Yii::app()->basePath.'/modules/'.$current_class,Yii::app()->basePath.'/modules/'.$target_class);
+
+		$this->event_type->name = $_POST['EventTypeModuleCode']['moduleSuffix'];
+		$this->event_type->class_name = $target_class;
+
+		$this->rawSQLQuery("UPDATE event_type SET name = '{$this->event_type->name}',class_name = '$target_class',event_group_id={$this->event_group->id} WHERE id = {$this->event_type->id}");
+
+		foreach (ElementType::model()->findAll('event_type_id=:eventTypeId',array(':eventTypeId'=>$this->event_type->id)) as $element_type) {
+			$element_class_name = 'Element_'.$target_class.'_'.preg_replace("/ /", "", ucwords(strtolower($element_type->name)));
+			$this->rawSQLQuery("UPDATE element_type SET class_name = '$element_class_name' WHERE id = $element_type->id");
+		}
+
+		foreach (Yii::app()->db->createCommand()->select('version')->from('tbl_migration')->where("version like '%_$current_class'")->queryAll() as $tbl_migration) {
+			$version = str_replace($current_class,$target_class,$tbl_migration['version']);
+			$this->rawSQLQuery("UPDATE tbl_migration SET version='$version' where version='{$tbl_migration['version']}'");
+		}
+
+		$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$current_class,$target_class);
+
+		$from_table_prefix = 'et_'.strtolower($current_class).'_';
+		$to_table_prefix = 'et_'.strtolower($target_class).'_';
+
+		$this->changeAllInstancesOfString(Yii::app()->basePath.'/modules/'.$target_class,$from_table_prefix,$to_table_prefix);
+
+		// introspect the database and fix all table, index and foreign key names
+		foreach (Yii::app()->getDb()->getSchema()->getTables() as $table_name => $table) {
+			if (strncmp($table_name,$from_table_prefix,strlen($from_table_prefix)) == 0) {
+				$foreign_keys = $this->getTableForeignKeys($table_name);
+
+				foreach ($foreign_keys as $foreign_key) {
+					if (strncmp($foreign_key['name'],$from_table_prefix,strlen($from_table_prefix)) == 0) {
+						$new_key_name = str_replace($from_table_prefix,$to_table_prefix,$foreign_key['name']);
+
+						$this->rawSQLQuery("ALTER TABLE `$table_name` DROP FOREIGN KEY `{$foreign_key['name']}`;");
+						$this->rawSQLQuery("DROP INDEX `{$foreign_key['name']}` ON `$table_name`;");
+						$this->rawSQLQuery("CREATE INDEX `$new_key_name` ON `$table_name` (`{$foreign_key['field']}`);");
+						$this->rawSQLQuery("ALTER TABLE `$table_name` ADD FOREIGN KEY `$new_key_name` (`{$foreign_key['field']}`) REFERENCES `{$foreign_key['remote_table']}` (`{$foreign_key['remote_field']}`);");
+					}
+				}
+
+				$new_table_name = str_replace($from_table_prefix,$to_table_prefix,$table_name);
+
+				$this->rawSQLQuery("RENAME TABLE `$table_name` TO `$new_table_name`");
+			}
+		}
+
+		// update the event_type name in the migrations
+		$path = Yii::app()->basePath.'/modules/'.$target_class.'/migrations';
+
+		$dh = opendir($path);
+
+		while ($file = readdir($dh)) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				$data = file_get_contents($path."/".$file);
+
+				if (preg_match_all('/\$event_type[\s\t]*=[\s\t]*.*?->queryRow\(\);/',$data,$m)) {
+					foreach ($m[0] as $blob) {
+						if (preg_match('/\(\':name\'[\s\t]*=>[\s\t]*\'.*?\'\)/',$blob,$b)) {
+							$newblob = str_replace($b[0],"(':name'=>'{$this->event_type->name}')",$blob);
+							$data = str_replace($blob,$newblob,$data);
+							file_put_contents($path."/".$file,$data);
+						}
+					}
+				}
+			}
+		}
+
+		closedir($dh);
+
+		$this->initialise(array(
+			'moduleID' => $target_class,
+			'eventGroupName' => $this->event_group->name,
+		));
 	}
 }

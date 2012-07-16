@@ -33,6 +33,8 @@ protected/commands/DumpProcElementsCommand.php
 protected/commands/ImportConsultantsCommand.php
 protected/commands/ImportInstitutionsCommand.php
 protected/commands/OpnoteDataCommand.php
+protected/commands/AuditCommand.php
+protected/commands/TestCommand.php
 
 tags
 index.php
