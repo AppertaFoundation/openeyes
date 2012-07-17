@@ -18,73 +18,14 @@
  */
 <?php echo ' ?>'; ?>
 
-<h4 class="elementTypeName"><?php echo '<?php '; ?> echo $element->elementType->name; <?php echo '?>'; ?></h4>
+<div class="<?php echo '<?php '; ?>echo $element->elementType->class_name<?php echo '?>'; ?>">
+	<h4 class="elementTypeName"><?php echo '<?php '; ?> echo $element->elementType->name; <?php echo '?>'; ?></h4>
 
 <?php
-if (isset($element)) {
-	foreach ($element['fields'] as $field) {
-		if ($field['type'] == 'Textbox') {
-			?>
-	<?php echo '<?php '; ?>echo $form->textField($element, '<?php echo $field['name']; ?>', array('layout' => 'horizontal', 'size' => '10')); <?php echo '?>' ;?>
-
-<?php
-		} elseif ($field['type'] == 'Textarea') {
-?>
-	<?php echo '<?php '; ?>echo $form->textArea($element, '<?php echo $field['name']; ?>', array('rows' => 6, 'cols' => 80)); <?php echo '?>' ;?>
-
-<?php
-		} elseif ($field['type'] == 'Date picker') {
-?>
-	<?php echo '<?php '; ?> $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-		'name'=>'<?php echo $field['name']; ?>', 
-		'id'=>'<?php echo $field['name']; ?>', 
-		'options'=>array(
-			'showAnim'=>'fold',
-			'dateFormat'=>Helper::NHS_DATE_FORMAT_JS,
-		),
-		'value' => $model->NHSDate('<?php echo $field['name']; ?>',''),
-		'htmlOptions'=>array('style'=>'width: 110px;')
-	)); <?php echo '?>'; ?>
-<?php
-		} elseif ($field['type'] == 'Dropdown list') {
-?>
-	<?php echo '<?php '; ?>echo $form->dropDownList($element, '<?php echo $field['name']; ?>', CHtml::listData(Theatre::model()->findAll(),'id','name'),array('empty'=>'- Please select -')); <?php echo '?>' ;?>
-
-<?php
-		} elseif ($field['type'] == 'Checkboxes') {
-?>
-	(Checkboxes go here)
-
-<?php
-		} elseif ($field['type'] == 'Radio buttons') {
-?>
-	(Radio buttons go here)
-
-<?php
-		} elseif ($field['type'] == 'Boolean') {
-?>
-	<?php echo '<?php '; ?>echo $form->radioBoolean($element, '<?php echo $field['name']; ?>'); <?php echo '?>' ;?>
-
-<?php
-		} elseif ($field['type'] == 'EyeDraw') {
-?>
->---<?php echo '<?php '; ?>
-		$this->widget('application.extensions.eyedraw.OEEyeDrawWidget', array(
-			'identifier'=> 'Buckle',
-			'side'=>'R',
-			'mode'=>'edit',
-			'size'=>300,
-			'model'=>$element,
-			'attribute'=>'eyedraw',
-			'doodleToolBarArray'=>array('CircumferentialBuckle','EncirclingBand','RadialSponge','BuckleSuture','DrainageSite'),
-			'onLoadedCommandArray'=>array(
-				array('addDoodle', array('BuckleOperation')),
-				array('deselectDoodles', array()),
-			),
-<?php echo '?>'; ?>
-
-			<?php
+	if (isset($element)) {
+		foreach ($element['fields'] as $field) {
+			echo "\t".$this->getHTMLField($field, 'update')."\n";
 		}
 	}
-}
-?>
+	?>
+</div>

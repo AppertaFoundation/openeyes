@@ -151,7 +151,13 @@ class SiteController extends BaseController
 			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : $default_site_id;
 		}
 
-		$sites = Site::model()->findAll(array('order' => 'short_name'));
+		$institution = Institution::model()->find('code=?',array('RP6'));
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('institution_id',$institution->id);
+		$criteria->order = 'short_name asc';
+
+		$sites = Site::model()->findAll($criteria);
 
 		// display the login form
 		$this->render('login',

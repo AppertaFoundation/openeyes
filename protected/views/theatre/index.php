@@ -42,7 +42,7 @@
 								</tr>
 								<tr class="even">
 									<td>
-										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], Site::model()->getList(), array('empty'=>'All sites', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
+										<?php echo CHtml::dropDownList('site-id', @$_POST['site-id'], CHtml::listData(Institution::model()->find('code=?',array('RP6'))->sites, 'id', 'short_name'), array('empty'=>'All sites', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('theatre-id', @$_POST['theatre-id'], $theatres, array('empty'=>'All theatres', 'disabled' => (@$_POST['emergency_list']==1 ? 'disabled' : '')))?>
@@ -478,6 +478,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
 
 		setFilter({'date-filter':'month','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
+		
+		return true;
+	});
+	
+	$('#date-filter_3').click(function() {
+
+		setFilter({'date-filter':'custom','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 		
 		return true;
 	});
