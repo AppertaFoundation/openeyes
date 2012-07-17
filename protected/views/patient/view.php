@@ -149,11 +149,11 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Address:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact->address !== null) ? $this->patient->gp->contact->address->address1.' '.$this->patient->gp->contact->address->address2.' '.$this->patient->gp->contact->address->city.' '.$this->patient->gp->contact->address->county.' '.$this->patient->gp->contact->address->postcode : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null && $this->patient->gp->contact->address !== null) ? $this->patient->gp->contact->address->address1.' '.$this->patient->gp->contact->address->address2.' '.$this->patient->gp->contact->address->city.' '.$this->patient->gp->contact->address->county.' '.$this->patient->gp->contact->address->postcode : 'Unknown'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Telephone:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
 						</div>
 					</div>
 
