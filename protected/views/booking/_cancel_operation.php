@@ -32,7 +32,7 @@ $patient = $operation->event->episode->patient; ?>
 echo CHtml::form(array('booking/cancelOperation'), 'post', array('id' => 'cancelForm'));
 echo CHtml::hiddenField('operation_id', $operation->id); ?>
 <?php echo CHtml::label('Cancellation reason: ', 'cancellation_reason'); ?>
-<?php if (!empty($operation->booking) && (date('Y-m-d') == date('Y-m-d', strtotime($operation->booking->session->date)))) {
+<?php if (!empty($operation->booking) && (strtotime($operation->booking->session->date) <= strtotime('now'))) {
 	$listIndex = 3;
 } else {
 	$listIndex = 2;
