@@ -145,7 +145,7 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Address:</div>
