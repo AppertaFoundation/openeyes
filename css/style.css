@@ -662,9 +662,9 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 .eventDetail > .data.limitWidth { width:830px; }
 .eventDetail > .data.limitWidth .procedureItem {clear: both;}
 .eventDetail > .data.limitWidth .procedureItem .left {width: 55px; display: inline-block; float:left;}
-.eventDetail > .data.limitWidth .procedureItem .middle {width: 350px; display: inline-block;}
+.eventDetail > .data.limitWidth .procedureItem .middle {width: 345px; display: inline-block;}
 .eventDetail > .data.limitWidth .procedureItem .middle.noDuration {width: 410px;}
-.eventDetail > .data.limitWidth .procedureItem .right {width: 63px; display: inline-block; float: right; text-align: right;}
+.eventDetail > .data.limitWidth .procedureItem .right {width: 65px; display: inline-block; float: right; text-align: right;}
 .eventDetail > .data .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; margin-bottom:4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .eventDetail > .data .group:hover { background:#fff;}
 .eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
