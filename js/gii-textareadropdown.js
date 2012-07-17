@@ -1,22 +1,13 @@
 $(document).ready(function() {
 	$('input[id^="textAreaDropDownCols"]').die('keypress').live('keypress',function(e) {
-		var m = $(this).attr('id').match(/^textAreaDropDownCols([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		if (e.keyCode == 13) {
-			$('input[name="textAreaDropDownFieldValue'+element+'Field'+field+'_1"]').select().focus();
+			$('input[name="textAreaDropDownFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_1"]').select().focus();
 			return false;
 		}
-
 		return true;
 	});
 
 	$('.textAreaDropDownFieldValuesAddValue').live('click',function() {
-		var m = $(this).attr('name').match(/^textAreaDropDownFieldValuesAddValue([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		var i = 1;
 
 		$(this).prev().children('input[type="text"]').map(function() {
@@ -28,8 +19,8 @@ $(document).ready(function() {
 
 		i += 1;
 
-		$('#textAreaDropDownFieldValues'+element+'Field'+field).append('<input type="text" class="textAreaDropDownFieldValueTextInput" name="textAreaDropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="textAreaDropDownFieldValuesRemoveValue" value="remove"><br/>');
-		$('input[name="textAreaDropDownFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
+		$('#textAreaDropDownFieldValues'+$(this).getElement()+'Field'+$(this).getField()).append('<input type="text" class="textAreaDropDownFieldValueTextInput" name="textAreaDropDownFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_'+i+'" value="Enter value" /><input type="submit" class="textAreaDropDownFieldValuesRemoveValue" value="remove"><br/>');
+		$('input[name="textAreaDropDownFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_'+i+'"]').select().focus();
 
 		return false;
 	});
@@ -47,12 +38,8 @@ $(document).ready(function() {
 	});
 
 	$('.textAreaDropDownFieldValueTextInput').die('keypress').live('keypress',function(e) {
-		var m = $(this).attr('name').match(/^textAreaDropDownFieldValue([0-9]+)Field([0-9]+)_[0-9]+$/);
-		var element = m[1];
-		var field = m[2];
-
 		if (e.keyCode == 13) {
-			$('input[name="textAreaDropDownFieldValuesAddValue'+element+'Field'+field+'"]').click();
+			$('input[name="textAreaDropDownFieldValuesAddValue'+$(this).getElement()+'Field'+$(this).getField()+'"]').click();
 			return false;
 		}
 
@@ -60,10 +47,6 @@ $(document).ready(function() {
 	});
 
 	$('.textAreaDropDownFieldValuesAddValue').live('click',function() {
-		var m = $(this).attr('name').match(/^textAreaDropDownFieldValuesAddValue([0-9]+)Field([0-9]+)$/);
-		var element = m[1];
-		var field = m[2];
-
 		var i = 1;
 
 		$(this).prev().children('input[type="text"]').map(function() {
@@ -75,8 +58,8 @@ $(document).ready(function() {
 
 		i += 1;
 
-		$('#textAreaDropDownFieldValues'+element+'Field'+field).append('<input type="text" class="textAreaDropDownFieldValueTextInput" name="textAreaDropDownFieldValue'+element+'Field'+field+'_'+i+'" value="Enter value" /><input type="submit" class="textAreaDropDownFieldValuesRemoveValue" value="remove"><br/>');
-		$('input[name="textAreaDropDownFieldValue'+element+'Field'+field+'_'+i+'"]').select().focus();
+		$('#textAreaDropDownFieldValues'+$(this).getElement()+'Field'+$(this).getField()).append('<input type="text" class="textAreaDropDownFieldValueTextInput" name="textAreaDropDownFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_'+i+'" value="Enter value" /><input type="submit" class="textAreaDropDownFieldValuesRemoveValue" value="remove"><br/>');
+		$('input[name="textAreaDropDownFieldValue'+$(this).getElement()+'Field'+$(this).getField()+'_'+i+'"]').select().focus();
 
 		return false;
 	});
