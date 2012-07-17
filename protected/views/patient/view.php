@@ -388,7 +388,7 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->address1 : '').')';?>");
+					currentContacts.push("<?php if ($this->patient->gp->contact && $this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->address1 : '').')';?>");
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
