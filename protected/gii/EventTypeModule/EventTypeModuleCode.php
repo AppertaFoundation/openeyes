@@ -82,6 +82,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		}
 
+		$elements = $this->getElementsFromPost();
+
 		foreach($this->files_to_process as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if($file!==$this->moduleTemplateFile) {
@@ -114,13 +116,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							$destination_file = preg_replace("/ELEMENTNAME|ELEMENTTYPENAME/", $element['class_name'], $file);
 							$content = $this->render($file, array('element'=>$element));
 							$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 						}
 					} elseif (preg_match('/LOOKUPTABLE/',$file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							foreach ($element['lookup_tables'] as $lookup_table) {
 								$destination_file = preg_replace('/LOOKUPTABLE/',$lookup_table['class'],$file);
 								$content = $this->render($file, array('lookup_table'=>$lookup_table));
@@ -128,7 +130,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match('/MAPPINGTABLE/',$file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							foreach ($element['mapping_tables'] as $mapping_table) {
 								$destination_file = preg_replace('/MAPPINGTABLE/',$mapping_table['class'],$file);
 								$content = $this->render($file, array('mapping_table'=>$mapping_table));
@@ -136,7 +138,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match('/DEFAULTSTABLE/',$file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							foreach ($element['defaults_tables'] as $defaults_table) {
 								$destination_file = preg_replace('/DEFAULTSTABLE/',$defaults_table['class'],$file);
 								$content = $this->render($file, array('defaults_table'=>$defaults_table));
@@ -144,7 +146,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match('/\.js$/',$file)) {
-						$content=$this->render($file,array('elements'=>$this->getElementsFromPost()));
+						$content=$this->render($file,array('elements'=>$elements));
 						$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 					} else {
 						$content=$this->render($file);
