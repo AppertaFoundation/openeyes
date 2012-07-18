@@ -2,11 +2,18 @@
 class BaseEventTypeElement extends BaseElement
 {
 	function getElementType() {
-		$event = $this->event;
-
-		foreach (ElementType::model()->findAll("event_type_id=?",array($this->event->event_type_id)) as $element_type) {
-			if ($element_type->class_name == get_class($this)) {
-				return $element_type;
+		if (Yii::app()->getController()->getModule()) {
+			$event_type = EventType::model()->find('class_name=?',array(Yii::app()->getController()->getModule()->getName()));
+			foreach (ElementType::model()->findAll("event_type_id=?",array($event_type->id)) as $element_type) {
+				if ($element_type->class_name == get_class($this)) {
+					return $element_type;
+				}
+			}
+		} else {
+			foreach (ElementType::model()->findAll("event_type_id=?",array(25)) as $element_type) {
+				if ($element_type->class_name == get_class($this)) {
+					return $element_type;
+				}
 			}
 		}
 
