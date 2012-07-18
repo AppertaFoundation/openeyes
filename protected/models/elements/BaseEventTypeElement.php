@@ -2,48 +2,17 @@
 class BaseEventTypeElement extends BaseElement
 {
 	function getElementType() {
-		$model_path = $this->find_model(Yii::app()->basePath, $this->tableSchema->name);
+		$event = $this->event;
 
-		if (preg_match('/\/modules\/(.*?)\//',$model_path,$m)) {
-			$event_type = EventType::model()->find('class_name=?',array($m[1]));
-			return ElementType::model()->find('class_name=? and event_type_id=?',array(get_class($this),$event_type->id));
-		}
-		
-		return ElementType::model()->find('class_name=?', array(get_class($this)));
-	}
-
-	function find_model($path, $table_name) {
-		$dh = opendir($path);
-
-		while ($file = readdir($dh)) {
-			if (!preg_match('/^\.\.?$/',$file)) {
-				if (is_file($path."/".$file)) {
-					if ($this->is_model($path."/".$file, $table_name)) {
-						return $path."/".$file;
-					}
-				} else {
-					if ($model_path = $this->find_model($path."/".$file, $table_name)) {
-						return $model_path;
-					}
-				}
-			} 
-		}
-		
-		closedir($dh);
-	}
-	
-	function is_model($path, $table_name) {
-		$data = file_get_contents($path);
-
-		if (preg_match('/function tableName.*?return[\s\t]+\'(.*?)\'/s',$data,$m)) {
-			if ($m[1] == $table_name) {
-				return $path;
+		foreach (ElementType::model()->findAll("event_type_id=?",array($this->event->event_type_id)) as $element_type) {
+			if ($element_type->class_name == get_class($this)) {
+				return $element_type;
 			}
 		}
 
 		return false;
 	}
-
+	
 	function render($action) {
 		$this->Controller->renderPartial();
 	}
