@@ -868,6 +868,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #event_display .colorband.category_images { background:#5f5f5f;}
 #event_display .colorband.category_clinical { background:#fdcc56;}
 #event_display .colorband.category_drugs { background:#acad47;}
+#event_display .colorband.category_legacy { background:#b5b5b5;}
 
 #event_display h3.withEventIcon { display:inline-block; height:40px; padding:17px 0 0 50px; margin-left:5px; }
 #event_display h3.episodeTitle { display:inline-block; font-size:23px; height:40px; padding:0 0 0 5px; margin-left:5px; }
