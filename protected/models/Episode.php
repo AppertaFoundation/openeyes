@@ -31,6 +31,7 @@
  * @property Patient $patient
  * @property Firm $firm
  * @property Event[] $events
+ * @property EpisodeStatus $status
  */
 class Episode extends BaseActiveRecord
 {
@@ -81,6 +82,7 @@ class Episode extends BaseActiveRecord
 			'events' => array(self::HAS_MANY, 'Event', 'episode_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
 		);
 	}
 
