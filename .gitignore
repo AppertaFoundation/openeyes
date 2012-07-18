@@ -25,3 +25,11 @@ tags
 index.php
 features/cache/
 e0_Com_contacts.html
+commands/AssociateConsultantsWithSitesCommand.php
+commands/AuditCommand.php
+commands/CorrespondenceDataCommand.php
+commands/DumpProcElementsCommand.php
+commands/ImportConsultantsCommand.php
+commands/ImportInstitutionsCommand.php
+commands/OpnoteDataCommand.php
+commands/TestCommand.php
