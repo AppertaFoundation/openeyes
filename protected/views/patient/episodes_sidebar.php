@@ -4,9 +4,11 @@
 <div class="patient_actions">
 	</div>
 		<div class="episode_nav" style="background-color:#eee">
-		<span class="aBtn"><a class="episode sprite showhide" href="#"><span class="hide"></span> </a> </span>
+		<div style="margin-bottom: 8px;">
+			<h4 style="display: inline; color: #999;">Legacy events</h4>
+			<span style="float: right;" class="aBtn"><a class="sprite showhide2" href="#"><span class="show"></span></a></span>
+		</div>
 			<div class="small"></div>
-			<h4 style="color:#999;">Legacy events</h4>
 			<ul class="events">
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
@@ -21,7 +23,7 @@
 							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
 						}
 						?>
-						<li id="eventLi<?php echo $event->id ?>">
+						<li id="eventLi<?php echo $event->id ?>" style="display: none;">
 							<div class="quicklook" style="display: none; ">
 								<span class="event"><?php echo $event->eventType->name?></span>
 								<span class="info"><?php echo str_replace("\n","<br/>",$event->info)?></span>
