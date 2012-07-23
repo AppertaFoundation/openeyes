@@ -1,75 +1,61 @@
 <div id="episodes_sidebar">
 	<?php if (is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
-                <div class="episode closed clearfix">
-                        <div class="episode_nav" style="background-color:#eee;">
-                                <input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-                                <div style="margin-bottom: 8px;">
-					<h4 style="display: inline;">Legacy events</h4>
-                                        <span style="float: right;" class="aBtn"><a class="sprite showhide2" href="#"><span class="hide"></span></a></span>
-                                </div>
-                                <div class="small hide episodeDate" style="margin-bottom: 10px;">
-                                        <div>
-                                                <span>
-							&nbsp;
-                                                        <!--<?php echo $episode->NHSDate('start_date'); ?>-->
-                                                </span>
-                                                <span style="float:right;">
-                                                        <a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details">
-								<!--
-                                                                <?php if (@$current_episode && $current_episode->id == $episode->id){?>
-                                                                        <div class="summary">
-                                                                <?php }?>View summary<?php if (@$current_episode && $current_episode->id == $episode->id){?></div><?php }?>
-								-->
-                                                        </a>
-                                                </span>
-                                        </div>
-                                </div>
-                                <ul class="events hide">
-                                        <?php foreach ($episode->events as $event) {
-                                                $highlight = false;
+	<div class="episode clearfix" style="display:block;">
+<div class="patient_actions">
+	</div>
+		<div class="episode_nav" style="background-color:#eee">
+		<div style="margin-bottom: 8px;">
+			<h4 style="display: inline; color: #999;">Legacy events</h4>
+			<span style="float: right;" class="aBtn"><a class="sprite showhide2" href="#"><span class="show"></span></a></span>
+		</div>
+			<div class="small"></div>
+			<ul class="events">
+					<?php foreach ($episode->events as $event) {
+						$highlight = false;
 
-                                                if(isset($this->event) && $this->event->id == $event->id){
-                                                        $highlight = TRUE;
-                                                }
-
-                                                if ($event->eventType->class_name == 'OphTrOperation') {
-                                                        $event_path = '/patient/event/';
-                                                } else {
-                                                        $event_path = '/'.$event->eventType->class_name.'/Default/view/';
-                                                }
-                                                ?>
-                                                <li id="eventLi<?php echo $event->id ?>">
-                                                        <div class="quicklook" style="display: none; ">
-                                                                <span class="event"><?php echo $event->eventType->name?></span>
-                                                                <span class="info"><?php echo str_replace("\n","<br/>",$event->info)?></span>
-                                                                <?php if($event->hasIssue()) { ?>
-                                                                        <span class="issue"><?php echo $event->getIssueText()?></span>
-                                                                <?php } ?>
-                                                        </div>
-                                                        <?php if($highlight) { ?>
-                                                        <div class="viewing">
-                                                        <?php } else { ?>
-                                                        <a href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details">
-                                                        <?php } ?>
-                                                                        <span class="type<?php if($event->hasIssue()) { ?> statusflag<?php } ?>">
-                                                                                <?php
-                                                                                if ($event->eventType->class_name == 'OphTrOperation') {?>
-                                                                                        <img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" />
-                                                                                <?php } else {
-                                                                                        $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.img')).'/';?>
-                                                                                        <img src="<?php echo $assetpath?>small.png" alt="op" width="19" height="19" />
-                                                                                <?php } ?>
-                                                                        </span>
-                                                                        <span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
-                                                        <?php if(!$highlight) { ?>
-                                                        </a>
-                                                        <?php } else { ?>
-                                                        </div>
-                                                        <?php } ?>
-                                                </li>
-                                                <?php } ?>
-                                </ul>
-			</div>
+						if(isset($this->event) && $this->event->id == $event->id){
+							$highlight = TRUE;
+						}
+						
+						if ($event->eventType->class_name == 'OphTrOperation') {
+							$event_path = '/patient/event/';
+						} else {
+							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
+						}
+						?>
+						<li id="eventLi<?php echo $event->id ?>" style="display: none;">
+							<div class="quicklook" style="display: none; ">
+								<span class="event"><?php echo $event->eventType->name?></span>
+								<span class="info"><?php echo str_replace("\n","<br/>",$event->info)?></span>
+								<?php if($event->hasIssue()) { ?>
+									<span class="issue"><?php echo $event->getIssueText()?></span>
+								<?php } ?>
+							</div>
+							<?php if($highlight) { ?>
+							<div class="viewing">
+							<?php } else { ?>
+							<a style="color:#999;" href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details">
+							<?php } ?>
+									<span class="type<?php if($event->hasIssue()) { ?> statusflag<?php } ?>">
+										<?php
+										if ($event->eventType->class_name == 'OphTrOperation') {?>
+											<img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" />
+										<?php } else {
+											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.img')).'/';?>
+											<img src="<?php echo $assetpath?>small.png" alt="op" width="19" height="19" />
+										<?php } ?>
+									</span>
+									<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
+							<?php if(!$highlight) { ?>
+							</a>
+							<?php } else { ?>
+							</div>
+							<?php } ?>
+						</li>
+						<?php } ?>
+				</ul>
+			</ul>
+		
 		</div>
         	<?php } ?>
 	<?php if (is_array($episodes)) foreach ($episodes as $i => $episode) {?>
