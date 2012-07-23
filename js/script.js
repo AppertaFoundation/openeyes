@@ -36,39 +36,50 @@ $(document).ready(function(){
 		var whiteBox = $(this).parents('.whiteBox');
 		
 		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fast",'swing');
+			whiteBox.children('.data_row').slideUp("fast",'fast');
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			whiteBox.children('.data_row').slideDown("fast",'swing');
+			whiteBox.children('.data_row').slideDown("fast",'fast');
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}
 	});
 
-	$('.sprite.showhide2').click( function(e){
+	// show hide
+	$('.sprite.showhide2').click(function(e){
 		e.preventDefault();
-		var sprite = $(this).children('span');
-		var small = $(this).parent().parent().next('div.episodeDate');
-		var events = $(this).parent().parent().next('div').next('ul.events');
-	 
-		if(sprite.hasClass('hide')) {
-			events.children('li').hide(); //slideUp('fast','swing');
-			small.hide(); //slideUp('fast','swing');
-			sprite.removeClass('hide');
-			sprite.addClass('show');
-		} else {
-			small.show(); //slideDown('fast','swing');
-			events.children('li').show(); /*slideDown('fast','swing',function() {
-				events.children('li').map(function() {
-					if ($(this).children('div:nth-child(2)').hasClass('viewing')) {
-						$(this).children('div:nth-child(2)').removeClass('viewing');
-						$(this).children('div:nth-child(2)').addClass('viewing');
-					}
-				});
-			});*/
-			sprite.removeClass('show');
-			sprite.addClass('hide');
-		}
+		changeState($(this).parents('.episode_nav'),$(this).children('span'));
 	});
+	
+	// check to see if it should be hidden by default?
+	$('.sprite.showhide2').each(function(){
+		if ($(this).children('span').hasClass('show')) {
+			$(this).parents('.episode_nav').children('.events').slideUp('fast');
+		}			
+	});
+	
+	function changeState(wb,sp) {
+		if (sp.hasClass('hide')) {
+			wb.children('.events').slideUp('fast');
+			sp.removeClass('hide');
+			sp.addClass('show');
+		} else {
+			wb.children('.events').slideDown('fast');
+			sp.removeClass('show');
+			sp.addClass('hide');
+		}
+	}
 });
+
+function changeState(wb,sp) {
+	if (sp.hasClass('hide')) {
+		wb.children('.events').slideUp('fast');
+		sp.removeClass('hide');
+		sp.addClass('show');
+	} else {
+		wb.children('.events').slideDown('fast');
+		sp.removeClass('show');
+		sp.addClass('hide');
+	}
+}

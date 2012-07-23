@@ -525,6 +525,7 @@ td.eventIcons > img { margin-bottom:10px; }
 .episode .episode_nav .mini_icons { padding:2px 5px 2px 5px; display: none; }
 .episode .episode_nav .mini_icons a {border:none;}
 .episode .episode_nav .mini_icons img { width:12px; height:12px; margin-right:3px; }
+.episode .legacy { background: #eee !important; }
 .episode ul.events { list-style-type: none; padding:4px 0 0 0; margin:0 0 0 5px; border-top:1px dotted #ccc; }
 .episode ul.events li { display:block; position: relative; height:19px; margin:0 2px 4px 0; } 
 .episode ul.events li img { vertical-align:middle; margin-left:0; margin-right:0; } 
@@ -845,6 +846,12 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .aBtn a:hover.sprite.showhide > .hide { background-position: top right; }
 .aBtn a.sprite.showhide > .show { background-position: bottom left; }
 .aBtn a:hover.sprite.showhide > .show { background-position: bottom right; }
+
+.aBtn a.sprite.showhide2 > span { display:inline-block; width:11px; height:11px; background:transparent url(../img/_elements/icons/_sprites/showhide_icon.png) no-repeat top left; }
+.aBtn a.sprite.showhide2 > .hide { background-position: top left; }
+.aBtn a:hover.sprite.showhide2 > .hide { background-position: top right; }
+.aBtn a.sprite.showhide2 > .show { background-position: bottom left; }
+.aBtn a:hover.sprite.showhide2 > .show { background-position: bottom right; }
 
 /* EVENT LIST showhide in Event List*/
 .episode_nav a.sprite { display:inline-block; padding:4px 5px 2px 5px; background: #fff; -webkit-border-bottom-left-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-bottomleft: 3px; -moz-border-radius-bottomright: 3px; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
