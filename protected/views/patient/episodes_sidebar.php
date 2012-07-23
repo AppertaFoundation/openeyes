@@ -59,8 +59,7 @@
 			</ul>
 		
 		</div>
-	</div>
-	<?php } ?>
+        	<?php } ?>
 	<?php if (is_array($episodes)) foreach ($episodes as $i => $episode) {?>
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
