@@ -1,14 +1,16 @@
 <div id="episodes_sidebar">
 	<?php if (is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
-	<div class="episode clearfix" style="display:block;">
-<div class="patient_actions">
-	</div>
-		<div class="episode_nav" style="background-color:#eee">
-		<div style="margin-bottom: 8px;">
-			<h4 style="display: inline; color: #999;">Legacy events</h4>
-			<span style="float: right;" class="aBtn"><a class="sprite showhide2" href="#"><span class="show"></span></a></span>
-		</div>
-			<div class="small"></div>
+	<div class="episode open clearfix" style="display:block;">
+		<div class="episode_nav legacy">
+			<div class="start_date small">
+				<?php echo $episode->NHSDate('start_date')?>
+				<span class="aBtn">
+					<a class="sprite showhide2 legacy" href="#">
+						<span class="show"></span>
+					</a>
+				</span>
+			</div>
+			<h4 class="legacy" style="margin-left: 8px;">Legacy events</h4>
 			<ul class="events">
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
@@ -23,7 +25,7 @@
 							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
 						}
 						?>
-						<li id="eventLi<?php echo $event->id ?>" style="display: none;">
+						<li id="eventLi<?php echo $event->id ?>">
 							<div class="quicklook" style="display: none; ">
 								<span class="event"><?php echo $event->eventType->name?></span>
 								<span class="info"><?php echo str_replace("\n","<br/>",$event->info)?></span>
@@ -63,24 +65,15 @@
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
 				<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-				<div style="margin-bottom: 8px;">
-					<h4 style="display: inline;"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
-					<span style="float: right;" class="aBtn"><a class="sprite showhide2" href="#"><span class="hide"></span></a></span>
+				<div class="start_date small">
+					<?php echo $episode->NHSDate('start_date')?>
+					<span class="aBtn">
+						<a class="sprite showhide2" href="#">
+							<span class="hide"></span>
+						</a>
+					</span>
 				</div>
-				<div class="small show episodeDate" style="margin-bottom: 10px;">
-					<div>
-						<span>
-							<?php echo $episode->NHSDate('start_date'); ?>
-						</span>
-						<span style="float:right;">
-							<a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details">
-								<?php if (@$current_episode && $current_episode->id == $episode->id){?>
-									<div class="summary">
-								<?php }?>View summary<?php if (@$current_episode && $current_episode->id == $episode->id){?></div><?php }?>
-							</a>
-						</span>
-					</div>
-				</div>
+				<h4><a href="/patient/episode/<?php echo $episode->id?>" class="title_summary<?php if ($current_episode && $current_episode->id == $episode->id) {?> viewing<?php }?>"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></a></h4>
 				<ul class="events show">
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
