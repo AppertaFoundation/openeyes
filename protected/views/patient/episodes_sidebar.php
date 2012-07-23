@@ -59,7 +59,8 @@
 			</ul>
 		
 		</div>
-        	<?php } ?>
+	</div>
+	<?php } ?>
 	<?php if (is_array($episodes)) foreach ($episodes as $i => $episode) {?>
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
@@ -72,7 +73,7 @@
 						</a>
 					</span>
 				</div>
-				<h4><a href="/patient/episode/<?php echo $episode->id?>" class="title_summary<?php if ($current_episode && $current_episode->id == $episode->id) {?> viewing<?php }?>"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></a></h4>
+				<h4><a href="/patient/episode/<?php echo $episode->id?>" class="title_summary<?php if (@$current_episode && $current_episode->id == $episode->id) {?> viewing<?php }?>"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></a></h4>
 				<ul class="events show">
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
