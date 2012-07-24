@@ -11,7 +11,7 @@
 				</span>
 			</div>
 			<h4 class="legacy" style="margin-left: 8px;">Legacy events</h4>
-			<ul class="events">
+			<ul class="events" style="display: none;">
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 

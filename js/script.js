@@ -52,13 +52,6 @@ $(document).ready(function(){
 		changeState($(this).parents('.episode_nav'),$(this).children('span'));
 	});
 	
-	// check to see if it should be hidden by default?
-	$('.sprite.showhide2').each(function(){
-		if ($(this).children('span').hasClass('show')) {
-			$(this).parents('.episode_nav').children('.events').slideUp('fast');
-		}			
-	});
-	
 	function changeState(wb,sp) {
 		if (sp.hasClass('hide')) {
 			wb.children('.events').slideUp('fast');
