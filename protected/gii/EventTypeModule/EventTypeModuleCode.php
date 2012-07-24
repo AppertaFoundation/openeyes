@@ -985,6 +985,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					case 'compare':
 						if (isset($rule['compare_field'])) {
 							$compare = $this->substitutePostValue($rule['compare_field'],$element_num,$field_num);
+							$compare = $_POST[$compare];
 						} else {
 							$compare = $rule['compare_value'];
 						}
@@ -992,6 +993,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						switch ($rule['operator']) {
 							case 'greater_equal':
 								if ($value < $compare) {
+									echo "[$value][$compare]";
 									$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or greater';
 								}
 								break;
