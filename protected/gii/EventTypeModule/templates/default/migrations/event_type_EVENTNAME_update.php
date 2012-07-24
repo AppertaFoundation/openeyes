@@ -131,18 +131,18 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 ?>
 		$this->addColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>','<?php echo $field_type?>');
 
-<? }
+<?php }
 if (isset($field['extra_report'])) {?>
 		$this->addColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>2','<?php echo $field_type?>');
 
-<? }
+<?php }
 							foreach ($element['foreign_keys'] as $foreign_key) {
 								if ($foreign_key['field'] == $field_name) {?>
 		$this->createIndex('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>','<?php echo $field_name?>');
 
 		$this->addForeignKey('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>','<?php echo $field_name?>','<?php echo $foreign_key['table']?>','id');
 
-<? }
+<?php }
 							}
 							$count++;
 						}
@@ -202,16 +202,16 @@ if ($element['mode'] == 'create') {?>
 
 		$this->dropIndex('<?php echo $foreign_key['name']?>','<?php echo $element['table_name']?>');
 
-<? }
+<?php }
 							}
 ?>
 		$this->dropColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>');
 
-<? }
+<?php }
 						if (isset($field['extra_report'])) {?>
 		$this->dropColumn('<?php echo $element['table_name']?>','<?php echo $field_name?>2');
 
-<? }
+<?php }
 						$count++;
 					}
 ?>
