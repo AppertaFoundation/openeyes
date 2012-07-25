@@ -168,6 +168,7 @@ class PatientController extends BaseController
 			'event_template_name' => $event_template_name,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
+			'current_episode' => $this->episode,
 		));
 	}
 
@@ -412,6 +413,16 @@ class PatientController extends BaseController
 		$legacyepisodes = $this->patient->legacyepisodes;
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
+		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+			$current_episode = empty($episodes) ? false : $episodes[0];
+		} else if ($current_episode->end_date == null) {
+			if ($event = Event::model()->find(array('order'=>'datetime desc'))) {
+				return $this->actionEvent($event->id);
+			}
+		} else {
+			$current_episode = null;
+		}
+
 		$this->title = 'Episode summary';
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
@@ -419,7 +430,7 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => empty($episodes) ? false : $episodes[0]
+			'current_episode' => $current_episode,
 		));
 	}
 
@@ -440,6 +451,10 @@ class PatientController extends BaseController
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
+
+		$status = Yii::app()->session['episode_hide_status'];
+		$status[$id] = true;
+		Yii::app()->session['episode_hide_status'] = $status;
 
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
@@ -856,5 +871,25 @@ class PatientController extends BaseController
 	 */
 	public function allergyList() {
 		return Allergy::model()->findAll(array('order' => 'name'));
+	}
+
+	public function actionHideepisode() {
+		$status = Yii::app()->session['episode_hide_status'];
+
+		if (isset($_GET['episode_id'])) {
+			$status[$_GET['episode_id']] = false;
+		}
+
+		Yii::app()->session['episode_hide_status'] = $status;
+	}
+
+	public function actionShowepisode() {
+		$status = Yii::app()->session['episode_hide_status'];
+	 
+		if (isset($_GET['episode_id'])) {
+			$status[$_GET['episode_id']] = true;
+		}
+	 
+		Yii::app()->session['episode_hide_status'] = $status;
 	}
 }

@@ -593,9 +593,11 @@ class ClinicalController extends BaseController
 
 	public function header($passthru=false) {
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$params = array(
 			'episodes'=>$episodes,
+			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'title'=>'Create'
 		);

@@ -290,4 +290,24 @@ class Episode extends BaseActiveRecord
 		}
 		return false;
 	}
+
+	public function getHidden() {
+		if (isset(Yii::app()->getController()->event) && Yii::app()->getController()->event->episode_id == $this->id) {
+			return false;
+		}
+
+		if (isset(Yii::app()->session['episode_hide_status'][$this->id])) {
+			return !Yii::app()->session['episode_hide_status'][$this->id];
+		}
+
+		if (isset(Yii::app()->getController()->episode)) {
+			return Yii::app()->getController()->episode->id != $this->id || $this->end_date != null;
+		}
+
+		return true;
+	}
+
+	public function getOpen() {
+		return ($this->end_date == null);
+	}
 }

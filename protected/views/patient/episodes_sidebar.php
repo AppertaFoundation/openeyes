@@ -6,12 +6,12 @@
 				<?php echo $episode->NHSDate('start_date')?>
 				<span class="aBtn">
 					<a class="sprite showhide2 legacy" href="#">
-						<span class="show"></span>
+						<span class="<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) {?>show<?php }else{?>hide<?php }?>"></span>
 					</a>
 				</span>
 			</div>
 			<h4 class="legacy" style="margin-left: 8px;">Legacy events</h4>
-			<ul class="events" style="display: none;">
+			<ul class="events"<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) {?> style="display: none;"<?php }?>>
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 
@@ -69,12 +69,16 @@
 					<?php echo $episode->NHSDate('start_date')?>
 					<span class="aBtn">
 						<a class="sprite showhide2" href="#">
-							<span class="hide"></span>
+							<span class="<?php if ((!@$current_episode || $current_episode->id != $episode->id) && $episode->hidden) {?>show<?php }else{?>hide<?php }?>"></span>
 						</a>
 					</span>
 				</div>
-				<h4><a href="/patient/episode/<?php echo $episode->id?>" class="title_summary<?php if (@$current_episode && $current_episode->id == $episode->id) {?> viewing<?php }?>"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></a></h4>
-				<ul class="events show">
+				<h4><a href="/patient/episode/<?php echo $episode->id?>" class="title_summary<?php if (!$this->event && @$current_episode && $current_episode->id == $episode->id) {?> viewing<?php }?>"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></a></h4>
+				<?php if ($episode->hidden) {?>
+					<ul class="events show" style="display: none;">
+				<?php }else{?>
+					<ul class="events hide">
+				<?php }?>
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 
