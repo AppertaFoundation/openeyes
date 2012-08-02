@@ -379,8 +379,8 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 #patient-grid .pager { display: none !important; visibility: hidden; }
 /* my pagination */
 .resultsPagination { text-align:right; background: #ddd; padding:10px;	}
-.resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
+.resultsPagination .otherPages:before { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 
 /* purpleUser can edit info as Admin	*/
 .purpleUser { line-height:1.5; font-size:11px; color:#ffffde; background:#545065; border:2px solid #602aba; padding:6px; position:relative; min-height: 50px; }
