@@ -1,4 +1,3 @@
-@mink:selenium
 Feature: Patient Summary
 	In order to view patient details and episodes
 	As a OpenEyes user
