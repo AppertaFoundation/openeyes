@@ -12,28 +12,23 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public $event_type;
 	public $event_group;
 	public $specialty;
+	public $cssPath;
+	public $jsPath;
+	public $imgPath;
+	public $validation_rules_path = "protected/gii/EventTypeModule/validation";
+	public $validation_rules = array();
 
-	private $validation_rules = array(
-		'element_name' => array(
-			'required' => true,
-			'required_error' => 'Please enter an element name.',
-			'regex' => '/^[a-zA-Z\s]+$/',
-			'regex_error' => 'Element name must be letters and spaces only.'
-		),
-		'element_field_name' => array(
-			'required' => true,
-			'required_error' => 'Please enter a field name.',
-			'regex' => '/^[a-z][a-z0-9_]+$/',
-			'regex_error' => 'Field name must be a-z, 0-9 and underscores only, and start with a letter.'
-		),
-		'element_field_label' => array(
-			'required' => true,
-			'required_error' => 'Please enter a field label.',
-			'regex' => '/^[a-zA-Z0-9\s]+$/',
-			'regex_error' => 'Field label must be letters, numbers and spaces only.'
-		)
-	);
-	public $cssPath, $jsPath, $imgPath;
+	public function __construct() {
+		$dh = dir($this->validation_rules_path);
+
+		while ($file = $dh->read()) {
+			if (!preg_match('/^\.\.?$/',$file)) {
+				$this->validation_rules = array_merge($this->validation_rules,require($this->validation_rules_path."/$file"));
+			}
+		}
+
+		parent::__construct();
+	}
 
 	public function rules() {
 		return array(
@@ -87,6 +82,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 		}
 
+		$elements = $this->getElementsFromPost();
+
 		foreach($this->files_to_process as $file) {
 			$destination_file = preg_replace("/EVENTNAME|EVENTTYPENAME|MODULENAME/", $this->moduleID, $file);
 			if($file!==$this->moduleTemplateFile) {
@@ -119,13 +116,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match("/ELEMENTNAME|ELEMENTTYPENAME/", $file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							$destination_file = preg_replace("/ELEMENTNAME|ELEMENTTYPENAME/", $element['class_name'], $file);
 							$content = $this->render($file, array('element'=>$element));
 							$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 						}
 					} elseif (preg_match('/LOOKUPTABLE/',$file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							foreach ($element['lookup_tables'] as $lookup_table) {
 								$destination_file = preg_replace('/LOOKUPTABLE/',$lookup_table['class'],$file);
 								$content = $this->render($file, array('lookup_table'=>$lookup_table));
@@ -133,7 +130,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match('/MAPPINGTABLE/',$file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							foreach ($element['mapping_tables'] as $mapping_table) {
 								$destination_file = preg_replace('/MAPPINGTABLE/',$mapping_table['class'],$file);
 								$content = $this->render($file, array('mapping_table'=>$mapping_table));
@@ -141,7 +138,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match('/DEFAULTSTABLE/',$file)) {
-						foreach ($this->getElementsFromPost() as $element) {
+						foreach ($elements as $element) {
 							foreach ($element['defaults_tables'] as $defaults_table) {
 								$destination_file = preg_replace('/DEFAULTSTABLE/',$defaults_table['class'],$file);
 								$content = $this->render($file, array('defaults_table'=>$defaults_table));
@@ -149,7 +146,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							}
 						}
 					} elseif (preg_match('/\.js$/',$file)) {
-						$content=$this->render($file,array('elements'=>$this->getElementsFromPost()));
+						$content=$this->render($file,array('elements'=>$elements));
 						$this->files[]=new CCodeFile($this->modulePath.substr($destination_file,strlen($this->templatePath)), $content);
 					} else {
 						$content=$this->render($file);
@@ -368,7 +365,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
 			}
 
-			$elements[$number]['fields'][$field_number]['lookup_field'] = $elements[$number]['fields'][$field_number]['order_field'] = $_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
+			$elements[$number]['fields'][$field_number]['lookup_field'] = $elements[$number]['fields'][$field_number]['order_field'] = @$_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
 
 			if (@$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
 				$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['dropDownFieldValueTextInputDefault'.$number.'Field'.$field_number];
@@ -748,7 +745,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return $this->render($file, $params);
 	}
 
-	//public function renderDBField($field) {
 	public function getDBFieldSQLType($field) {
 		switch ($field['type']) {
 			case 'Textbox':
@@ -847,7 +843,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		<?php echo CHtml::dropDownList('Specialty[id]',$specialty_id, CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br/>
 		<label>Event group: </label><?php echo CHtml::dropDownList('EventGroup[id]', $event_group_id, CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
 		<label>Name of event type: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleSuffix]',$event_type_name,array('size'=>65)); ?><br />
-		<?
+		<?php
 	}
 
 	static public function dump_table_fields($table, $selected=false) {
@@ -906,171 +902,130 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function elementExists($name) {
-		return ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>$_POST['EventTypeModuleEventType'],':elementName'=>$name));
+		if ($this->mode == 'update') {
+			return ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>$this->event_type->id,':elementName'=>$name));
+		}
+		return false;
 	}
 
 	public function validate_form() {
 		$errors = array();
 
 		foreach ($_POST as $key => $value) {
-			if (preg_match('/^elementName[0-9]+$/',$key)) {
-				if ($this->validation_rules['element_name']['required'] && strlen($value) <1) {
-					$errors[$key] = $this->validation_rules['element_name']['required_error'];
-				} else if (!preg_match($this->validation_rules['element_name']['regex'],$value)) {
-					$errors[$key] = $this->validation_rules['element_name']['regex_error'];
-				} else if ($this->mode == 'update' && $this->elementExists($value)) {
-					$errors[$key] = "This element name is already in use, please choose another";
-				}
-			}
-
-			if (preg_match('/^elementName[0-9]+FieldName[0-9]+$/',$key)) {
-				if ($this->validation_rules['element_field_name']['required'] && strlen($value) <1) {
-					$errors[$key] = $this->validation_rules['element_field_name']['required_error'];
-				} else if (!preg_match($this->validation_rules['element_field_name']['regex'],$value)) {
-					$errors[$key] = $this->validation_rules['element_field_name']['regex_error'];
-				}
-			}
-
-			if (preg_match('/^elementName[0-9]+FieldLabel[0-9]+$/',$key)) {
-				if ($this->validation_rules['element_field_label']['required'] && strlen($value) <1) {
-					$errors[$key] = $this->validation_rules['element_field_label']['required_error'];
-				} else if (!preg_match($this->validation_rules['element_field_label']['regex'],$value)) {
-					$errors[$key] = $this->validation_rules['element_field_label']['regex_error'];
+			foreach ($this->validation_rules as $regex => $rule) {
+				if (@preg_match($regex, $key, $m)) {
+					if ($error = $this->validateRule($regex, @$m[1], @$m[2])) {
+						$errors = array_merge($errors,$error);
+					}
 				}
 			}
 
 			if (preg_match('/^elementType([0-9]+)FieldType([0-9]+)$/',$key,$m)) {
-				if ($value == 'Dropdown list') {
-					if (!isset($_POST['dropDownMethod'.$m[1].'Field'.$m[2]])) {
-						$errors['dropDownMethod'.$m[1].'Field'.$m[2]] = "Please select a dropdown list method";
-					}
-				}
-				if ($value == 'EyeDraw') {
-					if (!@$_POST['eyedrawClass'.$m[1].'Field'.$m[2]]) {
-						$errors['eyedrawClass'.$m[1].'Field'.$m[2]] = "Please select an eyedraw type";
-					}
-					if (!@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]]) {
-						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Please enter a size (in pixels)";
-					} else if (!ctype_digit(@$_POST['eyedrawSize'.$m[1].'Field'.$m[2]])) {
-						$errors['eyedrawSize'.$m[1].'Field'.$m[2]] = "Size must be specified as a number of pixels";
-					}
-				}
-				if ($value == 'Slider') {
-					if (strlen(@$_POST['sliderMinValue'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Please enter a minimum value";
-					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMinValue'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderMinValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
-					}
-					if (!@$_POST['sliderMaxValue'.$m[1].'Field'.$m[2]]) {
-						$errors['sliderMaxValue'.$m[1].'Field'.$m[2]] = "Please enter a maximum value";
-					} else if (!preg_match('/^\-?[0-9\.]+$/',$_POST['sliderMaxValue'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderMaxValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
-					}
-					if (@$_POST['sliderDefaultValue'.$m[1].'Field'.$m[2]] && !preg_match('/^\-?[0-9\.]+$/',$_POST['sliderDefaultValue'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderDefaultValue'.$m[1].'Field'.$m[2]] = "Must be an integer or floating point number";
-					}
-					if (!@$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) {
-						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Please enter a stepping value";
-					} else if (!preg_match('/^[0-9\.]+$/',$_POST['sliderStepping'.$m[1].'Field'.$m[2]]) || $_POST['sliderStepping'.$m[1].'Field'.$m[2]] == 0) {
-						$errors['sliderStepping'.$m[1].'Field'.$m[2]] = "Must be a positive integer or floating point number";
-					}
-					if (@$_POST['sliderForceDP'.$m[1].'Field'.$m[2]] && !ctype_digit($_POST['sliderForceDP'.$m[1].'Field'.$m[2]])) {
-						$errors['sliderForceDP'.$m[1].'Field'.$m[2]] = "Must be a positive integer";
-					}
-				}
-				if ($value == 'Integer') {
-					if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]])) {
-							$errors['integerMinValue'.$m[1].'Field'.$m[2]] = "Minimum value must be an integer";
-						}
-					}
-					if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]])) {
-							$errors['integerMaxValue'.$m[1].'Field'.$m[2]] = "Maximum value must be an integer";
-						}
-					}
-					if (strlen(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit(@$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]])) {
-							$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be an integer";
-						} else {
-							if (strlen(@$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] < @$_POST['integerMinValue'.$m[1].'Field'.$m[2]]) {
-								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be >= minimum value";
-							}
-							if (strlen(@$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) >0 && @$_POST['integerDefaultValue'.$m[1].'Field'.$m[2]] > @$_POST['integerMaxValue'.$m[1].'Field'.$m[2]]) {
-								$errors['integerDefaultValue'.$m[1].'Field'.$m[2]] = "Default value must be <= maximum value";
-							}
-						}
-					}
-					if (strlen(@$_POST['integerSize'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size is required";
-					} else {
-						if (!ctype_digit(@$_POST['integerSize'.$m[1].'Field'.$m[2]])) {
-							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
-						} else if ($_POST['integerSize'.$m[1].'Field'.$m[2]] <1) {
-							$errors['integerSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
-						}
-					}
-					if (strlen(@$_POST['integerMaxLength'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit($_POST['integerMaxLength'.$m[1].'Field'.$m[2]])) {
-							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
-						} else if ($_POST['integerMaxLength'.$m[1].'Field'.$m[2]] <1) {
-							$errors['integerMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
-						}
-					}
-				}
-				if ($value == 'Textbox') {
-					if (strlen(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size is required";
-					} else {
-						if (!ctype_digit(@$_POST['textBoxSize'.$m[1].'Field'.$m[2]])) {
-							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be an integer";
-						} else if ($_POST['textBoxSize'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textBoxSize'.$m[1].'Field'.$m[2]] = "Size must be 1 or greater";
-						}
-					}
-					if (strlen(@$_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]]) >0) {
-						if (!ctype_digit($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]])) {
-							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be an integer";
-						} else if ($_POST['textBoxMaxLength'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textBoxMaxLength'.$m[1].'Field'.$m[2]] = "Max length must be 1 or greater";
-						}
-					}
-				}
-				if ($value == 'Textarea') {
-					if (strlen(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows is required";
-					} else {
-						if (!ctype_digit(@$_POST['textAreaRows'.$m[1].'Field'.$m[2]])) {
-							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be an integer";
-						} else if (@$_POST['textAreaRows'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textAreaRows'.$m[1].'Field'.$m[2]] = "Rows must be 1 or greater";
-						}
-					}
-					if (strlen(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]]) == 0) {
-						$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols is required";
-					} else {
-						if (!ctype_digit(@$_POST['textAreaCols'.$m[1].'Field'.$m[2]])) {
-							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be an integer";
-						} else if (@$_POST['textAreaCols'.$m[1].'Field'.$m[2]] <1) {
-							$errors['textAreaCols'.$m[1].'Field'.$m[2]] = "Cols must be 1 or greater";
-						}
-					}
-				}
-			}
-
-			if (preg_match('/^dropDownMethod([0-9]+)Field([0-9]+)$/',$key,$m)) {
-				if ($value == 1) {
-					if (!@$_POST['dropDownFieldSQLTable'.$m[1].'Field'.$m[2]]) {
-						$errors['dropDownFieldSQLTable'.$m[1].'Field'.$m[2]] = "Please select a table";
-					}
-					if (!@$_POST['dropDownFieldSQLTableField'.$m[1].'Field'.$m[2]]) {
-						$errors['dropDownFieldSQLTableField'.$m[1].'Field'.$m[2]] = "Please select a field";
-					}
+				if ($error = $this->validateRule($value,$m[1],$m[2])) {
+					$errors = array_merge($errors,$error);
 				}
 			}
 		}
 
 		Yii::app()->getController()->form_errors = $errors;
+	}
+
+	public function validateRule($field_type,$element_num,$field_num) {
+		$errors = array();
+
+		if (!isset($this->validation_rules[$field_type])) {
+			return $errors;
+		}
+
+		foreach ($this->validation_rules[$field_type] as $field => $rules) {
+			foreach ($rules as $rule) {
+				if (isset($rule['field_property'])) {
+					$key = $field.'['.$rule['field_property'].']';
+					$value = @$_POST[$field][$rule['field_property']];
+				} else {
+					$key = $this->substitutePostValue($field,$element_num,$field_num);
+					$value = @$_POST[$key];
+				}
+
+				if (isset($errors[$key])) continue;
+
+				if ($rule['type'] == 'required') {
+					if (isset($rule['condition'])) {
+						$condition_key = $this->substitutePostValue($rule['condition']['field'],$element_num,$field_num);
+						if (@$_POST[$condition_key] != $rule['condition']['value']) continue;
+					}
+					if (strlen($value) <1) {
+						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
+						$errors[$key] .= ' ('.$value.') ['.$key.']';
+						continue;
+					}
+				} else if (strlen($value) <1) continue;
+
+				switch ($rule['type']) {
+					case 'integer':
+						if (!preg_match('/^\-?[0-9]+$/',$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be an integer';
+						}
+						break;
+					case 'integer_positive':
+						if (!ctype_digit($value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive integer';
+						}
+						break;
+					case 'number':
+						if (!preg_match('/^\-?[0-9\.]+$/',$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a number';
+						}
+						break;
+					case 'number_positive':
+						if (!preg_match('/^[0-9\.]+$/',$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be a positive number';
+						}
+						break;
+					case 'compare':
+						if (isset($rule['compare_field'])) {
+							$compare = $this->substitutePostValue($rule['compare_field'],$element_num,$field_num);
+							$compare = $_POST[$compare];
+						} else {
+							$compare = $rule['compare_value'];
+						}
+
+						switch ($rule['operator']) {
+							case 'greater_equal':
+								if ($value < $compare) {
+									echo "[$value][$compare]";
+									$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or greater';
+								}
+								break;
+							case 'lesser_equal':
+								if ($value > $compare) {
+									$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be '.$compare.' or lower';
+								}
+								break;
+						}
+						break;
+					case 'regex':
+						if (!preg_match($rule['regex'],$value)) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Invalid characters in input';
+						}
+						break;
+					case 'exists':
+						if (isset($rule['exists_method'])) {
+							$method = $rule['exists_method'];
+							if ($this->{$method}($value)) {
+								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Already exists';
+							}
+						}
+						break;
+				}
+			}
+		}
+
+		return $errors;
+	}
+
+	public function substitutePostValue($field,$element_num,$field_num) {
+		return str_replace('{$element_num}',$element_num,str_replace('{$field_num}',$field_num,$field));
 	}
 
 	// the <?'s here are deliberately broken apart to prevent annoying syntax highlighting issues with vim

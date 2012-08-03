@@ -220,7 +220,7 @@ if (isset($element)) {
 		}
 		return $ids;
 	}
-<?}?>
+<?php }?>
 <?php }?>
 <?php }?>
 

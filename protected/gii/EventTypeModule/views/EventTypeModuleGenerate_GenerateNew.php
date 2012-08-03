@@ -6,6 +6,10 @@
 		<label>Name of event type:</label>
 		<input type="text" name="EventTypeModuleCode[moduleSuffix]" value="<?php echo @$_POST['EventTypeModuleCode']['moduleSuffix']?>" size="65" /><br/>
 
+		<?php if (isset($this->form_errors['EventTypeModuleCode[moduleSuffix]'])) {?>
+			<span style="color: #f00; margin-bottom: 10px; display: inline-block;"><?php echo $this->form_errors['EventTypeModuleCode[moduleSuffix]']?></span>
+		<?php }?>
+
 		<h3>Describe your element types:</h3>
 
 		<div id="elementsGenerateNew">
