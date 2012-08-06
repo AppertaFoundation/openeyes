@@ -19,9 +19,8 @@
 ?>
 
 <?php
-$uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.(@$_REQUEST['include_bookings']?'1':'0').'/'.(@$_REQUEST['include_reschedules']?'1':'0').'/'.(@$_REQUEST['include_cancellations']?'1':'0');
+$uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.@$_REQUEST['include_bookings'].'/'.@$_REQUEST['include_reschedules'].'/'.@$_REQUEST['include_cancellations'];
 ?>
-
 <div class="transport_pagination">
 	<?php if ($this->page >1) {?>
 		<a href="/transport/<?php echo ($this->page-1).$uri_append?>">&laquo; back</a>
