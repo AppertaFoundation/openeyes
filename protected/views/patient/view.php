@@ -289,7 +289,7 @@ if (!empty($address)) {
 							&nbsp;&nbsp;
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
-								<option value="consultant">Consultant Ophthalmologist</option>
+								<option value="consultant" selected="selected">Consultant Ophthalmologist</option>
 								<option value="specialist">Non-ophthalmic specialist</option>
 								<option value="gp">GP</option>
 							</select>
