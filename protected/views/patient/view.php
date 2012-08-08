@@ -291,7 +291,6 @@ if (!empty($address)) {
 								<option value="">- Filter -</option>
 								<option value="consultant" selected="selected">Consultant Ophthalmologist</option>
 								<option value="specialist">Non-ophthalmic specialist</option>
-								<option value="gp">GP</option>
 							</select>
 							&nbsp;
 							<img src="/img/ajax-loader.gif" class="loader" alt="loading..." style="display: none;" />
