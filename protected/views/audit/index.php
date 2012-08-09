@@ -44,7 +44,7 @@
 								</tr>
 								<tr class="even">
 									<td>
-										<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getList(),array('empty'=>'All sites'))?>
+										<?php echo CHtml::dropDownList('site_id',@$_POST['site_id'],Site::model()->getListForCurrentInstitution(),array('empty'=>'All sites'))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('firm_id', @$_POST['firm_id'], Firm::model()->getListWithoutDupes(), array('empty'=>'All firms'))?>

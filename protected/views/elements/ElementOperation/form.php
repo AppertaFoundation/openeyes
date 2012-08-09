@@ -41,7 +41,7 @@ if (!$model->eye_id) {
 					<?php echo $form->radioButtons($model, 'anaesthetic_type_id', 'anaesthetic_type');?>
 					<?php echo $form->radioBoolean($model, 'overnight_stay')?>
 					<?php // TODO: Hacked below, forcing it to use institution with ID = 1, should be what ever instituion the current openeyes install is for (maybe a config setting?) ?>
-					<?php echo $form->dropDownList($model, 'site_id', CHtml::listData(Site::model()->findAll('institution_id=:institution_id ORDER BY short_name',array(':institution_id' => 1)), 'id', 'short_name'))?>
+					<?php echo $form->dropDownList($model, 'site_id', Site::model()->getListForCurrentInstitution())?>
 					<?php echo $form->radioButtons($model, 'priority_id', 'priority')?>
 					<?php echo $form->datePicker($model, 'decision_date', array('maxDate' => 'today'), array('style'=>'width: 110px;'))?>
 					<?php echo $form->textArea($model, 'comments', array('rows'=>4,'cols'=>50))?>
