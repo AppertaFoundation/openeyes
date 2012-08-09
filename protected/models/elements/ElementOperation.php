@@ -1111,7 +1111,7 @@ class ElementOperation extends BaseEventTypeElement
 				}
 				break;
 			case 4: // Northwick Park
-				$contact['refuse'] .= '020 8869 3162';
+				$contact['refuse'] .= '0203 182 4027';
 				//$contact['health'] = 'Sister Titmus on 020 8869 3162';
 				break;
 			case 5: // St George's
