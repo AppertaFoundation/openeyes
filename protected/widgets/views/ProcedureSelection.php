@@ -195,15 +195,25 @@
 
 		// Remove removed procedure from the removed_stack
 		var stack = [];
+		var popped = null;
 		$.each(removed_stack, function(key, value) {
 			if (value["id"] != procedure_id) {
 				stack.push(value);
+			} else {
+				popped = value;
 			}
 		});
 		removed_stack = stack;
 
 		// Refresh the current procedure select box in case the removed procedure came from there
-		updateProcedureSelect();
+		if($('#subsection_id').length) {
+			// Procedures are in subsections, so fetch a clean list via ajax (easier than trying to work out if it's the right list) 
+			updateProcedureSelect();
+		} else if(popped) {
+			// No subsections, so we should be safe to just push it back into the list
+			$('#select_procedure_id').append('<option value="'+popped["id"]+'">'+popped["name"]+'</option>').removeAttr('disabled');
+			sort_selectbox($('#select_procedure_id'));
+		}
 
 		return false;
 	});
