@@ -1,153 +1,156 @@
-					<div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-						<div class="label">Procedures:</div>
-						<div class="data split limitWidth">
-							<div class="left">
-								<h5 class="normal"><em>Add a procedure:</em></h5>
+<div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+	<div class="label">Procedures:</div>
+	<div class="data split limitWidth">
+		<div class="left">
+			<h5 class="normal"><em>Add a procedure:</em></h5>
 
-								<?php
-								if (!empty($subsections) || !empty($procedures)) {
-									if (!empty($subsections)) {
-										echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 90%; margin-bottom:10px;'));
-										echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 90%; margin-bottom:10px;'));
-									} else {
-										echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 90%; margin-bottom:10px;'));
+			<?php
+			if (!empty($subsections) || !empty($procedures)) {
+				if (!empty($subsections)) {
+					echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 90%; margin-bottom:10px;'));
+					echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 90%; margin-bottom:10px;'));
+				} else {
+					echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 90%; margin-bottom:10px;'));
+				}
+			}
+			?>
+
+			<?php
+				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+					'name'=>'procedure_id',
+					'id'=>'autocomplete_procedure_id',
+					'source'=>"js:function(request, response) {
+						var existingProcedures = [];
+						$('div.procedureItem').map(function() {
+							var text = $.trim($(this).children('span:nth-child(2)').text());
+							existingProcedures.push(text.replace(/ - .*?$/,''));
+						});
+
+						$.ajax({
+							'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
+							'type':'GET',
+							'data':{'term': request.term},
+							'success':function(data) {
+								data = $.parseJSON(data);
+
+								var result = [];
+
+								for (var i = 0; i < data.length; i++) {
+									var index = $.inArray(data[i], existingProcedures);
+									if (index == -1) {
+										result.push(data[i]);
 									}
 								}
-								?>
 
-								<?php
-									$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-										'name'=>'procedure_id',
-										'id'=>'autocomplete_procedure_id',
-										'source'=>"js:function(request, response) {
-											var existingProcedures = [];
-											$('div.procedureItem').map(function() {
-												var text = $.trim($(this).children('span:nth-child(2)').text());
-												existingProcedures.push(text.replace(/ - .*?$/,''));
-											});
+								response(result);
+							}
+						});
+					}",
+					'options'=>array(
+						'minLength'=>'2',
+						'select'=>"js:function(event, ui) {
+							$.ajax({
+								'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."&short_version=".($short_version?'1':'0')."',
+								'type': 'GET',
+								'data': {'name': ui.item.value},
+								'success': function(data) {
+									var enableDurations = ".($durations?'true':'false').";
+									var shortVersion = ".($short_version?'true':'false').";
 
-											$.ajax({
-												'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
-												'type':'GET',
-												'data':{'term': request.term},
-												'success':function(data) {
-													data = $.parseJSON(data);
+									// append selection onto procedure list
+									$('#procedureList').children('h4').append(data);
+									$('#procedureList').show();
 
-													var result = [];
+									if (enableDurations) {
+										updateTotalDuration();
+										$('div.extraDetails').show();
+									}
 
-													for (var i = 0; i < data.length; i++) {
-														var index = $.inArray(data[i], existingProcedures);
-														if (index == -1) {
-															result.push(data[i]);
-														}
-													}
+									// clear out text field
+									$('#autocomplete_procedure_id').val('');
 
-													response(result);
-												}
-											});
-										}",
-										'options'=>array(
-											'minLength'=>'2',
-											'select'=>"js:function(event, ui) {
-												$.ajax({
-													'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."&short_version=".($short_version?'1':'0')."',
-													'type': 'GET',
-													'data': {'name': ui.item.value},
-													'success': function(data) {
-														var enableDurations = ".($durations?'true':'false').";
-														var shortVersion = ".($short_version?'true':'false').";
+									// remove selection from the filter box
+									if ($('#select_procedure_id').children().length > 0) {
+										m = data.match(/<span>(.*?)<\/span>/);
 
-														// append selection onto procedure list
-														$('#procedureList').children('h4').append(data);
-														$('#procedureList').show();
+										$('#select_procedure_id').children().each(function () {
+											if ($(this).text() == m[1]) {
+												var id = $(this).val();
+												var name = $(this).text();
 
-														if (enableDurations) {
-															updateTotalDuration();
-															$('div.extraDetails').show();
-														}
+												removed_stack.push({name: name, id: id});
 
-														// clear out text field
-														$('#autocomplete_procedure_id').val('');
+												$(this).remove();
+											}
+										});
+									}
 
-														// remove selection from the filter box
-														if ($('#select_procedure_id').children().length > 0) {
-															m = data.match(/<span>(.*?)<\/span>/);
+									if (typeof(window.callbackAddProcedure) == 'function') {
+										m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
+										var procedure_id = m[1];
+										callbackAddProcedure(procedure_id);
+									}
+								}
+							});
+						}",
+					),
+				'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
+			)); ?>
 
-															$('#select_procedure_id').children().each(function () {
-																if ($(this).text() == m[1]) {
-																	var id = $(this).val();
-																	var name = $(this).text();
-
-																	removed_stack.push({name: name, id: id});
-
-																	$(this).remove();
-																}
-															});
-														}
-
-														if (typeof(window.callbackAddProcedure) == 'function') {
-															m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
-															var procedure_id = m[1];
-															callbackAddProcedure(procedure_id);
-														}
-													}
-												});
-											}",
-										),
-									'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
-								)); ?>
-
-							</div>
-							<div class="right">
-								<?php
-								$totalDuration = 0;
-								?>
-								<div id="procedureList" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
-									<h4>
-										<?php
-										if (!empty($selected_procedures)) {
-											foreach ($selected_procedures as $procedure) {?>
-												<div class="procedureItem">
-													<span class="left">
-														<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-													</span>
-													<span class="middle<?php echo (!$durations) ? " noDuration" : ""; ?>">
-														<?php
-															$totalDuration += $procedure['default_duration'];
-															echo CHtml::hiddenField('Procedures[]', $procedure['id']);
-															echo "<span>".$procedure['term'];
-															if ($short_version) {
-																echo '</span> - <span>'.$procedure['short_format'];
-															}
-														?></span>
-													</span>
-													<?php if ($durations) {?>
-														<span class="right">
-															<?php echo $procedure['default_duration']?> mins
-														</span>
-													<?php } ?>
-												</div>
-											<?php	}
+		</div>
+		<div class="right">
+			<?php
+			$totalDuration = 0;
+			?>
+			<div id="procedureList" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
+				<h4>
+					<?php
+					if (!empty($selected_procedures)) {
+						foreach ($selected_procedures as $procedure) {?>
+							<div class="procedureItem">
+								<span class="left">
+									<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
+								</span>
+								<span class="middle<?php echo (!$durations) ? " noDuration" : ""; ?>">
+									<?php
+										$totalDuration += $procedure['default_duration'];
+										echo CHtml::hiddenField('Procedures[]', $procedure['id']);
+										echo "<span>".$procedure['term'];
+										if ($short_version) {
+											echo '</span> - <span>'.$procedure['short_format'];
 										}
-										?>
-									</h4>
-								
-								<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
-									<table class="grid">
-										<tfoot>
-											<tr>
-												<th>Calculated Total Duration:</th>
-												<th id="projected_duration"><?php echo $totalDuration?> mins</th>
-												<th>Estimated Total Duration:</th>
-												<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration" name="<?php echo $class?>[total_duration]" style="width: 60px;"></th>
-											</tr>
-										</tfoot>
-									</table>
-								</div>
+									?>
+								</span>
+								<?php if ($durations) {?>
+									<span class="right">
+										<?php echo $procedure['default_duration']?> mins
+									</span>
+								<?php } ?>
 							</div>
-						</div>
-					</div>
+						<?php	}
+					}
+					?>
+				</h4>
+			
+			<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
+				<table class="grid">
+					<tfoot>
+						<tr>
+							<th>Calculated Total Duration:</th>
+							<th id="projected_duration"><?php echo $totalDuration?> mins</th>
+							<th>Estimated Total Duration:</th>
+							<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration" name="<?php echo $class?>[total_duration]" style="width: 60px;"></th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script type="text/javascript">
+	// Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
+	// It is used to suppress procedures from the add a procedure inputs  
 	var removed_stack = [<?php foreach ($selected_procedures as $i => $proc) {
 		if ($i) echo ',';
 		echo '{id: '.$proc->id.', name: "'.$proc->term.'"}';}?>];
@@ -190,19 +193,17 @@
 			callbackRemoveProcedure(procedure_id);
 		}
 
+		// Remove removed procedure from the removed_stack
 		var stack = [];
-
 		$.each(removed_stack, function(key, value) {
 			if (value["id"] != procedure_id) {
 				stack.push(value);
-			} else {
-				$('#select_procedure_id').append('<option value="'+value["id"]+'">'+value["name"]+'</option>');
 			}
 		});
-
 		removed_stack = stack;
 
-		sort_selectbox($('#select_procedure_id'));
+		// Refresh the current procedure select box in case the removed procedure came from there
+		updateProcedureSelect();
 
 		return false;
 	});
@@ -218,11 +219,16 @@
 	};
 
 	$('select[id=subsection_id]').change(function() {
-		var subsection = $('select[name=subsection_id] option:selected').val();
+		updateProcedureSelect();
+	});
+
+	function updateProcedureSelect() {
+		var subsection_field = $('select[id=subsection_id]');
+		var subsection = subsection_field.val();
 		if (subsection != '') {
 			var existingProcedures = [];
 			$('div.procedureItem').map(function() {
-				var text = $.trim($(this).children('span:nth-child(2)').text());
+				var text = $.trim($(subsection_field).children('span:nth-child(2)').text());
 				existingProcedures.push(text.replace(/ - .*?$/,''));
 			});
 
@@ -251,8 +257,8 @@
 		} else {
 			$('select[name=select_procedure_id]').hide();
 		}
-	});
-
+	}
+	
 	$('#select_procedure_id').change(function() {
 		var procedure = $('select[name=select_procedure_id] option:selected').text();
 		if (procedure != 'Select a commonly used procedure') {
