@@ -150,10 +150,8 @@
 </div>
 <script type="text/javascript">
 	// Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
-	// It is used to suppress procedures from the add a procedure inputs  
-	var removed_stack = [<?php foreach ($selected_procedures as $i => $proc) {
-		if ($i) echo ',';
-		echo '{id: '.$proc->id.', name: "'.$proc->term.'"}';}?>];
+	// It is used to suppress procedures from the add a procedure inputs
+	var removed_stack = [<?php echo implode(',', $removed_stack); ?>];
 
 	function updateTotalDuration() {
 		// update total duration
