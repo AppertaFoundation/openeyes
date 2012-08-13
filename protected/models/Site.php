@@ -139,6 +139,7 @@ class Site extends BaseActiveRecord
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('institution_id',$site->institution_id);
+		$criteria->compare('id','<>13');
 		$criteria->order = $field.' asc';
 
 		$result = array();
