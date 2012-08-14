@@ -671,6 +671,7 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 .eventDetail > .data > .labelHint { width: 280px; }
 .eventDetail > .datarow-first { float: left; }
 .eventDetail > .datarow { float: left; margin-left: 10px; }
+.eventDetail > .data > .checkBoxArrayHeader { font-weight: bold; margin-bottom: 14px; }
 
 .eventDetail > .datacol1 { display:inline-block; position:relative;}
 .eventDetail > .datacol1.limitWidth { width:350px; }
