@@ -231,7 +231,7 @@ class BaseEventTypeController extends BaseController
 					$audit->save();
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array('Default/view/'.$eventId));
+					$this->redirect(array('default/view/'.$eventId));
 					return;
 				}
 			}
@@ -334,44 +334,45 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements('update');
-
-		if (!count($elements)) {
+		if (!count($this->getDefaultElements('update'))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
 		if (!empty($_POST)) {
+			
 			if (isset($_POST['cancel'])) {
-				$this->redirect(array('Default/view/'.$this->event->id));
+				// Cancel button pressed, so just bounce to view
+				$this->redirect(array('default/view/'.$this->event->id));
 				return;
 			}
 
 			$elements = array();
-			$element_names = array();
+			$to_delete = array();
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
-				if (isset($_POST[$element_type->class_name])) {
-					$class_name = $element_type->class_name;
+				$class_name = $element_type->class_name;
+				if (isset($_POST[$class_name])) {
 					if ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+						// Add existing element to array
 						$elements[] = $element;
 					} else {
+						// Add new element to array
 						$elements[] = new $class_name;
 					}
-					$element_names[$element_type->class_name] = $element_type->name;
+				} else if($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+					// Existing element is not posted, so we need to delete it
+					$to_delete[] = $element;
 				}
 			}
-
-			$elementList = array();
 
 			// validation
 			foreach ($elements as $element) {
 				$elementClassName = get_class($element);
 				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-				$elementList[] = $element;
 				if (!$element->validate()) {
+					$elementName = $element->getElementType()->name;
 					foreach ($element->getErrors() as $errormsgs) {
 						foreach ($errormsgs as $error) {
-							$index = $element_names[$elementClassName]; //preg_replace('/^Element/','',$elementClassName);
-							$errors[$index][] = $error;
+							$errors[$elementName][] = $error;
 						}
 					}
 				}
@@ -379,7 +380,10 @@ class BaseEventTypeController extends BaseController
 
 			// creation
 			if (empty($errors)) {
-				$success = $this->updateElements($elements, $_POST, $this->event);
+				
+				// Need to pass through _all_ elements to updateElements (those not in _POST will be deleted)
+				$all_elements = array_merge($elements, $to_delete);
+				$success = $this->updateElements($all_elements, $_POST, $this->event);
 
 				if ($success) {
 					$info_text = '';
@@ -418,7 +422,7 @@ class BaseEventTypeController extends BaseController
 
 					OELog::log("Updated event {$this->event->id}");
 
-					$this->redirect(array('Default/view/'.$this->event->id));
+					$this->redirect(array('default/view/'.$this->event->id));
 					return;
 				}
 			}
@@ -613,11 +617,13 @@ class BaseEventTypeController extends BaseController
 		return true;
 	}
 
-	public function getOrCreateEpisode($firm, $patientId)
-	{
+	public function getEpisode($firm, $patientId) {
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
-		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
-		if (!$episode) {
+		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+	}
+	
+	public function getOrCreateEpisode($firm, $patientId) {
+		if (!$episode = $this->getEpisode($firm, $patientId)) {
 			$episode = new Episode();
 			$episode->patient_id = $patientId;
 			$episode->firm_id = $firm->id;
@@ -760,7 +766,7 @@ class BaseEventTypeController extends BaseController
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->event->canDelete()) {
-			return $this->redirect(array('Default/view/'.$this->event->id));
+			return $this->redirect(array('default/view/'.$this->event->id));
 		}
 
 		if (!empty($_POST)) {

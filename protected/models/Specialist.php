@@ -75,6 +75,7 @@ class Specialist extends BaseActiveRecord
 			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
 				'on' => "parent_class = 'Specialist'",
 			),
+			'specialist_type' => array(self::BELONGS_TO, 'SpecialistType', 'specialist_type_id'),
 		);
 	}
 

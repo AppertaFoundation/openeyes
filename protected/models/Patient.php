@@ -368,16 +368,16 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
-			return strtolower($diagnosis->disorder->term);
+		if ($episode && $disorder = $episode->getPrincipalDisorder()) {
+			return strtolower($disorder->term);
 		}
 	}
 
 	public function getEps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
-			return strtolower($diagnosis->eye->name);
+		if ($episode && $eye = $episode->getPrincipalEye()) {
+			return strtolower($eye->name);
 		}
 	}
 
@@ -558,5 +558,17 @@ class Patient extends BaseActiveRecord {
 		$command->bindValue('patient_id', $this->id);
 		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
 		$command->execute();
+	}
+
+	public function getAdm() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
+
+		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+			if ($booking = $eo->booking) {
+				return $booking->session->NHSDate('date');
+			}
+		}
 	}
 }

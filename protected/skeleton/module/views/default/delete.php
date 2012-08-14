@@ -18,7 +18,7 @@
 		<strong>Are you sure you want to proceed?</strong>
 	</p>
 	<?php
-	echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
+	echo CHtml::form(array('default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
 		echo CHtml::hiddenField('event_id', $this->event->id); ?>
 		<div class="buttonwrapper">
 			<button type="submit" class="classy red venti" id="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>

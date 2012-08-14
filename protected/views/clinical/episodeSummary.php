@@ -18,14 +18,12 @@
  */
 
 if (!empty($episode)) {
-	$diagnosis = $episode->getPrincipalDiagnosis();
-
-	if (empty($diagnosis)) {
+	if ($episode->hasPrincipalDiagnosis()) {
+		$eye = $episode->getPrincipalDiagnosisEyeText();
+		$diagnosis = $episode->getPrincipalDiagnosisDisorderTerm();
+	} else {
 		$eye = 'No diagnosis';
 		$diagnosis = 'No diagnosis';
-	} else {
-		$eye = $diagnosis->eye->name;
-		$diagnosis = $diagnosis->disorder->term;
 	}
 
 	$audit = new Audit;
