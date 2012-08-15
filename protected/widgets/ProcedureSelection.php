@@ -20,6 +20,7 @@
 class ProcedureSelection extends BaseCWidget {
 	public $subsections;
 	public $procedures;
+	public $removed_stack;
 	public $newRecord;
 	public $selected_procedures;
 	public $form;
@@ -27,14 +28,9 @@ class ProcedureSelection extends BaseCWidget {
 	public $class;
 	public $total_duration = 0;
 	public $last;
+	public $short_version = true;
 
 	public function run() {
-		$firm = Firm::model()->findByPK(Yii::app()->session['selected_firm_id']);
-
-		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
-		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
-		$this->procedures = array();
-		
 		if (empty($_POST)) {
 			if (!$this->selected_procedures) {
 				$this->selected_procedures = $this->element->procedures;
@@ -44,7 +40,6 @@ class ProcedureSelection extends BaseCWidget {
 			}
 		} else {
 			$this->selected_procedures = array();
-
 			if (isset($_POST['Procedures']) && is_array($_POST['Procedures'])) {
 				foreach ($_POST['Procedures'] as $proc_id) {
 					$proc = Procedure::model()->findByPk($proc_id);
@@ -56,6 +51,11 @@ class ProcedureSelection extends BaseCWidget {
 			}
 		}
 		
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
+		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+		$this->procedures = array();
+		$this->removed_stack = array();
 		if (empty($this->subsections)) {
 			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id) as $proc_id => $name) {
 				if (empty($_POST)) {
@@ -69,12 +69,21 @@ class ProcedureSelection extends BaseCWidget {
 					}
 					if (!$found) {
 						$this->procedures[$proc_id] = $name;
+					} else {
+						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
 					}
 				} else {
 					if (!@$_POST['Procedures'] || !in_array($proc_id,$_POST['Procedures'])) {
 						$this->procedures[$proc_id] = $name;
+					} else {
+						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
 					}
 				}
+			}
+		} else {
+			// Doesn't matter if removed_stack contains non-common procedures as lists are reloaded using ajax on removal
+			foreach($this->selected_procedures as $selected_procedure) {
+				$this->removed_stack[] = "{id: $selected_procedure->id, name: '$selected_procedure->term'}";
 			}
 		}
 

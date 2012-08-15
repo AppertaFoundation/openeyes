@@ -17,15 +17,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+class CheckBox extends BaseCWidget {
+	public $field;
+	public $labeltext;
+	public $options;
+	public $columns = array();
+	public $checked = array();
+
+	public function init() {
+		if (empty($_POST)) {
+			if (isset($this->element->{$this->field})) {
+				$this->checked[$this->field] = (boolean)$this->element->{$this->field};
+			} else {
+				$this->checked[$this->field] = false;
+			}
+		} else {
+			$this->checked[$this->field] = (boolean)@$_POST[get_class($this->element)][$this->field];
+		}
+	}
+}
 ?>
-<div class="procedureItem">
-	<span class="left">
-		<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
-	</span>
-	<span class="middle noDuration">
-		<?php
-		echo CHtml::hiddenField('Procedures[]', $data['id']);
-		echo "<span>".$data['term'].'</span> - <span>'.$data['short_format']."</span>";
-		?>
-	</span>
-</div>

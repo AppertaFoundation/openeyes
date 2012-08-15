@@ -31,6 +31,7 @@
  * @property Patient $patient
  * @property Firm $firm
  * @property Event[] $events
+ * @property EpisodeStatus $status
  */
 class Episode extends BaseActiveRecord
 {
@@ -81,6 +82,7 @@ class Episode extends BaseActiveRecord
 			'events' => array(self::HAS_MANY, 'Event', 'episode_id'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
+			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
 		);
 	}
 
@@ -232,6 +234,18 @@ class Episode extends BaseActiveRecord
 		}
 
 		return Episode::model()->findByPk($episode['eid']);
+	}
+
+	public function getBookingsForToday() {
+		return Yii::app()->db->createCommand()
+			->select('b.id')
+			->from('booking b')
+			->join('element_operation eo','eo.id = b.element_operation_id')
+			->join('event e','eo.event_id = e.id')
+			->join('session s','b.session_id = s.id')
+			->where('e.episode_id = :episode_id and s.date = :todaysDate', array(':episode_id' => $this->id,':todaysDate' => date('Y-m-d')))
+			->order('b.last_modified_date desc')
+			->queryAll();
 	}
 
 	public function getMostRecentBooking() {

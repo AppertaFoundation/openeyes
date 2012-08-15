@@ -28,6 +28,8 @@ class CheckBox extends BaseCWidget {
 		if (empty($_POST)) {
 			if (isset($this->element->{$this->field})) {
 				$this->checked[$this->field] = (boolean)$this->element->{$this->field};
+			} else {
+				$this->checked[$this->field] = false;
 			}
 		} else {
 			$this->checked[$this->field] = (boolean)@$_POST[get_class($this->element)][$this->field];

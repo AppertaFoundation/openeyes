@@ -24,6 +24,10 @@ class TransportController extends BaseController
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
 	public $layout='//layouts/main';
+	public $items_per_page = 100;
+	public $page = 1;
+	public $total_items = 0;
+	public $pages = 1;
 
 	public function filters()
 	{

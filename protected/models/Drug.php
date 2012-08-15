@@ -23,10 +23,9 @@
  * The followings are the available columns in table 'drug':
  * @property integer $id
  * @property string $name
- * @property string $description
  * @property string $label
  * @property string $code
- * @property string $term
+ * @property string $aliases
  * @property string $dose_unit
  * @property string $default_dose
  * @property integer $preservative_free
@@ -66,9 +65,10 @@ class Drug extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
+			array('code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
 		);
 	}
 

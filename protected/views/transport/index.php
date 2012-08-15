@@ -28,9 +28,9 @@
 					<a id="tci_previous" href="#">Previous day</a> - 
 					<a id="tci_next" href="#">Next day</a>
 				</div>*/ ?>
-				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Download CSV</span></button>
-				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Print list</span></button>
-				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
+				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Download CSV</span></button>
+				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Print list</span></button>
+				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Confirm</span></button>
 
 				<div id="searchResults" class="whiteBox">
 					<form id="transport_form" method="post" action="/transport">

@@ -43,4 +43,21 @@ $(document).ready(function() {
 		} 
 		return false;
 	});
+
+	$('select.populate_textarea').unbind('change').change(function() {
+		if ($(this).val() != '') {
+			var cLass = $(this).parent().parent().parent().attr('class');
+			var el = $('#'+cLass+'_'+$(this).attr('id'));
+			var currentText = el.text();
+			var newText = $(this).children('option:selected').text();
+
+			if (currentText.length == 0) {
+				el.text(ucfirst(newText));
+			} else {
+				el.text(currentText+', '+newText);
+			}
+		}
+	});
 });
+
+function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }

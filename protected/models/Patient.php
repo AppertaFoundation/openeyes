@@ -87,7 +87,12 @@ class Patient extends BaseActiveRecord {
 		*/
 	public function relations() {
 		return array(
-			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id'),
+			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+				'condition' => "legacy=1"
+			),
+			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+				'condition' => "legacy=0 or legacy is null"
+			),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
 				'on' => "parent_class = 'Patient'"
 			),
@@ -363,7 +368,7 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
+		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
 			return strtolower($diagnosis->disorder->term);
 		}
 	}
@@ -415,7 +420,7 @@ class Patient extends BaseActiveRecord {
 	public function getOps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
+		if ($episode && $event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
 			if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
 				if ($pl = $pl->find('event_id=?',array($event->id))) {
 					foreach ($pl->procedures as $i => $procedure) {
@@ -553,5 +558,17 @@ class Patient extends BaseActiveRecord {
 		$command->bindValue('patient_id', $this->id);
 		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
 		$command->execute();
+	}
+
+	public function getAdm() {
+		$episode = $this->getEpisodeForCurrentSubspecialty();
+
+		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
+
+		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+			if ($booking = $eo->booking) {
+				return $booking->session->NHSDate('date');
+			}
+		}
 	}
 }

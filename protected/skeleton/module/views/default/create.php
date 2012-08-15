@@ -14,6 +14,8 @@
 		));
 	?>
 
+		<?php $this->displayErrors($errors)?>
+
 		<div class="elements">
 			<?php $this->renderDefaultElements($this->action->id, $form); ?>
 			<?php $this->renderOptionalElements($this->action->id, $form); ?>

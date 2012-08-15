@@ -35,7 +35,7 @@ class MultiSelectList extends BaseCWidget {
 					$this->selected_ids[] = $item->{$this->relation_id_field};
 					unset($this->filtered_options[$item->{$this->relation_id_field}]);
 				}
-			} else {
+			} else if (!$this->element->id) {
 				$this->selected_ids = $this->default_options;
 				foreach ($this->default_options as $id) {
 					unset($this->filtered_options[$id]);

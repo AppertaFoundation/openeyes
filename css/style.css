@@ -379,8 +379,8 @@ table#procedure_list tbody tr { background-color: #edf4f9; }
 #patient-grid .pager { display: none !important; visibility: hidden; }
 /* my pagination */
 .resultsPagination { text-align:right; background: #ddd; padding:10px;	}
-.resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
+.resultsPagination .otherPages:before { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 
 /* purpleUser can edit info as Admin	*/
 .purpleUser { line-height:1.5; font-size:11px; color:#ffffde; background:#545065; border:2px solid #602aba; padding:6px; position:relative; min-height: 50px; }
@@ -662,9 +662,9 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 .eventDetail > .data.limitWidth { width:830px; }
 .eventDetail > .data.limitWidth .procedureItem {clear: both;}
 .eventDetail > .data.limitWidth .procedureItem .left {width: 55px; display: inline-block; float:left;}
-.eventDetail > .data.limitWidth .procedureItem .middle {width: 350px; display: inline-block;}
+.eventDetail > .data.limitWidth .procedureItem .middle {width: 345px; display: inline-block;}
 .eventDetail > .data.limitWidth .procedureItem .middle.noDuration {width: 410px;}
-.eventDetail > .data.limitWidth .procedureItem .right {width: 60px; display: inline-block; float: right; text-align: right;}
+.eventDetail > .data.limitWidth .procedureItem .right {width: 65px; display: inline-block; float: right; text-align: right;}
 .eventDetail > .data .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; margin-bottom:4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .eventDetail > .data .group:hover { background:#fff;}
 .eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
@@ -1149,3 +1149,13 @@ div.auditDetailEvenRed div { line-height: 20px; }
 div.auditDetailOddRed div { line-height: 20px; }
 
 span.auditDetailLabel { width: 100px; }
+
+input.widgetSlider { vertical-align: middle; width: 770px; }
+span.widgetSliderValue { vertical-align: middle; margin-right: 10px; width: 45px; display: inline-block; }
+
+/* Temporary fix for OpNote post-op instructions dropbox resizing */
+#div_ElementComments_postop_instructions_TextSelection select{width: 181px;}
+
+div.DropDownLabelVertical { margin-bottom: 10px; }
+
+div.patron { margin-left: 37em; font-size: 12pt; }

@@ -253,22 +253,21 @@ class BaseEventTypeController extends BaseController
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
-
 		$this->patient = $this->event->episode->patient;
-
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 
 		$elements = $this->getDefaultElements('view');
 
-		// echo "fish"; exit;
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if (!$this->event->episode->firm) {
 			$this->editable = false;
-		} else {
-			$this->editable = true;
+		} else {	
+			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+				$this->editable = false;
+			} else {
+				$this->editable = true;
+			}
 		}
-
 		// Allow elements to override the editable status
 		if ($this->editable) {
 			foreach ($elements as $element) {
@@ -280,7 +279,6 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-
 		$this->logActivity('viewed event');
 
 		$audit = new Audit;
@@ -336,44 +334,44 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$elements = $this->getDefaultElements('update');
-
-		if (!count($elements)) {
+		if (!count($this->getDefaultElements('update'))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
 		if (!empty($_POST)) {
+			
 			if (isset($_POST['cancel'])) {
 				$this->redirect(array('Default/view/'.$this->event->id));
 				return;
 			}
 
 			$elements = array();
-			$element_names = array();
+			$to_delete = array();
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
-				if (isset($_POST[$element_type->class_name])) {
-					$class_name = $element_type->class_name;
+				$class_name = $element_type->class_name;
+				if (isset($_POST[$class_name])) {
 					if ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+						// Add existing element to array
 						$elements[] = $element;
 					} else {
+						// Add new element to array
 						$elements[] = new $class_name;
 					}
-					$element_names[$element_type->class_name] = $element_type->name;
+				} else if($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+					// Existing element is not posted, so we need to delete it
+					$to_delete[] = $element;
 				}
 			}
-
-			$elementList = array();
 
 			// validation
 			foreach ($elements as $element) {
 				$elementClassName = get_class($element);
 				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-				$elementList[] = $element;
 				if (!$element->validate()) {
+					$elementName = $element->getElementType()->name;
 					foreach ($element->getErrors() as $errormsgs) {
 						foreach ($errormsgs as $error) {
-							$index = $element_names[$elementClassName]; //preg_replace('/^Element/','',$elementClassName);
-							$errors[$index][] = $error;
+							$errors[$elementName][] = $error;
 						}
 					}
 				}
@@ -381,7 +379,10 @@ class BaseEventTypeController extends BaseController
 
 			// creation
 			if (empty($errors)) {
-				$success = $this->updateElements($elements, $_POST, $this->event);
+				
+				// Need to pass through _all_ elements to updateElements (those not in _POST will be deleted)
+				$all_elements = array_merge($elements, $to_delete);
+				$success = $this->updateElements($all_elements, $_POST, $this->event);
 
 				if ($success) {
 					$info_text = '';
@@ -470,6 +471,7 @@ class BaseEventTypeController extends BaseController
 
 	public function header($editable=null) {
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		if($editable === null){
 			if(isset($this->event)){
@@ -481,6 +483,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->renderPartial('//patient/event_header',array(
 			'episodes'=>$episodes,
+			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
 			'editable'=>$editable,
@@ -489,9 +492,11 @@ class BaseEventTypeController extends BaseController
 
 	public function footer() {
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
+			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules()
 		));
 	}
@@ -615,7 +620,6 @@ class BaseEventTypeController extends BaseController
 	{
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
 		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
-
 		if (!$episode) {
 			$episode = new Episode();
 			$episode->patient_id = $patientId;
@@ -775,7 +779,7 @@ class BaseEventTypeController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->save();
 
-			return header('Location: /patient/episodes/'.$this->event->episode->patient->id);
+			return header('Location: /patient/episode/'.$this->event->episode_id);
 		}
 
 		$this->patient = $this->event->episode->patient;

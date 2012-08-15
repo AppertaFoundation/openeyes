@@ -1,34 +1,27 @@
 <script type="text/javascript" src="/js/gii.js"></script>
+<?php
+$dh = opendir("js");
+while ($file = readdir($dh)) {
+	if (preg_match('/^gii-.*\.js$/',$file)) {?>
+<script type="text/javascript" src="/js/<?php echo $file?>"></script>
+<?php } }
+closedir($dh);
+?>
 
 <h1>Event type module Generator</h1>
 
 <p>This generator helps you to generate the skeleton code needed by an OpenEyes event type module.</p>
 
 <?php $form=$this->beginWidget('BaseGiiEventTypeCActiveForm', array('model'=>$model)); ?>
+	<input type="radio" id="EventTypeModuleModeRadioGenerateNew" class="EventTypeModuleMode" name="EventTypeModuleMode" value="0"<?php if (empty($_POST) || @$_POST['EventTypeModuleMode'] == 0) {?> checked="checked"<?php }?> /> Generate new&nbsp;&nbsp;
+	<input type="radio" id="EventTypeModuleModeRadioModifyExisting" class="EventTypeModuleMode" name="EventTypeModuleMode" value="1"<?php if (@$_POST['EventTypeModuleMode'] == 1) {?> checked="checked"<?php }?> /> Modify existing
+	<input type="hidden" id="has_errors" value="<?php echo empty($this->form_errors) ? '0' : '1'?>" />
 
-	<div class="row">
-		<h3>Describe your event type:</h3>
-		<label>Specialty: </label><?php echo CHtml::dropDownList('Specialty[id]',@$_REQUEST['Specialty']['id'], CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
-		<label>Event group: </label><?php echo CHtml::dropDownList('EventGroup[id]', @$_REQUEST['EventGroup']['id'], CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
-		<label>Name of event type: </label> <?php echo $form->textField($model,'moduleSuffix',array('size'=>65)); ?><br />
-
-		<h3>Describe your element types:</h3>
-
-		<div id="elements">
-			<?php foreach ($_POST as $key => $value) {
-				if (preg_match('/^elementName([0-9]+)$/',$key,$m)) {
-					echo $this->renderPartial('element',array('element_num'=>$m[1]));
-				}
-			}
-			?>
-		</div>
-
-		<input type="submit" class="add_element" name="add" value="add element" /><br />
-		<br/>
-
-		<div class="tooltip">
-			The name should only contain word characters and spaces.	The generated module class will be named based on the specialty, event group, and name of the event type.  EG: 'Ophthalmology', 'Treatment', and 'Operation note' will take the short codes for the specialty and event group to create <code>OphTrOperationnote</code>.
-		</div>
-		<?php echo $form->error($model,'moduleID'); ?>
+	<div class="row" id="EventTypeModuleGenerateDiv">
+		<?php if (@$_POST['EventTypeModuleMode'] == 1) {?>
+			<?php echo $this->renderPartial('EventTypeModuleGenerate_ModifyExisting')?>
+		<?php }else{?>
+			<?php echo $this->renderPartial('EventTypeModuleGenerate_GenerateNew')?>
+		<?php }?>
 	</div>
 <?php $this->endWidget(); ?>
