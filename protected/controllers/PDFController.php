@@ -19,58 +19,68 @@
 
 class PDFController extends BaseController {
 
-	public function actionHTML($operation_id) {
-		$operation = ElementOperation::model()->findByPk($operation_id);
-		$html = $this->getLetter($operation);
-		echo $html;
-	}
-
 	public function actionPDF($operation_id) {
+
+		// Get data
 		$operation = ElementOperation::model()->findByPk($operation_id);
+		$patient = $operation->event->episode->patient;
+		$site = $operation->site;
+		$firm = $operation->event->episode->firm;
+		if($consultant = $firm->getConsultant()) {
+			$consultant_name = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+		} else {
+			$consultant_name = 'CONSULTANT';
+		}
+
+		// From Address
+		$from_address = $site->getLetterAddress();
+		$from_address .= "\nTel: " . $site->telephone;
+		if($site->fax) {
+			$from_address .= "\nFax: " . $site->fax;
+		}
+
+		// Prepare PDF
 		$pdf = new OETCPDF();
 		$pdf->SetAuthor("Jamie Neil");
 		$pdf->SetTitle("PDF Print Test - GP Letter");
 		$pdf->SetSubject("PDF Print Test");
-		$pdf->AddPage();
-		
-		// Banner
-		$pdf->Banner();
-		
-		// Envelope Address
-		$patient = $operation->event->episode->patient;
-		$gp = $patient->gp;
-		$address = $gp->contact->fullname . "\n" . implode("\n",$gp->contact->correspondAddress->getLetterArray(false));
-		$pdf->ToAddress($address);
-		
-		// From Address
-		$site = $operation->site;
-		$address = $site->getLetterAddress();
-		$address .= "\nTel: " . $site->telephone;
-		if($site->fax) {
-			$address .= "\nFax: " . $site->fax;
-		}
-		$pdf->FromAddress($address);
-		
-		$html = $this->getLetter($operation);
-		$pdf->BodyStart();
-		$pdf->SetFontSize(16);
-		$pdf->writeHTML($html, true, false, true, false, '');
-		$pdf->lastPage();
-		$pdf->Output("gp_letter.pdf", "I");
-	}
 
-	protected function getLetter($operation) {
-		$patient = $operation->event->episode->patient;
-		$firm = $operation->event->episode->firm;
-		$site = $operation->site;
-		$waitingListContact = $operation->waitingListContact;
-		return $this->renderPartial('/letters/pdf/gp_letter', array(
-				'operation' => $operation,
-				'site' => $site,
-				'patient' => $patient,
-				'firm' => $firm,
-				'changeContact' => $waitingListContact,
+		// GP Letter
+		$gp = $patient->gp;
+		$to_address = $gp->contact->fullname . "\n" . implode("\n",$gp->contact->correspondAddress->getLetterArray(false));
+		$letter = new OELetter($to_address, $gp->contact->salutationname, "Admissions Officer");
+		$letter->setFromAddress($from_address);
+		$re = $patient->fullname ." (DOB: " . $patient->NHSDate('dob') . ", ";
+		$re .= ($patient->gender == 'M') ? 'Male' : 'Female';
+		$re .= ', ' . $patient->correspondAddress->letterline;
+		$re .= ", Hospital number: " . $patient->hos_num;
+		if (!empty($patient->nhs_num)) {
+			$re .= ", NHS number: " . $patient->nhs_num . ")";
+		}
+		$letter->setRe($re);
+		$html = $this->renderPartial('/letters/pdf/gp_letter', array(
+				'consultantName' => $consultant_name,
 		), true);
+		$letter->addBody($html);
+		$letter->render($pdf);
+
+		// Patient letter
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$letter = new OELetter($to_address, $patient->salutationname, 'Admissions Officer');
+		$letter->setFromAddress($from_address);
+		$re = "Hospital number: " . $patient->hos_num;
+		if (!empty($patient->nhs_num)) {
+			$re .= ", NHS number: " . $patient->nhs_num;
+		}
+		$letter->setRe($re);
+		$html = $this->renderPartial('/letters/pdf/removal_letter', array(
+				'consultantName' => $consultant_name,
+		), true);
+		$letter->addBody($html);
+		$letter->render($pdf);
+
+		// Render PDF
+		$pdf->Output("gp_letter.pdf", "I");
 	}
 
 }

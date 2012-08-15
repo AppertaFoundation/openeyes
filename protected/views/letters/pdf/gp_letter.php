@@ -17,31 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $gp = $patient->gp ?>
-<p>
-	<strong>Re: <?php echo $patient->fullname; ?> (DOB: <?php echo $patient->NHSDate('dob') ?>, <?php echo ($patient->gender == 'M') ? 'Male' : 'Female'; ?>)<br />
-		<?php echo $patient->correspondAddress->letterline ?><br/>
-		Hospital number: <?php echo $patient->hos_num ?>
-		<?php if (!empty($patient->nhs_num)) { ?>, NHS number: <?php echo $patient->nhs_num; } ?>
-	</strong>
-</p>
-
-<p>
-	Dear <?php echo $gp->contact->salutationname; ?>,
-</p>
-
 <p>
 	This patient was recently referred to this hospital and a decision was
 	made that surgery was appropriate under the care of
-	<?php 
-	if($consultant = $firm->getConsultant()) {
-		$consultantName = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
-	} else {
-		$consultantName = 'CONSULTANT';
-	}
-	?>
-	<?php echo CHtml::encode($consultantName) ?>
-	.
+	<?php echo CHtml::encode($consultantName) ?>.
 </p>
 
 <p>In accordance with the National requirements our admission system
@@ -51,5 +30,3 @@
 
 <p>Therefore we have removed this patient from our waiting list and we
 	are referring them back to you.</p>
-
-<?php $this->renderPartial("/letters/pdf/letter_end"); ?>
