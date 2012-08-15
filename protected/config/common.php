@@ -32,6 +32,7 @@ $config = array(
 		'application.models.elements.*',
 		'application.components.*',
 		'application.components.summaryWidgets.*',
+		'application.extensions.tcpdf.*',
 		'application.services.*',
 		'application.modules.*',
 		'application.commands.*',
