@@ -21,11 +21,48 @@ class PDFController extends BaseController {
 
 	public function actionPDF($operation_id) {
 
-		// Get data
 		$operation = ElementOperation::model()->findByPk($operation_id);
+		$patient = $operation->event->episode->patient;
+
+		// Get letter template
+		$letter_status = $operation->getDueLetter();
+		if ($letter_status === null && $operation->getLastLetter() == ElementOperation::LETTER_GP) {
+			$letter_status = ElementOperation::LETTER_GP;
+		}
+		$letter_templates = array(
+				ElementOperation::LETTER_INVITE => 'invitation_letter',
+				ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
+				ElementOperation::LETTER_REMINDER_2 => 'reminder_letter',
+				ElementOperation::LETTER_GP => 'gp_letter',
+				ElementOperation::LETTER_REMOVAL => false,
+		);
+		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
+
+		if($letter_template) {
+
+			// Don't print GP letter if GP is not defined
+			if($letter_status != ElementOperation::LETTER_GP || $patient->gp) {
+				Yii::log("Printing letter: ".$letter_template, 'trace');
+				$this->printLetters($operation, $letter_template);
+			} else {
+				Yii::log("Patient has no GP, printing letter supressed: ".$patient->id, 'trace');
+			}
+
+		} else if($letter_status === null) {
+			Yii::log("No letter is due: ".$patient->id, 'trace');
+		} else {
+			throw new CException('Undefined letter status');
+		}
+	}
+
+	protected function printLetters($operation, $letter_template) {
+
+		// Get data
 		$patient = $operation->event->episode->patient;
 		$site = $operation->site;
 		$firm = $operation->event->episode->firm;
+
+		// Consultant
 		if($consultant = $firm->getConsultant()) {
 			$consultant_name = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
 		} else {
@@ -45,7 +82,77 @@ class PDFController extends BaseController {
 		$pdf->SetTitle("PDF Print Test - GP Letter");
 		$pdf->SetSubject("PDF Print Test");
 
+		call_user_func(array($this, 'print_'.$letter_template), $pdf, $from_address, $operation, $consultant_name);
+		$this->print_admission_form($pdf, $from_address, $operation, $consultant_name);
+
+		// Render PDF
+		$pdf->Output("gp_letter.pdf", "I");
+	}
+
+	protected function print_admission_form($pdf, $from_address, $operation, $consultant_name) {
+		$patient = $operation->event->episode->patient;
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$letter = new OELetter($to_address, $patient->salutationname, 'Admissions Officer');
+		$letter->setFromAddress($from_address);
+		$site = $operation->site;
+		$firm = $operation->event->episode->firm;
+		$html = $this->renderPartial('/letters/pdf/admission_form', array(
+				'operation' => $operation,
+				'site' => $site,
+				'patient' => $patient,
+				'firm' => $firm,
+				'emergencyList' => false,
+		), true);
+		$letter->addBody($html);
+		$letter->render($pdf);
+	}
+
+	protected function print_invitation_letter($pdf, $from_address, $operation, $consultant_name) {
+		$patient = $operation->event->episode->patient;
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$letter = new OELetter($to_address, $patient->salutationname, 'Admissions Officer');
+		$letter->setFromAddress($from_address);
+		$re = "Hospital number: " . $patient->hos_num;
+		if (!empty($patient->nhs_num)) {
+			$re .= ", NHS number: " . $patient->nhs_num;
+		}
+		$letter->setRe($re);
+		$waitingListContact = $operation->waitingListContact;
+		$html = $this->renderPartial('/letters/pdf/invitation_letter', array(
+				'consultantName' => $consultant_name,
+				'operation' => $operation,
+				'patient' => $patient,
+				'changeContact' => $waitingListContact,
+		), true);
+		$letter->addBody($html);
+		$letter->render($pdf);
+	}
+
+	protected function print_reminder_letter($pdf, $from_address, $operation, $consultant_name) {
+		$patient = $operation->event->episode->patient;
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$letter = new OELetter($to_address, $patient->salutationname, 'Admissions Officer');
+		$letter->setFromAddress($from_address);
+		$re = "Hospital number: " . $patient->hos_num;
+		if (!empty($patient->nhs_num)) {
+			$re .= ", NHS number: " . $patient->nhs_num;
+		}
+		$letter->setRe($re);
+		$waitingListContact = $operation->waitingListContact;
+		$html = $this->renderPartial('/letters/pdf/reminder_letter', array(
+				'consultantName' => $consultant_name,
+				'operation' => $operation,
+				'patient' => $patient,
+				'changeContact' => $waitingListContact,
+		), true);
+		$letter->addBody($html);
+		$letter->render($pdf);
+	}
+
+	protected function print_gp_letter($pdf, $from_address, $operation, $consultant_name) {
+
 		// GP Letter
+		$patient = $operation->event->episode->patient;
 		$gp = $patient->gp;
 		$to_address = $gp->contact->fullname . "\n" . implode("\n",$gp->contact->correspondAddress->getLetterArray(false));
 		$letter = new OELetter($to_address, $gp->contact->salutationname, "Admissions Officer");
@@ -79,8 +186,6 @@ class PDFController extends BaseController {
 		$letter->addBody($html);
 		$letter->render($pdf);
 
-		// Render PDF
-		$pdf->Output("gp_letter.pdf", "I");
 	}
 
 }

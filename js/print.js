@@ -20,6 +20,23 @@ $(document).ready(function() {
 	$('body').append('<div class="printable" id="printable"></div>');
 });
 
+/* PDF Printing */
+/**
+ * This is only here temporarily for testing. Remaining printElement code needs removing.
+ */
+function printPDF(url) {
+	$('#print_pdf_iframe').remove();
+	var iframe = document.createElement('iframe');
+	$(iframe).attr({
+		id: 'print_pdf_iframe',
+		src: url,
+		style: 'display: none;'
+	});
+	document.body.appendChild(iframe);
+	iframe.contentWindow.print();
+}
+/* PDF Printing */
+
 function clearPrintContent() {
 	$('#printable').empty();
 }
