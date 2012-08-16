@@ -590,7 +590,7 @@ class PatientController extends BaseController
 		} else if (@$_GET['filter'] == 'specialist') {
 			$where = "parent_class = 'Specialist'";
 		} else {
-			$where = "parent_class in ('Consultant','Gp','Specialist')";
+			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
 		foreach (Yii::app()->db->createCommand()

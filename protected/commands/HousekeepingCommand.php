@@ -31,7 +31,7 @@ class HousekeepingCommand extends CConsoleCommand {
 
 	public function run($args) {
 		$this->deceasedPatients();
-		$this->archiveAuditTrail();
+		//$this->archiveAuditTrail();
 	}
 
 	// Check for operations where patient is deceased and cancel them

@@ -45,7 +45,7 @@ $based_on = implode(', ', $based_on);
 							$to = $total_items;
 						}
 						?>
-						<h3>Results. You are viewing patients <?php echo $from?> to <?php echo $to?> of <?php echo $total_items?></h3>
+						<h3>Results. You are viewing patients <?php echo $from?> - <?php echo $to?> of <?php echo $total_items?></h3>
 
 						<div id="patient-grid" class="grid-view">
 							<table class="items">
