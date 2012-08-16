@@ -16,32 +16,43 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+
 ?>
-<p>Dear <?php echo $to; ?>,</p>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title><?php echo CHtml::encode($this->pageTitle); ?></title>
+<style>
 
-<p><?php echo $patient->fullname; ?>
-<br/><strong>Hospital Reference Number: <?php echo $patient->hos_num; ?></strong>
-<?php if($patient->nhs_num) { ?><br/>NHS Number: <?php echo $patient->nhs_num; } ?>
-<br /><?php echo $patient->correspondAddress->letterline ?>
-<br />DOB: <?php echo $patient->NHSDate('dob') ?>, <?php echo ($patient->gender == 'M') ? 'Male' : 'Female'; ?>
-</p>
+h1 {
+	font-size: 1.6em;
+}
 
-<p>
-	This patient was recently referred to this hospital and a decision was
-	made that surgery was appropriate under the care of
-	<?php echo CHtml::encode($consultantName) ?>.
-</p>
+h2 {
+	font-size: 1.3em;
+}
 
-<p>In accordance with the National requirements our admission system
-	provides patients with the opportunity to agree the date for their
-	operation. We have written twice to ask the patient to contact us to
-	discuss and agree a date but we have had no response.</p>
+table {
+	padding: 2px 4px 3px 4px;
+}
 
-<p>Therefore we have removed this patient from our waiting list and we
-	are referring them back to you.</p>
+th {
+	font-weight: bold;
+}
 
-<p nobr="true">
-	Yours sincerely,
-	<br/><br/><br/><br/>
-	Admissions Officer
-</p>
+table.borders td,
+table.borders th {
+	border: 1px solid #999;
+}
+
+.accessible {
+	font-size: 16pt;
+}
+
+</style>
+</head>
+<body>
+	<?php echo $content; ?>
+</body>
+</html>

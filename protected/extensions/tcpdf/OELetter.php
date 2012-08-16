@@ -22,6 +22,8 @@ class OELetter {
 	protected $to_address;
 	protected $from_address;
 	protected $body_html;
+	protected $font_family = 'times';
+	protected $font_size = '12';
 
 	/**
 	 * @param string $to_address Address of recipient, lines separated by \n
@@ -42,6 +44,13 @@ class OELetter {
 		$this->body_html .= $body;
 	}
 
+	public function setFont($font_family, $font_size = null) {
+		$this->font_family = $font_family;
+		if($font_size) {
+			$this->font_size = $font_size;
+		}
+	}
+	
 	/**
 	 * Render the letter into supplied PDF
 	 * @param OETCPDF $pdf
@@ -49,6 +58,7 @@ class OELetter {
 	public function render($pdf) {
 		$pdf->startPageGroup();
 		$pdf->AddPage();
+		$pdf->setFont($this->font_family, '', $this->font_size);
 		if($this->to_address) {
 			$pdf->ToAddress($this->to_address);
 		}

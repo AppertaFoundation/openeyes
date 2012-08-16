@@ -17,18 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<p><strong>Re: Some text</strong></p>
+<p class="accessible">Dear <?php echo $to; ?>,</p>
 
-<p>Dear <?php echo $to; ?>,</p>
+<p class="accessible"><strong>Hospital Reference Number: <?php echo $patient->hos_num; ?></strong>
+<?php if($patient->nhs_num) { ?><br/>NHS Number: <?php echo $patient->nhs_num; } ?></p>
 
-<p>
-	I recently invited you to telephone to arrange a date for your <?php if ($isChild) { ?>child's <?php } ?>
+<p class="accessible">
+	I recently invited you to telephone to arrange a date for your <?php if ($patient->isChild()) { ?>child's <?php } ?>
 	admission for surgery under the care of
 	<?php echo CHtml::encode($consultantName) ?>.
 	I have not yet heard from you.
 </p>
 
-<p>
+<p class="accessible">
 	This is currently anticipated to be a
 	<?php
 	if ($overnightStay) {
@@ -40,16 +41,16 @@
 	procedure.
 </p>
 
-<p>
+<p class="accessible">
 	Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree
 	a convenient date for this operation.
 </p>
 
-<p>
-	Should you<?php	if ($isChild) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
+<p class="accessible">
+	Should you<?php	if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
 </p>
 
-<p nobr="true">
+<p class="accessible" nobr="true">
 	Yours sincerely,
 	<br/><br/><br/><br/>
 	Admissions Officer

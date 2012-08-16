@@ -21,6 +21,8 @@ class PdfController extends BaseController {
 
 	public function actionPdf($operation_id) {
 
+		$this->layout = '//layouts/pdf';
+
 		$operation = ElementOperation::model()->findByPk($operation_id);
 		$patient = $operation->event->episode->patient;
 
@@ -89,7 +91,7 @@ class PdfController extends BaseController {
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
 		$site = $operation->site;
 		$firm = $operation->event->episode->firm;
-		$body = $this->renderPartial('/letters/pdf/admission_form', array(
+		$body = $this->render('/letters/pdf/admission_form', array(
 				'operation' => $operation,
 				'site' => $site,
 				'patient' => $patient,
@@ -97,6 +99,7 @@ class PdfController extends BaseController {
 				'emergencyList' => false,
 		), true);
 		$letter = new OELetter();
+		$letter->setFont('helvetica','10');
 		$letter->addBody($body);
 		$letter->render($pdf);
 	}
@@ -104,11 +107,11 @@ class PdfController extends BaseController {
 	protected function print_invitation_letter($pdf, $operation) {
 		$patient = $operation->event->episode->patient;
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
-		$body = $this->renderPartial('/letters/pdf/invitation_letter', array(
+		$body = $this->render('/letters/pdf/invitation_letter', array(
 				'to' => $patient->salutationname,
 				'consultantName' => $this->getConsultantName($operation),
 				'overnightStay' => $operation->overnight_stay,
-				'isChild' => $patient->isChild(),
+				'patient' => $patient,
 				'changeContact' => $operation->waitingListContact,
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
@@ -118,11 +121,11 @@ class PdfController extends BaseController {
 	protected function print_reminder_letter($pdf, $operation) {
 		$patient = $operation->event->episode->patient;
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
-		$body = $this->renderPartial('/letters/pdf/reminder_letter', array(
+		$body = $this->render('/letters/pdf/reminder_letter', array(
 				'to' => $patient->salutationname,
 				'consultantName' => $this->getConsultantName($operation),
 				'overnightStay' => $operation->overnight_stay,
-				'isChild' => $patient->isChild(),
+				'patient' => $patient,
 				'changeContact' => $operation->waitingListContact,
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
@@ -135,8 +138,9 @@ class PdfController extends BaseController {
 		$patient = $operation->event->episode->patient;
 		$gp = $patient->gp;
 		$to_address = $gp->contact->fullname . "\n" . implode("\n",$gp->contact->correspondAddress->getLetterArray(false));
-		$body = $this->renderPartial('/letters/pdf/gp_letter', array(
+		$body = $this->render('/letters/pdf/gp_letter', array(
 				'to' => $gp->contact->salutationname,
+				'patient' => $patient,
 				'consultantName' => $this->getConsultantName($operation),
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
@@ -144,8 +148,9 @@ class PdfController extends BaseController {
 
 		// Patient letter
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
-		$body = $this->renderPartial('/letters/pdf/gp_letter_patient', array(
+		$body = $this->render('/letters/pdf/gp_letter_patient', array(
 				'to' => $patient->salutationname,
+				'patient' => $patient,
 				'consultantName' => $this->getConsultantName($operation),
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);

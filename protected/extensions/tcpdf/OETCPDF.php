@@ -37,10 +37,12 @@ class OETCPDF extends TCPDF {
 	 */
 	public function __construct($orientation = 'P') {
 		parent::__construct($orientation, $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false);
-		$this->setImageScale(1.5);
 		$this->setMargins(15, 15);
-		$this->SetFont("times", "", 12);
 		$this->SetAutoPageBreak(true, 25);
+		$this->setHtmlVSpace(array(
+				'h1' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 5, 'n' => 1)),
+				'h2' => array(0 => array('h' => 8, 'n' => 1), 1 => array('h' => 2, 'n' => 1)),
+		));
 	}
 
 	/**
@@ -113,8 +115,8 @@ class OETCPDF extends TCPDF {
 		$this->Cell(20, 10, "To:", 0 , 1, 'L');
 		$this->setX(20);
 		$this->MultiCell(100, 20, $address, 0 ,'L');
-		if($this->body_start < $this->getY() + 10) {
-			$this->body_start = $this->getY() + 10;
+		if($this->body_start < $this->getY()) {
+			$this->body_start = $this->getY();
 		}
 	}
 
@@ -127,8 +129,8 @@ class OETCPDF extends TCPDF {
 		$this->setY(35);
 		$this->MultiCell(0, 20, $address, 0 ,'R');
 		$this->Cell(0, 10, Helper::convertDate2NHS(date('Y-m-d')), 0, 2, 'R');
-		if($this->body_start < $this->getY() + 10) {
-			$this->body_start = $this->getY() + 10;
+		if($this->body_start < $this->getY()) {
+			$this->body_start = $this->getY();
 		}
 	}
 
