@@ -19,6 +19,22 @@
 
 class PdfController extends BaseController {
 
+	public function filters() {
+		return array('accessControl');
+	}
+
+	public function accessRules() {
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny',
+				'users'=>array('?')
+			),
+		);
+	}
+
 	public function actionPdf($operation_id) {
 
 		$this->layout = '//layouts/pdf';
