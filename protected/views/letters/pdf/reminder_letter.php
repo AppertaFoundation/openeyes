@@ -17,8 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<p><strong>Re: Some text</strong></p>
+
+<p>Dear <?php echo $to; ?>,</p>
+
 <p>
-	I recently invited you to telephone to arrange a date for your <?php if ($patient->isChild()) { ?>child's <?php } ?>
+	I recently invited you to telephone to arrange a date for your <?php if ($isChild) { ?>child's <?php } ?>
 	admission for surgery under the care of
 	<?php echo CHtml::encode($consultantName) ?>.
 	I have not yet heard from you.
@@ -27,7 +31,7 @@
 <p>
 	This is currently anticipated to be a
 	<?php
-	if ($operation->overnight_stay) {
+	if ($overnightStay) {
 		echo 'an overnight stay';
 	} else {
 		echo 'day case';
@@ -42,5 +46,11 @@
 </p>
 
 <p>
-	Should you<?php	if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
+	Should you<?php	if ($isChild) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
+</p>
+
+<p nobr="true">
+	Yours sincerely,
+	<br/><br/><br/><br/>
+	Admissions Officer
 </p>

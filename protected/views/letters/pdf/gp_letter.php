@@ -17,6 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<p><strong>Re: Some text</strong></p>
+
+<p>Dear <?php echo $to; ?>,</p>
+
 <p>
 	This patient was recently referred to this hospital and a decision was
 	made that surgery was appropriate under the care of
@@ -30,3 +34,9 @@
 
 <p>Therefore we have removed this patient from our waiting list and we
 	are referring them back to you.</p>
+
+<p nobr="true">
+	Yours sincerely,
+	<br/><br/><br/><br/>
+	Admissions Officer
+</p>

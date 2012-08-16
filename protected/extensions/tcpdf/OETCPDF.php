@@ -21,12 +21,22 @@ require_once(dirname(__FILE__).'/tcpdf/tcpdf.php');
 
 class OETCPDF extends TCPDF {
 
+	/**
+	 * @var string Reference printed in bottom left corner of footer
+	 */
 	protected $docref;
 
-	protected $body_start = 95;
+	/**
+	 * @var $body_start Default Y position for body of letter to start on the page
+	 */
+	const BODY_START = 40;
+	protected $body_start = self::BODY_START;
 
-	public function __construct($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false) {
-		parent::__construct();
+	/**
+	 * @param string $orientation Orientaion of page (Default: P)
+	 */
+	public function __construct($orientation = 'P') {
+		parent::__construct($orientation, $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false);
 		$this->setImageScale(1.5);
 		$this->setMargins(15, 15);
 		$this->SetFont("times", "", 12);
@@ -40,19 +50,27 @@ class OETCPDF extends TCPDF {
 	public function pageBreakIfRequired($h) {
 		$this->checkPageBreak($h);
 	}
-	
+
+	/**
+	 * @param string $docref Override default docref string
+	 */
 	public function setDocref($docref) {
 		$this->docref = $docref;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDocref() {
-		if($this->docref) {
-			return $this->docref;
-		} else {
-			return strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32));
+		if(!$this->docref) {
+			$this->docref = strtoupper(base_convert(time().sprintf('%04d', Yii::app()->user->getId()), 10, 32));
 		}
+		return $this->docref;
 	}
 
+	/**
+	 * @see TCPDF::Footer()
+	 */
 	public function Footer() {
 		// Page number
 		if (empty($this->pagegroups)) {
@@ -74,6 +92,9 @@ class OETCPDF extends TCPDF {
 
 	}
 
+	/**
+	 * @see TCPDF::Header()
+	 */
 	public function Header() {
 		if($this->getGroupPageNo() == 1) {
 			$image_path = Yii::app()->getBasePath() . '/../img';
@@ -82,29 +103,44 @@ class OETCPDF extends TCPDF {
 		}
 	}
 
+	/**
+	 * Render recipient address, aligned to envelope window
+	 * @param string $address Lines delimited with \n
+	 */
 	public function ToAddress($address) {
 		$this->SetFont("times", "", 12);
 		$this->setY(45);
 		$this->Cell(20, 10, "To:", 0 , 1, 'L');
 		$this->setX(20);
 		$this->MultiCell(100, 20, $address, 0 ,'L');
-		if($this->body_start < $this->getY()) {
-			$this->body_start = $this->getY();
+		if($this->body_start < $this->getY() + 10) {
+			$this->body_start = $this->getY() + 10;
 		}
 	}
 
+	/**
+	 * Render sender address
+	 * @param string $address Lines delimited with \n
+	 */
 	public function FromAddress($address) {
 		$this->SetFont("times", "", 12);
 		$this->setY(35);
 		$this->MultiCell(0, 20, $address, 0 ,'R');
 		$this->Cell(0, 10, Helper::convertDate2NHS(date('Y-m-d')), 0, 2, 'R');
-		if($this->body_start < $this->getY()) {
-			$this->body_start = $this->getY();
+		if($this->body_start < $this->getY() + 10) {
+			$this->body_start = $this->getY() + 10;
 		}
 	}
 
-	public function moveToBodyStart() {
+	/**
+	 * Move Y position to start of body, avoiding addresses (if used)
+	 * @param boolean $reset Reset body_start to default after move 
+	 */
+	public function moveToBodyStart($reset = true) {
 		$this->setY($this->body_start);
+		if($reset) {
+			$this->body_start = self::BODY_START;
+		}
 	}
-	
+
 }

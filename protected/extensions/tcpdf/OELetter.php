@@ -21,59 +21,25 @@ class OELetter {
 
 	protected $to_address;
 	protected $from_address;
-	protected $re;
-	protected $to;
 	protected $body_html;
-	protected $from;
-	protected $accessible = false;
 
 	/**
 	 * @param string $to_address Address of recipient, lines separated by \n
-	 * @param string $to Name of recipient (used in salutation)
-	 * @param string $from Name of sender (used in sign off)
-	 * @param string $body_html (optional) Body of the letter in HTML format
+	 * @param string $from_address Address of sender, lines separated by \n
+	 * @param string $body (optional) Body of the letter in HTML format
 	 */
-	public function __construct($to_address, $to, $from, $body_html = null) {
+	public function __construct($to_address = null, $from_address = null, $body = null) {
 		$this->to_address = $to_address;
-		$this->to = $to;
-		$this->from = $from;
-		$this->body_html = $body_html;
-	}
-
-	/**
-	 * Set sender address
-	 * @param string $from_address Address of sender, lines separated by \n,
-	 */
-	public function setFromAddress($from_address) {
 		$this->from_address = $from_address;
-	}
-
-	/**
-	 * Get sender address
-	 * @return string
-	 */
-	protected function getFromAddress() {
-		if($this->from_address) {
-			return $this->from_address;
-		} else {
-			// TODO: Implement alternative ways of getting the sender address, e.g. current site
-		}
-	}
-
-	/**
-	 * Set regarding line
-	 * @param string $re
-	 */
-	public function setRe($re) {
-		$this->re = $re;
+		$this->body_html = $body;
 	}
 
 	/**
 	 * Add HTML to body
-	 * @param string $body_html
+	 * @param string $body HTML to be added to letter body
 	 */
-	public function addBody($body_html) {
-		$this->body_html .= $body_html;
+	public function addBody($body) {
+		$this->body_html .= $body;
 	}
 
 	/**
@@ -83,33 +49,14 @@ class OELetter {
 	public function render($pdf) {
 		$pdf->startPageGroup();
 		$pdf->AddPage();
-		$pdf->ToAddress($this->to_address);
-		$pdf->FromAddress($this->getFromAddress());
-		$pdf->moveToBodyStart();
-		if($this->accessible) {
-			$pdf->SetFontSize(16);
+		if($this->to_address) {
+			$pdf->ToAddress($this->to_address);
 		}
-
-		// Re
-		$pdf->SetFont('times','B');
-		$pdf->MultiCell(0, 0, 'Re: '.$this->re, 0, 'L');
-		$pdf->setY($pdf->GetY() + 5);
-
-		// Salutation
-		$pdf->SetFont('times','');
-		$pdf->Cell(0, 0, "Dear " . $this->to . ",", 0, 1, 'L');
-		$pdf->setY($pdf->GetY() + 5);
-
-		// Body
+		if($this->from_address) {
+			$pdf->FromAddress($this->from_address);
+		}
+		$pdf->moveToBodyStart();
 		$pdf->writeHTML($this->body_html, true, false, true, true, 'L');
-		$pdf->setY($pdf->GetY() + 5);
-		
-		// Signed
-		$sign_off = "Yours sincerely,\n\n\n\n".$this->from;
-		$sign_off_height = $pdf->getStringHeight(0, $sign_off, true);
-		$pdf->pageBreakIfRequired($sign_off_height);
-		$pdf->MultiCell(0, 0, "Yours sincerely,\n\n\n\n".$this->from, 0, 'L');
-		
 	}
 
 }

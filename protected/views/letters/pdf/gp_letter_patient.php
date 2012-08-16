@@ -17,6 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<p><strong>Re: Some text</strong></p>
+
+<p>Dear <?php echo $to; ?>,</p>
+
 <p>
 	I recently invited you to telephone to arrange a date for your admission for surgery under the care of
 	<?php echo CHtml::encode($consultantName) ?>.
@@ -24,4 +28,10 @@
 
 <p>
 	Despite a reminder letter, I have not heard from you. I am therefore referring you back to your GP and have removed you from our waiting list.
+</p>
+
+<p nobr="true">
+	Yours sincerely,
+	<br/><br/><br/><br/>
+	Admissions Officer
 </p>
