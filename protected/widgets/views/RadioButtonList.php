@@ -9,7 +9,7 @@
 		<?php $i=0; ?>
 		<?php foreach ($data as $id => $value) {?>
 			<span class="group">
-				<?php echo CHtml::radioButton($name, $element->$field === $id,array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
+				<?php echo CHtml::radioButton($name, $element->$field == $id,array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
 				<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $value?></label>
 			</span>
 			<?php
