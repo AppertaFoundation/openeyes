@@ -7,10 +7,18 @@ class m120816_085927_remove_nightingale_nursing_home_site extends CDbMigration
 		$this->delete('site_subspecialty_anaesthetic_agent_default','site_id=13');
 		$this->delete('site_subspecialty_anaesthetic_agent','site_id=13');
 		$this->delete('site_subspecialty_operative_device','site_id=13');
-		$this->delete('et_ophcocorrespondence_letter_macro','site_id=13');
-		$this->delete('et_ophcocorrespondence_letter_string','site_id=13');
-		$this->delete('et_ophtroperationnote_site_subspecialty_postop_instructions','site_id=13');
-		$this->delete('et_ophtroperationnote_postop_site_subspecialty_drug','site_id=13');
+		if (Yii::app()->db->schema->getTable('et_ophcocorrespondence_letter_macro')) {
+			$this->delete('et_ophcocorrespondence_letter_macro','site_id=13');
+		}
+		if (Yii::app()->db->schema->getTable('et_ophcocorrespondence_letter_string')) {
+			$this->delete('et_ophcocorrespondence_letter_string','site_id=13');
+		}
+		if (Yii::app()->db->schema->getTable('et_ophtroperationnote_site_subspecialty_postop_instructions')) {
+			$this->delete('et_ophtroperationnote_site_subspecialty_postop_instructions','site_id=13');
+		}
+		if (Yii::app()->db->schema->getTable('et_ophtroperationnote_postop_site_subspecialty_drug')) {
+			$this->delete('et_ophtroperationnote_postop_site_subspecialty_drug','site_id=13');
+		}
 		$this->delete('site','id=13');
 	}
 
