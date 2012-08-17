@@ -59,7 +59,7 @@
 										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], $targets, array('empty' => 'All targets'))?>
 									</td>
 									<td width="20px;" style="margin-left: 50px; border: none;">
-										<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
+										<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
 									</td>
 									<td style="padding: 0;" width="70px;">
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Filter</span></button>
@@ -99,7 +99,7 @@
 							Hos num:
 							<?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('style'=>'width: 100px;'))?>
 							&nbsp;&nbsp;
-							<a href="/audit">View all</a>
+							<?php echo CHtml::link('View all',array('audit/'))?>
 							<div class="whiteBox pagination" style="display: none; margin-top: 10px;">
 							</div>
 						</div>

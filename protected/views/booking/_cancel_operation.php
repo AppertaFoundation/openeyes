@@ -20,7 +20,7 @@
 $this->header();
 
 Yii::app()->clientScript->registerCoreScript('jquery');
-Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
+Yii::app()->clientScript->registerCSSFile(Yii::app()->createUrl('css/theatre_calendar.css'), 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 	<p>
@@ -48,7 +48,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 		<div style="height: 0.4em;"></div>
 		<div class="buttonwrapper">
 			<button type="submit" class="classy red venti"><span class="button-span button-span-red">Cancel operation</span></button>
-			<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 <?php echo CHtml::endForm(); ?>
 	</div>
@@ -62,7 +62,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 
 			$.ajax({
 				type: 'POST',
-				url: '/booking/cancelOperation',
+				url: '<?php echo Yii::app()->createUrl('booking/cancelOperation')?>,
 				data: $('#cancelForm').serialize(),
 				dataType: 'json',
 				success: function(data) {
@@ -74,7 +74,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 					});
 
 					if (n == 0) {
-						window.location.href = '/patient/event/<?php echo $operation->event->id?>';
+						window.location.href = '<?php echo Yii::app()->createUrl('patient/event/'.$operation->event->id)?>';
 					} else {
 						$('div.alertBox').show();
 						$('div.alertBox').html(html);

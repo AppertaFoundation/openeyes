@@ -64,7 +64,7 @@ if (empty($bookings['bookings'])) { ?>
 	?>
 		<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 		<td class="patient">
-			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/event/' . $booking['evid'])?>
+			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], Yii::app()->createUrl('patient/event/'.$booking['evid']))?>
 		</td>
 		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
 		<td style="width: 73px;"><?php echo $booking['session_time']?></td>

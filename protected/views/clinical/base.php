@@ -28,13 +28,7 @@ $this->menu=array(
 <?php
 
 foreach ($this->eventTypes as $eventType) {
-	echo CHtml::link(
-                $eventType->name,
-                Yii::app()->createUrl('clinical/create', array(
-					'event_type_id' => $eventType->id
-                ))
-            );
-	echo('&nbsp;');
+	echo CHtml::link($eventType->name, Yii::app()->createUrl('clinical/create', array('event_type_id' => $eventType->id))).'&nbsp';
 }
 
 ?>
@@ -49,35 +43,16 @@ foreach ($this->episodes as $episode) {
 		$episodeString = '<b>' . $episodeString . '</b>';
 	}
 
-	echo CHtml::link(
-                $episodeString,
-                Yii::app()->createUrl('clinical/episodeSummary', array(
-					'id' => $episode->id
-                ))
-            );
-
-	echo("<br />\n");
+	echo CHtml::link($episodeString, Yii::app()->createUrl('clinical/episodeSummary', array('id' => $episode->id)))."<br/>\n";
 
 	foreach ($episode->events as $event) {
 		echo("&nbsp;&nbsp;event: " . $event->datetime . "&nbsp;&nbsp;");
-
-		echo CHtml::link(
-                'view',
-                Yii::app()->createUrl('clinical/view', array(
-					'id' => $event->id
-                ))
-            );
-		echo('&nbsp;');
+		echo CHtml::link('view', Yii::app()->createUrl('clinical/view', array('id' => $event->id))).'&nbsp;';
 
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-			echo CHtml::link(
-	                'update',
-	                Yii::app()->createUrl('clinical/update', array(
-						'id' => $event->id
-	                ))
-	            );
+			echo CHtml::link('update', Yii::app()->createUrl('clinical/update', array('id' => $event->id)));
 		}
 
-		echo('<br />');
+		echo '<br />';
 	}
 }

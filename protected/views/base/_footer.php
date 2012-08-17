@@ -31,7 +31,7 @@
 					<span>phone: <strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></span>
 				<?php } ?>
 				<span class="divider">|</span>
-				<span><a href="/pdf/OpenEyesOnlineHelp.pdf" target="_new">Online Help Documentation</a></span>
+				<span><?php echo CHtml::link('Online Help Documentation',Yii::app()->createUrl('pdf/OpenEyesOnlineHelp.pdf'),array('target'=>'_new'))?></span>
 		</div>
 	</div> <!-- #footer -->
 
@@ -39,7 +39,7 @@
 $('#support-info-link').unbind('click').click(function() {
 	$.fancybox({
 		'padding'				: 0,
-		'href'					: '/site/debuginfo',
+		'href'					: '<?php echo Yii::app()->createUrl('site/debuginfo')?>',
 		'transitionIn'	: 'elastic',
 		'transitionOut'	: 'elastic'
 	});

@@ -28,7 +28,7 @@ $(document).ready(function() {
 			if (m = window.location.href.match(/\/update\/[0-9]+/)) {
 				window.location.href = window.location.href.replace('/update/','/view/');
 			} else {
-				window.location.href = '/patient/episodes/'+et_patient_id;
+				window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
 			}
 		}
 		return false;
@@ -49,7 +49,7 @@ $(document).ready(function() {
 			if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
 				window.location.href = window.location.href.replace('/delete/','/view/');
 			} else {
-				window.location.href = '/patient/episodes/'+et_patient_id;
+				window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
 			}
 		} 
 		return false;

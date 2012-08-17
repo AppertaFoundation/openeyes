@@ -21,7 +21,7 @@
 <div id="box_gradient_bottom">
 <div style="height: 20px; float: left;"></div>
 <div id="add_episode">
-	<img src="/images/add_event_button.png" alt="Add an event to this episode" />
+	<img src="<?php echo Yii::app()->createUrl('images/add_event_button.png')?>" alt="Add an event to this episode" />
 	<ul id="episode_types">
 <?php
 	foreach ($eventTypeGroups as $group => $eventTypes) { ?>
@@ -37,7 +37,7 @@
 					'firm_id' => $firm->id
 				)
 			)
-		?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php echo $name; ?>" />
+		?>"><img src="<?php echo Yii::app()->createUrl('images/'.$type->name.'.gif')?>" alt="<?php echo $name; ?>" />
 			<span><?php echo $name; ?></span>
 		</a></li>
 <?php

@@ -23,7 +23,7 @@
 		<div class="buttonwrapper">
 			<button type="submit" class="classy red venti" id="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
 			<button type="submit" class="classy green venti" id="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
-			<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 	<?php echo CHtml::endForm(); ?>
 </div>

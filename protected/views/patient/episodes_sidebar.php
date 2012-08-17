@@ -17,9 +17,9 @@
 						}
 						
 						if ($event->eventType->class_name == 'OphTrOperation') {
-							$event_path = '/patient/event/';
+							$event_path = Yii::app()->createUrl('patient/event').'/';
 						} else {
-							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
+							$event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
 						}
 						?>
 						<li id="eventLi<?php echo $event->id ?>">
@@ -38,10 +38,10 @@
 									<span class="type<?php if($event->hasIssue()) { ?> statusflag<?php } ?>">
 										<?php
 										if ($event->eventType->class_name == 'OphTrOperation') {?>
-											<img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" />
+											<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png')?>" alt="op" width="19" height="19" />
 										<?php } else {
 											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.img')).'/';?>
-											<img src="<?php echo $assetpath?>small.png" alt="op" width="19" height="19" />
+											<img src="<?php echo Yii::app()->createUrl($assetpath.'small.png')?>" alt="op" width="19" height="19" />
 										<?php } ?>
 									</span>
 									<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
@@ -62,7 +62,7 @@
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
 				<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details"><?php if (@$current_episode && $current_episode->id == $episode->id){?><div class="summary"><?php }?>View summary<?php if (@$current_episode && $current_episode->id == $episode->id){?></div><?php }?></a></span></div>
+				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="<?php echo Yii::app()->createUrl('patient/episode/'.$episode->id)?>" rel="<?php echo $episode->id?>" class="episode-details"><?php if (@$current_episode && $current_episode->id == $episode->id){?><div class="summary"><?php }?>View summary<?php if (@$current_episode && $current_episode->id == $episode->id){?></div><?php }?></a></span></div>
 				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
 				<ul class="events">
 					<?php foreach ($episode->events as $event) {
@@ -73,9 +73,9 @@
 						}
 						
 						if ($event->eventType->class_name == 'OphTrOperation') {
-							$event_path = '/patient/event/';
+							$event_path = Yii::app()->createUrl('patient/event').'/';
 						} else {
-							$event_path = '/'.$event->eventType->class_name.'/Default/view/';
+							$event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
 						}
 						?>
 						<li id="eventLi<?php echo $event->id ?>">
@@ -94,10 +94,10 @@
 									<span class="type<?php if($event->hasIssue()) { ?> statusflag<?php } ?>">
 										<?php
 										if ($event->eventType->class_name == 'OphTrOperation') {?>
-											<img src="/img/_elements/icons/event/small/treatment_operation.png" alt="op" width="19" height="19" />
+											<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png')?>" alt="op" width="19" height="19" />
 										<?php } else {
 											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.img')).'/';?>
-											<img src="<?php echo $assetpath?>small.png" alt="op" width="19" height="19" />
+											<img src="<?php echo Yii::app()->createUrl($assetpath.'small.png')?>" alt="op" width="19" height="19" />
 										<?php } ?>
 									</span>
 									<span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
@@ -118,7 +118,7 @@
 				<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
 				<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></div>
 				<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></div>
-				<img class="folderIcon" src="/img/_elements/icons/folder_open.png" alt="folder open" />
+				<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png')?>" alt="folder open" />
 			</div>
 		</div> <!-- .episode -->
 	<?php }?>

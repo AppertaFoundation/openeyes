@@ -21,7 +21,7 @@ AuditLog.prototype = {
 
 		$.ajax({
 			'type': 'GET',
-			'url': '/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+$('#previous_user_id').val()+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
+			'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+$('#previous_user_id').val()+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
 			'success': function(html) {
 				if ($.trim(html).length >0) {
 					auditLog.data.html(html + auditLog.data.html());
@@ -82,7 +82,7 @@ AuditLog.prototype = {
 		}
 
 		$.ajax({
-			'url': '/audit/search',
+			'url': baseUrl+'/audit/search',
 			'type': 'POST',
 			'data': $('#auditList-filter').serialize(),
 			'success': function(data) {

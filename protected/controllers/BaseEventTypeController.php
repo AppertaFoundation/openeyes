@@ -779,7 +779,7 @@ class BaseEventTypeController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->save();
 
-			return header('Location: /patient/episode/'.$this->event->episode_id);
+			return $this->redirect(array('patient/episode/'.$this->event->episode_id));
 		}
 
 		$this->patient = $this->event->episode->patient;

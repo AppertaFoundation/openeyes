@@ -21,9 +21,9 @@ if (!$model->eye_id) {
 	$model->eye_id = 1;
 }
 					if (empty($model->event_id)) {?>
-						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Book Operation</h3>
+						<h3 class="withEventIcon" style="background:transparent url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/medium/treatment_laser.png')?>) center left no-repeat;">Book Operation</h3>
 					<?php }else{?>
-						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Edit Operation</h3>
+						<h3 class="withEventIcon" style="background:transparent url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/medium/treatment_laser.png')?>) center left no-repeat;">Edit Operation</h3>
 					<?php }?>
 					<h4>Select diagnosis</h4>
  

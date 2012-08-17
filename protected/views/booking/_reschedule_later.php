@@ -19,7 +19,7 @@
 
 $this->header();
 
-Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all');
+Yii::app()->clientScript->registerCSSFile(Yii::app()->createUrl('css/theatre_calendar.css'), 'all');
 $patient = $operation->event->episode->patient; ?>
 <div id="schedule">
 <p>Patient: <?php echo $patient->getDisplayName()?> (<?php echo $patient->hos_num?>)</p>
@@ -57,7 +57,7 @@ echo '<textarea name="cancellation_comment" rows=6 cols=40></textarea>';
 echo '<div style="height: 0.4em;"></div>'?>
 <div class="clear"></div>
 <button type="submit" class="classy red venti"><span class="button-span button-span-red">Confirm reschedule later</span></button>
-<img src="/img/ajax-loader.gif" alt="loading..." style="display: none;" class="loader" />
+<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" class="loader" />
 <?php
 echo CHtml::endForm(); ?>
 </div>
@@ -69,7 +69,7 @@ echo CHtml::endForm(); ?>
 		if (!$(this).hasClass('inactive')) {
 			$.ajax({
 				type: 'POST',
-				url: '/booking/update',
+				url: '<?php echo Yii::app()->createUrl('booking/update')?>,
 				data: $('#cancelForm').serialize(),
 				dataType: 'json',
 				success: function(data) {
@@ -81,7 +81,7 @@ echo CHtml::endForm(); ?>
 					});
 
 					if (n == 0) {
-						window.location.href = '/patient/event/<?php echo $operation->event->id?>';
+						window.location.href = '<?php echo Yii::app()->createUrl('patient/event/'.$operation->event->id)?>';
 					} else {
 						$('div.alertBox').show();
 						$('div.alertBox').html(html);

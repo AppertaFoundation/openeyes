@@ -51,13 +51,9 @@ $based_on = implode(', ', $based_on);
 							<table class="items">
 								<thead>
 									<tr>
-										<th id="patient-grid_c0"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/0/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Hospital Number</a></th>
-										<th id="patient-grid_c1"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/1/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Title</a></th>
-										<th id="patient-grid_c2"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/2/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">First name</a></th>
-										<th id="patient-grid_c3"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/3/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Last name</a></th>
-										<th id="patient-grid_c4"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/4/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Date of birth</a></th>
-										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/5/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">Gender</a></th>
-										<th id="patient-grid_c5"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/6/<?php if ($sort_dir == 0) {?>1<?php }else{?>0<?php }?>/<?php echo $pagen?>">NHS number</a></th>
+										<?php foreach (array('Hospital Number','Title','First name','Last name','Date of birth','Gender','NHS number') as $i => $field) {?>
+											<th id="patient-grid_c<?php echo $i?>"><?php echo CHtml::link($field,Yii::app()->createUrl('patient/results/'.$first_name.'/'.$last_name.'/'.$nhs_num.'/'.$gender.'/'.$i.'/'.(!$sort_dir?'1':'0').'/'.$pagen))?></th>
+										<?php }?>
 									</tr>
 								</thead>
 								<tbody>
@@ -92,7 +88,7 @@ $based_on = implode(', ', $based_on);
 										$to = $total_items;
 									}
 									?>
-									<span class="otherPages"><a href="/patient/results/<?php echo $first_name?>/<?php echo $last_name?>/<?php echo $nhs_num?>/<?php echo $gender?>/<?php echo $sort_by?>/<?php echo $sort_dir?>/<?php echo $i+1?>"><?php echo 1+($i*$items_per_page)?> - <?php echo $to?></a></span>
+									<span class="otherPages"><?php echo CHtml::link((1+($i*$items_per_page)).' - '.$to,Yii::app()->createUrl('patient/results/'.$first_name.'/'.$last_name.'/'.$nhs_num.'/'.$gender.'/'.$sort_by.'/'.$sort_dir.'/'.($i+1)))?></span>
 								<?php }?>
 							<?php }?>
 						</div>
@@ -129,7 +125,7 @@ $based_on = implode(', ', $based_on);
 							</div>
 						
 							<div class="form_button">
-								<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none; margin-right: 10px;" />
+								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none; margin-right: 10px;" />
 								<button type="submit" class="classy blue tall auto" id="refinePatient_details"><span class="button-span button-span-blue">Find patient</span></button>
 							</div>
 							
@@ -137,13 +133,13 @@ $based_on = implode(', ', $based_on);
 					</form>
 					-->
 				
-					<p><a href="/">Clear this search and <span class="aPush">start a new search</span></a></p>
+					<p><?php echo CHtml::link('Clear this search and <span class="aPush">start a new search</span>',array('/'))?></p>
 				
 				</div> <!-- .narrowColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('#patient-grid .items tr td').click(function() {
-					window.location.href = '/patient/viewhosnum/'+$(this).parent().children(":first").html();
+					window.location.href = '<?php echo Yii::app()->createUrl('patient/viewhosnum')?>/'+$(this).parent().children(":first").html();
 					return false;
 				});
 			</script>

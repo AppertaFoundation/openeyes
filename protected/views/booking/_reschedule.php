@@ -46,16 +46,12 @@ $patient = $operation->event->episode->patient;
 		<?php
 	}
 	?>
-
-
-
 	<div class="eventDetail">
 		<strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes
 	</div>
-	
 	<div class="eventDetail">
-                <div class="label"><strong>Current schedule:</strong></div>
-<?php $this->renderPartial('_session', array('operation' => $operation)); ?>
+		<div class="label"><strong>Current schedule:</strong></div>
+		<?php $this->renderPartial('_session', array('operation' => $operation)); ?>
 	</div>
 
 	<div id="firmSelect" class="eventDetail clearfix">
@@ -64,9 +60,9 @@ $patient = $operation->event->episode->patient;
 			<select id="firmId">
 				<option value="">Select a different firm</option>
 				<option value="EMG">Emergency List</option>
-                                <?php foreach ($firmList as $id => $name) {?>
-                                        <option value="<?php echo $id ?>"><?php echo $name ?></option>
-                                <?php }?>
+				<?php foreach ($firmList as $id => $name) {?>
+					<option value="<?php echo $id ?>"><?php echo $name ?></option>
+				<?php }?>
 			</select>
 		</div>
 	</div>

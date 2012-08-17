@@ -82,10 +82,7 @@ if (!empty($episode)) {
 
 	<?php
 	try {
-		echo $this->renderPartial(
-			'/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id,
-			array('episode' => $episode)
-		);
+		echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id, array('episode' => $episode));
 	} catch (Exception $e) {
 		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
@@ -179,7 +176,7 @@ if (!empty($episode)) {
 			e.preventDefault();
 			$('#close-episode-popup').slideToggle(100);
 			$.ajax({
-				url: '/clinical/closeepisode/<?php echo $episode->id?>',
+				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
 				success: function(data) {
 					$('#event_content').html(data);
 					return false;
@@ -196,10 +193,10 @@ if (!empty($episode)) {
 
 				$.ajax({
 					type: 'POST',
-					url: '/patient/setepisodestatus/<?php echo $episode->id?>',
+					url: '<?php echo Yii::app()->createUrl('patient/setepisodestatus/'.$episode->id)?>',
 					data: 'episode_status_id='+$('#episode_status_id').val(),
 					success: function(html) {
-						window.location.href = '/patient/episodes/<?php echo $this->patient->id?>';
+						window.location.href = '<?php echo Yii::app()->createUrl('patient/episodes/'.$this->patient->id)?>';
 					}
 				});
 			}

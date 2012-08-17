@@ -19,7 +19,7 @@
 
 $this->header(true,array('event'=>$event,'editing'=>true));
 
-Yii::app()->clientScript->registerScriptFile(Yii::app()->baseUrl . '/js/phrase.js');
+Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/phrase.js'));
 
 $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 	'id' => 'clinical-update',
@@ -67,7 +67,7 @@ foreach ($elements as $element) {
 	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
-		'/elements/' . $elementClassName . '/form',
+		Yii::app()->createUrl('/elements/' . $elementClassName . '/form'),
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 		'newRecord' => false)
 	);
@@ -90,7 +90,7 @@ if (isset($errors) && !empty($errors)) {?>
 
 <div class="cleartall"></div>
 <div class="form_button">
-	<img class="loader" style="display: none;" src="/img/ajax-loader.gif" alt="loading..." />&nbsp;
+	<img class="loader" style="display: none;" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
 	<button type="submit" class="classy green venti auto" id="saveOperation" name="saveOperation"><span class="button-span button-span-green">Save</span></button>
 	<button type="submit" class="classy red venti auto" id="cancelOperation" name="cancelOperation"><span class="button-span button-span-red">Cancel</span></button>
 </div>

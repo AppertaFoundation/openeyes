@@ -20,11 +20,14 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 	var firmId = $('select[id=selected_firm_id]').val();
 	$.ajax({
 		type: 'post',
-		url: '/',
+		url: baseUrl+'/',
 		data: {'selected_firm_id': firmId },
 		success: function(data) {
-			//console.log(data);
-			window.location.href = '/';
+			if (data.match(/change-firm-succeeded/)) {
+				window.location.href = baseUrl;
+			} else {
+				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
+			}
 		}
 	});
 });

@@ -19,12 +19,12 @@
 ?>
 <?php
 if (empty($model->event_id)) {
-				// It's a new event so fetch the most recent element_diagnosis
-				$diagnosis = ElementDiagnosis::model()->getNewestDiagnosis($patient);
+	// It's a new event so fetch the most recent element_diagnosis
+	$diagnosis = ElementDiagnosis::model()->getNewestDiagnosis($patient);
 
-				if (!empty($diagnosis->disorder)) {
-								$model->eye = $diagnosis->eye;
-				}
+	if (!empty($diagnosis->disorder)) {
+		$model->eye = $diagnosis->eye;
+	}
 }
 ?>
 					<h4>Procedure</h4>

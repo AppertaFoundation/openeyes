@@ -25,7 +25,7 @@ if (!$model->eye_id) {
 	$model->eye_id = 1;
 }
 ?>
-					<script type="text/javascript" src="/js/element_operation.js"></script>
+					<script type="text/javascript" src="<?php echo Yii::app()->createUrl('js/element_operation.js')?>"></script>
 					<h4>Procedure</h4>
 
 					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>

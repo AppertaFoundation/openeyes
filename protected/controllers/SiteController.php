@@ -99,7 +99,7 @@ class SiteController extends BaseController
 			} else {
 				$error_code = (int) $error['code'];
 				if ($error_code == 403) {
-					$this->redirect('/');
+					$this->redirect(array('/'));
 					Yii::app()->exit();
 				}
 				if($error_code != 404) {
@@ -121,7 +121,7 @@ class SiteController extends BaseController
 	public function actionLogin()
 	{
 		if (Yii::app()->session['user']) {
-			header('Location: /');
+			$this->redirect(array('/'));
 			Yii::app()->end();
 		}
 
@@ -227,6 +227,9 @@ class SiteController extends BaseController
 			if (isset($so['date-start'])) unset($so['date-start']);
 			if (isset($so['date-end'])) unset($so['date-end']);
 			Yii::app()->session['theatre_searchoptions'] = $so;
+
+			echo "change-firm-succeeded";
+			Yii::app()->end();
 		}
 
 		parent::storeData();
