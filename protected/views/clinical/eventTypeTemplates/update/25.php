@@ -67,7 +67,7 @@ foreach ($elements as $element) {
 	$elementClassName = get_class($element);
 
 	echo $this->renderPartial(
-		Yii::app()->createUrl('/elements/' . $elementClassName . '/form'),
+		'/elements/' . $elementClassName . '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 		'newRecord' => false)
 	);

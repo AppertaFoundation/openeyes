@@ -241,7 +241,7 @@
 			});
 
 			$.ajax({
-				'url': '/procedure/list',
+				'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
 				'type': 'POST',
 				'data': {'subsection': subsection, 'existing': existingProcedures},
 				'success': function(data) {
@@ -277,7 +277,7 @@
 			}
 
 			$.ajax({
-				'url': '/procedure/details?durations=<?php echo ($durations?'1':'0')?>&short_version=<?php echo $short_version?'1':'0'?>',
+				'url': '<?php echo Yii::app()->createUrl('procedure/details')?>?durations=<?php echo ($durations?'1':'0')?>&short_version=<?php echo $short_version?'1':'0'?>',
 				'type': 'GET',
 				'data': {'name': procedure},
 				'success': function(data) {

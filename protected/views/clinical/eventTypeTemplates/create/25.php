@@ -69,7 +69,7 @@ if (isset($errors) && !empty($errors)) {?>
 
 foreach ($elements as $element) {
 	echo $this->renderPartial(
-		Yii::app()->createUrl('/elements/' .	get_class($element) .  '/form'),
+		'/elements/' .	get_class($element) .  '/form',
 		array('model' => $element, 'form' => $form, 'specialties' => $specialties,
 			'newRecord' => true)
 	);
