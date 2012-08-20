@@ -29,10 +29,10 @@ function appendPrintContent(content) {
 }
 
 function printContent(csspath) {
-	
+
 	var css = [ { href: baseUrl+'/css/printcontent.css', media: 'all' } ];
 	if (csspath) {
-		css = [ { href: baseUrl+csspath+'/print.css', media: 'all' } ];
+		css = [ { href: csspath+'/print.css', media: 'all' } ];
 	}
 
 	$('#printable').printElement({
