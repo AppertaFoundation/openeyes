@@ -322,7 +322,7 @@ class TransportController extends BaseController
 				$return[] = $value;
 			}
 		}
-		return implode('/', $return);
+		return '/' . implode('/', $return);
 	}
 	
 }
