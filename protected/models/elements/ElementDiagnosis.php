@@ -135,65 +135,18 @@ class ElementDiagnosis extends BaseEventTypeElement
 		return parent::beforeValidate();
 	}
 
+	
 	/**
-	 * Returns the disorder if there is one. If not, it returns the most recent disorder for this episode.
-	 *
-	 * @return object
+	 * Set default values for forms on create
 	 */
-	public function getNewestDiagnosis($patient)
-	{
-		if (!empty($model->disorder)) {
-			return $model->disorder;
-		} else {
-			$firmId = Yii::app()->session['selected_firm_id'];
-
-			if (empty($firmId)) {
-				return null;
-			}
-
-			$firm = Firm::model()->findByPk($firmId);
-
-			$patientId = $patient->id;
-
-			if (empty($patientId)) {
-				return null;
-			}
-
-			$sql = '
-				SELECT
-					ed.*
-				FROM
-					element_diagnosis ed,
-					event ev,
-					episode ep,
-					firm f,
-					service_subspecialty_assignment ssa
-				WHERE
-					ed.event_id = ev.id
-				AND
-					ev.episode_id = ep.id
-				AND
-					ep.firm_id = f.id
-				AND
-					ep.end_date IS NULL
-				AND
-					f.service_subspecialty_assignment_id = ssa.id
-				AND
-					ssa.subspecialty_id = :subspecialty_id
-				AND
-					ep.patient_id = :patient_id
-				ORDER BY
-					ed.id
-				DESC
-				LIMIT 1
-			';
-
-			$diagnosis = ElementDiagnosis::model()->findBySql($sql, array(
-				'subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id,
-				'patient_id' => $patientId
-			));
-
-			return $diagnosis;
+	public function setDefaultOptions() {
+		$patient_id = (int) $_REQUEST['patient_id'];
+		$firm = Yii::app()->getController()->firm;
+		$episode = Episode::getCurrentEpisodeByFirm($patient_id, $firm);
+		if($episode && $episode->hasPrincipalDiagnosis()) {
+			$this->eye_id = $episode->getPrincipalEye()->id;
+			$this->disorder_id = $episode->getPrincipalDisorder()->id;
 		}
 	}
+
 }

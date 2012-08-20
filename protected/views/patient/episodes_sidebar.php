@@ -75,7 +75,7 @@
 						if ($event->eventType->class_name == 'OphTrOperation') {
 							$event_path = Yii::app()->createUrl('patient/event').'/';
 						} else {
-							$event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
+							$event_path = Yii::app()->createUrl($event->eventType->class_name.'/default/view').'/';
 						}
 						?>
 						<li id="eventLi<?php echo $event->id ?>">
@@ -113,9 +113,9 @@
 			<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
 				<div class="row"><span class="label">Start date:</span><?php echo $episode->NHSDate('start_date'); ?></div>
 				<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? $episode->NHSDate('end_date') : '-')?></div>
-				<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
-				<div class="row"><span class="label">Principal eye:</span><?php echo !empty($diagnosis) ? $diagnosis->eye->name : 'No diagnosis' ?></div>
-				<div class="row"><span class="label">Principal diagnosis:</span><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis' ?></div>
+				<?php $has_diagnosis = $episode->hasPrincipalDiagnosis() ?>
+				<div class="row"><span class="label">Principal eye:</span><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisEyeText() : 'No diagnosis' ?></div>
+				<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisDisorderTerm() : 'No diagnosis' ?></div>
 				<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></div>
 				<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></div>
 				<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png')?>" alt="folder open" />

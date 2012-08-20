@@ -42,6 +42,7 @@
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.fancybox-1.3.4.pack.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.printElement.min.js'))?>
+	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize-min.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/print.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/buttons.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/events_and_episodes.js'))?>

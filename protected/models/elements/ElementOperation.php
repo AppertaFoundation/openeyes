@@ -212,8 +212,13 @@ class ElementOperation extends BaseEventTypeElement
 	/**
 	 * Set default values for forms on create
 	 */
-	public function setDefaultOptions()
-	{
+	public function setDefaultOptions() {
+		$patient_id = (int) $_REQUEST['patient_id'];
+		$firm = Yii::app()->getController()->firm;
+		$episode = Episode::getCurrentEpisodeByFirm($patient_id, $firm);
+		if($episode && $episode->hasPrincipalDiagnosis()) {
+			$this->eye_id = $episode->getPrincipalEye()->id;
+		}
 		$this->consultant_required = self::CONSULTANT_NOT_REQUIRED;
 		$this->anaesthetic_type_id = 1;
 		$this->overnight_stay = 0;
@@ -221,7 +226,6 @@ class ElementOperation extends BaseEventTypeElement
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
-		$this->urgent = 1;
 	}
 
 	/**

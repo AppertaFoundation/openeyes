@@ -41,6 +41,7 @@
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jui/js/jquery-ui.min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.fancybox-1.3.4.pack.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize-min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/buttons.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
