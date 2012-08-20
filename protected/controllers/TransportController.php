@@ -312,4 +312,17 @@ class TransportController extends BaseController
 			echo '"'.$row['hos_num'].'","'.trim($row['first_name']).'","'.trim($row['last_name']).'","'.$row['session_date'].'","'.$row['session_time'].'","'.$row['location'].'","'.$row['ward_name'].'","'.$row['method'].'","'.$row['firm'].'","'.$row['subspecialty'].'","'.$row['decision_date'].'","'.$row['priority'].'"'."\n";
 		}
 	}
+	
+	public function getUriAppend() {
+		$return = array();
+		foreach(array(	'date_from' => '', 'date_to' => '', 'include_bookings' => 0, 'include_reschedules' => 0, 'include_cancellations' => 0) as $token => $value) {
+			if(isset($_REQUEST[$token])) {
+				$return[] = $_REQUEST[$token];
+			} else {
+				$return[] = $value;
+			}
+		}
+		return implode('/', $return);
+	}
+	
 }
