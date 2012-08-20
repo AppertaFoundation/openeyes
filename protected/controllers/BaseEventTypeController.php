@@ -11,9 +11,7 @@ class BaseEventTypeController extends BaseController
 	public $event;
 	public $event_type;
 	public $title;
-	public $cssPath;
-	public $jsPath;
-	public $imgPath;
+	public $assetPath;
 
 	public function actionIndex()
 	{
@@ -684,35 +682,34 @@ class BaseEventTypeController extends BaseController
 	public function init() {
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
 
-		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
-		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
-		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img')).'/';
+		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
 
-		$ex = explode('/',@$_SERVER['REQUEST_URI']);
+		$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
+		$action = $ex[3];
 
-		if ($ex[3] != 'print') {
-			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
+		if ($action != 'print') {
+			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
 
 			while ($file = readdir($dh)) {
 				if (preg_match('/\.js$/',$file)) {
-					Yii::app()->clientScript->registerScriptFile($this->jsPath.'/'.$file);
+					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
 				}
 			}
 
 			closedir($dh);
 		}
 
-		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
+		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
 
 		while ($file = readdir($dh)) {
 			if (preg_match('/\.css$/',$file)) {
-				if ($ex[3] == 'print') {
+				if ($action == 'print') {
 					if ($file == 'print.css') {
-						OECClientScript::registerCssFile($this->cssPath.'/'.$file);
+						Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
 					}
 				} else {
 					if ($file != 'print.css') {
-						OECClientScript::registerCssFile($this->cssPath.'/'.$file);
+						Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
 					}
 				}
 			}

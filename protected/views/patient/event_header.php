@@ -18,7 +18,7 @@
  */
 if ($module = $this->getModule()) {
 	$module = $module->getName();
-	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
+	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.assets'),true).'/';
 } else {
 	$module = 'OphTrOperation';
 }
@@ -44,5 +44,5 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				<?php if ($module == 'OphTrOperation') {?>
 					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
 				<?php } else {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl($assetpath.'watermark.png')?>) top left repeat-y;">
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath.'img/watermark.png'?>) top left repeat-y;">
 				<?php }?>
