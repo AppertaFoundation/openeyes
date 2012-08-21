@@ -33,7 +33,7 @@ if (!Yii::app()->user->isGuest) {
 			</div>
 
 			<ul id="user_nav">
-				<li><?php if ($uri == Yii::app()->baseUrl) {?><span class="selected">Home</span><?php }else{?><?php echo CHtml::link('Home',array('/'))?><?php }?></li>
+				<li><?php if ($uri == Yii::app()->baseUrl) {?><span class="selected">Home</span><?php }else{?><?php echo CHtml::link('Home',Yii::app()->baseUrl.'/')?><?php }?></li>
 				<li><?php if ($uri == Yii::app()->baseUrl.'/theatre') {?><span class="selected">Theatre Diaries</span><?php }else{?><?php echo CHtml::link('Theatre Diaries',array('theatre/'))?><?php }?></li>
 				<li><?php if ($uri == Yii::app()->baseUrl.'/waitingList') {?><span class="selected">Partial bookings waiting List</span><?php }else{?><?php echo CHtml::link('Partial bookings waiting list',array('waitingList/'))?><?php }?></li>
 				<li><?php echo CHtml::link('Logout',array('site/logout'))?></li>
