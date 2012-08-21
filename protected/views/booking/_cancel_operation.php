@@ -62,7 +62,7 @@ echo CHtml::hiddenField('operation_id', $operation->id); ?>
 
 			$.ajax({
 				type: 'POST',
-				url: '<?php echo Yii::app()->createUrl('booking/cancelOperation')?>,
+				url: '<?php echo Yii::app()->createUrl('booking/cancelOperation')?>',
 				data: $('#cancelForm').serialize(),
 				dataType: 'json',
 				success: function(data) {
