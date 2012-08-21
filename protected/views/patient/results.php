@@ -133,7 +133,7 @@ $based_on = implode(', ', $based_on);
 					</form>
 					-->
 				
-					<p><?php echo CHtml::link('Clear this search and <span class="aPush">start a new search</span>',array('/'))?></p>
+					<p><?php echo CHtml::link('Clear this search and <span class="aPush">start a new search</span>',Yii::app()->baseUrl.'/')?></p>
 				
 				</div> <!-- .narrowColumn -->
 			</div><!-- .wrapTwo -->

@@ -99,7 +99,7 @@ class SiteController extends BaseController
 			} else {
 				$error_code = (int) $error['code'];
 				if ($error_code == 403) {
-					$this->redirect(array('/'));
+					$this->redirect(Yii::app()->baseUrl.'/');
 					Yii::app()->exit();
 				}
 				if($error_code != 404) {
@@ -121,7 +121,7 @@ class SiteController extends BaseController
 	public function actionLogin()
 	{
 		if (Yii::app()->session['user']) {
-			$this->redirect(array('/'));
+			$this->redirect(Yii::app()->baseUrl.'/');
 			Yii::app()->end();
 		}
 

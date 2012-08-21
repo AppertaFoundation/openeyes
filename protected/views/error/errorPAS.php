@@ -32,4 +32,4 @@
 		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
 	</a></li>
 </ul>
-<?php echo CHtml::link('Click here to go back to the search page',array('/'))?>
+<?php echo CHtml::link('Click here to go back to the search page',Yii::app()->baseUrl.'/')?>

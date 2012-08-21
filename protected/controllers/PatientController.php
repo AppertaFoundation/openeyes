@@ -285,7 +285,7 @@ class PatientController extends BaseController
 
 	function patientSearch() {
 		if (!isset($_GET['sort_by'])) {
-			return $this->redirect(array('/'));
+			return $this->redirect(Yii::app()->baseUrl.'/');
 		}
 
 		switch ($_GET['sort_by']) {
