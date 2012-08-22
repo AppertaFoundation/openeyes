@@ -102,6 +102,8 @@ if (empty($bookings['bookings'])) { ?>
 	<?php
 	}
 }
+
+unset($last_eoid);
 ?>
 
 <div style="display: none;">
@@ -123,7 +125,8 @@ if (empty($bookings['bookings'])) { ?>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($bookings['bookings_all'] as $id => $booking) {?>
+				<?php foreach ($bookings['bookings_all'] as $booking) {
+					if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;?>
 					<tr>
 						<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 						<td>
@@ -139,7 +142,9 @@ if (empty($bookings['bookings'])) { ?>
 						<td style="width: 80px;"><?php echo Helper::convertMySQL2NHS($booking['decision_date']) ?></td>
 						<td><?php echo $booking['priority']?></td>
 					</tr>
-				<?php }?>
+					<?php
+					$last_eoid = $booking['eoid'];
+				}?>
 			</tbody>
 		</table>
 	</div>

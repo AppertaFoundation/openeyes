@@ -309,7 +309,11 @@ class TransportController extends BaseController
 		$data = $this->getBookings();
 
 		foreach ($data['bookings_all'] as $row) {
+			if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;
+
 			echo '"'.$row['hos_num'].'","'.trim($row['first_name']).'","'.trim($row['last_name']).'","'.$row['session_date'].'","'.$row['session_time'].'","'.$row['location'].'","'.$row['ward_name'].'","'.$row['method'].'","'.$row['firm'].'","'.$row['subspecialty'].'","'.$row['decision_date'].'","'.$row['priority'].'"'."\n";
+
+			$last_eoid = $booking['eoid'];
 		}
 	}
 	
