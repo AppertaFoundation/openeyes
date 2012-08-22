@@ -165,18 +165,39 @@ class TransportController extends BaseController
 
 		$data = array();
 		$data_all = array();
+		$done = array();
 
 		foreach (Yii::app()->db->createCommand($sql)->query() as $i => $row) {
-			if ($i >= $offset && count($data) < $this->items_per_page) {
-				$data[] = $row;
+			if (!in_array($this->getDisplayArray($row),$done)) {
+				if ($i >= $offset && count($data) < $this->items_per_page) {
+					$data[] = $row;
+				}
+				$data_all[] = $row;
+				$done[] = $this->getDisplayArray($row);
 			}
-			$data_all[] = $row;
 		}
 
 		$this->total_items = count($data_all);
 		$this->pages = ceil($this->total_items / $this->items_per_page);
 
 		return array('bookings' => $data, 'bookings_all' => $data_all);
+	}
+
+	public function getDisplayArray($row) {
+		return array(
+			'hos_num' => $row['hos_num'],
+			'first_name' => $row['first_name'],
+			'last_name' => $row['last_name'],
+			'tci_date' => $row['session_date'],
+			'admission_time' => $row['session_time'],
+			'location' => $row['location'],
+			'ward_name' => $row['ward_name'],
+			'method' => $row['method'],
+			'firm' => $row['firm'],
+			'subspecialty' => $row['subspecialty'],
+			'decision_date' => $row['decision_date'],
+			'priority' => $row['priority'],
+		);
 	}
 
 	public function actionDigest() {
@@ -309,11 +330,7 @@ class TransportController extends BaseController
 		$data = $this->getBookings();
 
 		foreach ($data['bookings_all'] as $row) {
-			if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;
-
 			echo '"'.$row['hos_num'].'","'.trim($row['first_name']).'","'.trim($row['last_name']).'","'.$row['session_date'].'","'.$row['session_time'].'","'.$row['location'].'","'.$row['ward_name'].'","'.$row['method'].'","'.$row['firm'].'","'.$row['subspecialty'].'","'.$row['decision_date'].'","'.$row['priority'].'"'."\n";
-
-			$last_eoid = $booking['eoid'];
 		}
 	}
 	

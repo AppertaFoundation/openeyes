@@ -44,10 +44,7 @@ if (empty($bookings['bookings'])) { ?>
 <?php
 	$i = 0;
 	if ($bookings) {
-		foreach ($bookings['bookings'] as $id => $booking) {
-			if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;
-	?>
-
+		foreach ($bookings['bookings'] as $id => $booking) {?>
 	<?php
 		if ($booking['transport'] == null) {
 			if (strtotime($booking['session_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
@@ -86,7 +83,6 @@ if (empty($bookings['bookings'])) { ?>
 
 	<?php
 			$i++;
-			$last_eoid = $booking['eoid'];
 		}
 
 		if ($i == 0) { ?>
@@ -103,7 +99,7 @@ if (empty($bookings['bookings'])) { ?>
 	}
 }
 
-unset($last_eoid);
+$done = array();
 ?>
 
 <div style="display: none;">
@@ -125,8 +121,7 @@ unset($last_eoid);
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($bookings['bookings_all'] as $booking) {
-					if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;?>
+				<?php foreach ($bookings['bookings_all'] as $booking) {?>
 					<tr>
 						<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 						<td>
@@ -142,9 +137,7 @@ unset($last_eoid);
 						<td style="width: 80px;"><?php echo Helper::convertMySQL2NHS($booking['decision_date']) ?></td>
 						<td><?php echo $booking['priority']?></td>
 					</tr>
-					<?php
-					$last_eoid = $booking['eoid'];
-				}?>
+				<?php }?>
 			</tbody>
 		</table>
 	</div>
