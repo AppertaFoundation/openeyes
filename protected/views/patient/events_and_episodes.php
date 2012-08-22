@@ -50,7 +50,7 @@ if ($module = $this->getModule()) {
 				</div>
 
 				<!-- EVENT CONTENT HERE -->
-				<?php if (is_object($this->event) || (count($episodes) >1 && @$current_episode)) {?>
+				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
 					<?php if ($module == 'OphTrOperation') {?>
 						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
 					<?php } else {?>
