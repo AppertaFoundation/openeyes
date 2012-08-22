@@ -79,13 +79,12 @@ class Episode extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'events' => array(self::HAS_MANY, 'Event', 'episode_id'),
+			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'datetime asc'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
 		);
 	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -313,5 +312,25 @@ class Episode extends BaseActiveRecord
 			return true;
 		}
 		return false;
+	}
+
+	public function getHidden() {
+		if (isset(Yii::app()->getController()->event) && Yii::app()->getController()->event->episode_id == $this->id) {
+			return false;
+		}
+
+		if (isset(Yii::app()->session['episode_hide_status'][$this->id])) {
+			return !Yii::app()->session['episode_hide_status'][$this->id];
+		}
+
+		if (isset(Yii::app()->getController()->episode)) {
+			return Yii::app()->getController()->episode->id != $this->id || $this->end_date != null;
+		}
+
+		return true;
+	}
+
+	public function getOpen() {
+		return ($this->end_date == null);
 	}
 }

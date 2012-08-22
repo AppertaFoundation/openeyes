@@ -410,7 +410,7 @@ class BaseEventTypeController extends BaseController
 					$audit->save();
 
 					// Update event to indicate user has made a change
-					$this->event->datetime = date("Y-m-d H:i:s");
+					// $this->event->datetime = date("Y-m-d H:i:s");
 					$this->event->user = Yii::app()->user->id;
 					$this->event->info = $info_text;
 
