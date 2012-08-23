@@ -73,7 +73,7 @@
 						</a>
 					</span>
 				</div>
-				<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name),array('patient/episode/'.$episode->id),array('class'=>'title_summary'.((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : '')))?></h4>
+				<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name),array('/patient/episode/'.$episode->id),array('class'=>'title_summary'.((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : '')))?></h4>
 				<?php if ($episode->hidden) {?>
 					<ul class="events show" style="display: none;">
 				<?php }else{?>

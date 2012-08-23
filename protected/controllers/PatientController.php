@@ -417,7 +417,12 @@ class PatientController extends BaseController
 			$current_episode = empty($episodes) ? false : $episodes[0];
 		} else if ($current_episode->end_date == null) {
 			if ($event = Event::model()->find(array('order'=>'datetime desc'))) {
-				return $this->actionEvent($event->id);
+				if ($event->eventType->class_name == 'OphTrOperation') {
+					$this->redirect(array('patient/event/'.$event->id));
+				} else {
+					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+				}
+				Yii::app()->end();
 			}
 		} else {
 			$current_episode = null;
