@@ -12,6 +12,7 @@ class BaseEventTypeController extends BaseController
 	public $event_type;
 	public $title;
 	public $assetPath;
+	public $episode;
 
 	public function actionIndex()
 	{
@@ -142,12 +143,14 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid patient_id.');
 		}
 
+		$session = Yii::app()->session;
+		$firm = Firm::model()->findByPk($session['selected_firm_id']);
+		$this->episode = $this->getEpisode($firm, $this->patient->id);
+
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
 			// firms in a different tab. Set the session firm id to the provided firm id.
-
-			$session = Yii::app()->session;
 
 			$firms = $session['firms'];
 			$firmId = intval($_POST['firm_id']);
@@ -253,6 +256,7 @@ class BaseEventTypeController extends BaseController
 		}
 		$this->patient = $this->event->episode->patient;
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
+		$this->episode = $this->event->episode;
 
 		$elements = $this->getDefaultElements('view');
 
@@ -311,6 +315,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->patient = $this->event->episode->patient;
+		$this->episode = $this->event->episode;
 
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
