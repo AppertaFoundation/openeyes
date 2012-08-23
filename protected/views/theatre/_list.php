@@ -375,7 +375,7 @@ if (empty($theatres)) {?>
 
 	var selected_tbody_id = null;
 
-	$('a.edit-sessions').die('click').live('click',function() {
+	$(this).undelegate('a.edit-sessions','click').delegate('a.edit-sessions','click',function() {
 		cancel_edit();
 
 		$('div.infoBox').hide();
@@ -414,12 +414,12 @@ if (empty($theatres)) {?>
 		return false;
 	});
 
-	$('a.view-sessions').die('click').live('click',function() {
+	$(this).undelegate('a.view-sessions','click').delegate('a.view-sessions','click',function() {
 		cancel_edit();
 		return false;
 	});
 
-	$('button[id^="btn_cancel_"]').live('click',function() {
+	$(this).undelegate('button[id^="btn_cancel_"]','click').delegate('button[id^="btn_cancel_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			$('#loader2_'+$(this).attr('id').match(/[0-9]+/)).show();
 			disableButtons();

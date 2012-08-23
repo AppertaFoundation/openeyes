@@ -195,7 +195,7 @@ $('#checkall').click(function() {
 });
 
 // Row highlighting
-$(".waiting-list td").live('hover', function() {
+$(this).undelegate('.waiting-list td','click').delegate('.waiting-list td','click',function() {
     var $tr = $(this).closest("tr");
 
     //toggle current row

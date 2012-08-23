@@ -250,7 +250,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 	}
 
-	$('button[id^="btn_save_"]').die('click').live('click',function() {
+	$(this).undelegate('button[id^="btn_save_"]','click').delegate('button[id^="btn_save_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 			var selected_tbody_id = $(this).attr('id').match(/[0-9]+/);

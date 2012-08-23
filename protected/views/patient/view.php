@@ -338,7 +338,7 @@ if (!empty($address)) {
 					window.location.href = '<?php echo Yii::app()->createUrl('patient/episode')?>/'+$(this).attr('id');
 					return false;
 				});
-				$('a[id^="removecontact"]').die('click').live('click',function() {
+				$(this).undelegate('a[id^="removecontact"]','click').delegate('a[id^="removecontact"]','click',function() {
 					var e = $(this).attr('id').replace(/^removecontact/,'').split('_');
 
 					var id = e[0];

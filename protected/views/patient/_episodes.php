@@ -109,7 +109,7 @@
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
 	});
-	$('ul.events li a').die('click').live('click', function() {
+	$(this).undelegate('ul.events li a','click').delegate('ul.events li a','click',function() {
 		$('ul.events li.shown').removeClass('shown');
 		$(this).parent().addClass('shown');
 		$.ajax({
@@ -121,7 +121,7 @@
 		});
 		return false;
 	});
-	$('.episode div.title').die('click').live('click', function() {
+	$(this).undelegate('.episode div.title','click').delegate('.episode div.title','click',function() {
 		var id = $(this).children('input').val();
 		$('ul.events li.shown').removeClass('shown');
 		$.ajax({

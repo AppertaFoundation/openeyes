@@ -19,7 +19,7 @@
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 
 	<script type="text/javascript">
-		$('select[id=selected_firm_id]').die('change').live('change', function() {
+		$(this).undelegate('select[id=selected_firm_id]','change').delegate('select[id=selected_firm_id]','change',function() {
 			var firmId = $('select[id=selected_firm_id]').val();
 			$.ajax({
 				type: 'post',

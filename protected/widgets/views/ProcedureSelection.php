@@ -169,7 +169,7 @@
 		$('#<?php echo $class?>_total_duration').val(totalDuration);
 	}
 
-	$('a.removeProcedure').live('click',function() {
+	$(this).undelegate('a.removeProcedure','click').delegate('a.removeProcedure','click',function() {
 		var len = $(this).parent().parent().parent().children('div').length;
 
 		var procedure_id = $(this).parent().parent().find('input[type="hidden"]:first').val();
