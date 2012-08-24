@@ -154,6 +154,35 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
+	public function getLongListForCurrentInstitution() {
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('institution_id',$site->institution_id);
+		$criteria->compare('id','<>13');
+
+		$result = array();
+
+		foreach (Site::model()->findAll($criteria) as $site) {
+			$institution = $site->institution;
+
+			$site_name = '';
+
+			if ($institution->short_name) {
+				$site_name = $institution->short_name.' at ';
+			}
+			$site_name .= $site->name;
+
+			if ($site->location) {
+				$site_name .= ', '.$site->location;
+			}
+
+			$result[$site->id] = $site_name;
+		}
+
+		return $result;
+	}
+
 	public function getDefaultSite() {
 		$site = null;
 		if(Yii::app()->params['default_site_code']) {
