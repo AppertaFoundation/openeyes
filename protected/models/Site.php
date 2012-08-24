@@ -82,6 +82,9 @@ class Site extends BaseActiveRecord
 			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+			'replyto' => array(self::HAS_ONE, 'Contact', 'parent_id',
+				'on' => "parent_class = 'Site_ReplyTo'",
+			),
 		);
 	}
 
@@ -190,5 +193,32 @@ class Site extends BaseActiveRecord
 		$address = "$this->name\n";
 
 		return $address . implode("\n",$this->getLetterArray(false));
+	}
+
+	public function getReplyToAddress() {
+		if (!$contact = $this->replyto) return '';
+
+		$fields = array();
+		if ($contact->first_name) {
+			$fields[] = $contact->first_name;
+		}
+		if ($contact->last_name) {
+			$fields[] = $contact->last_name;
+		}
+		if ($address = $contact->address) {
+			foreach (array('address1','address2','city','county','postcode') as $field) {
+				if ($address->{$field}) {
+					$fields[] = $address->{$field};
+				}
+			}
+		}
+		return implode(', ',$fields);
+	}
+
+	public function getCorrespondenceSiteName() {
+		if (!($contact = $this->replyto) || !$contact->nick_name) {
+			return $this->name;
+		}
+		return $contact->nick_name;
 	}
 }
