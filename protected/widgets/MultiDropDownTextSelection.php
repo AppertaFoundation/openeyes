@@ -17,13 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class TextArea extends BaseCWidget {
-	public $rows;
-	public $cols;
-	public $button;
-	public $layout;
-	public $nowrapper;
-	public $class;
-	public $no_label;
+class MultiDropDownTextSelection extends BaseCWidget {
+	public $options;
+	public $htmlOptions;
 }
 ?>
