@@ -32,7 +32,7 @@ $uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.@$_REQUE
 		<?php if ($i == $this->page) {?>
 			<?php echo $i?>
 		<?php }else{?>
-			<?php echo CHtml::link($i,Yii::app()->createUrl('transport/'.$i.$uri_append)?>
+			<?php echo CHtml::link($i,Yii::app()->createUrl('transport/'.$i.$uri_append)) ?>
 		<?php }?>
 		&nbsp;
 	<?php }?>
