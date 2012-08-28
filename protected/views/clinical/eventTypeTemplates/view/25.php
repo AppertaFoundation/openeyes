@@ -296,18 +296,12 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			//printUrl('/waitingList/printletters?confirm=1&operations[]='+<?php echo $operation->id ?>);
-			printPDF('/pdf/pdf?operation_id=' + <?php echo $operation->id ?>);
+			printPDF('/waitingList/printletters', {'operations': [<?php echo $operation->id ?>], 'confirm': 1});
 			enableButtons();
 		}
 		return false;
 	});
 
-	function test_print_letter() {
-		printPDF('/pdf/pdf?operation_id=' + <?php echo $operation->id ?>);
-		return false;
-	};
-	
 	$('#btn_print-letter').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();

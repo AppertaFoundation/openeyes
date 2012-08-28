@@ -16,26 +16,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$(document).ready(function() {
-	$('body').append('<div class="printable" id="printable"></div>');
-});
-
-/* PDF Printing */
 /**
- * This is only here temporarily for testing. Remaining printElement code needs removing.
+ * Load a PDF into an iframe and print it
  */
-function printPDF(url) {
+function printPDF(url, data) {
 	$('#print_pdf_iframe').remove();
 	var iframe = document.createElement('iframe');
 	$(iframe).attr({
 		id: 'print_pdf_iframe',
-		src: url,
+		src: url + '?' + $.param(data),
 		style: 'display: none;'
 	});
 	document.body.appendChild(iframe);
 	iframe.contentWindow.print();
 }
-/* PDF Printing */
+
+$(document).ready(function() {
+	$('body').append('<div class="printable" id="printable"></div>');
+});
 
 function clearPrintContent() {
 	$('#printable').empty();

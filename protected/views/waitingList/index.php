@@ -178,12 +178,6 @@
 	});
 
 	function print_items_from_selector(sel,all) {
-		if (all) {
-			var printurl = '/waitingList/printletters';
-		} else {
-			var printurl = '/waitingList/printletters';
-		}
-
 		var operations = new Array();
 
 		var nogp = 0;
@@ -206,7 +200,7 @@
 			}
 		} else {
 			show_letter_warnings(nogp);
-			printUrl(printurl, {'operations[]': operations, 'all': all});
+			printPDF('/waitingList/printletters', {'operations': operations, 'all': all});
 		}
 	}
 
