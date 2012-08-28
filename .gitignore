@@ -35,8 +35,6 @@ protected/commands/ImportInstitutionsCommand.php
 protected/commands/OpnoteDataCommand.php
 protected/commands/AuditCommand.php
 protected/commands/TestCommand.php
-
+protected/commands/FirmSecretaryNumbersCommand.php
 tags
 index.php
-
-e0_Com_contacts.html

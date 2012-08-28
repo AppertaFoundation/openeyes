@@ -28,7 +28,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
  
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
-	<meta name="viewport" content="width=device-width"> 
+	<meta name="viewport" content="width=device-width; initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
 		<meta http-equiv='expires' content='0'>
@@ -65,7 +65,7 @@
 	<?php }?>
 </head> 
  
-<body> 
+<body>
 	<?php if (Yii::app()->user->checkAccess('admin')) {?>
 		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
 	<?php } else if (Yii::app()->params['watermark']) {?>
