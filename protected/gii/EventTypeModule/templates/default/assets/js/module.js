@@ -57,7 +57,7 @@ $(document).ready(function() {
 
 	$('select.populate_textarea').unbind('change').change(function() {
 		if ($(this).val() != '') {
-			var cLass = $(this).parent().parent().parent().attr('class');
+			var cLass = $(this).parent().parent().parent().attr('class').match(/Element.*/);
 			var el = $('#'+cLass+'_'+$(this).attr('id'));
 			var currentText = el.text();
 			var newText = $(this).children('option:selected').text();
