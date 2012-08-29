@@ -19,7 +19,7 @@
 ?>
 
 <?php
-$uri_append = '/'.@$_REQUEST['date_from'].'/'.@$_REQUEST['date_to'].'/'.@$_REQUEST['include_bookings'].'/'.@$_REQUEST['include_reschedules'].'/'.@$_REQUEST['include_cancellations'];
+$uri_append = $this->getUriAppend();
 ?>
 <div class="transport_pagination">
 	<?php if ($this->page >1) {?>

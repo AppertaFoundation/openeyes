@@ -327,7 +327,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $lookup_table['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
 			}
 
 			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -362,7 +362,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
 			}
 
 			$elements[$number]['fields'][$field_number]['lookup_field'] = $elements[$number]['fields'][$field_number]['order_field'] = @$_POST['dropDownFieldSQLTableField'.$number.'Field'.$field_number];
@@ -405,7 +405,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$key_name = $lookup_table['name'].'_fk';
 
 		if (strlen($key_name) >64) {
-			$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+			$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
 		}
 
 		$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -448,7 +448,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $lookup_table['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
 			}
 
 			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -483,7 +483,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
 			}
 
 			$elements[$number]['foreign_keys'][] = array(
