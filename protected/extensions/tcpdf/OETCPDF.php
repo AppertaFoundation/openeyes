@@ -43,6 +43,10 @@ class OETCPDF extends TCPDF {
 				'h1' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 5, 'n' => 1)),
 				'h2' => array(0 => array('h' => 8, 'n' => 1), 1 => array('h' => 2, 'n' => 1)),
 		));
+		$preferences = array(
+				'PrintScaling' => 'None',
+		);
+		$this->setViewerPreferences($preferences);
 	}
 
 	/**
