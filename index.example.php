@@ -1,10 +1,19 @@
 <?php
 
+$depth = 1;
+
+while (1) {
+	$yii=dirname(__FILE__).'/'.str_repeat('../',$depth).'yii/framework/yii.php';
+
+	if (file_exists($yii)) break;
+
+	$depth++;
+}
+
 // change the following paths if necessary
-$yii=dirname(__FILE__).'/../yii/framework/yii.php';
 $config=dirname(__FILE__).'/protected/config/main.php';
 
-$common_config=dirname(__FILE__).'/protected/config/core/common.php';
+$common_config=dirname(__FILE__).'/protected/config/common.php';
 $local_common_config=dirname(__FILE__).'/protected/config/local/common.php';
 
 foreach (array($common_config,$local_common_config) as $configfile) {
