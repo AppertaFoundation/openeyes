@@ -416,7 +416,11 @@ class PatientController extends BaseController
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
 		} else if ($current_episode->end_date == null) {
-			if ($event = Event::model()->find(array('order'=>'datetime desc'))) {
+			$criteria = new CDbCriteria;
+			$criteria->compare('episode_id',$current_episode->id);
+			$criteria->order = 'datetime desc';
+
+			if ($event = Event::model()->find($criteria)) {
 				if ($event->eventType->class_name == 'OphTrOperation') {
 					$this->redirect(array('patient/event/'.$event->id));
 				} else {
