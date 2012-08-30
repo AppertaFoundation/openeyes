@@ -648,10 +648,7 @@ class BaseEventTypeController extends BaseController
 			$audit->data = $episode->getAuditAttributes();
 			$audit->save();
 
-			if (Yii::app()->params['use_pas']) {
-				// Try to fetch a referral from PAS for this episode
-				$episode->fetchPASReferral();
-			}
+			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
 		}
 
 		return $episode;
