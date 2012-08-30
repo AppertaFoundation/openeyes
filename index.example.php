@@ -8,6 +8,10 @@ while (1) {
 	if (file_exists($yii)) break;
 
 	$depth++;
+
+	if ($depth >= 100) {
+		die("yii directory not found. please install yii below the docroot.");
+	}
 }
 
 // change the following paths if necessary
