@@ -13,7 +13,7 @@ while (1) {
 // change the following paths if necessary
 $config=dirname(__FILE__).'/protected/config/main.php';
 
-$common_config=dirname(__FILE__).'/protected/config/common.php';
+$common_config=dirname(__FILE__).'/protected/config/core/common.php';
 $local_common_config=dirname(__FILE__).'/protected/config/local/common.php';
 
 foreach (array($common_config,$local_common_config) as $configfile) {
