@@ -25,7 +25,7 @@ class RadioButtonList extends BaseCWidget {
 
 	public function init() {
 		if (empty($_POST)) {
-			if ($this->selected_item !== null) {
+			if ($this->selected_item) {
 				$this->value = $this->selected_item;
 			} else if(isset($this->element->{$this->field})) {
 				$this->value = $this->element->{$this->field};
