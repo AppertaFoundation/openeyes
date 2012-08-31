@@ -38,6 +38,7 @@ protected/commands/TestCommand.php
 protected/commands/FirmSecretaryNumbersCommand.php
 protected/commands/SiteReplyToAddressesCommand.php
 protected/commands/SetEpisodeStatusCommand.php
+protected/commands/ImportEpatientlettersCommand.php
 tags
 index.php
 
