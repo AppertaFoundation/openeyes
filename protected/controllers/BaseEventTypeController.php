@@ -633,6 +633,8 @@ class BaseEventTypeController extends BaseController
 
 			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
 
+			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
+
 			$audit = new Audit;
 			$audit->action = "create";
 			$audit->target_type = "episode";
@@ -641,11 +643,6 @@ class BaseEventTypeController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = $episode->getAuditAttributes();
 			$audit->save();
-
-			if (Yii::app()->params['use_pas']) {
-				// Try to fetch a referral from PAS for this episode
-				$episode->fetchPASReferral();
-			}
 		}
 
 		return $episode;
