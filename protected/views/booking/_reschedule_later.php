@@ -69,7 +69,7 @@ echo CHtml::endForm(); ?>
 		if (!$(this).hasClass('inactive')) {
 			$.ajax({
 				type: 'POST',
-				url: '<?php echo Yii::app()->createUrl('booking/update')?>,
+				url: '<?php echo Yii::app()->createUrl('booking/update')?>',
 				data: $('#cancelForm').serialize(),
 				dataType: 'json',
 				success: function(data) {
