@@ -20,7 +20,7 @@ $(document).ready(function() {
 		return false;
 	});
 
-	$('a.MultiSelectRemove').die('click').live('click',function(e) {
+	$(this).undelegate('a.MultiSelectRemove','click').delegate('a.MultiSelectRemove','click',function(e) {
 		e.preventDefault();
 
 		var value = $(this).parent().next().val();

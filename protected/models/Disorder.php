@@ -142,40 +142,4 @@ class Disorder extends BaseActiveRecord
 		return $data;
 	}
 
-	/**
-	 * Get a list of disorders
-	 * Store extra data for the session
-	 *
-	 * @param string  $term		  term to search by
-	 *
-	 * @return array
-	 */
-	public static function getList($term)
-	{
-		$search = "%{$term}%";
-
-		$select = 'term, id';
-
-		$disorders = Yii::app()->db->createCommand()
-			->select($select)
-			->from('disorder')
-			->where('(term LIKE :term) AND systemic = 0', array(':term' => $search))
-			->order('disorder.term')
-			->queryAll();
-
-		$data = array();
-		$session = Yii::app()->session['Disorders'];
-
-		foreach ($disorders as $disorder) {
-			$data[] = $disorder['term'];
-			$id = $disorder['id'];
-			$session[$id] = array(
-				'fully_specified_name' => $disorder['term']
-			);
-		}
-
-		Yii::app()->session['Disorders'] = $session;
-
-		return $data;
-	}
 }

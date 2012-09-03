@@ -212,8 +212,13 @@ class ElementOperation extends BaseEventTypeElement
 	/**
 	 * Set default values for forms on create
 	 */
-	public function setDefaultOptions()
-	{
+	public function setDefaultOptions() {
+		$patient_id = (int) $_REQUEST['patient_id'];
+		$firm = Yii::app()->getController()->firm;
+		$episode = Episode::getCurrentEpisodeByFirm($patient_id, $firm);
+		if($episode && $episode->hasPrincipalDiagnosis()) {
+			$this->eye_id = $episode->getPrincipalEye()->id;
+		}
 		$this->consultant_required = self::CONSULTANT_NOT_REQUIRED;
 		$this->anaesthetic_type_id = 1;
 		$this->overnight_stay = 0;
@@ -221,7 +226,6 @@ class ElementOperation extends BaseEventTypeElement
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
-		$this->urgent = 1;
 	}
 
 	/**
@@ -1399,7 +1403,7 @@ class ElementOperation extends BaseEventTypeElement
 							$email,
 							"[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
 								. $this->getDisorder() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME']
-								. "/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
+								. Yii::app()->createUrl('transport')."\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
 							"From: " . Yii::app()->params['urgent_booking_notify_email_from']."\r\n"
 						);
 					}

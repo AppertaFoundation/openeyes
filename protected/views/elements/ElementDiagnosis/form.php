@@ -16,38 +16,39 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-if (!$model->eye_id) {
-	$model->eye_id = 1;
+?>
+<h3 class="withEventIcon"
+	style="background: transparent url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/medium/treatment_laser.png')?>) center left no-repeat;">
+<?php	if(empty($model->event_id)) { ?>Book Operation<?php } else { ?>Edit Operation<?php } ?>
+</h3>
+<h4>Select diagnosis</h4>
+<?php
+if ($this->action->id == 'create' && empty($_POST)) {
+	$model->setDefaultOptions();
 }
-					if (empty($model->event_id)) {?>
-						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Book Operation</h3>
-					<?php }else{?>
-						<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_laser.png) center left no-repeat;">Edit Operation</h3>
-					<?php }?>
-					<h4>Select diagnosis</h4>
+?>
  
- 					<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
+<?php echo $form->radioButtons($model, 'eye_id', 'eye');?>
 
-					<?php $form->widget('application.widgets.DiagnosisSelection',array(
-						'field' => 'disorder_id',
-						'element' => $model,
-						'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))
-					));
-					?>
+<?php $form->widget('application.widgets.DiagnosisSelection',array(
+		'field' => 'disorder_id',
+		'element' => $model,
+		'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId))
+));
+?>
 
-					<script type="text/javascript">
-						$('input[name="ElementDiagnosis[eye]"]').click(function() {
-							var disorder = $('input[name="ElementDiagnosis[disorder_id]"]').val();
-							if (disorder.length == 0) {
-								$('input[name="ElementDiagnosis[disorder_id]"]').focus();
-							}
-						});
-						$('input[name="ElementDiagnosis[disorder_id]"]').watermark('type the first few characters of a diagnosis');
-						$('select[name="ElementDiagnosis[disorder_id]"]').change(function() {
-							var value = $(this).children(':selected').text();
-							$('#enteredDiagnosisText span').html(value);
-							$('#savedDiagnosis').val(value);
-							$(this).children(':selected').attr('selected', false);
-						});
-					</script>
+<script type="text/javascript">
+	$('input[name="ElementDiagnosis[eye]"]').click(function() {
+		var disorder = $('input[name="ElementDiagnosis[disorder_id]"]').val();
+		if (disorder.length == 0) {
+			$('input[name="ElementDiagnosis[disorder_id]"]').focus();
+		}
+	});
+	$('input[name="ElementDiagnosis[disorder_id]"]').watermark('type the first few characters of a diagnosis');
+	$('select[name="ElementDiagnosis[disorder_id]"]').change(function() {
+		var value = $(this).children(':selected').text();
+		$('#enteredDiagnosisText span').html(value);
+		$('#savedDiagnosis').val(value);
+		$(this).children(':selected').attr('selected', false);
+	});
+</script>

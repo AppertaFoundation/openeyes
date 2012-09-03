@@ -25,7 +25,7 @@
 			</div>
 
 		<div id="waitinglist_display">
-			<form method="post" action="/waitingList/search" id="waitingList-filter">
+			<form method="post" action="<?php echo Yii::app()->createUrl('waitingList/search')?>" id="waitingList-filter">
 				<div id="search-options">
 
 					<div id="main-search" class="grid-view">
@@ -77,7 +77,7 @@
 										<span id="hos_num_error" class="red"<?php if (!@$_POST['hos_num'] || ctype_digit($_POST['hos_num'])){?> style="display: none;"<?php }?>>Invalid hospital number</span>
 									</td>
 									<td width="20px;" style="margin-left: 50px; border: none;">
-										<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
+										<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
 									</td>
 									<td style="padding: 0;" width="70px;">
 										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Search</span></button>
@@ -145,7 +145,7 @@
 			}
 
 			disableButtons();
-			$('#searchResults').html('<div id="waitingList" class="grid-view-waitinglist"><table><tbody><tr><th>Letters sent</th><th>Patient</th><th>Hospital number</th><th>Location</th><th>Procedure</th><th>Eye</th><th>Firm</th><th>Decision date</th><th>Priority</th><th>Book status (requires...)</th><th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value=""></th></tr><tr><td colspan="7" style="border: none; padding-top: 10px;"><img src="/img/ajax-loader.gif" /> Searching, please wait ...</td></tr></tbody></table></div>');
+			$('#searchResults').html('<div id="waitingList" class="grid-view-waitinglist"><table><tbody><tr><th>Letters sent</th><th>Patient</th><th>Hospital number</th><th>Location</th><th>Procedure</th><th>Eye</th><th>Firm</th><th>Decision date</th><th>Priority</th><th>Book status (requires...)</th><th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value=""></th></tr><tr><td colspan="7" style="border: none; padding-top: 10px;"><img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" /> Searching, please wait ...</td></tr></tbody></table></div>');
 
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('waitingList/search'); ?>',
@@ -179,9 +179,9 @@
 
 	function print_items_from_selector(sel,all) {
 		if (all) {
-			var printurl = '/waitingList/printletters';
+			var printurl = '<?php echo Yii::app()->createUrl('waitingList/printletters')?>';
 		} else {
-			var printurl = '/waitingList/printletters';
+			var printurl = '<?php echo Yii::app()->createUrl('waitingList/printletters')?>';
 		}
 
 		var operations = new Array();
@@ -241,7 +241,7 @@
 				disableButtons();
 
 				$.ajax({
-					url: '/waitingList/confirmPrinted',
+					url: '<?php echo Yii::app()->createUrl('waitingList/confirmPrinted')?>',
 					type: "POST",
 					data: data,
 					success: function(html) {

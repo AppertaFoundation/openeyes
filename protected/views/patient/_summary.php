@@ -126,7 +126,7 @@
 </div>
 </div>
 <script type="text/javascript">
-	$('#view_all').die('click').live('click', function() {
+	$(this).undelegate('#view_all','click').delegate('#view_all','click',function() {
 		$('#patient-tabs').tabs('select', 1);
 	});
 </script>

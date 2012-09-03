@@ -23,5 +23,7 @@ class TextArea extends BaseCWidget {
 	public $button;
 	public $layout;
 	public $nowrapper;
+	public $class;
+	public $no_label;
 }
 ?>

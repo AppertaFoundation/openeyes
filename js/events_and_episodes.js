@@ -33,14 +33,18 @@ $(document).ready(function(){
 			var target_id = $(this).attr('id').replace(/^dropDownTextSelection_/,'');
 
 			var currentVal = $('#'+target_id).val();
+			var newText = $(this).children('option:selected').text();
 
 			if (currentVal.length >0) {
 				currentVal += ', ';
+				newText = newText.toLowerCase();
 			}
 
-			$('#'+target_id).val(currentVal+$(this).children('option:selected').text());
+			$('#'+target_id).val(currentVal + newText);
 
-			$(this).children('option:selected').remove();
+			if (!$(this).attr('data-remove-selections') || $(this).attr('data-remove-selections') != "false") {
+				$(this).children('option:selected').remove();
+			}
 		}
 	});
 });

@@ -94,10 +94,10 @@
 			$('div.sessionWarning').hide();
 		}
 
-		$('#sessionDetails').html('<div style="margin-top: 10px;">&nbsp;<img src="/img/ajax-loader.gif" />&nbsp;&nbsp;Please wait ...</div>');
+		$('#sessionDetails').html('<div style="margin-top: 10px;">&nbsp;<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" />&nbsp;&nbsp;Please wait ...</div>');
 
 		$.ajax({
-     	'url': '/booking/list/operation/<?php echo $operation->id ?>/session/' + id,
+     	'url': '<?php echo Yii::app()->createUrl('booking/list/operation/'.$operation->id.'/session')?>/' + id,
       'type': 'POST',
       'data': 'operation=<?php echo $operation->id ?>&session=' + id + '&reschedule=<?php echo $reschedule ?>&bookable='+($(this).hasClass('bookable') ? '1' : '0'),
       'success': function(data) {

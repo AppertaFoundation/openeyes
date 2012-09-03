@@ -116,7 +116,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							</span>
 						</div>
 						<div style="float:right;">
-							<span style="width: 30px;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
+							<span style="width: 30px;"><img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
 							<button id="search_button" type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
 						</div>
 					</div> <!-- #extra-search -->
@@ -175,7 +175,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	function printElem(method,options){
 		$.ajax({
-			'url': '/theatre/'+method,
+			'url': '<?php echo Yii::app()->createUrl('theatre')?>/'+method,
 			'type': 'POST',
 			'data': searchData,
 			'success': function(data) {
@@ -202,7 +202,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			searchData = $('#theatre-filter').serialize();
 
 			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
+				'url': '<?php echo Yii::app()->createUrl('theatre/search')?>',
 				'type': 'POST',
 				'data': searchData,
 				'success': function(data) {
@@ -235,13 +235,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		$.ajax({
 			'type': 'POST',
 			'data': {'site_id': siteId},
-			'url': '<?php echo Yii::app()->createUrl('theatre/filterTheatres'); ?>',
+			'url': '<?php echo Yii::app()->createUrl('theatre/filterTheatres')?>',
 			'success':function(data) {
 				$('#theatre-id').html(data);
 				$.ajax({
 					'type': 'POST',
 					'data': {'site_id': siteId},
-					'url': '<?php echo Yii::app()->createUrl('theatre/filterWards'); ?>',
+					'url': '<?php echo Yii::app()->createUrl('theatre/filterWards')?>',
 					'success':function(data) {
 						$('#ward-id').html(data);
 					}
@@ -250,7 +250,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 	}
 
-	$('button[id^="btn_save_"]').die('click').live('click',function() {
+	$(this).undelegate('button[id^="btn_save_"]','click').delegate('button[id^="btn_save_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 			var selected_tbody_id = $(this).attr('id').match(/[0-9]+/);
@@ -337,7 +337,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'type': 'POST',
 				'data': data,
 				'dataType': 'json',
-				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
+				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions')?>',
 				'success': function(data) {
 					var count = 0;
 

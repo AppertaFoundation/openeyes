@@ -44,10 +44,7 @@ if (empty($bookings['bookings'])) { ?>
 <?php
 	$i = 0;
 	if ($bookings) {
-		foreach ($bookings['bookings'] as $id => $booking) {
-			if (isset($last_eoid) && $last_eoid == $booking['eoid']) continue;
-	?>
-
+		foreach ($bookings['bookings'] as $id => $booking) {?>
 	<?php
 		if ($booking['transport'] == null) {
 			if (strtotime($booking['session_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
@@ -64,7 +61,7 @@ if (empty($bookings['bookings'])) { ?>
 	?>
 		<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 		<td class="patient">
-			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/event/' . $booking['evid'])?>
+			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], Yii::app()->createUrl('patient/event/'.$booking['evid']))?>
 		</td>
 		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
 		<td style="width: 73px;"><?php echo $booking['session_time']?></td>
@@ -86,7 +83,6 @@ if (empty($bookings['bookings'])) { ?>
 
 	<?php
 			$i++;
-			$last_eoid = $booking['eoid'];
 		}
 
 		if ($i == 0) { ?>
@@ -102,6 +98,8 @@ if (empty($bookings['bookings'])) { ?>
 	<?php
 	}
 }
+
+$done = array();
 ?>
 
 <div style="display: none;">
@@ -123,7 +121,7 @@ if (empty($bookings['bookings'])) { ?>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($bookings['bookings_all'] as $id => $booking) {?>
+				<?php foreach ($bookings['bookings_all'] as $booking) {?>
 					<tr>
 						<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 						<td>

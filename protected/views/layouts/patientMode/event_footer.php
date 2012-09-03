@@ -15,11 +15,11 @@
 
 	<?php echo $this->renderPartial('//base/_footer',array())?>
 
-	<script defer type="text/javascript" src="/js/plugins.js"></script>
-	<script defer type="text/javascript" src="/js/script.js"></script>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/plugins.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 
 	<script type="text/javascript">
-		$('select[id=selected_firm_id]').die('change').live('change', function() {
+		$(this).undelegate('select[id=selected_firm_id]','change').delegate('select[id=selected_firm_id]','change',function() {
 			var firmId = $('select[id=selected_firm_id]').val();
 			$.ajax({
 				type: 'post',

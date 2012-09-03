@@ -184,7 +184,7 @@ class PatientController extends BaseController
 		}
 		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
 		if($patient) {
-			$this->redirect('/patient/view/'.$patient->id);
+			$this->redirect(array('/patient/view/'.$patient->id));
 		} else {
 			throw new CHttpException(404, 'Hospital number not found');
 		}
@@ -235,7 +235,7 @@ class PatientController extends BaseController
 				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
 				$audit->save();
 				setcookie('patient-search-minimum-criteria','1',0,'/');
-				$this->redirect('/patient/results/error');
+				$this->redirect(array('/patient/results/error'));
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
@@ -268,7 +268,7 @@ class PatientController extends BaseController
 			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
 
 			setcookie('patient-search-minimum-criteria','1',0,'/');
-			$this->redirect("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1");
+			$this->redirect(array("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1"));
 		}
 
 		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
@@ -278,7 +278,7 @@ class PatientController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = var_export($_POST['Patient'],true) . ": Error";
 			$audit->save();
-			$this->redirect('/patient/results/error');
+			$this->redirect(array('/patient/results/error'));
 		}
 
 		$this->patientSearch();
@@ -286,7 +286,7 @@ class PatientController extends BaseController
 
 	function patientSearch() {
 		if (!isset($_GET['sort_by'])) {
-			return $this->redirect('/');
+			return $this->redirect(Yii::app()->baseUrl.'/');
 		}
 
 		switch ($_GET['sort_by']) {
@@ -338,10 +338,10 @@ class PatientController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
 			$audit->save();
-			$this->redirect('/patient/no-results');
+			$this->redirect(array('/patient/no-results'));
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
-				$this->redirect('/patient/view/'.$item->id);
+				$this->redirect(array('/patient/view/'.$item->id));
 			}
 		} else {
 			$pages = ceil($nr/$pageSize);
@@ -416,8 +416,17 @@ class PatientController extends BaseController
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
 		} else if ($current_episode->end_date == null) {
-			if ($event = Event::model()->find(array('order'=>'datetime desc'))) {
-				return $this->actionEvent($event->id);
+			$criteria = new CDbCriteria;
+			$criteria->compare('episode_id',$current_episode->id);
+			$criteria->order = 'datetime desc';
+
+			if ($event = Event::model()->find($criteria)) {
+				if ($event->eventType->class_name == 'OphTrOperation') {
+					$this->redirect(array('patient/event/'.$event->id));
+				} else {
+					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+				}
+				Yii::app()->end();
 			}
 		} else {
 			$current_episode = null;

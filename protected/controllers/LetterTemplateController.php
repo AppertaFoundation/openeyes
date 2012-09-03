@@ -125,9 +125,9 @@ class LetterTemplateController extends BaseController
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 
-								if ($model->subspecialty_id != $this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-												throw new CHttpException(403, 'You are not permitted to view this letter template.');
-								}
+		if ($model->subspecialty_id != $this->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			throw new CHttpException(403, 'You are not permitted to view this letter template.');
+		}
 
 		return $model;
 	}

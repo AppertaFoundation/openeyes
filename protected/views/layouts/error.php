@@ -27,16 +27,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <title>OpenEyes - Login</title>
 <meta name="viewport" content="width=device-width" />
-<link rel="icon" href="/favicon.ico" type="image/x-icon" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="stylesheet" href="/css/style-error.css" />
+<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
+<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" />
+<?php Yii::app()->getClientScript()->registerCSSFile(Yii::app()->createUrl('css/style-error.css'))?>
 </head>
 <body>
 	<div id="container">
 		<div id="header" class="clearfix">
 			<div id="brand" class="ir">
 				<h1>
-					<a href="/site/index">OpenEyes</a>
+					<?php echo CHtml::link('OpenEyes',array('site/'))?>
 				</h1>
 			</div>
 		</div><!-- #header -->

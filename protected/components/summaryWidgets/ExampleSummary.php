@@ -33,11 +33,11 @@ class ExampleSummary extends CWidget {
 			throw new CHttpException(403, 'There is no episode of that id.');
 		}
 
-	        $noEvents = Yii::app()->db->createCommand()
-                        ->select('count(*) AS c')
-                        ->from('event')
-                        ->where('episode_id = :epid', array(':epid'=>$this->episode_id))
-                        ->queryRow();
+		$noEvents = Yii::app()->db->createCommand()
+			->select('count(*) AS c')
+			->from('event')
+			->where('episode_id = :epid', array(':epid'=>$this->episode_id))
+			->queryRow();
 
 		$this->noEvents = $noEvents['c'];
 

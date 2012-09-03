@@ -39,7 +39,7 @@ if (is_object($user)) {
 	$firm = 'Not logged in';
 }
 
-$commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(@$_SERVER['DOCUMENT_ROOT']."/.git/FETCH_HEAD"));
+$commit = preg_replace('/[\s\t].*$/s','',@file_get_contents(Yii::app()->basePath."/../.git/FETCH_HEAD"));
 $ex = explode('/',file_get_contents(".git/HEAD"));
 $branch = array_pop($ex);
 ?>
@@ -48,6 +48,7 @@ $branch = array_pop($ex);
 		<strong>This information is provided to assist the helpdesk in diagnosing any problems</strong><br />
 		Served, with love, by: <?php echo $hostname?><br />
 		Docroot: <?php echo @$_SERVER['DOCUMENT_ROOT']?><br />
+		Base dir: <?php echo Yii::app()->basePath?><br />
 		Date: <?php echo date('d.m.Y H:i:s')?><br />
 		Commit: <?php echo $commit?><br />
 		Branch: <?php echo $branch?><br/>

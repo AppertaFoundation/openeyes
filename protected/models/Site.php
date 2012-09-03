@@ -82,6 +82,9 @@ class Site extends BaseActiveRecord
 			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
+			'replyto' => array(self::HAS_ONE, 'Contact', 'parent_id',
+				'on' => "parent_class = 'Site_ReplyTo'",
+			),
 		);
 	}
 
@@ -151,6 +154,35 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
+	public function getLongListForCurrentInstitution() {
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('institution_id',$site->institution_id);
+		$criteria->compare('id','<>13');
+
+		$result = array();
+
+		foreach (Site::model()->findAll($criteria) as $site) {
+			$institution = $site->institution;
+
+			$site_name = '';
+
+			if ($institution->short_name) {
+				$site_name = $institution->short_name.' at ';
+			}
+			$site_name .= $site->name;
+
+			if ($site->location) {
+				$site_name .= ', '.$site->location;
+			}
+
+			$result[$site->id] = $site_name;
+		}
+
+		return $result;
+	}
+
 	public function getDefaultSite() {
 		$site = null;
 		if(Yii::app()->params['default_site_code']) {
@@ -190,5 +222,32 @@ class Site extends BaseActiveRecord
 		$address = "$this->name\n";
 
 		return $address . implode("\n",$this->getLetterArray(false));
+	}
+
+	public function getReplyToAddress() {
+		if (!$contact = $this->replyto) return '';
+
+		$fields = array();
+		if ($contact->first_name) {
+			$fields[] = $contact->first_name;
+		}
+		if ($contact->last_name) {
+			$fields[] = $contact->last_name;
+		}
+		if ($address = $contact->address) {
+			foreach (array('address1','address2','city','county','postcode') as $field) {
+				if ($address->{$field}) {
+					$fields[] = $address->{$field};
+				}
+			}
+		}
+		return implode(', ',$fields);
+	}
+
+	public function getCorrespondenceSiteName() {
+		if (!($contact = $this->replyto) || !$contact->nick_name) {
+			return $this->name;
+		}
+		return $contact->nick_name;
 	}
 }
