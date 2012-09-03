@@ -643,6 +643,8 @@ class BaseEventTypeController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = $episode->getAuditAttributes();
 			$audit->save();
+
+			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
 		}
 
 		return $episode;
