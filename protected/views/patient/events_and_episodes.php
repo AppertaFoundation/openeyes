@@ -39,17 +39,23 @@ if ($module = $this->getModule()) {
 					<div class="alertBox fullWidthEvent">
 						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
+				<?php }else if (!@$current_episode) {?>
+					<div class="alertBox fullWidthEvent">
+						There is no open episode for the current firm's subspecialty.
+					</div>
 				<?php }?>
-				<div class="display_actions"<?php if (!$this->title){?> style="display: none;"<?php }?>>
+				<div class="display_actions"<?php if (!$this->title || count($episodes)<1 || !@$current_episode){?> style="display: none;"<?php }?>>
 					<div class="display_mode"><?php echo $this->title?></div>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
 
 				<!-- EVENT CONTENT HERE -->
-				<?php if ($module == 'OphTrOperation') {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
-				<?php } else {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+				<?php if (count($episodes) >1 && @$current_episode) {?>
+					<?php if ($module == 'OphTrOperation') {?>
+						<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
+					<?php } else {?>
+						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+					<?php }?>
 				<?php }?>
 					<?php
 					if (isset($this->event)) {

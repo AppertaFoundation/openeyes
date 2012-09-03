@@ -1,14 +1,17 @@
 <div id="episodes_sidebar">
 	<?php if (is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
-	<div class="episode clearfix" style="display:block;border: 1px solid red;">
-<div class="patient_actions">
-		<span class="aBtn"><a class="episode showhide" href="#"><span
-				class="hide"></span> </a> </span>
-	</div>
-		<div class="episode_nav" style="background-color:#eee">
-			<div class="small"></div>
-			<h4 style="color:#999;">Legacy events</h4>
-			<ul class="events">
+	<div class="episode open clearfix" style="display:block;">
+		<div class="episode_nav legacy">
+			<div class="start_date small">
+				<?php echo $episode->NHSDate('start_date')?>
+				<span class="aBtn">
+					<a class="sprite showhide2 legacy" href="#">
+						<span class="<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) {?>show<?php }else{?>hide<?php }?>"></span>
+					</a>
+				</span>
+			</div>
+			<h4 class="legacy" style="margin-left: 8px;">Legacy events</h4>
+			<ul class="events"<?php if ((!$this->event || $this->event->eventType->class_name != 'OphLeEpatientletter') && !@Yii::app()->session['episode_hide_status']['legacy']) {?> style="display: none;"<?php }?>>
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 
@@ -62,9 +65,20 @@
 		<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
 			<div class="episode_nav">
 				<input type="hidden" name="episode-id" value="<?php echo $episode->id?>" />
-				<div class="small"><?php echo $episode->NHSDate('start_date'); ?><span style="float:right;"><a href="/patient/episode/<?php echo $episode->id?>" rel="<?php echo $episode->id?>" class="episode-details"><?php if (@$current_episode && $current_episode->id == $episode->id){?><div class="summary"><?php }?>View summary<?php if (@$current_episode && $current_episode->id == $episode->id){?></div><?php }?></a></span></div>
-				<h4><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></h4>
-				<ul class="events">
+				<div class="start_date small">
+					<?php echo $episode->NHSDate('start_date')?>
+					<span class="aBtn">
+						<a class="sprite showhide2" href="#">
+							<span class="<?php if ((!@$current_episode || $current_episode->id != $episode->id) && $episode->hidden) {?>show<?php }else{?>hide<?php }?>"></span>
+						</a>
+					</span>
+				</div>
+				<h4><a href="/patient/episode/<?php echo $episode->id?>" class="title_summary<?php if (!$this->event && @$current_episode && $current_episode->id == $episode->id) {?> viewing<?php }?>"><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></a></h4>
+				<?php if ($episode->hidden) {?>
+					<ul class="events show" style="display: none;">
+				<?php }else{?>
+					<ul class="events hide">
+				<?php }?>
 					<?php foreach ($episode->events as $event) {
 						$highlight = false;
 
