@@ -99,6 +99,7 @@ return array(
 										'class' => 'CFileLogRoute',
 										'levels' => 'info, warning, error',
 										'logFile' => 'application.log',
+										'maxLogFiles' => 30,
 								),
 								// Development logging (application only)
 								'debug' => array(
@@ -106,6 +107,7 @@ return array(
 										'levels' => 'trace, info, warning, error',
 										'categories' => 'application.*',
 										'logFile' => 'debug.log',
+										'maxLogFiles' => 30,
 								),
 						),
 				),

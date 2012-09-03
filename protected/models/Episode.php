@@ -178,7 +178,13 @@ class Episode extends BaseActiveRecord
 		$diagnosis = null;
 		foreach($element_classes as $element_module => $element_class) {
 			if($element_module) {
-				$element_model = ModuleAPI::getmodel($element_module, $element_class);
+
+				// Check to see if module is installed
+				if(Yii::app()->hasModule($element_module)) {
+					$element_model = ModuleAPI::getmodel($element_module, $element_class);
+				} else {
+					continue;
+				}
 			} else {
 				$element_model = ModuleAPI::getmodel($element_module, $element_class);
 			}
