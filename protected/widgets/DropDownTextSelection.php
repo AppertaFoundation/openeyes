@@ -19,5 +19,6 @@
 
 class DropDownTextSelection extends BaseCWidget {
 	public $options;
+	public $htmlOptions;
 }
 ?>

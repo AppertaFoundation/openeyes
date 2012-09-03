@@ -28,7 +28,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$('select.dropDownTextSelection').die('change').change(function() {
+	$(this).undelegate('select.dropDownTextSelection','change').delegate('select.dropDownTextSelection','change',function() {
 		if ($(this).val() != '') {
 			var target_id = $(this).attr('id').replace(/^dropDownTextSelection_/,'');
 

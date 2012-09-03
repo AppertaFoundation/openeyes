@@ -41,5 +41,3 @@ protected/commands/SetEpisodeStatusCommand.php
 protected/commands/ImportEpatientlettersCommand.php
 tags
 index.php
-
-e0_Com_contacts.html

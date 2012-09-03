@@ -22,6 +22,7 @@ class CheckBoxArray extends BaseCWidget {
 	public $options;
 	public $columns = array();
 	public $checked = array();
+	public $labeltext;
 
 	public function init() {
 		foreach ($this->fields as $field) {

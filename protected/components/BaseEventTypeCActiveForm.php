@@ -71,8 +71,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.MultiSelectList', array('element' => $element, 'field' => $field, 'relation' => $relation, 'relation_id_field' => $relation_id_field, 'options' => $options, 'default_options' => $default_options, 'htmlOptions' => $htmlOptions, 'hidden' => $hidden));
 	}
 
-	public function dropDownTextSelection($element, $text_field, $options) {
-		$this->widget('application.widgets.DropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options));
+	public function dropDownTextSelection($element, $text_field, $options, $htmlOptions=array()) {
+		$this->widget('application.widgets.DropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function multiDropDownTextSelection($element, $text_field, $options, $htmlOptions) {

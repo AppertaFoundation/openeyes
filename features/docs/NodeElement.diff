@@ -1,0 +1,21 @@
+diff --git a/src/Behat/Mink/Element/NodeElement.php b/src/Behat/Mink/Element/NodeElement.php
+index 3b51272..2815ccb 100644
+--- a/src/Behat/Mink/Element/NodeElement.php
++++ b/src/Behat/Mink/Element/NodeElement.php
+@@ -76,6 +76,16 @@ class NodeElement extends TraversableElement
+     {
+         return $this->getSession()->getDriver()->getValue($this->getXpath());
+     }
++       
++    /**
++     * Returns element's selected value (dropdowns)
++     *
++     * @return mixed
++     */
++    public function getSelectedText()
++    {
++        return $this->getSession()->getDriver()->getSelectedText($this->getXpath());
++    }
+ 
+     /**
+      * Sets node value.
