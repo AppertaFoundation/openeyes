@@ -118,6 +118,8 @@
 							<?php echo CHtml::textField('hos_num',@$_POST['hos_num'],array('style'=>'width: 100px;'))?>
 							&nbsp;&nbsp;
 							<?php echo CHtml::link('View all',array('audit/'))?>
+							&nbsp;&nbsp;&nbsp;
+							<?php echo CHtml::link("Auto update on",'#',array('id'=>'auto_update_toggle'))?>
 							<div class="whiteBox pagination" style="display: none; margin-top: 10px;">
 							</div>
 						</div>
@@ -173,5 +175,17 @@
 
 	$(document).ready(function() {
 		$('#auditList-filter button[type="submit"]').click();
+
+		$('#auto_update_toggle').click(function() {
+			if ($(this).text().match(/update on/)) {
+				$(this).text('Auto update off');
+				auditLog.run = false;
+			} else {
+				$(this).text('Auto update on');
+				auditLog.run = true;
+				auditLog.refresh();
+			}
+			return false;
+		});
 	});
 </script>
