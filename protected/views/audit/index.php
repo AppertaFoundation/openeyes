@@ -51,7 +51,21 @@
 										<?php echo CHtml::dropDownList('firm_id', @$_POST['firm_id'], Firm::model()->getListWithoutDupes(), array('empty'=>'All firms'))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('user_id', @$_POST['user_id'], User::model()->getList(), array('empty'=>'All users'))?>
+										<?php
+											$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+												'id'=>'user',
+												'name'=>'user',
+												'value'=>'',
+												'sourceUrl'=>array('audit/users'),
+												'options'=>array(
+													'minLength'=>'3',
+												),
+												'htmlOptions'=>array(
+													'style'=>'width: 260px; padding-top: 2px;',
+													'placeholder' => 'type to search for users'
+												),
+											));
+										?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('action', @$_POST['action'], $actions, array('empty' => 'All actions'))?>
@@ -110,7 +124,7 @@
 					</div>
 					<input type="hidden" id="previous_site_id" value="<?php echo @$_POST['site_id']?>" />
 					<input type="hidden" id="previous_firm_id" value="<?php echo @$_POST['firm_id']?>" />
-					<input type="hidden" id="previous_user_id" value="<?php echo @$_POST['user_id']?>" />
+					<input type="hidden" id="previous_user" value="<?php echo @$_POST['user']?>" />
 					<input type="hidden" id="previous_action" value="<?php echo @$_POST['action']?>" />
 					<input type="hidden" id="previous_target_type" value="<?php echo @$_POST['target_type']?>" />
 					<input type="hidden" id="previous_event_type" value="<?php echo @$_POST['event_type']?>" />
@@ -137,7 +151,7 @@
 				'success': function(data) {
 					$('#previous_site_id').val($('#site_id').val());
 					$('#previous_firm_id').val($('#firm_id').val());
-					$('#previous_user_id').val($('#user_id').val());
+					$('#previous_user').val($('#user').val());
 					$('#previous_action').val($('#action').val());
 					$('#previous_target_type').val($('#target_type').val());
 					$('#previous_event_type').val($('#event_type').val());
