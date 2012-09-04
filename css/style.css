@@ -1142,7 +1142,7 @@ ul#auditList li { line-height: 32px; padding-left: 4px; }
 ul#auditList li.header { font-weight: bold; margin-bottom: 0px; }
 ul#auditList span { display: inline-block; }
 ul#auditList span.timestamp { width:132px; }
-ul#auditList span.site { width:192px; }
+ul#auditList span.site { width:78px; }
 ul#auditList span.firm { width:160px; }
 ul#auditList span.user { width:140px; }
 ul#auditList span.action { width:105px; }
