@@ -376,7 +376,7 @@ class Patient extends BaseActiveRecord {
 	public function getEps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
+		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
 			return strtolower($diagnosis->eye->name);
 		}
 	}
