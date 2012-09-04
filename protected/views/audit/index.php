@@ -41,6 +41,7 @@
 									<th>User:</th>
 									<th>Action:</th>
 									<th>Target type:</th>
+									<th>Event type:</th>
 								</tr>
 								<tr class="even">
 									<td>
@@ -57,6 +58,9 @@
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], $targets, array('empty' => 'All targets'))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('event_type', @$_POST['event_type'], EventType::model()->getActiveList(), array('empty' => 'All event types'))?>
 									</td>
 									<td width="20px;" style="margin-left: 50px; border: none;">
 										<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
@@ -109,6 +113,7 @@
 					<input type="hidden" id="previous_user_id" value="<?php echo @$_POST['user_id']?>" />
 					<input type="hidden" id="previous_action" value="<?php echo @$_POST['action']?>" />
 					<input type="hidden" id="previous_target_type" value="<?php echo @$_POST['target_type']?>" />
+					<input type="hidden" id="previous_event_type" value="<?php echo @$_POST['event_type']?>" />
 					<input type="hidden" id="previous_date_from" value="<?php echo @$_POST['date_from']?>" />
 					<input type="hidden" id="previous_date_to" value="<?php echo @$_POST['date_to']?>" />
 					<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
@@ -135,6 +140,7 @@
 					$('#previous_user_id').val($('#user_id').val());
 					$('#previous_action').val($('#action').val());
 					$('#previous_target_type').val($('#target_type').val());
+					$('#previous_event_type').val($('#event_type').val());
 					$('#previous_date_from').val($('#date_from').val());
 					$('#previous_date_to').val($('#date_to').val());
 

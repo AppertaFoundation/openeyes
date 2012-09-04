@@ -104,6 +104,10 @@ class AuditController extends BaseController
 			$criteria->addCondition("target_type='".$_REQUEST['target_type']."'");
 		}
 
+		if (@$_REQUEST['event_type']) {
+			$criteria->addCondition('event_type_id='.$_REQUEST['event_type']);
+		}
+
 		if (@$_REQUEST['date_from']) {
 			$date_from = Helper::convertNHS2MySQL($_REQUEST['date_from']).' 00:00:00';
 			$criteria->addCondition("created_date >= '$date_from'");
