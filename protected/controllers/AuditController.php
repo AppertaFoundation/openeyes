@@ -104,8 +104,23 @@ class AuditController extends BaseController
 			}
 		}
 
-		if (@$_REQUEST['user_id']) {
-			$criteria->addCondition('user_id='.$_REQUEST['user_id']);
+		if (@$_REQUEST['user']) {
+			$user_ids = array();
+
+			$criteria2 = new CDbCriteria;
+			$criteria2->addCondition(array("active = :active"));
+			$criteria2->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) = :term"));
+
+			$params[':active'] = 1;
+			$params[':term'] = strtolower($_REQUEST['user']);
+
+			$criteria2->params = $params;
+
+			foreach (User::model()->findAll($criteria2) as $user) {
+				$user_ids[] = $user->id;
+			}
+
+			$criteria->addInCondition('user_id',$user_ids);
 		}
 
 		if (@$_REQUEST['action']) {
@@ -178,6 +193,31 @@ class AuditController extends BaseController
 		}
 
 		$this->renderPartial('_list_update', array('data' => $this->getDataFromId($audit->id)), false, true);
+	}
+
+	public function actionUsers() {
+		$users = array();
+
+		$criteria = new CDbCriteria;
+
+		$criteria->addCondition(array("active = :active"));
+		$criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
+
+		$params[':active'] = 1;
+		$params[':term'] = '%' . strtolower(strtr($_GET['term'], array('%' => '\%'))) . '%';
+
+		$criteria->params = $params;
+		$criteria->order = 'first_name, last_name';
+
+		foreach (User::model()->findAll($criteria) as $user) {
+			if ($contact = $user->contact) {
+				if (!in_array(trim($contact->first_name.' '.$contact->last_name),$users)) {
+					$users[] = trim($contact->first_name.' '.$contact->last_name);
+				}
+			}
+		}
+
+		echo json_encode($users);
 	}
 }
 ?>
