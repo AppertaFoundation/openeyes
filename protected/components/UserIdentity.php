@@ -248,7 +248,7 @@ class UserIdentity extends CUserIdentity
 		$audit->action = "login-successful";
 		$audit->target_type = "login";
 		$audit->user_id = $user->id;
-		$audit->data = "User {$this->username} logged in";
+		$audit->data = "User ".strtoupper($this->username)." logged in";
 		$audit->save();
 		OELog::log("User {$this->username} logged in",$this->username);
 

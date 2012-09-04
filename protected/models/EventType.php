@@ -122,4 +122,21 @@ class EventType extends BaseActiveRecord
 		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
 		return EventGroup::model()->find('code=?',array($m[2]));
 	}
+
+	public function getActiveList() {
+		$criteria = new CDbCriteria;
+		$criteria->distinct = true;
+		$criteria->select = 'event_type_id';
+
+		$event_type_ids = array();
+		foreach (Event::model()->findAll($criteria) as $event) {
+			$event_type_ids[] = $event->event_type_id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addInCondition('id',$event_type_ids);
+		$criteria->order = 'name asc';
+
+		return CHtml::listData(EventType::model()->findAll($criteria), 'id', 'name');
+	}
 }

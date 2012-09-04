@@ -224,6 +224,7 @@ class BaseEventTypeController extends BaseController
 					$audit = new Audit;
 					$audit->action = "create";
 					$audit->target_type = "event";
+					$audit->event_type_id = $event->event_type_id;
 					$audit->patient_id = $event->episode->patient->id;
 					$audit->episode_id = $event->episode_id;
 					$audit->event_id = $event->id;
@@ -286,6 +287,7 @@ class BaseEventTypeController extends BaseController
 		$audit = new Audit;
 		$audit->action = "view";
 		$audit->target_type = "event";
+		$audit->event_type_id = $this->event->event_type_id;
 		$audit->patient_id = $this->event->episode->patient->id;
 		$audit->episode_id = $this->event->episode_id;
 		$audit->event_id = $this->event->id;
@@ -407,6 +409,7 @@ class BaseEventTypeController extends BaseController
 					$audit = new Audit;
 					$audit->action = "update";
 					$audit->target_type = "event";
+					$audit->event_type_id = $this->event->event_type_id;
 					$audit->patient_id = $this->event->episode->patient->id;
 					$audit->episode_id = $this->event->episode_id;
 					$audit->event_id = $this->event->id;
@@ -743,6 +746,7 @@ class BaseEventTypeController extends BaseController
 		$audit = new Audit;
 		$audit->action = "print";
 		$audit->target_type = "event";
+		$audit->event_type_id = $this->event->event_type_id;
 		$audit->patient_id = $this->event->episode->patient->id;
 		$audit->episode_id = $this->event->episode_id;
 		$audit->event_id = $this->event->id;
@@ -775,6 +779,7 @@ class BaseEventTypeController extends BaseController
 			$audit = new Audit;
 			$audit->action = "delete";
 			$audit->target_type = "event";
+			$audit->event_type_id = $this->event->event_type_id;
 			$audit->patient_id = $this->event->episode->patient->id;
 			$audit->episode_id = $this->event->episode_id;
 			$audit->event_id = $this->event->id;

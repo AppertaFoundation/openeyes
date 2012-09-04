@@ -16,32 +16,24 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<div id="auditList" class="grid-view">
-	<?php
-	if (empty($data['items'])) {?>
-		<h4>No audit logs match the search criteria.</h4>
-	<?php
-	} else {
-	?>
-		<ul id="auditList">
-			<li class="header">
-				<span class="timestamp">Timestamp</span>
-				<span class="site">Site</span>
-				<span class="firm">Firm</span>
-				<span class="user">User</span>
-				<span class="action">Action</span>
-				<span class="target">Target type</span>
-				<span class="event_type">Event type</span>
-				<span class="patient">Patient</span>
-				<span class="episode">Episode</span>
-				<span class="event">Event</span>
-			</li>
-			<div id="auditListData">
-				<?php foreach ($data['items'] as $i => $log) {
-					$this->renderPartial('_list_row',array('i'=>$i,'log'=>$log));
-				}?>
-			</div>
-		</ul>
-	<?php }?>
-</div>
+
+class UpdateAuditEntriesCommand extends CConsoleCommand {
+	
+	public function getName() {
+	}
+	
+	public function getHelp() {
+	}
+
+	public function run($args) {
+		foreach (Audit::model()->findAll('target_type=?',array('event')) as $audit) {
+			if ($event = Event::model()->findByPk($audit->event_id)) {
+				$audit->event_type_id = $event->event_type_id;
+				$audit->save();
+				echo ".";
+			}
+		}
+
+		echo "\n";
+	}
+}

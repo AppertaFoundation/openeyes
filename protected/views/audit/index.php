@@ -25,8 +25,8 @@
 	</div>
 
 	<div id="waitinglist_display">
-	<p><?php echo Yii::app()->db->createCommand("select count(distinct data) from audit where action='login-successful' and created_date > '2012-07-02 23:59:59'")->queryScalar(); ?> unique users since 3rd July 2012</p>
-	<p><?php echo Yii::app()->db->createCommand("select count(data) from audit where action='login-successful' and created_date > '2012-07-02 23:59:59'")->queryScalar(); ?> total successful logins since 3rd July 2012</p>
+	<p><?php echo $unique_users?> unique users since <?php echo date('jS F Y')?></p>
+	<p><?php echo $total_logins?> total successful logins since <?php echo date('jS F Y')?></p>
 		<form method="post" action="/audit/search" id="auditList-filter">
 			<input type="hidden" id="page" name="page" value="1" />
 			<div id="search-options">
@@ -41,6 +41,7 @@
 									<th>User:</th>
 									<th>Action:</th>
 									<th>Target type:</th>
+									<th>Event type:</th>
 								</tr>
 								<tr class="even">
 									<td>
@@ -50,13 +51,30 @@
 										<?php echo CHtml::dropDownList('firm_id', @$_POST['firm_id'], Firm::model()->getListWithoutDupes(), array('empty'=>'All firms'))?>
 									</td>
 									<td>
-										<?php echo CHtml::dropDownList('user_id', @$_POST['user_id'], User::model()->getList(), array('empty'=>'All users'))?>
+										<?php
+											$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+												'id'=>'user',
+												'name'=>'user',
+												'value'=>'',
+												'sourceUrl'=>array('audit/users'),
+												'options'=>array(
+													'minLength'=>'3',
+												),
+												'htmlOptions'=>array(
+													'style'=>'width: 260px; padding-top: 2px;',
+													'placeholder' => 'type to search for users'
+												),
+											));
+										?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('action', @$_POST['action'], $actions, array('empty' => 'All actions'))?>
 									</td>
 									<td>
 										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], $targets, array('empty' => 'All targets'))?>
+									</td>
+									<td>
+										<?php echo CHtml::dropDownList('event_type', @$_POST['event_type'], EventType::model()->getActiveList(), array('empty' => 'All event types'))?>
 									</td>
 									<td width="20px;" style="margin-left: 50px; border: none;">
 										<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
@@ -106,9 +124,10 @@
 					</div>
 					<input type="hidden" id="previous_site_id" value="<?php echo @$_POST['site_id']?>" />
 					<input type="hidden" id="previous_firm_id" value="<?php echo @$_POST['firm_id']?>" />
-					<input type="hidden" id="previous_user_id" value="<?php echo @$_POST['user_id']?>" />
+					<input type="hidden" id="previous_user" value="<?php echo @$_POST['user']?>" />
 					<input type="hidden" id="previous_action" value="<?php echo @$_POST['action']?>" />
 					<input type="hidden" id="previous_target_type" value="<?php echo @$_POST['target_type']?>" />
+					<input type="hidden" id="previous_event_type" value="<?php echo @$_POST['event_type']?>" />
 					<input type="hidden" id="previous_date_from" value="<?php echo @$_POST['date_from']?>" />
 					<input type="hidden" id="previous_date_to" value="<?php echo @$_POST['date_to']?>" />
 					<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
@@ -132,9 +151,10 @@
 				'success': function(data) {
 					$('#previous_site_id').val($('#site_id').val());
 					$('#previous_firm_id').val($('#firm_id').val());
-					$('#previous_user_id').val($('#user_id').val());
+					$('#previous_user').val($('#user').val());
 					$('#previous_action').val($('#action').val());
 					$('#previous_target_type').val($('#target_type').val());
+					$('#previous_event_type').val($('#event_type').val());
 					$('#previous_date_from').val($('#date_from').val());
 					$('#previous_date_to').val($('#date_to').val());
 

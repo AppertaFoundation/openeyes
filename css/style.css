@@ -1147,6 +1147,7 @@ ul#auditList span.firm { width:160px; }
 ul#auditList span.user { width:140px; }
 ul#auditList span.action { width:105px; }
 ul#auditList span.target { width:110px; }
+ul#auditList span.event_type { width:110px; }
 ul#auditList span.patient { width:205px; }
 ul#auditList span.episode { width:55px; }
 ul#auditList span.event { width:55px; }
@@ -1176,3 +1177,5 @@ span.widgetSliderValue { vertical-align: middle; margin-right: 10px; width: 45px
 div.DropDownLabelVertical { margin-bottom: 10px; }
 
 div.patron { margin-left: 37em; font-size: 12pt; }
+
+#auditListData { font-size: 12px; }
