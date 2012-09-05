@@ -27,13 +27,13 @@ class OECClientScript {
 	static public function registerCssFile($url,$media='')
 	{
 		$return = Yii::app()->clientScript->registerCssFile($url,$media);
-
+		/*
 		if (file_exists(getcwd().$url)) {
 			$imgpath = Yii::app()->getController()->imgPath;
 
 			file_put_contents(getcwd().$url, str_replace('/IMAGEASSETS/',$imgpath,file_get_contents(getcwd().$url)));
 		}
-
+		*/
 		return $return;
 	}
 }
