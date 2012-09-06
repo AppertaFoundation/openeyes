@@ -182,7 +182,7 @@ if (!empty($address)) {
 												<?php } else if ($pca->institution) {?>
 													<?php echo $pca->institution->name?>
 												<?php } else if ($pca->contact->address) {?>
-													<?php echo str_replace(',','',$pca->contact->address->address1)?>
+													<?php echo str_replace(',','',$pca->contact->address->summary)?>
 												<?php }?>
 											</td>
 											<td>
@@ -387,7 +387,7 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp && $this->patient->gp->contact) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->address1 : '').')';?>");
+					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->summary : '').')';?>");
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
@@ -408,7 +408,7 @@ if (!empty($address)) {
 					<?php } else if ($pca->institution) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
 					<?php } else {?>
-						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->address1 : '').')';?>");
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->summary : '').')';?>");
 					<?php }?>
 				<?php }?>
 

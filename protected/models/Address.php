@@ -117,6 +117,13 @@ class Address extends BaseActiveRecord {
 	}
 
 	/**
+	 * @return string First line of address in a dropdown friendly form
+	 */
+	public function getSummary() {
+		return str_replace("\n", ', ', $this->address1);
+	}
+	
+	/**
 	 * @return array Address as an array 
 	 */
 	public function getLetterArray($include_country=true) {
