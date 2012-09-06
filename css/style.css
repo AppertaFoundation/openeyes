@@ -748,7 +748,8 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation #dates #month_back {float:left; margin-left:10px; position:relative; top:-5px; }
 #operation #dates #month_forward { float:right; margin-right: 10px; position:relative; top:-5px; }
 #operation table { width:100%; } /* match dates width */
-#operation table tbody * { padding:15px 25px 12px 25px; background: #eee; border: 1px solid #fff; text-align: center; }
+#operation table tbody th,
+#operation table tbody td { padding:15px 25px 12px 25px; background: #eee; border: 1px solid #fff; text-align: center; }
 #operation table tbody th { width:50px; background:#666; color:#fff; } /* the day, i.e Weds */
 #operation table tbody td { width:140px; }
 #operation table tbody td.invalid { color:#999; width:auto;  }

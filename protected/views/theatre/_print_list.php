@@ -35,7 +35,7 @@
 		<?php foreach ($bookings as $booking) { ?>
 			<tr>
 				<td><?php echo $booking['hos_num']?></td>
-				<td><?php echo $booking['last_name']?>, <?php echo $booking['first_name']?></td>
+				<td><strong><?php echo strtoupper($booking['last_name']) ?></strong>, <?php echo $booking['first_name']?></td>
 				<td><?php echo Helper::convertMySQL2NHS($booking['dob'])?></td>
 				<td><?php echo Helper::getAge($booking['dob'])?></td>
 				<td><?php echo $booking['gender']?></td>
