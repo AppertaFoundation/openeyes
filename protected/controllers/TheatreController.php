@@ -242,7 +242,7 @@ class TheatreController extends BaseController
 					'procedures_long' => (count($procedures['Long'])) ? implode(', ', $procedures['Long']) : '',
 					'patientHosNum' => $values['hos_num'],
 					'patientId' => $values['patientId'],
-					'patientName' => "<strong>" . strtoupper($values['last_name']) . '</strong>, ' . $values['first_name'],
+					'patientName' => strtoupper($values['last_name']) . ', ' . $values['first_name'],
 					'patientAge' => $age,
 					'patientGender' => $values['gender'],
 					'ward' => $values['ward'],
