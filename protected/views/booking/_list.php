@@ -45,6 +45,10 @@ if (!$reschedule) {
 	$counter = 1;
 	foreach ($bookings as $booking) {
 		$thisOperation = $booking->elementOperation;
+		if(!$thisOperation->event) {
+			// Event has been marked as deleted. This is a conflicted state, but for now the best thing we can do is skip it
+			continue;
+		}
 		$patient = $thisOperation->event->episode->patient;
 		$procedures = $thisOperation->procedures;
 		$procedureNames = array();
@@ -57,7 +61,7 @@ if (!$reschedule) {
 		} ?>
 
 			<tr>
-				<td><?php echo $counter?>. <?php echo $patient->last_name?>, <?php echo $patient->first_name?></td>
+				<td><?php echo $counter?>. <?php echo $patient->getDisplayName() ?></td>
 				<td><?php echo $procedureList; ?></td>
 				<td><?php echo $thisOperation->anaesthetic_type->name?></td>
 				<td><?php echo "{$thisOperation->total_duration} minutes"; ?></td>

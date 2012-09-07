@@ -89,7 +89,7 @@ DATE:
 ?>
 <tr>
 <td><?php echo $session['patientHosNum'] ?></td>
-<td><?php echo htmlspecialchars($session['patientName']) ?></td>
+<td><?php echo $session['patientName'] ?></td>
 <td><?php echo htmlspecialchars($session['patientAge']) ?></td>
 <td><?php echo htmlspecialchars($session['ward']) ?></td>
 <td><?php echo htmlspecialchars($session['anaesthetic']) ?></td>
