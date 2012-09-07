@@ -18,7 +18,11 @@
  */
 if ($module = $this->getModule()) {
 	$module = $module->getName();
-	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.assets'),true).'/';
+	if (file_exists(Yii::getPathOfAlias('application.modules.'.$module.'.assets'))) {
+		$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.assets'),true).'/';
+	} else {
+		$assetpath = '/assets/';
+	}
 } else {
 	$module = 'OphTrOperation';
 }

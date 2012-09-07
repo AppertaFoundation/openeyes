@@ -690,40 +690,42 @@ class BaseEventTypeController extends BaseController
 	public function init() {
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
 
-		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
+			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
 
-		$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
-		$action = $ex[3];
+			$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
+			$action = $ex[3];
 
-		if ($action != 'print') {
-			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
+			if ($action != 'print') {
+				$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
+
+				while ($file = readdir($dh)) {
+					if (preg_match('/\.js$/',$file)) {
+						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
+					}
+				}
+
+				closedir($dh);
+			}
+
+			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
 
 			while ($file = readdir($dh)) {
-				if (preg_match('/\.js$/',$file)) {
-					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
+				if (preg_match('/\.css$/',$file)) {
+					if ($action == 'print') {
+						if ($file == 'print.css') {
+							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+						}
+					} else {
+						if ($file != 'print.css') {
+							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+						}
+					}
 				}
 			}
 
 			closedir($dh);
 		}
-
-		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
-
-		while ($file = readdir($dh)) {
-			if (preg_match('/\.css$/',$file)) {
-				if ($action == 'print') {
-					if ($file == 'print.css') {
-						Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
-					}
-				} else {
-					if ($file != 'print.css') {
-						Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
-					}
-				}
-			}
-		}
-
-		closedir($dh);
 
 		parent::init();
 	}

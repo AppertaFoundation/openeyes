@@ -110,7 +110,11 @@
 										if ($event->eventType->class_name == 'OphTrOperation') {?>
 											<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png')?>" alt="op" width="19" height="19" />
 										<?php } else {
-											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/';?>
+											if (file_exists(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets'))) {
+												$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/';
+											} else {
+												$assetpath = '/assets/';
+											}?>
 											<img src="<?php echo $assetpath.'img/small.png'?>" alt="op" width="19" height="19" />
 										<?php } ?>
 									</span>
