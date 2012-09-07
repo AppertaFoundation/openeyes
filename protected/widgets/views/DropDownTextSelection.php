@@ -12,7 +12,7 @@
 				<option value="<?php echo $id?>"><?php echo $content?></option>
 			<?php }?>
 		</select>
-		<?php if (!$htmlOptions['nowrapper']) {?>
+		<?php if (!@$htmlOptions['nowrapper']) {?>
 	</div>
 </div>
 <?php }?>
