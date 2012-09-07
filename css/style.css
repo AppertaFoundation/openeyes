@@ -635,7 +635,7 @@ canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-rad
 
 /* 2 column split - for summary */
 #event_content .cols2 { padding-bottom:30px; }
-#event_content .cols2 > .left { clear: left; width: 48%; }
+#event_content .cols2 > .left { clear: left; float: left; width: 48%; }
 #event_content .cols2 > .right { clear: right; float: right; width: 48%; }
 /* reduced labels on two column split */
 #event_content .cols2 > .left > h4, #event_content > .cols2 > .right > h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px; }
