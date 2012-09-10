@@ -159,7 +159,6 @@ class Site extends BaseActiveRecord
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('institution_id',$site->institution_id);
-		$criteria->compare('id','<>13');
 
 		$result = array();
 
@@ -168,7 +167,7 @@ class Site extends BaseActiveRecord
 
 			$site_name = '';
 
-			if ($institution->short_name) {
+			if ($institution->short_name && $site->name != 'Unknown') {
 				$site_name = $institution->short_name.' at ';
 			}
 			$site_name .= $site->name;
