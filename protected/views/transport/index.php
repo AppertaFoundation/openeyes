@@ -33,7 +33,7 @@
 				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Confirm</span></button>
 
 				<div id="searchResults" class="whiteBox">
-					<form id="transport_form" method="post" action="/transport">
+					<form id="transport_form" method="post" action="<?php echo Yii::app()->baseUrl?>/transport">
 						<label for="date_from">
 							From:
 						</label>
