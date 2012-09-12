@@ -169,10 +169,10 @@ class AuditController extends BaseController
 		
 		$data['total_items'] = Audit::model()->count($criteria);
 
-		$criteria->order = 'id desc';
+		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;
 		if ($id) {
-			$criteria->addCondition('id > '.(integer)$id);
+			$criteria->addCondition('t.id > '.(integer)$id);
 		} else {
 			$criteria->offset = (($page-1) * $this->items_per_page);
 		}

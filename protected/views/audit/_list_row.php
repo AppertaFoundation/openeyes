@@ -20,12 +20,22 @@
 ?>
 					<li class="auditlist<?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; echo $log->colour;?>" id="audit<?php echo $log->id?>"<?php if (@$hidden) {?> style="display: none;"<?php }?>>
 						<span class="timestamp"><a href="#" id="auditItem<?php echo $log->id?>" class="auditItem"><?php echo $log->NHSDate('created_date').' '.substr($log->created_date,11,8)?></a></span>
-						<span class="site"><?php echo $log->site ? $log->site->name : '-'?></span>
+						<span class="site"><?php echo $log->site ? ($log->site->short_name ? $log->site->short_name : $log->site->name) : '-'?></span>
 						<span class="firm"><?php echo $log->firm ? $log->firm->name : '-'?></span>
 						<span class="user"><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></span>
 						<span class="action"><?php echo $log->action?></span>
 						<span class="target"><?php echo $log->target_type?></span>
-						<span class="event_type"><?php echo $log->event ? $log->event->eventType->name : '-'?></span>
+						<span class="event_type">
+							<?php if ($log->event) {
+								if ($log->event->event_type_id == 25) {?>
+									<a href="/patient/event/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
+								<?php }else{?>
+									<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
+								<?php }?>
+							<?php }else{?>
+								-
+							<?php }?>
+						</span>
 						<span class="patient">
 							<?php if ($log->patient) {?>
 								<?php echo CHtml::link($log->patient->displayName,array('patient/view/'.$log->patient_id))?>
@@ -36,17 +46,6 @@
 						<span class="episode">
 							<?php if ($log->episode) {?>
 								<?php echo CHtml::link('view',array('patient/episode/'.$log->episode_id))?>
-							<?php }else{?>
-								-
-							<?php }?>
-						</span>
-						<span class="event">
-							<?php if ($log->event) {
-								if ($log->event->event_type_id == 25) {?>
-									<a href="/patient/event/<?php echo $log->event_id?>">view</a>
-								<?php }else{?>
-									<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>">view</a>
-								<?php }?>
 							<?php }else{?>
 								-
 							<?php }?>
