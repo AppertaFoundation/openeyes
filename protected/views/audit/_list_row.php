@@ -25,7 +25,7 @@
 						<span class="user"><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></span>
 						<span class="action"><?php echo $log->action?></span>
 						<span class="target"><?php echo $log->target_type?></span>
-						<span class="event_type"><?php if ($log->event) echo $log->event->eventType->name?></span>
+						<span class="event_type"><?php echo $log->event ? $log->event->eventType->name : '-'?></span>
 						<span class="patient">
 							<?php if ($log->patient) {?>
 								<a href="/patient/view/<?php echo $log->patient_id?>">
