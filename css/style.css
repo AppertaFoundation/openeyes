@@ -1179,4 +1179,4 @@ div.DropDownLabelVertical { margin-bottom: 10px; }
 
 div.patron { margin-left: 37em; font-size: 12pt; }
 
-#auditListData { font-size: 12px; }
+#audit_filter_button { float: right; margin-top: -3px;}
