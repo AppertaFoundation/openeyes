@@ -218,30 +218,5 @@ class AuditController extends BaseController
 
 		echo json_encode($users);
 	}
-
-	public function actionUsers() {
-		$users = array();
-
-		$criteria = new CDbCriteria;
-
-		$criteria->addCondition(array("active = :active"));
-		$criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
-
-		$params[':active'] = 1;
-		$params[':term'] = '%' . strtolower(strtr($_GET['term'], array('%' => '\%'))) . '%';
-
-		$criteria->params = $params;
-		$criteria->order = 'first_name, last_name';
-
-		foreach (User::model()->findAll($criteria) as $user) {
-			if ($contact = $user->contact) {
-				if (!in_array(trim($contact->first_name.' '.$contact->last_name),$users)) {
-					$users[] = trim($contact->first_name.' '.$contact->last_name);
-				}
-			}
-		}
-
-		echo json_encode($users);
-	}
 }
 ?>

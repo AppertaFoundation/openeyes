@@ -192,7 +192,6 @@ class BookingController extends BaseController
 				$audit = new Audit;
 				$audit->action = "cancel";
 				$audit->target_type = "event";
-				$audit->event_type_id = $operation->event->event_type_id;
 				$audit->patient_id = $operation->event->episode->patient_id;
 				$audit->episode_id = $operation->event->episode_id;
 				$audit->event_id = $operation->event_id;

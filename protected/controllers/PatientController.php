@@ -131,7 +131,6 @@ class PatientController extends BaseController
 		$audit = new Audit;
 		$audit->action = "view";
 		$audit->target_type = "event";
-		$audit->event_type_id = $this->event->event_type_id;
 		$audit->patient_id = $this->patient->id;
 		$audit->episode_id = $this->episode->id;
 		$audit->event_id = $this->event->id;
