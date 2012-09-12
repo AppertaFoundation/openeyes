@@ -41,6 +41,7 @@
 									<th>User:</th>
 									<th>Action:</th>
 									<th>Target type:</th>
+									<th>Event type:</th>
 								</tr>
 								<tr class="even">
 									<td>
@@ -72,11 +73,8 @@
 									<td>
 										<?php echo CHtml::dropDownList('target_type', @$_POST['target_type'], $targets, array('empty' => 'All targets'))?>
 									</td>
-									<td width="20px;" style="margin-left: 50px; border: none;">
-										<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; display: none;" />
-									</td>
-									<td style="padding: 0;" width="70px;">
-										<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Filter</span></button>
+									<td>
+										<?php echo CHtml::dropDownList('event_type_id', @$_POST['event_type_id'], EventType::model()->getActiveList(), array('empty' => 'All event types'))?>
 									</td>
 								</tr>
 								</tbody>
@@ -116,6 +114,10 @@
 							<?php echo CHtml::link('View all',array('audit/'))?>
 							&nbsp;&nbsp;&nbsp;
 							<?php echo CHtml::link("Auto update on",'#',array('id'=>'auto_update_toggle'))?>
+							<div id="audit_filter_button">
+								<button type="submit" class="classy green tall" style="float: right;"><span class="button-span button-span-green">Filter</span></button>
+								<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-left: 0px; margin-right: 10px; margin-top: 8px; display: none;" />
+							</div>
 							<div class="whiteBox pagination" style="display: none; margin-top: 10px;">
 							</div>
 						</div>
@@ -125,6 +127,7 @@
 					<input type="hidden" id="previous_user" value="<?php echo @$_POST['user']?>" />
 					<input type="hidden" id="previous_action" value="<?php echo @$_POST['action']?>" />
 					<input type="hidden" id="previous_target_type" value="<?php echo @$_POST['target_type']?>" />
+					<input type="hidden" id="previous_event_type_id" value="<?php echo @$_POST['event_type_id']?>" />
 					<input type="hidden" id="previous_date_from" value="<?php echo @$_POST['date_from']?>" />
 					<input type="hidden" id="previous_date_to" value="<?php echo @$_POST['date_to']?>" />
 					<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
@@ -151,6 +154,7 @@
 					$('#previous_user').val($('#user').val());
 					$('#previous_action').val($('#action').val());
 					$('#previous_target_type').val($('#target_type').val());
+					$('#previous_event_type_id').val($('#event_type_id').val());
 					$('#previous_date_from').val($('#date_from').val());
 					$('#previous_date_to').val($('#date_to').val());
 

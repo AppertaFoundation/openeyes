@@ -149,10 +149,16 @@ class AuditController extends BaseController
 			}
 		}
 
+		if (@$_REQUEST['event_type_id']) {
+			$criteria->addCondition('event_type.id = '.$_REQUEST['event_type_id']);
+		}
+
+		$criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+
 		return $criteria;
 	}
 
-	public function getData($page=1) {
+	public function getData($page=1, $id=false) {
 		$criteria = $this->criteria();
 
 		$data = array();
@@ -160,29 +166,18 @@ class AuditController extends BaseController
 		$data['total_items'] = Audit::model()->count($criteria);
 
 		$criteria->order = 'id desc';
-		$criteria->offset = (($page-1) * $this->items_per_page);
 		$criteria->limit = $this->items_per_page;
+		if ($id) {
+			$criteria->addCondition('id > '.(integer)$id);
+		} else {
+			$criteria->offset = (($page-1) * $this->items_per_page);
+		}
 
 		$data['items'] = Audit::model()->findAll($criteria);
 		$data['pages'] = ceil($data['total_items'] / $this->items_per_page);
-		$data['page'] = $page;
-
-		return $data;
-	}
-
-	public function getDataFromId($id) {
-		$criteria = $this->criteria();
-
-		$data = array();
-
-		$data['total_items'] = Audit::model()->count($criteria);
-
-		$criteria->order = 'id desc';
-		$criteria->limit = $this->items_per_page;
-		$criteria->addCondition('id > '.(integer)$id);
-
-		$data['items'] = Audit::model()->findAll($criteria);
-		$data['pages'] = ceil($data['total_items'] / $this->items_per_page);
+		if (!$id) {
+			$data['page'] = $page;
+		}
 
 		return $data;
 	}
@@ -192,7 +187,7 @@ class AuditController extends BaseController
 			throw new Exception('Log entry not found: '.@$_GET['last_id']);
 		}
 
-		$this->renderPartial('_list_update', array('data' => $this->getDataFromId($audit->id)), false, true);
+		$this->renderPartial('_list_update', array('data' => $this->getData(null,$audit->id)), false, true);
 	}
 
 	public function actionUsers() {
