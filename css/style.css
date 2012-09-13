@@ -1138,7 +1138,7 @@ li.auditlistOddRed { background-color: #e9c2b8; }
 
 .waitinglistRed{ background-color: #F08A6F; }
 
-ul#auditList { list-style: none; margin: 0; padding: 0;}
+ul#auditList { list-style: none; margin: 0; padding: 0; font-size: 11px; }
 ul#auditList li { line-height: 32px; padding-left: 4px; }
 ul#auditList li.header { font-weight: bold; margin-bottom: 0px; }
 ul#auditList span { display: inline-block; }
@@ -1179,4 +1179,4 @@ div.DropDownLabelVertical { margin-bottom: 10px; }
 
 div.patron { margin-left: 37em; font-size: 12pt; }
 
-#auditListData { font-size: 12px; }
+#audit_filter_button { float: right; margin-top: -3px;}

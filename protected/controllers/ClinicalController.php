@@ -113,7 +113,6 @@ class ClinicalController extends BaseController
 		$audit->action = "view";
 		$audit->target_type = "event (route 2)";
 		$audit->event_id = $this->event->id;
-		$audit->event_type_id = $this->event->event_type_id;
 		$audit->patient_id = $this->patient->id;
 		$audit->episode_id = $this->episode->id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
@@ -244,7 +243,6 @@ class ClinicalController extends BaseController
 					$audit = new Audit;
 					$audit->action = "create";
 					$audit->target_type = "event";
-					$audit->event_type_id = $event->event_type_id;
 					$audit->patient_id = $this->patient->id;
 					$audit->episode_id = $event->episode_id;
 					$audit->event_id = $event->id;
@@ -383,7 +381,6 @@ class ClinicalController extends BaseController
 					$audit = new Audit;
 					$audit->action = "update";
 					$audit->target_type = "event";
-					$audit->event_type_id = $event->event_type_id;
 					$audit->patient_id = $this->patient->id;
 					$audit->episode_id = $event->episode_id;
 					$audit->event_id = $event->id;
@@ -648,7 +645,6 @@ class ClinicalController extends BaseController
 			$audit = new Audit;
 			$audit->action = "delete";
 			$audit->target_type = "event";
-			$audit->event_type_id = $event->event_type_id;
 			$audit->patient_id = $event->episode->patient->id;
 			$audit->episode_id = $event->episode_id;
 			$audit->event_id = $event->id;

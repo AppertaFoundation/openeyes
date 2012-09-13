@@ -131,7 +131,6 @@ class PatientController extends BaseController
 		$audit = new Audit;
 		$audit->action = "view";
 		$audit->target_type = "event";
-		$audit->event_type_id = $this->event->event_type_id;
 		$audit->patient_id = $this->patient->id;
 		$audit->episode_id = $this->episode->id;
 		$audit->event_id = $this->event->id;
@@ -839,19 +838,21 @@ class PatientController extends BaseController
 	 * @throws Exception
 	 */
 	public function actionAddAllergy() {
-		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
-			throw new Exception('Patient ID required');
+		if (!empty($_POST)) {
+			if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+				throw new Exception('Patient ID required');
+			}
+			if(!$patient = Patient::model()->findByPk($patient_id)) {
+				throw new Exception('Patient not found: '.$patient_id);
+			}
+			if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+				throw new Exception('Allergy ID required');
+			}
+			if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
+				throw new Exception('Allergy not found: '.$allergy_id);
+			}
+			$patient->addAllergy($allergy_id);
 		}
-		if(!$patient = Patient::model()->findByPk($patient_id)) {
-			throw new Exception('Patient not found: '.$patient_id);
-		}
-		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
-			throw new Exception('Allergy ID required');
-		}
-		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
-			throw new Exception('Allergy not found: '.$allergy_id);
-		}
-		$patient->addAllergy($allergy_id);
 	}
 
 	/**
