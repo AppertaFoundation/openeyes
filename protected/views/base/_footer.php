@@ -18,7 +18,7 @@
  */
 ?>
 	<div id="footer">
-		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;2012 &nbsp;&nbsp;|<!--&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals &nbsp;&nbsp;|-->&nbsp;&nbsp; <a href="#" id="support-info-link">served, with love, by <?php echo trim(`hostname`)?></a></h6>
+		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;2012 &nbsp;&nbsp;|<!--&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals &nbsp;&nbsp;|-->&nbsp;&nbsp; <a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">served, with love, by <?php echo trim(`hostname`)?></a></h6>
 		<div class="help">
 
 				<span><strong>Need Help?</strong></span>
@@ -35,13 +35,8 @@
 		</div>
 	</div> <!-- #footer -->
 
-<script type="text/javascript">
-$('#support-info-link').unbind('click').click(function() {
-	$.fancybox({
-		'padding'				: 0,
-		'href'					: '<?php echo Yii::app()->createUrl('site/debuginfo')?>',
-		'transitionIn'	: 'elastic',
-		'transitionOut'	: 'elastic'
-	});
-});
-</script>
+<?php $this->widget('application.extensions.fancybox.EFancyBox', array(
+	'target'=>'#support-info-link',
+	'config'=>array()
+	));
+?>

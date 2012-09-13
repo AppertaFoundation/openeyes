@@ -21,10 +21,6 @@ $patientName = $this->patient->first_name . ' ' . $this->patient->last_name;
 $this->breadcrumbs=array(
 	"{$patientName} ({$this->patient->hos_num})",
 );
-$this->widget('application.extensions.fancybox.EFancyBox', array(
-	'target'=>'button.fancybox',
-	'config'=>array()
-	));
 
 $address_str = '';
 
