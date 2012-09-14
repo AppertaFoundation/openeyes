@@ -37,12 +37,10 @@
 	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="/favicon.ico"/> 
 	<?php Yii::app()->clientScript->registerCssFile('/css/style.css'); ?>
-	<?php Yii::app()->clientScript->registerCssFile('/css/jquery.fancybox-1.3.4.css'); ?>
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php // TODO: These scripts should probably be registered through Yii too ?>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.fancybox-1.3.4.pack.js"></script>
 	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
 	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
 	<script type="text/javascript" src="/js/print.js"></script>

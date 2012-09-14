@@ -58,7 +58,19 @@ class AuditController extends BaseController
 			$targets[$field] = $field;
 		}
 
-		$this->render('index',array('actions'=>$actions,'targets'=>$targets));
+		$criteria = new CDbCriteria;
+		$criteria->distinct = true;
+		$criteria->compare('created_date','>= '.date('Y-m-d').' 00:00:00',false);
+		$criteria->compare('action','login-successful');
+		$criteria->select = 'data';
+
+		$unique_users = Audit::model()->count($criteria);
+
+		$criteria->distinct = false;
+
+		$total_logins = Audit::model()->count($criteria);
+
+		$this->render('index',array('actions'=>$actions,'targets'=>$targets,'unique_users'=>$unique_users,'total_logins'=>$total_logins));
 	}
 
 	public function actionSearch() {
@@ -92,8 +104,23 @@ class AuditController extends BaseController
 			}
 		}
 
-		if (@$_REQUEST['user_id']) {
-			$criteria->addCondition('user_id='.$_REQUEST['user_id']);
+		if (@$_REQUEST['user']) {
+			$user_ids = array();
+
+			$criteria2 = new CDbCriteria;
+			$criteria2->addCondition(array("active = :active"));
+			$criteria2->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) = :term"));
+
+			$params[':active'] = 1;
+			$params[':term'] = strtolower($_REQUEST['user']);
+
+			$criteria2->params = $params;
+
+			foreach (User::model()->findAll($criteria2) as $user) {
+				$user_ids[] = $user->id;
+			}
+
+			$criteria->addInCondition('user_id',$user_ids);
 		}
 
 		if (@$_REQUEST['action']) {
@@ -122,40 +149,35 @@ class AuditController extends BaseController
 			}
 		}
 
+		if (@$_REQUEST['event_type_id']) {
+			$criteria->addCondition('event_type.id = '.$_REQUEST['event_type_id']);
+		}
+
+		$criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+
 		return $criteria;
 	}
 
-	public function getData($page=1) {
+	public function getData($page=1, $id=false) {
 		$criteria = $this->criteria();
 
 		$data = array();
 		
 		$data['total_items'] = Audit::model()->count($criteria);
 
-		$criteria->order = 'id desc';
-		$criteria->offset = (($page-1) * $this->items_per_page);
+		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;
+		if ($id) {
+			$criteria->addCondition('t.id > '.(integer)$id);
+		} else {
+			$criteria->offset = (($page-1) * $this->items_per_page);
+		}
 
 		$data['items'] = Audit::model()->findAll($criteria);
 		$data['pages'] = ceil($data['total_items'] / $this->items_per_page);
-		$data['page'] = $page;
-
-		return $data;
-	}
-
-	public function getDataFromId($id) {
-		$criteria = $this->criteria();
-
-		$data = array();
-
-		$data['total_items'] = Audit::model()->count($criteria);
-
-		$criteria->order = 'id desc';
-		$criteria->limit = $this->items_per_page;
-		$criteria->addCondition('id > '.(integer)$id);
-
-		$data['items'] = Audit::model()->findAll($criteria);
-		$data['pages'] = ceil($data['total_items'] / $this->items_per_page);
+		if (!$id) {
+			$data['page'] = $page;
+		}
 
 		return $data;
 	}
@@ -165,7 +187,32 @@ class AuditController extends BaseController
 			throw new Exception('Log entry not found: '.@$_GET['last_id']);
 		}
 
-		$this->renderPartial('_list_update', array('data' => $this->getDataFromId($audit->id)), false, true);
+		$this->renderPartial('_list_update', array('data' => $this->getData(null,$audit->id)), false, true);
+	}
+
+	public function actionUsers() {
+		$users = array();
+
+		$criteria = new CDbCriteria;
+
+		$criteria->addCondition(array("active = :active"));
+		$criteria->addCondition(array("LOWER(concat_ws(' ',first_name,last_name)) LIKE :term"));
+
+		$params[':active'] = 1;
+		$params[':term'] = '%' . strtolower(strtr($_GET['term'], array('%' => '\%'))) . '%';
+
+		$criteria->params = $params;
+		$criteria->order = 'first_name, last_name';
+
+		foreach (User::model()->findAll($criteria) as $user) {
+			if ($contact = $user->contact) {
+				if (!in_array(trim($contact->first_name.' '.$contact->last_name),$users)) {
+					$users[] = trim($contact->first_name.' '.$contact->last_name);
+				}
+			}
+		}
+
+		echo json_encode($users);
 	}
 }
 ?>

@@ -253,4 +253,25 @@ class Firm extends BaseActiveRecord
 			return Consultant::model()->findByPk($result['id']);
 		}
 	}
+
+	public function getConsultantUser() {
+		$result = Yii::app()->db->createCommand()
+			->select('u.id as id')
+			->from('consultant cslt')
+			->join('contact c', "c.parent_id = cslt.id and c.parent_class = 'Consultant'")
+			->join('user_contact_assignment uca', 'uca.contact_id = c.id')
+			->join('user u', 'u.id = uca.user_id')
+			->join('firm_user_assignment fua', 'fua.user_id = u.id')
+			->join('firm f', 'f.id = fua.firm_id')
+			->where('f.id = :fid', array(
+				':fid' => $this->id
+			))
+			->queryRow();
+
+		if (empty($result)) {
+			return null;
+		} else {
+			return User::model()->findByPk($result['id']);
+		}
+	}
 }

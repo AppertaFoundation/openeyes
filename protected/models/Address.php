@@ -117,16 +117,27 @@ class Address extends BaseActiveRecord {
 	}
 
 	/**
+	 * @return string First line of address in a dropdown friendly form
+	 */
+	public function getSummary() {
+		return str_replace("\n", ', ', $this->address1);
+	}
+	
+	/**
 	 * @return array Address as an array 
 	 */
 	public function getLetterArray($include_country=true) {
 		$address = array();
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 			if (!empty($this->$field)) {
+				$line = $this->$field;
 				if ($field == 'address1') {
-					$address[] = CHtml::encode(str_replace(',','',$this->$field));
+					$line = str_replace(',', '', $line);
+					foreach(explode("\n",$line) as $part) {
+						$address[] = CHtml::encode($part);
+					} 
 				} else {
-					$address[] = CHtml::encode($this->$field);
+					$address[] = CHtml::encode($line);
 				}
 			}
 		}

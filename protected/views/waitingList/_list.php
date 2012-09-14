@@ -111,7 +111,7 @@ if (empty($operations)) { ?>
 ?>
 	</td>
 	<td class="patient">
-		<?php echo CHtml::link(trim("<b>" . $operation['last_name']) . '</b>, ' . $operation['first_name'], '/patient/event/' . $operation['evid'])?>
+		<?php echo CHtml::link("<strong>" . trim(strtoupper($operation['last_name'])) . '</strong>, ' . $operation['first_name'], '/patient/event/' . $operation['evid'])?>
 	</td>
 	<td><?php echo $operation['hos_num'] ?></td>
 	<td><?php echo $eo->site->short_name?></td>
