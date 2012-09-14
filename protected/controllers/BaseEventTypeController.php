@@ -771,19 +771,22 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (!empty($_POST)) {
-			$this->event->deleted = 1;
-			$this->event->save();
+			if (isset($_POST['et_deleteevent'])) {
+				$this->event->deleted = 1;
+				$this->event->save();
 
-			$audit = new Audit;
-			$audit->action = "delete";
-			$audit->target_type = "event";
-			$audit->patient_id = $this->event->episode->patient->id;
-			$audit->episode_id = $this->event->episode_id;
-			$audit->event_id = $this->event->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->save();
+				$audit = new Audit;
+				$audit->action = "delete";
+				$audit->target_type = "event";
+				$audit->patient_id = $this->event->episode->patient->id;
+				$audit->episode_id = $this->event->episode_id;
+				$audit->event_id = $this->event->id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+				$audit->save();
 
-			return $this->redirect(array('patient/episode/'.$this->event->episode_id));
+				return header('Location: '.Yii::app()->createUrl(array('/patient/episode/'.$this->event->episode_id)));
+			}
+			return header('Location: '.Yii::app()->createUrl(array('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id)));
 		}
 
 		$this->patient = $this->event->episode->patient;
