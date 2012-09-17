@@ -784,9 +784,9 @@ class BaseEventTypeController extends BaseController
 				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 				$audit->save();
 
-				return header('Location: '.Yii::app()->createUrl(array('/patient/episode/'.$this->event->episode_id)));
+				return header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
 			}
-			return header('Location: '.Yii::app()->createUrl(array('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id)));
+			return header('Location: '.Yii::app()->createUrl('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id));
 		}
 
 		$this->patient = $this->event->episode->patient;
