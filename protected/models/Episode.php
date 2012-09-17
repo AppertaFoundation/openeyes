@@ -53,6 +53,17 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
+	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
+	 * @return array of mandatory conditions
+	 */
+
+	public function defaultScope() {
+		return array(
+			'condition' => 'deleted=0',
+		);
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
@@ -62,7 +73,7 @@ class Episode extends BaseActiveRecord
 		return array(
 			array('patient_id', 'required'),
 			array('patient_id, firm_id', 'length', 'max'=>10),
-			array('end_date', 'safe'),
+			array('end_date, deleted', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, patient_id, firm_id, start_date, end_date', 'safe', 'on'=>'search'),
