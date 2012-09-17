@@ -97,7 +97,6 @@ if (!empty($episode)) {
 
 <!-- Booking -->
 
-<!--
 <h4>Episode Status</h4>
 
 <div class="eventDetail">
@@ -111,7 +110,6 @@ if (!empty($episode)) {
 		</span>
 	</div>
 </div>
--->
 
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
