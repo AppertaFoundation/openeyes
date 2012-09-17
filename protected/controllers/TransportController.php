@@ -143,7 +143,7 @@ class TransportController extends BaseController
 			->leftJoin('ward','booking.ward_id = ward.id')
 			->leftJoin('(select *,max(id) as maxid from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
 			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id and substr(transport_list2.last_modified_date,1,10) = '$today'")
-			->where("(booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 )")
+			->where("event.deleted = 0 and episode.deleted = 0 and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 ))")
 			->order("order_date asc, order_time asc, order_created_date desc")
 			->queryAll() as $i => $row) {
 
