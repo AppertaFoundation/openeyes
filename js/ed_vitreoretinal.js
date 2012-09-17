@@ -207,7 +207,7 @@ ED.Fundus.prototype.draw = function(_point)
 		ctx.moveTo(foveaX - crossLength, 0);
 		ctx.lineTo(foveaX + crossLength, 0);
 		
-		// Optic disk and cup 
+		// Optic disc and cup 
 		ctx.moveTo(25, 0);
 		ctx.arc(0,0,25,0,Math.PI*2,true);
 		ctx.moveTo(12, 0);
@@ -528,28 +528,28 @@ ED.RRD.prototype.draw = function(_point)
 	// Connect across the bottom via the apex point
 	var bp = +0.6;
 	
-	// Radius of disk (from Fundus doodle)
+	// Radius of disc (from Fundus doodle)
 	var dr = +25;
 	
-	// RD above optic disk
+	// RD above optic disc
 	if (this.apexY < -dr)
 	{
 		ctx.bezierCurveTo(topLeftX, topLeftY, bp * topLeftX, this.apexY, this.apexX, this.apexY);
 		ctx.bezierCurveTo(-bp * topLeftX, this.apexY, topRightX, topRightY, topRightX, topRightY);
 	}
-	// RRD involves optic disk
+	// RRD involves optic disc
 	else if (this.apexY < dr)
 	{
-		// Angle from origin to intersection of disk margin with a horizontal line through apexY
+		// Angle from origin to intersection of disc margin with a horizontal line through apexY
 		var phi = Math.acos((0 - this.apexY)/dr);
 		
-		// Curve to disk, curve around it, then curve out again
+		// Curve to disc, curve around it, then curve out again
 		var xd = dr * Math.sin(phi);
 		ctx.bezierCurveTo(topLeftX, topLeftY, bp * topLeftX, this.apexY, -xd, this.apexY);
 		ctx.arc(0, 0, dr, -Math.PI/2 - phi, -Math.PI/2 + phi, false);
 		ctx.bezierCurveTo(-bp * topLeftX, this.apexY, topRightX, topRightY, topRightX, topRightY);
 	}
-	// RRD beyond optic disk
+	// RRD beyond optic disc
 	else
 	{
 		ctx.bezierCurveTo(topLeftX, topLeftY, bp * topLeftX, this.apexY, 0, 25);
