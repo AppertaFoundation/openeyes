@@ -129,7 +129,7 @@
 		<th>Diagnosis:</th>
 		<td>
 			<?php if ($operation->getDisorder()) {
-				echo $operation->eye->name . ' ' . CHtml::encode($operation->getDisorder());
+				echo $operation->eye->adjective. ' ' . CHtml::encode($operation->getDisorder());
 			} else {
 				echo 'Unknown';
 			} ?>
