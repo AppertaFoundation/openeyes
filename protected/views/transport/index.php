@@ -33,7 +33,7 @@
 				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Confirm</span></button>
 
 				<div id="searchResults" class="whiteBox">
-					<form id="transport_form" method="post" action="/transport">
+					<form id="transport_form" method="post" action="<?php echo Yii::app()->baseUrl?>/transport">
 						<label for="date_from">
 							From:
 						</label>
@@ -62,7 +62,7 @@
 						))?>
 						<button type="submit" class="classy blue mini btn_filter auto"><span class="button-span button-span-blue">Filter</span></button>
 						<button type="submit" class="classy blue mini btn_viewall"><span class="button-span button-span-blue">View all</span></button>
-						<img src="/img/ajax-loader.gif" id="loader" style="display: none;" />
+						<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" id="loader" style="display: none;" />
 						<div style="height: 0.4em;"></div>
 						<label>
 							Include:
@@ -72,7 +72,7 @@
 						<input type="checkbox" name="include_reschedules" class="filter" value="1"<?php if (@$_REQUEST['include_reschedules']){?> checked="checked"<?php }?> /> Reschedules
 						<input type="checkbox" name="include_cancellations" class="filter" value="1"<?php if (@$_REQUEST['include_cancellations']){?> checked="checked"<?php }?> /> Cancellations
 					</form>
-					<form id="csvform" method="post" action="/transport/downloadcsv">
+					<form id="csvform" method="post" action="<?php echo Yii::app()->createUrl('transport/downloadcsv')?>">
 						<input type="hidden" name="date_from" value="<?php echo @$_REQUEST['date_from']?>" />
 						<input type="hidden" name="date_to" value="<?php echo @$_REQUEST['date_to']?>" />
 						<input type="hidden" name="include_bookings" value="<?php echo (@$_REQUEST['include_bookings'] ? 1 : 0)?>" />
@@ -113,7 +113,7 @@
 	function update_tcis() {
 		$.ajax({
 			type: "POST",
-			url: "/transport/list",
+			url: "<?php echo Yii::app()->createUrl('transport/list')?>",
 			data: "date="+tci_date.toDateString(),
 			success: function(html) {
 				$('#current_date').html(tci_date.getDate()+' '+tci_date.toDateString().replace(/^[a-zA-Z]{3} /,'').replace(/ [0-9]+ [0-9]+$/,'')+' '+tci_date.getFullYear());
@@ -121,7 +121,7 @@
 
 				var show_digest = false;
 
-				$('a[href^="/transport/digest"]').map(function() {
+				$('a[href^="<?php echo Yii::app()->createUrl('transport/digest')?>"]').map(function() {
 					var hour = $(this).attr('rel').replace(/:[0-9]+$/,'');
 					var min = $(this).attr('rel').replace(/^[0-9]+:/,'');
 
@@ -157,7 +157,7 @@
 
 			$.ajax({
 				type: "POST",
-				url: "/transport/confirm",
+				url: "<?php echo Yii::app()->createUrl('transport/confirm')?>",
 				data: $('input[name^="cancelled"]:checked').serialize()+"&"+$('input[name^="booked"]:checked').serialize(),
 				success: function(html) {
 					if (html == "1") {
@@ -192,7 +192,7 @@
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 			$('#loader').show();
-			window.location.href = '/transport';
+			window.location.href = '<?php echo Yii::app()->createUrl('transport/')?>';
 		}
 		return false;
 	});

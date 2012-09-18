@@ -120,26 +120,18 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		return CHtml::listData($specialties, 'id', 'name');
 	}
 
-	public static function getList($firm)
-	{
+	public static function getList($firm) {
 		if (empty($firm)) {
 			throw new CException('Firm is required.');
 		}
-
-		$options = Yii::app()->db->createCommand()
-			->select('t.id AS did, t.term')
-			->from('disorder t')
-			->join('common_ophthalmic_disorder', 't.id = common_ophthalmic_disorder.disorder_id')
-			->where(array('and','common_ophthalmic_disorder.subspecialty_id = :subspecialty_id','t.systemic = 0'),
-				array(':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id))
-			->order('t.term')
-			->queryAll();
-
-		$result = array();
-		foreach ($options as $value) {
-			$result[$value['did']] = $value['term'];
-		}
-
-		return $result;
+		$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
+		$disorders = Disorder::model()->findAll(array(
+				'condition' => 'cad.subspecialty_id = :subspecialty_id AND systemic = 0',
+				'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id',
+				'order' => 'term',
+				'params' => array(':subspecialty_id' => $ss_id),
+		));
+		return CHtml::listData($disorders, 'id', 'term');
 	}
+	
 }

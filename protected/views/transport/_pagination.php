@@ -23,7 +23,7 @@ $uri_append = $this->getUriAppend();
 ?>
 <div class="transport_pagination">
 	<?php if ($this->page >1) {?>
-		<a href="/transport/<?php echo ($this->page-1).$uri_append?>">&laquo; back</a>
+		<?php echo CHtml::link('&laquo; back',Yii::app()->createUrl('transport/'.($this->page-1).$uri_append))?>
 	<?php }else{?>
 		&laquo; back
 	<?php }?>
@@ -32,12 +32,12 @@ $uri_append = $this->getUriAppend();
 		<?php if ($i == $this->page) {?>
 			<?php echo $i?>
 		<?php }else{?>
-			<a href="/transport/<?php echo $i.$uri_append?>"><?php echo $i?></a>
+			<?php echo CHtml::link($i,Yii::app()->createUrl('transport/'.$i.$uri_append)) ?>
 		<?php }?>
 		&nbsp;
 	<?php }?>
 	<?php if ($this->page < $this->pages) {?>
-		<a href="/transport/<?php echo ($this->page+1).$uri_append?>">next &raquo;</a>
+		<?php echo CHtml::link('next &raquo;',Yii::app()->createUrl('transport/'.($this->page+1).$uri_append))?>
 	<?php }else{?>
 		next &raquo;
 	<?php }?>

@@ -94,6 +94,7 @@ class Audit extends BaseActiveRecord
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 		);
 	}
 

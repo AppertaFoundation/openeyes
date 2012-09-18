@@ -32,4 +32,4 @@ next &raquo;&nbsp;&nbsp;
 <?php }
 ?>
 &nbsp;
-<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
+<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />

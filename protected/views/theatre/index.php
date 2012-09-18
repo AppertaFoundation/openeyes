@@ -116,7 +116,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							</span>
 						</div>
 						<div style="float:right;">
-							<span style="width: 30px;"><img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
+							<span style="width: 30px;"><img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" /></span>&nbsp;&nbsp;
 							<button id="search_button" type="submit" class="classy green tall"><span class="button-span button-span-green">Search</span></button>
 						</div>
 					</div> <!-- #extra-search -->
@@ -175,7 +175,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	function printElem(method,options){
 		$.ajax({
-			'url': '/theatre/'+method,
+			'url': '<?php echo Yii::app()->createUrl('theatre')?>/'+method,
 			'type': 'POST',
 			'data': searchData,
 			'success': function(data) {
@@ -202,7 +202,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 			searchData = $('#theatre-filter').serialize();
 
 			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('theatre/search'); ?>',
+				'url': '<?php echo Yii::app()->createUrl('theatre/search')?>',
 				'type': 'POST',
 				'data': searchData,
 				'success': function(data) {
@@ -235,13 +235,13 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		$.ajax({
 			'type': 'POST',
 			'data': {'site_id': siteId},
-			'url': '<?php echo Yii::app()->createUrl('theatre/filterTheatres'); ?>',
+			'url': '<?php echo Yii::app()->createUrl('theatre/filterTheatres')?>',
 			'success':function(data) {
 				$('#theatre-id').html(data);
 				$.ajax({
 					'type': 'POST',
 					'data': {'site_id': siteId},
-					'url': '<?php echo Yii::app()->createUrl('theatre/filterWards'); ?>',
+					'url': '<?php echo Yii::app()->createUrl('theatre/filterWards')?>',
 					'success':function(data) {
 						$('#ward-id').html(data);
 					}
@@ -250,7 +250,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		});
 	}
 
-	$('button[id^="btn_save_"]').die('click').live('click',function() {
+	$(this).undelegate('button[id^="btn_save_"]','click').delegate('button[id^="btn_save_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 			var selected_tbody_id = $(this).attr('id').match(/[0-9]+/);
@@ -337,7 +337,7 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'type': 'POST',
 				'data': data,
 				'dataType': 'json',
-				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions'); ?>',
+				'url': '<?php echo Yii::app()->createUrl('theatre/saveSessions')?>',
 				'success': function(data) {
 					var count = 0;
 
@@ -440,14 +440,20 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 		return d.getDate() + " " + getmonth(d.getMonth()) + " " + d.getFullYear();
 	}
 
+	function clearBoundaries() {
+		$('#date-start').datepicker('option','minDate', '');
+		$('#date-start').datepicker('option','maxDate', '');
+		$('#date-end').datepicker('option','minDate', '');
+		$('#date-end').datepicker('option','maxDate', '');
+	}
+
 	$('#date-filter_0').click(function() {
 		today = new Date();
-		
+
+		clearBoundaries();
+
 		$('#date-start').datepicker('setDate', format_date(today));
 		$('#date-end').datepicker('setDate', format_date(today));
-
-		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
-		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
 
 		setFilter({'date-filter':'today','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 
@@ -456,13 +462,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 
 	$('#date-filter_1').click(function() {
 		today = new Date();
-		
+
+		clearBoundaries();
+
 		$('#date-start').datepicker('setDate', format_date(today));
 		$('#date-end').datepicker('setDate', format_date(returnDateWithInterval(today, 6)));
 		
-		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
-		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
-
 		setFilter({'date-filter':'week','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 		
 		return true;
@@ -471,12 +476,11 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$('#date-filter_2').click(function() {
 		today = new Date();
 
+		clearBoundaries();
+
 		$('#date-start').val(format_date(today));
 		$('#date-end').val(format_date(returnDateWithInterval(today, 29)));
 		
-		$('#date-end').datepicker('option','minDate',$('#date-start').datepicker('getDate'));
-		$('#date-start').datepicker('option','maxDate',$('#date-end').datepicker('getDate'));
-
 		setFilter({'date-filter':'month','date-start':$('#date-start').val(),'date-end':$('#date-end').val()});
 		
 		return true;
@@ -492,6 +496,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$('#last_week').click(function() {
 		// Calculate week before custom date or week before today if no custom date
 		sd = $('#date-start').val();
+
+		clearBoundaries();
 
 		if (sd == '') {
 			// No date-start. Make date-start one week before today, date-end today
@@ -514,6 +520,8 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 	$('#next_week').click(function() {
 		// Calculate week before custom date or week before today if no custom date
 		ed = $('#date-end').val();
+
+		clearBoundaries();
 
 		if (ed == '') {
 			// No date-start. Make date-start one week before today, date-end today

@@ -17,60 +17,64 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DisorderController extends Controller
-{
+class DisorderController extends Controller {
 	public $layout='column2';
-	
-	public function filters()
-	{
+
+	public function filters() {
 		return array('accessControl');
 	}
-	
-	public function accessRules()
-	{
+
+	public function accessRules() {
 		return array(
-			array('allow',
-				'users'=>array('@')
-			),
-			// non-logged in can't view anything
-			array('deny', 
-				'users'=>array('?')
-			),
+				array('allow',
+						'users'=>array('@')
+				),
+				// non-logged in can't view anything
+				array('deny',
+						'users'=>array('?')
+				),
 		);
-	}
-
-	protected function beforeAction($action)
-	{
-		// Sample code to be used when RBAC is fully implemented.
-//		if (!Yii::app()->user->checkAccess('admin')) {
-//			throw new CHttpException(403, 'You are not authorised to perform this action.');
-//		}
-
-		return parent::beforeAction($action);
 	}
 
 	/**
 	 * Lists all disorders for a given search term.
 	 */
-	public function actionAutocomplete()
-	{
-		echo CJavaScript::jsonEncode(Disorder::getList($_GET['term']));
+	public function actionAutocomplete() {
+		if(Yii::app()->request->isAjaxRequest) {
+			$criteria = new CDbCriteria();
+			$params = array();
+			if(isset($_GET['term']) && $term = $_GET['term']) {
+				$criteria->addCondition('LOWER(term) LIKE :term');
+				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
+			}
+			$criteria->order = 'term';
+			$criteria->params = $params;
+			// Limit results
+			$criteria->limit = '200';
+			$disorders = Disorder::model()->findAll($criteria);
+			$return = array();
+			foreach($disorders as $disorder) {
+				$return[] = array(
+						'label' => $disorder->term,
+						'value' => $disorder->term,
+						'id' => $disorder->id,
+				);
+			}
+			echo CJSON::encode($return);
+		}
 	}
 
-	public function actionDetails()
-	{
+	public function actionDetails() {
 		if (!isset($_REQUEST['name'])) {
 			echo CJavaScript::jsonEncode(false);
-			return;
+		} else {
+			$disorder = Disorder::model()->find('fully_specified_name = ? OR term = ?', array($_REQUEST['name'], $_REQUEST['name']));
+			if($disorder) {
+				echo $disorder->id;
+			} else {
+				echo CJavaScript::jsonEncode(false);
+			}
 		}
-
-		$disorder = Disorder::model()->find('fully_specified_name = ? OR term = ?', array($_REQUEST['name'], $_REQUEST['name']));
-
-		if (!isset($disorder)) {
-			echo CJavaScript::jsonEncode(false);
-			return;
-		}
-
-		echo $disorder->id;
 	}
+
 }

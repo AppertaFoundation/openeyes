@@ -65,7 +65,7 @@
 		var row = $(this).closest('tr');
 		var allergy_id = row.attr('data-allergy-id');
 		var patient_id = <?php echo $this->patient->id; ?>;
-		$.post("/patient/RemoveAllergy", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
+		$.post("<?php echo Yii::app()->createUrl('patient/RemoveAllergy')?>", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
 			row.remove();
 			$('#allergy_id option[value="' + allergy_id + '"]').removeAttr('disabled');
 		});

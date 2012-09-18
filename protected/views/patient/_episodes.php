@@ -21,7 +21,7 @@
 <div id="box_gradient_bottom">
 <div style="height: 20px; float: left;"></div>
 <div id="add_episode">
-	<img src="/images/add_event_button.png" alt="Add an event to this episode" />
+	<img src="<?php echo Yii::app()->createUrl('images/add_event_button.png')?>" alt="Add an event to this episode" />
 	<ul id="episode_types">
 <?php
 	foreach ($eventTypeGroups as $group => $eventTypes) { ?>
@@ -37,7 +37,7 @@
 					'firm_id' => $firm->id
 				)
 			)
-		?>"><img src="/images/<?php echo $type->name; ?>.gif" alt="<?php echo $name; ?>" />
+		?>"><img src="<?php echo Yii::app()->createUrl('images/'.$type->name.'.gif')?>" alt="<?php echo $name; ?>" />
 			<span><?php echo $name; ?></span>
 		</a></li>
 <?php
@@ -109,7 +109,7 @@
 	$('#episode_types li a').click(function() {
 		$('ul.events li.shown').removeClass('shown');
 	});
-	$('ul.events li a').die('click').live('click', function() {
+	$(this).undelegate('ul.events li a','click').delegate('ul.events li a','click',function() {
 		$('ul.events li.shown').removeClass('shown');
 		$(this).parent().addClass('shown');
 		$.ajax({
@@ -121,7 +121,7 @@
 		});
 		return false;
 	});
-	$('.episode div.title').die('click').live('click', function() {
+	$(this).undelegate('.episode div.title','click').delegate('.episode div.title','click',function() {
 		var id = $(this).children('input').val();
 		$('ul.events li.shown').removeClass('shown');
 		$.ajax({

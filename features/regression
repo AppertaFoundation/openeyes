@@ -1,0 +1,36 @@
+1
+---
+1.2 -::- not testable
+1.3 -::- not testable
+1.8 -::- don't understand
+1.9 -::- need to emulate connection throttling (charles does it)
+1.11 -::- skipping
+1.26 / 1.27 / 1.28 -::- skipping
+
+2
+---
+2.1 / 2.2 / 2.3 -::- skipping
+2.4 / 2.5 -::- can't do - skipping
+2.7 -::- already covered
+2.8 -::- already covered
+2.9 -::- TODO
+
+3
+---
+3.3 -::- skipping
+3.4 -::- skipping
+3.10 / 3.11 / 3.12 / 3.13 / 3.14 -::- skipping, browser feature
+3.17 -::- skipping
+3.18 -::- TODO: NEED MULTIPLE CONTACTS WITH THE SAME NAME
+3.21 / 3.22 / 3.23 / 3.24 / 3.25 -::- TODO: Inside footer
+
+4
+---
+TODO - Using javascript execution
+
+5
+---
+TODO - Setup with PAS
+
+6
+---

@@ -383,11 +383,12 @@ class LetterOutService
 			$this->substitutions['eps'] = 'NO DATA';
 
 			if (isset($episode) && $episode) {
-				$diagnosis = $episode->getPrincipalDiagnosis();
-
-				if (isset($diagnosis) && $diagnosis) {
-					$this->substitutions['epd'] = $diagnosis->disorder->term;
-					$this->substitutions['eps'] = $diagnosis->eye->name;
+				$principal_disorder = $episode->getPrincipalDisorder();
+				$principal_eye = $episode->getPrincipalEye();
+				
+				if ($principal_disorder && $principal_eye) {
+					$this->substitutions['epd'] = $principal_disorder->term;
+					$this->substitutions['eps'] = $principal_eye->name;
 				}
 			}
 		}
