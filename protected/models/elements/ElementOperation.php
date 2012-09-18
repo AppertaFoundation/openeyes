@@ -962,7 +962,7 @@ class ElementOperation extends BaseEventTypeElement
 		if (empty($elementDiagnosis)) {
 			return null;
 		} else {
-			return $elementDiagnosis->eye->name;
+			return $elementDiagnosis->eye->adjective;
 		}
 	}
 

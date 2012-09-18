@@ -376,8 +376,8 @@ class Patient extends BaseActiveRecord {
 	public function getEps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($episode && $eye = $episode->getPrincipalEye()) {
-			return strtolower($eye->name);
+		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
+			return strtolower($diagnosis->eye->adjective);
 		}
 	}
 
@@ -423,7 +423,7 @@ class Patient extends BaseActiveRecord {
 				if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
 					if ($pl = $pl->find('event_id=?',array($event->id))) {
 						foreach ($pl->procedures as $i => $procedure) {
-							@$return .= $pl->eye->name.' '.$procedure->term."\n";
+							@$return .= $pl->eye->name.' '.$procedure->snomed_term."\n";
 						}
 
 						return strtolower($return);
