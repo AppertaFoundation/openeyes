@@ -21,8 +21,8 @@
 	echo CHtml::form(array('Default/delete/'.$this->event->id), 'post', array('id' => 'deleteForm'));
 		echo CHtml::hiddenField('event_id', $this->event->id); ?>
 		<div class="buttonwrapper">
-			<button type="submit" class="classy red venti" id="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
-			<button type="submit" class="classy green venti" id="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
+			<button type="submit" class="classy red venti" id="et_deleteevent" name="et_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
+			<button type="submit" class="classy green venti" id="et_canceldelete" name="et_canceldelete"><span class="button-span button-span-green">Cancel</span></button>
 			<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
 		</div>
 	<?php echo CHtml::endForm(); ?>
