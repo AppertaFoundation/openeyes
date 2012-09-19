@@ -38,7 +38,7 @@ echo CHtml::hiddenField('event_id', $event->id); ?>
 		<div class="buttonwrapper">
 			<button type="submit" class="classy red venti" id="btn_deleteevent"><span class="button-span button-span-red">Delete event</span></button>
 			<button type="submit" class="classy green venti" id="btn_cancel"><span class="button-span button-span-green">Cancel</span></button>
-			<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="display: none;" />
+			<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 		</div>
 <?php echo CHtml::endForm(); ?>
 	</div>
@@ -56,7 +56,7 @@ echo CHtml::hiddenField('event_id', $event->id); ?>
 	$('#btn_cancel').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			window.location.href = '/patient/event/<?php echo $event->id?>';
+			window.location.href = '<?php echo Yii::app()->createUrl('/patient/event/'.$event->id)?>';
 		}
 		return false;
 	});

@@ -32,9 +32,9 @@
 				<span class="user">User</span>
 				<span class="action">Action</span>
 				<span class="target">Target type</span>
+				<span class="event_type">Event type</span>
 				<span class="patient">Patient</span>
 				<span class="episode">Episode</span>
-				<span class="event">Event</span>
 			</li>
 			<div id="auditListData">
 				<?php foreach ($data['items'] as $i => $log) {

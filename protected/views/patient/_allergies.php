@@ -47,13 +47,15 @@
 	// Add allergy
 	$('body').delegate('#btn_add_allergy','click', function() {
 		var allergy_id = $('#allergy_id').val();
-		var option = $('#allergy_id option:selected').first();
-		$.post("/patient/AddAllergy", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
-			var new_row = $('<tr data-allergy-id="'+allergy_id+'"></tr>');
-			new_row.append($('<td>'+option.text()+'</td>'), $('<td><a href="#" class="small removeAllergy"><strong>Remove</strong></a></td>'));
-			$('#patient_allergies tbody').append(new_row);
-			option.attr('disabled','disabled');
-		});
+		if(allergy_id) {
+			var option = $('#allergy_id option:selected').first();
+			$.post("<?php echo Yii::app()->createUrl('patient/AddAllergy')?>", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
+				var new_row = $('<tr data-allergy-id="'+allergy_id+'"></tr>');
+				new_row.append($('<td>'+option.text()+'</td>'), $('<td><a href="#" class="small removeAllergy"><strong>Remove</strong></a></td>'));
+				$('#patient_allergies tbody').append(new_row);
+				option.attr('disabled','disabled');
+			});
+		}
 		$('#allergy_id').val('');
 		return false;
 	});
@@ -63,7 +65,7 @@
 		var row = $(this).closest('tr');
 		var allergy_id = row.attr('data-allergy-id');
 		var patient_id = <?php echo $this->patient->id; ?>;
-		$.post("/patient/RemoveAllergy", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
+		$.post("<?php echo Yii::app()->createUrl('patient/RemoveAllergy')?>", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
 			row.remove();
 			$('#allergy_id option[value="' + allergy_id + '"]').removeAttr('disabled');
 		});

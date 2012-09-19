@@ -113,19 +113,19 @@ class Subspecialty extends BaseActiveRecord
 		));
 	}
 
-        /**
-         * Fetch an array of subspecialty IDs and names
-         * @return array
-         */
-        public function getList()
-        {
-                $list = Subspecialty::model()->findAll();
-                $result = array();
+	/**
+	 * Fetch an array of subspecialty IDs and names
+	 * @return array
+	 */
+	public function getList()
+	{
+		$list = Subspecialty::model()->findAll();
+		$result = array();
 
-                foreach ($list as $subspecialty) {
-                        $result[$subspecialty->id] = $subspecialty->name;
-                }
+		foreach ($list as $subspecialty) {
+			$result[$subspecialty->id] = $subspecialty->name;
+		}
 
-                return $result;
-        }
+		return $result;
+	}
 }

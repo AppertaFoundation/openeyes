@@ -18,7 +18,7 @@
  */
 ?>
 <div class="banner compact">
-	<div class="logo"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></div>
+	<div class="logo"><img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_Moorfields_NHS" /></div>
 </div>
 <h1>Admission Form</h1>
 <table class="half right">
@@ -129,7 +129,7 @@
 		<th>Diagnosis:</th>
 		<td>
 			<?php if ($operation->getDisorder()) {
-				echo $operation->eye->name . ' ' . CHtml::encode($operation->getDisorder());
+				echo $operation->eye->adjective. ' ' . CHtml::encode($operation->getDisorder());
 			} else {
 				echo 'Unknown';
 			} ?>

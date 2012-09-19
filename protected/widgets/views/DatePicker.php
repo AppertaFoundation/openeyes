@@ -1,5 +1,6 @@
 					<?php if (!@$htmlOptions['nowrapper']) {?>
-						<div class="eventDetail">
+						<div class="eventDetail"<?php if (@$htmlOptions['hidden']) {?> style="display: none;"<?php }?>>
+							<?php unset($htmlOptions['hidden'])?>
 							<div class="label"><?php echo CHtml::encode($element->getAttributeLabel($field))?>:</div>
 							<div class="data">
 								<?php }?>

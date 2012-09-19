@@ -20,11 +20,14 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 	var firmId = $('select[id=selected_firm_id]').val();
 	$.ajax({
 		type: 'post',
-		url: '/',
+		url: baseUrl+'/',
 		data: {'selected_firm_id': firmId },
 		success: function(data) {
-			//console.log(data);
-			window.location.href = '/';
+			if (data.match(/change-firm-succeeded/)) {
+				window.location.href = baseUrl;
+			} else {
+				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
+			}
 		}
 	});
 });
@@ -36,13 +39,60 @@ $(document).ready(function(){
 		var whiteBox = $(this).parents('.whiteBox');
 		
 		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fase",'swing');
+			whiteBox.children('.data_row').slideUp("fast",'fast');
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			whiteBox.children('.data_row').slideDown("fase",'swing');
+			whiteBox.children('.data_row').slideDown("fast",'fast');
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}
 	});
+
+	// show hide
+	$('.sprite.showhide2').click(function(e){
+		var episode_id = $(this).parent().parent().prev('input').val();
+		if (episode_id == undefined) {
+			episode_id = 'legacy';
+		}
+
+		e.preventDefault();
+		changeState($(this).parents('.episode_nav'),$(this).children('span'),episode_id);
+	});
+	
+	function changeState(wb,sp,episode_id) {
+		if (sp.hasClass('hide')) {
+			wb.children('.events').slideUp('fast');
+			sp.removeClass('hide');
+			sp.addClass('show');
+			$.ajax({
+				'type': 'GET',
+				'url': '/patient/hideepisode?episode_id='+episode_id,
+				'success': function(html) {
+				}
+			});
+		} else {
+			wb.children('.events').slideDown('fast');
+			sp.removeClass('show');
+			sp.addClass('hide');
+			$.ajax({
+				'type': 'GET',
+				'url': '/patient/showepisode?episode_id='+episode_id,
+				'success': function(html) {
+				} 
+			});
+		}
+	}
 });
+
+function changeState(wb,sp) {
+	if (sp.hasClass('hide')) {
+		wb.children('.events').slideUp('fast');
+		sp.removeClass('hide');
+		sp.addClass('show');
+	} else {
+		wb.children('.events').slideDown('fast');
+		sp.removeClass('show');
+		sp.addClass('hide');
+	}
+}

@@ -17,33 +17,5 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
-$config = CMap::mergeArray(
-	require(dirname(__FILE__).'/common.php'),
-	array(
-		'name'=>'OpenEyes Test',
-		'import'=>array(
-			'application.modules.admin.controllers.*',
-		),
-		'components'=>array(
-			'fixture'=>array(
-				'class'=>'system.test.CDbFixtureManager',
-			),
-			'db'=>array(
-				'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-				'username' => 'oe',
-				'password' => '_OE_TESTDB_PASSWORD_',
-			),
-		),
-	)
-);
-
-// Check for local test config 
-$local_test = dirname(__FILE__).'/local/test.php';
-if(file_exists($local_test)) {
-	$config = CMap::mergeArray(
-		$config,
-		require($local_test)
-	);
-}
-
-return $config;
+require dirname(__FILE__).'/OEConfig.php';
+return OEConfig::getMergedConfig('test');

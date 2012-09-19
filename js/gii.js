@@ -17,7 +17,7 @@ $(document).ready(function() {
 		field_num += 1;
 
 		$.ajax({
-			'url': '/gii/EventTypeModule?ajax=element_field&element_num='+element_num+'&field_num='+field_num,
+			'url': baseUrl+'/gii/EventTypeModule?ajax=element_field&element_num='+element_num+'&field_num='+field_num,
 			'type': 'GET',
 			'success': function(data) {
 				div.append(data);
@@ -57,7 +57,7 @@ $(document).ready(function() {
 		}
 
 		$.ajax({
-			'url': '/gii/EventTypeModule?ajax=element&element_num='+element_num,
+			'url': baseUrl+'/gii/EventTypeModule?ajax=element&element_num='+element_num,
 			'type': 'GET',
 			'success': function(data) {
 				$('#'+target).append(data);
@@ -99,7 +99,7 @@ $(document).ready(function() {
 		var event_type_id = $('select[name="EventTypeModuleEventType"]').val();
 
 		$.ajax({
-			'url': '/gii/EventTypeModule?ajax=elementfields&element_num='+element_num+'&event_type_id='+event_type_id,
+			'url': baseUrl+'/gii/EventTypeModule?ajax=elementfields&element_num='+element_num+'&event_type_id='+event_type_id,
 			'type': 'GET',
 			'success': function(data) {
 				$('#'+target).append(data);
@@ -137,7 +137,7 @@ $(document).ready(function() {
 		var field = m[2];
 
 		$.ajax({
-			'url': '/gii/EventTypeModule?ajax=extra_'+$(this).children('option:selected').text().replace(/ /g,'')+'&element_num='+element+'&field_num='+field,
+			'url': baseUrl+'/gii/EventTypeModule?ajax=extra_'+$(this).children('option:selected').text().replace(/ /g,'')+'&element_num='+element+'&field_num='+field,
 			'type': 'GET',
 			'success': function(html) {
 				if (html.length >0) {
@@ -214,7 +214,7 @@ $(document).ready(function() {
 
 		$.ajax({
 			'type': 'GET',
-			'url': '/gii/EventTypeModule?ajax='+view,
+			'url': baseUrl+'/gii/EventTypeModule?ajax='+view,
 			'success': function(html) {
 				$('#EventTypeModuleGenerateDiv').html(html);
 				$('input[name="generate"]').remove();
@@ -226,7 +226,7 @@ $(document).ready(function() {
 	$('select.EventTypeModuleEventType').live('change',function() {
 		if ($(this).val() != '') {
 			$.ajax({
-				'url': '/gii/EventTypeModule?ajax=event_type_properties&event_type_id='+$(this).val(),
+				'url': baseUrl+'/gii/EventTypeModule?ajax=event_type_properties&event_type_id='+$(this).val(),
 				'type': 'GET',
 				'success': function(html) {
 					$('#EventTypeModuleEventTypeProperties').html(html);
@@ -290,7 +290,7 @@ $.fn.extend({
 			var giiElement = m[1];
 			var giiField = m[2];
 
-			var queryStr = '/gii/EventTypeModule?ajax='+ajaxMethod+'&element_num='+giiElement+'&field_num='+giiField;
+			var queryStr = baseUrl+'/gii/EventTypeModule?ajax='+ajaxMethod+'&element_num='+giiElement+'&field_num='+giiField;
 
 			if (values) {
 				for (var key in values) {

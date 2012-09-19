@@ -46,7 +46,7 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 ?>
 <span style="display: none;" id="header_text"><?php if (isset($session)) {?>Operation: <?php echo $session->NHSDate('date') ?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }else{?>Operation: <?php echo $status?>, <?php echo $operation->event->user->first_name.' '.$operation->event->user->last_name?><?php }?></span>
 
-<h3 class="withEventIcon" style="background:transparent url(/img/_elements/icons/event/medium/treatment_operation.png) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
+<h3 class="withEventIcon" style="background:transparent url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/medium/treatment_operation.png')?>) center left no-repeat;">Operation (<?php echo $operation->getStatusText()?>)</h3>
 
 <?php $this->renderPartial('//base/_messages'); ?>
 
@@ -77,7 +77,7 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 
 <h4>Operation</h4>
 <div class="eventHighlight priority">
-	<h4><?php echo $operation->eye->name?> 
+	<h4><?php echo $operation->eye->adjective?> 
 <?php
 foreach ($elements as $element) {
 	// Only display elements that have been completed, i.e. they have an event id
@@ -260,7 +260,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_schedule-now').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			window.location.href = '/booking/schedule?operation=<?php echo $operation->id?>';
+			window.location.href = '<?php echo Yii::app()->createUrl('booking/schedule')?>?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -269,7 +269,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_cancel-operation').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			window.location.href = '/booking/cancelOperation?operation=<?php echo $operation->id?>';
+			window.location.href = '<?php echo Yii::app()->createUrl('booking/cancelOperation')?>?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -278,7 +278,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_reschedule-now').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			window.location.href = '/booking/reschedule?operation=<?php echo $operation->id?>';
+			window.location.href = '<?php echo Yii::app()->createUrl('booking/reschedule')?>?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -287,7 +287,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_reschedule-later').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			window.location.href = '/booking/rescheduleLater?operation=<?php echo $operation->id?>';
+			window.location.href = '<?php echo Yii::app()->createUrl('booking/rescheduleLater')?>?operation=<?php echo $operation->id?>';
 		}
 
 		return false;
@@ -296,7 +296,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			printPDF('/waitingList/printletters', {'operations': [<?php echo $operation->id ?>], 'confirm': 1});
+			printPDF('<?php echo Yii::app()->createUrl('waitingList/printletters')?>', {'operations': [<?php echo $operation->id ?>], 'confirm': 1});
 			enableButtons();
 		}
 		return false;
@@ -326,7 +326,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 			$firm = $operation->event->episode->firm;
 			$emergency_list = true;
 		}
-		$this->renderPartial("/letters/admission_letter", array(
+		$this->renderPartial('/letters/admission_letter', array(
 			'site' => $site,
 			'patient' => $patient,
 			'firm' => $firm,

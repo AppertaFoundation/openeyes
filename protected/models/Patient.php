@@ -88,7 +88,7 @@ class Patient extends BaseActiveRecord {
 	public function relations() {
 		return array(
 			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "legacy=1"
+				'condition' => "legacy=1",
 			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
 				'condition' => "legacy=0 or legacy is null"
@@ -269,7 +269,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getDisplayName() {
-		return '<span class="surname">'.$this->last_name.'</span>, <span class="given">'.$this->first_name.'</span>';
+		return '<span class="surname">'.strtoupper($this->last_name).'</span>, <span class="given">'.$this->first_name.'</span>';
 	}
 
 	private function randomData($field)
@@ -368,16 +368,16 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
-			return strtolower($diagnosis->disorder->term);
+		if ($episode && $disorder = $episode->getPrincipalDisorder()) {
+			return strtolower($disorder->term);
 		}
 	}
 
 	public function getEps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($diagnosis = $episode->getPrincipalDiagnosis()) {
-			return strtolower($diagnosis->eye->name);
+		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
+			return strtolower($diagnosis->eye->adjective);
 		}
 	}
 
@@ -386,30 +386,13 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getOpl() {
-		$episode = $this->getEpisodeForCurrentSubspecialty();
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
 
-		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
-
-		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
-			foreach ($eo->procedures as $i => $procedure) {
-				if ($i) $return .= ', ';
-				@$return .= $eo->eye->name.' '.$procedure->term;
-			}
-
-			return strtolower($return);
-		}
-	}
-
-	public function getOpr() {
-		$episode = $this->getEpisodeForCurrentSubspecialty();
-
-		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id);
-
-		if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
-			if ($pl = $pl->find('event_id=?',array($event->id))) {
-				foreach ($pl->procedures as $i => $procedure) {
+			if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+				foreach ($eo->procedures as $i => $procedure) {
 					if ($i) $return .= ', ';
-					@$return .= $pl->eye->name.' '.$procedure->term;
+					@$return .= $eo->eye->name.' '.$procedure->term;
 				}
 
 				return strtolower($return);
@@ -417,17 +400,34 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getOps() {
-		$episode = $this->getEpisodeForCurrentSubspecialty();
+	public function getOpr() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id);
 
-		if ($episode && $event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
 			if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
 				if ($pl = $pl->find('event_id=?',array($event->id))) {
 					foreach ($pl->procedures as $i => $procedure) {
-						@$return .= $pl->eye->name.' '.$procedure->term."\n";
+						if ($i) $return .= ', ';
+						@$return .= $pl->eye->name.' '.$procedure->term;
 					}
 
 					return strtolower($return);
+				}
+			}
+		}
+	}
+
+	public function getOps() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
+				if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
+					if ($pl = $pl->find('event_id=?',array($event->id))) {
+						foreach ($pl->procedures as $i => $procedure) {
+							@$return .= $pl->eye->name.' '.$procedure->snomed_term."\n";
+						}
+
+						return strtolower($return);
+					}
 				}
 			}
 		}
@@ -561,13 +561,13 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getAdm() {
-		$episode = $this->getEpisodeForCurrentSubspecialty();
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
 
-		$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
-
-		if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
-			if ($booking = $eo->booking) {
-				return $booking->session->NHSDate('date');
+			if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+				if ($booking = $eo->booking) {
+					return $booking->session->NHSDate('date');
+				}
 			}
 		}
 	}

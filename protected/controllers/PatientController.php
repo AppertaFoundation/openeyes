@@ -168,6 +168,7 @@ class PatientController extends BaseController
 			'event_template_name' => $event_template_name,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
+			'current_episode' => $this->episode,
 		));
 	}
 
@@ -183,7 +184,7 @@ class PatientController extends BaseController
 		}
 		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
 		if($patient) {
-			$this->redirect('/patient/view/'.$patient->id);
+			$this->redirect(array('/patient/view/'.$patient->id));
 		} else {
 			throw new CHttpException(404, 'Hospital number not found');
 		}
@@ -234,7 +235,7 @@ class PatientController extends BaseController
 				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
 				$audit->save();
 				setcookie('patient-search-minimum-criteria','1',0,'/');
-				$this->redirect('/patient/results/error');
+				$this->redirect(array('/patient/results/error'));
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
@@ -267,7 +268,7 @@ class PatientController extends BaseController
 			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
 
 			setcookie('patient-search-minimum-criteria','1',0,'/');
-			$this->redirect("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1");
+			$this->redirect(array("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1"));
 		}
 
 		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
@@ -277,7 +278,7 @@ class PatientController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = var_export($_POST['Patient'],true) . ": Error";
 			$audit->save();
-			$this->redirect('/patient/results/error');
+			$this->redirect(array('/patient/results/error'));
 		}
 
 		$this->patientSearch();
@@ -285,7 +286,7 @@ class PatientController extends BaseController
 
 	function patientSearch() {
 		if (!isset($_GET['sort_by'])) {
-			return $this->redirect('/');
+			return $this->redirect(Yii::app()->baseUrl.'/');
 		}
 
 		switch ($_GET['sort_by']) {
@@ -337,10 +338,10 @@ class PatientController extends BaseController
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
 			$audit->save();
-			$this->redirect('/patient/no-results');
+			$this->redirect(array('/patient/no-results'));
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
-				$this->redirect('/patient/view/'.$item->id);
+				$this->redirect(array('/patient/view/'.$item->id));
 			}
 		} else {
 			$pages = ceil($nr/$pageSize);
@@ -412,6 +413,25 @@ class PatientController extends BaseController
 		$legacyepisodes = $this->patient->legacyepisodes;
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
+		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
+			$current_episode = empty($episodes) ? false : $episodes[0];
+		} else if ($current_episode->end_date == null) {
+			$criteria = new CDbCriteria;
+			$criteria->compare('episode_id',$current_episode->id);
+			$criteria->order = 'datetime desc';
+
+			if ($event = Event::model()->find($criteria)) {
+				if ($event->eventType->class_name == 'OphTrOperation') {
+					$this->redirect(array('patient/event/'.$event->id));
+				} else {
+					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+				}
+				Yii::app()->end();
+			}
+		} else {
+			$current_episode = null;
+		}
+
 		$this->title = 'Episode summary';
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
@@ -419,7 +439,7 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => empty($episodes) ? false : $episodes[0]
+			'current_episode' => $current_episode,
 		));
 	}
 
@@ -440,6 +460,10 @@ class PatientController extends BaseController
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
+
+		$status = Yii::app()->session['episode_hide_status'];
+		$status[$id] = true;
+		Yii::app()->session['episode_hide_status'] = $status;
 
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
@@ -814,19 +838,21 @@ class PatientController extends BaseController
 	 * @throws Exception
 	 */
 	public function actionAddAllergy() {
-		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
-			throw new Exception('Patient ID required');
+		if (!empty($_POST)) {
+			if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+				throw new Exception('Patient ID required');
+			}
+			if(!$patient = Patient::model()->findByPk($patient_id)) {
+				throw new Exception('Patient not found: '.$patient_id);
+			}
+			if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+				throw new Exception('Allergy ID required');
+			}
+			if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
+				throw new Exception('Allergy not found: '.$allergy_id);
+			}
+			$patient->addAllergy($allergy_id);
 		}
-		if(!$patient = Patient::model()->findByPk($patient_id)) {
-			throw new Exception('Patient not found: '.$patient_id);
-		}
-		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
-			throw new Exception('Allergy ID required');
-		}
-		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
-			throw new Exception('Allergy not found: '.$allergy_id);
-		}
-		$patient->addAllergy($allergy_id);
 	}
 
 	/**
@@ -856,5 +882,25 @@ class PatientController extends BaseController
 	 */
 	public function allergyList() {
 		return Allergy::model()->findAll(array('order' => 'name'));
+	}
+
+	public function actionHideepisode() {
+		$status = Yii::app()->session['episode_hide_status'];
+
+		if (isset($_GET['episode_id'])) {
+			$status[$_GET['episode_id']] = false;
+		}
+
+		Yii::app()->session['episode_hide_status'] = $status;
+	}
+
+	public function actionShowepisode() {
+		$status = Yii::app()->session['episode_hide_status'];
+	 
+		if (isset($_GET['episode_id'])) {
+			$status[$_GET['episode_id']] = true;
+		}
+	 
+		Yii::app()->session['episode_hide_status'] = $status;
 	}
 }

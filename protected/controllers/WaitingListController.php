@@ -140,7 +140,7 @@ class WaitingListController extends BaseController
 	}
 
 	public function actionFilterSetFirm() {
-		$this->setFilter('firm-id', $_POST['firm-id']);
+		$this->setFilter('firm-id', $_POST['firm_id']);
 	}
 
 	public function actionFilterSetStatus() {

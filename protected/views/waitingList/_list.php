@@ -85,33 +85,33 @@ if (empty($operations)) { ?>
 
 	} elseif ($lastletter == ElementOperation::LETTER_INVITE) {
 		?>
-			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/invitation.png')?>" alt="Invitation" width="17" height="17" />
 		<?php
 	} elseif ($lastletter == ElementOperation::LETTER_REMINDER_1) {
 		?>
-			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
-			<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/invitation.png')?>" alt="Invitation" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter1.png')?>" alt="1st reminder" width="17" height="17" />
 		<?php
 
 	} elseif ($lastletter == ElementOperation::LETTER_REMINDER_2) {
 		?>
-			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
-			<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" width="17" height="17" />
-			<img src="img/_elements/icons/letters/letter2.png" alt="2nd reminder" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/invitation.png')?>" alt="Invitation" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter1.png')?>" alt="1st reminder" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter2.png')?>" alt="2nd reminder" width="17" height="17" />
 		<?php
 
 	} elseif ($lastletter == ElementOperation::LETTER_GP) {
 		?>
-			<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" width="17" height="17" />
-			<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" width="17" height="17" />
-			<img src="img/_elements/icons/letters/letter2.png" alt="2nd reminder" width="17" height="17" />
-			<img src="img/_elements/icons/letters/GP.png" alt="GP" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/invitation.png')?>" alt="Invitation" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter1.png')?>" alt="1st reminder" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter2.png')?>" alt="2nd reminder" width="17" height="17" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/GP.png')?>" alt="GP" width="17" height="17" />
 		<?php
 	}
 ?>
 	</td>
 	<td class="patient">
-		<?php echo CHtml::link(trim("<b>" . $operation['last_name']) . '</b>, ' . $operation['first_name'], '/patient/event/' . $operation['evid'])?>
+		<?php echo CHtml::link("<strong>" . trim(strtoupper($operation['last_name'])) . '</strong>, ' . $operation['first_name'], Yii::app()->createUrl('/patient/event/' . $operation['evid']))?>
 	</td>
 	<td><?php echo $operation['hos_num'] ?></td>
 	<td><?php echo $eo->site->short_name?></td>
@@ -176,10 +176,10 @@ if (empty($operations)) { ?>
 		<td colspan="11" class="small">
 			<div id="letters-key">
 			<span>Letters sent out:</span>&nbsp;&nbsp;
-				<img src="img/_elements/icons/letters/invitation.png" alt="Invitation" height="17" width="17"> - Invitation
-				<img src="img/_elements/icons/letters/letter1.png" alt="1st reminder" height="17" width="17"> - 1<sup>st</sup> Reminder
-				<img src="img/_elements/icons/letters/letter2.png" alt="2nd reminder" height="17" width="17"> - 2<sup>nd</sup> Reminder
-				<img src="img/_elements/icons/letters/GP.png" alt="GP" height="17" width="17"> - GP Removal
+				<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/invitation.png')?>" alt="Invitation" height="17" width="17"> - Invitation
+				<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter1.png')?>" alt="1st reminder" height="17" width="17"> - 1<sup>st</sup> Reminder
+				<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/letter2.png')?>" alt="2nd reminder" height="17" width="17"> - 2<sup>nd</sup> Reminder
+				<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/letters/GP.png')?>" alt="GP" height="17" width="17"> - GP Removal
 			</div>
 		</td>
 	</tr>
@@ -195,7 +195,7 @@ $('#checkall').click(function() {
 });
 
 // Row highlighting
-$(".waiting-list td").live('hover', function() {
+$(this).undelegate('.waiting-list td','click').delegate('.waiting-list td','click',function() {
     var $tr = $(this).closest("tr");
 
     //toggle current row

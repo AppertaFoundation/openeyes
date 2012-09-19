@@ -21,10 +21,6 @@ $patientName = $this->patient->first_name . ' ' . $this->patient->last_name;
 $this->breadcrumbs=array(
 	"{$patientName} ({$this->patient->hos_num})",
 );
-$this->widget('application.extensions.fancybox.EFancyBox', array(
-	'target'=>'button.fancybox',
-	'config'=>array()
-	));
 
 $address_str = '';
 
@@ -182,7 +178,7 @@ if (!empty($address)) {
 												<?php } else if ($pca->institution) {?>
 													<?php echo $pca->institution->name?>
 												<?php } else if ($pca->contact->address) {?>
-													<?php echo str_replace(',','',$pca->contact->address->address1)?>
+													<?php echo str_replace(',','',$pca->contact->address->summary)?>
 												<?php }?>
 											</td>
 											<td>
@@ -263,7 +259,7 @@ if (!empty($address)) {
 										$.ajax({
 											'type': 'GET',
 											'dataType': 'json',
-											'url': '/patient/associatecontact?'+querystr,
+											'url': '".Yii::app()->createUrl('patient/associatecontact')."?'+querystr,
 											'success': function(data) {
 												if (data[\"name\"]) {
 													$('#patient_contacts').append('<tr><td><span class=\"large\">'+data[\"name\"]+'</span><br />'+data[\"qualifications\"]+'</td><td>'+data[\"location\"]+'</td><td>'+data[\"type\"]+'<td colspan=\"2\" align=\"right\"><a id=\"removecontact'+data[\"id\"]+'_'+data[\"site_id\"]+'_'+data[\"institution_id\"]+'\" href=\"#\" class=\"small\"><strong>Remove</strong></a></td></tr>');
@@ -293,7 +289,7 @@ if (!empty($address)) {
 								<option value="specialist">Non-ophthalmic specialist</option>
 							</select>
 							&nbsp;
-							<img src="/img/ajax-loader.gif" class="loader" alt="loading..." style="display: none;" />
+							<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
 						</div>
 					</div>
 				</div>
@@ -316,9 +312,9 @@ if (!empty($address)) {
 												<td><?php echo $episode->NHSDate('end_date'); ?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
 												<td><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></td>
-												<?php $diagnosis = $episode->getPrincipalDiagnosis() ?>
-												<td><?php echo !empty($diagnosis) ? $diagnosis->eye->name : 'No diagnosis' ?></td>
-												<td><?php echo !empty($diagnosis) ? $diagnosis->disorder->term : 'No diagnosis'?></td>
+												<?php $has_diagnosis = $episode->hasPrincipalDiagnosis() ?>
+												<td><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisEyeText() : 'No diagnosis' ?></td>
+												<td><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisDisorderTerm() : 'No diagnosis' ?></td>
 											</tr>
 										<?php }?>
 									</tbody>
@@ -328,17 +324,17 @@ if (!empty($address)) {
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
 					<?php if(!$this->patient->isDeceased()) { ?>
-						<p><a href="/patient/episodes/<?php echo $this->patient->id?>"><span class="aPush">Create or View Episodes and Events</span></a></p>
+						<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php }?>
 					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('tr.all-episode').unbind('click').click(function() {
-					window.location.href = '/patient/episode/'+$(this).attr('id');
+					window.location.href = '<?php echo Yii::app()->createUrl('patient/episode')?>/'+$(this).attr('id');
 					return false;
 				});
-				$('a[id^="removecontact"]').die('click').live('click',function() {
+				$(this).undelegate('a[id^="removecontact"]','click').delegate('a[id^="removecontact"]','click',function() {
 					var e = $(this).attr('id').replace(/^removecontact/,'').split('_');
 
 					var id = e[0];
@@ -355,7 +351,7 @@ if (!empty($address)) {
 
 					$.ajax({
 						'type': 'GET',
-						'url': '/patient/unassociatecontact?patient_id=<?php echo $this->patient->id?>&contact_id='+id+'&site_id='+site_id+'&institution_id='+institution_id,
+						'url': '<?php echo Yii::app()->createUrl('patient/unassociatecontact')?>?patient_id=<?php echo $this->patient->id?>&contact_id='+id+'&site_id='+site_id+'&institution_id='+institution_id,
 						'success': function(resp) {
 							if (resp == "1") {
 								el.parent().parent().remove();
@@ -387,7 +383,7 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp && $this->patient->gp->contact) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->address1 : '').')';?>");
+					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->summary : '').')';?>");
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
@@ -408,7 +404,7 @@ if (!empty($address)) {
 					<?php } else if ($pca->institution) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
 					<?php } else {?>
-						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->address1 : '').')';?>");
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->summary : '').')';?>");
 					<?php }?>
 				<?php }?>
 

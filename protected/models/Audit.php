@@ -94,6 +94,7 @@ class Audit extends BaseActiveRecord
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 		);
 	}
 
@@ -141,7 +142,7 @@ class Audit extends BaseActiveRecord
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
 		if(isset($_SERVER['REMOTE_ADDR'])) {
 			$this->remote_addr = $_SERVER['REMOTE_ADDR'];
-			$this->http_user_agent = $_SERVER['HTTP_USER_AGENT'];
+			$this->http_user_agent = @$_SERVER['HTTP_USER_AGENT'];
 			$this->server_name = $_SERVER['SERVER_NAME'];
 			$this->request_uri = $_SERVER['REQUEST_URI'];
 			if ($this->user) {

@@ -42,12 +42,11 @@ if (empty($bookings['bookings'])) { ?>
 				<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /></th>
 			</tr>
 <?php
-	$i = 0;
 	if ($bookings) {
 		foreach ($bookings['bookings'] as $id => $booking) {?>
 	<?php
 		if ($booking['transport'] == null) {
-			if (strtotime($booking['session_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
+			if (strtotime($booking['order_date']) <= (strtotime(date('Y-m-d')) + 86400)) {
 				$tablecolour = "Red";
 			} else {
 				$tablecolour = "Green";
@@ -61,17 +60,17 @@ if (empty($bookings['bookings'])) { ?>
 	?>
 		<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 		<td class="patient">
-			<?php echo CHtml::link(trim("<b>" . $booking['last_name']) . '</b>, ' . $booking['first_name'], '/patient/event/' . $booking['evid'])?>
+			<?php echo CHtml::link("<strong>" . trim(strtoupper($booking['last_name'])) . '</strong>, ' . $booking['first_name'], Yii::app()->createUrl('patient/event/' . $booking['evid']))?>
 		</td>
-		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
-		<td style="width: 73px;"><?php echo $booking['session_time']?></td>
+		<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['order_date']))?></td>
+		<td style="width: 73px;"><?php echo $booking['order_time']?></td>
 		<td style="width: 95px;"><?php echo $booking['location']?></td>
 		<td style="width: 170px;"><?php echo $booking['ward_name']?></td>
 		<td style="width: 53px;"><?php echo $booking['method']?></td>
 		<td style="width: 43px;"><?php echo $booking['firm'] ?></td>
 		<td style="width: 53px;"><?php echo $booking['subspecialty']?></td>
 		<td style="width: 80px;"><?php echo Helper::convertMySQL2NHS($booking['decision_date']) ?></td>
-		<td><?php echo $booking['priority']?></td>
+		<td><?php echo $booking['priority_id'] == 1 ? 'Routine' : 'Urgent'?></td>
 		<td style="width: 20px;">
 			<?php if ($booking['method'] == 'Cancelled') {?>
 				<input type="checkbox" name="cancelled[]" value="<?php echo $booking['checkid']?>" />
@@ -81,11 +80,9 @@ if (empty($bookings['bookings'])) { ?>
 		</td>
 	</tr>
 
-	<?php
-			$i++;
-		}
+	<?php }
 
-		if ($i == 0) { ?>
+		if (count($bookings['bookings']) == 0) { ?>
 		<tr>
 			<td colspan="7" style="border: none; padding-top: 10px;">
 				There is no relevant activity for the selected date.
@@ -125,17 +122,17 @@ $done = array();
 					<tr>
 						<td style="width: 53px;"><?php echo $booking['hos_num'] ?></td>
 						<td>
-							<?php echo "<b>" . trim($booking['last_name']) . '</b>, ' . trim($booking['first_name'])?>
+							<?php echo "<strong>" . trim(strtoupper($booking['last_name'])) . '</strong>, ' . trim($booking['first_name'])?>
 						</td>
-						<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['session_date']))?></td>
-						<td style="width: 73px;"><?php echo $booking['session_time']?></td>
+						<td style="width: 83px;"><?php echo date('j-M-Y',strtotime($booking['order_date']))?></td>
+						<td style="width: 73px;"><?php echo $booking['order_time']?></td>
 						<td style="width: 95px;"><?php echo $booking['location']?></td>
 						<td style="width: 170px;"><?php echo $booking['ward_name']?></td>
 						<td style="width: 53px;"><?php echo $booking['method']?></td>
 						<td style="width: 43px;"><?php echo $booking['firm'] ?></td>
 						<td style="width: 53px;"><?php echo $booking['subspecialty']?></td>
 						<td style="width: 80px;"><?php echo Helper::convertMySQL2NHS($booking['decision_date']) ?></td>
-						<td><?php echo $booking['priority']?></td>
+						<td><?php echo $booking['priority_id'] == 1 ? 'Routine' : 'Urgent'?></td>
 					</tr>
 				<?php }?>
 			</tbody>
