@@ -90,16 +90,20 @@ body { width:1230px; margin:0 auto; }
 /* ====== CONTENT STRUCTURES ====== */
 #content .fullWidth		{ width:1230px; margin-top:20px; position: relative; }
 /* View Episode list, Event Display, Theatre Management */
-#content .fullWidth > #episodes_sidebar	{ float:left;	} /* expands for summary */
+#content .fullWidth > #episodes_sidebar	{ float:left; } /* expands for summary */
 #content .fullWidth > #event_display	{ float:right; max-width: 1050px; min-height:200px; overflow: hidden; }
 #content .fullWidth > #theatre_display	{ min-height:400px; }
 
 #content .centralColumn { width:800px;	margin: 20px auto 0 auto; }
+#content .homeHub 		{ width:1200px; margin: 20px auto 0 auto; }
+#content .wrapOne		{ width:1200px; margin: 20px auto 0 auto; }
 #content .wrapTwo		{ width:1200px; margin: 20px auto 0 auto; }
+#content .homeHub > .column { float: left; width:380px; margin-right:20px; }
 #content .wrapTwo > .narrowColumn		{ width:360px; float:right; }
 #content .wrapTwo > .wideColumn			{ width:820px; float:left; }
 #content .wrapTwo > .halfColumnLeft		{ width:580px; float:left; }
 #content .wrapTwo > .halfColumnRight	{ width:600px; float:right; }
+
 
 /* ====== GENERAL ====== */
 
@@ -117,6 +121,7 @@ h2 { display:inline; font-size:13px; font-weight: bold; color:#333; background:#
 -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; -webkit-border-radius: 0px 3px 3px 0px; border-radius: 0px 3px 3px 0px; }
 h2.alert { background-color:#ffe6b2; }
 h2.admin { background:#333; color:#fff; }
+/* e9b98f e97917 */
 em { font-style: italic; color:#333; }
 .small	{ font-size: 11px; font-weight: normal; }
 .normal { font-size: 13px; font-weight: normal; }
@@ -126,7 +131,24 @@ em { font-style: italic; color:#333; }
 .caps		{ font-variant: small-caps; }
 .dull * { opacity: 0.7; }
 
-/* ====== BOXES ====== */
+/* ====== Curvy Boxes ====== */
+/* ! update: use curvybox from now on and customize it */
+#content .curvybox { margin-bottom: 15px; padding:10px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; position:relative; } 
+#content .curvybox > p { background: none; padding:0; margin-bottom:8px; }
+/* customised curvybox note: duplicated older classes below are kept until ALL are updated */
+#content .curvybox.white	{ background: #fafafa; }
+#content .curvybox.blue		{ background: #dae6f1; color:#4d5155; }
+#content .curvybox.red		{ background: #e81515; color:#FFF; border:1px solid #fc621f; font-weight: bold; }	
+#content .curvybox.pedigree { background: #e9b98f url(../img/_elements/icons/pedigree/genetics-large.png) top right no-repeat;; color:#493a2d; border:1px solid #a29d8a; padding-right:80px; min-height:50px; }
+/* user info boxes */
+#content .curvybox.alert { background:#ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:1px solid #fc621f; padding-left:50px; }
+#content .curvybox.issue { background:#fdf2e5 url(../img/_elements/icons/box/issue.png) top left no-repeat; border:1px solid #f3c160; padding-left:50px; }
+#content .curvybox.info 	{ background:#e0f2db url(../img/_elements/icons/box/info.png) top left no-repeat; border:1px solid #9c9; padding-left:50px; }
+/* variation for use with fullWidth */
+#content .fullWidth.bgbox { background: #dae6f1; margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+ 
+
+/* historical classes now superceeded by curvybox */
 #content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .questionBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 /* box Paragraphs */
 #content .whiteBox > p, #content .redBox > p, #content .alertBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px; }
@@ -136,6 +158,7 @@ em { font-style: italic; color:#333; }
 #content .alertBox 	{ background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; }
 #content .issueBox 	{ background: #fdf2e5 url(../img/_elements/icons/box/issue.png) top left no-repeat; border:#f3c160 1px solid; padding:10px 10px 10px 50px; }
 #content .infoBox 	{ background: #e0f2db url(../img/_elements/icons/box/info.png) top left no-repeat; border:#9c9 1px solid; padding:10px 10px 10px 50px; }
+#content .optionalBox 	{ background: transparent url(../img/_elements/icons/event/medium/_optional.png) top left no-repeat; padding:10px 10px 10px 50px; }
 #content .questionBox 	{ background: #ccc; border:#666 1px dotted; padding:15px 10px 10px 10px; }
 #content .blueBox	{ background: #dae6f1; color:#4d5155; padding:10px;}
 #content .fullBox	{ background: #dae6f1; }
@@ -180,6 +203,11 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;	}
 .labelHint, .labelRequired { display:block; font-size: 11px; padding-right:10px; text-align: left;	}
 .labelHint		{ color: #777; }
 .labelRequired	{ color: #b33; }
+/* group label and input */
+.showAsDataGroup { display: inline-block; background:inherit; ; padding:4px 12px 5px 8px; margin-right: 15px; margin-bottom:4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.showAsDataGroup:hover { background:#fff; color:#003cff; }
+
+
 
 /* === CLASSY CSS BUTTONS === */
 /* default, inactive */
@@ -217,10 +245,6 @@ button.mini								{ height:24px; font-size:13px; width: auto; margin:0 2px; }
 button.mini span						{ padding:0 18px; }
 button.mini span.button-span			{ display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ padding:0 4px; }
-
-
-
-
 
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
 /*
@@ -317,7 +341,22 @@ button.smBtn_modify			{ background:transparent url(../img/_elements/btns/small/m
 button.smBtn_modify:hover	{ background-image: url(../img/_elements/btns/small/modify_o.png); }
 
 /* for buttons where clicking on the wrong one could be devasterous!  */
-.spaceOutButtons button {margin-right:40px;} 
+.spaceOutButtons button { margin-right:40px; } 
+
+/* simpleButtons - make a look like a basic version of button  */
+a.simpleButton { background:#107be9; color:#fff; padding:2px 8px; border:none; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+a:visited.simpleButton { background:#107be9; }
+a:hover.simpleButton, a:active.simpleButton { background:#145ea9; }
+
+
+
+/* ====== OVERLAYS ====== */
+/* dim and de-activate other content */
+.dimBackground { height:100%; width:100%; min-width:1240px; position:fixed; left:0; top:0; z-index:1; background-color:#666; filter: alpha(opacity=50);
+-webkit-opacity: 0.50; -moz-opacity: 0.50; opacity: 0.50;   }
+/* overlay holder is centered unless otherwise styled */
+.overlay { z-index:9 !important; background:transparent; position:fixed; left:50%; top:50%; }
+.overlay .loading { background:#555; color:#ccc; text-align:center; padding:10px; width:300px; margin-left:-150px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; }
 
 
 /* ====== TABLES - GENERAL ====== */
@@ -336,15 +375,16 @@ table tr:last-child { border-bottom: none; }
 .clickable:hover { background:#3665ff; color:white; }
 
 
-
-
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
 table.subtleWhite { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:20px;}
 table.subtleWhite tbody tr:hover { background-color: #fffbda; }
-table.subtleWhite th { text-align:left; font-size:11px; color:#ccc; padding:10px 10px 2px 10px; }
+table.subtleWhite th { text-align:left; font-size:11px; color:#aaa; padding:10px 10px 2px 10px; }
 table.subtleWhite td { font-size:15px; padding:10px; }
 table.subtleWhite.smallText td { font-size:11px; padding:8px 10px; }
 table.subtleWhite.normalText td { font-size:13px; }
+table.subtleWhite.noBorderRadius { -webkit-border-radius:0; -moz-border-radius:0; border-radius:0; margin-bottom:0; }
+table.subtleWhite.reduceRowHeight td { padding-top:5px; padding-bottom:5px;}
+
 
 
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
@@ -355,6 +395,12 @@ table.subtleWhite.normalText td { font-size:13px; }
 .grid-view table th:last-child, .grid-view td:last-child { border-right: none; }
 /* change properties for closed rows */
 .grid-view table .closed > td {  padding:6px 10px; border-right-color: #bbb; color: #666; }
+/* tweaks */
+.grid-view table.reduceRowHeight td { padding-top:5px; padding-bottom:5px; }
+.grid-view table.noBorder td { border-right:none; }
+.grid-view table.verticalMiddle td { vertical-align:middle; }
+
+
 
 /* TABLE KEY for <tfoot> */
 tfoot td #key .container { display:inline-block; margin:0 8px 0 5px; }
@@ -427,7 +473,13 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* ====== PATIENT ID ====== */
 #patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding:0 10px; border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212;		}
 #patientID > .patientReminder { padding-top:9px; }
-#patientID > .i_patient { position:absolute; right:0; bottom:0; }
+#patientID > .i_patient { position:absolute; right:5px; bottom:5px; }
+#patientID > .i_patient_details { position:absolute; right:1px; bottom:-21px; height:23px; padding:0 5px 0 5px; color:#444; background:#ffe6b2; border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212; -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;}
+#patientID > .i_patient_details.female { background:#ffe6b2 url(../img/_elements/icons/alerts/female_trans.png) center right no-repeat; padding-right:23px; }
+#patientID > .i_patient_details.male { background:#ffb212 url(../img/_elements/icons/alerts/male_trans.png) center right no-repeat; padding-right:23px; }
+#patientID > .i_patient_details .info { display:inline-block; padding:4px 0 0 5px; }
+
+
 .patientReminder > .given			{ display:inline-block; font-size: 16px; }
 /* .patientReminder > .given:after { color:#444; } */
 .patientReminder > .surname		{ display:inline-block; font-size: 16px; font-weight: bold; }
@@ -459,8 +511,8 @@ span.surname { font-weight: bold; }
 /* ------------------------------------------------- PAGE SPECIFIC	*/
 
 /* ====== LOGIN ====== */
-#login-form					{ width:350px; margin: 50px auto 0 auto; padding:40px 30px 25px 30px; }
-#login-form .loginRow			{ position:relative; height:55px; margin-bottom: 20px; text-align: right;}
+#login-form					{ width:350px; margin: 50px auto; padding:40px 30px 25px 30px; }
+#login-form .loginRow		{ position:relative; height:55px; margin-bottom: 20px; text-align: right;}
 #login-form .loginRow label { position:absolute; top:5px; left:10px; }
 #login-form .loginRow input { position:absolute; top:0; right:0; width:200px; margin:0 0 5px 0; }
 #login-form .loginRow a		{ position:absolute; bottom:0; right:0; }
@@ -468,7 +520,79 @@ span.surname { font-weight: bold; }
 #login-form .row label		{ margin-right: 5px;	}
 #login-form .row select		{ position: relative; top:-1px; width:180px; }
 
-/* ====== HOME - SEARCH ====== */
+
+/* ====== HOME HUB ====== */
+/* default grouping */
+.homeHub .group { margin-bottom:20px; }
+/* default header & footer */
+.homeHub h4 { font-family:Georgia Times sans-serif; font-style: italic; font-size:13px; background:#036; color:#eee; margin:0; padding:8px 10px; border-top:1px dotted #ccc; border-left:1px dotted #ccc; border-right:1px dotted #ccc;  }
+.homeHub .footer { background:#888;  -webkit-border-bottom-right-radius: 5px; -webkit-border-bottom-left-radius: 5px; -moz-border-radius-bottomright: 5px; -moz-border-radius-bottomleft: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; }
+/* white header & footer */
+.homeHub h4.white { font-size:15px; background:#fff; color:#058; border:none; -webkit-border-top-right-radius: 5px; -webkit-border-top-left-radius: 5px; -moz-border-radius-topright: 5px; -moz-border-radius-topleft: 5px; border-top-right-radius: 5px; border-top-left-radius: 5px; }
+.homeHub .footer.white { height:4px; background-color: #fff; }
+/* to do */
+
+/* tweak subtleWhite */
+.subtleWhite thead.overline { border-top: 2px solid #fffbda; }
+.subtleWhite thead.overline th { padding:8px 10px 2px 10px;  }
+
+/* User details */
+.homeHub .user { background:#036; border:1px dotted #ccc; color:#fff; padding:10px; margin-bottom:25px;}
+.homeHub .user h3 { font-size: 27px; font-weight: lighter; }
+.homeHub .user a { color:#a0f3ff; }
+.homeHub .user a:hover { border-bottom-color:#a0f3ff; }
+
+/* User profile */
+.homeHub #user_profile { display:none; margin-top:20px; border-top:2px dotted #003; }
+.homeHub #user_profile .actions { text-align:right; margin:10px 0; padding-bottom:20px;  border-bottom:2px dotted #003; }
+/* modify grid-view */
+.homeHub table.editProfile { margin-top:10px; padding-top:20px;  }
+.homeHub table.editProfile tr:hover { background-color:#002d59;  }
+.homeHub table.editProfile td:first-child { color:#bbb; }
+.homeHub table.editProfile td { border:none; }
+
+/* Internal Messaging */
+.homeHub .IM {  background:#807c6d url(../img/_elements/icons/im/paperclip_notification.png) top right no-repeat; color:#fff; border:2px dotted #a29d8a; padding:5px 5px; margin-bottom:20px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.homeHub .IM h4 { background:none; border:none; padding-top:18px; padding-bottom:14px; }
+/* auto-message - needs viewing: */
+.homeHub .IM a.autoMessage { display:inline-block; width:270px; padding:5px; color:#fff; background:#6e6b5e; border:2px dotted #a29d8a; margin-right:5px; margin-bottom:5px; }
+.homeHub .IM a:hover.autoMessage { background:#3665ff; border-color:#ccc6ae;}
+/* urgent */
+.homeHub .IM a.autoMessage.urgent { background-image: url(../img/_elements/icons/im/urgent_notification.png); background-position:top right; background-repeat: no-repeat; border-color:#ffcead; }
+
+.homeHub .IM .autoMessage .eventIcon { float:left; }
+.homeHub .IM .autoMessage .details { margin-top:5px; padding-left:50px; }
+.homeHub .IM .autoMessage .patient { margin:3px 0 0px 1px; }
+/* event viewed by clicking on auto-message. dismissable! */
+/* modify grid-view */
+.homeHub table.dismissIM tr:hover { background:#6e6b5e; } 
+.homeHub table.dismissIM td { border-color:#6e6b5e; }
+.homeHub table.dismissIM .actions { text-align: right; }
+
+/* Pedigree Management */
+/* f8c6ad  f2c595 */
+.homeHub .pedigree { background: #e9b98f url(../img/_elements/icons/pedigree/genetics-large.png) top right no-repeat; color:#493a2d; border:2px dotted #a29d8a; padding:10px; margin-bottom:20px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.homeHub .pedigree h3 { font-size:18px; }
+.homeHub .pedigree h5 { margin:15px 0 2px 0; padding:12px 0 4px 0; border-top:2px dotted #e97917;  }
+/* modify... */
+.pedigree .grid-view table td { padding-left:0; padding-right:0; border:none; }
+.pedigree .grid-view table td:last-child { text-align: right; }
+.pedigree .grid-view table td:first-child { text-align: left; }
+.pedigree .showAsDataGroup:hover { background:#e9d0ba; }
+
+/* news */
+.homeHub .news { background: #e1e1e1; border:none; padding:5px 5px 1px 5px;} 
+.homeHub .news .article { position:relative;  color:#036; }
+.homeHub .news .article h5 { font-family:Georgia Times sans-serif; font-weight:normal; font-size:15px; margin:0; padding:2px 10px 2px 10px;  }
+.homeHub .news .article h5 .date { color:#999; font-style: italic; float:right; }
+.homeHub .news .article p { font-family:Georgia Times sans-serif; }
+.homeHub .news .article a.readmore { font-family:Georgia Times sans-serif;  }  
+.homeHub .news .article .extended { display:none; }
+.homeHub .footer.news { background-color: #efefef; height:18px; padding:0 10px 5px 10px; }
+.homeHub .footer.news em { color:#999; }
+.homeHub .footer.news a { float:right; }
+
+/* ====== PATIENT SEARCH ====== */
 /* id */
 #search_patient_id { padding:15px; }
 #search_patient_id > .btn_find-patient{ display:block; float:right; }
@@ -563,8 +687,15 @@ td.eventIcons > img { margin-bottom:10px; }
 .episode_details > .row  { padding:0 0 2px 2px;  }
 .episode_details > .row .label { display:inline-block; width:130px; font-size:12px; color:#666; }
 
+/* cancel adding Event sidebar */
+#cancel_event_sidebar { background:#fff; width:168px; padding:10px 0px 10px 5px; border-top:3px solid #a29d8a; border-right:3px solid #a29d8a; border-bottom:3px solid #a29d8a; border-left:2px solid #b3b0ae; -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px;}
+#cancel_event_sidebar .eventType { margin:5px 0 25px 0; }
+#cancel_event_sidebar .eventType img { vertical-align: text-bottom; padding-right:3px; }
+/* add */
+#cancel_event_sidebar.add { border-top-color: #69bd51; border-right-color: #69bd51; border-bottom-color: #69bd51; }
 
-/* ====== EVENT DISPLAY ====== */
+
+/* ====== ADD NEW EVENT (v1) ====== */
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
 #event_display .addEvent { border:5px solid #69bd51; }
@@ -573,6 +704,27 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 #event_display .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
 #event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; z-index:999 !important;}
+
+
+/* ====== ADD NEW EVENT (v2 - overlay) jQuery version ====== */
+.overlay.forAddEvent { top:150px; left:49%; }
+/* overlay content */
+.overlay .addEvent { width:580px; background:#fff; border:7px solid #69bd51; padding:10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; -moz-box-shadow: 2px 2px 2px 2px #666; -webkit-box-shadow: 2px 2px 2px 2px #666;  box-shadow: 2px 2px 2px 2px #666; }
+.overlay .addEvent .allEventTypes { margin-top:10px;} 
+.overlay .addEvent .selectEvent { margin-bottom:5px;}
+.overlay .addEvent .selectEvent img { vertical-align: text-bottom; margin-right: 10px; }
+.overlay .addEvent .selectEvent a { display:block; font-size:14px; padding:5px; background: #f6f6f6; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.overlay .addEvent .selectEvent a:hover { border:none; color:#fff; background:#69bd51; }
+.overlay .addEvent .selectEvent a:active { border:none; color:#fff; background:#5da748; }
+.overlay .addEvent .cancel { float: right; margin-top:30px; }
+
+
+/* ====== DELETE EVENT (v2 - overlay) jQuery version ====== */
+/* overlay content */
+.overlay .deleteEvent { width:500px; margin-left:-250px; margin-top:-75px; background:#fff; border:7px solid #F00; padding:10px; -webkit-border-radius: 7px; -moz-border-radius: 7px; border-radius: 7px; -moz-box-shadow: 2px 2px 2px 2px #666; -webkit-box-shadow: 2px 2px 2px 2px #666;  box-shadow: 2px 2px 2px 2px #666; }
+.overlay .deleteEvent p { margin-bottom:8px; margin-top:4px; font-weight: bold;}
+
+
 
 /* ------------------------ NEW EVENT - Users selects a New Event to add, these are details needed */
 /* Green PlUS Graphic */
@@ -720,12 +872,17 @@ background:	linear-gradient(#c8d3dd, #dae6f1);
 .optionalElements > .optionalsAll .allButton > a { position:relative; top:2px; }
 
 /* viewing (not added) */
-.optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/extra-element_view.png) top right no-repeat; padding:4px 10px; margin:0; border-bottom:1px dotted #fafafa; }
+.optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/extra-element_view.png) center right no-repeat; padding:8px 10px; margin:0; border-bottom:1px dotted #fafafa; }
 .optionalElements > .elementMeta:hover	{ background-color: #3665ff; cursor: pointer; }
-.optionalElements > .elementMeta:active { background-color: #458446; }
-/* element added */
-.optionalElements > .elementMeta.added { background:#aeb8c2 url(../img/_elements/icons/extra-element_added.png) top right no-repeat; }
-.optionalElements > .elementMeta.added:hover { background-color: #458446; cursor: default;}
+.optionalElements > .elementMeta:active { background-color: #55a256; }
+/* element added .. 2 Options. Listed at the bottom or display inplace */
+.optionalElements > .elementMeta.added { color:#56a7f1; background:transparent url(../img/_elements/icons/extra-element_added.png) center right no-repeat; }
+.optionalElements > .elementMeta.added:hover { color:#fff; background-color: #3665ff; cursor: default;}
+
+.optionalElements > .elementMeta.inplace.added { color:#56a7f1; background:transparent url(../img/_elements/icons/extra-element_added.png) center right no-repeat; }
+.optionalElements > .elementMeta.inplace.added:hover { cursor: pointer; }
+
+
 .elementMeta > .clickHint { font-weight: normal; float: right; padding-right:20px;	 }
 .eventDetail .addOptional { position:absolute; top:8px; right:5px; }
 
