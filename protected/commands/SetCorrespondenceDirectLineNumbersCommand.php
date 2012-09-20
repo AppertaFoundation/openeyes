@@ -22,9 +22,10 @@ class SetCorrespondenceDirectLineNumbersCommand extends CConsoleCommand {
 		Yii::import('application.modules.OphCoCorrespondence.models.*');
 
 		foreach (ElementLetter::model()->findAll() as $element_letter) {
-			$episode = $element_letter->event->episode;
+			$event = Yii::app()->db->createCommand("select * from event where id = $element_letter->event_id")->queryRow();
+			$episode = Yii::app()->db->createCommand("select * from episode where id = $event->episode_id")->queryRow();
 
-			if ($dl = FirmSiteSecretary::model()->find('firm_id=? and site_id=?',array($episode->firm_id,$element_letter->site_id))) {
+			if ($dl = FirmSiteSecretary::model()->find('firm_id=? and site_id=?',array($episode['firm_id'],$element_letter->site_id))) {
 				Yii::app()->db->createCommand("update et_ophcocorrespondence_letter set direct_line = '$dl->direct_line' where id = $element_letter->id")->query();
 				echo ".";
 			}
