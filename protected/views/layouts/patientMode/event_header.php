@@ -44,6 +44,7 @@
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/events_and_episodes.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.textarea.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
