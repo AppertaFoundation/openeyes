@@ -229,7 +229,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 
 <?php if ($operation->erod) {?>
 	<div>
-		<h3 class="subsection">EROD</h3>
+		<h3 class="subsection">Earliest reasonable offer date</h3>
 		<div class="eventHighlight">
 			<h4><?php echo $operation->erod->NHSDate('session_date').' '.$operation->erod->timeSlot.', '.$operation->erod->FirmName?></h4>
 		</div>
