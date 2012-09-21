@@ -407,6 +407,12 @@ class BookingController extends BaseController
 			$model->display_order = $displayOrder;
 
 			if ($model->save()) {
+				if (!$operation->erod) {
+					$operation->calculateEROD($session->id);
+				} else {
+					throw new Exception('New booking somehow already has an EROD eo='.$operation->id);
+				}
+
 				OELog::log("Booking made $model->id");
 
 				$audit = new Audit;

@@ -99,43 +99,43 @@ foreach ($elements as $element) {
 <div class="cols2 clearfix">
 
 <div class="left">
-<h4>Anaesthetic</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->anaesthetic_type->name?></h4>
-</div>
-</div>
-
-<div class="right">
-<h4>Consultant required?</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->consultant_required ? 'Yes Consultant' : 'No Consultant'?></h4>
-</div>
-</div>
-
-<div class="left">
-<h4>Post Operative Stay Required</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->overnight_stay ? 'Yes Stay' : 'No Stay'?></h4>
-</div>
+	<h4>Anaesthetic</h4>
+	<div class="eventHighlight">
+		<h4><?php echo $operation->anaesthetic_type->name?></h4>
+	</div>
 </div>
 
 <div class="right">
-<h4>Decision Date</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
-</div>
+	<h4>Consultant required?</h4>
+	<div class="eventHighlight">
+		<h4><?php echo $operation->consultant_required ? 'Yes Consultant' : 'No Consultant'?></h4>
+	</div>
 </div>
 
 <div class="left">
-<h4>Operation priority</h4>
-<div class="eventHighlight">
-	<h4><?php echo $operation->priority->name?></h4>
+	<h4>Post Operative Stay Required</h4>
+	<div class="eventHighlight">
+		<h4><?php echo $operation->overnight_stay ? 'Yes Stay' : 'No Stay'?></h4>
+	</div>
 </div>
+
+<div class="right">
+	<h4>Decision Date</h4>
+	<div class="eventHighlight">
+		<h4><?php echo $operation->NHSDate('decision_date') ?></h4>
+	</div>
+</div>
+
+<div class="left">
+	<h4>Operation priority</h4>
+	<div class="eventHighlight">
+		<h4><?php echo $operation->priority->name?></h4>
+	</div>
 </div>
 
 <?php if (!empty($operation->comments)) { ?>
 <div class="right">
-<h4>Operation Comments</h4>
+	<h4>Operation Comments</h4>
 	<div class="eventHighlight comments">
 		<h4><?php echo $operation->comments?></h4>
 	</div>
@@ -145,12 +145,12 @@ foreach ($elements as $element) {
 </div>
 
 <div class="metaData">
-<span class="info">
-Operation created by <span class="user"><?php echo $operation->event->user->fullname ?></span> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?>
-</span>
-<span class="info">
-Operation last modified by <span class="user"><?php echo $operation->event->usermodified->fullname ?></span> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?>
-</span>
+	<span class="info">
+		Operation created by <span class="user"><?php echo $operation->event->user->fullname ?></span> on <?php echo $operation->event->NHSDate('created_date') ?> at <?php echo date('H:i', strtotime($operation->event->created_date)) ?>
+	</span>
+	<span class="info">
+		Operation last modified by <span class="user"><?php echo $operation->event->usermodified->fullname ?></span> on <?php echo $operation->event->NHSDate('last_modified_date') ?> at <?php echo date('H:i', strtotime($operation->event->last_modified_date)) ?>
+	</span>
 </div>
 
 <?php if (!empty($operation->booking)) { ?>
@@ -158,27 +158,27 @@ Operation last modified by <span class="user"><?php echo $operation->event->user
 <h3 class="subsection">Booking Details</h3>
 
 <div class="cols2">
-<div class="left">
-<h4>List</h4>
-<div class="eventHighlight">
-<?php $session = $operation->booking->session ?>
-<h4><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
-</div>
-</div>
+	<div class="left">
+		<h4>List</h4>
+		<div class="eventHighlight">
+			<?php $session = $operation->booking->session ?>
+			<h4><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
+		</div>
+	</div>
 
-<div>
-<h4>Theatre</h4>
-<div class="eventHighlight">
-<h4><?php echo $session->TheatreName ?></h4>
-</div>
-</div>
+	<div>
+		<h4>Theatre</h4>
+		<div class="eventHighlight">
+			<h4><?php echo $session->TheatreName ?></h4>
+		</div>
+	</div>
 
-<div>
-<h4>Admission Time</h4>
-<div class="eventHighlight">
-<h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
-</div>
-</div>
+	<div>
+		<h4>Admission Time</h4>
+		<div class="eventHighlight">
+			<h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
+		</div>
+	</div>
 </div>
 
 <div class="metaData">
@@ -226,6 +226,15 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 <?php } ?>
 
 <?php } ?>
+
+<?php if ($operation->erod) {?>
+	<div>
+		<h3 class="subsection">EROD</h3>
+		<div class="eventHighlight">
+			<h4><?php echo $operation->erod->NHSDate('session_date').' '.$operation->erod->timeSlot.', '.$operation->erod->FirmName?></h4>
+		</div>
+	</div>
+<?php }?>
 
 <?php if ($operation->status != $operation::STATUS_CANCELLED && $this->event->editable) { ?>
 <!-- editable -->

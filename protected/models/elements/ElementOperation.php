@@ -47,6 +47,7 @@
  * @property AnaestheticType $anaesthetic_type
  * @property Eye $eye
  * @property Priority $priority
+ * @property ElementOperationEROD $erod
  */
 class ElementOperation extends BaseEventTypeElement
 {
@@ -153,7 +154,8 @@ class ElementOperation extends BaseEventTypeElement
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'anaesthetic_type' => array(self::BELONGS_TO, 'AnaestheticType', 'anaesthetic_type_id'),
 			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
-			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id')
+			'priority' => array(self::BELONGS_TO, 'Priority', 'priority_id'),
+			'erod' => array(self::HAS_ONE, 'ElementOperationEROD', 'element_operation_id'),
 		);
 	}
 
@@ -1421,5 +1423,68 @@ class ElementOperation extends BaseEventTypeElement
 			$text .= $procedure['term']."\n";
 		}
 		return $text;
+	}
+
+	public function calculateEROD($booking_session_id) {
+		$where = '';
+
+		$service_subspecialty_assignment_id = $this->event->episode->firm->service_subspecialty_assignment_id;
+
+		if ($this->consultant_required) {
+			$where .= " and session.consultant = 1";
+		}
+
+		if ($this->event->episode->patient->isChild()) {
+			$where .= " and session.paediatric = 1";
+		}
+
+		if ($this->anaesthetist_required || $this->anaesthetic_type->code == 'GA') {
+			$where .= " and session.anaesthetist = 1 and session.general_anaesthetic = 1";
+		}
+
+		$cmd = Yii::app()->db->createCommand();
+
+		foreach ($erod = $cmd->select("session.id as session_id, date, start_time, end_time, firm.name as firm_name, firm.id as firm_id, subspecialty.name as subspecialty_name, consultant, paediatric, anaesthetist, general_anaesthetic, floor(time_to_sec(timediff(session.end_time,session.start_time))/60) as session_duration, sum(element_operation.total_duration) as total_operations_duration, floor(time_to_sec(timediff(session.end_time,session.start_time))/60 - sum(element_operation.total_duration)) as available_time")
+			->from("session")
+			->join("session_firm_assignment sfa","sfa.session_id = session.id")
+			->join("firm","firm.id = sfa.firm_id")
+			->join("booking","booking.session_id = session.id")
+			->join("element_operation","booking.element_operation_id = element_operation.id")
+			->join("service_subspecialty_assignment ssa","ssa.id = firm.service_subspecialty_assignment_id")
+			->join("subspecialty","subspecialty.id = ssa.subspecialty_id")
+			->join("theatre","session.theatre_id = theatre.id and theatre.id != 10")
+			->where("session.date > timestampadd(week,3,'".$this->decision_date."') and session.status = 0 and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id $where")
+			->group("session.id")
+			->order("session.date, session.start_time")
+			->queryAll() as $row) {
+
+			if ($row['session_id'] == $booking_session_id) {
+				// this is so that the available_time value saved below is accurate
+				$row['available_time'] -= $this->total_duration;
+			}
+			
+			if ($row['available_time'] >= $this->total_duration) {
+				$erod = new ElementOperationEROD;
+				$erod->element_operation_id = $this->id;
+				$erod->session_id = $row['session_id'];
+				$erod->session_date = $row['date'];
+				$erod->session_start_time = $row['start_time'];
+				$erod->session_end_time = $row['end_time'];
+				$erod->firm_id = $row['firm_id'];
+				$erod->consultant = $row['consultant'];
+				$erod->paediatric = $row['paediatric'];
+				$erod->anaesthetist = $row['anaesthetist'];
+				$erod->general_anaesthetic = $row['general_anaesthetic'];
+				$erod->session_duration = $row['session_duration'];
+				$erod->total_operations_time = $row['total_operations_duration'];
+				$erod->available_time = $row['available_time'];
+
+				if (!$erod->save()) {
+					throw new Exception('Unable to save EROD: '.print_r($erod->getErrors(),true));
+				}
+
+				break;
+			}
+		}
 	}
 }
