@@ -1442,9 +1442,9 @@ class ElementOperation extends BaseEventTypeElement
 			$where .= " and session.anaesthetist = 1 and session.general_anaesthetic = 1";
 		}
 
-		$cmd = Yii::app()->db->createCommand();
+		$lead_time_date = date('Y-m-d',strtotime($this->decision_date) + (86400 * 7 * Yii::app()->params['erod_lead_time_weeks']));
 
-		foreach ($erod = $cmd->select("session.id as session_id, date, start_time, end_time, firm.name as firm_name, firm.id as firm_id, subspecialty.name as subspecialty_name, consultant, paediatric, anaesthetist, general_anaesthetic, floor(time_to_sec(timediff(session.end_time,session.start_time))/60) as session_duration, sum(element_operation.total_duration) as total_operations_duration, floor(time_to_sec(timediff(session.end_time,session.start_time))/60 - sum(element_operation.total_duration)) as available_time")
+		foreach ($erod = Yii::app()->db->createCommand()->select("session.id as session_id, date, start_time, end_time, firm.name as firm_name, firm.id as firm_id, subspecialty.name as subspecialty_name, consultant, paediatric, anaesthetist, general_anaesthetic")
 			->from("session")
 			->join("session_firm_assignment sfa","sfa.session_id = session.id")
 			->join("firm","firm.id = sfa.firm_id")
@@ -1453,17 +1453,21 @@ class ElementOperation extends BaseEventTypeElement
 			->join("service_subspecialty_assignment ssa","ssa.id = firm.service_subspecialty_assignment_id")
 			->join("subspecialty","subspecialty.id = ssa.subspecialty_id")
 			->join("theatre","session.theatre_id = theatre.id and theatre.id != 10")
-			->where("session.date > timestampadd(week,3,'".$this->decision_date."') and session.status = 0 and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id $where")
+			->where("session.date > '$lead_time_date' and session.status = 0 and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id $where")
 			->group("session.id")
 			->order("session.date, session.start_time")
 			->queryAll() as $row) {
 
-			if ($row['session_id'] == $booking_session_id) {
+			$session = Session::model()->findByPk($row['session_id']);
+
+			$available_time = $session->available_time;
+
+			if ($session->id == $booking_session_id) {
 				// this is so that the available_time value saved below is accurate
-				$row['available_time'] -= $this->total_duration;
+				$available_time -= $this->total_duration;
 			}
-			
-			if ($row['available_time'] >= $this->total_duration) {
+
+			if ($available_time >= $this->total_duration) {
 				$erod = new ElementOperationEROD;
 				$erod->element_operation_id = $this->id;
 				$erod->session_id = $row['session_id'];
@@ -1475,9 +1479,9 @@ class ElementOperation extends BaseEventTypeElement
 				$erod->paediatric = $row['paediatric'];
 				$erod->anaesthetist = $row['anaesthetist'];
 				$erod->general_anaesthetic = $row['general_anaesthetic'];
-				$erod->session_duration = $row['session_duration'];
-				$erod->total_operations_time = $row['total_operations_duration'];
-				$erod->available_time = $row['available_time'];
+				$erod->session_duration = $session->duration;
+				$erod->total_operations_time = $session->total_operations_time;
+				$erod->available_time = $available_time;
 
 				if (!$erod->save()) {
 					throw new Exception('Unable to save EROD: '.print_r($erod->getErrors(),true));
