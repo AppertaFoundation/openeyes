@@ -119,4 +119,20 @@ class Institution extends BaseActiveRecord
 
 		return $address;
 	}
+
+	public function getLetterArray() {
+		return array_merge(array($this->name),$this->address->getLetterArray(false));
+
+		$address = array();
+		foreach (array('address1', 'address2', 'address3', 'postcode') as $field) {
+			if (!empty($this->$field)) {
+				if ($field == 'address1') {
+					$address[] = CHtml::encode(str_replace(',','',$this->$field));
+				} else {
+					$address[] = CHtml::encode($this->$field);
+				}
+			}
+		}
+		return $address;
+	}
 }

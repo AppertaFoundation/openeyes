@@ -191,7 +191,11 @@ if (!empty($address)) {
 														echo 'Consultant Ophthalmologist';
 														break;
 													default:
-														echo $pca->contact->parent_class;
+														if ($uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id))) {
+															echo $uca->user->role ? $uca->user->role : 'Staff';
+														} else {
+															echo $pca->contact->parent_class;
+														}
 												}
 												?>
 											</td>
@@ -253,7 +257,7 @@ if (!empty($address)) {
 										}
 
 										if (contactCache[value]['institution_id']) {
-											querystr += '&institution_id'+contactCache[value]['institution_id'];
+											querystr += '&institution_id='+contactCache[value]['institution_id'];
 										}
 
 										$.ajax({
@@ -285,7 +289,8 @@ if (!empty($address)) {
 							&nbsp;&nbsp;
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
-								<option value="consultant" selected="selected">Consultant Ophthalmologist</option>
+								<option value="moorfields" selected="selected">Moorfields staff</option>
+								<option value="consultant">Consultant ophthalmologist</option>
 								<option value="specialist">Non-ophthalmic specialist</option>
 							</select>
 							&nbsp;
@@ -344,9 +349,9 @@ if (!empty($address)) {
 					var el = $(this);
 
 					if ($(this).parent().parent().children('td:nth-child(2)').length >0) {
-						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+', '+$(this).parent().parent().children('td:nth-child(2)').html()+')';
+						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$.trim($(this).parent().parent().children('td:nth-child(3)').html())+', '+$.trim($(this).parent().parent().children('td:nth-child(2)').html())+')';
 					} else {
-						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+')';
+						var name = $.trim($(this).parent().parent().children('td:first').children('span').html())+' ('+$.trim($(this).parent().parent().children('td:nth-child(3)').html())+')';
 					}
 
 					$.ajax({
@@ -355,7 +360,7 @@ if (!empty($address)) {
 						'success': function(resp) {
 							if (resp == "1") {
 								el.parent().parent().remove();
-								
+
 								var newCurrentContacts = [];
 								for (var i in currentContacts) {
 									if (currentContacts[i] != name) {
@@ -401,8 +406,10 @@ if (!empty($address)) {
 						}
 						?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$type.', '.$pca->site->name.')';?>");
-					<?php } else if ($pca->institution) {?>
-						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
+					<?php } else if ($pca->institution) {
+						$uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id));
+						?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.($uca ? ($uca->user->role ? $uca->user->role : 'Staff') : $pca->contact->parent_class).', '.$pca->institution->name.')';?>");
 					<?php } else {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->summary : '').')';?>");
 					<?php }?>
