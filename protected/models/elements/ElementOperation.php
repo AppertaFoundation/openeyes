@@ -1452,14 +1452,18 @@ class ElementOperation extends BaseEventTypeElement
 			->join("element_operation","booking.element_operation_id = element_operation.id")
 			->join("service_subspecialty_assignment ssa","ssa.id = firm.service_subspecialty_assignment_id")
 			->join("subspecialty","subspecialty.id = ssa.subspecialty_id")
-			->join("theatre","session.theatre_id = theatre.id and theatre.id != 10")
+			->join("theatre","session.theatre_id = theatre.id")
 			->where("session.date > '$lead_time_date' and session.status = 0 and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id $where")
 			->group("session.id")
 			->order("session.date, session.start_time")
 			->queryAll() as $row) {
+ 			// removed this from the theatre join: and theatre.id != 10")   ~chrisr
 
 			$session = Session::model()->findByPk($row['session_id']);
-
+			// if the session has no firm, under the existing booking logic it is an emergency session
+			if (!$session->firm) {
+				continue;
+			}
 			$available_time = $session->available_time;
 
 			if ($session->id == $booking_session_id) {
