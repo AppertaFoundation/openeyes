@@ -1428,6 +1428,12 @@ class ElementOperation extends BaseEventTypeElement
 	public function calculateEROD($booking_session_id) {
 		$where = '';
 
+		if ($this->cancelledBookings) {
+			OELog::log("We have cancelled bookings so we dont set EROD");
+			return false;
+		} else {
+			OELog::log("No cancelled bookings so we set EROD");
+		}
 		$service_subspecialty_assignment_id = $this->event->episode->firm->service_subspecialty_assignment_id;
 
 		if ($this->consultant_required) {
