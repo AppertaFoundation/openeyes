@@ -87,6 +87,7 @@
 										if ($short_version) {
 											echo '</span> - <span>'.$procedure['short_format'];
 										}
+										echo "</span>";
 									?>
 								</span>
 								<?php if ($durations) {?>
