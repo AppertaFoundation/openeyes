@@ -39,6 +39,8 @@
  */
 class Drug extends BaseActiveRecord
 {
+	public $default_scope = true;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Drug the static model class
@@ -57,9 +59,23 @@ class Drug extends BaseActiveRecord
 	}
 
 	public function defaultScope() {
-		return array(
-			'condition' => 'discontinued = 0',
-		);
+		if ($this->default_scope) {
+			return array(
+				'condition' => 'discontinued = 0',
+			);
+		} else {
+			return array();
+		}
+	}
+
+	public function enableDefaultScope() {
+		$this->default_scope = true;
+		return $this;
+	}
+
+	public function disableDefaultScope() {
+		$this->default_scope = false;
+		return $this;
 	}
 
 	/**
