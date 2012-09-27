@@ -19,16 +19,21 @@
 /**
  * Load a PDF into an iframe and print it
  */
+
+var iframe = null;
+
 function printPDF(url, data) {
 	$('#print_pdf_iframe').remove();
-	var iframe = document.createElement('iframe');
+	iframe = document.createElement('iframe');
+	iframe.onload = function() {
+		setTimeout('iframe.contentWindow.print();',1000);
+	};
 	$(iframe).attr({
 		id: 'print_pdf_iframe',
 		src: url + '?' + $.param(data),
 		style: 'display: none;'
 	});
 	document.body.appendChild(iframe);
-	iframe.contentWindow.print();
 }
 
 $(document).ready(function() {
