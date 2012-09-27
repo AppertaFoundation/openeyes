@@ -56,6 +56,12 @@ class Drug extends BaseActiveRecord
 		return 'drug';
 	}
 
+	public function defaultScope() {
+		return array(
+			'condition' => 'discontinued = 0',
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -65,7 +71,7 @@ class Drug extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
+			array('code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name, code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
