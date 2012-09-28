@@ -139,6 +139,19 @@ class OETCPDF extends TCPDF {
 	}
 
 	/**
+	 * Render reply-to address
+	 * @param string $address Lines delimited with \n
+	 */
+	public function ReplyToAddress($address) {
+		$this->SetFont("times", "", 12);
+		$this->setY(90);
+		$this->MultiCell(0, 0, $address, 0, 'L');
+		if($this->body_start < $this->getY()) {
+			$this->body_start = $this->getY();
+		}
+	}
+
+	/**
 	 * Move Y position to start of body, avoiding addresses (if used)
 	 * @param boolean $reset Reset body_start to default after move 
 	 */
@@ -148,5 +161,4 @@ class OETCPDF extends TCPDF {
 			$this->body_start = self::BODY_START;
 		}
 	}
-
 }

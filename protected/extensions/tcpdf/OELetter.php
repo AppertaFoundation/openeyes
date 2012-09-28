@@ -21,6 +21,7 @@ class OELetter {
 
 	protected $to_address;
 	protected $from_address;
+	protected $replyto_address;
 	protected $body_html;
 	protected $font_family = 'times';
 	protected $font_size = '12';
@@ -65,8 +66,14 @@ class OELetter {
 		if($this->from_address) {
 			$pdf->FromAddress($this->from_address);
 		}
+		if($this->replyto_address) {
+			$pdf->ReplyToAddress("Please reply to: ".$this->replyto_address);
+		}
 		$pdf->moveToBodyStart();
 		$pdf->writeHTML($this->body_html, true, false, true, true, 'L');
 	}
 
+	public function addReplyToAddress($replyto_address) {
+		$this->replyto_address = $replyto_address;
+	}
 }
