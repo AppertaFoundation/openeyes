@@ -184,7 +184,7 @@
 
 <?php if($subspecialty->id != 13 && $operation->showPreopWarning()) { // Not refractive laser ?>
 <p>
-	<strong>All admissions require a Pre-Operative Assessment which you must attend. Non-attendance will cause a delay or possible <span class="red">cancellation</span> to your surgery.</strong>
+	<strong>All admissions require a Pre-Operative Assessment which you must attend. Non-attendance will cause a delay or possible <em>cancellation</em> to your surgery.</strong>
 </p>
 <?php } ?>
 
@@ -193,8 +193,8 @@
 </p>
 
 <?php if($subspecialty->id != 13 && $operation->showPrescriptionWarning()) { // Not refractive laser ?>
-<p class="red">
-	You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/friend/carer who is collecting you to make sure they bring some money to cover the prescription.
+<p>
+	<em>You may be given a prescription after your treatment. This can be collected from our pharmacy on the ward, however unless you have an exemption certificate the standard prescription charge will apply. Please ensure you have the correct money or ask the relative/friend/carer who is collecting you to make sure they bring some money to cover the prescription.</em>
 </p>
 <?php } ?>
 
@@ -212,7 +212,7 @@
 	<li>We would like to request that only 1 person should accompany you in order to ensure that adequate seating is available for patients</li>
 	<?php } ?>
 	<?php if($subspecialty->id != 13 && $operation->showPrescriptionWarning()) { ?>
-	<li class="red">Check whether you have to pay or are exempt from prescription charges. If you are exempt, you will need to provide proof that you are exempt every time you collect a prescription. The prescription charge is £7.40 per item.</li>
+	<li><em>Check whether you have to pay or are exempt from prescription charges. If you are exempt, you will need to provide proof that you are exempt every time you collect a prescription. The prescription charge is £7.40 per item.</em></li>
 	<?php } ?>
 </ul>
 
