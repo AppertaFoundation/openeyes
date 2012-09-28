@@ -613,13 +613,16 @@ class PatientController extends BaseController
 			$where = "parent_class = 'Consultant'";
 		} else if (@$_GET['filter'] == 'specialist') {
 			$where = "parent_class = 'Specialist'";
+		} else if (@$_GET['filter'] == 'moorfields') {
+			$where = "user_id is not null";
 		} else {
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
 		foreach (Yii::app()->db->createCommand()
-			->select('contact.*')
+			->select('contact.*, user_contact_assignment.user_id as user_id')
 			->from('contact')
+			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
 			->where("LOWER(last_name) LIKE :term AND $where", array(':term' => $term))
 			->order('title asc, first_name asc, last_name asc')
 			->queryAll() as $contact) {
@@ -677,6 +680,21 @@ class PatientController extends BaseController
 						);
 					}
 				}
+			} else if ($contact['user_id']) {
+				$user = User::model()->findByPk($contact['user_id']);
+
+				if (!($role = $user->role)) {
+					$role = 'Staff';
+				}
+
+				$institution = Institution::model()->find('code=?',array('RP6'));
+
+				$contacts[] = array(
+					'line' => trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name']).' ('.$role.', '.$institution->name.')',
+					'contact_id' => $contact['id'],
+					'institution_id' => $institution->id,
+				);
+
 			} else {
 				$contact = Contact::model()->findByPk($contact['id']);
 
@@ -708,6 +726,10 @@ class PatientController extends BaseController
 			$type = $specialist->specialist_type->name;
 		} else if ($contact->parent_class == 'Consultant') {
 			$type = 'Consultant Ophthalmologist';
+		} else if ($uca = UserContactAssignment::model()->find('contact_id=?',array($contact->id))) {
+			if (!($type = $uca->user->role)) {
+				$type = 'Staff';
+			}
 		} else {
 			$type = $contact->parent_class;
 		}
