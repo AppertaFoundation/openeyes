@@ -305,46 +305,8 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_print-letter').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			clearPrintContent();
-			appendPrintContent($('#printcontent_admissionletter').html());
-			printContent();
+			printPDF('<?php echo Yii::app()->createUrl('patient/printadmissionletter/'.$this->event->id)?>',{});
 			enableButtons();
 		}
 	});
 </script>
-<?php if($operation->booking) { ?>
-<div id="printcontent_admissionletter" style="display: none;">
-<?php
-	// TODO: This needs moving to a controller so we can pull it in using an ajax call
-	// Only render the letter if the patient has an address
-	if($has_address) {
-		$admissionContact = $operation->getAdmissionContact();
-		$site = $operation->booking->session->theatre->site;
-		$firm = $operation->booking->session->firm;
-		$emergency_list = false;
-		if(!$firm) {
-			$firm = $operation->event->episode->firm;
-			$emergency_list = true;
-		}
-		$this->renderPartial('/letters/admission_letter', array(
-			'site' => $site,
-			'patient' => $patient,
-			'firm' => $firm,
-			'emergencyList' => $emergency_list,
-			'operation' => $operation,
-			'refuseContact' => $admissionContact['refuse'],
-			'healthContact' => $admissionContact['health'],
-			'cancelledBookings' => $cancelledBookings,
-		));
-		$this->renderPartial("/letters/break");
-		$this->renderPartial("/letters/admission_form", array(
-			'operation' => $operation, 
-			'site' => $site,
-			'patient' => $patient,
-			'firm' => $firm,
-			'emergencyList' => $emergency_list,
-		));
-	}
-?>
-</div>
-<?php } ?>
