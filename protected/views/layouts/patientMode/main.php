@@ -38,6 +38,7 @@
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jui/js/jquery-ui.min.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
+	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.printElement.min.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize-min.js'))?>
