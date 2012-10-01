@@ -46,14 +46,6 @@ class BaseActiveRecord extends CActiveRecord
 	 * @return boolean
 	 */
 	protected function beforeSave() {
-		$primaryKey = $this->tableSchema->primaryKey;
-		foreach ($this->attributes as $name => $value) {
-			// The '!empty' check is to prevent it populating NULL values, e.g. episode.end_date was changing from NULL to 0000-00-00 00:00:00.
-			if(!empty($value) && ($primaryKey !== $name || (is_array($primaryKey) && !in_array($name, $primaryKey)))) {
-				$this->$name = strip_tags($value);
-			}
-		}
-
 		// Detect nullable foreign keys and replace "" with null (to fix html dropdowns breaking contraints)
 		foreach ($this->tableSchema->foreignKeys as $field => $stuff) {
 			if ($this->tableSchema->columns[$field]->allowNull && !$this->{$field}) {
@@ -63,7 +55,7 @@ class BaseActiveRecord extends CActiveRecord
 
 		return parent::beforeSave();
 	}
-	
+
 	/**
 	 * @param boolean $runValidation
 	 * @param array $attributes
