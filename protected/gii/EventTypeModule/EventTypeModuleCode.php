@@ -1079,6 +1079,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Textbox':
 			case 'Textarea':
 			case 'Textarea with dropdown':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></span></td>
+		</tr>';
 			case 'Integer':
 				return '		<tr>
 			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
@@ -1125,7 +1129,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		</tr>
 		'.(@$field['extra_report'] ? '<tr>
 			<td width="30%">Report:</td>
-			<td><span class="big"><?php echo $element->'.$field['name'].'2?'.'></span></td>
+			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].'2)?'.'></span></td>
 		</tr>' : '');
 			case 'Multi select':
 				return '		<tr>
