@@ -64,11 +64,11 @@ class AuditController extends BaseController
 		$criteria->compare('action','login-successful');
 		$criteria->select = 'data';
 
-		$unique_users = Audit::model()->count($criteria);
+		$unique_users = count(Audit::model()->findAll($criteria));
 
 		$criteria->distinct = false;
 
-		$total_logins = Audit::model()->count($criteria);
+		$total_logins = count(Audit::model()->findAll($criteria));
 
 		$this->render('index',array('actions'=>$actions,'targets'=>$targets,'unique_users'=>$unique_users,'total_logins'=>$total_logins));
 	}
