@@ -137,7 +137,7 @@ foreach ($elements as $element) {
 <div class="right">
 <h4>Operation Comments</h4>
 	<div class="eventHighlight comments">
-		<h4><?php echo $operation->comments?></h4>
+		<h4><?php echo CHtml::encode($operation->comments)?></h4>
 	</div>
 </div>
 <?php } ?>
