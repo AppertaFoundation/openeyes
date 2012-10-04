@@ -144,6 +144,10 @@ if (!empty($address)) {
 							<div class="data_value"><?php echo $this->patient->getGpName() ?></div>
 						</div>
 						<div class="data_row">
+							<div class="data_label">GP Address:</div>
+							<div class="data_value"><?php echo $this->patient->getGpAddress() ?></div>
+						</div>
+						<div class="data_row">
 							<div class="data_label">Practice Address:</div>
 							<div class="data_value"><?php echo $this->patient->getPracticeAddress() ?></div>
 						</div>
@@ -388,7 +392,8 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp && $this->patient->gp->contact) {
-					$gp_dropdown_string = $this->patient->getGpName() . '(Gp' . ($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '' . ')';
+					$gp_dropdown_string = $this->patient->getGpName() . '(Gp';
+					$gp_dropdown_string .= ($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '' . ')';
 				?>
 					currentContacts.push("<?php echo $gp_dropdown_string ?>");
 				<?php }?>

@@ -583,6 +583,14 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 	
+	public function getGpAddress() {
+		if($this->gp && $this->gp->contact && $this->gp->contact->address) {
+			return $this->gp->contact->address->getLetterLine();
+		} else {
+			return "Unknown";
+		}
+	}
+	
 	public function getPracticeAddress() {
 		if($this->practice && $this->practice->address) {
 			return $this->practice->address->getLetterLine();
