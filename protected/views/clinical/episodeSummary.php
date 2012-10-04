@@ -18,9 +18,9 @@
  */
 
 if (!empty($episode)) {
-	if ($episode->hasPrincipalDiagnosis()) {
-		$eye = $episode->getPrincipalDiagnosisEyeText();
-		$diagnosis = $episode->getPrincipalDiagnosisDisorderTerm();
+	if ($episode->diagnosis) {
+		$eye = $episode->eye ? $episode->eye->name : 'None';
+		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
 	} else {
 		$eye = 'No diagnosis';
 		$diagnosis = 'No diagnosis';
@@ -39,12 +39,12 @@ if (!empty($episode)) {
 
 	<h4>Principal diagnosis:</h4>
 	<div class="eventHighlight big">
-		<h4><?php echo $diagnosis?></h4>
+		<h4><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
 	</div>
 
 	<h4>Principal eye:</h4>
 	<div class="eventHighlight big">
-		<h4><?php echo $eye?></h4>
+		<h4><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
 	</div>
 
 	<!-- divide into two columns -->

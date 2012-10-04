@@ -925,4 +925,53 @@ class PatientController extends BaseController
 	 
 		Yii::app()->session['episode_hide_status'] = $status;
 	}
+
+	public function actionAdddiagnosis() {
+		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
+			$disorder = Disorder::model()->findByPk(@$_POST['DiagnosisSelection']['ophthalmic_disorder_id']);
+		} else {
+			$disorder = Disorder::model()->findByPk(@$_POST['DiagnosisSelection']['systemic_disorder_id']);
+		}
+
+		if (!$disorder) {
+			throw new Exception('Unable to find disorder: '.@$_POST['DiagnosisSelection']['ophthalmic_disorder_id'].' / '.@$_POST['DiagnosisSelection']['systemic_disorder_id']);
+		}
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_POST['patient_id']);
+		}
+
+		$date = $_POST['diagnosis_year'];
+
+		if ($_POST['diagnosis_month']) {
+			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+
+		if ($_POST['diagnosis_day']) {
+			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+
+		if (!$_POST['diagnosis_eye']) {
+			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($patient->id,$disorder->id))) {
+				$sd = new SecondaryDiagnosis;
+				$sd->disorder_id = $disorder->id;
+				$sd->patient_id = $patient->id;
+				$sd->date = $date;
+				$sd->save();
+			}
+		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye']))) {
+			$sd = new SecondaryDiagnosis;
+			$sd->disorder_id = $disorder->id;
+			$sd->patient_id = $patient->id;
+			$sd->date = $date;
+			$sd->eye_id = $_POST['diagnosis_eye'];
+			$sd->save();
+		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
+	}
 }

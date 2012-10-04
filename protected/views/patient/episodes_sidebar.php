@@ -131,9 +131,8 @@
 			<div class="episode_details hidden" id="episode-details-<?php echo $episode->id?>">
 				<div class="row"><span class="label">Start date:</span><?php echo $episode->NHSDate('start_date'); ?></div>
 				<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? $episode->NHSDate('end_date') : '-')?></div>
-				<?php $has_diagnosis = $episode->hasPrincipalDiagnosis() ?>
-				<div class="row"><span class="label">Principal eye:</span><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisEyeText() : 'No diagnosis' ?></div>
-				<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisDisorderTerm() : 'No diagnosis' ?></div>
+				<div class="row"><span class="label">Principal eye:</span><?php echo ($episode->diagnosis) ? ($episode->eye ? $episode->eye->name : 'None') : 'No diagnosis' ?></div>
+				<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
 				<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></div>
 				<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></div>
 				<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png')?>" alt="folder open" />

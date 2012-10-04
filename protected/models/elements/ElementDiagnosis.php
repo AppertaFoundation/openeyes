@@ -143,10 +143,50 @@ class ElementDiagnosis extends BaseEventTypeElement
 		$patient_id = (int) $_REQUEST['patient_id'];
 		$firm = Yii::app()->getController()->firm;
 		$episode = Episode::getCurrentEpisodeByFirm($patient_id, $firm);
-		if($episode && $episode->hasPrincipalDiagnosis()) {
-			$this->eye_id = $episode->getPrincipalEye()->id;
-			$this->disorder_id = $episode->getPrincipalDisorder()->id;
+		if($episode && $episode->diagnosis) {
+			$this->eye_id = $episode->eye_id;
+			$this->disorder_id = $episode->disorder_id;
 		}
 	}
 
+	protected function afterSave() {
+		if (!$this->event->episode->eye && !$this->event->episode->disorder_id) {
+			$this->event->episode->eye_id = $this->eye_id;
+			$this->event->episode->disorder_id = $this->disorder_id;
+			if (!$this->event->episode->save()) {
+				throw new Exception('Unable to save episode: '.print_r($this->event->episode->getErrors(),true));
+			}
+			if ($sd = SecondaryDiagnosis::model()->find('disorder_id=? and eye_id = ?',array($this->disorder_id,3))) {
+				if (!$sd->delete()) {
+					throw new Exception('Unable to delete secondary diagnosis: '.print_r($sd->getErrors(),true));
+				}
+
+				if (in_array($this->eye_id,array(1,2))) {
+					$sd = new SecondaryDiagnosis;
+					$sd->patient_id = $this->event->episode->patient_id;
+					$sd->disorder_id = $this->disorder_id;
+					$sd->eye_id = $this->eye_id == 1 ? 2 : 1;
+					$sd->date = date('Y-m-d');
+					if (!$sd->save()) {
+						throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
+					}
+				}
+			}
+		} else {
+			if (!SecondaryDiagnosis::model()->find('disorder_id=? and eye_id in ('.$this->eye_id.',3)',array($this->disorder_id))) {
+				if (!Episode::model()->findAll('disorder_id=? and eye_id in ('.$this->eye_id.',3)',array($this->disorder_id))) {
+					$sd = new SecondaryDiagnosis;
+					$sd->patient_id = $this->event->episode->patient_id;
+					$sd->disorder_id = $this->disorder_id;
+					$sd->eye_id = $this->eye_id;
+					$sd->date = date('Y-m-d');
+					if (!$sd->save()) {
+						throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
+					}
+				}
+			}
+		}
+
+		parent::afterSave();
+	}
 }

@@ -18,20 +18,26 @@
  */
 
 /**
- * This is the model class for table "common_systemic_disorder".
+ * This is the model class for table "secondary_diagnosis".
  *
- * The followings are the available columns in table 'common_systemic_disorder':
- * @property string $id
- * @property string $disorder_id
+ * The followings are the available columns in table 'secondary_diagnosis':
+ * @property integer $id
+ * @property integer $disorder_id
+ * @property integer $eye_id
+ * @property integer $patient_id
+ * @property integer $episode_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder
+ * @property Eye $eye
+ * @property Patient $patient
+ * @property Episode $episode
  */
-class CommonSystemicDisorder extends BaseActiveRecord
+class SecondaryDiagnosis extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return CommonSystemicDisorder the static model class
+	 * @return SecondaryDiagnosis the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -43,7 +49,7 @@ class CommonSystemicDisorder extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'common_systemic_disorder';
+		return 'secondary_diagnosis';
 	}
 
 	/**
@@ -54,11 +60,8 @@ class CommonSystemicDisorder extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id', 'required'),
-			array('disorder_id', 'length', 'max'=>10),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, disorder_id', 'safe', 'on'=>'search'),
+			array('disorder_id, patient_id', 'required'),
+			array('disorder_id, eye_id, patient_id, episode_id', 'safe'),
 		);
 	}
 
@@ -71,6 +74,9 @@ class CommonSystemicDisorder extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+			'episode' => array(self::BELONGS_TO, 'Episode', 'episode_id'),
 		);
 	}
 
@@ -81,7 +87,6 @@ class CommonSystemicDisorder extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'disorder_id' => 'Disorder',
 		);
 	}
 
@@ -97,18 +102,29 @@ class CommonSystemicDisorder extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('disorder_id',$this->disorder_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public static function getList($firm) {
-		return CHtml::listData(Disorder::model()->findAll(array(
-				'condition' => 'systemic = 1',
-				'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',
-				'order' => 'term',
-		)), 'id', 'term');
+	public function getDateText() {
+		$year = (integer)substr($this->date,0,4);
+		$mon = (integer)substr($this->date,5,2);
+		$day = (integer)substr($this->date,8,2);
+
+		if ($year && $mon && $day) {
+			return $this->NHSDate('date');
+		}
+
+		if ($year && $mon) {
+			return date('M Y',strtotime($year.'-'.$mon.'-01 00:00:00'));
+		}
+
+		if ($year) {
+			return $year;
+		}
+
+		return 'Unknown';
 	}
 }

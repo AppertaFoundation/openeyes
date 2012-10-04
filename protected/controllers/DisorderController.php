@@ -51,6 +51,11 @@ class DisorderController extends Controller {
 			$criteria->params = $params;
 			// Limit results
 			$criteria->limit = '200';
+			if (@$_GET['restrict'] == 'systemic') {
+				$criteria->addCondition('systemic = 1');
+			} else if (@$_GET['restrict'] == 'ophthalmic') {
+				$criteria->addCondition('systemic = 0');
+			}
 			$disorders = Disorder::model()->findAll($criteria);
 			$return = array();
 			foreach($disorders as $disorder) {

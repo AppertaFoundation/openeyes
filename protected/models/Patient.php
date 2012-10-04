@@ -368,7 +368,7 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($episode && $disorder = $episode->getPrincipalDisorder()) {
+		if ($episode && $disorder = $episode->diagnosis) {
 			return strtolower($disorder->term);
 		}
 	}
@@ -570,5 +570,23 @@ class Patient extends BaseActiveRecord {
 				}
 			}
 		}
+	}
+
+	public function getSystemicDiagnoses() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $this->id);
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 1';
+		$criteria->order = 'date asc';
+
+		return SecondaryDiagnosis::model()->findAll($criteria);
+	}
+
+	public function getOphthalmicDiagnoses() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $this->id);
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 0';
+		$criteria->order = 'date asc';
+
+		return SecondaryDiagnosis::model()->findAll($criteria);
 	}
 }

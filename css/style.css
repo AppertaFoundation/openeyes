@@ -1180,3 +1180,13 @@ div.DropDownLabelVertical { margin-bottom: 10px; }
 div.patron { margin-left: 37em; font-size: 12pt; }
 
 #audit_filter_button { float: right; margin-top: -3px;}
+
+.diagnosis_date { margin-top: 10px; }
+.diagnosis_date_field { margin-right: 10px; }
+
+.diagnosis_eye { margin-top: 10px; }
+.diagnosis_eye_label { width: 35px; display: inline-block; }
+.diagnosis_date_label { width: 45px; display: inline-block; }
+input.diagnosis_eye { margin-left: 10px; }
+#DiagnosisSelection_systemic_disorder_id_enteredDiagnosisText h4 { background: #fff; color: #000; padding: 0; font-size: 14pt; font-weight: bold; margin-bottom: 5px; }
+#DiagnosisSelection_ophthalmic_disorder_id_enteredDiagnosisText h4 { background: #fff; color: #000; padding: 0; font-size: 14pt; font-weight: bold; margin-bottom: 5px; }

@@ -217,8 +217,8 @@ class ElementOperation extends BaseEventTypeElement
 		$patient_id = (int) $_REQUEST['patient_id'];
 		$firm = Yii::app()->getController()->firm;
 		$episode = Episode::getCurrentEpisodeByFirm($patient_id, $firm);
-		if($episode && $episode->hasPrincipalDiagnosis()) {
-			$this->eye_id = $episode->getPrincipalEye()->id;
+		if($episode && $episode->diagnosis) {
+			$this->eye_id = $episode->eye_id;
 		}
 		$this->consultant_required = self::CONSULTANT_NOT_REQUIRED;
 		$this->anaesthetic_type_id = 1;
