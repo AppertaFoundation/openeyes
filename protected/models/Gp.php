@@ -30,6 +30,9 @@
  */
 class Gp extends BaseActiveRecord {
 	
+	const UNKNOWN_SALUTATION = 'Doctor';
+	const UNKNOWN_NAME = 'The General Practitioner'; 
+	
 	public $use_pas = TRUE;
 	
 	/**
