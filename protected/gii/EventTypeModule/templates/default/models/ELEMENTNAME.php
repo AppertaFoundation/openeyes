@@ -172,6 +172,17 @@ if (isset($element)) {
 	 */
 	public function setDefaultOptions()
 	{
+		if (Yii::app()->getController()->getAction()->id == 'create') {
+		<?php
+		if (isset($element)) { 
+			foreach ($element['fields'] as $field) {
+				if (isset($field['default_value'])) {
+					echo "\t\t\$this->" . $field['name'] . " = " . $field['default_value'] . ";\n";
+				}
+			}
+		}
+		?>
+		}
 	}
 
 <?php if (@$element['add_selected_eye']) {?>

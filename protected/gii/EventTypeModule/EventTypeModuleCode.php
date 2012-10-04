@@ -212,15 +212,16 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$element_type = ElementType::model()->findByPk($value);
 
 					$elements[$number]['name'] = $value = $element_type->name;
+					$elements[$number]['table_name'] = $element_type->tableName();
 					$field = 'elementName'.$number;
 				}
 
 				$elements[$number]['class_name'] = 'Element_'.$this->moduleID.'_'.preg_replace("/ /", "", ucwords(strtolower($value)));
-				#$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));
 				# now using the shortname field attribute for the table name
-				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
-				# not sure if we need to store the shortname attribute for later reference of table names
-				$elements[$number]['short_name'] = $_POST["elementShortName".$number];
+				if ($elements[$number]['mode'] == 'create') {
+					$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
+				}
+
 				$elements[$number]['number'] = $number;
 				$elements[$number]['fields'] = array();
 				$elements[$number]['foreign_keys'] = array();
@@ -272,6 +273,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['slider_min_value'] = @$_POST['sliderMinValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_max_value'] = @$_POST['sliderMaxValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_default_value'] = @$_POST['sliderDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['sliderDefaultValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_stepping'] = @$_POST['sliderStepping'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['slider_dp'] = @$_POST['sliderForceDP'.$number.'Field'.$field_number];
 						}
@@ -280,6 +282,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['integer_min_value'] = @$_POST['integerMinValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_max_value'] = @$_POST['integerMaxValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['integerDefaultValue'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_size'] = @$_POST['integerSize'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_max_length'] = @$_POST['integerMaxLength'.$number.'Field'.$field_number];
 						}
