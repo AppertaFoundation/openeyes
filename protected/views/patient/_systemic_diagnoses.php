@@ -8,8 +8,9 @@
 							<table class="subtleWhite">
 								<thead>
 									<tr>
-										<th width="40%">Date</th>
+										<th width="80px">Date</th>
 										<th>Diagnosis</th>
+										<th>Edit</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -17,6 +18,7 @@
 										<tr>
 											<td><?php echo $diagnosis->dateText?></td>
 											<td><?php echo $diagnosis->disorder->term?></td>
+											<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
 										</tr>
 									<?php }?>
 								</tbody>

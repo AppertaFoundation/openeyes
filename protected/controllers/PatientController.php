@@ -974,4 +974,20 @@ class PatientController extends BaseController
 
 		$this->redirect(array('patient/view/'.$patient->id));
 	}
+
+	public function actionRemovediagnosis() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_GET['patient_id']);
+		}
+
+		if (!$sd = SecondaryDiagnosis::model()->findByPk(@$_GET['diagnosis_id'])) {
+			throw new Exception('Unable to find secondary_diagnosis: '.@$_GET['diagnosis_id']);
+		}
+
+		if ($sd->delete()) {
+			echo "success";
+		} else {
+			echo "failure";
+		}
+	}
 }

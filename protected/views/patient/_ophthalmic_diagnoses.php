@@ -8,8 +8,9 @@
 							<table class="subtleWhite">
 								<thead>
 									<tr>
-										<th width="40%">Date</th>
+										<th width="80px">Date</th>
 										<th>Diagnosis</th>
+										<th>Edit</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -17,6 +18,7 @@
 										<tr>
 											<td><?php echo $diagnosis->dateText?></td>
 											<td><?php echo $diagnosis->disorder->term?></td>
+											<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
 										</tr>
 									<?php }?>
 								</tbody>
@@ -97,5 +99,23 @@
 	$('button.btn_save_ophthalmic_diagnosis').click(function() {
 		$('img.add_ophthalmic_diagnosis_loader').show();
 		return true;
+	});
+	$('.removeDiagnosis').live('click',function() {
+		var diagnosis_id = $(this).attr('rel');
+		var anchor = $(this);
+
+		$.ajax({
+			'type': 'GET',
+			'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+diagnosis_id,
+			'success': function(html) {
+				if (html == 'success') {
+					anchor.parent().parent().remove();
+				} else {
+					alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+				}
+			}
+		});
+
+		return false;
 	});
 </script>
