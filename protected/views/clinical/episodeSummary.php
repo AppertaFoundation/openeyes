@@ -38,14 +38,49 @@ if (!empty($episode)) {
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
 	<h4>Principal diagnosis:</h4>
-	<div class="eventHighlight big">
-		<h4><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
-	</div>
 
-	<h4>Principal eye:</h4>
-	<div class="eventHighlight big">
-		<h4><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
-	</div>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'add-systemic-diagnosis',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'action'=>array('patient/updateepisode'),
+	));
+
+	?><input type="hidden" name="episode_id" value="<?php echo $episode->id?>" /><?php
+
+	if ($episode->editable) {
+		$form->widget('application.widgets.DiagnosisSelection',array(
+				'field' => 'disorder_id',
+				'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+				'restrict' => 'ophthalmic',
+				'layout' => 'episodeSummary',
+		));
+
+		?><button style="margin-left:10px; margin-bottom: 10px;" class="classy blue mini" type="submit" id="save_episode_diagnosis"><span class="button-span button-span-blue">Change diagnosis</span></button><?php
+	} else {?>
+		<div class="eventHighlight big">
+			<h4 style="font-style: normal; border-top: none;"><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
+		</div>
+	<?php }?>
+
+	<h4 style="font-style: normal; border-top: none;">Principal eye:</h4>
+
+	<?php if ($episode->editable) {?>
+		<div>
+			<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+				<?php echo CHtml::radioButton('eye_id', $episode->eye_id == $eye->id,array('value' => $eye->id,'class'=>'episodeSummaryRadio'))?>
+				<label for="<?php echo $episode->eye_id?>"><?php echo $eye->name?></label>
+			<?php }?>
+		</div>
+		<button style="margin-left:10px; margin-bottom: 15px;" class="classy blue mini" type="submit" id="save_episode_eye"><span class="button-span button-span-blue">Change eye</span></button>
+	<?php }else{?>
+		<div class="eventHighlight big">
+			<h4 style="font-style: normal; border-top: none;"><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
+		</div>
+	<?php }
+
+	$this->endWidget()?>
 
 	<!-- divide into two columns -->
 	<div class="cols2 clearfix">

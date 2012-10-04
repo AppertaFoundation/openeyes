@@ -109,7 +109,7 @@ class Episode extends BaseActiveRecord
 			'firm_id' => 'Firm',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
-			'episode_status_id' => 'Current Status'
+			'episode_status_id' => 'Current Status',
 		);
 	}
 
@@ -283,5 +283,20 @@ class Episode extends BaseActiveRecord
 
 	public function getOpen() {
 		return ($this->end_date == null);
+	}
+
+	public function getEditable(){
+		if (!$this->firm) {
+			return FALSE;
+		}
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+			return FALSE;
+		}
+
+		if ($this->patient->date_of_death){
+			return FALSE;
+		}
+	 
+		return TRUE;
 	}
 }

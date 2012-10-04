@@ -97,6 +97,10 @@
 		return false;
 	});
 	$('button.btn_save_ophthalmic_diagnosis').click(function() {
+		if (!$('#DiagnosisSelection_ophthalmic_disorder_id_savedDiagnosis').val()) {
+			alert('Please select a diagnosis.');
+			return false;
+		}
 		$('img.add_ophthalmic_diagnosis_loader').show();
 		return true;
 	});

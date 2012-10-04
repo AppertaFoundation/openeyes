@@ -98,6 +98,10 @@
 		return false;
 	});
 	$('button.btn_save_systemic_diagnosis').click(function() {
+		if (!$('#DiagnosisSelection_systemic_disorder_id_savedDiagnosis').val()) {
+			alert("Please select a diagnosis.");
+			return false;
+		}
 		$('img.add_systemic_diagnosis_loader').show();
 		return true;
 	});

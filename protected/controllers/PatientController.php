@@ -990,4 +990,24 @@ class PatientController extends BaseController
 			echo "failure";
 		}
 	}
+
+	public function actionUpdateepisode() {
+		if (!$episode = Episode::model()->findByPk(@$_POST['episode_id'])) {
+			throw new Exception('Unable to find episode: '.@$_POST['episode_id']);
+		}
+
+		if (!$episode->editable) {
+			throw new Exception('Attempt to edit a non-editable episode: '.@$_POST['episode_id']);
+		}
+
+		if ($_POST['eye_id'] != $episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $episode->disorder_id) {
+			$episode->eye_id = $_POST['eye_id'];
+			$episode->disorder_id = $_POST['DiagnosisSelection']['disorder_id'];
+			if (!$episode->save()) {
+				throw new Exception('Unable to update eye/diagnosis for episode '.$episode->id.': '.print_r($episode->getErrors(),true));
+			}
+		}
+
+		$this->redirect(array('patient/episode/'.$episode->id));
+	}
 }
