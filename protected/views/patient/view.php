@@ -141,15 +141,15 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
+							<div class="data_value"><?php echo $this->patient->getGpName() ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Practice Address:</div>
-							<div class="data_value"><?php echo ($this->patient->practice !== null && $this->patient->practice->address !== null) ? $this->patient->practice->address->address1.' '.$this->patient->practice->address->address2.' '.$this->patient->practice->address->city.' '.$this->patient->practice->address->county.' '.$this->patient->practice->address->postcode : 'Unknown'?></div>
+							<div class="data_value"><?php echo $this->patient->getPracticeAddress() ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Practice Telephone:</div>
-							<div class="data_value"><?php echo ($this->patient->practice !== null) ? $this->patient->practice->phone : 'Unknown'?></div>
+							<div class="data_value"><?php echo $this->patient->getPracticePhone() ?></div>
 						</div>
 					</div>
 
@@ -387,8 +387,10 @@ if (!empty($address)) {
 
 				var currentContacts = [];
 
-				<?php if ($this->patient->gp && $this->patient->gp->contact) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->practice && $this->patient->practice->address ? ', '.$this->patient->practice->address->summary : '').')';?>");
+				<?php if ($this->patient->gp && $this->patient->gp->contact) {
+					$gp_dropdown_string = $this->patient->getGpName() . '(Gp' . ($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '' . ')';
+				?>
+					currentContacts.push("<?php echo $gp_dropdown_string ?>");
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
