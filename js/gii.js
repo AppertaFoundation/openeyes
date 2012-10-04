@@ -31,7 +31,8 @@ $(document).ready(function() {
 
 	$('.add_element').live('click',function() {
 		var element_num = 0;
-
+		
+		// work out the highest element number (which will be the latest one)
 		$('input[type="text"]').map(function() {
 			if (m = $(this).attr('name').match(/^elementName([0-9]+)$/)) {
 				if (parseInt(m[1]) > element_num) {
@@ -39,7 +40,7 @@ $(document).ready(function() {
 				}
 			}
 		});
-
+		
 		$('select.elementToAddFieldsTo').map(function() {
 			if (m = $(this).attr('name').match(/^elementId([0-9]+)$/)) {
 				if (parseInt(m[1]) > element_num) {
@@ -162,7 +163,22 @@ $(document).ready(function() {
 
 		return true;
 	});
+	
+	// auto generate the shortname field content when the element name is created
+	$(".elementNameTextField").live('focusout',function () {
+		var m = $(this).attr('name').match(/^elementName([0-9]+)$/);
+		var element = m[1];
+		
+		if ($('#elementShortName'+element).val() == '') {
+			var sname = $(this).val().toLowerCase().replace(/ /g, "").substring(0,11);
+			$('#elementShortName'+element).val(sname);
+		}
 
+		if ($(this).val() != '') {
+			$('#elementShortName'+element).select().focus();
+		}
+	});
+	
 	$('.fieldLabel').die('keypress').live('keypress',function(e) {
 		var m = $(this).attr('name').match(/^elementName([0-9]+)FieldLabel([0-9]+)$/);
 		var element = m[1];

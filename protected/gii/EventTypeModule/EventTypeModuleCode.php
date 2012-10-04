@@ -26,7 +26,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$this->validation_rules = array_merge($this->validation_rules,require($this->validation_rules_path."/$file"));
 			}
 		}
-
+		error_log("construction");
 		parent::__construct();
 	}
 
@@ -43,24 +43,26 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$this->{$key} = $value;
 			}
 		}
-
+		error_log("about to prepare");
 		parent::prepare();
 
 		$this->files = array();
 		$this->moduleTemplateFile = $this->templatePath.DIRECTORY_SEPARATOR.'module.php';
-		$this->files[]=new CCodeFile($this->modulePath.'/'.$this->moduleClass.'.php', $this->render($this->moduleTemplateFile));
+		$this->files[] = new CCodeFile($this->modulePath.'/'.$this->moduleClass.'.php', $this->render($this->moduleTemplateFile));
 		$this->files_to_process = CFileHelper::findFiles($this->templatePath,array('exclude'=>array('.svn')));
 	}
 
 	public function prepare() {
 		if ($this->mode == 'create') {
 			$this->initialise(array(
-				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix))),
+				'moduleID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) . 
+					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . 
+					Yii::app()->request->getQuery('Specialty[id]') . 
+					preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix))),
 				'eventGroupName' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->name,
 			));
 		} else if ($this->mode == 'update') {
 			$this->event_type = EventType::model()->findByPk(@$_POST['EventTypeModuleEventType']);
-
 			$this->initialise(array(
 				'moduleID' => $this->event_type->class_name,
 				'event_group' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']),
@@ -68,11 +70,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				'eventGroupName' => $this->event_type->name,
 			));
 		}
-
+		
 		if ($this->mode == 'update') {
 			$current_class = $this->event_type->class_name;
 			$target_class = Yii::app()->getController()->target_class = ucfirst(strtolower($this->specialty->code)) . ucfirst(strtolower($this->event_group->code)) . Yii::app()->request->getQuery('Specialty[id]') . preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix)));
-
 			if (@$_POST['generate'] == 'Generate') {
 				$this->handleViewChanges();
 
@@ -216,8 +217,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				}
 
 				$elements[$number]['class_name'] = 'Element_'.$this->moduleID.'_'.preg_replace("/ /", "", ucwords(strtolower($value)));
-				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));;
+				#$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $value));
+				# now using the shortname field attribute for the table name
+				$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
+				# not sure if we need to store the shortname attribute for later reference of table names
+				$elements[$number]['short_name'] = $_POST["elementShortName".$number];
 				$elements[$number]['number'] = $number;
+				$elements[$number]['fields'] = array();
 				$elements[$number]['foreign_keys'] = array();
 				$elements[$number]['lookup_tables'] = array();
 				$elements[$number]['defaults_tables'] = array();
@@ -551,7 +557,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$mapping_table = array(
-				'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name'],
+				#'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name'],
+				'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_assignment',
 				'lookup_table' => $lookup_table['name'],
 				'lookup_class' => $lookup_table['class'],
 				'element_class' => $elements[$number]['class_name'],
@@ -901,9 +908,40 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		}
 	}
 
+	/**
+	 * validation check to determine if an element called $name already exists for the event type
+	 * only performs check for updates
+	 * 
+	 * @param string $name
+	 * @return boolean
+	 */
 	public function elementExists($name) {
 		if ($this->mode == 'update') {
-			return ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>$this->event_type->id,':elementName'=>$name));
+			// get the id of the event type we are updating, and check if an element with this name exists for that event
+			return ( ElementType::model()->find('event_type_id=:eventTypeId and name=:elementName',array('eventTypeId'=>@$_POST['EventTypeModuleEventType'],':elementName'=>$name)) != null);
+		}
+		return false;
+	}
+	
+	/**
+	 * checks if an element short name exists 
+	 * 
+	 * We use the short name to define table names, so here we check for the table 
+	 * being defined in the db based off the current event.
+	 * 
+	 * Only works for updates.
+	 * @since future
+	 */
+	public function elementShortNameExists($name) {
+		if ($this->mode == 'update') {
+			// TODO: work out what the table name would be for the element based off the current event
+			/* 
+			 * get the elements that would be used to create the element table name - speciality, group, and event type
+			 * concatanate these, and then try and get the table
+			 */
+			$tname = strtolower('et_' . EventType::model()->findByPk(@$_POST['EventTypeModuleEventType'])->class_name . '_' . $name);
+			error_log($tname);
+			return Yii::app()->db->schema->getTable($tname);
 		}
 		return false;
 	}
@@ -946,22 +984,41 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$key = $this->substitutePostValue($field,$element_num,$field_num);
 					$value = @$_POST[$key];
 				}
-
+				
 				if (isset($errors[$key])) continue;
 
-				if ($rule['type'] == 'required') {
-					if (isset($rule['condition'])) {
-						$condition_key = $this->substitutePostValue($rule['condition']['field'],$element_num,$field_num);
+				if (isset($rule['condition'])) {
+					$condition_key = $this->substitutePostValue($rule['condition']['field'],$element_num,$field_num);
+					if (isset($rule['condition']['value_list'])) {
+						if (!in_array(@$_POST[$condition_key], $rule['condition']['value_list'])) continue;
+					} else {
 						if (@$_POST[$condition_key] != $rule['condition']['value']) continue;
 					}
+				}
+				
+				if ($rule['type'] == 'required') {
 					if (strlen($value) <1) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
 						$errors[$key] .= ' ('.$value.') ['.$key.']';
 						continue;
 					}
 				} else if (strlen($value) <1) continue;
-
+				
 				switch ($rule['type']) {
+					case 'length':
+						if (isset($rule['regstrip'])) {
+							$checkval = preg_replace($rule['regstrip'], '', $value);
+						}
+						else {
+							$checkval = $value;
+						}
+						if (isset($rule['max']) && strlen($checkval) > $rule['max']) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : "Cannot be longer than " . $rule['max']. " characters";
+						}
+						if (isset($rule['min']) && strlen($checkval) < $rule['min']) {
+							$errors[$key] = isset($rule['message']) ? $rule['message'] : "Must be at least " . $rule['min'] . " characters";
+						}
+						break;
 					case 'integer':
 						if (!preg_match('/^\-?[0-9]+$/',$value)) {
 							$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Must be an integer';
@@ -1013,6 +1070,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						if (isset($rule['exists_method'])) {
 							$method = $rule['exists_method'];
 							if ($this->{$method}($value)) {
+								error_log("we have an error" . $key);
 								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Already exists';
 							}
 						}
