@@ -148,6 +148,10 @@ if (!empty($address)) {
 							<div class="data_value"><?php echo $this->patient->getGpAddress() ?></div>
 						</div>
 						<div class="data_row">
+							<div class="data_label">GP Telephone:</div>
+							<div class="data_value"><?php echo $this->patient->getGpPhone() ?></div>
+						</div>
+						<div class="data_row">
 							<div class="data_label">Practice Address:</div>
 							<div class="data_value"><?php echo $this->patient->getPracticeAddress() ?></div>
 						</div>

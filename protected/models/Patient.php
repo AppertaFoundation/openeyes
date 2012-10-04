@@ -599,6 +599,14 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 	
+	public function getGpPhone() {
+		if($this->gp && $this->gp->contact) {
+			return $this->gp->contact->primary_phone;
+		} else {
+			return "Unknown";
+		}
+	}
+	
 	public function getPracticePhone() {
 		if($this->practice) {
 			return $this->practice->phone;
@@ -606,4 +614,5 @@ class Patient extends BaseActiveRecord {
 			return "Unknown";
 		}
 	}
+	
 }
