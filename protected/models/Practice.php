@@ -125,5 +125,11 @@ class Practice extends BaseActiveRecord {
 		parent::afterFind();
 		Yii::app()->event->dispatch('practice_after_find', array('practice' => $this));
 	}
-	
+
+	public function getLetterAddress($name) {
+		if($this->address) {
+			return trim($name) . "\n" . implode("\n",$this->address->getLetterArray(false));
+		}
+	}
+
 }

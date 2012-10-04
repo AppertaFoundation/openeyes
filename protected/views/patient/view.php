@@ -141,23 +141,23 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo $this->patient->getGpName() ?></div>
+							<div class="data_value"><?php echo ($gp_name = $this->patient->getGpName()) ? $gp_name : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">GP Address:</div>
-							<div class="data_value"><?php echo $this->patient->getGpAddress() ?></div>
+							<div class="data_value"><?php echo ($gp_address = $this->patient->getGpAddress()) ? $gp_address : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">GP Telephone:</div>
-							<div class="data_value"><?php echo $this->patient->getGpPhone() ?></div>
+							<div class="data_value"><?php echo ($gp_phone = $this->patient->getGpPhone()) ? $gp_phone : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Practice Address:</div>
-							<div class="data_value"><?php echo $this->patient->getPracticeAddress() ?></div>
+							<div class="data_value"><?php echo ($practice_address = $this->patient->getPracticeAddress()) ? $practice_address : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Practice Telephone:</div>
-							<div class="data_value"><?php echo $this->patient->getPracticePhone() ?></div>
+							<div class="data_value"><?php echo ($practice_phone = $this->patient->getPracticePhone()) ? $practice_phone : 'Unknown'; ?></div>
 						</div>
 					</div>
 
@@ -396,8 +396,8 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp && $this->patient->gp->contact) {
-					$gp_dropdown_string = $this->patient->getGpName() . '(Gp';
-					$gp_dropdown_string .= ($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '' . ')';
+					$gp_dropdown_string = (($gp_name = $this->patient->getGpName()) ? $gp_name : 'Unknown') . '(Gp';
+					$gp_dropdown_string .= (($this->patient->getPracticeAddress()) ? ', ' . $this->patient->practice->address->summary : '') . ')';
 				?>
 					currentContacts.push("<?php echo $gp_dropdown_string ?>");
 				<?php }?>
