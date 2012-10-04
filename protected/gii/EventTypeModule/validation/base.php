@@ -74,10 +74,21 @@ return array(
 				'regstrip' => '/_id$/',
 				'condition' => array(
 					'field' => 'elementType{$element_num}FieldType{$field_num}',
-					'value_list' => array('Multi select', 'Dropdown list', 'Radio buttons'),
+					'value_list' => array('Multi select',),
 				),
 				'message' => 'field name cannot be longer than 11 characters for this field type (excluding _id postfix)'
 				
+			),
+			array(
+					'type' => 'length',
+					'max'  => 20,
+					'regstrip' => '/_id$/',
+					'condition' => array(
+							'field' => 'elementType{$element_num}FieldType{$field_num}',
+							'value_list' => array('Dropdown list', 'Radio buttons', 'Textarea with dropdown'),
+					),
+					'message' => 'field name cannot be longer than 20 characters for this field type (excluding _id postfix)'
+			
 			),
 		),
 	),

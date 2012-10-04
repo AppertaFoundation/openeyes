@@ -26,7 +26,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$this->validation_rules = array_merge($this->validation_rules,require($this->validation_rules_path."/$file"));
 			}
 		}
-		error_log("construction");
 		parent::__construct();
 	}
 
@@ -43,7 +42,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$this->{$key} = $value;
 			}
 		}
-		error_log("about to prepare");
+		
 		parent::prepare();
 
 		$this->files = array();
@@ -307,6 +306,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		if (!preg_match('/_id$/',$fields_value)) {
 			$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
 		}
+		
+		// but for class naming/lookups we don't want the id:
+		$root_fields_value = preg_replace('/_id$/', '', $fields_value);
 
 		$elements[$number]['fields'][$field_number]['empty'] = @$_POST['dropDownUseEmpty'.$number.'Field'.$field_number];
 
@@ -327,13 +329,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$lookup_table = array(
-				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$root_fields_value
 			);
 
 			$key_name = $lookup_table['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$root_fields_value);
 			}
 
 			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -345,7 +347,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$lookup_table['values'] = $field_values;
-			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $root_fields_value) ) );
 			$elements[$number]['fields'][$field_number]['lookup_field'] = 'name';
 			$elements[$number]['fields'][$field_number]['order_field'] = 'display_order';
 
@@ -417,7 +419,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
 
 		$lookup_table['values'] = $field_values;
-		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+		$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','',ucwords(str_replace('_',' ', $fields_value)) );
 		$elements[$number]['fields'][$field_number]['lookup_field'] = 'name';
 
 		$elements[$number]['lookup_tables'][] = $lookup_table;
@@ -430,7 +432,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		if (!preg_match('/_id$/',$fields_value)) {
 			$_POST['elementName'.$number.'FieldName'.$field_number] = $elements[$number]['fields'][$field_number]['name'] = $fields_value = $fields_value.'_id';
 		}
-
+		// but for class naming/lookups we don't want the id:
+		$root_fields_value = preg_replace('/_id$/', '', $fields_value);
+		
 		if (@$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number]) {
 			$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['radioButtonFieldValueTextInputDefault'.$number.'Field'.$field_number];
 		}
@@ -448,13 +452,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$lookup_table = array(
-				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name'])
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$root_fields_value
 			);
 
 			$key_name = $lookup_table['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$root_fields_value);
 			}
 
 			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -466,13 +470,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$lookup_table['values'] = $field_values;
-			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $root_fields_value) ) );
 
 			$elements[$number]['lookup_tables'][] = $lookup_table;
 
 			$elements[$number]['relations'][] = array(
 				'type' => 'BELONGS_TO',
-				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'name' => $root_fields_value,
 				'class' => $lookup_table['class'],
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 			);
@@ -489,7 +493,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$key_name = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_fk';
 
 			if (strlen($key_name) >64) {
-				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$fields_value);
+				$key_name = $this->generateKeyName($elements[$number]['fields'][$field_number]['name'],$root_fields_value);
 			}
 
 			$elements[$number]['foreign_keys'][] = array(
@@ -500,7 +504,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			$elements[$number]['relations'][] = array(
 				'type' => 'BELONGS_TO',
-				'name' => preg_replace('/_id$/','',$elements[$number]['fields'][$field_number]['name']),
+				'name' => $root_fields_value,
 				'class' => $elements[$number]['fields'][$field_number]['lookup_class'] = EventTypeModuleCode::findModelClassForTable($lookup_table),
 				'field' => $elements[$number]['fields'][$field_number]['name'],
 			);
@@ -535,11 +539,12 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$lookup_table = array(
-				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name']
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$fields_value
 			);
 
 			$lookup_table['values'] = $field_values;
-			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = str_replace(' ','',ucwords(str_replace('_',' ',$lookup_table['name'])));
+			$lookup_table['class'] = $elements[$number]['fields'][$field_number]['lookup_class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $fields_value) ) );
+			
 			$lookup_table['defaults'] = array();
 
 			$lookup_table = $this->generateKeyNames($lookup_table,array('lmui','cui'));
@@ -557,14 +562,13 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			);
 
 			$mapping_table = array(
-				#'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_'.$elements[$number]['fields'][$field_number]['name'],
 				'name' => $elements[$number]['table_name'].'_'.$elements[$number]['fields'][$field_number]['name'].'_assignment',
 				'lookup_table' => $lookup_table['name'],
 				'lookup_class' => $lookup_table['class'],
 				'element_class' => $elements[$number]['class_name'],
 			);
 
-			$mapping_table['class'] = str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name'])));
+			$mapping_table['class'] = $elements[$number]['class_name'] . '_' . str_replace(' ','', ucwords(str_replace('_', ' ', $fields_value) ) ) . '_Assignment';
 
 			$mapping_table = $this->generateKeyNames($mapping_table,array('lmui','cui','ele','lku'));
 
@@ -573,7 +577,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$elements[$number]['relations'][] = array(
 				'type' => 'HAS_MANY',
 				'name' => $elements[$number]['fields'][$field_number]['name'].'s',
-				'class' => str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name']))),
+				#'class' => str_replace(' ','',ucwords(str_replace('_',' ',$mapping_table['name']))),
+				'class' => $mapping_table['class'],
 				'field' => 'element_id',
 			);
 
@@ -940,7 +945,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			 * concatanate these, and then try and get the table
 			 */
 			$tname = strtolower('et_' . EventType::model()->findByPk(@$_POST['EventTypeModuleEventType'])->class_name . '_' . $name);
-			error_log($tname);
 			return Yii::app()->db->schema->getTable($tname);
 		}
 		return false;
@@ -1070,7 +1074,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 						if (isset($rule['exists_method'])) {
 							$method = $rule['exists_method'];
 							if ($this->{$method}($value)) {
-								error_log("we have an error" . $key);
 								$errors[$key] = isset($rule['message']) ? $rule['message'] : 'Already exists';
 							}
 						}
