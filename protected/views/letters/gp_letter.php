@@ -31,7 +31,9 @@
 <div class="toAddress">
 	<?php $gp = $patient->gp ?>
 	<?php echo $gp->contact->fullname ?>
-	<br /><?php echo $gp->contact->correspondAddress->letterhtml ?>
+	<br />
+	<?php $practice = $patient->practice ?>
+	<?php echo $practice->address->letterhtml ?>
 </div>
 <div class="date">
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>

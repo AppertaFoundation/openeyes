@@ -143,13 +143,14 @@ if (!empty($address)) {
 							<div class="data_label">Name:</div>
 							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
 						</div>
+						<h4>Practice:</h4>
 						<div class="data_row">
 							<div class="data_label">Address:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null && $this->patient->gp->contact->address !== null) ? $this->patient->gp->contact->address->address1.' '.$this->patient->gp->contact->address->address2.' '.$this->patient->gp->contact->address->city.' '.$this->patient->gp->contact->address->county.' '.$this->patient->gp->contact->address->postcode : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->practice !== null && $this->patient->practice->address !== null) ? $this->patient->practice->address->address1.' '.$this->patient->practice->address->address2.' '.$this->patient->practice->address->city.' '.$this->patient->practice->address->county.' '.$this->patient->practice->address->postcode : 'Unknown'?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Telephone:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->practice !== null) ? $this->patient->practice->phone : 'Unknown'?></div>
 						</div>
 					</div>
 
@@ -388,7 +389,7 @@ if (!empty($address)) {
 				var currentContacts = [];
 
 				<?php if ($this->patient->gp && $this->patient->gp->contact) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->summary : '').')';?>");
+					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->practice && $this->patient->practice->address ? ', '.$this->patient->practice->address->summary : '').')';?>");
 				<?php }?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
