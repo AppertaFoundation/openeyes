@@ -574,35 +574,4 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
-	
-	public function getGpName() {
-		if($this->gp && $this->gp->contact) {
-			return $this->gp->contact->title.' '.$this->gp->contact->first_name.' '.$this->gp->contact->last_name;
-		}
-	}
-	
-	public function getGpAddress($include_country=true) {
-		if($this->gp && $this->gp->contact && $this->gp->contact->address) {
-			return $this->gp->contact->address->getLetterLine($include_country);
-		}
-	}
-	
-	public function getPracticeAddress($include_country=true) {
-		if($this->practice && $this->practice->address) {
-			return $this->practice->address->getLetterLine($include_country);
-		}
-	}
-	
-	public function getGpPhone() {
-		if($this->gp && $this->gp->contact && $this->gp->contact->primary_phone != 'Unknown') {
-			return $this->gp->contact->primary_phone;
-		}
-	}
-	
-	public function getPracticePhone() {
-		if($this->practice && $this->practice->phone != 'Unknown') {
-			return $this->practice->phone;
-		}
-	}
-	
 }

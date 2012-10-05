@@ -141,23 +141,23 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($gp_name = $this->patient->getGpName()) ? $gp_name : 'Unknown'; ?></div>
+							<div class="data_value"><?php echo ($this->patient->gp) ? $this->patient->gp->fullName : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">GP Address:</div>
-							<div class="data_value"><?php echo ($gp_address = $this->patient->getGpAddress()) ? $gp_address : 'Unknown'; ?></div>
+							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">GP Telephone:</div>
-							<div class="data_value"><?php echo ($gp_phone = $this->patient->getGpPhone()) ? $gp_phone : 'Unknown'; ?></div>
+							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Practice Address:</div>
-							<div class="data_value"><?php echo ($practice_address = $this->patient->getPracticeAddress()) ? $practice_address : 'Unknown'; ?></div>
+							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->address) ? $this->patient->practice->address->letterLine : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">Practice Telephone:</div>
-							<div class="data_value"><?php echo ($practice_phone = $this->patient->getPracticePhone()) ? $practice_phone : 'Unknown'; ?></div>
+							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown'; ?></div>
 						</div>
 					</div>
 
@@ -395,12 +395,12 @@ if (!empty($address)) {
 
 				var currentContacts = [];
 
-				<?php if ($this->patient->gp && $this->patient->gp->contact) {
-					$gp_dropdown_string = (($gp_name = $this->patient->getGpName()) ? $gp_name : 'Unknown') . '(Gp';
-					$gp_dropdown_string .= (($this->patient->getPracticeAddress()) ? ', ' . $this->patient->practice->address->summary : '') . ')';
+				<?php if ($this->patient->gp || ($this->patient->practice && $this->patient->practice->address)) { ?>
+					$gp_dropdown_string = (($this->patient->gp && $this->patient->gp->contact->fullName) ? $this->patient->gp->contact->fullName : 'Unknown') . '(Gp';
+					$gp_dropdown_string .= (($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '') . ')';
 				?>
 					currentContacts.push("<?php echo $gp_dropdown_string ?>");
-				<?php }?>
+				<?php } ?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
 					<?php if ($pca->site) {

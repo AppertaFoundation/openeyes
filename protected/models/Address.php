@@ -105,15 +105,15 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return string Address as formatted HTML (<br/> separated)
 	 */
-	public function getLetterHtml($include_country = true) {
-		return implode('<br />', $this->getLetterArray($include_country));
+	public function getLetterHtml() {
+		return implode('<br />', $this->getLetterArray());
 	}
 
 	/**
 	 * @return string Address as text (, separated) 
 	 */
-	public function getLetterLine($include_country = true) {
-		return implode(', ', $this->getLetterArray($include_country));
+	public function getLetterLine() {
+		return implode(', ', $this->getLetterArray());
 	}
 
 	/**
