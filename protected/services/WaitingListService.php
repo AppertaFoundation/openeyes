@@ -93,6 +93,7 @@ class WaitingListService
 				co.last_name,
 				pat.hos_num,
 				pat.gp_id,
+				pat.practice_id,
 				GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
 			FROM
 				element_operation eo,
@@ -142,6 +143,7 @@ class WaitingListService
 				co.last_name,
 				pat.hos_num,
 				pat.gp_id,
+				pat.practice_id,
 			GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
 			FROM
 				element_operation eo,

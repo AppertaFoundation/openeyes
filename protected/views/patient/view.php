@@ -141,7 +141,7 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($this->patient->gp) ? $this->patient->gp->fullName : 'Unknown'; ?></div>
+							<div class="data_value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
 							<div class="data_label">GP Address:</div>
@@ -395,7 +395,7 @@ if (!empty($address)) {
 
 				var currentContacts = [];
 
-				<?php if ($this->patient->gp || ($this->patient->practice && $this->patient->practice->address)) { ?>
+				<?php if ($this->patient->gp || ($this->patient->practice && $this->patient->practice->address)) {
 					$gp_dropdown_string = (($this->patient->gp && $this->patient->gp->contact->fullName) ? $this->patient->gp->contact->fullName : 'Unknown') . '(Gp';
 					$gp_dropdown_string .= (($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '') . ')';
 				?>

@@ -35,7 +35,8 @@ $status = ($operation->status == $operation::STATUS_CANCELLED) ? 'Cancelled' : '
 // Calculate next letter to be printed
 $letterTypes = ElementOperation::getLetterOptions();
 $letterType = ($operation->getDueLetter() !== null && isset($letterTypes[$operation->getDueLetter()])) ? $letterTypes[$operation->getDueLetter()] : false;
-$has_gp = ($operation->getDueLetter() != ElementOperation::LETTER_GP || $operation->event->episode->patient->gp);
+$has_gp = ($operation->getDueLetter() != ElementOperation::LETTER_GP
+		|| ($operation->event->episode->patient->practice && $operation->event->episode->patient->practice->address));
 $patient = $this->event->episode->patient;
 $has_address = (bool) $patient->correspondAddress;
 
@@ -52,7 +53,7 @@ if ($letterType == false && $operation->getLastLetter() == ElementOperation::LET
 
 <?php if (!$has_gp) { ?>
 <div class="alertBox">
-	Patient has no GP, please correct in PAS before printing GP letter.
+	Patient has no GP practice address, please correct in PAS before printing GP letter.
 </div>
 <?php } ?>
 <?php if (!$has_address) { ?>

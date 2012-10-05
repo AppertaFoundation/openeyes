@@ -29,8 +29,14 @@
 	<?php } ?>
 </div>
 <div class="toAddress">
-	<?php $gp = $patient->gp ?>
-	<?php echo $gp->contact->fullname ?>
+	<?php if($gp = $patient->gp) {
+		$to_name = $gp->contact->fullname;
+		$salutation = $gp->contact->salutationname;
+	} else {
+		$to_name = Gp::UNKNOWN_NAME;
+		$salutation = Gp::UNKNOWN_SALUTATION;
+	} ?>
+	<?php echo $to_name ?>
 	<br /><?php echo $patient->practice->address->letterhtml ?>
 </div>
 <div class="date">
@@ -39,7 +45,7 @@
 <div class="content">
 
 	<p>
-		Dear <?php echo $gp->contact->salutationname; ?>,
+		Dear <?php echo $salutation; ?>,
 	</p>
 
 	<p>
