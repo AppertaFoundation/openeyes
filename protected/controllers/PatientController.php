@@ -448,11 +448,11 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
 
-		if (!$episode = Episode::model()->findByPk($id)) {
+		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
 		}
 
-		$this->patient = $episode->patient;
+		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
 		$legacyepisodes = $this->patient->legacyepisodes;
@@ -471,7 +471,64 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $episode
+			'current_episode' => $this->episode
+		));
+	}
+
+	public function actionUpdateepisode($id)
+	{
+		$this->layout = '//layouts/patientMode/main';
+		$this->service = new ClinicalService;
+
+		if (!$this->episode = Episode::model()->findByPk($id)) {
+			throw new SystemException('Episode not found: '.$id);
+		}
+
+		if (!$this->episode->editable || isset($_POST['episode_cancel'])) {
+			return $this->redirect(array('patient/episode/'.$this->episode->id));
+		}
+
+		if (isset($_POST['episode_save'])) {
+			if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
+				$this->episode->eye_id = $_POST['eye_id'];
+				$this->episode->disorder_id = $_POST['DiagnosisSelection']['disorder_id'];
+				if (!$this->episode->save()) {
+					throw new Exception('Unable to update eye/diagnosis for episode '.$this->episode->id.': '.print_r($this->episode->getErrors(),true));
+				}
+			}
+
+			if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
+				$this->episode->episode_status_id = $_POST['episode_status_id'];
+				if (!$this->episode->save()) {
+					throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+				}
+			}
+
+			$this->redirect(array('patient/episode/'.$this->episode->id));
+		}
+
+		$this->patient = $this->episode->patient;
+
+		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
+
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->title = 'Episode summary';
+
+		$status = Yii::app()->session['episode_hide_status'];
+		$status[$id] = true;
+		Yii::app()->session['episode_hide_status'] = $status;
+
+		$this->editing = true;
+
+		$this->render('events_and_episodes', array(
+			'title' => empty($episodes) ? '' : 'Episode summary',
+			'episodes' => $episodes,
+			'legacyepisodes' => $legacyepisodes,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
+			'site' => $site,
+			'current_episode' => $this->episode
 		));
 	}
 
@@ -566,17 +623,6 @@ class PatientController extends BaseController
 		}
 
 		return $template;
-	}
-
-	public function actionSetEpisodeStatus($id) {
-		$episode = Episode::model()->findByPk($id);
-
-		if (!isset($episode)) {
-			throw new CHttpException(403, 'Invalid episode id.');
-		}
-
-		$episode->episode_status_id = $_POST['episode_status_id'];
-		$episode->save();
 	}
 
 	/**
@@ -989,25 +1035,5 @@ class PatientController extends BaseController
 		} else {
 			echo "failure";
 		}
-	}
-
-	public function actionUpdateepisode() {
-		if (!$episode = Episode::model()->findByPk(@$_POST['episode_id'])) {
-			throw new Exception('Unable to find episode: '.@$_POST['episode_id']);
-		}
-
-		if (!$episode->editable) {
-			throw new Exception('Attempt to edit a non-editable episode: '.@$_POST['episode_id']);
-		}
-
-		if ($_POST['eye_id'] != $episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $episode->disorder_id) {
-			$episode->eye_id = $_POST['eye_id'];
-			$episode->disorder_id = $_POST['DiagnosisSelection']['disorder_id'];
-			if (!$episode->save()) {
-				throw new Exception('Unable to update eye/diagnosis for episode '.$episode->id.': '.print_r($episode->getErrors(),true));
-			}
-		}
-
-		$this->redirect(array('patient/episode/'.$episode->id));
 	}
 }
