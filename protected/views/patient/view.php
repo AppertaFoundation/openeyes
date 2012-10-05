@@ -330,9 +330,9 @@ if (!empty($address)) {
 					<?php if(!$this->patient->isDeceased()) { ?>
 						<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php }?>
-					<?php $this->renderPartial('_allergies'); ?>
-					<?php $this->renderPartial('_systemic_diagnoses')?>
 					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
+					<?php $this->renderPartial('_systemic_diagnoses')?>
+					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
