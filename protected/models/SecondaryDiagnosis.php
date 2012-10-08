@@ -61,7 +61,7 @@ class SecondaryDiagnosis extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('disorder_id, patient_id', 'required'),
-			array('disorder_id, eye_id, patient_id, episode_id', 'safe'),
+			array('disorder_id, eye_id, patient_id', 'safe'),
 		);
 	}
 
@@ -76,7 +76,6 @@ class SecondaryDiagnosis extends BaseActiveRecord
 			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
 			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-			'episode' => array(self::BELONGS_TO, 'Episode', 'episode_id'),
 		);
 	}
 

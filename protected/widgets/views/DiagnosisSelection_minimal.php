@@ -1,11 +1,5 @@
 <div class="eventDetail" id="editDiagnosis">
 	<div class="data">
-		<div id="<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText" class="eventHighlight big"
-		<?php if (!$label){?> style="display: none;" <?php }?>>
-			<h4>
-				<?php echo $label?>
-			</h4>
-		</div>
 		<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis', 'style' => 'width: 525px; margin-bottom:10px;'))?>
 		<br />
 		<?php
@@ -20,18 +14,30 @@
 						'data':{'term': request.term, 'restrict': '".$restrict."'},
 						'success':function(data) {
 							data = $.parseJSON(data);
-							response(data);
+
+							var result = [];
+
+							for (var i = 0; i < data.length; i++) {
+								var ok = true;
+								$('#selected_diagnoses').children('input').map(function() {
+									if ($(this).val() == data[i]['id']) {
+										ok = false;
+									}
+								});
+								if (ok) {
+									result.push(data[i]);
+								}
+							}
+
+							response(result);
 						}
 					});
 				}",
 				'options' => array(
 						'minLength'=>'3',
 						'select' => "js:function(event, ui) {
+							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
 							$('#".$class."_".$field."_0').val('');
-							$('#".$class."_".$field."_enteredDiagnosisText h4').html(ui.item.value);
-							$('#".$class."_".$field."_enteredDiagnosisText').show();
-							$('input[id=".$class."_".$field."_savedDiagnosis]').val(ui.item.id);
-							$('#".$class."_".$field."').focus();
 							return false;
 						}",
 				),
@@ -41,14 +47,13 @@
 				),
 		));
 		?>
-		<input type="hidden" name="<?php echo $class?>[<?php echo $field?>]"
-			id="<?php echo $class?>_<?php echo $field?>_savedDiagnosis" value="<?php echo $value?>" />
 	</div>
 </div>
 <script type="text/javascript">
-	$('#<?php echo $class?>_<?php echo $field?>').change(function() {
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText h4').html($('option:selected', this).text());
-		$('#<?php echo $class?>_<?php echo $field?>_savedDiagnosis').val($(this).val());
-		$('#<?php echo $class?>_<?php echo $field?>_enteredDiagnosisText').show();
-	});
+	<?php if ($callback) {?>
+		$('#<?php echo $class?>_<?php echo $field?>').change(function() {
+			<?php echo $callback?>($(this).children('option:selected').val(), $(this).children('option:selected').text());
+			$('#<?php echo $class?>_<?php echo $field?>_0').val('');
+		});
+	<?php }?>
 </script>
