@@ -94,36 +94,19 @@ class WaitingListService
 				pat.hos_num,
 				pat.gp_id,
 				pat.practice_id,
+				pad.id AS practice_address_id,
 				GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
-			FROM
-				element_operation eo,
-				event ev,
-				episode ep,
-				firm f,
-				service_subspecialty_assignment ssa,
-				patient pat,
-				contact co,
-				operation_procedure_assignment opa,
-				proc p
+			FROM element_operation eo
+			JOIN event ev ON eo.event_id = ev.id
+			JOIN episode ep ON ev.episode_id = ep.id
+			JOIN firm f ON ep.firm_id = f.id
+			JOIN service_subspecialty_assignment ssa ON f.service_subspecialty_assignment_id = ssa.id
+			JOIN patient pat ON ep.patient_id = pat.id
+			JOIN contact co ON co.parent_id = pat.id AND co.parent_class = \'Patient\'
+			JOIN operation_procedure_assignment opa ON opa.operation_id = eo.id
+			JOIN proc p ON opa.proc_id = p.id
+			LEFT JOIN address pad ON pad.parent_id = pat.practice_id AND pad.parent_class = \'Practice\'
 			WHERE
-				eo.event_id = ev.id
-			AND
-				ev.episode_id = ep.id
-			AND
-				ep.firm_id = f.id
-			AND
-				f.service_subspecialty_assignment_id = ssa.id
-			AND
-				ep.patient_id = pat.id
-			AND
-				co.parent_class = \'Patient\'
-			AND
-				co.parent_id = pat.id
-			AND
-				opa.operation_id = eo.id
-			AND
-				opa.proc_id = p.id
-			AND
 				ep.end_date IS NULL
 			AND
 				eo.status = ' . ElementOperation::STATUS_PENDING . '
@@ -144,36 +127,19 @@ class WaitingListService
 				pat.hos_num,
 				pat.gp_id,
 				pat.practice_id,
-			GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
-			FROM
-				element_operation eo,
-				event ev,
-				episode ep,
-				firm f,
-				service_subspecialty_assignment ssa,
-				patient pat,
-				contact co,
-				operation_procedure_assignment opa,
-				proc p
+				pad.id AS practice_address_id,
+				GROUP_CONCAT(p.short_format SEPARATOR ", ") AS List
+			FROM element_operation eo
+			JOIN event ev ON eo.event_id = ev.id
+			JOIN episode ep ON ev.episode_id = ep.id
+			JOIN firm f ON ep.firm_id = f.id
+			JOIN service_subspecialty_assignment ssa ON f.service_subspecialty_assignment_id = ssa.id
+			JOIN patient pat ON ep.patient_id = pat.id
+			JOIN contact co ON co.parent_id = pat.id AND co.parent_class = \'Patient\'
+			JOIN operation_procedure_assignment opa ON opa.operation_id = eo.id
+			JOIN proc p ON opa.proc_id = p.id
+			LEFT JOIN address pad ON pad.parent_id = pat.practice_id AND pad.parent_class = \'Practice\'
 			WHERE
-				eo.event_id = ev.id
-			AND
-				ev.episode_id = ep.id
-			AND
-				ep.firm_id = f.id
-			AND
-				f.service_subspecialty_assignment_id = ssa.id
-			AND
-				ep.patient_id = pat.id
-			AND
-				co.parent_class = \'Patient\'
-			AND
-				co.parent_id = pat.id
-			AND
-				opa.operation_id = eo.id
-			AND
-				opa.proc_id = p.id
-			AND
 				ep.end_date IS NULL
 			AND
 				eo.status = ' . ElementOperation::STATUS_NEEDS_RESCHEDULING . '

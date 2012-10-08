@@ -473,7 +473,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getLetterAddress() {
-		$address = $this->fullName;
+		$address = $this->addressName;
 
 		if (isset($this->qualifications)) {
 			$address .= ' '.$this->qualifications;

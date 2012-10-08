@@ -129,7 +129,7 @@ if (empty($operations)) { ?>
 		</div>
 		<?php }?>
 		
-		<?php if(!$operation['practice_id'] ) { ?>
+		<?php if(!$operation['practice_address_id'] ) { ?>
 			<script type="text/javascript">
 				$('#pas_warnings').show();
 				$('#pas_warnings .no_gp').show();

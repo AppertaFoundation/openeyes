@@ -68,7 +68,7 @@ if (!empty($address)) {
 						This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 					</div>
 				<?php } ?>
-				<?php if(!$this->patient->practice || $this->patient->practice->address) { ?>
+				<?php if(!$this->patient->practice || !$this->patient->practice->address) { ?>
 				<div id="no-practice-address" class="alertBox">
 					Patient has no GP practice address, please correct in PAS before printing GP letter.
 				</div>
