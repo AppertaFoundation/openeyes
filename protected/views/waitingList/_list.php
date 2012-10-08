@@ -18,7 +18,7 @@
  */
 ?>
 <div id="pas_warnings" class="alertBox" style="display: none;">
-	<div class="no_gp" style="display: none;">One or more patients has no GP practice, please correct in PAS before printing GP letter.</div>
+	<div class="no_gp" style="display: none;">One or more patients has no GP practice address, please correct in PAS before printing GP letter.</div>
 	<div class="no_address" style="display: none;">One or more patients has no Address, please correct in PAS before printing a letter for them.</div>
 </div>
 <div id="waitingList" class="grid-view">
