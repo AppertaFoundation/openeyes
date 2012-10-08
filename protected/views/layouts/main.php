@@ -36,7 +36,7 @@
 	<?php }?>
 	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="/favicon.ico"/> 
-	<?php Yii::app()->clientScript->registerCssFile('/css/style.css'); ?>
+	<!--  zoink! -->
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php // TODO: These scripts should probably be registered through Yii too ?>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>

@@ -679,8 +679,11 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function init() {
+		parent::init();
+		
+		// do automatic file inclusion after the base init
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
-
+		
 		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
 		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
 		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img')).'/';
@@ -717,7 +720,6 @@ class BaseEventTypeController extends BaseController
 
 		closedir($dh);
 
-		parent::init();
 	}
 
 	public function actionPrint($id) {

@@ -25,6 +25,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	
+	
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<meta name="viewport" content="width=device-width">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
@@ -34,7 +36,7 @@
 	<?php }?>
 	<link rel="icon" href="/favicon.ico" type="image/x-icon" />
 	<link rel="shortcut icon" href="/favicon.ico"/>
-	<link rel="stylesheet" href="/css/style.css">
+	
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php // TODO: These scripts should probably be registered through Yii too ?>
 	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
