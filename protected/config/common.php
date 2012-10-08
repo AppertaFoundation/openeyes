@@ -124,6 +124,13 @@ $config = array(
 					'levels' => 'trace, info, warning, error',
 					'categories' => 'application.*',
 					'logFile' => 'debug.log',
+					'filter' => array(
+					'class' => 'CLogFilter',
+						'prefixSession' => true,
+						'prefixUser' => false,
+						'logUser' => false,
+						'logVars' => array(),
+					),
 				),
 			),
 		),
