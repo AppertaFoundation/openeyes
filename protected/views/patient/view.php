@@ -143,14 +143,16 @@ if (!empty($address)) {
 							<div class="data_label">Name:</div>
 							<div class="data_value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
 						</div>
-						<div class="data_row">
+						<?php if (Yii::app()->user->checkAccess('admin')) { ?>
+						<div class="data_row goldenrod">
 							<div class="data_label">GP Address:</div>
 							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
 						</div>
-						<div class="data_row">
+						<div class="data_row goldenrod">
 							<div class="data_label">GP Telephone:</div>
 							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
 						</div>
+						<?php } ?>
 						<div class="data_row">
 							<div class="data_label">Practice Address:</div>
 							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->address) ? $this->patient->practice->address->letterLine : 'Unknown'; ?></div>
