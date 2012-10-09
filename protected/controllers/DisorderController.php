@@ -82,4 +82,11 @@ class DisorderController extends Controller {
 		}
 	}
 
+	public function actionIsCommonOphthalmic($id) {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?',array($id,$firm->serviceSubspecialtyAssignment->subspecialty_id))) {
+			echo "<option value=\"$cd->disorder_id\">".$cd->disorder->term."</option>";
+		}
+	}
 }

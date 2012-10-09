@@ -27,6 +27,7 @@ class DiagnosisSelection extends BaseCWidget {
 	public $default = true;
 	public $layout = false;
 	public $callback = false;
+	public $selected = array();
 
 	public function run() {
 		$this->class = get_class($this->element);

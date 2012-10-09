@@ -37,7 +37,11 @@
 						'minLength'=>'3',
 						'select' => "js:function(event, ui) {
 							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
-							$('#".$class."_".$field."_0').val('');
+							$('#".$class."_".$field."').children('option').map(function() {
+								if ($(this).val() == ui.item.id) {
+									$(this).remove();
+								}
+							});
 							return false;
 						}",
 				),
@@ -53,7 +57,8 @@
 	<?php if ($callback) {?>
 		$('#<?php echo $class?>_<?php echo $field?>').change(function() {
 			<?php echo $callback?>($(this).children('option:selected').val(), $(this).children('option:selected').text());
-			$('#<?php echo $class?>_<?php echo $field?>_0').val('');
+			$(this).children('option:selected').remove();
+			$('#<?php echo $class?>_<?php echo $field?>').val('');
 		});
 	<?php }?>
 </script>
