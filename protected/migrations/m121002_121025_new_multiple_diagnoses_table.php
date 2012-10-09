@@ -4,7 +4,6 @@ class m121002_121025_new_multiple_diagnoses_table extends CDbMigration
 {
 	public function up()
 	{
-		/*
 		$this->createTable('secondary_diagnosis',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'disorder_id' => 'int(10) unsigned NOT NULL',
@@ -37,7 +36,6 @@ class m121002_121025_new_multiple_diagnoses_table extends CDbMigration
 		$this->addColumn('episode','disorder_id','int(10) unsigned NULL');
 		$this->createIndex('episode_disorder_id_fk','episode','disorder_id');
 		$this->addForeignKey('episode_disorder_id_fk','episode','disorder_id','disorder','id');
-*/
 
 		echo "Populating principal eyes and diagnoses for episodes ... ";
 
