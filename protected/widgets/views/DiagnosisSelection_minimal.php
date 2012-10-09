@@ -37,6 +37,7 @@
 						'minLength'=>'3',
 						'select' => "js:function(event, ui) {
 							".($callback ? $callback."(ui.item.id, ui.item.value);" : '')."
+							$('#".$class."_".$field."_0').val('');
 							$('#".$class."_".$field."').children('option').map(function() {
 								if ($(this).val() == ui.item.id) {
 									$(this).remove();
