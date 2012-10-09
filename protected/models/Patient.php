@@ -600,12 +600,16 @@ class Patient extends BaseActiveRecord {
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
 			$action = "add-secondary-diagnosis";
+			$sd->eye_id = $eye_id;
+			$sd->date = $date;
 		} else {
 			$action = "update-secondary-diagnosis";
+			if ($sd->eye_id != $eye_id) {
+				$sd->eye_id = $eye_id;
+				$sd->date = $date;
+			}
 		}
 
-		$sd->eye_id = $eye_id;
-		$sd->date = $date;
 		if (!$sd->save()) {
 			throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
 		}

@@ -321,7 +321,8 @@ class Episode extends BaseActiveRecord
 		$audit = new Audit;
 		$audit->action = "set-principal-diagnosis";
 		$audit->target_type = "episode";
-		$audit->patient_id = $this->id;
+		$audit->episode_id = $this->id;
+		$audit->patient_id = $this->patient_id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->data = $this->getAuditAttributes();
 		$audit->save();
