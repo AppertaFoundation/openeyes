@@ -17,7 +17,7 @@
 									<?php foreach ($this->patient->systemicDiagnoses as $diagnosis) {?>
 										<tr>
 											<td><?php echo $diagnosis->dateText?></td>
-											<td><?php echo $diagnosis->eye->adjective?> <?php echo $diagnosis->disorder->term?></td>
+											<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
 											<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
 										</tr>
 									<?php }?>
