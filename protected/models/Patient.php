@@ -589,4 +589,53 @@ class Patient extends BaseActiveRecord {
 
 		return SecondaryDiagnosis::model()->findAll($criteria);
 	}
+
+	public function addDiagnosis($disorder_id, $eye_id=false, $date=false) {
+		if (!$date) {
+			$date = date('Y-m-d');
+		}
+
+		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
+			$sd = new SecondaryDiagnosis;
+			$sd->patient_id = $this->id;
+			$sd->disorder_id = $disorder_id;
+			$action = "add-secondary-diagnosis";
+		} else {
+			$action = "update-secondary-diagnosis";
+		}
+
+		$sd->eye_id = $eye_id;
+		$sd->date = $date;
+		if (!$sd->save()) {
+			throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = $action;
+		$audit->target_type = "patient";
+		$audit->patient_id = $this->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $sd->getAuditAttributes();
+		$audit->save();
+	}
+
+	public function removeDiagnosis($diagnosis_id) {
+		if (!$sd = SecondaryDiagnosis::model()->findByPk($diagnosis_id)) {
+			throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
+		}
+
+		$audit_attributes = $sd->getAuditAttributes();
+
+		if (!$sd->delete()) {
+			throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = "remove-secondary-diagnosis";
+		$audit->target_type = "patient";
+		$audit->patient_id = $this->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $audit_attributes;
+		$audit->save();
+	}
 }

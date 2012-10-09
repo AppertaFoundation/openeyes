@@ -310,4 +310,20 @@ class Episode extends BaseActiveRecord
 			}
 		}
 	}
+
+	public function setPrincipalDiagnosis($disorder_id, $eye_id) {
+		$this->disorder_id = $disorder_id;
+		$this->eye_id = $eye_id;
+		if (!$this->save()) {
+			throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = "set-principal-diagnosis";
+		$audit->target_type = "episode";
+		$audit->patient_id = $this->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $this->getAuditAttributes();
+		$audit->save();
+	}
 }

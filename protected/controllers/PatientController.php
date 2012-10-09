@@ -490,11 +490,7 @@ class PatientController extends BaseController
 
 		if (isset($_POST['episode_save'])) {
 			if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
-				$this->episode->eye_id = $_POST['eye_id'];
-				$this->episode->disorder_id = $_POST['DiagnosisSelection']['disorder_id'];
-				if (!$this->episode->save()) {
-					throw new Exception('Unable to update eye/diagnosis for episode '.$this->episode->id.': '.print_r($this->episode->getErrors(),true));
-				}
+				$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
 			}
 
 			if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
@@ -1003,19 +999,10 @@ class PatientController extends BaseController
 
 		if (!$_POST['diagnosis_eye']) {
 			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($patient->id,$disorder->id))) {
-				$sd = new SecondaryDiagnosis;
-				$sd->disorder_id = $disorder->id;
-				$sd->patient_id = $patient->id;
-				$sd->date = $date;
-				$sd->save();
+				$patient->addDiagnosis($disorder->id,null,$date);
 			}
 		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye']))) {
-			$sd = new SecondaryDiagnosis;
-			$sd->disorder_id = $disorder->id;
-			$sd->patient_id = $patient->id;
-			$sd->date = $date;
-			$sd->eye_id = $_POST['diagnosis_eye'];
-			$sd->save();
+			$patient->addDiagnosis($disorder->id, $_POST['diagnosis_eye'], $date);
 		}
 
 		$this->redirect(array('patient/view/'.$patient->id));
@@ -1026,14 +1013,8 @@ class PatientController extends BaseController
 			throw new Exception('Unable to find patient: '.@$_GET['patient_id']);
 		}
 
-		if (!$sd = SecondaryDiagnosis::model()->findByPk(@$_GET['diagnosis_id'])) {
-			throw new Exception('Unable to find secondary_diagnosis: '.@$_GET['diagnosis_id']);
-		}
+		$patient->removeDiagnosis(@$_GET['diagnosis_id']);
 
-		if ($sd->delete()) {
-			echo "success";
-		} else {
-			echo "failure";
-		}
+		echo "success";
 	}
 }
