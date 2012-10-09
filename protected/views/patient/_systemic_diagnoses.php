@@ -70,8 +70,8 @@
 								</select>
 								<select name="diagnosis_month" class="diagnosis_date_field">
 									<option value="">Month (optional)</option>
-									<?php for ($i=1;$i<=12;$i++) {?>
-										<option value="<?php echo $i?>"><?php echo $i?></option>
+									<?php foreach (array('January','February','March','April','May','June','July','August','September','October','November','December') as $month) {?>
+										<option value="<?php echo $i?>"><?php echo $month?></option>
 									<?php }?>
 								</select>
 								<select name="diagnosis_year" class="diagnosis_date_field">
