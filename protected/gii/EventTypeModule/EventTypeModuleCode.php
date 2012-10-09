@@ -286,7 +286,14 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 							$elements[$number]['fields'][$field_number]['integer_size'] = @$_POST['integerSize'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['integer_max_length'] = @$_POST['integerMaxLength'.$number.'Field'.$field_number];
 						}
-
+						if ($elements[$number]['fields'][$field_number]['type'] == 'Decimal') {
+							$elements[$number]['fields'][$field_number]['decimal_min_value'] = @$_POST['decimalMinValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['decimal_max_value'] = @$_POST['decimalMaxValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['default_value'] = @$_POST['decimalDefaultValue'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['decimal_size'] = @$_POST['decimalSize'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['decimal_max_length'] = @$_POST['decimalMaxLength'.$number.'Field'.$field_number];
+							$elements[$number]['fields'][$field_number]['decimal_dp'] = @$_POST['decimalForceDP'.$number.'Field'.$field_number];
+						}
 						if ($elements[$number]['fields'][$field_number]['type'] == 'Textbox') {
 							$elements[$number]['fields'][$field_number]['textbox_size'] = @$_POST['textBoxSize'.$number.'Field'.$field_number];
 							$elements[$number]['fields'][$field_number]['textbox_max_length'] = @$_POST['textBoxMaxLength'.$number.'Field'.$field_number];
@@ -795,7 +802,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 				$maxlen = strlen(preg_replace('/\..*?$/','',preg_replace('/^\-/','',$field['slider_max_value'])));
 				$minlen = strlen(preg_replace('/\..*?$/','',preg_replace('/^\-/','',$field['slider_min_value'])));
-				if (strlen($maxlen) > strlen($minlen)) {
+				if ($maxlen > $minlen) {
 					$size = $maxlen;
 				} else {
 					$size = $minlen;
@@ -803,6 +810,21 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$size += (integer)$field['slider_dp'];
 
 				return "decimal ($size,{$field['slider_dp']}) NOT NULL$default";
+			case 'Decimal':
+				$default = $field['default_value']>0 ? " DEFAULT \'{$field['default_value']}\'" : '';
+				
+				$maxlen = strlen(preg_replace('/\..*$/', '', preg_replace('/^[\-\+]/','', $field['decimal_max_value'])));
+				$minlen = strlen(preg_replace('/\..*$/', '', preg_replace('/^[\-\+]/','', $field['decimal_min_value'])));
+				
+				if ($maxlen > $minlen) {
+					$size = $maxlen;
+				} else {
+					$size = $minlen;
+				}
+				
+				$size += (integer)$field['decimal_dp'];
+				
+				return "decimal ($size, {$field['decimal_dp']}) NOT NULL$default";
 		}
 
 		return false;
@@ -1101,6 +1123,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		switch ($field['type']) {
 			case 'Textbox':
 				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['textbox_size'].'\''.($field['textbox_max_length'] ? ',\'maxlength\' => \''.$field['textbox_max_length'].'\'' : '').'))?'.'>';
+			case 'Decimal':
+				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['decimal_size'].'\''.($field['decimal_max_length'] ? ',\'maxlength\' => \''.$field['decimal_max_length'].'\'' : '').'))?'.'>';
 			case 'Integer':
 				return '<?php echo $form->textField($element, \''.$field['name'].'\', array(\'size\' => \''.$field['integer_size'].'\''.($field['integer_max_length'] ? ',\'maxlength\' => \''.$field['integer_max_length'].'\'' : '').'))?'.'>';
 			case 'Textarea':
@@ -1146,6 +1170,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				return '		<tr>
 			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
 			<td><span class="big"><?php echo CHtml::encode($element->'.$field['name'].')?'.'></span></td>
+		</tr>';
+			case 'Decimal':
+				return '		<tr>
+			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].'?'.'></span></td>
 		</tr>';
 			case 'Integer':
 				return '		<tr>

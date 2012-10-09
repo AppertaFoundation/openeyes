@@ -99,6 +99,8 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
 <?php if (isset($element)) foreach ($element['fields'] as $field) { if ($field['type'] == 'Integer' && ($field['integer_min_value'] || $field['integer_max_value'])) {?>
 			array('<?php echo $field['name']?>', 'numerical', 'integerOnly' => true,<?php if ($field['integer_min_value']){?> 'min' => <?php echo $field['integer_min_value']?>,<?php }?><?php if ($field['integer_max_value']){?> 'max' => <?php echo $field['integer_max_value']?><?php }?>, 'message' => '<?php if ($field['integer_min_value'] && $field['integer_max_value']) {?><?php echo $field['label']?> must be between <?php echo $field['integer_min_value']?> - <?php echo $field['integer_max_value']?><?php } else if ($field['integer_min_value']){?><?php echo $field['label']?> must be higher or equal to <?php echo $field['integer_min_value']?><?php }else{?><?php echo $field['label']?> must be lower or equal to <?php echo $field['integer_max_value']?><?php }?>'),
+<?php } else if ($field['type'] == 'Decimal') {?>  
+			array('<?php echo $field['name']?>', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/'<?php if (isset($field['decimal_min_value'])) {?>, 'min' => <?php echo $field['decimal_min_value']?><?php } if (isset($field['decimal_max_value'])) {?>, 'max' => <?php echo $field['decimal_max_value']?><?php }?>),
 <?php } }?>
 		);
 	}

@@ -221,6 +221,109 @@ $(document).ready(function() {
 		return true;
 	});
 
+	// deduce and set various values on the specified decimal field attributes
+	function manageDecimal(element, field) {
+		var min_val = $('#decimalMinValue' + element + 'Field' + field).val().replace(/[^0-9\.\-\+]/g, "");
+		var max_val = $('#decimalMaxValue' + element + 'Field' + field).val().replace(/[^0-9\.\-\+]/g, "");
+		var dps = parseInt($('#decimalForceDP' + element + 'Field' + field).val());
+		
+		if (isNaN(dps)) {
+			dps = 0;
+		}
+		var max_length = parseInt($('#decimalMaxLength' + element + 'Field' + field).val());
+		if (isNaN(max_length)) {
+			max_length = 0;
+		}
+		var fld_size = parseInt($('#decimalSize'+element+'Field'+field).val());
+		if (isNaN(fld_size)) {
+			fld_size = 0;
+		}
+		
+		var min_flt = parseFloat(min_val);
+		var max_flt = parseFloat(max_val);
+		
+		if (!isNaN(min_flt)) {
+			// deduce required dps from min val
+			var num_chk = min_val.match(/^([+-]?\d+)(\.(\d+))?$/);
+			if (num_chk) {
+				
+				if (num_chk[3] != undefined && num_chk[3].length > dps) {
+					dps = num_chk[1].length;
+				}
+				
+				var length = num_chk[1].length;
+				if (dps > 0) {
+					length += dps + 1;
+				}
+				if (length > max_length) {
+					max_length = length;
+				}
+			}
+		}
+		
+		if (!isNaN(max_flt)) {
+			// deduce required dps from min val
+			var num_chk = max_val.match(/^[+-]?(\d+)(\.(\d+))?$/);
+			
+			if (num_chk) {
+				if (num_chk[3] != undefined && num_chk[3].length > dps) {
+					dps = num_chk[1].length;
+				}
+				var length = num_chk[1].length;
+				
+				if (dps > 0) {
+					length += dps + 1;
+				}
+				if (length > max_length) {
+					max_length = length;
+				}
+			}
+		}
+		if (dps) {
+			if (dps >= max_length) {
+				max_length += dps+2;
+			}
+			$('#decimalForceDP' + element + 'Field' + field).val(dps);
+		}
+		
+		if (max_length) {
+			$('#decimalMaxLength' + element + 'Field' +field).val(max_length);
+		}
+		if (max_length > fld_size) {
+			$('#decimalSize' + element + 'Field' + field).val(max_length+1);
+		}
+	}
+	
+	$('.decimalMinValue').live('focusout', function() {
+		var m = $(this).attr('name').match(/^decimalMinValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+		
+		if ($(this).val() != '') {
+			manageDecimal(element, field);
+		}
+	})
+	
+	$('.decimalMaxValue').live('focusout', function() {
+		var m = $(this).attr('name').match(/^decimalMaxValue([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+		
+		if ($(this).val() != '') {
+			manageDecimal(element, field);
+		}
+	})
+	
+	$('.decimalForceDP').live('focusout', function() {
+		var m = $(this).attr('name').match(/^decimalForceDP([0-9]+)Field([0-9]+)$/);
+		var element = m[1];
+		var field = m[2];
+		
+		if ($(this).val() != '') {
+			manageDecimal(element, field);
+		}
+	})
+	
 	$('input.EventTypeModuleMode').click(function() {
 		if ($(this).val() == 0) {
 			var view = 'EventTypeModuleGenerate_GenerateNew';
