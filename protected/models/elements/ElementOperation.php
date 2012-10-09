@@ -1135,6 +1135,9 @@ class ElementOperation extends BaseEventTypeElement
 				$contact['refuse'] .= '01707 646422';
 				//$contact['health'] = 'Potters Bar Admission Team on 01707 646422';
 				break;
+			case 8: // Queen Mary's
+				$contact['refuse'] .= '020 8872 51794';
+				break;
 			case 9: // St Anns
 				$contact['refuse'] .= '020 8211 8323';
 				//$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
