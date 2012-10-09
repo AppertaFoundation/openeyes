@@ -4,6 +4,7 @@ class m121002_121025_new_multiple_diagnoses_table extends CDbMigration
 {
 	public function up()
 	{
+		/*
 		$this->createTable('secondary_diagnosis',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'disorder_id' => 'int(10) unsigned NOT NULL',
@@ -36,38 +37,22 @@ class m121002_121025_new_multiple_diagnoses_table extends CDbMigration
 		$this->addColumn('episode','disorder_id','int(10) unsigned NULL');
 		$this->createIndex('episode_disorder_id_fk','episode','disorder_id');
 		$this->addForeignKey('episode_disorder_id_fk','episode','disorder_id','disorder','id');
-
-		$element_classes = array(
-				'' => 'ElementDiagnosis',
-				'OphCiExamination' => 'Element_OphCiExamination_Diagnosis',
-		);
-
-		Yii::import('application.modules.OphCiExamination.models.*');
+*/
 
 		echo "Populating principal eyes and diagnoses for episodes ... ";
 
 		foreach (Yii::app()->db->createCommand("select * from episode")->queryAll() as $episode) {
 			$diagnosis = null;
-			foreach($element_classes as $element_module => $element_class) {
-				if ($element_module) {
-					$element_model = Element_OphCiExamination_Diagnosis::model();
-				} else {
-					$element_model = ElementDiagnosis::model();
-				}
-				$criteria = new CDbCriteria();
-				$criteria->join = 'JOIN event ev ON t.event_id = ev.id';
-				$criteria->addCondition('ev.episode_id = :episode_id');
-				$criteria->params = array(':episode_id' => $episode['id']);
-				$criteria->order = 't.created_date DESC, t.id DESC';
-				$element = $element_model->find($criteria);
-				if ($element && (!$diagnosis || strtotime($element->created_date) > strtotime($diagnosis->created_date))) {
-					$diagnosis = $element;
-				}
-			}
 
-			if ($diagnosis) {
-				Yii::app()->db->createCommand("update episode set disorder_id = $diagnosis->disorder_id where id = {$episode['id']}")->query();
-				Yii::app()->db->createCommand("update episode set eye_id = $diagnosis->eye_id where id = {$episode['id']}")->query();
+			$criteria = new CDbCriteria();
+			$criteria->join = 'JOIN event ev ON t.event_id = ev.id';
+			$criteria->addCondition('ev.episode_id = :episode_id');
+			$criteria->params = array(':episode_id' => $episode['id']);
+			$criteria->order = 't.created_date DESC, t.id DESC';
+			$element = ElementDiagnosis::model()->find($criteria);
+			if ($element && (!$diagnosis || strtotime($element->created_date) > strtotime($diagnosis->created_date))) {
+				Yii::app()->db->createCommand("update episode set disorder_id = $element->disorder_id where id = {$episode['id']}")->query();
+				Yii::app()->db->createCommand("update episode set eye_id = $element->eye_id where id = {$episode['id']}")->query();
 			}
 		}
 
