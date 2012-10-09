@@ -3,7 +3,7 @@
 							<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
 						<div class="icon_patientIssue"></div>
-						<h4>Systemic diagnosis</h4>
+						<h4>Systemic diagnoses</h4>
 						<div class="data_row">
 							<table class="subtleWhite">
 								<thead>

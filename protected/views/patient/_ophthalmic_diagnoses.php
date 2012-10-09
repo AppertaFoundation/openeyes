@@ -3,7 +3,7 @@
 							<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 						</div>
 						<div class="icon_patientIssue"></div>
-						<h4>Ophthalmic diagnosis</h4>
+						<h4>Ophthalmic diagnoses</h4>
 						<div class="data_row">
 							<table class="subtleWhite">
 								<thead>
