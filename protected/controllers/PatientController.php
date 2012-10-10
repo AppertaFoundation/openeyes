@@ -444,11 +444,11 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
 
-		if (!$episode = Episode::model()->findByPk($id)) {
+		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
 		}
 
-		$this->patient = $episode->patient;
+		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
 		$legacyepisodes = $this->patient->legacyepisodes;
@@ -467,7 +467,60 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $episode
+			'current_episode' => $this->episode
+		));
+	}
+
+	public function actionUpdateepisode($id)
+	{
+		$this->layout = '//layouts/patientMode/main';
+		$this->service = new ClinicalService;
+
+		if (!$this->episode = Episode::model()->findByPk($id)) {
+			throw new SystemException('Episode not found: '.$id);
+		}
+
+		if (!$this->episode->editable || isset($_POST['episode_cancel'])) {
+			return $this->redirect(array('patient/episode/'.$this->episode->id));
+		}
+
+		if (isset($_POST['episode_save'])) {
+			if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
+				$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
+			}
+
+			if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
+				$this->episode->episode_status_id = $_POST['episode_status_id'];
+				if (!$this->episode->save()) {
+					throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+				}
+			}
+
+			$this->redirect(array('patient/episode/'.$this->episode->id));
+		}
+
+		$this->patient = $this->episode->patient;
+
+		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
+
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->title = 'Episode summary';
+
+		$status = Yii::app()->session['episode_hide_status'];
+		$status[$id] = true;
+		Yii::app()->session['episode_hide_status'] = $status;
+
+		$this->editing = true;
+
+		$this->render('events_and_episodes', array(
+			'title' => empty($episodes) ? '' : 'Episode summary',
+			'episodes' => $episodes,
+			'legacyepisodes' => $legacyepisodes,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
+			'site' => $site,
+			'current_episode' => $this->episode
 		));
 	}
 
@@ -562,17 +615,6 @@ class PatientController extends BaseController
 		}
 
 		return $template;
-	}
-
-	public function actionSetEpisodeStatus($id) {
-		$episode = Episode::model()->findByPk($id);
-
-		if (!isset($episode)) {
-			throw new CHttpException(403, 'Invalid episode id.');
-		}
-
-		$episode->episode_status_id = $_POST['episode_status_id'];
-		$episode->save();
 	}
 
 	/**
@@ -920,5 +962,55 @@ class PatientController extends BaseController
 		}
 	 
 		Yii::app()->session['episode_hide_status'] = $status;
+	}
+
+	public function actionAdddiagnosis() {
+		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
+			$disorder = Disorder::model()->findByPk(@$_POST['DiagnosisSelection']['ophthalmic_disorder_id']);
+		} else {
+			$disorder = Disorder::model()->findByPk(@$_POST['DiagnosisSelection']['systemic_disorder_id']);
+		}
+
+		if (!$disorder) {
+			throw new Exception('Unable to find disorder: '.@$_POST['DiagnosisSelection']['ophthalmic_disorder_id'].' / '.@$_POST['DiagnosisSelection']['systemic_disorder_id']);
+		}
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_POST['patient_id']);
+		}
+
+		$date = $_POST['diagnosis_year'];
+
+		if ($_POST['diagnosis_month']) {
+			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+
+		if ($_POST['diagnosis_day']) {
+			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+
+		if (!$_POST['diagnosis_eye']) {
+			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($patient->id,$disorder->id))) {
+				$patient->addDiagnosis($disorder->id,null,$date);
+			}
+		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye']))) {
+			$patient->addDiagnosis($disorder->id, $_POST['diagnosis_eye'], $date);
+		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
+	}
+
+	public function actionRemovediagnosis() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_GET['patient_id']);
+		}
+
+		$patient->removeDiagnosis(@$_GET['diagnosis_id']);
+
+		echo "success";
 	}
 }

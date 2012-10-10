@@ -34,19 +34,34 @@ if (!empty($episode)) {
 	$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 	$audit->save();
 ?>
+<div class="episodeSummary">
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
 	<h4>Principal diagnosis:</h4>
 
-	<div class="eventHighlight big">
-		<h4><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
-	</div>
+	<?php
+	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
+			'id'=>'add-systemic-diagnosis',
+			'enableAjaxValidation'=>false,
+			'htmlOptions' => array('class'=>'sliding'),
+			'action'=>array('patient/updateepisode/'.$episode->id),
+	));
+
+	$form->widget('application.widgets.DiagnosisSelection',array(
+			'field' => 'disorder_id',
+			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+			'restrict' => 'ophthalmic',
+			'layout' => 'episodeSummary',
+	))?>
 
 	<h4>Principal eye:</h4>
 
-	<div class="eventHighlight big">
-		<h4><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
+	<div>
+		<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+			<?php echo CHtml::radioButton('eye_id', $episode->eye_id == $eye->id,array('value' => $eye->id,'class'=>'episodeSummaryRadio'))?>
+			<label for="<?php echo $episode->eye_id?>"><?php echo $eye->name?></label>
+		<?php }?>
 	</div>
 
 	<!-- divide into two columns -->
@@ -101,13 +116,27 @@ if (!empty($episode)) {
 
 <h4>Episode Status</h4>
 
-<div class="eventHighlight big">
-	<h4><?php echo $episode->status->name?></h4>
+<div class="eventDetail">
+	<div class="label"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></div>
+	<div class="data">
+		<span class="group">
+			<?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?>
+		</span>
+	</div>
 </div>
 
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
 </div>
+
+<div class="form_button">
+	<img class="loader" style="display: none;" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
+	<button type="submit" class="classy green venti" id="episode_save" name="episode_save"><span class="button-span button-span-green">Save</span></button>
+	<button type="submit" class="classy red venti" id="episode_cancel" name="episode_cancel"><span class="button-span button-span-red">Cancel</span></button>
+</div>
+
+<?php $this->endWidget()?>
+
 <script type="text/javascript">
 	$('#closelink').click(function() {
 		$('#dialog-confirm').dialog({
@@ -139,7 +168,7 @@ if (!empty($episode)) {
 </script>
 
 <?php if (empty($episode->end_date)) {?>
-	<div style="margin-top:40px; text-align:right; position:relative; ">
+	<div style="margin-top:10px; text-align:right; position:relative;">
 		<!--button id="close-episode" type="submit" value="submit" class="wBtn_close-episode ir">Close Episode</button-->
 
 		<div id="close-episode-popup" class="popup red" style="display: none;">
@@ -178,5 +207,37 @@ if (!empty($episode)) {
 
 			return false;
 		});
+
+		$('#save_episode_status').unbind('click').click(function(e) {
+			if (!$(this).hasClass('inactive')) {
+				e.preventDefault();
+				disableButtons();
+
+				$.ajax({
+					type: 'POST',
+					url: '<?php echo Yii::app()->createUrl('patient/setepisodestatus/'.$episode->id)?>',
+					data: 'episode_status_id='+$('#episode_status_id').val(),
+					success: function(html) {
+						window.location.href = '<?php echo Yii::app()->createUrl('patient/episodes/'.$this->patient->id)?>';
+					}
+				});
+			}
+
+			return false;
+		});
+
+		$('#episode_cancel').click(function() {
+			disableButtons();
+			$('img.loader').show();
+			window.location.href = window.location.href.replace(/updateepisode/,'episode');
+			return false;
+		});
+
+		$('#episode_save').click(function() {
+			disableButtons();
+			$('img.loader').show();
+			return true;
+		});
 	</script>
 <?php }?>
+</div>

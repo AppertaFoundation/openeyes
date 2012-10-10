@@ -250,8 +250,8 @@ class WaitingListController extends BaseController
 			$site = $operation->site;
 			$waitingListContact = $operation->waitingListContact;
 			
-			// Don't print GP letter if GP is not defined
-			if($letter_status != ElementOperation::LETTER_GP || $patient->gp) {
+			// Don't print GP letter if practice address is not defined
+			if($letter_status != ElementOperation::LETTER_GP || ($patient->practice && $patient->practice->address)) {
 				Yii::log("Printing letter: ".$letter_template, 'trace');
 				$this->renderPartial('/letters/'.$letter_template, array(
 					'operation' => $operation,
@@ -272,7 +272,7 @@ class WaitingListController extends BaseController
 					$operation->confirmLetterPrinted();
 				}
 			} else {
-				Yii::log("Patient has no GP, printing letter supressed: ".$patient->id, 'trace');
+				Yii::log("Patient has no practice address, printing letter supressed: ".$patient->id, 'trace');
 			}
 		} else if($letter_status === null) {
 			Yii::log("No letter is due: ".$patient->id, 'trace');

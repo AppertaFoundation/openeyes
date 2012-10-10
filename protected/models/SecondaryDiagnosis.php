@@ -18,26 +18,26 @@
  */
 
 /**
- * This is the model class for table "Gp".
+ * This is the model class for table "secondary_diagnosis".
  *
- * The followings are the available columns in table 'Gp':
- * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
+ * The followings are the available columns in table 'secondary_diagnosis':
+ * @property integer $id
+ * @property integer $disorder_id
+ * @property integer $eye_id
+ * @property integer $patient_id
+ * @property integer $episode_id
  *
  * The followings are the available model relations:
- * @property Contact $contact
+ * @property Disorder $disorder
+ * @property Eye $eye
+ * @property Patient $patient
+ * @property Episode $episode
  */
-class Gp extends BaseActiveRecord {
-	
-	const UNKNOWN_SALUTATION = 'Doctor';
-	const UNKNOWN_NAME = 'The General Practitioner'; 
-	
-	public $use_pas = TRUE;
-	
+class SecondaryDiagnosis extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Gp the static model class
+	 * @return SecondaryDiagnosis the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -49,7 +49,7 @@ class Gp extends BaseActiveRecord {
 	 */
 	public function tableName()
 	{
-		return 'Gp';
+		return 'secondary_diagnosis';
 	}
 
 	/**
@@ -60,11 +60,8 @@ class Gp extends BaseActiveRecord {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('obj_prof, nat_id', 'required'),
-			array('obj_prof, nat_id', 'length', 'max'=>20),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, obj_prof, nat_id', 'safe', 'on'=>'search'),
+			array('disorder_id, patient_id', 'required'),
+			array('disorder_id, eye_id, patient_id', 'safe'),
 		);
 	}
 
@@ -76,9 +73,9 @@ class Gp extends BaseActiveRecord {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Gp'",
-			),
+			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 		);
 	}
 
@@ -89,8 +86,6 @@ class Gp extends BaseActiveRecord {
 	{
 		return array(
 			'id' => 'ID',
-			'obj_prof' => 'Obj Prof',
-			'nat_id' => 'Nat',
 		);
 	}
 
@@ -106,39 +101,29 @@ class Gp extends BaseActiveRecord {
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('obj_prof',$this->obj_prof,true);
-		$criteria->compare('nat_id',$this->nat_id,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
-	
-	/**
-	* Supress PAS call after find
-	*/
-	public function noPas() {
-			$this->use_pas = false;
-			return $this;
+
+	public function getDateText() {
+		$year = (integer)substr($this->date,0,4);
+		$mon = (integer)substr($this->date,5,2);
+		$day = (integer)substr($this->date,8,2);
+
+		if ($year && $mon && $day) {
+			return $this->NHSDate('date');
+		}
+
+		if ($year && $mon) {
+			return date('M Y',strtotime($year.'-'.$mon.'-01 00:00:00'));
+		}
+
+		if ($year) {
+			return $year;
+		}
+
+		return 'Unknown';
 	}
-	
-	/**
-	* Pass through use_pas flag to allow pas supression
-	* @see CActiveRecord::instantiate()
-	*/
-	protected function instantiate($attributes) {
-			$model = parent::instantiate($attributes);
-			$model->use_pas = $this->use_pas;
-			return $model;
-	}
-	
-	/**
-	 * Raise event to allow external data sources to update gp
-	 * @see CActiveRecord::afterFind()
-	 */
-	protected function afterFind() {
-		parent::afterFind();
-		Yii::app()->event->dispatch('gp_after_find', array('gp' => $this));
-	}
-	
 }

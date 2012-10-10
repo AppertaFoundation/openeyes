@@ -1126,8 +1126,9 @@ label.error {color: red;}
 #delete_event h1 { margin-left: 10px; }
 #delete_event h2 { color: #f00; font-size: 16px; background: none; display: block; padding-left: 0; margin-left: 10px; padding-top: 20px;}
 
-.goldenrod {background-color: goldenrod; width: 200px; padding: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.goldenrod > h4 {color: #000 !important;}
+.data_row.goldenrod { background-color: goldenrod; padding: 10px; }
+.data_row.goldenrod .data_label { color: #eee; }
+.data_row.goldenrod .data_value { color: #666; }
 
 li.auditlistEven { user-select: none; -moz-user-select: none; -khtml-user-select:none; }
 li.auditlistOdd { user-select: none; -moz-user-select: none; -khtml-user-select:none; }
@@ -1180,3 +1181,20 @@ div.DropDownLabelVertical { margin-bottom: 10px; }
 div.patron { margin-left: 37em; font-size: 12pt; }
 
 #audit_filter_button { float: right; margin-top: -3px;}
+
+.diagnosis_date { margin-top: 10px; }
+.diagnosis_date_field { margin-right: 10px; }
+
+.diagnosis_eye { margin-top: 10px; }
+.diagnosis_eye_label { width: 35px; display: inline-block; }
+.diagnosis_date_label { width: 45px; display: inline-block; }
+input.diagnosis_eye { margin-left: 10px; }
+#DiagnosisSelection_systemic_disorder_id_enteredDiagnosisText h4 { background: #fff; color: #000; padding: 0; font-size: 14pt; font-weight: bold; margin-bottom: 5px; }
+#DiagnosisSelection_ophthalmic_disorder_id_enteredDiagnosisText h4 { background: #fff; color: #000; padding: 0; font-size: 14pt; font-weight: bold; margin-bottom: 5px; }
+.editDiagnosisEpisodeSummary { margin-left: 10px; margin-bottom: 15px; }
+.episodeSummaryRadio { margin-left: 10px; margin-bottom: 15px; }
+
+.episodeSummary form h4 { font-style: normal !important; border: none !important; }
+
+#delete_diagnosis .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#delete_allergy .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }

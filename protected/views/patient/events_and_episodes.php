@@ -67,9 +67,15 @@ if ($module = $this->getModule()) {
 							), false, true
 						);
 					} else if ($current_episode) {
-						$this->renderPartial('/clinical/episodeSummary',
-							array('episode' => $current_episode)
-						);
+						if ($this->editing) {
+							$this->renderPartial('/clinical/updateEpisode',
+								array('episode' => $current_episode)
+							);
+						} else {
+							$this->renderPartial('/clinical/episodeSummary',
+								array('episode' => $current_episode)
+							);
+						}
 					}
 					?>
 				</div>

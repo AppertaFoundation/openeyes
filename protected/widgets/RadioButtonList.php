@@ -33,10 +33,6 @@ class RadioButtonList extends BaseCWidget {
 		} else {
 			$this->value = @$_POST[get_class($this->element)][$this->field];
 		}
-
-		if ($this->field) {
-			$this->element->{$this->field} = $this->value;
-		}
 	}
 }
 ?>
