@@ -88,6 +88,9 @@
 							<?php $this->endWidget()?>
 						</div>
 					</div>
+				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
+					<p>Are you sure you want to remove this diagnosis?</p>
+				</div>
 <script type="text/javascript">
 	$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 		$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
@@ -108,14 +111,27 @@
 		var diagnosis_id = $(this).attr('rel');
 		var anchor = $(this);
 
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+diagnosis_id,
-			'success': function(html) {
-				if (html == 'success') {
-					anchor.parent().parent().remove();
-				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+		$('#confirm_remove_diagnosis_dialog').dialog({
+			resizable: false,
+			modal: true,
+			buttons: {
+				"Remove": function() {
+					$(this).dialog("close");
+
+					$.ajax({
+						'type': 'GET',
+						'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+diagnosis_id,
+						'success': function(html) {
+							if (html == 'success') {
+								anchor.parent().parent().remove();
+							} else {
+								alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+							}
+						}
+					});
+				},
+				Cancel: function() {
+					$(this).dialog("close");
 				}
 			}
 		});
