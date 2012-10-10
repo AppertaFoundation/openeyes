@@ -642,4 +642,254 @@ class Patient extends BaseActiveRecord {
 		$audit->data = $audit_attributes;
 		$audit->save();
 	}
+
+	public function getHpc() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($history = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_History')) {
+				if ($history = $history->find('event_id=?',array($event->id))) {
+					return strtolower($history->description);
+				}
+			}
+		}
+	}
+
+	public function getIpb() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+				if ($iop = $iop->find('event_id=?',array($event->id))) {
+					return "The intraocular pressure is ".$iop->left_reading->name." in the left eye and ".$iop->right_reading->name." in the right eye";
+				}
+			}
+		}
+	}
+
+	public function getIpl() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+				if ($iop = $iop->find('event_id=?',array($event->id))) {
+					return "The intraocular pressure is ".$iop->left_reading->name." in the left eye";
+				} 
+			}
+		}
+	}
+
+	public function getIpp() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			switch ($episode->eye_id) {
+				case 1:
+					return $this->ipl;
+				case 2:
+					return $this->ipr;
+				case 3:
+					return $this->ipb;
+			}
+		}
+	}
+
+	public function getIpr() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+				if ($iop = $iop->find('event_id=?',array($event->id))) {
+					return "The intraocular pressure is ".$iop->right_reading->name." in the right eye";
+				} 
+			}
+		}
+	}
+
+	public function getAsb() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Anteriorsegment')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return "The anterior segment is ".$as->left_description." in the left eye and ".$as->right_description." in the right eye";
+				} 
+			}
+		}
+	}
+
+	public function getAsl() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+	
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Anteriorsegment')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return "The anterior segment is ".$as->left_description." in the left eye";
+				} 
+			}
+		}
+	}
+
+	public function getAsp() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			switch ($episode->eye_id) {
+				case 1:
+					return $this->asl;
+				case 2:
+					return $this->asr;
+				case 3:
+					return $this->asb;
+			}
+		}
+	}
+
+	public function getAsr() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+	
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Anteriorsegment')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return "The anterior segment is ".$as->right_description." in the right eye";
+				} 
+			}
+		}
+	}
+
+	public function getPsb() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Posteriorsegment')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return "The posterior segment is ".$as->left_description." in the left eye and ".$as->right_description." in the right eye";
+				} 
+			}
+		}
+	}
+
+	public function getPsl() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+ 
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Posteriorsegment')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return "The posterior segment is ".$as->left_description." in the left eye"; 
+				} 
+			}
+		}
+	}
+
+	public function getPsp() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			switch ($episode->eye_id) {
+				case 1:
+					return $this->asl;
+				case 2:
+					return $this->asr;
+				case 3:
+					return $this->asb;
+			}
+		}
+	}
+
+	public function getPsr() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Posteriorsegment')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return "The posterior segment is ".$as->right_description." in the right eye";
+				}
+			}
+		}
+	}
+
+	public function getVbb() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					$msg = "The best visual acuity was ";
+					if ($as->hasLeft()) {
+						$msg .= $as->getCombined('left').' '.$as->left_comments;
+					} else {
+						$msg .= "not recorded";
+					}
+					$msg .= " in the left eye and ";
+					if ($as->hasRight()) {
+						$msg .= $as->getCombined('right').' '.$as->right_comments;
+					} else {
+						$msg .= "not recorded";
+					}
+					$msg .= " in the right eye";
+
+					return $msg;
+				}
+			}
+		}
+	}
+
+	public function getVbl() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					$msg = "The best visual acuity was ";
+					if ($as->hasLeft()) {
+						$msg .= $as->getCombined('left').' '.$as->left_comments;
+					} else {
+						$msg .= "not recorded";
+					}
+					$msg .= " in the left eye";
+
+					return $msg;
+				}
+			}
+		}
+	}
+
+	public function getVbp() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			switch ($episode->eye_id) {
+				case 1:
+					return $this->asl;
+				case 2:
+					return $this->asr;
+				case 3:
+					return $this->asb;
+			}
+		}
+	}
+
+	public function getVbr() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					$msg = "The best visual acuity was ";
+					if ($as->hasRight()) {
+						$msg .= $as->getCombined('right').' '.$as->right_comments;
+					} else {
+						$msg .= "not recorded";
+					}
+					$msg .= " in the right eye";
+
+					return $msg;
+				}
+			}
+		}
+	}
+
+	public function getCon() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Conclusion')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return $as->description;
+				}
+			}
+		}
+	}
 }
