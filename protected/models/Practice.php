@@ -18,66 +18,53 @@
  */
 
 /**
- * This is the model class for table "Gp".
+ * This is the model class for table "Practice".
  *
- * The followings are the available columns in table 'Gp':
+ * The followings are the available columns in table 'Practice':
  * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
+ * @property string $code
+ * @property string $phone
  *
  * The followings are the available model relations:
- * @property Contact $contact
+ * @property Address $address
  */
-class Gp extends BaseActiveRecord {
-	
-	const UNKNOWN_SALUTATION = 'Doctor';
-	const UNKNOWN_NAME = 'The General Practitioner'; 
+class Practice extends BaseActiveRecord {
 	
 	public $use_pas = TRUE;
 	
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Gp the static model class
+	 * @return Practice the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
-		return 'Gp';
+	public function tableName() {
+		return 'practice';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
-			array('obj_prof, nat_id', 'required'),
-			array('obj_prof, nat_id', 'length', 'max'=>20),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, obj_prof, nat_id', 'safe', 'on'=>'search'),
+			array('code', 'required'),
+			array('phone', 'safe'),
+			array('id, code', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Gp'",
+			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
+				'on' => "parent_class = 'Practice'",
 			),
 		);
 	}
@@ -85,12 +72,11 @@ class Gp extends BaseActiveRecord {
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
 			'id' => 'ID',
-			'obj_prof' => 'Obj Prof',
-			'nat_id' => 'Nat',
+			'code' => 'Code',
+			'phone' => 'Phone',
 		);
 	}
 
@@ -98,17 +84,16 @@ class Gp extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
+	public function search() {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('obj_prof',$this->obj_prof,true);
-		$criteria->compare('nat_id',$this->nat_id,true);
-
+		$criteria->compare('code',$this->code,true);
+		$criteria->compare('phone',$this->phone,true);
+		
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
@@ -133,12 +118,23 @@ class Gp extends BaseActiveRecord {
 	}
 	
 	/**
-	 * Raise event to allow external data sources to update gp
+	 * Raise event to allow external data sources to update practice
 	 * @see CActiveRecord::afterFind()
 	 */
 	protected function afterFind() {
 		parent::afterFind();
-		Yii::app()->event->dispatch('gp_after_find', array('gp' => $this));
+		Yii::app()->event->dispatch('practice_after_find', array('practice' => $this));
 	}
-	
+
+	public function getLetterAddress($name = '') {
+		if($this->address) {
+			if($name) {
+				$return = trim($name) . "\n";
+			} else {
+				$return = '';
+			}
+			return $return . implode("\n",$this->address->getLetterArray(false));
+		}
+	}
+
 }

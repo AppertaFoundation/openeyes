@@ -18,28 +18,37 @@
  */
 
 /**
- * This is the model class for table "Gp".
+ * This is the model class for table "element_operation_erod".
  *
- * The followings are the available columns in table 'Gp':
- * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
+ * The followings are the available columns in table 'element_operation_erod':
+ * @property integer $id
+ * @property integer $element_operation_id
+ * @property integer $session_id
+ * @property date $session_date
+ * @property time $session_start_time
+ * @property time $session_end_time
+ * @property integer $firm_id
+ * @property boolean $consultant
+ * @property boolean $paediatric
+ * @property boolean $anaesthetist
+ * @property boolean $general_anaesthetic
+ * @property integer $session_duration
+ * @property integer $total_operations_time
+ * @property integer $available_time
+ * @property integer $firm_id
  *
  * The followings are the available model relations:
- * @property Contact $contact
+ * @property ElementOperation $element_operation
+ * @property Session $session
+ * @property Firm $firm
  */
-class Gp extends BaseActiveRecord {
-	
-	const UNKNOWN_SALUTATION = 'Doctor';
-	const UNKNOWN_NAME = 'The General Practitioner'; 
-	
-	public $use_pas = TRUE;
-	
+class ElementOperationEROD extends BaseActiveRecord 
+{
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Gp the static model class
+	 * @return ElementOperation the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -49,7 +58,7 @@ class Gp extends BaseActiveRecord {
 	 */
 	public function tableName()
 	{
-		return 'Gp';
+		return 'element_operation_erod';
 	}
 
 	/**
@@ -60,14 +69,12 @@ class Gp extends BaseActiveRecord {
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('obj_prof, nat_id', 'required'),
-			array('obj_prof, nat_id', 'length', 'max'=>20),
+			array('element_operation_id, session_id, session_date, session_start_time, firm_id, consultant, paediatric, anaesthetist, general_anaesthetic, session_duration, total_operations_time, available_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, obj_prof, nat_id', 'safe', 'on'=>'search'),
 		);
 	}
-
+	
 	/**
 	 * @return array relational rules.
 	 */
@@ -76,9 +83,11 @@ class Gp extends BaseActiveRecord {
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Gp'",
-			),
+			'element_operation' => array(self::BELONGS_TO, 'ElementOperation', 'element_operation_id'),
+			'session' => array(self::BELONGS_TO, 'Session', 'session_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -89,8 +98,6 @@ class Gp extends BaseActiveRecord {
 	{
 		return array(
 			'id' => 'ID',
-			'obj_prof' => 'Obj Prof',
-			'nat_id' => 'Nat',
 		);
 	}
 
@@ -103,42 +110,25 @@ class Gp extends BaseActiveRecord {
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('obj_prof',$this->obj_prof,true);
-		$criteria->compare('nat_id',$this->nat_id,true);
-
+		$criteria->compare('id', $this->id, true);
+		$criteria->compare('element_operation_id', $this->element_operation_id);
+		$criteria->compare('session_id', $this->session_id);
+		$criteria->compare('session_date', $this->session_date);
+		$criteria->compare('session_start_time', $this->session_start_time);
+		$criteria->compare('firm_id', $this->firm_id);
+		
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
 	}
-	
-	/**
-	* Supress PAS call after find
-	*/
-	public function noPas() {
-			$this->use_pas = false;
-			return $this;
+
+	public function getFirmName() {
+		return $this->firm->name . ' (' . $this->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
 	}
-	
-	/**
-	* Pass through use_pas flag to allow pas supression
-	* @see CActiveRecord::instantiate()
-	*/
-	protected function instantiate($attributes) {
-			$model = parent::instantiate($attributes);
-			$model->use_pas = $this->use_pas;
-			return $model;
+
+	public function getTimeSlot() {
+		return date('H:i',strtotime($this->session_start_time)) . ' - ' . date('H:i',strtotime($this->session_end_time));
 	}
-	
-	/**
-	 * Raise event to allow external data sources to update gp
-	 * @see CActiveRecord::afterFind()
-	 */
-	protected function afterFind() {
-		parent::afterFind();
-		Yii::app()->event->dispatch('gp_after_find', array('gp' => $this));
-	}
-	
 }
