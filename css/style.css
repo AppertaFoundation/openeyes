@@ -1194,3 +1194,6 @@ input.diagnosis_eye { margin-left: 10px; }
 .episodeSummaryRadio { margin-left: 10px; margin-bottom: 15px; }
 
 .episodeSummary form h4 { font-style: normal !important; border: none !important; }
+
+#delete_diagnosis .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+#delete_allergy .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }

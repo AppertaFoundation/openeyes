@@ -31,8 +31,8 @@
 		</div>
 </div>
 <div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
-	<div id="schedule">
-		<div id="delete_event">
+	<div>
+		<div id="delete_allergy">
 			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
 				<strong>WARNING: This will remove the allergy from the patient record.
 			</div>

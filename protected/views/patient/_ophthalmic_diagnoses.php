@@ -89,8 +89,8 @@
 						</div>
 					</div>
 				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
-					<div id="schedule">
-						<div id="delete_event">
+					<div>
+						<div id="delete_diagnosis">
 							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
 								<strong>WARNING: This will remove the diagnosis from the patient record.
 							</div>
