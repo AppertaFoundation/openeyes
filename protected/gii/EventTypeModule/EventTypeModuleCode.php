@@ -2,7 +2,9 @@
 class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 {
 	public $moduleID;
+	public $moduleShortID;
 	public $moduleSuffix;
+	public $moduleShortSuffix;
 	public $eventGroupName;
 	public $template = "default";
 	public $form_errors = array();
@@ -33,6 +35,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		return array(
 			array('moduleSuffix', 'required'),
 			array('moduleSuffix', 'safe'),
+			array('moduleShortSuffix', 'required'),
+			array('moduleShortSuffix', 'safe'),
 		);
 	}
 
@@ -58,12 +62,21 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) . 
 					Yii::app()->request->getQuery('Specialty[id]') . 
 					preg_replace("/ /", "", ucfirst(strtolower($this->moduleSuffix))),
+				'moduleShortID' => ucfirst(strtolower(Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code)) .
+					ucfirst(strtolower(EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code)) .
+					Yii::app()->request->getQuery('Specialty[id]') .
+					preg_replace("/ /", "", ucfirst(strtolower($this->moduleShortSuffix))),
 				'eventGroupName' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->name,
 			));
 		} else if ($this->mode == 'update') {
 			$this->event_type = EventType::model()->findByPk(@$_POST['EventTypeModuleEventType']);
+			
+			$short_suffix = $this->getEventShortName($this->event_type);
+			
 			$this->initialise(array(
 				'moduleID' => $this->event_type->class_name,
+				'moduleShortID' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code . 
+					Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code . $short_suffix,
 				'event_group' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']),
 				'specialty' => Specialty::model()->findByPk($_REQUEST['Specialty']['id']),
 				'eventGroupName' => $this->event_type->name,
@@ -219,7 +232,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['class_name'] = 'Element_'.$this->moduleID.'_'.preg_replace("/ /", "", ucwords(strtolower($value)));
 				# now using the shortname field attribute for the table name
 				if ($elements[$number]['mode'] == 'create') {
-					$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
+					$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleShortID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
 				}
 
 				$elements[$number]['number'] = $number;
@@ -234,7 +247,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$elements[$number]['after_save'] = array();
 
 				$elements[$number] = $this->generateKeyNames($elements[$number],array('lmui','cui','ev'));
-
+				
 				$fields = Array();
 				foreach ($_POST as $fields_key => $fields_value) {
 					$pattern = '/^' . $field . 'FieldName([0-9]+)$/';
@@ -859,9 +872,40 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		parent::init();
 	}
 
+	/*
+	 * works out the short name for an event type - if the event was generated through this version of gii
+	 * then it will use the moduleShortSuffix property on the class. Otherwise it uses the table names 
+	 * generated for the event elements.
+	 * 
+	 * assumes table names of the form et_[specialty_code][group_code][short_name]_[element_short_name]
+	 * 
+	 * event needs to have had an element defined.
+	 * 
+	 */
+	static public function getEventShortName($event_type) {
+		if (isset($event_type->moduleShortSuffix)) {
+			return $event_type->moduleShortSuffix;
+		}
+		else {
+			// try to derive the short suffix from the table name of an element in the class
+			$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id));
+			
+			if (count($el)) {
+				$test = ModuleAPI::getmodel($event_type->class_name, $el[0]->getAttribute('class_name')); 
+				$code = strtolower(substr($event_type->class_name, 0, 5));
+				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $test->tableName(), $m) ) {
+					die ("ERROR: cannot determine short name for event type " . $event_type->class_name);
+				}
+				return $m[1];
+			}
+			return '';
+		}
+	}
+	
 	static public function eventTypeProperties($event_type_id) {
 		$event_type = EventType::model()->findByPk($event_type_id);
-
+		$event_type_short_name = EventTypeModuleCode::getEventShortName($event_type);
+		
 		if (empty($_POST)) {
 			if (!preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-zA-Z]+)$/',$event_type->class_name,$m)) {
 				die("ERROR: $event_type->class_name");
@@ -879,7 +923,8 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		<label>Specialty: </label>
 		<?php echo CHtml::dropDownList('Specialty[id]',$specialty_id, CHtml::listData(Specialty::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br/>
 		<label>Event group: </label><?php echo CHtml::dropDownList('EventGroup[id]', $event_group_id, CHtml::listData(EventGroup::model()->findAll(array('order' => 'name')), 'id', 'name'))?><br />
-		<label>Name of event type: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleSuffix]',$event_type_name,array('size'=>65)); ?><br />
+		<label>Name of event type: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleSuffix]',$event_type_name,array('size'=>65, 'id'=>'moduleSuffix')); ?><br />
+		<label>Event type short name: </label> <?php echo CHtml::textField('EventTypeModuleCode[moduleShortSuffix]',$event_type_short_name,array('size'=>65, 'id'=>'moduleShortSuffix')); ?><br />
 		<?php
 	}
 

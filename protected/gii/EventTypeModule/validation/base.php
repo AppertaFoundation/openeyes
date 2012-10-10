@@ -9,11 +9,16 @@ return array(
 			),
 			array(
 				'type' => 'length',
-				'field_property' => 'moduleSuffix',
+				'field_property' => 'moduleShortSuffix',
 				'max'  => 20,
 				'regstrip' => '/\s+/',
 				'message' => 'Event name cannot be more than 20 characters (not including spaces)'
-			)
+			),
+			array(
+				'type' => 'required',
+				'field_property' => 'moduleShortSuffix',
+				'message' => 'Please enter an event short name',
+			),
 		),
 	),
 	'/^elementName([0-9]+)$/' => array(

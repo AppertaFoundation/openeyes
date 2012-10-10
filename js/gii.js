@@ -164,6 +164,14 @@ $(document).ready(function() {
 		return true;
 	});
 	
+	// auto generate the shortname for the event from the event name
+	$("#moduleSuffix").live('focusout', function () {
+		if ($("#moduleShortSuffix").val().length == 0) {
+			var sname = $(this).val().toLowerCase().replace(/ /g, "").substring(0,20);
+			$("#moduleShortSuffix").val(sname).select().focus();
+		}
+	});
+	
 	// auto generate the shortname field content when the element name is created
 	$(".elementNameTextField").live('focusout',function () {
 		var m = $(this).attr('name').match(/^elementName([0-9]+)$/);
