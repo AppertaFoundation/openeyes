@@ -31,7 +31,22 @@
 		</div>
 </div>
 <div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
-	<p>Are you sure you want to remove this allergy?</p>
+	<div id="schedule">
+		<div id="delete_event">
+			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+				<strong>WARNING: This will remove the allergy from the patient record.
+			</div>
+			<p>
+				<strong>Are you sure you want to proceed?</strong>
+			</p>
+			<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+				<input type="hidden" id="allergy_id" value="" />
+				<button type="submit" class="classy red venti btn_remove_allergy"><span class="button-span button-span-red">Remove allergy</span></button>
+				<button type="submit" class="classy green venti btn_cancel_remove_allergy"><span class="button-span button-span-green">Cancel</span></button>
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+			</div>
+		</div>
+	</div>
 </div>
 <!-- #patient_allergies -->
 <script type="text/javascript">
@@ -65,29 +80,30 @@
 	
 	// Remove allergy
 	$('#patient_allergies').delegate('a.removeAllergy', 'click', function() {
-		var row = $(this).closest('tr');
+		$('#allergy_id').val($(this).closest('tr').attr('data-allergy-id'));
 
 		$('#confirm_remove_allergy_dialog').dialog({
 			resizable: false,
 			modal: true,
-			buttons: {
-				"Remove": function() {
-					$(this).dialog("close");
-
-					var allergy_id = row.attr('data-allergy-id');
-					var patient_id = <?php echo $this->patient->id; ?>;
-					$.post("<?php echo Yii::app()->createUrl('patient/RemoveAllergy')?>", { patient_id: patient_id, allergy_id: allergy_id }, function(data) {
-						row.remove();
-						$('#allergy_id option[value="' + allergy_id + '"]').removeAttr('disabled');
-					});
-				},
-				Cancel: function() {
-					$(this).dialog("close");
-				}
-			}
+			width: 560
 		});
 
 		return false;
 	});
-	
+
+	$('button.btn_remove_allergy').click(function() {
+		$("#confirm_remove_allergy_dialog").dialog("close");
+
+		$.post("<?php echo Yii::app()->createUrl('patient/RemoveAllergy')?>", { patient_id: <?php echo $this->patient->id?>, allergy_id: $('#allergy_id').val() }, function(data) {
+			$('tr[data-allergy-id="'+$('#allergy_id').val()+'"]').remove();
+			$('#allergy_id option[value="' + $('#allergy_id').val() + '"]').removeAttr('disabled');
+		});
+
+		return false;
+	});
+
+	$('button.btn_cancel_remove_allergy').click(function() {
+		$("#confirm_remove_allergy_dialog").dialog("close");
+		return false;
+	});
 </script>
