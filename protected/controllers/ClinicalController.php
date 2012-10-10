@@ -33,6 +33,7 @@ class ClinicalController extends BaseController
 
 	public function init()
 	{
+		parent::init();
 		// FIXME: this is a hack to enable things to continue working until we can call eg: /modulename/create
 		foreach (EventType::model()->getEventTypeModules() as $module) {
 			if ($module != 'OphTrOperation') {
