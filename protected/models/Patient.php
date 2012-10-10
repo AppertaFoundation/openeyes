@@ -65,13 +65,12 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
-	 * Like the model() method, but with PAS calls suppressed.
+	 * Suppress PAS integration
 	 * @return Patient
 	 */
-	public static function noPasmodel($className = __CLASS__) {
-		$model = new $className(null);
-		$model->_md = new CActiveRecordMetaData($model);
-		$model->attachBehaviors($model->behaviors());
+	public function noPas() {
+		// Clone to avoid singleton problems with use_pas flag
+		$model = clone $this;
 		$model->use_pas = FALSE;
 		return $model;
 	}
