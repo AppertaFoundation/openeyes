@@ -50,7 +50,7 @@ if (empty($operations)) { ?>
 		
 		$patient = NULL;
 		if(isset($operation['pid'])){
-			$patient = Patient::model()->noPas()->findByPk($operation['pid']);
+			$patient = Patient::noPasModel()->findByPk($operation['pid']);
 		}
 		if (isset($_POST['status']) and $_POST['status'] != '') {
 			if ($eo->getNextLetter() != $_POST['status']) {

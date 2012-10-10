@@ -45,6 +45,18 @@ class Gp extends BaseActiveRecord {
 	}
 
 	/**
+	 * Like the model() method, but with PAS calls suppressed.
+	 * @return Gp
+	 */
+	public static function noPasmodel($className = __CLASS__) {
+		$model = new $className(null);
+		$model->_md = new CActiveRecordMetaData($model);
+		$model->attachBehaviors($model->behaviors());
+		$model->use_pas = FALSE;
+		return $model;
+	}
+	
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -112,14 +124,6 @@ class Gp extends BaseActiveRecord {
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-	
-	/**
-	* Supress PAS call after find
-	*/
-	public function noPas() {
-			$this->use_pas = false;
-			return $this;
 	}
 	
 	/**

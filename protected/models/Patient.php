@@ -65,6 +65,18 @@ class Patient extends BaseActiveRecord {
 	}
 
 	/**
+	 * Like the model() method, but with PAS calls suppressed.
+	 * @return Patient
+	 */
+	public static function noPasmodel($className = __CLASS__) {
+		$model = new $className(null);
+		$model->_md = new CActiveRecordMetaData($model);
+		$model->attachBehaviors($model->behaviors());
+		$model->use_pas = FALSE;
+		return $model;
+	}
+
+	/**
 		* @return string the associated database table name
 		*/
 	public function tableName() {
@@ -313,14 +325,6 @@ class Patient extends BaseActiveRecord {
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
-	/**
-	* Supress PAS call after find
-	*/
-	public function noPas() {
-			$this->use_pas = false;
-			return $this;
-	}
-	
 	/**
 	* Pass through use_pas flag to allow pas supression
 	* @see CActiveRecord::instantiate()
