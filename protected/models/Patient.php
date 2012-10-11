@@ -810,13 +810,13 @@ class Patient extends BaseActiveRecord {
 				if ($as = $as->find('event_id=?',array($event->id))) {
 					$msg = "The best visual acuity was ";
 					if ($as->hasLeft()) {
-						$msg .= $as->getCombined('left').' '.$as->left_comments;
+						$msg .= $as->getBest('left');
 					} else {
 						$msg .= "not recorded";
 					}
 					$msg .= " in the left eye and ";
 					if ($as->hasRight()) {
-						$msg .= $as->getCombined('right').' '.$as->right_comments;
+						$msg .= $as->getBest('right');
 					} else {
 						$msg .= "not recorded";
 					}
