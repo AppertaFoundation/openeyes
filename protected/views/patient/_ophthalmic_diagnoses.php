@@ -88,6 +88,24 @@
 							<?php $this->endWidget()?>
 						</div>
 					</div>
+				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
+					<div>
+						<div id="delete_diagnosis">
+							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
+								<strong>WARNING: This will remove the diagnosis from the patient record.
+							</div>
+							<p>
+								<strong>Are you sure you want to proceed?</strong>
+							</p>
+							<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+								<input type="hidden" id="diagnosis_id" value="" />
+								<button type="submit" class="classy red venti btn_remove_diagnosis"><span class="button-span button-span-red">Remove diagnosis</span></button>
+								<button type="submit" class="classy green venti btn_cancel_remove_diagnosis"><span class="button-span button-span-green">Cancel</span></button>
+								<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+							</div>
+						</div>
+					</div>
+				</div>
 <script type="text/javascript">
 	$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 		$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
@@ -105,21 +123,37 @@
 		return true;
 	});
 	$('.removeDiagnosis').live('click',function() {
-		var diagnosis_id = $(this).attr('rel');
-		var anchor = $(this);
+		$('#diagnosis_id').val($(this).attr('rel'));
+
+		$('#confirm_remove_diagnosis_dialog').dialog({
+			resizable: false,
+			modal: true,
+			width: 560
+		});
+
+		return false;
+	});
+
+	$('button.btn_remove_diagnosis').click(function() {
+		$("#confirm_remove_diagnosis_dialog").dialog("close");
 
 		$.ajax({
 			'type': 'GET',
-			'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+diagnosis_id,
+			'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+$('#diagnosis_id').val(),
 			'success': function(html) {
 				if (html == 'success') {
-					anchor.parent().parent().remove();
+					$('a.removeDiagnosis[rel="'+$('#diagnosis_id').val()+'"]').parent().parent().remove();
 				} else {
 					alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
 				}
 			}
 		});
 
+		return false;
+	});
+
+	$('button.btn_cancel_remove_diagnosis').click(function() {
+		$("#confirm_remove_diagnosis_dialog").dialog("close");
 		return false;
 	});
 </script>

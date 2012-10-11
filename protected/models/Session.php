@@ -209,4 +209,43 @@ class Session extends BaseActiveRecord {
 		return $text;
 	}
 
+	public function getDuration() {
+		$from = strtotime('2012-01-01 '.$this->start_time);
+		$to = strtotime('2012-01-01 '.$this->end_time);
+
+		return ($to - $from) / 60;
+	}
+
+	public function getAvailable_time() {
+		$available = $this->duration;
+
+		$criteria = new CDbCriteria;
+		$criteria->join = "join booking on booking.element_operation_id = t.id join session on booking.session_id = session.id";
+		$criteria->compare('session.id',$this->id);
+
+		foreach (ElementOperation::model()->findAll($criteria) as $eo) {
+			$available -= $eo->total_duration;
+
+			if ($available <0) {
+				$available = 0;
+				break;
+			}
+		}
+
+		return $available;
+	}
+
+	public function getTotal_operations_time() {
+		$total = 0;
+
+		$criteria = new CDbCriteria;
+		$criteria->join = "join booking on booking.element_operation_id = t.id join session on booking.session_id = session.id";
+		$criteria->compare('session.id',$this->id);
+
+		foreach (ElementOperation::model()->findAll($criteria) as $eo) {
+			$total += $eo->total_duration;
+		}
+
+		return $total;
+	}
 }

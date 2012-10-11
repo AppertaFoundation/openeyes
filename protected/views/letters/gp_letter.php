@@ -29,9 +29,15 @@
 	<?php } ?>
 </div>
 <div class="toAddress">
-	<?php $gp = $patient->gp ?>
-	<?php echo $gp->contact->fullname ?>
-	<br /><?php echo $gp->contact->correspondAddress->letterhtml ?>
+	<?php if($gp = $patient->gp) {
+		$to_name = $gp->contact->fullname;
+		$salutation = $gp->contact->salutationname;
+	} else {
+		$to_name = Gp::UNKNOWN_NAME;
+		$salutation = Gp::UNKNOWN_SALUTATION;
+	} ?>
+	<?php echo $to_name ?>
+	<br /><?php echo $patient->practice->address->letterhtml ?>
 </div>
 <div class="date">
 	<?php echo date(Helper::NHS_DATE_FORMAT) ?>
@@ -39,7 +45,7 @@
 <div class="content">
 
 	<p>
-		Dear <?php echo $gp->contact->salutationname; ?>,
+		Dear <?php echo $salutation; ?>,
 	</p>
 
 	<p>
