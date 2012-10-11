@@ -45,6 +45,17 @@ class Gp extends BaseActiveRecord {
 	}
 
 	/**
+	 * Suppress PAS integration
+	 * @return Gp
+	 */
+	public function noPas() {
+		// Clone to avoid singleton problems with use_pas flag
+		$model = clone $this;
+		$model->use_pas = FALSE;
+		return $model;
+	}
+
+	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
@@ -112,14 +123,6 @@ class Gp extends BaseActiveRecord {
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-	
-	/**
-	* Supress PAS call after find
-	*/
-	public function noPas() {
-			$this->use_pas = false;
-			return $this;
 	}
 	
 	/**
