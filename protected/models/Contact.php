@@ -171,4 +171,15 @@ class Contact extends BaseActiveRecord {
 
 		return Contact::Model()->findAll($criteria);
 	}
+
+	public function getPrefix() {
+		if ($this->parent_class = 'Gp') {
+			return 'GP';
+		}
+
+		if (UserContactAssignment::model()->find('contact_id=?',array($this->id)) && $this->parent_class != 'Consultant') {
+			return '';
+		}
+		return 'Consultant';
+	}
 }

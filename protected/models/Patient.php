@@ -645,4 +645,22 @@ class Patient extends BaseActiveRecord {
 		$audit->data = $audit_attributes;
 		$audit->save();
 	}
+
+	public function getContactAddress($contact_id, $location_type=false, $location_id=false) {
+		if ($location_type && $location_id) {
+			if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=? and '.$location_type.'_id=?',array($this->id, $contact_id, $location_id))) {
+				return $pca->address;
+			}
+		} else {
+			if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($this->id, $contact_id))) {
+				return $pca->address;
+			}
+		}
+
+		return false;
+	}
+
+	public function getPrefix() {
+		return 'Patient';
+	}
 }
