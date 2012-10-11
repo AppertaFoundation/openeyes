@@ -94,6 +94,8 @@ class Episode extends BaseActiveRecord
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
+			'diagnosis' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
 		);
 	}
 	/**
@@ -107,7 +109,7 @@ class Episode extends BaseActiveRecord
 			'firm_id' => 'Firm',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
-			'episode_status_id' => 'Current Status'
+			'episode_status_id' => 'Current Status',
 		);
 	}
 
@@ -176,76 +178,8 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->find($criteria);
 	}
 
-	/**
-	 * Get the principal diagnosis for this episode
-	 * @return mixed
-	 */
-	protected function getPrincipalDiagnosis() {
-		$element_classes = array(
-				'' => 'ElementDiagnosis',
-				'OphCiExamination' => 'Element_OphCiExamination_Diagnosis',
-		);
-		$diagnosis = null;
-		foreach($element_classes as $element_module => $element_class) {
-			if($element_module) {
-
-				// Check to see if module is installed
-				if(Yii::app()->hasModule($element_module)) {
-					$element_model = ModuleAPI::getmodel($element_module, $element_class);
-				} else {
-					continue;
-				}
-			} else {
-				$element_model = ModuleAPI::getmodel($element_module, $element_class);
-			}
-			$criteria = new CDbCriteria();
-			$criteria->join = 'JOIN event ev ON t.event_id = ev.id';
-			$criteria->addCondition('ev.episode_id = :episode_id');
-			$criteria->params = array(':episode_id' => $this->id);
-			$criteria->order = 't.created_date DESC, t.id DESC';
-			$element = $element_model->find($criteria);
-			if($element && (!$diagnosis || strtotime($element->created_date) > strtotime($diagnosis->created_date))) {
-				$diagnosis = $element;
-			}
-		}
-		return $diagnosis;
-	}
-
-	public function hasPrincipalDiagnosis() {
-		$diagnosis = $this->getPrincipalDiagnosis();
-		return ($diagnosis != null);
-	}
-	
-	/**
-	 * Get the principal disorder for this episode
-	 * @return Disorder
-	 */
-	public function getPrincipalDisorder() {
-		if($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->disorder;
-		}
-	}
-	
-	/**
-	 * Get the principal eye for this episode
-	 * @return Eye
-	 */
-	public function getPrincipalEye() {
-		if($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->eye;
-		}
-	}
-	
-	public function getPrincipalDiagnosisEyeText() {
-		if ($eye = $this->getPrincipalEye()) {
-			return $eye->name;
-		} else {
-			return 'none';
-		}
-	}
-
 	public function getPrincipalDiagnosisDisorderTerm() {
-		if ($disorder = $this->getPrincipalDisorder()) {
+		if ($disorder = $this->getPrincipalD2isorder()) {
 			return $disorder->term;
 		} else {
 			return 'none';
@@ -349,5 +283,48 @@ class Episode extends BaseActiveRecord
 
 	public function getOpen() {
 		return ($this->end_date == null);
+	}
+
+	public function getEditable(){
+		if (!$this->firm) {
+			return FALSE;
+		}
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+			return FALSE;
+		}
+
+		if ($this->patient->date_of_death){
+			return FALSE;
+		}
+	 
+		return TRUE;
+	}
+
+	protected function afterSave() {
+		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {
+			if ($this->eye_id == $sd->eye_id || ($this->eye_id == 3 && in_array($sd->eye_id,array(1,2)))) {
+				$sd->delete();
+			} else if (in_array($this->eye_id,array(1,2)) && $sd->eye_id == 3) {
+				$sd->eye_id = ($this->eye_id == 1 ? 2 : 1);
+				$sd->save();
+			}
+		}
+	}
+
+	public function setPrincipalDiagnosis($disorder_id, $eye_id) {
+		$this->disorder_id = $disorder_id;
+		$this->eye_id = $eye_id;
+		if (!$this->save()) {
+			throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = "set-principal-diagnosis";
+		$audit->target_type = "episode";
+		$audit->episode_id = $this->id;
+		$audit->patient_id = $this->patient_id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $this->getAuditAttributes();
+		$audit->save();
 	}
 }

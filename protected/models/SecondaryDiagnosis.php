@@ -18,32 +18,26 @@
  */
 
 /**
- * This is the model class for table "drug".
+ * This is the model class for table "secondary_diagnosis".
  *
- * The followings are the available columns in table 'drug':
+ * The followings are the available columns in table 'secondary_diagnosis':
  * @property integer $id
- * @property string $name
- * @property string $tallman
- * @property string $label
- * @property string $aliases
- * @property string $dose_unit
- * @property string $default_dose
- * @property integer $preservative_free
+ * @property integer $disorder_id
+ * @property integer $eye_id
+ * @property integer $patient_id
+ * @property integer $episode_id
  *
- * @property Allergy[] $allergies
- * @property DrugType $type
- * @property DrugForm $form
- * @property DrugRoute $default_route
- * @property DrugFrequency $default_frequency
- * @property DrugDuration $default_duration
+ * The followings are the available model relations:
+ * @property Disorder $disorder
+ * @property Eye $eye
+ * @property Patient $patient
+ * @property Episode $episode
  */
-class Drug extends BaseActiveRecord
+class SecondaryDiagnosis extends BaseActiveRecord
 {
-	public $default_scope = true;
-
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Drug the static model class
+	 * @return SecondaryDiagnosis the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -55,30 +49,7 @@ class Drug extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'drug';
-	}
-
-	public function defaultScope() {
-		if ($this->default_scope) {
-			return array(
-				'condition' => 'discontinued = 0',
-			);
-		} else {
-			return array();
-		}
-	}
-
-	public function scopes() {
-		return array(
-			'discontinued' => array(
-				'condition' => 'discontinued in (0,1)',
-			),
-		);
-	}
-
-	public function discontinued() {
-		$this->default_scope = false;
-		return $this;
+		return 'secondary_diagnosis';
 	}
 
 	/**
@@ -89,11 +60,8 @@ class Drug extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name, tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
+			array('disorder_id, patient_id', 'required'),
+			array('disorder_id, eye_id, patient_id', 'safe'),
 		);
 	}
 
@@ -105,12 +73,9 @@ class Drug extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-				'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-				'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
-				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
-				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 		);
 	}
 
@@ -120,25 +85,10 @@ class Drug extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
 		);
 	}
 
-	public function getLabel() {
-		if($this->preservative_free) {
-			return $this->name . ' (No Preservative)';
-		} else {
-			return $this->name;
-		}
-	}
-	
-	public function getTallmanLabel() {
-		if($this->preservative_free) {
-			return $this->tallman . ' (No Preservative)';
-		} else {
-			return $this->tallman;
-		}
-	}
-	
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -151,10 +101,29 @@ class Drug extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getDateText() {
+		$year = (integer)substr($this->date,0,4);
+		$mon = (integer)substr($this->date,5,2);
+		$day = (integer)substr($this->date,8,2);
+
+		if ($year && $mon && $day) {
+			return $this->NHSDate('date');
+		}
+
+		if ($year && $mon) {
+			return date('M Y',strtotime($year.'-'.$mon.'-01 00:00:00'));
+		}
+
+		if ($year) {
+			return $year;
+		}
+
+		return 'Unknown';
 	}
 }

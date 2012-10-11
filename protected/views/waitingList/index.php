@@ -208,7 +208,7 @@
 		var msg = '';
 
 		if (nogp >0) {
-			msg += nogp+" item"+(nogp == 1 ? '' : 's')+" could not be printed as the patient has no GP.";
+			msg += nogp+" item"+(nogp == 1 ? '' : 's')+" could not be printed as the patient has no GP practice.";
 		}
 
 		if (msg.length >0) {

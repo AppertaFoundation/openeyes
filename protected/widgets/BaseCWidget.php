@@ -27,16 +27,18 @@ class BaseCWidget extends CWidget
 	public $hidden = false;
 
 	public function init() {
-		if (empty($_POST)) {
-			if (isset($this->element->{$this->field})) {
-				$this->value = $this->element->{$this->field};
+		if (is_object($this->element)) {
+			if (empty($_POST)) {
+				if (isset($this->element->{$this->field})) {
+					$this->value = $this->element->{$this->field};
+				}
+			} else {
+				$this->value = @$_POST[get_class($this->element)][$this->field];
 			}
-		} else {
-			$this->value = @$_POST[get_class($this->element)][$this->field];
-		}
 
-		if ($this->field && $this->element->hasAttribute($this->field)) {
-			$this->element->{$this->field} = $this->value;
+			if ($this->field && $this->element->hasAttribute($this->field)) {
+				$this->element->{$this->field} = $this->value;
+			}
 		}
 
 		// if the widget has javascript, load it in

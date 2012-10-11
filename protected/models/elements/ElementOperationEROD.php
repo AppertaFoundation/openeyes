@@ -18,34 +18,37 @@
  */
 
 /**
- * This is the model class for table "drug".
+ * This is the model class for table "element_operation_erod".
  *
- * The followings are the available columns in table 'drug':
+ * The followings are the available columns in table 'element_operation_erod':
  * @property integer $id
- * @property string $name
- * @property string $tallman
- * @property string $label
- * @property string $aliases
- * @property string $dose_unit
- * @property string $default_dose
- * @property integer $preservative_free
+ * @property integer $element_operation_id
+ * @property integer $session_id
+ * @property date $session_date
+ * @property time $session_start_time
+ * @property time $session_end_time
+ * @property integer $firm_id
+ * @property boolean $consultant
+ * @property boolean $paediatric
+ * @property boolean $anaesthetist
+ * @property boolean $general_anaesthetic
+ * @property integer $session_duration
+ * @property integer $total_operations_time
+ * @property integer $available_time
+ * @property integer $firm_id
  *
- * @property Allergy[] $allergies
- * @property DrugType $type
- * @property DrugForm $form
- * @property DrugRoute $default_route
- * @property DrugFrequency $default_frequency
- * @property DrugDuration $default_duration
+ * The followings are the available model relations:
+ * @property ElementOperation $element_operation
+ * @property Session $session
+ * @property Firm $firm
  */
-class Drug extends BaseActiveRecord
+class ElementOperationEROD extends BaseActiveRecord 
 {
-	public $default_scope = true;
-
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Drug the static model class
+	 * @return ElementOperation the static model class
 	 */
-	public static function model($className=__CLASS__)
+	public static function model($className = __CLASS__)
 	{
 		return parent::model($className);
 	}
@@ -55,30 +58,7 @@ class Drug extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'drug';
-	}
-
-	public function defaultScope() {
-		if ($this->default_scope) {
-			return array(
-				'condition' => 'discontinued = 0',
-			);
-		} else {
-			return array();
-		}
-	}
-
-	public function scopes() {
-		return array(
-			'discontinued' => array(
-				'condition' => 'discontinued in (0,1)',
-			),
-		);
-	}
-
-	public function discontinued() {
-		$this->default_scope = false;
-		return $this;
+		return 'element_operation_erod';
 	}
 
 	/**
@@ -89,14 +69,12 @@ class Drug extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name', 'required'),
-			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
+			array('element_operation_id, session_id, session_date, session_start_time, firm_id, consultant, paediatric, anaesthetist, general_anaesthetic, session_duration, total_operations_time, available_time', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
 		);
 	}
-
+	
 	/**
 	 * @return array relational rules.
 	 */
@@ -105,12 +83,11 @@ class Drug extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-				'allergies' => array(self::MANY_MANY, 'Allergy', 'drug_allergy_assignment(drug_id, allergy_id)'),
-				'type' => array(self::BELONGS_TO, 'DrugType', 'type_id'),
-				'form' => array(self::BELONGS_TO, 'DrugForm', 'form_id'),
-				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
-				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
-				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+			'element_operation' => array(self::BELONGS_TO, 'ElementOperation', 'element_operation_id'),
+			'session' => array(self::BELONGS_TO, 'Session', 'session_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
+			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 		);
 	}
 
@@ -120,25 +97,10 @@ class Drug extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
 		);
 	}
 
-	public function getLabel() {
-		if($this->preservative_free) {
-			return $this->name . ' (No Preservative)';
-		} else {
-			return $this->name;
-		}
-	}
-	
-	public function getTallmanLabel() {
-		if($this->preservative_free) {
-			return $this->tallman . ' (No Preservative)';
-		} else {
-			return $this->tallman;
-		}
-	}
-	
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -148,13 +110,25 @@ class Drug extends BaseActiveRecord
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
 
-		$criteria=new CDbCriteria;
+		$criteria = new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-
+		$criteria->compare('id', $this->id, true);
+		$criteria->compare('element_operation_id', $this->element_operation_id);
+		$criteria->compare('session_id', $this->session_id);
+		$criteria->compare('session_date', $this->session_date);
+		$criteria->compare('session_start_time', $this->session_start_time);
+		$criteria->compare('firm_id', $this->firm_id);
+		
 		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
+			'criteria' => $criteria,
 		));
+	}
+
+	public function getFirmName() {
+		return $this->firm->name . ' (' . $this->firm->serviceSubspecialtyAssignment->subspecialty->name . ')';
+	}
+
+	public function getTimeSlot() {
+		return date('H:i',strtotime($this->session_start_time)) . ' - ' . date('H:i',strtotime($this->session_end_time));
 	}
 }

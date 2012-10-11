@@ -21,7 +21,7 @@
  * This is the model class for table "patient".
  *
  * The followings are the available columns in table 'patient':
- * @property string  $id
+ * @property integer  $id
  * @property string  $pas_key
  * @property string  $title
  * @property string  $first_name
@@ -32,11 +32,12 @@
  * @property string  $hos_num
  * @property string  $nhs_num
  * @property string  $primary_phone
- * @property string  $gp_id
+ * @property integer  $gp_id
+ * @property integer $practice_id
  * @property string  $created_date
  * @property string  $last_modified_date
- * @property string  $created_user_id
- * @property string  $last_modified_user_id
+ * @property integer  $created_user_id
+ * @property integer  $last_modified_user_id
  * 
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -46,6 +47,7 @@
  * @property CorrespondAddress $correspondAddress Correspondence address
  * @property Contact[] $contacts
  * @property Gp $gp
+ * @property Practice $practice
  * @property Allergy[] $allergies
  */
 class Patient extends BaseActiveRecord {
@@ -118,6 +120,7 @@ class Patient extends BaseActiveRecord {
 				'on' => "parent_class = 'Patient'",
 			),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
+			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 		);
@@ -265,7 +268,7 @@ class Patient extends BaseActiveRecord {
 		* @return string Full name 
 		*/
 	public function getFullName() {
-		return implode(' ',array($this->title, $this->first_name, $this->last_name));
+		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
 
 	public function getDisplayName() {
@@ -368,7 +371,7 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($episode && $disorder = $episode->getPrincipalDisorder()) {
+		if ($episode && $disorder = $episode->diagnosis) {
 			return strtolower($disorder->term);
 		}
 	}
@@ -376,7 +379,7 @@ class Patient extends BaseActiveRecord {
 	public function getEps() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 
-		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
+		if ($episode && $diagnosis = $episode->diagnosis) {
 			return strtolower($diagnosis->eye->adjective);
 		}
 	}
@@ -470,7 +473,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getLetterAddress() {
-		$address = $this->fullName;
+		$address = $this->addressName;
 
 		if (isset($this->qualifications)) {
 			$address .= ' '.$this->qualifications;
@@ -570,5 +573,76 @@ class Patient extends BaseActiveRecord {
 				}
 			}
 		}
+	}
+
+	public function getSystemicDiagnoses() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $this->id);
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 1';
+		$criteria->order = 'date asc';
+
+		return SecondaryDiagnosis::model()->findAll($criteria);
+	}
+
+	public function getOphthalmicDiagnoses() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $this->id);
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 0';
+		$criteria->order = 'date asc';
+
+		return SecondaryDiagnosis::model()->findAll($criteria);
+	}
+
+	public function addDiagnosis($disorder_id, $eye_id=false, $date=false) {
+		if (!$date) {
+			$date = date('Y-m-d');
+		}
+
+		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
+			$sd = new SecondaryDiagnosis;
+			$sd->patient_id = $this->id;
+			$sd->disorder_id = $disorder_id;
+			$action = "add-secondary-diagnosis";
+			$sd->eye_id = $eye_id;
+			$sd->date = $date;
+		} else {
+			$action = "update-secondary-diagnosis";
+			if ($sd->eye_id != $eye_id) {
+				$sd->eye_id = $eye_id;
+				$sd->date = $date;
+			}
+		}
+
+		if (!$sd->save()) {
+			throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = $action;
+		$audit->target_type = "patient";
+		$audit->patient_id = $this->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $sd->getAuditAttributes();
+		$audit->save();
+	}
+
+	public function removeDiagnosis($diagnosis_id) {
+		if (!$sd = SecondaryDiagnosis::model()->findByPk($diagnosis_id)) {
+			throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
+		}
+
+		$audit_attributes = $sd->getAuditAttributes();
+
+		if (!$sd->delete()) {
+			throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = "remove-secondary-diagnosis";
+		$audit->target_type = "patient";
+		$audit->patient_id = $this->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $audit_attributes;
+		$audit->save();
 	}
 }
