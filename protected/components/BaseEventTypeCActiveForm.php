@@ -36,8 +36,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden));
 	}
 
-	public function radioBoolean($element,$field) {
-		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No'), 'selected_item' => $element->$field));
+	public function radioBoolean($element,$field,$htmlOptions=array()) {
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No'), 'selected_item' => $element->$field, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function datePicker($element,$field,$options,$htmlOptions=array()) {
