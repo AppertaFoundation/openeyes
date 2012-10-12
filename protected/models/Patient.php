@@ -864,4 +864,16 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
+
+	public function getMan() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Management')) {
+				if ($as = $as->find('event_id=?',array($event->id))) {
+					return $as->comments;
+				}
+			}
+		}
+	}
 }
