@@ -1,6 +1,8 @@
 <?php if (@$options['text-align'] == 'right') {?>
 	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail">
-		<div class="label"></div>
+		<?php if (!@$options['no-label']) {?>
+			<div class="label"></div>
+		<?php }?>
 		<div class="data">
 			<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0')?>
 			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field])?>
