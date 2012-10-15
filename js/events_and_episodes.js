@@ -41,6 +41,8 @@ $(document).ready(function(){
 			}
 
 			$('#'+target_id).val(currentVal + newText);
+
+			$(this).val('');
 		}
 	});
 });
