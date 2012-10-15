@@ -684,9 +684,9 @@ class BaseEventTypeController extends BaseController
 		// do automatic file inclusion after the base init
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
 		
-		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
-		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
-		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img')).'/';
+		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'), false, -1, YII_DEBUG);
+		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'), false, -1, YII_DEBUG);
+		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img'), false, -1, YII_DEBUG).'/';
 
 		$ex = explode('/',@$_SERVER['REQUEST_URI']);
 
