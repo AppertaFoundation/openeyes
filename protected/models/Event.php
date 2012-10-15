@@ -96,11 +96,8 @@ class Event extends BaseActiveRecord
 	}
 	
 	public function getEditable(){
-	
-		if (!$this->episode->firm) {
-			return FALSE;
-		}	
-		if($this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+
+		if (!$this->episode->editable) {
 			return FALSE;
 		}
 
@@ -112,10 +109,6 @@ class Event extends BaseActiveRecord
 			}
 		}
 
-		if($this->episode->patient->date_of_death){
-			return FALSE;
-		}
-		
 		return TRUE;
 	}
 

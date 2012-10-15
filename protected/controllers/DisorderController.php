@@ -51,6 +51,11 @@ class DisorderController extends Controller {
 			$criteria->params = $params;
 			// Limit results
 			$criteria->limit = '200';
+			if (@$_GET['restrict'] == 'systemic') {
+				$criteria->addCondition('systemic = 1');
+			} else if (@$_GET['restrict'] == 'ophthalmic') {
+				$criteria->addCondition('systemic = 0');
+			}
 			$disorders = Disorder::model()->findAll($criteria);
 			$return = array();
 			foreach($disorders as $disorder) {
@@ -77,4 +82,11 @@ class DisorderController extends Controller {
 		}
 	}
 
+	public function actionIsCommonOphthalmic($id) {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?',array($id,$firm->serviceSubspecialtyAssignment->subspecialty_id))) {
+			echo "<option value=\"$cd->disorder_id\">".$cd->disorder->term."</option>";
+		}
+	}
 }

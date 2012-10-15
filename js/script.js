@@ -39,11 +39,11 @@ $(document).ready(function(){
 		var whiteBox = $(this).parents('.whiteBox');
 		
 		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fast",'fast');
+			whiteBox.children('.data_row').slideUp("fast");
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			whiteBox.children('.data_row').slideDown("fast",'fast');
+			whiteBox.children('.data_row').slideDown("fast");
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}

@@ -166,15 +166,16 @@ class BaseEventTypeController extends BaseController
 		}
 		$elements = $this->getDefaultElements('create', $this->event_type->id);
 
-		if (!count($elements)) {
+		if (empty($_POST) && !count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
-		if (!empty($_POST)) {
-			if (isset($_POST['cancel'])) {
-				$this->redirect(array('/patient/view/'.$this->patient->id));
-				return;
-			}
+		if (!empty($_POST) && isset($_POST['cancel'])) {
+			$this->redirect(array('/patient/view/'.$this->patient->id));
+			return;
+		} else if(!empty($_POST) && !count($elements)) {
+			$errors['Event'][] = 'No elements selected';
+		} else if (!empty($_POST)) {
 
 			$elements = array();
 			$element_names = array();
@@ -337,18 +338,18 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		if (!count($this->getDefaultElements('update'))) {
+		if (empty($_POST) && !count($this->getDefaultElements('update'))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
-		if (!empty($_POST)) {
+		if (!empty($_POST) && isset($_POST['cancel'])) {
+			// Cancel button pressed, so just bounce to view
+			$this->redirect(array('default/view/'.$this->event->id));
+			return;
+		} else if(!empty($_POST) && !count($this->getDefaultElements('update'))) {
+			$errors['Event'][] = 'No elements selected';
+		} else if (!empty($_POST)) {
 			
-			if (isset($_POST['cancel'])) {
-				// Cancel button pressed, so just bounce to view
-				$this->redirect(array('default/view/'.$this->event->id));
-				return;
-			}
-
 			$elements = array();
 			$to_delete = array();
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {

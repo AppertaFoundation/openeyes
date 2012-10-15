@@ -37,6 +37,10 @@
 		<td><?php echo $patient->hos_num ?></td>
 	</tr>
 	<tr>
+		<th>NHS Number</th>
+		<td><?php echo $patient->nhsnum?></td>
+	</tr>
+	<tr>
 		<th>DOB</th>
 		<td><?php echo $patient->NHSDate('dob'); ?></td>
 	</tr>
@@ -105,7 +109,7 @@
 		<?php if($booking) { ?>
 		<th>Operation date:</th>
 		<td><?php echo $booking->session->NHSDate('date'); ?></td>
-		<?php } else { 	?>
+		<?php } else {	?>
 		<th colspan="2" rowspan="4">Patient Added to partial bookings waiting List, admission Date to be arranged</th>
 		<?php } ?>
 	</tr>
