@@ -577,4 +577,8 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
+
+	public function getNhsnum() {
+		return $this->nhs_num ? substr($this->nhs_num,0,3).' '.substr($this->nhs_num,4,3).' '.substr($this->nhs_num,6,4) : null;
+	}
 }
