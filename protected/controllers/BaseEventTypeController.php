@@ -686,10 +686,14 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function init() {
+		parent::init();
+		
+		// do automatic file inclusion after the base init
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
 
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
+			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+
 
 			$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
 			$action = $ex[3];
@@ -725,7 +729,6 @@ class BaseEventTypeController extends BaseController
 			closedir($dh);
 		}
 
-		parent::init();
 	}
 
 	public function actionPrint($id) {
