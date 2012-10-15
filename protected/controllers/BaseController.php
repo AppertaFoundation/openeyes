@@ -174,6 +174,6 @@ class BaseController extends Controller
 	public function init() {
 		parent::init();
 
-		OECClientScript::registerCssFile('/css/style.css');
+		Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('/css/style.css'));
 	}
 }
