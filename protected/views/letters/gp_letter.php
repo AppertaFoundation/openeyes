@@ -58,8 +58,7 @@
 			<br /><?php echo $patient->NHSDate('dob') ?>, <?php echo ($patient->gender == 'M') ? 'Male' : 'Female'; ?>
 			<br /><?php echo $patient->correspondAddress->letterline ?></strong>
 		</div>
-		<?php if (!empty($patient->nhs_num)) { ?>
-		<strong>NHS number: <?php echo $patient->nhs_num; } ?></strong>
+		<strong>NHS number: <?php echo $patient->nhsnum?></strong>
 	</div>
 
 	<p>
