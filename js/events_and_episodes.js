@@ -41,10 +41,6 @@ $(document).ready(function(){
 			}
 
 			$('#'+target_id).val(currentVal + newText);
-
-			if (!$(this).attr('data-remove-selections') || $(this).attr('data-remove-selections') != "false") {
-				$(this).children('option:selected').remove();
-			}
 		}
 	});
 });
