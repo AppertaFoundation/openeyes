@@ -23,6 +23,7 @@ class RadioButtonList extends BaseCWidget {
 	public $selected_item;
 	public $maxwidth;
 	public $htmlOptions = array();
+	public $no_element = false;
 
 	public function init() {
 		if (empty($_POST)) {
@@ -33,6 +34,10 @@ class RadioButtonList extends BaseCWidget {
 			}
 		} else {
 			$this->value = @$_POST[get_class($this->element)][$this->field];
+		}
+
+		if ($this->no_element) {
+			$this->name = $this->field;
 		}
 	}
 }
