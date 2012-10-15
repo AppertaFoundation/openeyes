@@ -46,16 +46,12 @@ $patient = $operation->event->episode->patient;
 		<?php
 	}
 	?>
-
-
-
 	<div class="eventDetail">
 		<strong>Operation duration:</strong> <?php echo $operation->total_duration; ?> minutes
 	</div>
-	
 	<div class="eventDetail">
-                <div class="label"><strong>Current schedule:</strong></div>
-<?php $this->renderPartial('_session', array('operation' => $operation)); ?>
+		<div class="label"><strong>Current schedule:</strong></div>
+		<?php $this->renderPartial('_session', array('operation' => $operation)); ?>
 	</div>
 
 	<div id="firmSelect" class="eventDetail clearfix">
@@ -64,9 +60,9 @@ $patient = $operation->event->episode->patient;
 			<select id="firmId">
 				<option value="">Select a different firm</option>
 				<option value="EMG">Emergency List</option>
-                                <?php foreach ($firmList as $id => $name) {?>
-                                        <option value="<?php echo $id ?>"><?php echo $name ?></option>
-                                <?php }?>
+				<?php foreach ($firmList as $id => $name) {?>
+					<option value="<?php echo $id ?>"><?php echo $name ?></option>
+				<?php }?>
 			</select>
 		</div>
 	</div>
@@ -93,7 +89,7 @@ $patient = $operation->event->episode->patient;
 
 <script type="text/javascript">
 	$(function() {
-		$('#previous_month').die('click').live('click',function() {
+		$(this).undelegate('#previous_month','click').delegate('#previous_month','click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
@@ -112,7 +108,7 @@ $patient = $operation->event->episode->patient;
 			});
 			return false;
 		});
-		$('#next_month').die('click').live('click',function() {
+		$(this).undelegate('#next_month','click').delegate('#next_month','click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
@@ -131,7 +127,7 @@ $patient = $operation->event->episode->patient;
 			});
 			return false;
 		});
-		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed').die('click').live('click', function() {
+		$(this).undelegate('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed','click').delegate('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed','click',function() {
 			$('#sessionDetails').html('');
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');
@@ -161,7 +157,7 @@ $patient = $operation->event->episode->patient;
 				}
 			});
 		});
-		$('#theatres div.shinybutton').die('click').live('click', function() {
+		$(this).undelegate('#theatres div.shinybutton','click').delegate('#theatres div.shinybutton','click',function() {
 			var session = $(this).children().children('span.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
@@ -170,7 +166,7 @@ $patient = $operation->event->episode->patient;
 			$(this).addClass('highlighted');
 			showTheatreList(operation, month, day, session);
 		});
-		$('#firmSelect #firmId').die('change').live('change', function() {
+		$(this).undelegate('#firmSelect #firmId','click').delegate('#firmSelect #firmId','change',function() {
 			var firmId = $(this).val();
 			var operation = $('input[id=operation]').val();
 			window.location.href = '<?php echo Yii::app()->createUrl('booking/reschedule'); ?>?operation='+operation+'&firmId='+firmId;

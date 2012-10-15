@@ -37,17 +37,17 @@ $this->menu=array(
 		'id',
 		'name',
 		'phrase',
-                array(
-                        'name' => 'subspecialty_id',
-                        'value' => CHtml::encode($model->getSubspecialtyText())
-                ),
-                array(
-                        'name' => 'to',
-                        'value' => CHtml::encode($model->getToText())
-                ),
-                array(
-                        'name' => 'cc',
-                        'value' => CHtml::encode($model->getCcText())
-                ),
+		array(
+			'name' => 'subspecialty_id',
+			'value' => CHtml::encode($model->getSubspecialtyText())
+		),
+		array(
+			'name' => 'to',
+			'value' => CHtml::encode($model->getToText())
+		),
+		array(
+			'name' => 'cc',
+			'value' => CHtml::encode($model->getCcText())
+		),
 	),
 )); ?>

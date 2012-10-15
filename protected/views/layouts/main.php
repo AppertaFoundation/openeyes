@@ -16,7 +16,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 ?>
 <!doctype html> 
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -28,24 +27,23 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
  
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
-	<meta name="viewport" content="width=device-width"> 
+	<meta name="viewport" content="width=device-width; initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
 		<meta http-equiv='expires' content='0'>
 		<meta http-equiv='pragma' content='no-cache'>
 	<?php }?>
-	<link rel="icon" href="/favicon.ico" type="image/x-icon" /> 
-	<link rel="shortcut icon" href="/favicon.ico"/> 
-	<!--  zoink! -->
-	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
-	<?php // TODO: These scripts should probably be registered through Yii too ?>
-	<script type="text/javascript" src="/js/jui/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.watermark.min.js"></script>
-	<script type="text/javascript" src="/js/libs/modernizr-2.0.6.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.printElement.min.js"></script>
-	<script type="text/javascript" src="/js/print.js"></script>
-	<script type="text/javascript" src="/js/buttons.js"></script>
-	<script type="text/javascript" src="/js/script.js"></script>
+	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" /> 
+	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/> 
+	<?php Yii::app()->clientScript->registerCoreScript('jquery')?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jui/js/jquery-ui.min.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jquery.watermark.min.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/libs/modernizr-2.0.6.min.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jquery.printElement.min.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
@@ -61,9 +59,12 @@
 
 		</script>
 	<?php }?>
+	<script type="text/javascript">
+		var baseUrl = '<?php echo Yii::app()->baseUrl?>';
+	</script>
 </head> 
  
-<body> 
+<body>
 	<?php if (Yii::app()->user->checkAccess('admin')) {?>
 		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
 	<?php } else if (Yii::app()->params['watermark']) {?>
@@ -73,7 +74,7 @@
 	<?php echo $this->renderPartial('/base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix">
-			<div id="brand" class="ir"><h1><a href="/site/index">OpenEyes</a></h1></div>
+			<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 		</div> <!-- #header --> 
 		<!--div id="mainmenu">

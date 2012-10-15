@@ -88,7 +88,7 @@ class Patient extends BaseActiveRecord {
 	public function relations() {
 		return array(
 			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "legacy=1"
+				'condition' => "legacy=1",
 			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
 				'condition' => "legacy=0 or legacy is null"
@@ -368,8 +368,8 @@ class Patient extends BaseActiveRecord {
 	public function getEpd() {
 		$episode = $this->getEpisodeForCurrentSubspecialty();
 		
-		if ($episode && $diagnosis = $episode->getPrincipalDiagnosis()) {
-			return strtolower($diagnosis->disorder->term);
+		if ($episode && $disorder = $episode->getPrincipalDisorder()) {
+			return strtolower($disorder->term);
 		}
 	}
 

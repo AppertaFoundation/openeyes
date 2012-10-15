@@ -87,8 +87,10 @@ class EventType extends BaseActiveRecord
 	}
 
 	public function getEventTypeModules() {
+		$legacy_events = EventGroup::model()->find('code=?',array('Le'));
+
 		$criteria = new CDbCriteria;
-		$criteria->condition = "class_name in ('".implode("','",array_keys(Yii::app()->getModules()))."') or class_name='OphTrOperation'";
+		$criteria->condition = "(class_name in ('".implode("','",array_keys(Yii::app()->getModules()))."') or class_name='OphTrOperation') and event_group_id != $legacy_events->id";
 		$criteria->order = "class_name asc";
 		return EventType::model()->findAll($criteria);
 	}

@@ -38,16 +38,14 @@
 						</span>
 						<span class="patient">
 							<?php if ($log->patient) {?>
-								<a href="/patient/view/<?php echo $log->patient_id?>">
-									<?php echo $log->patient->displayName?>
-								</a>
+								<?php echo CHtml::link($log->patient->displayName,array('patient/view/'.$log->patient_id))?>
 							<?php }else{?>
 								-
 							<?php }?>
 						</span>
 						<span class="episode">
 							<?php if ($log->episode) {?>
-								<a href="/patient/episode/<?php echo $log->episode_id?>">view</a>
+								<?php echo CHtml::link('view',array('patient/episode/'.$log->episode_id))?>
 							<?php }else{?>
 								-
 							<?php }?>

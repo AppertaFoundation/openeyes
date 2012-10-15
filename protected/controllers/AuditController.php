@@ -80,7 +80,7 @@ class AuditController extends BaseController
 			$data = $this->getData();
 		}
 
-		Yii::app()->clientScript->registerScriptFile('/js/audit.js');
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/audit.js'));
 		$this->renderPartial('_list', array('data' => $data), false, true);
 		echo "<!-------------------------->";
 		$this->renderPartial('_pagination', array('data' => $data), false, true);
@@ -129,6 +129,10 @@ class AuditController extends BaseController
 
 		if (@$_REQUEST['target_type']) {
 			$criteria->addCondition("target_type='".$_REQUEST['target_type']."'");
+		}
+
+		if (@$_REQUEST['event_type']) {
+			$criteria->addCondition('event_type_id='.$_REQUEST['event_type']);
 		}
 
 		if (@$_REQUEST['date_from']) {

@@ -18,14 +18,12 @@
  */
 
 if (!empty($episode)) {
-	$diagnosis = $episode->getPrincipalDiagnosis();
-
-	if (empty($diagnosis)) {
+	if ($episode->hasPrincipalDiagnosis()) {
+		$eye = $episode->getPrincipalDiagnosisEyeText();
+		$diagnosis = $episode->getPrincipalDiagnosisDisorderTerm();
+	} else {
 		$eye = 'No diagnosis';
 		$diagnosis = 'No diagnosis';
-	} else {
-		$eye = $diagnosis->eye->name;
-		$diagnosis = $diagnosis->disorder->term;
 	}
 
 	$audit = new Audit;
@@ -82,10 +80,7 @@ if (!empty($episode)) {
 
 	<?php
 	try {
-		echo $this->renderPartial(
-			'/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id,
-			array('episode' => $episode)
-		);
+		echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id, array('episode' => $episode));
 	} catch (Exception $e) {
 		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
@@ -102,7 +97,6 @@ if (!empty($episode)) {
 
 <!-- Booking -->
 
-<!--
 <h4>Episode Status</h4>
 
 <div class="eventDetail">
@@ -116,7 +110,6 @@ if (!empty($episode)) {
 		</span>
 	</div>
 </div>
--->
 
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
@@ -182,7 +175,7 @@ if (!empty($episode)) {
 			e.preventDefault();
 			$('#close-episode-popup').slideToggle(100);
 			$.ajax({
-				url: '/clinical/closeepisode/<?php echo $episode->id?>',
+				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
 				success: function(data) {
 					$('#event_content').html(data);
 					return false;
@@ -199,10 +192,10 @@ if (!empty($episode)) {
 
 				$.ajax({
 					type: 'POST',
-					url: '/patient/setepisodestatus/<?php echo $episode->id?>',
+					url: '<?php echo Yii::app()->createUrl('patient/setepisodestatus/'.$episode->id)?>',
 					data: 'episode_status_id='+$('#episode_status_id').val(),
 					success: function(html) {
-						window.location.href = '/patient/episodes/<?php echo $this->patient->id?>';
+						window.location.href = '<?php echo Yii::app()->createUrl('patient/episodes/'.$this->patient->id)?>';
 					}
 				});
 			}

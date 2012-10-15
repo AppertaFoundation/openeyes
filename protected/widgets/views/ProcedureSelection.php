@@ -49,49 +49,17 @@
 					'options'=>array(
 						'minLength'=>'2',
 						'select'=>"js:function(event, ui) {
-							$.ajax({
-								'url': '" . Yii::app()->createUrl('procedure/details') . "?durations=".($durations?'1':'0')."&short_version=".($short_version?'1':'0')."',
-								'type': 'GET',
-								'data': {'name': ui.item.value},
-								'success': function(data) {
-									var enableDurations = ".($durations?'true':'false').";
-									var shortVersion = ".($short_version?'true':'false').";
-
-									// append selection onto procedure list
-									$('#procedureList').children('h4').append(data);
-									$('#procedureList').show();
-
-									if (enableDurations) {
-										updateTotalDuration();
-										$('div.extraDetails').show();
+							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
+								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
+									if (result != true) {
+										$('#autocomplete_procedure_id').val('');
+										return;
 									}
-
-									// clear out text field
-									$('#autocomplete_procedure_id').val('');
-
-									// remove selection from the filter box
-									if ($('#select_procedure_id').children().length > 0) {
-										m = data.match(/<span>(.*?)<\/span>/);
-
-										$('#select_procedure_id').children().each(function () {
-											if ($(this).text() == m[1]) {
-												var id = $(this).val();
-												var name = $(this).text();
-
-												removed_stack.push({name: name, id: id});
-
-												$(this).remove();
-											}
-										});
-									}
-
-									if (typeof(window.callbackAddProcedure) == 'function') {
-										m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
-										var procedure_id = m[1];
-										callbackAddProcedure(procedure_id);
-									}
-								}
-							});
+									ProcedureSelectionSelectByName(ui.item.value,true);
+								});
+							} else {
+								ProcedureSelectionSelectByName(ui.item.value,true);
+							}
 						}",
 					),
 				'htmlOptions'=>array('style'=>'width: 90%;','placeholder'=>'or enter procedure here')
@@ -119,6 +87,7 @@
 										if ($short_version) {
 											echo '</span> - <span>'.$procedure['short_format'];
 										}
+										echo "</span>";
 									?>
 								</span>
 								<?php if ($durations) {?>
@@ -169,7 +138,7 @@
 		$('#<?php echo $class?>_total_duration').val(totalDuration);
 	}
 
-	$('a.removeProcedure').live('click',function() {
+	$(this).undelegate('a.removeProcedure','click').delegate('a.removeProcedure','click',function() {
 		var len = $(this).parent().parent().parent().children('div').length;
 
 		var procedure_id = $(this).parent().parent().find('input[type="hidden"]:first').val();
@@ -241,7 +210,7 @@
 			});
 
 			$.ajax({
-				'url': '/procedure/list',
+				'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
 				'type': 'POST',
 				'data': {'subsection': subsection, 'existing': existingProcedures},
 				'success': function(data) {
@@ -268,45 +237,32 @@
 	}
 	
 	$('#select_procedure_id').change(function() {
+		var select = $(this);
 		var procedure = $('select[name=select_procedure_id] option:selected').text();
 		if (procedure != 'Select a commonly used procedure') {
 
-			if (typeof(window.callbackAddProcedure) == 'function') {
-				var procedure_id = $('select[name=select_procedure_id] option:selected').val();
-				callbackAddProcedure(procedure_id);
-			}
-
-			$.ajax({
-				'url': '/procedure/details?durations=<?php echo ($durations?'1':'0')?>&short_version=<?php echo $short_version?'1':'0'?>',
-				'type': 'GET',
-				'data': {'name': procedure},
-				'success': function(data) {
-					// append selection onto procedure list
-					$('#procedureList').children('h4').append(data);
-					$('#procedureList').show();
-
-					<?php if ($durations) {?>
-						$('div.extraDetails').show();
-						updateTotalDuration();
-					<?php }?>
-
-					// clear out text field
-					$('#autocomplete_procedure_id').val('');
-
-					var id = $('select[name=select_procedure_id] option:selected').val();
-					var name = $('select[name=select_procedure_id] option:selected').text();
-
-					removed_stack.push({name: name, id: id});
-
-					// remove the procedure from the options list
-					$('select[name=select_procedure_id] option:selected').remove();
-
-					// disable the dropdown if there are no items left to select
-					if ($('select[name=select_procedure_id] option').length == 1) {
-						$('select[name=select_procedure_id]').attr('disabled', true);
+			if (typeof(window.callbackVerifyAddProcedure) == 'function') {
+				window.callbackVerifyAddProcedure(procedure,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
+					if (result != true) {
+						select.val('');
+						return;
 					}
+
+					if (typeof(window.callbackAddProcedure) == 'function') {
+						var procedure_id = $('select[name=select_procedure_id] option:selected').val();
+						callbackAddProcedure(procedure_id);
+					}
+
+					ProcedureSelectionSelectByName(procedure,false);
+				});
+			} else {
+				if (typeof(window.callbackAddProcedure) == 'function') {
+					var procedure_id = $('select[name=select_procedure_id] option:selected').val();
+					callbackAddProcedure(procedure_id);
 				}
-			});
+
+				ProcedureSelectionSelectByName(procedure,false);
+			}
 		}
 		return false;
 	});
@@ -316,4 +272,50 @@
 			$('#projected_duration').html((parseInt($('#projected_duration').html().match(/[0-9]+/)) * 2) + " mins");
 		}
 	});
+
+	function ProcedureSelectionSelectByName(name, callback) {
+		$.ajax({
+			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&short_version=<?php echo $short_version?'1':'0'?>',
+			'type': 'GET',
+			'data': {'name': name},
+			'success': function(data) {
+				var enableDurations = <?php echo $durations?'true':'false'?>;
+				var shortVersion = <?php echo $short_version?'true':'false'?>;
+
+				// append selection onto procedure list
+				$('#procedureList').children('h4').append(data);
+				$('#procedureList').show();
+
+				if (enableDurations) {
+					updateTotalDuration();
+					$('div.extraDetails').show();
+				}
+
+				// clear out text field
+				$('#autocomplete_procedure_id').val('');
+
+				// remove selection from the filter box
+				if ($('#select_procedure_id').children().length > 0) {
+					m = data.match(/<span>(.*?)<\/span>/);
+
+					$('#select_procedure_id').children().each(function () {
+						if ($(this).text() == m[1]) {
+							var id = $(this).val();
+							var name = $(this).text();
+
+							removed_stack.push({name: name, id: id});
+
+							$(this).remove();
+						}
+					});
+				}
+
+				if (callback && typeof(window.callbackAddProcedure) == 'function') {
+					m = data.match(/<input type=\"hidden\" value=\"([0-9]+)\"/);
+					var procedure_id = m[1];
+					callbackAddProcedure(procedure_id);
+				}
+			}
+		});
+	}
 </script>

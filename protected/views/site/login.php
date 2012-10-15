@@ -53,7 +53,7 @@ $this->layout = 'simple';
 			</div>
 
 			<div class="row">
-				<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 10px; display: none;" />
+				<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 10px; display: none;" />
 				<button id="login_button" type="submit" name="yt0" class="classy blue tall" tabindex="2"><span class="button-span button-span-blue">Login</span></button>
 			</div>
 

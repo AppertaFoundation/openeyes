@@ -19,17 +19,17 @@
 
 class RightsService
 {
-        public $userId;
+	public $userId;
 
-        /**
-         * Create a new instance of the service
-         *
-         * @param model $userId
-         */
-        public function __construct($userId)
-        {
-        	$this->userId = $userId;
-        }
+	/**
+	 * Create a new instance of the service
+	 *
+	 * @param model $userId
+	 */
+	public function __construct($userId)
+	{
+		$this->userId = $userId;
+	}
 
 	/**
 	 * Perform a search based on the patient pas key

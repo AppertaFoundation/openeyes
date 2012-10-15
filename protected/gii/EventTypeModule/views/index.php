@@ -1,9 +1,9 @@
-<script type="text/javascript" src="/js/gii.js"></script>
+<script type="text/javascript" src="<?php echo Yii::app()->createUrl('js/gii.js')?>"></script>
 <?php
 $dh = opendir("js");
 while ($file = readdir($dh)) {
 	if (preg_match('/^gii-.*\.js$/',$file)) {?>
-<script type="text/javascript" src="/js/<?php echo $file?>"></script>
+<script type="text/javascript" src="<?php echo Yii::app()->createUrl('js/'.$file)?>"></script>
 <?php } }
 closedir($dh);
 ?>
@@ -25,3 +25,6 @@ closedir($dh);
 		<?php }?>
 	</div>
 <?php $this->endWidget(); ?>
+<script type="text/javascript">
+	var baseUrl = '<?php echo Yii::app()->baseUrl?>';
+</script>

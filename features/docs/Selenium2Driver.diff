@@ -1,0 +1,70 @@
+diff --git a/src/Behat/Mink/Driver/Selenium2Driver.php b/src/Behat/Mink/Driver/Selenium2Driver.php
+index a3743cf..1ad5551 100755
+--- a/src/Behat/Mink/Driver/Selenium2Driver.php
++++ b/src/Behat/Mink/Driver/Selenium2Driver.php
+@@ -661,6 +661,65 @@ JS;
+     }
+ 
+     /**
++     * Returns select element's selected text by it's XPath query.
++     *
++     * @param   string  $xpath
++     *
++     * @return  string
++     */
++    public function getSelectedText($xpath)
++    {
++        $script = <<<JS
++var node = {{ELEMENT}},
++    tagName = node.tagName;
++
++if (tagName == "SELECT") {
++    if (node.getAttribute('multiple')) {
++        options = [];
++        for (var i = 0; i < node.options.length; i++) {
++            if (node.options[ i ].selected) {
++                options.push(node.options[ i ].value);
++            }
++        }
++        value = "array:" + options.join(',');
++    } else {
++        var idx = node.selectedIndex;
++        if (idx >= 0) {
++            value = "string:" + node.options.item(idx).text;
++        } else {
++            value = null;
++        }
++    }
++} else {
++    attributeValue = node.getAttribute('value');
++    if(attributeValue) {
++        value = "string:" + attributeValue;
++    } else if(node.value) {
++        value = "string:" + node.value;
++    } else {
++        return null;
++    }
++}
++
++return value;
++JS;
++
++        $value = $this->executeJsOnXpath($xpath, $script);
++        if ($value) {
++            if (preg_match('/^string:(.*)$/', $value, $vars)) {
++                return $vars[1];
++            }
++            if (preg_match('/^array:(.*)$/', $value, $vars)) {
++                if ('' === trim($vars[1])) {
++                    return array();
++                }
++
++                return explode(',', $vars[1]);
++            }
++        }
++    }
++
++    /**
+      * Clicks button or link located by it's XPath query.
+      *
+      * @param   string  $xpath

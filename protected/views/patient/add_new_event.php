@@ -3,11 +3,15 @@
 	<p><strong>Select event to add:</strong></p>
 	<?php foreach ($eventTypes as $eventType) {
 		if ($eventType->class_name == 'OphTrOperation') {?>
-			<p><a href="/clinical/create?event_type_id=25&patient_id=<?php echo $this->patient->id?>&firm_id=<?php echo $this->firm->id?>"><img src="/img/_elements/icons/event/small/treatment_operation.png" alt="operation" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+			<p><?php echo CHtml::link('<img src="'.Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png').'" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl('clinical/create').'?event_type_id=25&patient_id='.$this->patient->id.'&firm_id='.$this->firm->id)?></p>
 		<?php }else{
-			$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.img').'/').'/';
+			if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+				$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+			} else {
+				$assetpath = '/assets/';
+			}
 			?>
-			<p><a href="/<?php echo $eventType->class_name?>/Default/create?patient_id=<?php echo $this->patient->id?>"><img src="<?php echo $assetpath?>small.png" alt="operation" /> - <strong><?php echo $eventType->name ?></strong></a></p>
+			<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$this->patient->id)?></p>
 		<?php }?>
 	<?php }?>
 </div>

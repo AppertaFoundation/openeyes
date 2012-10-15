@@ -100,7 +100,7 @@ if (!$reschedule) {
 
 	<div class="eventDetail clearfix" style="position:relative;">
 		<div class="label"><strong>Session Comments:</strong>
-			<img src="/img/_elements/icons/alerts/comment.png" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
+			<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/comment.png')?>" alt="comment" width="17" height="17" style="position:absolute; bottom:10px; left:10px;" />
 		</div>
 		<div class="data">
 			<div class="sessionComments" style="width:400px; display:inline-block; margin-bottom:0; ">
@@ -163,13 +163,13 @@ if (!$reschedule) {
 	<div class="alertBox" style="margin-top: 10px; display:none"><p>Please fix the following input errors:</p>
 	<ul><li>&nbsp;</li></ul></div>
 
-	<script type="text/javascript" src="/js/jquery.validate.min.js"></script>
-	<script type="text/javascript" src="/js/additional-validators.js"></script>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jquery.validate.min.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/additional-validators.js'))?>
 	<script type="text/javascript">
 		$('button#cancel_scheduling').click(function() {
 			if (!$(this).hasClass('inactive')) {
 				disableButtons();
-				document.location.href = '/patient/episodes/'+<?php echo $operation->event->episode->patient->id ?>;
+				document.location.href = '<?php echo Yii::app()->createUrl('patient/episodes/'.$operation->event->episode->patient->id)?>';
 			}
 			return false;
 		});
@@ -190,7 +190,7 @@ if (!$reschedule) {
 
 					$.ajax({
 						'type': 'POST',
-						'url': <?php if ($reschedule) {?>'/booking/update',<?php }else{?>'/booking/create',<?php }?>
+						'url': <?php if ($reschedule) {?>'<?php echo Yii::app()->createUrl('booking/update')?>',<?php }else{?>'<?php echo Yii::app()->createUrl('booking/create')?>',<?php }?>
 						'data': $('#bookingForm').serialize(),
 						'dataType': 'json',
 						'success': function(data) {
@@ -202,7 +202,7 @@ if (!$reschedule) {
 							});
 
 							if (n == 0) {
-								window.location.href = '/patient/event/<?php echo $operation->event->id?>';
+								window.location.href = '<?php echo Yii::app()->createUrl('patient/event/'.$operation->event->id)?>';
 							} else {
 								$('div.alertBox').show();
 								$('div.alertBox').html(html);

@@ -113,6 +113,7 @@ class ClinicalController extends BaseController
 		$audit = new Audit;
 		$audit->action = "view";
 		$audit->target_type = "event (route 2)";
+		$audit->event_id = $this->event->id;
 		$audit->patient_id = $this->patient->id;
 		$audit->episode_id = $this->episode->id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
@@ -594,9 +595,11 @@ class ClinicalController extends BaseController
 
 	public function header($passthru=false) {
 		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$params = array(
 			'episodes'=>$episodes,
+			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'title'=>'Create'
 		);
