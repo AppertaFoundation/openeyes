@@ -36,11 +36,11 @@ $(document).ready(function(){
 			if($(this).hasClass('delimited')) {
 				var newText = $(this).val();
 			} else {
-				var newText = $(this).children('option:selected').text() + ', ';
+				var newText = $(this).children('option:selected').text();
 			}
 
 			if (currentVal.length > 0 && !$(this).hasClass('delimited')) {
-				newText = newText.toLowerCase();
+				newText = ', ' + newText.toLowerCase();
 			} else if (currentVal.length == 0 && $(this).hasClass('delimited')) {
 				newText = newText.charAt(0).toUpperCase() + newText.slice(1)
 			}
