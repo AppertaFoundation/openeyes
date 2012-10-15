@@ -43,8 +43,7 @@
 	<p>
 		<br /><br />
 		<strong>Hospital number reference: <?php echo $patient->hos_num ?>
-			<?php if ($patient->nhsnum) { ?>
-				<br />NHS number: <?php echo $patient->nhsnum; } ?>
+			<br />NHS number: <?php echo $patient->nhsnum?>
 		</strong>
 	</p>
 
