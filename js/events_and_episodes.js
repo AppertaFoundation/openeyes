@@ -46,6 +46,7 @@ $(document).ready(function(){
 			}
 			
 			target.val(currentVal + newText);
+			target.trigger('autosize');
 
 			$(this).val('');
 		}
