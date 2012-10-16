@@ -1,4 +1,4 @@
-/* HTML5 ✰ Boilerplate
+	/* HTML5 ✰ Boilerplate
  * ==|== normalize ==========================================================
  */
 
@@ -69,7 +69,7 @@ body { width:1230px; margin:0 auto; }
 #container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
-#content		{ min-height: 400px;}
+#content		{ min-height: 400px; }
 #help			{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }	/* offset by 5px! */
 #help:before	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
 #footer			{ width: 1234px; height:25px; background: #b3b0ae url(../img/_structure/openeyes_footer.png) bottom right no-repeat; padding-top:14px} /* allow for help offset */
@@ -384,6 +384,8 @@ table.subtleWhite.smallText td { font-size:11px; padding:8px 10px; }
 table.subtleWhite.normalText td { font-size:13px; }
 table.subtleWhite.noBorderRadius { -webkit-border-radius:0; -moz-border-radius:0; border-radius:0; margin-bottom:0; }
 table.subtleWhite.reduceRowHeight td { padding-top:5px; padding-bottom:5px;}
+table.subtleWhite.noMargin { margin-bottom:0; }
+table.subtleWhite.grey { background:#efefef; }
 
 
 
@@ -725,6 +727,13 @@ td.eventIcons > img { margin-bottom:10px; }
 .overlay .deleteEvent p { margin-bottom:8px; margin-top:4px; font-weight: bold;}
 
 
+/* ====== NOTIFICATION ====== */
+.overlay .IM { width:500px; margin-left:-250px; margin-top:-100px; padding:50px 10px 15px 10px; background:#807c6d url(../img/_elements/icons/im/paperclip_notification.png) top right no-repeat; color:#fff; border:2px dotted #a29d8a; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 2px 2px 4px 3px #ccc; -webkit-box-shadow: 2px 2px 4px 3px #ccc;  box-shadow: 2px 2px 4px 3px #ccc; }
+.overlay .IM .autoMessage img  { float:left; }
+.overlay .IM .autoMessage .details { padding-left:50px; padding-top:5px; }
+
+
+
 
 /* ------------------------ NEW EVENT - Users selects a New Event to add, these are details needed */
 /* Green PlUS Graphic */
@@ -1024,6 +1033,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #event_display .colorband.category_treatment { background:#fd6892;}
 #event_display .colorband.category_communication { background:#86cdff;}
 #event_display .colorband.category_investigation { background:#a5a0a9;}
+#event_display .colorband.category_outcomes { background:#f0bead;}
 #event_display .colorband.category_images { background:#5f5f5f;}
 #event_display .colorband.category_clinical { background:#fdcc56;}
 #event_display .colorband.category_drugs { background:#acad47;}
@@ -1167,14 +1177,11 @@ table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; borde
 
 /* ==|== media queries ====================================================== */
 
-@media only screen and (min-width: 480px) {
-
-
+@media all and (max-width:800px) {
+/* 	in order to ensure consistant display scale on iphone and ipad the height must be above a minimum 16:9  width:1230px; */
+	#content { min-height: 1230px !important; }
 }
 
-@media only screen and (min-width: 768px) {
-
-}
 
 
 
