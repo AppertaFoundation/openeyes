@@ -1067,13 +1067,6 @@ class ElementOperation extends BaseEventTypeElement
 			'health' => '',
 		);
 
-		# OE-2259 special case for Allan Bruce/External Theatre 9
-		if ($this->event->episode->firm_id == 19 && $this->booking->session->theatre_id == 9) {
-			return array(
-				'refuse' => '020 7566 2205'
-			);
-		}
-
 		switch ($siteId) {
 			case 1: // City Road
 				switch ($subspecialty->id) {
@@ -1151,6 +1144,12 @@ class ElementOperation extends BaseEventTypeElement
 				//$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
 				break;
 		}
+
+		# OE-2259 special case for Allan Bruce/External Theatre 9
+		if ($this->event->episode->firm_id == 19 && $this->booking->session->theatre_id == 9) {
+			$contact['refuse'] = '020 7566 2205';
+		}
+
 		return $contact;
 	}
 	
