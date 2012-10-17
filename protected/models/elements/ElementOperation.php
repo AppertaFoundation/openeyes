@@ -1066,6 +1066,14 @@ class ElementOperation extends BaseEventTypeElement
 			'refuse' => $subspecialty->name . ' Admission Coordinator on ',
 			'health' => '',
 		);
+
+		# OE-2259 special case for Allan Bruce/External Theatre 9
+		if ($this->event->episode->firm_id == 19 && $this->booking->session->theatre_id == 9) {
+			return array(
+				'refuse' => '020 7566 2205'
+			);
+		}
+
 		switch ($siteId) {
 			case 1: // City Road
 				switch ($subspecialty->id) {
@@ -1466,7 +1474,7 @@ class ElementOperation extends BaseEventTypeElement
 			->group("session.id")
 			->order("session.date, session.start_time")
 			->queryAll() as $row) {
- 			// removed this from the theatre join: and theatre.id != 10")   ~chrisr
+			// removed this from the theatre join: and theatre.id != 10")		~chrisr
 
 			$session = Session::model()->findByPk($row['session_id']);
 			// if the session has no firm, under the existing booking logic it is an emergency session
