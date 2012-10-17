@@ -15,7 +15,7 @@
 									<?php }?>
 								</select>
 								<select name="diagnosis_year" class="diagnosis_date_field">
-									<?php for ($i=1990;$i<=date('Y');$i++) {?>
+									<?php for ($i=date('Y')-50;$i<=date('Y');$i++) {?>
 										<option value="<?php echo $i?>"<?php if ($i == date('Y')) {?> selected="selected"<?php }?>><?php echo $i?></option>
 									<?php }?>
 								</select>
