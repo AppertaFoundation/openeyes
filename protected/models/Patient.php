@@ -901,4 +901,10 @@ class Patient extends BaseActiveRecord {
 	public function getNhsnum() {
 		return $this->nhs_num ? substr($this->nhs_num,0,3).' '.substr($this->nhs_num,3,3).' '.substr($this->nhs_num,6,4) : 'not known';
 	}
+
+	public function hasLegacyLetters() {
+		if ($model = ModuleAPI::getmodel('OphLeEpatientletter','Element_OphLeEpatientletter_EpatientLetter')) {
+			return $model->find('epatient_hosnum=?',array($this->hos_num));
+		}
+	}
 }
