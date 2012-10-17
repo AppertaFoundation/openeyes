@@ -342,7 +342,7 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<?php if(!$this->patient->isDeceased()) { ?>
+					<?php if(!$this->patient->isDeceased() || $this->patient->hasLegacyLetters()) {?>
 						<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php }?>
 					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
