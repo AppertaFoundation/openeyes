@@ -923,7 +923,19 @@ class ElementOperation extends BaseEventTypeElement
 	}
 	
 	public function showPreopWarning() {
-		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
+		$show = true;
+		
+		// Not Ozurdex
+		if (in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))) {
+			$show = false;
+		}
+		
+		// Not External / Theatre 9
+		if($this->booking->session->theatre->code == 'CR9' && $this->booking->session->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec == 'EX') {
+			$show = false;
+		}
+		
+		return $show;
 	}
 	
 	public function showSeatingWarning() {
