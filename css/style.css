@@ -346,6 +346,12 @@ table.subtleWhite td { font-size:15px; padding:10px; }
 table.subtleWhite.smallText td { font-size:11px; padding:8px 10px; }
 table.subtleWhite.normalText td { font-size:13px; }
 
+table.subtleWhiteNoHover { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:20px;}
+table.subtleWhiteNoHover th { text-align:left; font-size:11px; color:#ccc; padding:10px 10px 2px 10px; }
+table.subtleWhiteNoHover td { font-size:15px; padding:10px; }
+table.subtleWhiteNoHover.smallText td { font-size:11px; padding:8px 10px; }
+table.subtleWhiteNoHover.normalText td { font-size:13px; }
+
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
 .grid-view table { width:100%; } 
 .grid-view table th { text-align: left; background:#ddd; color: #444; font-size: 11px; min-width:50px; padding:10px; border-right:1px solid #bbb;	}
