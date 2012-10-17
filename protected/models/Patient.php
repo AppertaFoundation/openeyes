@@ -602,15 +602,22 @@ class Patient extends BaseActiveRecord {
 		}
 
 		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
+			$action = "add-secondary-diagnosis";
 			$sd = new SecondaryDiagnosis;
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
-			$action = "add-secondary-diagnosis";
 			$sd->eye_id = $eye_id;
 			$sd->date = $date;
 		} else {
-			$action = "update-secondary-diagnosis";
-			if ($sd->eye_id != $eye_id) {
+			if ($sd->date == $date && (($sd->eye_id == 1 and $eye_id == 2) || ($sd->eye_id == 2 && $eye_id == 1))) {
+				$action = "update-secondary-diagnosis";
+				$sd->eye_id = 3;
+				$sd->date = $date;
+			} else {
+				$action = "add-secondary-diagnosis";
+				$sd = new SecondaryDiagnosis;
+				$sd->patient_id = $this->id;
+				$sd->disorder_id = $disorder_id;
 				$sd->eye_id = $eye_id;
 				$sd->date = $date;
 			}
