@@ -877,6 +877,20 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
+	public function getContactAddress($contact_id, $location_type=false, $location_id=false) {
+		if ($location_type && $location_id) {
+			if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=? and '.$location_type.'_id=?',array($this->id, $contact_id, $location_id))) {
+				return $pca->address;
+			}
+		} else {
+			if ($pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($this->id, $contact_id))) {
+				return $pca->address;
+			}
+		}
+
+		return false;
+	}
+
 	public function getNhsnum() {
 		return $this->nhs_num ? substr($this->nhs_num,0,3).' '.substr($this->nhs_num,3,3).' '.substr($this->nhs_num,6,4) : 'not known';
 	}
