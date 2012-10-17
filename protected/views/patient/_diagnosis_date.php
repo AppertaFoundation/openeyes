@@ -4,7 +4,7 @@
 								</span>
 								<select name="diagnosis_day" class="diagnosis_date_field">
 									<option value="">Day (optional)</option>
-									<?php for ($i=1;$i<31;$i++) {?>
+									<?php for ($i=1;$i<=31;$i++) {?>
 										<option value="<?php echo $i?>"<?php if (date('j') == $i) {?> selected="selected"<?php }?>><?php echo $i?></option>
 									<?php }?>
 								</select>
