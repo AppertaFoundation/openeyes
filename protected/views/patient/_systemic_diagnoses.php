@@ -72,9 +72,15 @@
 <script type="text/javascript">
 	$('#btn-add_new_systemic_diagnosis').click(function() {
 		$('#add_new_systemic_diagnosis').slideToggle('fast');
+		$('#btn-add_new_systemic_diagnosis').attr('disabled',true);
+		$('#btn-add_new_systemic_diagnosis').removeClass('green').addClass('disabled');
+		$('#btn-add_new_systemic_diagnosis span').removeClass('button-span-green').addClass('button-span-disabled');
 	});
 	$('button.btn_cancel_systemic_diagnosis').click(function() {
 		$('#add_new_systemic_diagnosis').slideToggle('fast');
+		$('#btn-add_new_systemic_diagnosis').attr('disabled',false);
+		$('#btn-add_new_systemic_diagnosis').removeClass('disabled').addClass('green');
+		$('#btn-add_new_systemic_diagnosis span').removeClass('button-span-disabled').addClass('button-span-green');
 		return false;
 	});
 	$('button.btn_save_systemic_diagnosis').click(function() {
