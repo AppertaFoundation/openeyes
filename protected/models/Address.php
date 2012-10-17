@@ -173,12 +173,6 @@ class Address extends BaseActiveRecord {
 	}
 
 	public function getLetterAddress() {
-		$address = "$this->name\n";
-
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray(false));
-		}
-
-		return $address;
+		return implode("\n",$this->getLetterArray(false));
 	}
 }
