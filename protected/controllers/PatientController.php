@@ -671,6 +671,8 @@ class PatientController extends BaseController
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
+//die("[$where][$term]");
+
 		foreach (Yii::app()->db->createCommand()
 			->select('contact.*, user_contact_assignment.user_id as user_id')
 			->from('contact')
@@ -688,6 +690,8 @@ class PatientController extends BaseController
 					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
 				}
 
+				$found_locations = false;
+
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
 						$institutions[] = $sca->site->institution_id;
@@ -698,6 +702,8 @@ class PatientController extends BaseController
 						'contact_id' => $contact['id'],
 						'site_id' => $sca->site_id,
 					);
+
+					$found_locations = true;
 				}
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
@@ -708,8 +714,21 @@ class PatientController extends BaseController
 							'contact_id' => $contact['id'],
 							'institution_id' => $ica->institution_id,
 						);
+
+						$found_locations = true;
 					}
 				}
+
+				if ($contact['user_id'] && !$found_locations) {
+					$institution = Institution::model()->findByPk(1);
+
+					$contacts[] = array(
+						'line' => $line.', '.$institution->name.')',
+						'contact_id' => $contact['id'],
+						'institution_id' => $institution->id,
+					);
+				}
+
 			} else if ($contact['parent_class'] == 'Specialist') {
 				$sites = array();
 
