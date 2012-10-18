@@ -415,6 +415,16 @@ class PatientController extends BaseController
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
+			if (!empty($legacyepisodes)) {
+				$criteria = new CDbCriteria;
+				$criteria->compare('episode_id',$legacyepisodes[0]->id);
+				$criteria->order = 'datetime desc';
+
+				if ($event = Event::model()->find($criteria)) {
+					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+					Yii::app()->end();
+				}
+			}
 		} else if ($current_episode->end_date == null) {
 			$criteria = new CDbCriteria;
 			$criteria->compare('episode_id',$current_episode->id);
