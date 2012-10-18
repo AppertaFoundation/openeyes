@@ -31,13 +31,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			Yii::app()->clientScript->scriptMap = array(
-				'jquery.js' => false,
-				'jquery.min.js' => false,
-				'jquery-ui.js' => false,
-				'jquery-ui.min.js' => false,
-				'module.js' => false,
-			);
+			$scriptMap = Yii::app()->clientScript->scriptMap;
+			$scriptMap['jquery.js'] = false;
+			$scriptMap['jquery.min.js'] = false;
+			$scriptMap['jquery-ui.js'] = false;
+			$scriptMap['jquery-ui.min.js'] = false;
+			$scriptMap['module.js'] = false;
+			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
 		return parent::beforeAction($action);

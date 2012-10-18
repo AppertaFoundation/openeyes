@@ -44,7 +44,15 @@
 									'restrict' => 'ophthalmic',
 									'default' => false,
 									'layout' => 'patientSummary',
+									'loader' => 'add_ophthalmic_diagnosis_loader',
 							))?>
+
+							<div id="add_ophthalmic_diagnosis_loader" style="display: none;">
+								<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+								<div>
+									searching...
+								</div>
+							</div>
 
 							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
@@ -72,7 +80,7 @@
 					<div>
 						<div id="delete_diagnosis">
 							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-								<strong>WARNING: This will remove the diagnosis from the patient record.
+								<strong>WARNING: This will remove the diagnosis from the patient record.</strong>
 							</div>
 							<p>
 								<strong>Are you sure you want to proceed?</strong>

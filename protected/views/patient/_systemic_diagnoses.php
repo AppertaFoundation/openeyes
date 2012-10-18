@@ -44,7 +44,15 @@
 									'restrict' => 'systemic',
 									'default' => false,
 									'layout' => 'patientSummary',
+									'loader' => 'add_systemic_diagnosis_loader',
 							))?>
+
+							<div id="add_systemic_diagnosis_loader" style="display: none;">
+								<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+								<div>
+									searching...
+								</div>
+							</div>
 
 							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
