@@ -97,11 +97,37 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, event_id, <?php if (isset($element)) { foreach ($element['fields'] as $field) { if ($field['type'] != 'Multi select') echo $field['name'] . ", "; } } ?>', 'safe', 'on' => 'search'),
-<?php if (isset($element)) foreach ($element['fields'] as $field) { if ($field['type'] == 'Integer' && ($field['integer_min_value'] || $field['integer_max_value'])) {?>
-			array('<?php echo $field['name']?>', 'numerical', 'integerOnly' => true,<?php if ($field['integer_min_value']){?> 'min' => <?php echo $field['integer_min_value']?>,<?php }?><?php if ($field['integer_max_value']){?> 'max' => <?php echo $field['integer_max_value']?><?php }?>, 'message' => '<?php if ($field['integer_min_value'] && $field['integer_max_value']) {?><?php echo $field['label']?> must be between <?php echo $field['integer_min_value']?> - <?php echo $field['integer_max_value']?><?php } else if ($field['integer_min_value']){?><?php echo $field['label']?> must be higher or equal to <?php echo $field['integer_min_value']?><?php }else{?><?php echo $field['label']?> must be lower or equal to <?php echo $field['integer_max_value']?><?php }?>'),
-<?php } else if ($field['type'] == 'Decimal') {?>  
-			array('<?php echo $field['name']?>', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/'<?php if (isset($field['decimal_min_value'])) {?>, 'min' => <?php echo $field['decimal_min_value']?><?php } if (isset($field['decimal_max_value'])) {?>, 'max' => <?php echo $field['decimal_max_value']?><?php }?>),
-<?php } }?>
+<?php if (isset($element)) 
+	foreach ($element['fields'] as $field) { 
+		if ($field['type'] == 'Integer' && (strlen(@$field['integer_min_value']) || strlen(@$field['integer_max_value'])) ) {
+			echo "\t\t\tarray('" . $field['name'] . "', 'numerical', 'integerOnly' => true,";
+			if (strlen(@$field['integer_min_value']) ){
+				echo " 'min' => " . $field['integer_min_value'] . ",";
+			}
+			if (strlen(@$field['integer_max_value']) ){
+				echo " 'max' => " . $field['integer_max_value'] .",";
+			}
+			echo " 'message' => '" . $field['label'] . " ";
+			if (strlen(@$field['integer_min_value']) && strlen(@$field['integer_max_value']) ){
+				echo "must be between " . $field['integer_min_value'] . " - " . $field['integer_max_value'];
+			} else if (strlen(@$field['integer_min_value']) ){
+				echo "must be higher or equal to " . $field['integer_min_value'];
+			} else {
+				echo "must be lower or equal to " . $field['integer_max_value'];
+			}
+			echo "'),\n";
+		} else if ($field['type'] == 'Decimal') {  
+			echo "\t\t\tarray("; 
+			echo "'" . $field['name'] . "', 'numerical', 'numberPattern' => '/^\s*[\+\-]?\d+\.?\d*\s*$/',";
+			if (strlen(@$field['decimal_min_value'])) { 
+				echo " 'min' => " . $field['decimal_min_value'] . ","; 
+			} 
+			if (strlen(@$field['decimal_max_value'])) {
+				echo " 'max' => " . $field['decimal_max_value'];
+			}
+			echo "),\n";
+	} 
+}?>
 		);
 	}
 	
@@ -175,15 +201,15 @@ if (isset($element)) {
 	public function setDefaultOptions()
 	{
 		if (Yii::app()->getController()->getAction()->id == 'create') {
-		<?php
-		if (isset($element)) { 
-			foreach ($element['fields'] as $field) {
-				if (isset($field['default_value'])) {
-					echo "\t\t\$this->" . $field['name'] . " = " . $field['default_value'] . ";\n";
-				}
-			}
+<?php
+if (isset($element)) { 
+	foreach ($element['fields'] as $field) {
+		if (isset($field['default_value']) && strlen($field['default_value']) ) {
+			echo "\t\t\t\$this->" . $field['name'] . " = " . $field['default_value'] . ";\n";
 		}
-		?>
+	}
+}
+?>
 		}
 	}
 
