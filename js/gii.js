@@ -167,7 +167,7 @@ $(document).ready(function() {
 	// auto generate the shortname for the event from the event name
 	$("#moduleSuffix").live('focusout', function () {
 		if ($("#moduleShortSuffix").val().length == 0) {
-			var sname = $(this).val().toLowerCase().replace(/ /g, "").substring(0,20);
+			var sname = $.trim($(this).val()).toLowerCase().replace(/ /g, "").substring(0,20);
 			$("#moduleShortSuffix").val(sname).select().focus();
 		}
 	});
@@ -208,7 +208,7 @@ $(document).ready(function() {
 		var field = m[2];
 
 		if ($('#elementName'+element+'FieldName'+field).val() == '') {
-			$('#elementName'+element+'FieldName'+field).val($(this).val().toLowerCase().replace(/ /g, "_"));
+			$('#elementName'+element+'FieldName'+field).val($.trim($(this).val()).toLowerCase().replace(/ /g, "_"));
 		}
 
 		if ($(this).val() != '') {
