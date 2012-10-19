@@ -101,6 +101,14 @@ return array(
 										'logFile' => 'application.log',
 										'maxLogFiles' => 30,
 								),
+								// Action log
+								'action' => array(
+										'class' => 'CFileLogRoute',
+										'levels' => 'info, warning, error',
+										'categories' => 'application.action.*',
+										'logFile' => 'action.log',
+										'maxLogFiles' => 30,
+								),
 								// Development logging (application only)
 								'debug' => array(
 										'class' => 'CFileLogRoute',
