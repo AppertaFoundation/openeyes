@@ -34,7 +34,7 @@
 	<div>
 		<div id="delete_allergy">
 			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-				<strong>WARNING: This will remove the allergy from the patient record.
+				<strong>WARNING: This will remove the allergy from the patient record.</strong>
 			</div>
 			<p>
 				<strong>Are you sure you want to proceed?</strong>
