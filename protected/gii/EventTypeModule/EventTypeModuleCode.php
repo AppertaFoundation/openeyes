@@ -75,8 +75,9 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			
 			$this->initialise(array(
 				'moduleID' => $this->event_type->class_name,
-				'moduleShortID' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code . 
-					Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code . $short_suffix,
+				'moduleShortID' => Specialty::model()->findByPk($_REQUEST['Specialty']['id'])->code .
+					EventGroup::model()->findByPk($_REQUEST['EventGroup']['id'])->code . 
+					$short_suffix,
 				'event_group' => EventGroup::model()->findByPk($_REQUEST['EventGroup']['id']),
 				'specialty' => Specialty::model()->findByPk($_REQUEST['Specialty']['id']),
 				'eventGroupName' => $this->event_type->name,
@@ -223,9 +224,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					$elements[$number]['id'] = $value;
 
 					$element_type = ElementType::model()->findByPk($value);
-
+					
+					$element_class = $element_type->class_name;
+					
 					$elements[$number]['name'] = $value = $element_type->name;
-					$elements[$number]['table_name'] = $element_type->tableName();
+					$elements[$number]['table_name'] = $element_class::model()->tableName();
 					$field = 'elementName'.$number;
 				}
 
@@ -234,7 +237,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				if ($elements[$number]['mode'] == 'create') {
 					$elements[$number]['table_name'] = 'et_' . strtolower($this->moduleShortID) . '_' . strtolower(preg_replace("/ /", "", $_POST["elementShortName".$number]));
 				}
-
+				
 				$elements[$number]['number'] = $number;
 				$elements[$number]['fields'] = array();
 				$elements[$number]['foreign_keys'] = array();
