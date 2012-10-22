@@ -56,6 +56,12 @@ class User extends BaseActiveRecord
 		return 'user';
 	}
 
+	public function defaultScope() {
+		return array(
+			'condition' => 'active=1',
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -264,7 +270,7 @@ class User extends BaseActiveRecord
 
 	/**
 	 * Returns whether this user has a contact entry and a consultant entry
-	 *      i.e. they are a consultant for the centre.
+	 *			i.e. they are a consultant for the centre.
 	 *
 	 * @return boolean
 	 */
