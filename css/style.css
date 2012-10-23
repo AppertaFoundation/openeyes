@@ -1176,7 +1176,7 @@ div.auditDetailOddRed div { line-height: 20px; }
 
 span.auditDetailLabel { width: 100px; }
 
-input.widgetSlider { vertical-align: middle; width: 770px; }
+input.widgetSlider { vertical-align: middle; width: 770px; padding: 0; border: 0 }
 span.widgetSliderValue { vertical-align: middle; margin-right: 10px; width: 45px; display: inline-block; }
 
 /* Temporary fix for OpNote post-op instructions dropbox resizing */
