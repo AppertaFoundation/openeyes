@@ -56,12 +56,6 @@ class User extends BaseActiveRecord
 		return 'user';
 	}
 
-	public function defaultScope() {
-		return array(
-			'condition' => 'active=1',
-		);
-	}
-
 	/**
 	 * @return array validation rules for model attributes.
 	 */
