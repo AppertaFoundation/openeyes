@@ -24,7 +24,7 @@
 				<span><strong>Need Help?</strong></span>
 				<span class="divider">|</span>
 				<?php if (Yii::app()->params['helpdesk_email']) {?>
-					<span><a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email'] ?></a></span>
+					<span><?php echo Yii::app()->params['helpdesk_email']?></span>
 				<?php }?>
 					<span class="divider">|</span>
 				<?php if (Yii::app()->params['helpdesk_phone']) {?>
