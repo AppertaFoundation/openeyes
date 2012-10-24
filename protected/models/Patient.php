@@ -674,7 +674,7 @@ class Patient extends BaseActiveRecord {
 
 			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
 				if ($iop = $iop->find('event_id=?',array($event->id))) {
-					return $iop->letter_reading('right')." on the right, and ".$iop->letter_reading('left')." on the left";
+					return $iop->getLetter_reading('right')." on the right, and ".$iop->getLetter_reading('left')." on the left";
 				}
 			}
 		}
@@ -686,7 +686,7 @@ class Patient extends BaseActiveRecord {
 
 			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
 				if ($iop = $iop->find('event_id=?',array($event->id))) {
-					return $iop->letter_reading('left');
+					return $iop->getLetter_reading('left');
 				} 
 			}
 		}
@@ -701,9 +701,9 @@ class Patient extends BaseActiveRecord {
 					if ($iop = $iop->find('event_id=?',array($event->id))) {
 						switch ($episode->eye_id) {
 							case 1:
-								return "The intraocular pressure was ".$iop->letter_reading('left')." in the left eye";
+								return "The intraocular pressure was ".$iop->getLetter_reading('left')." in the left eye";
 							case 2:
-								return "The intraocular pressure was ".$iop->letter_reading('right')." in the right eye";
+								return "The intraocular pressure was ".$iop->getLetter_reading('right')." in the right eye";
 							case 3:
 								return $this->ipb;
 						}
@@ -719,7 +719,7 @@ class Patient extends BaseActiveRecord {
 
 			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
 				if ($iop = $iop->find('event_id=?',array($event->id))) {
-					return "The intraocular pressure is ".$iop->letter_reading('right')." in the right eye";
+					return "The intraocular pressure is ".$iop->getLetter_reading('right')." in the right eye";
 				} 
 			}
 		}
@@ -813,7 +813,7 @@ class Patient extends BaseActiveRecord {
 
 			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
 				if ($as = $as->find('event_id=?',array($event->id))) {
-					return ($as->hasRight ? $as->getBest('right') : "not recorded")." on the right and ".($as->hasLeft() ? $as->getBest('left') : "not recorded")." on the left";
+					return ($as->hasRight() ? $as->getBest('right') : "not recorded")." on the right and ".($as->hasLeft() ? $as->getBest('left') : "not recorded")." on the left";
 				}
 			}
 		}
