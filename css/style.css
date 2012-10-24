@@ -128,7 +128,8 @@ em { font-style: italic; color:#333; }
 .large 	{ font-size: 14px; font-weight: normal; }
 .bold	{ font-size: 15px; font-weight: bolder; }
 .big	{ font-size: 18px; font-weight: normal; }
-.caps		{ font-variant: small-caps; }
+.red	{ color:#d62020; }
+.caps	{ font-variant: small-caps; }
 .dull * { opacity: 0.7; }
 
 /* ====== Curvy Boxes ====== */
@@ -944,7 +945,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation #key #day			.color_box { background:#666; }
 #operation #key #available		.color_box { background:#69bd51; }
 #operation #key #limited		.color_box { background:#8dbd7f; }
-#operation #key #full				.color_box { background:#427633; }
+#operation #key #full			.color_box { background:#427633; }
 #operation #key #closed			.color_box { background:#828282; }
 #operation #key #selected_date	.color_box { background:#3665ff; }
 #operation #key #outside_rtt	.color_box { background:transparent url(../img/_elements/icons/RTT-warning_tiny.png) top left no-repeat; }
@@ -1178,7 +1179,7 @@ table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; borde
 /* ==|== media queries ====================================================== */
 
 @media all and (max-width:800px) {
-/* 	in order to ensure consistant display scale on iphone and ipad the height must be above a minimum 16:9  width:1230px; */
+/* 	in order to ensure consistant display scale on iphone and ipad the min-height needs adjusting  width:1230px; */
 	#content { min-height: 1230px !important; }
 }
 
