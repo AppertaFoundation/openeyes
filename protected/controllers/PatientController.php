@@ -687,8 +687,8 @@ class PatientController extends BaseController
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
 			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
-			->order('title asc, first_name asc, last_name asc')
+			->where("LOWER(contact.last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
+			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 
 			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
