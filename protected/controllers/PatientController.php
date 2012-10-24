@@ -499,18 +499,26 @@ class PatientController extends BaseController
 		}
 
 		if (isset($_POST['episode_save'])) {
-			if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
-				$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
-			}
-
-			if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
-				$this->episode->episode_status_id = $_POST['episode_status_id'];
-				if (!$this->episode->save()) {
-					throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
+				$error = "Please select a disorder for the principal diagnosis";
+			} else if (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+				$error = "Please select an eye for the principal diagnosis";
+			} else {
+				if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+					if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
+						$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
+					}
 				}
-			}
 
-			$this->redirect(array('patient/episode/'.$this->episode->id));
+				if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
+					$this->episode->episode_status_id = $_POST['episode_status_id'];
+					if (!$this->episode->save()) {
+						throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+					}
+				}
+
+				$this->redirect(array('patient/episode/'.$this->episode->id));
+			}
 		}
 
 		$this->patient = $this->episode->patient;
@@ -534,7 +542,8 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $this->episode
+			'current_episode' => $this->episode,
+			'error' => @$error,
 		));
 	}
 
