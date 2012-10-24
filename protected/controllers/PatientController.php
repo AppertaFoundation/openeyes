@@ -683,10 +683,11 @@ class PatientController extends BaseController
 //die("[$where][$term]");
 
 		foreach (Yii::app()->db->createCommand()
-			->select('contact.*, user_contact_assignment.user_id as user_id')
+			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
-			->where("LOWER(last_name) LIKE :term AND $where", array(':term' => $term))
+			->leftJoin('user','user_contact_assignment.user_id = user.id')
+			->where("LOWER(last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
 			->order('title asc, first_name asc, last_name asc')
 			->queryAll() as $contact) {
 
