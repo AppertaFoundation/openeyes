@@ -614,6 +614,8 @@ class Patient extends BaseActiveRecord {
 				$sd->eye_id = 3;
 				$sd->date = $date;
 			} else {
+				if ($sd->eye_id == $eye_id) return;
+
 				$action = "add-secondary-diagnosis";
 				$sd = new SecondaryDiagnosis;
 				$sd->patient_id = $this->id;
