@@ -1,5 +1,8 @@
 <div id="episodes_sidebar">
-	<?php if (is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
+	<?php
+	$legacyletters = EventType::model()->find('class_name=?',array('OphLeEpatientletter'));
+	?>
+	<?php if ($legacyletters && !$legacyletters->disabled && is_array($legacyepisodes)) foreach ($legacyepisodes as $i => $episode) {?>
 	<div class="episode open clearfix" style="display:block;">
 		<div class="episode_nav legacy">
 			<div class="start_date small">

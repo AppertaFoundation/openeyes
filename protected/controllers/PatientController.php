@@ -421,8 +421,10 @@ class PatientController extends BaseController
 				$criteria->order = 'datetime desc';
 
 				if ($event = Event::model()->find($criteria)) {
-					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
-					Yii::app()->end();
+					if (!$event->eventType->disabled) {
+						$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+						Yii::app()->end();
+					}
 				}
 			}
 		} else if ($current_episode->end_date == null) {
