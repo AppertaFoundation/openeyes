@@ -143,8 +143,14 @@ class EventType extends BaseActiveRecord
 	public function getDisabled() {
 		if (is_array(Yii::app()->params['modules_disabled'])) {
 			foreach (Yii::app()->params['modules_disabled'] as $module => $params) {
-				if ($module == $this->class_name) {
-					return true;
+				if (is_array($params)) {
+					if ($module == $this->class_name) {
+						return true;
+					}
+				} else {
+					if ($params == $this->class_name) {
+						return true;
+					}
 				}
 			}
 		}
