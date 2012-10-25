@@ -139,4 +139,24 @@ class EventType extends BaseActiveRecord
 
 		return CHtml::listData(EventType::model()->findAll($criteria), 'id', 'name');
 	}
+
+	public function getDisabled() {
+		if (is_array(Yii::app()->params['modules_disabled'])) {
+			foreach (Yii::app()->params['modules_disabled'] as $module => $params) {
+				if ($module == $this->class_name) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public function getDisabled_title() {
+		return Yii::app()->params['modules_disabled'][$this->class_name]['title'];
+	}
+
+	public function getDisabled_detail() {
+		return Yii::app()->params['modules_disabled'][$this->class_name]['detail'];
+	}
 }
