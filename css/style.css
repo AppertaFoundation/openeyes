@@ -582,6 +582,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 #event_display .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
 #event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; z-index:999 !important;}
+#event_display #add-event-select-type .disabled { padding: 4px 10px 3px 10px; color: #999; }
 
 /* ------------------------ NEW EVENT - Users selects a New Event to add, these are details needed */
 /* Green PlUS Graphic */

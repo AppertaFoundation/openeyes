@@ -2,16 +2,26 @@
 	<h3>Adding New Event</h3>
 	<p><strong>Select event to add:</strong></p>
 	<?php foreach ($eventTypes as $eventType) {
-		if ($eventType->class_name == 'OphTrOperation') {?>
-			<p><?php echo CHtml::link('<img src="'.Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png').'" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl('clinical/create').'?event_type_id=25&patient_id='.$this->patient->id.'&firm_id='.$this->firm->id)?></p>
+		if (!is_array(Yii::app()->params['modules_disabled']) || !in_array($eventType->class_name,Yii::app()->params['modules_disabled'])) {
+			if ($eventType->class_name == 'OphTrOperation') {?>
+				<p><?php echo CHtml::link('<img src="'.Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png').'" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl('clinical/create').'?event_type_id=25&patient_id='.$this->patient->id.'&firm_id='.$this->firm->id)?></p>
+			<?php }else{
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+					$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+				} else {
+					$assetpath = '/assets/';
+				}
+				?>
+				<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$this->patient->id)?></p>
+			<?php }?>
 		<?php }else{
-			if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
-				$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
-			} else {
-				$assetpath = '/assets/';
-			}
-			?>
-			<p><?php echo CHtml::link('<img src="'.$assetpath.'small.png" alt="operation" /> - <strong>'.$eventType->name.'</strong>',Yii::app()->createUrl($eventType->class_name.'/Default/create').'?patient_id='.$this->patient->id)?></p>
-		<?php }?>
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
+					$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
+				} else {
+					$assetpath = '/assets/';
+				}
+				?>
+				<p class="disabled"><img src="<?php echo $assetpath?>small.png" alt="operation" /> - <strong><?php echo $eventType->name?></strong></p>
+			<?php }?>
 	<?php }?>
 </div>
