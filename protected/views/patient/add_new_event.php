@@ -42,7 +42,7 @@
 		$('#add-event-disabled-pop-up').hide();
 	});
 
-	$('#OphCiExamination_disabled').mousemove(function(e) {
+	$('p.add_event_disabled').mousemove(function(e) {
 		var moveLeft = -100;
 		var moveDown = -150;
 		$("#add-event-disabled-pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
