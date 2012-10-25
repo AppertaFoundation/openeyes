@@ -109,7 +109,7 @@ class ElementOperation extends BaseEventTypeElement
 		return array(
 			array('eye_id', 'required', 'message' => 'Please select an eye option'),
 			array('eye_id', 'matchDiagnosisEye'),
-			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
+			array('decision_date, total_duration', 'required'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. '.Helper::NHS_DATE_EXAMPLE.')'),
 			array('eye_id, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, priority_id', 'numerical', 'integerOnly' => true),
 			array('eye_id, event_id, comments, decision_date, site_id', 'safe'),
