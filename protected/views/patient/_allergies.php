@@ -34,7 +34,7 @@
 	<div>
 		<div id="delete_allergy">
 			<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
-				<strong>WARNING: This will remove the allergy from the patient record.
+				<strong>WARNING: This will remove the allergy from the patient record.</strong>
 			</div>
 			<p>
 				<strong>Are you sure you want to proceed?</strong>
@@ -97,12 +97,14 @@
 		$.post("<?php echo Yii::app()->createUrl('patient/RemoveAllergy')?>", { patient_id: <?php echo $this->patient->id?>, allergy_id: $('#allergy_id').val() }, function(data) {
 			$('tr[data-allergy-id="'+$('#allergy_id').val()+'"]').remove();
 			$('#allergy_id option[value="' + $('#allergy_id').val() + '"]').removeAttr('disabled');
+			$('#allergy_id').val('');
 		});
 
 		return false;
 	});
 
 	$('button.btn_cancel_remove_allergy').click(function() {
+		$('#allergy_id').val('');
 		$("#confirm_remove_allergy_dialog").dialog("close");
 		return false;
 	});

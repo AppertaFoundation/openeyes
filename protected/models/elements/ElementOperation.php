@@ -109,7 +109,7 @@ class ElementOperation extends BaseEventTypeElement
 		return array(
 			array('eye_id', 'required', 'message' => 'Please select an eye option'),
 			array('eye_id', 'matchDiagnosisEye'),
-			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
+			array('decision_date, total_duration', 'required'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. '.Helper::NHS_DATE_EXAMPLE.')'),
 			array('eye_id, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, priority_id', 'numerical', 'integerOnly' => true),
 			array('eye_id, event_id, comments, decision_date, site_id', 'safe'),
@@ -927,7 +927,19 @@ class ElementOperation extends BaseEventTypeElement
 	}
 	
 	public function showPreopWarning() {
-		return (!in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))); // Not Ozurdex
+		$show = true;
+		
+		// Not Ozurdex
+		if (in_array($this->booking->session->theatre->code, array('CRZ','BRZ'))) {
+			$show = false;
+		}
+		
+		// Not External / Theatre 9
+		if($this->booking->session->theatre->code == 'CR9' && $this->booking->session->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec == 'EX') {
+			$show = false;
+		}
+		
+		return $show;
 	}
 	
 	public function showSeatingWarning() {
@@ -1070,6 +1082,7 @@ class ElementOperation extends BaseEventTypeElement
 			'refuse' => $subspecialty->name . ' Admission Coordinator on ',
 			'health' => '',
 		);
+
 		switch ($siteId) {
 			case 1: // City Road
 				switch ($subspecialty->id) {
@@ -1147,6 +1160,12 @@ class ElementOperation extends BaseEventTypeElement
 				//$contact['health'] = 'St Ann\'s Team on 020 8211 8323';
 				break;
 		}
+
+		# OE-2259 special case for Allan Bruce/External Theatre 9
+		if ($this->event->episode->firm_id == 19 && $this->booking->session->theatre_id == 9) {
+			$contact['refuse'] = '020 7566 2205';
+		}
+
 		return $contact;
 	}
 	
@@ -1470,7 +1489,7 @@ class ElementOperation extends BaseEventTypeElement
 			->group("session.id")
 			->order("session.date, session.start_time")
 			->queryAll() as $row) {
- 			// removed this from the theatre join: and theatre.id != 10")   ~chrisr
+			// removed this from the theatre join: and theatre.id != 10")		~chrisr
 
 			$session = Session::model()->findByPk($row['session_id']);
 			// if the session has no firm, under the existing booking logic it is an emergency session

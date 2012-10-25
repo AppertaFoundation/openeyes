@@ -411,6 +411,16 @@ class PatientController extends BaseController
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
+			if (!empty($legacyepisodes)) {
+				$criteria = new CDbCriteria;
+				$criteria->compare('episode_id',$legacyepisodes[0]->id);
+				$criteria->order = 'datetime desc';
+
+				if ($event = Event::model()->find($criteria)) {
+					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+					Yii::app()->end();
+				}
+			}
 		} else if ($current_episode->end_date == null) {
 			$criteria = new CDbCriteria;
 			$criteria->compare('episode_id',$current_episode->id);
@@ -485,18 +495,26 @@ class PatientController extends BaseController
 		}
 
 		if (isset($_POST['episode_save'])) {
-			if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
-				$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
-			}
-
-			if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
-				$this->episode->episode_status_id = $_POST['episode_status_id'];
-				if (!$this->episode->save()) {
-					throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
+				$error = "Please select a disorder for the principal diagnosis";
+			} else if (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+				$error = "Please select an eye for the principal diagnosis";
+			} else {
+				if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+					if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
+						$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
+					}
 				}
-			}
 
-			$this->redirect(array('patient/episode/'.$this->episode->id));
+				if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
+					$this->episode->episode_status_id = $_POST['episode_status_id'];
+					if (!$this->episode->save()) {
+						throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+					}
+				}
+
+				$this->redirect(array('patient/episode/'.$this->episode->id));
+			}
 		}
 
 		$this->patient = $this->episode->patient;
@@ -520,7 +538,8 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $this->episode
+			'current_episode' => $this->episode,
+			'error' => @$error,
 		));
 	}
 
@@ -657,12 +676,15 @@ class PatientController extends BaseController
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
+//die("[$where][$term]");
+
 		foreach (Yii::app()->db->createCommand()
-			->select('contact.*, user_contact_assignment.user_id as user_id')
+			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
-			->where("LOWER(last_name) LIKE :term AND $where", array(':term' => $term))
-			->order('title asc, first_name asc, last_name asc')
+			->leftJoin('user','user_contact_assignment.user_id = user.id')
+			->where("LOWER(contact.last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
+			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 
 			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
@@ -674,6 +696,8 @@ class PatientController extends BaseController
 					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
 				}
 
+				$found_locations = false;
+
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
 						$institutions[] = $sca->site->institution_id;
@@ -684,6 +708,8 @@ class PatientController extends BaseController
 						'contact_id' => $contact['id'],
 						'site_id' => $sca->site_id,
 					);
+
+					$found_locations = true;
 				}
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
@@ -694,8 +720,21 @@ class PatientController extends BaseController
 							'contact_id' => $contact['id'],
 							'institution_id' => $ica->institution_id,
 						);
+
+						$found_locations = true;
 					}
 				}
+
+				if ($contact['user_id'] && !$found_locations) {
+					$institution = Institution::model()->findByPk(1);
+
+					$contacts[] = array(
+						'line' => $line.', '.$institution->name.')',
+						'contact_id' => $contact['id'],
+						'institution_id' => $institution->id,
+					);
+				}
+
 			} else if ($contact['parent_class'] == 'Specialist') {
 				$sites = array();
 

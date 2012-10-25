@@ -14,11 +14,13 @@
 				'id' => "{$class}_{$field}_0",
 				'value'=>'',
 				'source'=>"js:function(request, response) {
+					".($loader ? "$('#".$loader."').show();" : "")."
 					$.ajax({
 						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
 						'type':'GET',
 						'data':{'term': request.term, 'restrict': '".$restrict."'},
 						'success':function(data) {
+							".($loader ? "$('#".$loader."').hide();" : "")."
 							data = $.parseJSON(data);
 							response(data);
 						}

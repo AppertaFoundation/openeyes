@@ -184,7 +184,12 @@ if (!empty($address)) {
 									</tr>
 								</thead>
 								<tbody id="patient_contacts">	
-									<?php foreach ($this->patient->contactAssignments as $pca) {?>
+									<?php foreach ($this->patient->contactAssignments as $pca) {
+										if (!in_array($pca->contact->parent_class,array('Specialist','Consultant'))) {
+											if ($uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id))) {
+												if (!$uca->user) continue;
+											}
+										}?>
 										<tr>
 											<td><span class="large"><?php if ($pca->contact->title) echo $pca->contact->title.' '?><?php echo $pca->contact->first_name?> <?php echo $pca->contact->last_name?></span><br /><?php echo $pca->contact->qualifications?></td>
 											<td>
@@ -342,7 +347,7 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<?php if(!$this->patient->isDeceased()) { ?>
+					<?php if(!$this->patient->isDeceased() || $this->patient->hasLegacyLetters()) {?>
 						<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php }?>
 					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
@@ -427,8 +432,9 @@ if (!empty($address)) {
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$type.', '.$pca->site->name.')';?>");
 					<?php } else if ($pca->institution) {
 						$uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id));
-						?>
+						if ($uca->user) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.($uca ? ($uca->user->role ? $uca->user->role : 'Staff') : $pca->contact->parent_class).', '.$pca->institution->name.')';?>");
+						<?php }?>
 					<?php } else {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->summary : '').')';?>");
 					<?php }?>

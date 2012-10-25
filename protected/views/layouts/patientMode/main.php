@@ -34,7 +34,6 @@
 	<?php }?>
 	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
 	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/>
-	<?php Yii::app()->getClientScript()->registerCSSFile(Yii::app()->createUrl('css/style.css'))?>
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jui/js/jquery-ui.min.js'))?>
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
@@ -87,6 +86,7 @@
 					<?php echo $this->patient->getDisplayName()?>
 					<?php if($this->patient->isDeceased()) { ?>(Deceased)<?php } ?>
 					<span class="number">Hospital number: <?php echo $this->patient->hos_num?></span>
+					<span class="number">NHS number: <?php echo $this->patient->nhsnum?></span>
 				</div>
 			</div> <!-- #patientID -->
 

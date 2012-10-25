@@ -44,7 +44,15 @@
 									'restrict' => 'systemic',
 									'default' => false,
 									'layout' => 'patientSummary',
+									'loader' => 'add_systemic_diagnosis_loader',
 							))?>
+
+							<div id="add_systemic_diagnosis_loader" style="display: none;">
+								<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+								<div>
+									searching...
+								</div>
+							</div>
 
 							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 
@@ -58,28 +66,8 @@
 								<?php }?>
 							</div>
 
-							<div class="diagnosis_date">
-								<span class="diagnosis_date_label">
-									Date:
-								</span>
-								<select name="diagnosis_day" class="diagnosis_date_field">
-									<option value="">Day (optional)</option>
-									<?php for ($i=1;$i<31;$i++) {?>
-										<option value="<?php echo $i?>"><?php echo $i?></option>
-									<?php }?>
-								</select>
-								<select name="diagnosis_month" class="diagnosis_date_field">
-									<option value="">Month (optional)</option>
-									<?php foreach (array('January','February','March','April','May','June','July','August','September','October','November','December') as $i => $month) {?>
-										<option value="<?php echo $i+1?>"><?php echo $month?></option>
-									<?php }?>
-								</select>
-								<select name="diagnosis_year" class="diagnosis_date_field">
-									<?php for ($i=1990;$i<=date('Y');$i++) {?>
-										<option value="<?php echo $i?>"<?php if ($i == date('Y')) {?> selected="selected"<?php }?>><?php echo $i?></option>
-									<?php }?>
-								</select>
-							</div>
+							<?php $this->renderPartial('_diagnosis_date')?>
+
 							<div align="right">
 								<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader" style="display: none;" />
 								<button class="classy green mini btn_save_systemic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
@@ -92,9 +80,15 @@
 <script type="text/javascript">
 	$('#btn-add_new_systemic_diagnosis').click(function() {
 		$('#add_new_systemic_diagnosis').slideToggle('fast');
+		$('#btn-add_new_systemic_diagnosis').attr('disabled',true);
+		$('#btn-add_new_systemic_diagnosis').removeClass('green').addClass('disabled');
+		$('#btn-add_new_systemic_diagnosis span').removeClass('button-span-green').addClass('button-span-disabled');
 	});
 	$('button.btn_cancel_systemic_diagnosis').click(function() {
 		$('#add_new_systemic_diagnosis').slideToggle('fast');
+		$('#btn-add_new_systemic_diagnosis').attr('disabled',false);
+		$('#btn-add_new_systemic_diagnosis').removeClass('disabled').addClass('green');
+		$('#btn-add_new_systemic_diagnosis span').removeClass('button-span-disabled').addClass('button-span-green');
 		return false;
 	});
 	$('button.btn_save_systemic_diagnosis').click(function() {

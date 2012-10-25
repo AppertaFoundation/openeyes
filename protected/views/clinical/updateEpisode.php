@@ -38,6 +38,17 @@ if (!empty($episode)) {
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
+	<?php if ($error) {?>
+		<div id="clinical-create_es_" class="alertBox">
+			<p>Please fix the following input errors:</p>
+			<ul>
+				<li>
+					<?php echo $error?>
+				</li>
+			</ul>
+		</div>
+	<?php }?>
+
 	<h4>Principal diagnosis:</h4>
 
 	<?php
@@ -53,13 +64,20 @@ if (!empty($episode)) {
 			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
 			'restrict' => 'ophthalmic',
 			'layout' => 'episodeSummary',
-	))?>
+	));
+
+	if (!empty($_POST)) {
+		$eye_id = @$_POST['eye_id'];
+	} else {
+		$eye_id = $episode->eye_id;
+	}
+	?>
 
 	<h4>Principal eye:</h4>
 
 	<div>
 		<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-			<?php echo CHtml::radioButton('eye_id', $episode->eye_id == $eye->id,array('value' => $eye->id,'class'=>'episodeSummaryRadio'))?>
+			<?php echo CHtml::radioButton('eye_id', $eye_id,array('value' => $eye->id,'class'=>'episodeSummaryRadio'))?>
 			<label for="<?php echo $episode->eye_id?>"><?php echo $eye->name?></label>
 		<?php }?>
 	</div>
@@ -128,6 +146,17 @@ if (!empty($episode)) {
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
 </div>
+
+<?php if ($error) {?>
+	<div id="clinical-create_es_" class="alertBox">
+		<p>Please fix the following input errors:</p>
+		<ul>
+			<li>
+				<?php echo $error?>
+			</li>
+		</ul>
+	</div>
+<?php }?>
 
 <div class="form_button">
 	<img class="loader" style="display: none;" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;

@@ -170,4 +170,10 @@ class BaseController extends Controller
 
 		Yii::log($message . ' from ' . $addr, "user", "userActivity");
 	}
+	
+	public function init() {
+		parent::init();
+
+		Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('/css/style.css'));
+	}
 }

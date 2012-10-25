@@ -31,13 +31,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			Yii::app()->clientScript->scriptMap = array(
-				'jquery.js' => false,
-				'jquery.min.js' => false,
-				'jquery-ui.js' => false,
-				'jquery-ui.min.js' => false,
-				'module.js' => false,
-			);
+			$scriptMap = Yii::app()->clientScript->scriptMap;
+			$scriptMap['jquery.js'] = false;
+			$scriptMap['jquery.min.js'] = false;
+			$scriptMap['jquery-ui.js'] = false;
+			$scriptMap['jquery-ui.min.js'] = false;
+			$scriptMap['module.js'] = false;
+			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
 		return parent::beforeAction($action);
@@ -166,15 +166,16 @@ class BaseEventTypeController extends BaseController
 		}
 		$elements = $this->getDefaultElements('create', $this->event_type->id);
 
-		if (!count($elements)) {
+		if (empty($_POST) && !count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
-		if (!empty($_POST)) {
-			if (isset($_POST['cancel'])) {
-				$this->redirect(array('/patient/view/'.$this->patient->id));
-				return;
-			}
+		if (!empty($_POST) && isset($_POST['cancel'])) {
+			$this->redirect(array('/patient/view/'.$this->patient->id));
+			return;
+		} else if(!empty($_POST) && !count($elements)) {
+			$errors['Event'][] = 'No elements selected';
+		} else if (!empty($_POST)) {
 
 			$elements = array();
 			$element_names = array();
@@ -337,18 +338,18 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		if (!count($this->getDefaultElements('update'))) {
+		if (empty($_POST) && !count($this->getDefaultElements('update'))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
-		if (!empty($_POST)) {
+		if (!empty($_POST) && isset($_POST['cancel'])) {
+			// Cancel button pressed, so just bounce to view
+			$this->redirect(array('default/view/'.$this->event->id));
+			return;
+		} else if(!empty($_POST) && !count($this->getDefaultElements('update'))) {
+			$errors['Event'][] = 'No elements selected';
+		} else if (!empty($_POST)) {
 			
-			if (isset($_POST['cancel'])) {
-				// Cancel button pressed, so just bounce to view
-				$this->redirect(array('default/view/'.$this->event->id));
-				return;
-			}
-
 			$elements = array();
 			$to_delete = array();
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
@@ -685,13 +686,22 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function init() {
+		parent::init();
+
+		$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
+		$action = $ex[3];
+
+		if ($action == 'print') {
+			$scriptMap = Yii::app()->clientScript->scriptMap;
+			$scriptMap['style.css'] = false;
+			Yii::app()->clientScript->scriptMap = $scriptMap;
+		}
+
+		// do automatic file inclusion after the base init
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
 
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'));
-
-			$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
-			$action = $ex[3];
+			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
 
 			if ($action != 'print') {
 				$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
@@ -724,7 +734,6 @@ class BaseEventTypeController extends BaseController
 			closedir($dh);
 		}
 
-		parent::init();
 	}
 
 	public function actionPrint($id) {

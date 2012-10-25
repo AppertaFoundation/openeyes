@@ -69,7 +69,7 @@ if ($module = $this->getModule()) {
 					} else if ($current_episode) {
 						if ($this->editing) {
 							$this->renderPartial('/clinical/updateEpisode',
-								array('episode' => $current_episode)
+								array('episode' => $current_episode, 'error' => $error)
 							);
 						} else {
 							$this->renderPartial('/clinical/episodeSummary',
