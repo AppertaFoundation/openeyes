@@ -33,7 +33,7 @@
 	</p>
 </div>
 <script type="text/javascript">
-	$('#OphCiExamination_disabled').hover(function(e) {
+	$('p.add_event_disabled').hover(function(e) {
 		$('#add-event-disabled-pop-up-title').text($(this).attr('data-title'));
 		$('#add-event-disabled-pop-up-detail').text($(this).attr('data-detail'));
 		$('#add-event-disabled-pop-up').show();
