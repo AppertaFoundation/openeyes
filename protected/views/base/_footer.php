@@ -31,7 +31,7 @@
 					<span><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></span>
 				<?php } ?>
 				<span class="divider">|</span>
-				<span><?php echo CHtml::link('Help Documentation',Yii::app()->createUrl('pdf/OpenEyesOnlineHelp.pdf'),array('target'=>'_new'))?></span>
+				<span><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_new'))?></span>
 		</div>
 	</div> <!-- #footer -->
 
