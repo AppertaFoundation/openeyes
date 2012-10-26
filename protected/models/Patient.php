@@ -735,7 +735,7 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
 	
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Anteriorsegment')) {
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AnteriorSegment')) {
 				if ($as = $as->find('event_id=?',array($event->id))) {
 					return $as->left_description;
 				} 
@@ -760,7 +760,7 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
 	
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Anteriorsegment')) {
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AnteriorSegment')) {
 				if ($as = $as->find('event_id=?',array($event->id))) {
 					return $as->right_description;
 				} 
@@ -776,7 +776,7 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
  
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Posteriorsegment')) {
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_PosteriorSegment')) {
 				if ($as = $as->find('event_id=?',array($event->id))) {
 					return $as->left_description;
 				} 
@@ -801,7 +801,7 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
 
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Posteriorsegment')) {
+			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_PosteriorSegment')) {
 				if ($as = $as->find('event_id=?',array($event->id))) {
 					return $as->right_description;
 				}
