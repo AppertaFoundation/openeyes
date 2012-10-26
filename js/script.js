@@ -24,7 +24,12 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 		data: {'selected_firm_id': firmId },
 		success: function(data) {
 			if (data.match(/change-firm-succeeded/)) {
-				window.location.href = window.location.href;
+				url = window.location.href
+				if (m = url.match(/firm_id=[0-9]+/)) {
+					url = url.replace(m[0],'firm_id='+firmId);
+				}
+				window.location.href = url;
+				return false;
 			} else {
 				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
 			}

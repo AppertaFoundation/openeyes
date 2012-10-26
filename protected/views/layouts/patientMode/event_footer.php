@@ -18,21 +18,6 @@
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/plugins.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 
-	<script type="text/javascript">
-		$(this).undelegate('select[id=selected_firm_id]','change').delegate('select[id=selected_firm_id]','change',function() {
-			var firmId = $('select[id=selected_firm_id]').val();
-			$.ajax({
-				type: 'post',
-				url: '<?php echo Yii::app()->createUrl('site'); ?>',
-				data: {'selected_firm_id': firmId },
-				success: function(data) {
-					console.log(data);
-					window.location.href = '<?php echo Yii::app()->createUrl('site'); ?>';
-				}
-			});
-		});
-	</script>
-
 	<?php if (Yii::app()->user->checkAccess('admin')) {?>
 		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
 	<?php } else if (Yii::app()->params['watermark']) {?>

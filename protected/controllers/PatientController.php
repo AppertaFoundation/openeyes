@@ -417,8 +417,10 @@ class PatientController extends BaseController
 				$criteria->order = 'datetime desc';
 
 				if ($event = Event::model()->find($criteria)) {
-					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
-					Yii::app()->end();
+					if (!$event->eventType->disabled) {
+						$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+						Yii::app()->end();
+					}
 				}
 			}
 		} else if ($current_episode->end_date == null) {
@@ -754,6 +756,28 @@ class PatientController extends BaseController
 							'line' => $contact_line,
 							'contact_id' => $contact['id'],
 							'site_id' => $ica->site_id,
+						);
+					}
+				}
+
+				$institutions = array();
+
+				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->institution_id,$institutions)) {
+						if ($contact['title']) {
+							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+						} else {
+							$contact_line = $contact['first_name'].' '.$contact['last_name'];
+						}
+
+						$specialist = Specialist::model()->findByPk($contact['parent_id']);
+
+						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->institution->name.")";
+
+						$contacts[] = array(
+							'line' => $contact_line,
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
 						);
 					}
 				}
