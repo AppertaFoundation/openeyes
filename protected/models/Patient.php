@@ -901,7 +901,8 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getNhsnum() {
-		return $this->nhs_num ? substr($this->nhs_num,0,3).' '.substr($this->nhs_num,3,3).' '.substr($this->nhs_num,6,4) : 'not known';
+		$nhs_num = preg_replace('/[^0-9]/', '', $this->nhs_num);
+		return $nhs_num ? substr($nhs_num,0,3).' '.substr($nhs_num,3,3).' '.substr($nhs_num,6,4) : 'not known';
 	}
 
 	public function hasLegacyLetters() {
