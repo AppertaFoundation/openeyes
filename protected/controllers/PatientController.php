@@ -675,6 +675,28 @@ class PatientController extends BaseController
 						);
 					}
 				}
+
+				$institutions = array();
+
+				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->institution_id,$institutions)) {
+						if ($contact['title']) {
+							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+						} else {
+							$contact_line = $contact['first_name'].' '.$contact['last_name'];
+						}
+
+						$specialist = Specialist::model()->findByPk($contact['parent_id']);
+
+						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->institution->name.")";
+
+						$contacts[] = array(
+							'line' => $contact_line,
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
+						);
+					}
+				}
 			} else if ($contact['user_id']) {
 				$user = User::model()->findByPk($contact['user_id']);
 
