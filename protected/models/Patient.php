@@ -21,7 +21,7 @@
  * This is the model class for table "patient".
  *
  * The followings are the available columns in table 'patient':
- * @property string  $id
+ * @property integer  $id
  * @property string  $pas_key
  * @property string  $title
  * @property string  $first_name
@@ -32,11 +32,12 @@
  * @property string  $hos_num
  * @property string  $nhs_num
  * @property string  $primary_phone
- * @property string  $gp_id
+ * @property integer  $gp_id
+ * @property integer $practice_id
  * @property string  $created_date
  * @property string  $last_modified_date
- * @property string  $created_user_id
- * @property string  $last_modified_user_id
+ * @property integer  $created_user_id
+ * @property integer  $last_modified_user_id
  * 
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -46,6 +47,7 @@
  * @property CorrespondAddress $correspondAddress Correspondence address
  * @property Contact[] $contacts
  * @property Gp $gp
+ * @property Practice $practice
  * @property Allergy[] $allergies
  */
 class Patient extends BaseActiveRecord {
@@ -60,6 +62,17 @@ class Patient extends BaseActiveRecord {
 		*/
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
+	}
+
+	/**
+	 * Suppress PAS integration
+	 * @return Patient
+	 */
+	public function noPas() {
+		// Clone to avoid singleton problems with use_pas flag
+		$model = clone $this;
+		$model->use_pas = FALSE;
+		return $model;
 	}
 
 	/**
@@ -118,6 +131,7 @@ class Patient extends BaseActiveRecord {
 				'on' => "parent_class = 'Patient'",
 			),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
+			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 		);
@@ -265,7 +279,7 @@ class Patient extends BaseActiveRecord {
 		* @return string Full name 
 		*/
 	public function getFullName() {
-		return implode(' ',array($this->title, $this->first_name, $this->last_name));
+		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
 
 	public function getDisplayName() {
@@ -310,14 +324,6 @@ class Patient extends BaseActiveRecord {
 		return date("Y-m-d",strtotime("$startDate + ".rand(0,round((strtotime($endDate) - strtotime($startDate)) / (60 * 60 * 24)))." days"));
 	}
 
-	/**
-	* Supress PAS call after find
-	*/
-	public function noPas() {
-			$this->use_pas = false;
-			return $this;
-	}
-	
 	/**
 	* Pass through use_pas flag to allow pas supression
 	* @see CActiveRecord::instantiate()
@@ -470,7 +476,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getLetterAddress() {
-		$address = $this->fullName;
+		$address = $this->addressName;
 
 		if (isset($this->qualifications)) {
 			$address .= ' '.$this->qualifications;
@@ -570,5 +576,9 @@ class Patient extends BaseActiveRecord {
 				}
 			}
 		}
+	}
+
+	public function getNhsnum() {
+		return $this->nhs_num ? substr($this->nhs_num,0,3).' '.substr($this->nhs_num,3,3).' '.substr($this->nhs_num,6,4) : 'not known';
 	}
 }

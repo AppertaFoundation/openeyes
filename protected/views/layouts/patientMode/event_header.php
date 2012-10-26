@@ -81,6 +81,7 @@
 				<div class="patientReminder">
 					<?php echo $this->patient->getDisplayName()?>
 					<span class="number">Hospital number: <?php echo $this->patient->hos_num?></span>
+					<span class="number">NHS number: <?php echo $this->patient->nhsnum?></span>
 				</div>
 			</div> <!-- #patientID -->
 

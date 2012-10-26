@@ -68,7 +68,12 @@ if (!empty($address)) {
 						This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 					</div>
 				<?php } ?>
-
+				<?php if(!$this->patient->practice || !$this->patient->practice->address) { ?>
+				<div id="no-practice-address" class="alertBox">
+					Patient has no GP practice address, please correct in PAS before printing GP letter.
+				</div>
+				<?php } ?>
+				
 				<div class="halfColumnLeft">
  
 					<!-- double re-enforcement of mode change not currently required, but might be needed in the future
@@ -141,15 +146,25 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
+						</div>
+						<?php if (Yii::app()->user->checkAccess('admin')) { ?>
+						<div class="data_row goldenrod">
+							<div class="data_label">GP Address:</div>
+							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
+						</div>
+						<div class="data_row goldenrod">
+							<div class="data_label">GP Telephone:</div>
+							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
+						</div>
+						<?php } ?>
+						<div class="data_row">
+							<div class="data_label">Practice Address:</div>
+							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->address) ? $this->patient->practice->address->letterLine : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
-							<div class="data_label">Address:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null && $this->patient->gp->contact->address !== null) ? $this->patient->gp->contact->address->address1.' '.$this->patient->gp->contact->address->address2.' '.$this->patient->gp->contact->address->city.' '.$this->patient->gp->contact->address->county.' '.$this->patient->gp->contact->address->postcode : 'Unknown'?></div>
-						</div>
-						<div class="data_row">
-							<div class="data_label">Telephone:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
+							<div class="data_label">Practice Telephone:</div>
+							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown'; ?></div>
 						</div>
 					</div>
 
@@ -387,9 +402,12 @@ if (!empty($address)) {
 
 				var currentContacts = [];
 
-				<?php if ($this->patient->gp && $this->patient->gp->contact) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->summary : '').')';?>");
-				<?php }?>
+				<?php if ($this->patient->gp || ($this->patient->practice && $this->patient->practice->address)) {
+					$gp_dropdown_string = (($this->patient->gp && $this->patient->gp->contact->fullName) ? $this->patient->gp->contact->fullName : 'Unknown') . '(Gp';
+					$gp_dropdown_string .= (($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '') . ')';
+				?>
+					currentContacts.push("<?php echo $gp_dropdown_string ?>");
+				<?php } ?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
 					<?php if ($pca->site) {
