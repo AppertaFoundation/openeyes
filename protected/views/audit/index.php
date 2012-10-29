@@ -19,7 +19,7 @@
 ?>
 <h2>Audit log</h2>
 
-<?php $userid = Yii::app()->session['user']->id; if (($userid != 2103)and($username != 122)and($username != 613)and($username != 1330)and($username != 1)) {echo $username; exit;} ?>
+<?php $userid = Yii::app()->session['user']->id; if (($userid != 2103)and($userid != 122)and($userid != 613)and($userid != 1330)and($userid != 1)) {exit;} ?>
 
 <div class="fullWidth fullBox clearfix">
 	<div id="whiteBox">
