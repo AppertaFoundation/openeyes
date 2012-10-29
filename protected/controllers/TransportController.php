@@ -101,6 +101,10 @@ class TransportController extends BaseController
 		$exclude_sites = array(3,5);
 		$exclude_theatres = array();
 
+$fp = fopen("/tmp/debug","a+");
+fwrite($fp,date('Y-m-d H:i:s')." mark\n");
+fclose($fp);
+
 		// cache theatre->site associations for page load speed
 		$sites = array();
 		foreach (Yii::app()->db->createCommand()
@@ -115,14 +119,18 @@ class TransportController extends BaseController
 			}
 		}
 
+$fp = fopen("/tmp/debug","a+");
+fwrite($fp,date('Y-m-d H:i:s')." mark\n");
+fclose($fp);
+
 		if (!empty($exclude_theatres)) {
 			$wheresql3 = ' and session.theatre_id not in ('.implode(',',$exclude_theatres).') ';
 			$wheresql4 = ' and cb.theatre_id not in ('.implode(',',$exclude_theatres).') ';
 		} else {
 			$wheresql3 = $wheresql4 = '';
 		}
-
-		foreach (Yii::app()->db->createCommand()
+/*
+echo Yii::app()->db->createCommand()
 			->selectDistinct('element_operation.id as eoid, element_operation.priority_id, booking.id as booking_id, patient.id as pid, event.id as evid, contact.first_name,
 				contact.last_name, patient.hos_num, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, subspecialty.ref_spec as subspecialty,
 				session.date as session_date, session.start_time as session_time, element_operation.status, transport_list.id as transport,
@@ -143,6 +151,32 @@ class TransportController extends BaseController
 			->leftJoin('ward','booking.ward_id = ward.id')
 			->leftJoin('(select *,max(id) as maxid from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
 			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id and substr(transport_list2.last_modified_date,1,10) = '$today'")
+			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 ))")
+			->order("order_date asc, order_time asc, order_created_date desc")->getText(); exit;
+*/
+		foreach (Yii::app()->db->createCommand()
+			->selectDistinct('element_operation.id as eoid, element_operation.priority_id, booking.id as booking_id, patient.id as pid, event.id as evid, contact.first_name,
+				contact.last_name, patient.hos_num, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, subspecialty.ref_spec as subspecialty,
+				session.date as session_date, session.start_time as session_time, element_operation.status, transport_list.id as transport,
+				coalesce(booking.created_date,cb.created_date) as order_created_date, ward.name as ward_name, cb.id as cancelled_booking_id, cb.date as cancelled_session_date,
+				session.theatre_id, coalesce(session.date,cb.date) as order_date, cb.start_time as cancelled_session_time, session.id as session_id, cb.theatre_id as theatre_id2,
+				coalesce(session.start_time,cb.start_time) as order_time, cb.date as cancelled_booking_date')
+			->from('element_operation')
+			->join('event','element_operation.event_id = event.id')
+			->join('episode','event.episode_id = episode.id')
+			->join('firm','episode.firm_id = firm.id')
+			->join('service_subspecialty_assignment','firm.service_subspecialty_assignment_id = service_subspecialty_assignment.id')
+			->join('subspecialty','service_subspecialty_assignment.subspecialty_id = subspecialty.id')
+			->join('patient','episode.patient_id = patient.id')
+			->join('contact',"contact.parent_id = patient.id and contact.parent_class = 'Patient'")
+			->leftJoin('booking','booking.element_operation_id = element_operation.id')
+			->leftJoin('transport_list',"transport_list.item_table = 'booking' and transport_list.item_id = booking.id and substr(transport_list.last_modified_date,1,10) = '$today'")
+			->leftJoin('ward','booking.ward_id = ward.id')
+			//->leftJoin('(select *,max(id) as maxid from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
+			->leftJoin('(select created_date,date,start_time,theatre_id,element_operation_id,max(id) as id from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
+			//->leftJoin('cancelled_booking cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
+			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id and substr(transport_list2.last_modified_date,1,10) = '$today'")
+			->leftJoin('session',"booking.session_id = session.id and session.date >= '$today'")
 			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 ))")
 			->order("order_date asc, order_time asc, order_created_date desc")
 			->queryAll() as $i => $row) {
@@ -176,8 +210,16 @@ class TransportController extends BaseController
 			}
 		}
 
+$fp = fopen("/tmp/debug","a+");
+fwrite($fp,date('Y-m-d H:i:s')." mark\n");
+fclose($fp);
+
 		ksort($data);
 		ksort($data_all);
+
+$fp = fopen("/tmp/debug","a+");
+fwrite($fp,date('Y-m-d H:i:s')." mark\n");
+fclose($fp);
 
 		$this->total_items = count($data_all);
 		$this->pages = ceil($this->total_items / $this->items_per_page);
