@@ -16,7 +16,17 @@
 				'name' => "{$class}[$field]",
 				'id' => "{$class}_{$field}_0",
 				'value'=>'',
-				'sourceUrl'=>array('/disorder/autocomplete'),
+				'source'=>"js:function(request, response) {
+					$.ajax({
+						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
+						'type':'GET',
+						'data':{'term': request.term, 'restrict': 'ophthalmic'},
+						'success':function(data) {
+							data = $.parseJSON(data);
+							response(data);
+						}
+					});
+				}",
 				'options' => array(
 						'minLength'=>'3',
 						'select' => "js:function(event, ui) {
