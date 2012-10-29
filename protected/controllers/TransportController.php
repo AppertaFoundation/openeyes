@@ -138,12 +138,12 @@ class TransportController extends BaseController
 			->join('patient','episode.patient_id = patient.id')
 			->join('contact',"contact.parent_id = patient.id and contact.parent_class = 'Patient'")
 			->leftJoin('booking','booking.element_operation_id = element_operation.id')
-			->leftJoin('session',"booking.session_id = session.id and session.date >= '$today'")
 			->leftJoin('transport_list',"transport_list.item_table = 'booking' and transport_list.item_id = booking.id")
 			->leftJoin('ward','booking.ward_id = ward.id')
 			->leftJoin('(select created_date,date,start_time,theatre_id,element_operation_id,max(id) as id from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
 			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id")
-			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 )) and ((transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today') and (transport_list2.id is null or substr(transport_list2.last_modified_date,1,10) = '$today'))")
+			->leftJoin('session',"booking.session_id = session.id and session.date >= '$today'")
+			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 )) and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today') and (transport_list2.id is null or substr(transport_list2.last_modified_date,1,10) = '$today')")
 			->order("order_date asc, order_time asc, order_created_date desc")
 			->queryAll() as $i => $row) {
 
