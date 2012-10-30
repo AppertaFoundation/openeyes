@@ -11,7 +11,7 @@
 		<?php $i=0; ?>
 		<?php foreach ($data as $id => $data_value) {?>
 			<span class="group">
-				<?php echo CHtml::radioButton($name, $value == $id && $value!="", array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
+				<?php echo CHtml::radioButton($name, $value == $id && (!is_string($value) || $value!=""), array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
 				<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>
 			</span>
 			<?php
