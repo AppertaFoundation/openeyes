@@ -130,8 +130,6 @@ class TransportController extends BaseController
 				session.theatre_id, coalesce(session.date,cb.date) as order_date, cb.start_time as cancelled_session_time, session.id as session_id, cb.theatre_id as theatre_id2,
 				coalesce(session.start_time,cb.start_time) as order_time, cb.date as cancelled_booking_date')
 			->from('element_operation')
-			->leftJoin('booking','booking.element_operation_id = element_operation.id')
-			->leftJoin('session',"booking.session_id = session.id and session.date >= '$today'")
 			->join('event','element_operation.event_id = event.id')
 			->join('episode','event.episode_id = episode.id')
 			->join('firm','episode.firm_id = firm.id')
@@ -139,11 +137,13 @@ class TransportController extends BaseController
 			->join('subspecialty','service_subspecialty_assignment.subspecialty_id = subspecialty.id')
 			->join('patient','episode.patient_id = patient.id')
 			->join('contact',"contact.parent_id = patient.id and contact.parent_class = 'Patient'")
-			->leftJoin('transport_list',"transport_list.item_table = 'booking' and transport_list.item_id = booking.id and substr(transport_list.last_modified_date,1,10) = '$today'")
+			->leftJoin('booking','booking.element_operation_id = element_operation.id')
+			->leftJoin('transport_list',"transport_list.item_table = 'booking' and transport_list.item_id = booking.id")
 			->leftJoin('ward','booking.ward_id = ward.id')
-			->leftJoin('(select *,max(id) as maxid from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
-			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id and substr(transport_list2.last_modified_date,1,10) = '$today'")
-			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 ))")
+			->leftJoin('(select created_date,date,start_time,theatre_id,element_operation_id,max(id) as id from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
+			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id")
+			->leftJoin('session',"booking.session_id = session.id and session.date >= '$today'")
+			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 )) and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today') and (transport_list2.id is null or substr(transport_list2.last_modified_date,1,10) = '$today')")
 			->order("order_date asc, order_time asc, order_created_date desc")
 			->queryAll() as $i => $row) {
 

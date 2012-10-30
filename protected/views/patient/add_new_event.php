@@ -41,10 +41,4 @@
 	}, function() {
 		$('#add-event-disabled-pop-up').hide();
 	});
-
-	$('p.add_event_disabled').mousemove(function(e) {
-		var moveLeft = -100;
-		var moveDown = -150;
-		$("#add-event-disabled-pop-up").css('top', e.pageY + moveDown).css('left', e.pageX + moveLeft);
-	});
 </script>
