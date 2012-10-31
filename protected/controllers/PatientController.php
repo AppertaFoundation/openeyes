@@ -239,17 +239,30 @@ class PatientController extends BaseController
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
-				$get_hos_num = str_pad($_POST['Patient']['hos_num'], 7, '0', STR_PAD_LEFT);
-				$_GET = array(
-					'hos_num' => $get_hos_num,
-					'nhs_num' => '',
-					'gender' => '',
-					'sort_by' => 0,
-					'sort_dir' => 0,
-					'page_num' => 1,
-					'first_name' => '',
-					'last_name' => ''
-				);
+				if (strlen($_POST['Patient']['hos_num']) == 10) {
+					$_GET = array(
+						'hos_num' => '',
+						'nhs_num' => $_POST['Patient']['hos_num'],
+						'gender' => '',
+						'sort_by' => 0,
+						'sort_dir' => 0,
+						'page_num' => 1,
+						'first_name' => '',
+						'last_name' => ''
+					);
+				} else {
+					$get_hos_num = str_pad($_POST['Patient']['hos_num'], 7, '0', STR_PAD_LEFT);
+					$_GET = array(
+						'hos_num' => $get_hos_num,
+						'nhs_num' => '',
+						'gender' => '',
+						'sort_by' => 0,
+						'sort_dir' => 0,
+						'page_num' => 1,
+						'first_name' => '',
+						'last_name' => ''
+					);
+				}
 
 				$this->patientSearch();
 

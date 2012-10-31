@@ -185,7 +185,11 @@ class Patient extends BaseActiveRecord {
 		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
 		$criteria->compare('LOWER(contact.first_name)',strtolower($params['first_name']), false);
 		$criteria->compare('LOWER(contact.last_name)',strtolower($params['last_name']), false);
-		$criteria->compare('hos_num',$this->hos_num, false);
+		if (strlen($this->nhs_num) == 10) {
+			$criteria->compare('nhs_num',$this->nhs_num, false);
+		} else {
+			$criteria->compare('hos_num',$this->hos_num, false);
+		}
 
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
