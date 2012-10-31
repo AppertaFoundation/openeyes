@@ -52,7 +52,7 @@ $this->layout = 'main'; ?>
 	));?>
 	<div id="search_patient_id" class="form_greyBox bigInput">
 		<?php
-			echo CHtml::label('Search by hospital number:', 'hospital_number');
+			echo CHtml::label('Search by hospital/NHS number:', 'hospital_number');
 			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 		?>
 		<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_id" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
