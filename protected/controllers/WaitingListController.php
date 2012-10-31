@@ -43,6 +43,12 @@ class WaitingListController extends BaseController
 		);
 	}
 
+	public function printActions() {
+		return array(
+				'printletters',
+		);
+	}
+	
 	/**
 		* Lists all models.
 		*/

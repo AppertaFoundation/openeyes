@@ -51,6 +51,13 @@ class PatientController extends BaseController
 		);
 	}
 
+	public function printActions() {
+		return array(
+				'printadmissionletter',
+		);
+	}
+	
+	
 	protected function beforeAction($action)
 	{
 		parent::storeData();
