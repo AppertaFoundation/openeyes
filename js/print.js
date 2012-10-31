@@ -16,6 +16,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+/**
+ * Load a PDF into an iframe and print it
+ */
+
+var iframe = null;
+
+function printPDF(url, data) {
+	$('#print_pdf_iframe').remove();
+	iframe = document.createElement('iframe');
+	iframe.onload = function() {
+		setTimeout('iframe.contentWindow.print();',1000);
+	};
+	$(iframe).attr({
+		id: 'print_pdf_iframe',
+		src: url + '?' + $.param(data),
+		style: 'display: none;'
+	});
+	document.body.appendChild(iframe);
+}
+
 $(document).ready(function() {
 	$('body').append('<div class="printable" id="printable"></div>');
 });

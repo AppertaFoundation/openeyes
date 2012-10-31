@@ -13,6 +13,7 @@ class BaseEventTypeController extends BaseController
 	public $title;
 	public $assetPath;
 	public $episode;
+	public $print_css = true;
 
 	public function actionIndex()
 	{
@@ -719,23 +720,25 @@ class BaseEventTypeController extends BaseController
 				closedir($dh);
 			}
 
-			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
+			if ($action != 'print' || $this->print_css) {
+				$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
 
-			while ($file = readdir($dh)) {
-				if (preg_match('/\.css$/',$file)) {
-					if ($action == 'print') {
-						if ($file == 'print.css') {
-							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
-						}
-					} else {
-						if ($file != 'print.css') {
-							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+				while ($file = readdir($dh)) {
+					if (preg_match('/\.css$/',$file)) {
+						if ($action == 'print') {
+							if ($file == 'print.css') {
+								Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+							}
+						} else {
+							if ($file != 'print.css') {
+								Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+							}
 						}
 					}
 				}
-			}
 
-			closedir($dh);
+				closedir($dh);
+			}
 		}
 
 	}
