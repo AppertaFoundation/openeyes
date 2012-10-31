@@ -1468,6 +1468,8 @@ class ElementOperation extends BaseEventTypeElement
 
 		if ($this->event->episode->patient->isChild()) {
 			$where .= " and session.paediatric = 1";
+
+			$service_subspecialty_assignment_id = $this->event->element_operation->booking->session->firm->serviceSubspecialtyAssignment->id;
 		}
 
 		if ($this->anaesthetist_required || $this->anaesthetic_type->code == 'GA') {
@@ -1475,6 +1477,19 @@ class ElementOperation extends BaseEventTypeElement
 		}
 
 		$lead_time_date = date('Y-m-d',strtotime($this->decision_date) + (86400 * 7 * Yii::app()->params['erod_lead_time_weeks']));
+
+		if ($rule = ErodRule::model()->find('subspecialty_id=?',array($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id))) {
+			$firm_ids = array();
+			foreach ($rule->items as $item) {
+				if ($item->item_type == 'firm') {
+					$firm_ids[] = $item->item_id;
+				}
+			}
+
+			$where .= " and firm.id in (".implode(',',$firm_ids).")";
+		} else {
+			$where .= " and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id";
+		}
 
 		foreach ($erod = Yii::app()->db->createCommand()->select("session.id as session_id, date, start_time, end_time, firm.name as firm_name, firm.id as firm_id, subspecialty.name as subspecialty_name, consultant, paediatric, anaesthetist, general_anaesthetic")
 			->from("session")
@@ -1485,7 +1500,7 @@ class ElementOperation extends BaseEventTypeElement
 			->join("service_subspecialty_assignment ssa","ssa.id = firm.service_subspecialty_assignment_id")
 			->join("subspecialty","subspecialty.id = ssa.subspecialty_id")
 			->join("theatre","session.theatre_id = theatre.id")
-			->where("session.date > '$lead_time_date' and session.status = 0 and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id $where")
+			->where("session.date > '$lead_time_date' and session.status = 0 $where")
 			->group("session.id")
 			->order("session.date, session.start_time")
 			->queryAll() as $row) {
