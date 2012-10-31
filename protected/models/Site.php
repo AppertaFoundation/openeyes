@@ -246,7 +246,9 @@ class Site extends BaseActiveRecord
 	public function getCorrespondenceSiteName() {
 		if (!($contact = $this->replyto) || !$contact->nick_name) {
 			if ($this->institution->short_name) {
-				return $this->institution->short_name.' at '.$this->name;
+				if (!strstr($this->name,$this->institution->short_name)) {
+					return $this->institution->short_name.' at '.$this->name;
+				}
 			}
 			return $this->name;
 		}
