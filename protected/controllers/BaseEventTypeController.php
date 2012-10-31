@@ -93,7 +93,9 @@ class BaseEventTypeController extends BaseController
 						if (isset($event->event_type_id) && ($element = $element_class::model()->find('event_id = ?',array($event->id)))) {
 							$elements[] = $element;
 						} else {
-							$elements[] = new $element_class;
+							if ($action != 'update' || !$element_type->default) {
+								$elements[] = new $element_class;
+							}
 						}
 					}
 				}
