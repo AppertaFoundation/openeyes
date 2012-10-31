@@ -786,7 +786,7 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (!empty($_POST)) {
-			if (isset($_POST['et_deleteevent'])) {
+			//if (isset($_POST['et_deleteevent'])) {
 				$this->event->deleted = 1;
 				$this->event->save();
 
@@ -815,7 +815,7 @@ class BaseEventTypeController extends BaseController
 				}
 
 				return header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			}
+			//}
 			return header('Location: '.Yii::app()->createUrl('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id));
 		}
 
