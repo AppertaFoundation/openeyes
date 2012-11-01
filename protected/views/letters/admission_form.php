@@ -17,42 +17,39 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="banner compact">
-	<div class="logo"><img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_Moorfields_NHS" /></div>
-</div>
 <h1>Admission Form</h1>
-<table class="half right">
-	<tr>
-		<th>Patient Name</th>
-		<td><?php echo $patient->fullname ?></td>
-	</tr>
-	<tr>
-		<th>Address</th>
-		<td><?php echo $patient->correspondAddress->letterhtml ?></td>
-	</tr>
-</table>	
-<table class="half">
+
+<table>
+
 	<tr>
 		<th>Hospital Number</th>
 		<td><?php echo $patient->hos_num ?></td>
+		<th>Patient Name</th>
+		<td><?php echo $patient->fullname ?></td>
 	</tr>
+
 	<tr>
 		<th>NHS Number</th>
 		<td><?php echo $patient->nhsnum?></td>
+		<th rowspan="2">Address</th>
+		<td rowspan="2"><?php echo $patient->correspondAddress->letterhtml ?></td>
 	</tr>
+
 	<tr>
 		<th>DOB</th>
 		<td><?php echo $patient->NHSDate('dob'); ?></td>
 	</tr>
+	
 </table>
 
 <h2>Admission Information</h2>
-<table class="borders">
+	<table class="borders">
 
-	<tr>
-		<?php $booking = $operation->booking; ?>
-		<th><?php if($booking) { ?>Admitting Consultant:<?php } else { ?>Consultant:<?php } ?></th>
-		<?php 
+		<tr>
+			<?php $booking = $operation->booking; ?>
+			<th><?php if($booking) { ?>Admitting Consultant:<?php } else { ?>Consultant:<?php } ?>
+			</th>
+			<?php 
 			if($consultant = $firm->getConsultant()) {
 				$consultantName = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
 			} else {

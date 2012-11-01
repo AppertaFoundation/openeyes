@@ -303,7 +303,7 @@ class WaitingListController extends BaseController
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
 		$site = $operation->site;
 		$firm = $operation->event->episode->firm;
-		$body = $this->render('/letters/pdf/admission_form', array(
+		$body = $this->render('/letters/admission_form', array(
 				'operation' => $operation,
 				'site' => $site,
 				'patient' => $patient,
@@ -323,7 +323,7 @@ class WaitingListController extends BaseController
 	protected function print_invitation_letter($pdf, $operation) {
 		$patient = $operation->event->episode->patient;
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
-		$body = $this->render('/letters/pdf/invitation_letter', array(
+		$body = $this->render('/letters/invitation_letter', array(
 				'to' => $patient->salutationname,
 				'consultantName' => $this->getConsultantName($operation),
 				'overnightStay' => $operation->overnight_stay,
@@ -341,7 +341,7 @@ class WaitingListController extends BaseController
 	protected function print_reminder_letter($pdf, $operation) {
 		$patient = $operation->event->episode->patient;
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
-		$body = $this->render('/letters/pdf/reminder_letter', array(
+		$body = $this->render('/letters/reminder_letter', array(
 				'to' => $patient->salutationname,
 				'consultantName' => $this->getConsultantName($operation),
 				'overnightStay' => $operation->overnight_stay,
@@ -360,10 +360,20 @@ class WaitingListController extends BaseController
 
 		// GP Letter
 		$patient = $operation->event->episode->patient;
-		$gp = $patient->gp;
-		$to_address = $gp->contact->fullname . "\n" . implode("\n",$gp->contact->correspondAddress->getLetterArray(false));
-		$body = $this->render('/letters/pdf/gp_letter', array(
-				'to' => $gp->contact->salutationname,
+		if($gp = $patient->gp) {
+			$to_name = $gp->contact->fullname;
+			$salutation = $gp->contact->salutationname;
+		} else {
+			$to_name = Gp::UNKNOWN_NAME;
+			$salutation = Gp::UNKNOWN_SALUTATION;
+		}
+		if($patient->practice && $practice_address = $patient->practice->address) {
+			$to_address = $to_name . "\n" . implode("\n",$practice_address->getLetterArray(false));
+		} else {
+			throw new CException('Patient has no practice address');
+		}
+		$body = $this->render('/letters/gp_letter', array(
+				'to' => $salutation,
 				'patient' => $patient,
 				'consultantName' => $this->getConsultantName($operation),
 		), true);
@@ -372,7 +382,7 @@ class WaitingListController extends BaseController
 
 		// Patient letter
 		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
-		$body = $this->render('/letters/pdf/gp_letter_patient', array(
+		$body = $this->render('/letters/gp_letter_patient', array(
 				'to' => $patient->salutationname,
 				'patient' => $patient,
 				'consultantName' => $this->getConsultantName($operation),

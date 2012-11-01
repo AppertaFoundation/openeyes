@@ -17,31 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<p>Dear <?php echo $to; ?>,</p>
 
-<p><?php echo $patient->fullname; ?>
-<br/><strong>Hospital Reference Number: <?php echo $patient->hos_num; ?></strong>
-<?php if($patient->nhs_num) { ?><br/>NHS Number: <?php echo $patient->nhs_num; } ?>
-<br /><?php echo $patient->correspondAddress->letterline ?>
-<br />DOB: <?php echo $patient->NHSDate('dob') ?>, <?php echo ($patient->gender == 'M') ? 'Male' : 'Female'; ?>
-</p>
+<?php echo $this->renderPartial('/letters/letter_start', array(
+		'to' => $to,
+		'accessible' => true,
+		'patient' => $patient,
+		)); ?>
 
-<p>
-	This patient was recently referred to this hospital and a decision was
-	made that surgery was appropriate under the care of
+<p class="accessible">
+	I recently invited you to telephone to arrange a date for your admission for surgery under the care of
 	<?php echo CHtml::encode($consultantName) ?>.
 </p>
 
-<p>In accordance with the National requirements our admission system
-	provides patients with the opportunity to agree the date for their
-	operation. We have written twice to ask the patient to contact us to
-	discuss and agree a date but we have had no response.</p>
-
-<p>Therefore we have removed this patient from our waiting list and we
-	are referring them back to you.</p>
-
-<p nobr="true">
-	Yours sincerely,
-	<br/><br/><br/><br/>
-	Admissions Officer
+<p class="accessible">
+	Despite a reminder letter, I have not heard from you. I am therefore referring you back to your GP and have removed you from our waiting list.
 </p>
+
+<?php echo $this->renderPartial('/letters/letter_end', array('accessible' => true)); ?>
