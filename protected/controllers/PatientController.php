@@ -217,7 +217,7 @@ class PatientController extends BaseController
 
 		$pdf_print = new OEPDFPrint('Openeyes', 'Booking letters', 'Booking letters');
 
-		$body = $this->renderPartial('/letters/pdf/admission_letter', array(
+		$body = $this->render('/letters/admission_letter', array(
 			'site' => $site,
 			'patient' => $patient,
 			'firm' => $firm,
@@ -234,7 +234,7 @@ class PatientController extends BaseController
 
 		$pdf_print->addLetter($oeletter);
 
-		$body = $this->render('/letters/pdf/admission_form', array(
+		$body = $this->render('/letters/admission_form', array(
 				'operation' => $operation,
 				'site' => $site,
 				'patient' => $patient,

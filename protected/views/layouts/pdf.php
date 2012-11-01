@@ -41,6 +41,10 @@ th {
 	font-weight: bold;
 }
 
+li {
+	line-height: 1.5em;
+}
+
 table.borders td,
 table.borders th {
 	border: 1px solid #999;
