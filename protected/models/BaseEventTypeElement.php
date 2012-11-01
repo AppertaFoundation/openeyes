@@ -180,4 +180,11 @@ class BaseEventTypeElement extends BaseElement {
 		return true;
 	}
 
+	public function requiredIfSide($attribute, $params) {
+		if (($params['side'] == 'left' && $this->eye_id != 2) || ($params['side'] == 'right' && $this->eye_id != 1)) {
+			if ($this->$attribute == null) {
+				$this->addError($attribute, ucfirst($params['side'])." ".$this->getAttributeLabel($attribute)." cannot be blank.");
+			}
+		}
+	}
 }
