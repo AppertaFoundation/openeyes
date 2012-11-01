@@ -63,8 +63,8 @@ if($consultant = $firm->getConsultant()) {
 	<tr>
 		<th>Ward:</th>
 		<td><?php if ($site->id == 5) {
-			// St George's ?> St Georges Jungle Ward <?php } else {
-				// City Road ?> Richard Desmond's Children's Eye Centre (RDCEC) <?php }	?>
+			// St George's ?>St Georges Jungle Ward<?php } else {
+			// City Road ?>Richard Desmond's Children's Eye Centre (RDCEC)<?php }	?>
 		</td>
 		<th>Location:</th>
 		<td><?php echo CHtml::encode($site->name); ?></td>
@@ -171,8 +171,8 @@ else {
 	<tr>
 		<th>Ward:</th>
 		<td><?php if ($subspecialty->id == 13) {
-			// Refractive laser ?> Refractive waiting room - Cumberledge Wing 4th
-			Floor <?php } else { ?> <?php echo CHtml::encode($booking->ward->name); ?>
+			// Refractive laser ?>Refractive waiting room - Cumberledge Wing 4th
+			Floor<?php } else { ?><?php echo CHtml::encode($booking->ward->name); ?>
 			<?php } ?>
 		</td>
 	</tr>
