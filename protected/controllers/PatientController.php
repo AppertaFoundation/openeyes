@@ -304,8 +304,7 @@ class PatientController extends BaseController
 				$_POST['Patient'][$key] = trim($value);
 			}
 
-
-			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
+			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name']) && (!@$_POST['Patient']['nhs_num'] || preg_match('/[^\d]/', $_POST['Patient']['nhs_num']))) {
 				$audit = new Audit;
 				$audit->action = "search-error";
 				$audit->target_type = "search";
@@ -316,50 +315,27 @@ class PatientController extends BaseController
 				$this->redirect(array('/patient/results/error'));
 			}
 
-			if (@$_POST['Patient']['hos_num']) {
-				if (strlen($_POST['Patient']['hos_num']) == 10) {
-					$_GET = array(
-						'hos_num' => '',
-						'nhs_num' => preg_replace('/[^0-9]*/','',$_POST['Patient']['hos_num']),
-						'gender' => '',
-						'sort_by' => 0,
-						'sort_dir' => 0,
-						'page_num' => 1,
-						'first_name' => '',
-						'last_name' => ''
-					);
-				} else {
-					$get_hos_num = str_pad(preg_replace('/[^0-9]*/','',$_POST['Patient']['hos_num']), 7, '0', STR_PAD_LEFT);
-					$_GET = array(
-						'hos_num' => $get_hos_num,
-						'nhs_num' => '',
-						'gender' => '',
-						'sort_by' => 0,
-						'sort_dir' => 0,
-						'page_num' => 1,
-						'first_name' => '',
-						'last_name' => ''
-					);
+			$_GET = $_POST['Patient'];
+
+			if ($_GET['hos_num'] || $_GET['nhs_num']) {
+				if ($_GET['hos_num']) {
+					$_GET['hos_num'] = str_pad($_GET['hos_num'], 7, '0', STR_PAD_LEFT);
 				}
+				$_GET['sort_by'] = 0;
+				$_GET['sort_dir'] = 0;
+				$_GET['page_num'] = 1;
 
 				$this->patientSearch();
 
 				Yii::app()->end();
-			} else {
-				$get_hos_num = '000000';
 			}
 
-			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
-			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
-			// Get rid of any dashes from nhs_num as PAS doesn't store them
-			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? preg_replace('/-/', '', $_POST['Patient']['nhs_num']) : '0');
-			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
-			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
-			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
-			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
+			if (!$_GET['nhs_num']) $_GET['nhs_num'] = '0';
+			if (!$_GET['first_name']) $_GET['first_name'] = '0';
+			if (!$_GET['last_name']) $_GET['last_name'] = 0;
 
 			setcookie('patient-search-minimum-criteria','1',0,'/');
-			$this->redirect(array("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1"));
+			$this->redirect(array("/patient/results/{$_GET['first_name']}/{$_GET['last_name']}/{$_GET['nhs_num']}/0/0/0/1"));
 		}
 
 		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
@@ -773,12 +749,14 @@ class PatientController extends BaseController
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
+//die("[$where][$term]");
+
 		foreach (Yii::app()->db->createCommand()
 			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
 			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(contact.last_name) LIKE :term AND $where and (active is null or active = 1)", array(':term' => $term))
+			->where("LOWER(contact.last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
 			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 

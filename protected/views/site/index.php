@@ -21,7 +21,7 @@ $this->layout = 'main'; ?>
 <?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/phrase.js')?>
 <h2>Patient search</h2>
 <div class="centralColumn">
-	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
+	<p><strong>Find a patient.</strong> Either by hospital number, NHS number or firstname and surname.</p>
 	<?php $this->renderPartial('//base/_messages'); ?>
 	<?php if ($_SERVER['REQUEST_URI'] == Yii::app()->baseUrl.'/patient/results/error') {?>
 		<div id="patient-search-error" class="alertBox">
@@ -47,20 +47,23 @@ $this->layout = 'main'; ?>
 	$form=$this->beginWidget('CActiveForm', array(
 		'id'=>'patient-search',
 		'enableAjaxValidation'=>true,
-		'focus'=>'#Patient_hos_num',
+		'focus'=>'#query',
 		'action' => Yii::app()->createUrl('patient/results')
 	));?>
 	<div id="search_patient_id" class="form_greyBox bigInput">
 		<?php
-			echo CHtml::label('Search by hospital/NHS number:', 'hospital_number');
-			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
+			echo CHtml::label('Search:', 'hospital_number');
+			echo CHtml::textField('query', '', array('style'=>'width: 304px;'));
+			echo CHtml::hiddenField('Patient[hos_num]','');
+			echo CHtml::hiddenField('Patient[nhs_num]','');
+			echo CHtml::hiddenField('Patient[first_name]','');
+			echo CHtml::hiddenField('Patient[last_name]','');
 		?>
 		<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_id" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
 		<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-right: 10px; margin-top: 9px; display: none;" />
 		<?php //$this->endWidget();?>
 	</div>
 	<?php
-	$this->renderPartial('/patient/_advanced_search');
 	$this->endWidget();
 	?>
 </div><!-- .centralColumn -->
@@ -80,76 +83,45 @@ $this->layout = 'main'; ?>
 
 	function patient_search() {
 		if (!$('#findPatient_id').hasClass('inactive')) {
-			if (!$('#Patient_hos_num').val() && (!$('#Patient_last_name').val() || !$('#Patient_first_name').val())) {
-				$('#patient-search-error').html('<h3>Please enter either a hospital number or a firstname and lastname.</h3>');
-				$('#patient-search-error').show();
-				$('#patient-list').hide();
+			var query = $('#query').val();
+			if (query.length <1) {
 				return false;
+			}
+
+			$('#Patient_hos_num').val('');
+			$('#Patient_nhs_num').val('');
+			$('#Patient_first_name').val('');
+			$('#Patient_last_name').val('');
+
+			if (!query.match(/[a-zA-Z]/)) {
+				query = query.replace(/[^0-9]+/g,'');
+			}
+
+			if (query.match(/^[0-9]+$/)) {
+				if (query.length == 10) {
+					$('#Patient_nhs_num').val(query);
+				} else {
+					$('#Patient_hos_num').val(query);
+				}
+			} else {
+				if (!query.match(/ /)) {
+					$('#patient-search-error').html('<h3>Please enter a hospital number, NHS number or a firstname and lastname.</h3>');
+					$('#patient-search-error').show();
+					$('#patient-list').hide();
+					$('#query').select();
+					return false;
+				} else {
+					var x = query.split(' ');
+					$('#Patient_last_name').val(x.pop());
+					$('#Patient_first_name').val(x.join(' '));
+				}
 			}
 
 			disableButtons();
 
 			$('#patient-search').submit();
 			return false;
-
-			var postdata = $('#patient-search').serialize();
-
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('patient/results'); ?>',
-				'type': 'POST',
-				'data': postdata,
-				'success': function(data) {
-					try {
-						arr = $.parseJSON(data);
-
-						patientViewUrl = '<?php echo Yii::app()->createUrl('patient/view', array('id' => 'patientId')) ?>';
-
-						if (!$.isEmptyObject(arr)) {
-							if (arr.length == 1) {
-								// One result, forward to the patient summary page
-								patientViewUrl = patientViewUrl.replace(/patientId/, arr[0]['id']);
-
-								window.location.replace(patientViewUrl);
-							} else if (arr.length > 1) {
-								// Multiple results, populate list
-								if ($('#patient-adv-search div.ui-accordion-content:visible').length > 0) {
-									// hide advanced search options, if visible
-									$('#patient-adv-search').accordion('activate', 0);
-								}
-
-								content = '<br /><strong>' + arr.length + " results found</strong><p />\n";
-								content += "<table><tr><th>Patient name</th><th>Date of Birth</th><th>Gender</th><th>NHS Number</th><th>Hospital Number</th></tr>\n";
-
-								$.each(arr, function(index, value) {
-									if (value['gender'] == 'M') {
-										gender = 'Male';
-									} else {
-										gender = 'Female';
-									}
-									content += '<tr><td>' + value['first_name'] + ' ' + value['last_name'] + '</td><td>' + value['dob'] + '</td><td>' + gender;
-									content += '</td><td>' + value['nhs_num'] + '</td><td>';
-									content += '<a href="index.php?r=patient/view&id=' + value['id'];
-									content += '">' + value['hos_num'] + "</a></td></tr>\n";
-								});
-
-								content += "</table>\n";
-
-								$('#patient-list').html(content);
-
-								$('#patient-search-error').hide();
-								$('#patient-list').show();
-							}
-						} else {
-							$('#patient-search-error').html('No patients found matching the selected options. Please choose different options and try again.');
-							$('#patient-search-error').show();
-							$('#patient-list').hide();
-						}
-					} catch (e) {
-					}
-				}
-			});
 		}
-
 		return false;
 	}
 </script>
