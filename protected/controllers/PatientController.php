@@ -157,10 +157,6 @@ class PatientController extends BaseController
 			}
 		}
 
-		if($this->episode->patient->date_of_death){
-			return FALSE;
-		}
-
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
 			'legacyepisodes' => $legacyepisodes,
