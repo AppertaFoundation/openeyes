@@ -317,17 +317,30 @@ class PatientController extends BaseController
 			}
 
 			if (@$_POST['Patient']['hos_num']) {
-				$get_hos_num = str_pad($_POST['Patient']['hos_num'], 7, '0', STR_PAD_LEFT);
-				$_GET = array(
-					'hos_num' => $get_hos_num,
-					'nhs_num' => '',
-					'gender' => '',
-					'sort_by' => 0,
-					'sort_dir' => 0,
-					'page_num' => 1,
-					'first_name' => '',
-					'last_name' => ''
-				);
+				if (strlen($_POST['Patient']['hos_num']) == 10) {
+					$_GET = array(
+						'hos_num' => '',
+						'nhs_num' => preg_replace('/[^0-9]*/','',$_POST['Patient']['hos_num']),
+						'gender' => '',
+						'sort_by' => 0,
+						'sort_dir' => 0,
+						'page_num' => 1,
+						'first_name' => '',
+						'last_name' => ''
+					);
+				} else {
+					$get_hos_num = str_pad(preg_replace('/[^0-9]*/','',$_POST['Patient']['hos_num']), 7, '0', STR_PAD_LEFT);
+					$_GET = array(
+						'hos_num' => $get_hos_num,
+						'nhs_num' => '',
+						'gender' => '',
+						'sort_by' => 0,
+						'sort_dir' => 0,
+						'page_num' => 1,
+						'first_name' => '',
+						'last_name' => ''
+					);
+				}
 
 				$this->patientSearch();
 
@@ -760,14 +773,12 @@ class PatientController extends BaseController
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
-//die("[$where][$term]");
-
 		foreach (Yii::app()->db->createCommand()
 			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
 			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(contact.last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
+			->where("LOWER(contact.last_name) LIKE :term AND $where and (active is null or active = 1)", array(':term' => $term))
 			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 
