@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-Yii::app()->clientScript->registerCSSFile('/css/theatre_calendar.css', 'all'); ?>
+Yii::app()->clientScript->registerCSSFile(Yii::app()->createUrl('css/theatre_calendar.css'), 'all'); ?>
 <h3>Operation Details</h3>
 <div class="view">
 	<strong><?php echo $data->getEyeLabelText(); ?></strong>

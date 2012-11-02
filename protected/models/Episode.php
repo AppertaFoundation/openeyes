@@ -53,6 +53,17 @@ class Episode extends BaseActiveRecord
 	}
 
 	/**
+	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
+	 * @return array of mandatory conditions
+	 */
+
+	public function defaultScope() {
+		return array(
+			'condition' => 'deleted=0',
+		);
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
@@ -62,7 +73,7 @@ class Episode extends BaseActiveRecord
 		return array(
 			array('patient_id', 'required'),
 			array('patient_id, firm_id', 'length', 'max'=>10),
-			array('end_date', 'safe'),
+			array('end_date, deleted', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, patient_id, firm_id, start_date, end_date', 'safe', 'on'=>'search'),
@@ -79,13 +90,14 @@ class Episode extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'events' => array(self::HAS_MANY, 'Event', 'episode_id'),
+			'events' => array(self::HAS_MANY, 'Event', 'episode_id', 'order' => 'datetime asc'),
 			'user' => array(self::BELONGS_TO, 'User', 'created_user_id'),
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
+			'diagnosis' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
+			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
 		);
 	}
-
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -97,7 +109,7 @@ class Episode extends BaseActiveRecord
 			'firm_id' => 'Firm',
 			'start_date' => 'Start Date',
 			'end_date' => 'End Date',
-			'episode_status_id' => 'Current Status'
+			'episode_status_id' => 'Current Status',
 		);
 	}
 
@@ -166,50 +178,9 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->find($criteria);
 	}
 
-	/**
-	 * Get the principle diagnosis for this episode
-	 * @return ElementDiagnosis
-	 */
-	public function getPrincipalDiagnosis() {
-		$result = Yii::app()->db->createCommand()
-			->select('ed.id AS id')
-			->from('element_diagnosis ed')
-			->join('event ev', 'ed.event_id = ev.id')
-			->join('episode ep', 'ev.episode_id = ep.id')
-			->where('ep.id = :ep_id', array(
-				':ep_id' => $this->id
-			))
-			->order('ed.id DESC')
-			->queryRow();
-
-		if (empty($result)) {
-			return null;
-		} else {
-			return ElementDiagnosis::model()->findByPk($result['id']);
-		}
-	}
-
-	/**
-	 * Get the principle eye for this episode
-	 * @return Eye
-	 */
-	public function getPrincipleEye() {
-		if($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->eye;
-		}
-	}
-	
-	public function getPrincipalDiagnosisEyeText() {
-		if ($eye = $this->getPrincipleEye()) {
-			return $eye->name;
-		} else {
-			return 'none';
-		}
-	}
-
 	public function getPrincipalDiagnosisDisorderTerm() {
-		if ($diagnosis = $this->getPrincipalDiagnosis()) {
-			return $diagnosis->disorder->term;
+		if ($disorder = $this->getPrincipalD2isorder()) {
+			return $disorder->term;
 		} else {
 			return 'none';
 		}
@@ -292,5 +263,68 @@ class Episode extends BaseActiveRecord
 			return true;
 		}
 		return false;
+	}
+
+	public function getHidden() {
+		if (isset(Yii::app()->getController()->event) && Yii::app()->getController()->event->episode_id == $this->id) {
+			return false;
+		}
+
+		if (isset(Yii::app()->session['episode_hide_status'][$this->id])) {
+			return !Yii::app()->session['episode_hide_status'][$this->id];
+		}
+
+		if (isset(Yii::app()->getController()->episode)) {
+			return Yii::app()->getController()->episode->id != $this->id || $this->end_date != null;
+		}
+
+		return true;
+	}
+
+	public function getOpen() {
+		return ($this->end_date == null);
+	}
+
+	public function getEditable(){
+		if (!$this->firm) {
+			return FALSE;
+		}
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+			return FALSE;
+		}
+
+		if ($this->patient->date_of_death){
+			return FALSE;
+		}
+	 
+		return TRUE;
+	}
+
+	protected function afterSave() {
+		foreach (SecondaryDiagnosis::model()->findAll('patient_id=? and disorder_id=?',array($this->patient_id,$this->disorder_id)) as $sd) {
+			if ($this->eye_id == $sd->eye_id || ($this->eye_id == 3 && in_array($sd->eye_id,array(1,2)))) {
+				$sd->delete();
+			} else if (in_array($this->eye_id,array(1,2)) && $sd->eye_id == 3) {
+				$sd->eye_id = ($this->eye_id == 1 ? 2 : 1);
+				$sd->save();
+			}
+		}
+	}
+
+	public function setPrincipalDiagnosis($disorder_id, $eye_id) {
+		$this->disorder_id = $disorder_id;
+		$this->eye_id = $eye_id;
+		if (!$this->save()) {
+			throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(),true));
+		}
+
+		$audit = new Audit;
+		$audit->action = "set-principal-diagnosis";
+		$audit->target_type = "episode";
+		$audit->episode_id = $this->id;
+		$audit->patient_id = $this->patient_id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $this->getAuditAttributes();
+		$audit->save();
 	}
 }

@@ -264,7 +264,7 @@ class User extends BaseActiveRecord
 
 	/**
 	 * Returns whether this user has a contact entry and a consultant entry
-	 *      i.e. they are a consultant for the centre.
+	 *			i.e. they are a consultant for the centre.
 	 *
 	 * @return boolean
 	 */

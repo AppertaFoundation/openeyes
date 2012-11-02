@@ -109,7 +109,7 @@ class ElementOperation extends BaseEventTypeElement
 		return array(
 			array('eye_id', 'required', 'message' => 'Please select an eye option'),
 			array('eye_id', 'matchDiagnosisEye'),
-			array('decision_date', 'required', 'message' => 'Please enter a decision date'),
+			array('decision_date, total_duration', 'required'),
 			array('decision_date', 'OeDateValidator', 'message' => 'Please enter a valid decision date (e.g. '.Helper::NHS_DATE_EXAMPLE.')'),
 			array('eye_id, total_duration, consultant_required, anaesthetist_required, anaesthetic_type_id, overnight_stay, schedule_timeframe, priority_id', 'numerical', 'integerOnly' => true),
 			array('eye_id, event_id, comments, decision_date, site_id', 'safe'),
@@ -214,8 +214,13 @@ class ElementOperation extends BaseEventTypeElement
 	/**
 	 * Set default values for forms on create
 	 */
-	public function setDefaultOptions()
-	{
+	public function setDefaultOptions() {
+		$patient_id = (int) $_REQUEST['patient_id'];
+		$firm = Yii::app()->getController()->firm;
+		$episode = Episode::getCurrentEpisodeByFirm($patient_id, $firm);
+		if($episode && $episode->diagnosis) {
+			$this->eye_id = $episode->eye_id;
+		}
 		$this->consultant_required = self::CONSULTANT_NOT_REQUIRED;
 		$this->anaesthetic_type_id = 1;
 		$this->overnight_stay = 0;
@@ -223,7 +228,6 @@ class ElementOperation extends BaseEventTypeElement
 		$this->total_duration = 0;
 		$this->schedule_timeframe = self::SCHEDULE_IMMEDIATELY;
 		$this->status = self::STATUS_PENDING;
-		$this->urgent = 1;
 	}
 
 	/**
@@ -1423,7 +1427,7 @@ class ElementOperation extends BaseEventTypeElement
 							$email,
 							"[OpenEyes] Urgent cancellation made","A cancellation was made with a TCI date within the next 24 hours.\n\nDisorder: "
 								. $this->getDisorder() . "\n\nPlease see: http://" . @$_SERVER['SERVER_NAME']
-								. "/transport\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
+								. Yii::app()->createUrl('transport')."\n\nIf you need any assistance you can reply to this email and one of the OpenEyes support personnel will respond.",
 							"From: " . Yii::app()->params['urgent_booking_notify_email_from']."\r\n"
 						);
 					}
@@ -1464,6 +1468,8 @@ class ElementOperation extends BaseEventTypeElement
 
 		if ($this->event->episode->patient->isChild()) {
 			$where .= " and session.paediatric = 1";
+
+			$service_subspecialty_assignment_id = $this->event->element_operation->booking->session->firm->serviceSubspecialtyAssignment->id;
 		}
 
 		if ($this->anaesthetist_required || $this->anaesthetic_type->code == 'GA') {
@@ -1471,6 +1477,19 @@ class ElementOperation extends BaseEventTypeElement
 		}
 
 		$lead_time_date = date('Y-m-d',strtotime($this->decision_date) + (86400 * 7 * Yii::app()->params['erod_lead_time_weeks']));
+
+		if ($rule = ErodRule::model()->find('subspecialty_id=?',array($this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id))) {
+			$firm_ids = array();
+			foreach ($rule->items as $item) {
+				if ($item->item_type == 'firm') {
+					$firm_ids[] = $item->item_id;
+				}
+			}
+
+			$where .= " and firm.id in (".implode(',',$firm_ids).")";
+		} else {
+			$where .= " and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id";
+		}
 
 		foreach ($erod = Yii::app()->db->createCommand()->select("session.id as session_id, date, start_time, end_time, firm.name as firm_name, firm.id as firm_id, subspecialty.name as subspecialty_name, consultant, paediatric, anaesthetist, general_anaesthetic")
 			->from("session")
@@ -1481,7 +1500,7 @@ class ElementOperation extends BaseEventTypeElement
 			->join("service_subspecialty_assignment ssa","ssa.id = firm.service_subspecialty_assignment_id")
 			->join("subspecialty","subspecialty.id = ssa.subspecialty_id")
 			->join("theatre","session.theatre_id = theatre.id")
-			->where("session.date > '$lead_time_date' and session.status = 0 and firm.service_subspecialty_assignment_id = $service_subspecialty_assignment_id $where")
+			->where("session.date > '$lead_time_date' and session.status = 0 $where")
 			->group("session.id")
 			->order("session.date, session.start_time")
 			->queryAll() as $row) {

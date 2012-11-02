@@ -171,4 +171,8 @@ class Address extends BaseActiveRecord {
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getLetterAddress() {
+		return implode("\n",$this->getLetterArray(false));
+	}
 }

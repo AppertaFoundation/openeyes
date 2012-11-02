@@ -11,9 +11,8 @@ class BaseEventTypeController extends BaseController
 	public $event;
 	public $event_type;
 	public $title;
-	public $cssPath;
-	public $jsPath;
-	public $imgPath;
+	public $assetPath;
+	public $episode;
 
 	public function actionIndex()
 	{
@@ -32,13 +31,13 @@ class BaseEventTypeController extends BaseController
 		}
 
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
-			Yii::app()->clientScript->scriptMap = array(
-				'jquery.js' => false,
-				'jquery.min.js' => false,
-				'jquery-ui.js' => false,
-				'jquery-ui.min.js' => false,
-				'module.js' => false,
-			);
+			$scriptMap = Yii::app()->clientScript->scriptMap;
+			$scriptMap['jquery.js'] = false;
+			$scriptMap['jquery.min.js'] = false;
+			$scriptMap['jquery-ui.js'] = false;
+			$scriptMap['jquery-ui.min.js'] = false;
+			$scriptMap['module.js'] = false;
+			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
 		return parent::beforeAction($action);
@@ -94,7 +93,9 @@ class BaseEventTypeController extends BaseController
 						if (isset($event->event_type_id) && ($element = $element_class::model()->find('event_id = ?',array($event->id)))) {
 							$elements[] = $element;
 						} else {
-							$elements[] = new $element_class;
+							if ($action != 'update' || !$element_type->default) {
+								$elements[] = new $element_class;
+							}
 						}
 					}
 				}
@@ -144,12 +145,18 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'Invalid patient_id.');
 		}
 
+		if (is_array(Yii::app()->params['modules_disabled']) && in_array($this->event_type->class_name,Yii::app()->params['modules_disabled'])) {
+			return $this->redirect(array('/patient/episodes/'.$this->patient->id));
+		}
+
+		$session = Yii::app()->session;
+		$firm = Firm::model()->findByPk($session['selected_firm_id']);
+		$this->episode = $this->getEpisode($firm, $this->patient->id);
+
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
 			// firms in a different tab. Set the session firm id to the provided firm id.
-
-			$session = Yii::app()->session;
 
 			$firms = $session['firms'];
 			$firmId = intval($_POST['firm_id']);
@@ -165,15 +172,16 @@ class BaseEventTypeController extends BaseController
 		}
 		$elements = $this->getDefaultElements('create', $this->event_type->id);
 
-		if (!count($elements)) {
+		if (empty($_POST) && !count($elements)) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
-		if (!empty($_POST)) {
-			if (isset($_POST['cancel'])) {
-				$this->redirect(array('/patient/view/'.$this->patient->id));
-				return;
-			}
+		if (!empty($_POST) && isset($_POST['cancel'])) {
+			$this->redirect(array('/patient/view/'.$this->patient->id));
+			return;
+		} else if(!empty($_POST) && !count($elements)) {
+			$errors['Event'][] = 'No elements selected';
+		} else if (!empty($_POST)) {
 
 			$elements = array();
 			$element_names = array();
@@ -231,7 +239,7 @@ class BaseEventTypeController extends BaseController
 					$audit->save();
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array('Default/view/'.$eventId));
+					$this->redirect(array('default/view/'.$eventId));
 					return;
 				}
 			}
@@ -255,6 +263,7 @@ class BaseEventTypeController extends BaseController
 		}
 		$this->patient = $this->event->episode->patient;
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
+		$this->episode = $this->event->episode;
 
 		$elements = $this->getDefaultElements('view');
 
@@ -313,6 +322,7 @@ class BaseEventTypeController extends BaseController
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 		$this->patient = $this->event->episode->patient;
+		$this->episode = $this->event->episode;
 
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
@@ -334,17 +344,18 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		if (!count($this->getDefaultElements('update'))) {
+		if (empty($_POST) && !count($this->getDefaultElements('update'))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
-		if (!empty($_POST)) {
+		if (!empty($_POST) && isset($_POST['cancel'])) {
+			// Cancel button pressed, so just bounce to view
+			$this->redirect(array('default/view/'.$this->event->id));
+			return;
+		} else if(!empty($_POST) && !count($this->getDefaultElements('update'))) {
+			$errors['Event'][] = 'No elements selected';
+		} else if (!empty($_POST)) {
 			
-			if (isset($_POST['cancel'])) {
-				$this->redirect(array('Default/view/'.$this->event->id));
-				return;
-			}
-
 			$elements = array();
 			$to_delete = array();
 			foreach (ElementType::model()->findAll('event_type_id=?',array($this->event_type->id)) as $element_type) {
@@ -411,7 +422,7 @@ class BaseEventTypeController extends BaseController
 					$audit->save();
 
 					// Update event to indicate user has made a change
-					$this->event->datetime = date("Y-m-d H:i:s");
+					// $this->event->datetime = date("Y-m-d H:i:s");
 					$this->event->user = Yii::app()->user->id;
 					$this->event->info = $info_text;
 
@@ -421,7 +432,7 @@ class BaseEventTypeController extends BaseController
 
 					OELog::log("Updated event {$this->event->id}");
 
-					$this->redirect(array('Default/view/'.$this->event->id));
+					$this->redirect(array('default/view/'.$this->event->id));
 					return;
 				}
 			}
@@ -616,11 +627,13 @@ class BaseEventTypeController extends BaseController
 		return true;
 	}
 
-	public function getOrCreateEpisode($firm, $patientId)
-	{
+	public function getEpisode($firm, $patientId) {
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
-		$episode = Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
-		if (!$episode) {
+		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+	}
+	
+	public function getOrCreateEpisode($firm, $patientId) {
+		if (!$episode = $this->getEpisode($firm, $patientId)) {
 			$episode = new Episode();
 			$episode->patient_id = $patientId;
 			$episode->firm_id = $firm->id;
@@ -681,45 +694,54 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function init() {
+		parent::init();
+
+		$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
+		$action = $ex[3];
+
+		if ($action == 'print') {
+			$scriptMap = Yii::app()->clientScript->scriptMap;
+			$scriptMap['style.css'] = false;
+			Yii::app()->clientScript->scriptMap = $scriptMap;
+		}
+
+		// do automatic file inclusion after the base init
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
 
-		$this->cssPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
-		$this->jsPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
-		$this->imgPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.img')).'/';
+		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
+			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
 
-		$ex = explode('/',@$_SERVER['REQUEST_URI']);
+			if ($action != 'print') {
+				$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
 
-		if ($ex[3] != 'print') {
-			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.js'));
+				while ($file = readdir($dh)) {
+					if (preg_match('/\.js$/',$file)) {
+						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
+					}
+				}
+
+				closedir($dh);
+			}
+
+			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
 
 			while ($file = readdir($dh)) {
-				if (preg_match('/\.js$/',$file)) {
-					Yii::app()->clientScript->registerScriptFile($this->jsPath.'/'.$file);
+				if (preg_match('/\.css$/',$file)) {
+					if ($action == 'print') {
+						if ($file == 'print.css') {
+							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+						}
+					} else {
+						if ($file != 'print.css') {
+							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+						}
+					}
 				}
 			}
 
 			closedir($dh);
 		}
 
-		$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.css'));
-
-		while ($file = readdir($dh)) {
-			if (preg_match('/\.css$/',$file)) {
-				if ($ex[3] == 'print') {
-					if ($file == 'print.css') {
-						OECClientScript::registerCssFile($this->cssPath.'/'.$file);
-					}
-				} else {
-					if ($file != 'print.css') {
-						OECClientScript::registerCssFile($this->cssPath.'/'.$file);
-					}
-				}
-			}
-		}
-
-		closedir($dh);
-
-		parent::init();
 	}
 
 	public function actionPrint($id) {
@@ -762,11 +784,11 @@ class BaseEventTypeController extends BaseController
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->event->canDelete()) {
-			return $this->redirect(array('Default/view/'.$this->event->id));
+			return $this->redirect(array('default/view/'.$this->event->id));
 		}
 
 		if (!empty($_POST)) {
-			if (isset($_POST['et_deleteevent'])) {
+			//if (isset($_POST['et_deleteevent'])) {
 				$this->event->deleted = 1;
 				$this->event->save();
 
@@ -779,8 +801,23 @@ class BaseEventTypeController extends BaseController
 				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 				$audit->save();
 
+				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+					$this->event->episode->deleted = 1;
+					$this->event->episode->save();
+
+					$audit = new Audit;
+					$audit->action = "delete";
+					$audit->target_type = "episode";
+					$audit->patient_id = $this->event->episode->patient->id;
+					$audit->episode_id = $this->event->episode_id;
+					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+					$audit->save();
+
+					return header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+				}
+
 				return header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			}
+			//}
 			return header('Location: '.Yii::app()->createUrl('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id));
 		}
 

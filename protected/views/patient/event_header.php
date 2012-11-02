@@ -18,7 +18,11 @@
  */
 if ($module = $this->getModule()) {
 	$module = $module->getName();
-	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
+	if (file_exists(Yii::getPathOfAlias('application.modules.'.$module.'.assets'))) {
+		$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.assets'),true).'/';
+	} else {
+		$assetpath = '/assets/';
+	}
 } else {
 	$module = 'OphTrOperation';
 }
@@ -27,6 +31,11 @@ $this->renderPartial('//layouts/patientMode/event_header');
 ?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
+			<?php if ($this->patient->isDeceased()) {?>
+				<div id="deceased-notice" class="alertBox">
+					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+				</div>
+			<?php } ?>
 			<div id="episodesBanner">
 				<form>
 					<button tabindex="2" class="classy venti <?php echo ($this->patient->date_of_death) ? 'inactive' : 'green'; ?>" id="addNewEvent" type="submit" <?php echo ($this->patient->date_of_death) ? 'disabled="disabled"' : ''; ?> style="float: right; margin-right: 1px;"><span class="button-span <?php echo ($this->patient->date_of_death) ? 'button-span-inactive' : 'button-span-green'; ?> with-plussign">add new Event</span></button>
@@ -42,7 +51,7 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				</div>
 				<!-- EVENT CONTENT HERE -->
 				<?php if ($module == 'OphTrOperation') {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
 				<?php } else {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath.'img/watermark.png'?>) top left repeat-y;">
 				<?php }?>

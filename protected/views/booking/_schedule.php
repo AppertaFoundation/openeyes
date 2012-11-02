@@ -82,7 +82,7 @@ $patient = $operation->event->episode->patient;
 
 <script type="text/javascript">
 	$(function() {
-		$('#previous_month').die('click').live('click',function() {
+		$(this).undelegate('#previous_month','click').delegate('#previous_month','click',function() {
 			var month = $('input[id=pmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
@@ -101,7 +101,7 @@ $patient = $operation->event->episode->patient;
 			});
 			return false;
 		});
-		$('#next_month').die('click').live('click',function() {
+		$(this).undelegate('#next_month','click').delegate('#next_month','click',function() {
 			var month = $('input[id=nmonth]').val();
 			var operation = $('input[id=operation]').val();
 			$.ajax({
@@ -120,7 +120,7 @@ $patient = $operation->event->episode->patient;
 			});
 			return false;
 		});
-		$('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed').die('click').live('click', function() {
+		$(this).undelegate('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed','click').delegate('#calendar table td.available,#calendar table td.limited,#calendar table td.full,#calendar table td.inthepast,#calendar table td.closed','click',function() {
 			$('#sessionDetails').html('');
 			$('.selected_date').removeClass('selected_date');
 			$(this).addClass('selected_date');
@@ -149,7 +149,7 @@ $patient = $operation->event->episode->patient;
 				}
 			});
 		});
-		$('#theatres div.shinybutton').die('click').live('click', function() {
+		$(this).undelegate('#theatres div.shinybutton','click').delegate('#theatres div.shinybutton','click',function() {
 			var session = $(this).children().children('span.session_id').text();
 			var month = $('#current_month').text();
 			var operation = $('input[id=operation]').val();
@@ -158,7 +158,7 @@ $patient = $operation->event->episode->patient;
 			$(this).addClass('highlighted');
 			showTheatreList(operation, month, day, session);
 		});
-		$('#firmSelect #firmId').die('change').live('change', function() {
+		$(this).undelegate('#firmSelect #firmId','change').delegate('#firmSelect #firmId','change',function() {
 			var firmId = $(this).val();
 			var operation = $('input[id=operation]').val();
 			window.location.href = '<?php echo Yii::app()->createUrl('booking/schedule'); ?>?operation='+operation+'&firmId='+firmId;

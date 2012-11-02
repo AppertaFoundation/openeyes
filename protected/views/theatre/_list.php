@@ -73,7 +73,7 @@ if (empty($theatres)) {?>
 						</tfoot>
 					</table>
 					<div style="display: none;" id="buttons_<?php echo $previousSessionId?>" class="classy_buttons">
-						<img id="loader2_<?php echo $previousSessionId?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 2px; display: none" />
+						<img id="loader2_<?php echo $previousSessionId?>" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 2px; display: none" />
 						<button type="submit" class="classy green mini" id="btn_save_<?php echo $previousSessionId?>"><span class="button-span button-span-green">Save changes to session</span></button>
 						<button type="submit" class="classy red mini" id="btn_cancel_<?php echo $previousSessionId?>"><span class="button-span button-span-red">Cancel</span></button>
 					</div>
@@ -86,7 +86,7 @@ if (empty($theatres)) {?>
 				</div>
 
 				<div class="action_options" id="action_options_<?php echo $session['sessionId']?>" style="float: right;">
-					<img id="loader_<?php echo $session['sessionId']?>" src="/img/ajax-loader.gif" alt="loading..." style="margin-right: 5px; margin-bottom: 4px; display: none;" />
+					<img id="loader_<?php echo $session['sessionId']?>" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="margin-right: 5px; margin-bottom: 4px; display: none;" />
 					<div class="session_options">
 						<span class="aBtn_inactive">View</span>
 						<span class="aBtn edit-event">
@@ -152,11 +152,11 @@ if (empty($theatres)) {?>
 									<span id="admitTime_ro_<?php echo $session['sessionId']?>_<?php echo $session['operationId']?>"><?php echo substr($session['admissionTime'], 0, 5)?></span>
 								</td>
 								<td class="td_sort" style="display: none;">
-									<img src="/img/_elements/icons/draggable_row.png" alt="draggable_row" width="25" height="28" />
+									<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/draggable_row.png')?>" alt="draggable_row" width="25" height="28" />
 								</td>
 								<td class="hospital"><?php echo CHtml::link(
 									$session['patientHosNum'],
-									'/patient/event/' . $session['eventId']
+									Yii::app()->createUrl('/patient/event/' . $session['eventId'])
 								);
 								?></td>
 								<td class="confirm"><input id="confirm_<?php echo $session['operationId']?>" type="checkbox" value="1" name="confirm_<?php echo $session['operationId']?>" disabled="disabled" <?php if ($session['confirmed']) {?>checked="checked" <?php }?>/></td>
@@ -169,31 +169,31 @@ if (empty($theatres)) {?>
 								<?php
 					if ($session['patientGender'] == 'M') {
 ?>
-<img src="/img/_elements/icons/alerts/male.png" alt="male" title="male" width="17" height="17" />
+<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/male.png')?>" alt="male" title="male" width="17" height="17" />
 <?php
 					} else {
 ?>
-<img src="/img/_elements/icons/alerts/female.png" alt="female" title="female" width="17" height="17" />
+<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/female.png')?>" alt="female" title="female" width="17" height="17" />
 <?php
 					}
 
-					?><img src="/img/_elements/icons/alerts/confirmed.png" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed"<?php if (!$session['confirmed']) {?> style="display: none;"<?php }?>><?php
+					?><img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/confirmed.png')?>" alt="confirmed" width="17" height="17" class="confirmed" title="confirmed"<?php if (!$session['confirmed']) {?> style="display: none;"<?php }?>><?php
 
 					if (!empty($session['operationComments']) && preg_match('/\w/', $session['operationComments'])) {
-							?><img src="/img/_elements/icons/alerts/comment.png" alt="<?php echo htmlentities($session['operationComments']) ?>" title="<?php echo htmlentities($session['operationComments']) ?>" width="17" height="17" />
+							?><img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/comment.png')?>" alt="<?php echo htmlentities($session['operationComments']) ?>" title="<?php echo htmlentities($session['operationComments']) ?>" width="17" height="17" />
 <?php
 					}
 
 					if (!empty($session['overnightStay'])) {
-							?><img src="/img/_elements/icons/alerts/overnight.png" alt="Overnight stay required" title="Overnight stay required" width="17" height="17" />
+							?><img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/overnight.png')?>" alt="Overnight stay required" title="Overnight stay required" width="17" height="17" />
 <?php
 					}
 
 					if (!empty($session['consultantRequired'])) {
-							?><img src="/img/_elements/icons/alerts/consultant.png" alt="Consultant required" title="Consultant required" width="17" height="17" />
+							?><img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/consultant.png')?>" alt="Consultant required" title="Consultant required" width="17" height="17" />
 <?php
 					}
-					?><img src="/img/_elements/icons/alerts/booked_user.png" alt="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" title="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" width="17" height="17" /><?php
+					?><img src="<?php echo Yii::app()->createUrl('img/_elements/icons/alerts/booked_user.png')?>" alt="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" title="Created by: <?php echo $session['created_user']."\n"?>Last modified by: <?php echo $session['last_modified_user']?>" width="17" height="17" /><?php
 				}
 ?>
 								</td>
@@ -375,7 +375,7 @@ if (empty($theatres)) {?>
 
 	var selected_tbody_id = null;
 
-	$('a.edit-sessions').die('click').live('click',function() {
+	$(this).undelegate('a.edit-sessions','click').delegate('a.edit-sessions','click',function() {
 		cancel_edit();
 
 		$('div.infoBox').hide();
@@ -414,12 +414,12 @@ if (empty($theatres)) {?>
 		return false;
 	});
 
-	$('a.view-sessions').die('click').live('click',function() {
+	$(this).undelegate('a.view-sessions','click').delegate('a.view-sessions','click',function() {
 		cancel_edit();
 		return false;
 	});
 
-	$('button[id^="btn_cancel_"]').live('click',function() {
+	$(this).undelegate('button[id^="btn_cancel_"]','click').delegate('button[id^="btn_cancel_"]','click',function() {
 		if (!$(this).hasClass('inactive')) {
 			$('#loader2_'+$(this).attr('id').match(/[0-9]+/)).show();
 			disableButtons();
@@ -515,7 +515,7 @@ if (empty($theatres)) {?>
 			$.ajax({
 				type: "POST",
 				data: "operations[]=" + operations.join("&operations[]="),
-				url: "/theatre/requiresconsultant",
+				url: "<?php echo Yii::app()->createUrl('theatre/requiresconsultant')?>",
 				success: function(html) {
 					if (html == "1") {
 						$('#consultant_'+id).attr('checked',true);
@@ -544,7 +544,7 @@ if (empty($theatres)) {?>
 			$.ajax({
 				type: "POST",
 				data: "patients[]=" + patients.join("&patients[]="),
-				url: "/theatre/ischild",
+				url: "<?php echo Yii::app()->createUrl('theatre/ischild')?>",
 				success: function(html) {
 					if (html == "1") {
 						$('#paediatric_'+id).attr('checked',true);
@@ -572,7 +572,7 @@ if (empty($theatres)) {?>
 				$.ajax({
 					type: "POST",
 					data: "operations[]=" + operations.join("&operations[]="),
-					url: "/theatre/requiresanaesthetist",
+					url: "<?php echo Yii::app()->createUrl('theatre/requiresanaesthetist')?>",
 					success: function(html) {
 						if (html == "1") {
 							$('#anaesthetic_'+id).attr('checked',true);
@@ -605,7 +605,7 @@ if (empty($theatres)) {?>
 				$.ajax({
 					type: "POST",
 					data: "operations[]=" + operations.join("&operations[]="),
-					url: "/theatre/requiresgeneralanaesthetic",
+					url: "<?php echo Yii::app()->createUrl('theatre/requiresgeneralanaesthetic')?>",
 					success: function(html) {
 						if (html == "1") {
 							$('#general_anaesthetic_'+id).attr('checked',true);

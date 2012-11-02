@@ -31,13 +31,13 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DropDownListNoPost',array('id' => $id, 'options' => $options, 'selected_value' => $selected_value, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function radioButtons($element,$field,$table,$selected_item=false, $maxwidth=false, $hidden=false) {
+	public function radioButtons($element,$field,$table,$selected_item=null, $maxwidth=false, $hidden=false, $no_element=false) {
 		$data = $element->getFormOptions($table);
-		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden));
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden, 'no_element' => $no_element));
 	}
 
-	public function radioBoolean($element,$field) {
-		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No'), 'selected_item' => $element->$field));
+	public function radioBoolean($element,$field,$htmlOptions=array()) {
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => array(1=>'Yes',0=>'No'), 'selected_item' => $element->$field, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function datePicker($element,$field,$options,$htmlOptions=array()) {
@@ -71,8 +71,12 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.MultiSelectList', array('element' => $element, 'field' => $field, 'relation' => $relation, 'relation_id_field' => $relation_id_field, 'options' => $options, 'default_options' => $default_options, 'htmlOptions' => $htmlOptions, 'hidden' => $hidden));
 	}
 
-	public function dropDownTextSelection($element, $text_field, $options) {
-		$this->widget('application.widgets.DropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options));
+	public function dropDownTextSelection($element, $text_field, $options, $htmlOptions=array()) {
+		$this->widget('application.widgets.DropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options, 'htmlOptions' => $htmlOptions));
+	}
+
+	public function multiDropDownTextSelection($element, $text_field, $options, $htmlOptions) {
+		$this->widget('application.widgets.MultiDropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function hiddenInput($element, $field, $value=false) {

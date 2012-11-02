@@ -645,10 +645,10 @@ class BookingController extends BaseController
 	public function updateEvent($event)
 	{
 		// Update event with this user and datetime
-		$event->datetime = date("Y-m-d H:i:s");
-		if (!$event->save()) {
-			throw new SystemException('Unable to update event datetime: '.print_r($event->getErrors(),true));
-		}
+		// $event->datetime = date("Y-m-d H:i:s");
+		// if (!$event->save()) {
+		// 	throw new SystemException('Unable to update event datetime: '.print_r($event->getErrors(),true));
+		// }
 	}
 
 	public function header($editable=false) {

@@ -25,6 +25,11 @@ if ($module = $this->getModule()) {
 ?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
+			<?php if ($this->patient->isDeceased()) {?>
+				<div id="deceased-notice" class="alertBox">
+					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+				</div>
+			<?php } ?>
 			<div id="episodesBanner">
 				<form>
 					<button tabindex="2" class="classy venti <?php echo ($this->patient->date_of_death) ? 'inactive' : 'green'; ?>" id="addNewEvent" type="submit" <?php echo ($this->patient->date_of_death) ? 'disabled="disabled"' : ''; ?> style="float: right; margin-right: 1px;"><span class="button-span <?php echo ($this->patient->date_of_death) ? 'button-span-inactive' : 'button-span-green'; ?> with-plussign">add new Event</span></button>
@@ -39,17 +44,23 @@ if ($module = $this->getModule()) {
 					<div class="alertBox fullWidthEvent">
 						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
+				<?php }else if (!@$current_episode) {?>
+					<div class="alertBox fullWidthEvent">
+						There is no open episode for the current firm's subspecialty.
+					</div>
 				<?php }?>
-				<div class="display_actions"<?php if (!$this->title){?> style="display: none;"<?php }?>>
+				<div class="display_actions"<?php if (!$this->title || count($episodes)<1 || !@$current_episode){?> style="display: none;"<?php }?>>
 					<div class="display_mode"><?php echo $this->title?></div>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
 
 				<!-- EVENT CONTENT HERE -->
-				<?php if ($module == 'OphTrOperation') {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(/img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y;">
-				<?php } else {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
+					<?php if ($module == 'OphTrOperation') {?>
+						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
+					<?php } else {?>
+						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+					<?php }?>
 				<?php }?>
 					<?php
 					if (isset($this->event)) {
@@ -61,9 +72,15 @@ if ($module = $this->getModule()) {
 							), false, true
 						);
 					} else if ($current_episode) {
-						$this->renderPartial('/clinical/episodeSummary',
-							array('episode' => $current_episode)
-						);
+						if ($this->editing) {
+							$this->renderPartial('/clinical/updateEpisode',
+								array('episode' => $current_episode, 'error' => $error)
+							);
+						} else {
+							$this->renderPartial('/clinical/episodeSummary',
+								array('episode' => $current_episode)
+							);
+						}
 					}
 					?>
 				</div>

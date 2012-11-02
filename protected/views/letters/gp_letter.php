@@ -18,8 +18,8 @@
  */
 ?>
 <div class="banner" style="font-size: 14pt;">
-	<div class="seal"><img src="/img/_print/letterhead_seal.jpg" alt="letterhead_seal" /></div>
-	<div class="logo"><img src="/img/_print/letterhead_Moorfields_NHS.jpg" alt="letterhead_Moorfields_NHS" /></div>
+	<div class="seal"><img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_seal.jpg')?>" alt="letterhead_seal" /></div>
+	<div class="logo"><img src="<?php echo Yii::app()->createUrl('img/_print/letterhead_Moorfields_NHS.jpg')?>" alt="letterhead_Moorfields_NHS" /></div>
 </div>
 <div class="fromAddress">
 	<?php echo $site->letterhtml ?>

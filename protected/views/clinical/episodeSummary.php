@@ -18,14 +18,12 @@
  */
 
 if (!empty($episode)) {
-	$diagnosis = $episode->getPrincipalDiagnosis();
-
-	if (empty($diagnosis)) {
+	if ($episode->diagnosis) {
+		$eye = $episode->eye ? $episode->eye->name : 'None';
+		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
+	} else {
 		$eye = 'No diagnosis';
 		$diagnosis = 'No diagnosis';
-	} else {
-		$eye = $diagnosis->eye->name;
-		$diagnosis = $diagnosis->disorder->term;
 	}
 
 	$audit = new Audit;
@@ -40,13 +38,15 @@ if (!empty($episode)) {
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
 	<h4>Principal diagnosis:</h4>
+
 	<div class="eventHighlight big">
-		<h4><?php echo $diagnosis?></h4>
+		<h4><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
 	</div>
 
 	<h4>Principal eye:</h4>
+
 	<div class="eventHighlight big">
-		<h4><?php echo $eye?></h4>
+		<h4><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
 	</div>
 
 	<!-- divide into two columns -->
@@ -82,10 +82,7 @@ if (!empty($episode)) {
 
 	<?php
 	try {
-		echo $this->renderPartial(
-			'/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id,
-			array('episode' => $episode)
-		);
+		echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id, array('episode' => $episode));
 	} catch (Exception $e) {
 		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
@@ -102,21 +99,11 @@ if (!empty($episode)) {
 
 <!-- Booking -->
 
-<!--
 <h4>Episode Status</h4>
 
-<div class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></div>
-	<div class="data">
-		<span class="group">
-			<form>
-				<?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?>
-				<button style="margin-left:20px;" class="classy blue mini" type="submit" id="save_episode_status"><span class="button-span button-span-blue">Change status</span></button>
-			</form>
-		</span>
-	</div>
+<div class="eventHighlight big">
+	<h4><?php echo $episode->status->name?></h4>
 </div>
--->
 
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
@@ -182,30 +169,12 @@ if (!empty($episode)) {
 			e.preventDefault();
 			$('#close-episode-popup').slideToggle(100);
 			$.ajax({
-				url: '/clinical/closeepisode/<?php echo $episode->id?>',
+				url: '<?php echo Yii::app()->createUrl('clinical/closeepisode/'.$episode->id)?>',
 				success: function(data) {
 					$('#event_content').html(data);
 					return false;
 				}
 			});
-
-			return false;
-		});
-
-		$('#save_episode_status').unbind('click').click(function(e) {
-			if (!$(this).hasClass('inactive')) {
-				e.preventDefault();
-				disableButtons();
-
-				$.ajax({
-					type: 'POST',
-					url: '/patient/setepisodestatus/<?php echo $episode->id?>',
-					data: 'episode_status_id='+$('#episode_status_id').val(),
-					success: function(html) {
-						window.location.href = '/patient/episodes/<?php echo $this->patient->id?>';
-					}
-				});
-			}
 
 			return false;
 		});

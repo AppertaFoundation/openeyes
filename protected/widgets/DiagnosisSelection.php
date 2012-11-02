@@ -22,29 +22,49 @@ class DiagnosisSelection extends BaseCWidget {
 	public $options;
 	public $class;
 	public $form;
+	public $label;
+	public $restrict;
+	public $default = true;
+	public $layout = false;
+	public $callback = false;
+	public $selected = array();
+	public $loader = false;
 
 	public function run() {
 		$this->class = get_class($this->element);
-
 		if (empty($_POST)) {
 			if (empty($this->element->event_id)) {
-				// It's a new event so fetch the most recent element_diagnosis
-				$diagnosis = $this->element->getNewestDiagnosis(Yii::app()->getController()->patient);
-
-				if (!empty($diagnosis->disorder)) {
-					// There is a diagnosis for this episode
-					$this->value = $diagnosis->disorder->term;
+				if ($this->default) {
+					// It's a new event so fetch the most recent element_diagnosis
+					$firmId = Yii::app()->session['selected_firm_id'];
+					$firm = Firm::model()->findByPk($firmId);
+					$patientId = Yii::app()->getController()->patient->id;
+					$episode = Episode::getCurrentEpisodeByFirm($patientId, $firm);
+					if ($episode && $disorder = $episode->diagnosis) {
+						// There is a diagnosis for this episode
+						$this->value = $disorder->id;
+						$this->label = $disorder->term;
+					}
 				}
 			} else {
 				if (isset($this->element->disorder)) {
-					$this->value = $this->element->disorder->term;
+					$this->value = $this->element->disorder->id;
+					$this->label = $this->element->disorder->term;
 				}
 			}
 		} else {
 			$this->value = $_POST[$this->class][$this->field];
+			if($disorder = Disorder::model()->findByPk($this->value)) {
+				$this->label = $disorder->term;
+			}
 		}
-
 		parent::run();
 	}
+
+	public function render($view, $data=null, $return=false) {
+		if ($this->layout) {
+			$view .= '_'.$this->layout;
+		}
+		parent::render($view, $data, $return);
+	}
 }
-?>

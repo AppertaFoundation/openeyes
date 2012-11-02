@@ -18,24 +18,24 @@
  */
 
 $this->layout = 'main'; ?>
-<script type="text/javascript" src="/js/phrase.js"></script>
+<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->baseUrl.'/js/phrase.js')?>
 <h2>Patient search</h2>
 <div class="centralColumn">
 	<p><strong>Find a patient.</strong> Either by hospital number or by personal details. You must know their surname.</p>
 	<?php $this->renderPartial('//base/_messages'); ?>
-	<?php if ($_SERVER['REQUEST_URI'] == '/patient/results/error') {?>
+	<?php if ($_SERVER['REQUEST_URI'] == Yii::app()->baseUrl.'/patient/results/error') {?>
 		<div id="patient-search-error" class="alertBox">
 			Please enter either a valid hospital number or a firstname and lastname.
 		</div>
-	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results') {?>
+	<?php }else if ($_SERVER['REQUEST_URI'] == Yii::app()->baseUrl.'/patient/no-results') {?>
 		<div id="patient-search-error" class="alertBox">
 			Sorry, No patients found for that search.
 		</div>
-	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results-pas') {?>
+	<?php }else if ($_SERVER['REQUEST_URI'] == Yii::app()->baseUrl.'/patient/no-results-pas') {?>
 		<div id="pas-error" class="alertBox">
 			Sorry, the PAS is down. Unable to search for patients.
 		</div>
-	<?php }else if ($_SERVER['REQUEST_URI'] == '/patient/no-results-address') {?>
+	<?php }else if ($_SERVER['REQUEST_URI'] == Yii::app()->baseUrl.'/patient/no-results-address') {?>
 		<div id="pas-address-error" class="alertBox">
 			Sorry, the patient has no address defined in PAS and so cannot be loaded.
 		</div>
@@ -52,11 +52,11 @@ $this->layout = 'main'; ?>
 	));?>
 	<div id="search_patient_id" class="form_greyBox bigInput">
 		<?php
-			echo CHtml::label('Search by hospital number:', 'hospital_number');
+			echo CHtml::label('Search by hospital/NHS number:', 'hospital_number');
 			echo CHtml::textField('Patient[hos_num]', '', array('style'=>'width: 204px;'));
 		?>
 		<button type="submit" style="float: right; display: block;" class="classy blue tall" id="findPatient_id" tabindex="2"><span class="button-span button-span-blue">Find patient</span></button>
-		<img class="loader" src="/img/ajax-loader.gif" alt="loading..." style="float: right; margin-right: 10px; margin-top: 9px; display: none;" />
+		<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="float: right; margin-right: 10px; margin-top: 9px; display: none;" />
 		<?php //$this->endWidget();?>
 	</div>
 	<?php
