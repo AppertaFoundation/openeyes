@@ -927,7 +927,7 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getAdd() {
+	public function getAdl() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
 
