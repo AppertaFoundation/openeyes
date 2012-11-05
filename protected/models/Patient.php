@@ -914,4 +914,28 @@ class Patient extends BaseActiveRecord {
 			return $model->find('epatient_hosnum=?',array($this->hos_num));
 		}
 	}
+
+	public function getAdd() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($ac = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AdnexalComorbidity')) {
+				if ($ac = $ac->find('event_id=?',array($event->id))) {
+					return $ac->right_description;
+				}
+			}
+		}
+	}
+
+	public function getAdl() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
+
+			if ($ac = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AdnexalComorbidity')) {
+				if ($ac = $ac->find('event_id=?',array($event->id))) {
+					return $ac->left_description;
+				}
+			}
+		}
+	}
 }
