@@ -93,9 +93,10 @@ class OETCPDF extends TCPDF {
 		$this->MultiCell(0, 20, "Patron: Her Majesty The Queen\nChairman: Rudy Markham\nChief	Executive: John Pelly", 0, 'R');
 
 		// Barcode
-		$this->SetY(-14);
 		$docref = $this->getDocref() . '/' . $this->getAliasNumPage();
+		$this->SetY(-18);
 		if($barcode = $this->getBarcode()) {
+			$this->SetY(-14);
 			$style = array(
 					'position' => 'L',
 					'align' => 'L',

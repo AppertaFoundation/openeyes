@@ -74,9 +74,7 @@ class OELetter {
 		if($this->replyto_address) {
 			$pdf->ReplyToAddress("Please reply to: ".$this->replyto_address);
 		}
-		if($this->barcode) {
-			$pdf->setBarcode($this->barcode);
-		}
+		$pdf->setBarcode($this->barcode);
 		$pdf->moveToBodyStart();
 		$pdf->writeHTML($this->body_html, true, false, true, true, 'L');
 	}
