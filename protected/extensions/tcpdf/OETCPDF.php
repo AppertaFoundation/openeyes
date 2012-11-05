@@ -84,17 +84,27 @@ class OETCPDF extends TCPDF {
 		} else {
 			$pagenumtxt = $this->getPageNumGroupAlias().' / '.$this->getPageGroupAlias();
 		}
-		$this->SetY(-20);
-		$this->SetFont('helvetica', '', 8);
+		$this->SetY(-18);
+		$this->SetFont('helvetica', '', 7);
 		$this->Cell(0, 10, 'Page ' . $pagenumtxt, 0, false, 'C', 0);
 
 		// Patrons
-		$this->SetY(-24);
+		$this->SetY(-20.7);
 		$this->MultiCell(0, 20, "Patron: Her Majesty The Queen\nChairman: Rudy Markham\nChief	Executive: John Pelly", 0, 'R');
 
-		// Document reference
-		$this->SetY(-20);
-		$this->Cell(0, 10, $this->getDocref() . '/' . $this->getAliasNumPage(), 0, false, 'L');
+		// Barcode
+		$this->SetY(-14);
+		$docref = $this->getDocref() . '/' . $this->getAliasNumPage();
+		if($barcode = $this->getBarcode()) {
+			$style = array(
+					'position' => 'L',
+					'align' => 'L',
+			);
+			$this->write1DBarcode($barcode, 'C128', '', '', 60, 2, 0.3, $style, '');
+			$docref = $barcode . '/' . $docref;
+			$this->SetY(-21);
+		}
+		$this->Cell(0, 10, $docref, 0, false, 'L');
 
 	}
 
@@ -153,7 +163,7 @@ class OETCPDF extends TCPDF {
 
 	/**
 	 * Move Y position to start of body, avoiding addresses (if used)
-	 * @param boolean $reset Reset body_start to default after move 
+	 * @param boolean $reset Reset body_start to default after move
 	 */
 	public function moveToBodyStart($reset = true) {
 		$this->setY($this->body_start);

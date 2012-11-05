@@ -25,6 +25,7 @@ class OELetter {
 	protected $body_html;
 	protected $font_family = 'times';
 	protected $font_size = '12';
+	protected $barcode;
 
 	/**
 	 * @param string $to_address Address of recipient, lines separated by \n
@@ -37,6 +38,10 @@ class OELetter {
 		$this->body_html = $body;
 	}
 
+	public function setBarcode($barcode) {
+		$this->barcode = $barcode;
+	}
+	
 	/**
 	 * Add HTML to body
 	 * @param string $body HTML to be added to letter body
@@ -68,6 +73,9 @@ class OELetter {
 		}
 		if($this->replyto_address) {
 			$pdf->ReplyToAddress("Please reply to: ".$this->replyto_address);
+		}
+		if($this->barcode) {
+			$pdf->setBarcode($this->barcode);
 		}
 		$pdf->moveToBodyStart();
 		$pdf->writeHTML($this->body_html, true, false, true, true, 'L');

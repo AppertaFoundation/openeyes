@@ -20,6 +20,10 @@ class BaseEventTypeController extends BaseController
 		$this->render('index');
 	}
 
+	public function printActions() {
+		return array('print');
+	}
+	
 	protected function beforeAction($action)
 	{
 		parent::storeData();
@@ -749,17 +753,45 @@ class BaseEventTypeController extends BaseController
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
-
 		$this->patient = $this->event->episode->patient;
-
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-
 		$elements = $this->getDefaultElements('view');
-
 		$this->site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$this->title = $this->event_type->name;
+		$this->logPrint();
+		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
+		if($pdf) {
+			$this->printPDF($elements, $id);
+		} else {
+			$this->printHTML($elements, $id);
+		}
+	}
 
+	protected function printHTML($elements, $id) {
+		$this->renderPartial(
+			'print', array(
+			'elements' => $elements,
+			'eventId' => $id,
+		), false, true);
+	}
+	
+	protected function printPDF($elements, $id) {
+		Yii::app()->getClientScript()->reset();
+		$this->layout = '//layouts/pdf';
+		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
+		$oeletter = new OELetter();
+		$oeletter->setBarcode('E:'.$id);
+		$body = $this->render('print', array(
+			'elements' => $elements,
+			'eventId' => $id,
+		), true);
+		$oeletter->addBody($body);
+		$pdf_print->addLetter($oeletter);
+		$pdf_print->output();
+	}
+	
+	protected function logPrint() {
 		$this->logActivity('printed event');
-
 		$audit = new Audit;
 		$audit->action = "print";
 		$audit->target_type = "event";
@@ -768,16 +800,8 @@ class BaseEventTypeController extends BaseController
 		$audit->event_id = $this->event->id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
-
-		$this->title = $this->event_type->name;
-
-		$this->renderPartial(
-			'print', array(
-			'elements' => $elements,
-			'eventId' => $id,
-		), false, true);
 	}
-
+	
 	public function actionDelete($id) {
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
