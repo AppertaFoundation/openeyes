@@ -42,10 +42,15 @@ class OEConfig {
 
 		// Get module configs
 		$modules_path = dirname(__FILE__) . "/../modules/";
-		foreach(array_unique($active_modules) as $module_key => $module_name) {
+		$processed_modules = array();
+		foreach($active_modules as $module_key => $module_name) {
 			if(is_array($module_name)) {
 				$module_name = $module_key;
 			}
+			if(in_array($module_name, $processed_modules)) {
+				continue;
+			}
+			$processed_modules[] = $module_name;
 			
 			// Import event type module's models folder
 			// FIXME: We need a better way of handling this
