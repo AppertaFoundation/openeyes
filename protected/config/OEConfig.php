@@ -47,26 +47,25 @@ class OEConfig {
 			if(is_array($module_name)) {
 				$module_name = $module_key;
 			}
-			if(in_array($module_name, $processed_modules)) {
-				continue;
-			}
-			$processed_modules[] = $module_name;
-			
-			// Import event type module's models folder
-			// FIXME: We need a better way of handling this
-			if(substr($module_name, 0, 3) == 'Oph') {
-				$configs['modules'][] = array(
-						'import' => array(
-								'application.modules.' . $module_name .'.models.*',
-						),
-				);
-			}
-			
-			if(file_exists($modules_path . $module_name . "/config/common.php")) {
-				$configs['modules'][] = include $modules_path . $module_name . "/config/common.php";
-			}
-			if(file_exists($modules_path . $module_name . "/config/$environment.php")) {
-				$configs['modules'][] = include $modules_path . $module_name . "/config/$environment.php";
+			if(!in_array($module_name, $processed_modules)) {
+				$processed_modules[] = $module_name;
+				
+				// Import event type module's models folder
+				// FIXME: We need a better way of handling this
+				if(substr($module_name, 0, 3) == 'Oph') {
+					$configs['modules'][] = array(
+							'import' => array(
+									'application.modules.' . $module_name .'.models.*',
+							),
+					);
+				}
+				
+				if(file_exists($modules_path . $module_name . "/config/common.php")) {
+					$configs['modules'][] = include $modules_path . $module_name . "/config/common.php";
+				}
+				if(file_exists($modules_path . $module_name . "/config/$environment.php")) {
+					$configs['modules'][] = include $modules_path . $module_name . "/config/$environment.php";
+				}
 			}
 		}
 
