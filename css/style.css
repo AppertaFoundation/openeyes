@@ -581,7 +581,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 #event_display .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
-#event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; z-index:999 !important;}
+#event_display #add-event-select-type { position:absolute; top:90px; right:4px; width:300px; z-index:999 !important;}
 #event_display #add-event-select-type .add_event_disabled a { padding: 4px 10px 3px 10px; color: #999; }
 #event_display #add-event-disabled-pop-up { display: none; position: absolute; width: 280px; padding: 10px; background: #eeeeee; color: #000000; border: 1px solid #1a1a1a; font-size: 90%; z-index: 1000; left: 590px; }
 

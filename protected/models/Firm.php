@@ -224,6 +224,7 @@ class Firm extends BaseActiveRecord
 		foreach ($firms as $firm) {
 			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
 		}
+		natcasesort($data);
 		return $data;
 	}
 
