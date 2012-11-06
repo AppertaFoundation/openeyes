@@ -40,7 +40,7 @@ $(document).ready(function(){
 			}
 
 			if (currentVal.length > 0 && !$(this).hasClass('delimited')) {
-				newText = ', ' + newText.toLowerCase();
+				newText = ', ' + newText.charAt(0).toLowerCase() + newText.slice(1);
 			} else if (currentVal.length == 0 && $(this).hasClass('delimited')) {
 				newText = newText.charAt(0).toUpperCase() + newText.slice(1)
 			}
