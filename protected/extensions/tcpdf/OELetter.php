@@ -26,6 +26,8 @@ class OELetter {
 	protected $font_family = 'times';
 	protected $font_size = '12';
 	protected $barcode;
+	protected $watermark;
+	protected $hide_date = false;
 
 	/**
 	 * @param string $to_address Address of recipient, lines separated by \n
@@ -40,6 +42,14 @@ class OELetter {
 
 	public function setBarcode($barcode) {
 		$this->barcode = $barcode;
+	}
+	
+	public function setWatermark($watermark) {
+		$this->watermark = $watermark;
+	}
+	
+	public function setHideDate($hide_date) {
+		$this->hide_date = $hide_date;
 	}
 	
 	/**
@@ -63,18 +73,19 @@ class OELetter {
 	 */
 	public function render($pdf) {
 		$pdf->startPageGroup();
+		$pdf->setBarcode($this->barcode);
+		$pdf->setWatermark($this->watermark);
 		$pdf->AddPage();
 		$pdf->setFont($this->font_family, '', $this->font_size);
 		if($this->to_address) {
 			$pdf->ToAddress($this->to_address);
 		}
 		if($this->from_address) {
-			$pdf->FromAddress($this->from_address);
+			$pdf->FromAddress($this->from_address, $this->hide_date);
 		}
 		if($this->replyto_address) {
 			$pdf->ReplyToAddress("Please reply to: ".$this->replyto_address);
 		}
-		$pdf->setBarcode($this->barcode);
 		$pdf->moveToBodyStart();
 		$pdf->writeHTML($this->body_html, true, false, true, true, 'L');
 	}

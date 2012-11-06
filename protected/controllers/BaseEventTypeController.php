@@ -749,34 +749,59 @@ class BaseEventTypeController extends BaseController
 
 	}
 
+	/**
+	 * Print action
+	 * @param integer $id event id
+	 */
 	public function actionPrint($id) {
+		$this->printInit($id);
+		$elements = $this->getDefaultElements('print');
+		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
+		$this->printLog($id, $pdf);
+		if($pdf) {
+			$this->printPDF($id, $elements);
+		} else {
+			$this->printHTML($id, $elements);
+		}
+	}
+
+	/**
+	 * Initialise print action
+	 * @param integer $id event id
+	 * @throws CHttpException
+	 */
+	protected function printInit($id) {
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
 		$this->patient = $this->event->episode->patient;
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$elements = $this->getDefaultElements('view');
+		$this->event_type = $this->event->eventType;
 		$this->site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 		$this->title = $this->event_type->name;
-		$this->logPrint();
-		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
-		if($pdf) {
-			$this->printPDF($elements, $id);
-		} else {
-			$this->printHTML($elements, $id);
-		}
 	}
-
-	protected function printHTML($elements, $id) {
-		$this->renderPartial(
-			'print', array(
+	
+	/**
+	 * Render HTML
+	 * @param integer $id event id
+	 * @param array $elements
+	 */
+	protected function printHTML($id, $elements) {
+		$this->renderPartial('print', array(
 			'elements' => $elements,
 			'eventId' => $id,
 		), false, true);
 	}
 	
-	protected function printPDF($elements, $id) {
+	/**
+	 * Render PDF
+	 * @param integer $id event id
+	 * @param array $elements
+	 */
+	protected function printPDF($id, $elements) {
+
+		// Remove any existing css
 		Yii::app()->getClientScript()->reset();
+		
 		$this->layout = '//layouts/pdf';
 		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
 		$oeletter = new OELetter();
@@ -790,14 +815,19 @@ class BaseEventTypeController extends BaseController
 		$pdf_print->output();
 	}
 	
-	protected function logPrint() {
-		$this->logActivity('printed event');
+	/**
+	 * Log print action
+	 * @param integer $id event id
+	 * @param boolean $pdf
+	 */
+	protected function printLog($id, $pdf) {
+		$this->logActivity("printed event (pdf=$pdf)");
 		$audit = new Audit;
 		$audit->action = "print";
 		$audit->target_type = "event";
 		$audit->patient_id = $this->event->episode->patient->id;
 		$audit->episode_id = $this->event->episode_id;
-		$audit->event_id = $this->event->id;
+		$audit->event_id = $id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
 	}
