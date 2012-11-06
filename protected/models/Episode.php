@@ -293,10 +293,6 @@ class Episode extends BaseActiveRecord
 			return FALSE;
 		}
 
-		if ($this->patient->date_of_death){
-			return FALSE;
-		}
-	 
 		return TRUE;
 	}
 
