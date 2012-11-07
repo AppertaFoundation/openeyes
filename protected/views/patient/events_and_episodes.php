@@ -25,9 +25,11 @@ if ($module = $this->getModule()) {
 ?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
-			<div id="deceased-notice" class="alertBox">
-				This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
-			</div>
+			<?php if ($this->patient->isDeceased()) {?>
+				<div id="deceased-notice" class="alertBox">
+					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
+				</div>
+			<?php }?>
 			<div id="episodesBanner">
 				<form>
 					<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
