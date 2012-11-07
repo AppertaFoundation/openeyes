@@ -25,6 +25,8 @@ class OETCPDF extends TCPDF {
 	 * @var string Reference printed in bottom left corner of footer
 	 */
 	protected $docref;
+	
+	protected $watermark;
 
 	/**
 	 * @var $body_start Default Y position for body of letter to start on the page
@@ -41,7 +43,7 @@ class OETCPDF extends TCPDF {
 		$this->SetAutoPageBreak(true, 25);
 		$this->setHtmlVSpace(array(
 				'h1' => array(0 => array('h' => 0, 'n' => 0), 1 => array('h' => 5, 'n' => 1)),
-				'h2' => array(0 => array('h' => 8, 'n' => 1), 1 => array('h' => 2, 'n' => 1)),
+				'h2' => array(0 => array('h' => 6, 'n' => 1), 1 => array('h' => 2, 'n' => 1)),
 		));
 		$preferences = array(
 				'PrintScaling' => 'None',
@@ -74,6 +76,10 @@ class OETCPDF extends TCPDF {
 		return $this->docref;
 	}
 
+	public function setWatermark($watermark) {
+		$this->watermark = $watermark;
+	}
+	
 	/**
 	 * @see TCPDF::Footer()
 	 */
@@ -118,6 +124,15 @@ class OETCPDF extends TCPDF {
 			$this->Image($image_path.'/_print/letterhead_seal.jpg', 15, 10, 25);
 			$this->Image($image_path.'/_print/letterhead_Moorfields_NHS.jpg', 95, 12, 100);
 		}
+		if($this->watermark) {
+			$this->StartTransform();
+			$this->SetFont('helvetica', '', 96);
+			$this->SetTextColor(224,224,224);
+			$this->Rotate(60,0,280);
+			$this->SetXY(20, 280);
+			$this->Cell(300, 40, $this->watermark, $border=0, $ln=0, $align='C', $fill=false, $link='', $stretch=0, $ignore_min_height=false, $calign='T', $valign='M');
+			$this->StopTransform();
+		}
 	}
 
 	/**
@@ -125,7 +140,6 @@ class OETCPDF extends TCPDF {
 	 * @param string $address Lines delimited with \n
 	 */
 	public function ToAddress($address) {
-		$this->SetFont("times", "", 12);
 		$this->setY(45);
 		$this->Cell(20, 10, "To:", 0 , 1, 'L');
 		$this->setX(20);
@@ -139,11 +153,12 @@ class OETCPDF extends TCPDF {
 	 * Render sender address
 	 * @param string $address Lines delimited with \n
 	 */
-	public function FromAddress($address) {
-		$this->SetFont("times", "", 12);
+	public function FromAddress($address, $hide_date = false) {
 		$this->setY(35);
 		$this->MultiCell(0, 20, $address, 0 ,'R');
-		$this->Cell(0, 10, Helper::convertDate2NHS(date('Y-m-d')), 0, 2, 'R');
+		if(!$hide_date) {
+			$this->Cell(0, 10, Helper::convertDate2NHS(date('Y-m-d')), 0, 2, 'R');
+		}
 		if($this->body_start < $this->getY()) {
 			$this->body_start = $this->getY();
 		}
@@ -154,7 +169,6 @@ class OETCPDF extends TCPDF {
 	 * @param string $address Lines delimited with \n
 	 */
 	public function ReplyToAddress($address) {
-		$this->SetFont("times", "", 12);
 		$this->setY(90);
 		$this->MultiCell(0, 0, $address, 0, 'L');
 		if($this->body_start < $this->getY()) {

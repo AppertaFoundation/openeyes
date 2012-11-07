@@ -229,7 +229,7 @@ class PatientController extends BaseController
 		), true);
 
 		$oeletter = new OELetter($patient->addressname."\n".implode("\n",$patient->correspondAddress->letterarray),$site->name."\n".implode("\n",$site->letterarray)."\nTel: ".$site->telephone.($site->fax ? "\nFax: ".$site->fax : ''));
-		$oeletter->setFont('helvetica','10');
+		$oeletter->setBarcode('E:'.$operation->event_id);
 		$oeletter->addBody($body);
 
 		$pdf_print->addLetter($oeletter);
@@ -244,6 +244,7 @@ class PatientController extends BaseController
 
 		$oeletter = new OELetter;
 		$oeletter->setFont('helvetica','10');
+		$oeletter->setBarcode('E:'.$operation->event_id);
 		$oeletter->addBody($body);
 
 		$pdf_print->addLetter($oeletter);
