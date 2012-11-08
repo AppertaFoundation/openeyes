@@ -82,6 +82,7 @@
 				</table>
 			</div>
 			<div class="resultsPagination">
+				Viewing patients:
 				<?php for ($i=0; $i < $pages; $i++) { ?>
 				<?php
 					$current_page = ($i == $page_num);
