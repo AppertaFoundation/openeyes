@@ -107,6 +107,10 @@
 	</div>
 	<!-- .wideColumn -->
 
+	<div class="narrowColumn">
+			<p><?php echo CHtml::link('Clear this search and <span class="aPush">start a new search</span>',Yii::app()->baseUrl.'/')?></p>
+	</div> <!-- .narrowColumn -->
+	
 </div>
 <!-- .wrapTwo -->
 <script type="text/javascript">
