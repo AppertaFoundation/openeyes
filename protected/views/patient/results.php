@@ -110,7 +110,7 @@
 </div>
 <!-- .wrapTwo -->
 <script type="text/javascript">
-	$('#patient-grid .items tr').click(function() {
+	$('#patient-grid .items tbody tr').click(function() {
 		window.location.href = '<?php echo Yii::app()->createUrl('patient/viewhosnum')?>/'+$(this).children(":first").html();
 		return false;
 	});
