@@ -352,6 +352,7 @@ if (!empty($address)) {
 					<?php }?>
 					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
 					<?php $this->renderPartial('_systemic_diagnoses')?>
+					<?php $this->renderPartial('_cvi_status')?>
 					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
