@@ -116,8 +116,8 @@ class SiteController extends BaseController
 			}
 			
 			// NHS number (assume 10 digit number is an NHS number)
-			if(preg_match('/^(N|NHS)\s*:\s*([0-9\-]+)$/i',$query,$matches)
-					|| preg_match('/^([0-9]{3}-?[0-9]{3}-?[0-9]{4})$/i',$query,$matches)) {
+			if(preg_match('/^(N|NHS)\s*:\s*([0-9\- ]+)$/i',$query,$matches)
+					|| preg_match('/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i',$query,$matches)) {
 				$nhs = (isset($matches[2])) ? $matches[2] : $matches[1];
 				$nhs = str_replace(array('-',' '),'',$nhs);
 				$this->redirect(array('patient/search', 'nhs_num' => $nhs));
@@ -145,7 +145,7 @@ class SiteController extends BaseController
 		$audit->target_type = "search";
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
-		Yii::app()->user->setFlash('warning.search_error', 'Please enter a valid search.');
+		Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
 		$this->redirect('/');
 	}
 
