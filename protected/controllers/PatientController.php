@@ -595,22 +595,6 @@ class PatientController extends BaseController
 		return $model->search();
 	}
 
-	/**
-	 * Returns the $_REQUEST['Patient'] values plus the dob day, month and year appended together.
-	 *
-	 * @return array
-	 */
-	public function collatePostData()
-	{
-		$data = $_POST['Patient'];
-
-		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
-			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
-		}
-
-		return $data;
-	}
-
 	public function getTemplateName($action, $eventTypeId)
 	{
 		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
