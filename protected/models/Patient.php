@@ -175,7 +175,7 @@ class Patient extends BaseActiveRecord {
 		if (!is_array($params)) {
 			$params = array(
 				'pageSize' => 20,
-				'currentPage' => 1,
+				'currentPage' => 0,
 				'sortBy' => 'hos_num*1',
 				'sortDir' => 'asc',
 			);
@@ -197,7 +197,7 @@ class Patient extends BaseActiveRecord {
 		
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
-			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'] - 1)
+			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
 		));
 		
 		return $dataProvider;
