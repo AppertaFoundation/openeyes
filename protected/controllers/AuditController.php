@@ -146,10 +146,14 @@ class AuditController extends BaseController
 		}
 
 		if (@$_REQUEST['hos_num']) {
-			if ($patient = Patient::model()->find('hos_num=?',array(@$_REQUEST['hos_num']))) {
+			if ($patient = Patient::model()->find('hos_num=?',array($_REQUEST['hos_num']))) {
 				$criteria->addCondition('patient_id='.$patient->id);
 			} else {
-				$criteria->addCondition('patient_id=0');
+				if ($patient = Patient::model()->find('hos_num=?',array(str_pad($_REQUEST['hos_num'],7,'0',STR_PAD_LEFT)))) {
+					$criteria->addCondition('patient_id='.$patient->id);
+				} else {
+					$criteria->addCondition('patient_id=0');
+				}
 			}
 		}
 
