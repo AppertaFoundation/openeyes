@@ -605,8 +605,14 @@ class Patient extends BaseActiveRecord {
 			$date = date('Y-m-d');
 		}
 
+		if (!$disorder = Disorder::model()->findByPk($disorder_id)) {
+			throw new Exception('Disorder not found: '.$disorder_id);
+		}
+
+		$type = $disorder->systemic ? 'systemic' : 'ophthalmic';
+
 		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
-			$action = "add-secondary-diagnosis";
+			$action = "add-$type-diagnosis";
 			$sd = new SecondaryDiagnosis;
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
@@ -614,13 +620,13 @@ class Patient extends BaseActiveRecord {
 			$sd->date = $date;
 		} else {
 			if ($sd->date == $date && (($sd->eye_id == 1 and $eye_id == 2) || ($sd->eye_id == 2 && $eye_id == 1))) {
-				$action = "update-secondary-diagnosis";
+				$action = "update-$type-diagnosis";
 				$sd->eye_id = 3;
 				$sd->date = $date;
 			} else {
 				if ($sd->eye_id == $eye_id) return;
 
-				$action = "add-secondary-diagnosis";
+				$action = "add-$type-diagnosis";
 				$sd = new SecondaryDiagnosis;
 				$sd->patient_id = $this->id;
 				$sd->disorder_id = $disorder_id;
@@ -647,6 +653,12 @@ class Patient extends BaseActiveRecord {
 			throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
 		}
 
+		if (!$disorder = Disorder::model()->findByPk($sd->disorder_id)) {
+			throw new Exception('Unable to find disorder: '.$sd->disorder_id);
+		}
+
+		$type = $disorder->systemic ? 'systemic' : 'ophthalmic';
+
 		$audit_attributes = $sd->getAuditAttributes();
 
 		if (!$sd->delete()) {
@@ -654,7 +666,7 @@ class Patient extends BaseActiveRecord {
 		}
 
 		$audit = new Audit;
-		$audit->action = "remove-secondary-diagnosis";
+		$audit->action = "remove-$type-diagnosis";
 		$audit->target_type = "patient";
 		$audit->patient_id = $this->id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
