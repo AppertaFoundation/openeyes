@@ -183,6 +183,12 @@ class AuditController extends BaseController
 
 		$data['items'] = Audit::model()->findAll($criteria);
 		$data['pages'] = ceil($data['total_items'] / $this->items_per_page);
+		if ($data['pages'] <1) {
+			$data['pages'] = 1;
+		}
+		if ($page > $data['pages']) {
+			$page = $data['pages'];
+		}
 		if (!$id) {
 			$data['page'] = $page;
 		}
