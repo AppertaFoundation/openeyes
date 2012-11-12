@@ -18,9 +18,9 @@
  */
 
 if (!empty($episode)) {
-	if ($episode->hasPrincipalDiagnosis()) {
-		$eye = $episode->getPrincipalDiagnosisEyeText();
-		$diagnosis = $episode->getPrincipalDiagnosisDisorderTerm();
+	if ($episode->diagnosis) {
+		$eye = $episode->eye ? $episode->eye->name : 'None';
+		$diagnosis = $episode->diagnosis ? $episode->diagnosis->term : 'none';
 	} else {
 		$eye = 'No diagnosis';
 		$diagnosis = 'No diagnosis';
@@ -38,13 +38,15 @@ if (!empty($episode)) {
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
 	<h4>Principal diagnosis:</h4>
+
 	<div class="eventHighlight big">
-		<h4><?php echo $diagnosis?></h4>
+		<h4><?php echo $episode->diagnosis ? $episode->diagnosis->term : 'None'?></h4>
 	</div>
 
 	<h4>Principal eye:</h4>
+
 	<div class="eventHighlight big">
-		<h4><?php echo $eye?></h4>
+		<h4><?php echo $episode->eye ? $episode->eye->name : 'None'?></h4>
 	</div>
 
 	<!-- divide into two columns -->
@@ -97,21 +99,11 @@ if (!empty($episode)) {
 
 <!-- Booking -->
 
-<!--
 <h4>Episode Status</h4>
 
-<div class="eventDetail">
-	<div class="label"><?php echo CHtml::encode($episode->getAttributeLabel('episode_status_id'))?></div>
-	<div class="data">
-		<span class="group">
-			<form>
-				<?php echo CHtml::dropDownList('episode_status_id', $episode->episode_status_id, EpisodeStatus::Model()->getList())?>
-				<button style="margin-left:20px;" class="classy blue mini" type="submit" id="save_episode_status"><span class="button-span button-span-blue">Change status</span></button>
-			</form>
-		</span>
-	</div>
+<div class="eventHighlight big">
+	<h4><?php echo $episode->status->name?></h4>
 </div>
--->
 
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
@@ -183,24 +175,6 @@ if (!empty($episode)) {
 					return false;
 				}
 			});
-
-			return false;
-		});
-
-		$('#save_episode_status').unbind('click').click(function(e) {
-			if (!$(this).hasClass('inactive')) {
-				e.preventDefault();
-				disableButtons();
-
-				$.ajax({
-					type: 'POST',
-					url: '<?php echo Yii::app()->createUrl('patient/setepisodestatus/'.$episode->id)?>',
-					data: 'episode_status_id='+$('#episode_status_id').val(),
-					success: function(html) {
-						window.location.href = '<?php echo Yii::app()->createUrl('patient/episodes/'.$this->patient->id)?>';
-					}
-				});
-			}
 
 			return false;
 		});

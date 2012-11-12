@@ -57,6 +57,10 @@ class ImportDataCommand extends CConsoleCommand {
 			$block_size = 1000;
 			$values = array();
 			foreach($file as $index => $line) {
+				if (!strlen(trim($line))) {
+					continue;
+				}
+				
 				if(!$index) {
 					$columns = str_getcsv($line, ',', '"');
 				} else {

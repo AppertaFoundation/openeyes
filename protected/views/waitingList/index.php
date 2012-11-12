@@ -178,12 +178,6 @@
 	});
 
 	function print_items_from_selector(sel,all) {
-		if (all) {
-			var printurl = '<?php echo Yii::app()->createUrl('waitingList/printletters')?>';
-		} else {
-			var printurl = '<?php echo Yii::app()->createUrl('waitingList/printletters')?>';
-		}
-
 		var operations = new Array();
 
 		var nogp = 0;
@@ -206,7 +200,7 @@
 			}
 		} else {
 			show_letter_warnings(nogp);
-			printUrl(printurl, {'operations[]': operations, 'all': all});
+			printPDF('<?php echo Yii::app()->createUrl('waitingList/printletters')?>', {'operations': operations, 'all': all});
 		}
 	}
 
@@ -214,7 +208,7 @@
 		var msg = '';
 
 		if (nogp >0) {
-			msg += nogp+" item"+(nogp == 1 ? '' : 's')+" could not be printed as the patient has no GP.";
+			msg += nogp+" item"+(nogp == 1 ? '' : 's')+" could not be printed as the patient has no GP practice.";
 		}
 
 		if (msg.length >0) {

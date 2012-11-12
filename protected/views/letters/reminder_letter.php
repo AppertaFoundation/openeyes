@@ -17,29 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->renderPartial("/letters/letter_start", array(
-	'site' => $site,
-	'patient' => $patient,
-)); ?>
 
-<p>
+<?php echo $this->renderPartial('/letters/letter_start', array(
+		'to' => $to,
+		'accessible' => true,
+		'patient' => $patient,
+		)); ?>
+
+<p class="accessible">
 	I recently invited you to telephone to arrange a date for your <?php if ($patient->isChild()) { ?>child's <?php } ?>
 	admission for surgery under the care of
-	<?php 
-		if($consultant = $firm->getConsultant()) {
-			$consultantName = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
-		} else {
-			$consultantName = 'CONSULTANT';
-		}
-	?>
 	<?php echo CHtml::encode($consultantName) ?>.
 	I have not yet heard from you.
 </p>
 
-<p>
+<p class="accessible">
 	This is currently anticipated to be a
 	<?php
-	if ($operation->overnight_stay) {
+	if ($overnightStay) {
 		echo 'an overnight stay';
 	} else {
 		echo 'day case';
@@ -48,13 +43,13 @@
 	procedure.
 </p>
 
-<p>
+<p class="accessible">
 	Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree
 	a convenient date for this operation.
 </p>
 
-<p>
+<p class="accessible">
 	Should you<?php	if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
 </p>
 
-<?php $this->renderPartial("/letters/letter_end"); ?>
+<?php echo $this->renderPartial('/letters/letter_end', array('accessible' => true)); ?>

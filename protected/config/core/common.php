@@ -14,6 +14,7 @@ return array(
 				'application.models.elements.*',
 				'application.components.*',
 				'application.components.summaryWidgets.*',
+				'application.extensions.tcpdf.*',
 				'application.services.*',
 				'application.modules.*',
 				'application.commands.*',
@@ -50,18 +51,13 @@ return array(
 						'urlFormat' => 'path',
 						'showScriptName' => false,
 						'rules' => array(
-								'patient/results/error' => 'site/index',
-								'patient/no-results' => 'site/index',
-								'patient/no-results-pas' => 'site/index',
-								'patient/no-results-address'=>'site/index',
-								'patient/results/<first_name:.*>/<last_name:.*>/<nhs_num:\w+>/<gender:\w+>/<sort_by:\d+>/<sort_dir:\d+>/<page_num:\d+>'=>'patient/results',
+								'' => 'site/index',
 								'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
 								'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 								'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
-				'transport/<page:\d+>' => 'transport/index',
-				'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
+								'transport/<page:\d+>' => 'transport/index',
+								'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
 								'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
-								'' => 'site/index', // default action
 								'<controller:\w+>/<id:\d+>' => '<controller>/view',
 								'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
 								'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
@@ -99,6 +95,14 @@ return array(
 										'class' => 'CFileLogRoute',
 										'levels' => 'info, warning, error',
 										'logFile' => 'application.log',
+										'maxLogFiles' => 30,
+								),
+								// Action log
+								'action' => array(
+										'class' => 'CFileLogRoute',
+										'levels' => 'info, warning, error',
+										'categories' => 'application.action.*',
+										'logFile' => 'action.log',
 										'maxLogFiles' => 30,
 								),
 								// Development logging (application only)
@@ -144,5 +148,6 @@ return array(
 				'urgent_booking_notify_email' => array(),
 				'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 				'default_site_code' => '',
+				'erod_lead_time_weeks' => 3,
 		)
 );

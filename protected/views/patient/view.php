@@ -68,7 +68,12 @@ if (!empty($address)) {
 						This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 					</div>
 				<?php } ?>
-
+				<?php if(!$this->patient->practice || !$this->patient->practice->address) { ?>
+				<div id="no-practice-address" class="alertBox">
+					Patient has no GP practice address, please correct in PAS before printing GP letter.
+				</div>
+				<?php } ?>
+				
 				<div class="halfColumnLeft">
  
 					<!-- double re-enforcement of mode change not currently required, but might be needed in the future
@@ -141,15 +146,25 @@ if (!empty($address)) {
 						<h4>General Practitioner:</h4>
 						<div class="data_row">
 							<div class="data_label">Name:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->title.' '.$this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name : 'Unknown'?></div>
+							<div class="data_value"><?php echo ($this->patient->gp) ? $this->patient->gp->contact->fullName : 'Unknown'; ?></div>
+						</div>
+						<?php if (Yii::app()->user->checkAccess('admin')) { ?>
+						<div class="data_row goldenrod">
+							<div class="data_label">GP Address:</div>
+							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->address) ? $this->patient->gp->contact->address->letterLine : 'Unknown'; ?></div>
+						</div>
+						<div class="data_row goldenrod">
+							<div class="data_label">GP Telephone:</div>
+							<div class="data_value"><?php echo ($this->patient->gp && $this->patient->gp->contact->primary_phone) ? $this->patient->gp->contact->primary_phone : 'Unknown'; ?></div>
+						</div>
+						<?php } ?>
+						<div class="data_row">
+							<div class="data_label">Practice Address:</div>
+							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->address) ? $this->patient->practice->address->letterLine : 'Unknown'; ?></div>
 						</div>
 						<div class="data_row">
-							<div class="data_label">Address:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null && $this->patient->gp->contact->address !== null) ? $this->patient->gp->contact->address->address1.' '.$this->patient->gp->contact->address->address2.' '.$this->patient->gp->contact->address->city.' '.$this->patient->gp->contact->address->county.' '.$this->patient->gp->contact->address->postcode : 'Unknown'?></div>
-						</div>
-						<div class="data_row">
-							<div class="data_label">Telephone:</div>
-							<div class="data_value"><?php echo ($this->patient->gp !== null && $this->patient->gp->contact !== null) ? $this->patient->gp->contact->primary_phone : 'Unknown'?></div>
+							<div class="data_label">Practice Telephone:</div>
+							<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->phone) ? $this->patient->practice->phone : 'Unknown'; ?></div>
 						</div>
 					</div>
 
@@ -169,7 +184,12 @@ if (!empty($address)) {
 									</tr>
 								</thead>
 								<tbody id="patient_contacts">	
-									<?php foreach ($this->patient->contactAssignments as $pca) {?>
+									<?php foreach ($this->patient->contactAssignments as $pca) {
+										if (!in_array($pca->contact->parent_class,array('Specialist','Consultant'))) {
+											if ($uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id))) {
+												if (!$uca->user) continue;
+											}
+										}?>
 										<tr>
 											<td><span class="large"><?php if ($pca->contact->title) echo $pca->contact->title.' '?><?php echo $pca->contact->first_name?> <?php echo $pca->contact->last_name?></span><br /><?php echo $pca->contact->qualifications?></td>
 											<td>
@@ -191,7 +211,11 @@ if (!empty($address)) {
 														echo 'Consultant Ophthalmologist';
 														break;
 													default:
-														echo $pca->contact->parent_class;
+														if ($uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id))) {
+															echo $uca->user->role ? $uca->user->role : 'Staff';
+														} else {
+															echo $pca->contact->parent_class;
+														}
 												}
 												?>
 											</td>
@@ -253,7 +277,7 @@ if (!empty($address)) {
 										}
 
 										if (contactCache[value]['institution_id']) {
-											querystr += '&institution_id'+contactCache[value]['institution_id'];
+											querystr += '&institution_id='+contactCache[value]['institution_id'];
 										}
 
 										$.ajax({
@@ -285,7 +309,8 @@ if (!empty($address)) {
 							&nbsp;&nbsp;
 							<select id="contactfilter" name="contactfilter">
 								<option value="">- Filter -</option>
-								<option value="consultant" selected="selected">Consultant Ophthalmologist</option>
+								<option value="moorfields" selected="selected">Moorfields staff</option>
+								<option value="consultant">Consultant ophthalmologist</option>
 								<option value="specialist">Non-ophthalmic specialist</option>
 							</select>
 							&nbsp;
@@ -312,9 +337,8 @@ if (!empty($address)) {
 												<td><?php echo $episode->NHSDate('end_date'); ?></td>
 												<td><?php echo CHtml::encode($episode->firm->name)?></td>
 												<td><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></td>
-												<?php $has_diagnosis = $episode->hasPrincipalDiagnosis() ?>
-												<td><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisEyeText() : 'No diagnosis' ?></td>
-												<td><?php echo ($has_diagnosis) ? $episode->getPrincipalDiagnosisDisorderTerm() : 'No diagnosis' ?></td>
+												<td><?php echo ($episode->diagnosis) ? $episode->eye->name : 'No diagnosis' ?></td>
+												<td><?php echo ($episode->diagnosis) ? $episode->diagnosis->term : 'No diagnosis' ?></td>
 											</tr>
 										<?php }?>
 									</tbody>
@@ -323,9 +347,9 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<?php if(!$this->patient->isDeceased()) { ?>
-						<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
-					<?php }?>
+					<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
+					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
+					<?php $this->renderPartial('_systemic_diagnoses')?>
 					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
@@ -344,9 +368,9 @@ if (!empty($address)) {
 					var el = $(this);
 
 					if ($(this).parent().parent().children('td:nth-child(2)').length >0) {
-						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+', '+$(this).parent().parent().children('td:nth-child(2)').html()+')';
+						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$.trim($(this).parent().parent().children('td:nth-child(3)').html())+', '+$.trim($(this).parent().parent().children('td:nth-child(2)').html())+')';
 					} else {
-						var name = $(this).parent().parent().children('td:first').children('span').html()+' ('+$(this).parent().parent().children('td:nth-child(3)').html()+')';
+						var name = $.trim($(this).parent().parent().children('td:first').children('span').html())+' ('+$.trim($(this).parent().parent().children('td:nth-child(3)').html())+')';
 					}
 
 					$.ajax({
@@ -355,7 +379,7 @@ if (!empty($address)) {
 						'success': function(resp) {
 							if (resp == "1") {
 								el.parent().parent().remove();
-								
+
 								var newCurrentContacts = [];
 								for (var i in currentContacts) {
 									if (currentContacts[i] != name) {
@@ -382,9 +406,12 @@ if (!empty($address)) {
 
 				var currentContacts = [];
 
-				<?php if ($this->patient->gp && $this->patient->gp->contact) {?>
-					currentContacts.push("<?php if ($this->patient->gp->contact->title) echo $this->patient->gp->contact->title.' '; echo $this->patient->gp->contact->first_name.' '.$this->patient->gp->contact->last_name.' (Gp'.($this->patient->gp->contact->address ? ', '.$this->patient->gp->contact->address->summary : '').')';?>");
-				<?php }?>
+				<?php if ($this->patient->gp || ($this->patient->practice && $this->patient->practice->address)) {
+					$gp_dropdown_string = (($this->patient->gp && $this->patient->gp->contact->fullName) ? $this->patient->gp->contact->fullName : 'Unknown') . '(Gp';
+					$gp_dropdown_string .= (($this->patient->practice && $this->patient->practice->address) ? ', ' . $this->patient->practice->address->summary : '') . ')';
+				?>
+					currentContacts.push("<?php echo $gp_dropdown_string ?>");
+				<?php } ?>
 
 				<?php foreach ($this->patient->contactAssignments as $pca) {?>
 					<?php if ($pca->site) {
@@ -401,8 +428,11 @@ if (!empty($address)) {
 						}
 						?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$type.', '.$pca->site->name.')';?>");
-					<?php } else if ($pca->institution) {?>
-						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.', '.$pca->institution->name.')';?>");
+					<?php } else if ($pca->institution) {
+						$uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id));
+						if ($uca->user) {?>
+						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.($uca ? ($uca->user->role ? $uca->user->role : 'Staff') : $pca->contact->parent_class).', '.$pca->institution->name.')';?>");
+						<?php }?>
 					<?php } else {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$pca->contact->parent_class.($pca->contact->address ? ', '.$pca->contact->address->summary : '').')';?>");
 					<?php }?>

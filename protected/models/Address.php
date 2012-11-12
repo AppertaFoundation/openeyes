@@ -134,15 +134,15 @@ class Address extends BaseActiveRecord {
 				if ($field == 'address1') {
 					$line = str_replace(',', '', $line);
 					foreach(explode("\n",$line) as $part) {
-						$address[] = CHtml::encode($part);
+						$address[] = $part;
 					} 
 				} else {
-					$address[] = CHtml::encode($line);
+					$address[] = $line;
 				}
 			}
 		}
 		if ($include_country && !empty($this->country->name)) {
-			$address[] = CHtml::encode($this->country->name);
+			$address[] = $this->country->name;
 		}
 		return $address;
 	}
@@ -170,5 +170,9 @@ class Address extends BaseActiveRecord {
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function getLetterAddress() {
+		return implode("\n",$this->getLetterArray(false));
 	}
 }

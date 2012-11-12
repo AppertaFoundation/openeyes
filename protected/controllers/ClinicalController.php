@@ -33,6 +33,7 @@ class ClinicalController extends BaseController
 
 	public function init()
 	{
+		parent::init();
 		// FIXME: this is a hack to enable things to continue working until we can call eg: /modulename/create
 		foreach (EventType::model()->getEventTypeModules() as $module) {
 			if ($module != 'OphTrOperation') {
@@ -640,7 +641,9 @@ class ClinicalController extends BaseController
 
 		if (!empty($_POST) && @$_POST['event_id'] == $event->id) {
 			$event->deleted = 1;
-			$event->save();
+			if (!$event->save()) {
+				throw new Exception("Unable to mark event $event->id as deleted: ".print_r($event->getErrors(),true));
+			}
 
 			$audit = new Audit;
 			$audit->action = "delete";
@@ -650,6 +653,23 @@ class ClinicalController extends BaseController
 			$audit->event_id = $event->id;
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 			$audit->save();
+
+			// If the episode has no other events, mark it as deleted
+			if (empty($event->episode->events)) {
+				$episode = $event->episode;
+				$episode->deleted = 1;
+				if (!$episode->save()) {
+					throw new Exception("Unable to mark episode $episode->id as deleted: ".print_r($episode->getErrors(),true));
+				}
+
+				$audit = new Audit;
+				$audit->action = "delete";
+				$audit->target_type = "episode";
+				$audit->patient_id = $episode->patient_id;
+				$audit->episode_id = $episode->id;
+				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+				$audit->save();
+			}
 
 			$this->redirect(array('patient/episodes/'.$event->episode->patient->id));
 		}

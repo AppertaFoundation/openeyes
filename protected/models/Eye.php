@@ -66,5 +66,11 @@ class Eye extends BaseActiveRecord
 	public function getShortName() {
 		return substr($this->name, 0, 1);
 	}
-	
+
+	public function getAdjective() {
+		if ($this->name == 'Both') {
+			return 'Bilateral';
+		}
+		return $this->name;
+	}
 }

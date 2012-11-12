@@ -24,14 +24,14 @@
 				<span><strong>Need Help?</strong></span>
 				<span class="divider">|</span>
 				<?php if (Yii::app()->params['helpdesk_email']) {?>
-					<span>email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email'] ?></a></span>
+					<span><?php echo Yii::app()->params['helpdesk_email']?></span>
 				<?php }?>
 					<span class="divider">|</span>
 				<?php if (Yii::app()->params['helpdesk_phone']) {?>
-					<span>phone: <strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></span>
+					<span><strong><?php echo Yii::app()->params['helpdesk_phone'] ?></strong></span>
 				<?php } ?>
 				<span class="divider">|</span>
-				<span><?php echo CHtml::link('Online Help Documentation',Yii::app()->createUrl('pdf/OpenEyesOnlineHelp.pdf'),array('target'=>'_new'))?></span>
+				<span><?php echo CHtml::link('Help Documentation','http://mehhome/about/trust-wide-projects/openeyes/training-arrangements/',array('target'=>'_new'))?></span>
 		</div>
 	</div> <!-- #footer -->
 

@@ -96,11 +96,12 @@ class Event extends BaseActiveRecord
 	}
 	
 	public function getEditable(){
-	
-		if (!$this->episode->firm) {
+
+		if (!$this->episode->editable) {
 			return FALSE;
-		}	
-		if($this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
+		}
+
+		if ($this->episode->patient->date_of_death) {
 			return FALSE;
 		}
 
@@ -112,10 +113,6 @@ class Event extends BaseActiveRecord
 			}
 		}
 
-		if($this->episode->patient->date_of_death){
-			return FALSE;
-		}
-		
 		return TRUE;
 	}
 
@@ -239,6 +236,10 @@ class Event extends BaseActiveRecord
 
 	// Only the event creator can delete the event, and only 24 hours after its initial creation
 	public function canDelete() {
+		if ($this->episode->patient->date_of_death) return false;
+
+		$admin = User::model()->find('username=?',array('admin'));   // these two lines should be replaced once we have rbac
+		if ($admin->id == Yii::app()->session['user']->id) {return true;}
 		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
 	}
 }

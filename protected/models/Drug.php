@@ -23,8 +23,8 @@
  * The followings are the available columns in table 'drug':
  * @property integer $id
  * @property string $name
+ * @property string $tallman
  * @property string $label
- * @property string $code
  * @property string $aliases
  * @property string $dose_unit
  * @property string $default_dose
@@ -39,6 +39,8 @@
  */
 class Drug extends BaseActiveRecord
 {
+	public $default_scope = true;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Drug the static model class
@@ -56,6 +58,29 @@ class Drug extends BaseActiveRecord
 		return 'drug';
 	}
 
+	public function defaultScope() {
+		if ($this->default_scope) {
+			return array(
+				'condition' => 'discontinued = 0',
+			);
+		} else {
+			return array();
+		}
+	}
+
+	public function scopes() {
+		return array(
+			'discontinued' => array(
+				'condition' => 'discontinued in (0,1)',
+			),
+		);
+	}
+
+	public function discontinued() {
+		$this->default_scope = false;
+		return $this;
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -65,10 +90,10 @@ class Drug extends BaseActiveRecord
 		// will receive user inputs.
 		return array(
 			array('name', 'required'),
-			array('code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe'),
+			array('tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases, discontinued', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, code, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
+			array('id, name, tallman, dose_unit, default_dose, preservative_free, type_id, form_id, default_duration_id, default_frequency_id, default_route_id, aliases', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -103,6 +128,14 @@ class Drug extends BaseActiveRecord
 			return $this->name . ' (No Preservative)';
 		} else {
 			return $this->name;
+		}
+	}
+	
+	public function getTallmanLabel() {
+		if($this->preservative_free) {
+			return $this->tallman . ' (No Preservative)';
+		} else {
+			return $this->tallman;
 		}
 	}
 	

@@ -90,6 +90,9 @@ table.half {
 
 table.admission_letter th,
 table.admission_letter td {
+	font-size: 15px;
+	padding: 4px 6px;
+	
 }
 
 table.half td,
@@ -110,7 +113,6 @@ th.tall {
 em {
 	text-decoration: underline;
 	font-style: normal;
-	font-weight: bold;
 }
 
 html {
@@ -177,4 +179,8 @@ body {
 
 .red {
 	color: #f00 !important;
+}
+
+li {
+	margin: 10px 0;
 }

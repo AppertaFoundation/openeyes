@@ -203,9 +203,11 @@ class Site extends BaseActiveRecord
 		return implode('<br />', $address);
 	}
 
-	public function getLetterArray() {
+	public function getLetterArray($include_name=false) {
+		$fields = $include_name ? array('name') : array();
+
 		$address = array();
-		foreach (array('address1', 'address2', 'address3', 'postcode') as $field) {
+		foreach (array_merge($fields,array('address1', 'address2', 'address3', 'postcode')) as $field) {
 			if (!empty($this->$field)) {
 				if ($field == 'address1') {
 					$address[] = CHtml::encode(str_replace(',','',$this->$field));
@@ -245,6 +247,11 @@ class Site extends BaseActiveRecord
 
 	public function getCorrespondenceSiteName() {
 		if (!($contact = $this->replyto) || !$contact->nick_name) {
+			if ($this->institution->short_name) {
+				if (!strstr($this->name,$this->institution->short_name)) {
+					return $this->institution->short_name.' at '.$this->name;
+				}
+			}
 			return $this->name;
 		}
 		return $contact->nick_name;

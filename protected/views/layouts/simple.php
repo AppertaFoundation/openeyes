@@ -33,12 +33,13 @@
 		<meta http-equiv='expires' content='0'>
 		<meta http-equiv='pragma' content='no-cache'>
 	<?php }?>
+
 	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/> 
-	<?php Yii::app()->getClientScript()->registerCSSFile(Yii::app()->createUrl('/css/style.css'))?>
 	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jui/js/jquery-ui.min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
+	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize-min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/buttons.js'))?>

@@ -51,6 +51,13 @@ class PatientController extends BaseController
 		);
 	}
 
+	public function printActions() {
+		return array(
+				'printadmissionletter',
+		);
+	}
+	
+	
 	protected function beforeAction($action)
 	{
 		parent::storeData();
@@ -157,10 +164,6 @@ class PatientController extends BaseController
 			}
 		}
 
-		if($this->episode->patient->date_of_death){
-			return FALSE;
-		}
-
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
 			'legacyepisodes' => $legacyepisodes,
@@ -170,6 +173,82 @@ class PatientController extends BaseController
 			'site' => $site,
 			'current_episode' => $this->episode,
 		));
+	}
+
+	public function actionPrintAdmissionLetter($id) {
+		$this->layout = '//layouts/pdf';
+
+		$this->service = new ClinicalService;
+
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new Exception('Event not found: '.$id);
+		}
+
+		$patient = $event->episode->patient;
+
+		if ($patient->date_of_death) {
+			return false;
+		}
+
+		if (!$operation = ElementOperation::model()->find('event_id = ?',array($id))) {
+			throw new Exception('Operation not found for event: '.$id);
+		}
+
+		$audit = new Audit;
+		$audit->action = "print";
+		$audit->target_type = "admission letter";
+		$audit->patient_id = $patient->id;
+		$audit->episode_id = $event->episode_id;
+		$audit->event_id = $event->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
+
+		$this->logActivity('printed admission letter');
+
+		$site = $operation->booking->session->theatre->site;
+		$firm = $operation->booking->session->firm;
+		if (!$firm) {
+			$firm = $operation->event->episode->firm;
+			$emergency_list = true;
+		}
+		$admissionContact = $operation->getAdmissionContact();
+		$emergency_list = false;
+		$cancelledBookings = $operation->getCancelledBookings();
+
+		$pdf_print = new OEPDFPrint('Openeyes', 'Booking letters', 'Booking letters');
+
+		$body = $this->render('/letters/admission_letter', array(
+			'site' => $site,
+			'patient' => $patient,
+			'firm' => $firm,
+			'emergencyList' => $emergency_list,
+			'operation' => $operation,
+			'refuseContact' => $admissionContact['refuse'],
+			'healthContact' => $admissionContact['health'],
+			'cancelledBookings' => $cancelledBookings,
+		), true);
+
+		$oeletter = new OELetter($patient->addressname."\n".implode("\n",$patient->correspondAddress->letterarray),$site->name."\n".implode("\n",$site->letterarray)."\nTel: ".$site->telephone.($site->fax ? "\nFax: ".$site->fax : ''));
+		$oeletter->setBarcode('E:'.$operation->event_id);
+		$oeletter->addBody($body);
+
+		$pdf_print->addLetter($oeletter);
+
+		$body = $this->render('/letters/admission_form', array(
+				'operation' => $operation,
+				'site' => $site,
+				'patient' => $patient,
+				'firm' => $firm,
+				'emergencyList' => $emergency_list,
+		), true);
+
+		$oeletter = new OELetter;
+		$oeletter->setFont('helvetica','10');
+		$oeletter->setBarcode('E:'.$operation->event_id);
+		$oeletter->addBody($body);
+
+		$pdf_print->addLetter($oeletter);
+		$pdf_print->output();
 	}
 
 	/**
@@ -190,106 +269,33 @@ class PatientController extends BaseController
 		}
 	}
 
-	/**
-	 * Lists all models.
-	 */
-	public function actionIndex()
-	{
-		$dataProvider = new CActiveDataProvider('Patient');
-		$this->render('index', array(
-			'dataProvider' => $dataProvider,
-		));
-	}
-
-	/**
-	 * Display a form to use for searching models
-	 */
-	public function actionSearch()
-	{
-		if (isset($_POST['Patient'])) {
-			$this->forward('results');
-		} else {
-			$model = new Patient;
-			$this->render('search', array(
-				'model' => $model,
-			));
-		}
-	}
-
-	/**
-	 * Display results based on a search submission
-	 */
-	public function actionResults($page=false)
-	{
-		if (!empty($_POST)) {
-			foreach ($_POST['Patient'] as $key => $value) {
-				$_POST['Patient'][$key] = trim($value);
+	public function actionSearch() {
+		
+		// Check that we have a valid set of search criteria
+		$search_terms = array(
+				'hos_num' => null,
+				'nhs_num' => null,
+				'first_name' => null,
+				'last_name' => null,
+		);
+		foreach($search_terms as $search_term => $search_value) {
+			if(isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
+				
+				// Pad hos_num
+				if($search_term == 'hos_num') {
+					$search_value = sprintf('%07s',$search_value);
+				}
+				
+				$search_terms[$search_term] = $search_value;
 			}
-
-
-			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
-				$audit = new Audit;
-				$audit->action = "search-error";
-				$audit->target_type = "search";
-				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
-				$audit->save();
-				setcookie('patient-search-minimum-criteria','1',0,'/');
-				$this->redirect(array('/patient/results/error'));
-			}
-
-			if (@$_POST['Patient']['hos_num']) {
-				$get_hos_num = str_pad($_POST['Patient']['hos_num'], 7, '0', STR_PAD_LEFT);
-				$_GET = array(
-					'hos_num' => $get_hos_num,
-					'nhs_num' => '',
-					'gender' => '',
-					'sort_by' => 0,
-					'sort_dir' => 0,
-					'page_num' => 1,
-					'first_name' => '',
-					'last_name' => ''
-				);
-
-				$this->patientSearch();
-
-				Yii::app()->end();
-			} else {
-				$get_hos_num = '000000';
-			}
-
-			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
-			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
-			// Get rid of any dashes from nhs_num as PAS doesn't store them
-			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? preg_replace('/-/', '', $_POST['Patient']['nhs_num']) : '0');
-			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
-			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
-			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
-			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
-
-			setcookie('patient-search-minimum-criteria','1',0,'/');
-			$this->redirect(array("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1"));
 		}
-
-		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
-			$audit = new Audit;
-			$audit->action = "search-error";
-			$audit->target_type = "search";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = var_export($_POST['Patient'],true) . ": Error";
-			$audit->save();
-			$this->redirect(array('/patient/results/error'));
+		if(!$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
+			Yii::app()->user->setFlash('warning.invalid-search', 'Please enter a valid search.');
+			$this->redirect('/');
 		}
-
-		$this->patientSearch();
-	}
-
-	function patientSearch() {
-		if (!isset($_GET['sort_by'])) {
-			return $this->redirect(Yii::app()->baseUrl.'/');
-		}
-
-		switch ($_GET['sort_by']) {
+		$search_terms = CHtml::encodeArray($search_terms);
+		
+		switch (@$_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
 				break;
@@ -311,24 +317,27 @@ class PatientController extends BaseController
 			case 6:
 				$sort_by = 'nhs_num*1';
 				break;
+			default:
+				$sort_by = 'hos_num*1';
 		}
-
-		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
-
+		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+		$page_num = (integer)@$_GET['page_num'];
+		$page_size = 20;
+		
 		$model = new Patient();
-		$model->attributes = $this->collateGetData();
-		$pageSize = 20;
+		$model->hos_num = $search_terms['hos_num'];
+		$model->nhs_num = $search_terms['nhs_num'];
 		$dataProvider = $model->search(array(
-			'currentPage' => (integer)@$_GET['page_num'],
-			'pageSize' => $pageSize,
+			'currentPage' => $page_num,
+			'pageSize' => $page_size,
 			'sortBy' => $sort_by,
 			'sortDir'=> $sort_dir,
-			'first_name' => @$_GET['first_name'],
-			'last_name' => @$_GET['last_name'],
+			'first_name' => $search_terms['first_name'],
+			'last_name' => $search_terms['last_name'],
 		));
 		$nr = $model->search_nr(array(
-			'first_name' => @$_GET['first_name'],
-			'last_name' => @$_GET['last_name'],
+			'first_name' => $search_terms['first_name'],
+			'last_name' => $search_terms['last_name'],
 		));
 
 		if($nr == 0) {
@@ -336,44 +345,38 @@ class PatientController extends BaseController
 			$audit->action = "search-results";
 			$audit->target_type = "search";
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
+			$audit->data = implode(',',$search_terms) ." : No results";
 			$audit->save();
-			$this->redirect(array('/patient/no-results'));
+			$message = 'Sorry, no results ';
+			if($search_terms['hos_num']) {
+				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
+			} else if($search_terms['nhs_num']) {
+				$message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
+			} else if($search_terms['first_name'] && $search_terms['last_name']) {
+				$message .= 'for Patient Name <strong>"'.$search_terms['first_name'] . ' ' . $search_terms['last_name'].'"</strong>';
+			} else {
+				$message .= 'found for your search.';
+			}
+			Yii::app()->user->setFlash('warning.no-results', $message);
+			$this->redirect('/');
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
-				$this->redirect(array('/patient/view/'.$item->id));
+				$this->redirect(array('patient/view/' . $item->id));
 			}
 		} else {
-			$pages = ceil($nr/$pageSize);
+			$pages = ceil($nr/$page_size);
 			$this->render('results', array(
-				'dataProvider' => $dataProvider,
+				'data_provider' => $dataProvider,
 				'pages' => $pages,
-				'items_per_page' => $pageSize,
+				'page_num' => $page_num,
+				'items_per_page' => $page_size,
 				'total_items' => $nr,
-				'first_name' => $_GET['first_name'],
-				'last_name' => $_GET['last_name'],
-				'nhs_num' => $_GET['nhs_num'],
-				'gender' => $_GET['gender'],
-				'pagen' => (integer)$_GET['page_num'],
-				'sort_by' => (integer)$_GET['sort_by'],
-				'sort_dir' => (integer)$_GET['sort_dir']
+				'search_terms' => $search_terms,
+				'sort_by' => (integer)@$_GET['sort_by'],
+				'sort_dir' => (integer)@$_GET['sort_dir']
 			));
 		}
-	}
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model = new Patient('search');
-		$model->unsetAttributes();	// clear any default values
-		if (isset($_GET['Patient']))
-			$model->attributes = $_GET['Patient'];
-
-		$this->render('admin', array(
-			'model' => $model,
-		));
+		
 	}
 
 	public function actionSummary()
@@ -415,6 +418,18 @@ class PatientController extends BaseController
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
+			if (!empty($legacyepisodes)) {
+				$criteria = new CDbCriteria;
+				$criteria->compare('episode_id',$legacyepisodes[0]->id);
+				$criteria->order = 'datetime desc';
+
+				if ($event = Event::model()->find($criteria)) {
+					if (!$event->eventType->disabled) {
+						$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
+						Yii::app()->end();
+					}
+				}
+			}
 		} else if ($current_episode->end_date == null) {
 			$criteria = new CDbCriteria;
 			$criteria->compare('episode_id',$current_episode->id);
@@ -448,11 +463,11 @@ class PatientController extends BaseController
 		$this->layout = '//layouts/patientMode/main';
 		$this->service = new ClinicalService;
 
-		if (!$episode = Episode::model()->findByPk($id)) {
+		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
 		}
 
-		$this->patient = $episode->patient;
+		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
 		$legacyepisodes = $this->patient->legacyepisodes;
@@ -471,7 +486,69 @@ class PatientController extends BaseController
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
-			'current_episode' => $episode
+			'current_episode' => $this->episode
+		));
+	}
+
+	public function actionUpdateepisode($id)
+	{
+		$this->layout = '//layouts/patientMode/main';
+		$this->service = new ClinicalService;
+
+		if (!$this->episode = Episode::model()->findByPk($id)) {
+			throw new SystemException('Episode not found: '.$id);
+		}
+
+		if (!$this->episode->editable || isset($_POST['episode_cancel'])) {
+			return $this->redirect(array('patient/episode/'.$this->episode->id));
+		}
+
+		if (isset($_POST['episode_save'])) {
+			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
+				$error = "Please select a disorder for the principal diagnosis";
+			} else if (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+				$error = "Please select an eye for the principal diagnosis";
+			} else {
+				if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+					if ($_POST['eye_id'] != $this->episode->eye_id || $_POST['DiagnosisSelection']['disorder_id'] != $this->episode->disorder_id) {
+						$this->episode->setPrincipalDiagnosis($_POST['DiagnosisSelection']['disorder_id'],$_POST['eye_id']);
+					}
+				}
+
+				if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
+					$this->episode->episode_status_id = $_POST['episode_status_id'];
+					if (!$this->episode->save()) {
+						throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
+					}
+				}
+
+				$this->redirect(array('patient/episode/'.$this->episode->id));
+			}
+		}
+
+		$this->patient = $this->episode->patient;
+
+		$episodes = $this->patient->episodes;
+		$legacyepisodes = $this->patient->legacyepisodes;
+
+		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+
+		$this->title = 'Episode summary';
+
+		$status = Yii::app()->session['episode_hide_status'];
+		$status[$id] = true;
+		Yii::app()->session['episode_hide_status'] = $status;
+
+		$this->editing = true;
+
+		$this->render('events_and_episodes', array(
+			'title' => empty($episodes) ? '' : 'Episode summary',
+			'episodes' => $episodes,
+			'legacyepisodes' => $legacyepisodes,
+			'eventTypes' => EventType::model()->getEventTypeModules(),
+			'site' => $site,
+			'current_episode' => $this->episode,
+			'error' => @$error,
 		));
 	}
 
@@ -524,39 +601,6 @@ class PatientController extends BaseController
 		return $model->search();
 	}
 
-	/**
-	 * Returns the $_REQUIEST['Patient'] values plus the dob day, month and year appended together.
-	 *
-	 * @return array
-	 */
-	public function collatePostData()
-	{
-		$data = $_POST['Patient'];
-
-		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
-			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
-		}
-
-		return $data;
-	}
-
-	public function collateGetData()
-	{
-		$data = $_GET;
-
-		if (isset($_GET['dob_day']) && isset($_GET['dob_month']) && isset($_GET['dob_year']) && $_GET['dob_day'] && $_GET['dob_month'] && $_GET['dob_year']) {
-			$data['dob'] = $_GET['dob_year'] . '-' . $_GET['dob_month'] . '-' . $_GET['dob_day'];
-		}
-
-		foreach ($data as $key => $value) {
-			if ($value == '0') {
-				$data[$key] = '';
-			}
-		}
-
-		return $data;
-	}
-
 	public function getTemplateName($action, $eventTypeId)
 	{
 		$template = 'eventTypeTemplates' . DIRECTORY_SEPARATOR . $action . DIRECTORY_SEPARATOR . $eventTypeId;
@@ -566,17 +610,6 @@ class PatientController extends BaseController
 		}
 
 		return $template;
-	}
-
-	public function actionSetEpisodeStatus($id) {
-		$episode = Episode::model()->findByPk($id);
-
-		if (!isset($episode)) {
-			throw new CHttpException(403, 'Invalid episode id.');
-		}
-
-		$episode->episode_status_id = $_POST['episode_status_id'];
-		$episode->save();
 	}
 
 	/**
@@ -613,15 +646,21 @@ class PatientController extends BaseController
 			$where = "parent_class = 'Consultant'";
 		} else if (@$_GET['filter'] == 'specialist') {
 			$where = "parent_class = 'Specialist'";
+		} else if (@$_GET['filter'] == 'moorfields') {
+			$where = "user_id is not null";
 		} else {
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
+//die("[$where][$term]");
+
 		foreach (Yii::app()->db->createCommand()
-			->select('contact.*')
+			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
 			->from('contact')
-			->where("LOWER(last_name) LIKE :term AND $where", array(':term' => $term))
-			->order('title asc, first_name asc, last_name asc')
+			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
+			->leftJoin('user','user_contact_assignment.user_id = user.id')
+			->where("LOWER(contact.last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
+			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 
 			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
@@ -633,6 +672,8 @@ class PatientController extends BaseController
 					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
 				}
 
+				$found_locations = false;
+
 				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
 					if (!in_array($sca->site->institution_id,$institutions)) {
 						$institutions[] = $sca->site->institution_id;
@@ -643,6 +684,8 @@ class PatientController extends BaseController
 						'contact_id' => $contact['id'],
 						'site_id' => $sca->site_id,
 					);
+
+					$found_locations = true;
 				}
 
 				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
@@ -653,8 +696,21 @@ class PatientController extends BaseController
 							'contact_id' => $contact['id'],
 							'institution_id' => $ica->institution_id,
 						);
+
+						$found_locations = true;
 					}
 				}
+
+				if ($contact['user_id'] && !$found_locations) {
+					$institution = Institution::model()->findByPk(1);
+
+					$contacts[] = array(
+						'line' => $line.', '.$institution->name.')',
+						'contact_id' => $contact['id'],
+						'institution_id' => $institution->id,
+					);
+				}
+
 			} else if ($contact['parent_class'] == 'Specialist') {
 				$sites = array();
 
@@ -677,6 +733,43 @@ class PatientController extends BaseController
 						);
 					}
 				}
+
+				$institutions = array();
+
+				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
+					if (!in_array($ica->institution_id,$institutions)) {
+						if ($contact['title']) {
+							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
+						} else {
+							$contact_line = $contact['first_name'].' '.$contact['last_name'];
+						}
+
+						$specialist = Specialist::model()->findByPk($contact['parent_id']);
+
+						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->institution->name.")";
+
+						$contacts[] = array(
+							'line' => $contact_line,
+							'contact_id' => $contact['id'],
+							'institution_id' => $ica->institution_id,
+						);
+					}
+				}
+			} else if ($contact['user_id']) {
+				$user = User::model()->findByPk($contact['user_id']);
+
+				if (!($role = $user->role)) {
+					$role = 'Staff';
+				}
+
+				$institution = Institution::model()->find('code=?',array('RP6'));
+
+				$contacts[] = array(
+					'line' => trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name']).' ('.$role.', '.$institution->name.')',
+					'contact_id' => $contact['id'],
+					'institution_id' => $institution->id,
+				);
+
 			} else {
 				$contact = Contact::model()->findByPk($contact['id']);
 
@@ -708,6 +801,10 @@ class PatientController extends BaseController
 			$type = $specialist->specialist_type->name;
 		} else if ($contact->parent_class == 'Consultant') {
 			$type = 'Consultant Ophthalmologist';
+		} else if ($uca = UserContactAssignment::model()->find('contact_id=?',array($contact->id))) {
+			if (!($type = $uca->user->role)) {
+				$type = 'Staff';
+			}
 		} else {
 			$type = $contact->parent_class;
 		}
@@ -902,5 +999,55 @@ class PatientController extends BaseController
 		}
 	 
 		Yii::app()->session['episode_hide_status'] = $status;
+	}
+
+	public function actionAdddiagnosis() {
+		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
+			$disorder = Disorder::model()->findByPk(@$_POST['DiagnosisSelection']['ophthalmic_disorder_id']);
+		} else {
+			$disorder = Disorder::model()->findByPk(@$_POST['DiagnosisSelection']['systemic_disorder_id']);
+		}
+
+		if (!$disorder) {
+			throw new Exception('Unable to find disorder: '.@$_POST['DiagnosisSelection']['ophthalmic_disorder_id'].' / '.@$_POST['DiagnosisSelection']['systemic_disorder_id']);
+		}
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_POST['patient_id']);
+		}
+
+		$date = $_POST['diagnosis_year'];
+
+		if ($_POST['diagnosis_month']) {
+			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+
+		if ($_POST['diagnosis_day']) {
+			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+
+		if (!$_POST['diagnosis_eye']) {
+			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($patient->id,$disorder->id))) {
+				$patient->addDiagnosis($disorder->id,null,$date);
+			}
+		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye']))) {
+			$patient->addDiagnosis($disorder->id, $_POST['diagnosis_eye'], $date);
+		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
+	}
+
+	public function actionRemovediagnosis() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_GET['patient_id']);
+		}
+
+		$patient->removeDiagnosis(@$_GET['diagnosis_id']);
+
+		echo "success";
 	}
 }

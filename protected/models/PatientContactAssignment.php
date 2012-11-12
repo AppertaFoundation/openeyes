@@ -107,4 +107,16 @@ class PatientContactAssignment extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getAddress() {
+		if ($this->site) {
+			return $this->site;
+		}
+
+		if ($this->institution ) {
+			return $this->institution->address ? $this->institution->address : false;
+		}
+
+		return $this->contact->address;
+	}
 }

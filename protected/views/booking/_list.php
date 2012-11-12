@@ -49,7 +49,9 @@ if (!$reschedule) {
 			// Event has been marked as deleted. This is a conflicted state, but for now the best thing we can do is skip it
 			continue;
 		}
-		$patient = $thisOperation->event->episode->patient;
+		// Use nopas flag as temporary work around for merged patients
+		$patient_id = $thisOperation->event->episode->patient_id;
+		$patient = Patient::model()->noPas()->findByPk($patient_id);
 		$procedures = $thisOperation->procedures;
 		$procedureNames = array();
 		foreach ($procedures as $procedure) {

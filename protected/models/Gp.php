@@ -28,8 +28,12 @@
  * The followings are the available model relations:
  * @property Contact $contact
  */
-class Gp extends BaseActiveRecord
-{
+class Gp extends BaseActiveRecord {
+	
+	const UNKNOWN_SALUTATION = 'Doctor';
+	const UNKNOWN_NAME = 'The General Practitioner'; 
+	
+	public $use_pas = TRUE;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -38,6 +42,17 @@ class Gp extends BaseActiveRecord
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
+	}
+
+	/**
+	 * Suppress PAS integration
+	 * @return Gp
+	 */
+	public function noPas() {
+		// Clone to avoid singleton problems with use_pas flag
+		$model = clone $this;
+		$model->use_pas = FALSE;
+		return $model;
 	}
 
 	/**
@@ -109,7 +124,17 @@ class Gp extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-
+	
+	/**
+	* Pass through use_pas flag to allow pas supression
+	* @see CActiveRecord::instantiate()
+	*/
+	protected function instantiate($attributes) {
+			$model = parent::instantiate($attributes);
+			$model->use_pas = $this->use_pas;
+			return $model;
+	}
+	
 	/**
 	 * Raise event to allow external data sources to update gp
 	 * @see CActiveRecord::afterFind()

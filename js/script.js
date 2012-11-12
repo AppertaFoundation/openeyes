@@ -24,7 +24,12 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 		data: {'selected_firm_id': firmId },
 		success: function(data) {
 			if (data.match(/change-firm-succeeded/)) {
-				window.location.href = baseUrl;
+				url = window.location.href
+				if (m = url.match(/firm_id=[0-9]+/)) {
+					url = url.replace(m[0],'firm_id='+firmId);
+				}
+				window.location.href = url;
+				return false;
 			} else {
 				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
 			}
@@ -39,11 +44,11 @@ $(document).ready(function(){
 		var whiteBox = $(this).parents('.whiteBox');
 		
 		if(sprite.hasClass('hide')) {
-			whiteBox.children('.data_row').slideUp("fast",'fast');
+			whiteBox.children('.data_row').slideUp("fast");
 			sprite.removeClass('hide');
 			sprite.addClass('show');
 		} else {
-			whiteBox.children('.data_row').slideDown("fast",'fast');
+			whiteBox.children('.data_row').slideDown("fast");
 			sprite.removeClass('show');
 			sprite.addClass('hide');
 		}
