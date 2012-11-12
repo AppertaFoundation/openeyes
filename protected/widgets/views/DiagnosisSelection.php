@@ -20,7 +20,7 @@
 					$.ajax({
 						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
 						'type':'GET',
-						'data':{'term': request.term, 'restrict': 'ophthalmic'},
+						'data':{'term': request.term, 'code': 'OPH'},
 						'success':function(data) {
 							data = $.parseJSON(data);
 							response(data);

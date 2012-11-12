@@ -585,7 +585,7 @@ class Patient extends BaseActiveRecord {
 	public function getSystemicDiagnoses() {
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
-		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 1';
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id and specialty_id is null';
 		$criteria->order = 'date asc';
 
 		return SecondaryDiagnosis::model()->findAll($criteria);
@@ -594,7 +594,10 @@ class Patient extends BaseActiveRecord {
 	public function getOphthalmicDiagnoses() {
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
-		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 0';
+		
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id join specialty on disorder.specialty_id = specialty.id';
+		$criteria->compare('specialty.code', 'OPH');
+		
 		$criteria->order = 'date asc';
 
 		return SecondaryDiagnosis::model()->findAll($criteria);

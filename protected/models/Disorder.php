@@ -83,6 +83,7 @@ class Disorder extends BaseActiveRecord
 			'commonOphthalmicDisorders' => array(self::HAS_MANY, 'CommonOphthalmicDisorder', 'disorder_id'),
 			'commonSystemicDisorders' => array(self::HAS_MANY, 'CommonSystemicDisorder', 'disorder_id'),
 			'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
+			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
 

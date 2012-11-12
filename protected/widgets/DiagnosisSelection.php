@@ -24,6 +24,8 @@ class DiagnosisSelection extends BaseCWidget {
 	public $form;
 	public $label;
 	public $restrict;
+	//specialty code to restrict diagnosis list by
+	public $code;
 	public $default = true;
 	public $layout = false;
 	public $callback = false;

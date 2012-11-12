@@ -48,14 +48,19 @@ class DisorderController extends Controller {
 				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
 			}
 			$criteria->order = 'term';
-			$criteria->params = $params;
+			
 			// Limit results
 			$criteria->limit = '200';
-			if (@$_GET['restrict'] == 'systemic') {
-				$criteria->addCondition('systemic = 1');
-			} else if (@$_GET['restrict'] == 'ophthalmic') {
-				$criteria->addCondition('systemic = 0');
+			if (@$_GET['code']) {
+				$criteria->join = 'join specialty on specialty_id = specialty.id AND specialty.code = :specode';
+				$params[':specode'] = $_GET['code'];
 			}
+			else {
+				$criteria->addCondition('specialty_id is null');
+			}
+			
+			$criteria->params = $params;
+			
 			$disorders = Disorder::model()->findAll($criteria);
 			$return = array();
 			foreach($disorders as $disorder) {
