@@ -280,6 +280,12 @@ class PatientController extends BaseController
 		);
 		foreach($search_terms as $search_term => $search_value) {
 			if(isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
+				
+				// Pad hos_num
+				if($search_term == 'hos_num') {
+					$search_value = sprintf('%07s',$search_value);
+				}
+				
 				$search_terms[$search_term] = $search_value;
 			}
 		}
