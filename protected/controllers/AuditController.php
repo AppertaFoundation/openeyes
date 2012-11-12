@@ -137,12 +137,12 @@ class AuditController extends BaseController
 
 		if (@$_REQUEST['date_from']) {
 			$date_from = Helper::convertNHS2MySQL($_REQUEST['date_from']).' 00:00:00';
-			$criteria->addCondition("created_date >= '$date_from'");
+			$criteria->addCondition("`t`.created_date >= '$date_from'");
 		}
 
 		if (@$_REQUEST['date_to']) {
 			$date_to = Helper::convertNHS2MySQL($_REQUEST['date_to']).' 23:59:59';
-			$criteria->addCondition("created_date <= '$date_to'");
+			$criteria->addCondition("`t`.created_date <= '$date_to'");
 		}
 
 		if (@$_REQUEST['hos_num']) {
@@ -171,7 +171,7 @@ class AuditController extends BaseController
 
 		$data = array();
 		
-		$data['total_items'] = Audit::model()->count($criteria);
+		$data['total_items'] = count(Audit::model()->findAll());
 
 		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;
