@@ -899,9 +899,10 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatre_display, #waitinglist_display { padding:10px; }
 #search-options #main-search h3 { padding-left:10px; }
 #search-options #main-search tbody td { padding-bottom:20px;}
-#search-options #extra-search { padding:5px 10px; background:#ddd; }
-#search-options #extra-search .data label { font-size:13px; position:relative; top:-1px; }
-#search-options #extra-search .data > .group { background: #e8e8e8; }
+#search-options .extra-search { padding:5px 10px; background:#ddd; }
+#search-options .extra-search .data label { font-size:13px; position:relative; top:-1px; }
+#search-options .extra-search .data > .group { background: #e8e8e8; }
+#lower_pagination .extra-search { padding:5px 10px; background:#ddd; margin-top: -15px; }
 /* results */
 #theatre_display #theatreList { margin-top:15px; }
 #theatreList > div.fullBox { background:#888; color: #fff; padding:5px 10px; }
