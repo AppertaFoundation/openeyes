@@ -39,3 +39,5 @@ protected/commands/SetEpisodeStatusCommand.php
 protected/commands/ImportEpatientlettersCommand.php
 tags
 index.php
+protected/views/patient/custom/info/php
+
