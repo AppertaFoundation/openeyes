@@ -194,7 +194,7 @@ class Episode extends BaseActiveRecord
 			->from('episode e')
 			->join('firm f', 'e.firm_id = f.id')
 			->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-			->where('e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+			->where('e.deleted = False AND e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
 				':patient_id' => $patientId, ':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
 			))
 			->queryRow();
