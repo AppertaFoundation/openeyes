@@ -80,7 +80,7 @@
 								</tbody>
 							</table>
 						</div>
-						<div id="extra-search" class="eventDetail clearfix">
+						<div class="extra-search eventDetail clearfix">
 							<label for="date_from">
 								From:
 							</label>
@@ -133,6 +133,12 @@
 					<input type="hidden" id="previous_hos_num" value="<?php echo @$_POST['hos_num']?>" />
 				</form>
 				<div id="searchResults" class="whiteBox">
+				</div>
+				<div id="lower_pagination">
+					<div class="extra-search eventDetail clearfix">
+						<div class="whiteBox pagination" style="display: none; margin-top: 10px;">
+						</div>
+					</div>
 				</div>
 			</div>
 			<div style="float: right; margin-right: 18px;">
