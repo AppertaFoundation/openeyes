@@ -11,7 +11,7 @@
 					$.ajax({
 						'url': '" . Yii::app()->createUrl('/disorder/autocomplete') . "',
 						'type':'GET',
-						'data':{'term': request.term, 'restrict': '".$restrict."'},
+						'data':{'term': request.term, 'code': '".$code."'},
 						'success':function(data) {
 							data = $.parseJSON(data);
 

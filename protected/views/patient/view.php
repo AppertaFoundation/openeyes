@@ -348,10 +348,28 @@ if (!empty($address)) {
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
 					<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
-					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
-					<?php $this->renderPartial('_systemic_diagnoses')?>
-					<?php $this->renderPartial('_cvi_status')?>
-					<?php $this->renderPartial('_allergies'); ?>
+					<?php
+					try {
+						echo $this->renderPartial('custom/info');
+					} catch (Exception $e) {
+						// This is our default layout
+						$codes = $this->patient->getSpecialtyCodes();
+						// specialist diagnoses
+						foreach ($codes as $code) {
+							try {
+								echo $this->renderPartial('_' . $code . '_diagnoses');
+							} catch (Exception $e) {}
+						}
+						$this->renderPartial('_systemic_diagnoses');
+						// specialist extra data
+						foreach ($codes as $code) {
+							try {
+								echo $this->renderPartial('_' . $code . '_info');
+							} catch (Exception $e) {}
+						}
+						$this->renderPartial('_allergies'); 
+					}
+					?>
 				</div> <!-- .halfColumn -->
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">

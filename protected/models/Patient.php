@@ -585,7 +585,7 @@ class Patient extends BaseActiveRecord {
 	public function getSystemicDiagnoses() {
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
-		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 1';
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id and specialty_id is null';
 		$criteria->order = 'date asc';
 
 		return SecondaryDiagnosis::model()->findAll($criteria);
@@ -594,10 +594,30 @@ class Patient extends BaseActiveRecord {
 	public function getOphthalmicDiagnoses() {
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
-		$criteria->join = 'join disorder on t.disorder_id = disorder.id and systemic = 0';
+		
+		$criteria->join = 'join disorder on t.disorder_id = disorder.id join specialty on disorder.specialty_id = specialty.id';
+		$criteria->compare('specialty.code', 'OPH');
+		
 		$criteria->order = 'date asc';
 
 		return SecondaryDiagnosis::model()->findAll($criteria);
+	}
+	
+	/*
+	 * returns the specialty codes that are relevant to the patient. Determined by looking at the diagnoses
+	 * related to the patient.
+	 * 
+	 * @return Array specialty codes 
+	 */
+	public function getSpecialtyCodes() {
+		$codes = array();
+		if (isset(Yii::app()->params['specialty_codes'])) {
+			$codes = Yii::app()->params['specialty_codes'];
+		}
+		else {
+			// TODO: perform dynamic calculation of specialty codes based on the episodes and/or events assigned to patient
+		}
+		return $codes;
 	}
 
 	public function addDiagnosis($disorder_id, $eye_id=false, $date=false) {

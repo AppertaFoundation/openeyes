@@ -149,5 +149,6 @@ return array(
 				'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 				'default_site_code' => '',
 				'erod_lead_time_weeks' => 3,
+				'specialty_codes' => array(),
 		)
 );

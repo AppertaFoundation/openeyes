@@ -41,7 +41,8 @@
 							<?php $form->widget('application.widgets.DiagnosisSelection',array(
 									'field' => 'ophthalmic_disorder_id',
 									'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-									'restrict' => 'ophthalmic',
+									//'restrict' => 'ophthalmic',
+									'code' => 'OPH',
 									'default' => false,
 									'layout' => 'patientSummary',
 									'loader' => 'add_ophthalmic_diagnosis_loader',
