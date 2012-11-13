@@ -353,8 +353,20 @@ if (!empty($address)) {
 						echo $this->renderPartial('custom/info');
 					} catch (Exception $e) {
 						// This is our default layout
-						$this->renderPartial('_ophthalmic_diagnoses');
+						$codes = $this->patient->getSpecialtyCodes();
+						// specialist diagnoses
+						foreach ($codes as $code) {
+							try {
+								echo $this->renderPartial('_' . $code . '_diagnoses');
+							} catch (Exception $e) {}
+						}
 						$this->renderPartial('_systemic_diagnoses');
+						// specialist extra data
+						foreach ($codes as $code) {
+							try {
+								echo $this->renderPartial('_' . $code . '_info');
+							} catch (Exception $e) {}
+						}
 						$this->renderPartial('_allergies'); 
 					}
 					?>

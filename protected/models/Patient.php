@@ -602,6 +602,23 @@ class Patient extends BaseActiveRecord {
 
 		return SecondaryDiagnosis::model()->findAll($criteria);
 	}
+	
+	/*
+	 * returns the specialty codes that are relevant to the patient. Determined by looking at the diagnoses
+	 * related to the patient.
+	 * 
+	 * @return Array specialty codes 
+	 */
+	public function getSpecialtyCodes() {
+		$codes = array();
+		if (isset(Yii::app()->params['specialty_codes'])) {
+			$codes = Yii::app()->params['specialty_codes'];
+		}
+		else {
+			// TODO: perform dynamic calculation of specialty codes based on the episodes and/or events assigned to patient
+		}
+		return $codes;
+	}
 
 	public function addDiagnosis($disorder_id, $eye_id=false, $date=false) {
 		if (!$date) {
