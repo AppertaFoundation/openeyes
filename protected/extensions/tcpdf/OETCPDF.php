@@ -27,6 +27,8 @@ class OETCPDF extends TCPDF {
 	protected $docref;
 	
 	protected $watermark;
+	
+	protected $rollover;
 
 	/**
 	 * @var $body_start Default Y position for body of letter to start on the page
@@ -80,6 +82,10 @@ class OETCPDF extends TCPDF {
 		$this->watermark = $watermark;
 	}
 	
+	public function setRollover($text) {
+		$this->rollover = trim($text);
+	}
+	
 	/**
 	 * @see TCPDF::Footer()
 	 */
@@ -123,6 +129,11 @@ class OETCPDF extends TCPDF {
 			$image_path = Yii::app()->getBasePath() . '/../img';
 			$this->Image($image_path.'/_print/letterhead_seal.jpg', 15, 10, 25);
 			$this->Image($image_path.'/_print/letterhead_Moorfields_NHS.jpg', 95, 12, 100);
+		} else {
+			if($this->rollover) {
+				$this->setMargins(15, 18);
+				$this->writeHTMLCell(0, 0, 16, 12, $this->rollover, 0, 'L');
+			}
 		}
 		if($this->watermark) {
 			$this->StartTransform();
