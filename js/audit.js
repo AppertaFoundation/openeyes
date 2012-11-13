@@ -17,7 +17,12 @@ AuditLog.prototype = {
 
 		this.running = true;
 
-		var last_id = $('#auditListData').children('li').attr('id').match(/[0-9]+/);
+		last_id = null;
+		$('#auditListData').children('li').map(function() {
+			if (last_id == null && $(this).attr('id') != 'undefined') {
+				last_id = $(this).attr('id').match(/[0-9]+/);
+			}
+		});
 
 		$.ajax({
 			'type': 'GET',
