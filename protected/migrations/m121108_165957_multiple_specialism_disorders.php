@@ -16,7 +16,7 @@ class m121108_165957_multiple_specialism_disorders extends CDbMigration
 	public function down()
 	{
 		$this->addColumn("disorder", "systemic", "tinyint(1) unsigned DEFAULT '0'");
-		$this->update("disorder", array("systemic"=> 1), "specialty is NULL");
+		$this->update("disorder", array("systemic"=> 1), "specialty_id is NULL");
 		$this->dropForeignKey("disorder_specialty_fk", "disorder");
 		$this->dropColumn("disorder", "specialty_id");
 	}
