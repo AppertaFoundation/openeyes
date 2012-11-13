@@ -229,7 +229,7 @@ class PatientController extends BaseController
 		), true);
 
 		$oeletter = new OELetter($patient->addressname."\n".implode("\n",$patient->correspondAddress->letterarray),$site->name."\n".implode("\n",$site->letterarray)."\nTel: ".$site->telephone.($site->fax ? "\nFax: ".$site->fax : ''));
-		$oeletter->setFont('helvetica','10');
+		$oeletter->setBarcode('E:'.$operation->event_id);
 		$oeletter->addBody($body);
 
 		$pdf_print->addLetter($oeletter);
@@ -244,6 +244,7 @@ class PatientController extends BaseController
 
 		$oeletter = new OELetter;
 		$oeletter->setFont('helvetica','10');
+		$oeletter->setBarcode('E:'.$operation->event_id);
 		$oeletter->addBody($body);
 
 		$pdf_print->addLetter($oeletter);
@@ -268,95 +269,27 @@ class PatientController extends BaseController
 		}
 	}
 
-	/**
-	 * Lists all models.
-	 */
-	public function actionIndex()
-	{
-		$dataProvider = new CActiveDataProvider('Patient');
-		$this->render('index', array(
-			'dataProvider' => $dataProvider,
-		));
-	}
-
-	/**
-	 * Display a form to use for searching models
-	 */
-	public function actionSearch()
-	{
-		if (isset($_POST['Patient'])) {
-			$this->forward('results');
-		} else {
-			$model = new Patient;
-			$this->render('search', array(
-				'model' => $model,
-			));
-		}
-	}
-
-	/**
-	 * Display results based on a search submission
-	 */
-	public function actionResults($page=false)
-	{
-		if (!empty($_POST)) {
-			foreach ($_POST['Patient'] as $key => $value) {
-				$_POST['Patient'][$key] = trim($value);
+	public function actionSearch() {
+		
+		// Check that we have a valid set of search criteria
+		$search_terms = array(
+				'hos_num' => null,
+				'nhs_num' => null,
+				'first_name' => null,
+				'last_name' => null,
+		);
+		foreach($search_terms as $search_term => $search_value) {
+			if(isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
+				$search_terms[$search_term] = $search_value;
 			}
-
-			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name']) && (!@$_POST['Patient']['nhs_num'] || preg_match('/[^\d]/', $_POST['Patient']['nhs_num']))) {
-				$audit = new Audit;
-				$audit->action = "search-error";
-				$audit->target_type = "search";
-				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
-				$audit->save();
-				setcookie('patient-search-minimum-criteria','1',0,'/');
-				$this->redirect(array('/patient/results/error'));
-			}
-
-			$_GET = $_POST['Patient'];
-
-			if ($_GET['hos_num'] || $_GET['nhs_num']) {
-				if ($_GET['hos_num']) {
-					$_GET['hos_num'] = str_pad($_GET['hos_num'], 7, '0', STR_PAD_LEFT);
-				}
-				$_GET['sort_by'] = 0;
-				$_GET['sort_dir'] = 0;
-				$_GET['page_num'] = 1;
-
-				$this->patientSearch();
-
-				Yii::app()->end();
-			}
-
-			if (!$_GET['nhs_num']) $_GET['nhs_num'] = '0';
-			if (!$_GET['first_name']) $_GET['first_name'] = '0';
-			if (!$_GET['last_name']) $_GET['last_name'] = 0;
-
-			setcookie('patient-search-minimum-criteria','1',0,'/');
-			$this->redirect(array("/patient/results/{$_GET['first_name']}/{$_GET['last_name']}/{$_GET['nhs_num']}/0/0/0/1"));
 		}
-
-		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
-			$audit = new Audit;
-			$audit->action = "search-error";
-			$audit->target_type = "search";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = var_export($_POST['Patient'],true) . ": Error";
-			$audit->save();
-			$this->redirect(array('/patient/results/error'));
+		if(!$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
+			Yii::app()->user->setFlash('warning.invalid-search', 'Please enter a valid search.');
+			$this->redirect('/');
 		}
-
-		$this->patientSearch();
-	}
-
-	function patientSearch() {
-		if (!isset($_GET['sort_by'])) {
-			return $this->redirect(Yii::app()->baseUrl.'/');
-		}
-
-		switch ($_GET['sort_by']) {
+		$search_terms = CHtml::encodeArray($search_terms);
+		
+		switch (@$_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
 				break;
@@ -378,24 +311,27 @@ class PatientController extends BaseController
 			case 6:
 				$sort_by = 'nhs_num*1';
 				break;
+			default:
+				$sort_by = 'hos_num*1';
 		}
-
-		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
-
+		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+		$page_num = (integer)@$_GET['page_num'];
+		$page_size = 20;
+		
 		$model = new Patient();
-		$model->attributes = $this->collateGetData();
-		$pageSize = 20;
+		$model->hos_num = $search_terms['hos_num'];
+		$model->nhs_num = $search_terms['nhs_num'];
 		$dataProvider = $model->search(array(
-			'currentPage' => (integer)@$_GET['page_num'],
-			'pageSize' => $pageSize,
+			'currentPage' => $page_num,
+			'pageSize' => $page_size,
 			'sortBy' => $sort_by,
 			'sortDir'=> $sort_dir,
-			'first_name' => @$_GET['first_name'],
-			'last_name' => @$_GET['last_name'],
+			'first_name' => $search_terms['first_name'],
+			'last_name' => $search_terms['last_name'],
 		));
 		$nr = $model->search_nr(array(
-			'first_name' => @$_GET['first_name'],
-			'last_name' => @$_GET['last_name'],
+			'first_name' => $search_terms['first_name'],
+			'last_name' => $search_terms['last_name'],
 		));
 
 		if($nr == 0) {
@@ -403,44 +339,38 @@ class PatientController extends BaseController
 			$audit->action = "search-results";
 			$audit->target_type = "search";
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
+			$audit->data = implode(',',$search_terms) ." : No results";
 			$audit->save();
-			$this->redirect(array('/patient/no-results'));
+			$message = 'Sorry, no results ';
+			if($search_terms['hos_num']) {
+				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
+			} else if($search_terms['nhs_num']) {
+				$message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
+			} else if($search_terms['first_name'] && $search_terms['last_name']) {
+				$message .= 'for Patient Name <strong>"'.$search_terms['first_name'] . ' ' . $search_terms['last_name'].'"</strong>';
+			} else {
+				$message .= 'found for your search.';
+			}
+			Yii::app()->user->setFlash('warning.no-results', $message);
+			$this->redirect('/');
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
-				$this->redirect(array('/patient/view/'.$item->id));
+				$this->redirect(array('patient/view/' . $item->id));
 			}
 		} else {
-			$pages = ceil($nr/$pageSize);
+			$pages = ceil($nr/$page_size);
 			$this->render('results', array(
-				'dataProvider' => $dataProvider,
+				'data_provider' => $dataProvider,
 				'pages' => $pages,
-				'items_per_page' => $pageSize,
+				'page_num' => $page_num,
+				'items_per_page' => $page_size,
 				'total_items' => $nr,
-				'first_name' => $_GET['first_name'],
-				'last_name' => $_GET['last_name'],
-				'nhs_num' => $_GET['nhs_num'],
-				'gender' => $_GET['gender'],
-				'pagen' => (integer)$_GET['page_num'],
-				'sort_by' => (integer)$_GET['sort_by'],
-				'sort_dir' => (integer)$_GET['sort_dir']
+				'search_terms' => $search_terms,
+				'sort_by' => (integer)@$_GET['sort_by'],
+				'sort_dir' => (integer)@$_GET['sort_dir']
 			));
 		}
-	}
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model = new Patient('search');
-		$model->unsetAttributes();	// clear any default values
-		if (isset($_GET['Patient']))
-			$model->attributes = $_GET['Patient'];
-
-		$this->render('admin', array(
-			'model' => $model,
-		));
+		
 	}
 
 	public function actionSummary()
@@ -663,39 +593,6 @@ class PatientController extends BaseController
 		$model = new Patient;
 		$model->attributes = $data;
 		return $model->search();
-	}
-
-	/**
-	 * Returns the $_REQUIEST['Patient'] values plus the dob day, month and year appended together.
-	 *
-	 * @return array
-	 */
-	public function collatePostData()
-	{
-		$data = $_POST['Patient'];
-
-		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
-			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
-		}
-
-		return $data;
-	}
-
-	public function collateGetData()
-	{
-		$data = $_GET;
-
-		if (isset($_GET['dob_day']) && isset($_GET['dob_month']) && isset($_GET['dob_year']) && $_GET['dob_day'] && $_GET['dob_month'] && $_GET['dob_year']) {
-			$data['dob'] = $_GET['dob_year'] . '-' . $_GET['dob_month'] . '-' . $_GET['dob_day'];
-		}
-
-		foreach ($data as $key => $value) {
-			if ($value == '0') {
-				$data[$key] = '';
-			}
-		}
-
-		return $data;
 	}
 
 	public function getTemplateName($action, $eventTypeId)

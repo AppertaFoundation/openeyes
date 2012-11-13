@@ -137,19 +137,23 @@ class AuditController extends BaseController
 
 		if (@$_REQUEST['date_from']) {
 			$date_from = Helper::convertNHS2MySQL($_REQUEST['date_from']).' 00:00:00';
-			$criteria->addCondition("created_date >= '$date_from'");
+			$criteria->addCondition("`t`.created_date >= '$date_from'");
 		}
 
 		if (@$_REQUEST['date_to']) {
 			$date_to = Helper::convertNHS2MySQL($_REQUEST['date_to']).' 23:59:59';
-			$criteria->addCondition("created_date <= '$date_to'");
+			$criteria->addCondition("`t`.created_date <= '$date_to'");
 		}
 
 		if (@$_REQUEST['hos_num']) {
-			if ($patient = Patient::model()->find('hos_num=?',array(@$_REQUEST['hos_num']))) {
+			if ($patient = Patient::model()->find('hos_num=?',array($_REQUEST['hos_num']))) {
 				$criteria->addCondition('patient_id='.$patient->id);
 			} else {
-				$criteria->addCondition('patient_id=0');
+				if ($patient = Patient::model()->find('hos_num=?',array(str_pad($_REQUEST['hos_num'],7,'0',STR_PAD_LEFT)))) {
+					$criteria->addCondition('patient_id='.$patient->id);
+				} else {
+					$criteria->addCondition('patient_id=0');
+				}
 			}
 		}
 
@@ -167,7 +171,7 @@ class AuditController extends BaseController
 
 		$data = array();
 		
-		$data['total_items'] = Audit::model()->count($criteria);
+		$data['total_items'] = count(Audit::model()->findAll());
 
 		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;
@@ -179,6 +183,12 @@ class AuditController extends BaseController
 
 		$data['items'] = Audit::model()->findAll($criteria);
 		$data['pages'] = ceil($data['total_items'] / $this->items_per_page);
+		if ($data['pages'] <1) {
+			$data['pages'] = 1;
+		}
+		if ($page > $data['pages']) {
+			$page = $data['pages'];
+		}
 		if (!$id) {
 			$data['page'] = $page;
 		}

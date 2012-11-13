@@ -20,8 +20,10 @@
 class ModuleAPI {
 	
 	static public function getmodel($module, $model) {
-		Yii::import('application.modules.'.$module.'.models.*');
-		return new $model;
+		if (isset(Yii::app()->modules[$module])) {
+			Yii::import('application.modules.'.$module.'.models.*');
+			return new $model;
+		}
 	}
 
 }

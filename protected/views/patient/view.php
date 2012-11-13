@@ -347,9 +347,7 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<?php if(!$this->patient->isDeceased() || $this->patient->hasLegacyLetters()) {?>
-						<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
-					<?php }?>
+					<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
 					<?php $this->renderPartial('_systemic_diagnoses')?>
 					<?php $this->renderPartial('_cvi_status')?>

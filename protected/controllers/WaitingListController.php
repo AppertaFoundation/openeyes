@@ -311,6 +311,7 @@ class WaitingListController extends BaseController
 				'emergencyList' => false,
 		), true);
 		$letter = new OELetter();
+		$letter->setBarcode('E:'.$operation->event_id);
 		$letter->setFont('helvetica','10');
 		$letter->addBody($body);
 		$pdf->addLetter($letter);
@@ -331,6 +332,7 @@ class WaitingListController extends BaseController
 				'changeContact' => $operation->waitingListContact,
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
 		$pdf->addLetter($letter);
 	}
 
@@ -349,6 +351,7 @@ class WaitingListController extends BaseController
 				'changeContact' => $operation->waitingListContact,
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
 		$pdf->addLetter($letter);
 	}
 
@@ -378,6 +381,7 @@ class WaitingListController extends BaseController
 				'consultantName' => $this->getConsultantName($operation),
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
 		$pdf->addLetter($letter);
 
 		// Patient letter
@@ -388,6 +392,7 @@ class WaitingListController extends BaseController
 				'consultantName' => $this->getConsultantName($operation),
 		), true);
 		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
 		$pdf->addLetter($letter);
 
 	}

@@ -144,6 +144,8 @@
 			disableButtons();
 			$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
 
+			$('#page').val(1);
+
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
 				'type': 'POST',
@@ -185,5 +187,13 @@
 			}
 			return false;
 		});
+	});
+
+	$('#date_from').bind('change',function() {
+		$('#date_to').datepicker('option','minDate',$('#date_from').datepicker('getDate'));
+	});
+
+	$('#date_to').bind('change',function() {
+		$('#date_from').datepicker('option','maxDate',$('#date_to').datepicker('getDate'));
 	});
 </script>
