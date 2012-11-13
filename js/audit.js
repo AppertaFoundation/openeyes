@@ -3,11 +3,11 @@ function AuditLog() {if (this.init) this.init.apply(this, arguments); }
 
 AuditLog.prototype = {
 	init : function() {
-		this.refresh_rate = 1000;
+		this.refresh_rate = 5000;
 		this.data = $('#auditListData');
 		this.run = true;
 
-		setTimeout('auditLog.refresh();',this.refresh_rate);
+		setTimeout('auditLog.refresh();',1000);
 	},
 	refresh : function() {
 		if (!this.run) {
@@ -43,7 +43,7 @@ AuditLog.prototype = {
 	},
 	showLines : function() {
 		if (this.lines.length == 0) {
-			setTimeout('auditLog.refresh();',this.refresh_rate);
+			setTimeout('auditLog.refresh();',auditLog.refresh_rate);
 		} else {
 			var line = this.lines.pop();
 
@@ -55,6 +55,8 @@ AuditLog.prototype = {
 				line.attr('class',line.attr('class').replace(/Odd/,'Even'));
 			}
 
+			var lines = this.lines;
+
 			line.slideToggle('fast',function() {
 				var last_extra = auditLog.data.children('li').last();
 				if (!last_extra.is(':hidden')) {
@@ -62,14 +64,22 @@ AuditLog.prototype = {
 						$(this).remove();
 						auditLog.data.children('li').last().slideToggle('fast',function() {
 							$(this).remove();
-							auditLog.showLines();
+							if (lines == 0) {
+								setTimeout('auditLog.refresh();',1000);
+							} else {
+								auditLog.showLines();
+							}
 						});
 					});
 				} else {
 					last_extra.remove();
 					auditLog.data.children('li').last().slideToggle('fast',function() {
 						$(this).remove();
-						auditLog.showLines();
+						if (lines == 0) {
+							setTimeout('auditLog.refresh();',1000);
+						} else {
+							auditLog.showLines();
+						}
 					});
 				}
 			});
