@@ -145,7 +145,9 @@ class SiteController extends BaseController
 		$audit->target_type = "search";
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
-		Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
+		if (isset($query)) {
+			Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
+		}
 		$this->redirect('/');
 	}
 
