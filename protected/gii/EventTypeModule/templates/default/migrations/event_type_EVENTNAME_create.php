@@ -7,12 +7,12 @@ class m<?php if (isset($migrationid)) echo $migrationid; ?>_event_type_<?php ech
 		// --- EVENT TYPE ENTRIES ---
 
 		// create an event_type entry for this event type name if one doesn't already exist
-		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow()) {
+		if (!$this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow()) {
 			$group = $this->dbConnection->createCommand()->select('id')->from('event_group')->where('name=:name',array(':name'=>'<?php echo $this->eventGroupName; ?>'))->queryRow();
 			$this->insert('event_type', array('class_name' => '<?php echo $this->moduleID;?>', 'name' => '<?php echo $this->moduleSuffix; ?>','event_group_id' => $group['id']));
 		}
 		// select the event_type id for this event type name
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow();
 
 		// --- ELEMENT TYPE ENTRIES ---
 
@@ -169,7 +169,7 @@ if (isset($field['extra_report'])) {?>
 <?php }} ?>
 
 		// --- delete event entries ---
-		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('name=:name', array(':name'=>'<?php echo $this->moduleSuffix; ?>'))->queryRow();
+		$event_type = $this->dbConnection->createCommand()->select('id')->from('event_type')->where('class_name=:class_name', array(':class_name'=>'<?php echo $this->moduleID; ?>'))->queryRow();
 
 		foreach ($this->dbConnection->createCommand()->select('id')->from('event')->where('event_type_id=:event_type_id', array(':event_type_id'=>$event_type['id']))->queryAll() as $row) {
 			$this->delete('audit', 'event_id='.$row['id']);

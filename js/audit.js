@@ -24,9 +24,15 @@ AuditLog.prototype = {
 			}
 		});
 
+		var user_id = $('#previous_user_id').val();
+		if (user_id == undefined) {
+			// user wasn't found, so return as there won't ever be any entries
+			return;
+		}
+
 		$.ajax({
 			'type': 'GET',
-			'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+$('#previous_user_id').val()+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
+			'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+user_id+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
 			'success': function(html) {
 				if ($.trim(html).length >0) {
 					auditLog.data.html(html + auditLog.data.html());
