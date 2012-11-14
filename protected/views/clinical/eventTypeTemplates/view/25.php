@@ -176,7 +176,7 @@ foreach ($elements as $element) {
 
 	<div>
 		<h4>Admission Time</h4>
-		<div class="eventHighlight">
+		<div class="eventHighlight" style="margin-left: 37.2em;">
 			<h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 		</div>
 	</div>
