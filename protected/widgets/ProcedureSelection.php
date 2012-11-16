@@ -21,7 +21,6 @@ class ProcedureSelection extends BaseCWidget {
 	public $subsections;
 	public $procedures;
 	public $removed_stack;
-	public $newRecord;
 	public $selected_procedures;
 	public $form;
 	public $durations = false;
