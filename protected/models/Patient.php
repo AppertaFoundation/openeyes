@@ -360,6 +360,23 @@ class Patient extends BaseActiveRecord {
 
 		return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
 	}
+	
+	/**
+	 * returns the ophthalmic information object for this patient (creates a default one if one does not exist - but does not save it)
+	 * 
+	 * @return PatientOphInfo
+	 */
+	public function getOphInfo() {
+		$info = PatientOphInfo::model()->find('patient_id = ?', array($this->id));
+		if (!$info) {
+			$info = new PatientOphInfo();
+			$info->patient_id = $this->id;
+			// only interested in yyyy mm dd for the cvi date
+			$info->cvi_status_date = substr($this->created_date, 0 , 10);
+			$info->cvi_status_id = 1;
+		}
+		return $info;
+	}
 
 	/* Patient as subject, eg man, woman, boy girl */
 
@@ -629,10 +646,15 @@ class Patient extends BaseActiveRecord {
 			throw new Exception('Disorder not found: '.$disorder_id);
 		}
 
-		$type = $disorder->systemic ? 'systemic' : 'ophthalmic';
+		if ($disorder->specialty_id) {
+			$type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
+		}
+		else {
+			$type = 'sys';
+		}
 
 		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
-			$action = "add-$type-diagnosis";
+			$action = "add-diagnosis-$type";
 			$sd = new SecondaryDiagnosis;
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
@@ -640,13 +662,13 @@ class Patient extends BaseActiveRecord {
 			$sd->date = $date;
 		} else {
 			if ($sd->date == $date && (($sd->eye_id == 1 and $eye_id == 2) || ($sd->eye_id == 2 && $eye_id == 1))) {
-				$action = "update-$type-diagnosis";
+				$action = "update-diagnosis-$type";
 				$sd->eye_id = 3;
 				$sd->date = $date;
 			} else {
 				if ($sd->eye_id == $eye_id) return;
 
-				$action = "add-$type-diagnosis";
+				$action = "add-diagnosis-$type";
 				$sd = new SecondaryDiagnosis;
 				$sd->patient_id = $this->id;
 				$sd->disorder_id = $disorder_id;
@@ -693,7 +715,37 @@ class Patient extends BaseActiveRecord {
 		$audit->data = $audit_attributes;
 		$audit->save();
 	}
-
+	
+	/**
+	 * update the patient's ophthalmic information
+	 * 
+	 * @param PatientOphInfoCviStatus $cvi_status
+	 * @param string $cvi_status_date - fuzzy date string of the format yyyy-mm-dd
+	 */
+	public function editOphInfo($cvi_status, $cvi_status_date) {
+		$oph_info = $this->getOphInfo();
+		if ($oph_info->id) {
+			$action = 'update-ophinfo';
+		}
+		else {
+			$action = 'set-ophinfo';
+		}
+		
+		$oph_info->cvi_status_id = $cvi_status->id;
+		$oph_info->cvi_status_date = $cvi_status_date;
+		
+		$oph_info->save();
+		
+		$audit = new Audit;
+		$audit->action = $action;
+		$audit->target_type = "patient";
+		$audit->patient_id = $this->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->data = $oph_info->getAuditAttributes();
+		$audit->save();
+		
+	}
+	
 	public function getHpc() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);

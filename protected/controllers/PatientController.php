@@ -283,10 +283,11 @@ class PatientController extends BaseController
 				$search_terms[$search_term] = $search_value;
 			}
 		}
-		if(!$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
+	/*	if(!$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
 			Yii::app()->user->setFlash('warning.invalid-search', 'Please enter a valid search.');
 			$this->redirect('/');
 		}
+		*/
 		$search_terms = CHtml::encodeArray($search_terms);
 		
 		switch (@$_GET['sort_by']) {
@@ -994,6 +995,24 @@ class PatientController extends BaseController
 	 
 		Yii::app()->session['episode_hide_status'] = $status;
 	}
+	
+	private function processDiagnosisDate() {
+		$date = $_POST['diagnosis_year'];
+		
+		if ($_POST['diagnosis_month']) {
+			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+		
+		if ($_POST['diagnosis_day']) {
+			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		} else {
+			$date .= '-00';
+		}
+		
+		return $date;
+	}
 
 	public function actionAdddiagnosis() {
 		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
@@ -1010,19 +1029,7 @@ class PatientController extends BaseController
 			throw new Exception('Unable to find patient: '.@$_POST['patient_id']);
 		}
 
-		$date = $_POST['diagnosis_year'];
-
-		if ($_POST['diagnosis_month']) {
-			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
-		} else {
-			$date .= '-00';
-		}
-
-		if ($_POST['diagnosis_day']) {
-			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
-		} else {
-			$date .= '-00';
-		}
+		$date = $this->processDiagnosisDate();
 
 		if (!$_POST['diagnosis_eye']) {
 			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($patient->id,$disorder->id))) {
@@ -1043,5 +1050,24 @@ class PatientController extends BaseController
 		$patient->removeDiagnosis(@$_GET['diagnosis_id']);
 
 		echo "success";
+	}
+	
+	public function actionEditOphInfo() {
+		$cvi_status = PatientOphInfoCviStatus::model()->findByPk(@$_POST['PatientOphInfo']['cvi_status_id']);
+
+		if (!$cvi_status) {
+			throw new Exception('invalid cvi status selection:' . @$_POST['PatientOphInfo']['cvi_status_id']);
+		}
+		
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception('Unable to find patient: '.@$_POST['patient_id']);
+		}
+		
+		$cvi_status_date = $this->processDiagnosisDate();
+		
+		$patient->editOphInfo($cvi_status, $cvi_status_date);
+		
+		$this->redirect(array('patient/view/'.$patient->id));
+		
 	}
 }
