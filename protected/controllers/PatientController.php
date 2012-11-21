@@ -1054,7 +1054,7 @@ class PatientController extends BaseController
 	
 	public function actionEditOphInfo() {
 		$cvi_status = PatientOphInfoCviStatus::model()->findByPk(@$_POST['PatientOphInfo']['cvi_status_id']);
-
+		
 		if (!$cvi_status) {
 			throw new Exception('invalid cvi status selection:' . @$_POST['PatientOphInfo']['cvi_status_id']);
 		}
@@ -1065,9 +1065,20 @@ class PatientController extends BaseController
 		
 		$cvi_status_date = $this->processDiagnosisDate();
 		
-		$patient->editOphInfo($cvi_status, $cvi_status_date);
-		
-		$this->redirect(array('patient/view/'.$patient->id));
-		
+		if (Yii::app()->request->isAjaxRequest) {
+			$test = new PatientOphInfo();
+			$test->attributes = array(
+					'cvi_status_date' => $cvi_status_date,
+					'cvi_status_id' => $cvi_status->id,
+					);
+			
+			echo CActiveForm::validate($test, null, false);
+			Yii::app()->end();
+		}
+		else {
+			$patient->editOphInfo($cvi_status, $cvi_status_date);
+			
+			$this->redirect(array('patient/view/'.$patient->id));
+		}
 	}
 }

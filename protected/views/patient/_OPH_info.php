@@ -32,13 +32,28 @@
 							<?php 
 							$form = $this->beginWidget('CActiveForm', array(
 									'id'=>'edit-oph_info',
-									'enableAjaxValidation'=>false,
+									'enableAjaxValidation'=>true,
+									'clientOptions'=>array(
+										'validateOnSubmit' => true,
+										'validateOnChange' => false,
+										'afterValidate' => "js:function(form, data, hasError) {
+										if (hasError) {
+											// mask the ajax loader image again
+											$('img.edit_oph_info_loader').hide();
+										}
+										else {
+											return true;
+										}}"
+									),
 									'htmlOptions' => array('class'=>'sliding'),
 									'action'=>array('patient/editophinfo'),
 							))?>
 							<?php echo CHtml::activeDropDownList($info, 'cvi_status_id', CHtml::listData(PatientOphInfoCviStatus::model()->findAll(array('order'=>'display_order')),'id','name')) ?>
 							
+							<?php echo $form->error($info, 'cvi_status_date'); ?>
+							
 							<?php $this->renderPartial('_diagnosis_date', array('diagnosis_date'=> $info->cvi_status_date))?>
+							
 							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 							<div align="right">
 								<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_oph_info_loader" style="display: none;" />
@@ -59,13 +74,14 @@
 		$('#btn-edit_oph_info span').removeClass('button-span-green').addClass('button-span-disabled');
 	});
 	$('button.btn_cancel_oph_info').click(function() {
-		$('#add_new_systemic_diagnosis').slideToggle('fast');
+		$('#edit_oph_info').slideToggle('fast');
 		$('#btn-edit_oph_info').attr('disabled',false);
 		$('#btn-edit_oph_info').removeClass('disabled').addClass('green');
 		$('#btn-edit_oph_info span').removeClass('button-span-disabled').addClass('button-span-green');
 		return false;
 	});
 	$('button.btn_save_oph_info').click(function() {
+		$('.errorMessage').slideUp();
 		$('img.edit_oph_info_loader').show();
 		return true;
 	});

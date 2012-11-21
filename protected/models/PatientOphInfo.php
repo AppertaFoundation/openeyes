@@ -66,9 +66,8 @@ class PatientOphInfo extends BaseActiveRecord
 		return array(
 				array('cvi_status_date, cvi_status_id', 'safe'),
 				array('cvi_status_date, cvi_status_id', 'required'),
-				// The following rule is used by search().
-				// Please remove those attributes that should not be searched.
 				array('cvi_status_id', 'safe', 'on' => 'search'),
+				array('cvi_status_date', 'OeFuzzyDateValidator'),
 		);
 	}
 
@@ -121,4 +120,5 @@ class PatientOphInfo extends BaseActiveRecord
 				'criteria' => $criteria,
 		));
 	}
+	
 }
