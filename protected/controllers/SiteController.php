@@ -117,8 +117,8 @@ class SiteController extends BaseController
 			}
 	
 			// Hospital number (assume a < 10 digit number is a hosnum)
-			if(preg_match('/^(H|Hosnum)\s*:\s*([0-9]+)$/i',$query,$matches)
-					|| preg_match('/^([0-9]{1,9})$/i',$query,$matches)) {
+			if(preg_match('/^(H|Hosnum)\s*:\s*([0-9a-zA-Z\-]+)$/i',$query,$matches)
+					|| preg_match(Yii::app()->params['hos_num_regex'],$query,$matches)) {
 				$hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
 				$this->redirect(array('patient/search', 'hos_num' => $hosnum));
 				return;
