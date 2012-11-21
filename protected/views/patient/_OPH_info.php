@@ -17,7 +17,7 @@
 									$info = $this->patient->getOPHInfo();
 									?>
 									<tr>
-										<td><?php echo $info->NHSDate('cvi_status_date'); ?></td>
+										<td><?php echo Helper::formatFuzzyDate($info->cvi_status_date); ?></td>
 										<td><?php echo $info->cvi_status->name; ?></td>
 									</tr>
 								</tbody>
@@ -52,7 +52,8 @@
 							
 							<?php echo $form->error($info, 'cvi_status_date'); ?>
 							
-							<?php $this->renderPartial('_diagnosis_date', array('diagnosis_date'=> $info->cvi_status_date))?>
+							<?php 
+							$this->renderPartial('_diagnosis_date')?>
 							
 							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 							<div align="right">

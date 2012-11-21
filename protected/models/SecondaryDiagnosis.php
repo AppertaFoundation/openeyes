@@ -108,22 +108,6 @@ class SecondaryDiagnosis extends BaseActiveRecord
 	}
 
 	public function getDateText() {
-		$year = (integer)substr($this->date,0,4);
-		$mon = (integer)substr($this->date,5,2);
-		$day = (integer)substr($this->date,8,2);
-
-		if ($year && $mon && $day) {
-			return $this->NHSDate('date');
-		}
-
-		if ($year && $mon) {
-			return date('M Y',strtotime($year.'-'.$mon.'-01 00:00:00'));
-		}
-
-		if ($year) {
-			return $year;
-		}
-
-		return 'Unknown';
+		return Helper::formatFuzzyDate($this->date);
 	}
 }

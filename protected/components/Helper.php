@@ -121,4 +121,30 @@ class Helper {
 		return $age;
 	}
 	
+	/**
+	 * generate string representation of a fuzzy date (fuzzy dates are strings of the format 
+	 * yyyy-mm-dd, where mm and dd can be 00 to indicate not being set)
+	 * 
+	 * @param string $value
+	 * @return string
+	 */
+	public static function formatFuzzyDate($value) {
+		$year = (integer)substr($value,0,4);
+		$mon = (integer)substr($value,5,2);
+		$day = (integer)substr($value,8,2);
+		
+		if ($year && $mon && $day) {
+			return self::convertMySQL2NHS($value);
+		}
+		
+		if ($year && $mon) {
+			return date('M Y',strtotime($year.'-'.$mon.'-01 00:00:00'));
+		}
+		
+		if ($year) {
+			return (string)$year;
+		}
+		
+		return 'Unknown';
+	}
 }
