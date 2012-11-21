@@ -56,7 +56,6 @@ return array(
 						'rules' => array(
 								'' => 'site/index',
 								'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-								'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 								'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
 								'transport/<page:\d+>' => 'transport/index',
 								'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
