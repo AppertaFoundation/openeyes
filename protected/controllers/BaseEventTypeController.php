@@ -14,6 +14,9 @@ class BaseEventTypeController extends BaseController
 	public $assetPath;
 	public $episode;
 	public $print_css = true;
+	public $successUri = 'default/view/';
+	public $eventIssueCreate = false;
+	public $extraViewProperties = array();
 
 	public function actionIndex()
 	{
@@ -69,6 +72,9 @@ class BaseEventTypeController extends BaseController
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type->id);
 		$criteria->order = 'display_order asc';
+		# TODO remove these when the core booking models are removed
+		$criteria->compare('id','<>29');
+		$criteria->compare('id','<>31');
 
 		$elements = array();
 
@@ -129,6 +135,9 @@ class BaseEventTypeController extends BaseController
 				$criteria->compare('event_type_id',$event_type->id);
 				$criteria->compare('`default`',1);
 				$criteria->order = 'display_order asc';
+				# TODO remove these when the core booking models are removed
+				$criteria->compare('id','<>29');
+				$criteria->compare('id','<>31');
 
 				$elements = array();
 				$element_classes = array();
@@ -227,25 +236,21 @@ class BaseEventTypeController extends BaseController
 
 					$event = Event::model()->findByPk($eventId);
 
+					if ($this->eventIssueCreate) {
+						$event->addIssue($this->eventIssueCreate);
+					}
+
 					$audit_data = array('event' => $event->getAuditAttributes());
 
 					foreach ($elements as $element) {
 						$audit_data[get_class($element)] = $element->getAuditAttributes();
 					}
 
-					$audit = new Audit;
-					$audit->action = "create";
-					$audit->target_type = "event";
-					$audit->patient_id = $event->episode->patient->id;
-					$audit->episode_id = $event->episode_id;
-					$audit->event_id = $event->id;
-					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-					$audit->data = serialize($audit_data);
-					$audit->save();
+					$event->audit('event','create',serialize($audit_data));
 
 					Yii::app()->user->setFlash('success', "{$this->event_type->name} created.");
-					$this->redirect(array('default/view/'.$eventId));
-					return;
+					$this->redirect(array($this->successUri.$eventId));
+					return $eventId;
 				}
 			}
 		}
@@ -295,22 +300,15 @@ class BaseEventTypeController extends BaseController
 		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 		$this->logActivity('viewed event');
 
-		$audit = new Audit;
-		$audit->action = "view";
-		$audit->target_type = "event";
-		$audit->patient_id = $this->event->episode->patient->id;
-		$audit->episode_id = $this->event->episode_id;
-		$audit->event_id = $this->event->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		$this->event->audit('event','view',false);
 
 		$this->title = $this->event_type->name;
 
 		$this->renderPartial(
-			'view', array(
+			'view', array_merge(array(
 			'elements' => $elements,
 			'eventId' => $id,
-			), false, true);
+			), $this->extraViewProperties), false, true);
 	}
 
 	public function actionUpdate($id) {
@@ -416,15 +414,7 @@ class BaseEventTypeController extends BaseController
 						$audit_data[get_class($element)] = $element->getAuditAttributes();
 					}
 
-					$audit = new Audit;
-					$audit->action = "update";
-					$audit->target_type = "event";
-					$audit->patient_id = $this->event->episode->patient->id;
-					$audit->episode_id = $this->event->episode_id;
-					$audit->event_id = $this->event->id;
-					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-					$audit->data = serialize($audit_data);
-					$audit->save();
+					$this->event->audit('event','update',serialize($audit_data));
 
 					// Update event to indicate user has made a change
 					// $this->event->datetime = date("Y-m-d H:i:s");
@@ -651,14 +641,7 @@ class BaseEventTypeController extends BaseController
 
 			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
 
-			$audit = new Audit;
-			$audit->action = "create";
-			$audit->target_type = "episode";
-			$audit->patient_id = $episode->patient->id;
-			$audit->episode_id = $episode->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $episode->getAuditAttributes();
-			$audit->save();
+			$episode->audit('episode','create');
 
 			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
 		}
@@ -822,14 +805,7 @@ class BaseEventTypeController extends BaseController
 	 */
 	protected function printLog($id, $pdf) {
 		$this->logActivity("printed event (pdf=$pdf)");
-		$audit = new Audit;
-		$audit->action = "print";
-		$audit->target_type = "event";
-		$audit->patient_id = $this->event->episode->patient->id;
-		$audit->episode_id = $this->event->episode_id;
-		$audit->event_id = $id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		$this->event->audit('event','print',false);
 	}
 	
 	public function actionDelete($id) {
@@ -847,26 +823,13 @@ class BaseEventTypeController extends BaseController
 				$this->event->deleted = 1;
 				$this->event->save();
 
-				$audit = new Audit;
-				$audit->action = "delete";
-				$audit->target_type = "event";
-				$audit->patient_id = $this->event->episode->patient->id;
-				$audit->episode_id = $this->event->episode_id;
-				$audit->event_id = $this->event->id;
-				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-				$audit->save();
+				$this->event->audit('event','delete',false);
 
 				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
 					$this->event->episode->deleted = 1;
 					$this->event->episode->save();
 
-					$audit = new Audit;
-					$audit->action = "delete";
-					$audit->target_type = "episode";
-					$audit->patient_id = $this->event->episode->patient->id;
-					$audit->episode_id = $this->event->episode_id;
-					$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-					$audit->save();
+					$this->event->episode->audit('episode','delete',false);
 
 					return header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
 				}

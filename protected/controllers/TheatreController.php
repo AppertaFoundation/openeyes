@@ -85,18 +85,9 @@ class TheatreController extends BaseController
 				Yii::app()->session['theatre_searchoptions'] = $_POST;
 			}
 
-			$audit = new Audit;
-			$audit->action = "view";
-			$audit->target_type = "diary";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->save();
+			Audit::add('diary','view');
 		} else {
-			$audit = new Audit;
-			$audit->action = "search";
-			$audit->target_type = "diary";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = serialize($_POST);
-			$audit->save();
+			Audit::add('diary','search',serialize($_POST));
 		}
 
 		$this->render('index', array('wards'=>$wards, 'theatres'=>$theatres));
@@ -104,35 +95,20 @@ class TheatreController extends BaseController
 
 	public function actionPrintDiary()
 	{
-		$audit = new Audit;
-		$audit->action = "print";
-		$audit->target_type = "diary";
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = serialize($_POST);
-		$audit->save();
+		Audit::add('diary','print',serialize($_POST));
 
 		$this->renderPartial('_print_diary', array('theatres'=>$this->getTheatres()), false, true);
 	}
 
 	public function actionPrintList() {
-		$audit = new Audit;
-		$audit->action = "print list";
-		$audit->target_type = "diary";
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = serialize($_POST);
-		$audit->save();
+		Audit::add('diary','print list',serialize($_POST));
 
 		$this->renderPartial('_print_list', array('bookings'=>$this->getBookingList()), false, true);
 	}
 
 	public function actionSearch()
 	{
-		$audit = new Audit;
-		$audit->action = "search";
-		$audit->target_type = "diary";
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = serialize($_POST);
-		$audit->save();
+		Audit::add('diary','search',serialize($_POST));
 
 		$this->renderPartial('_list', array('theatres' => $this->getTheatres()), false, true);
 	}
@@ -451,15 +427,7 @@ class TheatreController extends BaseController
 							throw new SystemException('Unable to save booking: '.print_r($booking->getErrors(),true));
 						}
 
-						$audit = new Audit;
-						$audit->action = "update (diary)";
-						$audit->target_type = "booking";
-						$audit->patient_id = $booking->elementOperation->event->episode->patient_id;
-						$audit->episode_id = $booking->elementOperation->event->episode_id;
-						$audit->event_id = $booking->elementOperation->event_id;
-						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-						$audit->data = $booking->getAuditAttributes();
-						$audit->save();
+						$booking->elementOperation->event->audit('booking','update (diary)',$booking->getAuditAttributes());
 					}
 				}
 
@@ -491,12 +459,7 @@ class TheatreController extends BaseController
 							throw new SystemException('Unable to save session: '.print_r($session->getErrors(),true));
 						}
 
-						$audit = new Audit;
-						$audit->action = "update (diary)";
-						$audit->target_type = "session";
-						$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-						$audit->data = $session->getAuditAttributes();
-						$audit->save();
+						$session->audit('session','update (diary)');
 					}
 				}
 			}

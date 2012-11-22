@@ -164,4 +164,31 @@ class Audit extends BaseActiveRecord
 				break;
 		}
 	}
+
+	public static function add($target, $action, $data=null, $log=false, $properties=array()) {
+		$audit = new Audit;
+		$audit->target_type = $target;
+		$audit->action = $action;
+		$audit->data = $data;
+
+		if (!isset($properties['user_id'])) {
+			if (Yii::app()->session['user']) {
+				$properties['user_id'] = Yii::app()->session['user']->id;
+			}
+		}
+
+		foreach ($properties as $key => $value) {
+			$audit->{$key} = $value;
+		}
+
+		$audit->save();
+
+		if (isset($properties['user_id'])) {
+			$username = User::model()->findByPk($properties['user_id'])->username;
+		}
+
+		$log && OELog::log($data,@$username);
+
+		return $audit;
+	}
 }

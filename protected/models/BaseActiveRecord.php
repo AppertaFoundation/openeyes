@@ -134,4 +134,18 @@ class BaseActiveRecord extends CActiveRecord
 
 		return serialize($attributes);
 	}
+
+	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+		foreach (array('patient_id','episode_id','event_id','user_id','site_id','firm_id') as $field) {
+			if (isset($this->{$field}) && !isset($properties[$field])) {
+				$properties[$field] = $this->{$field};
+			}
+		}
+
+		if ($data === null) {
+			$data = $this->getAuditAttributes();
+		}
+
+		Audit::add($target, $action, $data, $log, $properties);
+	}
 }

@@ -68,7 +68,7 @@
 					</thead>
 					<tbody>
 						<?php foreach ($data_provider->getData() as $i => $result) {?>
-						<tr id="r<?php echo $result->id?>" class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>">
+						<tr class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>">
 							<td><?php echo $result->hos_num?></td>
 							<td><?php echo $result->title?></td>
 							<td><?php echo $result->first_name?></td>
@@ -116,7 +116,7 @@
 <!-- .wrapTwo -->
 <script type="text/javascript">
 	$('#patient-grid .items tbody tr').click(function() {
-		window.location.href = '<?php echo Yii::app()->createUrl('patient/view')?>/'+$(this).attr('id').match(/[0-9]+/);
+		window.location.href = '<?php echo Yii::app()->createUrl('patient/viewhosnum')?>/'+$(this).children(":first").html();
 		return false;
 	});
 </script>

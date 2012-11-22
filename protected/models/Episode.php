@@ -251,14 +251,7 @@ class Episode extends BaseActiveRecord
 
 		if (parent::save($runValidation, $attributes)) {
 			if ($previous && $previous->episode_status_id != $this->episode_status_id) {
-				$audit = new Audit;
-				$audit->action = "change-status";
-				$audit->target_type = "episode";
-				$audit->patient_id = $this->patient_id;
-				$audit->episode_id = $this->id;
-				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-				$audit->data = $this->episode_status_id;
-				$audit->save();
+				$this->audit('episode','change-status',$this->episode_status_id);
 			}
 			return true;
 		}
@@ -314,13 +307,12 @@ class Episode extends BaseActiveRecord
 			throw new Exception('Unable to set episode principal diagnosis/eye: '.print_r($this->getErrors(),true));
 		}
 
-		$audit = new Audit;
-		$audit->action = "set-principal-diagnosis";
-		$audit->target_type = "episode";
-		$audit->episode_id = $this->id;
-		$audit->patient_id = $this->patient_id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = $this->getAuditAttributes();
-		$audit->save();
+		$this->audit('episode','set-principal-diagnosis');
+	}
+
+	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+		$properties['episode_id'] = $this->id;
+		$properties['patient_id'] = $this->patient_id;
+		return parent::audit($target, $action, $data, $log, $properties);
 	}
 }
