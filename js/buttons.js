@@ -25,6 +25,7 @@ function disableButtons() {
 		var selection = $('button.'+col);
 		selection.removeClass(col).addClass('inactive');
 		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
+		selection.children('a').children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
 		button_cache[col] = selection;
 		$('.loader').show();
 	}
