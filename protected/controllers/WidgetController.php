@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,36 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var button_colours = ["red","blue","green"];
-var button_cache = {};
+class WidgetController extends Controller
+{
+	public $layout='column2';
 
-function disableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		var selection = $('button.'+col);
-		selection.removeClass(col).addClass('inactive');
-		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		selection.children('a').children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		button_cache[col] = selection;
-		$('.loader').show();
+	public function filters()
+	{
+		return array('accessControl');
+	}
+
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny',
+				'users'=>array('?')
+			),
+		);
+	}
+
+	protected function beforeAction($action)
+	{
+		return parent::beforeAction($action);
 	}
 }
-
-function enableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		button_cache[col].removeClass('inactive').addClass(col);
-		button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-		$('.loader').hide();
-	}
-}
-
-$(document).ready(function() {
-	$('button.auto').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			return true;
-		}
-		return false;
-	});
-});

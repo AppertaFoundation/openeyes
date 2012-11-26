@@ -81,18 +81,18 @@
 								</span>
 								<span class="middle<?php echo (!$durations) ? " noDuration" : ""; ?>">
 									<?php
-										$totalDuration += $procedure['default_duration'];
-										echo CHtml::hiddenField('Procedures[]', $procedure['id']);
-										echo "<span>".$procedure['term'];
+										$totalDuration += $procedure->procedure->default_duration;
+										echo CHtml::hiddenField('Procedures[]', $procedure->procedure->id);
+										echo "<span>".$procedure->procedure->term;
 										if ($short_version) {
-											echo '</span> - <span>'.$procedure['short_format'];
+											echo '</span> - <span>'.$procedure->procedure->short_format;
 										}
 										echo "</span>";
 									?>
 								</span>
 								<?php if ($durations) {?>
 									<span class="right">
-										<?php echo $procedure['default_duration']?> mins
+										<?php echo $procedure->procedure->default_duration?> mins
 									</span>
 								<?php } ?>
 							</div>

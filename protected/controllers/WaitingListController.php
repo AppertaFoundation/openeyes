@@ -67,18 +67,9 @@ class WaitingListController extends BaseController
 				);
 			}
 
-			$audit = new Audit;
-			$audit->action = "view";
-			$audit->target_type = "waiting list";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->save();
+			Audit::add('waiting list','view');
 		} else {
-			$audit = new Audit;
-			$audit->action = "search";
-			$audit->target_type = "waiting list";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = serialize($_POST);
-			$audit->save();
+			Audit::add('waiting list','search',serialize($_POST));
 		}
 
 		$this->render('index');
@@ -86,12 +77,7 @@ class WaitingListController extends BaseController
 
 	public function actionSearch()
 	{
-		$audit = new Audit;
-		$audit->action = "search";
-		$audit->target_type = "waiting list";
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = serialize($_POST);
-		$audit->save();
+		Audit::add('waiting list','search',serialize($_POST));
 
 		if (empty($_POST)) {
 			$operations = array();
@@ -193,16 +179,7 @@ class WaitingListController extends BaseController
 		* @throws CHttpException
 		*/
 	public function actionPrintLetters() {
-		$audit = new Audit;
-		if (@$_REQUEST['all'] == 'true') {
-			$audit->action = "print all";
-		} else {
-			$audit->action = "print selected";
-		}
-		$audit->target_type = "waiting list";
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = serialize($_POST);
-		$audit->save();
+		Audit::add('waiting list',(@$_REQUEST['all']=='true' ? 'print all' : 'print selected',serialize($_POST)));
 
 		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
 		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
@@ -398,12 +375,7 @@ class WaitingListController extends BaseController
 	}
 
 	public function actionConfirmPrinted() {
-		$audit = new Audit;
-		$audit->action = "confirm";
-		$audit->target_type = "waiting list";
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = serialize($_POST);
-		$audit->save();
+		Audit::add('waiting list','confirm',serialize($_POST));
 
 		foreach ($_POST['operations'] as $operation_id) {
 			if ($operation = ElementOperation::Model()->findByPk($operation_id)) {
@@ -415,5 +387,4 @@ class WaitingListController extends BaseController
 			}
 		}
 	}
-	
 }

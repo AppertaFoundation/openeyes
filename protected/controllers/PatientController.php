@@ -95,12 +95,7 @@ class PatientController extends BaseController
 
 		$this->layout = '//layouts/patientMode/main';
 
-		$audit = new Audit;
-		$audit->action = "view";
-		$audit->target_type = "patient summary";
-		$audit->patient_id = $this->patient->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		Audit::add('patient summary','view');
 
 		$this->logActivity('viewed patient');
 
@@ -135,14 +130,7 @@ class PatientController extends BaseController
 
 		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
 
-		$audit = new Audit;
-		$audit->action = "view";
-		$audit->target_type = "event";
-		$audit->patient_id = $this->patient->id;
-		$audit->episode_id = $this->episode->id;
-		$audit->event_id = $this->event->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		$this->event->audit('event','view',false);
 
 		$this->logActivity('viewed event');
 
@@ -194,14 +182,7 @@ class PatientController extends BaseController
 			throw new Exception('Operation not found for event: '.$id);
 		}
 
-		$audit = new Audit;
-		$audit->action = "print";
-		$audit->target_type = "admission letter";
-		$audit->patient_id = $patient->id;
-		$audit->episode_id = $event->episode_id;
-		$audit->event_id = $event->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		$this->event->audit('admission letter','print',false);
 
 		$this->logActivity('printed admission letter');
 
@@ -340,13 +321,9 @@ class PatientController extends BaseController
 			'last_name' => $search_terms['last_name'],
 		));
 
-		if($nr == 0) {
-			$audit = new Audit;
-			$audit->action = "search-results";
-			$audit->target_type = "search";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = implode(',',$search_terms) ." : No results";
-			$audit->save();
+		if ($nr == 0) {
+			Audit::add('search','search-results',implode(',',$search_terms) ." : No results");
+
 			$message = 'Sorry, no results ';
 			if($search_terms['hos_num']) {
 				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
@@ -436,11 +413,7 @@ class PatientController extends BaseController
 			$criteria->order = 'datetime desc';
 
 			if ($event = Event::model()->find($criteria)) {
-				if ($event->eventType->class_name == 'OphTrOperation') {
-					$this->redirect(array('patient/event/'.$event->id));
-				} else {
-					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
-				}
+				$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
 				Yii::app()->end();
 			}
 		} else {
@@ -866,13 +839,7 @@ class PatientController extends BaseController
 			}
 			$pca->save();
 
-			$audit = new Audit;
-			$audit->action = "associate-contact";
-			$audit->target_type = "patient";
-			$audit->patient_id = $patient->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $pca->getAuditAttributes();
-			$audit->save();
+			$patient->audit('patient','associate-contact',$pca->getAuditAttributes());
 		}
 
 		echo json_encode($data);
@@ -916,13 +883,7 @@ class PatientController extends BaseController
 				return;
 			}
 
-			$audit = new Audit;
-			$audit->action = "unassociate-contact";
-			$audit->target_type = "patient";
-			$audit->patient_id = $patient->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $pca->getAuditAttributes();
-			$audit->save();
+			$patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
 		}
 
 		echo "1";

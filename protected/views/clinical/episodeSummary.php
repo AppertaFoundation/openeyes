@@ -26,13 +26,7 @@ if (!empty($episode)) {
 		$diagnosis = 'No diagnosis';
 	}
 
-	$audit = new Audit;
-	$audit->action = "view";
-	$audit->target_type = "episode summary";
-	$audit->patient_id = $this->patient->id;
-	$audit->episode_id = $episode->id;
-	$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-	$audit->save();
+	$episode->audit('episode summary','view',false);
 ?>
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>

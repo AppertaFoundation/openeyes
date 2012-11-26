@@ -512,13 +512,7 @@ class Patient extends BaseActiveRecord {
 				throw new Exception('Unable to add patient allergy assignment: '.print_r($paa->getErrors(),true));
 			}
 
-			$audit = new Audit;
-			$audit->action = "add-allergy";
-			$audit->target_type = "patient";
-			$audit->patient_id = $this->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $paa->getAuditAttributes();
-			$audit->save();
+			$this->audit('patient','add-allergy',$paa->getAuditAttributes());
 		}
 	}
 	
@@ -528,13 +522,7 @@ class Patient extends BaseActiveRecord {
 				throw new Exception('Unable to delete patient allergy assignment: '.print_r($paa->getErrors(),true));
 			}
 
-			$audit = new Audit;
-			$audit->action = "remove-allergy";
-			$audit->target_type = "patient";
-			$audit->patient_id = $this->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $paa->getAuditAttributes();
-			$audit->save();
+			$this->audit('patient','remove-allergy',$paa->getAuditAttributes());
 		}
 	}
 
@@ -639,13 +627,7 @@ class Patient extends BaseActiveRecord {
 			throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
 		}
 
-		$audit = new Audit;
-		$audit->action = $action;
-		$audit->target_type = "patient";
-		$audit->patient_id = $this->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = $sd->getAuditAttributes();
-		$audit->save();
+		$this->audit('patient',$action,$sd->getAuditAttributes());
 	}
 
 	public function removeDiagnosis($diagnosis_id) {
@@ -665,13 +647,7 @@ class Patient extends BaseActiveRecord {
 			throw new Exception('Unable to delete diagnosis: '.print_r($sd->getErrors(),true));
 		}
 
-		$audit = new Audit;
-		$audit->action = "remove-$type-diagnosis";
-		$audit->target_type = "patient";
-		$audit->patient_id = $this->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = $audit_attributes;
-		$audit->save();
+		$this->audit('patient',"remove-$type-diagnosis",$audit_attributes);
 	}
 
 	public function getHpc() {
@@ -949,5 +925,10 @@ class Patient extends BaseActiveRecord {
 				}
 			}
 		}
+	}
+
+	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+		$properties['patient_id'] = $this->id;
+		return parent::audit($target, $action, $data, $log, $properties);
 	}
 }
