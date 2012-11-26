@@ -360,6 +360,52 @@ class MigrateBookingCommand extends CConsoleCommand {
 		}
 
 		echo "ok\n";
+
+		echo "Creating letter contact entries ... ";
+
+		$this->createContact(1,1,4,'020 7566 2006');
+		$this->createContact(1,1,6,'020 7566 2006');
+		$this->createContact(1,1,7,'020 7566 2056');
+		$this->createContact(1,1,8,'020 7566 2311',21,'Admission Coordinator');
+		$this->createContact(1,1,8,'020 7566 2258');
+		$this->createContact(1,1,11,'020 7566 2258',null,'Paediatrics and Strabismus Admission Coordinator');
+		$this->createContact(2,1,11,'0207 566 2595 and ask to speak to a nurse');
+		$this->createContact(1,1,13,'020 7566 2205 and ask for Joyce Carmichael');
+		$this->createContact(2,1,13,'020 7253 3411 X4336 and ask for a Laser Nurse');
+		$this->createContact(1,1,14,'020 7566 2258',null,'Paediatrics and Strabismus Admission Coordinator');
+		$this->createContact(2,1,14,'0207 566 2595 and ask to speak to a nurse');
+		$this->createContact(1,1,16,'020 7566 2004');
+		$this->createContact(1,1,null,'020 7566 2206/2292');
+
+		$this->createContact(1,3,null,'020 8967 5648',22,'Admission Coordinator');
+		$this->createContact(1,3,null,'020 8967 5766');
+		$this->createContact(1,4,null,'0203 182 4027');
+		$this->createContact(1,5,null,'020 8725 0060');
+		$this->createContact(2,5,null,'020 8725 0060');
+		$this->createContact(1,6,7,'020 7566 2020');
+		$this->createContact(1,6,null,'020 7566 2712');
+		$this->createContact(1,7,null,'01707 646422');
+		$this->createContact(1,8,null,'020 8725 1794');
+		$this->createContact(1,9,null,'020 8211 8323');
+
+		$this->createContact(1,null,null,'020 7566 2205',9,'',19);
+
+		echo "ok\n";
+	}
+
+	public function createContact($contact_type_id,$site_id, $subspecialty_id, $telephone, $theatre_id=null, $title='', $firm_id=null) {
+		$c = new OphTrOperation_Letter_Contact;
+		$c->contact_type_id = $contact_type_id;
+		$c->site_id = $site_id;
+		$c->subspecialty_id = $subspecialty_id;
+		$c->telephone = $telephone;
+		$c->theatre_id = $theatre_id;
+		$c->title = $title;
+		$c->firm_id = $firm_id;
+
+		if (!$c->save()) {
+			throw new Exception('Unable to save letter contact: '.print_r($c->getErrors(),true));
+		}
 	}
 
 	public function findSessionForCancelledBooking($cb) {
