@@ -82,6 +82,7 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$operation->cancellation_date = $co['cancelled_date'];
 				$operation->cancellation_reason_id = $co['cancelled_reason_id'];
 				$operation->cancellation_comment = $co['cancellation_comment'];
+				$operation->cancellation_user_id = $co['created_user_id'];
 			}
 
 			if (!$operation->save(true,null,true)) {
@@ -189,7 +190,11 @@ class MigrateBookingCommand extends CConsoleCommand {
 			}
 
 			foreach ($seq as $key => $value) {
-				$sequence->{$key} = $value;
+				if ($key == 'repeat_interval') {
+					$sequence->interval_id = $value+1;
+				} else {
+					$sequence->{$key} = $value;
+				}
 			}
 
 			if ($sfa = Yii::app()->db->createCommand("select * from sequence_firm_assignment where sequence_id = {$seq['id']}")->queryRow()) {
@@ -211,11 +216,15 @@ class MigrateBookingCommand extends CConsoleCommand {
 			$session = new OphTrOperation_Operation_Session;
 
 			foreach ($ses as $key => $value) {
-				$session->{$key} = $value;
+				if ($key == 'status') {
+					$session->available = ($value == 0);
+				} else {
+					$session->{$key} = $value;
+				}
 			}
 
 			if ($sfa = Yii::app()->db->createCommand("select * from session_firm_assignment where session_id = {$ses['id']}")->queryRow()) {
-				$sequence->firm_id = $sfa['firm_id'];
+				$session->firm_id = $sfa['firm_id'];
 			}
 
 			if (!$session->save(true,null,true)) {
@@ -340,6 +349,7 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled->cancellation_date = $cb['cancelled_date'];
 				$cancelled->cancellation_reason_id = $cb['cancelled_reason_id'];
 				$cancelled->cancellation_comment = $cb['cancellation_comment'];
+				$cancelled->cancellation_user_id = $cb['created_user_id'];
 
 				if (!$cancelled->save(true,null,true)) {
 					echo "Unable to save cancelled booking: ".print_r($cancelled->getErrors(),true)."\n";
