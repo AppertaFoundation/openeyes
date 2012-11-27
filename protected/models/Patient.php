@@ -1022,4 +1022,62 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
+	
+	// DR function additions
+	/*
+	 * NSC right Retinopathy
+	 */
+	public function getNrr() {
+		//TODO: implement nrr
+	}
+	
+	/*
+	 * NSC left Retinopathy
+	*/
+	public function getNlr() {
+		//TODO: implement nlr
+	}
+	
+	/*
+	 * NSC right Maculopathy
+	*/
+	public function getNrm() {
+		//TODO: implement nrm
+	}
+	
+	/*
+	 * NSC left Maculopathy
+	*/
+	public function getNlm() {
+		//TODO: implement nlm
+	}
+	
+	/*
+	 * Type of diabetes mellitus
+	*/
+	public function getDmt() {
+		//TODO: implement dmt
+	}
+	
+	/*
+	 * Laser management plan
+	*/
+	public function getLmp() {
+		//TODO: implement lmp
+	}
+	
+	/*
+	 * Laser management comments
+	*/
+	public function getLmc() {
+		//TODO: implement lmc
+	}
+	
+	/*
+	 * Follow up period
+	*/
+	public function getFup() {
+		//TODO: implement fup
+	}
+		
 }
