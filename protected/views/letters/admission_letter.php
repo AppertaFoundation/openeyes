@@ -173,7 +173,7 @@
 </table>
 
 <p>
-	Please confirm this is convenient by calling <?php echo $refuseContact?> within 5 working days.
+	If this is not convenient or you no longer wish to proceed with surgery, please contact the <?php echo $refuseContact?> as soon as possible.
 </p>
 
 <?php if(!$operation->overnight_stay) { ?>
