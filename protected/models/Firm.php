@@ -233,8 +233,7 @@ class Firm extends BaseActiveRecord
 	 *
 	 * @return object
 	 */
-	public function getConsultant()
-	{
+	public function getConsultant() {
 		$result = Yii::app()->db->createCommand()
 			->select('cslt.id AS id')
 			->from('consultant cslt')
@@ -253,6 +252,13 @@ class Firm extends BaseActiveRecord
 		} else {
 			return Consultant::model()->findByPk($result['id']);
 		}
+	}
+
+	public function getConsultantName() {
+		if ($consultant = $this->consultant) {
+			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+		}
+		return 'CONSULTANT';
 	}
 
 	public function getConsultantUser() {
