@@ -931,4 +931,8 @@ class Patient extends BaseActiveRecord {
 		$properties['patient_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
 	}
+
+	public function getChildPrefix() {
+		return $this->isChild ? "child's " : "";
+	}
 }
