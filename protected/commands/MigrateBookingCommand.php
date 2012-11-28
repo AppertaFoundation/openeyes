@@ -171,6 +171,19 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$ward->theatre_id = $twa['theatre_id'];
 			}
 
+			if ($w['id'] == 3) {
+				$ward->long_name = "Richard Desmond's Children's Eye Centre (RDCEC)";
+				$ward->directions = "the Main Reception in the RDCEC";
+			}
+
+			if ($w['id'] == 5) {
+				$ward->long_name = "Refractive waiting room - Cumberledge Wing 4th Floor";
+			}
+
+			if ($w['id'] == 9) {
+				$ward->directions = "the Jungle Ward on level 5 of the Lanesborough wing";
+			}
+
 			if (!$ward->save(true,null,true)) {
 				echo "Unable to save ward:\n\n".print_r($ward->getErrors(),true)."\n";
 				print_r($w);
