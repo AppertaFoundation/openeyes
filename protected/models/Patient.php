@@ -933,6 +933,6 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getChildPrefix() {
-		return $this->isChild ? "child's " : "";
+		return $this->isChild() ? "child's " : "";
 	}
 }
