@@ -16,7 +16,9 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-$uri = preg_replace('/\/$/','',$_SERVER['REQUEST_URI']);
+if (!$uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']))) {
+	$uri = '/';
+}
 ?>
 <?php
 if (!Yii::app()->user->isGuest) {
@@ -29,14 +31,15 @@ if (!Yii::app()->user->isGuest) {
 	<div id="user_panel">
 		<div class="clearfix">
 			<div id="user_id">
-				Hi <strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>&nbsp;<!--a href="#" class="small">(not you?)</a-->
+				Hi <strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>
 			</div>
 
 			<ul id="user_nav">
-				<li><?php if ($uri == Yii::app()->baseUrl) { ?><span class="selected">Home</span><?php } else { ?><?php echo CHtml::link('Home',Yii::app()->baseUrl.'/')?><?php } ?></li>
-				<li><?php if ($uri == Yii::app()->baseUrl.'/theatre') { ?><span class="selected">Theatre Diaries</span><?php } else { ?><?php echo CHtml::link('Theatre Diaries',array(Yii::app()->baseUrl.'/theatre/'))?><?php } ?></li>
-				<li><?php if ($uri == Yii::app()->baseUrl.'/OphTrOperation/waitingList/index') { ?><span class="selected">Partial bookings waiting List</span><?php } else { ?><?php echo CHtml::link('Partial bookings waiting list',array(Yii::app()->baseUrl.'/OphTrOperation/waitingList/index'))?><?php } ?></li>
-				<li><?php echo CHtml::link('Logout', array(Yii::app()->baseUrl.'/site/logout')) ?></li>
+				<?php foreach (Yii::app()->params['menu_bar_items'] as $item) {?>
+					<li>
+						<?php if ($uri == $item['uri']) {?><span class="selected"><?php echo $item['title']?></span><?php }else{?><?php echo CHtml::link($item['title'],Yii::app()->baseUrl.$item['uri'])?><?php }?>
+					</li>
+				<?php }?>
 			</ul>
 		</div>
 		<?php
@@ -56,6 +59,6 @@ if (!Yii::app()->user->isGuest) {
 				?>
 			</div>
 		<?php }?>
-	</div> <!-- #user_panel -->
+	</div>
 <?php
 }?>

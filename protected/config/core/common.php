@@ -149,5 +149,23 @@ return array(
 				'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 				'default_site_code' => '',
 				'erod_lead_time_weeks' => 3,
-		)
+				'menu_bar_items' => array(
+					array(
+						'title' => 'Home',
+						'uri' => '/',
+					),
+					array(
+						'title' => 'Theatre Diaries',
+						'uri' => 'OphTrOperation/theatreDiary/index',
+					),
+					array(
+						'title' => 'Partial bookings waiting list',
+						'uri' => 'OphTrOperation/waitingList/index',
+					),
+					array(
+						'title' => 'Logout',
+						'uri' => 'site/logout',
+					),
+				),
+		),
 );
