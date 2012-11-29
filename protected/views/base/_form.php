@@ -37,7 +37,7 @@ if (!Yii::app()->user->isGuest) {
 			<ul id="user_nav">
 				<?php foreach (Yii::app()->params['menu_bar_items'] as $item) {?>
 					<li>
-						<?php if ($uri == $item['uri']) {?><span class="selected"><?php echo $item['title']?></span><?php }else{?><?php echo CHtml::link($item['title'],Yii::app()->baseUrl.$item['uri'])?><?php }?>
+						<?php if ($uri == $item['uri']) {?><span class="selected"><?php echo $item['title']?></span><?php }else{?><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?><?php }?>
 					</li>
 				<?php }?>
 			</ul>
