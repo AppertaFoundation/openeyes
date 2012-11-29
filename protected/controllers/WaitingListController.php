@@ -179,7 +179,7 @@ class WaitingListController extends BaseController
 		* @throws CHttpException
 		*/
 	public function actionPrintLetters() {
-		Audit::add('waiting list',(@$_REQUEST['all']=='true' ? 'print all' : 'print selected',serialize($_POST)));
+		Audit::add('waiting list',(@$_REQUEST['all']=='true' ? 'print all' : 'print selected'),serialize($_POST));
 
 		$operation_ids = (isset($_REQUEST['operations'])) ? $_REQUEST['operations'] : null;
 		$auto_confirm = (isset($_REQUEST['confirm']) && $_REQUEST['confirm'] == 1);
