@@ -251,24 +251,6 @@ class PatientController extends BaseController
 		$pdf_print->output();
 	}
 
-	/**
-	 * Redirect to correct patient view by hospital number
-	 * @param string $hos_num
-	 * @throws CHttpException
-	 */
-	public function actionViewhosnum($hos_num) {
-		$hos_num = (int) $hos_num;
-		if(!$hos_num) {
-			throw new CHttpException(400, 'Invalid hospital number');
-		}
-		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
-		if($patient) {
-			$this->redirect(array('/patient/view/'.$patient->id));
-		} else {
-			throw new CHttpException(404, 'Hospital number not found');
-		}
-	}
-
 	public function actionSearch() {
 		
 		// Check that we have a valid set of search criteria
@@ -282,8 +264,8 @@ class PatientController extends BaseController
 			if(isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
 				
 				// Pad hos_num
-				if($search_term == 'hos_num') {
-					$search_value = sprintf('%07s',$search_value);
+				if ($search_term == 'hos_num' && Yii::app()->params['pad_hos_num']) {
+					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
 				}
 				
 				$search_terms[$search_term] = $search_value;

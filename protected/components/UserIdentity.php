@@ -48,6 +48,8 @@ class UserIdentity extends CUserIdentity
 			throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
 		}
 
+		Yii::app()->event->dispatch('user_before_login', array('username' => $this->username));
+
 		/**
 		 * Usernames are case sensitive
 		 */

@@ -163,7 +163,7 @@ foreach ($elements as $element) {
 		<h4>List</h4>
 		<div class="eventHighlight">
 			<?php $session = $operation->booking->session ?>
-			<h4><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
+			<h4 style="width: 460px;"><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
 		</div>
 	</div>
 
@@ -176,7 +176,7 @@ foreach ($elements as $element) {
 
 	<div>
 		<h4>Admission Time</h4>
-		<div class="eventHighlight" style="margin-left: 37.2em;">
+		<div class="eventHighlight">
 			<h4><?php echo substr($operation->booking->admission_time,0,5) ?></h4>
 		</div>
 	</div>
