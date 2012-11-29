@@ -44,6 +44,10 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
+		if (!in_array(Yii::app()->params['ldap_method'],array('native','zend'))) {
+			throw new Exception('Unsupported LDAP authentication method: '.Yii::app()->params['ldap_method'].', please use native or zend.');
+		}
+
 		/**
 		 * Usernames are case sensitive
 		 */
@@ -80,55 +84,81 @@ class UserIdentity extends CUserIdentity
 			/**
 			 * Required for LDAP authentication
 			 */
-			Yii::import('application.vendors.*');
-			require_once('Zend/Ldap.php');
+			if (Yii::app()->params['ldap_method'] == 'zend') {
+				Yii::import('application.vendors.*');
+				require_once('Zend/Ldap.php');
 
-			/**
-			 * Check with LDAP for authentication
-			 */
-			$options = array(
-				'host'				=> Yii::app()->params['ldap_server'],
-				'port'				=> Yii::app()->params['ldap_port'],
-				'username'			=> Yii::app()->params['ldap_admin_dn'],
-				'password'			=> Yii::app()->params['ldap_password'],
-				'baseDn'			=> Yii::app()->params['ldap_admin_dn'],
-				'useStartTls'		=> false,
-			);
-
-			$ldap = $this->getLdap($options);
-
-			/**
-			 * Try and bind to the login details provided. This indicates if
-			 * the user is in LDAP.
-			 */
-			try {
-				$ldap->bind(
-					"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
-					$this->password
-				);
-			} catch (Exception $e){
 				/**
-				 * User not authenticated via LDAP
+				 * Check with LDAP for authentication
 				 */
-				$audit = new Audit;
-				$audit->action = "login-failed";
-				$audit->target_type = "login";
-				$audit->user_id = $user->id;
-				$audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage().": ".$this->username;
-				$audit->save();
-				OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(),$this->username);
+				$options = array(
+					'host'				=> Yii::app()->params['ldap_server'],
+					'port'				=> Yii::app()->params['ldap_port'],
+					'username'			=> Yii::app()->params['ldap_admin_dn'],
+					'password'			=> Yii::app()->params['ldap_password'],
+					'baseDn'			=> Yii::app()->params['ldap_admin_dn'],
+					'useStartTls'		=> false,
+				);
 
-				$this->errorCode = self::ERROR_USERNAME_INVALID;
-				return false;
+				$ldap = $this->getLdap($options);
+
+				/**
+				 * Try and bind to the login details provided. This indicates if
+				 * the user is in LDAP.
+				 */
+				try {
+					$ldap->bind(
+						"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
+						$this->password
+					);
+				} catch (Exception $e){
+					/**
+					 * User not authenticated via LDAP
+					 */
+					$audit = new Audit;
+					$audit->action = "login-failed";
+					$audit->target_type = "login";
+					$audit->user_id = $user->id;
+					$audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage().": ".$this->username;
+					$audit->save();
+					OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".$e->getMessage(),$this->username);
+
+					$this->errorCode = self::ERROR_USERNAME_INVALID;
+					return false;
+				}
+
+				/**
+				 * User is in LDAP, get their details.
+				 */
+				$info = $ldap->getEntry(
+					"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
+					array('givenname', 'sn', 'mail')
+				);
+
+			} else {
+				if (!$link = ldap_connect(Yii::app()->params['ldap_server'])) {
+					throw new Exception('Unable to connect to LDAP server.');
+				}
+
+				ldap_set_option($link, LDAP_OPT_NETWORK_TIMEOUT, Yii::app()->params['ldap_native_timeout']);
+
+				if (!@ldap_bind($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], $this->password)) {
+					$audit = new Audit;
+					$audit->action = "login-failed";
+					$audit->target_type = "login";
+					$audit->user_id = $user->id;
+					$audit->data = "Login failed for user {$this->username}: LDAP authentication failed";
+					$audit->save();
+					OELog::log("Login failed for user {$this->username}: LDAP authentication failed");
+
+					$this->errorCode = self::ERROR_USERNAME_INVALID;
+					return false;
+				}
+
+				$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
+				$info = ldap_get_entries($link, $sr);
+				$info = $info[0];
 			}
-
-			/**
-			 * User is in LDAP, get their details.
-			 */
-			$info = $ldap->getEntry(
-				"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
-				array('givenname', 'sn', 'mail')
-			);
 
 			/**
 			 * Update user db record with details from LDAP.

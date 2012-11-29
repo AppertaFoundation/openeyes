@@ -134,6 +134,8 @@ return array(
 				'ldap_admin_dn' => '',
 				'ldap_password' => '',
 				'ldap_dn' => '',
+				'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+				'ldap_native_timeout' => 3,
 				'environment' => 'dev',
 				'audit_trail' => false,
 				'watermark' => '',
