@@ -148,24 +148,4 @@ class BaseActiveRecord extends CActiveRecord
 
 		Audit::add($target, $action, $data, $log, $properties);
 	}
-
-	public function getTest() {
-		return $this->name;
-	}
-
-	public function __call($name, $arguments) {
-		if (!method_exists($this, $name)) {
-			if ($model = ModuleAPI::getExtendedModelWithMethod($this, $name)) {
-				return call_user_func_array(array($model,$name), $arguments);
-			}
-		}
-
-		parent::__call($name, $arguments);
-	}
-
-	public function cloneObject($object) {
-		foreach ($object as $key => $value) {
-			$this->{$key} = $value;
-		}
-	}
 }

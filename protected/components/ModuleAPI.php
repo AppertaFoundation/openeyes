@@ -24,19 +24,4 @@ class ModuleAPI {
 			return new $model;
 		}
 	}
-
-	static public function getExtendedModelWithMethod($model, $method) {
-		$modelName = get_class($model);
-
-		foreach (Yii::app()->modules as $module) {
-			$module = preg_replace('/\..*$/','',$module['class']);
-			if (file_exists("modules/$module/models/{$module}_$modelName.php")) {
-				Yii::import("application.modules.$module.models.*");
-				$modelName = "{$module}_$modelName";
-				$extendedModel = new $modelName;
-				$extendedModel->cloneObject($model);
-				return $extendedModel;
-			}
-		}
-	}
 }
