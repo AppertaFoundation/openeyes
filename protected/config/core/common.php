@@ -152,7 +152,7 @@ return array(
 				'menu_bar_items' => array(
 					array(
 						'title' => 'Home',
-						'uri' => '/',
+						'uri' => '',
 					),
 					array(
 						'title' => 'Theatre Diaries',
