@@ -17,6 +17,7 @@ class BaseEventTypeController extends BaseController
 	public $successUri = 'default/view/';
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
+	public $js = array();
 
 	public function actionIndex()
 	{
@@ -732,6 +733,9 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
+		foreach ($this->js as $js) {
+			Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl($js));
+		}
 	}
 
 	/**
