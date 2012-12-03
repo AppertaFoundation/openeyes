@@ -22,8 +22,8 @@ class YiiSession {
 		return Yii::app()->session[$index];
 	}
 
-	static public function set($index, $data, $data2=false) {
-		if ($data2) {
+	static public function set($index, $data, $data2='NODATAWASSENT') {
+		if ($data2 != 'NODATAWASSENT') {
 			$d = Yii::app()->session[$index];
 			$d[$data] = $data2;
 			Yii::app()->session[$index] = $d;
