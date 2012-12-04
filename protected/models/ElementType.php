@@ -24,9 +24,11 @@
  * @property string $id
  * @property string $name
  * @property string $class_name
+ * @property string $parent_element_type_id
  *
  * The followings are the available model relations:
  * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
+ * @property 
  */
 class ElementType extends BaseActiveRecord
 {
@@ -59,7 +61,7 @@ class ElementType extends BaseActiveRecord
 			array('name, class_name', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, class_name', 'safe', 'on'=>'search'),
+			array('id, name, class_name, parent_element_type_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -71,6 +73,8 @@ class ElementType extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'parent_element_type' => array(self::BELONGS_TO, 'ElementType', 'parent_element_type_id'),
+			'child_element_types' => array(self::HAS_MANY, 'Element', 'parent_element_type_id')
 		);
 	}
 
