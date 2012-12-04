@@ -40,7 +40,7 @@ return array(
 		// Application components
 		'components' => array(
 				'request' => array(
-					'enableCsrfValidation' => true,
+					'enableCsrfValidation' => false,
 				),
 				'event' => array(
 						'class' => 'OEEventManager',
