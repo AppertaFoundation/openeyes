@@ -429,8 +429,7 @@ if (!empty($address)) {
 						?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.$type.', '.$pca->site->name.')';?>");
 					<?php } else if ($pca->institution) {
-						$uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id));
-						if ($uca->user) {?>
+						if (($uca = UserContactAssignment::model()->find('contact_id=?',array($pca->contact_id))) && $uca->user) {?>
 						currentContacts.push("<?php if ($pca->contact->title) echo $pca->contact->title.' '; echo $pca->contact->first_name.' '.$pca->contact->last_name.' ('.($uca ? ($uca->user->role ? $uca->user->role : 'Staff') : $pca->contact->parent_class).', '.$pca->institution->name.')';?>");
 						<?php }?>
 					<?php } else {?>
