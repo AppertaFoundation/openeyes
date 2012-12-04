@@ -83,7 +83,7 @@ class Sequence extends BaseActiveRecord {
 			array('theatre_id, start_date, start_time, end_time, repeat_interval', 'required'),
 			array('repeat_interval', 'numerical', 'integerOnly'=>true),
 			array('theatre_id', 'length', 'max'=>10),
-			array('end_date, week_selection, consultant, paediatric, anaesthetist', 'safe'),
+			array('end_date, week_selection, consultant, paediatric, anaesthetist, general_anaesthetic', 'safe'),
 			array('start_date', 'date', 'format'=>'yyyy-MM-dd'),
 			array('start_time', 'date', 'format'=>array('H:mm', 'H:mm:ss')),
 			array('end_time', 'date', 'format'=>array('H:mm', 'H:mm:ss')),

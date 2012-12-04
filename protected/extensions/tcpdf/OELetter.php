@@ -27,6 +27,7 @@ class OELetter {
 	protected $font_size = '12';
 	protected $barcode;
 	protected $watermark;
+	protected $rollover;
 	protected $hide_date = false;
 
 	/**
@@ -46,6 +47,10 @@ class OELetter {
 	
 	public function setWatermark($watermark) {
 		$this->watermark = $watermark;
+	}
+
+	public function setRollover($text) {
+		$this->rollover = $text;
 	}
 	
 	public function setHideDate($hide_date) {
@@ -75,8 +80,10 @@ class OELetter {
 		$pdf->startPageGroup();
 		$pdf->setBarcode($this->barcode);
 		$pdf->setWatermark($this->watermark);
+		$pdf->setRollover($this->rollover);
 		$pdf->AddPage();
 		$pdf->setFont($this->font_family, '', $this->font_size);
+		$pdf->setHeaderFont(array($this->font_family, '', $this->font_size));
 		if($this->to_address) {
 			$pdf->ToAddress($this->to_address);
 		}

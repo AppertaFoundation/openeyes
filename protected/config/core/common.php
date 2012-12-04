@@ -56,7 +56,6 @@ return array(
 						'rules' => array(
 								'' => 'site/index',
 								'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-								'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 								'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
 								'transport/<page:\d+>' => 'transport/index',
 								'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
@@ -153,5 +152,7 @@ return array(
 				'default_site_code' => '',
 				'erod_lead_time_weeks' => 3,
 				'specialty_codes' => array(),
+				'hos_num_regex' => '/^([0-9]{1,9})$/',
+				'pad_hos_num' => '%07s',
 		)
 );
