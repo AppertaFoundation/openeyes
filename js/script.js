@@ -101,3 +101,41 @@ function changeState(wb,sp) {
 		sp.addClass('hide');
 	}
 }
+
+function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
+
+function format_date(d) {
+	if (window["NHSDateFormat"] !== undefined) {
+		var date = window["NHSDateFormat"];
+		var m = date.match(/[a-zA-Z]+/g);
+
+		for (var i in m) {
+			date = date.replace(m[i],format_date_get_segment(d,m[i]));
+		}
+
+		return date;
+	}
+}
+
+function format_date_get_segment(d,segment) {
+	switch (segment) {
+		case 'j':
+			return d.getDate();
+		case 'd':
+			return (d.getDate() <10 ? '0' : '') + d.getDate();
+		case 'M':
+			return getMonthShortName(d.getMonth());
+		case 'Y':
+			return d.getFullYear();
+	}
+}
+
+function getMonthShortName(i) {
+	var months = {0:'Jan',1:'Feb',2:'Mar',3:'Apr',4:'May',5:'Jun',6:'Jul',7:'Aug',8:'Sep',9:'Oct',10:'Nov',11:'Dec'};
+	return months[i];
+}
+
+function getMonthNumberByShortName(m) {
+	var months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+	return months[m];
+}
