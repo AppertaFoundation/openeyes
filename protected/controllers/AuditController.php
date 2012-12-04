@@ -171,7 +171,7 @@ class AuditController extends BaseController
 
 		$data = array();
 		
-		$data['total_items'] = count(Audit::model()->findAll());
+		$data['total_items'] = count(Audit::model()->findAll($criteria));
 
 		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;

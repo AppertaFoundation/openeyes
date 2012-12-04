@@ -20,7 +20,7 @@
 ?>
 <div class="form">
 
-	<?php $form = $this->beginWidget('CActiveForm', array(
+	<?php $form = $this->beginWidget('BaseEventTypeCActiveForm', array(
 		'id' => 'sequence-form',
 		'enableAjaxValidation' => false,
 	)); ?>
@@ -50,20 +50,7 @@
 	<div class="row">
 		<?php echo $form->labelEx($model,'start_date'); ?>
 		<div class="field">
-			<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model' => $model,
-				'attribute' => 'start_date',
-				'value' => $model->start_date,
-				'options' => array(
-					'showAnim' => 'fold',
-					'minDate' => 'new Date()',
-					'defaultDate' => $model->start_date,
-					'dateFormat' => Helper::NHS_DATE_FORMAT_JS
-				),
-				'htmlOptions' => array(
-					'style' => 'height: 20px;'
-				),
-				)); ?>
+			<?php echo $form->datePicker($model, 'start_date', array('mindate' => 'new Date()'), array('style' => 'height: 20px;'))?>
 			<?php echo $form->error($model,'start_date'); ?>
 		</div>
 	</div>

@@ -27,7 +27,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
  
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
-	<meta name="viewport" content="width=device-width; initial-scale=0.62">
+	<meta name="viewport" content="width=device-width, initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
 		<meta http-equiv='expires' content='0'>
@@ -35,15 +35,17 @@
 	<?php }?>
 	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/> 
-	<?php Yii::app()->clientScript->registerCoreScript('jquery')?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jui/js/jquery-ui.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jquery.watermark.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/libs/modernizr-2.0.6.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/jquery.printElement.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
+	<?php $cs = Yii::app()->clientScript; ?>
+	<?php $cs->registerCoreScript('jquery')?>
+	<?php $cs->registerCoreScript('jquery.ui')?>
+	<?php $cs->registerCSSFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen')?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.watermark.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/modernizr-2.0.6.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.printElement.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/print.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/buttons.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 

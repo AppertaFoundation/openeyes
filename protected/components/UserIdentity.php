@@ -44,6 +44,8 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
+		Yii::app()->event->dispatch('user_before_login', array('username' => $this->username));
+
 		/**
 		 * Usernames are case sensitive
 		 */
