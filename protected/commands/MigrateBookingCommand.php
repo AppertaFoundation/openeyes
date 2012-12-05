@@ -367,6 +367,10 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled->cancellation_reason_id = $cb['cancelled_reason_id'];
 				$cancelled->cancellation_comment = $cb['cancellation_comment'];
 				$cancelled->cancellation_user_id = $cb['created_user_id'];
+				$cancelled->created_user_id = $cb['created_user_id'];
+				$cancelled->created_date = $cn['created_date'];
+				$cancelled->last_modified_user_id = $cb['last_modified_user_id'];
+				$cancelled->last_modified_date = $cb['last_modified_date'];
 
 				if (Yii::app()->db->createCommand("select id from transport_list where item_table = 'cancelled_booking' and item_id = {$cb['id']}")->queryRow()) {
 					$cancelled->transport_arranged = 1;
