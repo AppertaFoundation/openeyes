@@ -306,7 +306,9 @@ class MigrateBookingCommand extends CConsoleCommand {
 
 		echo "ok\n";
 
-		echo "Migrating booking ... ";
+		echo "Collecting data from booking ... ";
+
+		$bookings = array();
 
 		foreach (Yii::app()->db->createCommand("select * from booking order by id asc")->queryAll() as $b) {
 			$booking = new OphTrOperation_Operation_Booking;
@@ -329,18 +331,12 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$booking->transport_arranged = 1;
 			}
 
-			if (!$booking->save(true,null,true)) {
-				echo $booking->theatre_id."\n";
-
-				echo "Unable to save booking:\n\n".print_r($booking->getErrors(),true)."\n";
-				print_r($b);
-				exit;
-			}
+			$bookings[$booking->created_date][] = $booking;
 		}
 
 		echo "ok\n";
 
-		echo "Migrating cancelled_booking ... ";
+		echo "Collecting data from cancelled_booking ... ";
 
 		foreach (Yii::app()->db->createCommand("select * from cancelled_booking order by id asc")->queryAll() as $cb) {
 			if (Yii::app()->db->createCommand("select * from element_operation where id = {$cb['element_operation_id']}")->queryRow()) {
@@ -368,7 +364,7 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled->cancellation_comment = $cb['cancellation_comment'];
 				$cancelled->cancellation_user_id = $cb['created_user_id'];
 				$cancelled->created_user_id = $cb['created_user_id'];
-				$cancelled->created_date = $cn['created_date'];
+				$cancelled->created_date = $cb['created_date'];
 				$cancelled->last_modified_user_id = $cb['last_modified_user_id'];
 				$cancelled->last_modified_date = $cb['last_modified_date'];
 
@@ -376,9 +372,29 @@ class MigrateBookingCommand extends CConsoleCommand {
 					$cancelled->transport_arranged = 1;
 				}
 
-				if (!$cancelled->save(true,null,true)) {
-					echo "Unable to save cancelled booking: ".print_r($cancelled->getErrors(),true)."\n";
-					print_r($cb);
+				$bookings[$cancelled->created_date][] = $cancelled;
+			}
+		}
+
+		echo "ok\n";
+
+		echo "Sorting bookings by last_modified_date ... ";
+
+		ksort($bookings);
+
+		echo "ok\n";
+
+		echo "Storing all bookings ... ";
+
+		$id = 1;
+
+		foreach ($bookings as $bookings_for_date) {
+			foreach ($bookings_for_date as $booking) {
+				$booking->id = $id++;
+
+				if (!$booking->save(true,null,true)) {
+					echo "Unable to save booking: ".print_r($booking->getErrors(),true)."\n";
+					print_r($booking);
 					exit;
 				}
 			}
