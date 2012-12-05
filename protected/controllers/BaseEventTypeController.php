@@ -684,7 +684,7 @@ class BaseEventTypeController extends BaseController
 		parent::init();
 
 		$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
-		$action = preg_replace('/\?.*$/','',$ex[3]);
+		$action = preg_replace('/\?.*$/','',@$ex[3]);
 
 		if ($action == 'print') {
 			$scriptMap = Yii::app()->clientScript->scriptMap;
