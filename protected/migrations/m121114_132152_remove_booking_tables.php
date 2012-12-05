@@ -31,6 +31,7 @@ class m121114_132152_remove_booking_tables extends CDbMigration
 		$this->dropTable('date_letter_sent');
 		$this->dropTable('element_operation');
 		$this->dropTable('cancellation_reason');
+		$this->dropTable('transport_list');
 	}
 
 	public function down()
@@ -443,5 +444,21 @@ class m121114_132152_remove_booking_tables extends CDbMigration
 
 		$this->insert('element_type_priority',array('element_type_id' => $element_operation->id, 'priority_id' => 1, 'display_order' => 1));
 		$this->insert('element_type_priority',array('element_type_id' => $element_operation->id, 'priority_id' => 2, 'display_order' => 2));
+
+		$this->createTable('transport_list', array(
+				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
+				'item_table' => 'varchar(40) CHARACTER SET utf8 NOT NULL',
+				'item_id' => 'int(10) unsigned NOT NULL',
+				'status' => 'int(1) unsigned NOT NULL',
+				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
+				'last_modified_user_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
+				'created_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+				'last_modified_date' => 'datetime NOT NULL DEFAULT \'1900-01-01 00:00:00\'',
+				'PRIMARY KEY (`id`)',
+				'KEY `transport_list_created_user_id_fk` (`created_user_id`)',
+				'KEY `transport_list_last_modified_user_id_fk` (`last_modified_user_id`)',
+				'CONSTRAINT `transport_list_created_user_id_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `transport_list_last_modified_user_id_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)'
+			), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 	}
 }
