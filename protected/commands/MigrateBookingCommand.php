@@ -325,6 +325,10 @@ class MigrateBookingCommand extends CConsoleCommand {
 			$booking->session_end_time = $session['end_time'];
 			$booking->session_theatre_id = $session['theatre_id'];
 
+			if (Yii::app()->db->createCommand("select id from transport_list where item_tablename = 'booking' and item_id = {$b['id']}")->queryRow()) {
+				$booking->transport_arranged = 1;
+			}
+
 			if (!$booking->save(true,null,true)) {
 				echo $booking->theatre_id."\n";
 
@@ -363,6 +367,10 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled->cancellation_reason_id = $cb['cancelled_reason_id'];
 				$cancelled->cancellation_comment = $cb['cancellation_comment'];
 				$cancelled->cancellation_user_id = $cb['created_user_id'];
+
+				if (Yii::app()->db->createCommand("select id from transport_list where item_tablename = 'cancelled_booking' and item_id = {$cb['id']}")->queryRow()) {
+					$cancelled->transport_arranged = 1;
+				}
 
 				if (!$cancelled->save(true,null,true)) {
 					echo "Unable to save cancelled booking: ".print_r($cancelled->getErrors(),true)."\n";
