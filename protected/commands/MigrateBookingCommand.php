@@ -325,7 +325,7 @@ class MigrateBookingCommand extends CConsoleCommand {
 			$booking->session_end_time = $session['end_time'];
 			$booking->session_theatre_id = $session['theatre_id'];
 
-			if (Yii::app()->db->createCommand("select id from transport_list where item_tablename = 'booking' and item_id = {$b['id']}")->queryRow()) {
+			if (Yii::app()->db->createCommand("select id from transport_list where item_table = 'booking' and item_id = {$b['id']}")->queryRow()) {
 				$booking->transport_arranged = 1;
 			}
 
@@ -368,7 +368,7 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled->cancellation_comment = $cb['cancellation_comment'];
 				$cancelled->cancellation_user_id = $cb['created_user_id'];
 
-				if (Yii::app()->db->createCommand("select id from transport_list where item_tablename = 'cancelled_booking' and item_id = {$cb['id']}")->queryRow()) {
+				if (Yii::app()->db->createCommand("select id from transport_list where item_table = 'cancelled_booking' and item_id = {$cb['id']}")->queryRow()) {
 					$cancelled->transport_arranged = 1;
 				}
 
@@ -384,7 +384,7 @@ class MigrateBookingCommand extends CConsoleCommand {
 	}
 
 	public function findSessionForCancelledBooking($cb) {
-		$theatres = array();
+		$sessions = array();
 
 		foreach (Yii::app()->db->createCommand("select * from session where date = '{$cb['date']}' and start_time = '{$cb['start_time']}' and end_time = '{$cb['end_time']}' and theatre_id = '{$cb['theatre_id']}'")->queryAll() as $session) {
 			$sessions[] = $session;
