@@ -203,16 +203,24 @@ class Site extends BaseActiveRecord
 		return implode('<br />', $address);
 	}
 
-	public function getLetterArray($include_name=false) {
+	public function getLetterArray($include_name=false,$encode=true) {
 		$fields = $include_name ? array('name') : array();
 
 		$address = array();
 		foreach (array_merge($fields,array('address1', 'address2', 'address3', 'postcode')) as $field) {
 			if (!empty($this->$field)) {
 				if ($field == 'address1') {
-					$address[] = CHtml::encode(str_replace(',','',$this->$field));
+					if ($encode) {
+						$address[] = CHtml::encode(str_replace(',','',$this->$field));
+					} else {
+						$address[] = str_replace(',','',$this->$field);
+					}
 				} else {
-					$address[] = CHtml::encode($this->$field);
+					if ($encode) {
+						$address[] = CHtml::encode($this->$field);
+					} else {
+						$address[] = $this->$field;
+					}
 				}
 			}
 		}

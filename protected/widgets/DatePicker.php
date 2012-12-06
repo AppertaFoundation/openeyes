@@ -31,7 +31,11 @@ class DatePicker extends BaseCWidget {
 					$this->value = date('j M Y',strtotime($this->element->{$this->field}));
 				}
 			} else {
-				$this->value = date('j M Y');
+				if (@$this->htmlOptions['null']) {
+					$this->value = null;
+				} else {
+					$this->value = date('j M Y');
+				}
 			}
 		} else {
 			$this->value = $_POST[get_class($this->element)][$this->field];

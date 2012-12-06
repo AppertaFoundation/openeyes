@@ -39,6 +39,9 @@ return array(
 
 		// Application components
 		'components' => array(
+				'request' => array(
+					//'enableCsrfValidation' => true,
+				),
 				'event' => array(
 						'class' => 'OEEventManager',
 						'observers' => array(),
@@ -53,11 +56,6 @@ return array(
 						'rules' => array(
 								'' => 'site/index',
 								'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-								'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
-								'transport'=>'OphTrOperation/transport/',
-								'transport/digest/<date:\d+>_<time:\d+>.csv'=>'OphTrOperation/transport/',
-								'transport/<page:\d+>' => 'OphTrOperation/transport/',
-								'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'OphTrOperation/transport/',
 								'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
 								'<controller:\w+>/<id:\d+>' => '<controller>/view',
 								'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
@@ -135,6 +133,8 @@ return array(
 				'ldap_admin_dn' => '',
 				'ldap_password' => '',
 				'ldap_dn' => '',
+				'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+				'ldap_native_timeout' => 3,
 				'environment' => 'dev',
 				'audit_trail' => false,
 				'watermark' => '',

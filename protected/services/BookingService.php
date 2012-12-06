@@ -55,7 +55,7 @@ class BookingService
 			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			LEFT JOIN `booking` `a` ON s.id = a.session_id
 			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id AND `e`.deleted = 0
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . " AND
 				s.date BETWEEN CAST('$startDate' AS DATE) AND
 				CAST('$monthEnd' AS DATE) AND $firmSql
@@ -98,10 +98,9 @@ class BookingService
 			LEFT JOIN `session_firm_assignment` `f` ON s.id = f.session_id
 			LEFT JOIN `booking` `a` ON s.id = a.session_id
 			LEFT JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id
+			LEFT JOIN `event` `e` ON `o`.event_id = `e`.id AND `e`.deleted = 0
 			WHERE s.status != " . Session::STATUS_UNAVAILABLE . "
 				AND s.date = '$date' AND $firmSql
-				AND (`e`.deleted = 0 or `e`.deleted is null)
 			GROUP BY s.id
 			ORDER BY s.start_time
 		";
@@ -125,11 +124,10 @@ class BookingService
 			FROM `session` `s`
 			JOIN `booking` `a` ON s.id = a.session_id
 			JOIN `element_operation` `o` ON a.element_operation_id = o.id
-			JOIN `event` `e` ON `o`.event_id = `e`.id
+			JOIN `event` `e` ON `o`.event_id = `e`.id AND `e`.deleted = 0
 			JOIN `theatre` `t` ON s.theatre_id = t.id
 			JOIN `site` ON site.id = t.site_id
-			WHERE s.id = '" . $sessionId . "'
-			AND (`e`.deleted = 0 or `e`.deleted is null)";
+			WHERE s.id = '" . $sessionId . "'";
 
 		$sessions = Yii::app()->db->createCommand($sql)->query();
 
@@ -213,8 +211,6 @@ class BookingService
 				$whereParams[':wardId'] = $wardId;
 			}
 
-			$whereSql .= ' AND ( e.deleted = 0 OR e.deleted is null ) AND ( ep.deleted = 0 OR ep.deleted is null) ';
-
 			$command = Yii::app()->db->createCommand()
 				// TODO: References to sequences need to be removed when possible
 				->select('DISTINCT(o.id) AS operation_id, t.name, i.short_name as site_name, s.date, s.start_time, s.end_time, s.id AS session_id, s.sequence_id,
@@ -228,12 +224,12 @@ class BookingService
 					c.last_name, p.dob, p.gender, p.hos_num, w.name AS ward, b.display_order, b.confirmed, pr.name as priority, s.status, mu.first_name AS mu_fn, mu.last_name AS mu_ln, cu.first_name as cu_fn, cu.last_name as cu_ln, s.last_modified_date, su.first_name as session_first_name, su.last_name as session_last_name')
 				->from('session s')
 				->join('theatre t', 't.id = s.theatre_id')
-				->leftJoin('site i', 'i.id = t.site_id')
+				->leftJoin('site i', 'i.id = t.site_id') 
 				->leftJoin('booking b', 'b.session_id = s.id')
 				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
 				->leftJoin('priority pr','pr.id = o.priority_id')
-				->leftJoin('event e', 'e.id = o.event_id')
-				->leftJoin('episode ep', 'ep.id = e.episode_id')
+				->leftJoin('event e', 'e.id = o.event_id AND e.deleted = 0')
+				->leftJoin('episode ep', 'ep.id = e.episode_id AND ep.deleted = 0')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
 				->leftJoin('contact c', "c.parent_id = p.id and c.parent_class = 'Patient'")
 				->join('session_firm_assignment sfa', 'sfa.session_id = s.id')
@@ -265,8 +261,8 @@ class BookingService
 				->leftJoin('booking b', 'b.session_id = s.id')
 				->leftJoin('element_operation o', 'o.id = b.element_operation_id')
 				->leftJoin('priority pr','pr.id = o.priority_id')
-				->leftJoin('event e', 'e.id = o.event_id')
-				->leftJoin('episode ep', 'ep.id = e.episode_id')
+				->leftJoin('event e', 'e.id = o.event_id AND e.deleted = 0')
+				->leftJoin('episode ep', 'ep.id = e.episode_id AND ep.deleted = 0')
 				->leftJoin('patient p', 'p.id = ep.patient_id')
 				->leftJoin('contact c', "c.parent_id = p.id and c.parent_class = 'Patient'")
 				->leftJoin('session_firm_assignment sfa', 'sfa.session_id = s.id')
@@ -277,7 +273,7 @@ class BookingService
 				->where($whereSql, $whereParams)
 				->order('t.name ASC, s.date ASC, s.start_time ASC, s.end_time ASC, b.display_order ASC');
 		}
-
+Yii::log($command->getText(),'trace');
 		return $command->queryAll();
 	}
 }

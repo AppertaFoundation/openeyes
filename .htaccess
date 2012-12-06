@@ -2,14 +2,15 @@ Options +FollowSymLinks
 IndexIgnore */*
 
 RewriteEngine On
+#RewriteBase /
 
-# if a directory or a file exists, use it directly
+# Things not to rewrite
+RewriteCond %{REQUEST_URI} !(\.gif$)|(\.jpg$)|(\.png$)|(\.css$)|(\.js$)|(\.ico$)
+
+# If a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
 
-# otherwise forward it to index.php
-RewriteCond %{REQUEST_FILENAME} !favicon.ico$
-RewriteCond %{REQUEST_FILENAME} !robots.txt$
+# Otherwise forward it to index.php
 RewriteRule ^.*$ index.php [L]
 
 ############### boilerplate stuff ###############
