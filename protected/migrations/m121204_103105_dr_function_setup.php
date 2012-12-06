@@ -1,4 +1,4 @@
-<?php
+cd <?php
 
 class m121204_103105_dr_function_setup extends CDbMigration
 {
@@ -12,7 +12,7 @@ class m121204_103105_dr_function_setup extends CDbMigration
 			
 			// Follow up letter macro
 			if (!$lm = SubSpecialtyLetterMacro::model()->find('name=? and subspecialty_id=?', array('Follow up', $mr_id))) {
-				$lm = new SubspecialtyLetterMacro;
+				$lm = new SubSpecialtyLetterMacro;
 			}
 			$lm->name = 'Follow up';
 			$lm->subspecialty_id = $mr_id;
