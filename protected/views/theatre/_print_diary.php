@@ -11,7 +11,6 @@ _____________________________________________________________________________
 http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
-
 ?>
 <!-- ================================================ -->
 <!-- * * * * * * * * * *   DIARY  * * * * * * * * * * -->
@@ -101,6 +100,7 @@ DATE:
 ?>
 <?php echo !empty($session['procedures']) ? '['.$eye_string.'] '.htmlspecialchars($session['procedures_long']) : 'No procedures'?><br />
 <?php echo htmlspecialchars($session['operationComments']) ?>
+<?php echo htmlspecialchars($session['comments'])?>
 <td><?php echo $session['admissionTime'] ?></td>
 </tr>
 <?php

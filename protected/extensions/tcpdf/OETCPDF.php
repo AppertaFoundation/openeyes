@@ -51,6 +51,8 @@ class OETCPDF extends TCPDF {
 				'PrintScaling' => 'None',
 		);
 		$this->setViewerPreferences($preferences);
+		$this->IncludeJS('print(true);');
+		
 	}
 
 	/**
