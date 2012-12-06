@@ -310,11 +310,17 @@ class MigrateBookingCommand extends CConsoleCommand {
 
 		$bookings = array();
 
+		$operation_ids = array();
+
 		foreach (Yii::app()->db->createCommand("select * from booking order by id asc")->queryAll() as $b) {
 			$booking = new OphTrOperation_Operation_Booking;
 
 			$b['element_id'] = $b['element_operation_id'];
 			unset($b['element_operation_id']);
+
+			if (!in_array($b['element_id'],$operation_ids)) {
+				$operation_ids[] = $b['element_id'];
+			}
 
 			foreach ($b as $key => $value) {
 				$booking->{$key} = $value;
@@ -327,11 +333,12 @@ class MigrateBookingCommand extends CConsoleCommand {
 			$booking->session_end_time = $session['end_time'];
 			$booking->session_theatre_id = $session['theatre_id'];
 
-			if (Yii::app()->db->createCommand("select id from transport_list where item_table = 'booking' and item_id = {$b['id']}")->queryRow()) {
+			if ($tl = Yii::app()->db->createCommand("select id,last_modified_date from transport_list where item_table = 'booking' and item_id = {$b['id']}")->queryRow()) {
 				$booking->transport_arranged = 1;
+				$booking->transport_arranged_date = $tl['last_modified_date'];
 			}
 
-			$bookings[$booking->created_date][] = $booking;
+			$bookings[$b['element_id']][$booking->created_date][] = $booking;
 		}
 
 		echo "ok\n";
@@ -343,6 +350,10 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled = new OphTrOperation_Operation_Booking;
 
 				$cancelled->element_id = $cb['element_operation_id'];
+
+				if (!in_array($cancelled->element_id,$operation_ids)) {
+					$operation_ids[] = $cancelled->element_id;
+				}
 
 				if ($session = $this->findSessionForCancelledBooking($cb)) {
 					// map cancelled_booking rows to a session
@@ -368,33 +379,56 @@ class MigrateBookingCommand extends CConsoleCommand {
 				$cancelled->last_modified_user_id = $cb['last_modified_user_id'];
 				$cancelled->last_modified_date = $cb['last_modified_date'];
 
-				if (Yii::app()->db->createCommand("select id from transport_list where item_table = 'cancelled_booking' and item_id = {$cb['id']}")->queryRow()) {
+				if ($tl = Yii::app()->db->createCommand("select id,last_modified_date from transport_list where item_table = 'cancelled_booking' and item_id = {$cb['id']}")->queryRow()) {
 					$cancelled->transport_arranged = 1;
+					$cancelled->transport_arranged_date = $tl['last_modified_date'];
 				}
 
-				$bookings[$cancelled->created_date][] = $cancelled;
+				$bookings[$cancelled->element_id][$cancelled->created_date][] = $cancelled;
 			}
 		}
 
 		echo "ok\n";
 
-		echo "Sorting bookings by last_modified_date ... ";
+		echo "Sorting bookings ... ";
 
 		ksort($bookings);
 
+		foreach ($bookings as $element_id => $dates) {
+			foreach ($dates as $date => $bookings_for_date) {
+				ksort($bookings[$element_id][$date]);
+			}
+		}
+
 		echo "ok\n";
 
-		echo "Storing all bookings ... ";
+		echo "Storing bookings ... ";
 
 		$id = 1;
 
-		foreach ($bookings as $bookings_for_date) {
-			foreach ($bookings_for_date as $booking) {
-				$booking->id = $id++;
+		foreach ($bookings as $element_id => $dates) {
+			$live_booking = false;
 
-				if (!$booking->save(true,null,true)) {
-					echo "Unable to save booking: ".print_r($booking->getErrors(),true)."\n";
-					print_r($booking);
+			foreach ($dates as $date => $bookings_for_date) {
+				foreach ($bookings_for_date as $booking) {
+					if ($booking->cancellation_date) {
+						$booking->id = $id++;
+						if (!$booking->save()) {
+							echo "Unable to save booking: ".print_r($booking->getErrors(),true)."\n";
+							print_r($booking);
+							exit;
+						}
+					} else {
+						$live_booking = $booking;
+					}
+				}
+			}
+
+			if ($live_booking) {
+				$live_booking->id = $id++;
+				if (!$live_booking->save()) {
+					echo "Unable to save booking: ".print_r($live_booking->getErrors(),true)."\n";
+					print_r($live_booking);
 					exit;
 				}
 			}
