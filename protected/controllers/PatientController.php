@@ -23,7 +23,6 @@ class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
 	public $patient;
-	public $service;
 	public $firm;
 	public $editable;
 	public $editing;
@@ -74,8 +73,6 @@ class PatientController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
-		$this->service = new ClinicalService;
-
 		return parent::beforeAction($action);
 	}
 
@@ -115,58 +112,8 @@ class PatientController extends BaseController
 		));
 	}
 
-	public function actionEvent($id) {
-		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
-
-		$this->event = Event::model()->findByPk($id);
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$this->episode = $this->event->episode;
-		$this->patient = $this->episode->patient;
-		$episodes = $this->patient->episodes;
-		$legacyepisodes = $this->patient->legacyepisodes;
-
-		$elements = $this->service->getDefaultElements('view', $this->event);
-
-		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
-
-		$this->event->audit('event','view',false);
-
-		$this->logActivity('viewed event');
-
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-
-		if(isset($this->event->element_operation->booking->session->date)){
-			$this->title = $this->event_type->name .": ".$this->event->element_operation->booking->session->NHSDate('date'). ", ". $this->patient->first_name. " ". $this->patient->last_name;
-		}else{
-			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
-		}
-
-		$this->editable = $this->event->editable;
-
-		// Should not be able to edit cancelled operations
-		if ($this->event_type_id == 25) {
-			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
-			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
-				return FALSE;
-			}
-		}
-
-		$this->render('events_and_episodes', array(
-			'episodes' => $episodes,
-			'legacyepisodes' => $legacyepisodes,
-			'elements' => $elements,
-			'event_template_name' => $event_template_name,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
-			'site' => $site,
-			'current_episode' => $this->episode,
-		));
-	}
-
 	public function actionPrintAdmissionLetter($id) {
 		$this->layout = '//layouts/pdf';
-
-		$this->service = new ClinicalService;
 
 		if (!$event = Event::model()->findByPk($id)) {
 			throw new Exception('Event not found: '.$id);
@@ -386,7 +333,6 @@ class PatientController extends BaseController
 	public function actionEpisodes()
 	{
 		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
@@ -434,7 +380,6 @@ class PatientController extends BaseController
 	public function actionEpisode($id)
 	{
 		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
 
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
@@ -466,7 +411,6 @@ class PatientController extends BaseController
 	public function actionUpdateepisode($id)
 	{
 		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
 
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
