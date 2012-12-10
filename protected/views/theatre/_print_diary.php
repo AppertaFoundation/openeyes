@@ -64,6 +64,7 @@ DATE:
 </td><td>
 <?php echo Helper::convertDate2NHS($date); ?>
 </td></tr>
+<tr><td>COMMENTS: <?php echo htmlspecialchars($session['comments'])?></td></tr>
 </tbody></table>
 
 <table class="d_data">
@@ -100,7 +101,6 @@ DATE:
 ?>
 <?php echo !empty($session['procedures']) ? '['.$eye_string.'] '.htmlspecialchars($session['procedures_long']) : 'No procedures'?><br />
 <?php echo htmlspecialchars($session['operationComments']) ?>
-<?php echo htmlspecialchars($session['comments'])?>
 <td><?php echo $session['admissionTime'] ?></td>
 </tr>
 <?php
