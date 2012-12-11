@@ -1023,40 +1023,64 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 	
+	private function _getDRGrading() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
+			if ($dr = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_DRGrading')) {
+				return $dr->find('event_id=?', array($event->id));
+			}
+		}
+	}
+	
 	// DR function additions
 	/*
 	 * NSC right Retinopathy
 	 */
 	public function getNrr() {
-		//TODO: implement nrr
+		if ($dr = $this->_getDRGrading()) {
+			return $dr->right_nscretinopathy;
+		}
 	}
 	
 	/*
 	 * NSC left Retinopathy
 	*/
 	public function getNlr() {
-		//TODO: implement nlr
+		if ($dr = $this->_getDRGrading()) {
+			return $dr->left_nscretinopathy;
+		}
 	}
 	
 	/*
 	 * NSC right Maculopathy
 	*/
 	public function getNrm() {
-		//TODO: implement nrm
+		if ($dr = $this->_getDRGrading()) {
+			return $dr->right_nscmaculopathy;
+		}
 	}
 	
 	/*
 	 * NSC left Maculopathy
 	*/
 	public function getNlm() {
-		//TODO: implement nlm
+	if ($dr = $this->_getDRGrading()) {
+			return $dr->left_nscretinopathy;
+		}
 	}
 	
 	/*
 	 * Type of diabetes mellitus
 	*/
 	public function getDmt() {
-		//TODO: implement dmt
+		if($diagnoses = $this->getSystemicDiagnoses()) {
+			foreach ($diagnoses as $diagnosis) {
+				if (in_array($diagnosis->disorder->id, array('44054006', '46635009'))) {
+					return $diagnosis->disorder->term;
+				}
+			}
+			return 'not diabetic';
+		}
 	}
 	
 	/*
