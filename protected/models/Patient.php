@@ -698,9 +698,14 @@ class Patient extends BaseActiveRecord {
 		if (!$disorder = Disorder::model()->findByPk($sd->disorder_id)) {
 			throw new Exception('Unable to find disorder: '.$sd->disorder_id);
 		}
-
-		$type = $disorder->systemic ? 'systemic' : 'ophthalmic';
-
+		
+		if ($disorder->specialty_id) {
+			$type = strtolower(Specialty::model()->findByPk($disorder->specialty_id)->code);
+		}
+		else {
+			$type = 'sys';
+		}
+		
 		$audit_attributes = $sd->getAuditAttributes();
 
 		if (!$sd->delete()) {
@@ -1071,6 +1076,8 @@ class Patient extends BaseActiveRecord {
 	
 	/*
 	 * Type of diabetes mellitus
+	 * // SNOMED codes for Diabetes mellitus type 2
+	 * // and Diabetes mellitus type 1
 	*/
 	public function getDmt() {
 		if($diagnoses = $this->getSystemicDiagnoses()) {

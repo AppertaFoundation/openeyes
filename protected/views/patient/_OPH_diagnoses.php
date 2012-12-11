@@ -95,6 +95,7 @@
 					</div>
 				</div>
 <script type="text/javascript">
+	
 	$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 		$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
 		$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',true);
@@ -116,38 +117,5 @@
 		$('img.add_ophthalmic_diagnosis_loader').show();
 		return true;
 	});
-	$('.removeDiagnosis').live('click',function() {
-		$('#diagnosis_id').val($(this).attr('rel'));
 
-		$('#confirm_remove_diagnosis_dialog').dialog({
-			resizable: false,
-			modal: true,
-			width: 560
-		});
-
-		return false;
-	});
-
-	$('button.btn_remove_diagnosis').click(function() {
-		$("#confirm_remove_diagnosis_dialog").dialog("close");
-
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+$('#diagnosis_id').val(),
-			'success': function(html) {
-				if (html == 'success') {
-					$('a.removeDiagnosis[rel="'+$('#diagnosis_id').val()+'"]').parent().parent().remove();
-				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
-				}
-			}
-		});
-
-		return false;
-	});
-
-	$('button.btn_cancel_remove_diagnosis').click(function() {
-		$("#confirm_remove_diagnosis_dialog").dialog("close");
-		return false;
-	});
-</script>
+	</script>
