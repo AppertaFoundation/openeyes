@@ -37,7 +37,7 @@ Comments: [pro] has been advised of the importance of optimal blood sugar and bl
 			$lm->save();
 			
 			// Discharge letter macro
-			if (!$lm = SubSpecialtyLetterMacro::model()->find('name=? and subspecialty_id=?', array('Discharge', $mr_id))) {
+			if (!$lm = SubspecialtyLetterMacro::model()->find('name=? and subspecialty_id=?', array('Discharge', $mr_id))) {
 				$lm = new SubspecialtyLetterMacro;
 			}
 			$lm->name = 'Discharge';
