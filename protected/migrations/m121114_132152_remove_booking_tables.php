@@ -4,7 +4,6 @@ class m121114_132152_remove_booking_tables extends CDbMigration
 {
 	public function up()
 	{
-		/*
 		$element_operation = ElementType::model()->find('event_type_id=? and class_name=?',array(25,'ElementOperation'));
 		$element_diagnosis = ElementType::model()->find('event_type_id=? and class_name=?',array(25,'ElementDiagnosis'));
 		$this->delete('element_type_anaesthetic_type','element_type_id='.$element_operation->id);
@@ -27,7 +26,6 @@ class m121114_132152_remove_booking_tables extends CDbMigration
 		$this->dropTable('theatre_ward_assignment');
 		$this->dropTable('ward');
 		$this->dropTable('cancelled_booking');
-		*/
 		$this->dropTable('theatre');
 		$this->dropTable('cancelled_operation');
 		$this->dropTable('date_letter_sent');
