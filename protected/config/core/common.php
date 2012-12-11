@@ -150,6 +150,8 @@ return array(
 				'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 				'default_site_code' => '',
 				'erod_lead_time_weeks' => 3,
+				'hos_num_regex' => '/^([0-9]{1,9})$/',
+				'pad_hos_num' => '%07s',
 				'menu_bar_items' => array(
 					array(
 						'title' => 'Home',
