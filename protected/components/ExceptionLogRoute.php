@@ -148,6 +148,9 @@ class ExceptionLogRoute extends CLogRoute
 			$user = isset(Yii::app()->session['user']->username) ? Yii::app()->session['user']->username : 'Not logged in';
 			$useragent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'None';
 
+			$timestamp = time();
+			$timestamp = substr($timestamp,0,5).'-'.substr($timestamp,5,strlen($timestamp));
+
 			$msg = "User: $user\n";
 			$msg .= "User agent: $useragent\n";
 			isset($_SERVER['REQUEST_URI']) && $msg .= "Request: http".(@$_SERVER['HTTPS']?'s':'').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\n";
@@ -156,7 +159,7 @@ class ExceptionLogRoute extends CLogRoute
 			isset($_SERVER['HTTP_VIA']) && $msg .= "Via: ".$_SERVER['HTTP_VIA']."\n";
 			isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $msg .= "Forwarded IP: ".$_SERVER['HTTP_X_FORWARDED_FOR']."\n";
 			$msg .= "\n".$log[0];
-			mail($this->adminEmail,$this->emailSubject,$msg);
+			mail($this->adminEmail,$this->emailSubject." [$timestamp]",$msg);
 		}
 	}
 
