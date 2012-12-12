@@ -52,7 +52,7 @@ if ($module = $this->getModule()) {
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
 				<?php if (count($episodes) >0 && @$current_episode) {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
 				<?php }?>
 					<?php
 					if ($current_episode) {

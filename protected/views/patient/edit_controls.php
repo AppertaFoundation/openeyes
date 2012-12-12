@@ -3,8 +3,8 @@
 			if (is_object($this->event)) {?>
 				You can: <span class="aBtn view-event"><?php echo CHtml::link('View',array('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id),array('class'=>"view-event"))?></span><span class="aBtn_inactive">Edit</span><?php if ($this->event->canDelete()) {?><span class="aBtn edit-event"><?php echo CHtml::link('Delete',array('/'.$this->event->eventType->class_name.'/default/delete/'.$this->event->id),array('class'=>"edit-event"))?></span><?php }
 			} else if (is_object($this->episode)) {?>
-				You can: <span class="aBtn view-event"><?php echo CHtml::link('View',array('/patient/episode/'.$this->episode->id),array('class'=>"view-episode"))?></span><span class="aBtn_inactive">Edit</span><?php if ($this->event->canDelete()) {?><span class="aBtn edit-event"><?php echo CHtml::link('Delete',array('/'.$this->event->eventType->class_name.'/default/delete/'.$this->event->id),array('class'=>"edit-event"))?></span><?php }
-			}?>
+				You can: <span class="aBtn view-event"><?php echo CHtml::link('View',array('/patient/episode/'.$this->episode->id),array('class'=>"view-episode"))?></span><span class="aBtn_inactive">Edit</span>
+			<?php }?>
 		<?php }else{
 			if (is_object($this->event)) {?>
 				You can: <span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->editable) {?> style="display: none;"<?php }?>><?php echo CHtml::link('Edit',array('/'.$this->event->eventType->class_name.'/default/update/'.$this->event->id),array('class'=>"edit-event"))?></span><?php if ($this->event->canDelete()) {?><span class="aBtn edit-event"><?php echo CHtml::link('Delete',array('/'.$this->event->eventType->class_name.'/default/delete/'.$this->event->id),array('class'=>"edit-event"))?></span><?php }
