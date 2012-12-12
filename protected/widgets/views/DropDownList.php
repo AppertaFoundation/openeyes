@@ -25,8 +25,15 @@
 						</optgroup>
 					<?php }?>
 				</select>
-			<?php }else{?>
-				<?php echo CHtml::activeDropDownList($element,$field,$data,$htmlOptions)?>
+			<?php }else{
+				if (@$htmlOptions['textAttribute']) {
+					$html_options = array();
+					foreach ($data as $i => $item) {
+						$html_options[(string)$i] = array($htmlOptions['textAttribute'] => $item);
+					}
+					$htmlOptions['options'] = $html_options;
+				}
+				echo CHtml::activeDropDownList($element,$field,$data,$htmlOptions)?>
 			<?php }?>
 		</div>
 	</div>
