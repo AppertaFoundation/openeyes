@@ -23,8 +23,6 @@ if ($module = $this->getModule()) {
 	} else {
 		$assetpath = '/assets/';
 	}
-} else {
-	$module = 'OphTrOperation';
 }
 
 $this->renderPartial('//layouts/patientMode/event_header');
@@ -49,9 +47,4 @@ $this->renderPartial('//layouts/patientMode/event_header');
 					<div class="display_mode"><?php echo $this->title?></div>
 					<?php $this->renderPartial('//patient/edit_controls')?>
 				</div>
-				<!-- EVENT CONTENT HERE -->
-				<?php if ($module == 'OphTrOperation') {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
-				<?php } else {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath.'img/watermark.png'?>) top left repeat-y;">
-				<?php }?>
+				<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath.'img/watermark.png'?>) top left repeat-y;">

@@ -19,8 +19,6 @@
 if ($module = $this->getModule()) {
 	$module = $module->getName();
 	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
-} else {
-	$module = 'OphTrOperation';
 }
 ?>
 		<h2>Episodes &amp; Events</h2>
@@ -53,25 +51,11 @@ if ($module = $this->getModule()) {
 					<div class="display_mode"><?php echo $this->title?></div>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
-
-				<!-- EVENT CONTENT HERE -->
-				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
-					<?php if ($module == 'OphTrOperation') {?>
-						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
-					<?php } else {?>
-						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
-					<?php }?>
+				<?php if (count($episodes) >0 && @$current_episode) {?>
+					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
 				<?php }?>
 					<?php
-					if (isset($this->event)) {
-						$this->renderPartial(
-							"/clinical/".$event_template_name,
-							array(
-								'elements' => $elements,
-								'site' => $site
-							), false, true
-						);
-					} else if ($current_episode) {
+					if ($current_episode) {
 						if ($this->editing) {
 							$this->renderPartial('/clinical/updateEpisode',
 								array('episode' => $current_episode, 'error' => $error)
@@ -84,10 +68,9 @@ if ($module = $this->getModule()) {
 					}
 					?>
 				</div>
-				<!-- #event_content -->
 				<div class="colorband category_treatment"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
 				<div id="display_actions_footer" class="display_actions footer"<?php if (!$this->title){?> style="display: none;"<?php }?>>
 					<?php $this->renderPartial('edit_controls')?>
 				</div>
-			</div><!-- #event_display -->
-		</div> <!-- .fullWidth -->
+			</div>
+		</div>
