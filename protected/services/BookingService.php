@@ -162,8 +162,8 @@ class BookingService
 	/**
 	 * Search for theatres/sessions, filtered by site/subspecialty/firm/theatre
 	 *
-	 * @param string  $startDate (YYYY-MM-DD)
-	 * @param string  $endDate   (YYYY-MM-DD)
+	 * @param string	$startDate (YYYY-MM-DD)
+	 * @param string	$endDate	 (YYYY-MM-DD)
 	 * @param integer $siteId
 	 * @param integer $theatreId
 	 * @param integer $subspecialtyId
@@ -181,9 +181,28 @@ class BookingService
 		$wardId = null,
 		$emergencyList = null
 	) {
-		if (empty($startDate) || empty($endDate) ||
-			(strtotime($endDate) < strtotime($startDate))) {
+		if (empty($startDate) || empty($endDate)) {
 			throw new Exception('Invalid start and end dates.');
+		}
+
+		if (preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{2})$/',$startDate,$m)) {
+			$m[1] = str_pad($m[1],2,0,STR_PAD_LEFT);
+			$m[2] = str_pad($m[2],2,0,STR_PAD_LEFT);
+			$startDate = "20{$m[3]}-{$m[2]}-{$m[1]}";
+		}
+
+		if (preg_match('/^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{2})$/',$endDate,$m)) {
+			$m[1] = str_pad($m[1],2,0,STR_PAD_LEFT);
+			$m[2] = str_pad($m[2],2,0,STR_PAD_LEFT);
+			$endDate = "20{$m[3]}-{$m[2]}-{$m[1]}";
+		}
+
+		if (!strtotime($startDate) || !strtotime($endDate)) {
+			throw new Exception('Invalid start and end dates.');
+		}
+
+		if (strtotime($endDate) < strtotime($startDate)) {
+			list($startDate,$endDate) = array($endDate,$startDate);
 		}
 
 		$whereSql = 's.date BETWEEN :start AND :end';
