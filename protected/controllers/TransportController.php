@@ -125,7 +125,7 @@ class TransportController extends BaseController
 		foreach (Yii::app()->db->createCommand()
 			->selectDistinct('element_operation.id as eoid, element_operation.priority_id, booking.id as booking_id, patient.id as pid, event.id as evid, contact.first_name,
 				contact.last_name, patient.hos_num, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, subspecialty.ref_spec as subspecialty,
-				session.date as session_date, session.start_time as session_time, element_operation.status, transport_list.id as transport,
+				session.date as session_date, session.start_time as session_time, element_operation.status, transport_list.id as transport, transport_list2.id as transport2,
 				coalesce(booking.created_date,cb.created_date) as order_created_date, ward.name as ward_name, cb.id as cancelled_booking_id, cb.date as cancelled_session_date,
 				session.theatre_id, coalesce(session.date,cb.date) as order_date, cb.start_time as cancelled_session_time, session.id as session_id, cb.theatre_id as theatre_id2,
 				coalesce(session.start_time,cb.start_time) as order_time, cb.date as cancelled_booking_date')
@@ -165,6 +165,7 @@ class TransportController extends BaseController
 				$row['session_time'] = $row['cancelled_session_time'];
 				$row['ward_name'] = 'Unknown';
 				$row['location'] = $sites[$row['theatre_id2']];
+				$row['transport'] = $row['transport2'];
 			}
 
 			if (($include_bookings && $row['method'] == 'Booked') || ($include_reschedules && $row['method'] == 'Rescheduled') || ($include_cancellations && $row['method'] == 'Cancelled')) {
