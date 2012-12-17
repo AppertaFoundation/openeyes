@@ -185,6 +185,13 @@ class SiteController extends BaseController
 			Yii::app()->end();
 		}
 
+		if (Yii::app()->params['required_user_agent'] && !preg_match(Yii::app()->params['required_user_agent'],@$_SERVER['HTTP_USER_AGENT'])) {
+			if (!Yii::app()->params['required_user_agent_message']) {
+				throw new Exception('You must define the required_user_agent_message parameter.');
+			}
+			return $this->render('login_wrong_browser');
+		}
+
 		$model=new LoginForm;
 
 		// if it is ajax validation request
