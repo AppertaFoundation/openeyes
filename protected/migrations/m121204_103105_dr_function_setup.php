@@ -30,7 +30,7 @@ Left eye:     [nlr]
 Visual acuity: [vbb] 
 Laser management: [lmp]
 					
-Comments: [pro] has been advised of the importance of optimal blood sugar and blood pressure control in reducing the risk of retinopathy and maculopathy worsening. The importance of regular follow-up has been emphasised. Other points:[lmc].
+Comments: [pro] has been advised of the importance of optimal blood sugar and blood pressure control in reducing the risk of retinopathy and maculopathy worsening. The importance of regular follow-up has been emphasised. Other points: [lmc].
 [pro] will be reviewed in [fup]";
 			$lm->cc_patient = 1;
 			$lm->display_order = 1;
@@ -56,7 +56,7 @@ Left eye:   [nlr]
 Visual acuity:  [vbb] 
 Laser management: [lmp]
 					
-Comments: [pro] has been advised of the importance of optimal blood sugar and blood pressure control in reducing the risk of retinopathy and maculopathy worsening. The importance of regular follow-up has been emphasised. Other points:[lmc].
+Comments: [pro] has been advised of the importance of optimal blood sugar and blood pressure control in reducing the risk of retinopathy and maculopathy worsening. The importance of regular follow-up has been emphasised. Other points: [lmc].
 [pro] has been referred to [pos] PCT's diabetic retinopathy screening programme who will review [obj] in one year's time.";
 			$lm->cc_patient = 1;
 			$lm->display_order = 1;

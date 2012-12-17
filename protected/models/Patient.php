@@ -1090,18 +1090,31 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 	
+	private function _getExaminationManagement() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
+			if ($dr = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Management')) {
+				return $dr->find('event_id=?', array($event->id));
+			}
+		}
+	}
+	
 	/*
 	 * Laser management plan
 	*/
 	public function getLmp() {
-		//TODO: implement lmp
+		if ($m = $this->_getExaminationManagement()) {
+			return $m->getLetter_lmp();
+		}
 	}
 	
 	/*
 	 * Laser management comments
 	*/
 	public function getLmc() {
-		//TODO: implement lmc
+		if ($m = $this->_getExaminationManagement()) {
+			return $m->comments;
+		}
 	}
 	
 	/*
