@@ -199,7 +199,6 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;	}
 
 /* === CLASSY CSS BUTTONS === */
 /* default, inactive */
-
 button.classy { height:32px; padding:0; margin:0; position:relative; top:1px; font-family: sans-serif; font-weight:normal; font-size:17px; letter-spacing: 1px;
 color:#fff; text-shadow:-1px -1px 0 #999; white-space:nowrap; border:none; overflow:visible; background:#bbb; 
 background: -moz-linear-gradient(#cacacb, #aeaeaf);		 
@@ -361,7 +360,7 @@ table		{ border-collapse: collapse; }
 table tr:last-child { border-bottom: none; }
 .table_endRow{ background: #ddd; height:15px; }
 /* clickable table row  */
-tr.clickable:hover { background:#3665ff; color:white; }
+.clickable:hover { background:#3665ff; color:white; }
 
 
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
