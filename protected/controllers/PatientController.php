@@ -228,7 +228,7 @@ class PatientController extends BaseController
 			'cancelledBookings' => $cancelledBookings,
 		), true);
 
-		$oeletter = new OELetter($patient->addressname."\n".implode("\n",$patient->correspondAddress->letterarray),$site->name."\n".implode("\n",$site->letterarray)."\nTel: ".$site->telephone.($site->fax ? "\nFax: ".$site->fax : ''));
+		$oeletter = new OELetter($patient->addressname."\n".implode("\n",$patient->correspondAddress->letterarray),$site->name."\n".implode("\n",$site->getLetterArray(false,false))."\nTel: ".$site->telephone.($site->fax ? "\nFax: ".$site->fax : ''));
 		$oeletter->setBarcode('E:'.$operation->event_id);
 		$oeletter->addBody($body);
 
