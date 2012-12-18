@@ -115,7 +115,7 @@ class Event extends BaseActiveRecord
 
 		return TRUE;
 	}
-
+	
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -241,5 +241,30 @@ class Event extends BaseActiveRecord
 		$admin = User::model()->find('username=?',array('admin'));   // these two lines should be replaced once we have rbac
 		if ($admin->id == Yii::app()->session['user']->id) {return true;}
 		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
+	}
+	
+	/*
+	 * returns the latest event of this type in the event episode
+	 * 
+	 * @returns Event
+	 */
+	public function getLatestOfTypeInEpisode() {
+		$criteria = new CDbCriteria;
+		$criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
+		$criteria->limit = 1;
+		$criteria->order = 'created_date DESC';
+		$criteria->params = array(':e_id'=>$this->episode_id, ':et_id'=>$this->event_type_id);
+		
+		return Event::model()->find($criteria);
+	}
+	
+	/*
+	 * if this event is the most recent of its type in its episode, returns true. false otherwise
+	 * 
+	 * @returns boolean
+	 */
+	public function isLatestOfTypeInEpisode() {
+		$latest = $this->getLatestOfTypeInEpisode();
+		return ($latest->id == $this->id) ? true : false;
 	}
 }
