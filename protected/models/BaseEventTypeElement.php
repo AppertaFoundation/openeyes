@@ -154,7 +154,13 @@ class BaseEventTypeElement extends BaseElement {
 	 * Used by child objects to set defaults for forms on create
 	 */
 	public function setDefaultOptions() {
-		return null;
+	}
+
+	/**
+	 * Stubbed method to set update options
+	 * Used by child objects to override null values for forms on update
+	 */
+	public function setUpdateOptions() {
 	}
 
 	public function getInfoText() {
