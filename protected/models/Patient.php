@@ -1043,7 +1043,11 @@ class Patient extends BaseActiveRecord {
 	 */
 	public function getNrr() {
 		if ($dr = $this->_getDRGrading()) {
-			return $dr->right_nscretinopathy;
+			$res = $dr->right_nscretinopathy;
+			if ($dr->right_nscretinopathy_photocoagulation) {
+				$res .= " and evidence of photocoagulation";
+			}
+			return $res;
 		}
 	}
 	
@@ -1052,7 +1056,11 @@ class Patient extends BaseActiveRecord {
 	*/
 	public function getNlr() {
 		if ($dr = $this->_getDRGrading()) {
-			return $dr->left_nscretinopathy;
+			$res = $dr->left_nscretinopathy;
+			if ($dr->left_nscretinopathy_photocoagulation) {
+				$res .= " and evidence of photocoagulation";
+			}
+			return $res;
 		}
 	}
 	
@@ -1061,7 +1069,11 @@ class Patient extends BaseActiveRecord {
 	*/
 	public function getNrm() {
 		if ($dr = $this->_getDRGrading()) {
-			return $dr->right_nscmaculopathy;
+			$res = $dr->right_nscmaculopathy;
+			if ($dr->right_nscmaculopathy_photocoagulation) {
+				$res .= " and evidence of photocoagulation";
+			}
+			return $res;
 		}
 	}
 	
@@ -1070,7 +1082,25 @@ class Patient extends BaseActiveRecord {
 	*/
 	public function getNlm() {
 	if ($dr = $this->_getDRGrading()) {
-			return $dr->left_nscretinopathy;
+			$res = $dr->left_nscmaculopathy;
+			if ($dr->left_nscmaculopathy_photocoagulation) {
+				$res .= " and evidence of photocoagulation";
+			}
+			return $res;
+		}
+	}
+	
+	// Clinical right DR Grade
+	public function getCrd() {
+		if ($dr = $this->_getDRGrading()) {
+			return $dr->right_clinical;
+		}
+	}
+	
+	// Clinical left DR Grade
+	public function getCld() {
+		if ($dr = $this->_getDRGrading()) {
+			return $dr->left_clinical;
 		}
 	}
 	

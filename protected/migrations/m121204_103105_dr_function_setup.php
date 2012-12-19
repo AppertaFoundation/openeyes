@@ -21,10 +21,8 @@ class m121204_103105_dr_function_setup extends CDbMigration
 			$lm->recipient_doctor = 1;
 			$lm->use_nickname = 1;
 			$lm->body = "Diagnosis:
-Right eye:    [nrr]
-              [nrm]
-Left eye:     [nlr]
-              [nlm]
+Right eye:    [crd]([nrr]/[nrm])
+Left eye:     [cld]([nlr]/[nlm])
 [dmt]
 					
 Visual acuity: [vbb] 
@@ -47,10 +45,8 @@ Comments: [pro] has been advised of the importance of optimal blood sugar and bl
 			$lm->recipient_doctor = 1;
 			$lm->use_nickname = 1;
 			$lm->body = "Diagnosis:
-Right eye:  [nrr]
-            [nrm]
-Left eye:   [nlr]
-            [nlm]
+Right eye:    [crd]([nrr]/[nrm])
+Left eye:     [cld]([nlr]/[nlm])
 [dmt]
 
 Visual acuity:  [vbb] 
