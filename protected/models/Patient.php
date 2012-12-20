@@ -1123,8 +1123,8 @@ class Patient extends BaseActiveRecord {
 	private function _getExaminationManagement() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
-			if ($dr = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Management')) {
-				return $dr->find('event_id=?', array($event->id));
+			if ($mgmt = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Management')) {
+				return $mgmt->find('event_id=?', array($event->id));
 			}
 		}
 	}
@@ -1147,11 +1147,24 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 	
+	private function _getExaminationOutcome() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
+			if ($out = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Outcome')) {
+				return $out->find('event_id=?', array($event->id));
+			}
+		}
+	}
+	
 	/*
 	 * Follow up period
 	*/
 	public function getFup() {
-		//TODO: implement fup
+		if ($o = $this->_getExaminationOutcome()) {
+			if ($o->followup_quantity) {
+				return $o->followup_quantity . " " . $o->followup_period;
+			}
+		}
 	}
 		
 }
