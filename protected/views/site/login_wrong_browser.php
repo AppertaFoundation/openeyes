@@ -17,32 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DatePicker extends BaseCWidget {
-	public $name;
-	public $options;
-	public $htmlOptions;
-
-	public function run() {
-		if (empty($_POST)) {
-			if ($this->element->{$this->field}) {
-				if (preg_match('/^[0-9]+ [a-zA-Z]+ [0-9]+$/',$this->element->{$this->field})) {
-					$this->value = $this->element->{$this->field};
-				} else {
-					$this->value = date('j M Y',strtotime($this->element->{$this->field}));
-				}
-			} else {
-				if (@$this->htmlOptions['null']) {
-					$this->value = null;
-				} else {
-					$this->value = date('j M Y');
-				}
-			}
-		} else {
-			$this->value = $_POST[get_class($this->element)][$this->field];
-		}
-
-		parent::run();
-	}
-}
-
+$this->pageTitle=Yii::app()->name . ' - Login';
+$this->layout = 'simple';
 ?>
+<h2 class="alert">Please login</h2>
+
+<div id="login-form" class="form_greyBox">
+	<p><?php echo str_replace("\n","<br/>",Yii::app()->params['required_user_agent_message'])?></p>
+</div>

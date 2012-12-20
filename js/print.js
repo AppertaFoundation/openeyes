@@ -17,23 +17,17 @@
  */
 
 /**
- * Load a PDF into an iframe and print it
+ * Load a PDF into an iframe to print it (print js is embedded in the pdf)
  */
-
-var iframe = null;
-
 function printPDF(url, data) {
 	$('#print_pdf_iframe').remove();
-	iframe = document.createElement('iframe');
-	iframe.onload = function() {
-		setTimeout('iframe.contentWindow.print();',1000);
-	};
-	$(iframe).attr({
+	var iframe = $('<iframe></iframe>');
+	iframe.attr({
 		id: 'print_pdf_iframe',
 		src: url + '?' + $.param(data),
 		style: 'display: none;'
 	});
-	document.body.appendChild(iframe);
+	$('body').append(iframe);
 }
 
 $(document).ready(function() {
