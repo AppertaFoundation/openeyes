@@ -44,7 +44,16 @@ class BaseEventTypeElement extends BaseElement {
 	function getFormOptions($table) {
 		$options = array();
 
-		if (Yii::app()->getDb()->getSchema()->getTable("element_type_$table")) {
+		$table_exists = false;
+
+		foreach (Yii::app()->db->createCommand("show tables;")->query() as $_table) {
+			if ($table == $_table) {
+				$table_exists = true;
+				break;
+			}
+		}
+
+		if ($table_exists) {
 			foreach (Yii::app()->db->createCommand()
 					->select("$table.*")
 					->from($table)
