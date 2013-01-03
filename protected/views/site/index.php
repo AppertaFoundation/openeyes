@@ -36,7 +36,7 @@
 </div><!-- .centralColumn -->
 <script type="text/javascript">
 	$('#omnibox button').click(function() {
-		if (!$(this).hasClass('inactive') && $('#query').val().length > 0) {
+		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 		} else {
 			return false;

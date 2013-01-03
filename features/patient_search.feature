@@ -8,7 +8,7 @@ Feature: Patient Search
 
 	Scenario: Blank patient name search
 		Given I am on "/"
-		When I press "findPatient_details"
+		When I press "Search"
 		Then I should see "Please enter either a hospital number or a firstname and lastname."
 
 	Scenario: Blank hospital number search
