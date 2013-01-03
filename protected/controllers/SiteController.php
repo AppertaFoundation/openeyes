@@ -302,6 +302,8 @@ class SiteController extends BaseController
 			if (isset($so['date-end'])) unset($so['date-end']);
 			Yii::app()->session['theatre_searchoptions'] = $so;
 
+			Yii::app()->session['waitinglist_searchoptions'] = null;
+
 			echo "change-firm-succeeded";
 			Yii::app()->end();
 		}
