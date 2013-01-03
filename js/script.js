@@ -16,6 +16,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+var redirectHomeAfterChangingFirm = true;
+
 $('select[id=selected_firm_id]').die('change').live('change', function() {
 	var firmId = $('select[id=selected_firm_id]').val();
 	$.ajax({
@@ -24,11 +26,13 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 		data: {'selected_firm_id': firmId },
 		success: function(data) {
 			if (data.match(/change-firm-succeeded/)) {
-				url = window.location.href
-				if (m = url.match(/firm_id=[0-9]+/)) {
-					url = url.replace(m[0],'firm_id='+firmId);
+				if (redirectHomeAfterChangingFirm) {
+					url = window.location.href
+					if (m = url.match(/firm_id=[0-9]+/)) {
+						url = url.replace(m[0],'firm_id='+firmId);
+					}
+					window.location.href = url;
 				}
-				window.location.href = url;
 				return false;
 			} else {
 				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
