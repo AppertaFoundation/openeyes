@@ -338,5 +338,4 @@ JS;
 			$el->keyPress($key);
 		}
 	}
-
 }

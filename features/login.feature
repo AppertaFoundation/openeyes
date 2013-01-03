@@ -61,31 +61,23 @@ Feature: Login
 		And I select "City Road" from "LoginForm[siteId]"
 		And I press "Login"
 		Then I should see "Hi <firstname> <lastname>" in the "#user_id" element
+		When I follow "Logout"
 
 	Examples:
-	|	username	|	password		|	site		|	firstname	|	lastname	|
-	|	admin		|	admin			|	City Road	|	Enoch		|	Root		|
-	|	username	|	username		|	Bedford		|	User		|	User		|
-	|	kahnj		|	openeyesdevel	|	Boots		|	Jaheed		|	Khan		|
-	|	jonese		|	openeyesdevel	|	Bridge lane	|	Emma		|	Jones		|
-	|	childc		|	openeyesdevel	|	Croydon		|	Chris		|	Child		|
-	|	wilkinsm	|	openeyesdevel	|	Ealing		|	Mark		|	Wilkins		|
-	|	verityd		|	openeyesdevel	|	Harlow		|	David		|	Verity		|
-	|	tufts		|	openeyesdevel	|	Homerton	|	Stephen		|	Tuft		|
+	|	username	|	password		|	firstname	|	lastname	|
+	| angunawelar | openeyesdevel | Romesh |  Angunawela |
+	|	admin		|	admin			|	Enoch		|	Root		|
+	|	RAIP |	openeyesdevel	|	Poornima |	Rai |
+	|	WATSONM2 |	openeyesdevel	|	Martin |	Watson |
+	|	OsborneS |	openeyesdevel	|	Sarah |	Osborne |
+	|	RAJENDRAMR1 |	openeyesdevel	|	Ranjan |	Rajendram |
+	|	STROUTHIDISN |	openeyesdevel	|	Nicholas |	Strouthidis |
 
 	@regression @regression:1 @sample-data
 	Scenario: 1.12 Search screen loads after login
 		Given I am logged in as "admin:admin:Enoch:Root"
-		Then I should see "Patient search"
-		And I should see "Find a patient. Either by hospital number or by personal details. You must know their surname."
-		And I should see "Search by hospital number:"
-		And I should see an "#Patient_hos_num" element
-		And I should see "Find patient" in the "#findPatient_id" element
-		And I should see "Last name:"
-		And I should see "First name:"
-		And I should see an "#Patient_last_name" element
-		And I should see an "#Patient_first_name" element
-		And I should see "Find patient" in the "#findPatient_details" element
+		Then I should see "Find a patient by Hospital Number, NHS Number, Firstname Surname or Surname, Firstname."
+		And I should see an "#query" element
 
 	@sample-data
 	Scenario: Login with no username
