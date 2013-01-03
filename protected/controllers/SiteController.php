@@ -95,7 +95,7 @@ class SiteController extends BaseController
 		if(isset($_POST['query']) && $query = trim($_POST['query'])) {
 				
 			// Event ID
-			if(preg_match('/^(E|Event)\s*:\s*([0-9]+)$/i',$query,$matches)) {
+			if(preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i',$query,$matches)) {
 				$event_id = $matches[2];
 				if($event = Event::model()->findByPk($event_id)) {
 					$event_class_name = $event->eventType->class_name;
@@ -108,7 +108,7 @@ class SiteController extends BaseController
 			}
 	
 			// NHS number (assume 10 digit number is an NHS number)
-			if(preg_match('/^(N|NHS)\s*:\s*([0-9\- ]+)$/i',$query,$matches)
+			if(preg_match('/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i',$query,$matches)
 					|| preg_match('/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i',$query,$matches)) {
 				$nhs = (isset($matches[2])) ? $matches[2] : $matches[1];
 				$nhs = str_replace(array('-',' '),'',$nhs);
@@ -117,7 +117,7 @@ class SiteController extends BaseController
 			}
 	
 			// Hospital number (assume a < 10 digit number is a hosnum)
-			if(preg_match('/^(H|Hosnum)\s*:\s*([0-9a-zA-Z\-]+)$/i',$query,$matches)
+			if(preg_match('/^(H|Hosnum)\s*[:;]\s*([0-9a-zA-Z\-]+)$/i',$query,$matches)
 					|| preg_match(Yii::app()->params['hos_num_regex'],$query,$matches)) {
 				$hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
 				$this->redirect(array('patient/search', 'hos_num' => $hosnum));
@@ -125,7 +125,7 @@ class SiteController extends BaseController
 			}
 			
 			// Patient name (assume two strings separated by space and/or comma is a name)
-			if(preg_match('/^(P|Patient)\s*:\s*([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)
+			if(preg_match('/^(P|Patient)\s*[:;]\s*([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)
 					|| preg_match('/^([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)) {
 				$delimiter = (isset($matches[4])) ? trim($matches[3]) : trim($matches[2]);
 				if($delimiter) {
