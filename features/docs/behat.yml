@@ -1,0 +1,13 @@
+default:
+  extensions:
+    Behat\MinkExtension\Extension:
+      base_url: 'http://localhost'
+      default_session: selenium2
+      javascript_session: selenium2
+      browser_name: 'chrome'
+      selenium2:
+        capabilities:
+          browser: chrome
+          browserVersion: 23
+          version: "23"
+          platform: MAC
