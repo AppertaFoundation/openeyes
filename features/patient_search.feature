@@ -34,7 +34,7 @@ Feature: Patient Search
         And I press "Search"
         Then I should see "\"violet\" is not a valid search."
 
-	Scenario: Searching for a patient that doesn't exist by name
+	Scenario: 5.1 Searching for a patient that doesn't exist by name
 		Given I am on "/"
         When I fill in "query" with "vio cof"
         And I press "Search"
