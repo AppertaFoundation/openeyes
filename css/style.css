@@ -163,9 +163,9 @@ a:active { border-bottom: thin solid #3665ff; }
 .form_column { display:block; width:45%; float:left; margin-right:2%; }
 .form_button { display:block; clear: both; width:inherit; text-align:right; margin-top: 15px; }
 /* defaults */
-label { font-size:15px; }
-input { font-size:15px; padding:3px; background: #fcfcfc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;	border:solid 1px #6b8aaa; }
-input:focus { background: #ffffff; border:solid 1px #19a8ea;	}
+label, input { font-size:15px; }
+input, textarea { padding:3px; background: #fcfcfc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;	border:solid 1px #6b8aaa; }
+input:focus, textarea:focus { background: #ffffff; border:solid 1px #19a8ea;	}
 /* big fields */
 .bigInput > label { font-size:17px; }
 .bigInput > input { font-size:17px; padding:5px; }
