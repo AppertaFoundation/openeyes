@@ -201,20 +201,9 @@ class BaseEventTypeController extends BaseController
 			$elementList = array();
 
 			// validation
-			foreach ($elements as $element) {
-				$elementClassName = get_class($element);
-				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-				$elementList[] = $element;
-				if (!$element->validate()) {
-					foreach ($element->getErrors() as $errormsgs) {
-						foreach ($errormsgs as $error) {
-							$index = $element_names[$elementClassName]; //preg_replace('/^Element/','',$elementClassName);
-							$errors[$index][] = $error;
-						}
-					}
-				}
-			}
-
+			$errors = $this->validatePOSTElements($elements);
+			
+			
 			// creation
 			if (empty($errors)) {
 				// The user has submitted the form to create the event
@@ -380,18 +369,8 @@ class BaseEventTypeController extends BaseController
 			}
 
 			// validation
-			foreach ($elements as $element) {
-				$elementClassName = get_class($element);
-				$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
-				if (!$element->validate()) {
-					$elementName = $element->getElementType()->name;
-					foreach ($element->getErrors() as $errormsgs) {
-						foreach ($errormsgs as $error) {
-							$errors[$elementName][] = $error;
-						}
-					}
-				}
-			}
+			$errors = $this->validatePOSTElements($elements);
+
 
 			// creation
 			if (empty($errors)) {
@@ -455,6 +434,29 @@ class BaseEventTypeController extends BaseController
 			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
 			false, true
 		);
+	}
+	
+	protected function setPOSTManyToMany($element) {
+		// placeholder function 
+	}
+	
+	protected function validatePOSTElements($elements) {
+		$errors = array();
+		foreach ($elements as $element) {
+			$elementClassName = get_class($element);
+			$element->attributes = Helper::convertNHS2MySQL($_POST[$elementClassName]);
+			$this->setPOSTManyToMany($element);
+			if (!$element->validate()) {
+				$elementName = $element->getElementType()->name;
+				foreach ($element->getErrors() as $errormsgs) {
+					foreach ($errormsgs as $error) {
+						$errors[$elementName][] = $error;
+					}
+				}
+			}
+		}
+		
+		return $errors;
 	}
 
 	public function renderDefaultElements($action, $form=false, $data=false) {
