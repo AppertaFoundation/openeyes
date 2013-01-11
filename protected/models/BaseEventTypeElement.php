@@ -47,9 +47,11 @@ class BaseEventTypeElement extends BaseElement {
 		$table_exists = false;
 
 		foreach (Yii::app()->db->createCommand("show tables;")->query() as $_table) {
-			if ($table == $_table) {
-				$table_exists = true;
-				break;
+			foreach ($_table as $key => $value) {
+				if ("element_type_$table" == $value) {
+					$table_exists = true;
+					break;
+				}
 			}
 		}
 
