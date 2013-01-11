@@ -24,7 +24,7 @@
 	</span>
 	<span class="middle<?php if (!$durations) {?> noDuration<?php }?>">
 		<?php
-		echo CHtml::hiddenField('Procedures[]', $data['id']);
+		echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $data['id']);
 		echo "<span>".$data['term'].'</span>';
 		if ($short_version) {
 			echo ' - <span>'.$data['short_format']."</span>";
