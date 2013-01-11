@@ -1000,7 +1000,6 @@ class ElementOperation extends BaseEventTypeElement
 		$siteId = $this->site->id;
 		$serviceId = $this->event->episode->firm->serviceSubspecialtyAssignment->service->id;
 		$firmCode = $this->event->episode->firm->pas_code;
-		$firmId = $this->event->episode->firm_id;
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
@@ -1079,6 +1078,7 @@ class ElementOperation extends BaseEventTypeElement
 	public function getAdmissionContact() {
 		$siteId = $this->booking->ward->site_id;
 		$subspecialty = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
+		$firmId = $this->event->episode->firm_id;
 		$contact = array(
 			'refuse' => $subspecialty->name . ' Admission Coordinator on ',
 			'health' => '',
