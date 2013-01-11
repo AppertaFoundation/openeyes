@@ -1078,7 +1078,11 @@ class ElementOperation extends BaseEventTypeElement
 	public function getAdmissionContact() {
 		$siteId = $this->booking->ward->site_id;
 		$subspecialty = $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty;
-		$firmId = $this->booking->session->firm->id;
+		if ($this->booking && $this->booking->session && $this->booking->session->firm) {
+			$firmId = $this->booking->session->firm->id;
+		} else {
+			$firmId = null;
+		}
 		$contact = array(
 			'refuse' => $subspecialty->name . ' Admission Coordinator on ',
 			'health' => '',
