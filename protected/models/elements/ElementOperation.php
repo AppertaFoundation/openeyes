@@ -1000,6 +1000,7 @@ class ElementOperation extends BaseEventTypeElement
 		$siteId = $this->site->id;
 		$serviceId = $this->event->episode->firm->serviceSubspecialtyAssignment->service->id;
 		$firmCode = $this->event->episode->firm->pas_code;
+		$firmId = $this->event->episode->firm_id;
 		if ($this->event->episode->patient->isChild()) {
 			if ($siteId == 1) {
 				// City Road
@@ -1138,14 +1139,18 @@ class ElementOperation extends BaseEventTypeElement
 				$contact['health'] = '020 8725 0060';
 				break;
 			case 6: // Mile End
-				switch ($subspecialty->id) {
-					case 7:	// Glaucoma
-						$contact['refuse'] .= '020 7566 2020';
-						//$contact['health'] = 'Eileen Harper on 020 7566 2020';
-						break;
-					default:
-						$contact['refuse'] .= '020 7566 2712';
-						//$contact['health'] = 'Linda Haslin on 020 7566 2712';
+				if ($firmId == 233) {
+					$contact['refuse'] = '020 7566 2020';
+				} else {
+					switch ($subspecialty->id) {
+						case 7:	// Glaucoma
+							$contact['refuse'] .= '020 7566 2020';
+							//$contact['health'] = 'Eileen Harper on 020 7566 2020';
+							break;
+						default:
+							$contact['refuse'] .= '020 7566 2712';
+							//$contact['health'] = 'Linda Haslin on 020 7566 2712';
+					}
 				}
 				break;
 			case 7: // Potters Bar
@@ -1153,7 +1158,7 @@ class ElementOperation extends BaseEventTypeElement
 				//$contact['health'] = 'Potters Bar Admission Team on 01707 646422';
 				break;
 			case 8: // Queen Mary's
-				$contact['refuse'] .= '020 8725 1794';
+				$contact['refuse'] .= '020 8725 0060';
 				break;
 			case 9: // St Anns
 				$contact['refuse'] .= '020 8211 8323';

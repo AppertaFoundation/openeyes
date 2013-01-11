@@ -70,7 +70,7 @@
 	<?php if (Yii::app()->params['watermark_description']) {?>
 		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
 	<?php }?>
-	<?php echo $this->renderPartial('/base/_debug',array())?> 
+	<?php echo $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
 		<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
@@ -104,7 +104,7 @@
 	</div> 
 	<!--#container --> 
 
-	<?php echo $this->renderPartial('/base/_footer',array())?>
+	<?php echo $this->renderPartial('//base/_footer',array())?>
 
 	<?php if (Yii::app()->params['watermark']) {?>
 		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
