@@ -1144,7 +1144,7 @@ class ElementOperation extends BaseEventTypeElement
 				break;
 			case 6: // Mile End
 				if ($firmId == 233) {
-					$contact['refuse'] = '020 7566 2020';
+					$contact['refuse'] .= '020 7566 2020';
 				} else {
 					switch ($subspecialty->id) {
 						case 7:	// Glaucoma
