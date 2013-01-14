@@ -436,10 +436,18 @@ class BaseEventTypeController extends BaseController
 		);
 	}
 	
+	/*
+	 * Use this for any many to many relations defined on your elements. This is called prior to validation
+	 * so should set values without actually touching the database. To do that, the createElements and updateElements 
+	 * methods should be extended to handle the POST values.
+	 */
 	protected function setPOSTManyToMany($element) {
 		// placeholder function 
 	}
 	
+	/*
+	 * Uses the POST values to define elements and their field values without hitting the db, and then performs validation
+	 */
 	protected function validatePOSTElements($elements) {
 		$errors = array();
 		foreach ($elements as $element) {
