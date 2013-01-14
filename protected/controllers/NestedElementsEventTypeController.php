@@ -40,6 +40,16 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	}
 	
 	/*
+	 * abstraction of element initialisation to allow custom extension in overrides of controller
+	 */
+	protected function getElementForElementForm($element_type) {
+		$element = new $element_type->class_name;
+		$element->setDefaultOptions();
+		
+		return $element;
+	}
+	
+	/*
 	 * Ajax method for loading an individual element (and its children)
 	 */
 	public function actionElementForm($id, $patient_id) {
@@ -56,8 +66,10 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		$session = Yii::app()->session;
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
-		$element = new $element_type->class_name;
-		$element->setDefaultOptions();
+		
+		// retrieve the element
+		$element = $this->getElementForElementForm($element_type);
+		
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
 				'id' => 'clinical-create',
 				'enableAjaxValidation' => false,
