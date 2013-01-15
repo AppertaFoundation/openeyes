@@ -19,7 +19,7 @@ Feature: Header
 
 	Examples:
 	|	item							|	current_url	|	target_url		|	page_title						|
-	|	Home							|	/theatre	|	/				|	Patient search					|
+	|	Home							|	/theatre	|	/				|	Search 		|
 	|	Theatre Diaries					|	/			|	/theatre		|	Theatre Schedules				|
 	|	Partial bookings waiting list	|	/			|	/waitingList	|	Partial bookings waiting List	|
 

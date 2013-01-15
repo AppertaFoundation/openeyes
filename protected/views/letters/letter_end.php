@@ -20,6 +20,6 @@
 
 <p<?php if(@$accessible) { ?> class="accessible"<?php } ?> nobr="true">
 	Yours sincerely,
-	<br/><br/><br/><br/>
+	<br/><br/><br/>
 	Admissions Officer
 </p>

@@ -634,14 +634,12 @@ class PatientController extends BaseController
 			$where = "parent_class in ('Consultant','Specialist')";
 		}
 
-//die("[$where][$term]");
-
 		foreach (Yii::app()->db->createCommand()
 			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
 			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(contact.last_name) LIKE :term AND $where and active != 0", array(':term' => $term))
+			->where("LOWER(contact.last_name) LIKE :term AND $where and (user_contact_assignment.id is null or active != 0)", array(':term' => $term))
 			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 
