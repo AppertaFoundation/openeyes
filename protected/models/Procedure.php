@@ -125,16 +125,22 @@ class Procedure extends BaseActiveRecord
 	 *
 	 * @return array
 	 */
-	public static function getList($term)
+	public static function getList($term, $restrict=false)
 	{
 		$search = "%{$term}%";
 
 		$select = 'term, short_format, id, default_duration';
 
+		$where = 'term LIKE :term';
+
+		if ($restrict == 'unbooked') {
+			$where .= ' and unbooked=1';
+		}
+
 		$procedures = Yii::app()->db->createCommand()
 			->select($select)
 			->from('proc')
-			->where('term LIKE :term', array(':term'=>$search))
+			->where($where, array(':term'=>$search))
 			->order('term')
 			->queryAll();
 
@@ -156,13 +162,13 @@ class Procedure extends BaseActiveRecord
 		return $data;
 	}
 
-	public function getListBySubspecialty($subspecialtyId)
+	public function getListBySubspecialty($subspecialtyId, $unbooked=false)
 	{
 		$procedures = Yii::app()->db->createCommand()
 			->select('proc.id, proc.term')
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.subspecialty_id = :id',
+			->where('psa.subspecialty_id = :id'.($unbooked ? ' and unbooked=1' : ''),
 				array(':id'=>$subspecialtyId))
 			->order('proc.term ASC')
 			->queryAll();
