@@ -54,7 +54,7 @@ class ProcedureController extends Controller
 	 */
 	public function actionAutocomplete()
 	{
-		echo CJavaScript::jsonEncode(Procedure::getList($_GET['term']));
+		echo CJavaScript::jsonEncode(Procedure::getList($_GET['term'], @$_GET['restrict']));
 	}
 
 	public function actionDetails()
