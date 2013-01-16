@@ -74,7 +74,7 @@ class ElementType extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'parent_element_type' => array(self::BELONGS_TO, 'ElementType', 'parent_element_type_id'),
-			'child_element_types' => array(self::HAS_MANY, 'Element', 'parent_element_type_id')
+			'child_element_types' => array(self::HAS_MANY, 'ElementType', 'parent_element_type_id')
 		);
 	}
 
