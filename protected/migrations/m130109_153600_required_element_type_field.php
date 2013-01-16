@@ -10,7 +10,6 @@ class m130109_153600_required_element_type_field extends CDbMigration
 	public function down()
 	{
 		$this->dropColumn('element_type', 'required');
-		return false;
 	}
 
 	/*
