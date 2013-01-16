@@ -118,7 +118,7 @@ $(document).ready(function() {
 		var display_order = $(element).attr('data-element-display-order');
 		$(element).html($('<h5>' + element_type_name + '</h5>'));
 		if (is_child) {
-			var container = $(element).closest('.active_child_elements').parent().find('.inactive_child_elements');
+			var container = $(element).closest('.active_child_elements').parent().find('.inactive_child_elements:last');
 		}
 		else {
 			var container = $('#inactive_elements');
