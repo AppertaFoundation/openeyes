@@ -13,8 +13,8 @@
 #inactive_elements .element.clicked h5 { color: #333; } 
 #active_elements .inactive_child_elements .element.clicked { background: #ddd url(../../../img/ajax-loader.gif) 1010px 4px no-repeat; } 
 #active_elements .inactive_child_elements .element.clicked h5 { color: #333; } 
-#optionals_all { font-size: 12px; border-bottom: 1px dotted #fafafa; border-top: 2px dotted #8C949C; margin-top: 10px; background: #dae6f1; }
-#event_content #optionals_all h4 { margin: 0; padding: 6px 8px; float: left; border: none; }
-#optionals_all div { float: right; height: 28px; }
-#optionals_all .allButton { display: inline-block; height: 20px; padding: 0 0 2px 15px; margin: 3px 0 0 1px; cursor: pointer; } 
-#optionals_all .allButton > a { position: relative; top: 2px; }
+.optionals-header { font-size: 12px; border-bottom: 1px dotted #fafafa; border-top: 2px dotted #8C949C; margin-top: 10px; background: #dae6f1; }
+#event_content .optionals-header h4 { margin: 0; padding: 6px 8px; float: left; border: none; }
+.optionals-header div { float: right; height: 28px; }
+.optionals-header .allButton { display: inline-block; height: 20px; padding: 0 0 2px 15px; margin: 3px 0 0 1px; cursor: pointer; } 
+.optionals-header .allButton > a { position: relative; top: 2px; }
