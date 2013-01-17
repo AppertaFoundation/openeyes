@@ -1,4 +1,3 @@
-@mink:selenium
 Feature: Patient Episodes
 	In order to manage patients in OpenEyes
 	As a OpenEyes user
@@ -31,5 +30,7 @@ Feature: Patient Episodes
 		Given I am on "/patient/view/10057"
 		When I follow "Create or View Episodes and Events"
 		And I press "addNewEvent"
+		And I wait "0.5" seconds
 		And I press "addNewEvent"
+		And I wait "0.5" seconds
 		Then I should not see an "#add-event-select-type" element on screen

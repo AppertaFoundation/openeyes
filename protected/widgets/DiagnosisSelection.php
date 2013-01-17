@@ -55,9 +55,16 @@ class DiagnosisSelection extends BaseCWidget {
 				}
 			}
 		} else {
-			$this->value = $_POST[$this->class][$this->field];
-			if($disorder = Disorder::model()->findByPk($this->value)) {
-				$this->label = $disorder->term;
+			if (preg_match('/[^\d]/', $_POST[$this->class][$this->field])) {
+				if ($disorder = Disorder::model()->find('term=? and systemic=0',array($_POST[$this->class][$this->field]))) {
+					$this->value = $disorder->id;
+					$this->label = $disorder->term;
+				}
+			} else {
+				$this->value = $_POST[$this->class][$this->field];
+				if($disorder = Disorder::model()->findByPk($this->value)) {
+					$this->label = $disorder->term;
+				}
 			}
 		}
 		parent::run();

@@ -20,11 +20,11 @@
 class SplitEventTypeElement extends BaseEventTypeElement {
 
 	public function hasLeft() {
-		return $this->eye->name != 'Right';
+		return $this->eye && $this->eye->name != 'Right';
 	}
 
 	public function hasRight() {
-		return $this->eye->name != 'Left';
+		return $this->eye && $this->eye->name != 'Left';
 	}
 
 	/**

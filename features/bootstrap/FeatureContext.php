@@ -225,8 +225,9 @@ class FeatureContext extends Behat\MinkExtension\Context\MinkContext {
 	 */
 	public function iSelectFirm($firm)
 	{
+		$this->getSession()->wait(50, 'redirectHomeAfterChangingFirm = false;');
 		$this->getSession()->getPage()->selectFieldOption('selected_firm_id', $firm);
-		$this->getSession()->wait(50, '$("#selected_firm_id").trigger("change")');
+		//$this->getSession()->wait(50, '$("#selected_firm_id").trigger("change")');
 	}
 
 	/**
@@ -338,5 +339,4 @@ JS;
 			$el->keyPress($key);
 		}
 	}
-
 }
