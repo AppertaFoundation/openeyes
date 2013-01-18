@@ -60,6 +60,7 @@ class ProcedureComplication extends BaseActiveRecord
 	public function relations()
 	{
 		return array(
+			'complication' => array(self::BELONGS_TO, 'Complication', 'complication_id'),
 		);
 	}
 }
