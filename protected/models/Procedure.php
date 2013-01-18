@@ -84,6 +84,28 @@ class Procedure extends BaseActiveRecord
 		);
 	}
 
+	public function getComplications() {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		$complications = array();
+		foreach (ProcedureComplication::model()->findAll('proc_id=? and service_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->service_id)) as $pc) {
+			$complications[] = $pc->complication;
+		}
+
+		return $complications;
+	}
+
+	public function getBenefits() {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		$benefits = array();
+		foreach (ProcedureBenefit::model()->findAll('proc_id=? and service_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->service_id)) as $pc) {
+			$benefits[] = $pc->benefit;
+		}
+
+		return $benefits;
+	}
+
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */

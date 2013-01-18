@@ -60,6 +60,7 @@ class ProcedureBenefit extends BaseActiveRecord
 	public function relations()
 	{
 		return array(
+			'benefit' => array(self::BELONGS_TO, 'Benefit', 'benefit_id'),
 		);
 	}
 }
