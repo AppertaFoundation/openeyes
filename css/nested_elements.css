@@ -1,10 +1,14 @@
-#active_elements .element { position: relative; }
+#active_elements .element { position: relative; background: #fafafa; }
+#active_elements .element .element { border: 1px solid #fafafa; }
 #active_elements h4.elementTypeName { border-top: 2px dotted #8C949C; }
 #active_elements .element h5 { background: #ccc; padding: 2px 4px; }
 #active_elements .removeElement { position: absolute; right: 5px; top: 7px; z-index: 1; }
-#active_elements .active_child_elements h4.elementTypeName {border-top: 2px dotted #56A7F1; }
+#active_elements .active_child_elements h4.elementTypeName { border: none; margin: 0; padding: 6px; }
+#active_elements .active_child_elements .removeElement { right: 2px; top: 2px; }
+#active_elements .active_child_elements .inactiveForm { padding: 0; margin: 0; }
 #active_elements .inactive_child_elements .element {background: #8C949C url(../../../img/_elements/icons/extra-element_view.png) top right no-repeat; padding: 5px; color: #fff; border-bottom: 1px dotted #fafafa; cursor: pointer;}
 #active_elements .inactive_child_elements .element h5 {margin: 0; line-height: 1em; padding: 0 5px; background: none;}
+#active_elements .active_child_elements { padding: 0 10px 10px; background: #dae6f1; }
 
 #inactive_elements .element { background: #8C949C url(../../../img/_elements/icons/extra-element_view.png) top right no-repeat; padding: 5px; color: #fff; border-bottom: 1px dotted #fafafa; cursor: pointer; } 
 #inactive_elements h5 { margin: 0; line-height: 1em; padding: 0 5px; } 

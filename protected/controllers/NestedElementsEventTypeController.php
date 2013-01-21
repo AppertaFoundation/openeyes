@@ -95,6 +95,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				'element' => $element,
 				'data' => null,
 				'form' => $form,
+				'child' => true,
 			), false, true);
 		}
 	}
