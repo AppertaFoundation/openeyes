@@ -81,6 +81,8 @@ body { width:1230px; margin:0 auto; }
 #brand { width:240px; height:70px; background: url(../img/_structure/openeyes.png) top left no-repeat; }
 #user_panel { height:65px; width:500px; position: absolute; top:0; right:10px; }
 #patientID	{ height:65px; width:340px; position: absolute; top:0; right:540px; }
+#oesync		{ height:48px; width:31px; position: absolute; top:0; left:200px; }
+
 /* special brand themes */
 #brand.olympic { background-image: url(../img/_structure/openeyes_olympic.png); }
 
@@ -535,6 +537,12 @@ div.pagefooter > .help { position:absolute; top:0; left:287px; width:660px; heig
 div.pagefooter > .help > .divider { padding:0 5px; color:#aaa; }
 
 /* ------------------------------------------------- HEADER MODULES  */
+/* instance sync */
+.oesync { background: rgb(255,255,255); background: rgba(255,255,255,0.6); border:1px solid #fff; border-top:none; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -moz-border-radius-bottomright: 6px; -moz-border-radius-bottomleft: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;}
+.oesync a.syncbtn { position:absolute; bottom:5px; left:3px; }
+.oesync a.syncbtn:hover { border-bottom: none; }
+
+
 /* add border radius to header elements */
 .userpanel, .patientid, ul.usershortcuts a, ul.usershortcuts > li .selected  { -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
 
