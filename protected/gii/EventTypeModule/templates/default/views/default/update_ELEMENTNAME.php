@@ -1,4 +1,4 @@
-<?php echo '<?php '; ?>
+<?php echo "<?php\n"?>
 /**
  * OpenEyes
  *
@@ -16,20 +16,9 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-<?php echo ' ?>'; ?>
-
-<div class="element <?php echo '<?php '; ?>echo $element->elementType->class_name<?php echo '?>'; ?>"
-	data-element-type-id="<?php echo '<?php '; ?>echo $element->elementType->id<?php echo '?>'; ?>"
-	data-element-type-class="<?php echo '<?php '; ?>echo $element->elementType->class_name<?php echo '?>'; ?>"
-	data-element-type-name="<?php echo '<?php '; ?>echo $element->elementType->name<?php echo '?>'; ?>"
-	data-element-display-order="<?php echo '<?php '; ?>echo $element->elementType->display_order<?php echo '?>'; ?>">
-	<h4 class="elementTypeName"><?php echo '<?php '; ?> echo $element->elementType->name; <?php echo '?>'; ?></h4>
-
-<?php
-	if (isset($element)) {
-		foreach ($element['fields'] as $field) {
-			echo "\t".$this->getHTMLField($field, 'update')."\n";
-		}
-	}
-	?>
-</div>
+<?php echo "?>\n"?>
+<?php echo '<?php'?> $this->renderPartial(
+	'form_' . get_class($element),
+	array('element' => $element, 'data' => $data, 'form' => $form),
+	false, false
+)<?php echo '?>'?>

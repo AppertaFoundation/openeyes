@@ -355,7 +355,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			}
 
 			$lookup_table = array(
-				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = $elements[$number]['table_name'].'_'.$root_fields_value
+				'name' => $elements[$number]['fields'][$field_number]['lookup_table'] = preg_replace('/^et_/','',$elements[$number]['table_name'].'_'.$root_fields_value),
 			);
 
 			$key_name = $lookup_table['name'].'_fk';
@@ -1200,7 +1200,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				\'model\'=>$element,
 				\'attribute\'=>\''.$field['name'].'\',
 			));
-			'.(@$field['extra_report'] ? 'echo $form->hiddenInput($element, \''.$field['name'].'2\', '.($mode=='create' ? '\'\'' : '$element->'.$field['name'].'2').');' : '').'
+			'.(@$field['extra_report'] ? 'echo $form->hiddenInput($element, \''.$field['name'].'2\');' : '').'
 		?>
 	</div>';
 			case 'Multi select':
@@ -1401,6 +1401,12 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 
 			if ($this->shouldUpdateFile($update)) {
 				$this->updateFormView(Yii::app()->basePath.'/'.$update, $element, 'update');
+			}
+
+			$form = "modules/$this->moduleID/views/default/form_{$element['class_name']}.php";
+
+			if ($this->shouldUpdateFile($form)) {
+				$this->updateFormView(Yii::app()->basePath.'/'.$form, $element, 'form');
 			}
 
 			$view = "modules/$this->moduleID/views/default/view_{$element['class_name']}.php";
