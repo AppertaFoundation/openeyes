@@ -1,4 +1,4 @@
-<?php
+<?php echo "<?php\n"?>
 /**
  * OpenEyes
  *
@@ -16,9 +16,9 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
+<?php echo "?>\n"?>
 
-<h4 class="elementTypeName"><?php echo '<?php ';?> echo $element->elementType->name <?php echo '?>'; ?></h4>
+<h4 class="elementTypeName"><?php echo '<?php'?> echo $element->elementType->name<?php echo '?>'?></h4>
 
 <table class="subtleWhite normalText">
 	<tbody>
