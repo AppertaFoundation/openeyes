@@ -88,7 +88,7 @@ class Procedure extends BaseActiveRecord
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		$complications = array();
-		foreach (ProcedureComplication::model()->findAll('proc_id=? and service_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->service_id)) as $pc) {
+		foreach (ProcedureComplication::model()->findAll('proc_id=? and subspecialty_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->subspecialty_id)) as $pc) {
 			$complications[] = $pc->complication;
 		}
 
@@ -99,7 +99,7 @@ class Procedure extends BaseActiveRecord
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		$benefits = array();
-		foreach (ProcedureBenefit::model()->findAll('proc_id=? and service_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->service_id)) as $pc) {
+		foreach (ProcedureBenefit::model()->findAll('proc_id=? and subspecialty_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->subspecialty_id)) as $pc) {
 			$benefits[] = $pc->benefit;
 		}
 
