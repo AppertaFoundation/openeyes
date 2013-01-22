@@ -1,6 +1,26 @@
 $(document).ready(function() {
 	
 	/**
+	 * Show/hide activechildelements containers (necessary in order to deal with padding)
+	 */
+	showActiveChildElements();
+
+	function showActiveChildElements() {
+		$('#active_elements .active_child_elements').each(function() {
+			if($('.element', this).length) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	}
+	
+	/**
+	 * Autoadjust height of textareas
+	 */
+	$('#event_display textarea.autosize:visible').autosize();
+
+	/**
 	 * Add all optional elements
 	 */
 	$('.optionals-header').delegate('.add-all', 'click', function(e) {
@@ -61,6 +81,7 @@ $(document).ready(function() {
 			}
 			
 			$('#event_display textarea.autosize:visible').autosize();
+			showActiveChildElements();
 				
 			var inserted = (insert_before.length) ? insert_before.prevAll('div:first') : container.find('.element:last');
 			if (animate) {
@@ -151,6 +172,7 @@ $(document).ready(function() {
 		} else {
 			$(container).append(element);
 		}
+		showActiveChildElements();
 	}
 	
 	/**
