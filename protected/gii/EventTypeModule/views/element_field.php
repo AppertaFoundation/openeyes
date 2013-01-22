@@ -11,6 +11,10 @@
 		$field_types[] = 'EyeDraw';
 	}
 
+	if (file_exists(Yii::app()->basePath.'/modules/eyedraw2')) {
+		$field_types[] = 'EyeDraw2';
+	}
+
 	sort($field_types);
 	?>
 
