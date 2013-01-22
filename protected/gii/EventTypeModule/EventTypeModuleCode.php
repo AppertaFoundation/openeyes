@@ -1230,22 +1230,144 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			array(\'addDoodle\', array(\'AntSeg\')),
 			array(\'deselectDoodles\', array()),
 		),
-		\'idSuffix\' => $side.\'_\'.$element->elementType->id,
-		\'side\' => ($side == \'right\') ? \'R\' : \'L\',
+		\'bindingArray\' => array(
+		),
+		\'listenerArray\' => array(
+		),
+		\'idSuffix\' => $element->getSelectedEye()->name.\'_\'.$element->elementType->id,
+		\'side\' => $element->getSelectedEye()->getShortName(),
 		\'mode\' => \'edit\',
-		\'width\' => 300,
-		\'height\' => 300,
+		\'width\' => '.$field['eyedraw_size'].',
+		\'height\' => '.$field['eyedraw_size'].',
 		\'model\' => $element,
-		\'attribute\' => $side.\'_eyedraw\',
+		\'attribute\' => \''.$field['name'].'\',
 	))?'.'>';
 					case 'Buckle':
+						return '';
 					case 'Cataract':
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+		\'doodleToolBarArray\' => array(
+			0 => array(\'PhakoIncision\',\'SidePort\',\'IrisHook\',\'PCIOL\',\'ACIOL\',\'PI\'),
+			1 => array(\'MattressSuture\',\'CapsularTensionRing\',\'CornealSuture\',\'ToricPCIOL\',\'LimbalRelaxingIncision\'),
+		),
+		\'onReadyCommandArray\' => array(
+			array(\'addDoodle\', array(\'AntSeg\')),
+			array(\'addDoodle\', array(\'PhakoIncision\')),
+			array(\'addDoodle\', array(\'PCIOL\')),
+			array(\'deselectDoodles\', array()),
+		),
+		\'bindingArray\' => array(
+		),
+		\'listenerArray\' => array(
+		),
+		\'idSuffix\' => \'Cataract\',
+		\'side\' => $element->getSelectedEye()->getShortName(),
+		\'mode\' => \'edit\',
+		\'width\' => '.$field['eyedraw_size'].',
+		\'height\' => '.$field['eyedraw_size'].',
+		\'model\' => $element,
+		\'attribute\' => \''.$field['name'].'\',
+		\'offsetX\' => 10,
+		\'offsetY\' => 10,
+		\'template\' => \'OEEyeDrawWidgetCataract\',
+	))?'.'>';
 					case 'Gonioscopy':
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+		\'doodleToolBarArray\' => array(\'AngleNV\',\'AntSynech\',\'AngleRecession\'),
+		\'onReadyCommandArray\' => array(
+			array(\'addDoodle\',array(\'Gonioscopy\')),
+			array(\'addDoodle\',array(\'AngleGradeNorth\')),
+			array(\'addDoodle\',array(\'AngleGradeEast\')),
+			array(\'addDoodle\',array(\'AngleGradeSouth\')),
+			array(\'addDoodle\',array(\'AngleGradeWest\')),
+			array(\'deselectDoodles\',array()),
+		),
+		\'bindingArray\' => array(
+		),
+		\'idSuffix\' => $element->getSelectedEye()->name.\'_\'.$element->elementType->id,
+		\'side\' => $element->getSelectedEye()->getShortName(),
+		\'mode\' => \'edit\',
+		\'width\' => \''.$field['eyedraw_size'].'\',
+		\'height\' => \''.$field['eyedraw_size'].'\',
+		\'model\' => $element,
+		\'attribute\' => \''.$field['name'].'\',
+))?'.'>';
 					case 'OpticDisc':
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+		\'doodleToolBarArray\' => array(\'PeripapillaryAtrophy\', \'DiscPallor\', \'DiscHaemorrhage\', \'NerveFibreDefect\', \'OpticDiscPit\', \'Papilloedema\'),
+		\'onReadyCommandArray\' => array(
+			array(\'addDoodle\', array(\'OpticDisc\', array(\'mode\' => \'Basic\'))),
+			array(\'deselectDoodles\', array()),
+		),
+		\'bindingArray\' => array(
+		),
+		\'idSuffix\' => $element->getSelectedEye()->name.\'_\'.$element->elementType->id,
+		\'side\' => $element->getSelectedEye()->getShortName(),
+		\'mode\' => \'edit\',
+		\'width\' => \''.$field['eyedraw_size'].'\',
+		\'height\' => \''.$field['eyedraw_size'].'\',
+		\'model\' => $element,
+		\'attribute\' => \''.$field['name'].'\',
+))?'.'>';
 					case 'PosteriorSegment':
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+		\'doodleToolBarArray\' => array(\'Geographic\',\'VitreousOpacity\',\'DiabeticNV\',\'CNV\',\'Circinate\',\'CystoidMacularOedema\',\'EpiretinalMembrane\',\'HardDrusen\',\'PRPPostPole\',\'MacularHole\'),
+		\'onReadyCommandArray\' => array(
+			array(\'addDoodle\', array(\'PostPole\')),
+			array(\'deselectDoodles\', array()),
+		),
+		\'bindingArray\' => array(
+		),
+		\'idSuffix\' => $element->getSelectedEye()->name.\'_\'.$element->elementType->id,
+		\'side\' => $element->getSelectedEye()->getShortName(),
+		\'mode\' => \'edit\',
+		\'width\' => \''.$field['eyedraw_size'].'\',
+		\'height\' => \''.$field['eyedraw_size'].'\',
+		\'model\' => $element,
+		\'attribute\' => \''.$field['name'].'\',
+))?'.'>';
 					case 'Refraction':
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+		\'doodleToolBarArray\' => array(),
+		\'toolbar\' => false,
+		\'onReadyCommandArray\' => array(
+			array(\'addDoodle\', array(\'TrialFrame\')),
+			array(\'addDoodle\', array(\'TrialLens\')),
+			array(\'deselectDoodles\', array()),
+		),
+		\'bindingArray\' => array(
+		),
+		\'idSuffix\' => $element->getSelectedEye()->name.\'_\'.$element->elementType->id,
+		\'side\' => $element->getSelectedEye()->getShortName(),
+		\'mode\' => \'edit\',
+		\'width\' => \''.$field['eyedraw_size'].'\',
+		\'height\' => \''.$field['eyedraw_size'].'\',
+		\'model\' => $element,
+		\'attribute\' => \''.$field['name'].'\',
+))?'.'>';
 					case 'SurgeonPosition':
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+		\'onReadyCommandArray\' => array(
+			array(\'addDoodle\', array(\'OperatingTable\')),
+			array(\'addDoodle\', array(\'Surgeon\')),
+			array(\'deselectDoodles\', array()),
+		),
+		\'syncArray\' => array(
+		),
+		\'idSuffix\' => \'Position\',
+		\'side\' => $element->getSelectedEye()->getShortName(),
+		\'mode\' => \'edit\',
+		\'width\' => '.$field['eyedraw_size'].',
+		\'height\' => '.$field['eyedraw_size'].',
+		\'model\' => $element,
+		\'attribute\' => \''.$field['name'].'\',
+		\'offsetX\' => 10,
+		\'offsetY\' => 10,
+		\'toolbar\' => false,
+		\'template\' => \'OEEyeDrawWidgetSurgeonPosition\',
+	))?'.'>';
 					case 'Vitrectomy':
+						return '';
 				}
 				break;
 			case 'Multi select':
