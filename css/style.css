@@ -218,7 +218,11 @@ button.mini span						{ padding:0 18px; }
 button.mini span.button-span			{ display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ padding:0 4px; }
 
-
+/* nano - just replace 'tall','grande' or 'venti' in button class */
+button.nano								{ height:21px; font-size:12px; width: auto; margin:0 2px; }
+button.nano span						{ padding:0 15px; }
+button.nano span.button-span			{ display:block; height:21px; line-height:20px; } 
+button.nano span.button-span.icon-only	{ padding:0 4px; }
 
 
 
