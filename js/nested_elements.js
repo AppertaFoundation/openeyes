@@ -120,10 +120,8 @@ $(document).ready(function() {
 			$(this).closest('.element').find('.active_child_elements .element').each(function() {
 				removeElement(this, true);
 			})
-		}
-		else {
-			$('#active_elements.element').each(function() {
-				
+		} else {
+			$('#active_elements > .element').each(function() {
 				removeElement(this);
 			});
 		}
