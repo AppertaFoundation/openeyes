@@ -91,6 +91,9 @@ class PatientController extends BaseController
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
+		
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$this->layout = '//layouts/patientMode/main';
@@ -116,7 +119,7 @@ class PatientController extends BaseController
 		}
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
 	}
 
@@ -129,6 +132,7 @@ class PatientController extends BaseController
 		$this->episode = $this->event->episode;
 		$this->patient = $this->episode->patient;
 		$episodes = $this->patient->episodes;
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$elements = $this->service->getDefaultElements('view', $this->event);
@@ -166,6 +170,7 @@ class PatientController extends BaseController
 
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'elements' => $elements,
 			'event_template_name' => $event_template_name,
@@ -395,6 +400,8 @@ class PatientController extends BaseController
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
@@ -433,6 +440,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
@@ -452,6 +460,8 @@ class PatientController extends BaseController
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
@@ -465,6 +475,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
@@ -511,6 +522,8 @@ class PatientController extends BaseController
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
@@ -526,6 +539,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,

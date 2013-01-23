@@ -517,6 +517,8 @@ td.eventIcons > img { margin-bottom:10px; }
 #episodesBanner { margin-bottom: 10px; }
 /* corners TR BR */
 #episodes_sidebar > .episode, .episode .episode_nav { -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
+/* Specialty group header */
+#episodes_sidebar > .specialty { color:#504c3c; background: #eaddaf; padding:5px 2px 5px 5px; -webkit-border-top-right-radius: 3px;  -moz-border-radius-topright: 3px; ; border-top-right-radius: 3px; }
 /* container */
 #episodes_sidebar > .episode.open		{ background: #eaddaf; margin-bottom:5px;}
 #episodes_sidebar > .episode.closed { background: #dad3ba; margin-bottom:5px; }

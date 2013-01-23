@@ -43,7 +43,7 @@
 													<td>
 														<?php
 														echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
-																		array('empty'=>'All specialties', 'ajax'=>array(
+																		array('empty'=>'All sub-specialties', 'ajax'=>array(
 																						'type'=>'POST',
 																						'data'=>array('subspecialty_id'=>'js:this.value'),
 																						'url'=>Yii::app()->createUrl('waitingList/filterFirms'),
