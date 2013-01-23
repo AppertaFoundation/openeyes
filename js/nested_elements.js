@@ -50,17 +50,20 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 	
-	function addElement(element, animate, is_child) {
+	function addElement(element, animate, is_child, import_previous) {
 		if (typeof (animate) === 'undefined')
 			animate = true;
 		if (typeof (is_child) === 'undefined')
 			is_child = false;
+		if (typeof (import_previous) === 'undefined')
+			import_previous = false;
 		
 		var element_type_id = $(element).attr('data-element-type-id');
 		var display_order = $(element).attr('data-element-display-order');
 		$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", {
 			id : element_type_id,
 			patient_id : et_patient_id,
+			import_previous: (import_previous) ? 1 : 0,
 		}, function(data) {
 			if (is_child) {
 				var container = $(element).closest('.inactive_child_elements').parent().find('.active_child_elements:first');
@@ -68,12 +71,12 @@ $(document).ready(function() {
 				var container = $('#active_elements');
 			}
 			
+			$(element).remove();
 			var insert_before = container.find('.element').first();
 			
 			while (parseInt(insert_before.attr('data-element-display-order')) < parseInt(display_order)) {
 				insert_before = insert_before.nextAll('div:first');
 			}
-			$(element).remove();
 			if (insert_before.length) {
 				insert_before.before(data);
 			} else {
@@ -113,6 +116,15 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Import previous element
+	 */
+	$('#active_elements').delegate('.elementActions .importPrevious', 'click', function(e) {
+		var element = $(this).closest('.element');
+		addElement(element, false, false, true);
+		e.preventDefault();
+	});
+
+	/**
 	 * Remove all optional elements
 	 */
 	$('.optionals-header').delegate('.remove-all', 'click', function(e) {
@@ -131,7 +143,7 @@ $(document).ready(function() {
 	/**
 	 * Remove an optional element
 	 */
-	$('#active_elements').delegate('.removeElement button', 'click', function(e) {
+	$('#active_elements').delegate('.elementActions .removeElement', 'click', function(e) {
 		if (!$(this).parents('.active_child_elements').length) {
 			var element = $(this).closest('.element');
 			removeElement(element);
@@ -139,10 +151,10 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 	
-	/*
+	/**
 	 * Remove a child element
 	 */
-	$('#active_elements').delegate('.active_child_elements .removeElement button', 'click', function(e) {
+	$('#active_elements').delegate('.active_child_elements .elementActions .removeElement', 'click', function(e) {
 		var element = $(this).closest('.element');
 		removeElement(element, true);
 		e.preventDefault();

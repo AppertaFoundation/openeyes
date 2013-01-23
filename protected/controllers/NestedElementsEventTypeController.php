@@ -42,17 +42,45 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	/*
 	 * abstraction of element initialisation to allow custom extension in overrides of controller
 	 */
-	protected function getElementForElementForm($element_type) {
-		$element = new $element_type->class_name;
+	protected function getElementForElementForm($element_type, $import_previous) {
+		$element_class = $element_type->class_name;
+		$element = new $element_class;
 		$element->setDefaultOptions();
-		
+		if($import_previous && $element->canCopy() && $episode = $this->episode) {
+			$previous_element = $this->getPreviousElement($element_class, $episode);
+			$element->loadFromExisting($previous_element);
+		}
+		return $element;
+	}
+	
+	/**
+	 * Can an element_type can be copied?
+	 * @param string $element_class
+	 * @return boolean
+	 */
+	public function canCopy($element_class) {
+		if($episode = $this->episode) {
+			return ($element_class::model()->canCopy() && $this->getPreviousElement($element_class, $episode));
+		} else {
+			return false;
+		}
+	}
+	
+	protected function getPreviousElement($element_class, $episode) {
+		$episode_id = $episode->id;
+		$criteria = new CDbCriteria();
+		$criteria->condition = 'event.episode_id = :episode_id';
+		$criteria->params = array(':episode_id' => $episode_id);
+		$criteria->order = 't.id DESC';
+		$criteria->join = 'JOIN event ON event.id = t.event_id';
+		$element = $element_class::model()->find($criteria);
 		return $element;
 	}
 	
 	/*
 	 * Ajax method for loading an individual element (and its children)
 	 */
-	public function actionElementForm($id, $patient_id) {
+	public function actionElementForm($id, $patient_id, $import_previous) {
 		// first prevent invalid requests
 		$element_type = ElementType::model()->findByPk($id);
 		if(!$element_type) {
@@ -68,7 +96,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 		
 		// retrieve the element
-		$element = $this->getElementForElementForm($element_type);
+		$element = $this->getElementForElementForm($element_type, $import_previous);
 		
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
 				'id' => 'clinical-create',

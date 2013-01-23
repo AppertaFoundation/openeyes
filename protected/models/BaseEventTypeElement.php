@@ -37,6 +37,50 @@ class BaseEventTypeElement extends BaseElement {
 		return ElementType::model()->find('class_name=?', array(get_class($this)));
 	}
 
+	/**
+	 * Can this element be copied (cloned/duplicated)
+	 * @return boolean
+	 */
+	public function canCopy() {
+		return false;
+	}
+
+	/**
+	 * Fields which are copied by the loadFromExisting() method
+	 * @return array:
+	 */
+	protected function copiedFields() {
+		$rules = $this->rules();
+		$fields = null;
+		foreach($rules as $rule) {
+			if($rule[1] == 'safe') {
+				$fields = $rule[0];
+				break;
+			}
+		}
+		$fields = explode(',', $fields);
+		$no_copy = array('event_id','id');
+		foreach($fields as $index => $field) {
+			if(in_array($field,$no_copy)) {
+				unset($fields[$index]);
+			} else {
+				$fields[$index] = trim($field);
+			}
+		}
+		return $fields;
+	}
+	
+	/**
+	 * Load an existing element's data into this one
+	 * The base implementation is very simple and may be overridden to allow for more complex relationships
+	 * @param BaseEventTypeElement $element
+	 */
+	public function loadFromExisting($element) {
+		foreach($this->copiedFields() as $attribute) {
+			$this->$attribute = $element->$attribute;
+		}
+	}
+	
 	function render($action) {
 		$this->Controller->renderPartial();
 	}
