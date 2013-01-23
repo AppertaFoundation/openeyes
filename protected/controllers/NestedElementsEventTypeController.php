@@ -54,7 +54,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	}
 	
 	/**
-	 * Can an element_type can be copied?
+	 * Can an element can be copied?
 	 * @param string $element_class
 	 * @return boolean
 	 */
@@ -66,6 +66,12 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		}
 	}
 	
+	/**
+	 * Fetches the latest instance of an element in an episode
+	 * @param string $element_class
+	 * @param Episode $episode
+	 * @return BaseEventTypeElement
+	 */
 	protected function getPreviousElement($element_class, $episode) {
 		$episode_id = $episode->id;
 		$criteria = new CDbCriteria();

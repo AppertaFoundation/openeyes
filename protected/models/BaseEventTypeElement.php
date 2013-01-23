@@ -39,6 +39,7 @@ class BaseEventTypeElement extends BaseElement {
 
 	/**
 	 * Can this element be copied (cloned/duplicated)
+	 * Override to return true if you want an element to be copyable
 	 * @return boolean
 	 */
 	public function canCopy() {
@@ -47,6 +48,8 @@ class BaseEventTypeElement extends BaseElement {
 
 	/**
 	 * Fields which are copied by the loadFromExisting() method
+	 * By default these are taken from the "safe" scenario of the model rules, but
+	 * should be overridden for more complex requirements  
 	 * @return array:
 	 */
 	protected function copiedFields() {
@@ -72,7 +75,8 @@ class BaseEventTypeElement extends BaseElement {
 	
 	/**
 	 * Load an existing element's data into this one
-	 * The base implementation is very simple and may be overridden to allow for more complex relationships
+	 * The base implementation simply uses copiedFields(), but it may be
+	 * overridden to allow for more complex relationships
 	 * @param BaseEventTypeElement $element
 	 */
 	public function loadFromExisting($element) {
