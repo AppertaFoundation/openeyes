@@ -47,7 +47,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		$element = new $element_class;
 		$element->setDefaultOptions();
 		if($import_previous && $element->canCopy() && $episode = $this->episode) {
-			$previous_element = $this->getPreviousElement($element_class, $episode);
+			$previous_element = $this->getLatestElement($element_class, $episode);
 			$element->loadFromExisting($previous_element);
 		}
 		return $element;
@@ -60,7 +60,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 */
 	public function canCopy($element_class) {
 		if($episode = $this->episode) {
-			return ($element_class::model()->canCopy() && $this->getPreviousElement($element_class, $episode));
+			return ($element_class::model()->canCopy() && $this->getLatestElement($element_class, $episode));
 		} else {
 			return false;
 		}
@@ -72,7 +72,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 * @param Episode $episode
 	 * @return BaseEventTypeElement
 	 */
-	protected function getPreviousElement($element_class, $episode) {
+	protected function getLatestElement($element_class, $episode) {
 		$episode_id = $episode->id;
 		$criteria = new CDbCriteria();
 		$criteria->condition = 'event.episode_id = :episode_id';
