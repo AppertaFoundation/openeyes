@@ -165,8 +165,12 @@ return array(
 						'uri' => 'theatre',
 					),
 					array(
-						'title' => 'Partial bookings waiting list',
+						'title' => 'Waiting list',
 						'uri' => 'waitingList',
+					),
+					array(
+						'title' => 'Reports',
+						'uri' => 'Reports/default/index',
 					),
 					array(
 						'title' => 'Logout',
