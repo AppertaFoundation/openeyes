@@ -92,6 +92,12 @@ $(document).ready(function(){
 			});
 		}
 	}
+	
+	$('#header').waypoint('sticky');
+	$('.display_actions').waypoint('sticky', {
+		offset: 75,
+		wrapper: '<div class="display_actions_sticky_wrapper" />'
+	});
 });
 
 function changeState(wb,sp) {

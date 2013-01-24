@@ -40,6 +40,8 @@
 	<?php $cs->registerCSSFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen')?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/mustache.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/waypoints.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/waypoints-sticky.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.printElement.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.hoverIntent.min.js'))?>

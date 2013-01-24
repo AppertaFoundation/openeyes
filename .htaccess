@@ -2,7 +2,7 @@ Options +FollowSymLinks
 IndexIgnore */*
 
 RewriteEngine On
-#RewriteBase /
+RewriteBase /
 
 # Things not to rewrite
 RewriteCond %{REQUEST_URI} !(\.gif$)|(\.jpg$)|(\.png$)|(\.css$)|(\.js$)|(\.ico$)

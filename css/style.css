@@ -69,6 +69,7 @@ body { width:1230px; margin:0 auto; }
 #container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
+#header.stuck { background: #fff; position: fixed; top: 0; z-index: 10; padding-bottom: 5px; border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); }
 #content		{ min-height: 400px;}
 #help			{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }	/* offset by 5px! */
 #help:before	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
@@ -829,7 +830,9 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #siteSelected > .highlighted, #dateSelected > .highlighted { font-weight:bold; }
 
 /* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */
-#event_display .display_actions { background: #eaddaf; border-bottom:5px solid #a29d8a; }
+#event_display .display_actions { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1050px; }
+#event_display .display_actions.stuck { position: fixed; top: 75px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 28px; }
+#event_display .display_actions_sticky_wrapper { padding-bottom: 5px; }
 #event_display .display_actions.footer { height: 35px; border-top:1px solid #a29d8a; border-bottom: none; padding-top:10px; -webkit-border-bottom-left-radius: 8px; -webkit-border-bottom-right-radius: 8px; -moz-border-radius-bottomleft: 8px; -moz-border-radius-bottomright: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}  
 .display_actions .display_mode	{ display:inline-block; color:#fff; font-size:13px; height:20px; margin:3px 0 0 3px; padding:5px 10px 0 10px; background: #a29d8a; -webkit-border-top-left-radius: 3px; -webkit-border-top-right-radius: 3px; -moz-border-radius-topleft: 3px; -moz-border-radius-topright: 3px; border-top-left-radius: 3px; border-top-right-radius: 3px; }
 .display_actions .display_mode.edit { background:#1e55c1; }
