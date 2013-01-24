@@ -59,6 +59,8 @@ $(document).ready(function() {
 			import_previous = false;
 		
 		var element_type_id = $(element).attr('data-element-type-id');
+		var element_type_class = $(element).attr('data-element-type-class');
+		
 		var display_order = $(element).attr('data-element-display-order');
 		$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", {
 			id : element_type_id,
@@ -81,6 +83,24 @@ $(document).ready(function() {
 				insert_before.before(data);
 			} else {
 				$(container).append(data);
+			}
+			
+			if (is_child) {
+				// check if this is sided
+				// and match the parent active sides if it is
+				var cel = $(container).find('.'+element_type_class);
+				var pel = $(container).parents('.element');
+				var sideField = $(cel).find('input.sideField');
+				if ($(sideField).length && $(pel).find('input.sideField').length) {
+					$(sideField).val($(pel).find('.sideField').val());
+					
+					if($(sideField).val() == '1') {
+						$(cel).find('.side.left').addClass('inactive');
+					}
+					else if ($(sideField).val() == '2') {
+						$(cel).find('.side.right').addClass('inactive');
+					}
+				}				
 			}
 			
 			$('#event_display textarea.autosize:visible').autosize();
