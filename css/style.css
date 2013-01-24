@@ -83,8 +83,8 @@ body { width:1230px; margin:0 auto; }
 #brand.olympic { background-image: url(../img/_structure/openeyes_olympic.png); }
 
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
-#user_panel { width:500px; right:10px; }
-#patientID	{ width:340px; right:540px; }
+#user_panel { width:490px; right:10px; }
+#patientID	{ width:340px; right:523px; }
 #eventType	{ width:150px; left: 260px; }
 
 /* ====== CONTENT STRUCTURES ====== */
