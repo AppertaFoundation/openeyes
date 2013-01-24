@@ -41,8 +41,9 @@
 	<?php $cs->registerCoreScript('jquery.ui')?>
 	<?php $cs->registerCSSFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen')?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
-	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/mustache.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.hoverIntent.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/buttons.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>

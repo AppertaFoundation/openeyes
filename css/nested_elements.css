@@ -9,6 +9,8 @@
 #active_elements .inactive_child_elements .element {background: #8C949C url(../../../img/_elements/icons/extra-element_view.png) top right no-repeat; padding: 5px; color: #fff; border-bottom: 1px dotted #fafafa; cursor: pointer;}
 #active_elements .inactive_child_elements .element h5 {margin: 0; line-height: 1em; padding: 0 5px; background: none;}
 #active_elements .active_child_elements { padding: 0 10px 10px; background: #dae6f1; }
+#active_elements > .element.clicked { background: #ddd url(../../../img/ajax-loader.gif) 1006px 12px no-repeat; } 
+#active_elements > .element.clicked .elementActions { display: none; } 
 
 #inactive_elements .element { background: #8C949C url(../../../img/_elements/icons/extra-element_view.png) top right no-repeat; padding: 5px; color: #fff; border-bottom: 1px dotted #fafafa; cursor: pointer; } 
 #inactive_elements h5 { margin: 0; line-height: 1em; padding: 0 5px; } 

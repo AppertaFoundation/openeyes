@@ -119,8 +119,12 @@ $(document).ready(function() {
 	 * Import previous element
 	 */
 	$('#active_elements').delegate('.elementActions .importPrevious', 'click', function(e) {
-		var element = $(this).closest('.element');
-		addElement(element, false, false, true);
+		if (!$(this).hasClass('clicked')) {
+			var element = $(this).closest('.element');
+			$(element).addClass('clicked');
+			addElement(element, false, false, true);
+			addElement(this, true, true);
+		}
 		e.preventDefault();
 	});
 
