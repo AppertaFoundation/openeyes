@@ -83,8 +83,8 @@ body { width:1230px; margin:0 auto; }
 #brand.olympic { background-image: url(../img/_structure/openeyes_olympic.png); }
 
 #user_panel, #patientID, #eventType { height:63px; position: absolute; top:0; }
-#user_panel { width:490px; right:10px; }
-#patientID	{ width:340px; right:523px; }
+#user_panel { width:500px; right:10px; }
+#patientID	{ width:340px; right:540px; }
 #eventType	{ width:150px; left: 260px; }
 
 /* ====== CONTENT STRUCTURES ====== */
@@ -125,7 +125,7 @@ h2.admin { background:#333; color:#fff; }
 em { font-style: italic; color:#333; }
 .small	{ font-size: 11px; font-weight: normal; }
 .normal { font-size: 13px; font-weight: normal; }
-.large	{ font-size: 14px; font-weight: normal; }
+.large 	{ font-size: 14px; font-weight: normal; }
 .bold	{ font-size: 15px; font-weight: bolder; }
 .big	{ font-size: 18px; font-weight: normal; }
 .red	{ color:#d62020; }
@@ -136,7 +136,7 @@ em { font-style: italic; color:#333; }
 /* start REPLACE: with curvybox */
 #content .whiteBox, #content .alertBox, #content .issueBox, #content .infoBox, #content .questionBox, #content .blueBox, #content .fullBox, #content .patientBox { margin-bottom: 15px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
 /* box Paragraphs */
-#content .whiteBox > p, #content .redBox > p, #content .alertBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p	{ background: none; padding:0; margin-bottom:8px; }
+#content .whiteBox > p, #content .redBox > p, #content .alertBox > p, #content .issueBox > p, #content .infoBox > p, #content .blueBox > p, #content .eventBox > p  { background: none; padding:0; margin-bottom:8px; }
 /* box specifics */
 #content .whiteBox 	{ background: #fafafa; padding:10px; position:relative; }
 #content .redBox 	{ background: #e81515; border:#fc621f 4px solid; color:#FFF; font-weight: bold; padding:7px 10px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
@@ -199,7 +199,6 @@ input:focus { background: #ffffff; border:solid 1px #19a8ea;	}
 
 /* === CLASSY CSS BUTTONS === */
 /* default, inactive */
-
 button.classy { height:32px; padding:0; margin:0; position:relative; top:1px; font-family: sans-serif; font-weight:normal; font-size:17px; letter-spacing: 1px;
 color:#fff; text-shadow:-1px -1px 0 #999; white-space:nowrap; border:none; overflow:visible; background:#bbb; 
 background: -moz-linear-gradient(#cacacb, #aeaeaf);		 
@@ -361,7 +360,7 @@ table		{ border-collapse: collapse; }
 table tr:last-child { border-bottom: none; }
 .table_endRow{ background: #ddd; height:15px; }
 /* clickable table row  */
-tr.clickable:hover { background:#3665ff; color:white; }
+.clickable:hover { background:#3665ff; color:white; }
 
 
 /* SUBTLE WHITE - table structure used for layout but not too obvious */
@@ -377,11 +376,6 @@ table.subtleWhite.noMargin { margin-bottom:0; }
 table.subtleWhite.grey { background:#efefef; }
 
 
-table.subtleWhiteNoHover { width:100%; background:#fff; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; margin-bottom:20px;}
-table.subtleWhiteNoHover th { text-align:left; font-size:11px; color:#ccc; padding:10px 10px 2px 10px; }
-table.subtleWhiteNoHover td { font-size:15px; padding:10px; }
-table.subtleWhiteNoHover.smallText td { font-size:11px; padding:8px 10px; }
-table.subtleWhiteNoHover.normalText td { font-size:13px; }
 
 /* GRID VIEW - used by SEARCH RESULTS, RECENT EPISODES */
 .grid-view table { width:100%; } 
@@ -412,19 +406,15 @@ tfoot td #key .container .label { display:inline-block; margin-left:4px; }
 /* change properties for closed rows */
 .grid-view-waitinglist table .closed > td {  padding: 6px 10px; border-right-color: #bbb; color: #666; }
 
-#letters-key {margin-top:15px;}
-#letters-key img {margin-left: 10px;}
-
 /* hack to help with in page CSS for add Operation */
 table#procedure_list tbody tr { background-color: #edf4f9; }
 
-#patient-grid tbody tr { cursor: pointer; }
 /* make sure default pager is hidden! */
 #patient-grid .pager { display: none !important; visibility: hidden; }
 /* my pagination */
 .resultsPagination { text-align:right; background: #ddd; padding:10px;	}
+.resultsPagination span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
 .resultsPagination .showingPage { color:#000; font-weight: bold;}
-.resultsPagination .notFirst:before { color: #999; content: "\00a0\00a0 |\00a0\00a0 "; }
 
 /* purpleUser can edit info as Admin	*/
 .purpleUser { line-height:1.5; font-size:11px; color:#ffffde; background:#545065; border:2px solid #602aba; padding:6px; position:relative; min-height: 50px; }
@@ -447,13 +437,6 @@ div.hint:last-child { border-right: none; }
 #footer .help .divider { padding:0 5px; color:#aaa; }
 
 /* ------------------------------------------------- HEADER MODULES  */
-
-#oesync		{ height:48px; width:31px; position: absolute; top:0; left:200px; }
-
-.oesync { background: rgb(255,255,255); background: rgba(255,255,255,0.6); border:1px solid #fff; border-top:none; -webkit-border-bottom-right-radius: 6px; -webkit-border-bottom-left-radius: 6px; -moz-border-radius-bottomright: 6px; -moz-border-radius-bottomleft: 6px; border-bottom-right-radius: 6px; border-bottom-left-radius: 6px;}
-.oesync a.syncbtn { position:absolute; bottom:5px; left:3px; }
-.oesync a.syncbtn:hover { border-bottom: none; }
-
 
 /* add border radius to header elements */
 #user_panel, ul#user_nav a, ul#user_nav > li .selected, #patientID { -webkit-border-bottom-right-radius: 3px; -webkit-border-bottom-left-radius: 3px; -moz-border-radius-bottomright: 3px; -moz-border-radius-bottomleft: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px;}
@@ -491,7 +474,7 @@ ul#user_nav > li .selected { display:inline-block; background: #1e55c1; color:#f
 /* .patientReminder > .given:after { color:#444; } */
 .patientReminder > .surname		{ display:inline-block; font-size: 16px; font-weight: bold; }
 .patientReminder > .number		{ display:block; font-size: 12px; margin-top:1px; }
-.patientReminder > .nhs			{ display:inline-block; font-size: 12px; color:#fff; background: #107ebd url(../img/_elements/icons/nhs_tiny.png) center left no-repeat;	margin-top: 1px; padding:1px 4px 1px 35px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.patientReminder > .nhs			{ display:inline-block; font-size: 12px; color:#fff; background: #107ebd url(../img/_elements/icons/nhs_tiny.png) center left no-repeat;  margin-top: 1px; padding:1px 4px 1px 35px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 
 /* generic surname */
 span.surname { font-weight: bold; }
@@ -622,8 +605,8 @@ span.surname { font-weight: bold; }
 /* Clinicians only info */
 .whiteBox.forClinicians { border:1px solid #999; position:relative;}
 .whiteBox.forClinicians h4 { display:inline-block; padding:5px 10px 5px 45px; font-size:12px; color:#fff; background:#999; margin-bottom: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
-.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;	}
-.whiteBox.forClinicians .fuzzyDate { font-family:Georgia Times sans-serif; font-style: italic;	color:#666; }
+.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;  }
+.whiteBox.forClinicians .fuzzyDate { font-family:Georgia Times sans-serif; font-style: italic;  color:#666; }
 
 /* for fullWidth Episode Summary, need to control the vertical spacing in case of 2+ rows */
 td.eventIcons > img { margin-bottom:10px; }
@@ -639,8 +622,6 @@ td.eventIcons > img { margin-bottom:10px; }
 #episodesBanner { margin-bottom: 10px; }
 /* corners TR BR */
 #episodes_sidebar > .episode, .episode .episode_nav { -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
-/* Specialty group header */
-#episodes_sidebar > .specialty { color:#504c3c; background: #eaddaf; padding:5px 2px 5px 5px; -webkit-border-top-right-radius: 3px;  -moz-border-radius-topright: 3px; ; border-top-right-radius: 3px; }
 /* container */
 #episodes_sidebar > .episode.open		{ background: #eaddaf; margin-bottom:5px;}
 #episodes_sidebar > .episode.closed { background: #dad3ba; margin-bottom:5px; }
@@ -651,12 +632,11 @@ td.eventIcons > img { margin-bottom:10px; }
 .episode .episode_nav h4 .title_summary { display:block; color:#000; padding:3px 0 15px 5px; border:none; -webkit-border-top-right-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-topright: 3px; -moz-border-radius-bottomright: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; }
 .episode .episode_nav h4 .title_summary.viewing { color:#fff; background:#aaa url(../img/_elements/icons/event/event_open_arrow.png) bottom right no-repeat; }
 .episode .episode_nav h4 a.title_summary { background:#fff url(../img/_elements/graphic/view-episode-summary.png) bottom right no-repeat; }
-.episode .episode_nav a:hover.title_summary		{ color:#fff; background-color:#3665ff; background-image: url(../img/_elements/icons/event/event_open_arrow.png); }
-.episode .episode_nav a:active.title_summary	{ color:#fff; background-color:#315be6; }
+.episode .episode_nav a:hover.title_summary 	{ color:#fff; background-color:#3665ff; background-image: url(../img/_elements/icons/event/event_open_arrow.png); }
+.episode .episode_nav a:active.title_summary 	{ color:#fff; background-color:#315be6; }
 .episode .episode_nav .mini_icons { padding:2px 5px 2px 5px; display: none; }
 .episode .episode_nav .mini_icons a {border:none;}
 .episode .episode_nav .mini_icons img { width:12px; height:12px; margin-right:3px; }
-.episode .legacy { background: #eee !important; }
 .episode ul.events { list-style-type: none; padding:4px 0 0 0; margin:0 0 0 5px; border-top:1px dotted #ccc; }
 .episode ul.events li { display:block; position: relative; height:19px; margin:0 2px 4px 0; } 
 .episode ul.events li img { vertical-align:middle; margin-left:0; margin-right:0; } 
@@ -672,7 +652,7 @@ td.eventIcons > img { margin-bottom:10px; }
 .episode ul.events li a:active	{ border-bottom: none; background: #315be6; color:#fff; }
 
 /* Quicklook ... meta overview of Event */
-.episode ul.events li .quicklook { display:none; position:absolute; width:200px; left:140px; top:-5px; z-index:1; padding:5px; border:1px solid #3665ff; background:#fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 2px 2px 2px 0 #999;  -webkit-box-shadow: 2px 2px 2px 0 #999;	box-shadow: 2px 2px 2px 0 #999;  }
+.episode ul.events li .quicklook { display:none; position:absolute; width:200px; left:140px; top:-5px; z-index:1; padding:5px; border:1px solid #3665ff; background:#fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 2px 2px 2px 0 #999;  -webkit-box-shadow: 2px 2px 2px 0 #999;  box-shadow: 2px 2px 2px 0 #999;  }
 .episode ul.events li .quicklook .event { display:block; font-weight: bold; padding-left:5px; padding-bottom:3px; }
 .episode ul.events li .quicklook .info	{ display:block; font-size:11px; padding-left:5px}
 .episode ul.events li .quicklook .issue	{ display:block; font-size:11px; color:#600; padding:5px 5px 5px 20px; margin-top:7px; background:#fdf2e5 url(../img/_elements/icons/event/status/alert.png) top left no-repeat;}
@@ -713,9 +693,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 #event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
 #event_display .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
-#event_display #add-event-select-type { position:absolute; top:90px; right:4px; width:300px; z-index:999 !important;}
-#event_display #add-event-select-type .add_event_disabled a { padding: 4px 10px 3px 10px; color: #999; }
-#event_display #add-event-disabled-pop-up { display: none; position: absolute; width: 280px; padding: 10px; background: #eeeeee; color: #000000; border: 1px solid #1a1a1a; font-size: 90%; z-index: 1000; left: 590px; }
+#event_display #add-event-select-type { position:absolute; top:40px; right:4px; width:300px; z-index:999 !important;}
 
 
 /* ====== ADD NEW EVENT (v2 - overlay) jQuery version ====== */
@@ -759,10 +737,10 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px;}
 #event_content form h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 
-/* ---	Viewing a canvas element */
-canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
+/* ---  Viewing a canvas element */
+canvas.viewing {  border:7px solid #fff; margin-bottom: 10px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
 
-/* ---	eventHighlight ---	should rename this to elementHighlight really! */
+/* ---  eventHighlight ---  should rename this to elementHighlight really! */
 #event_content .eventHighlight { width:75%; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; padding:2px 5px; margin-bottom:10px;}
 /* eventHighlight within a colsplit */
 #event_content .colsX .eventHighlight { width:90%; } 
@@ -791,8 +769,8 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content .eventDetail { padding:10px; background:#dae6f1; position:relative; }
 #event_content .eventDetail.subGroup-start { border-top:1px solid #e7f3ff; margin-top:0; -webkit-border-top-left-radius: 6px; -webkit-border-top-right-radius: 6px; -moz-border-radius-topleft: 6px; -moz-border-radius-topright: 6px; border-top-left-radius: 6px; border-top-right-radius: 6px;}
 #event_content .eventDetail.subGroup-end { border-bottom: 2px solid #d2dde8; margin-bottom:1px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;}
-#event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;	}
-#event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;	}
+#event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;  }
+#event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;  }
 #event_content .eventDetail > .label-horizontal { display:inline-block; width:145px; float: left; font-size:15px; }
 #event_content .eventDetail > .labelrow-first { display: inline; float: left; width: 170px; }
 #event_content .eventDetail > .labelrow { margin-left: 20px; display: inline; float: left; }
@@ -803,7 +781,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 
 /* 2 column split - for summary */
 #event_content .cols2 { padding-bottom:30px; }
-#event_content .cols2 > .left { clear: left; float: left; width: 48%; }
+#event_content .cols2 > .left { float: left; width: 48%; }
 #event_content .cols2 > .right { clear: right; float: right; width: 48%; }
 /* reduced labels on two column split */
 #event_content .cols2 > .left > h4, #event_content > .cols2 > .right > h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px; }
@@ -819,7 +797,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content ul.eventComments > li { margin-bottom:8px; padding-bottom: 8px; border-bottom:1px dotted #dae6f1; }
 
 /* meta data (creation and modification) */
-#event_content .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
+#event_content .metaData { width:75%; font-size:13px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#666; border-bottom:1px dotted #dae6f1;  }
 #event_content .metaData .info { margin-right: 15px; }
 #event_content .metaData .user { color:#333; }
 
@@ -828,7 +806,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content .cols2 h3.subsection { margin-top: 10px; clear: both; border-bottom: 1px solid #ccc; padding-bottom: 5px; }
 
 #event_content .splitElement { padding:10px 0; margin:10px 0; border-top:5px solid #dae6f1; border-bottom:5px solid #dae6f1; }
-#event_content .splitElement .left	{ clear: left; float: left; width: 50%; }
+#event_content .splitElement .left 	{ clear: left; float: left; width: 50%; }
 #event_content .splitElement .right { clear: right; float: right; width: 50%; }
 
 .eventDetail > .data { display:inline-block; position:relative;}
@@ -838,16 +816,15 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 .eventDetail > .data.limitWidth { width:830px; }
 .eventDetail > .data.limitWidth .procedureItem {clear: both;}
 .eventDetail > .data.limitWidth .procedureItem .left {width: 55px; display: inline-block; float:left;}
-.eventDetail > .data.limitWidth .procedureItem .middle {width: 345px; display: inline-block;}
+.eventDetail > .data.limitWidth .procedureItem .middle {width: 350px; display: inline-block;}
 .eventDetail > .data.limitWidth .procedureItem .middle.noDuration {width: 410px;}
-.eventDetail > .data.limitWidth .procedureItem .right {width: 65px; display: inline-block; float: right; text-align: right;}
+.eventDetail > .data.limitWidth .procedureItem .right {width: 60px; display: inline-block; float: right; text-align: right;}
 .eventDetail > .data .group { display: inline-block; background:#e3f0f2; padding:4px 12px 5px 8px; margin-right: 15px; margin-bottom:4px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 .eventDetail > .data .group:hover { background:#fff;}
 .eventDetail > .data label { margin: 0 0 0 5px; position:relative; top:1px; }
 .eventDetail > .data > .labelHint { width: 280px; }
 .eventDetail > .datarow-first { float: left; }
 .eventDetail > .datarow { float: left; margin-left: 10px; }
-.eventDetail > .data > .checkBoxArrayHeader { font-weight: bold; margin-bottom: 14px; }
 
 .eventDetail > .datacol1 { display:inline-block; position:relative;}
 .eventDetail > .datacol1.limitWidth { width:350px; }
@@ -870,12 +847,10 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 /* ON-DEMAND - wrapper for elements that appear 'on-demand' */
 #event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/extra-element_view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
 #event_content .ondemand h4 { border-top: none; }
-#event_content .missing { border:7px solid #da3232 !important; }
-#event_content .missingtext { color: #da3232 !important; }
 #event_content .hidden { display: none; }
 .ondemand > .demandReason { position:absolute; top:0; right:30px; color:#979fa7; font-size:11px; padding:4px 7px 2px 7px; 
-background: -moz-linear-gradient(#c8d3dd, #dae6f1);		 
-background: -ms-linear-gradient(#c8d3dd, #dae6f1);	
+background: -moz-linear-gradient(#c8d3dd, #dae6f1);    
+background: -ms-linear-gradient(#c8d3dd, #dae6f1);  
 background: -webkit-linear-gradient(#c8d3dd, #dae6f1); 
 -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#c8d3dd', endColorstr='#dae6f1')"; 
 background:	linear-gradient(#c8d3dd, #dae6f1);
@@ -933,8 +908,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #operation #dates #month_back {float:left; margin-left:10px; position:relative; top:-5px; }
 #operation #dates #month_forward { float:right; margin-right: 10px; position:relative; top:-5px; }
 #operation table { width:100%; } /* match dates width */
-#operation table tbody th,
-#operation table tbody td { padding:15px 25px 12px 25px; background: #eee; border: 1px solid #fff; text-align: center; }
+#operation table tbody * { padding:15px 25px 12px 25px; background: #eee; border: 1px solid #fff; text-align: center; }
 #operation table tbody th { width:50px; background:#666; color:#fff; } /* the day, i.e Weds */
 #operation table tbody td { width:140px; }
 #operation table tbody td.invalid { color:#999; width:auto;  }
@@ -988,6 +962,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #session_details #dateSelected { display:block; padding:10px; background:#dae6f1; font-size:15px; margin-top:3px; }
 #siteSelected > .highlighted, #dateSelected > .highlighted { font-weight:bold; }
 
+
 /* ====== EVENT WRAPPER: VIEW & ACTIONS ====== */
 #event_display .display_actions { background: #eaddaf; border-bottom:5px solid #a29d8a; }
 #event_display .display_actions.footer { height: 35px; border-top:1px solid #a29d8a; border-bottom: none; padding-top:10px; -webkit-border-bottom-left-radius: 8px; -webkit-border-bottom-right-radius: 8px; -moz-border-radius-bottomleft: 8px; -moz-border-radius-bottomright: 8px; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;}  
@@ -1024,12 +999,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .aBtn a.sprite.showhide > .show { background-position: bottom left; }
 .aBtn a:hover.sprite.showhide > .show { background-position: bottom right; }
 
-.aBtn a.sprite.showhide2 > span { display:inline-block; width:11px; height:11px; background:transparent url(../img/_elements/icons/_sprites/showhide_icon.png) no-repeat top left; }
-.aBtn a.sprite.showhide2 > .hide { background-position: top left; }
-.aBtn a:hover.sprite.showhide2 > .hide { background-position: top right; }
-.aBtn a.sprite.showhide2 > .show { background-position: bottom left; }
-.aBtn a:hover.sprite.showhide2 > .show { background-position: bottom right; }
-
 /* EVENT LIST showhide in Event List*/
 .episode_nav a.sprite { display:inline-block; padding:4px 5px 2px 5px; background: #fff; -webkit-border-bottom-left-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-bottomleft: 3px; -moz-border-radius-bottomright: 3px; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
 .episode_nav .aBtn { position:absolute; top:0; right:2px;}
@@ -1043,6 +1012,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .patient_actions .aBtn > a { display:inline-block; padding:4px 10px 3px 10px; background: #dadada; -webkit-border-bottom-left-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-bottomleft: 3px; -moz-border-radius-bottomright: 3px; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
 .patient_actions .aBtn > a:hover { border:none; color:#fff; background:#3665ff;;}
 .patient_actions .aBtn > a:active { border:none; color:#fff; background:#2546b1; }
+
 
 /* ====== CATEGORY & EVENT COLOUR ====== */
 #event_display .colorband { height:5px; background:#a29d8a;  }
@@ -1064,10 +1034,9 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 #theatre_display, #waitinglist_display { padding:10px; }
 #search-options #main-search h3 { padding-left:10px; }
 #search-options #main-search tbody td { padding-bottom:20px;}
-#search-options .extra-search { padding:5px 10px; background:#ddd; }
-#search-options .extra-search .data label { font-size:13px; position:relative; top:-1px; }
-#search-options .extra-search .data > .group { background: #e8e8e8; }
-#lower_pagination .extra-search { padding:5px 10px; background:#ddd; margin-top: -15px; }
+#search-options #extra-search { padding:5px 10px; background:#ddd; }
+#search-options #extra-search .data label { font-size:13px; position:relative; top:-1px; }
+#search-options #extra-search .data > .group { background: #e8e8e8; }
 /* results */
 #theatre_display #theatreList { margin-top:15px; }
 #theatreList > div.fullBox { background:#888; color: #fff; padding:5px 10px; }
@@ -1088,7 +1057,6 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .theatre-sessions table th.footer.full { background: #ffedb2; }
 /* Control the widths of key tds */
 .theatre-sessions table td.session { width:40px; }
-.theatre-sessions table td.session input {width: 38px;}
 .theatre-sessions table td.dragsort { width:26px; }
 .theatre-sessions table td.dragsort:hover { cursor: pointer; background-color:#ffe6b2; }
 .theatre-sessions table td.confirm { width:28px; padding-left:15px; }
@@ -1123,7 +1091,7 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 /* ====== WAITING LIST ====== */
 /* modified GRID VIEW ... */
 .grid-view table.waiting-list th { min-width:20px; }
-.grid-view table.waiting-list td { padding: 5px 10px 6px 8px; }
+.grid-view table.waiting-list td { padding:5px 10px 6px 8px;	}
 /* coloured send flags	*/
 table.waiting-list tr.sendflag-invitation > td:first-child { background-color:#77b8d3; }
 table.waiting-list tr.sendflag-reminder > td:first-child { background-color:#b8eaa6; }
@@ -1132,10 +1100,10 @@ table.waiting-list tr.sendflag-remove > td:first-child { background-color:#f08a6
 /* change default hover */
 table.waiting-list .odd:hover, table.waiting-list .even:hover { background-color: #ffd; border-bottom-color: #aaa; }
 /* NO GP flag */
-table.waiting-list td > .no-GP, table.waiting-list td > .no-Address { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted;}
+table.waiting-list td > span.no-GP { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted; }
 /* letters send icons */
 table.waiting-list td.letterStatus > img {margin-right:4px; }
-table.waiting-list td.letterStatus { width: 96px; padding-bottom:10px; }
+table.waiting-list td.letterStatus { width: 92px; padding-bottom:10px; }
 
 /* KEY	- for Waiting List */
 table.waiting-list #key { margin-top:15px; }
@@ -1144,33 +1112,6 @@ table.waiting-list #key #sendflag-reminder		.color_box { background:#b8eaa6; bor
 table.waiting-list #key #sendflag-GPremoval		.color_box { background:#f7bf8d; border:1px solid #999; position: relative; top:1px;}
 table.waiting-list #key #sendflag-remove		.color_box { background:#f08a6f; border:1px solid #999; position: relative; top:1px;}
 
-table.waiting-list tr.hover{ background-color: #ffffdd; }
-
-/* ====== AUDIT LIST ====== */
-/* modified GRID VIEW ... */
-.grid-view table.audit-list th { min-width:20px; }
-.grid-view table.audit-list td { padding: 5px 10px 6px 8px; }
-/* coloured send flags	*/
-table.audit-list tr.sendflag-invitation > td:first-child { background-color:#77b8d3; }
-table.audit-list tr.sendflag-reminder > td:first-child { background-color:#b8eaa6; }
-table.audit-list tr.sendflag-GPremoval > td:first-child { background-color:#f7bf8d; }
-table.audit-list tr.sendflag-remove > td:first-child { background-color:#f08a6f; }
-/* change default hover */
-table.audit-list .odd:hover, table.audit-list .even:hover { background-color: #ffd; border-bottom-color: #aaa; }
-/* NO GP flag */
-table.audit-list td > .no-GP, table.audit-list td > .no-Address { font-size: 11px; font-weight: bold; color:#f00; white-space: nowrap; border-bottom:#f00 1px dotted;}
-/* letters send icons */
-table.audit-list td.letterStatus > img {margin-right:3px; }
-table.audit-list td.letterStatus { width: 92px; }
-
-/* KEY	- for Waiting List */
-table.audit-list #key { margin-top:15px; }
-table.audit-list #key #sendflag-invitation	.color_box { background:#77b8d3; border:1px solid #999; position: relative; top:1px;}
-table.audit-list #key #sendflag-reminder		.color_box { background:#b8eaa6; border:1px solid #999; position: relative; top:1px;}
-table.audit-list #key #sendflag-GPremoval		.color_box { background:#f7bf8d; border:1px solid #999; position: relative; top:1px;}
-table.audit-list #key #sendflag-remove		.color_box { background:#f08a6f; border:1px solid #999; position: relative; top:1px;}
-
-table.audit-list tr.hover{ background-color: #ffffdd; }
 
 /* ------------------------ PRINT STUFF */
 
@@ -1277,110 +1218,16 @@ table.audit-list tr.hover{ background-color: #ffffdd; }
 .toAddress {padding-left:7em;}
 .red { color: #f00; }
 
-/* [NEW] colours for waiting list */
-.waitinglistOdd{ background-color: #EDF4F9; border-bottom: 1px solid #CCD;}
-.waitinglistEven{ background-color: #E1EEF9; border-bottom: 1px solid #CCD;}
-.waitinglistPurple{ background-color: #77B8D3; }
-.waitinglistGreen { background-color: #B8EAA6; }
-.waitinglistRed{ background-color: #F08A6F; }
-.waitinglistOrange{ background-color: #F7BF8D; }
-
-/* colours for the audit list */
-.auditlistOdd{ background-color: #EDF4F9; border-bottom: 1px solid #CCD;}
-.auditlistEven{ background-color: #E1EEF9; border-bottom: 1px solid #CCD;}
+/* waiting list row colour coding */
+.waitinglistPurple {background:#c9c;}
+.waitinglistGreen {background:#8FBC8F;}
+.waitinglistOrange {background:#f93;}
+.waitinglistRed {background:#e53737;}
+.waitinglistWhite {background:#eee;}
+.waitinglistGrey {background:#999;}
 
 .elements { margin-bottom: 20px; }
 canvas { outline: none; }
 
 ul.MultiSelectList { list-style-type: none; padding-left: 10px; }
 div.MultiSelectList { background: #fff; }
-
-label.error {color: red;}
-
-#delete_event h1 { margin-left: 10px; }
-#delete_event h2 { color: #f00; font-size: 16px; background: none; display: block; padding-left: 0; margin-left: 10px; padding-top: 20px;}
-
-.data_row.goldenrod { background-color: goldenrod; padding: 10px; }
-.data_row.goldenrod .data_label { color: #eee; }
-.data_row.goldenrod .data_value { color: #666; }
-
-li.auditlistEven { user-select: none; -moz-user-select: none; -khtml-user-select:none; }
-li.auditlistOdd { user-select: none; -moz-user-select: none; -khtml-user-select:none; }
-li.auditlistEvenGreen { background-color: #c6ebb9; }
-li.auditlistOddGreen { background-color: #e0f8d8; }
-li.auditlistEvenRed { background-color: #eba694; }
-li.auditlistOddRed { background-color: #e9c2b8; }
-
-.waitinglistRed{ background-color: #F08A6F; }
-
-ul#auditList { list-style: none; margin: 0; padding: 0; font-size: 11px; }
-ul#auditList li { line-height: 32px; padding-left: 4px; }
-ul#auditList li.header { font-weight: bold; margin-bottom: 0px; }
-ul#auditList span { display: inline-block; }
-ul#auditList span.timestamp { width:132px; }
-ul#auditList span.site { width:78px; }
-ul#auditList span.firm { width:160px; }
-ul#auditList span.user { width:100px; }
-ul#auditList span.action { width:175px; }
-ul#auditList span.target { width:110px; }
-ul#auditList span.event_type { width:110px; }
-ul#auditList span.patient { width:205px; }
-ul#auditList span.episode { width:55px; }
-ul#auditList span.event { width:55px; }
-
-div.auditDetailEven { display: inline-block; margin-left: 10px; margin-right: 10px; margin-top: 6px; margin-bottom: 6px !important; width: 96%; }
-div.auditDetailOdd { display: inline-block; margin-left: 10px; margin-right: 10px; margin-top: 6px; margin-bottom: 6px !important; width: 96%; }
-div.auditDetailEvenGreen { display: inline-block; margin-left: 10px; margin-right: 10px; margin-top: 6px; margin-bottom: 6px !important; width: 96%; }
-div.auditDetailOddGreen { display: inline-block; margin-left: 10px; margin-right: 10px; margin-top: 6px; margin-bottom: 6px !important; width: 96%; }
-div.auditDetailEvenRed { display: inline-block; margin-left: 10px; margin-right: 10px; margin-top: 6px; margin-bottom: 6px !important; width: 96%; }
-div.auditDetailOddRed { display: inline-block; margin-left: 10px; margin-right: 10px; margin-top: 6px; margin-bottom: 6px !important; width: 96%; }
-
-div.auditDetailEven div { line-height: 20px; }
-div.auditDetailOdd div { line-height: 20px; }
-div.auditDetailEvenGreen div { line-height: 20px; }
-div.auditDetailOddGreen div { line-height: 20px; }
-div.auditDetailEvenRed div { line-height: 20px; }
-div.auditDetailOddRed div { line-height: 20px; }
-
-span.auditDetailLabel { width: 100px; }
-
-input.widgetSlider { vertical-align: middle; width: 770px; padding: 0; border: 0 }
-span.widgetSliderValue { vertical-align: middle; margin-right: 10px; width: 45px; display: inline-block; }
-
-/* Temporary fix for OpNote post-op instructions dropbox resizing */
-#div_ElementComments_postop_instructions_TextSelection select{width: 181px;}
-
-div.DropDownLabelVertical { margin-bottom: 10px; }
-
-div.patron { margin-left: 37em; font-size: 12pt; }
-
-#audit_filter_button { float: right; margin-top: -3px;}
-
-.diagnosis_date { margin-top: 10px; }
-.diagnosis_date_field { margin-right: 10px; }
-
-.diagnosis_eye { margin-top: 10px; }
-.diagnosis_eye_label { width: 35px; display: inline-block; }
-.diagnosis_date_label { width: 45px; display: inline-block; }
-input.diagnosis_eye { margin-left: 10px; }
-#DiagnosisSelection_systemic_disorder_id_enteredDiagnosisText h4 { background: #fff; color: #000; padding: 0; font-size: 14pt; font-weight: bold; margin-bottom: 5px; }
-#DiagnosisSelection_ophthalmic_disorder_id_enteredDiagnosisText h4 { background: #fff; color: #000; padding: 0; font-size: 14pt; font-weight: bold; margin-bottom: 5px; }
-.editDiagnosisEpisodeSummary { margin-left: 10px; margin-bottom: 15px; }
-.episodeSummaryRadio { margin-left: 10px; margin-bottom: 15px; }
-
-.episodeSummary form h4 { font-style: normal !important; border: none !important; }
-
-#delete_diagnosis .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-#delete_allergy .alertBox  { background: #ffe6b2 url(../img/_elements/icons/box/warning.png) top left no-repeat; border:#fc621f 1px solid; padding:10px 10px 10px 50px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
-
-#add_ophthalmic_diagnosis_loader { display: inline; }
-#add_ophthalmic_diagnosis_loader > img { margin-top: 10px; }
-#add_ophthalmic_diagnosis_loader > div { margin-top: 9px; padding-left: 22px; }
-#add_systemic_diagnosis_loader { display: inline; }
-#add_systemic_diagnosis_loader > img { margin-top: 10px; }
-#add_systemic_diagnosis_loader > div { margin-top: 9px; padding-left: 22px; }
-
-@media all and (max-width:800px) {
-/*	in order to ensure consistant display scale on iphone and ipad the min-height needs adjusting  width:1230px; */
-	#content { min-height: 1230px !important; }
-}
