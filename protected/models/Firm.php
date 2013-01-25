@@ -275,4 +275,8 @@ class Firm extends BaseActiveRecord
 			return User::model()->findByPk($result['id']);
 		}
 	}
+
+	public function getReportDisplay() {
+		return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->name.')';
+	}
 }

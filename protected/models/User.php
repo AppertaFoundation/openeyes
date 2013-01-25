@@ -289,4 +289,16 @@ class User extends BaseActiveRecord
 
 		return $users;
 	}
+
+	public function getListSurgeons() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('is_doctor',1);
+		$criteria->compare('active',1);
+		$criteria->order = 'last_name,first_name asc';
+		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
+	}
+
+	public function getReportDisplay() {
+		return $this->reversedFullName;
+	}
 }
