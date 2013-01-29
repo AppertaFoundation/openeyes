@@ -96,6 +96,10 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		if(!$patient) {
 			throw new CHttpException(404, 'Unknown Patient');
 		}
+		
+		// Clear script requirements as all the base css and js will already be on the page
+		Yii::app()->clientScript->reset();
+		
 		$this->patient = $patient;
 		$session = Yii::app()->session;
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
@@ -110,7 +114,6 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				'htmlOptions' => array('class' => 'sliding'),
 		));
 		// Render called with processOutput
-		// TODO: Check that scripts aren't being double loaded
 		try {
 			// look for element specific view file
 			$this->renderPartial('create_' . $element->create_view, array(
