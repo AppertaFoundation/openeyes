@@ -121,4 +121,14 @@ class Helper {
 		return $age;
 	}
 	
+	/**
+	 * generate string representation of timestamp for the database
+	 *
+	 * @param int $timestamp
+	 * @return string
+	 */
+	public static function timestampToDB($timestamp) {
+		return date('Y-m-d H:i:s', $timestamp);
+	}
+	
 }
