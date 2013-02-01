@@ -299,6 +299,6 @@ class User extends BaseActiveRecord
 	}
 
 	public function getReportDisplay() {
-		return $this->reversedFullName;
+		return $this->fullName;
 	}
 }
