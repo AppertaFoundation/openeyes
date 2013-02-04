@@ -69,7 +69,7 @@ body { width:1230px; margin:0 auto; }
 #container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
-#header.stuck { background: #dae6f1; position: fixed; top: 0; z-index: 10; padding-bottom: 5px;
+#header.stuck { background: #8ac7f0; position: fixed; top: 0; z-index: 10; padding-bottom: 5px;
 	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 45px; }
 #header.stuck #brand { background: url(../img/_structure/oe_eye.png) 0 10px no-repeat; }
 #header.stuck .surname,
