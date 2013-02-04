@@ -1241,7 +1241,7 @@ input.diagnosis_eye { margin-left: 10px; }
 	#content { min-height: 1230px !important; }
 }
 
-.event_tabs { background: #dae6f1; border-bottom:5px solid #a29d8a; width: 1040px; padding: 5px 5px 0; }
+.event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1040px; padding: 5px 5px 0; }
 .event_tabs_sticky_wrapper { padding-bottom: 10px; }
 .event_tabs.stuck { position: fixed; top: 50px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; }
 .event_tabs ul { padding: 0; margin: 0; }
