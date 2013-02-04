@@ -47,8 +47,4 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php $this->renderPartial('//patient/event_tabs')?>
 				<!-- EVENT CONTENT HERE -->
-				<?php if ($module == 'OphTrOperation') {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
-				<?php } else {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath.'img/watermark.png'?>) top left repeat-y;">
-				<?php }?>
+				<div id="event_content" class="watermarkBox">
