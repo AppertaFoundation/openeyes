@@ -69,7 +69,18 @@ body { width:1230px; margin:0 auto; }
 #container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
-#header.stuck { background: #fff; position: fixed; top: 0; z-index: 10; padding-bottom: 5px; border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); }
+#header.stuck { background: #dae6f1; position: fixed; top: 0; z-index: 10; padding-bottom: 5px;
+	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 45px; }
+#header.stuck #brand { background: url(../img/_structure/oe_eye.png) 0 10px no-repeat; }
+#header.stuck .surname,
+#header.stuck .given { font-size: 12px; }
+#header.stuck .number { display: inline-block; }
+#header.stuck .patientReminder { padding: 0; }
+#header.stuck #patientID { height: auto; padding: 5px 10px; }
+#header.stuck #user_panel { height: auto; padding: 5px 10px; }
+#header.stuck .i_patient,
+#header.stuck #user_panel .clearfix { display: none; }
+
 #content		{ min-height: 400px;}
 #help			{ min-height: 40px; background: url(../img/_structure/help_bg.jpg) #a5ddf1 top left repeat; position: relative; top:5px; }	/* offset by 5px! */
 #help:before	{ content: url(../img/_structure/help_top_grad.jpg); display: block; margin:0; padding:0; }
@@ -1229,3 +1240,27 @@ input.diagnosis_eye { margin-left: 10px; }
 /*	in order to ensure consistant display scale on iphone and ipad the min-height needs adjusting  width:1230px; */
 	#content { min-height: 1230px !important; }
 }
+
+.event_tabs { background: #dae6f1; border-bottom:5px solid #a29d8a; width: 1040px; padding: 5px 5px 0; }
+.event_tabs_sticky_wrapper { padding-bottom: 10px; }
+.event_tabs.stuck { position: fixed; top: 50px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; }
+.event_tabs ul { padding: 0; margin: 0; }
+.event_tabs ul li { float: left; list-style: none; background: #fffee7;
+	margin-right: 4px; border-top-left-radius: 3px;
+	border-top-right-radius: 3px; font-size: 14px; } 
+.event_tabs ul li span { display: block; padding: 5px 10px 3px 10px; }
+.event_tabs ul li a.hover { border: 0; }
+.event_tabs ul li.active { background-color: #a29d8a; color: #fff; }
+.event_tabs ul li.hover { background-color: #3665ff; }
+.event_tabs ul li.active.hover { background-color: #a29d8a; }
+.event_tabs ul li.hover a { color: #fff; }
+
+.event_actions_sticky_wrapper { height: 55px; }
+.event_actions { width: 1012px; height: 35px; margin: 4px 4px 0; padding: 10px 5px; }
+.event_actions.stuck { position: fixed; bottom: 0; z-index: 10; box-shadow: 0 0 4px 4px rgba(0, 0, 0, .3);
+	background: #fafafa; border-top-left-radius: 5px; border-top-right-radius: 5px; height: 25px; padding: 8px 5px; }
+.event_actions.stuck button { height:24px; font-size:13px; width: auto; margin:0 2px; }
+.event_actions.stuck button span { padding:0 18px; }
+.event_actions ul { padding: 0; margin: 0; float: right; }
+.event_actions ul li { float: left; list-style: none; margin-right: 4px; } 
+

@@ -95,7 +95,7 @@ $(document).ready(function(){
 	
 	$('#header').waypoint('sticky');
 	$('.event_tabs').waypoint('sticky', {
-		offset: 75,
+		offset: 50,
 		wrapper: '<div class="event_tabs_sticky_wrapper" />'
 	});
 	$('.event_actions_sticky_wrapper').waypoint(function(direction) {
