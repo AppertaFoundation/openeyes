@@ -94,10 +94,19 @@ $(document).ready(function(){
 	}
 	
 	$('#header').waypoint('sticky');
-	$('.display_actions').waypoint('sticky', {
+	$('.event_tabs').waypoint('sticky', {
 		offset: 75,
-		wrapper: '<div class="display_actions_sticky_wrapper" />'
+		wrapper: '<div class="event_tabs_sticky_wrapper" />'
 	});
+	$('.event_actions_sticky_wrapper').waypoint(function(direction) {
+		$('.event_actions').toggleClass('stuck', direction === 'up');
+	}, {
+		offset: function() {
+			var offset = $.waypoints('viewportHeight') - $(this).outerHeight();
+			return offset;
+		}
+	});
+
 });
 
 function changeState(wb,sp) {

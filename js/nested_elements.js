@@ -132,6 +132,10 @@ $(document).ready(function() {
 					window[initFunctionName]();
 				}
 			});
+			
+			// Update waypoints to cope with change in page size
+			$.waypoints('refresh');
+			
 		});
 	}
 
@@ -207,6 +211,10 @@ $(document).ready(function() {
 			$(container).append(element);
 		}
 		showActiveChildElements();
+
+		// Update waypoints to cope with change in page size
+		$.waypoints('refresh');
+		
 	}
 	
 	/**

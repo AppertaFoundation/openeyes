@@ -20,9 +20,6 @@
 				</div>
 				<!-- #event_content -->
 				<div class="colorband "></div>
-				<div id="display_actions_footer" class="display_actions footer">
-					<?php $this->renderPartial('//patient/edit_controls')?>
-				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
 <?php $this->renderPartial('//layouts/patientMode/event_footer')?>
