@@ -53,7 +53,15 @@ class Disorder extends BaseActiveRecord
 	{
 		return 'disorder';
 	}
-
+	
+	/**
+	 * @return string the associated database tree table name
+	 */
+	public function treeTable()
+	{
+		return 'disorder_tree';
+	}
+	
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -87,6 +95,15 @@ class Disorder extends BaseActiveRecord
 		);
 	}
 
+	public function behaviors()
+	{
+		return array(
+			'treeBehavior'=>array(
+				'class' => 'TreeBehavior',
+			)		
+		);
+	}
+	
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -114,7 +131,6 @@ class Disorder extends BaseActiveRecord
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('fully_specified_name', $this->fully_specified_name, true);
 		$criteria->compare('term', $this->term, true);
-		$criteria->compare('systemic', $this->systemic);
 		return new CActiveDataProvider(get_class($this), array( 'criteria' => $criteria));
 	}
 
@@ -143,4 +159,14 @@ class Disorder extends BaseActiveRecord
 		return $data;
 	}
 
+	/*
+	 * returns boolean to indicate if the disorder is systemic (true)
+	 * 
+	 */
+	public static function getSystemic() {
+		if ($this->specialty_id) {
+			return false;
+		}
+		return true;
+	}
 }
