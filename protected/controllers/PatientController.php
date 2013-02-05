@@ -32,7 +32,9 @@ class PatientController extends BaseController
 	public $title;
 	public $event_type_id;
 	public $episode;
-
+	public $event_tabs = array();
+	public $event_actions = array();
+	
 	public function filters()
 	{
 		return array('accessControl');
@@ -153,7 +155,17 @@ class PatientController extends BaseController
 		}else{
 			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
 		}
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'active' => true,
+				),
+				array(
+						'label' => 'Edit',
+						'href' => Yii::app()->createUrl('/clinical/update/'.$this->event->id),
+				),
+		);
+		
 		$this->editable = $this->event->editable;
 
 		// Should not be able to edit cancelled operations

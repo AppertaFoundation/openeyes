@@ -107,6 +107,15 @@ $(document).ready(function(){
 		}
 	});
 
+	/**
+	 * Tab hover
+	 */
+	$('.event_tabs li').hover(function() {
+		$(this).addClass('hover');
+	}, function() {
+		$(this).removeClass('hover');
+	});
+	
 });
 
 function changeState(wb,sp) {

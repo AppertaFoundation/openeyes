@@ -24,15 +24,20 @@ class EventAction {
 	public $htmlOptions;
 	public $label;
 	public $href;
+	public $colour = 'blue';
 	
 	public static function button($label, $name, $htmlOptions = null) {
 		$action = new self($label, 'button');
 		$action->htmlOptions = $htmlOptions;
+		if(isset($action->htmlOptions['colour'])) {
+			$action->colour = $action->htmlOptions['colour'];
+			unset($action->htmlOptions['colour']); 
+		}
 		$action->htmlOptions['name'] = $name;
 		$action->htmlOptions['type'] = 'submit';
-		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' venti classy' : 'blue venti classy';
-		if(!isset($htmlOptions['id'])) {
-			$htmlOptions['id'] = 'et_'.strtolower($name);
+		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' venti classy' : $action->colour.' venti classy';
+		if(!isset($action->htmlOptions['id'])) {
+			$action->htmlOptions['id'] = 'et_'.strtolower($name);
 		}
 		return $action;
 	}
@@ -40,7 +45,7 @@ class EventAction {
 	public static function link($label, $href = '#', $htmlOptions = null) {
 		$action = new self($label, 'link');
 		$action->htmlOptions = $htmlOptions;
-		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' venti classy' : 'blue venti classy';
+		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' venti classy' : $action->colour.' venti classy';
 		$action->href = $href;
 		return $action;
 	}
@@ -53,8 +58,10 @@ class EventAction {
 	public function toHtml() {
 		$label = '<span class="btn">'.CHtml::encode($this->label).'</span>';
 		if($this->type == 'button') {
+			$label = '<span class="button-span-'.$this->colour.'">'.CHtml::encode($this->label).'</span>';
 			return CHtml::htmlButton($label, $this->htmlOptions);
 		} else if($this->type == 'link') {
+			$label = '<span class="btn">'.CHtml::encode($this->label).'</span>';
 			return CHtml::link($label, $this->href, $this->htmlOptions);
 		}
 	}
