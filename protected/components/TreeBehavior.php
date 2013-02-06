@@ -144,7 +144,9 @@ class TreeBehavior extends CActiveRecordBehavior {
 			'WHERE leaf.' . $this->leftAttribute . ' BETWEEN parent.' . $this->leftAttribute . ' AND parent.' . $this->rightAttribute .
 			' AND leaf.' . $this->leftAttribute . ' BETWEEN sub_parent.' . $this->leftAttribute . ' AND sub_parent.' . $this->rightAttribute . 
 			' AND sub_parent.' . $this->idAttribute . ' = sub_tree.' . $this->idAttribute . ' ' . 
-			'GROUP BY leaf.' . $this->idAttribute . ' HAVING depth = 1 ORDER BY leaf.' . $this->leftAttribute;  
+			'GROUP BY leaf.' . $this->idAttribute . ' HAVING depth = ' . 
+			'(SELECT count(*) FROM ' . $owner->treeTable() . ' AS tree WHERE tree.' . $this->idAttribute . ' = ' . $db->quoteValue($owner->id) . ') ' .  
+			'ORDER BY leaf.' . $this->leftAttribute;  
 		
 		$res = $db->createCommand($query)->query();
 		$result = array();
