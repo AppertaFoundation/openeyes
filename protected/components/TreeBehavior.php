@@ -45,7 +45,28 @@ class TreeBehavior extends CActiveRecordBehavior {
 	public $rightAttribute = 'rght';
 	
 	/*
-	 * get's the list of left and right boundaries for any given owner objects
+	* gets the list of left and right boundaries for any given owner objects
+	*
+	* @param CDbConnection $db
+	* @param string $tree_table
+	* @param string $obj_id
+	*
+	* @returns array of array(left, right)
+	*/
+	protected function _treeLimits($db, $tree_table, $obj_id) {
+		$query = 'SELECT ' . $this->leftAttribute . ',' . $this->rightAttribute . ' FROM ' . $tree_table .
+		' WHERE ' . $this->idAttribute . ' = ' . $db->quoteValue($obj_id);
+		
+		$res = $db->createCommand($query)->query();
+		$result = array();
+		foreach ($res as $r) {
+			$result[] = array($r[$this->leftAttribute], $r[$this->rightAttribute]);
+		}
+		return $result;
+	}
+	
+	/*
+	* gets the list of left and right boundaries for any given owner objects
 	*
 	* @param CActiveRecord $owner
 	*
@@ -53,15 +74,63 @@ class TreeBehavior extends CActiveRecordBehavior {
 	*/
 	protected function treeLimits($owner) {
 		$db = $owner->getDbConnection();
-		$query = 'SELECT ' . $this->leftAttribute . ',' . $this->rightAttribute . ' FROM ' . $owner->treeTable() .
-		' WHERE ' . $this->idAttribute . ' = ' . $db->quoteValue($owner->id);
+		
+		return $this->_treeLimits($db, $owner->treeTable(), $owner->id);
+	}
+	
+	/*
+	 * gets the list of left and right boundaries for any given owner objects
+	*
+	* @param CDbConnection $db
+	* @param string $tree_table
+	* @param string $obj_id
+	*
+	* @returns array of array(left, right)
+	*/
+	protected function _descendentIds($db, $tree_table, $obj_id) {
+		$limits = $this->_treeLimits($db, $tree_table, $obj_id);
+		$sql_strs = array();
+		foreach ($limits as $l) {
+			$sql_strs[] = $this->leftAttribute . ' > ' . $l[0] . ' AND ' . $this->rightAttribute . ' <  ' . $l[1];
+		}
+	
+		$query = 'SELECT id FROM ' . $tree_table . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
+		$res = $db->createCommand($query)->query();
+	
+		$ids = array();
+		foreach ($res as $r) {
+			$ids[] = $r['id'];
+		}
+	
+		return $ids;
+	}
+	
+	/*
+	 * Returns all the ancestor ids of the provided object id
+	*
+	* @param CDbConnection $db
+	* @param string $table
+	* @param string $obj_id
+	*
+	* @returns array() ids
+	*/
+	protected function _ancestorIds($db, $table, $obj_id) {
+		$limits = $this->_treeLimits($db, $table, $obj_id);
+		$sql_strs = array();
+		foreach ($limits as $l) {
+			$sql_strs[] = $this->leftAttribute . ' < ' . $l[0] . ' AND ' . $this->rightAttribute . ' >  ' . $l[1];
+		}
+	
+		$query = 'SELECT ' . $this->idAttribute . ' FROM ' . $table . ' WHERE (' . implode(') OR (', $sql_strs ) . ')';
 	
 		$res = $db->createCommand($query)->query();
-		$result = array();
+	
+		$ids = array();
 		foreach ($res as $r) {
-			$result[] = array($r[$this->leftAttribute], $r[$this->rightAttribute]);
+			$ids[] = $r['id'];
 		}
-		return $result;
+	
+		return $ids;
 	}
 	
 	/**
@@ -90,7 +159,7 @@ class TreeBehavior extends CActiveRecordBehavior {
 			return 1;
 		} 
 	}
-
+	
 	/*
 	 * returns all descendant ids of the object, across any trees the the object exists in
 	 * 
@@ -100,21 +169,7 @@ class TreeBehavior extends CActiveRecordBehavior {
 		$owner = $this->getOwner(); 
 		$db = $owner->getDbConnection();
 		
-		$limits = $this->treeLimits($owner);
-		$sql_strs = array();
-		foreach ($limits as $l) {
-			$sql_strs[] = $this->leftAttribute . ' > ' . $l[0] . ' AND ' . $this->rightAttribute . ' <  ' . $l[1];
-		}
-
-		$query = 'SELECT id FROM ' . $owner->treeTable() . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
-		$res = $db->createCommand($query)->query();
-		
-		$ids = array();
-		foreach ($res as $r) {
-			$ids[] = $r['id'];
-		}
-		
-		return $ids;
+		return $this->_descendentIds($owner->getDbConnection, $owner->treeTable(), $owner->id);
 	}
 	
 	/*
@@ -147,13 +202,26 @@ class TreeBehavior extends CActiveRecordBehavior {
 			'GROUP BY leaf.' . $this->idAttribute . ' HAVING depth = ' . 
 			'(SELECT count(*) FROM ' . $owner->treeTable() . ' AS tree WHERE tree.' . $this->idAttribute . ' = ' . $db->quoteValue($owner->id) . ') ' .  
 			'ORDER BY leaf.' . $this->leftAttribute;  
-		
+		print $query;
 		$res = $db->createCommand($query)->query();
 		$result = array();
 		foreach ($res as $r) {
 			$result[] = $r['id'];
 		}
 		return $result;
+	}
+	
+	public function children() {
+		$owner = $this->getOwner();
+		$cids  = $owner->childIds();
+		
+		var_dump($cids);
+		$idorder = implode(',',$cids);
+		
+		$criteria = new CDbCriteria();
+		$criteria->order = "FIELD(id, $idorder)";
+		$kls = get_class($owner);
+		return $kls::model()->findAllByPk($cids, $criteria);
 	}
 	
 	/*
@@ -185,7 +253,7 @@ class TreeBehavior extends CActiveRecordBehavior {
 		
 		return $ids;
 	}
-	
+		
 	/* 
 	 * returns all parent object ids (note there may be more than one because any object can exist in more than one tree)
 	 * 
@@ -193,24 +261,8 @@ class TreeBehavior extends CActiveRecordBehavior {
 	 */
 	public function ancestorIds() {
 		$owner = $this->getOwner();
-		$db = $owner->getDbConnection();
-		$limits = $this->treeLimits($owner);
-		$sql_strs = array();
-		foreach ($limits as $l) {
-			$sql_strs[] = $this->leftAttribute . ' < ' . $l[0] . ' AND ' . $this->rightAttribute . ' >  ' . $l[1];
-		}
-
-		$query = 'SELECT ' . $this->idAttribute . ' FROM ' . $owner->treeTable() . ' WHERE (' . implode(') OR (', $sql_strs ) . ')';
 		
-		$res = $db->createCommand($query)->query();
-		
-		$ids = array();
-		foreach ($res as $r) {
-			$ids[] = $r['id'];
-		}
-		
-		return $ids;
-		
+		return $this->_ancestorIds($owner->getDbConnection(), $owner->treeTable(), $owner->id);
 	}
 	/*
 	 * returns the object ids that are at the top of trees
@@ -226,6 +278,8 @@ class TreeBehavior extends CActiveRecordBehavior {
 				'WHERE leaf.' . $this->leftAttribute . ' BETWEEN parent.' . $this->leftAttribute . ' AND parent.' . $this->rightAttribute . 
 				' GROUP BY leaf.id) as leaf WHERE depth = 0';
 
+		print $query;
+		
 		$res = $db->createCommand($query)->query();
 		
 		$ids = array();
@@ -233,5 +287,47 @@ class TreeBehavior extends CActiveRecordBehavior {
 			$ids[] = $r['id'];
 		}
 		return $ids;
+	}
+	
+	/*
+	 * returns true if the owner is an ancestor of any of the ids passed in
+	 * 
+	 * @param array() list of object ids
+	 * 
+	 * @returns bool
+	 */
+	public function ancestorOfIds($ids) {
+		$owner = $this->getOwner();
+		$descendents = $owner->descendentIds();
+		
+		return count(array_intersect($ids, $descendents)) > 0;
+	}
+	
+	/*
+	 * utlity function that will check whether any of the list $ids appear in the trees of any of the $ancestor_ids (including the
+	 * ancestor ids themselves)
+	 * 
+	 * @param array() $ids - ids to look for
+	 * @param array() $ancestor_ids - tree parent ids to check in
+	 * 
+	 * @returns bool
+	 * 
+	 */
+	public function ancestorIdsMatch($ids, $ancestor_ids) {
+		$obj = $this->getOwner();
+		$db = $obj->getDbConnection();
+		$tree_table = $obj->treeTable();
+		
+		$all_ancestor_ids = array();
+		foreach ($ancestor_ids as $aid) {
+			if (!in_array($aid, $all_ancestor_ids) ) {
+				$all_ancestor_ids = array_merge($this->_descendentIds($db, $tree_table, $aid), $all_ancestor_ids);
+			}
+		}
+		// include the ids we're checking for as all the descendents
+		$all_ancestors = array_merge($ancestor_ids,$all_ancestor_ids);
+		
+		return count(array_intersect($ids, $all_ancestors)) > 0;
+		
 	}
 }
