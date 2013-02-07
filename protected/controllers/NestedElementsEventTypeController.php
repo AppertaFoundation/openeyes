@@ -42,17 +42,12 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	/*
 	 * abstraction of element initialisation to allow custom extension in overrides of controller
 	 */
-	protected function getElementForElementForm($element_type, $import_previous, $previous_id = null) {
+	protected function getElementForElementForm($element_type, $previous_id = 0) {
 		$element_class = $element_type->class_name;
 		$element = new $element_class;
 		$element->setDefaultOptions();
-		if($import_previous && $element->canCopy()) {
-			if($previous_id) {
-				$previous_element = $element_class::model()->findByPk($previous_id);
-			} else {
-				$previous_elements = $this->getPreviousElements($element_class, $this->episode);
-				$previous_element = array_shift($previous_elements);
-			}
+		if($previous_id && $element->canCopy()) {
+			$previous_element = $element_class::model()->findByPk($previous_id);
 			$element->loadFromExisting($previous_element);
 		}
 		return $element;
@@ -124,8 +119,9 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		$elements = $this->getPreviousElements($element_type->class_name, $this->episode);
 		
 		$this->renderPartial('_previous', array(
-				'elements' => $elements,
-		));
+				'elements' => $elements,	
+			), false, true // Process output to deal with script requirements
+		);
 	}
 	
 	/**
@@ -137,7 +133,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 * @throws CHttpException
 	 * @throws Exception
 	 */
-	public function actionElementForm($id, $patient_id, $import_previous, $previous_id = null) {
+	public function actionElementForm($id, $patient_id, $previous_id = null) {
 		// first prevent invalid requests
 		$element_type = ElementType::model()->findByPk($id);
 		if(!$element_type) {
@@ -157,7 +153,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 		
 		// retrieve the element
-		$element = $this->getElementForElementForm($element_type, $import_previous, $previous_id);
+		$element = $this->getElementForElementForm($element_type, $previous_id);
 		
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
 				'id' => 'clinical-create',
@@ -425,7 +421,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				}
 				// otherwise use the default layout
 				$this->renderPartial(
-						'_form',
+						'_'.$action,
 						array('element' => $element, 'data' => $data, 'form' => $form)
 				);
 			}
@@ -458,7 +454,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				}
 				// otherwise use the default view
 				$this->renderPartial(
-						'_form',
+						'_'.$action,
 						array('element' => $child, 'data' => $data, 'form' => $form, 'child' => true)
 				);
 			}
