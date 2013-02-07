@@ -134,6 +134,7 @@ class Patient extends BaseActiveRecord {
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
+			'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
 		);
 	}
 
@@ -598,7 +599,61 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
-
+	
+	/*
+	 * returns all disorder ids for the patient, aggregating the principal diagnosis for each patient episode, and any secondary diagnosis on the patient
+	*
+	* FIXME: some of this can be abstracted to a relation when we upgrade from yii 1.1.8, which has some problems with yii relations:
+	* 	http://www.yiiframework.com/forum/index.php/topic/26806-relations-through-problem-wrong-on-clause-in-sql-generated/
+	*
+	* @returns array() of disorder ids
+	*/
+	private function getAllDisorderIds() {
+		// Get all the secondary disorders
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id', $this->id);
+		$sd = SecondaryDiagnosis::model()->findAll($criteria);
+		$disorder_ids = array();
+		foreach ($sd as $d) {
+			$disorder_ids[] = $d->disorder_id;
+		}
+		
+			
+		foreach ($this->episodes as $ep) {
+			//primary disorder for episode
+			if ($ep->disorder_id) {
+				$disorder_ids[] = $ep->disorder_id;
+			}
+		}
+		
+		return array_unique($disorder_ids);
+	}
+	
+	/*
+	 * returns all disorders for the patient.
+	 * 
+	 * FIXME: some of this can be abstracted to a relation when we upgrade from yii 1.1.8, which has some problems with yii relations:
+	 * 	http://www.yiiframework.com/forum/index.php/topic/26806-relations-through-problem-wrong-on-clause-in-sql-generated/
+	 *  
+	 * @returns array() of disorders
+	 */
+	public function getAllDisorders() {
+		return Disorder::model()->findAllByPk($this->getAllDisorderIds());
+	}
+	
+	/*
+	 * checks if the patient has a disorder that is defined as being within the SNOMED tree specified by the given $snomed id.
+	 * 
+	 * @returns bool
+	 */
+	public function hasDisorderTypeByIds($snomeds) {
+		$disorder_ids = $this->getAllDisorderIds();
+		if (count($disorder_ids)) {
+			return Disorder::model()->ancestorIdsMatch($disorder_ids, $snomeds);
+		}
+		return false;
+	}
+	
 	public function getSystemicDiagnoses() {
 		$criteria = new CDbCriteria;
 		$criteria->compare('patient_id', $this->id);
@@ -1105,19 +1160,16 @@ class Patient extends BaseActiveRecord {
 	}
 	
 	/*
-	 * Type of diabetes mellitus
-	 * // SNOMED codes for Diabetes mellitus type 2
-	 * // and Diabetes mellitus type 1
+	* Type of diabetes mellitus
 	*/
 	public function getDmt() {
-		if($diagnoses = $this->getSystemicDiagnoses()) {
-			foreach ($diagnoses as $diagnosis) {
-				if (in_array($diagnosis->disorder->id, array('44054006', '46635009'))) {
-					return $diagnosis->disorder->term;
-				}
-			}
-			return 'not diabetic';
+		if ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_I_SET) ) {
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_I)->term;
 		}
+		elseif ($this->hasDisorderTypeByIds(Disorder::$SNOMED_DIABETES_TYPE_II_SET)) {
+			return Disorder::model()->findByPk(Disorder::SNOMED_DIABETES_TYPE_II)->term;
+		}
+		return 'not diabetic';
 	}
 	
 	private function _getExaminationManagement() {

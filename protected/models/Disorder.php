@@ -37,6 +37,17 @@ class Disorder extends BaseActiveRecord
 	const SITE_RIGHT = 1;
 	const SITE_BILATERAL = 2;
 
+	// the following constants are defined as convenience values for determining disorders of certain types.
+	// prefixed SNOMED to reserve namespace, and be self-describing.
+	const SNOMED_DIABETES = 73211009;
+	const SNOMED_DIABETES_TYPE_I = 46635009;
+	const SNOMED_DIABETES_TYPE_II = 44054006;
+	// the sets postfix indicate this is an array of SNOMED concepts that can be used to determine if a disorder
+	// is part of the parent SNOMED concept. 
+	// For example, diabetes is indicated by both the disorder parent and associated disorders
+	static $SNOMED_DIABETES_TYPE_I_SET = array(46635009, 420868002);
+	static $SNOMED_DIABETES_TYPE_II_SET = array(44054006, 422014003);
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Disorder the static model class
