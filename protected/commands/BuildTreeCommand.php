@@ -19,9 +19,9 @@
 
 class BuildTreeCommand extends CConsoleCommand {
 
-	const CONCEPT_TABLE = 'newdisorders';
-	const DESC_TABLE    = 'newdisorders_desc';
-	const REL_TABLE     = 'newdisorders_relationships';
+	const CONCEPT_TABLE = 'snomed_concepts';
+	const DESC_TABLE    = 'snomed_descriptions';
+	const REL_TABLE     = 'snomed_relationships';
 	const ISA_RELTYPE   = '116680003';
 	
 	private $model_cls;
