@@ -101,7 +101,7 @@ class ReportsCommand extends CConsoleCommand {
 			$dataset1->addInput(array(
 				'data_type_id' => $ridt_dropdown_from_table->id,
 				'data_type_param1' => 'Firm',
-				'data_type_param2' => 'getListWithSpecialties',
+				'data_type_param2' => 'getCataractList',
 				'name' => 'firm_id',
 				'description' => 'Firm',
 				'display_order' => 1,

@@ -228,6 +228,18 @@ class Firm extends BaseActiveRecord
 		return $data;
 	}
 
+	public function getCataractList() {
+		$specialty = Specialty::model()->find('code=?',array('OPH'));
+		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
+		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty->id));
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('service_subspecialty_assignment_id',$ssa->id);
+		$criteria->order = 'name';
+
+		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
+	}
+
 	/**
 	 * Returns the consultant for the firm
 	 *
