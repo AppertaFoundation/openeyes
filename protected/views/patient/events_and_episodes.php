@@ -36,7 +36,7 @@ if ($module = $this->getModule()) {
 				</form>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
-			<?php $this->renderPartial('episodes_sidebar',array('episodes'=>$episodes,'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
+			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php

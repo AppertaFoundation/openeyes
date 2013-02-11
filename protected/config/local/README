@@ -6,3 +6,7 @@ common.php - Used by main, test and console
 main.php - Used by main only
 test.php - Used by test only
 console.php - Used by console only
+
+OpenEyes parameters (incomplete list):
+
+specialty_sort - array of specialty codes to provide a fixed order to episodes being displayed by specialty.

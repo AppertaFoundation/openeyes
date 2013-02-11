@@ -203,10 +203,22 @@ class Site extends BaseActiveRecord
 		return implode('<br />', $address);
 	}
 
-	public function getLetterArray($include_name=false,$encode=true) {
+	public function getLetterArray($include_name=false,$encode=true,$include_institution_name=false) {
 		$fields = $include_name ? array('name') : array();
 
 		$address = array();
+
+		if ($include_institution_name) {
+			if ($this->institution->short_name) {
+				$address[] = $this->institution->short_name.' at '.$this->name;
+				if ($include_name) {
+					array_shift($fields);
+				}
+			} else {
+				$address[] = $this->institution->name;
+			}
+		}
+
 		foreach (array_merge($fields,array('address1', 'address2', 'address3', 'postcode')) as $field) {
 			if (!empty($this->$field)) {
 				if ($field == 'address1') {
@@ -227,10 +239,14 @@ class Site extends BaseActiveRecord
 		return $address;
 	}
 
-	public function getLetterAddress() {
-		$address = "$this->name\n";
+	public function getLetterAddress($include_institution_name=false) {
+		if (!$include_institution_name) {
+			$address = "$this->name\n";
+		} else {
+			$address = '';
+		}
 
-		return $address . implode("\n",$this->getLetterArray(false));
+		return $address . implode("\n",$this->getLetterArray(false,true,$include_institution_name));
 	}
 
 	public function getReplyToAddress() {
