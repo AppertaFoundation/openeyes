@@ -1074,5 +1074,3 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_actions.stuck button span { padding:0 18px; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-right: 4px; } 
-
-#event_content.watermarkBox { background:#fafafa url(../img/_elements/icons/event/watermark/treatment_operation.png) top left repeat-y; }

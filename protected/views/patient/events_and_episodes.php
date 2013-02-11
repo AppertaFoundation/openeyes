@@ -16,10 +16,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-if ($module = $this->getModule()) {
-	$module = $module->getName();
-	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
-}
 ?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
@@ -51,7 +47,7 @@ if ($module = $this->getModule()) {
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
-					<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
+					<div id="event_content" class="watermarkBox">
 				<?php }?>
 					<?php
 					if ($current_episode) {
@@ -67,6 +63,6 @@ if ($module = $this->getModule()) {
 					}
 					?>
 				</div>
-				<div class="colorband category_treatment"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
+				<div class="colorband episode"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
