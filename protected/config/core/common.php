@@ -56,9 +56,6 @@ return array(
 						'rules' => array(
 								'' => 'site/index',
 								'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-								'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
-								'transport/<page:\d+>' => 'transport/index',
-								'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
 								'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
 								'<controller:\w+>/<id:\d+>' => '<controller>/view',
 								'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
@@ -156,5 +153,23 @@ return array(
 				'specialty_codes' => array(),
 				'hos_num_regex' => '/^([0-9]{1,9})$/',
 				'pad_hos_num' => '%07s',
-		)
+				'menu_bar_items' => array(
+					array(
+						'title' => 'Home',
+						'uri' => '',
+					),
+					array(
+						'title' => 'Theatre Diaries',
+						'uri' => 'OphTrOperation/theatreDiary/index',
+					),
+					array(
+						'title' => 'Partial bookings waiting list',
+						'uri' => 'OphTrOperation/waitingList/index',
+					),
+					array(
+						'title' => 'Logout',
+						'uri' => 'site/logout',
+					),
+				),
+		),
 );

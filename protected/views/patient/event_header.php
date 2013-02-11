@@ -23,8 +23,6 @@ if ($module = $this->getModule()) {
 	} else {
 		$assetpath = '/assets/';
 	}
-} else {
-	$module = 'OphTrOperation';
 }
 
 $this->renderPartial('//layouts/patientMode/event_header');

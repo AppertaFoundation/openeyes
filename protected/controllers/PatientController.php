@@ -23,7 +23,6 @@ class PatientController extends BaseController
 {
 	public $layout = '//layouts/column2';
 	public $patient;
-	public $service;
 	public $firm;
 	public $editable;
 	public $editing;
@@ -76,8 +75,6 @@ class PatientController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
-		$this->service = new ClinicalService;
-
 		return parent::beforeAction($action);
 	}
 
@@ -100,12 +97,7 @@ class PatientController extends BaseController
 
 		$this->layout = '//layouts/patientMode/main';
 
-		$audit = new Audit;
-		$audit->action = "view";
-		$audit->target_type = "patient summary";
-		$audit->patient_id = $this->patient->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		Audit::add('patient summary','view');
 
 		$this->logActivity('viewed patient');
 
@@ -125,77 +117,8 @@ class PatientController extends BaseController
 		));
 	}
 
-	public function actionEvent($id) {
-		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
-
-		$this->event = Event::model()->findByPk($id);
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-		$this->episode = $this->event->episode;
-		$this->patient = $this->episode->patient;
-		$episodes = $this->patient->episodes;
-		$ordered_episodes = $this->patient->getOrderedEpisodes();
-		$legacyepisodes = $this->patient->legacyepisodes;
-
-		$elements = $this->service->getDefaultElements('view', $this->event);
-
-		$event_template_name = $this->getTemplateName('view', $this->event->event_type_id);
-
-		$audit = new Audit;
-		$audit->action = "view";
-		$audit->target_type = "event";
-		$audit->patient_id = $this->patient->id;
-		$audit->episode_id = $this->episode->id;
-		$audit->event_id = $this->event->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
-
-		$this->logActivity('viewed event');
-
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
-
-		if(isset($this->event->element_operation->booking->session->date)){
-			$this->title = $this->event_type->name .": ".$this->event->element_operation->booking->session->NHSDate('date'). ", ". $this->patient->first_name. " ". $this->patient->last_name;
-		}else{
-			$this->title = $this->event_type->name .": ". $this->patient->first_name. " ". $this->patient->last_name;
-		}
-		$this->event_tabs = array(
-				array(
-						'label' => 'View',
-						'active' => true,
-				),
-				array(
-						'label' => 'Edit',
-						'href' => Yii::app()->createUrl('/clinical/update/'.$this->event->id),
-				),
-		);
-		
-		$this->editable = $this->event->editable;
-
-		// Should not be able to edit cancelled operations
-		if ($this->event_type_id == 25) {
-			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
-			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
-				return FALSE;
-			}
-		}
-
-		$this->render('events_and_episodes', array(
-			'episodes' => $episodes,
-			'ordered_episodes' => $ordered_episodes,
-			'legacyepisodes' => $legacyepisodes,
-			'elements' => $elements,
-			'event_template_name' => $event_template_name,
-			'eventTypes' => EventType::model()->getEventTypeModules(),
-			'site' => $site,
-			'current_episode' => $this->episode,
-		));
-	}
-
 	public function actionPrintAdmissionLetter($id) {
 		$this->layout = '//layouts/pdf';
-
-		$this->service = new ClinicalService;
 
 		if (!$event = Event::model()->findByPk($id)) {
 			throw new Exception('Event not found: '.$id);
@@ -211,14 +134,7 @@ class PatientController extends BaseController
 			throw new Exception('Operation not found for event: '.$id);
 		}
 
-		$audit = new Audit;
-		$audit->action = "print";
-		$audit->target_type = "admission letter";
-		$audit->patient_id = $patient->id;
-		$audit->episode_id = $event->episode_id;
-		$audit->event_id = $event->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->save();
+		$this->event->audit('admission letter','print',false);
 
 		$this->logActivity('printed admission letter');
 
@@ -268,6 +184,24 @@ class PatientController extends BaseController
 		$pdf_print->output();
 	}
 
+	/**
+	 * Redirect to correct patient view by hospital number
+	 * @param string $hos_num
+	 * @throws CHttpException
+	 */
+	public function actionViewhosnum($hos_num) {
+		$hos_num = (int) $hos_num;
+		if(!$hos_num) {
+			throw new CHttpException(400, 'Invalid hospital number');
+		}
+		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
+		if($patient) {
+			$this->redirect(array('/patient/view/'.$patient->id));
+		} else {
+			throw new CHttpException(404, 'Hospital number not found');
+		}
+	}
+
 	public function actionSearch() {
 		
 		// Check that we have a valid set of search criteria
@@ -281,8 +215,8 @@ class PatientController extends BaseController
 			if(isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
 				
 				// Pad hos_num
-				if ($search_term == 'hos_num' && Yii::app()->params['pad_hos_num']) {
-					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
+				if($search_term == 'hos_num') {
+					$search_value = sprintf('%07s',$search_value);
 				}
 				
 				$search_terms[$search_term] = $search_value;
@@ -340,13 +274,9 @@ class PatientController extends BaseController
 			'last_name' => $search_terms['last_name'],
 		));
 
-		if($nr == 0) {
-			$audit = new Audit;
-			$audit->action = "search-results";
-			$audit->target_type = "search";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = implode(',',$search_terms) ." : No results";
-			$audit->save();
+		if ($nr == 0) {
+			Audit::add('search','search-results',implode(',',$search_terms) ." : No results");
+
 			$message = 'Sorry, no results ';
 			if($search_terms['hos_num']) {
 				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
@@ -409,7 +339,6 @@ class PatientController extends BaseController
 	public function actionEpisodes()
 	{
 		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
@@ -438,11 +367,7 @@ class PatientController extends BaseController
 			$criteria->order = 'datetime desc';
 
 			if ($event = Event::model()->find($criteria)) {
-				if ($event->eventType->class_name == 'OphTrOperation') {
-					$this->redirect(array('patient/event/'.$event->id));
-				} else {
-					$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
-				}
+				$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
 				Yii::app()->end();
 			}
 		} else {
@@ -464,7 +389,6 @@ class PatientController extends BaseController
 	public function actionEpisode($id)
 	{
 		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
 
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
@@ -499,7 +423,6 @@ class PatientController extends BaseController
 	public function actionUpdateepisode($id)
 	{
 		$this->layout = '//layouts/patientMode/main';
-		$this->service = new ClinicalService;
 
 		if (!$this->episode = Episode::model()->findByPk($id)) {
 			throw new SystemException('Episode not found: '.$id);
@@ -873,13 +796,7 @@ class PatientController extends BaseController
 			}
 			$pca->save();
 
-			$audit = new Audit;
-			$audit->action = "associate-contact";
-			$audit->target_type = "patient";
-			$audit->patient_id = $patient->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $pca->getAuditAttributes();
-			$audit->save();
+			$patient->audit('patient','associate-contact',$pca->getAuditAttributes());
 		}
 
 		echo json_encode($data);
@@ -923,13 +840,7 @@ class PatientController extends BaseController
 				return;
 			}
 
-			$audit = new Audit;
-			$audit->action = "unassociate-contact";
-			$audit->target_type = "patient";
-			$audit->patient_id = $patient->id;
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = $pca->getAuditAttributes();
-			$audit->save();
+			$patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
 		}
 
 		echo "1";

@@ -35,7 +35,7 @@ class GenerateSessionsCommand extends CConsoleCommand {
 		// Get sequences
 		$today = date('Y-m-d');
 		$initialEndDate = empty($args) ? strtotime('+13 months') : strtotime($args[0]);
-		$sequences = Sequence::model()->findAll(
+		$sequences = OphTrOperation_Operation_Sequence::model()->findAll(
 			'start_date <= :end_date AND (end_date IS NULL or end_date >= :today)',
 			array(':end_date'=>date('Y-m-d', $initialEndDate), ':today'=>$today)
 		);
@@ -45,7 +45,7 @@ class GenerateSessionsCommand extends CConsoleCommand {
 			// Find most recent session for sequence
 			$session = Yii::app()->db->createCommand()
 			->select('date')
-			->from('session')
+			->from('ophtroperation_operation_session')
 			->where('sequence_id=:id', array(':id' => $sequence->id))
 			->order('date DESC')
 			->queryRow();
@@ -61,13 +61,13 @@ class GenerateSessionsCommand extends CConsoleCommand {
 			}
 
 			$dateList = array();
-			if($sequence->repeat_interval == Sequence::FREQUENCY_ONCE) {
+			if ($sequence->interval_id == 1) {
 				// NO REPEAT (single session)
 				// If a session already exists for this one off there's no point creating another
 				if (empty($session)) {
 					$dateList[] = $sequence->start_date;
 				}
-			} else if($sequence->repeat_interval == Sequence::FREQUENCY_MONTHLY && $sequence->week_selection) {
+			} else if ($sequence->interval_id == 6 && $sequence->week_selection) {
 				// MONTHLY REPEAT (weeks x,y of month)
 				$date = date('Y-m-d', $startDate);
 				$time = $startDate;
@@ -81,7 +81,7 @@ class GenerateSessionsCommand extends CConsoleCommand {
 				// WEEKLY REPEAT (every x weeks)
 				// There is a repeat interval, e.g. once every two weeks. In the instance of two weeks, the
 				//	function below returns 60 * 60 * 24 * 14, i.e. two weeks
-				$interval = $sequence->getFrequencyInteger($sequence->repeat_interval, $endDate);
+				$interval = $sequence->interval->getInteger($endDate);
 
 				// The number of days in the interval - 14 in the case of two week interval
 				$days = $interval / 24 / 60 / 60;
@@ -124,19 +124,14 @@ class GenerateSessionsCommand extends CConsoleCommand {
 				// Process dateList into sessions
 				foreach($dateList as $date) {
 					// TODO: Check for collisions, maybe in Session validation code
-					$new_session = new Session();
+					$new_session = new OphTrOperation_Operation_Session;
 					foreach(array('start_time','end_time','consultant','anaesthetist','paediatric','general_anaesthetic','theatre_id') as $attribute) {
 						$new_session->$attribute = $sequence->$attribute;
 					}
 					$new_session->date = $date;
 					$new_session->sequence_id = $sequence->id;
+					$new_session->firm_id = $sequence->firm_id;
 					$new_session->save();
-					if($sequence->firmAssignment) {
-						$new_firm_assignment = new SessionFirmAssignment();
-						$new_firm_assignment->session_id = $new_session->id;
-						$new_firm_assignment->firm_id = $sequence->firmAssignment->firm_id;
-						$new_firm_assignment->save();
-					}
 				}
 				$output .= "Sequence ID {$sequence->id}: Created " . count($dateList) . " session(s).\n";
 			}

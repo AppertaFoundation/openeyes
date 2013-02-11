@@ -17,34 +17,19 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$firm = $operation->event->episode->firm; ?>
-<div class="view">
-	<strong>Service:</strong>
-	<?php echo CHtml::encode($firm->serviceSubspecialtyAssignment->service->name); ?>
-</div>
-<div class="view">
-	<strong>Firm:</strong>
-	<?php echo CHtml::encode($firm->name); ?>
-</div>
-<?php
-if (!empty($operation->booking)) {
-	$theatre = $operation->booking->session->theatre; ?>
-<div class="view">
-	<strong>Location:</strong>
-	<?php echo CHtml::encode($theatre->site->name) . ' - ' . 
-		CHtml::encode($theatre->name); ?>
-</div>
-<?php	
-} ?>
-<!--div class="view">
-	<strong>Referral date:</strong>
-</div-->
-<!--div class="view">
-	<strong>Clinic date:</strong>
-</div>
-<div class="view">
-	<strong>PCT Clinical pathway:</strong>
-</div>
-<div class="view">
-	<strong>Diagnosis:</strong>
-</div-->
+class YiiSession {
+	static public function get($index) {
+		return Yii::app()->session[$index];
+	}
+
+	static public function set($index, $data, $data2='NODATAWASSENT') {
+		if ($data2 != 'NODATAWASSENT') {
+			$d = Yii::app()->session[$index];
+			$d[$data] = $data2;
+			Yii::app()->session[$index] = $d;
+		} else {
+			Yii::app()->session[$index] = $data;
+		}
+	}
+}
+?>

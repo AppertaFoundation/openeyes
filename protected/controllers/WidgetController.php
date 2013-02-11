@@ -17,33 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?>
-<div id="diaryTemplate">
-<div id="d_title">TCIs in date range <?php echo $_POST['date-start']?> to <?php echo $_POST['date-end']?></div>
-	<table>
-		<tr>
-			<th>Patient no</th>
-			<th>Patient name</th>
-			<th>D.O.B.</th>
-			<th>Age</th>
-			<th>Sex</th>
-			<th>Op. date</th>
-			<th>Ward</th>
-			<th>Consultant</th>
-			<th>Subspecialty</th>
-		</tr>
-		<?php foreach ($bookings as $booking) { ?>
-			<tr>
-				<td><?php echo $booking['hos_num']?></td>
-				<td><strong><?php echo strtoupper($booking['last_name']) ?></strong>, <?php echo $booking['first_name']?></td>
-				<td><?php echo Helper::convertMySQL2NHS($booking['dob'])?></td>
-				<td><?php echo Helper::getAge($booking['dob'])?></td>
-				<td><?php echo $booking['gender']?></td>
-				<td><?php echo Helper::convertMySQL2NHS($booking['date'])?></td>
-				<td><?php echo $booking['ward_name']?></td>
-				<td><?php echo $booking['consultant']?></td>
-				<td><?php echo $booking['subspecialty']?></td>
-			</tr>
-		<?php } ?>
-	</table>
-</div>
+class WidgetController extends Controller
+{
+	public $layout='column2';
+
+	public function filters()
+	{
+		return array('accessControl');
+	}
+
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny',
+				'users'=>array('?')
+			),
+		);
+	}
+
+	protected function beforeAction($action)
+	{
+		return parent::beforeAction($action);
+	}
+}

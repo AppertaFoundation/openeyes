@@ -22,11 +22,7 @@
 							$highlight = TRUE;
 						}
 						
-						if ($event->eventType->class_name == 'OphTrOperation') {
-							$event_path = Yii::app()->createUrl('patient/event').'/';
-						} else {
-							$event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
-						}
+						$event_path = Yii::app()->createUrl($event->eventType->class_name.'/Default/view').'/';
 						?>
 						<li id="eventLi<?php echo $event->id ?>">
 							<div class="quicklook" style="display: none; ">
@@ -42,13 +38,8 @@
 							<a style="color:#999;" href="<?php echo $event_path.$event->id?>" rel="<?php echo $event->id?>" class="show-event-details">
 							<?php } ?>
 									<span class="type<?php if($event->hasIssue()) { ?> statusflag<?php } ?>">
-										<?php
-										if ($event->eventType->class_name == 'OphTrOperation') {?>
-											<img src="<?php echo Yii::app()->createUrl('img/_elements/icons/event/small/treatment_operation.png')?>" alt="op" width="19" height="19" />
-										<?php } else {
-											$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/';?>
-											<img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png')?>" alt="op" width="19" height="19" />
-										<?php } ?>
+										<?php $assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$event->eventType->class_name.'.assets')).'/';?>
+										<img src="<?php echo Yii::app()->createUrl($assetpath.'img/small.png')?>" alt="op" width="19" height="19" />
 									</span>
 									<span class="date"> <?php echo $event->NHSDateAsHTML('datetime'); ?></span>
 							<?php if(!$highlight) { ?>
