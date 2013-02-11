@@ -92,6 +92,30 @@ $(document).ready(function(){
 			});
 		}
 	}
+	
+	$('#header').waypoint('sticky');
+	$('.event_tabs').waypoint('sticky', {
+		offset: 50,
+		wrapper: '<div class="event_tabs_sticky_wrapper" />'
+	});
+	$('.event_actions_sticky_wrapper').waypoint(function(direction) {
+		$('.event_actions').toggleClass('stuck', direction === 'up');
+	}, {
+		offset: function() {
+			var offset = $.waypoints('viewportHeight') - $(this).outerHeight();
+			return offset;
+		}
+	});
+
+	/**
+	 * Tab hover
+	 */
+	$('.event_tabs li').hover(function() {
+		$(this).addClass('hover');
+	}, function() {
+		$(this).removeClass('hover');
+	});
+	
 });
 
 function changeState(wb,sp) {

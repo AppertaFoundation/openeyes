@@ -50,13 +50,13 @@ $(document).ready(function() {
 		e.preventDefault();
 	});
 	
-	function addElement(element, animate, is_child, import_previous) {
+	function addElement(element, animate, is_child, previous_id) {
 		if (typeof (animate) === 'undefined')
 			animate = true;
 		if (typeof (is_child) === 'undefined')
 			is_child = false;
-		if (typeof (import_previous) === 'undefined')
-			import_previous = false;
+		if (typeof (previous_id) === 'undefined')
+			previous_id = 0;
 		
 		var element_type_id = $(element).attr('data-element-type-id');
 		var element_type_class = $(element).attr('data-element-type-class');
@@ -65,7 +65,7 @@ $(document).ready(function() {
 		$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", {
 			id : element_type_id,
 			patient_id : et_patient_id,
-			import_previous: (import_previous) ? 1 : 0,
+			previous_id: previous_id,
 		}, function(data) {
 			if (is_child) {
 				var container = $(element).closest('.inactive_child_elements').parent().find('.active_child_elements:first');
@@ -132,19 +132,43 @@ $(document).ready(function() {
 					window[initFunctionName]();
 				}
 			});
+			
+			// Update waypoints to cope with change in page size
+			$.waypoints('refresh');
+			
 		});
 	}
 
 	/**
-	 * Import previous element
+	 * View previous elements
 	 */
-	$('#active_elements').delegate('.elementActions .importPrevious', 'click', function(e) {
-		if (!$(this).hasClass('clicked')) {
-			var element = $(this).closest('.element');
-			$(element).addClass('clicked');
-			addElement(element, false, false, true);
-			addElement(this, true, true);
-		}
+	$('#active_elements').delegate('.elementActions .viewPrevious', 'click', function(e) {
+		var element = $(this).closest('.element');
+		$.ajax({
+			url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
+			data: { element_type_id: element.attr('data-element-type-id'), patient_id: et_patient_id },
+			success: function(data) {
+				element.append(data);
+				$('#previous_elements').dialog({
+					width: 1070,
+					minWidth: 1070,
+					maxWidth: 1070,
+					height: 400,
+					minHeight: 400,
+					title: 'Previous '+element.attr('data-element-type-name')+' Elements',
+					modal: true,
+					close: function(event, ui) {
+						$(this).remove();
+					},
+				});
+				$('#previous_elements .copy_element').click(function() {
+					var element_id = $(this).attr('data-element-id');
+					var element = $('#active_elements .element.' + $(this).attr('data-element-type-class'))
+					$('#previous_elements').dialog('close');
+					addElement(element, false, false, element_id);
+				});
+			}
+		});
 		e.preventDefault();
 	});
 
@@ -207,6 +231,10 @@ $(document).ready(function() {
 			$(container).append(element);
 		}
 		showActiveChildElements();
+
+		// Update waypoints to cope with change in page size
+		$.waypoints('refresh');
+		
 	}
 	
 	/**

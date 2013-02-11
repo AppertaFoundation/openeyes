@@ -173,7 +173,7 @@ class Contact extends BaseActiveRecord {
 	}
 
 	public function getPrefix() {
-		if ($this->parent_class = 'Gp') {
+		if ($this->parent_class == 'Gp') {
 			return 'GP';
 		}
 

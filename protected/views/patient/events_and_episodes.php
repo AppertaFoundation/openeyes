@@ -36,7 +36,7 @@ if ($module = $this->getModule()) {
 				</form>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
-			<?php $this->renderPartial('episodes_sidebar',array('episodes'=>$episodes,'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
+			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php
@@ -49,10 +49,7 @@ if ($module = $this->getModule()) {
 						There is no open episode for the current firm's subspecialty.
 					</div>
 				<?php }?>
-				<div class="display_actions"<?php if (!$this->title || count($episodes)<1 || !@$current_episode){?> style="display: none;"<?php }?>>
-					<div class="display_mode"><?php echo $this->title?></div>
-					<?php $this->renderPartial('edit_controls')?>
-				</div>
+				<?php $this->renderPartial('event_tabs')?>
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
@@ -86,8 +83,5 @@ if ($module = $this->getModule()) {
 				</div>
 				<!-- #event_content -->
 				<div class="colorband category_treatment"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
-				<div id="display_actions_footer" class="display_actions footer"<?php if (!$this->title){?> style="display: none;"<?php }?>>
-					<?php $this->renderPartial('edit_controls')?>
-				</div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->

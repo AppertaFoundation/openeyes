@@ -13,7 +13,9 @@ class BaseEventTypeController extends BaseController
 	public $title;
 	public $assetPath;
 	public $episode;
-
+	public $event_tabs = array();
+	public $event_actions = array();
+	
 	public function actionIndex()
 	{
 		$this->render('index');
@@ -285,7 +287,13 @@ class BaseEventTypeController extends BaseController
 
 		$this->editable = false;
 		$this->title = 'Create';
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'Create',
+						'active' => true,
+				),
+		);
+		
 		$this->renderPartial(
 			'create',
 			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
@@ -338,7 +346,17 @@ class BaseEventTypeController extends BaseController
 		$audit->save();
 
 		$this->title = $this->event_type->name;
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'active' => true,
+				),
+				array(
+						'label' => 'Edit',
+						'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
+				),
+		);
+		
 		$this->renderPartial(
 			'view', array(
 			'elements' => $elements,
@@ -468,7 +486,17 @@ class BaseEventTypeController extends BaseController
 
 		$this->editing = true;
 		$this->title = 'Update';
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/view/'.$this->event->id),
+				),
+				array(
+						'label' => 'Edit',
+						'active' => true,
+				),
+		);
+		
 		$this->renderPartial(
 			'update',
 			array(
@@ -541,6 +569,13 @@ class BaseEventTypeController extends BaseController
 
 	public function header($editable=null) {
 		$episodes = $this->patient->episodes;
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
+		/*
+		$ordered_episodes = array();
+		foreach ($episodes as $ep) {
+			$ordered_episodes[$ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty->name][] = $ep;
+		}
+		*/
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		if($editable === null){
@@ -552,7 +587,7 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->renderPartial('//patient/event_header',array(
-			'episodes'=>$episodes,
+			'ordered_episodes'=>$ordered_episodes,
 			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,

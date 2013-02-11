@@ -30,7 +30,9 @@ class ClinicalController extends BaseController
 	public $editable;
 	public $event;
 	public $title;
-
+	public $event_tabs = array();
+	public $event_actions = array();
+	
 	public function init()
 	{
 		parent::init();
@@ -289,7 +291,13 @@ class ClinicalController extends BaseController
 
 		$this->editable = false;
 		$this->title = 'Create';
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'Create',
+						'active' => true,
+				),
+		);
+		
 		$this->renderPartial(
 			$this->getTemplateName('create', $eventTypeId),
 			$params,
@@ -422,7 +430,17 @@ class ClinicalController extends BaseController
 		$this->editing = TRUE;
 
 		$this->title = 'Update';
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'href' => Yii::app()->createUrl('/patient/event/'.$this->event->id),
+				),
+				array(
+						'label' => 'Edit',
+						'active' => true,
+				),
+		);
+		
 		$this->renderPartial(
 			$this->getTemplateName('update', $event->event_type_id),
 			$params,
@@ -594,11 +612,11 @@ class ClinicalController extends BaseController
 	}
 
 	public function header($passthru=false) {
-		$episodes = $this->patient->episodes;
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$params = array(
-			'episodes'=>$episodes,
+			'ordered_episodes'=>$ordered_episodes,
 			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'title'=>'Create'

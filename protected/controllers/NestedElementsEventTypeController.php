@@ -42,12 +42,12 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	/*
 	 * abstraction of element initialisation to allow custom extension in overrides of controller
 	 */
-	protected function getElementForElementForm($element_type, $import_previous) {
+	protected function getElementForElementForm($element_type, $previous_id = 0) {
 		$element_class = $element_type->class_name;
 		$element = new $element_class;
 		$element->setDefaultOptions();
-		if($import_previous && $element->canCopy() && $episode = $this->episode) {
-			$previous_element = $this->getLatestElement($element_class, $episode);
+		if($previous_id && $element->canCopy()) {
+			$previous_element = $element_class::model()->findByPk($previous_id);
 			$element->loadFromExisting($previous_element);
 		}
 		return $element;
@@ -59,34 +59,81 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 * @return boolean
 	 */
 	public function canCopy($element_class) {
+		return ($element_class::model()->canCopy() && hasPrevious($element_class));
+	}
+	
+	/**
+	 * Are there one or more previous instances of an element?
+	 * @param string $element_class
+	 * @return boolean
+	 */
+	public function hasPrevious($element_class) {
 		if($episode = $this->episode) {
-			return ($element_class::model()->canCopy() && $this->getLatestElement($element_class, $episode));
+			return $this->getPreviousElements($element_class, $episode);
 		} else {
 			return false;
 		}
 	}
 	
 	/**
-	 * Fetches the latest instance of an element in an episode
+	 * Fetches previous instances of an element in an episode
 	 * @param string $element_class
 	 * @param Episode $episode
-	 * @return BaseEventTypeElement
+	 * @return BaseEventTypeElement[]
 	 */
-	protected function getLatestElement($element_class, $episode) {
+	protected function getPreviousElements($element_class, $episode) {
 		$episode_id = $episode->id;
 		$criteria = new CDbCriteria();
 		$criteria->condition = 'event.episode_id = :episode_id';
 		$criteria->params = array(':episode_id' => $episode_id);
 		$criteria->order = 't.id DESC';
 		$criteria->join = 'JOIN event ON event.id = t.event_id';
-		$element = $element_class::model()->find($criteria);
-		return $element;
+		return $element_class::model()->findAll($criteria);
 	}
 	
-	/*
-	 * Ajax method for loading an individual element (and its children)
+
+	/**
+	 * Ajax method for viewing previous elements
+	 * @param integer $element_type_id
+	 * @param integer $patient_id
+	 * @throws CHttpException
 	 */
-	public function actionElementForm($id, $patient_id, $import_previous) {
+	public function actionViewPreviousElements($element_type_id, $patient_id) {
+		$element_type = ElementType::model()->findByPk($element_type_id);
+		if(!$element_type) {
+			throw new CHttpException(404, 'Unknown ElementType');
+		}
+		$patient = Patient::model()->findByPk($patient_id);
+		if(!$patient) {
+			throw new CHttpException(404, 'Unknown Patient');
+		}
+		
+		// Clear script requirements as all the base css and js will already be on the page
+		Yii::app()->clientScript->reset();
+		
+		$this->patient = $patient;
+		$session = Yii::app()->session;
+		$firm = Firm::model()->findByPk($session['selected_firm_id']);
+		$this->episode = $this->getEpisode($firm, $patient_id);
+		
+		$elements = $this->getPreviousElements($element_type->class_name, $this->episode);
+		
+		$this->renderPartial('_previous', array(
+				'elements' => $elements,	
+			), false, true // Process output to deal with script requirements
+		);
+	}
+	
+	/**
+	 * Ajax method for loading an individual element (and its children)
+	 * @param integer $id
+	 * @param integer $patient_id
+	 * @param integer $import_previous
+	 * @param integer $previous_id
+	 * @throws CHttpException
+	 * @throws Exception
+	 */
+	public function actionElementForm($id, $patient_id, $previous_id = null) {
 		// first prevent invalid requests
 		$element_type = ElementType::model()->findByPk($id);
 		if(!$element_type) {
@@ -96,13 +143,17 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		if(!$patient) {
 			throw new CHttpException(404, 'Unknown Patient');
 		}
+		
+		// Clear script requirements as all the base css and js will already be on the page
+		Yii::app()->clientScript->reset();
+		
 		$this->patient = $patient;
 		$session = Yii::app()->session;
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 		
 		// retrieve the element
-		$element = $this->getElementForElementForm($element_type, $import_previous);
+		$element = $this->getElementForElementForm($element_type, $previous_id);
 		
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
 				'id' => 'clinical-create',
@@ -110,7 +161,6 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				'htmlOptions' => array('class' => 'sliding'),
 		));
 		// Render called with processOutput
-		// TODO: Check that scripts aren't being double loaded
 		try {
 			// look for element specific view file
 			$this->renderPartial('create_' . $element->create_view, array(
@@ -371,7 +421,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				}
 				// otherwise use the default layout
 				$this->renderPartial(
-						'_form',
+						'_'.$action,
 						array('element' => $element, 'data' => $data, 'form' => $form)
 				);
 			}
@@ -404,7 +454,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 				}
 				// otherwise use the default view
 				$this->renderPartial(
-						'_form',
+						'_'.$action,
 						array('element' => $child, 'data' => $data, 'form' => $form, 'child' => true)
 				);
 			}
