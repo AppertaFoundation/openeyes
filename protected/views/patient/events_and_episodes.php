@@ -63,6 +63,5 @@
 					}
 					?>
 				</div>
-				<div class="colorband episode"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->
