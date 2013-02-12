@@ -1223,21 +1223,20 @@ class Patient extends BaseActiveRecord {
 		return 'not diabetic';
 	}
 	
-	private function _getExaminationManagement() {
-		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
-			if ($mgmt = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Management')) {
-				return $mgmt->find('event_id=?', array($event->id));
-			}
-		}
+	private function _getExaminationLaserManagement() {
 	}
 	
 	/*
 	 * Laser management plan
 	*/
 	public function getLmp() {
-		if ($m = $this->_getExaminationManagement()) {
-			return $m->getLetter_lmp();
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
+			if ($mgmt_model = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_LaserManagement')) {
+				if ($m = $mgmt_model->find('event_id=?', array($event->id))) {
+					return $m->getLetter_lmp();
+				}
+			}
 		}
 	}
 	
@@ -1245,9 +1244,18 @@ class Patient extends BaseActiveRecord {
 	 * Laser management comments
 	*/
 	public function getLmc() {
-		if ($m = $this->_getExaminationManagement()) {
-			return $m->comments;
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
+			// comments from the management element should only be returned if there is a laser component.
+			if ($lmgmt_model = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_LaserManagement')) {
+				if ($lm = $lmgmt_model->find('event_id=?', array($event->id))) {
+					$mgmt_model = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Management');
+					$m = $mgmt_model->find('event_id=?', array($event->id));
+					return $m->comments;
+				}
+			}
 		}
+		
 	}
 	
 	private function _getExaminationOutcome() {
