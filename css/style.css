@@ -596,20 +596,22 @@ td.eventIcons > img { margin-bottom:10px; }
 /* ====== EVENT DISPLAY ====== */
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
-#event_display .addEvent { border:5px solid #69bd51; }
-#event_display .addEvent > h3 { padding:0; }
-#event_display .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
-#event_display .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
-#event_display .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
-#event_display #add-event-select-type { position:absolute; top:90px; right:4px; width:300px; z-index:999 !important;}
-#event_display #add-event-select-type .add_event_disabled a { padding: 4px 10px 3px 10px; color: #999; }
-#event_display #add-event-disabled-pop-up { display: none; position: absolute; width: 280px; padding: 10px; background: #eeeeee; color: #000000; border: 1px solid #1a1a1a; font-size: 90%; z-index: 1000; left: 590px; }
+#add_event_wrapper { position: relative; }
+#add_event_wrapper .addEvent { border:5px solid #69bd51; position: absolute; right: 0; top: 35px; z-index: 10; width:300px; }
+#add_event_wrapper .addEvent > h3 { padding:0; }
+#add_event_wrapper .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px;
+	-moz-border-radius: 3px; border-radius: 3px; }
+#add_event_wrapper .addEvent p > a:hover { border:none; color:#fff; background:#69bd51; }
+#add_event_wrapper .addEvent p > a:active { border:none; color:#fff; background:#5da748; }
+#add_event_wrapper .addEvent .add_event_disabled a { padding: 4px 10px 3px 10px; color: #999; }
+#add-event-disabled-pop-up { display: none; position: absolute; width: 280px; padding: 10px;
+	background: #eeeeee; color: #000000; border: 1px solid #1a1a1a; font-size: 90%; z-index: 1000; left: 590px; }
 
 /* ------------------------ NEW EVENT - Users selects a New Event to add, these are details needed */
 /* Green PlUS Graphic */
 #event_plus_graphic { display:block; position:absolute; top:64px; left:296px; }
  /* event content */ 
-#event_display .addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; }  /* allow gap for graphic - NOT USED! */
+.addNewEvent { width:876px; margin-right:4px; border: 2px solid #ffb212; }  /* allow gap for graphic - NOT USED! */
 #event_display .fullWidthEvent { width:1050px;	}
 #event_display .miniWidthEvent { width:510px; }
 /* elements of event & episode */

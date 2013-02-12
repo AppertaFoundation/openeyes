@@ -35,14 +35,11 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				</div>
 			<?php }?>
 			<div id="episodesBanner">
-				<form>
-					<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
-				</form>
+				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
 				<p style="margin-bottom: 0px;">&nbsp;</p>
 			</div>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes))?>
 			<div id="event_display">
-				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php $this->renderPartial('//patient/event_tabs')?>
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="watermarkBox">
