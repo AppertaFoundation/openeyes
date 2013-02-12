@@ -70,7 +70,7 @@ body { width:1230px; margin:0 auto; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
 #header.stuck { background: #8ac7f0; position: fixed; top: 0; z-index: 10; padding-bottom: 5px;
-	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 45px; opacity: 0.8; }
+	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 45px; opacity: 0.9; }
 #header.stuck.hover { opacity: 1; }
 #header.stuck #brand { background: url(../img/_structure/oe_eye.png) 0 10px no-repeat; }
 #header.stuck .surname,
@@ -1062,9 +1062,9 @@ input.diagnosis_eye { margin-left: 10px; }
 	#content { min-height: 1230px !important; }
 }
 
-.event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1040px; padding: 10px 5px 0; }
+.event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1030px; padding: 10px 10px 0; }
 .event_tabs_sticky_wrapper { padding-bottom: 15px; }
-.event_tabs.stuck { position: fixed; top: 50px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; opacity: 0.8; }
+.event_tabs.stuck { position: fixed; top: 50px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; opacity: 0.9; }
 .event_tabs.stuck.hover { opacity: 1; }
 .event_tabs ul { padding: 0; margin: 0; }
 .event_tabs ul li { float: left; list-style: none; background: #fffee7;
@@ -1078,7 +1078,7 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_tabs ul li.hover a { color: #fff; }
 
 .event_actions_sticky_wrapper { position: absolute; top: -35px; width: 835px; margin-left: 200px; text-align: right; }
-.event_actions.stuck { position: fixed; top: 55px; z-index: 10; height: 25px; width: 835px; text-align: right; opacity: 0.8; }
+.event_actions.stuck { position: fixed; top: 55px; z-index: 10; height: 25px; width: 835px; text-align: right; opacity: 0.9; }
 .event_actions.stuck.hover { opacity: 1; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-left: 4px; } 
