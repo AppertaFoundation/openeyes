@@ -362,6 +362,12 @@ class BaseEventTypeController extends BaseController
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
+		$this->event_actions = array(
+				EventAction::link('Delete',
+						Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+						array('colour' => 'red')
+				)
+		);
 		
 		$this->renderPartial(
 			'view', array_merge(array(
@@ -888,7 +894,19 @@ class BaseEventTypeController extends BaseController
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
 
 		$this->title = "Delete ".$this->event_type->name;
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'active' => true,
+				)
+		);
+		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			$this->event_tabs[] = array(
+					'label' => 'Edit',
+					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
+			);
+		}
+		
 		$this->renderPartial(
 			'delete', array(
 			'eventId' => $id,

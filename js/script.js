@@ -98,13 +98,9 @@ $(document).ready(function(){
 		offset: 50,
 		wrapper: '<div class="event_tabs_sticky_wrapper" />'
 	});
-	$('.event_actions_sticky_wrapper').waypoint(function(direction) {
-		$('.event_actions').toggleClass('stuck', direction === 'up');
-	}, {
-		offset: function() {
-			var offset = $.waypoints('viewportHeight') - $(this).outerHeight();
-			return offset;
-		}
+	$('.event_actions').waypoint('sticky', {
+		offset: 55,
+		wrapper: '<div class="event_actions_sticky_wrapper" />'
 	});
 
 	/**

@@ -35,7 +35,7 @@ class EventAction {
 		}
 		$action->htmlOptions['name'] = $name;
 		$action->htmlOptions['type'] = 'submit';
-		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' venti classy' : $action->colour.' venti classy';
+		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' mini classy' : $action->colour.' mini classy';
 		if(!isset($action->htmlOptions['id'])) {
 			$action->htmlOptions['id'] = 'et_'.strtolower($name);
 		}
@@ -45,7 +45,11 @@ class EventAction {
 	public static function link($label, $href = '#', $htmlOptions = null) {
 		$action = new self($label, 'link');
 		$action->htmlOptions = $htmlOptions;
-		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' venti classy' : $action->colour.' venti classy';
+			if(isset($action->htmlOptions['colour'])) {
+			$action->colour = $action->htmlOptions['colour'];
+			unset($action->htmlOptions['colour']); 
+		}
+		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' mini classy' : $action->colour.' mini classy';
 		$action->href = $href;
 		return $action;
 	}

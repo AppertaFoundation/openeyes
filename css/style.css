@@ -237,7 +237,14 @@ button.nano span						{ padding:0 15px; }
 button.nano span.button-span			{ display:block; height:21px; line-height:20px; } 
 button.nano span.button-span.icon-only	{ padding:0 4px; }
 
-
+a.classy.mini { display: block; padding: 3px 7px; margin-top: 2px; }
+a.classy.mini:hover { border: 0; }
+a.classy.mini.red, a.classy.mini.red:visited { color: #851616; }
+a.classy.mini.blue, a.classy.mini.blue:visited { color: #5c0faa; }
+a.classy.mini.green, a.classy.mini.green:visited { color: #43727f; }
+a.classy.mini.red:hover { background: #851616; color: #fff; }
+a.classy.mini.blue:hover { background: #5c0faa; color: #fff; }
+a.classy.mini.green:hover { background: #43727f; color: #fff; }
 
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
 /*
@@ -615,6 +622,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display .fullWidthEvent { width:1050px;	}
 #event_display .miniWidthEvent { width:510px; }
 /* elements of event & episode */
+#event_content { position: relative; }
 #event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
@@ -1055,8 +1063,8 @@ input.diagnosis_eye { margin-left: 10px; }
 	#content { min-height: 1230px !important; }
 }
 
-.event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1040px; padding: 5px 5px 0; }
-.event_tabs_sticky_wrapper { padding-bottom: 10px; }
+.event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1040px; padding: 10px 5px 0; }
+.event_tabs_sticky_wrapper { padding-bottom: 15px; }
 .event_tabs.stuck { position: fixed; top: 50px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; }
 .event_tabs ul { padding: 0; margin: 0; }
 .event_tabs ul li { float: left; list-style: none; background: #fffee7;
@@ -1069,11 +1077,7 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_tabs ul li.active.hover { background-color: #a29d8a; }
 .event_tabs ul li.hover a { color: #fff; }
 
-.event_actions_sticky_wrapper { height: 55px; }
-.event_actions { width: 1012px; height: 35px; margin: 4px 4px 0; padding: 10px 5px; }
-.event_actions.stuck { position: fixed; bottom: 0; z-index: 10; box-shadow: 0 0 4px 4px rgba(0, 0, 0, .3);
-	background: #fafafa; border-top-left-radius: 5px; border-top-right-radius: 5px; height: 25px; padding: 8px 5px; }
-.event_actions.stuck button { height:24px; font-size:13px; width: auto; margin:0 2px; }
-.event_actions.stuck button span { padding:0 18px; }
+.event_actions_sticky_wrapper { position: absolute; top: -35px; width: 835px; margin-left: 200px; text-align: right; }
+.event_actions.stuck { position: fixed; top: 55px; z-index: 10; height: 25px; width: 835px; text-align: right; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
-.event_actions ul li { float: left; list-style: none; margin-right: 4px; } 
+.event_actions ul li { float: left; list-style: none; margin-left: 4px; } 
