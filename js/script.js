@@ -93,6 +93,7 @@ $(document).ready(function(){
 		}
 	}
 	
+	// Sticky stuff
 	$('#header').waypoint('sticky');
 	$('.event_tabs').waypoint('sticky', {
 		offset: 50,
@@ -102,15 +103,21 @@ $(document).ready(function(){
 		offset: 55,
 		wrapper: '<div class="event_actions_sticky_wrapper" />'
 	});
+	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {
+		$('#header, .event_tabs, .event_actions').toggleClass('hover', e.type === 'mouseenter');
+	});
 
 	/**
 	 * Tab hover
 	 */
-	$('.event_tabs li').hover(function() {
-		$(this).addClass('hover');
-	}, function() {
-		$(this).removeClass('hover');
-	});
+	$('.event_tabs li').hover(
+			function() {
+				$(this).addClass('hover');
+			},
+			function() {
+				$(this).removeClass('hover');
+			}
+	);
 	
 });
 
