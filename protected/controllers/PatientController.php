@@ -404,7 +404,20 @@ class PatientController extends BaseController
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'active' => true,
+				)
+		);
+		if ($this->episode->editable
+				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+			$this->event_tabs[] = array(
+					'label' => 'Edit',
+					'href' => Yii::app()->createUrl('/patient/updateepisode/'.$this->episode->id),
+			);
+		}
+		
 		$status = Yii::app()->session['episode_hide_status'];
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
@@ -465,7 +478,17 @@ class PatientController extends BaseController
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
 		$this->title = 'Episode summary';
-
+		$this->event_tabs = array(
+				array(
+						'label' => 'View',
+						'href' => Yii::app()->createUrl('/patient/episode/'.$this->episode->id),
+				),
+				array(
+						'label' => 'Edit',
+						'active' => true,
+				),
+		);
+		
 		$status = Yii::app()->session['episode_hide_status'];
 		$status[$id] = true;
 		Yii::app()->session['episode_hide_status'] = $status;
