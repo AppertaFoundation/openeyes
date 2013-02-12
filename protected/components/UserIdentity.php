@@ -149,9 +149,9 @@ class UserIdentity extends CUserIdentity
 					$audit->action = "login-failed";
 					$audit->target_type = "login";
 					$audit->user_id = $user->id;
-					$audit->data = "Login failed for user {$this->username}: LDAP authentication failed";
+					$audit->data = "Login failed for user {$this->username}: LDAP authentication failed: ".ldap_error($link);
 					$audit->save();
-					OELog::log("Login failed for user {$this->username}: LDAP authentication failed");
+					OELog::log("Login failed for user {$this->username}: LDAP authentication failed: ".ldap_error($link));
 
 					$this->errorCode = self::ERROR_USERNAME_INVALID;
 					return false;
