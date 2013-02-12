@@ -23,6 +23,7 @@ class CheckBox extends BaseCWidget {
 	public $options;
 	public $columns = array();
 	public $checked = array();
+	public $htmlOptions = array();
 
 	public function init() {
 		if (empty($_POST)) {

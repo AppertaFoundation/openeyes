@@ -5,7 +5,7 @@
 		<?php }?>
 		<div class="data">
 			<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0')?>
-			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field])?>
+			<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
 			<?php echo $element->getAttributeLabel($field)?>
 		</div>
 	</div>
@@ -18,7 +18,7 @@
 			<div class="datacol1">
 				<?php }?>
 				<?php echo CHtml::hiddenField(get_class($element)."[$field]",'0')?>
-				<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field])?>
+				<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],$htmlOptions)?>
 			<?php if (!@$options['nowrapper']) {?>
 			</div>
 		</div>

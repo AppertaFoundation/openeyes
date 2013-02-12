@@ -59,8 +59,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.TextField',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function checkBox($element, $field, $options=false) {
-		$this->widget('application.widgets.CheckBox',array('element' => $element, 'field' => $field, 'options' => $options));
+	public function checkBox($element, $field, $options=false, $htmlOptions=array()) {
+		$this->widget('application.widgets.CheckBox',array('element' => $element, 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function checkBoxArray($element,$labeltext,$fields, $options=false) {
