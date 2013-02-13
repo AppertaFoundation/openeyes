@@ -197,7 +197,8 @@ input:focus, textarea:focus { background: #ffffff; border:solid 1px #19a8ea;	}
 
 /* === CLASSY CSS BUTTONS === */
 /* default, inactive */
-button.classy { height:32px; padding:0; position:relative; top:1px; font-family: sans-serif; font-weight:normal; font-size:17px; letter-spacing: 1px;
+button.classy,
+.event-action.primary { height:32px; padding:0; position:relative; top:1px; font-family: sans-serif; font-weight:normal; font-size:17px; letter-spacing: 1px;
 color:#fff; text-shadow:-1px -1px 0 #999; white-space:nowrap; border:none; overflow:visible; background:#bbb; 
 background: -moz-linear-gradient(#cacacb, #aeaeaf);		 
 background: -ms-linear-gradient(#cacacb, #aeaeaf);	
@@ -208,7 +209,6 @@ border-bottom:2px solid #929293;
 -webkit-border-radius:4px; -moz-border-radius:4px; border-radius:4px; 
 -webkit-box-shadow:0 1px 4px rgba(0,0,0,0.3); -moz-box-shadow:0 1px 4px rgba(0,0,0,0.3); box-shadow:0 1px 4px rgba(0,0,0,0.3); 
 cursor:pointer; }
-
 /* widths */
 button.tall			{ width: 125px;	}
 button.grande		{ width: 154px; }
@@ -218,18 +218,24 @@ button.venti span	{ padding:0 22px; }
 
 /* button text */
 button.classy span.button-span			{  display:block; height:32px; line-height:31px; }
-button.classy span.button-span-green	{  text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
-button.classy span.button-span-blue		{  text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
-button.classy span.button-span-red		{  text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
+button.classy span.button-span-green,
+.event-action.primary.green span {  text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+button.classy span.button-span-blue,
+.event-action.primary.blue span {  text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
+button.classy span.button-span-red,
+.event-action.primary.red span {  text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
 /* graphic elements */
 button.classy span.with-plussign		{ background: transparent url(../img/_elements/btns/plus-sign.png) no-repeat center left; padding-left:40px; }
 button.classy span.with-leftarrow		{ background: transparent url(../img/_elements/btns/left-arrow.png) no-repeat top left; padding-left:20px; }
 button.classy span.with-rightarrow		{ background: transparent url(../img/_elements/btns/right-arrow.png) no-repeat top right; padding-right:20px; }
 
 /* mini - just replace 'tall','grande' or 'venti' in button class */
-button.mini								{ height:24px; font-size:13px; width: auto; margin:0 2px; }
-button.mini span						{ padding:0 18px; }
-button.mini span.button-span			{ display:block; height:24px; line-height:23px; } 
+button.mini,
+.event-action.primary { height:24px; font-size:13px; width: auto; margin:0 2px; }
+button.mini span,
+.event-action.primary span { padding:0 18px; }
+button.mini span.button-span,
+.event-action.primary span { display:block; height:24px; line-height:23px; } 
 button.mini span.button-span.icon-only	{ padding:0 4px; }
 
 /* nano - just replace 'tall','grande' or 'venti' in button class */
@@ -237,15 +243,6 @@ button.nano								{ height:21px; font-size:12px; width: auto; margin:0 2px; }
 button.nano span						{ padding:0 15px; }
 button.nano span.button-span			{ display:block; height:21px; line-height:20px; } 
 button.nano span.button-span.icon-only	{ padding:0 4px; }
-
-a.classy.mini { display: block; padding: 3px 7px; margin-top: 2px; }
-a.classy.mini:hover { border: 0; }
-a.classy.mini.red, a.classy.mini.red:visited { color: #851616; }
-a.classy.mini.blue, a.classy.mini.blue:visited { color: #5c0faa; }
-a.classy.mini.green, a.classy.mini.green:visited { color: #43727f; }
-a.classy.mini.red:hover { background: #851616; color: #fff; }
-a.classy.mini.blue:hover { background: #5c0faa; color: #fff; }
-a.classy.mini.green:hover { background: #43727f; color: #fff; }
 
 /* hack for plus sign - need to add a way to include a graphic element for Add New Event, Next and Previous Month */
 /*
@@ -255,7 +252,8 @@ a.classy.mini.green:hover { background: #43727f; color: #fff; }
 */
 
 /* background colours */
-button.classy.green {
+button.classy.green,
+.event-action.primary.green {
 background: -moz-linear-gradient(#43a844, #55a256);		 
 background: -ms-linear-gradient(#43a844, #55a256);	
 background: -webkit-linear-gradient(#43a844, #55a256); 
@@ -263,7 +261,8 @@ background: -webkit-linear-gradient(#43a844, #55a256);
 background:	linear-gradient(#43a844, #55a256);
 border-bottom:2px solid #3fa522;	
 }
-button.classy.green:hover {
+button.classy.green:hover,
+.event-action.primary.green:hover {
 background: -moz-linear-gradient(#48bd27, #3fa522);		 
 background: -ms-linear-gradient(#48bd27, #3fa522);	
 background: -webkit-linear-gradient(#48bd27, #3fa522); 
@@ -271,7 +270,8 @@ background: -webkit-linear-gradient(#48bd27, #3fa522);
 background:	linear-gradient(#48bd27, #3fa522);
 border-bottom:2px solid #569b42; 
 }
-button.classy.green:active {
+button.classy.green:active,
+.event-action.primary.green:active {
 background: -moz-linear-gradient(#458446, #396c39);		 
 background: -ms-linear-gradient(#458446, #396c39);	
 background: -webkit-linear-gradient(#458446, #396c39); 
@@ -279,7 +279,8 @@ background: -webkit-linear-gradient(#458446, #396c39);
 background:	linear-gradient(#458446, #396c39);
 border-bottom:2px solid #336234; 
 }
-button.classy.blue {
+button.classy.blue,
+.event-action.primary.blue {
 background: -moz-linear-gradient(#107be9, #1469bf);		 
 background: -ms-linear-gradient(#107be9, #1469bf);	
 background: -webkit-linear-gradient(#107be9, #1469bf); 
@@ -287,7 +288,8 @@ background: -webkit-linear-gradient(#107be9, #1469bf);
 background:	linear-gradient(#107be9, #1469bf);
 border-bottom:2px solid #105dae;	
 }
-button.classy.blue:hover {
+button.classy.blue:hover,
+.event-action.primary.blue:hover {
 background: -moz-linear-gradient(#118afb, #1279e3);		 
 background: -ms-linear-gradient(#118afb, #1279e3);	
 background: -webkit-linear-gradient(#118afb, #1279e3); 
@@ -295,7 +297,8 @@ background: -webkit-linear-gradient(#118afb, #1279e3);
 background:	linear-gradient(#118afb, #1279e3);
 border-bottom:2px solid #1974d1; 
 }
-button.classy.blue:active {
+button.classy.blue:active,
+.event-action.primary.blue:active {
 background: -moz-linear-gradient(#145ea9, #104d8b);		 
 background: -ms-linear-gradient(#145ea9, #104d8b);	
 background: -webkit-linear-gradient(#145ea9, #104d8b); 
@@ -303,7 +306,8 @@ background: -webkit-linear-gradient(#145ea9, #104d8b);
 background:	linear-gradient(#145ea9, #104d8b);
 border-bottom:2px solid #0f467e; 
 }
-button.classy.red {
+button.classy.red,
+.event-action.primary.red {
 background: -moz-linear-gradient(#cf0d27, #b8152b);		 
 background: -ms-linear-gradient(#cf0d27, #b8152b);	
 background: -webkit-linear-gradient(#cf0d27, #b8152b); 
@@ -311,7 +315,8 @@ background: -webkit-linear-gradient(#cf0d27, #b8152b);
 background:	linear-gradient(#cf0d27, #b8152b);
 border-bottom:2px solid #9a091c;	
 }
-button.classy.red:hover {
+button.classy.red:hover,
+.event-action.primary.red:hover {
 background: -moz-linear-gradient(#e81515, #e01a1a);		 
 background: -ms-linear-gradient(#e81515, #e01a1a);	
 background: -webkit-linear-gradient(#e81515, #e01a1a); 
@@ -319,7 +324,8 @@ background: -webkit-linear-gradient(#e81515, #e01a1a);
 background:	linear-gradient(#e81515, #e01a1a);
 border-bottom:2px solid #ad1515; 
 }
-button.classy.red:active {
+button.classy.red:active,
+.event-action.primary.red:active {
 background: -moz-linear-gradient(#901828, #761421);		 
 background: -ms-linear-gradient(#901828, #761421);	
 background: -webkit-linear-gradient(#901828, #761421); 
@@ -327,7 +333,8 @@ background: -webkit-linear-gradient(#901828, #761421);
 background:	linear-gradient(#901828, #761421);
 border-bottom:2px solid #6b121e; 
 }
-button.classy.inactive {
+button.classy.inactive,
+.event-action.primary.inactive {
 background: -moz-linear-gradient(#aaaaaa, #999999);
 background: -ms-linear-gradient(#aaaaaa, #999999);
 background: -webkit-linear-gradient(#aaaaaa, #999999);
@@ -690,7 +697,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content ul.eventComments > li { margin-bottom:8px; padding-bottom: 8px; border-bottom:1px dotted #dae6f1; }
 
 /* meta data (creation and modification) */
-#event_content .metaData { width:75%; font-size:12px; font-style: italic; padding:3px 10px 8px 10px; margin-bottom:2px; color:#888; border-bottom:1px dotted #dae6f1;  }
+#event_content .metaData { font-size:12px; font-style: italic; padding-top: 8px; margin:20px 10px 0; color:#888; border-top:1px dotted #dae6f1;  }
 #event_content .metaData .info { margin-right: 15px; }
 #event_content .metaData .user { color:#333; }
 
@@ -1082,3 +1089,14 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_actions.stuck.hover { opacity: 1; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-left: 4px; } 
+
+a.event-action { display: inline-block; }
+a.event-action.primary { color: #fff; height: 22px; }
+a.event-action.secondary { color: #999; padding: 4px 10px; margin: 1px 2px 0; letter-spacing: 1px; font-size: 13px; white-space: nowrap; }
+a.event-action.secondary:hover { border: 0; background: #999; color: #fff; border-radius: 5px; text-shadow: 1px 1px 0 #999, 2px 2px 0 #666; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+a.event-action.secondary.red { color: #ad1515; }
+a.event-action.secondary.red:hover { background: #ad1515; color: #fff; text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
+a.event-action.secondary.blue { color: #105dae; }
+a.event-action.secondary.blue:hover { background: #105dae; color: #fff; text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
+a.event-action.secondary.green { color: #3fa522; }
+a.event-action.secondary.green:hover { background: #3fa522; color: #fff; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }

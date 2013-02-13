@@ -21,51 +21,57 @@ class EventAction {
 	
 	public $name;
 	public $type;
-	public $htmlOptions;
 	public $label;
 	public $href;
-	public $colour = 'blue';
+	public $htmlOptions;
+	public $options = array(
+			'colour' => 'blue',
+			'level' => 'primary',
+			'disabled' => false
+	);
 	
-	public static function button($label, $name, $htmlOptions = null) {
-		$action = new self($label, 'button');
-		$action->htmlOptions = $htmlOptions;
-		if(isset($action->htmlOptions['colour'])) {
-			$action->colour = $action->htmlOptions['colour'];
-			unset($action->htmlOptions['colour']); 
-		}
+	public static function button($label, $name, $options = null, $htmlOptions = null) {
+		$action = new self($label, 'button', $options, $htmlOptions);
 		$action->htmlOptions['name'] = $name;
 		$action->htmlOptions['type'] = 'submit';
-		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' mini classy' : $action->colour.' mini classy';
 		if(!isset($action->htmlOptions['id'])) {
 			$action->htmlOptions['id'] = 'et_'.strtolower($name);
 		}
 		return $action;
 	}
 	
-	public static function link($label, $href = '#', $htmlOptions = null) {
-		$action = new self($label, 'link');
-		$action->htmlOptions = $htmlOptions;
-			if(isset($action->htmlOptions['colour'])) {
-			$action->colour = $action->htmlOptions['colour'];
-			unset($action->htmlOptions['colour']); 
-		}
-		$action->htmlOptions['class'] = (isset($action->htmlOptions['class'])) ? $action->htmlOptions['class'] . ' mini classy' : $action->colour.' mini classy';
+	public static function link($label, $href = '#', $options, $htmlOptions = null) {
+		$action = new self($label, 'link', $options, $htmlOptions);
 		$action->href = $href;
 		return $action;
 	}
 	
-	public function __construct($label, $type) {
+	public function __construct($label, $type, $options = null, $htmlOptions = null) {
 		$this->label = $label;
 		$this->type = $type;
+		$this->htmlOptions = $htmlOptions;
+		if(!isset($this->htmlOptions['class'])) {
+			$this->htmlOptions['class'] = '';
+		}
+		if(is_array($options)) {
+			foreach($options as $key => $value) {
+				$this->options[$key] = $value;
+			}
+		}
 	}
 	
 	public function toHtml() {
-		$label = '<span class="btn">'.CHtml::encode($this->label).'</span>';
+		$label = '<span>'.CHtml::encode($this->label).'</span>';
+		$this->htmlOptions['class'] .= ' event-action '.$this->options['level'];
+		if($this->options['disabled']) {
+			$this->htmlOptions['class'] .= ' disabled';
+			$this->htmlOptions['disabled'] = 'disabled';
+		} else {
+			$this->htmlOptions['class'] .= ' '.$this->options['colour'];
+		}
 		if($this->type == 'button') {
-			$label = '<span class="button-span-'.$this->colour.'">'.CHtml::encode($this->label).'</span>';
 			return CHtml::htmlButton($label, $this->htmlOptions);
 		} else if($this->type == 'link') {
-			$label = '<span class="btn">'.CHtml::encode($this->label).'</span>';
 			return CHtml::link($label, $this->href, $this->htmlOptions);
 		}
 	}
