@@ -697,7 +697,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content ul.eventComments > li { margin-bottom:8px; padding-bottom: 8px; border-bottom:1px dotted #dae6f1; }
 
 /* meta data (creation and modification) */
-#event_content .metaData { font-size:12px; font-style: italic; padding-top: 8px; margin:20px 10px 0; color:#888; border-top:1px dotted #dae6f1;  }
+#event_content .metaData { font-size:12px; font-style: italic; padding-top: 8px; margin:10px; color:#888; border-top:1px dotted #dae6f1;  }
 #event_content .metaData .info { margin-right: 15px; }
 #event_content .metaData .user { color:#333; }
 
