@@ -25,14 +25,11 @@
 				</div>
 			<?php }?>
 			<div id="episodesBanner">
-				<form>
-					<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
-				</form>
+				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
-				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php
 				if (count($episodes) <1) {?>
 					<div class="alertBox fullWidthEvent">
@@ -47,7 +44,7 @@
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
-					<div id="event_content" class="watermarkBox">
+					<div id="event_content" class="watermarkBox clearfix">
 				<?php }?>
 					<?php
 					if ($current_episode) {

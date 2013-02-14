@@ -365,7 +365,7 @@ class BaseEventTypeController extends BaseController
 		$this->event_actions = array(
 				EventAction::link('Delete',
 						Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-						array('colour' => 'red')
+						array('colour' => 'red', 'level' => 'secondary')
 				)
 		);
 		
