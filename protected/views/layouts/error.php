@@ -34,11 +34,7 @@
 <body>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<div id="brand" class="ir">
-				<h1>
-					<?php echo CHtml::link('OpenEyes',array('site/'))?>
-				</h1>
-			</div>
+			<?php echo $this->renderPartial('//base/_brand'); ?>
 		</div><!-- #header -->
 		<div id="content">
 			<div id="down-form" class="form_greyBox">

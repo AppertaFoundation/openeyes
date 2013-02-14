@@ -43,7 +43,7 @@
   <div id="container">
 	<div id="header" class="clearfix">
 
-		<div id="brand" class="ir"><h1>OpenEyes</h1></div>
+		<?php echo $this->renderPartial('//base/_brand'); ?>
 		
 		<div id="user_panel" class="inAdmin">
 			<div class="clearfix">
