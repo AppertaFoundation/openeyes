@@ -94,7 +94,10 @@ $(document).ready(function(){
 	}
 	
 	// Sticky stuff
-	//$('#header').waypoint('sticky');
+	$('#alert_banner').waypoint('sticky', {
+		offset: -30,
+		wrapper: '<div class="alert_banner_sticky_wrapper" />'
+	});
 	$('#header').waypoint('sticky', {
 		offset: -20,
 	});
