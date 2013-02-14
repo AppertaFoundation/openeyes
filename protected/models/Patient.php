@@ -459,6 +459,10 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
+	public function getGenderString() {
+		return ($this->gender == 'F' ? 'Female' : 'Male');
+	}
+
 	public function getObj() {
 		return ($this->gender == 'F' ? 'her' : 'him');
 	}

@@ -20,19 +20,26 @@
 <?php
 $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
 if (!Yii::app()->user->isGuest) {
-	if (!empty(Yii::app()->session['user'])) {
-		$user = Yii::app()->session['user'];
-	} else {
-		$user = User::model()->findByPk(Yii::app()->user->id);
-		Yii::app()->session['user'] = $user;
+	if (empty(Yii::app()->session['user'])) {
+		Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
 	}
+	$user = Yii::app()->session['user'];
+	$menu = array();
+	foreach(Yii::app()->params['menu_bar_items'] as $menu_item) {
+		$menu[$menu_item['position']] = $menu_item;
+	}
+	ksort($menu);
 ?>
 <div id="user_panel">
 	<div id="user_nav" class="clearfix">
 		<ul>
-			<?php foreach (Yii::app()->params['menu_bar_items'] as $item) {?>
+			<?php foreach($menu as $item) {?>
 				<li>
-					<?php if ($uri == $item['uri']) {?><span class="selected"><?php echo $item['title']?></span><?php }else{?><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?><?php }?>
+					<?php if ($uri == $item['uri']) {?>
+					<span class="selected"><?php echo $item['title']?></span>
+					<?php } else { ?>
+					<span><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?></span>
+					<?php }?>
 				</li>
 			<?php }?>
 		</ul>
@@ -54,7 +61,7 @@ if (!Yii::app()->user->isGuest) {
 	</div>
 	<?php } ?>
 	<div id="user_id">
-		<strong><?php echo $user->last_name; ?></strong>, <?php echo $user->first_name ?>
+		<span>You are logged in as:</span> <strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong>
 	</div>
 </div>
 <?php } ?>

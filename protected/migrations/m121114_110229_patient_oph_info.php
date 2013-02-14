@@ -13,10 +13,10 @@ class m121114_110229_patient_oph_info extends CDbMigration
 				'created_user_id' => 'int(10) unsigned NOT NULL DEFAULT 1',
 				'created_date' => 'datetime NOT NULL DEFAULT \'1901-01-01 00:00:00\'',
 				'PRIMARY KEY (`id`)',
-				'KEY `et_ophauanaestheticsataudit_ramsayscore_score_lmui_fk` (`last_modified_user_id`)',
-				'KEY `et_ophauanaestheticsataudit_ramsayscore_score_cui_fk` (`created_user_id`)',
-				'CONSTRAINT `et_ophauanaestheticsataudit_ramsayscore_score_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
-				'CONSTRAINT `et_ophauanaestheticsataudit_ramsayscore_score_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
+				'KEY `patient_oph_info_cvi_status_lmui_fk` (`last_modified_user_id`)',
+				'KEY `patient_oph_info_cvi_status_cui_fk` (`created_user_id`)',
+				'CONSTRAINT `patient_oph_info_cvi_status_lmui_fk` FOREIGN KEY (`last_modified_user_id`) REFERENCES `user` (`id`)',
+				'CONSTRAINT `patient_oph_info_cvi_status_cui_fk` FOREIGN KEY (`created_user_id`) REFERENCES `user` (`id`)',
 		), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 		
 		$this->insert('patient_oph_info_cvi_status',array('name'=>'Unknown','display_order'=>1));

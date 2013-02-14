@@ -79,7 +79,7 @@
 	<?php echo $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix">
-			<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
+			<?php echo $this->renderPartial('//base/_brand'); ?>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
 		</div> <!-- #header --> 
 		<!--div id="mainmenu">
