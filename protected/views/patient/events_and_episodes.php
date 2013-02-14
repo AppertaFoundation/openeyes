@@ -44,7 +44,7 @@
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
-					<div id="event_content" class="watermarkBox">
+					<div id="event_content" class="watermarkBox clearfix">
 				<?php }?>
 					<?php
 					if ($current_episode) {

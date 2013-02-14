@@ -81,20 +81,7 @@
 		<div id="header" class="clearfix">
 			<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
-			<div id="patientID">
-				<div class="i_patient">
-					<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id),array('class'=>'small'))?>
-					<img class="i_patient" src="<?php echo Yii::app()->createUrl('img/_elements/icons/patient_small.png')?>" alt="patient_small" width="26" height="30" />
-				</div>
-
-				<div class="patientReminder">
-					<?php echo $this->patient->getDisplayName()?>
-					<?php if($this->patient->isDeceased()) { ?>(Deceased)<?php } ?>
-					<span class="number">Hospital number: <?php echo $this->patient->hos_num?></span>
-					<span class="number">NHS number: <?php echo $this->patient->nhsnum?></span>
-				</div>
-			</div> <!-- #patientID -->
-
+			<?php echo $this->renderPartial('//patient/_patient_id', array()); ?>
 		</div> <!-- #header -->
 
 		<div id="content">

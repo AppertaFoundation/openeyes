@@ -17,6 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+					<?php
+						if($this->action->id == 'view') { $this->renderPartial('//patient/event_metadata'); }
+					?>
 				</div><!-- #event_content -->
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->

@@ -42,4 +42,4 @@ $this->renderPartial('//layouts/patientMode/event_header');
 			<div id="event_display">
 				<?php $this->renderPartial('//patient/event_tabs')?>
 				<!-- EVENT CONTENT HERE -->
-				<div id="event_content" class="watermarkBox">
+				<div id="event_content" class="watermarkBox clearfix">
