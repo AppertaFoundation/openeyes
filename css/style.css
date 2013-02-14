@@ -162,8 +162,8 @@ em { font-style: italic; color:#333; }
 #content .patientBox	{ position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
 #content .eventBox { background: #fafafa; padding:10px; }
 /* watermarked width 1050px - 20px padding = 1030px */
-#content .watermarkBox { width:1020px; background-color:#fafafa; background-repeat: repeat-y; background-position: top left;
-	padding:5px 10px 10px 10px; border-width: 0 5px 5px; border-style: solid; border-color: #a29d8a; }
+#content .watermarkBox { width:1030px; background-color:#fafafa; background-repeat: repeat-y; background-position: top left;
+	padding:5px 5px 10px; border-width: 0 5px 5px; border-style: solid; border-color: #a29d8a; }
 /* icons for boxes */
 #content .withIcon { padding-left: 40px; }
 #content .boxIcon { position: absolute; top:5px; left:0; }
