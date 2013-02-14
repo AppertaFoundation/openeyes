@@ -154,21 +154,15 @@ return array(
 				'hos_num_regex' => '/^([0-9]{1,9})$/',
 				'pad_hos_num' => '%07s',
 				'menu_bar_items' => array(
-					array(
+					'home' => array(
 						'title' => 'Home',
 						'uri' => '',
+						'position' => 1,
 					),
-					array(
-						'title' => 'Theatre Diaries',
-						'uri' => 'OphTrOperation/theatreDiary/index',
-					),
-					array(
-						'title' => 'Partial bookings waiting list',
-						'uri' => 'OphTrOperation/waitingList/index',
-					),
-					array(
+					'logout' => array(
 						'title' => 'Logout',
 						'uri' => 'site/logout',
+						'position' => 9999,
 					),
 				),
 		),
