@@ -76,7 +76,7 @@ body { width:1230px; margin:0 auto; }
 #header.stuck #brand a { height: 25px; }
 #header.stuck #patientID { border-bottom: 0; border-radius: 0; margin: 0; height: 29px; padding: 5px 10px; width: 330px; }
 #header.stuck .patientName { font-size: 12px; }
-#header.stuck .patientReminder { padding: 0; background: none; }
+#header.stuck .patientReminder { padding: 0; }
 #header.stuck .hospitalNumber,
 #header.stuck .nhsNumber { float: left; margin-right: 5px; padding-top: 1px; padding-bottom: 1px; }
 #header.stuck .i_patient { display: none; }
@@ -454,7 +454,7 @@ ul#user_nav > li .selected,
 #patientID { border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;}
 
 /* ====== USER PANEL ====== */
-#user_panel { background: #dae6f1 url(../img/_elements/gradients/bg_userpanel.jpg) bottom left repeat-x;
+#user_panel { background: #dae6f1 url(../img/_elements/icons/user/idcard_bg.png) top left no-repeat;
 	padding:0 10px 5px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;	 }
 /* nav in user panel */
 #user_nav	{}

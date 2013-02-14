@@ -1,5 +1,5 @@
 <div id="patientID">
-	<div class="patientReminder">
+	<div class="patientReminder clearfix">
 		<div class="patientName">
 			<?php echo CHtml::link($this->patient->getDisplayName(),array('/patient/view/'.$this->patient->id)) ?>
 			(<?php if($this->patient->isDeceased()) { ?>Deceased<?php } else { echo $this->patient->getAge(); } ?>)
