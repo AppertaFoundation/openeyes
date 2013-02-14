@@ -54,7 +54,7 @@ if (!Yii::app()->user->isGuest) {
 	</div>
 	<?php } ?>
 	<div id="user_id">
-		<strong><?php echo $user->last_name; ?></strong>, <?php echo $user->first_name ?>
+		<span>You are logged in as:</span> <strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong>
 	</div>
 </div>
 <?php } ?>
