@@ -58,19 +58,7 @@ class AuditController extends BaseController
 			$targets[$field] = $field;
 		}
 
-		$criteria = new CDbCriteria;
-		$criteria->distinct = true;
-		$criteria->compare('created_date','>= '.date('Y-m-d').' 00:00:00',false);
-		$criteria->compare('action','login-successful');
-		$criteria->select = 'data';
-
-		$unique_users = count(Audit::model()->findAll($criteria));
-
-		$criteria->distinct = false;
-
-		$total_logins = count(Audit::model()->findAll($criteria));
-
-		$this->render('index',array('actions'=>$actions,'targets'=>$targets,'unique_users'=>$unique_users,'total_logins'=>$total_logins));
+		$this->render('index',array('actions'=>$actions,'targets'=>$targets));
 	}
 
 	public function actionSearch() {
