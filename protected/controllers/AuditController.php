@@ -74,8 +74,12 @@ class AuditController extends BaseController
 		$this->renderPartial('_pagination', array('data' => $data), false, true);
 	}
 
-	public function criteria() {
+	public function criteria($count=false) {
 		$criteria = new CDbCriteria;
+
+		if ($count) {
+			$criteria->select = 'count(*) as count';
+		}
 
 		if (@$_REQUEST['site_id']) {
 			$criteria->addCondition('site_id='.$_REQUEST['site_id']);
@@ -149,17 +153,17 @@ class AuditController extends BaseController
 			$criteria->addCondition('event_type.id = '.$_REQUEST['event_type_id']);
 		}
 
-		$criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+		!($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
 
 		return $criteria;
 	}
 
 	public function getData($page=1, $id=false) {
-		$criteria = $this->criteria();
-
 		$data = array();
-		
-		$data['total_items'] = count(Audit::model()->findAll($criteria));
+
+		$data['total_items'] = Audit::model()->find($this->criteria(true))->count;
+
+		$criteria = $this->criteria();
 
 		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;
