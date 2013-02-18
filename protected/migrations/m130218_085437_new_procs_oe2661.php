@@ -25,7 +25,7 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 		$this->update('proc_opcs_assignment',array('proc_id'=>$new->id),"proc_id = $old->id");
 		$this->update('proc_subspecialty_assignment',array('proc_id'=>$new->id),"proc_id = $old->id");
 
-		if (isset(Yii::app()->modules['OphTrOperationnote'])) {
+		if (isset(Yii::app()->modules['OphTrOperationnote']) && $this->hasTable('et_ophtroperationnote_procedure_element')) {
 			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$new->id),"procedure_id = $old->id");
 		}
 
@@ -42,7 +42,7 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 		$this->update('proc_opcs_assignment',array('proc_id'=>$old->id),"proc_id = $new->id");
 		$this->update('proc_subspecialty_assignment',array('proc_id'=>$old->id),"proc_id = $new->id");
 
-		if (isset(Yii::app()->modules['OphTrOperationnote'])) {
+		if (isset(Yii::app()->modules['OphTrOperationnote']) && $this->hasTable('et_ophtroperationnote_procedure_element')) {
 			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$old->id),"procedure_id = $new->id");
 		}
 
@@ -60,5 +60,16 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 		$this->delete('proc',"term='Scanning laser ophthalmoscopy' and snomed_code='252846004'");
 		$this->delete('proc',"term='Optical coherence tomography' and snomed_code='392010000'");
 		$this->delete('proc',"term='Insertion of sustained release device into posterior segment of eye' and snomed_code='428618008'");
+	}
+
+	public function hasTable($table) {
+		foreach (Yii::app()->db->createCommand("show tables")->queryAll() as $row) {
+			foreach ($row as $key => $value) {
+				if ($value == $table) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
