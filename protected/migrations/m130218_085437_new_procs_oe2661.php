@@ -24,6 +24,11 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 
 		$this->update('proc_opcs_assignment',array('proc_id'=>$new->id),"proc_id = $old->id");
 		$this->update('proc_subspecialty_assignment',array('proc_id'=>$new->id),"proc_id = $old->id");
+
+		if (isset(Yii::app()->modules['OphTrOperationnote'])) {
+			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$new->id),"procedure_id = $old->id");
+		}
+
 		$this->delete('proc',"id=$old->id");
 	}
 
@@ -36,6 +41,10 @@ class m130218_085437_new_procs_oe2661 extends CDbMigration
 
 		$this->update('proc_opcs_assignment',array('proc_id'=>$old->id),"proc_id = $new->id");
 		$this->update('proc_subspecialty_assignment',array('proc_id'=>$old->id),"proc_id = $new->id");
+
+		if (isset(Yii::app()->modules['OphTrOperationnote'])) {
+			$this->update('et_ophtroperationnote_procedure_element',array('procedure_id'=>$old->id),"procedure_id = $new->id");
+		}
 
 		$this->delete('proc',"term='Removal of eyelash' and snomed_code='398072007'");
 		$this->delete('proc',"term='Removal of foreign body from conjunctiva' and snomed_code='78362007'");
