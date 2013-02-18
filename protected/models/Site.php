@@ -239,14 +239,14 @@ class Site extends BaseActiveRecord
 		return $address;
 	}
 
-	public function getLetterAddress($include_institution_name=false) {
+	public function getLetterAddress($include_institution_name=false,$encode=true) {
 		if (!$include_institution_name) {
 			$address = "$this->name\n";
 		} else {
 			$address = '';
 		}
 
-		return $address . implode("\n",$this->getLetterArray(false,true,$include_institution_name));
+		return $address . implode("\n",$this->getLetterArray(false,$encode,$include_institution_name));
 	}
 
 	public function getReplyToAddress() {
