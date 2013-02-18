@@ -58,8 +58,8 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 * @param string $element_class
 	 * @return boolean
 	 */
-	public function canCopy($element_class) {
-		return ($element_class::model()->canCopy() && hasPrevious($element_class));
+	public function canCopy($element_class, $exclude_event_id = null) {
+		return ($element_class::model()->canCopy() && $this->hasPrevious($element_class, $exclude_event_id));
 	}
 	
 	/**
@@ -67,9 +67,9 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 * @param string $element_class
 	 * @return boolean
 	 */
-	public function hasPrevious($element_class) {
+	public function hasPrevious($element_class, $exclude_event_id = null) {
 		if($episode = $this->episode) {
-			return $this->getPreviousElements($element_class, $episode);
+			return count($this->getPreviousElements($element_class, $episode, $exclude_event_id));
 		} else {
 			return false;
 		}
@@ -79,13 +79,18 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	 * Fetches previous instances of an element in an episode
 	 * @param string $element_class
 	 * @param Episode $episode
+	 * @param integer $exclude_event_id
 	 * @return BaseEventTypeElement[]
 	 */
-	protected function getPreviousElements($element_class, $episode) {
+	protected function getPreviousElements($element_class, $episode, $exclude_event_id = null) {
 		$episode_id = $episode->id;
 		$criteria = new CDbCriteria();
 		$criteria->condition = 'event.episode_id = :episode_id';
 		$criteria->params = array(':episode_id' => $episode_id);
+		if($exclude_event_id) {
+			$criteria->condition .= ' AND event.id != :exclude_event_id';
+			$criteria->params[':exclude_event_id'] = $exclude_event_id;
+		}
 		$criteria->order = 't.id DESC';
 		$criteria->join = 'JOIN event ON event.id = t.event_id';
 		return $element_class::model()->findAll($criteria);
