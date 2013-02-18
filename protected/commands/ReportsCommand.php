@@ -257,7 +257,7 @@ class ReportsCommand extends CConsoleCommand {
 				'report_item_id' => $pc_ruptures->id,
 				'name' => 'PC rupture rate',
 				'subtitle' => 'percentage',
-				'range' => 100,
+				'range' => 10,
 				'display_order' => 1,
 				'show_scale' => 0,
 			));
@@ -266,7 +266,7 @@ class ReportsCommand extends CConsoleCommand {
 				'report_item_id' => $avg_pc_ruptures->id,
 				'name' => 'Average rate',
 				'subtitle' => 'institution average',
-				'range' => 100,
+				'range' => 10,
 				'display_order' => 2,
 			));
 
@@ -274,7 +274,7 @@ class ReportsCommand extends CConsoleCommand {
 				'report_item_id' => $complications->id,
 				'name' => 'Complication rate',
 				'subtitle' => 'percentage',
-				'range' => 100,
+				'range' => 10,
 				'display_order' => 3,
 				'show_scale' => 0,
 			));
@@ -283,7 +283,7 @@ class ReportsCommand extends CConsoleCommand {
 				'report_item_id' => $avg_complications->id,
 				'name' => 'Average rate',
 				'subtitle' => 'institution average',
-				'range' => 100,
+				'range' => 10,
 				'display_order' => 4,
 			));
 
