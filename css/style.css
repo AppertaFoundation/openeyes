@@ -988,7 +988,7 @@ table.audit-list tr.hover{ background-color: #ffffdd; }
 
 .alert_banner_sticky_wrapper { margin-bottom: 10px; }
 #alert_banner { width: 100%; height: 30px; margin-bottom: 10px; }
-#alert_banner .banner-watermark { width: 100%; height: 20px; font-size: 16px; text-align: center;
+#alert_banner .banner-watermark { height: 20px; font-size: 16px; text-align: center;
 	background-color: #f00; padding: 5px; color: #fff; line-height: 20px; margin: 0 auto; }
 #alert_banner .banner-watermark.admin { background-color: #DAA520; }
 .banner-watermark-description { width: 100%; margin: 10px 0; }
