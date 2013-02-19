@@ -58,19 +58,7 @@ class AuditController extends BaseController
 			$targets[$field] = $field;
 		}
 
-		$criteria = new CDbCriteria;
-		$criteria->distinct = true;
-		$criteria->compare('created_date','>= '.date('Y-m-d').' 00:00:00',false);
-		$criteria->compare('action','login-successful');
-		$criteria->select = 'data';
-
-		$unique_users = count(Audit::model()->findAll($criteria));
-
-		$criteria->distinct = false;
-
-		$total_logins = count(Audit::model()->findAll($criteria));
-
-		$this->render('index',array('actions'=>$actions,'targets'=>$targets,'unique_users'=>$unique_users,'total_logins'=>$total_logins));
+		$this->render('index',array('actions'=>$actions,'targets'=>$targets));
 	}
 
 	public function actionSearch() {
@@ -86,8 +74,12 @@ class AuditController extends BaseController
 		$this->renderPartial('_pagination', array('data' => $data), false, true);
 	}
 
-	public function criteria() {
+	public function criteria($count=false) {
 		$criteria = new CDbCriteria;
+
+		if ($count) {
+			$criteria->select = 'count(*) as count';
+		}
 
 		if (@$_REQUEST['site_id']) {
 			$criteria->addCondition('site_id='.$_REQUEST['site_id']);
@@ -161,17 +153,17 @@ class AuditController extends BaseController
 			$criteria->addCondition('event_type.id = '.$_REQUEST['event_type_id']);
 		}
 
-		$criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
+		!($count) && $criteria->join = 'left join event on t.event_id = event.id left join event_type on event.event_type_id = event_type.id';
 
 		return $criteria;
 	}
 
 	public function getData($page=1, $id=false) {
-		$criteria = $this->criteria();
-
 		$data = array();
-		
-		$data['total_items'] = count(Audit::model()->findAll($criteria));
+
+		$data['total_items'] = Audit::model()->find($this->criteria(true))->count;
+
+		$criteria = $this->criteria();
 
 		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;

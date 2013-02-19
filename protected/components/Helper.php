@@ -124,4 +124,14 @@ class Helper {
 	public static function getMonthText($month, $long=false) {
 		return date($long?'F':'M',mktime(0,0,0,$month,1,date('Y')));
 	}
+	
+	/**
+	 * generate string representation of timestamp for the database
+	 *
+	 * @param int $timestamp
+	 * @return string
+	 */
+	public static function timestampToDB($timestamp) {
+		return date('Y-m-d H:i:s', $timestamp);
+	}
 }
