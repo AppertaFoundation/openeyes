@@ -988,7 +988,7 @@ table.audit-list tr.hover{ background-color: #ffffdd; }
 
 .alert_banner_sticky_wrapper { margin-bottom: 10px; }
 #alert_banner { width: 100%; height: 30px; margin-bottom: 10px; }
-#alert_banner .banner-watermark { width: 100%; height: 20px; font-size: 16px; text-align: center;
+#alert_banner .banner-watermark { height: 20px; font-size: 16px; text-align: center;
 	background-color: #f00; padding: 5px; color: #fff; line-height: 20px; margin: 0 auto; }
 #alert_banner .banner-watermark.admin { background-color: #DAA520; }
 .banner-watermark-description { width: 100%; margin: 10px 0; }
@@ -1120,8 +1120,8 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_tabs ul li.active.hover { background-color: #a29d8a; }
 .event_tabs ul li.hover a { color: #fff; }
 
-.event_actions_sticky_wrapper { position: absolute; top: -35px; width: 830px; margin-left: 200px; text-align: right; }
-.event_actions.stuck { position: fixed; top: 55px; z-index: 10; height: 25px; width: 830px; text-align: right; opacity: 0.9; }
+.event_actions_sticky_wrapper { position: absolute; top: -35px; width: 835px; margin-left: 200px; text-align: right; }
+.event_actions.stuck { position: fixed; top: 44px; z-index: 10; height: 25px; width: 835px; text-align: right; opacity: 0.9; }
 .event_actions.stuck.hover { opacity: 1; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-left: 4px; } 
