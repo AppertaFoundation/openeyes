@@ -115,7 +115,10 @@ class Subspecialty extends BaseActiveRecord
 	}
 
 	/**
-	 * Fetch an array of subspecialty IDs and names
+	 * Fetch an array of subspecialty IDs and names, by default does not return non medical subspecialties (as defined by parent specialty)
+	 * 
+	 * @param bool $nonmedical
+	 * 
 	 * @return array
 	 */
 	public function getList($nonmedical = false)
