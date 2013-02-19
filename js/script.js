@@ -93,14 +93,22 @@ $(document).ready(function(){
 		}
 	}
 	
-	// Sticky stuff
-	$('#header').waypoint('sticky');
+	/**
+	 * Sticky stuff
+	 */ 
+	$('#alert_banner').waypoint('sticky', {
+		offset: -30,
+		wrapper: '<div class="alert_banner_sticky_wrapper" />'
+	});
+	$('#header').waypoint('sticky', {
+		offset: -20,
+	});
 	$('.event_tabs').waypoint('sticky', {
-		offset: 50,
+		offset: 39,
 		wrapper: '<div class="event_tabs_sticky_wrapper" />'
 	});
 	$('.event_actions').waypoint('sticky', {
-		offset: 55,
+		offset: 44,
 		wrapper: '<div class="event_actions_sticky_wrapper" />'
 	});
 	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {

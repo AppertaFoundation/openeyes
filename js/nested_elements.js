@@ -144,6 +144,9 @@ $(document).ready(function() {
 	 */
 	$('#active_elements').delegate('.elementActions .viewPrevious', 'click', function(e) {
 		var element = $(this).closest('.element');
+		if (!$(element).hasClass('clicked')) {
+			$(element).addClass('clicked');
+		}
 		$.ajax({
 			url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
 			data: { element_type_id: element.attr('data-element-type-id'), patient_id: et_patient_id },
@@ -164,9 +167,11 @@ $(document).ready(function() {
 				$('#previous_elements .copy_element').click(function() {
 					var element_id = $(this).attr('data-element-id');
 					var element = $('#active_elements .element.' + $(this).attr('data-element-type-class'))
+					$(element).addClass('clicked');
 					$('#previous_elements').dialog('close');
 					addElement(element, false, false, element_id);
 				});
+				$(element).removeClass('clicked');
 			}
 		});
 		e.preventDefault();

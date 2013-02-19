@@ -28,6 +28,7 @@ class ProcedureSelection extends BaseCWidget {
 	public $total_duration = 0;
 	public $last;
 	public $short_version = true;
+	public $newRecord;
 
 	public function run() {
 		if (empty($_POST)) {

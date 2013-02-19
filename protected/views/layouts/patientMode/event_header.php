@@ -73,29 +73,13 @@
 </head>
 
 <body>
-	<?php if (Yii::app()->user->checkAccess('admin')) {?>
-		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
-	<?php } else if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
+	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
 	<?php echo $this->renderPartial('//base/_debug',array())?>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
+			<?php echo $this->renderPartial('//base/_brand'); ?>
 			<?php echo $this->renderPartial('//base/_form', array()); ?>
-			<div id="patientID">
-				<div class="i_patient">
-					<?php echo CHtml::link('Patient Summary',array('/patient/view/'.$this->patient->id),array('class'=>'small'))?>
-					<img class="i_patient" src="<?php echo Yii::app()->createUrl('img/_elements/icons/patient_small.png')?>" alt="patient_small" width="26" height="30" />
-				</div>
-
-				<div class="patientReminder">
-					<?php echo $this->patient->getDisplayName()?>
-					<span class="number">Hospital number: <?php echo $this->patient->hos_num?></span>
-					<span class="number">NHS number: <?php echo $this->patient->nhsnum?></span>
-				</div>
-			</div> <!-- #patientID -->
-
+			<?php echo $this->renderPartial('//patient/_patient_id', array()); ?>
 		</div> <!-- #header -->
 
 		<script type="text/javascript"> var et_patient_id = <?php echo $this->patient->id?>; </script>
