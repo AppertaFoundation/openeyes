@@ -64,9 +64,11 @@ td { vertical-align: top; }
 /* ======================================================================== primary styles ================= */
 
 html { background-color: #d4d1cd; }
-body { width:1230px; margin:0 auto; }
+body {}
 /* ====== STRUCTURE ====== */
-#container, #header, #content, #help, #footer { width: 1230px; padding:0; margin:0; }
+#container, #header, #content, #help, #footer { width: 1230px; padding:0; }
+#container, #footer { margin: 0 auto; }
+#footer { margin-bottom: 40px; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
 #header.stuck { background: #8ac7f0; position: fixed; top: 0; z-index: 10; padding-bottom: 4px;
@@ -160,8 +162,8 @@ em { font-style: italic; color:#333; }
 #content .patientBox	{ position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
 #content .eventBox { background: #fafafa; padding:10px; }
 /* watermarked width 1050px - 20px padding = 1030px */
-#content .watermarkBox { width:1020px; background-color:#fafafa; background-repeat: repeat-y; background-position: top left;
-	padding:5px 10px 10px 10px; border-width: 0 5px 5px; border-style: solid; border-color: #a29d8a; }
+#content .watermarkBox { width:1030px; background-color:#fafafa; background-repeat: repeat-y; background-position: top left;
+	padding:5px 5px 10px; border-width: 0 5px 5px; border-style: solid; border-color: #a29d8a; }
 /* icons for boxes */
 #content .withIcon { padding-left: 40px; }
 #content .boxIcon { position: absolute; top:5px; left:0; }
@@ -454,7 +456,7 @@ ul#user_nav > li .selected,
 #patientID { border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;}
 
 /* ====== USER PANEL ====== */
-#user_panel { background: #dae6f1 url(../img/_elements/icons/user/idcard_bg.png) top left no-repeat;
+#user_panel { background: #dae6f1 url(../img/_elements/icons/user/idcard_bg.png) left bottom no-repeat;
 	padding:0 10px 5px; border-right:1px solid #b3b0ae; border-bottom:1px solid #b3b0ae; border-left:1px solid #b3b0ae;	 }
 /* nav in user panel */
 #user_nav	{}
@@ -983,10 +985,19 @@ table.audit-list tr.hover{ background-color: #ffffdd; }
 /* ======================================================================== DEV TEAM Extra styles ================= */
 
 .admin-confirmto {background-color: #DAA520;padding:10px;margin:3px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #f00; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark-admin { width: 100%; font-size: 16px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; margin-left: auto; margin-right: auto; text-align: center; background-color: #DAA520; padding-top: 0.4em; padding-bottom: 0.4em; padding-right: 4px; color: #fff; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark-description { width: 100%; font-size: 11px; margin-top: 0.6em; margin-bottom: 0.6em; position: relative; background-color: #ffc0cb; padding-top: 1.0em; padding-bottom: 1.0em; color: #666; padding-right: 4px; -webkit-border-radius: 5px; -moz-border-radius: 5px;}
-.h1-watermark-description p { margin-left: 1em; }
+
+.alert_banner_sticky_wrapper { margin-bottom: 10px; }
+#alert_banner { width: 100%; height: 30px; margin-bottom: 10px; }
+#alert_banner .banner-watermark { width: 100%; height: 20px; font-size: 16px; text-align: center;
+	background-color: #f00; padding: 5px; color: #fff; line-height: 20px; margin: 0 auto; }
+#alert_banner .banner-watermark.admin { background-color: #DAA520; }
+.banner-watermark-description { width: 100%; margin: 10px 0; }
+.banner-watermark-description p { font-size: 11px; color: #666; width: 1212px; margin: 0 auto;
+	background-color: #ffc0cb; padding: 10px; border-radius: 5px; }
+
+#alert_banner.stuck { height: 25px; position: fixed; bottom: 0; z-index: 100; margin-bottom: 0; }
+#alert_banner.stuck .banner-watermark { font-size: 13px; height: 15px; line-height: 15px; }
+
 #debug-info-modal { font-family:monospace;padding:15px;-webkit-border-radius: 5px; -moz-border-radius: 5px;}
 
 #LoginForm_siteId { margin-top: 6px; position: absolute; right: 0; top: 0; width: 212px; }
@@ -1109,8 +1120,8 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_tabs ul li.active.hover { background-color: #a29d8a; }
 .event_tabs ul li.hover a { color: #fff; }
 
-.event_actions_sticky_wrapper { position: absolute; top: -35px; width: 835px; margin-left: 200px; text-align: right; }
-.event_actions.stuck { position: fixed; top: 44px; z-index: 10; height: 25px; width: 835px; text-align: right; opacity: 0.9; }
+.event_actions_sticky_wrapper { position: absolute; top: -35px; width: 830px; margin-left: 200px; text-align: right; }
+.event_actions.stuck { position: fixed; top: 55px; z-index: 10; height: 25px; width: 830px; text-align: right; opacity: 0.9; }
 .event_actions.stuck.hover { opacity: 1; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-left: 4px; } 

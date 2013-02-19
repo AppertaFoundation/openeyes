@@ -53,25 +53,29 @@ class BaseEventTypeController extends BaseController
 			} else {
 
 				// Register js
-				$js_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
-				while ($file = readdir($js_dh)) {
-					if (preg_match('/\.js$/',$file)) {
-						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
-					}
-				}
-				closedir($js_dh);
-
-				// Register css
-				$css_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
-				while ($file = readdir($css_dh)) {
-					if (preg_match('/\.css$/',$file)) {
-						if ($file != 'print.css') {
-							// Skip print.css as it's /only/ for print layouts
-							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+				if(is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'))) {
+					$js_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
+					while ($file = readdir($js_dh)) {
+						if (preg_match('/\.js$/',$file)) {
+							Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
 						}
 					}
+					closedir($js_dh);
 				}
-				closedir($css_dh);
+
+				// Register css
+				if(is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'))) {
+					$css_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
+					while ($file = readdir($css_dh)) {
+						if (preg_match('/\.css$/',$file)) {
+							if ($file != 'print.css') {
+								// Skip print.css as it's /only/ for print layouts
+								Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+							}
+						}
+					}
+					closedir($css_dh);
+				}
 				
 			}
 			

@@ -46,6 +46,8 @@
  */
 class Audit extends BaseActiveRecord
 {
+	public $count;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Theatre the static model class

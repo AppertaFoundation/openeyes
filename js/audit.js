@@ -149,6 +149,7 @@ $(document).ready(function() {
 		$('.loader').show();
 
 		auditLog.run = false;
+		auditLog.running = false;
 		setTimeout('auditLog.loadItems()',50);
 
 		return false;
