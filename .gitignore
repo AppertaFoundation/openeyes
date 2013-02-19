@@ -20,4 +20,4 @@ protected/config/db_muu.php
 tags
 index.php
 protected/views/patient/custom/info/php
-
+protected/commands/
