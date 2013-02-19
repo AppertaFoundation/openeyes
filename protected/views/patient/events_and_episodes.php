@@ -16,12 +16,6 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-if ($module = $this->getModule()) {
-	$module = $module->getName();
-	$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$module.'.img'),true).'/';
-} else {
-	$module = 'OphTrOperation';
-}
 ?>
 		<h2>Episodes &amp; Events</h2>
 		<div class="fullWidth fullBox clearfix">
@@ -31,14 +25,11 @@ if ($module = $this->getModule()) {
 				</div>
 			<?php }?>
 			<div id="episodesBanner">
-				<form>
-					<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
-				</form>
+				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
 			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
-				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php
 				if (count($episodes) <1) {?>
 					<div class="alertBox fullWidthEvent">
@@ -53,22 +44,10 @@ if ($module = $this->getModule()) {
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>
-					<?php if ($module == 'OphTrOperation') {?>
-						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo Yii::app()->createUrl('img/_elements/icons/event/watermark/treatment_operation.png')?>) top left repeat-y;">
-					<?php } else {?>
-						<div id="event_content" class="watermarkBox" style="background:#fafafa url(<?php echo $assetpath?>watermark.png) top left repeat-y;">
-					<?php }?>
+					<div id="event_content" class="watermarkBox clearfix">
 				<?php }?>
 					<?php
-					if (isset($this->event)) {
-						$this->renderPartial(
-							"/clinical/".$event_template_name,
-							array(
-								'elements' => $elements,
-								'site' => $site
-							), false, true
-						);
-					} else if ($current_episode) {
+					if ($current_episode) {
 						if ($this->editing) {
 							$this->renderPartial('/clinical/updateEpisode',
 								array('episode' => $current_episode, 'error' => $error)
@@ -81,7 +60,5 @@ if ($module = $this->getModule()) {
 					}
 					?>
 				</div>
-				<!-- #event_content -->
-				<div class="colorband category_treatment"<?php if(!$this->title){ ?> style="display: none;"<?php } ?>></div>
 			</div><!-- #event_display -->
 		</div> <!-- .fullWidth -->

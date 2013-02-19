@@ -16,46 +16,52 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-$uri = preg_replace('/\/$/','',$_SERVER['REQUEST_URI']);
 ?>
 <?php
+$uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
 if (!Yii::app()->user->isGuest) {
-	if (!empty(Yii::app()->session['user'])) {
-		$user = Yii::app()->session['user'];
-	} else {
-		$user = User::model()->findByPk(Yii::app()->user->id);
-		Yii::app()->session['user'] = $user;
-	} ?>
-	<div id="user_panel">
-		<div class="clearfix">
-			<div id="user_id">
-				Hi <strong><?php echo $user->first_name . ' ' . $user->last_name; ?></strong>&nbsp;<!--a href="#" class="small">(not you?)</a-->
-			</div>
-
-			<ul id="user_nav">
-				<li><?php if ($uri == Yii::app()->baseUrl) { ?><span class="selected">Home</span><?php } else { ?><?php echo CHtml::link('Home',Yii::app()->baseUrl.'/')?><?php } ?></li>
-				<li><?php if ($uri == Yii::app()->baseUrl.'/theatre') { ?><span class="selected">Theatre Diaries</span><?php } else { ?><?php echo CHtml::link('Theatre Diaries',array(Yii::app()->baseUrl.'/theatre/'))?><?php } ?></li>
-				<li><?php if ($uri == Yii::app()->baseUrl.'/waitingList') { ?><span class="selected">Partial bookings waiting List</span><?php } else { ?><?php echo CHtml::link('Partial bookings waiting list',array(Yii::app()->baseUrl.'/waitingList/'))?><?php } ?></li>
-				<li><?php echo CHtml::link('Logout', array(Yii::app()->baseUrl.'/site/logout')) ?></li>
-			</ul>
-		</div>
+	if (empty(Yii::app()->session['user'])) {
+		Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
+	}
+	$user = Yii::app()->session['user'];
+	$menu = array();
+	foreach(Yii::app()->params['menu_bar_items'] as $menu_item) {
+		$menu[$menu_item['position']] = $menu_item;
+	}
+	ksort($menu);
+?>
+<div id="user_panel">
+	<div id="user_nav" class="clearfix">
+		<ul>
+			<?php foreach($menu as $item) {?>
+				<li>
+					<?php if ($uri == $item['uri']) {?>
+					<span class="selected"><?php echo $item['title']?></span>
+					<?php } else { ?>
+					<span><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?></span>
+					<?php }?>
+				</li>
+			<?php }?>
+		</ul>
+	</div>
+	<?php if ($this->showForm) { ?>
+	<div id="user_firm">
 		<?php
-		if ($this->showForm) {?>
-			<div id="user_firm">
-				<?php
-				$form=$this->beginWidget('CActiveForm', array(
-					'id'=>'base-form',
-					'enableAjaxValidation'=>false,
-					'action' => Yii::app()->createUrl('site')
-				));
-				?>
-				<label>Selected firm: </label>
-				<?php
-				echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms);
-				$this->endWidget();
-				?>
-			</div>
-		<?php }?>
-	</div> <!-- #user_panel -->
-<?php
-}?>
+		$form=$this->beginWidget('CActiveForm', array(
+			'id'=>'base-form',
+			'enableAjaxValidation'=>false,
+			'action' => Yii::app()->createUrl('site')
+		));
+		?>
+		<label>Selected firm: </label>
+		<?php
+		echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms);
+		$this->endWidget();
+		?>
+	</div>
+	<?php } ?>
+	<div id="user_id">
+		<span>You are logged in as:</span> <strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong>
+	</div>
+</div>
+<?php } ?>

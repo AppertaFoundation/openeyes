@@ -17,23 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class CheckBox extends BaseCWidget {
-	public $field;
-	public $labeltext;
-	public $options;
-	public $columns = array();
-	public $checked = array();
-	public $htmlOptions = array();
+class YiiSession {
+	static public function get($index) {
+		return Yii::app()->session[$index];
+	}
 
-	public function init() {
-		if (empty($_POST)) {
-			if (isset($this->element->{$this->field})) {
-				$this->checked[$this->field] = (boolean)$this->element->{$this->field};
-			} else {
-				$this->checked[$this->field] = false;
-			}
+	static public function set($index, $data, $data2='NODATAWASSENT') {
+		if ($data2 != 'NODATAWASSENT') {
+			$d = Yii::app()->session[$index];
+			$d[$data] = $data2;
+			Yii::app()->session[$index] = $d;
 		} else {
-			$this->checked[$this->field] = (boolean)@$_POST[get_class($this->element)][$this->field];
+			Yii::app()->session[$index] = $data;
 		}
 	}
 }

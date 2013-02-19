@@ -289,4 +289,9 @@ class User extends BaseActiveRecord
 
 		return $users;
 	}
+
+	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+		$properties['user_id'] = $this->id;
+		return parent::audit($target, $action, $data, $log, $properties);
+	}
 }

@@ -93,28 +93,39 @@ $(document).ready(function(){
 		}
 	}
 	
-	$('#header').waypoint('sticky');
+	/**
+	 * Sticky stuff
+	 */ 
+	$('#alert_banner').waypoint('sticky', {
+		offset: -30,
+		wrapper: '<div class="alert_banner_sticky_wrapper" />'
+	});
+	$('#header').waypoint('sticky', {
+		offset: -20,
+	});
 	$('.event_tabs').waypoint('sticky', {
-		offset: 50,
+		offset: 39,
 		wrapper: '<div class="event_tabs_sticky_wrapper" />'
 	});
-	$('.event_actions_sticky_wrapper').waypoint(function(direction) {
-		$('.event_actions').toggleClass('stuck', direction === 'up');
-	}, {
-		offset: function() {
-			var offset = $.waypoints('viewportHeight') - $(this).outerHeight();
-			return offset;
-		}
+	$('.event_actions').waypoint('sticky', {
+		offset: 44,
+		wrapper: '<div class="event_actions_sticky_wrapper" />'
+	});
+	$('body').delegate('#header.stuck, .event_tabs.stuck, .event_actions.stuck', 'hover', function(e) {
+		$('#header, .event_tabs, .event_actions').toggleClass('hover', e.type === 'mouseenter');
 	});
 
 	/**
 	 * Tab hover
 	 */
-	$('.event_tabs li').hover(function() {
-		$(this).addClass('hover');
-	}, function() {
-		$(this).removeClass('hover');
-	});
+	$('.event_tabs li').hover(
+			function() {
+				$(this).addClass('hover');
+			},
+			function() {
+				$(this).removeClass('hover');
+			}
+	);
 	
 });
 
@@ -128,4 +139,42 @@ function changeState(wb,sp) {
 		sp.removeClass('show');
 		sp.addClass('hide');
 	}
+}
+
+function ucfirst(str) { str += ''; var f = str.charAt(0).toUpperCase(); return f + str.substr(1); }
+
+function format_date(d) {
+	if (window["NHSDateFormat"] !== undefined) {
+		var date = window["NHSDateFormat"];
+		var m = date.match(/[a-zA-Z]+/g);
+
+		for (var i in m) {
+			date = date.replace(m[i],format_date_get_segment(d,m[i]));
+		}
+
+		return date;
+	}
+}
+
+function format_date_get_segment(d,segment) {
+	switch (segment) {
+		case 'j':
+			return d.getDate();
+		case 'd':
+			return (d.getDate() <10 ? '0' : '') + d.getDate();
+		case 'M':
+			return getMonthShortName(d.getMonth());
+		case 'Y':
+			return d.getFullYear();
+	}
+}
+
+function getMonthShortName(i) {
+	var months = {0:'Jan',1:'Feb',2:'Mar',3:'Apr',4:'May',5:'Jun',6:'Jul',7:'Aug',8:'Sep',9:'Oct',10:'Nov',11:'Dec'};
+	return months[i];
+}
+
+function getMonthNumberByShortName(m) {
+	var months = {'Jan':0,'Feb':1,'Mar':2,'Apr':3,'May':4,'Jun':5,'Jul':6,'Aug':7,'Sep':8,'Oct':9,'Nov':10,'Dec':11};
+	return months[m];
 }

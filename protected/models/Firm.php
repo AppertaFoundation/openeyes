@@ -233,8 +233,7 @@ class Firm extends BaseActiveRecord
 	 *
 	 * @return object
 	 */
-	public function getConsultant()
-	{
+	public function getConsultant() {
 		$result = Yii::app()->db->createCommand()
 			->select('cslt.id AS id')
 			->from('consultant cslt')
@@ -255,6 +254,13 @@ class Firm extends BaseActiveRecord
 		}
 	}
 
+	public function getConsultantName() {
+		if ($consultant = $this->consultant) {
+			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+		}
+		return 'CONSULTANT';
+	}
+
 	public function getConsultantUser() {
 		$result = Yii::app()->db->createCommand()
 			->select('u.id as id')
@@ -273,6 +279,24 @@ class Firm extends BaseActiveRecord
 			return null;
 		} else {
 			return User::model()->findByPk($result['id']);
+		}
+	}
+	
+	public function getSpecialty() {
+		$result = Yii::app()->db->createCommand()
+			->select('su.specialty_id as id')
+			->from('subspecialty su')
+			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
+			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
+			->where('f.id = :fid', array(
+				':fid' => $this->id
+			))
+			->queryRow();
+		
+		if (empty($result)) {
+			return null;
+		} else {
+			return Specialty::model()->findByPk($result['id']);
 		}
 	}
 }

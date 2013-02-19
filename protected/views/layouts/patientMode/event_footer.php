@@ -18,10 +18,5 @@
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/plugins.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>
 
-	<?php if (Yii::app()->user->checkAccess('admin')) {?>
-		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
-	<?php } else if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
 </body>
 </html>

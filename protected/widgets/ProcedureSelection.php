@@ -21,7 +21,6 @@ class ProcedureSelection extends BaseCWidget {
 	public $subsections;
 	public $procedures;
 	public $removed_stack;
-	public $newRecord;
 	public $selected_procedures;
 	public $form;
 	public $durations = false;
@@ -29,6 +28,7 @@ class ProcedureSelection extends BaseCWidget {
 	public $total_duration = 0;
 	public $last;
 	public $short_version = true;
+	public $newRecord;
 
 	public function run() {
 		if (empty($_POST)) {
@@ -83,7 +83,7 @@ class ProcedureSelection extends BaseCWidget {
 		} else {
 			// Doesn't matter if removed_stack contains non-common procedures as lists are reloaded using ajax on removal
 			foreach($this->selected_procedures as $selected_procedure) {
-				$this->removed_stack[] = "{id: $selected_procedure->id, name: '$selected_procedure->term'}";
+				$this->removed_stack[] = "{id: {$selected_procedure->procedure->id}, name: '{$selected_procedure->procedure->term}'}";
 			}
 		}
 

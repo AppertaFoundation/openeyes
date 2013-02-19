@@ -18,15 +18,12 @@
  */
 ?>
 <h2>Audit log</h2>
-<?php $userid = Yii::app()->session['user']->id; if (($userid != 2103)and($userid != 122)and($userid != 613)and($userid != 1330)and($userid != 1)) {exit;} ?>
 <div class="fullWidth fullBox clearfix">
 	<div id="whiteBox">
 		<p><strong></strong></p>
 	</div>
 
 	<div id="waitinglist_display">
-	<p><?php echo $unique_users?> unique users since <?php echo date('jS F Y')?></p>
-	<p><?php echo $total_logins?> total successful logins since <?php echo date('jS F Y')?></p>
 		<form method="post" action="/audit/search" id="auditList-filter">
 			<input type="hidden" id="page" name="page" value="1" />
 			<div id="search-options">

@@ -18,12 +18,10 @@
  */
 
 class ModuleAPI {
-	
 	static public function getmodel($module, $model) {
 		if (isset(Yii::app()->modules[$module])) {
 			Yii::import('application.modules.'.$module.'.models.*');
 			return new $model;
 		}
 	}
-
 }

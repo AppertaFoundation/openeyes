@@ -43,7 +43,7 @@
   <div id="container">
 	<div id="header" class="clearfix">
 
-		<div id="brand" class="ir"><h1>OpenEyes</h1></div>
+		<?php echo $this->renderPartial('//base/_brand'); ?>
 		
 		<div id="user_panel" class="inAdmin">
 			<div class="clearfix">
@@ -141,7 +141,8 @@
 
   
   <div id="footer">
-  	<h6>&copy; Copyright OpenEyes Foundation 2011 &nbsp;&nbsp;|&nbsp;&nbsp; Terms of Use &nbsp;&nbsp;|&nbsp;&nbsp; Legals</h6>
+		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?>&nbsp;&nbsp;|&nbsp;&nbsp;
+			<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">served, with love, by <?php echo trim(`hostname`)?></a></h6>
   </div> <!-- #footer -->
 
 </body>

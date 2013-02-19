@@ -17,24 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class CheckBox extends BaseCWidget {
-	public $field;
-	public $labeltext;
-	public $options;
-	public $columns = array();
-	public $checked = array();
-	public $htmlOptions = array();
+class WidgetController extends Controller
+{
+	public $layout='column2';
 
-	public function init() {
-		if (empty($_POST)) {
-			if (isset($this->element->{$this->field})) {
-				$this->checked[$this->field] = (boolean)$this->element->{$this->field};
-			} else {
-				$this->checked[$this->field] = false;
-			}
-		} else {
-			$this->checked[$this->field] = (boolean)@$_POST[get_class($this->element)][$this->field];
-		}
+	public function filters()
+	{
+		return array('accessControl');
+	}
+
+	public function accessRules()
+	{
+		return array(
+			array('allow',
+				'users'=>array('@')
+			),
+			// non-logged in can't view anything
+			array('deny',
+				'users'=>array('?')
+			),
+		);
+	}
+
+	protected function beforeAction($action)
+	{
+		return parent::beforeAction($action);
 	}
 }
-?>
