@@ -17,11 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI {
-	static public function getmodel($module, $model) {
-		if (isset(Yii::app()->modules[$module])) {
-			Yii::import('application.modules.'.$module.'.models.*');
-			return new $model;
+class ModuleAPI extends CApplicationComponent {
+	public function get($moduleName) {
+		if ($module = Yii::app()->getModule($moduleName)) {
+			Yii::import("application.modules.$moduleName.components.*");
+
+			$APIClass = $moduleName.'_API';
+
+			if (class_exists($APIClass)) {
+				return new $APIClass;
+			}
 		}
+
+		return false;
 	}
 }
