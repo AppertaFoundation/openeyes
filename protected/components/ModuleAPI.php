@@ -18,6 +18,13 @@
  */
 
 class ModuleAPI extends CApplicationComponent {
+	static public function getmodel($module, $model) {
+		if (isset(Yii::app()->modules[$module])) {
+			Yii::import('application.modules.'.$module.'.models.*');
+			return new $model;
+		}
+	}
+
 	public function get($moduleName) {
 		if ($module = Yii::app()->getModule($moduleName)) {
 			Yii::import("application.modules.$moduleName.components.*");
