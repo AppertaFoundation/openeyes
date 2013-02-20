@@ -228,6 +228,18 @@ class Firm extends BaseActiveRecord
 		return $data;
 	}
 
+	public function getCataractList() {
+		$specialty = Specialty::model()->find('code=?',array('OPH'));
+		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
+		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty->id));
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('service_subspecialty_assignment_id',$ssa->id);
+		$criteria->order = 'name';
+
+		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
+	}
+
 	/**
 	 * Returns the consultant for the firm
 	 *
@@ -281,7 +293,11 @@ class Firm extends BaseActiveRecord
 			return User::model()->findByPk($result['id']);
 		}
 	}
-	
+
+	public function getReportDisplay() {
+		return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->name.')';
+	}
+
 	public function getSpecialty() {
 		$result = Yii::app()->db->createCommand()
 			->select('su.specialty_id as id')

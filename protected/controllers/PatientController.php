@@ -1027,4 +1027,111 @@ class PatientController extends BaseController
 			$this->redirect(array('patient/view/'.$patient->id));
 		}
 	}
+
+	public function reportDiagnoses($params) {
+		$patients = array();
+
+		$where = '';
+		$select = "p.id as patient_id, p.hos_num, c.first_name, c.last_name";
+
+		if (empty($params['selected_diagnoses'])) {
+			return array('patients'=>array());
+		}
+
+		$command = Yii::app()->db->createCommand()
+			->from("patient p")
+			->join("contact c","c.parent_class = 'Patient' and c.parent_id = p.id");
+
+		if (!empty($params['principal'])) {
+			foreach ($params['principal'] as $i => $disorder_id) {
+				$command->join("episode e$i","e$i.patient_id = p.id");
+				$command->join("eye eye_e_$i","eye_e_$i.id = e$i.eye_id");
+				$command->join("disorder disorder_e_$i","disorder_e_$i.id = e$i.disorder_id");
+				if ($i>0) $where .= ' and ';
+				$where .= "e$i.disorder_id = $disorder_id ";
+				$select .= ", e$i.last_modified_date as episode{$i}_date, eye_e_$i.name as episode{$i}_eye, disorder_e_$i.term as episode{$i}_disorder";
+			}
+		}
+
+		foreach ($params['selected_diagnoses'] as $i => $disorder_id) {
+			if (empty($params['principal']) || !in_array($disorder_id,$params['principal'])) {
+				$command->join("secondary_diagnosis sd$i","sd$i.patient_id = p.id");
+				$command->join("eye eye_sd_$i","eye_sd_$i.id = sd$i.eye_id");
+				$command->join("disorder disorder_sd_$i","disorder_sd_$i.id = sd$i.disorder_id");
+				if ($where) $where .= ' and ';
+				$where .= "sd$i.disorder_id = $disorder_id ";
+				$select .= ", sd$i.date as sd{$i}_date, sd$i.eye_id as sd{$i}_eye_id, eye_sd_$i.name as sd{$i}_eye, disorder_sd_$i.term as sd{$i}_disorder";
+			}
+		}
+
+		$results = array();
+
+		foreach ($command->select($select)->where($where)->queryAll() as $row) {
+			$date = $this->reportEarliestDate($row);
+
+			while(isset($results[$date['timestamp']])) {
+				$date['timestamp']++;
+			}
+
+			$results['patients'][$date['timestamp']] = array(
+				'patient_id' => $row['patient_id'],
+				'hos_num' => $row['hos_num'],
+				'first_name' => $row['first_name'],
+				'last_name' => $row['last_name'],
+				'date' => $date['date'],
+				'diagnoses' => array(),
+			);
+
+			foreach ($row as $key => $value) {
+				if (preg_match('/^episode([0-9]+)_eye$/',$key,$m)) {
+					$results['patients'][$date['timestamp']]['diagnoses'][] = array(
+						'eye' => $value,
+						'diagnosis' => $row['episode'.$m[1].'_disorder'],
+					);
+				}
+				if (preg_match('/^sd([0-9]+)_eye$/',$key,$m)) {
+					$results['patients'][$date['timestamp']]['diagnoses'][] = array(
+						'eye' => $value,
+						'diagnosis' => $row['sd'.$m[1].'_disorder'],
+					);
+				}
+			}
+		}
+
+		ksort($results['patients'], SORT_NUMERIC);
+
+		return $results;
+	}
+
+	public function reportEarliestDate($row) {
+		$dates = array();
+
+		foreach ($row as $key => $value) {
+			$value = substr($value,0,10);
+
+			if (preg_match('/_date$/',$key) && !in_array($value,$dates)) {
+				$dates[] = $value;
+			}
+		}
+
+		sort($dates, SORT_STRING);
+
+		if (preg_match('/-00-00$/',$dates[0])) {
+			return array(
+				'date' => substr($dates[0],0,4),
+				'timestamp' => strtotime(substr($dates[0],0,4).'-01-01'),
+			);
+		} else if (preg_match('/-00$/',$dates[0])) {
+			$date = Helper::getMonthText(substr($dates[0],5,2)).' '.substr($dates[0],0,4);
+			return array(
+				'date' => $date,
+				'timestamp' => strtotime($date),
+			);
+		}
+
+		return array(
+			'date' => date('j M Y',strtotime($dates[0])),
+			'timestamp' => strtotime($dates[0]),
+		);
+	}
 }
