@@ -23,7 +23,7 @@ class OELetter {
 	protected $from_address;
 	protected $replyto_address;
 	protected $body_html;
-	protected $font_family = 'times';
+	protected $font_family = 'helvetica';
 	protected $font_size = '12';
 	protected $barcode;
 	protected $watermark;
