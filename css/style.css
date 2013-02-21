@@ -72,8 +72,7 @@ body {}
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
 #header.stuck { background: #8ac7f0; position: fixed; top: 0; z-index: 10; padding-bottom: 4px;
-	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 35px; opacity: 0.9; }
-#header.stuck.hover { opacity: 1; }
+	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 35px; }
 #header.stuck #brand { height: 25px; margin: 8px 0 0 10px; background: url(../img/_structure/openeyes_small.png) 0 0 no-repeat; }
 #header.stuck #brand a { height: 25px; }
 #header.stuck #patientID { border-bottom: 0; border-radius: 0; margin: 0; height: 29px; padding: 5px 10px; width: 330px; }
@@ -1107,8 +1106,7 @@ input.diagnosis_eye { margin-left: 10px; }
 
 .event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1030px; padding: 10px 10px 0; }
 .event_tabs_sticky_wrapper { padding-bottom: 15px; }
-.event_tabs.stuck { position: fixed; top: 39px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; opacity: 0.9; }
-.event_tabs.stuck.hover { opacity: 1; }
+.event_tabs.stuck { position: fixed; top: 39px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; }
 .event_tabs ul { padding: 0; margin: 0; }
 .event_tabs ul li { float: left; list-style: none; background: #fffee7;
 	margin-right: 4px; border-top-left-radius: 3px;
@@ -1121,8 +1119,7 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_tabs ul li.hover a { color: #fff; }
 
 .event_actions_sticky_wrapper { position: absolute; top: -35px; width: 835px; margin-left: 200px; text-align: right; }
-.event_actions.stuck { position: fixed; top: 44px; z-index: 10; height: 25px; width: 835px; text-align: right; opacity: 0.9; }
-.event_actions.stuck.hover { opacity: 1; }
+.event_actions.stuck { position: fixed; top: 44px; z-index: 10; height: 25px; width: 835px; text-align: right; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-left: 4px; } 
 
