@@ -114,14 +114,14 @@ class Institution extends BaseActiveRecord
 		$address = "$this->name\n";
 
 		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray(false));
+			$address .= implode("\n",$this->address->getLetterArray());
 		}
 
 		return $address;
 	}
 
 	public function getLetterArray() {
-		return array_merge(array($this->name),$this->address->getLetterArray(false));
+		return array_merge(array($this->name),$this->address->getLetterArray());
 
 		$address = array();
 		foreach (array('address1', 'address2', 'address3', 'postcode') as $field) {

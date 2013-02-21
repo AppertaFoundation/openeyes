@@ -561,7 +561,7 @@ class Patient extends BaseActiveRecord {
 		$address .= "\n";
 		
 		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray(false));
+			$address .= implode("\n",$this->address->getLetterArray());
 		}
 		
 		return $address; 
