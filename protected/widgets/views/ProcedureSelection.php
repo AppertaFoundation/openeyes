@@ -77,8 +77,7 @@
 				<h4>
 					<?php
 					if (!empty($selected_procedures)) {
-						foreach ($selected_procedures as $procedure) {
-							$procedure = $procedure->procedure;?>
+						foreach ($selected_procedures as $procedure) {?>
 							<div class="procedureItem">
 								<span class="left">
 									<a href="#" class="small removeProcedure"><strong>(remove)</strong></a>
