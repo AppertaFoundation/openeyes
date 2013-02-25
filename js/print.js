@@ -61,6 +61,22 @@ function printContent(csspath) {
 	});
 }
 
+function printIFrameUrl(url, data) {
+	if (data) {
+		url += '?' + $.param(data);
+	}
+	
+	$('#print_content_iframe').remove();
+	var iframe = $('<iframe></iframe>');
+	iframe.attr({
+		id: 'print_content_iframe',
+		name: 'print_content_iframe',
+		src: url,
+		style: 'display: none;',
+	});
+	$('body').append(iframe);
+}
+
 function printUrl(url, data, csspath) {
 	$.post(url, data, function(content) {
 		$('#printable').html(content);
