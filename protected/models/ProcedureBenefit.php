@@ -10,32 +10,57 @@
  * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * @package OpenEyes
- * @link http://www.openeyes.org.uk
- * @author OpenEyes <info@openeyes.org.uk>
+ * @link http://www.openprocedure_benefits.org.uk
+ * @author OpenEyes <info@openprocedure_benefits.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI extends CApplicationComponent {
-	static public function getmodel($module, $model) {
-		if (isset(Yii::app()->modules[$module])) {
-			Yii::import('application.modules.'.$module.'.models.*');
-			return new $model;
-		}
+/**
+ * This is the model class for table "procedure_benefit".
+ *
+ * The followings are the available columns in table 'procedure_benefit':
+ * @property string $id
+ * @property string $name
+ */
+class ProcedureBenefit extends BaseActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @return Firm the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
 	}
 
-	public function get($moduleName) {
-		if ($module = Yii::app()->getModule($moduleName)) {
-			Yii::import("application.modules.$moduleName.components.*");
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'procedure_benefit';
+	}
 
-			$APIClass = $moduleName.'_API';
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+		);
+	}
 
-			if (class_exists($APIClass)) {
-				return new $APIClass;
-			}
-		}
-
-		return false;
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		return array(
+			'benefit' => array(self::BELONGS_TO, 'Benefit', 'benefit_id'),
+		);
 	}
 }

@@ -21,6 +21,7 @@ class ProcedureSelection extends BaseCWidget {
 	public $subsections;
 	public $procedures;
 	public $removed_stack;
+	public $newRecord;
 	public $selected_procedures;
 	public $form;
 	public $durations = false;
@@ -28,20 +29,25 @@ class ProcedureSelection extends BaseCWidget {
 	public $total_duration = 0;
 	public $last;
 	public $short_version = true;
-	public $newRecord;
+	public $identifier = 'procs';
+	public $relation = 'procedures';
+	public $label = 'Procedures';
+	public $headertext;
+	public $read_only = false;
+	public $restrict = false;
 
 	public function run() {
 		if (empty($_POST)) {
 			if (!$this->selected_procedures) {
-				$this->selected_procedures = $this->element->procedures;
+				$this->selected_procedures = $this->element->{$this->relation};
 				if ($this->durations) {
 					$this->total_duration = $this->element->total_duration;
 				}
 			}
 		} else {
 			$this->selected_procedures = array();
-			if (isset($_POST['Procedures']) && is_array($_POST['Procedures'])) {
-				foreach ($_POST['Procedures'] as $proc_id) {
+			if (isset($_POST['Procedures_'.$this->identifier]) && is_array($_POST['Procedures_'.$this->identifier])) {
+				foreach ($_POST['Procedures_'.$this->identifier] as $proc_id) {
 					$proc = Procedure::model()->findByPk($proc_id);
 					$this->selected_procedures[] = $proc;
 					if ($this->durations) {
@@ -53,11 +59,15 @@ class ProcedureSelection extends BaseCWidget {
 		
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
-		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+		if ($this->restrict == 'unbooked') {
+			$this->subsections = array();
+		} else {
+			$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+		}
 		$this->procedures = array();
 		$this->removed_stack = array();
 		if (empty($this->subsections)) {
-			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id) as $proc_id => $name) {
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id,($this->restrict=='unbooked')) as $proc_id => $name) {
 				if (empty($_POST)) {
 					$found = false;
 					if ($this->selected_procedures) {
@@ -73,7 +83,7 @@ class ProcedureSelection extends BaseCWidget {
 						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
 					}
 				} else {
-					if (!@$_POST['Procedures'] || !in_array($proc_id,$_POST['Procedures'])) {
+					if (!@$_POST['Procedures_'.$this->identifier] || !in_array($proc_id,$_POST['Procedures_'.$this->identifier])) {
 						$this->procedures[$proc_id] = $name;
 					} else {
 						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
@@ -83,12 +93,17 @@ class ProcedureSelection extends BaseCWidget {
 		} else {
 			// Doesn't matter if removed_stack contains non-common procedures as lists are reloaded using ajax on removal
 			foreach($this->selected_procedures as $selected_procedure) {
-				$this->removed_stack[] = "{id: {$selected_procedure->procedure->id}, name: '{$selected_procedure->procedure->term}'}";
+				$this->removed_stack[] = "{id: $selected_procedure->id, name: '$selected_procedure->term'}";
 			}
 		}
 
 		$this->class = get_class($this->element);
-		parent::run();
+
+		if ($this->read_only) {
+			$this->render(get_class($this)."_readonly");
+		} else {
+			$this->render(get_class($this));
+		}
 	}
 }
 ?>

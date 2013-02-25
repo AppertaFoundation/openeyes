@@ -360,7 +360,8 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->event->episode->firm
+			&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
@@ -834,8 +835,7 @@ class BaseEventTypeController extends BaseController
 	 * @param integer $id event id
 	 * @param array $elements
 	 */
-	protected function printPDF($id, $elements) {
-
+	protected function printPDF($id, $elements, $template='print') {
 		// Remove any existing css
 		Yii::app()->getClientScript()->reset();
 		
@@ -843,7 +843,7 @@ class BaseEventTypeController extends BaseController
 		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
 		$oeletter = new OELetter();
 		$oeletter->setBarcode('E:'.$id);
-		$body = $this->render('print', array(
+		$body = $this->render($template, array(
 			'elements' => $elements,
 			'eventId' => $id,
 		), true);

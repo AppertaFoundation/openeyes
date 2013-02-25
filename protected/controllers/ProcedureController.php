@@ -54,7 +54,7 @@ class ProcedureController extends Controller
 	 */
 	public function actionAutocomplete()
 	{
-		echo CJavaScript::jsonEncode(Procedure::getList($_GET['term']));
+		echo CJavaScript::jsonEncode(Procedure::getList($_GET['term'], @$_GET['restrict']));
 	}
 
 	public function actionDetails()
@@ -75,7 +75,12 @@ class ProcedureController extends Controller
 
 						$found = true;
 
-						$this->renderPartial('_ajaxProcedure', array('data' => $data, 'durations' => @$_GET['durations'], 'short_version' => $_GET['short_version']), false, false);
+						$this->renderPartial('_ajaxProcedure',array(
+							'data' => $data,
+							'durations' => @$_GET['durations'],
+							'short_version' => $_GET['short_version'],
+							'identifier' => @$_GET['identifier'],
+						), false, false);
 						break;
 					}
 				}
@@ -100,7 +105,12 @@ class ProcedureController extends Controller
 
 					Yii::app()->session['Procedures'] = $list;
 
-					$this->renderPartial('_ajaxProcedure', array('data' => $data, 'durations' => @$_GET['durations'], 'short_version' => $_GET['short_version']), false, false);
+					$this->renderPartial('_ajaxProcedure',array(
+						'data' => $data,
+						'durations' => @$_GET['durations'],
+						'short_version' => $_GET['short_version'],
+						'identifier' => @$_GET['identifier'],
+					), false, false);
 				}
 			}
 		}
@@ -123,5 +133,45 @@ class ProcedureController extends Controller
 
 			$this->renderPartial('_procedureOptions', array('procedures' => $procedures), false, false);
 		}
+	}
+
+	public function actionBenefits($id) {
+		if (!Procedure::model()->findByPk($id)) {
+			throw new Exception("Unknown procedure: $id");
+		}
+
+		$benefits = array();
+
+		foreach (Yii::app()->db->createCommand()
+			->select("b.name")
+			->from("benefit b")
+			->join("procedure_benefit pb","pb.benefit_id = b.id")
+			->where("pb.proc_id = $id")
+			->order("b.name asc")
+			->queryAll() as $row) {
+			$benefits[] = $row['name'];
+		}
+
+		echo json_encode($benefits);
+	}
+
+	public function actionComplications($id) {
+		if (!Procedure::model()->findByPk($id)) {
+			throw new Exception("Unknown procedure: $id");
+		}
+		
+		$complications = array();
+
+		foreach (Yii::app()->db->createCommand()
+			->select("b.name")
+			->from("complication b")
+			->join("procedure_complication pb","pb.complication_id = b.id")
+			->where("pb.proc_id = $id")
+			->order("b.name asc")
+			->queryAll() as $row) {
+			$complications[] = $row['name'];
+		}
+		
+		echo json_encode($complications);
 	}
 }

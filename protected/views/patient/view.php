@@ -22,39 +22,14 @@ $this->breadcrumbs=array(
 	"{$patientName} ({$this->patient->hos_num})",
 );
 
-$address_str = '';
-
 $address = $this->patient->address;
 
 if (!empty($address)) {
-	$fields = array(
-		'address1' => str_replace(',','',$address->address1),
-		'address2' => $address->address2,
-		'city' => $address->city,
-		'county' => $address->county,
-		'postcode' => $address->postcode);
-	$addressList = array_filter($fields, 'filter_nulls');
-
-	$numLines = 1;
-	foreach ($addressList as $name => $string) {
-		if ($name === 'postcode') {
-			$string = strtoupper($string);
-		}
-		if ($name != 'email') {
-			$address_str .= $string;
-		}
-		if (!empty($string) && $string != end($addressList)) {
-			$address_str .= '<br />';
-		}
-		$numLines++;
-	}
-	// display extra blank lines if needed for padding
-	for ($numLines; $numLines <= 5; $numLines++) {
-		$address_str .= '<br />';
-	}
+	$address_str = $address->getLetterHtml();
 } else {
-	$address_str .= 'Unknown';
-} ?>
+	$address_str = 'Unknown';
+}
+?>
 		<h2>Patient Summary</h2>
 			<div class="wrapTwo clearfix">
 				<?php $this->renderPartial('//base/_messages'); ?>
@@ -103,7 +78,7 @@ if (!empty($address)) {
 						<div class="data_row">
 							<div class="data_label">Date of Birth:</div>
 							<div class="data_value">
-								<?php echo $this->patient->NHSDate('dob') ?>
+								<?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?>
 							</div>
 						</div>
 						<div class="data_row">
