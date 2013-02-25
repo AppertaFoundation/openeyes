@@ -61,6 +61,35 @@ function printContent(csspath) {
 	});
 }
 
+/*
+ * creates an iframe in the current document, and populates with the given url and GET data
+ * 
+ * NOTE: the call to print the iFrame must be part of the document returned by the server. By having
+ * this in the $(document).ready() function, we can ensure that all the requisite objects (specifically
+ * eyedraw) are loaded before the print is attempted.
+ * 
+ * @param url - url of page to load
+ * @param data - associative array of GET values to append to URL
+ */
+function printIFrameUrl(url, data) {
+	if (data) {
+		url += '?' + $.param(data);
+	}
+	
+	$('#print_content_iframe').remove();
+	var iframe = $('<iframe></iframe>');
+	iframe.attr({
+		id: 'print_content_iframe',
+		name: 'print_content_iframe',
+		src: url,
+		style: 'display: none;',
+	});
+	$('body').append(iframe);
+}
+
+/*
+ * DEPRECATED - should migrate to using printIFrameUrl
+ */
 function printUrl(url, data, csspath) {
 	$.post(url, data, function(content) {
 		$('#printable').html(content);
