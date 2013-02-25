@@ -158,7 +158,9 @@ class UserIdentity extends CUserIdentity
 				}
 
 				$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
-				$info = ldap_get_entries($link, $sr);
+				if (!($info = ldap_get_entries($link, $sr)) || empty($info)) {
+					throw new Exception("Failed to retrieve ldap info for user $user->username: ".ldap_error($link));
+				}
 				$info = $info[0];
 			}
 
