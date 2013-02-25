@@ -994,10 +994,10 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->addBenefit('Strabismus','Inferior rectus resection','improve double vision');
 		$this->addBenefit('Strabismus','Inferior rectus resection','improve head posture');
 		$this->addBenefit('Strabismus','Inferior rectus resection','improve binocular potential');
-		$this->addComplication('Cataract','Injection into anterior chamber of eye','raised IOP');
-		$this->addComplication('Cataract','Injection into anterior chamber of eye','haemorrhage');
-		$this->addComplication('Cataract','Injection into anterior chamber of eye','inflammation');
-		$this->addBenefit('Cataract','Injection into anterior chamber of eye','reduce inflammation');
+		$this->addComplication('Cataract','Injection into anterior chamber','raised IOP');
+		$this->addComplication('Cataract','Injection into anterior chamber','haemorrhage');
+		$this->addComplication('Cataract','Injection into anterior chamber','inflammation');
+		$this->addBenefit('Cataract','Injection into anterior chamber','reduce inflammation');
 		$this->addComplication('Cornea','Injection into eye','Infection');
 		$this->addComplication('Cornea','Injection into eye','bleeding');
 		$this->addComplication('Cornea','Injection into eye','loss of vision');
