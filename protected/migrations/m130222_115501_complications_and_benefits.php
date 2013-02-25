@@ -523,12 +523,12 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->addComplication('Adnexal','Dacryocystorhinostomy','lower lid weakness/incomplete lid closure');
 		$this->addComplication('Adnexal','Dacryocystorhinostomy','failure of surgery');
 		$this->addBenefit('Adnexal','Dacryocystorhinostomy','Improve watering');
-		$this->addComplication('Adnexal','Dacryocystorhinostomy - endonasal','infection');
-		$this->addComplication('Adnexal','Dacryocystorhinostomy - endonasal','bleeding (including nose bleed)');
-		$this->addComplication('Adnexal','Dacryocystorhinostomy - endonasal','extrusion of tube onto ocular surface');
-		$this->addComplication('Adnexal','Dacryocystorhinostomy - endonasal','air blow-back');
-		$this->addComplication('Adnexal','Dacryocystorhinostomy - endonasal','failure of surgery');
-		$this->addBenefit('Adnexal','Dacryocystorhinostomy - endonasal','Improve watering');
+		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','infection');
+		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','bleeding (including nose bleed)');
+		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','extrusion of tube onto ocular surface');
+		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','air blow-back');
+		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','failure of surgery');
+		$this->addBenefit('Adnexal','Dacrocystorhinostomy - endonasal','Improve watering');
 		$this->addComplication('Adnexal','Dacryocystorhinostomy & retrotubes','infection');
 		$this->addComplication('Adnexal','Dacryocystorhinostomy & retrotubes','bleeding (including nose bleed)');
 		$this->addComplication('Adnexal','Dacryocystorhinostomy & retrotubes','scarring');
