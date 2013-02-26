@@ -79,6 +79,8 @@ class UserIdentity extends CUserIdentity
 			Yii::app()->params['auth_source'] = 'BASIC';
 		}
 
+		$this->password = utf8_decode($this->password);
+
 		/**
 		 * Here we diverge depending on the authentication source.
 		 */
