@@ -24,6 +24,9 @@ return array(
 			'username' => 'root',
 			'password' => '',
 		),
+		'session' => array(
+			'timeout' => 86400
+		),
 		/*
 		'log' => array(
 			'routes' => array(
