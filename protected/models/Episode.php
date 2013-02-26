@@ -210,10 +210,10 @@ class Episode extends BaseActiveRecord
 	public function getBookingsForToday() {
 		return Yii::app()->db->createCommand()
 			->select('b.id')
-			->from('ophtroperation_operation_booking b')
-			->join('et_ophtroperation_operation eo','eo.id = b.element_id')
+			->from('ophtroperationbooking_operation_booking b')
+			->join('et_ophtroperationbooking_operation eo','eo.id = b.element_id')
 			->join('event e','eo.event_id = e.id')
-			->join('ophtroperation_operation_session s','b.session_id = s.id')
+			->join('ophtroperationbooking_operation_session s','b.session_id = s.id')
 			->where('e.episode_id = :episode_id and s.date = :todaysDate', array(':episode_id' => $this->id,':todaysDate' => date('Y-m-d')))
 			->order('b.last_modified_date desc')
 			->queryAll();
@@ -222,15 +222,15 @@ class Episode extends BaseActiveRecord
 	public function getMostRecentBooking() {
 		if ($booking = Yii::app()->db->createCommand()
 			->select('b.id')
-			->from('ophtroperation_operation_booking b')
-			->join('et_ophtroperation_operation eo','eo.id = b.element_id')
+			->from('ophtroperationbooking_operation_booking b')
+			->join('et_ophtroperationbooking_operation eo','eo.id = b.element_id')
 			->join('event e','eo.event_id = e.id')
 			->where('e.episode_id = :episode_id', array(':episode_id' => $this->id))
 			->limit(1)
 			->order('b.last_modified_date desc')
 			->queryRow()) {
 
-			return OphTrOperation_Operation_Booking::model()->findByPk($booking['id']);
+			return OphTrOperationbooking_Operation_Booking::model()->findByPk($booking['id']);
 		}
 
 		return false;

@@ -660,6 +660,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_content .patientReminder { display:block; background: #fff2d7; padding:10px; }
 #event_content .patientReminder .patient { position:relative; top:1px; left:5px;}
 #event_content h3 { color:#333; padding:10px 10px 0 10px;} /* inherits margin-bottom: 10px */
+#event_content h3.sectiondivider { font-family:Georgia,Constantia,Lucida,Times,serif; font-size:14px; color:#444; background:#dae6f1; padding:15px 10px 12px 10px; margin-top: 10px; }
 #event_content h4 { color:#56a7f1; font-size:13px; padding:5px 10px 0 10px; margin-bottom: 5px;}
 #event_content form h4 { color:#56a7f1; font-size:13px; font-style: italic;  border-top:1px dotted #97c6f1; padding:10px 10px 0 10px; margin-bottom: 10px; }
 
@@ -1133,3 +1134,68 @@ a.event-action.secondary.blue { color: #105dae; }
 a.event-action.secondary.blue:hover { background: #105dae; color: #fff; text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
 a.event-action.secondary.green { color: #3fa522; }
 a.event-action.secondary.green:hover { background: #3fa522; color: #fff; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+
+/* ====== Element DETAIL ====== */
+#event_content .edetail { padding:10px; background:#dae6f1; position:relative; }
+#event_content .edetail.header { padding-top:0; border-top:1px solid #dae6f1; }
+#event_content .edetail:hover { background-color:#dfecf7;}
+/* add the clearfix to edetail to handle long labels that wrap over 2 lines */
+#event_content .edetail:before, #event_content .edetail:after { content: ""; display: table; }
+#event_content .edetail:after { clear: both; }
+#event_content .edetail { zoom: 1; }
+/* add visual divider for data split - left right */
+#event_content .edetail.showsplit { background:#dae6f1 url(../img/_elements/gradients/bg_split-element.png) top center repeat-y; }
+#event_content .edetail.showsplit:hover { background-color:#dfecf7; }
+/* if edetail.showingsplit then tweak cols */
+#event_content .edetail.showsplit .cols > .left 	{ float: left; 	width: 49%; clear: left; position:relative; }
+#event_content .edetail.showsplit .cols > .right { float: right; width: 49%; clear: right; position:relative; }
+/* basic - max width is 1010px  */
+#event_content .edetail > .label { display:inline-block; width:170px; float:left; font-size:15px; }
+#event_content .edetail > .data {  display:inline-block; position:relative; }  /* width is controlled by label, with label = width:840px; */
+#event_content .edetail > .data.fullwidth { width:100%; } /* push data to fill width */
+#event_content .edetail > .data.fixwidth { width:840px; } /* used with cols */
+/* header instead of label */
+#event_content .edetail > .header { position:relative; left:-10px; width:1010px; font-size:15px; color:#295073; background:#fafafa; padding:15px 10px 5px 10px; margin-bottom:10px; }
+#event_content .edetail.optional > .header { width:1005px; } /* stops header overlapping dotted line */
+#event_content .ondemand	.edetail > .header { width:995px; }	/* stops header overlapping surrounding line */
+#event_content .edetail > .header .parent { padding-right:25px; margin-right: 5px;  color: #afa6a6; background: transparent url(../img/_elements/icons/element-actions/parent-child-arrow.png) right center no-repeat;}
+/* increase label width */
+#event_content.widelabels .edetail > .label { width:230px;}
+#event_content.widelabels .edetail > .data.fixwidth { width:780px; }
+/* element actions, such as import, add children */
+#event_content .edetail > .header .elementactions { position:absolute; top:5px; right:40px; height:30px; display:block;}
+
+/* GRID */
+table.grid { width:100%; } 
+table.grid th, table.grid tfoot td { text-align: left; vertical-align: middle; background:#ddd; color: #444; font-size: 11px; font-weight:bold; min-width:30px; padding:10px; border-right:1px solid #bbb;}
+table.grid td { text-align: left; padding:10px; border-right:1px solid #ccc; } 
+table.grid th:last-child, table.grid td:last-child { border-right: none; }
+table.grid td.nowrap { white-space: nowrap; }
+table.grid td.icons > img {margin-right:4px; margin-bottom:4px; }
+/* customise */
+table.grid.margintop { margin-top:10px; }
+table.grid.marginbottom { margin-bottom:10px; }
+table.grid.reduceheight td { padding-top:5px; padding-bottom:5px; }
+table.grid.nodivider td, table.grid.nodivider th { border-right:none; }
+table.grid.valignmiddle tr td { vertical-align:middle; }
+/* table grid bottom grey border to match thead */
+div.tablegrid { background:#ddd; }
+div.tablegrid.end {  min-height:15px; }
+div.tablegrid.footer { padding:5px 10px; }
+div.tablegrid.footer h6 { color: #444; font-size: 11px; font-weight:bold; padding:10px 0;}
+/* pagination for grid results */
+div.tablegrid.pagination { text-align:right; padding:10px;	}
+div.tablegrid.pagination > span:after { content: "\00a0\00a0 |\00a0\00a0 "; color: #999; }
+div.tablegrid.pagination .results .showing { background:#eee; color:#000; font-weight: bold; padding:2px 8px; border:none; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+/* table key */
+div.tablekey  { background:#ddd; color: #444; font-size: 11px; font-weight:bold; padding:10px; } 
+div.tablekey .keys { margin-bottom:15px; }
+div.tablekey .keys .desc { display:inline-block; margin-right:10px; margin-bottom:10px; font-weight:normal; }
+div.tablekey .keys .key { margin-right:15px; margin-top:5px; vertical-align: bottom; }
+div.tablekey .keys.inline .desc { margin-bottom:0; }
+div.tablekey .keys.inline .key { display:inline-block; margin-top:0; }
+/* key colours - specific colours are set in module.css */
+div.tablekey .key .icon { display:inline-block; margin-right:5px; }
+div.tablekey .key .colorbox { display:inline-block; height:10px; width:15px; background:#eee; border:1px solid #999; position: relative; top:1px; margin-right:5px; }
+
+.btngroup.padtop { padding-top:20px; }
