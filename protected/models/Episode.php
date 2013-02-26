@@ -230,7 +230,7 @@ class Episode extends BaseActiveRecord
 			->order('b.last_modified_date desc')
 			->queryRow()) {
 
-			return OphTrOperation_Operation_Booking::model()->findByPk($booking['id']);
+			return OphTrOperationbooking_Operation_Booking::model()->findByPk($booking['id']);
 		}
 
 		return false;
