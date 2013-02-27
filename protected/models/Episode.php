@@ -219,23 +219,6 @@ class Episode extends BaseActiveRecord
 			->queryAll();
 	}
 
-	public function getMostRecentBooking() {
-		if ($booking = Yii::app()->db->createCommand()
-			->select('b.id')
-			->from('ophtroperationbooking_operation_booking b')
-			->join('et_ophtroperationbooking_operation eo','eo.id = b.element_id')
-			->join('event e','eo.event_id = e.id')
-			->where('e.episode_id = :episode_id', array(':episode_id' => $this->id))
-			->limit(1)
-			->order('b.last_modified_date desc')
-			->queryRow()) {
-
-			return OphTrOperationbooking_Operation_Booking::model()->findByPk($booking['id']);
-		}
-
-		return false;
-	}
-
 	public function getMostRecentEventByType($event_type_id) {
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);

@@ -17,18 +17,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI extends CApplicationComponent {
-	public function get($moduleName) {
-		if ($module = Yii::app()->getModule($moduleName)) {
-			Yii::import("application.modules.$moduleName.components.*");
-
-			$APIClass = $moduleName.'_API';
-
-			if (class_exists($APIClass)) {
-				return new $APIClass;
-			}
+class BaseAPI {
+	public function getElementForLatestEventInEpisode($patient, $element) {
+		if (!$event_type = EventType::model()->find('class_name=?',array(preg_replace('/_API$/','',get_class($this))))) {
+			throw new Exception("Unknown event type or incorrectly named API class: ".get_class($this));
 		}
 
-		return false;
+		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+			if ($event = $episode->getMostRecentEventByType($event_type->id)) {
+				$criteria = new CDbCriteria;
+				$criteria->compare('episode_id',$episode->id);
+				$criteria->compare('event_id',$event->id);
+				$criteria->order = 'datetime desc';
+
+				return $element::model()
+					->with('event')
+					->find($criteria);
+			}
+		}
 	}
 }

@@ -912,7 +912,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id));
 			
 			if (count($el)) {
-				$test = ModuleAPI::getmodel($event_type->class_name, $el[0]->getAttribute('class_name')); 
 				$code = strtolower(substr($event_type->class_name, 0, 5));
 				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $test->tableName(), $m) ) {
 					die ("ERROR: cannot determine short name for event type " . $event_type->class_name);
