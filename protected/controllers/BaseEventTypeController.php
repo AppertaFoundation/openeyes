@@ -823,11 +823,12 @@ class BaseEventTypeController extends BaseController
 	 * @param integer $id event id
 	 * @param array $elements
 	 */
-	protected function printHTML($id, $elements) {
-		$this->renderPartial('print', array(
+	protected function printHTML($id, $elements, $template='print') {
+		$this->layout = '//layouts/print';
+		$this->render($template, array(
 			'elements' => $elements,
 			'eventId' => $id,
-		), false, true);
+		));
 	}
 	
 	/**

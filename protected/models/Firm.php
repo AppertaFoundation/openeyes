@@ -258,7 +258,7 @@ class Firm extends BaseActiveRecord
 		if ($consultant = $this->consultant) {
 			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
 		}
-		return 'CONSULTANT';
+		return 'NO CONSULTANT';
 	}
 
 	public function getConsultantUser() {
