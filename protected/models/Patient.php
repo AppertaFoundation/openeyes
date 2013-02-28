@@ -958,12 +958,8 @@ class Patient extends BaseActiveRecord {
 	 * NSC right Retinopathy
 	 */
 	public function getNrr() {
-		if ($dr = $this->_getDRGrading()) {
-			$res = $dr->right_nscretinopathy;
-			if ($dr->right_nscretinopathy_photocoagulation) {
-				$res .= " and evidence of photocoagulation";
-			}
-			return $res;
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterDRRetinopathy($this,'right');
 		}
 	}
 	
@@ -971,12 +967,8 @@ class Patient extends BaseActiveRecord {
 	 * NSC left Retinopathy
 	*/
 	public function getNlr() {
-		if ($dr = $this->_getDRGrading()) {
-			$res = $dr->left_nscretinopathy;
-			if ($dr->left_nscretinopathy_photocoagulation) {
-				$res .= " and evidence of photocoagulation";
-			}
-			return $res;
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterDRRetinopathy($this,'left');
 		}
 	}
 	
@@ -984,12 +976,8 @@ class Patient extends BaseActiveRecord {
 	 * NSC right Maculopathy
 	*/
 	public function getNrm() {
-		if ($dr = $this->_getDRGrading()) {
-			$res = $dr->right_nscmaculopathy;
-			if ($dr->right_nscmaculopathy_photocoagulation) {
-				$res .= " and evidence of photocoagulation";
-			}
-			return $res;
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterDRMaculopathy($this,'right');
 		}
 	}
 	
@@ -997,26 +985,22 @@ class Patient extends BaseActiveRecord {
 	 * NSC left Maculopathy
 	*/
 	public function getNlm() {
-	if ($dr = $this->_getDRGrading()) {
-			$res = $dr->left_nscmaculopathy;
-			if ($dr->left_nscmaculopathy_photocoagulation) {
-				$res .= " and evidence of photocoagulation";
-			}
-			return $res;
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterDRMaculopathy($this,'left');
 		}
 	}
 	
 	// Clinical right DR Grade
 	public function getCrd() {
-		if ($dr = $this->_getDRGrading()) {
-			return $dr->right_clinical;
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterDRClinical($this,'right');
 		}
 	}
 	
 	// Clinical left DR Grade
 	public function getCld() {
-		if ($dr = $this->_getDRGrading()) {
-			return $dr->left_clinical;
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterDRClinical($this,'left');
 		}
 	}
 	
@@ -1033,20 +1017,12 @@ class Patient extends BaseActiveRecord {
 		return 'not diabetic';
 	}
 	
-	private function _getExaminationLaserManagement() {
-	}
-	
 	/*
 	 * Laser management plan
 	*/
 	public function getLmp() {
-		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
-			if ($mgmt_model = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_LaserManagement')) {
-				if ($m = $mgmt_model->find('event_id=?', array($event->id))) {
-					return $m->getLetter_lmp();
-				}
-			}
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterLaserManagementPlan($this);
 		}
 	}
 	
@@ -1054,26 +1030,8 @@ class Patient extends BaseActiveRecord {
 	 * Laser management comments
 	*/
 	public function getLmc() {
-		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
-			// comments from the management element should only be returned if there is a laser component.
-			if ($lmgmt_model = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_LaserManagement')) {
-				if ($lm = $lmgmt_model->find('event_id=?', array($event->id))) {
-					$mgmt_model = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Management');
-					$m = $mgmt_model->find('event_id=?', array($event->id));
-					return $m->comments;
-				}
-			}
-		}
-		
-	}
-	
-	private function _getExaminationOutcome() {
-		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?', array('OphCiExamination'))->id);
-			if ($out = ModuleAPI::getmodel('OphCiExamination', 'Element_OphCiExamination_Outcome')) {
-				return $out->find('event_id=?', array($event->id));
-			}
+		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+			return $api->getLetterLaserManagementComments($this);
 		}
 	}
 	
@@ -1086,6 +1044,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
+	
+	
 	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
 		$properties['patient_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
