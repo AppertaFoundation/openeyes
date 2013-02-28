@@ -8,7 +8,7 @@
 							<table class="subtleWhite">
 								<thead>
 									<tr>
-										<th width="80px">Date</th>
+										<th width="85px">Date</th>
 										<th>Diagnosis</th>
 										<th>Edit</th>
 									</tr>
