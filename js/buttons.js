@@ -23,7 +23,9 @@ function handleButton(button, callback) {
 	button.click(function(e) {
 		if (!button.hasClass('inactive')) {
 			disableButtons();
-			callback(e,button);
+			if (callback) {
+				callback(e,button);
+			}
 		} else {
 			e.preventDefault();
 		}
