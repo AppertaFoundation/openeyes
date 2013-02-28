@@ -258,6 +258,10 @@ class User extends BaseActiveRecord
 		return implode(' ', array($this->title, $this->first_name, $this->last_name));
 	}
 	
+	public function getFullNameAndTitleAndQualifications() {
+		return implode(' ', array($this->title, $this->first_name, $this->last_name)).($this->qualifications?' '.$this->qualifications:'');
+	}
+
 	public function getReversedFullNameAndTitle() {
 		return implode(' ', array($this->title, $this->last_name, $this->first_name));
 	}
