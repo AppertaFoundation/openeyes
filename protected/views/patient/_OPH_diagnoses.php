@@ -26,55 +26,57 @@
 							
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_new_ophthalmic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Ophthalmic Diagnosis</span></button></form>
-							</div>	
-						</div>
-						<div class="data_row" id="add_new_ophthalmic_diagnosis" style="display: none;">
-							<h5>Add ophthalmic diagnosis</h5>	
-							<?php
-							$form = $this->beginWidget('CActiveForm', array(
-									'id'=>'add-ophthalmic-diagnosis',
-									'enableAjaxValidation'=>false,
-									'htmlOptions' => array('class'=>'sliding'),
-									'action'=>array('patient/adddiagnosis'),
-							))?>
-
-							<?php $form->widget('application.widgets.DiagnosisSelection',array(
-									'field' => 'ophthalmic_disorder_id',
-									'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-									'code' => 'OPH',
-									'default' => false,
-									'layout' => 'patientSummary',
-									'loader' => 'add_ophthalmic_diagnosis_loader',
-							))?>
-
-							<div id="add_ophthalmic_diagnosis_loader" style="display: none;">
-								<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
-								<div>
-									searching...
+							</div>
+							
+							<div id="add_new_ophthalmic_diagnosis" style="display: none;">
+								<h5>Add ophthalmic diagnosis</h5>	
+								<?php
+								$form = $this->beginWidget('CActiveForm', array(
+										'id'=>'add-ophthalmic-diagnosis',
+										'enableAjaxValidation'=>false,
+										'htmlOptions' => array('class'=>'sliding'),
+										'action'=>array('patient/adddiagnosis'),
+								))?>
+	
+								<?php $form->widget('application.widgets.DiagnosisSelection',array(
+										'field' => 'ophthalmic_disorder_id',
+										'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+										'code' => 'OPH',
+										'default' => false,
+										'layout' => 'patientSummary',
+										'loader' => 'add_ophthalmic_diagnosis_loader',
+								))?>
+	
+								<div id="add_ophthalmic_diagnosis_loader" style="display: none;">
+									<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+									<div>
+										searching...
+									</div>
 								</div>
+	
+								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+	
+								<div class="diagnosis_eye">
+									<span class="diagnosis_eye_label">
+											Eye:
+									</span>
+									<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
+										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
+									<?php }?>
+								</div>
+	
+								<?php $this->renderPartial('_diagnosis_date')?>
+	
+								<div align="right">
+									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
+									<button class="classy green mini btn_save_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
+									<button class="classy red mini btn_cancel_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+								</div>
+	
+								<?php $this->endWidget()?>
 							</div>
-
-							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-							<div class="diagnosis_eye">
-								<span class="diagnosis_eye_label">
-										Eye:
-								</span>
-								<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $i => $eye) {?>
-									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
-								<?php }?>
-							</div>
-
-							<?php $this->renderPartial('_diagnosis_date')?>
-
-							<div align="right">
-								<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
-								<button class="classy green mini btn_save_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
-								<button class="classy red mini btn_cancel_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-							</div>
-
-							<?php $this->endWidget()?>
 						</div>
+						
 					</div>
 				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
 					<div>
