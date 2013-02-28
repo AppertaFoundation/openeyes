@@ -8,7 +8,7 @@
 							<table class="subtleWhite">
 								<thead>
 									<tr>
-										<th width="80px">Date</th>
+										<th width="85px">Date</th>
 										<th>Diagnosis</th>
 										<th>Edit</th>
 									</tr>
@@ -26,56 +26,57 @@
 							
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_new_systemic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Systemic Diagnosis</span></button></form>
+							</div>
+							<div id="add_new_systemic_diagnosis" style="display: none;">
+								<h5>Add Systemic diagnosis</h5>	
+								<?php
+								$form = $this->beginWidget('CActiveForm', array(
+										'id'=>'add-systemic-diagnosis',
+										'enableAjaxValidation'=>false,
+										'htmlOptions' => array('class'=>'sliding'),
+										'action'=>array('patient/adddiagnosis'),
+								))?>
+	
+								<?php $form->widget('application.widgets.DiagnosisSelection',array(
+										'field' => 'systemic_disorder_id',
+										'options' => CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
+										//'restrict' => 'specialty',
+										'default' => false,
+										'layout' => 'patientSummary',
+										'loader' => 'add_systemic_diagnosis_loader',
+								))?>
+	
+								<div id="add_systemic_diagnosis_loader" style="display: none;">
+									<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
+									<div>
+										searching...
+									</div>
+								</div>
+	
+								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+	
+								<div class="diagnosis_eye">
+									<span class="diagnosis_eye_label">
+											Side:
+									</span>
+									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="" checked="checked" /> None
+									<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
+									<?php }?>
+								</div>
+	
+								<?php $this->renderPartial('_diagnosis_date')?>
+	
+								<div align="right">
+									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader" style="display: none;" />
+									<button class="classy green mini btn_save_systemic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
+									<button class="classy red mini btn_cancel_systemic_diagnosis" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+								</div>
+	
+								<?php $this->endWidget()?>
 							</div>	
 						</div>
-						<div class="data_row" id="add_new_systemic_diagnosis" style="display: none;">
-							<h5>Add Systemic diagnosis</h5>	
-							<?php
-							$form = $this->beginWidget('CActiveForm', array(
-									'id'=>'add-systemic-diagnosis',
-									'enableAjaxValidation'=>false,
-									'htmlOptions' => array('class'=>'sliding'),
-									'action'=>array('patient/adddiagnosis'),
-							))?>
-
-							<?php $form->widget('application.widgets.DiagnosisSelection',array(
-									'field' => 'systemic_disorder_id',
-									'options' => CommonSystemicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-									//'restrict' => 'specialty',
-									'default' => false,
-									'layout' => 'patientSummary',
-									'loader' => 'add_systemic_diagnosis_loader',
-							))?>
-
-							<div id="add_systemic_diagnosis_loader" style="display: none;">
-								<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
-								<div>
-									searching...
-								</div>
-							</div>
-
-							<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-
-							<div class="diagnosis_eye">
-								<span class="diagnosis_eye_label">
-										Side:
-								</span>
-								<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="" checked="checked" /> None
-								<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-									<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
-								<?php }?>
-							</div>
-
-							<?php $this->renderPartial('_diagnosis_date')?>
-
-							<div align="right">
-								<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader" style="display: none;" />
-								<button class="classy green mini btn_save_systemic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
-								<button class="classy red mini btn_cancel_systemic_diagnosis" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-							</div>
-
-							<?php $this->endWidget()?>
-						</div>
+						
 					</div>
 <script type="text/javascript">
 	$('#btn-add_new_systemic_diagnosis').click(function() {
