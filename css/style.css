@@ -737,6 +737,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content .splitElement .right { clear: right; float: right; width: 50%; }
 
 .eventDetail > .data { display:inline-block; position:relative;}
+.eventDetail > .data > .label { font-size:15px; margin-bottom: 10px;  }
 .eventDetail > .data.split { width:100%; }
 .eventDetail > .data.split	> .left { clear: left; float: left; width: 40%; }
 .eventDetail > .data.split	> .right { clear: right; float: right; width: 60%; }
