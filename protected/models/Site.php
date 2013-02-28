@@ -285,8 +285,8 @@ class Site extends BaseActiveRecord
 		$sites = Yii::app()->db->createCommand()
 			->selectDistinct('site.id, site.short_name')
 			->from('site')
-			->join('ophtroperation_operation_theatre t', 'site.id = t.site_id')
-			->join('ophtroperation_operation_session s', 's.theatre_id = t.id')
+			->join('ophtroperationbooking_operation_theatre t', 'site.id = t.site_id')
+			->join('ophtroperationbooking_operation_session s', 's.theatre_id = t.id')
 			->where('s.firm_id = :id', array(':id' => $firmId))
 			->order('site.name')
 			->queryAll();

@@ -136,7 +136,7 @@ class Practice extends BaseActiveRecord {
 			} else {
 				$return = '';
 			}
-			return $return . implode("\n",$this->address->getLetterArray(false));
+			return $return . implode("\n",$this->address->getLetterArray());
 		}
 	}
 

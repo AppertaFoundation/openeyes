@@ -514,22 +514,22 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->addComplication('Adnexal','Dacrocystogram','including anaphylaxis');
 		$this->addComplication('Adnexal','Dacrocystogram','infection');
 		$this->addBenefit('Adnexal','Dacrocystogram','Identify cause for watery eye');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','infection');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','bleeding (including nose bleed)');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','scarring');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','extrusion of tube onto ocular surface');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','eye irritation');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','air blow-back');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','lower lid weakness/incomplete lid closure');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy','failure of surgery');
-		$this->addBenefit('Adnexal','Dacrocystorhinostomy','Improve watering');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','infection');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','bleeding (including nose bleed)');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','scarring');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','extrusion of tube onto ocular surface');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','eye irritation');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','air blow-back');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','lower lid weakness/incomplete lid closure');
+		$this->addComplication('Adnexal','Dacryocystorhinostomy','failure of surgery');
+		$this->addBenefit('Adnexal','Dacryocystorhinostomy','Improve watering');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','infection');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','bleeding (including nose bleed)');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','extrusion of tube onto ocular surface');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','air blow-back');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy - endonasal','failure of surgery');
 		$this->addBenefit('Adnexal','Dacrocystorhinostomy - endonasal','Improve watering');
-		$this->addComplication('Adnexal','Dacrocystorhinostomy & retrotubes','infection');
+		$this->addComplication('Adnexal','Dacrocystorhinostomy & retrotubes ','infection');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy & retrotubes','bleeding (including nose bleed)');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy & retrotubes','scarring');
 		$this->addComplication('Adnexal','Dacrocystorhinostomy & retrotubes','extrusion of tube onto ocular surface');
@@ -994,10 +994,10 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->addBenefit('Strabismus','Inferior rectus resection','improve double vision');
 		$this->addBenefit('Strabismus','Inferior rectus resection','improve head posture');
 		$this->addBenefit('Strabismus','Inferior rectus resection','improve binocular potential');
-		$this->addComplication('Cataract','Injection into anterior chamber of eye','raised IOP');
-		$this->addComplication('Cataract','Injection into anterior chamber of eye','haemorrhage');
-		$this->addComplication('Cataract','Injection into anterior chamber of eye','inflammation');
-		$this->addBenefit('Cataract','Injection into anterior chamber of eye','reduce inflammation');
+		$this->addComplication('Cataract','Injection into anterior chamber','raised IOP');
+		$this->addComplication('Cataract','Injection into anterior chamber','haemorrhage');
+		$this->addComplication('Cataract','Injection into anterior chamber','inflammation');
+		$this->addBenefit('Cataract','Injection into anterior chamber','reduce inflammation');
 		$this->addComplication('Cornea','Injection into eye','Infection');
 		$this->addComplication('Cornea','Injection into eye','bleeding');
 		$this->addComplication('Cornea','Injection into eye','loss of vision');
@@ -2101,11 +2101,11 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 
 	public function addComplication($subspecialty,$procedure,$complication) {
 		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
-			throw new Exception("Subspecialty not found: $_subspecialty->name\n");
+			throw new Exception("Subspecialty not found: $subspecialty\n");
 		}
 
 		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
-			throw new Exception("Procedure not found: $_procedure->term\n");
+			throw new Exception("Procedure not found: $procedure\n");
 		}
 
 		if (!$_complication = Complication::model()->find('name=?',array($complication))) {
@@ -2121,11 +2121,11 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 
 	public function addBenefit($subspecialty,$procedure,$benefit) {
 		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
-			throw new Exception("Subspecialty not found: $_subspecialty->name\n");
+			throw new Exception("Subspecialty not found: $subspecialty\n");
 		}
 		
 		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
-			throw new Exception("Procedure not found: $_procedure->term\n");
+			throw new Exception("Procedure not found: $procedure\n");
 		}
 		
 		if (!$_benefit = Benefit::model()->find('name=?',array($benefit))) {

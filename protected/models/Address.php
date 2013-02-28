@@ -63,7 +63,8 @@ class Address extends BaseActiveRecord {
 			array('address1, address2, city, county', 'length', 'max' => 255),
 			array('postcode', 'length', 'max' => 10),
 			array('email', 'length', 'max' => 255),
-			array('id, address1, address2, city, postcode, county, email', 'safe', 'on' => 'search'),
+			array('country_id, parent_class, parent_id, type, date_start, date_end', 'safe'),
+			array('id, address1, address2, city, postcode, county, email, country_id, parent_class, parent_id, type, date_start, date_end', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -105,15 +106,15 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return string Address as formatted HTML (<br/> separated)
 	 */
-	public function getLetterHtml() {
-		return implode('<br />', $this->getLetterArray());
+	public function getLetterHtml($include_country=true) {
+		return implode('<br />', $this->getLetterArray($include_country));
 	}
 
 	/**
 	 * @return string Address as text (, separated) 
 	 */
-	public function getLetterLine() {
-		return implode(', ', $this->getLetterArray());
+	public function getLetterLine($include_country=true) {
+		return implode(', ', $this->getLetterArray($include_country));
 	}
 
 	/**
@@ -176,6 +177,6 @@ class Address extends BaseActiveRecord {
 	}
 
 	public function getLetterAddress() {
-		return implode("\n",$this->getLetterArray(false));
+		return implode("\n",$this->getLetterArray());
 	}
 }

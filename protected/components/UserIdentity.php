@@ -68,6 +68,8 @@ class UserIdentity extends CUserIdentity
 			Yii::app()->params['auth_source'] = 'BASIC';
 		}
 
+		$this->password = utf8_decode($this->password);
+
 		/**
 		 * Here we diverge depending on the authentication source.
 		 */
@@ -149,6 +151,9 @@ class UserIdentity extends CUserIdentity
 
 				$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
 				$info = ldap_get_entries($link, $sr);
+				if (!isset($info[0])) {
+					throw new Exception("Failed to retrieve ldap info for user $user->username: ".ldap_error($link)." [".print_r($info,true)."]");
+				}
 				$info = $info[0];
 			}
 

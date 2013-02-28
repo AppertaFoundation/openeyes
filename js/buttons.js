@@ -19,6 +19,19 @@
 var button_colours = ["red","blue","green"];
 var button_cache = {};
 
+function handleButton(button, callback) {
+	button.click(function(e) {
+		if (!button.hasClass('inactive')) {
+			disableButtons();
+			if (callback) {
+				callback(e,button);
+			}
+		} else {
+			e.preventDefault();
+		}
+	});
+}
+
 function disableButtons() {
 	for (var i in button_colours) {
 		var col = button_colours[i];

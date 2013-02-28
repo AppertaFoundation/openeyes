@@ -17,18 +17,34 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI extends CApplicationComponent {
-	public function get($moduleName) {
-		if ($module = Yii::app()->getModule($moduleName)) {
-			Yii::import("application.modules.$moduleName.components.*");
+class MigrateModulesCommand extends CConsoleCommand {
 
-			$APIClass = $moduleName.'_API';
+	public function getHelp()
+	{
+		return <<<EOD
+USAGE
+  yiic migratemodules
 
-			if (class_exists($APIClass)) {
-				return new $APIClass;
+DESCRIPTION
+  This command runs the migrations for all configured modules.
+  Note that is is not interactive, and so will not prompt you for each module
+  individually. If you require more control then run the module migrations
+  separately using the standard migrate command and --migrationPath
+
+EOD;
+	}
+	
+	public function run($args) {
+		$commandPath = Yii::getFrameworkPath() . DIRECTORY_SEPARATOR . 'cli' . DIRECTORY_SEPARATOR . 'commands';
+		$modules = Yii::app()->modules;
+		foreach($modules as $module => $module_settings) {
+			if(is_dir(Yii::getPathOfAlias($module.'.migrations'))) {
+				echo "Migrating $module:\n";
+				$args = array('yiic', 'migrate', '--migrationPath='.$module.'.migrations');
+				$runner = new CConsoleCommandRunner();
+				$runner->addCommands($commandPath);
+				$runner->run($args);
 			}
 		}
-
-		return false;
 	}
 }

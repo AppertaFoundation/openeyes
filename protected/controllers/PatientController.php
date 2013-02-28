@@ -155,11 +155,13 @@ class PatientController extends BaseController
 				$search_terms[$search_term] = $search_value;
 			}
 		}
-	/*	if(!$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
+		// if we are on a dev environment, this allows more flexible search terms (i.e. just a first name or surname - useful for testing
+		// the multiple search results view. If we are live, enforces controls over search terms.
+		if(!YII_DEBUG && !$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
 			Yii::app()->user->setFlash('warning.invalid-search', 'Please enter a valid search.');
 			$this->redirect('/');
 		}
-		*/
+		
 		$search_terms = CHtml::encodeArray($search_terms);
 		
 		switch (@$_GET['sort_by']) {
