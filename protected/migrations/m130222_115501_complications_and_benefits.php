@@ -2101,11 +2101,11 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 
 	public function addComplication($subspecialty,$procedure,$complication) {
 		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
-			throw new Exception("Subspecialty not found: $subspecialty\n");
+			return;
 		}
 
 		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
-			throw new Exception("Procedure not found: $procedure\n");
+			return;
 		}
 
 		if (!$_complication = Complication::model()->find('name=?',array($complication))) {
@@ -2121,11 +2121,11 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 
 	public function addBenefit($subspecialty,$procedure,$benefit) {
 		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
-			throw new Exception("Subspecialty not found: $subspecialty\n");
+			return;
 		}
 		
 		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
-			throw new Exception("Procedure not found: $procedure\n");
+			return;
 		}
 		
 		if (!$_benefit = Benefit::model()->find('name=?',array($benefit))) {
