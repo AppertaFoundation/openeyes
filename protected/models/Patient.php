@@ -800,19 +800,19 @@ class Patient extends BaseActiveRecord {
 
 	public function getPsl() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorSegment($this,'left');
+			return $api->getLetterPosteriorPole($this,'left');
 		}
 	}
 
 	public function getPsp() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorSegment($this,'episode');
+			return $api->getLetterPosteriorPole($this,'episode');
 		}
 	}
 
 	public function getPsr() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorSegment($this,'right');
+			return $api->getLetterPosteriorPole($this,'right');
 		}
 	}
 
