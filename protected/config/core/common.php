@@ -14,6 +14,7 @@ return array(
 				'application.models.elements.*',
 				'application.components.*',
 				'application.components.summaryWidgets.*',
+				'application.extensions.tcpdf.*',
 				'application.services.*',
 				'application.modules.*',
 				'application.commands.*',
@@ -38,6 +39,9 @@ return array(
 
 		// Application components
 		'components' => array(
+				'request' => array(
+					//'enableCsrfValidation' => true,
+				),
 				'event' => array(
 						'class' => 'OEEventManager',
 						'observers' => array(),
@@ -50,18 +54,12 @@ return array(
 						'urlFormat' => 'path',
 						'showScriptName' => false,
 						'rules' => array(
-								'patient/results/error' => 'site/index',
-								'patient/no-results' => 'site/index',
-								'patient/no-results-pas' => 'site/index',
-								'patient/no-results-address'=>'site/index',
-								'patient/results/<first_name:.*>/<last_name:.*>/<nhs_num:\w+>/<gender:\w+>/<sort_by:\d+>/<sort_dir:\d+>/<page_num:\d+>'=>'patient/results',
+								'' => 'site/index',
 								'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-								'patient/viewhosnum/<hos_num:\d+>' => 'patient/viewhosnum',
 								'transport/digest/<date:\d+>_<time:\d+>.csv'=>'transport/digest',
-				'transport/<page:\d+>' => 'transport/index',
-				'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
+								'transport/<page:\d+>' => 'transport/index',
+								'transport/<page:\d+>/<date_from:.*>/<date_to:.*>/<include_bookings:.*>/<include_reschedules:.*>/<include_cancellations:.*>' => 'transport/index',
 								'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
-								'' => 'site/index', // default action
 								'<controller:\w+>/<id:\d+>' => '<controller>/view',
 								'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
 								'<controller:\w+>/<action:\w+>' => '<controller>/<action>',
@@ -138,6 +136,8 @@ return array(
 				'ldap_admin_dn' => '',
 				'ldap_password' => '',
 				'ldap_dn' => '',
+				'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
+				'ldap_native_timeout' => 3,
 				'environment' => 'dev',
 				'audit_trail' => false,
 				'watermark' => '',
@@ -153,5 +153,7 @@ return array(
 				'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 				'default_site_code' => '',
 				'erod_lead_time_weeks' => 3,
+				'hos_num_regex' => '/^([0-9]{1,9})$/',
+				'pad_hos_num' => '%07s',
 		)
 );

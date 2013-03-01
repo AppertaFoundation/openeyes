@@ -224,6 +224,7 @@ class Firm extends BaseActiveRecord
 		foreach ($firms as $firm) {
 			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
 		}
+		natcasesort($data);
 		return $data;
 	}
 
@@ -272,6 +273,24 @@ class Firm extends BaseActiveRecord
 			return null;
 		} else {
 			return User::model()->findByPk($result['id']);
+		}
+	}
+	
+	public function getSpecialty() {
+		$result = Yii::app()->db->createCommand()
+			->select('su.specialty_id as id')
+			->from('subspecialty su')
+			->join('service_subspecialty_assignment svc_ass', 'svc_ass.subspecialty_id = su.id')
+			->join('firm f', 'f.service_subspecialty_assignment_id = svc_ass.id')
+			->where('f.id = :fid', array(
+				':fid' => $this->id
+			))
+			->queryRow();
+		
+		if (empty($result)) {
+			return null;
+		} else {
+			return Specialty::model()->findByPk($result['id']);
 		}
 	}
 }

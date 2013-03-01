@@ -57,8 +57,21 @@ class BaseController extends Controller
 		$filter->filter($filterChain);
 	}
 
-	protected function beforeAction($action)
-	{
+	/**
+	 * List of actions for which the style.css file should _not_ be included
+	 * @return array:
+	 */
+	public function printActions() {
+		return array();
+	}
+	
+	protected function beforeAction($action) {
+		
+		// Register base style.css unless it's a print action
+		if(!in_array($action->id,$this->printActions())) {
+			Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('/css/style.css'));
+		}
+		
 		$app = Yii::app();
 
 		if (Yii::app()->params['ab_testing']) {
@@ -171,9 +184,4 @@ class BaseController extends Controller
 		Yii::log($message . ' from ' . $addr, "user", "userActivity");
 	}
 	
-	public function init() {
-		parent::init();
-
-		Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('/css/style.css'));
-	}
 }

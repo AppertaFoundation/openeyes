@@ -55,6 +55,8 @@ class Patient extends BaseActiveRecord {
 	const CHILD_AGE_LIMIT = 16;
 	
 	public $use_pas = TRUE;
+	private $_orderedepisodes;
+	
 	
 	/**
 		* Returns the static model of the specified AR class.
@@ -104,7 +106,7 @@ class Patient extends BaseActiveRecord {
 				'condition' => "legacy=1",
 			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "legacy=0 or legacy is null"
+				'condition' => "legacy=0 or legacy is null",
 			),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
 				'on' => "parent_class = 'Patient'"
@@ -175,7 +177,7 @@ class Patient extends BaseActiveRecord {
 		if (!is_array($params)) {
 			$params = array(
 				'pageSize' => 20,
-				'currentPage' => 1,
+				'currentPage' => 0,
 				'sortBy' => 'hos_num*1',
 				'sortDir' => 'asc',
 			);
@@ -197,7 +199,7 @@ class Patient extends BaseActiveRecord {
 		
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
-			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'] - 1)
+			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
 		));
 		
 		return $dataProvider;
@@ -213,22 +215,71 @@ class Patient extends BaseActiveRecord {
 		return parent::beforeSave();
 	}
 
+	/*
+	 * will group episodes by specialty, ordered by the configuration key of specialty sort,
+	 * and alphanumeric for any specialties not configured.
+	 * 
+	 * @returns Array
+	 */
+	public function getOrderedEpisodes() {
+		
+		if (!isset($this->_orderedepisodes)) {
+			$episodes = $this->episodes;
+			$by_specialty = array();
+			
+			// group
+			foreach ($episodes as $ep) {
+				$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
+				$by_specialty[$specialty->code]['episodes'][] = $ep;
+				$by_specialty[$specialty->code]['specialty'] = $specialty;
+			}
+			
+			
+			$res = array();
+			if (count(array_keys($by_specialty)) > 1) {
+				// get specialties that are configured
+				if (isset(Yii::app()->params['specialty_sort'])) {
+					foreach (Yii::app()->params['specialty_sort'] as $code) {
+						if (isset($by_specialty[$code])) {
+							$res[] = $by_specialty[$code];
+							unset($by_specialty[$code]);
+						}
+					}
+				}
+		
+				// sort the remainder
+				function cmp($a, $b) {
+					return strcasecmp($a['specialty']->name, $b['specialty']->name);
+				}
+				uasort($by_specialty, "cmp");
+			}
+			// either flattens, or gets the remainder
+			foreach ($by_specialty as $row) {
+				$res[] = $row;
+			}
+
+			$this->_orderedepisodes = $res;
+		}
+		
+		return $this->_orderedepisodes;
+	}
+	
 	public function getAge() {
 		return Helper::getAge($this->dob, $this->date_of_death);
 	}
 
 	/**
-		* @return boolean Is patient a child?
-		*/
+	* @return boolean Is patient a child?
+	*/
 	public function isChild() {
 		$age_limit = (isset(Yii::app()->params['child_age_limit'])) ? Yii::app()->params['child_age_limit'] : self::CHILD_AGE_LIMIT;
 		return ($this->getAge() < $age_limit);
 	}
 
 	/**
-		* @param integer $drug_id
-		* @return boolean Is patient allergic?
-		*/
+	* @param integer $drug_id
+	* @return boolean Is patient allergic?
+	*/
 	public function hasAllergy($drug_id = null) {
 		if($drug_id) {
 			if($this->allergies) {
@@ -397,31 +448,31 @@ class Patient extends BaseActiveRecord {
 
 	public function getOpl() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id)) {
+				if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+					foreach ($eo->procedures as $i => $procedure) {
+						if ($i) $return .= ', ';
+						@$return .= $eo->eye->name.' '.$procedure->term;
+					}
 
-			if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
-				foreach ($eo->procedures as $i => $procedure) {
-					if ($i) $return .= ', ';
-					@$return .= $eo->eye->name.' '.$procedure->term;
+					return strtolower($return);
 				}
-
-				return strtolower($return);
 			}
 		}
 	}
 
 	public function getOpr() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id);
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperationnote'))->id)) {
+				if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
+					if ($pl = $pl->find('event_id=?',array($event->id))) {
+						foreach ($pl->procedures as $i => $procedure) {
+							if ($i) $return .= ', ';
+							@$return .= $pl->eye->name.' '.$procedure->term;
+						}
 
-			if ($pl = ModuleAPI::getmodel('OphTrOperationnote','ElementProcedureList')) {
-				if ($pl = $pl->find('event_id=?',array($event->id))) {
-					foreach ($pl->procedures as $i => $procedure) {
-						if ($i) $return .= ', ';
-						@$return .= $pl->eye->name.' '.$procedure->term;
+						return strtolower($return);
 					}
-
-					return strtolower($return);
 				}
 			}
 		}
@@ -572,11 +623,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getAdm() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id);
-
-			if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
-				if ($booking = $eo->booking) {
-					return $booking->session->NHSDate('date');
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphTrOperation'))->id)) {
+				if ($eo = ElementOperation::model()->find('event_id=?',array($event->id))) {
+					if ($booking = $eo->booking) {
+						return $booking->session->NHSDate('date');
+					}
 				}
 			}
 		}
@@ -605,8 +656,14 @@ class Patient extends BaseActiveRecord {
 			$date = date('Y-m-d');
 		}
 
+		if (!$disorder = Disorder::model()->findByPk($disorder_id)) {
+			throw new Exception('Disorder not found: '.$disorder_id);
+		}
+
+		$type = $disorder->systemic ? 'systemic' : 'ophthalmic';
+
 		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
-			$action = "add-secondary-diagnosis";
+			$action = "add-$type-diagnosis";
 			$sd = new SecondaryDiagnosis;
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
@@ -614,13 +671,13 @@ class Patient extends BaseActiveRecord {
 			$sd->date = $date;
 		} else {
 			if ($sd->date == $date && (($sd->eye_id == 1 and $eye_id == 2) || ($sd->eye_id == 2 && $eye_id == 1))) {
-				$action = "update-secondary-diagnosis";
+				$action = "update-$type-diagnosis";
 				$sd->eye_id = 3;
 				$sd->date = $date;
 			} else {
 				if ($sd->eye_id == $eye_id) return;
 
-				$action = "add-secondary-diagnosis";
+				$action = "add-$type-diagnosis";
 				$sd = new SecondaryDiagnosis;
 				$sd->patient_id = $this->id;
 				$sd->disorder_id = $disorder_id;
@@ -647,6 +704,12 @@ class Patient extends BaseActiveRecord {
 			throw new Exception('Unable to find secondary_diagnosis: '.$diagnosis_id);
 		}
 
+		if (!$disorder = Disorder::model()->findByPk($sd->disorder_id)) {
+			throw new Exception('Unable to find disorder: '.$sd->disorder_id);
+		}
+
+		$type = $disorder->systemic ? 'systemic' : 'ophthalmic';
+
 		$audit_attributes = $sd->getAuditAttributes();
 
 		if (!$sd->delete()) {
@@ -654,7 +717,7 @@ class Patient extends BaseActiveRecord {
 		}
 
 		$audit = new Audit;
-		$audit->action = "remove-secondary-diagnosis";
+		$audit->action = "remove-$type-diagnosis";
 		$audit->target_type = "patient";
 		$audit->patient_id = $this->id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
@@ -664,11 +727,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getHpc() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($history = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_History')) {
-				if ($history = $history->find('event_id=?',array($event->id))) {
-					return strtolower($history->description);
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($history = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_History')) {
+					if ($history = $history->find('event_id=?',array($event->id))) {
+						return strtolower($history->description);
+					}
 				}
 			}
 		}
@@ -676,11 +739,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getIpb() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
-				if ($iop = $iop->find('event_id=?',array($event->id))) {
-					return $iop->getLetter_reading('right')." on the right, and ".$iop->getLetter_reading('left')." on the left";
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+					if ($iop = $iop->find('event_id=?',array($event->id))) {
+						return $iop->getLetter_reading('right')." on the right, and ".$iop->getLetter_reading('left')." on the left";
+					}
 				}
 			}
 		}
@@ -688,12 +751,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getIpl() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
-				if ($iop = $iop->find('event_id=?',array($event->id))) {
-					return $iop->getLetter_reading('left');
-				} 
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+					if ($iop = $iop->find('event_id=?',array($event->id))) {
+						return $iop->getLetter_reading('left');
+					} 
+				}
 			}
 		}
 	}
@@ -701,17 +764,17 @@ class Patient extends BaseActiveRecord {
 	public function getIpp() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			if ($episode->eye) {
-				$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-				if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
-					if ($iop = $iop->find('event_id=?',array($event->id))) {
-						switch ($episode->eye_id) {
-							case 1:
-								return "The intraocular pressure was ".$iop->getLetter_reading('left')." in the left eye";
-							case 2:
-								return "The intraocular pressure was ".$iop->getLetter_reading('right')." in the right eye";
-							case 3:
-								return $this->ipb;
+				if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+					if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+						if ($iop = $iop->find('event_id=?',array($event->id))) {
+							switch ($episode->eye_id) {
+								case 1:
+									return "The intraocular pressure was ".$iop->getLetter_reading('left')." in the left eye";
+								case 2:
+									return "The intraocular pressure was ".$iop->getLetter_reading('right')." in the right eye";
+								case 3:
+									return $this->ipb;
+							}
 						}
 					}
 				}
@@ -721,12 +784,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getIpr() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
-				if ($iop = $iop->find('event_id=?',array($event->id))) {
-					return "The intraocular pressure is ".$iop->getLetter_reading('right')." in the right eye";
-				} 
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($iop = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_IntraocularPressure')) {
+					if ($iop = $iop->find('event_id=?',array($event->id))) {
+						return "The intraocular pressure is ".$iop->getLetter_reading('right')." in the right eye";
+					} 
+				}
 			}
 		}
 	}
@@ -737,12 +800,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getAsl() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-	
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AnteriorSegment')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return $as->left_description;
-				} 
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AnteriorSegment')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return $as->left_description;
+					} 
+				}
 			}
 		}
 	}
@@ -762,12 +825,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getAsr() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-	
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AnteriorSegment')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return $as->right_description;
-				} 
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AnteriorSegment')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return $as->right_description;
+					} 
+				}
 			}
 		}
 	}
@@ -778,12 +841,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getPsl() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
- 
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_PosteriorSegment')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return $as->left_description;
-				} 
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_PosteriorSegment')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return $as->left_description;
+					} 
+				}
 			}
 		}
 	}
@@ -803,11 +866,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getPsr() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_PosteriorSegment')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return $as->right_description;
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_PosteriorSegment')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return $as->right_description;
+					}
 				}
 			}
 		}
@@ -815,11 +878,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getVbb() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return ($as->hasRight() ? $as->getBest('right') : "not recorded")." on the right and ".($as->hasLeft() ? $as->getBest('left') : "not recorded")." on the left";
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return ($as->hasRight() ? $as->getBest('right') : "not recorded")." on the right and ".($as->hasLeft() ? $as->getBest('left') : "not recorded")." on the left";
+					}
 				}
 			}
 		}
@@ -827,12 +890,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getVbl() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					if ($as->hasLeft()) {
-						return $as->getBest('left');
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						if ($as->hasLeft()) {
+							return $as->getBest('left');
+						}
 					}
 				}
 			}
@@ -854,12 +917,12 @@ class Patient extends BaseActiveRecord {
 
 	public function getVbr() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					if ($as->hasRight()) {
-						return $as->getBest('right');
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_VisualAcuity')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						if ($as->hasRight()) {
+							return $as->getBest('right');
+						}
 					}
 				}
 			}
@@ -868,11 +931,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getCon() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Conclusion')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return $as->description;
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Conclusion')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return $as->description;
+					}
 				}
 			}
 		}
@@ -880,11 +943,11 @@ class Patient extends BaseActiveRecord {
 
 	public function getMan() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			$event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id);
-
-			if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Management')) {
-				if ($as = $as->find('event_id=?',array($event->id))) {
-					return $as->comments;
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($as = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_Management')) {
+					if ($as = $as->find('event_id=?',array($event->id))) {
+						return $as->comments;
+					}
 				}
 			}
 		}
@@ -912,6 +975,30 @@ class Patient extends BaseActiveRecord {
 	public function hasLegacyLetters() {
 		if ($model = ModuleAPI::getmodel('OphLeEpatientletter','Element_OphLeEpatientletter_EpatientLetter')) {
 			return $model->find('epatient_hosnum=?',array($this->hos_num));
+		}
+	}
+
+	public function getAdd() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($ac = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AdnexalComorbidity')) {
+					if ($ac = $ac->find('event_id=?',array($event->id))) {
+						return $ac->right_description;
+					}
+				}
+			}
+		}
+	}
+
+	public function getAdl() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			if ($event = $episode->getMostRecentEventByType(EventType::model()->find('class_name=?',array('OphCiExamination'))->id)) {
+				if ($ac = ModuleAPI::getmodel('OphCiExamination','Element_OphCiExamination_AdnexalComorbidity')) {
+					if ($ac = $ac->find('event_id=?',array($event->id))) {
+						return $ac->left_description;
+					}
+				}
+			}
 		}
 	}
 }

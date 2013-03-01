@@ -19,8 +19,56 @@ class BaseEventTypeController extends BaseController
 		$this->render('index');
 	}
 
-	protected function beforeAction($action)
-	{
+	public function printActions() {
+		return array('print');
+	}
+	
+	protected function beforeAction($action) {
+
+		// Need to initialise base CSS first
+		$parent_return = parent::beforeAction($action);
+		
+		// Set asset path
+		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
+			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
+		}
+
+		// Automatic file inclusion unless it's an ajax call
+		if($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
+		
+			if (in_array($action->id,$this->printActions())) {
+				
+				// Register print css
+				if(file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
+					Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/print.css');
+				}
+
+			} else {
+
+				// Register js
+				$js_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
+				while ($file = readdir($js_dh)) {
+					if (preg_match('/\.js$/',$file)) {
+						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
+					}
+				}
+				closedir($js_dh);
+
+				// Register css
+				$css_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
+				while ($file = readdir($css_dh)) {
+					if (preg_match('/\.css$/',$file)) {
+						if ($file != 'print.css') {
+							// Skip print.css as it's /only/ for print layouts
+							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+						}
+					}
+				}
+				closedir($css_dh);
+				
+			}
+		}
+		
 		parent::storeData();
 
 		$this->firm = Firm::model()->findByPk($this->selectedFirmId);
@@ -30,6 +78,7 @@ class BaseEventTypeController extends BaseController
 			throw new CHttpException(403, 'You are not authorised to view this page without selecting a firm.');
 		}
 
+		// Clear js for ajax calls
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
 			$scriptMap = Yii::app()->clientScript->scriptMap;
 			$scriptMap['jquery.js'] = false;
@@ -40,7 +89,7 @@ class BaseEventTypeController extends BaseController
 			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
-		return parent::beforeAction($action);
+		return $parent_return;
 	}
 
 	/**
@@ -482,6 +531,13 @@ class BaseEventTypeController extends BaseController
 
 	public function header($editable=null) {
 		$episodes = $this->patient->episodes;
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
+		/*
+		$ordered_episodes = array();
+		foreach ($episodes as $ep) {
+			$ordered_episodes[$ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty->name][] = $ep;
+		}
+		*/
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		if($editable === null){
@@ -493,7 +549,7 @@ class BaseEventTypeController extends BaseController
 		}
 
 		$this->renderPartial('//patient/event_header',array(
-			'episodes'=>$episodes,
+			'ordered_episodes'=>$ordered_episodes,
 			'legacyepisodes'=>$legacyepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
@@ -693,90 +749,89 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial('//elements/form_errors',array('errors'=>$errors));
 	}
 
-	public function init() {
-		parent::init();
-
-		$ex = explode("/",substr(Yii::app()->getRequest()->getRequestUri(),strlen(Yii::app()->baseUrl),strlen(Yii::app()->getRequest()->getRequestUri())));
-		$action = $ex[3];
-
-		if ($action == 'print') {
-			$scriptMap = Yii::app()->clientScript->scriptMap;
-			$scriptMap['style.css'] = false;
-			Yii::app()->clientScript->scriptMap = $scriptMap;
+	/**
+	 * Print action
+	 * @param integer $id event id
+	 */
+	public function actionPrint($id) {
+		$this->printInit($id);
+		$elements = $this->getDefaultElements('print');
+		$pdf = (isset($_GET['pdf']) && $_GET['pdf']);
+		$this->printLog($id, $pdf);
+		if($pdf) {
+			$this->printPDF($id, $elements);
+		} else {
+			$this->printHTML($id, $elements);
 		}
-
-		// do automatic file inclusion after the base init
-		if (Yii::app()->getRequest()->getIsAjaxRequest()) return;
-
-		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
-			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
-
-			if ($action != 'print') {
-				$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
-
-				while ($file = readdir($dh)) {
-					if (preg_match('/\.js$/',$file)) {
-						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
-					}
-				}
-
-				closedir($dh);
-			}
-
-			$dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
-
-			while ($file = readdir($dh)) {
-				if (preg_match('/\.css$/',$file)) {
-					if ($action == 'print') {
-						if ($file == 'print.css') {
-							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
-						}
-					} else {
-						if ($file != 'print.css') {
-							Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
-						}
-					}
-				}
-			}
-
-			closedir($dh);
-		}
-
 	}
 
-	public function actionPrint($id) {
+	/**
+	 * Initialise print action
+	 * @param integer $id event id
+	 * @throws CHttpException
+	 */
+	protected function printInit($id) {
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');
 		}
-
 		$this->patient = $this->event->episode->patient;
-
-		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
-
-		$elements = $this->getDefaultElements('view');
-
+		$this->event_type = $this->event->eventType;
 		$this->site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$this->title = $this->event_type->name;
+	}
+	
+	/**
+	 * Render HTML
+	 * @param integer $id event id
+	 * @param array $elements
+	 */
+	protected function printHTML($id, $elements) {
+		$this->renderPartial('print', array(
+			'elements' => $elements,
+			'eventId' => $id,
+		), false, true);
+	}
+	
+	/**
+	 * Render PDF
+	 * @param integer $id event id
+	 * @param array $elements
+	 */
+	protected function printPDF($id, $elements) {
 
-		$this->logActivity('printed event');
-
+		// Remove any existing css
+		Yii::app()->getClientScript()->reset();
+		
+		$this->layout = '//layouts/pdf';
+		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
+		$oeletter = new OELetter();
+		$oeletter->setBarcode('E:'.$id);
+		$body = $this->render('print', array(
+			'elements' => $elements,
+			'eventId' => $id,
+		), true);
+		$oeletter->addBody($body);
+		$pdf_print->addLetter($oeletter);
+		$pdf_print->output();
+	}
+	
+	/**
+	 * Log print action
+	 * @param integer $id event id
+	 * @param boolean $pdf
+	 */
+	protected function printLog($id, $pdf) {
+		$this->logActivity("printed event (pdf=$pdf)");
 		$audit = new Audit;
 		$audit->action = "print";
 		$audit->target_type = "event";
 		$audit->patient_id = $this->event->episode->patient->id;
 		$audit->episode_id = $this->event->episode_id;
-		$audit->event_id = $this->event->id;
+		$audit->event_id = $id;
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->save();
-
-		$this->title = $this->event_type->name;
-
-		$this->renderPartial(
-			'print', array(
-			'elements' => $elements,
-			'eventId' => $id,
-		), false, true);
 	}
-
+	
 	public function actionDelete($id) {
 		if (!$this->event = Event::model()->findByPk($id)) {
 			throw new CHttpException(403, 'Invalid event id.');

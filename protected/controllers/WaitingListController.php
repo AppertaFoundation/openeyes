@@ -33,16 +33,22 @@ class WaitingListController extends BaseController
 	public function accessRules()
 	{
 		return array(
-			array('allow',
-				'users'=>array('@')
-			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+				array('allow',
+						'users'=>array('@')
+				),
+				// non-logged in can't view anything
+				array('deny',
+						'users'=>array('?')
+				),
 		);
 	}
 
+	public function printActions() {
+		return array(
+				'printletters',
+		);
+	}
+	
 	/**
 		* Lists all models.
 		*/
@@ -56,8 +62,8 @@ class WaitingListController extends BaseController
 				}
 			} else {
 				$_POST = array(
-					'firm-id' => Yii::app()->session['selected_firm_id'],
-					'subspecialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id
+						'firm-id' => Yii::app()->session['selected_firm_id'],
+						'subspecialty-id' => Firm::Model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id
 				);
 			}
 
@@ -97,11 +103,11 @@ class WaitingListController extends BaseController
 			$site_id = !empty($_POST['site_id']) ? $_POST['site_id'] : false;
 
 			Yii::app()->session['waitinglist_searchoptions'] = array(
-				'subspecialty-id' => $subspecialtyId,
-				'firm-id' => $firmId,
-				'status' => $status,
-				'hos_num' => $hos_num,
-				'site_id' => $site_id
+					'subspecialty-id' => $subspecialtyId,
+					'firm-id' => $firmId,
+					'status' => $status,
+					'hos_num' => $hos_num,
+					'site_id' => $site_id
 			);
 
 			$service = new WaitingListService;
@@ -122,13 +128,13 @@ class WaitingListController extends BaseController
 		Yii::app()->session['waitinglist_searchoptions'] = $so;
 
 		echo CHtml::tag('option', array('value'=>''),
-			CHtml::encode('All firms'), true);
+				CHtml::encode('All firms'), true);
 		if (!empty($_POST['subspecialty_id'])) {
 			$firms = $this->getFilteredFirms($_POST['subspecialty_id']);
 
 			foreach ($firms as $id => $name) {
 				echo CHtml::tag('option', array('value'=>$id),
-					CHtml::encode($name), true);
+						CHtml::encode($name), true);
 			}
 		}
 	}
@@ -163,14 +169,14 @@ class WaitingListController extends BaseController
 	protected function getFilteredFirms($subspecialtyId)
 	{
 		$data = Yii::app()->db->createCommand()
-			->select('f.id, f.name')
-			->from('firm f')
-			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-			->join('subspecialty s', 'ssa.subspecialty_id = s.id')
-			->order('f.name asc')
-			->where('ssa.subspecialty_id=:id',
+		->select('f.id, f.name')
+		->from('firm f')
+		->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+		->join('subspecialty s', 'ssa.subspecialty_id = s.id')
+		->order('f.name asc')
+		->where('ssa.subspecialty_id=:id',
 				array(':id'=>$subspecialtyId))
-			->queryAll();
+				->queryAll();
 
 		$firms = array();
 		foreach ($data as $values) {
@@ -179,7 +185,7 @@ class WaitingListController extends BaseController
 
 		return $firms;
 	}
-	
+
 	/**
 		* Prints next pending letter type for requested operations
 		* Operation IDs are passed as an array (operations[]) via GET or POST
@@ -204,47 +210,38 @@ class WaitingListController extends BaseController
 			throw new CHttpException('400', 'Invalid operation list');
 		}
 		$operations = ElementOperation::model()->findAllByPk($operation_ids);
-		
-		// Print a letter for each operation, separated by a page break
-		$break = false;
+
+
+		// Print letter(s) for each operation
+		$this->layout = '//layouts/pdf';
+		$pdf_print = new OEPDFPrint('Openeyes', 'Waiting list letters', 'Waiting list letters');
 		foreach($operations as $operation) {
-			if($break) {
-				$this->printBreak();
-			} else {
-				$break = true;
-			}
-			$this->printLetter($operation, $auto_confirm);
-			
+			$this->printLetter($pdf_print, $operation, $auto_confirm);
 		}
+		$pdf_print->output();
 	}
-	
-	/**
-		* Print a page break
-		*/
-	protected function printBreak() {
-		$this->renderPartial("/letters/break");
-	}
-	
+
 	/**
 		* Print the next letter for an operation
+		* @param OEPDFPrint $pdf_print
 		* @param ElementOperation $operation
+		* @param Boolean $auto_confirm
 		*/
-	protected function printLetter($operation, $auto_confirm = false) {
+	protected function printLetter($pdf_print, $operation, $auto_confirm = false) {
+		$patient = $operation->event->episode->patient;
 		$letter_status = $operation->getDueLetter();
-		$letter_templates = array(
-			ElementOperation::LETTER_INVITE => 'invitation_letter',
-			ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
-			ElementOperation::LETTER_REMINDER_2 => 'reminder_letter',
-			ElementOperation::LETTER_GP => 'gp_letter',
-			ElementOperation::LETTER_REMOVAL => false,
-		);
-
 		if ($letter_status === null && $operation->getLastLetter() == ElementOperation::LETTER_GP) {
 			$letter_status = ElementOperation::LETTER_GP;
 		}
-
+		$letter_templates = array(
+				ElementOperation::LETTER_INVITE => 'invitation_letter',
+				ElementOperation::LETTER_REMINDER_1 => 'reminder_letter',
+				ElementOperation::LETTER_REMINDER_2 => 'reminder_letter',
+				ElementOperation::LETTER_GP => 'gp_letter',
+				ElementOperation::LETTER_REMOVAL => false,
+		);
 		$letter_template = (isset($letter_templates[$letter_status])) ? $letter_templates[$letter_status] : false;
-		$patient = $operation->event->episode->patient;
+
 		if($letter_template) {
 			$firm = $operation->event->episode->firm;
 			$site = $operation->site;
@@ -253,21 +250,10 @@ class WaitingListController extends BaseController
 			// Don't print GP letter if practice address is not defined
 			if($letter_status != ElementOperation::LETTER_GP || ($patient->practice && $patient->practice->address)) {
 				Yii::log("Printing letter: ".$letter_template, 'trace');
-				$this->renderPartial('/letters/'.$letter_template, array(
-					'operation' => $operation,
-					'site' => $site,
-					'patient' => $patient,
-					'firm' => $firm,
-					'changeContact' => $waitingListContact,
-				));
-				$this->printBreak();
-				$this->renderPartial("/letters/admission_form", array(
-					'operation' => $operation, 
-					'site' => $site,
-					'patient' => $patient,
-					'firm' => $firm,
-					'emergencyList' => false,
-				));
+
+				call_user_func(array($this, 'print_'.$letter_template), $pdf_print, $operation);
+				$this->print_admission_form($pdf_print, $operation);
+
 				if($auto_confirm) {
 					$operation->confirmLetterPrinted();
 				}
@@ -279,6 +265,136 @@ class WaitingListController extends BaseController
 		} else {
 			throw new CException('Undefined letter status');
 		}
+	}
+
+	/**
+	 * Get consultant name for letter
+	 * @param ElementOperation $operation
+	 * @return string
+	 */
+	protected function getConsultantName($operation) {
+		if($consultant = $operation->event->episode->firm->getConsultant()) {
+			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
+		} else {
+			return 'CONSULTANT';
+		}
+	}
+
+	/**
+	 * Get letter from address for letter
+	 * @param ElementOperation $operation
+	 * @return string
+	 */
+	protected function getFromAddress($operation) {
+		$from_address = implode("\n",$operation->site->getLetterArray(false,false));
+		$from_address .= "\nTel: " . $operation->site->telephone;
+		if($operation->site->fax) {
+			$from_address .= "\nFax: " . $operation->site->fax;
+		}
+		return $from_address;
+	}
+
+	/**
+	 * @param OEPDFPrint $pdf
+	 * @param ElementOperation $operation
+	 */
+	protected function print_admission_form($pdf, $operation) {
+		$patient = $operation->event->episode->patient;
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$site = $operation->site;
+		$firm = $operation->event->episode->firm;
+		$body = $this->render('/letters/admission_form', array(
+				'operation' => $operation,
+				'site' => $site,
+				'patient' => $patient,
+				'firm' => $firm,
+				'emergencyList' => false,
+		), true);
+		$letter = new OELetter();
+		$letter->setBarcode('E:'.$operation->event_id);
+		$letter->setFont('helvetica','10');
+		$letter->addBody($body);
+		$pdf->addLetter($letter);
+	}
+
+	/**
+	 * @param OEPDFPrint $pdf
+	 * @param ElementOperation $operation
+	 */
+	protected function print_invitation_letter($pdf, $operation) {
+		$patient = $operation->event->episode->patient;
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$body = $this->render('/letters/invitation_letter', array(
+				'to' => $patient->salutationname,
+				'consultantName' => $this->getConsultantName($operation),
+				'overnightStay' => $operation->overnight_stay,
+				'patient' => $patient,
+				'changeContact' => $operation->waitingListContact,
+		), true);
+		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
+		$pdf->addLetter($letter);
+	}
+
+	/**
+	 * @param OEPDFPrint $pdf
+	 * @param ElementOperation $operation
+	 */
+	protected function print_reminder_letter($pdf, $operation) {
+		$patient = $operation->event->episode->patient;
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$body = $this->render('/letters/reminder_letter', array(
+				'to' => $patient->salutationname,
+				'consultantName' => $this->getConsultantName($operation),
+				'overnightStay' => $operation->overnight_stay,
+				'patient' => $patient,
+				'changeContact' => $operation->waitingListContact,
+		), true);
+		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
+		$pdf->addLetter($letter);
+	}
+
+	/**
+	 * @param OEPDFPrint $pdf
+	 * @param ElementOperation $operation
+	 */
+	protected function print_gp_letter($pdf, $operation) {
+
+		// GP Letter
+		$patient = $operation->event->episode->patient;
+		if($gp = $patient->gp) {
+			$to_name = $gp->contact->fullname;
+			$salutation = $gp->contact->salutationname;
+		} else {
+			$to_name = Gp::UNKNOWN_NAME;
+			$salutation = Gp::UNKNOWN_SALUTATION;
+		}
+		if($patient->practice && $practice_address = $patient->practice->address) {
+			$to_address = $to_name . "\n" . implode("\n",$practice_address->getLetterArray(false));
+		} else {
+			throw new CException('Patient has no practice address');
+		}
+		$body = $this->render('/letters/gp_letter', array(
+				'to' => $salutation,
+				'patient' => $patient,
+				'consultantName' => $this->getConsultantName($operation),
+		), true);
+		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
+		$pdf->addLetter($letter);
+
+		// Patient letter
+		$to_address = $patient->addressname . "\n" . implode("\n", $patient->correspondAddress->getLetterArray(false));
+		$body = $this->render('/letters/gp_letter_patient', array(
+				'to' => $patient->salutationname,
+				'patient' => $patient,
+				'consultantName' => $this->getConsultantName($operation),
+		), true);
+		$letter = new OELetter($to_address, $this->getFromAddress($operation), $body);
+		$letter->setBarcode('E:'.$operation->event_id);
+		$pdf->addLetter($letter);
+
 	}
 
 	public function actionConfirmPrinted() {
@@ -299,4 +415,5 @@ class WaitingListController extends BaseController
 			}
 		}
 	}
+	
 }

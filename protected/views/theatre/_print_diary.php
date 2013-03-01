@@ -11,7 +11,6 @@ _____________________________________________________________________________
 http://www.openeyes.org.uk	 info@openeyes.org.uk
 --
 */
-
 ?>
 <!-- ================================================ -->
 <!-- * * * * * * * * * *   DIARY  * * * * * * * * * * -->
@@ -65,6 +64,7 @@ DATE:
 </td><td>
 <?php echo Helper::convertDate2NHS($date); ?>
 </td></tr>
+<tr><td>COMMENTS: <?php echo htmlspecialchars($session['comments'])?></td></tr>
 </tbody></table>
 
 <table class="d_data">

@@ -29,14 +29,14 @@ if ($module = $this->getModule()) {
 				<div id="deceased-notice" class="alertBox">
 					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 				</div>
-			<?php } ?>
+			<?php }?>
 			<div id="episodesBanner">
 				<form>
-					<button tabindex="2" class="classy venti <?php echo ($this->patient->date_of_death) ? 'inactive' : 'green'; ?>" id="addNewEvent" type="submit" <?php echo ($this->patient->date_of_death) ? 'disabled="disabled"' : ''; ?> style="float: right; margin-right: 1px;"><span class="button-span <?php echo ($this->patient->date_of_death) ? 'button-span-inactive' : 'button-span-green'; ?> with-plussign">add new Event</span></button>
+					<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
 				</form>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
 			</div>
-			<?php $this->renderPartial('episodes_sidebar',array('episodes'=>$episodes,'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
+			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
 				<?php

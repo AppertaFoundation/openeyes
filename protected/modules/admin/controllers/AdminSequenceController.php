@@ -55,7 +55,7 @@ class AdminSequenceController extends BaseController
 		// $this->performAjaxValidation($model);
 
 		if(isset($_POST['Sequence'])) {
-			$model->attributes = $_POST['Sequence'];
+			$model->attributes = Helper::convertNHS2MySQL($_POST['Sequence']);
 			$model->firmAssignment->attributes = $_POST['SequenceFirmAssignment'];
 			$modelValid = $model->validate();
 			$firmValid = $model->firmAssignment->validate();

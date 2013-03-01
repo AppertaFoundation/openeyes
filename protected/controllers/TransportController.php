@@ -125,7 +125,7 @@ class TransportController extends BaseController
 		foreach (Yii::app()->db->createCommand()
 			->selectDistinct('element_operation.id as eoid, element_operation.priority_id, booking.id as booking_id, patient.id as pid, event.id as evid, contact.first_name,
 				contact.last_name, patient.hos_num, element_operation.eye_id, firm.pas_code as firm, element_operation.decision_date, subspecialty.ref_spec as subspecialty,
-				session.date as session_date, session.start_time as session_time, element_operation.status, transport_list.id as transport,
+				session.date as session_date, session.start_time as session_time, element_operation.status, transport_list.id as transport, transport_list2.id as transport2,
 				coalesce(booking.created_date,cb.created_date) as order_created_date, ward.name as ward_name, cb.id as cancelled_booking_id, cb.date as cancelled_session_date,
 				session.theatre_id, coalesce(session.date,cb.date) as order_date, cb.start_time as cancelled_session_time, session.id as session_id, cb.theatre_id as theatre_id2,
 				coalesce(session.start_time,cb.start_time) as order_time, cb.date as cancelled_booking_date')
@@ -140,7 +140,8 @@ class TransportController extends BaseController
 			->leftJoin('booking','booking.element_operation_id = element_operation.id')
 			->leftJoin('transport_list',"transport_list.item_table = 'booking' and transport_list.item_id = booking.id")
 			->leftJoin('ward','booking.ward_id = ward.id')
-			->leftJoin('(select created_date,date,start_time,theatre_id,element_operation_id,max(id) as id from cancelled_booking group by element_operation_id) cb',"element_operation.id = cb.element_operation_id and cb.date >= '$today'")
+			->leftJoin('(select created_date,date,start_time,theatre_id,element_operation_id,max(id) as maxid from cancelled_booking group by element_operation_id) cb2',"element_operation.id = cb2.element_operation_id")
+			->leftJoin("cancelled_booking cb","cb.id = cb2.maxid and cb.date >= '$today'")
 			->leftJoin('transport_list transport_list2',"transport_list2.item_table = 'cancelled_booking' and transport_list2.item_id = cb.id")
 			->leftJoin('session',"booking.session_id = session.id and session.date >= '$today'")
 			->where("(event.deleted = 0 or event.deleted is null) and (episode.deleted = 0 or episode.deleted is null) and ((booking.id is not null $wheresql1 $wheresql3) or (booking.id is null and cb.id is not null $wheresql2 $wheresql4 )) and (transport_list.id is null or substr(transport_list.last_modified_date,1,10) = '$today') and (transport_list2.id is null or substr(transport_list2.last_modified_date,1,10) = '$today')")
@@ -164,6 +165,7 @@ class TransportController extends BaseController
 				$row['session_time'] = $row['cancelled_session_time'];
 				$row['ward_name'] = 'Unknown';
 				$row['location'] = $sites[$row['theatre_id2']];
+				$row['transport'] = $row['transport2'];
 			}
 
 			if (($include_bookings && $row['method'] == 'Booked') || ($include_reschedules && $row['method'] == 'Rescheduled') || ($include_cancellations && $row['method'] == 'Cancelled')) {

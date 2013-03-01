@@ -27,7 +27,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
  
 	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
-	<meta name="viewport" content="width=device-width; initial-scale=0.62">
+	<meta name="viewport" content="width=device-width, initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
 		<meta http-equiv='expires' content='0'>
@@ -71,7 +71,7 @@
 		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
 	<?php }?>
 
-	<?php echo $this->renderPartial('/base/_debug',array())?> 
+	<?php echo $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix">
 			<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
@@ -115,7 +115,7 @@
 		</div><!-- #help --> 
 	</div><!--#container --> 
 
-	<?php echo $this->renderPartial('/base/_footer',array())?>
+	<?php echo $this->renderPartial('//base/_footer',array())?>
  
 	<?php if (Yii::app()->user->checkAccess('admin')) {?>
 		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>

@@ -1,4 +1,4 @@
-<?php echo '<?php '?>
+<?php echo "<?php\n"?>
 /**
  * OpenEyes
  *
@@ -161,7 +161,7 @@ class <?php if (isset($element)) echo $element['class_name']; ?> extends BaseEve
 <?php
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
-		echo "'" . $field['name'] . '\' => \'' . $field['label'] . "',\n";
+		echo "\t\t\t'" . $field['name'] . '\' => \'' . $field['label'] . "',\n";
 	}
 }
 ?>
@@ -181,36 +181,17 @@ if (isset($element)) {
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-
 <?php
 if (isset($element)) {
 	foreach ($element['fields'] as $field) {
-		echo '$criteria->compare(\'' . $field['name'] . '\', $this->' . $field['name'] . ');' . "\n";
+		echo "\t\t\$criteria->compare('". $field['name'] . '\', $this->' . $field['name'] . ');' . "\n";
 	}
 }
 ?>
 		
 		return new CActiveDataProvider(get_class($this), array(
-				'criteria' => $criteria,
-			));
-	}
-
-	/**
-	 * Set default values for forms on create
-	 */
-	public function setDefaultOptions()
-	{
-		if (Yii::app()->getController()->getAction()->id == 'create') {
-<?php
-if (isset($element)) { 
-	foreach ($element['fields'] as $field) {
-		if (isset($field['default_value']) && strlen($field['default_value']) ) {
-			echo "\t\t\t\$this->" . $field['name'] . " = " . $field['default_value'] . ";\n";
-		}
-	}
-}
-?>
-		}
+			'criteria' => $criteria,
+		));
 	}
 
 <?php if (@$element['add_selected_eye']) {?>

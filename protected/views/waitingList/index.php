@@ -43,7 +43,7 @@
 													<td>
 														<?php
 														echo CHtml::dropDownList('subspecialty-id', @$_POST['subspecialty-id'], Subspecialty::model()->getList(),
-																		array('empty'=>'All specialties', 'ajax'=>array(
+																		array('empty'=>'All sub-specialties', 'ajax'=>array(
 																						'type'=>'POST',
 																						'data'=>array('subspecialty_id'=>'js:this.value'),
 																						'url'=>Yii::app()->createUrl('waitingList/filterFirms'),
@@ -178,12 +178,6 @@
 	});
 
 	function print_items_from_selector(sel,all) {
-		if (all) {
-			var printurl = '<?php echo Yii::app()->createUrl('waitingList/printletters')?>';
-		} else {
-			var printurl = '<?php echo Yii::app()->createUrl('waitingList/printletters')?>';
-		}
-
 		var operations = new Array();
 
 		var nogp = 0;
@@ -206,7 +200,7 @@
 			}
 		} else {
 			show_letter_warnings(nogp);
-			printUrl(printurl, {'operations[]': operations, 'all': all});
+			printPDF('<?php echo Yii::app()->createUrl('waitingList/printletters')?>', {'operations': operations, 'all': all});
 		}
 	}
 

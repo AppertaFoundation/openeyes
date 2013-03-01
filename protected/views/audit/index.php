@@ -25,8 +25,6 @@
 	</div>
 
 	<div id="waitinglist_display">
-	<p><?php echo $unique_users?> unique users since <?php echo date('jS F Y')?></p>
-	<p><?php echo $total_logins?> total successful logins since <?php echo date('jS F Y')?></p>
 		<form method="post" action="/audit/search" id="auditList-filter">
 			<input type="hidden" id="page" name="page" value="1" />
 			<div id="search-options">
@@ -80,7 +78,7 @@
 								</tbody>
 							</table>
 						</div>
-						<div id="extra-search" class="eventDetail clearfix">
+						<div class="extra-search eventDetail clearfix">
 							<label for="date_from">
 								From:
 							</label>
@@ -134,6 +132,12 @@
 				</form>
 				<div id="searchResults" class="whiteBox">
 				</div>
+				<div id="lower_pagination">
+					<div class="extra-search eventDetail clearfix">
+						<div class="whiteBox pagination" style="display: none; margin-top: 10px;">
+						</div>
+					</div>
+				</div>
 			</div>
 			<div style="float: right; margin-right: 18px;">
 			</div>
@@ -143,6 +147,8 @@
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
 			$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
+
+			$('#page').val(1);
 
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
@@ -185,5 +191,13 @@
 			}
 			return false;
 		});
+	});
+
+	$('#date_from').bind('change',function() {
+		$('#date_to').datepicker('option','minDate',$('#date_from').datepicker('getDate'));
+	});
+
+	$('#date_to').bind('change',function() {
+		$('#date_from').datepicker('option','maxDate',$('#date_to').datepicker('getDate'));
 	});
 </script>

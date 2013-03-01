@@ -17,10 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-	<p>
-		Yours sincerely,<br />
-		<br />
-		<br />
-		Admissions Officer
-	</p>
-</div>
+
+<p<?php if(@$accessible) { ?> class="accessible"<?php } ?> nobr="true">
+	Yours sincerely,
+	<br/><br/><br/>
+	Admissions Officer
+</p>

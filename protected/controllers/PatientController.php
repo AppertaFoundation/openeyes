@@ -51,6 +51,13 @@ class PatientController extends BaseController
 		);
 	}
 
+	public function printActions() {
+		return array(
+				'printadmissionletter',
+		);
+	}
+	
+	
 	protected function beforeAction($action)
 	{
 		parent::storeData();
@@ -84,6 +91,9 @@ class PatientController extends BaseController
 		$eventId = !empty($_GET['eventId']) ? $_GET['eventId'] : 0;
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
+		
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$this->layout = '//layouts/patientMode/main';
@@ -109,7 +119,7 @@ class PatientController extends BaseController
 		}
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
 		));
 	}
 
@@ -122,6 +132,7 @@ class PatientController extends BaseController
 		$this->episode = $this->event->episode;
 		$this->patient = $this->episode->patient;
 		$episodes = $this->patient->episodes;
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$elements = $this->service->getDefaultElements('view', $this->event);
@@ -159,6 +170,7 @@ class PatientController extends BaseController
 
 		$this->render('events_and_episodes', array(
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'elements' => $elements,
 			'event_template_name' => $event_template_name,
@@ -168,137 +180,109 @@ class PatientController extends BaseController
 		));
 	}
 
-	/**
-	 * Redirect to correct patient view by hospital number
-	 * @param string $hos_num
-	 * @throws CHttpException
-	 */
-	public function actionViewhosnum($hos_num) {
-		$hos_num = (int) $hos_num;
-		if(!$hos_num) {
-			throw new CHttpException(400, 'Invalid hospital number');
+	public function actionPrintAdmissionLetter($id) {
+		$this->layout = '//layouts/pdf';
+
+		$this->service = new ClinicalService;
+
+		if (!$event = Event::model()->findByPk($id)) {
+			throw new Exception('Event not found: '.$id);
 		}
-		$patient = Patient::model()->find('hos_num=:hos_num', array(':hos_num' => $hos_num));
-		if($patient) {
-			$this->redirect(array('/patient/view/'.$patient->id));
-		} else {
-			throw new CHttpException(404, 'Hospital number not found');
+
+		$patient = $event->episode->patient;
+
+		if ($patient->date_of_death) {
+			return false;
 		}
+
+		if (!$operation = ElementOperation::model()->find('event_id = ?',array($id))) {
+			throw new Exception('Operation not found for event: '.$id);
+		}
+
+		$audit = new Audit;
+		$audit->action = "print";
+		$audit->target_type = "admission letter";
+		$audit->patient_id = $patient->id;
+		$audit->episode_id = $event->episode_id;
+		$audit->event_id = $event->id;
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
+
+		$this->logActivity('printed admission letter');
+
+		$site = $operation->booking->session->theatre->site;
+		$firm = $operation->booking->session->firm;
+		if (!$firm) {
+			$firm = $operation->event->episode->firm;
+			$emergency_list = true;
+		}
+		$admissionContact = $operation->getAdmissionContact();
+		$emergency_list = false;
+		$cancelledBookings = $operation->getCancelledBookings();
+
+		$pdf_print = new OEPDFPrint('Openeyes', 'Booking letters', 'Booking letters');
+
+		$body = $this->render('/letters/admission_letter', array(
+			'site' => $site,
+			'patient' => $patient,
+			'firm' => $firm,
+			'emergencyList' => $emergency_list,
+			'operation' => $operation,
+			'refuseContact' => $admissionContact['refuse'],
+			'healthContact' => $admissionContact['health'],
+			'cancelledBookings' => $cancelledBookings,
+		), true);
+
+		$oeletter = new OELetter($patient->addressname."\n".implode("\n",$patient->correspondAddress->letterarray),$site->name."\n".implode("\n",$site->getLetterArray(false,false))."\nTel: ".$site->telephone.($site->fax ? "\nFax: ".$site->fax : ''));
+		$oeletter->setBarcode('E:'.$operation->event_id);
+		$oeletter->addBody($body);
+
+		$pdf_print->addLetter($oeletter);
+
+		$body = $this->render('/letters/admission_form', array(
+				'operation' => $operation,
+				'site' => $site,
+				'patient' => $patient,
+				'firm' => $firm,
+				'emergencyList' => $emergency_list,
+		), true);
+
+		$oeletter = new OELetter;
+		$oeletter->setFont('helvetica','10');
+		$oeletter->setBarcode('E:'.$operation->event_id);
+		$oeletter->addBody($body);
+
+		$pdf_print->addLetter($oeletter);
+		$pdf_print->output();
 	}
 
-	/**
-	 * Lists all models.
-	 */
-	public function actionIndex()
-	{
-		$dataProvider = new CActiveDataProvider('Patient');
-		$this->render('index', array(
-			'dataProvider' => $dataProvider,
-		));
-	}
-
-	/**
-	 * Display a form to use for searching models
-	 */
-	public function actionSearch()
-	{
-		if (isset($_POST['Patient'])) {
-			$this->forward('results');
-		} else {
-			$model = new Patient;
-			$this->render('search', array(
-				'model' => $model,
-			));
-		}
-	}
-
-	/**
-	 * Display results based on a search submission
-	 */
-	public function actionResults($page=false)
-	{
-		if (!empty($_POST)) {
-			foreach ($_POST['Patient'] as $key => $value) {
-				$_POST['Patient'][$key] = trim($value);
-			}
-
-
-			if ((!@$_POST['Patient']['hos_num'] || preg_match('/[^\d]/', $_POST['Patient']['hos_num'])) && (!@$_POST['Patient']['first_name'] || !@$_POST['Patient']['last_name'])) {
-				$audit = new Audit;
-				$audit->action = "search-error";
-				$audit->target_type = "search";
-				$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-				$audit->data = var_export($_POST['Patient'],true) . ": Patient search minimum criteria";
-				$audit->save();
-				setcookie('patient-search-minimum-criteria','1',0,'/');
-				$this->redirect(array('/patient/results/error'));
-			}
-
-			if (@$_POST['Patient']['hos_num']) {
-				if (strlen($_POST['Patient']['hos_num']) == 10) {
-					$_GET = array(
-						'hos_num' => '',
-						'nhs_num' => preg_replace('/[^0-9]*/','',$_POST['Patient']['hos_num']),
-						'gender' => '',
-						'sort_by' => 0,
-						'sort_dir' => 0,
-						'page_num' => 1,
-						'first_name' => '',
-						'last_name' => ''
-					);
-				} else {
-					$get_hos_num = str_pad(preg_replace('/[^0-9]*/','',$_POST['Patient']['hos_num']), 7, '0', STR_PAD_LEFT);
-					$_GET = array(
-						'hos_num' => $get_hos_num,
-						'nhs_num' => '',
-						'gender' => '',
-						'sort_by' => 0,
-						'sort_dir' => 0,
-						'page_num' => 1,
-						'first_name' => '',
-						'last_name' => ''
-					);
+	public function actionSearch() {
+		
+		// Check that we have a valid set of search criteria
+		$search_terms = array(
+				'hos_num' => null,
+				'nhs_num' => null,
+				'first_name' => null,
+				'last_name' => null,
+		);
+		foreach($search_terms as $search_term => $search_value) {
+			if(isset($_GET[$search_term]) && $search_value = trim($_GET[$search_term])) {
+				
+				// Pad hos_num
+				if ($search_term == 'hos_num' && Yii::app()->params['pad_hos_num']) {
+					$search_value = sprintf(Yii::app()->params['pad_hos_num'],$search_value);
 				}
-
-				$this->patientSearch();
-
-				Yii::app()->end();
-			} else {
-				$get_hos_num = '000000';
+				
+				$search_terms[$search_term] = $search_value;
 			}
-
-			$get_first_name = (@$_POST['Patient']['first_name'] ? $_POST['Patient']['first_name'] : '0');
-			$get_last_name = (@$_POST['Patient']['last_name'] ? $_POST['Patient']['last_name'] : '0');
-			// Get rid of any dashes from nhs_num as PAS doesn't store them
-			$get_nhs_num = (@$_POST['Patient']['nhs_num'] ? preg_replace('/-/', '', $_POST['Patient']['nhs_num']) : '0');
-			$get_gender = (@$_POST['Patient']['gender'] ? $_POST['Patient']['gender'] : '0');
-			$get_dob_day = (@$_POST['dob_day'] ? $_POST['dob_day'] : '0');
-			$get_dob_month = (@$_POST['dob_month'] ? $_POST['dob_month'] : '0');
-			$get_dob_year = (@$_POST['dob_year'] ? $_POST['dob_year'] : '0');
-
-			setcookie('patient-search-minimum-criteria','1',0,'/');
-			$this->redirect(array("/patient/results/$get_first_name/$get_last_name/$get_nhs_num/$get_gender/0/0/1"));
 		}
-
-		if (@$_GET['hos_num'] == '0' && (@$_GET['first_name'] == '0' || @$_GET['last_name'] == '0')) {
-			$audit = new Audit;
-			$audit->action = "search-error";
-			$audit->target_type = "search";
-			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = var_export($_POST['Patient'],true) . ": Error";
-			$audit->save();
-			$this->redirect(array('/patient/results/error'));
+		if(!$search_terms['hos_num'] && !$search_terms['nhs_num'] && !($search_terms['first_name'] && $search_terms['last_name'])) {
+			Yii::app()->user->setFlash('warning.invalid-search', 'Please enter a valid search.');
+			$this->redirect('/');
 		}
-
-		$this->patientSearch();
-	}
-
-	function patientSearch() {
-		if (!isset($_GET['sort_by'])) {
-			return $this->redirect(Yii::app()->baseUrl.'/');
-		}
-
-		switch ($_GET['sort_by']) {
+		$search_terms = CHtml::encodeArray($search_terms);
+		
+		switch (@$_GET['sort_by']) {
 			case 0:
 				$sort_by = 'hos_num*1';
 				break;
@@ -320,24 +304,27 @@ class PatientController extends BaseController
 			case 6:
 				$sort_by = 'nhs_num*1';
 				break;
+			default:
+				$sort_by = 'hos_num*1';
 		}
-
-		$sort_dir = ($_GET['sort_dir'] == 0 ? 'asc' : 'desc');
-
+		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
+		$page_num = (integer)@$_GET['page_num'];
+		$page_size = 20;
+		
 		$model = new Patient();
-		$model->attributes = $this->collateGetData();
-		$pageSize = 20;
+		$model->hos_num = $search_terms['hos_num'];
+		$model->nhs_num = $search_terms['nhs_num'];
 		$dataProvider = $model->search(array(
-			'currentPage' => (integer)@$_GET['page_num'],
-			'pageSize' => $pageSize,
+			'currentPage' => $page_num,
+			'pageSize' => $page_size,
 			'sortBy' => $sort_by,
 			'sortDir'=> $sort_dir,
-			'first_name' => @$_GET['first_name'],
-			'last_name' => @$_GET['last_name'],
+			'first_name' => $search_terms['first_name'],
+			'last_name' => $search_terms['last_name'],
 		));
 		$nr = $model->search_nr(array(
-			'first_name' => @$_GET['first_name'],
-			'last_name' => @$_GET['last_name'],
+			'first_name' => $search_terms['first_name'],
+			'last_name' => $search_terms['last_name'],
 		));
 
 		if($nr == 0) {
@@ -345,44 +332,38 @@ class PatientController extends BaseController
 			$audit->action = "search-results";
 			$audit->target_type = "search";
 			$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-			$audit->data = "first_name: '".@$_GET['first_name'] . "' last_name: '" . @$_GET['last_name'] . "' hos_num='" . @$_GET['hos_num'] . "': No results";
+			$audit->data = implode(',',$search_terms) ." : No results";
 			$audit->save();
-			$this->redirect(array('/patient/no-results'));
+			$message = 'Sorry, no results ';
+			if($search_terms['hos_num']) {
+				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
+			} else if($search_terms['nhs_num']) {
+				$message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
+			} else if($search_terms['first_name'] && $search_terms['last_name']) {
+				$message .= 'for Patient Name <strong>"'.$search_terms['first_name'] . ' ' . $search_terms['last_name'].'"</strong>';
+			} else {
+				$message .= 'found for your search.';
+			}
+			Yii::app()->user->setFlash('warning.no-results', $message);
+			$this->redirect('/');
 		} else if($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
-				$this->redirect(array('/patient/view/'.$item->id));
+				$this->redirect(array('patient/view/' . $item->id));
 			}
 		} else {
-			$pages = ceil($nr/$pageSize);
+			$pages = ceil($nr/$page_size);
 			$this->render('results', array(
-				'dataProvider' => $dataProvider,
+				'data_provider' => $dataProvider,
 				'pages' => $pages,
-				'items_per_page' => $pageSize,
+				'page_num' => $page_num,
+				'items_per_page' => $page_size,
 				'total_items' => $nr,
-				'first_name' => $_GET['first_name'],
-				'last_name' => $_GET['last_name'],
-				'nhs_num' => $_GET['nhs_num'],
-				'gender' => $_GET['gender'],
-				'pagen' => (integer)$_GET['page_num'],
-				'sort_by' => (integer)$_GET['sort_by'],
-				'sort_dir' => (integer)$_GET['sort_dir']
+				'search_terms' => $search_terms,
+				'sort_by' => (integer)@$_GET['sort_by'],
+				'sort_dir' => (integer)@$_GET['sort_dir']
 			));
 		}
-	}
-
-	/**
-	 * Manages all models.
-	 */
-	public function actionAdmin()
-	{
-		$model = new Patient('search');
-		$model->unsetAttributes();	// clear any default values
-		if (isset($_GET['Patient']))
-			$model->attributes = $_GET['Patient'];
-
-		$this->render('admin', array(
-			'model' => $model,
-		));
+		
 	}
 
 	public function actionSummary()
@@ -419,6 +400,8 @@ class PatientController extends BaseController
 		$this->patient = $this->loadModel($_GET['id']);
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 
@@ -457,6 +440,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
@@ -476,6 +460,8 @@ class PatientController extends BaseController
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
@@ -489,6 +475,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
@@ -535,6 +522,8 @@ class PatientController extends BaseController
 		$this->patient = $this->episode->patient;
 
 		$episodes = $this->patient->episodes;
+		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
+		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
@@ -550,6 +539,7 @@ class PatientController extends BaseController
 		$this->render('events_and_episodes', array(
 			'title' => empty($episodes) ? '' : 'Episode summary',
 			'episodes' => $episodes,
+			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
@@ -605,39 +595,6 @@ class PatientController extends BaseController
 		$model = new Patient;
 		$model->attributes = $data;
 		return $model->search();
-	}
-
-	/**
-	 * Returns the $_REQUIEST['Patient'] values plus the dob day, month and year appended together.
-	 *
-	 * @return array
-	 */
-	public function collatePostData()
-	{
-		$data = $_POST['Patient'];
-
-		if (isset($_POST['dob_day']) && isset($_POST['dob_month']) && isset($_POST['dob_year']) && $_POST['dob_day'] && $_POST['dob_month'] && $_POST['dob_year']) {
-			$data['dob'] = $_POST['dob_year'] . '-' . $_POST['dob_month'] . '-' . $_POST['dob_day'];
-		}
-
-		return $data;
-	}
-
-	public function collateGetData()
-	{
-		$data = $_GET;
-
-		if (isset($_GET['dob_day']) && isset($_GET['dob_month']) && isset($_GET['dob_year']) && $_GET['dob_day'] && $_GET['dob_month'] && $_GET['dob_year']) {
-			$data['dob'] = $_GET['dob_year'] . '-' . $_GET['dob_month'] . '-' . $_GET['dob_day'];
-		}
-
-		foreach ($data as $key => $value) {
-			if ($value == '0') {
-				$data[$key] = '';
-			}
-		}
-
-		return $data;
 	}
 
 	public function getTemplateName($action, $eventTypeId)
@@ -696,7 +653,7 @@ class PatientController extends BaseController
 			->from('contact')
 			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
 			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(contact.last_name) LIKE :term AND $where and (active is null or active = 1)", array(':term' => $term))
+			->where("LOWER(contact.last_name) LIKE :term AND $where and (user_contact_assignment.id is null or active != 0)", array(':term' => $term))
 			->order('title asc, contact.first_name asc, contact.last_name asc')
 			->queryAll() as $contact) {
 

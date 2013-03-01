@@ -163,7 +163,7 @@ foreach ($elements as $element) {
 		<h4>List</h4>
 		<div class="eventHighlight">
 			<?php $session = $operation->booking->session ?>
-			<h4><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
+			<h4 style="width: 460px;"><?php echo $session->NHSDate('date') . ' ' . $session->TimeSlot . ', '.$session->FirmName; ?></h4>
 		</div>
 	</div>
 
@@ -306,54 +306,17 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	$('#btn_print-invitation-letter').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			printUrl('<?php echo Yii::app()->createUrl('waitingList/printletters')?>?confirm=1&operations[]='+<?php echo $operation->id ?>);
+			printPDF('<?php echo Yii::app()->createUrl('waitingList/printletters')?>', {'operations': [<?php echo $operation->id ?>], 'confirm': 1});
 			enableButtons();
 		}
+		return false;
 	});
 
 	$('#btn_print-letter').unbind('click').click(function() {
 		if (!$(this).hasClass('inactive')) {
 			disableButtons();
-			clearPrintContent();
-			appendPrintContent($('#printcontent_admissionletter').html());
-			printContent();
+			printPDF('<?php echo Yii::app()->createUrl('patient/printadmissionletter/'.$this->event->id)?>',{});
 			enableButtons();
 		}
 	});
 </script>
-<?php if($operation->booking) { ?>
-<div id="printcontent_admissionletter" style="display: none;">
-<?php
-	// TODO: This needs moving to a controller so we can pull it in using an ajax call
-	// Only render the letter if the patient has an address
-	if($has_address) {
-		$admissionContact = $operation->getAdmissionContact();
-		$site = $operation->booking->session->theatre->site;
-		$firm = $operation->booking->session->firm;
-		$emergency_list = false;
-		if(!$firm) {
-			$firm = $operation->event->episode->firm;
-			$emergency_list = true;
-		}
-		$this->renderPartial('/letters/admission_letter', array(
-			'site' => $site,
-			'patient' => $patient,
-			'firm' => $firm,
-			'emergencyList' => $emergency_list,
-			'operation' => $operation,
-			'refuseContact' => $admissionContact['refuse'],
-			'healthContact' => $admissionContact['health'],
-			'cancelledBookings' => $cancelledBookings,
-		));
-		$this->renderPartial("/letters/break");
-		$this->renderPartial("/letters/admission_form", array(
-			'operation' => $operation, 
-			'site' => $site,
-			'patient' => $patient,
-			'firm' => $firm,
-			'emergencyList' => $emergency_list,
-		));
-	}
-?>
-</div>
-<?php } ?>

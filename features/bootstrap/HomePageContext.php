@@ -25,30 +25,8 @@ class HomePageContext extends Behat\MinkExtension\Context\RawMinkContext {
 	 * @When /^I search for patient "([^"]*)"$/
 	 */
 	public function iSearchForPatient($patient) {
-		if (is_numeric($patient)) {
-			$field = str_replace('\\"', '"', "Patient[hos_num]");
-			$value = str_replace('\\"', '"', (int) $patient);
-			$this->getSession()->getPage()->fillField($field, $value);
-
-			$button = str_replace('\\"', '"', "findPatient_details");
-			$this->getSession()->getPage()->pressButton($button);
-		} elseif (strstr($patient, ":")) {
-			$name = explode(":", $patient);
-			$this->getSession()->visit($this->locatePath('/'));
-
-			$field = str_replace('\\"', '"', "Patient[first_name]");
-			$value = str_replace('\\"', '"', $name[0]);
-			$this->getSession()->getPage()->fillField($field, $value);
-
-			$field = str_replace('\\"', '"', "Patient[last_name]");
-			$value = str_replace('\\"', '"', $name[1]);
-			$this->getSession()->getPage()->fillField($field, $value);
-
-			$button = str_replace('\\"', '"', "findPatient_details");
-			$this->getSession()->getPage()->pressButton($button);
-		} else {
-			throw new ResponseTextException("Argument passed incorrectly, expected 'firstname:lastname' OR 'hos_num'", $this->getSession());
-		}
+		$this->getSession()->getPage()->fillField("query",$patient);
+		$this->getSession()->getPage()->pressButton("Search");
 	}
 	
 	/**

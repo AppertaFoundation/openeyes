@@ -3,11 +3,11 @@ function AuditLog() {if (this.init) this.init.apply(this, arguments); }
 
 AuditLog.prototype = {
 	init : function() {
-		this.refresh_rate = 1000;
+		this.refresh_rate = 5000;
 		this.data = $('#auditListData');
 		this.run = true;
 
-		setTimeout('auditLog.refresh();',this.refresh_rate);
+		setTimeout('auditLog.refresh();',1000);
 	},
 	refresh : function() {
 		if (!this.run) {
@@ -17,11 +17,22 @@ AuditLog.prototype = {
 
 		this.running = true;
 
-		var last_id = $('#auditListData').children('li').attr('id').match(/[0-9]+/);
+		last_id = null;
+		$('#auditListData').children('li').map(function() {
+			if (last_id == null && $(this).attr('id') != 'undefined') {
+				last_id = $(this).attr('id').match(/[0-9]+/);
+			}
+		});
+
+		var user_id = $('#previous_user_id').val();
+		if (user_id == undefined) {
+			// user wasn't found, so return as there won't ever be any entries
+			return;
+		}
 
 		$.ajax({
 			'type': 'GET',
-			'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+$('#previous_user_id').val()+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
+			'url': baseUrl+'/audit/updateList?last_id='+last_id+'&site_id='+$('#previous_site_id').val()+'&firm_id='+$('#previous_firm_id').val()+'&user_id='+user_id+'&action='+$('#previous_action').val()+'&target_type='+$('#previous_target_type').val()+'&date_from='+$('#previous_date_from').val()+'&date_to='+$('#previous_date_to').val()+'&hos_num='+$('#previous_hos_num').val(),
 			'success': function(html) {
 				if ($.trim(html).length >0) {
 					auditLog.data.html(html + auditLog.data.html());
@@ -43,7 +54,7 @@ AuditLog.prototype = {
 	},
 	showLines : function() {
 		if (this.lines.length == 0) {
-			setTimeout('auditLog.refresh();',this.refresh_rate);
+			setTimeout('auditLog.refresh();',auditLog.refresh_rate);
 		} else {
 			var line = this.lines.pop();
 
@@ -55,6 +66,8 @@ AuditLog.prototype = {
 				line.attr('class',line.attr('class').replace(/Odd/,'Even'));
 			}
 
+			var lines = this.lines;
+
 			line.slideToggle('fast',function() {
 				var last_extra = auditLog.data.children('li').last();
 				if (!last_extra.is(':hidden')) {
@@ -62,14 +75,22 @@ AuditLog.prototype = {
 						$(this).remove();
 						auditLog.data.children('li').last().slideToggle('fast',function() {
 							$(this).remove();
-							auditLog.showLines();
+							if (lines == 0) {
+								setTimeout('auditLog.refresh();',1000);
+							} else {
+								auditLog.showLines();
+							}
 						});
 					});
 				} else {
 					last_extra.remove();
 					auditLog.data.children('li').last().slideToggle('fast',function() {
 						$(this).remove();
-						auditLog.showLines();
+						if (lines == 0) {
+							setTimeout('auditLog.refresh();',1000);
+						} else {
+							auditLog.showLines();
+						}
 					});
 				}
 			});
@@ -128,6 +149,7 @@ $(document).ready(function() {
 		$('.loader').show();
 
 		auditLog.run = false;
+		auditLog.running = false;
 		setTimeout('auditLog.loadItems()',50);
 
 		return false;

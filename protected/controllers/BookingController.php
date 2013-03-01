@@ -661,10 +661,10 @@ class BookingController extends BaseController
 
 		$patient = $this->model = $operation->event->episode->patient;
 
-		$episodes = $patient->episodes;
-
+		$ordered_episodes =  $patient->getOrderedEpisodes();
+		
 		$this->renderPartial('//patient/event_header',array(
-			'episodes'=>$episodes,
+			'ordered_episodes'=>$ordered_episodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'title'=>'Schedule operation',
 			'model'=>$patient,

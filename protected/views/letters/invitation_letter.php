@@ -17,23 +17,18 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->renderPartial("/letters/letter_start", array(
-	'site' => $site,
-	'patient' => $patient,
-)); ?>
 
-<p>
+<?php echo $this->renderPartial('/letters/letter_start', array(
+		'to' => $to,
+		'accessible' => true,
+		'patient' => $patient,
+		)); ?>
+
+<p class="accessible">
 	I have been asked to arrange your <?php	if ($patient->isChild()) { ?>child's <?php } ?> admission for surgery under the care of
-	<?php 
-		if($consultant = $firm->getConsultant()) {
-			$consultantName = $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
-		} else {
-			$consultantName = 'CONSULTANT';
-		}
-	?>
 	<?php echo CHtml::encode($consultantName) ?>. This is currently anticipated to be
 	<?php
-	if ($operation->overnight_stay) {
+	if ($overnightStay) {
 		echo 'an overnight stay';
 	} else {
 		echo 'a day case';
@@ -42,25 +37,13 @@
 	procedure.
 </p>
 
-<p>
+<p class="accessible">
 	Please will you telephone <?php echo $changeContact ?> within 2 weeks of the date of this letter to discuss and agree a
 	convenient date for this operation. If there is no reply, please leave a message and contact number on the answer phone.
 </p>
 
-<p>
+<p class="accessible">
 	Should you<?php if ($patient->isChild()) { ?>r child<?php } ?> no longer require treatment please let me know as soon as possible.
 </p>
 
-<?php $this->renderPartial("/letters/letter_end"); ?>
-<?php
-/*
-$this->renderPartial("/letters/break");
-$this->renderPartial("/letters/consent_form", array(
-	'operation' => $operation, 
-	'site' => $site,
-	'patient' => $patient,
-	'firm' => $firm,
-	'emergencyList' => false,
-	));
-*/
-?>
+<?php echo $this->renderPartial('/letters/letter_end', array('accessible' => true)); ?>

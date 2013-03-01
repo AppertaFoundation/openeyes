@@ -81,12 +81,84 @@ class SiteController extends BaseController
 	}
 
 	/**
-	 * This is the default 'index' action that is invoked
-	 * when an action is not explicitly requested by users.
+	 * Omnibox search form
 	 */
-	public function actionIndex()
-	{
-		$this->render('index', array('patientSearchError' => isset($_REQUEST['patientSearchError'])));
+	public function actionIndex()	{
+		$this->layout = 'main';
+		$this->render('index');
+	}
+
+	/**
+	 * Omnibox search handler
+	 */
+	public function actionSearch() {
+		if(isset($_POST['query']) && $query = trim($_POST['query'])) {
+				
+			// Event ID
+			if(preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i',$query,$matches)) {
+				$event_id = $matches[2];
+				if($event = Event::model()->findByPk($event_id)) {
+					$event_class_name = $event->eventType->class_name;
+					if($event_class_name == 'OphTrOperation') {
+						// TODO: This can go away once we modularise Booking
+						$this->redirect(array('/patient/event/'.$event_id));
+					} else {
+						$this->redirect(array($event_class_name.'/default/view/'.$event_id));
+					}
+				} else {
+					Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
+					$this->redirect('/');
+				}
+				return;
+			}
+	
+			// NHS number (assume 10 digit number is an NHS number)
+			if(preg_match('/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i',$query,$matches)
+					|| preg_match('/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i',$query,$matches)) {
+				$nhs = (isset($matches[2])) ? $matches[2] : $matches[1];
+				$nhs = str_replace(array('-',' '),'',$nhs);
+				$this->redirect(array('patient/search', 'nhs_num' => $nhs));
+				return;
+			}
+	
+			// Hospital number (assume a < 10 digit number is a hosnum)
+			if(preg_match('/^(H|Hosnum)\s*[:;]\s*([0-9a-zA-Z\-]+)$/i',$query,$matches)
+					|| preg_match(Yii::app()->params['hos_num_regex'],$query,$matches)) {
+				$hosnum = (isset($matches[2])) ? $matches[2] : $matches[1];
+				$this->redirect(array('patient/search', 'hos_num' => $hosnum));
+				return;
+			}
+			
+			// Patient name (assume two strings separated by space and/or comma is a name)
+			if(preg_match('/^(P|Patient)\s*[:;]\s*([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)
+					|| preg_match('/^([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)) {
+				$delimiter = (isset($matches[4])) ? trim($matches[3]) : trim($matches[2]);
+				if($delimiter) {
+					$firstname = (isset($matches[4])) ? $matches[4] : $matches[3];
+					$surname = (isset($matches[4])) ? $matches[2] : $matches[1];
+				} else {
+					$firstname = (isset($matches[4])) ? $matches[2] : $matches[1];
+					$surname = (isset($matches[4])) ? $matches[4] : $matches[3];
+				}
+				$this->redirect(array('patient/search', 'first_name' => $firstname, 'last_name' => $surname));
+				return;
+			}
+		}
+
+		$audit = new Audit;
+		$audit->action = "search-error";
+		$audit->target_type = "search";
+		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
+		$audit->save();
+
+		if (isset($query)) {
+			if (strlen($query) == 0) {
+				Yii::app()->user->setFlash('warning.search_error', "Please enter either a hospital number or a firstname and lastname.");
+			} else {
+				Yii::app()->user->setFlash('warning.search_error', '<strong>"'.CHtml::encode($query).'"</strong> is not a valid search.');
+			}
+		}
+		$this->redirect('/');
 	}
 
 	/**
@@ -123,6 +195,13 @@ class SiteController extends BaseController
 		if (Yii::app()->session['user']) {
 			$this->redirect(Yii::app()->baseUrl.'/');
 			Yii::app()->end();
+		}
+
+		if (Yii::app()->params['required_user_agent'] && !preg_match(Yii::app()->params['required_user_agent'],@$_SERVER['HTTP_USER_AGENT'])) {
+			if (!Yii::app()->params['required_user_agent_message']) {
+				throw new Exception('You must define the required_user_agent_message parameter.');
+			}
+			return $this->render('login_wrong_browser');
 		}
 
 		$model=new LoginForm;
@@ -227,6 +306,8 @@ class SiteController extends BaseController
 			if (isset($so['date-start'])) unset($so['date-start']);
 			if (isset($so['date-end'])) unset($so['date-end']);
 			Yii::app()->session['theatre_searchoptions'] = $so;
+
+			Yii::app()->session['waitinglist_searchoptions'] = null;
 
 			echo "change-firm-succeeded";
 			Yii::app()->end();
