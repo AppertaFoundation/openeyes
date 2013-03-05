@@ -225,20 +225,24 @@ class BaseEventTypeElement extends BaseElement {
 	public function getInfoText() {
 	}
 
-	public function getCreate_view() {
+	public function getDefaultView() {
 		return get_class($this);
+	}
+
+	public function getCreate_view() {
+		return $this->getDefaultView();
 	}
 
 	public function getUpdate_view() {
-		return get_class($this);
+		return $this->getDefaultView();
 	}
 
 	public function getView_view() {
-		return get_class($this);
+		return $this->getDefaultView();
 	}
 
 	public function getPrint_view() {
-		return get_class($this);
+		return $this->getDefaultView();
 	}
 
 	public function isEditable() {
