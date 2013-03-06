@@ -29,7 +29,6 @@
  * @property string  $dob
  * @property string  $date_of_death
  * @property string  $gender
- * @property string  $ethnic_group
  * @property string  $hos_num
  * @property string  $nhs_num
  * @property string  $primary_phone
@@ -50,6 +49,7 @@
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
+ * @property EthnicGroup $ethnic_group
  */
 class Patient extends BaseActiveRecord {
 	
@@ -92,8 +92,8 @@ class Patient extends BaseActiveRecord {
 		return array(
 			array('pas_key', 'length', 'max' => 10),
 			array('hos_num, nhs_num', 'length', 'max' => 40),
-			array('gender, ethnic_group', 'length', 'max' => 1),
-			array('dob, date_of_death', 'safe'),
+			array('gender', 'length', 'max' => 1),
+			array('dob, date_of_death, ethnic_group_id', 'safe'),
 			array('dob, hos_num, nhs_num, date_of_death', 'safe', 'on' => 'search'),
 		);
 	}
@@ -137,6 +137,7 @@ class Patient extends BaseActiveRecord {
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
+			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 		);
 	}
 
@@ -151,7 +152,7 @@ class Patient extends BaseActiveRecord {
 			'dob' => 'Date of Birth',
 			'date_of_death' => 'Date of Death',
 			'gender' => 'Gender',
-			'ethnic_group' => 'Ethnic Group',
+			'ethnic_group_id' => 'Ethnic Group',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
 		);
@@ -466,15 +467,8 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getEthnicGroupString() {
-		$strings = array(
-				'Z' => 'Z',
-				'C' => 'C',
-				'A' => 'A',
-				'P' => 'P',
-				'S' => 'S',
-		);
-		if(isset($strings[$this->ethnic_group])) {
-			return $strings[$this->ethnic_group];
+		if($this->ethnic_group) {
+			return $this->ethnic_group->name;
 		} else {
 			return 'Unknown';
 		}

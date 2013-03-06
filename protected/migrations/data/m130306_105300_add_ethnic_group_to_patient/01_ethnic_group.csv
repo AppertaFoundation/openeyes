@@ -1,0 +1,18 @@
+"id","name","code","display_order"
+1,"White – British","A",10
+2,"White – Irish","B",20
+3,"White – Any other background","C",30
+4,"Mixed – White/Black Caribbean","D",40
+5,"Mixed – White/Black African","E",50
+6,"Mixed – White and Asian","F",60
+7,"Mixed – Any other","G",70
+8,"Asian – Indian","H",80
+9,"Asian – Pakistani","J",90
+10,"Asian – Bangladeshi","K",100
+11,"Asian – Any other background","L",110
+12,"Black – Caribbean","M",120
+13,"Black – African","N",130
+14,"Black – Any other background","P",140
+15,"Other – Chinese","R",150
+16,"Other – Any other","S",160
+17,"Not Stated","Z",170
