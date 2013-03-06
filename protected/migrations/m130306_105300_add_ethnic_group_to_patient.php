@@ -19,13 +19,15 @@ class m130306_105300_add_ethnic_group_to_patient extends OEMigration {
 			),
 			'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
+                $migrations_path = dirname(__FILE__);
+                $this->initialiseData($migrations_path);
 		$this->addColumn('patient','ethnic_group_id','int(10) unsigned');
 		$this->addForeignKey('patient_ethnic_group_id_fk', 'patient', 'ethnic_group_id', 'ethnic_group', 'id');
 	}
 
 	public function down() {
 		$this->dropForeignKey('patient_ethnic_group_id_fk', 'patient');
-		$this->dropColumn('patient','ethnic_group');
+		$this->dropColumn('patient','ethnic_group_id');
 		$this->dropTable('ethnic_group');
 	}
 	
