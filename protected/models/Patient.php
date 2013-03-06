@@ -21,7 +21,7 @@
  * This is the model class for table "patient".
  *
  * The followings are the available columns in table 'patient':
- * @property integer	$id
+ * @property integer $id
  * @property string  $pas_key
  * @property string  $title
  * @property string  $first_name
@@ -29,15 +29,16 @@
  * @property string  $dob
  * @property string  $date_of_death
  * @property string  $gender
+ * @property string  $ethnic_group
  * @property string  $hos_num
  * @property string  $nhs_num
  * @property string  $primary_phone
- * @property integer	$gp_id
+ * @property integer $gp_id
  * @property integer $practice_id
  * @property string  $created_date
  * @property string  $last_modified_date
- * @property integer	$created_user_id
- * @property integer	$last_modified_user_id
+ * @property integer $created_user_id
+ * @property integer $last_modified_user_id
  * 
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -91,7 +92,7 @@ class Patient extends BaseActiveRecord {
 		return array(
 			array('pas_key', 'length', 'max' => 10),
 			array('hos_num, nhs_num', 'length', 'max' => 40),
-			array('gender', 'length', 'max' => 1),
+			array('gender, ethnic_group', 'length', 'max' => 1),
 			array('dob, date_of_death', 'safe'),
 			array('dob, hos_num, nhs_num, date_of_death', 'safe', 'on' => 'search'),
 		);
@@ -150,6 +151,7 @@ class Patient extends BaseActiveRecord {
 			'dob' => 'Date of Birth',
 			'date_of_death' => 'Date of Death',
 			'gender' => 'Gender',
+			'ethnic_group' => 'Ethnic Group',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
 		);
@@ -461,6 +463,21 @@ class Patient extends BaseActiveRecord {
 
 	public function getGenderString() {
 		return ($this->gender == 'F' ? 'Female' : 'Male');
+	}
+
+	public function getEthnicGroupString() {
+		$strings = array(
+				'Z' => 'Z',
+				'C' => 'C',
+				'A' => 'A',
+				'P' => 'P',
+				'S' => 'S',
+		);
+		if(isset($strings[$this->ethnic_group])) {
+			return $strings[$this->ethnic_group];
+		} else {
+			return 'Unknown';
+		}
 	}
 
 	public function getObj() {
