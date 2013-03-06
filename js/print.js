@@ -85,6 +85,12 @@ function printIFrameUrl(url, data) {
 		style: 'display: none;',
 	});
 	$('body').append(iframe);
+	
+	// re-enable the buttons
+	$('#print_content_iframe').load(function() {
+		enableButtons();
+	});
+
 }
 
 /*
