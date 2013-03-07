@@ -27,5 +27,25 @@
 </head>
 <body>
 	<?php echo $content; ?>
+<script type="text/javascript">
+	$(document).ready(function() {
+		// function for printing
+		printFn = function() {
+			window.print();
+		};
+
+		// check to see if the eyedraw libraries are loaded (which implies that we have eyedraws
+		// on the page) If they are, then use that to call the print function when ready, otherwise 
+		// we can just call it straight off
+		if (typeof(getOeEyeDrawChecker) === 'function') {
+			edChecker = getOEEyeDrawChecker();	
+			edChecker.registerForReady(printFn);
+		}
+		else {
+			printFn();
+		}
+	});
+	
+</script>
 </body>
 </html>
