@@ -1128,13 +1128,23 @@ input.diagnosis_eye { margin-left: 10px; }
 a.event-action { display: inline-block; }
 a.event-action.primary { color: #fff; height: 22px; }
 a.event-action.secondary { color: #999; padding: 4px 10px; margin: 1px 2px 0; letter-spacing: 1px; font-size: 13px; white-space: nowrap; }
-a.event-action.secondary:hover { border: 0; background: #999; color: #fff; border-radius: 5px; text-shadow: 1px 1px 0 #999, 2px 2px 0 #666; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+a.event-action.secondary:hover { border: 0; background-color: #999; color: #fff; border-radius: 5px; text-shadow: 1px 1px 0 #999, 2px 2px 0 #666; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
 a.event-action.secondary.red { color: #ad1515; }
-a.event-action.secondary.red:hover { background: #ad1515; color: #fff; text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
+a.event-action.secondary.red:hover { background-color: #ad1515; color: #fff; text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
 a.event-action.secondary.blue { color: #105dae; }
-a.event-action.secondary.blue:hover { background: #105dae; color: #fff; text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
+a.event-action.secondary.blue:hover { background-color: #105dae; color: #fff; text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
 a.event-action.secondary.green { color: #3fa522; }
-a.event-action.secondary.green:hover { background: #3fa522; color: #fff; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+a.event-action.secondary.green:hover { background-color: #3fa522; color: #fff; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+
+a.event-action.trash {
+	background: url(../img/_elements/icons/_sprites/trash-can.png) no-repeat 50% -53px;
+	width: 16px;
+	height: 16px;
+}
+a.event-action.trash span { display: none; }
+a.event-action.trash:hover {
+	background-position-y: -1px;
+}
 
 /* ====== Element DETAIL ====== */
 #event_content .edetail { padding:10px; background:#dae6f1; position:relative; }
