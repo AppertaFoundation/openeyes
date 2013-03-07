@@ -222,9 +222,8 @@ else {
 	<em>You may be given a prescription after your treatment. This can be
 		collected from our pharmacy on the ward, however unless you have an
 		exemption certificate the standard prescription charge will apply.
-		Please ensure you have the correct money or ask the
-		relative/friend/carer who is collecting you to make sure they bring
-		some money to cover the prescription.</em>
+		Please ensure you, or the person collecting you, have the correct money
+		to cover the prescription cost.</em>
 </p>
 <?php } ?>
 
@@ -240,8 +239,8 @@ else {
 	</li>
 	<li>You must not drive yourself to or from hospital</li>
 	<?php if($operation->showSeatingWarning()) { ?>
-	<li>We would like to request that only 1 person should accompany you in
-		order to ensure that adequate seating is available for patients</li>
+	<li>We request that only 1 person accompany you to ensure that there is adequate
+		seating available for patients</li>
 	<?php } ?>
 	<?php if($subspecialty->id != 13 && $operation->showPrescriptionWarning()) { ?>
 	<li><em>Check whether you have to pay or are exempt from prescription
