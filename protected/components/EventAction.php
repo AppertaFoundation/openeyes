@@ -40,7 +40,7 @@ class EventAction {
 		return $action;
 	}
 	
-	public static function link($label, $href = '#', $options, $htmlOptions = null) {
+	public static function link($label, $href = '#', $options = null, $htmlOptions = null) {
 		$action = new self($label, 'link', $options, $htmlOptions);
 		$action->href = $href;
 		return $action;

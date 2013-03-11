@@ -92,7 +92,11 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Gender:</div>
-							<div class="data_value"><?php echo $this->patient->gender == 'F' ? 'Female' : 'Male'?></div>
+							<div class="data_value"><?php echo $this->patient->getGenderString() ?></div>
+						</div>
+						<div class="data_row">
+							<div class="data_label">Ethnic Group:</div>
+							<div class="data_value"><?php echo $this->patient->getEthnicGroupString() ?></div>
 						</div>
 					</div> <!-- #personal_details -->
 					<div class="whiteBox patientDetails" id="contact_details">

@@ -10,7 +10,7 @@ class OEMigration extends CDbMigration {
 		$data_path = $migrations_path.'/data/'.get_class($this).'/';
 		foreach(glob($data_path."*.csv") as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
-			echo "Importing $table data...";
+			echo "Importing $table data...\n";
 			$fh = fopen($file_path, 'r');
 			$columns = fgetcsv($fh);
 			$lookup_columns = array();

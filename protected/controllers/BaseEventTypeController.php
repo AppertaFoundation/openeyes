@@ -370,7 +370,8 @@ class BaseEventTypeController extends BaseController
 		$this->event_actions = array(
 				EventAction::link('Delete',
 						Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-						array('colour' => 'red', 'level' => 'secondary')
+						array('colour' => 'red', 'level' => 'secondary'),
+						array('class' => 'trash')
 				)
 		);
 		
@@ -417,7 +418,7 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		if (empty($_POST) && !count($this->getDefaultElements('update'))) {
+		if (empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
@@ -425,7 +426,7 @@ class BaseEventTypeController extends BaseController
 			// Cancel button pressed, so just bounce to view
 			$this->redirect(array('default/view/'.$this->event->id));
 			return;
-		} else if(!empty($_POST) && !count($this->getDefaultElements('update'))) {
+		} else if(!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
 			$errors['Event'][] = 'No elements selected';
 		} else if (!empty($_POST)) {
 			
@@ -507,9 +508,9 @@ class BaseEventTypeController extends BaseController
 		);
 		
 		$this->renderPartial(
-			'update',
+			$this->action->id,
 			array(
-				'elements' => $this->getDefaultElements('update'),
+				'elements' => $this->getDefaultElements($this->action->id),
 				'errors' => @$errors
 			),
 			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
@@ -554,8 +555,9 @@ class BaseEventTypeController extends BaseController
 				$element->setDefaultOptions();
 			}
 
+			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
-				$action . '_' . $element->{$action.'_view'},
+				$action . '_' . $view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, false
 			);
@@ -568,8 +570,9 @@ class BaseEventTypeController extends BaseController
 				$element->setDefaultOptions();
 			}
 
+			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
-				$action . '_' . $element->{$action.'_view'},
+				$action . '_' . $view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, false
 			);
@@ -660,6 +663,8 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
+		$this->afterCreateElements($event);
+		
 		return $event->id;
 	}
 
@@ -726,10 +731,26 @@ class BaseEventTypeController extends BaseController
 		foreach ($toDelete as $element) {
 			$element->delete();
 		}
+		
+		$this->afterUpdateElements($event);
 
 		return true;
 	}
 
+	/**
+	 * Called after event (and elements) has been updated
+	 * @param Event $event
+	 */
+	protected function afterUpdateElements($event) {
+	}
+	
+	/**
+	 * Called after event (and elements) have been created
+	 * @param Event $event
+	 */
+	protected function afterCreateElements($event) {
+	}
+	
 	public function getEpisode($firm, $patientId) {
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
 		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);

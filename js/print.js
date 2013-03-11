@@ -16,9 +16,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * Load a PDF into an iframe to print it (print js is embedded in the pdf)
- */
+/*
 function printPDF(url, data) {
 	$('#print_pdf_iframe').remove();
 	var iframe = $('<iframe></iframe>');
@@ -28,6 +26,11 @@ function printPDF(url, data) {
 		style: 'display: none;'
 	});
 	$('body').append(iframe);
+	
+	// re-enable the buttons
+	$('#print_pdf_iframe').load(function() {
+		enableButtons();
+	});
 }
 
 $(document).ready(function() {
@@ -60,6 +63,7 @@ function printContent(csspath) {
 		overrideElementCSS : css,
 	});
 }
+*/
 
 /*
  * creates an iframe in the current document, and populates with the given url and GET data
@@ -85,6 +89,12 @@ function printIFrameUrl(url, data) {
 		style: 'display: none;',
 	});
 	$('body').append(iframe);
+	
+	// re-enable the buttons
+	$('#print_content_iframe').load(function() {
+		enableButtons();
+	});
+
 }
 
 /*
