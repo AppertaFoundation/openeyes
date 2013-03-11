@@ -64,7 +64,7 @@ $(document).ready(function() {
 		var display_order = $(element).attr('data-element-display-order');
 		$.get(baseUrl + "/" + moduleName + "/Default/ElementForm", {
 			id : element_type_id,
-			patient_id : et_patient_id,
+			patient_id : OE_patient_id,
 			previous_id: previous_id,
 		}, function(data) {
 			if (is_child) {
@@ -149,7 +149,7 @@ $(document).ready(function() {
 		}
 		$.ajax({
 			url: baseUrl + '/' + moduleName + '/default/viewpreviouselements',
-			data: { element_type_id: element.attr('data-element-type-id'), patient_id: et_patient_id },
+			data: { element_type_id: element.attr('data-element-type-id'), patient_id: OE_patient_id },
 			success: function(data) {
 				element.append(data);
 				$('#previous_elements').dialog({
