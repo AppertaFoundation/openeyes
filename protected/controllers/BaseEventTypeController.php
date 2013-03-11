@@ -20,6 +20,7 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
 	public $js = array();
+	public $jsVars = array();
 
 	public function actionIndex()
 	{
@@ -308,7 +309,8 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				),
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'create',
 			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
@@ -374,7 +376,8 @@ class BaseEventTypeController extends BaseController
 						array('class' => 'trash')
 				)
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'view', array_merge(array(
 			'elements' => $elements,
@@ -506,7 +509,8 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				),
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			$this->action->id,
 			array(
@@ -932,10 +936,29 @@ class BaseEventTypeController extends BaseController
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'delete', array(
 			'eventId' => $id,
 			), false, true);
+	}
+
+	public function processJsVars() {
+		$this->jsVars['OE_patient_id'] = $this->patient->id;
+		if ($this->event) {
+			$this->jsVars['OE_event_id'] = $this->event->id;
+			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+		}
+		$this->jsVars['OE_module_css_path'] = $this->assetPath."/css";
+
+		foreach ($this->jsVars as $key => $value) {
+			if (is_array($value)) {
+				$value = json_encode($value);
+			} else if (!preg_match('/^[0-9\.]+$/',$value) && !in_array($value,array('true','false'))) {
+				$value = "'$value'";
+			}
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
+		}
 	}
 }
