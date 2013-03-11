@@ -6,7 +6,7 @@ class OEMigration extends CDbMigration {
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
 	 */
-	protected function initialiseData($migrations_path) {
+	protected function initialiseData($migrations_path, $update_pk = null) {
 		$data_path = $migrations_path.'/data/'.get_class($this).'/';
 		foreach(glob($data_path."*.csv") as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
@@ -46,7 +46,21 @@ class OEMigration extends CDbMigration {
 					}
 				}
 
-				$this->insert($table, $data);
+				if($update_pk) {
+					$pk = $data[$update_pk];
+					$existing = $this->getDbConnection()->createCommand()
+					->select($update_pk)
+					->from($table)
+					->where($update_pk.' = ?')
+					->queryScalar(array($pk));
+					if($existing) {
+						$this->update($table, $data, $update_pk . '= :pk', array(':pk' => $pk));
+					} else {
+						$this->insert($table, $data);
+					}
+				} else {
+					$this->insert($table, $data);
+				}
 			}
 			fclose($fh);
 			echo "$row_count records, done.\n";
