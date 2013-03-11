@@ -950,14 +950,10 @@ class BaseEventTypeController extends BaseController
 			$this->jsVars['OE_event_id'] = $this->event->id;
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
-		$this->jsVars['OE_module_css_path'] = $this->assetPath."/css";
+		$this->jsVars['OE_asset_path'] = $this->assetPath;
 
 		foreach ($this->jsVars as $key => $value) {
-			if (is_array($value)) {
-				$value = json_encode($value);
-			} else if (!preg_match('/^[0-9\.]+$/',$value) && !in_array($value,array('true','false'))) {
-				$value = "'$value'";
-			}
+			$value = CJavaScript::encode($value);
 			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
 		}
 	}
