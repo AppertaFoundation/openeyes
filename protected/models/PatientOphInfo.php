@@ -67,7 +67,7 @@ class PatientOphInfo extends BaseActiveRecord
 				array('cvi_status_date, cvi_status_id', 'safe'),
 				array('cvi_status_date, cvi_status_id', 'required'),
 				array('cvi_status_id', 'safe', 'on' => 'search'),
-				array('cvi_status_date', 'OeFuzzyDateValidator'),
+				array('cvi_status_date', 'OEFuzzyDateValidator'),
 		);
 	}
 

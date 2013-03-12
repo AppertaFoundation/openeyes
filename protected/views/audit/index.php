@@ -142,38 +142,35 @@
 			</div>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
-	$('#auditList-filter button[type="submit"]').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
+	handleButton($('#auditList-filter button[type="submit"]'),function(e) {
+		$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
 
-			$('#page').val(1);
+		$('#page').val(1);
 
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
-				'type': 'POST',
-				'data': $('#auditList-filter').serialize(),
-				'success': function(data) {
-					$('#previous_site_id').val($('#site_id').val());
-					$('#previous_firm_id').val($('#firm_id').val());
-					$('#previous_user').val($('#user').val());
-					$('#previous_action').val($('#action').val());
-					$('#previous_target_type').val($('#target_type').val());
-					$('#previous_event_type_id').val($('#event_type_id').val());
-					$('#previous_date_from').val($('#date_from').val());
-					$('#previous_date_to').val($('#date_to').val());
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
+			'type': 'POST',
+			'data': $('#auditList-filter').serialize(),
+			'success': function(data) {
+				$('#previous_site_id').val($('#site_id').val());
+				$('#previous_firm_id').val($('#firm_id').val());
+				$('#previous_user').val($('#user').val());
+				$('#previous_action').val($('#action').val());
+				$('#previous_target_type').val($('#target_type').val());
+				$('#previous_event_type_id').val($('#event_type_id').val());
+				$('#previous_date_from').val($('#date_from').val());
+				$('#previous_date_to').val($('#date_to').val());
 
-					var s = data.split('<!-------------------------->');
+				var s = data.split('<!-------------------------->');
 
-					$('#searchResults').html(s[0]);
-					$('div.pagination').html(s[1]).show();
+				$('#searchResults').html(s[0]);
+				$('div.pagination').html(s[1]).show();
 
-					enableButtons();
-					return false;
-				}
-			});
-		}
-		return false;
+				enableButtons();
+			}
+		});
+
+		e.preventDefault();
 	});
 
 	$(document).ready(function() {

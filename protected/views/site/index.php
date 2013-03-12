@@ -35,11 +35,5 @@
 	<?php $this->endWidget(); ?>
 </div><!-- .centralColumn -->
 <script type="text/javascript">
-	$('#omnibox button').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-		} else {
-			return false;
-		}
-	});
+	handleButton($('#omnibox button'));
 </script>

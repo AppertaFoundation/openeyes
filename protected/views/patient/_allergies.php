@@ -23,12 +23,12 @@
 				<?php } ?>
 			</tbody>
 		</table>
-	</div>
-	<div class="data_row" id="add_new_allergy">
-		Add Allergy:
-		<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'));?>
-		<button id="btn_add_allergy" class="classy green mini" type="button"><span class="button-span button-span-green">Add</span></button>
+		<div id="add_new_allergy">
+			Add Allergy:
+			<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'));?>
+			<button id="btn_add_allergy" class="classy green mini" type="button"><span class="button-span button-span-green">Add</span></button>
 		</div>
+	</div>
 </div>
 <div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
 	<div>

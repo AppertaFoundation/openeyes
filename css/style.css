@@ -71,7 +71,7 @@ body {}
 #footer { margin-bottom: 40px; }
 #container		{ background: url(../img/_structure/gradient_bg.jpg) #dae6f1 top left no-repeat; background-position: 0px 0px; border-left: 2px solid #b3b0ae; border-right: 2px solid #b3b0ae; }
 #header			{ height: 70px; position: relative; border-top:2px solid #b3b0ae; }
-#header.stuck { background: #8ac7f0; position: fixed; top: 0; z-index: 10; padding-bottom: 4px;
+#header.stuck { background: #a0d7f8 url(../img/_structure/miniheader/bg_gradient.png) bottom repeat-x; position: fixed; top: 0; z-index: 10; padding-bottom: 4px;
 	border-top: none; border-radius: 0; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 35px; }
 #header.stuck #brand { height: 25px; margin: 8px 0 0 10px; background: url(../img/_structure/openeyes_small.png) 0 0 no-repeat; }
 #header.stuck #brand a { height: 25px; }
@@ -1264,7 +1264,7 @@ input.diagnosis_eye { margin-left: 10px; }
 
 .event_tabs { background: #eaddaf; border-bottom:5px solid #a29d8a; width: 1030px; padding: 10px 10px 0; }
 .event_tabs_sticky_wrapper { padding-bottom: 15px; }
-.event_tabs.stuck { position: fixed; top: 39px; z-index: 10; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; }
+.event_tabs.stuck { position: fixed; top: 39px; z-index: 9; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); height: 25px; }
 .event_tabs ul { padding: 0; margin: 0; }
 .event_tabs ul li { float: left; list-style: none; background: #fffee7;
 	margin-right: 4px; border-top-left-radius: 3px;
@@ -1277,20 +1277,30 @@ input.diagnosis_eye { margin-left: 10px; }
 .event_tabs ul li.hover a { color: #fff; }
 
 .event_actions_sticky_wrapper { position: absolute; top: -35px; width: 835px; margin-left: 200px; text-align: right; }
-.event_actions.stuck { position: fixed; top: 44px; z-index: 10; height: 25px; width: 835px; text-align: right; }
+.event_actions.stuck { position: fixed; top: 44px; z-index: 9; height: 25px; width: 835px; text-align: right; }
 .event_actions ul { padding: 0; margin: 0; float: right; }
 .event_actions ul li { float: left; list-style: none; margin-left: 4px; } 
 
 a.event-action { display: inline-block; }
 a.event-action.primary { color: #fff; height: 22px; }
 a.event-action.secondary { color: #999; padding: 4px 10px; margin: 1px 2px 0; letter-spacing: 1px; font-size: 13px; white-space: nowrap; }
-a.event-action.secondary:hover { border: 0; background: #999; color: #fff; border-radius: 5px; text-shadow: 1px 1px 0 #999, 2px 2px 0 #666; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
+a.event-action.secondary:hover { border: 0; background-color: #999; color: #fff; border-radius: 5px; text-shadow: 1px 1px 0 #999, 2px 2px 0 #666; box-shadow:0 1px 4px rgba(0,0,0,0.3); }
 a.event-action.secondary.red { color: #ad1515; }
-a.event-action.secondary.red:hover { background: #ad1515; color: #fff; text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
+a.event-action.secondary.red:hover { background-color: #ad1515; color: #fff; text-shadow: 1px 1px 0 #9a091c, 2px 2px 0 #851616; }
 a.event-action.secondary.blue { color: #105dae; }
-a.event-action.secondary.blue:hover { background: #105dae; color: #fff; text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
+a.event-action.secondary.blue:hover { background-color: #105dae; color: #fff; text-shadow: 1px 1px 0 #105dae, 2px 2px 0 #5c0faa; }
 a.event-action.secondary.green { color: #3fa522; }
-a.event-action.secondary.green:hover { background: #3fa522; color: #fff; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+a.event-action.secondary.green:hover { background-color: #3fa522; color: #fff; text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f; }
+
+a.event-action.trash {
+	background: url(../img/_elements/icons/_sprites/trash-can.png) no-repeat 50% -53px;
+	width: 16px;
+	height: 16px;
+}
+a.event-action.trash span { display: none; }
+a.event-action.trash:hover {
+	background-position-y: -1px;
+}
 
 /* ====== Element DETAIL ====== */
 #event_content .edetail { padding:10px; background:#dae6f1; position:relative; }

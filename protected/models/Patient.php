@@ -21,7 +21,7 @@
  * This is the model class for table "patient".
  *
  * The followings are the available columns in table 'patient':
- * @property integer	$id
+ * @property integer $id
  * @property string  $pas_key
  * @property string  $title
  * @property string  $first_name
@@ -32,12 +32,12 @@
  * @property string  $hos_num
  * @property string  $nhs_num
  * @property string  $primary_phone
- * @property integer	$gp_id
+ * @property integer $gp_id
  * @property integer $practice_id
  * @property string  $created_date
  * @property string  $last_modified_date
- * @property integer	$created_user_id
- * @property integer	$last_modified_user_id
+ * @property integer $created_user_id
+ * @property integer $last_modified_user_id
  * 
  * The followings are the available model relations:
  * @property Episode[] $episodes
@@ -49,6 +49,7 @@
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
+ * @property EthnicGroup $ethnic_group
  */
 class Patient extends BaseActiveRecord {
 	
@@ -92,7 +93,7 @@ class Patient extends BaseActiveRecord {
 			array('pas_key', 'length', 'max' => 10),
 			array('hos_num, nhs_num', 'length', 'max' => 40),
 			array('gender', 'length', 'max' => 1),
-			array('dob, date_of_death', 'safe'),
+			array('dob, date_of_death, ethnic_group_id', 'safe'),
 			array('dob, hos_num, nhs_num, date_of_death', 'safe', 'on' => 'search'),
 		);
 	}
@@ -136,6 +137,7 @@ class Patient extends BaseActiveRecord {
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
+			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 		);
 	}
 
@@ -150,6 +152,7 @@ class Patient extends BaseActiveRecord {
 			'dob' => 'Date of Birth',
 			'date_of_death' => 'Date of Death',
 			'gender' => 'Gender',
+			'ethnic_group_id' => 'Ethnic Group',
 			'hos_num' => 'Hospital Number',
 			'nhs_num' => 'NHS Number',
 		);
@@ -461,6 +464,14 @@ class Patient extends BaseActiveRecord {
 
 	public function getGenderString() {
 		return ($this->gender == 'F' ? 'Female' : 'Male');
+	}
+
+	public function getEthnicGroupString() {
+		if($this->ethnic_group) {
+			return $this->ethnic_group->name;
+		} else {
+			return 'Unknown';
+		}
 	}
 
 	public function getObj() {
@@ -800,19 +811,19 @@ class Patient extends BaseActiveRecord {
 
 	public function getPsl() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorSegment($this,'left');
+			return $api->getLetterPosteriorPole($this,'left');
 		}
 	}
 
 	public function getPsp() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorSegment($this,'episode');
+			return $api->getLetterPosteriorPole($this,'episode');
 		}
 	}
 
 	public function getPsr() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorSegment($this,'right');
+			return $api->getLetterPosteriorPole($this,'right');
 		}
 	}
 
@@ -886,91 +897,6 @@ class Patient extends BaseActiveRecord {
 	public function getAdl() {
 		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
 			return $api->getLetterAdnexalComorbidity($this,'left');
-		}
-	}
-	
-	// DR function additions
-	/*
-	 * NSC right Retinopathy
-	 */
-	public function getNrr() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterDRRetinopathy($this,'right');
-		}
-	}
-	
-	/*
-	 * NSC left Retinopathy
-	*/
-	public function getNlr() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterDRRetinopathy($this,'left');
-		}
-	}
-	
-	/*
-	 * NSC right Maculopathy
-	*/
-	public function getNrm() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterDRMaculopathy($this,'right');
-		}
-	}
-	
-	/*
-	 * NSC left Maculopathy
-	*/
-	public function getNlm() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterDRMaculopathy($this,'left');
-		}
-	}
-	
-	// Clinical right DR Grade
-	public function getCrd() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterDRClinical($this,'right');
-		}
-	}
-	
-	// Clinical left DR Grade
-	public function getCld() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterDRClinical($this,'left');
-		}
-	}
-	
-	/*
-	 * Type of diabetes mellitus
-	 * // SNOMED codes for Diabetes mellitus type 2
-	 * // and Diabetes mellitus type 1
-	*/
-	public function getDmt() {
-		if($diagnoses = $this->getSystemicDiagnoses()) {
-			foreach ($diagnoses as $diagnosis) {
-				if (in_array($diagnosis->disorder->id, array('44054006', '46635009'))) {
-					return $diagnosis->disorder->term;
-				}
-			}
-			return 'not diabetic';
-		}
-	}
-	
-	/*
-	 * Laser management plan
-	*/
-	public function getLmp() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterLaserManagementPlan($this);
-		}
-	}
-	
-	/*
-	 * Laser management comments
-	*/
-	public function getLmc() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterLaserManagementComments($this);
 		}
 	}
 	

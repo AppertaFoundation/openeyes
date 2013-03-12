@@ -69,12 +69,5 @@ $this->layout = 'simple';
 			$('#LoginForm_password').select().focus();
 		}
 
-		$('#login_button').unbind('click').click(function() {
-			if (!$(this).hasClass('inactive')) {
-				disableButtons();
-				$('img.loader').show();
-				return true;
-			}
-			return false;
-		});
+		handleButton($('#login_button'));
 	</script>

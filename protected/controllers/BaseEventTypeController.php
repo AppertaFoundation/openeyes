@@ -20,6 +20,7 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
 	public $js = array();
+	public $jsVars = array();
 
 	public function actionIndex()
 	{
@@ -308,7 +309,8 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				),
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'create',
 			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
@@ -360,20 +362,23 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->event->episode->firm
-			&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->editable) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		$this->event_actions = array(
-				EventAction::link('Delete',
-						Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-						array('colour' => 'red', 'level' => 'secondary')
-				)
-		);
-		
+		if($this->event->canDelete()) {
+			$this->event_actions = array(
+					EventAction::link('Delete',
+							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+							array('colour' => 'red', 'level' => 'secondary'),
+							array('class' => 'trash')
+					)
+			);
+		}
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'view', array_merge(array(
 			'elements' => $elements,
@@ -417,7 +422,7 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		if (empty($_POST) && !count($this->getDefaultElements('update'))) {
+		if (empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
 			throw new CHttpException(403, 'Gadzooks!	I got me no elements!');
 		}
 
@@ -425,7 +430,7 @@ class BaseEventTypeController extends BaseController
 			// Cancel button pressed, so just bounce to view
 			$this->redirect(array('default/view/'.$this->event->id));
 			return;
-		} else if(!empty($_POST) && !count($this->getDefaultElements('update'))) {
+		} else if(!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
 			$errors['Event'][] = 'No elements selected';
 		} else if (!empty($_POST)) {
 			
@@ -505,11 +510,12 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				),
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
-			'update',
+			$this->action->id,
 			array(
-				'elements' => $this->getDefaultElements('update'),
+				'elements' => $this->getDefaultElements($this->action->id),
 				'errors' => @$errors
 			),
 			// processOutput is true so that the css/javascript from the event_header.php are processed when rendering the view
@@ -554,8 +560,9 @@ class BaseEventTypeController extends BaseController
 				$element->setDefaultOptions();
 			}
 
+			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
-				$action . '_' . $element->{$action.'_view'},
+				$action . '_' . $view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, false
 			);
@@ -568,8 +575,9 @@ class BaseEventTypeController extends BaseController
 				$element->setDefaultOptions();
 			}
 
+			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
-				$action . '_' . $element->{$action.'_view'},
+				$action . '_' . $view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
 				false, false
 			);
@@ -660,6 +668,8 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
+		$this->afterCreateElements($event);
+		
 		return $event->id;
 	}
 
@@ -726,10 +736,26 @@ class BaseEventTypeController extends BaseController
 		foreach ($toDelete as $element) {
 			$element->delete();
 		}
+		
+		$this->afterUpdateElements($event);
 
 		return true;
 	}
 
+	/**
+	 * Called after event (and elements) has been updated
+	 * @param Event $event
+	 */
+	protected function afterUpdateElements($event) {
+	}
+	
+	/**
+	 * Called after event (and elements) have been created
+	 * @param Event $event
+	 */
+	protected function afterCreateElements($event) {
+	}
+	
 	public function getEpisode($firm, $patientId) {
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
 		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
@@ -836,7 +862,7 @@ class BaseEventTypeController extends BaseController
 	 * @param integer $id event id
 	 * @param array $elements
 	 */
-	protected function printPDF($id, $elements, $template='print') {
+	protected function printPDF($id, $elements, $template='print', $params=array()) {
 		// Remove any existing css
 		Yii::app()->getClientScript()->reset();
 		
@@ -844,10 +870,10 @@ class BaseEventTypeController extends BaseController
 		$pdf_print = new OEPDFPrint('Openeyes', 'PDF', 'PDF');
 		$oeletter = new OELetter();
 		$oeletter->setBarcode('E:'.$id);
-		$body = $this->render($template, array(
+		$body = $this->render($template, array_merge($params,array(
 			'elements' => $elements,
 			'eventId' => $id,
-		), true);
+		)), true);
 		$oeletter->addBody($body);
 		$pdf_print->addLetter($oeletter);
 		$pdf_print->output();
@@ -870,28 +896,28 @@ class BaseEventTypeController extends BaseController
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->event->canDelete()) {
-			return $this->redirect(array('default/view/'.$this->event->id));
+			$this->redirect(array('default/view/'.$this->event->id));
+			return false;
 		}
 
 		if (!empty($_POST)) {
-			//if (isset($_POST['et_deleteevent'])) {
-				$this->event->deleted = 1;
-				$this->event->save();
+			$this->event->deleted = 1;
+			$this->event->save();
 
-				$this->event->audit('event','delete',false);
+			$this->event->audit('event','delete',false);
 
-				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
-					$this->event->episode->deleted = 1;
-					$this->event->episode->save();
+			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+				$this->event->episode->deleted = 1;
+				$this->event->episode->save();
 
-					$this->event->episode->audit('episode','delete',false);
+				$this->event->episode->audit('episode','delete',false);
 
-					return header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
-				}
+				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+				return true;
+			}
 
-				return header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			//}
-			return header('Location: '.Yii::app()->createUrl('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id));
+			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
+			return true;
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -905,16 +931,33 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->editable) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'delete', array(
 			'eventId' => $id,
 			), false, true);
+		
+		return false;
+	}
+
+	public function processJsVars() {
+		$this->jsVars['OE_patient_id'] = $this->patient->id;
+		if ($this->event) {
+			$this->jsVars['OE_event_id'] = $this->event->id;
+			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+		}
+		$this->jsVars['OE_asset_path'] = $this->assetPath;
+
+		foreach ($this->jsVars as $key => $value) {
+			$value = CJavaScript::encode($value);
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
+		}
 	}
 }
