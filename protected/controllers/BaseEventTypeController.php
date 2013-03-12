@@ -895,28 +895,28 @@ class BaseEventTypeController extends BaseController
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->event->canDelete()) {
-			return $this->redirect(array('default/view/'.$this->event->id));
+			$this->redirect(array('default/view/'.$this->event->id));
+			return false;
 		}
 
 		if (!empty($_POST)) {
-			//if (isset($_POST['et_deleteevent'])) {
-				$this->event->deleted = 1;
-				$this->event->save();
+			$this->event->deleted = 1;
+			$this->event->save();
 
-				$this->event->audit('event','delete',false);
+			$this->event->audit('event','delete',false);
 
-				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
-					$this->event->episode->deleted = 1;
-					$this->event->episode->save();
+			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+				$this->event->episode->deleted = 1;
+				$this->event->episode->save();
 
-					$this->event->episode->audit('episode','delete',false);
+				$this->event->episode->audit('episode','delete',false);
 
-					return header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
-				}
+				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+				return true;
+			}
 
-				return header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			//}
-			return header('Location: '.Yii::app()->createUrl('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id));
+			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
+			return true;
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -942,6 +942,8 @@ class BaseEventTypeController extends BaseController
 			'delete', array(
 			'eventId' => $id,
 			), false, true);
+		
+		return false;
 	}
 
 	public function processJsVars() {
