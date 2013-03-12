@@ -47,6 +47,21 @@ class BaseEventTypeElement extends BaseElement {
 	}
 
 	/**
+	 * Return this elements children
+	 * @return array
+	 */
+	public function getChildren() {
+		$child_element_types = ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
+		$child_elements = array();
+		foreach($child_element_types as $child_element_type) {
+			if($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
+				$child_elements[] = $element;
+			}
+		}
+		return $child_elements;
+	}
+	
+	/**
 	 * Fields which are copied by the loadFromExisting() method
 	 * By default these are taken from the "safe" scenario of the model rules, but
 	 * should be overridden for more complex requirements  

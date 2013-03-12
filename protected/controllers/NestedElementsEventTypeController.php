@@ -17,11 +17,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/*
- * This controller class provides functionality to load elements via ajax, and supports the parent/child relationship between event elements to allow them to be displayed in a nested format.
- * 
- * It also adheres to a more dyanmic convention for view files. it will look for the $action_[elementclassname] files, but if they do not exist, it will render using the form_[elementclassname] files 
- * (i.e. allowing the same form to be used for create and update). 
+/**
+ * This controller class provides functionality to load elements via ajax, and
+ * supports the parent/child relationship between event elements to allow them
+ * to be displayed in a nested format.
+ * It also adheres to a more dyanmic convention for view files. it will look for
+ * the $action_[elementclassname] files, but if they do not exist, it will
+ * render using the form_[elementclassname] files (i.e. allowing the same form
+ * to be used for create and update).
  */
 
 class NestedElementsEventTypeController extends BaseEventTypeController {
