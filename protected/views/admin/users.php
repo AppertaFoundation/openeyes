@@ -17,38 +17,5 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class AdminController extends BaseController
-{
-	public $layout = 'admin';
-
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
-		return array(
-			array('allow',
-				'users'=>array('@')
-			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
-		);
-	}
-
-	protected function beforeAction($action) {
-		Yii::app()->clientScript->registerCssFile("/css/admin.css");
-		return parent::beforeAction($action);
-	}
-
-	public function actionIndex() {
-		$this->render('/admin/index');
-	}
-
-	public function actionUsers() {
-		$this->render('/admin/users');
-	}
-}
+?>
+users
