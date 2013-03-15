@@ -51,7 +51,6 @@ return array(
 			'password' => 'openeyes',
 			'ipFilters'=> array('*')
 		),
-		'admin',
 	),
 
 	// Application components
