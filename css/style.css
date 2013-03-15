@@ -1433,8 +1433,8 @@ table.subtle.noradiusbottom { -webkit-border-bottom-right-radius:0; -webkit-bord
 .admingroup ul li a:hover { border-bottom: none; background-color: #3665ff; background-image: url(../img/report-small-no-bg.png); color:#fff; }
 .admingroup ul li a:active  { border-bottom: none; background-color: #315be6; color:#fff; }
 
-/* report you are viewing in list */
-.reportsgroup ul li.active { background:transparent url(../img/active-arrow.png) right center no-repeat;}
-.reportsgroup ul li .viewing { display:block; height:25px; line-height:25px; color:#333; background:#ccc url(../img/report-small-no-bg.png) left center no-repeat; margin:0 2px 4px 0; padding-left:30px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+/* admin item you are viewing in list */
+.admingroup ul li.active { background:transparent url(../img/active-arrow.png) right center no-repeat;}
+.admingroup ul li .viewing { display:block; height:25px; line-height:25px; color:#333; background:#ccc url(../img/report-small-no-bg.png) left center no-repeat; margin:0 2px 4px 0; padding-left:30px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
 
 h2.admin { background:#666; color:#fff; border:1px solid #999; border-left:none; }
