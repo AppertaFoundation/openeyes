@@ -1376,6 +1376,16 @@ table.grid td { text-align: left; padding:10px; border-right:1px solid #ccc; }
 table.grid th:last-child, table.grid td:last-child { border-right: none; }
 table.grid td.nowrap { white-space: nowrap; }
 table.grid td.icons > img {margin-right:4px; margin-bottom:4px; }
+
+ul.grid { width: 100%; list-style-type: none; padding: 0; }
+ul.grid li.header { text-align: left; vertical-align: middle; background:#ddd; color: #444; font-size: 11px; font-weight:bold; min-width:10px; padding:0px; border-right:1px solid #bbb; }
+ul.grid li.header span { text-align: left; vertical-align: middle; background:#ddd; color: #444; font-size: 11px; font-weight:bold; min-width:10px; padding:10px; border-right:1px solid #bbb; }
+ul.grid li.even { margin: 0; text-align: left; padding:0px; border-right:1px solid #ccc; }
+ul.grid li.even span { margin: 0; text-align: left; padding:10px; border-right:1px solid #ccc; }
+ul.grid li.odd { margin: 0; text-align: left; padding:0px; border-right:1px solid #ccc; }
+ul.grid li.odd span { margin: 0; text-align: left; padding:10px; border-right:1px solid #ccc; }
+ul.grid li:hover { cursor: pointer; }
+
 /* customise */
 table.grid.margintop { margin-top:10px; }
 table.grid.marginbottom { margin-bottom:10px; }
@@ -1438,3 +1448,6 @@ table.subtle.noradiusbottom { -webkit-border-bottom-right-radius:0; -webkit-bord
 .admingroup ul li .viewing { display:block; height:25px; line-height:25px; color:#333; background:#ccc url(../img/report-small-no-bg.png) left center no-repeat; margin:0 2px 4px 0; padding-left:30px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
 
 h2.admin { background:#666; color:#fff; border:1px solid #999; border-left:none; }
+
+.reportInputs .newdrug { width: 730px; }
+.reportInputs .editdrug { width: 730px; }
