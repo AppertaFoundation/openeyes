@@ -1,4 +1,21 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
 
 class BaseEventTypeController extends BaseController
 {
@@ -20,6 +37,7 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
 	public $js = array();
+	public $jsVars = array();
 
 	public function actionIndex()
 	{
@@ -308,7 +326,8 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				),
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'create',
 			array('elements' => $this->getDefaultElements('create'), 'eventId' => null, 'errors' => @$errors),
@@ -360,21 +379,23 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->event->episode->firm
-			&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->editable) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		$this->event_actions = array(
-				EventAction::link('Delete',
-						Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
-						array('colour' => 'red', 'level' => 'secondary'),
-						array('class' => 'trash')
-				)
-		);
-		
+		if($this->event->canDelete()) {
+			$this->event_actions = array(
+					EventAction::link('Delete',
+							Yii::app()->createUrl($this->event->eventType->class_name.'/default/delete/'.$this->event->id),
+							array('colour' => 'red', 'level' => 'secondary'),
+							array('class' => 'trash')
+					)
+			);
+		}
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'view', array_merge(array(
 			'elements' => $elements,
@@ -506,7 +527,8 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				),
 		);
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			$this->action->id,
 			array(
@@ -891,28 +913,28 @@ class BaseEventTypeController extends BaseController
 
 		// Only the event creator can delete the event, and only 24 hours after its initial creation
 		if (!$this->event->canDelete()) {
-			return $this->redirect(array('default/view/'.$this->event->id));
+			$this->redirect(array('default/view/'.$this->event->id));
+			return false;
 		}
 
 		if (!empty($_POST)) {
-			//if (isset($_POST['et_deleteevent'])) {
-				$this->event->deleted = 1;
-				$this->event->save();
+			$this->event->deleted = 1;
+			$this->event->save();
 
-				$this->event->audit('event','delete',false);
+			$this->event->audit('event','delete',false);
 
-				if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
-					$this->event->episode->deleted = 1;
-					$this->event->episode->save();
+			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
+				$this->event->episode->deleted = 1;
+				$this->event->episode->save();
 
-					$this->event->episode->audit('episode','delete',false);
+				$this->event->episode->audit('episode','delete',false);
 
-					return header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
-				}
+				header('Location: '.Yii::app()->createUrl('/patient/episodes/'.$this->event->episode->patient->id));
+				return true;
+			}
 
-				return header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
-			//}
-			return header('Location: '.Yii::app()->createUrl('/'.$this->event->eventType->class_name.'/default/view/'.$this->event->id));
+			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
+			return true;
 		}
 
 		$this->patient = $this->event->episode->patient;
@@ -926,16 +948,33 @@ class BaseEventTypeController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->editable) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
 					'href' => Yii::app()->createUrl($this->event->eventType->class_name.'/default/update/'.$this->event->id),
 			);
 		}
-		
+
+		$this->processJsVars();
 		$this->renderPartial(
 			'delete', array(
 			'eventId' => $id,
 			), false, true);
+		
+		return false;
+	}
+
+	public function processJsVars() {
+		$this->jsVars['OE_patient_id'] = $this->patient->id;
+		if ($this->event) {
+			$this->jsVars['OE_event_id'] = $this->event->id;
+			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
+		}
+		$this->jsVars['OE_asset_path'] = $this->assetPath;
+
+		foreach ($this->jsVars as $key => $value) {
+			$value = CJavaScript::encode($value);
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
+		}
 	}
 }

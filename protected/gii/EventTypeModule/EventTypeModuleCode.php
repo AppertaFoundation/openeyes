@@ -1223,7 +1223,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'EyeDraw2':
 				switch ($field['eyedraw_class']) {
 					case 'AnteriorSegment':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'doodleToolBarArray\' => array(\'NuclearCataract\',\'CorticalCataract\',\'PostSubcapCataract\',\'PCIOL\',\'ACIOL\',\'Bleb\',\'PI\',\'Fuchs\',\'RK\',\'LasikFlap\',\'CornealScar\'),
 		\'onReadyCommandArray\' => array(
 			array(\'addDoodle\', array(\'AntSeg\')),
@@ -1244,7 +1244,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 					case 'Buckle':
 						return '';
 					case 'Cataract':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'doodleToolBarArray\' => array(
 			0 => array(\'PhakoIncision\',\'SidePort\',\'IrisHook\',\'PCIOL\',\'ACIOL\',\'PI\'),
 			1 => array(\'MattressSuture\',\'CapsularTensionRing\',\'CornealSuture\',\'ToricPCIOL\',\'LimbalRelaxingIncision\'),
@@ -1271,7 +1271,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		\'template\' => \'OEEyeDrawWidgetCataract\',
 	))?'.'>';
 					case 'Gonioscopy':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'doodleToolBarArray\' => array(\'AngleNV\',\'AntSynech\',\'AngleRecession\'),
 		\'onReadyCommandArray\' => array(
 			array(\'addDoodle\',array(\'Gonioscopy\')),
@@ -1292,7 +1292,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		\'attribute\' => \''.$field['name'].'\',
 ))?'.'>';
 					case 'OpticDisc':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'doodleToolBarArray\' => array(\'PeripapillaryAtrophy\', \'DiscPallor\', \'DiscHaemorrhage\', \'NerveFibreDefect\', \'OpticDiscPit\', \'Papilloedema\'),
 		\'onReadyCommandArray\' => array(
 			array(\'addDoodle\', array(\'OpticDisc\', array(\'mode\' => \'Basic\'))),
@@ -1309,7 +1309,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		\'attribute\' => \''.$field['name'].'\',
 ))?'.'>';
 					case 'PosteriorSegment':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'doodleToolBarArray\' => array(\'Geographic\',\'VitreousOpacity\',\'DiabeticNV\',\'CNV\',\'Circinate\',\'CystoidMacularOedema\',\'EpiretinalMembrane\',\'HardDrusen\',\'PRPPostPole\',\'MacularHole\'),
 		\'onReadyCommandArray\' => array(
 			array(\'addDoodle\', array(\'PostPole\')),
@@ -1326,7 +1326,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		\'attribute\' => \''.$field['name'].'\',
 ))?'.'>';
 					case 'Refraction':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'doodleToolBarArray\' => array(),
 		\'toolbar\' => false,
 		\'onReadyCommandArray\' => array(
@@ -1345,7 +1345,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		\'attribute\' => \''.$field['name'].'\',
 ))?'.'>';
 					case 'SurgeonPosition':
-						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw2.OEEyeDrawWidget\', array(
+						return '<?php'."\n".'		$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 		\'onReadyCommandArray\' => array(
 			array(\'addDoodle\', array(\'OperatingTable\')),
 			array(\'addDoodle\', array(\'Surgeon\')),
