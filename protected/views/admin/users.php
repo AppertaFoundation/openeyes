@@ -32,6 +32,9 @@
 			<form id="admin_users">
 				<ul class="grid reduceheight">
 					<li class="header">
+						<?php /*
+						<span class="column_checkbox"><input type="checkbox" name="selectall" id="selectall" /></span>
+						*/?>
 						<span class="column_id">ID</span>
 						<span class="column_username">Username</span>
 						<span class="column_title">Title</span>
@@ -45,12 +48,15 @@
 						<?php
 						foreach ($users['items'] as $i => $user) {?>
 							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
+								<?php /*
+								<span class="column_checkbox"><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></span>
+								*/?>
 								<span class="column_id"><?php echo $user->id?></span>
 								<span class="column_username"><?php echo strtolower($user->username)?></span>
-								<span class="column_title"><?php echo $user->title?></span>
+								<span class="column_title"><?php echo $user->title?>&nbsp;</span>
 								<span class="column_firstname"><?php echo $user->first_name?></span>
 								<span class="column_lastname"><?php echo $user->last_name?></span>
-								<span class="column_role"><?php echo $user->role?></span>
+								<span class="column_role"><?php echo $user->role?>&nbsp;</span>
 								<span class="column_doctor"><?php echo $user->is_doctor ? 'Yes' : 'No'?></span>
 								<span class="column_active"><?php echo $user->active ? 'Yes' : 'No'?></span>
 							</li>
@@ -63,4 +69,5 @@
 </div>
 <div>
 	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
+	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
 </div>

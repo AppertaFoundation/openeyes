@@ -1307,7 +1307,8 @@ div.admin #User_role { width: 300px; }
 div.admin #User_qualifications { width: 300px; }
 
 /* admin sections */
-#admin_users ul li { padding: 0; margin: 0; line-height: 4px; font-size: 11px; }
+#admin_users ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_users ul li .column_checkbox { width: 15px; display: inline-block; }
 #admin_users ul li .column_id { width: 15px; display: inline-block; }
 #admin_users ul li .column_username { width: 75px; display: inline-block; }
 #admin_users ul li .column_title { width: 25px; display: inline-block; }
