@@ -65,6 +65,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -72,14 +73,13 @@ class User extends BaseActiveRecord
 				$commonRules,
 				array(
 					array('username', 'match', 'pattern' => '/^[\w|_]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
-					array('username, password, password_repeat, email, first_name, last_name, active, global_firm_rights', 'required'),
+					array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
 					array('username, password, first_name, last_name', 'length', 'max' => 40),
-					array('password', 'length', 'min' => 6, 'message' => 'Passwords must be at least 6 characters long.'),
+					array('password', 'length', 'min' => 5, 'message' => 'Passwords must be at least 6 characters long.'),
 					array('email', 'length', 'max' => 80),
 					array('email', 'email'),
 					array('salt', 'length', 'max' => 10),
 					// Added for password comparison functionality
-					array('password', 'compare'),
 					array('password_repeat', 'safe'),
 				)
 			);
@@ -189,7 +189,10 @@ class User extends BaseActiveRecord
 	protected function afterValidate()
 	{
 		parent::afterValidate();
-		$this->password = $this->hashPassword($this->password, $this->salt);
+
+		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
+			$this->password = $this->hashPassword($this->password, $this->salt);
+		}
 	}
 
 	/**
@@ -309,5 +312,35 @@ class User extends BaseActiveRecord
 
 	public function getReportDisplay() {
 		return $this->fullName;
+	}
+
+	public function beforeValidate() {
+		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
+			if ($this->password != $this->password_repeat) {
+				$this->addError('password','Password confirmation must match exactly');
+			}
+			$this->salt = $this->randomSalt();
+		}
+
+		return parent::beforeValidate();
+	}
+
+	public function randomSalt() {
+		$salt = '';
+		for ($i=0;$i<10;$i++) {
+			switch (rand(0,2)) {
+				case 0:
+					$salt .= chr(rand(48,57));
+					break;
+				case 1:
+					$salt .= chr(rand(65,90));
+					break;
+				case 2:
+					$salt .= chr(rand(97,122));
+					break;
+			}
+		}
+
+		return $salt;
 	}
 }

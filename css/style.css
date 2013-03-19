@@ -1451,3 +1451,24 @@ h2.admin { background:#666; color:#fff; border:1px solid #999; border-left:none;
 
 .reportInputs .newdrug { width: 730px; }
 .reportInputs .editdrug { width: 730px; }
+
+div.admin .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px; margin-top: 6px; }
+div.admin .group { background: none !important; }
+
+div.admin input { margin: 2px; }
+div.admin #User_first_name { width: 250px; }
+div.admin #User_last_name { width: 250px; }
+div.admin #User_email { width: 300px; }
+div.admin #User_role { width: 300px; }
+div.admin #User_qualifications { width: 300px; }
+
+/* admin sections */
+#admin_users ul li { padding: 0; margin: 0; line-height: 4px; font-size: 11px; }
+#admin_users ul li .column_id { width: 15px; display: inline-block; }
+#admin_users ul li .column_username { width: 75px; display: inline-block; }
+#admin_users ul li .column_title { width: 25px; display: inline-block; }
+#admin_users ul li .column_firstname { width: 140px; display: inline-block; }
+#admin_users ul li .column_lastname { width: 140px; display: inline-block; }
+#admin_users ul li .column_role { width: 215px; display: inline-block; }
+#admin_users ul li .column_doctor { width: 35px; display: inline-block; }
+#admin_users ul li .column_active { width: 35px; display: inline-block; }

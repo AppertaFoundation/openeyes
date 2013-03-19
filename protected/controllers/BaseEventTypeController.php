@@ -955,9 +955,6 @@ class BaseEventTypeController extends BaseController
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
 
-		foreach ($this->jsVars as $key => $value) {
-			$value = CJavaScript::encode($value);
-			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
-		}
+		return parent::processJsVars();
 	}
 }
