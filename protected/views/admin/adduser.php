@@ -20,7 +20,7 @@
 ?>
 <div class="report curvybox white">
 	<div class="admin">
-		<h3 class="georgia">Edit user</h3>
+		<h3 class="georgia">Add user</h3>
 		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 		<div>
 			<?php

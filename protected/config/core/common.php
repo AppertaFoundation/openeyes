@@ -58,7 +58,9 @@ return array(
 			'rules' => array(
 				'' => 'site/index',
 				'patient/viewpas/<pas_key:\d+>' => 'patient/viewpas',
-				'admin/<section:\w+>s/<action:\w+>/<id:\d+>' => 'admin/edit<section>',
+				'admin/users/<id:\d+>' => 'admin/users',
+				'admin/<section:\w+>s/<action:\w+>/<id:\d+>' => 'admin/<action><section>',
+				'admin/<section:\w+>s/<action:\w+>' => 'admin/<action><section>',
 				'<module:\w+>/<controller:\w+>/<action:\w+>/<id:\d+>' => '<module>/<controller>/<action>',
 				'<controller:\w+>/<id:\d+>' => '<controller>/view',
 				'<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',

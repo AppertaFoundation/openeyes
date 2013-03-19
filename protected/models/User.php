@@ -168,7 +168,7 @@ class User extends BaseActiveRecord
 			/**
 			 * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
 			 */
-			if ($this->getIsNewRecord()) {
+			if ($this->getIsNewRecord() && !$this->salt) {
 				$salt = '';
 				$possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -320,6 +320,10 @@ class User extends BaseActiveRecord
 				$this->addError('password','Password confirmation must match exactly');
 			}
 			$this->salt = $this->randomSalt();
+		}
+
+		if ($this->getIsNewRecord() && !$this->password) {
+			$this->addError('password','Password is required');
 		}
 
 		return parent::beforeValidate();

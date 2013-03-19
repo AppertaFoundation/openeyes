@@ -69,6 +69,30 @@ class AdminController extends BaseController
 		));
 	}
 
+	public function actionAddUser() {
+		$user = new User;
+
+		if (!empty($_POST)) {
+			$user->attributes = $_POST['User'];
+
+			if (!$user->validate()) {
+				$errors = $user->getErrors();
+			} else {
+				if (!$user->save()) {
+					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+				}
+				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
+			}
+		}
+
+		$user->password = '';
+
+		$this->render('/admin/adduser',array(
+			'user' => $user,
+			'errors' => @$errors,
+		));
+	}
+
 	public function actionEditUser($id) {
 		if (!$user = User::model()->findByPk($id)) {
 			throw new Exception("User not found: $id");
