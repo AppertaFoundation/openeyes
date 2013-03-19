@@ -7,7 +7,7 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		if ($(this).parent().attr('data-attr-id')) {
-			window.location.href = baseUrl+'/admin/users/edit/'+$(this).parent().attr('data-attr-id');
+			window.location.href = baseUrl+'/admin/editUser/'+$(this).parent().attr('data-attr-id');
 		}
 	});
 
@@ -30,7 +30,8 @@ $(document).ready(function() {
 
 		for (var i in e) {
 			if (e[i] == 'admin') {
-				window.location.href = baseUrl+'/admin/'+e[parseInt(i)+1]+(page ? '/'+page : '');
+				var object = e[parseInt(i)+1].replace(/^[a-z]+/,'').toLowerCase()+'s';
+				window.location.href = baseUrl+'/admin/'+object+(page ? '/'+page : '');
 			}
 		}
 	});
@@ -42,7 +43,8 @@ $(document).ready(function() {
 
 		for (var i in e) {
 			if (e[i] == 'admin') {
-				window.location.href = baseUrl+'/admin/'+e[parseInt(i)+1]+'/add';
+				var object = ucfirst(e[parseInt(i)+1].replace(/s$/,''));
+				window.location.href = baseUrl+'/admin/add'+object;
 			}
 		}
 	});
