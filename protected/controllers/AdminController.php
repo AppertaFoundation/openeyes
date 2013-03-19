@@ -20,6 +20,8 @@
 class AdminController extends BaseController
 {
 	public $layout = 'admin';
+	public $items_per_page = 30;
+	public $jsVars = array();
 
 	public function filters()
 	{
@@ -30,7 +32,7 @@ class AdminController extends BaseController
 	{
 		return array(
 			array('allow',
-				'users'=>array('@')
+				'users'=>array('@'),
 			),
 			// non-logged in can't view anything
 			array('deny',
@@ -41,6 +43,10 @@ class AdminController extends BaseController
 
 	protected function beforeAction($action) {
 		Yii::app()->clientScript->registerCssFile("/css/admin.css");
+		Yii::app()->clientScript->registerScriptFile("/js/admin.js");
+
+		$this->jsVars['items_per_page'] = $this->items_per_page;
+
 		return parent::beforeAction($action);
 	}
 
@@ -48,7 +54,71 @@ class AdminController extends BaseController
 		$this->render('/admin/index');
 	}
 
-	public function actionUsers() {
-		$this->render('/admin/users');
+	public function actionUsers($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		$this->render('/admin/users',array(
+			'users' => $this->getItems(array(
+				'model' => 'User',
+				'page' => $page,
+			)),
+		));
+	}
+
+	public function actionEditUser($id) {
+		if (!$user = User::model()->findByPk($id)) {
+			throw new Exception("User not found: $id");
+		}
+
+		if (!empty($_POST)) {
+			if (!$_POST['User']['password']) {
+				unset($_POST['User']['password']);
+			}
+
+			$user->attributes = $_POST['User'];
+
+			if (!$user->validate()) {
+				$errors = $user->getErrors();
+			} else {
+				if (!$user->save()) {
+					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+				}
+				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
+			}
+		}
+
+		$user->password = '';
+
+		$this->render('/admin/edituser',array(
+			'user' => $user,
+			'errors' => @$errors,
+		));
+	}
+
+	public function getItems($params) {
+		$pages = ceil(count($params['model']::model()->findAll()) / $this->items_per_page);
+
+		if ($params['page'] <1) {
+			$page = 1;
+		} else if ($params['page'] > $pages) {
+			$page = $pages;
+		} else {
+			$page = $params['page'];
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->order = 'id asc';
+		$criteria->offset = ($page-1) * $this->items_per_page;
+		$criteria->limit = $this->items_per_page;
+
+		return array(
+			'items' => $params['model']::model()->findAll($criteria),
+			'page' => $page,
+			'pages' => ceil(count($params['model']::model()->findAll()) / $this->items_per_page),
+		);
 	}
 }

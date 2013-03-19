@@ -18,4 +18,49 @@
  */
 
 ?>
-users
+<div class="report curvybox white">
+	<div class="admin">
+		<h3 class="georgia">Users</h3>
+		<div class="pagination">
+			<?php echo $this->renderPartial('_pagination',array(
+				'prefix' => '/admin/users/',
+				'page' => $users['page'],
+				'pages' => $users['pages'],
+			))?>
+		</div>
+		<div>
+			<form id="admin_users">
+				<ul class="grid reduceheight">
+					<li class="header">
+						<span class="column_id">ID</span>
+						<span class="column_username">Username</span>
+						<span class="column_title">Title</span>
+						<span class="column_firstname">First name</span>
+						<span class="column_lastname">Last name</span>
+						<span class="column_role">Role</span>
+						<span class="column_doctor">Doctor</span>
+						<span class="column_active">Active</span>
+					</li>
+					<div class="sortable">
+						<?php
+						foreach ($users['items'] as $i => $user) {?>
+							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
+								<span class="column_id"><?php echo $user->id?></span>
+								<span class="column_username"><?php echo strtolower($user->username)?></span>
+								<span class="column_title"><?php echo $user->title?></span>
+								<span class="column_firstname"><?php echo $user->first_name?></span>
+								<span class="column_lastname"><?php echo $user->last_name?></span>
+								<span class="column_role"><?php echo $user->role?></span>
+								<span class="column_doctor"><?php echo $user->is_doctor ? 'Yes' : 'No'?></span>
+								<span class="column_active"><?php echo $user->active ? 'Yes' : 'No'?></span>
+							</li>
+						<?php }?>
+					</div>
+				</ul>
+			</form>
+		</div>
+	</div>
+</div>
+<div>
+	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
+</div>
