@@ -104,5 +104,6 @@ return array(
 		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'specialty_codes' => array('OPH'),
 		//'default_site_code' => '',
+		'specialty_sort' => array('OPH', 'SUP')
 	),
 );
