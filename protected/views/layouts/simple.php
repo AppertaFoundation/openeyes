@@ -64,7 +64,12 @@
 </head> 
  
 <body> 
-	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
+	<?php if (Yii::app()->params['watermark']) {?>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
+	<?php if (Yii::app()->params['watermark_description']) {?>
+		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
+	<?php }?>
 	<?php echo $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
@@ -100,6 +105,9 @@
 	<!--#container --> 
 
 	<?php echo $this->renderPartial('//base/_footer',array())?>
-	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
+
+	<?php if (Yii::app()->params['watermark']) {?>
+		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
+	<?php }?>
 </body>
 </html>

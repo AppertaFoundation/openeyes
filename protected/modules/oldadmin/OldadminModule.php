@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class AdminModule extends CWebModule {
+class OldadminModule extends CWebModule {
 	
 	public function init() {
 		// this method is called when the module is being created
