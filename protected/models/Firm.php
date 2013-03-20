@@ -33,6 +33,9 @@
  */
 class Firm extends BaseActiveRecord
 {
+	public $subspecialty_id;
+	public $consultant_id;
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Firm the static model class
@@ -62,6 +65,7 @@ class Firm extends BaseActiveRecord
 			array('service_subspecialty_assignment_id', 'length', 'max'=>10),
 			array('pas_code', 'length', 'max'=>4),
 			array('name', 'length', 'max'=>40),
+			array('name, pas_code, subspecialty_id, consultant_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, service_subspecialty_assignment_id, pas_code, name', 'safe', 'on'=>'search'),
@@ -313,6 +317,71 @@ class Firm extends BaseActiveRecord
 			return null;
 		} else {
 			return Specialty::model()->findByPk($result['id']);
+		}
+	}
+
+	public function beforeSave() {
+		if ($this->subspecialty_id) {
+			$this->service_subspecialty_assignment_id = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($this->subspecialty_id))->id;
+		}
+
+		return parent::beforeSave();
+	}
+
+	protected function afterSave() {
+		if ($this->consultant_id) {
+			if ($user = User::model()->findByPk($this->consultant_id)) {
+				if (!$this->getConsultantUser() || $this->getConsultantUser()->id != $user->id) {
+					if (!$fua = FirmUserAssignment::model()->find('firm_id=?',array($this->id))) {
+						$fua = new FirmUserAssignment;
+						$fua->firm_id = $this->id;
+					}
+					$fua->user_id = $user->id;
+					if (!$fua->save()) {
+						throw new Exception("Unable to save firm_user_assignment: ".print_r($fua->getErrors(),true));
+					}
+					if (!$uca = UserContactAssignment::model()->find('user_id=?',array($user->id))) {
+						$consultant = new Consultant;
+						if (!$consultant->save(false)) {
+							throw new Exception("Unable to create new consultant: ".print_r($consultant->getErrors(),true));
+						}
+
+						$contact = new Contact;
+						$contact->title = $user->title;
+						$contact->first_name = $user->first_name;
+						$contact->last_name = $user->last_name;
+						$contact->qualifications = $user->qualifications;
+						$contact->parent_class = 'Consultant';
+						$contact->parent_id = $consultant->id;
+						if (!$contact->save(false)) {
+							throw new Exception("Unable to create contact: ".print_r($contact->getErrors(),true));
+						}
+
+						$uca = new UserContactAssignment;
+						$uca->user_id = $user->id;
+						$uca->contact_id = $contact->id;
+						if (!$uca->save()) {
+							throw new Exception("Unable to create user_contact_assignment: ".print_r($uca->getErrors(),true));
+						}
+					}
+					if ($uca->contact->parent_class != 'Consultant') {
+						$consultant = new Consultant;
+						if (!$consultant->save(false)) {
+							throw new Exception("Unable to create new consultant: ".print_r($consultant->getErrors(),true));
+						}
+
+						$contact = $uca->contact;
+						$contact->parent_class = 'Consultant';
+						$contact->parent_id = $consultant->id;
+						if (!$contact->save()) {
+							throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+						}
+					}
+				}
+				$this->consultant_id = null;
+			} else {
+				throw new Exception("User not found: $this->consultant_id");
+			}
 		}
 	}
 }

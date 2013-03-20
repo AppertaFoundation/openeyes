@@ -4,6 +4,7 @@
 		<?php foreach (array(
 			'Users' => '/admin/users',
 			'Firms' => '/admin/firms',
+			/*
 			'Global phrases' => '/admin/globalPhrases',
 			'Phrases by subspecialty' => '/admin/phrasesBySubspecialty',
 			'Phrases by firm' => '/admin/phrasesByFirm',
@@ -11,6 +12,7 @@
 			'Sequences' => '/admin/sequences',
 			'Sessions' => '/admin/sessions',
 			'Episode status' => '/admin/episodeStatus',
+			*/
 		) as $title => $uri) {?>
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="active"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
@@ -22,8 +24,8 @@
 		<?php }?>
 	</ul>
 </div>
-<div class="admingroup curvybox">
-	<?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
+<?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
+	<div class="admingroup curvybox">
 		<h4><?php echo $module?></h4>
 		<ul>
 			<?php foreach ($items as $item => $uri) {
@@ -38,5 +40,5 @@
 				</li>
 			<?php }?>
 		</ul>
-	<?php }?>
-</div>
+	</div>
+<?php }?>

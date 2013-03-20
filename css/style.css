@@ -1456,11 +1456,13 @@ div.admin .label { display:inline-block; width:170px; float:left; font-size:15px
 div.admin .group { background: none !important; }
 
 div.admin input { margin: 2px; }
+div.admin select { margin-top: 4px; margin-left: 2px; margin-bottom: 4px; }
 div.admin #User_first_name { width: 250px; }
 div.admin #User_last_name { width: 250px; }
 div.admin #User_email { width: 300px; }
 div.admin #User_role { width: 300px; }
 div.admin #User_qualifications { width: 300px; }
+div.admin div.pagination .selected { background-color: #0b59da; color: #fff; padding-left: 2px; padding-right: 2px; }
 
 /* admin sections */
 #admin_users ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
@@ -1473,3 +1475,11 @@ div.admin #User_qualifications { width: 300px; }
 #admin_users ul li .column_role { width: 215px; display: inline-block; }
 #admin_users ul li .column_doctor { width: 35px; display: inline-block; }
 #admin_users ul li .column_active { width: 35px; display: inline-block; }
+
+#admin_firms ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_firms ul li .column_id { width: 15px; display: inline-block; }
+#admin_firms ul li .column_pas_code { width: 52px; display: inline-block; }
+#admin_firms ul li .column_name { width: 200px; display: inline-block; }
+#admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
+#admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
+#div_Firm_consultant_id { margin-top: 2px; }

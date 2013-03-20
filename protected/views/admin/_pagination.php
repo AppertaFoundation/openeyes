@@ -27,7 +27,7 @@
 <?php }?>
 <?php for ($i=1;$i<=$pages;$i++) {?>
 	<?php if ($i == $page) {?>
-		<?php echo $i?>
+		<span class="selected"><?php echo $i?></span>
 	<?php }else{?>
 		<a href="<?php echo Yii::app()->createUrl($prefix.$i)?>"><?php echo $i?></a>
 	<?php }?>

@@ -11,6 +11,14 @@ $(document).ready(function() {
 		}
 	});
 
+	$('#admin_firms li .column_id, #admin_firms li .column_pas_code, #admin_firms li .column_name, #admin_firms li .column_subspecialty, #admin_firms li .column_consultant').click(function(e) {
+		e.preventDefault();
+
+		if ($(this).parent().attr('data-attr-id')) {
+			window.location.href = baseUrl+'/admin/editFirm/'+$(this).parent().attr('data-attr-id');
+		}
+	});
+
 	handleButton($('#et_save'),function(e) {
 		e.preventDefault();
 
