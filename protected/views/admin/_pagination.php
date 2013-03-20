@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,48 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var button_colours = ["red","blue","green"];
-var button_cache = {};
-
-function handleButton(button, callback) {
-	button.click(function(e) {
-		if (!button.hasClass('inactive')) {
-			disableButtons();
-			if (callback) {
-				callback(e,button);
-			}
-		} else {
-			e.preventDefault();
-		}
-	});
-}
-
-function disableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		var selection = $('button.'+col);
-		selection.removeClass(col).addClass('inactive');
-		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		button_cache[col] = selection;
-		$('.loader').show();
-	}
-}
-
-function enableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		button_cache[col].removeClass('inactive').addClass(col);
-		button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-		$('.loader').hide();
-	}
-}
-
-$(document).ready(function() {
-	$('button.auto').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			return true;
-		}
-		return false;
-	});
-});
+?>
+<?php if ($page > 1) {?>
+	<a href="<?php echo Yii::app()->createUrl($prefix.($page-1))?>">&laquo; back</a>
+	&nbsp;
+<?php }else{?>
+	&laquo; back
+	&nbsp;
+<?php }?>
+<?php for ($i=1;$i<=$pages;$i++) {?>
+	<?php if ($i == $page) {?>
+		<span class="selected"><?php echo $i?></span>
+	<?php }else{?>
+		<a href="<?php echo Yii::app()->createUrl($prefix.$i)?>"><?php echo $i?></a>
+	<?php }?>
+	&nbsp;
+<?php }?>
+<?php if ($page < $pages) {?>
+	<a href="<?php echo Yii::app()->createUrl($prefix.($page+1))?>">next &raquo;</a>
+	&nbsp;
+<?php }else{?>
+	next &raquo;
+	&nbsp;
+<?php }?>
