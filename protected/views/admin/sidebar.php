@@ -24,8 +24,8 @@
 		<?php }?>
 	</ul>
 </div>
-<div class="admingroup curvybox">
-	<?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
+<?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
+	<div class="admingroup curvybox">
 		<h4><?php echo $module?></h4>
 		<ul>
 			<?php foreach ($items as $item => $uri) {
@@ -40,5 +40,5 @@
 				</li>
 			<?php }?>
 		</ul>
-	<?php }?>
-</div>
+	</div>
+<?php }?>
