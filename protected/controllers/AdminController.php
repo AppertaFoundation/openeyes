@@ -123,6 +123,45 @@ class AdminController extends BaseController
 		));
 	}
 
+	public function actionFirms($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		$this->render('/admin/firms',array(
+			'firms' => $this->getItems(array(
+				'model' => 'Firm',
+				'page' => $page,
+			)),
+		));
+	}
+
+	public function actionEditFirm($id) {
+		if (!$firm= Firm::model()->findByPk($id)) {
+			throw new Exception("Firm not found: $id");
+		}
+
+		if (!empty($_POST)) {
+			$firm->attributes = $_POST['Firm'];
+
+			if (!$firm->validate()) {
+				$errors = $firm->getErrors();
+			} else {
+				if (!$firm->save()) {
+					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
+				}
+				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editfirm',array(
+			'firm' => $firm,
+			'errors' => @$errors,
+		));
+	}
+
 	public function getItems($params) {
 		$pages = ceil(count($params['model']::model()->findAll()) / $this->items_per_page);
 
