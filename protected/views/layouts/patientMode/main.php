@@ -66,11 +66,7 @@
 </head>
 
 <body>
-	<?php if (Yii::app()->user->checkAccess('admin')) {?>
-		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
-	<?php } else if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
+	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
 	<?php echo $this->renderPartial('/base/_debug',array())?>
 	<div id="container">
 		<div id="header" class="clearfix">
@@ -113,10 +109,6 @@
 
 	<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/plugins.js'))?>
 
-	<?php if (Yii::app()->user->checkAccess('admin')) {?>
-		<div class="h1-watermark-admin"><?php echo Yii::app()->params['watermark_admin']?></div>
-	<?php } else if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
+	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
 </body>
 </html>
