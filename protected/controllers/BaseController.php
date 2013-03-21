@@ -31,30 +31,49 @@ class BaseController extends Controller
 	public $patientName;
 
 	/**
-	 * Default all access rule filters to a deny-basis to prevent accidental
-	 * allowing of actions that don't have access rules defined yet
-	 *
-	 * @param $filterChain
-	 * @return type
+	 * Check to see if user's level is high enough
+	 * @param integer $level
+	 * @return boolean
 	 */
-	public function filterAccessControl($filterChain)
-	{
-		$rules = $this->accessRules();
-
-		if (Yii::app()->params['ab_testing']) {
-			$rules = array(
-				array('allow',
-					'users'=>array('@','?')
-				)
-			);
-		} else {
-			// default deny
-			$rules[] = array('deny', 'users'=>array('?'));
-		}
-
+	public static function checkUserLevel($level) {
+		return (Yii::app()->user->access_level >= $level);
+	}
+	
+	/**
+	 * Set default rules to block everyone apart from admin
+	 * These should be overridden in child classes
+	 * @return array
+	 */
+	public function filters() {
+		return array('accessControl');
+	}
+	public function accessRules() {
+		return array(
+			// Level 3 or above can do anything
+			array('allow',
+				'roles'=>array('admin'),
+			),
+			// Deny everyone else
+			array('deny',
+			),
+		);
+	}
+	
+	public function filterAccessControl($filterChain) {
 		$filter = new CAccessControlFilter;
-		$filter->setRules($rules);
+		$filter->setRules($this->compileAccessRules());
 		$filter->filter($filterChain);
+	}
+	
+	protected function compileAccessRules() {
+		// Always allow admin
+		$admin_rule = array('allow', 'roles' => array('admin'));
+		
+		// Always deny unauthenticated users in case rules fall through
+		$default_rule = array('deny', 'users' => array('?'));
+		
+		// Merge rules defined by controller
+		return array_merge(array($admin_rule), $this->accessRules(), array($default_rule));
 	}
 
 	/**

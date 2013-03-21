@@ -23,21 +23,9 @@ class AdminController extends BaseController
 	public $items_per_page = 30;
 	public $jsVars = array();
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
-			array('allow',
-				'users'=>array('@'),
-			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+			array('deny'),
 		);
 	}
 

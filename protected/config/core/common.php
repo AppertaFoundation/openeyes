@@ -47,6 +47,7 @@ return array(
 						'observers' => array(),
 				),
 				'user' => array(
+						'class' => 'WebUser',
 						// Enable cookie-based authentication
 						'allowAutoLogin' => true,
 				),

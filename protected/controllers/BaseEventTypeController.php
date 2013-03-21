@@ -14,6 +14,42 @@ class BaseEventTypeController extends BaseController
 	public $assetPath;
 	public $episode;
 
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
+	}
+	
+	public function filters()
+	{
+		return array('accessControl');
+	}
+
+	public function accessRules()
+	{
+		return array(
+			// Level 2 can't change anything
+			array('allow',
+				'actions' => array('view', 'print'),
+				'expression' => 'BaseController::checkUserLevel(2)',
+			),
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			array('deny',
+			),
+		);
+	}
+	
 	public function actionIndex()
 	{
 		$this->render('index');
@@ -24,7 +60,7 @@ class BaseEventTypeController extends BaseController
 	}
 	
 	protected function beforeAction($action) {
-
+		
 		// Need to initialise base CSS first
 		$parent_return = parent::beforeAction($action);
 		
@@ -317,7 +353,7 @@ class BaseEventTypeController extends BaseController
 		$elements = $this->getDefaultElements('view');
 
 		// Decide whether to display the 'edit' button in the template
-		if (!$this->event->episode->firm) {
+		if (!BaseController::checkUserLevel(3) || !$this->event->episode->firm) {
 			$this->editable = false;
 		} else {	
 			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {

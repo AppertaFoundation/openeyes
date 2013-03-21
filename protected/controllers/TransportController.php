@@ -29,24 +29,22 @@ class TransportController extends BaseController
 	public $total_items = 0;
 	public $pages = 1;
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
-			array('allow',
-				'users'=>array('@')
-			),
-			// non-logged in can't view anything
+			// Level 2 can't change anything
 			array('deny',
-				'users'=>array('?')
+				'actions' => array('confirm'),
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
+			// Level 2 or above can do anything else
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(2)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
-
+	
 	/**
 	 * Lists all models.
 	 */
