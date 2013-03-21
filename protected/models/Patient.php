@@ -936,6 +936,8 @@ class Patient extends BaseActiveRecord {
 			return implode(', ',$diagnoses).' and '.$last;
 		}
 
-		return $return;
+		if (!empty($diagnoses)) {
+			return array_pop($diagnoses);
+		}
 	}
 }
