@@ -298,9 +298,12 @@
 	});
 
 	$(document).ready(function() {
-		if ($('input[name=\"<?php echo $class?>[eye_id]\"]:checked').val() == 3) {
+		if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
 			$('#projected_duration_<?php echo $identifier?>').html((parseInt($('#projected_duration_<?php echo $identifier?>').html().match(/[0-9]+/)) * 2) + " mins");
 		}
+		$('input[name="<?php echo $class?>[eye_id]"]').click(function() {
+			updateTotalDuration('<?php echo $identifier?>');
+		});
 	});
 
 	function ProcedureSelectionSelectByName(name, callback, identifier) {
