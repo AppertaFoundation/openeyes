@@ -934,8 +934,9 @@ class ElementOperation extends BaseEventTypeElement
 			$show = false;
 		}
 		
-		// Not External / Theatre 9
-		if($this->booking->session->theatre->code == 'CR9' && $this->booking->session->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec == 'EX') {
+		// Not External in Theatre 9 / CXL
+		if(($this->booking->session->theatre->code == 'CR9' || $this->booking->session->theatre->code == 'CXL') 
+				&& $this->booking->session->firm->serviceSubspecialtyAssignment->subspecialty->ref_spec == 'EX') {
 			$show = false;
 		}
 		
@@ -1170,8 +1171,9 @@ class ElementOperation extends BaseEventTypeElement
 				break;
 		}
 
-		# OE-2259 special case for Allan Bruce/External Theatre 9
-		if ($this->event->episode->firm_id == 19 && $this->booking->session->theatre_id == 9) {
+		# OE-2259 special case for Allan Bruce in External Theatre 9 or CXL
+		if ($this->event->episode->firm_id == 19
+			&& ($this->booking->session->theatre_id == 9 || $this->booking->session->theatre_id == 25)) {
 			$contact['refuse'] = '020 7566 2205';
 		}
 
