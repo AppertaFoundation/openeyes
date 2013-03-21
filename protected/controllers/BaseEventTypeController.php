@@ -576,8 +576,8 @@ class BaseEventTypeController extends BaseController
 			if ($action == 'create' && empty($_POST)) {
 				$element->setDefaultOptions();
 			}
-
-			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
+			
+			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
 				$action . '_' . $view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
@@ -592,7 +592,7 @@ class BaseEventTypeController extends BaseController
 				$element->setDefaultOptions();
 			}
 
-			$view = (property_exists($element, $action.'_view')) ? $element->{$action.'_view'} : $element->getDefaultView();
+			$view = ($element->{$action.'_view'}) ? $element->{$action.'_view'} : $element->getDefaultView();
 			$this->renderPartial(
 				$action . '_' . $view,
 				array('element' => $element, 'data' => $data, 'form' => $form),
