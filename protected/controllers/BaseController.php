@@ -29,6 +29,7 @@ class BaseController extends Controller
 	public $showForm = false;
 	public $patientId;
 	public $patientName;
+	public $jsVars = array();
 
 	/**
 	 * Check to see if user's level is high enough
@@ -202,5 +203,16 @@ class BaseController extends Controller
 
 		Yii::log($message . ' from ' . $addr, "user", "userActivity");
 	}
-	
+
+	protected function beforeRender($view) {
+		$this->processJsVars();
+		return parent::beforeRender($view);
+	}
+
+	public function processJsVars() {
+		foreach ($this->jsVars as $key => $value) {
+			$value = CJavaScript::encode($value);
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
+		}
+	}
 }
