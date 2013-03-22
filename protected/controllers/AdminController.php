@@ -21,7 +21,6 @@ class AdminController extends BaseController
 {
 	public $layout = 'admin';
 	public $items_per_page = 30;
-	public $jsVars = array();
 
 	public function accessRules() {
 		return array(
