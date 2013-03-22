@@ -49,13 +49,12 @@ class BaseController extends Controller
 	}
 	public function accessRules() {
 		return array(
-			// Level 3 or above can do anything
 			array('allow',
 				'roles'=>array('admin'),
 			),
-			// Deny everyone else
-			array('deny',
-			),
+			// Deny everyone else (this is important to add when overriding as otherwise
+			// any authenticated user may fall through and be allowed)
+			array('deny'),
 		);
 	}
 	
@@ -70,6 +69,7 @@ class BaseController extends Controller
 		$admin_rule = array('allow', 'roles' => array('admin'));
 		
 		// Always deny unauthenticated users in case rules fall through
+		// Maybe we should change this to deny everyone for safety
 		$default_rule = array('deny', 'users' => array('?'));
 		
 		// Merge rules defined by controller

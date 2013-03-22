@@ -28,13 +28,7 @@ class BaseEventTypeController extends BaseController
 		return false;
 	}
 	
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
 			// Level 2 can't change anything
 			array('allow',
