@@ -28,6 +28,19 @@
 				'pages' => $users['pages'],
 			))?>
 		</div>
+		<div class="search">
+			<?php
+			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
+				'id' => 'searchform',
+				'enableAjaxValidation' => false,
+				'htmlOptions' => array('class'=>'sliding'),
+				'focus' => '#search',
+				'action' => Yii::app()->createUrl('/admin/users'),
+			))?>
+				<span>Search:</span>
+				<input type="text" name="search" id="search" value="<?php echo strip_tags(@$_POST['search'])?>" />
+			<?php $this->endWidget()?>
+		</div>
 		<div>
 			<form id="admin_users">
 				<ul class="grid reduceheight">
