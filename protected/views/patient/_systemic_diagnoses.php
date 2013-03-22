@@ -10,7 +10,7 @@
 									<tr>
 										<th width="80px">Date</th>
 										<th>Diagnosis</th>
-										<th>Edit</th>
+										<?php if(BaseController::checkUserLevel(3)) { ?><th>Edit</th><?php } ?>
 									</tr>
 								</thead>
 								<tbody>
@@ -18,7 +18,9 @@
 										<tr>
 											<td><?php echo $diagnosis->dateText?></td>
 											<td><?php echo $diagnosis->eye ? $diagnosis->eye->adjective : ''?> <?php echo $diagnosis->disorder->term?></td>
+											<?php if(BaseController::checkUserLevel(3)) { ?>
 											<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
+											<?php } ?>
 										</tr>
 									<?php }?>
 								</tbody>

@@ -180,7 +180,7 @@ if (!empty($address)) {
 										<th width="33%">Name</th>
 										<th>Location</th>
 										<th>Type</th>
-										<th colspan="2"></th>
+										<?php if(BaseController::checkUserLevel(3)) { ?><th colspan="2"></th><?php } ?>
 									</tr>
 								</thead>
 								<tbody id="patient_contacts">	
@@ -219,7 +219,9 @@ if (!empty($address)) {
 												}
 												?>
 											</td>
+											<?php if(BaseController::checkUserLevel(3)) { ?>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
+											<?php } ?>
 										</tr>
 									<?php }?>
 								</tbody>

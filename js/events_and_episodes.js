@@ -3,7 +3,7 @@ $(document).ready(function(){
 
 	$('#addNewEvent').unbind('click').click(function(e) {
 		e.preventDefault();
-		if(!$(this).hasClass('inactive')) {
+		if(!$(this).hasClass('disabled')) {
 			$collapsed = false;
 			$('#add-event-select-type').slideToggle(100,function() {
 				if($(this).is(":visible")){

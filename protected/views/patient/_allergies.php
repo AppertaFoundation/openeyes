@@ -10,14 +10,16 @@
 			<thead>
 				<tr>
 					<th width="80%">Allergies</th>
-					<th>Edit</th>
+					<?php if(BaseController::checkUserLevel(3)) { ?><th>Edit</th><?php } ?>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach($this->patient->allergies as $allergy) { ?>
 				<tr data-allergy-id="<?php echo $allergy->id ?>">
 					<td><?php echo $allergy->name ?></td>
+					<?php if(BaseController::checkUserLevel(3)) { ?>
 					<td><a href="#" class="small removeAllergy"><strong>Remove</strong>
+					<?php } ?>
 					</a></td>
 				</tr>
 				<?php } ?>

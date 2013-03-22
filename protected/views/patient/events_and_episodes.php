@@ -33,9 +33,9 @@ if ($module = $this->getModule()) {
 			<div id="episodesBanner">
 				<form>
 					<?php $active = BaseController::checkUserLevel(3); ?>
-					<button tabindex="2" class="classy venti <?php if($active) { ?>green<?php } else { ?>inactive<?php } ?>"
+					<button tabindex="2" class="classy venti <?php if($active) { ?>green<?php } else { ?>disabled<?php } ?>"
 						id="addNewEvent" type="submit" style="float: right; margin-right: 1px;">
-						<span class="button-span button-span-<?php if($active) { ?>green<?php } else { ?>inactive<?php } ?> with-plussign">add new Event</span>
+						<span class="button-span button-span-<?php if($active) { ?>green<?php } else { ?>disabled<?php } ?> with-plussign">add new Event</span>
 					</button>
 				</form>
 				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>

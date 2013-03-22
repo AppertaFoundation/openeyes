@@ -56,7 +56,7 @@ class PatientController extends BaseController
 			),
 			// Level 2 can't change anything
 			array('allow',
-				'actions' => array('episode','event', 'episodes'),
+				'actions' => array('episode','event', 'episodes','printadmissionletter'),
 				'expression' => 'BaseController::checkUserLevel(2)',
 			),
 			// Level 3 or above can do anything
