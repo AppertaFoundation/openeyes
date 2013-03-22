@@ -43,7 +43,7 @@ class AdminController extends BaseController
 	}
 
 	public function actionIndex() {
-		$this->render('/admin/index');
+		$this->actionUsers();
 	}
 
 	public function actionUsers($id=false) {
