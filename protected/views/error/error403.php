@@ -16,30 +16,19 @@
  * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-class AdminModule extends CWebModule {
-	
-	public function init() {
-		// this method is called when the module is being created
-		// you may place code here to customize the module or the application
-
-		// import the module-level models and components
-		/*
-		$this->setImport(array(
-			'admin.models.*',
-			'admin.components.*',
-		));
-		*/
-	}
-
-	public function beforeControllerAction($controller, $action) {
-		if(parent::beforeControllerAction($controller, $action)) {
-			// this method is called before any module controller action is performed
-			// you may place customized code here
-			return true;
-		}	else {
-			return false;
-		}
-	}
-	
-}
+?>
+<?php
+	$helpdesk_phone = Yii::app()->params['helpdesk_phone'];
+	$helpdesk_email = Yii::app()->params['helpdesk_email'];
+	$this->layout = 'error';
+?>
+<h3>Forbidden</h3>
+<p><strong>You do not have permission to access this page</strong></p>
+<h4>Support Options</h4>
+<ul>
+	<li>Immediate support (8:00am to 8:00pm) - Phone <?php echo @$helpdesk_phone?></li>
+	<li>Less urgent issues email <a
+		href="mailto:<?php echo @$helpdesk_email?>"><?php echo @$helpdesk_email?>
+	</a></li>
+</ul>
+<div style="color: gray;"><?php echo date('r'); ?></div>

@@ -90,7 +90,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="help" class="clearfix"> 
+		<div id="help" class="clearfix"></div>
 	</div>
 	<?php echo $this->renderPartial('//base/_footer',array())?>
 </body> 

@@ -17,25 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DisorderController extends Controller {
+class DisorderController extends BaseController {
 	public $layout='column2';
-
-	public function filters() {
-		return array('accessControl');
-	}
 
 	public function accessRules() {
 		return array(
-				array('allow',
-						'users'=>array('@')
-				),
-				// non-logged in can't view anything
-				array('deny',
-						'users'=>array('?')
-				),
+			// Level 2 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(2)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
-
+	
 	/**
 	 * Lists all disorders for a given search term.
 	 */

@@ -23,25 +23,17 @@ class AdminController extends BaseController
 	public $items_per_page = 30;
 	public $jsVars = array();
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
-			array('allow',
-				'users'=>array('@'),
-			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+			array('deny'),
 		);
 	}
 
 	protected function beforeAction($action) {
+		$scriptMap = Yii::app()->clientScript->scriptMap;
+		$scriptMap['style.css'] = false;
+		Yii::app()->clientScript->scriptMap = $scriptMap;
+		Yii::app()->clientScript->registerCssFile("/css/admin-style.css");
 		Yii::app()->clientScript->registerCssFile("/css/admin.css");
 		Yii::app()->clientScript->registerScriptFile("/js/admin.js");
 

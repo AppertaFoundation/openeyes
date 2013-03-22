@@ -44,24 +44,36 @@ class ClinicalController extends BaseController
 		}
 	}
 
-	public function filters()
-	{
-		return array('accessControl');
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
 	}
-
-	public function accessRules()
-	{
+	
+	public function accessRules() {
 		return array(
+			// Level 2 can't change anything
 			array('allow',
-				'users' => array('@')
+				'actions' => array('episodesummary','index','summary','view'),
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users' => array('?')
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
 			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
-
+		
 	protected function beforeAction($action) {
 		// Prevent jquery + other js that might conflict getting loaded twice on ajax calls
 		if (Yii::app()->getRequest()->getIsAjaxRequest()) {
@@ -98,7 +110,7 @@ class ClinicalController extends BaseController
 		$elements = $this->service->getDefaultElements('view', $this->event);
 
 		// Decide whether to display the 'edit' button in the template
-		if (!$this->event->episode->firm) {
+		if (!BaseController::checkUserLevel(3) || !$this->event->episode->firm) {
 			$editable = false;
 		} else {
 			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
@@ -445,7 +457,7 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if (!$episode->firm) {
+		if (!BaseController::checkUserLevel(3) || !$episode->firm) {
 			$editable = false;
 		} else {
 			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
@@ -483,7 +495,7 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+		if (!BaseController::checkUserLevel(3) || $this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
 			$episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {
@@ -568,7 +580,7 @@ class ClinicalController extends BaseController
 		}
 
 		// Decide whether to display the 'edit' button in the template
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
+		if (!BaseController::checkUserLevel(3) || $this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
 			$episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$editable = false;
 		} else {

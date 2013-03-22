@@ -27,24 +27,31 @@ class BookingController extends BaseController
 	public $event;
 	public $editable;
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
+			// Level 3 or above can do anything
 			array('allow',
-				'users'=>array('@')
+				'expression' => 'BaseController::checkUserLevel(3)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
-
+	
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
+	}
+	
 	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.
