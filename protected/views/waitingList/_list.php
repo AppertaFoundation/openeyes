@@ -41,7 +41,9 @@ if (empty($operations)) { ?>
 				<th style="width: 80px;">Decision date</th>
 				<th>Priority</th>
 				<th>Book status (requires...)</th>
-				<th><input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /> All</th>
+				<th>
+					<input style="margin-top: 0.4em;" type="checkbox" id="checkall" value="" /> All
+				</th>
 			</tr>
 <?php
 	$i = 0;

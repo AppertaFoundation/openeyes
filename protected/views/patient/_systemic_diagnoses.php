@@ -24,10 +24,13 @@
 								</tbody>
 							</table>
 							
+							<?php if(BaseController::checkUserLevel(3)) { ?>
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_new_systemic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Systemic Diagnosis</span></button></form>
-							</div>	
+							</div>
+							<?php } ?>	
 						</div>
+						<?php if(BaseController::checkUserLevel(3)) { ?>
 						<div class="data_row" id="add_new_systemic_diagnosis" style="display: none;">
 							<h5>Add Systemic diagnosis</h5>	
 							<?php
@@ -76,7 +79,9 @@
 
 							<?php $this->endWidget()?>
 						</div>
+						<?php } ?>
 					</div>
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <script type="text/javascript">
 	$('#btn-add_new_systemic_diagnosis').click(function() {
 		$('#add_new_systemic_diagnosis').slideToggle('fast');
@@ -100,3 +105,4 @@
 		return true;
 	});
 </script>
+<?php } ?>

@@ -24,10 +24,13 @@
 								</tbody>
 							</table>
 							
+							<?php if(BaseController::checkUserLevel(3)) { ?>
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_new_ophthalmic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Ophthalmic Diagnosis</span></button></form>
-							</div>	
+							</div>
+							<?php } ?>
 						</div>
+						<?php if(BaseController::checkUserLevel(3)) { ?>
 						<div class="data_row" id="add_new_ophthalmic_diagnosis" style="display: none;">
 							<h5>Add ophthalmic diagnosis</h5>	
 							<?php
@@ -75,8 +78,10 @@
 
 							<?php $this->endWidget()?>
 						</div>
+						<?php } ?>
 					</div>
-				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
+					<?php if(BaseController::checkUserLevel(3)) { ?>
+					<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
 					<div>
 						<div id="delete_diagnosis">
 							<div class="alertBox" style="margin-top: 10px; margin-bottom: 15px;">
@@ -93,7 +98,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
+					</div>
 <script type="text/javascript">
 	$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 		$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
@@ -151,3 +156,4 @@
 		return false;
 	});
 </script>
+<?php } ?>

@@ -24,12 +24,15 @@
 			</tbody>
 		</table>
 	</div>
+	<?php if(BaseController::checkUserLevel(3)) { ?>
 	<div class="data_row" id="add_new_allergy">
 		Add Allergy:
 		<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'));?>
 		<button id="btn_add_allergy" class="classy green mini" type="button"><span class="button-span button-span-green">Add</span></button>
-		</div>
+	</div>
+	<?php } ?>
 </div>
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
 	<div>
 		<div id="delete_allergy">
@@ -109,3 +112,4 @@
 		return false;
 	});
 </script>
+<?php } ?>

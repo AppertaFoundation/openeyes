@@ -30,7 +30,9 @@
 				</div>*/ ?>
 				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Download CSV</span></button>
 				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Print list</span></button>
+				<?php if(BaseController::checkUserLevel(3)) {?>
 				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right; z-index: 1"><span class="button-span button-span-blue">Confirm</span></button>
+				<?php } ?>
 
 				<div id="searchResults" class="whiteBox">
 					<form id="transport_form" method="post" action="<?php echo Yii::app()->baseUrl?>/transport">
@@ -85,7 +87,9 @@
 				</div> <!-- #searchResults -->
 				<button type="submit" class="classy blue venti btn_download" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Download CSV</span></button>
 				<button type="submit" class="classy blue tall btn_print" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Print list</span></button>
+				<?php if(BaseController::checkUserLevel(3)) {?>
 				<button type="submit" class="classy blue tall btn_confirm" style="margin-right: 10px; margin-top: 20px; margin-bottom: 20px; float: right;"><span class="button-span button-span-blue">Confirm</span></button>
+				<?php } ?>
 				<div>
 					<?php
 					$times = Yii::app()->params['transport_csv_intervals'];
