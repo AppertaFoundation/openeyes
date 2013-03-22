@@ -65,7 +65,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -88,7 +88,8 @@ class User extends BaseActiveRecord
 				$commonRules,
 				array(
 					array('username, active, global_firm_rights', 'required'),
-					array('username', 'length', 'max' => 40)
+					array('username', 'length', 'max' => 40),
+					array('password_repeat', 'safe'),
 				)
 			);
 		} else {
