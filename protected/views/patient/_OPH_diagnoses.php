@@ -87,7 +87,7 @@
 									<?php }?>
 								</div>
 	
-								<?php $this->renderPartial('_diagnosis_date')?>
+								<?php $this->renderPartial('_fuzzy_date')?>
 	
 								<div align="right">
 									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />

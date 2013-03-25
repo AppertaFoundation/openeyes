@@ -895,16 +895,16 @@ class PatientController extends BaseController
 	}
 	
 	private function processDiagnosisDate() {
-		$date = $_POST['diagnosis_year'];
+		$date = $_POST['fuzzy_year'];
 		
-		if ($_POST['diagnosis_month']) {
-			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		if ($_POST['fuzzy_month']) {
+			$date .= '-'.str_pad($_POST['fuzzy_month'],2,'0',STR_PAD_LEFT);
 		} else {
 			$date .= '-00';
 		}
 		
-		if ($_POST['diagnosis_day']) {
-			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		if ($_POST['fuzzy_day']) {
+			$date .= '-'.str_pad($_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
 		} else {
 			$date .= '-00';
 		}
@@ -1085,5 +1085,63 @@ class PatientController extends BaseController
 			'date' => date('j M Y',strtotime($dates[0])),
 			'timestamp' => strtotime($dates[0]),
 		);
+	}
+
+	public function actionAddPreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!isset($_POST['previous_operation'])) {
+			throw new Exception("Missing previous operation text");
+		}
+
+		if (@$_POST['edit_operation_id']) {
+			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
+				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
+			}
+			$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
+			$po->operation = @$_POST['previous_operation'];
+			$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
+			if (!$po->save()) {
+				throw new Exception("Unable to save previous operation: ".print_r($po->getErrors(),true));
+			}
+		} else {
+			$patient->addPreviousOperation(@$_POST['previous_operation'],@$_POST['previous_operation_side'],str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionRemovePreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$po = PreviousOperation::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['operation_id']))) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		if (!$po->delete()) {
+			throw new Exception("Failed to remove previous operation: ".print_r($po->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionGetPreviousOperation() {
+		if (!$po = PreviousOperation::model()->findByPk(@$_GET['operation_id'])) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		$date = explode('-',$po->date);
+
+		echo json_encode(array(
+			'operation' => $po->operation,
+			'side_id' => $po->side_id,
+			'fuzzy_year' => $date[0],
+			'fuzzy_month' => preg_replace('/^0/','',$date[1]),
+			'fuzzy_day' => preg_replace('/^0/','',$date[2]),
+		));
 	}
 }

@@ -72,7 +72,7 @@
 								<?php echo $form->error($info, 'cvi_status_date'); ?>
 								
 								<?php 
-								$this->renderPartial('_diagnosis_date')?>
+								$this->renderPartial('_fuzzy_date')?>
 								
 								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
 								<div align="right">
