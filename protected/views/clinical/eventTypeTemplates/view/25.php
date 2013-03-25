@@ -237,6 +237,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	</div>
 <?php }?>
 
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <?php if ($operation->status != $operation::STATUS_CANCELLED && $this->event->editable) { ?>
 <!-- editable -->
 <div style="margin-top:40px; text-align:center;">
@@ -251,24 +252,19 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 		// Patient has no GP defined or doesn't have an address ?>
 	<button type="submit" class="classy disabled venti" value="submit" disabled="disabled"><span class="button-span">Print <?php echo $letterType ?> letter</span></button>
 	<?php } } ?>
-	<?php if(BaseController::checkUserLevel(3)) { ?>
 	<button type="submit" class="classy green venti" value="submit" id="btn_schedule-now"><span class="button-span button-span-green">Schedule now</span></button>
-	<?php } ?>
 	<?php } else { // The operation has been booked ?>
 	<?php if($has_address) { ?>
 	<button type="submit" class="classy blue venti" value="submit" id="btn_print-letter"><span class="button-span">Print letter</span></button>
 	<?php } else { ?>
 	<button type="submit" class="classy disabled venti" value="submit" disabled="disabled"><span class="button-span button-span-blue">Print letter</span></button>
 	<?php } ?>
-	<?php if(BaseController::checkUserLevel(3)) { ?>
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-now"><span class="button-span button-span-green">Reschedule now</span></button>
 	<button type="submit" class="classy green venti" value="submit" id="btn_reschedule-later"><span class="button-span button-span-green">Reschedule later</span></button>
 	<?php } ?>
-	<?php } ?>
-	<?php if(BaseController::checkUserLevel(3)) { ?>
 	<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
-	<?php } ?>
 </div>
+<?php } ?>
 <?php } ?>
 
 <script type="text/javascript">

@@ -32,16 +32,23 @@ class BaseEventTypeController extends BaseController
 		return array(
 			// Level 2 can't change anything
 			array('allow',
-				'actions' => array('view', 'print'),
+				'actions' => array('view'),
 				'expression' => 'BaseController::checkUserLevel(2)',
 			),
 			// Level 3 or above can do anything
 			array('allow',
 				'expression' => 'BaseController::checkUserLevel(3)',
 			),
-			array('deny',
-			),
+			array('deny'),
 		);
+	}
+	
+	/**
+	 * Whether the current user is allowed to call print actions
+	 * @return boolean
+	 */
+	public function canPrint() {
+		return BaseController::checkUserLevel(3);
 	}
 	
 	public function actionIndex()

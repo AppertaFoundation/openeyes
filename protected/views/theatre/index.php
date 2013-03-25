@@ -133,10 +133,12 @@ $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				<!-- ====================================================  end of P R I N T  S T U F F ============  -->
 
 			</div> <!-- #theatre_display -->
+			<?php if(BaseController::checkUserLevel(3)) { ?>
 			<div style="text-align:right; margin-right:10px;">
 				<button type="submit" class="classy blue tall" id="btn_print"><span class="button-span button-span-blue">Print</span></button>
 				<button type="submit" class="classy blue tall" id="btn_print_list"><span class="button-span button-span-blue">Print list</span></button>
 			</div>
+			<?php } ?>
 		</div> <!-- .fullWidth -->
 		<div id="iframeprintholder" style="display: none;"></div>
 <script type="text/javascript">

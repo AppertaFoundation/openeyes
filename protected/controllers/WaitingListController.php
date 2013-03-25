@@ -27,10 +27,10 @@ class WaitingListController extends BaseController
 
 	public function accessRules() {
 		return array(
-			// Level 2 can't change anything
+			// Level 2 can't change anything or print
 			array('deny',
-				'actions' => array('confirmprinted'),
-				'expression' => 'BaseController::checkUserLevel(2)',
+				'actions' => array('confirmprinted', 'printletters'),
+				'expression' => '!BaseController::checkUserLevel(3)',
 			),
 			// Level 2 or above can do anything else
 			array('allow',
