@@ -353,6 +353,7 @@ if (!empty($address)) {
 						}
 						$this->renderPartial('_systemic_diagnoses');
 						$this->renderPartial('_previous_operations');
+						$this->renderPartial('_medications');
 						// specialist extra data
 						foreach ($codes as $code) {
 							try {
@@ -417,7 +418,7 @@ if (!empty($address)) {
 				
 						return false;
 					});
-				
+
 					$('button.btn_remove_operation').click(function() {
 						$("#confirm_remove_operation_dialog").dialog("close");
 				
@@ -445,6 +446,44 @@ if (!empty($address)) {
 						return false;
 					});
 
+					$('.removeMedication').live('click',function() {
+						$('#medication_id').val($(this).attr('rel'));
+				
+						$('#confirm_remove_medication_dialog').dialog({
+							resizable: false,
+							modal: true,
+							width: 560
+						});
+				
+						return false;
+					});
+
+					$('button.btn_remove_medication').click(function() {
+						$("#confirm_remove_medication_dialog").dialog("close");
+				
+						$.ajax({
+							'type': 'GET',
+							'url': baseUrl+'/patient/removeMedication?patient_id=<?php echo $this->patient->id?>&medication_id='+$('#medication_id').val(),
+							'success': function(html) {
+								if (html == 'success') {
+									$('a.removeMedication[rel="'+$('#medication_id').val()+'"]').parent().parent().remove();
+								} else {
+									alert("Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance.");
+								}
+							},
+							'error': function() {
+								console.log('error with remove call');
+								alert("Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance.");
+							}
+						});
+				
+						return false;
+					});
+				
+					$('button.btn_cancel_remove_medication').click(function() {
+						$("#confirm_remove_medication_dialog").dialog("close");
+						return false;
+					});
 				});
 				$('tr.all-episode').unbind('click').click(function() {
 					window.location.href = '<?php echo Yii::app()->createUrl('patient/episode')?>/'+$(this).attr('id');

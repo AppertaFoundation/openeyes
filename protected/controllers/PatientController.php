@@ -1113,6 +1113,37 @@ class PatientController extends BaseController
 		$this->redirect(array('/patient/view/'.$patient->id));
 	}
 
+	public function actionAddMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!@$_POST['medication']) {
+			throw new Exception("Missing medication text");
+		}
+
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route'])) {
+			throw new Exception("Drug route not found: ".@$_POST['route']);
+		}
+
+		if (@$_POST['edit_medication_id']) {
+			if (!$m = Medication::model()->findByPk(@$_POST['edit_medication_id'])) {
+				throw new Exception("Medication not found: ".@$_POST['edit_medication_id']);
+			}
+			$m->medication = $_POST['medication'];
+			$m->route_id = $route->id;
+			$m->comments = @$_POST['comments'];
+
+			if (!$m->save()) {
+				throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+			}
+		} else {
+			$patient->addMedication(@$_POST['medication'],$route->id,@$_POST['comments']);
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
 	public function actionRemovePreviousOperation() {
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception("Patient not found: ".@$_GET['patient_id']);
@@ -1143,5 +1174,21 @@ class PatientController extends BaseController
 			'fuzzy_month' => preg_replace('/^0/','',$date[1]),
 			'fuzzy_day' => preg_replace('/^0/','',$date[2]),
 		));
+	}
+
+	public function actionRemoveMedication() {
+    if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+      throw new Exception("Patient not found: ".@$_GET['patient_id']);
+    }
+
+    if (!$m = Medication::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['medication_id']))) {
+      throw new Exception("Medication not found: ".@$_GET['medication_id']);
+    }
+
+    if (!$m->delete()) {
+      throw new Exception("Failed to remove medication: ".print_r($m->getErrors(),true));
+    }
+
+    echo 'success';
 	}
 }

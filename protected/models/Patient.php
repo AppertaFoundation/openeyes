@@ -139,6 +139,7 @@ class Patient extends BaseActiveRecord {
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
+			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date'),
 		);
 	}
 
@@ -953,6 +954,21 @@ class Patient extends BaseActiveRecord {
 
 		if (!$pa->save()) {
 			throw new Exception("Unable to save previous operation: ".print_r($pa->getErrors(),true));
+		}
+	}
+
+	public function addMedication($medication,$route_id,$comments) {
+		if (!$m = Medication::model()->find('patient_id=? and medication=? and route_id=?',array($this->id,$medication,$route_id))) {
+			$m = new Medication;
+			$m->patient_id = $this->id;
+			$m->medication = $medication;
+			$m->route_id = $route_id;
+		}
+
+		$m->comments = $comments;
+
+		if (!$m->save()) {
+			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
 		}
 	}
 }
