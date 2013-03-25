@@ -140,6 +140,7 @@ class Patient extends BaseActiveRecord {
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
 			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date'),
+			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 		);
 	}
 
@@ -969,6 +970,22 @@ class Patient extends BaseActiveRecord {
 
 		if (!$m->save()) {
 			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+		}
+	}
+
+	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments) {
+		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
+			$fh = new FamilyHistory;
+			$fh->patient_id = $this->id;
+			$fh->relative_id = $relative_id;
+			$fh->side_id = $side_id;
+			$fh->condition_id = $condition_id;
+		}
+
+		$fh->comments = $comments;
+
+		if (!$fh->save()) {
+			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
 		}
 	}
 }

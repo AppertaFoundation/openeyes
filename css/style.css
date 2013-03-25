@@ -1525,3 +1525,8 @@ div.patientMedication .label { display: inline-block; width: 125px; }
 div.patientMedication .data { display: inline-block; }
 div.patientMedication { margin-bottom: 10px; }
 div.patientMedication #previous_operation { width: 439px; }
+
+div.familyHistory .label { display: inline-block; width: 125px; }
+div.familyHistory .data { display: inline-block; }
+div.familyHistory { margin-bottom: 10px; }
+div.familyHistory #comments { width: 439px; }

@@ -361,6 +361,7 @@ if (!empty($address)) {
 							} catch (Exception $e) {}
 						}
 						$this->renderPartial('_allergies'); 
+						$this->renderPartial('_family_history');
 					}
 					?>
 				</div> <!-- .halfColumn -->
@@ -482,6 +483,45 @@ if (!empty($address)) {
 				
 					$('button.btn_cancel_remove_medication').click(function() {
 						$("#confirm_remove_medication_dialog").dialog("close");
+						return false;
+					});
+
+					$('.removeFamilyHistory').live('click',function() {
+						$('#family_history_id').val($(this).attr('rel'));
+				
+						$('#confirm_remove_family_history_dialog').dialog({
+							resizable: false,
+							modal: true,
+							width: 560
+						});
+				
+						return false;
+					});
+
+					$('button.btn_remove_family_history').click(function() {
+						$("#confirm_remove_family_history_dialog").dialog("close");
+				
+						$.ajax({
+							'type': 'GET',
+							'url': baseUrl+'/patient/removeFamilyHistory?patient_id=<?php echo $this->patient->id?>&family_history_id='+$('#family_history_id').val(),
+							'success': function(html) {
+								if (html == 'success') {
+									$('a.removeFamilyHistory[rel="'+$('#family_history_id').val()+'"]').parent().parent().remove();
+								} else {
+									alert("Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance.");
+								}
+							},
+							'error': function() {
+								console.log('error with remove call');
+								alert("Sorry, an internal error occurred and we were unable to remove the family_history.\n\nPlease contact support for assistance.");
+							}
+						});
+				
+						return false;
+					});
+				
+					$('button.btn_cancel_remove_family_history').click(function() {
+						$("#confirm_remove_family_history_dialog").dialog("close");
 						return false;
 					});
 				});
