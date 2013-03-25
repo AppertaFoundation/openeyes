@@ -130,7 +130,7 @@ class PatientController extends BaseController
 		}
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
 		));
 	}
 
@@ -1122,5 +1122,183 @@ class PatientController extends BaseController
 			'date' => date('j M Y',strtotime($dates[0])),
 			'timestamp' => strtotime($dates[0]),
 		);
+	}
+
+	public function actionAddPreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!isset($_POST['previous_operation'])) {
+			throw new Exception("Missing previous operation text");
+		}
+
+		if (@$_POST['edit_operation_id']) {
+			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
+				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
+			}
+			$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
+			$po->operation = @$_POST['previous_operation'];
+			$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
+			if (!$po->save()) {
+				throw new Exception("Unable to save previous operation: ".print_r($po->getErrors(),true));
+			}
+		} else {
+			$patient->addPreviousOperation(@$_POST['previous_operation'],@$_POST['previous_operation_side'],str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionAddMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!$drug = Drug::model()->findByPk(@$_POST['drug_id'])) {
+			throw new Exception("Drug not found: ".@$_POST['drug_id']);
+		}
+
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
+			throw new Exception("Route not found: ".@$_POST['route_id']);
+		}
+
+		if (!empty($route->options)) {
+			if (!$option = DrugRouteOption::model()->findByPk(@$_POST['option_id'])) {
+				throw new Exception("Route option not found: ".@$_POST['option_id']);
+			}
+		}
+
+		if (!$frequency = DrugFrequency::model()->findByPk(@$_POST['frequency_id'])) {
+			throw new Exception("Frequency not found: ".@$_POST['frequency_id']);
+		}
+
+		if (!strtotime(@$_POST['start_date'])) {
+			throw new Exception("Invalid date: ".@$_POST['start_date']);
+		}
+
+		if (@$_POST['edit_medication_id']) {
+			if (!$m = Medication::model()->findByPk(@$_POST['edit_medication_id'])) {
+				throw new Exception("Medication not found: ".@$_POST['edit_medication_id']);
+			}
+			$patient->updateMedication($m,array(
+				'drug_id' => $drug->id,
+				'route_id' => $route->id,
+				'option_id' => $option ? $option->id : null,
+				'frequency_id' => $frequency->id,
+				'start_date' => $_POST['start_date'],
+			));
+		} else {
+			$patient->addMedication(array(
+				'drug_id' => $drug->id,
+				'route_id' => $route->id,
+				'option_id' => $option ? $option->id : null,
+				'frequency_id' => $frequency->id,
+				'start_date' => $_POST['start_date'],
+			));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionRemovePreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$po = PreviousOperation::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['operation_id']))) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		if (!$po->delete()) {
+			throw new Exception("Failed to remove previous operation: ".print_r($po->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionGetPreviousOperation() {
+		if (!$po = PreviousOperation::model()->findByPk(@$_GET['operation_id'])) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		$date = explode('-',$po->date);
+
+		echo json_encode(array(
+			'operation' => $po->operation,
+			'side_id' => $po->side_id,
+			'fuzzy_year' => $date[0],
+			'fuzzy_month' => preg_replace('/^0/','',$date[1]),
+			'fuzzy_day' => preg_replace('/^0/','',$date[2]),
+		));
+	}
+
+	public function actionRemoveMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$m = Medication::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['medication_id']))) {
+			throw new Exception("Medication not found: ".@$_GET['medication_id']);
+		}
+
+		$m->end_date = date('Y-m-d');
+
+		if (!$m->save()) {
+			throw new Exception("Failed to remove medication: ".print_r($m->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionGetDrugRouteOptions() {
+		if (!$route = DrugRoute::model()->findByPk(@$_GET['route_id'])) {
+			throw new Exception("Drug route not found: ".@$_GET['route_id']);
+		}
+
+		$this->renderPartial('_drug_route_options',array('route'=>$route));
+	}
+
+	public function actionValidateAddMedication() {
+		$errors = array();
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!Drug::model()->findByPk(@$_POST['drug_id'])) {
+			$errors['drug_id'] = "Please select a drug";
+		}
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
+			$errors['route_id'] = "Please select a route";
+		}
+		if (!empty($route->options) && !DrugRouteOption::model()->findByPk(@$_POST['option_id'])) {
+			$errors['option_id'] = "Please select a route option";
+		}
+		if (empty($_POST['frequency_id'])) {
+			$errors['frequency_id'] = 'Please select a frequency';
+		}
+		if (empty($_POST['start_date'])) {
+			$errors['start_date'] = 'Please select a date';
+		} else if (!strtotime($_POST['start_date'])) {
+			$errors['start_date'] = 'Invalid date entered';
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionGetMedication() {
+		if (!$m = Medication::model()->findByPk(@$_GET['medication_id'])) {
+			throw new Exception("Medication not found: ".@$_GET['medication_id']);
+		}
+
+		echo json_encode(array(
+			'drug_id' => $m->drug_id,
+			'route_id' => $m->route_id,
+			'option_id' => $m->option_id,
+			'frequency_id' => $m->frequency_id,
+			'start_date' => $m->start_date,
+			'route_options' => $this->renderPartial('_drug_route_options',array('route'=>$m->route),true),
+		));
 	}
 }

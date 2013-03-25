@@ -111,6 +111,7 @@ class Drug extends BaseActiveRecord
 				'default_duration' => array(self::BELONGS_TO, 'DrugDuration', 'default_duration_id'),
 				'default_frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'default_frequency_id'),
 				'default_route' => array(self::BELONGS_TO, 'DrugRoute', 'default_route_id'),
+				'subspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyDrug', 'drug_id'),
 		);
 	}
 
@@ -156,5 +157,13 @@ class Drug extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function listBySubspecialty($subspecialty_id) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('subspecialty_id',$subspecialty_id);
+		$criteria->order = 'name asc';
+
+		return CHtml::listData(Drug::model()->with('subspecialtyAssignments')->findAll($criteria),'id','name');
 	}
 }

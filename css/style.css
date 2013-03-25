@@ -1514,4 +1514,18 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
 #div_Firm_consultant_id { margin-top: 2px; }
+
 div.episodeMetadata { margin-left: 10px; }
+
+div.previousOperation .label { display: inline-block; width: 125px; }
+div.previousOperation .data { display: inline-block; }
+div.previousOperation { margin-bottom: 10px; }
+div.previousOperation #previous_operation { width: 439px; }
+input.previous_operation_eye { margin-left: 10px; }
+
+div.patientMedication .label { display: inline-block; width: 125px; }
+div.patientMedication .data { display: inline-block; }
+div.patientMedication { margin-bottom: 10px; }
+div.patientMedication #previous_operation { width: 439px; }
+
+#Medication_start_date { width: 90px; }

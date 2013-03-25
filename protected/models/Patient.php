@@ -138,6 +138,8 @@ class Patient extends BaseActiveRecord {
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
+			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
+			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
 		);
 	}
 
@@ -954,5 +956,22 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			return $episode->firm->serviceSubspecialtyAssignment->service->name;
 		}
+	}
+
+	public function updateMedication($m, $params) {
+		$m->patient_id = $this->id;
+		$m->drug_id = $params['drug_id'];
+		$m->route_id = $params['route_id'];
+		$m->option_id = $params['option_id'];
+		$m->frequency_id = $params['frequency_id'];
+		$m->start_date = date('Y-m-d',strtotime($params['start_date']));
+
+		if (!$m->save()) {
+			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+		}
+	}
+
+	public function addMedication($params) {
+		$this->updateMedication(new Medication, $params);
 	}
 }
