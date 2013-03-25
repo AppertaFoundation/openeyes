@@ -18,7 +18,7 @@
 				<?php }
 			} else if (isset($this->episode) && is_object($this->episode)) {
 				if (Yii::app()->getController()->action->id != 'create') {?>
-					You can: <span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->episode->editable) {?> style="display: none;"<?php }?>><?php echo CHtml::link('Edit',array('/patient/updateepisode/'.$this->episode->id),array('class'=>"edit-episode"))?></span>
+					You can: <span class="aBtn_inactive">View</span><span class="aBtn edit-event"<?php if (!$this->editable) {?> style="display: none;"<?php }?>><?php echo CHtml::link('Edit',array('/patient/updateepisode/'.$this->episode->id),array('class'=>"edit-episode"))?></span>
 				<?php }?>
 			<?php }?>
 		<?php }?>

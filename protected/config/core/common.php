@@ -34,7 +34,7 @@ return array(
 						'password' => 'openeyes',
 						'ipFilters'=> array('*')
 				),
-				'admin',
+				'oldadmin',
 		),
 
 		// Application components
@@ -47,6 +47,7 @@ return array(
 						'observers' => array(),
 				),
 				'user' => array(
+						'class' => 'WebUser',
 						// Enable cookie-based authentication
 						'allowAutoLogin' => true,
 				),

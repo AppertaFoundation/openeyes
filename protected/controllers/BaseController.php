@@ -29,32 +29,52 @@ class BaseController extends Controller
 	public $showForm = false;
 	public $patientId;
 	public $patientName;
+	public $jsVars = array();
 
 	/**
-	 * Default all access rule filters to a deny-basis to prevent accidental
-	 * allowing of actions that don't have access rules defined yet
-	 *
-	 * @param $filterChain
-	 * @return type
+	 * Check to see if user's level is high enough
+	 * @param integer $level
+	 * @return boolean
 	 */
-	public function filterAccessControl($filterChain)
-	{
-		$rules = $this->accessRules();
-
-		if (Yii::app()->params['ab_testing']) {
-			$rules = array(
-				array('allow',
-					'users'=>array('@','?')
-				)
-			);
-		} else {
-			// default deny
-			$rules[] = array('deny', 'users'=>array('?'));
-		}
-
+	public static function checkUserLevel($level) {
+		return (Yii::app()->user->access_level >= $level);
+	}
+	
+	/**
+	 * Set default rules to block everyone apart from admin
+	 * These should be overridden in child classes
+	 * @return array
+	 */
+	public function filters() {
+		return array('accessControl');
+	}
+	public function accessRules() {
+		return array(
+			array('allow',
+				'roles'=>array('admin'),
+			),
+			// Deny everyone else (this is important to add when overriding as otherwise
+			// any authenticated user may fall through and be allowed)
+			array('deny'),
+		);
+	}
+	
+	public function filterAccessControl($filterChain) {
 		$filter = new CAccessControlFilter;
-		$filter->setRules($rules);
+		$filter->setRules($this->compileAccessRules());
 		$filter->filter($filterChain);
+	}
+	
+	protected function compileAccessRules() {
+		// Always allow admin
+		$admin_rule = array('allow', 'roles' => array('admin'));
+		
+		// Always deny unauthenticated users in case rules fall through
+		// Maybe we should change this to deny everyone for safety
+		$default_rule = array('deny', 'users' => array('?'));
+		
+		// Merge rules defined by controller
+		return array_merge(array($admin_rule), $this->accessRules(), array($default_rule));
 	}
 
 	/**
@@ -183,5 +203,16 @@ class BaseController extends Controller
 
 		Yii::log($message . ' from ' . $addr, "user", "userActivity");
 	}
-	
+
+	protected function beforeRender($view) {
+		$this->processJsVars();
+		return parent::beforeRender($view);
+	}
+
+	public function processJsVars() {
+		foreach ($this->jsVars as $key => $value) {
+			$value = CJavaScript::encode($value);
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
+		}
+	}
 }

@@ -180,7 +180,7 @@ if (!empty($address)) {
 										<th width="33%">Name</th>
 										<th>Location</th>
 										<th>Type</th>
-										<th colspan="2"></th>
+										<?php if(BaseController::checkUserLevel(3)) { ?><th colspan="2"></th><?php } ?>
 									</tr>
 								</thead>
 								<tbody id="patient_contacts">	
@@ -219,12 +219,15 @@ if (!empty($address)) {
 												}
 												?>
 											</td>
+											<?php if(BaseController::checkUserLevel(3)) { ?>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
+											<?php } ?>
 										</tr>
 									<?php }?>
 								</tbody>
 							</table>	
 						</div>
+						<?php if(BaseController::checkUserLevel(3)) { ?>
 						<div class="data_tow">
 							<span>Add contact:</span>
 							<?php
@@ -316,9 +319,11 @@ if (!empty($address)) {
 							&nbsp;
 							<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
 						</div>
+						<?php } ?>
 					</div>
 				</div>
 
+				<?php if(BaseController::checkUserLevel(2)) { ?>
 				<div class="halfColumnRight">
 					<div class="blueBox">
 						<h5>All Episodes<span style="float:right;">&nbsp; open <?php echo $episodes_open?> &nbsp;|&nbsp;<span style="font-weight:normal;">closed <?php echo $episodes_closed?></span></span></h5>
@@ -353,11 +358,13 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
+					<?php $episodes_link = (BaseController::checkUserLevel(3)) ? 'Create or View' : 'View';  ?>
+					<p><?php echo CHtml::link('<span class="aPush">'.$episodes_link.' Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
 					<?php $this->renderPartial('_systemic_diagnoses')?>
 					<?php $this->renderPartial('_allergies'); ?>
 				</div> <!-- .halfColumn -->
+				<?php } ?>
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$('tr.all-episode').unbind('click').click(function() {

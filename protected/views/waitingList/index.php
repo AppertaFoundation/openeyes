@@ -100,6 +100,7 @@
 				<div id="searchResults" class="whiteBox">
 				</div> <!-- #searchResults -->
 			</div> <!-- #waitinglist_display -->
+			<?php if(BaseController::checkUserLevel(3)) { ?>
 			<div style="float: right; margin-right: 18px;">
 				<button style="margin-right: 15px;" type="submit" class="classy blue tall" id="btn_print_all"><span class="button-span button-span-blue">Print all</span></button>
 				<button style="margin-right: 15px;" type="submit" class="classy blue grande" id="btn_print"><span class="button-span button-span-blue">Print selected</span></button>
@@ -133,6 +134,7 @@
 				<?php } ?>
 				<button type="submit" class="classy green venti" id="btn_confirm_selected"><span class="button-span button-span-green">Confirm selected</span></button>
 			</div>
+			<?php } ?>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
 	$('#waitingList-filter button[type="submit"]').click(function() {

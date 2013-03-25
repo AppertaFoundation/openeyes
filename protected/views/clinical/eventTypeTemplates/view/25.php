@@ -237,6 +237,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	</div>
 <?php }?>
 
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <?php if ($operation->status != $operation::STATUS_CANCELLED && $this->event->editable) { ?>
 <!-- editable -->
 <div style="margin-top:40px; text-align:center;">
@@ -263,6 +264,7 @@ Booking last modified by <span class="user"><?php echo $operation->booking->user
 	<?php } ?>
 	<button type="submit" class="classy red venti" value="submit" id="btn_cancel-operation"><span class="button-span button-span-red">Cancel operation</span></button>
 </div>
+<?php } ?>
 <?php } ?>
 
 <script type="text/javascript">

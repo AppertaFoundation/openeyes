@@ -38,7 +38,11 @@ $this->renderPartial('//layouts/patientMode/event_header');
 			<?php }?>
 			<div id="episodesBanner">
 				<form>
-					<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
+					<?php $active = BaseController::checkUserLevel(3); ?>
+					<button tabindex="2" class="classy venti <?php if($active) { ?>green<?php } else { ?>disabled<?php } ?>"
+						id="addNewEvent" type="submit" style="float: right; margin-right: 1px;">
+						<span class="button-span button-span-<?php if($active) { ?>green<?php } else { ?>disabled<?php } ?> with-plussign">add new Event</span>
+					</button>
 				</form>
 				<p style="margin-bottom: 0px;">&nbsp;</p>
 			</div>

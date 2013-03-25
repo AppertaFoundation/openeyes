@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,48 +17,29 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var button_colours = ["red","blue","green"];
-var button_cache = {};
+class OldadminModule extends CWebModule {
+	
+	public function init() {
+		// this method is called when the module is being created
+		// you may place code here to customize the module or the application
 
-function handleButton(button, callback) {
-	button.click(function(e) {
-		if (!button.hasClass('inactive')) {
-			disableButtons();
-			if (callback) {
-				callback(e,button);
-			}
-		} else {
-			e.preventDefault();
-		}
-	});
-}
-
-function disableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		var selection = $('button.'+col);
-		selection.removeClass(col).addClass('inactive');
-		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		button_cache[col] = selection;
-		$('.loader').show();
+		// import the module-level models and components
+		/*
+		$this->setImport(array(
+			'admin.models.*',
+			'admin.components.*',
+		));
+		*/
 	}
-}
 
-function enableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		button_cache[col].removeClass('inactive').addClass(col);
-		button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-		$('.loader').hide();
-	}
-}
-
-$(document).ready(function() {
-	$('button.auto').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
+	public function beforeControllerAction($controller, $action) {
+		if(parent::beforeControllerAction($controller, $action)) {
+			// this method is called before any module controller action is performed
+			// you may place customized code here
 			return true;
+		}	else {
+			return false;
 		}
-		return false;
-	});
-});
+	}
+	
+}

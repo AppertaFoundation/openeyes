@@ -63,7 +63,7 @@ class UserIdentity extends CUserIdentity
 			OELog::log("User not found in local database: $this->username");
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
-		} else if($user->active != 1) {
+		} else if($user->active != 1 || $user->access_level == 0) {
 			$audit = new Audit;
 			$audit->action = "login-failed";
 			$audit->target_type = "login";

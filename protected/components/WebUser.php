@@ -1,3 +1,4 @@
+<?php
 /**
  * OpenEyes
  *
@@ -16,48 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var button_colours = ["red","blue","green"];
-var button_cache = {};
+class WebUser extends CWebUser {
 
-function handleButton(button, callback) {
-	button.click(function(e) {
-		if (!button.hasClass('inactive')) {
-			disableButtons();
-			if (callback) {
-				callback(e,button);
-			}
-		} else {
-			e.preventDefault();
-		}
-	});
-}
+	private $_model;
 
-function disableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		var selection = $('button.'+col);
-		selection.removeClass(col).addClass('inactive');
-		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		button_cache[col] = selection;
-		$('.loader').show();
+	public function getAccess_Level(){
+		$user = $this->loadUser();
+		return $user->access_level;
 	}
-}
 
-function enableButtons() {
-	for (var i in button_colours) {
-		var col = button_colours[i];
-		button_cache[col].removeClass('inactive').addClass(col);
-		button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
-		$('.loader').hide();
+	public function isAdmin(){
+		$user = $this->loadUser();
+		return intval($user->role) == 1;
 	}
-}
 
-$(document).ready(function() {
-	$('button.auto').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			return true;
+	protected function loadUser() {
+		if($this->_model === null) {
+			$this->_model = User::model()->findByPk(Yii::app()->user->id);
 		}
-		return false;
-	});
-});
+		return $this->_model;
+	}
+	
+}

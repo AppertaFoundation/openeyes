@@ -25,21 +25,19 @@ class TheatreController extends BaseController
 		*/
 	public $layout='//layouts/main';
  
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
-			array('allow',
-				'users'=>array('@')
-			),
-			// non-logged in can't view anything
+			// Level 2 or below can't change anything
 			array('deny',
-				'users'=>array('?')
+				'actions' => array('savesessions', 'printdiary', 'printlist'),
+				'expression' => '!BaseController::checkUserLevel(3)',
 			),
+			// Level 2 or above can do anything else
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(2)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
 
