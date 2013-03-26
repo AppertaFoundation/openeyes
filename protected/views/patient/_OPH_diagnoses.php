@@ -29,7 +29,7 @@
 									<tr>
 										<th width="85px">Date</th>
 										<th>Diagnosis</th>
-										<th>Edit</th>
+										<?php if(BaseController::checkUserLevel(3)) { ?><th>Edit</th><?php } ?>
 									</tr>
 								</thead>
 								<tbody>
@@ -37,12 +37,15 @@
 										<tr>
 											<td><?php echo $diagnosis->dateText?></td>
 											<td><?php echo $diagnosis->eye->adjective?> <?php echo $diagnosis->disorder->term?></td>
+											<?php if(BaseController::checkUserLevel(3)) { ?>
 											<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
+											<?php } ?>
 										</tr>
 									<?php }?>
 								</tbody>
 							</table>
 							
+							<?php if(BaseController::checkUserLevel(3)) { ?>
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_new_ophthalmic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Ophthalmic Diagnosis</span></button></form>
 							</div>
@@ -94,9 +97,11 @@
 	
 								<?php $this->endWidget()?>
 							</div>
+							<?php } ?>
 						</div>
 						
 					</div>
+				<?php if(BaseController::checkUserLevel(3)) { ?>
 				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
 					<div>
 						<div id="delete_diagnosis">
@@ -140,3 +145,4 @@
 	});
 
 	</script>
+<?php } ?>

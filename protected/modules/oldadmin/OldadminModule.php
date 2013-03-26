@@ -16,19 +16,30 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php if (@$htmlOptions['nowrapper']) {?>
-	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-<?php }else{?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="label"><?php echo empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label']?>:</div>
-		<div class="data">
-			<?php if (@$htmlOptions['password']) { ?>
-				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
-			<?php } else {?>
-				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-			<?php } ?>
-			<?php echo @$htmlOptions['append_text']?>
-		</div>
-	</div>
-<?php }?>
+
+class OldadminModule extends CWebModule {
+	
+	public function init() {
+		// this method is called when the module is being created
+		// you may place code here to customize the module or the application
+
+		// import the module-level models and components
+		/*
+		$this->setImport(array(
+			'admin.models.*',
+			'admin.components.*',
+		));
+		*/
+	}
+
+	public function beforeControllerAction($controller, $action) {
+		if(parent::beforeControllerAction($controller, $action)) {
+			// this method is called before any module controller action is performed
+			// you may place customized code here
+			return true;
+		}	else {
+			return false;
+		}
+	}
+	
+}
