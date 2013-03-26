@@ -42,7 +42,7 @@ class AdminController extends BaseController
 	}
 
 	public function actionIndex() {
-		$this->actionUsers();
+		$this->redirect(array('/admin/users'));
 	}
 
 	public function actionUsers($id=false) {
