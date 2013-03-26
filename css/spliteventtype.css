@@ -1,4 +1,3 @@
-<?php
 /**
  * OpenEyes
  *
@@ -16,19 +15,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php if (@$htmlOptions['nowrapper']) {?>
-	<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-<?php }else{?>
-	<div id="div_<?php echo get_class($element)?>_<?php echo $field?>" class="eventDetail" <?php if (@$htmlOptions['hide']) {?> style="display: none;"<?php }?>>
-		<div class="label"><?php echo empty($htmlOptions['label']) ? CHtml::encode($element->getAttributeLabel($field)) : $htmlOptions['label']?>:</div>
-		<div class="data">
-			<?php if (@$htmlOptions['password']) { ?>
-				<?php echo CHtml::passwordField($name, $value, $htmlOptions)?>
-			<?php } else {?>
-				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
-			<?php } ?>
-			<?php echo @$htmlOptions['append_text']?>
-		</div>
-	</div>
-<?php }?>
+
+#event_content .cols2 { padding-bottom: 0 !important; }
+
+#event_content .cols2 .inactive .activeForm,
+#event_content .cols2 .inactiveForm { display: none; }
+#event_content .cols2 .activeForm,
+#event_content .cols2 .inactive .inactiveForm  { display: block; }
+#event_content .cols2 .inactiveForm { margin: 10px 10px 20px; text-align: center; }
+#event_content .cols2 .inactiveForm a { padding-right: 23px; background: url(../../../img/_elements/icons/extra-element_view.png) center right no-repeat; }
+#event_content .cols2 .activeForm a.removeSide { display: block; position: absolute; top: 5px; right: 5px; width: 16px; height: 16px;
+	background: url(../../../img/_elements/icons/extra-element_remove.png) -10px -2px no-repeat; text-decoration: none; text-indent: -9999px; }
+#event_content .cols2 .activeForm a.removeSide:hover { border: none; }
+#event_content .cols2 .activeForm { width: 100% }
+#event_content .cols2 div.label { width: 140px; display: inline; }
+#event_content .cols2 .data { display: inline; }
+ 

@@ -34,21 +34,38 @@ class PatientController extends BaseController
 	public $event_tabs = array();
 	public $event_actions = array();
 	
-	public function filters()
-	{
-		return array('accessControl');
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
 	}
-
-	public function accessRules()
-	{
+	
+	public function accessRules() {
 		return array(
+			// Level 1 can view patient demographics
 			array('allow',
-				'users'=>array('@')
+				'actions' => array('search','view'),
+				'expression' => 'BaseController::checkUserLevel(1)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
+			// Level 2 can't change anything
+			array('allow',
+				'actions' => array('episode','event', 'episodes'),
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
 
@@ -345,7 +362,7 @@ class PatientController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->episode->editable
+		if (BaseController::checkUserLevel(3) && $this->episode->editable
 				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
