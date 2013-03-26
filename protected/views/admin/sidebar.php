@@ -24,7 +24,6 @@
 		<?php }?>
 	</ul>
 </div>
-<?php /*
 <?php foreach (ModuleAdmin::getAll() as $module => $items) {?>
 	<div class="admingroup curvybox">
 		<h4><?php echo $module?></h4>
@@ -43,4 +42,3 @@
 		</ul>
 	</div>
 <?php }?>
-*/?>
