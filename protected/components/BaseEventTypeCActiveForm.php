@@ -55,8 +55,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.TextArea',array_merge(array('element' => $element, 'field' => $field, 'hidden' => $hidden), $options));
 	}
 
-	public function textField($element,$field,$htmlOptions=array()) {
-		$this->widget('application.widgets.TextField',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'htmlOptions' => $htmlOptions));
+	public function textField($element,$field,$htmlOptions=array(),$links=array()) {
+		$this->widget('application.widgets.TextField',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'htmlOptions' => $htmlOptions, 'links' => $links));
 	}
 
 	public function passwordField($element,$field,$htmlOptions=array()) {

@@ -30,7 +30,11 @@
 				'htmlOptions' => array('class'=>'sliding'),
 				'focus'=>'#username'
 			))?>
-			<?php echo $form->textField($user,'username')?>
+			<?php echo $form->textField($user,'username',array(),array(array(
+				'id' => 'lookup_user',
+				'title' => 'Lookup user',
+				'href' => '#',
+			)))?>
 			<?php echo $form->textField($user,'title')?>
 			<?php echo $form->textField($user,'first_name')?>
 			<?php echo $form->textField($user,'last_name')?>
@@ -57,3 +61,8 @@
 	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
 	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 </div>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#User_username').focus();
+	});
+</script>

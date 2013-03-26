@@ -181,4 +181,14 @@ class AdminController extends BaseController
 			'pages' => ceil(count($params['model']::model()->findAll()) / $this->items_per_page),
 		);
 	}
+
+	public function actionLookupUser() {
+		Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
+
+		if ($user = User::model()->find('username=?',array($_GET['username']))) {
+			echo $user->id;
+		} else {
+			echo "NOTFOUND";
+		}
+	}
 }
