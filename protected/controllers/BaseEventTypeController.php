@@ -1002,7 +1002,9 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function processJsVars() {
-		$this->jsVars['OE_patient_id'] = $this->patient->id;
+		if($this->patient) {
+			$this->jsVars['OE_patient_id'] = $this->patient->id;
+		}
 		if ($this->event) {
 			$this->jsVars['OE_event_id'] = $this->event->id;
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
