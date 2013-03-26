@@ -1065,4 +1065,27 @@ class Patient extends BaseActiveRecord {
 	public function getChildPrefix() {
 		return $this->isChild() ? "child's " : "";
 	}
+
+	public function getSdl() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id',$this->id);
+		$criteria->order = 'created_date asc';
+
+		$diagnoses = array();
+
+		foreach (SecondaryDiagnosis::model()->findAll('patient_id=?',array($this->id)) as $i => $sd) {
+			if ($sd->disorder->specialty->code == 'OPH') {
+				$diagnoses[] = strtolower(($sd->eye ? $sd->eye->adjective.' ' : '').$sd->disorder->term);
+			}
+		}
+
+		if (count($diagnoses) >1) {
+			$last = array_pop($diagnoses);
+			return implode(', ',$diagnoses).' and '.$last;
+		}
+
+		if (!empty($diagnoses)) {
+			return array_pop($diagnoses);
+		}
+	}
 }
