@@ -67,22 +67,22 @@
 
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
-				array('label'=>'Home', 'url'=>array('/site/index')),
-				array('label'=>'Users', 'url'=>array('/admin/adminUser/index')),
-				array('label'=>'Firms', 'url'=>array('/admin/adminFirm/index')),
-				array('label'=>'Global phrases', 'url'=>array('/admin/adminPhrase/index')),
-				array('label'=>'Phrases by subspecialty', 'url'=>array('/admin/adminPhraseBySubspecialty/index')),
-				array('label'=>'Phrases by firm', 'url'=>array('/admin/adminPhraseByFirm/index')),
-				array('label'=>'Letter Templates', 'url'=>array('/admin/adminLetterTemplate/index')),
-				array('label'=>'Sequences', 'url'=>array('/admin/adminSequence/index')),
-				array('label'=>'Sessions', 'url'=>array('/admin/adminSession/index')),
+				//array('label'=>'Home', 'url'=>array('/site/index')),
+				//array('label'=>'Users', 'url'=>array('/oldadmin/adminUser/index')),
+				//array('label'=>'Firms', 'url'=>array('/oldadmin/adminFirm/index')),
+				//array('label'=>'Global phrases', 'url'=>array('/oldadmin/adminPhrase/index')),
+				//array('label'=>'Phrases by subspecialty', 'url'=>array('/oldadmin/adminPhraseBySubspecialty/index')),
+				//array('label'=>'Phrases by firm', 'url'=>array('/oldadmin/adminPhraseByFirm/index')),
+				//array('label'=>'Letter Templates', 'url'=>array('/oldadmin/adminLetterTemplate/index')),
+				array('label'=>'Sequences', 'url'=>array('/oldadmin/adminSequence/index')),
+				array('label'=>'Sessions', 'url'=>array('/oldadmin/adminSession/index')),
 				//array('label'=>'Ophthalmic Disorders', 'url'=>array('/admin/adminCommonOphthalmicDisorder/index')),
 				//array('label'=>'Systemic Disorders', 'url'=>array('/admin/adminCommonSystemicDisorder/index')),
 				// Removed because the typical admin shouldn't be able to alter site_element_types. Surely they are the domain of the sysadmin?
 				//array('label'=>'Site Element Types', 'url'=>array('/admin/adminSiteElementType')),
-				array('label'=>'Episode status','url'=>array('/admin/adminEpisodeStatus/index')),
+				//array('label'=>'Episode status','url'=>array('/oldadmin/adminEpisodeStatus/index')),
 				array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
+				//array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest)
 			),
 		)); ?>
 		</div>	<!-- #mainmenu -->

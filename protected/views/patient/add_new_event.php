@@ -23,7 +23,7 @@
 		<h3>Adding New Event</h3>
 		<p><strong>Select event to add:</strong></p>
 		<?php foreach ($eventTypes as $eventType) {
-			if (!$eventType->disabled) {
+			if (!$eventType->disabled && $this->checkEventAccess($eventType)) {
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
 					$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
 				} else {
