@@ -191,5 +191,7 @@ return array(
 			'position' => 9999,
 			),
 		),
+		'admin_menu' => array(
+		),
 	),
 );
