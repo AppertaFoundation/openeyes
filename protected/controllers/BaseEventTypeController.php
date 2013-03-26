@@ -23,7 +23,7 @@ class BaseEventTypeController extends BaseController
 	public $firm;
 	public $patient;
 	public $site;
-	public $editable;
+	public $editable = true;
 	public $editing;
 	public $event;
 	public $event_type;
@@ -385,13 +385,13 @@ class BaseEventTypeController extends BaseController
 		$elements = $this->getDefaultElements('view');
 
 		// Decide whether to display the 'edit' button in the template
-		if (!BaseController::checkUserLevel(3) || !$this->event->episode->firm) {
-			$this->editable = false;
-		} else {	
-			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->editable) {
+			if (!BaseController::checkUserLevel(3) || !$this->event->episode->firm) {
 				$this->editable = false;
-			} else {
-				$this->editable = true;
+			} else {	
+				if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+					$this->editable = false;
+				}
 			}
 		}
 		// Allow elements to override the editable status

@@ -17,6 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <div id="add_event_wrapper">
 	<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
 	<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
@@ -59,3 +60,4 @@
 		$('#add-event-disabled-pop-up').hide();
 	});
 </script>
+<?php } ?>
