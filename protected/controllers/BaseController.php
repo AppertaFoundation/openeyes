@@ -37,7 +37,11 @@ class BaseController extends Controller
 	 * @return boolean
 	 */
 	public static function checkUserLevel($level) {
-		return (Yii::app()->user->access_level >= $level);
+		if($user = Yii::app()->user) {
+			return ($user->access_level >= $level);
+		} else {
+			return false;
+		}
 	}
 	
 	/**
