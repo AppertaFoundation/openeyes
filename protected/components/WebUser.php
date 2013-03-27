@@ -22,13 +22,19 @@ class WebUser extends CWebUser {
 	private $_model;
 
 	public function getAccess_Level(){
-		$user = $this->loadUser();
-		return $user->access_level;
+		if($user = $this->loadUser()) {
+			return $user->access_level;
+		} else {
+			return 0;
+		}
 	}
 
 	public function isAdmin(){
-		$user = $this->loadUser();
-		return intval($user->role) == 1;
+		if($user = $this->loadUser()) {
+			return intval($user->role) == 1;
+		} else {
+			return false;
+		}
 	}
 
 	protected function loadUser() {
