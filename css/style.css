@@ -1059,6 +1059,19 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#2546b1; }
 
+/* aBtn SPRITES 11px */
+.aBtn a.sprite.showhide > span { display:inline-block; width:11px; height:11px; background:transparent url(../../../img/_elements/icons/_sprites/showhide_icon.png) no-repeat top left; }
+.aBtn a.sprite.showhide > .hide { background-position: top left; }
+.aBtn a:hover.sprite.showhide > .hide { background-position: top right; }
+.aBtn a.sprite.showhide > .show { background-position: bottom left; }
+.aBtn a:hover.sprite.showhide > .show { background-position: bottom right; }
+
+.aBtn a.sprite.showhide2 > span { display:inline-block; width:11px; height:11px; background:transparent url(../../../img/_elements/icons/_sprites/showhide_icon.png) no-repeat top left; }
+.aBtn a.sprite.showhide2 > .hide { background-position: top left; }
+.aBtn a:hover.sprite.showhide2 > .hide { background-position: top right; }
+.aBtn a.sprite.showhide2 > .show { background-position: bottom left; }
+.aBtn a:hover.sprite.showhide2 > .show { background-position: bottom right; }
+
 /* EVENT LIST showhide in Event List*/
 .episode_nav a.sprite { display:inline-block; padding:4px 5px 2px 5px; background: #fff; -webkit-border-bottom-left-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-bottomleft: 3px; -moz-border-radius-bottomright: 3px; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
 .episode_nav .aBtn { position:absolute; top:0; right:2px;}
