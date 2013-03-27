@@ -23,7 +23,7 @@
 	$this->header();
 <?php echo "?>\n"?>
 
-<h3 class="withEventIcon" style="background:transparent url(<?php echo '<?php '?>echo $this->assetPath<?php echo '?>'?>/img/medium.png) center left no-repeat;"><?php echo '<?php '?>echo $this->event_type->name <?php echo '?>'?></h3>
+<h3 class="withEventIcon"><?php echo '<?php '?>echo $this->event_type->name <?php echo '?>'?></h3>
 
 <div>
 	<?php echo "<?php\n"?>
@@ -31,8 +31,13 @@
 		'id'=>'clinical-create',
 		'enableAjaxValidation'=>false,
 		'htmlOptions' => array('class'=>'sliding'),
-		'focus'=>'#procedure_id'
-	))<?php echo "?>\n"?>
+	))
+
+	// Event actions
+	$this->event_actions[] = EventAction::button('Save', 'save', array('colour' => 'green'));
+	$this->renderPartial('//patient/event_actions');
+
+	<?php echo "?>\n"?>
 
 	<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
 	<?php echo '<?php'?> $this->renderDefaultElements($this->action->id, $form)<?php echo "?>\n"?>
@@ -40,11 +45,6 @@
 	<?php echo '<?php'?> $this->displayErrors($errors)<?php echo "?>\n"?>
 
 	<div class="cleartall"></div>
-	<div class="form_button">
-		<img class="loader" style="display: none;" src="<?php echo '<?php'?> echo Yii::app()->createUrl('img/ajax-loader.gif')<?php echo '?>'?>" alt="loading..." />&nbsp;
-		<button type="submit" class="classy green venti" id="et_save" name="save"><span class="button-span button-span-green">Save</span></button>
-		<button type="submit" class="classy red venti" id="et_cancel" name="cancel"><span class="button-span button-span-red">Cancel</span></button>
-	</div>
 	<?php echo '<?php'?> $this->endWidget()<?php echo "?>\n"?>
 </div>
 
