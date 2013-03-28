@@ -30,6 +30,7 @@ class BaseController extends Controller
 	public $patientId;
 	public $patientName;
 	public $jsVars = array();
+	protected $css = array();
 
 	/**
 	 * Check to see if user's level is high enough
@@ -82,6 +83,35 @@ class BaseController extends Controller
 	}
 
 	/**
+	 * (Pre)register a CSS file with a priority to allow ordering
+	 * @param string $name
+	 * @param string $path
+	 * @param integer $priority
+	 */
+	public function registerCssFile($name, $path, $priority = 100) {
+		$this->css[$name] = array(
+				'path' => $path,
+				'priority' => $priority,
+		);
+	}
+	
+	/**
+	 * Registers all CSS file that were preregistered by priority
+	 */
+	protected function registerCssFiles() {
+		$css_array = array();
+		foreach($this->css as $css_item) {
+			$css_array[$css_item['path']] = $css_item['priority'];
+		}
+		arsort($css_array);
+		Yii::log(var_export($css_array,true), 'trace');
+		$clientscript = Yii::app()->clientScript;
+		foreach($css_array as $path => $priority) {
+			$clientscript->registerCssFile($path);
+		}
+	} 
+	
+	/**
 	 * List of actions for which the style.css file should _not_ be included
 	 * @return array:
 	 */
@@ -93,7 +123,7 @@ class BaseController extends Controller
 		
 		// Register base style.css unless it's a print action
 		if(!in_array($action->id,$this->printActions())) {
-			Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('/css/style.css'));
+			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 		}
 		
 		$app = Yii::app();
@@ -120,6 +150,8 @@ class BaseController extends Controller
 			$this->patientName = $app->session['patient_name'];
 		}
 
+		$this->registerCssFiles();
+		
 		return parent::beforeAction($action);
 	}
 

@@ -25,7 +25,7 @@
 #event_content .cols2 .inactiveForm { margin: 10px 10px 20px; text-align: center; }
 #event_content .cols2 .inactiveForm a { padding-right: 23px; background: url(../../../img/_elements/icons/extra-element_view.png) center right no-repeat; }
 #event_content .cols2 .activeForm a.removeSide { display: block; position: absolute; top: 5px; right: 5px; width: 16px; height: 16px;
-	background: url(../../../img/_elements/icons/extra-element_remove.png) -10px -2px no-repeat; text-decoration: none; text-indent: -9999px; }
+	background: url(../../../img/_elements/icons/event-optional/element-remove.png) -10px -2px no-repeat; text-decoration: none; text-indent: -9999px; }
 #event_content .cols2 .activeForm a.removeSide:hover { border: none; }
 #event_content .cols2 .activeForm { width: 100% }
 #event_content .cols2 div.label { width: 140px; display: inline; }

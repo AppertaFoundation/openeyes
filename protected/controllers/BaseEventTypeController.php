@@ -87,9 +87,6 @@ class BaseEventTypeController extends BaseController
 	
 	protected function beforeAction($action) {
 		
-		// Need to initialise base CSS first
-		$parent_return = parent::beforeAction($action);
-		
 		// Set asset path
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
 			$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
@@ -102,7 +99,7 @@ class BaseEventTypeController extends BaseController
 				
 				// Register print css
 				if(file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
-					Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/print.css');
+					$this->registerCssFile('module-print.css', $this->assetPath.'/css/print.css');
 				}
 
 			} else {
@@ -125,7 +122,7 @@ class BaseEventTypeController extends BaseController
 						if (preg_match('/\.css$/',$file)) {
 							if ($file != 'print.css') {
 								// Skip print.css as it's /only/ for print layouts
-								Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+								$this->registerCssFile('module-'.$file, $this->assetPath.'/css/'.$file, 10);
 							}
 						}
 					}
@@ -159,7 +156,7 @@ class BaseEventTypeController extends BaseController
 			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
-		return $parent_return;
+		return parent::beforeAction($action);;
 	}
 
 	/**

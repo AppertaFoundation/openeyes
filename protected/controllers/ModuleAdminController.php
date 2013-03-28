@@ -27,7 +27,7 @@ class ModuleAdminController extends BaseController
 	protected function beforeAction($action) {
 		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
 		Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
-		Yii::app()->clientScript->registerCssFile($this->assetPath.'/css/module.css');
+		$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
 	
 		return parent::beforeAction($action);
 	}
