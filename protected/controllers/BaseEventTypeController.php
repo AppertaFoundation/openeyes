@@ -23,7 +23,7 @@ class BaseEventTypeController extends BaseController
 	public $firm;
 	public $patient;
 	public $site;
-	public $editable;
+	public $editable = true;
 	public $editing;
 	public $event;
 	public $event_type;
@@ -39,6 +39,43 @@ class BaseEventTypeController extends BaseController
 	public $js = array();
 	public $jsVars = array();
 
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
+	}
+	
+	public function accessRules() {
+		return array(
+			// Level 2 can't change anything
+			array('allow',
+				'actions' => array('view'),
+				'expression' => 'BaseController::checkUserLevel(2)',
+			),
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			array('deny'),
+		);
+	}
+	
+	/**
+	 * Whether the current user is allowed to call print actions
+	 * @return boolean
+	 */
+	public function canPrint() {
+		return BaseController::checkUserLevel(3);
+	}
+	
 	public function actionIndex()
 	{
 		$this->render('index');
@@ -49,9 +86,6 @@ class BaseEventTypeController extends BaseController
 	}
 	
 	protected function beforeAction($action) {
-
-		// Need to initialise base CSS first
-		$parent_return = parent::beforeAction($action);
 		
 		// Set asset path
 		if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'))) {
@@ -65,7 +99,7 @@ class BaseEventTypeController extends BaseController
 				
 				// Register print css
 				if(file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
-					Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/print.css');
+					$this->registerCssFile('module-print.css', $this->assetPath.'/css/print.css');
 				}
 
 			} else {
@@ -88,7 +122,7 @@ class BaseEventTypeController extends BaseController
 						if (preg_match('/\.css$/',$file)) {
 							if ($file != 'print.css') {
 								// Skip print.css as it's /only/ for print layouts
-								Yii::app()->getClientScript()->registerCssFile($this->assetPath.'/css/'.$file);
+								$this->registerCssFile('module-'.$file, $this->assetPath.'/css/'.$file, 10);
 							}
 						}
 					}
@@ -122,7 +156,7 @@ class BaseEventTypeController extends BaseController
 			Yii::app()->clientScript->scriptMap = $scriptMap;
 		}
 
-		return $parent_return;
+		return parent::beforeAction($action);;
 	}
 
 	/**
@@ -348,13 +382,13 @@ class BaseEventTypeController extends BaseController
 		$elements = $this->getDefaultElements('view');
 
 		// Decide whether to display the 'edit' button in the template
-		if (!$this->event->episode->firm) {
-			$this->editable = false;
-		} else {	
-			if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->editable) {
+			if (!BaseController::checkUserLevel(3) || !$this->event->episode->firm) {
 				$this->editable = false;
-			} else {
-				$this->editable = true;
+			} else {	
+				if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+					$this->editable = false;
+				}
 			}
 		}
 		// Allow elements to override the editable status
@@ -965,7 +999,9 @@ class BaseEventTypeController extends BaseController
 	}
 
 	public function processJsVars() {
-		$this->jsVars['OE_patient_id'] = $this->patient->id;
+		if($this->patient) {
+			$this->jsVars['OE_patient_id'] = $this->patient->id;
+		}
 		if ($this->event) {
 			$this->jsVars['OE_event_id'] = $this->event->id;
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);

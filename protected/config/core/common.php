@@ -51,6 +51,7 @@ return array(
 			'password' => 'openeyes',
 			'ipFilters'=> array('*')
 		),
+		'oldadmin',
 	),
 
 	// Application components
@@ -66,6 +67,7 @@ return array(
 			'observers' => array(),
 		),
 		'user' => array(
+			'class' => 'WebUser',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
@@ -154,6 +156,8 @@ return array(
 		'ldap_dn' => '',
 		'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
 		'ldap_native_timeout' => 3,
+		'ldap_info_retries' => 3,
+		'ldap_info_retry_delay' => 1,
 		'environment' => 'dev',
 		'audit_trail' => false,
 		'watermark' => '',
@@ -186,6 +190,8 @@ return array(
 			'uri' => 'site/logout',
 			'position' => 9999,
 			),
+		),
+		'admin_menu' => array(
 		),
 	),
 );

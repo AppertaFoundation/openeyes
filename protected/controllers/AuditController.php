@@ -26,21 +26,14 @@ class AuditController extends BaseController
 	public $layout='//layouts/main';
 	public $items_per_page = 100;
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
+			// Level 2 or above can do anything
 			array('allow',
-				'users'=>array('@')
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
 

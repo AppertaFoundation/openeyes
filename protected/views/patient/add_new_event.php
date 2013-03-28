@@ -17,13 +17,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <div id="add_event_wrapper">
 	<button tabindex="2" class="classy venti green" id="addNewEvent" type="submit" style="float: right; margin-right: 1px;"><span class="button-span button-span-green with-plussign">add new Event</span></button>
 	<div id="add-event-select-type" class="whiteBox addEvent clearfix" style="display: none;">
 		<h3>Adding New Event</h3>
 		<p><strong>Select event to add:</strong></p>
 		<?php foreach ($eventTypes as $eventType) {
-			if (!$eventType->disabled) {
+			if (!$eventType->disabled && $this->checkEventAccess($eventType)) {
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img'))) {
 					$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$eventType->class_name.'.assets.img').'/').'/';
 				} else {
@@ -59,3 +60,4 @@
 		$('#add-event-disabled-pop-up').hide();
 	});
 </script>
+<?php } ?>

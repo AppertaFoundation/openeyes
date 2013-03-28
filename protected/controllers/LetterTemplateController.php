@@ -22,6 +22,22 @@ class LetterTemplateController extends BaseController
 	public $layout = '//layouts/patientMode/column2';
 	public $firm;
 
+	public function accessRules() {
+		return array(
+			// Level 2 can't change anything
+			array('allow',
+				'actions' => array('index','view'),
+				'expression' => 'BaseController::checkUserLevel(2)',
+			),
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
+		);
+	}
+		
 	protected function beforeAction($action)
 	{
 		// Only internal consultants are allowed to use this page

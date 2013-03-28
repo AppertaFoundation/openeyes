@@ -28,6 +28,19 @@
 				'pages' => $users['pages'],
 			))?>
 		</div>
+		<div class="search">
+			<?php
+			$form = $this->beginWidget('BaseEventTypeCActiveForm',array(
+				'id' => 'searchform',
+				'enableAjaxValidation' => false,
+				'htmlOptions' => array('class'=>'sliding'),
+				'focus' => '#search',
+				'action' => Yii::app()->createUrl('/admin/users'),
+			))?>
+				<span>Search:</span>
+				<input type="text" name="search" id="search" value="<?php echo strip_tags(@$_POST['search'])?>" />
+			<?php $this->endWidget()?>
+		</div>
 		<div>
 			<form id="admin_users">
 				<ul class="grid reduceheight">
@@ -40,7 +53,7 @@
 						<span class="column_title">Title</span>
 						<span class="column_firstname">First name</span>
 						<span class="column_lastname">Last name</span>
-						<span class="column_role">Role</span>
+						<span class="column_role">Access level</span>
 						<span class="column_doctor">Doctor</span>
 						<span class="column_active">Active</span>
 					</li>
@@ -56,7 +69,7 @@
 								<span class="column_title"><?php echo $user->title?>&nbsp;</span>
 								<span class="column_firstname"><?php echo $user->first_name?></span>
 								<span class="column_lastname"><?php echo $user->last_name?></span>
-								<span class="column_role"><?php echo $user->role?>&nbsp;</span>
+								<span class="column_role"><?php echo $user->accesslevelstring?>&nbsp;</span>
 								<span class="column_doctor"><?php echo $user->is_doctor ? 'Yes' : 'No'?></span>
 								<span class="column_active"><?php echo $user->active ? 'Yes' : 'No'?></span>
 							</li>

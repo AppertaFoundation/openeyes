@@ -29,17 +29,15 @@
 
 class NestedElementsEventTypeController extends BaseEventTypeController {
 	
-	protected function beforeAction($action)
-	{
-		$res = parent::beforeAction($action);
+	protected function beforeAction($action) {
 		
 		if (!Yii::app()->getRequest()->getIsAjaxRequest() && !(in_array($action->id,$this->printActions())) ) {
 			Yii::app()->getClientScript()->registerScript('nestedElementJS', 'var moduleName = "' . $this->getModule()->name . '";', CClientScript::POS_HEAD);
-			Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('css/nested_elements.css'));
+			$this->registerCssFile('nested_elements.css', Yii::app()->createUrl('css/nested_elements.css'));
 			Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('js/nested_elements.js'));
 		}
 		
-		return $res;
+		return parent::beforeAction($action);
 	}
 	
 	/*

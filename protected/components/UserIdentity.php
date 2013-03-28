@@ -58,7 +58,7 @@ class UserIdentity extends CUserIdentity
 			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
-		} else if($user->active != 1) {
+		} else if($user->active != 1 || $user->access_level == 0) {
 			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
@@ -149,8 +149,18 @@ class UserIdentity extends CUserIdentity
 					return false;
 				}
 
-				$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
-				$info = ldap_get_entries($link, $sr);
+				$attempts = isset(Yii::app()->params['ldap_info_retries']) ? Yii::app()->params['ldap_info_retries'] : 1;
+
+				for ($i=0; $i<$attempts; $i++) {
+					if ($i >0 && isset(Yii::app()->params['ldap_info_retry_delay'])) {
+						sleep(Yii::app()->params['ldap_info_retry_delay']);
+					}
+					$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
+					$info = ldap_get_entries($link, $sr);
+
+					if (isset($info[0])) break;
+				}
+
 				if (!isset($info[0])) {
 					throw new Exception("Failed to retrieve ldap info for user $user->username: ".ldap_error($link)." [".print_r($info,true)."]");
 				}

@@ -120,6 +120,10 @@ class Helper {
 		}
 		return $age;
 	}
+
+	public static function getMonthText($month, $long=false) {
+		return date($long?'F':'M',mktime(0,0,0,$month,1,date('Y')));
+	}
 	
 	/**
 	 * generate string representation of a fuzzy date (fuzzy dates are strings of the format 
@@ -169,5 +173,4 @@ class Helper {
 			case 7: return 'Sunday';
 		}
 	}
-	
 }

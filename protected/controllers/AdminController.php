@@ -21,29 +21,16 @@ class AdminController extends BaseController
 {
 	public $layout = 'admin';
 	public $items_per_page = 30;
-	public $jsVars = array();
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
-			array('allow',
-				'users'=>array('@'),
-			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+			array('deny'),
 		);
 	}
 
 	protected function beforeAction($action) {
-		Yii::app()->clientScript->registerCssFile("/css/admin.css");
-		Yii::app()->clientScript->registerScriptFile("/js/admin.js");
+		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 
@@ -51,7 +38,7 @@ class AdminController extends BaseController
 	}
 
 	public function actionIndex() {
-		$this->render('/admin/index');
+		$this->redirect(array('/admin/users'));
 	}
 
 	public function actionUsers($id=false) {
@@ -123,6 +110,45 @@ class AdminController extends BaseController
 		));
 	}
 
+	public function actionFirms($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		$this->render('/admin/firms',array(
+			'firms' => $this->getItems(array(
+				'model' => 'Firm',
+				'page' => $page,
+			)),
+		));
+	}
+
+	public function actionEditFirm($id) {
+		if (!$firm= Firm::model()->findByPk($id)) {
+			throw new Exception("Firm not found: $id");
+		}
+
+		if (!empty($_POST)) {
+			$firm->attributes = $_POST['Firm'];
+
+			if (!$firm->validate()) {
+				$errors = $firm->getErrors();
+			} else {
+				if (!$firm->save()) {
+					throw new Exception("Unable to save firm: ".print_r($firm->getErrors(),true));
+				}
+				$this->redirect('/admin/firms/'.ceil($firm->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editfirm',array(
+			'firm' => $firm,
+			'errors' => @$errors,
+		));
+	}
+
 	public function getItems($params) {
 		$pages = ceil(count($params['model']::model()->findAll()) / $this->items_per_page);
 
@@ -139,6 +165,13 @@ class AdminController extends BaseController
 		$criteria->offset = ($page-1) * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
+
+		if (!empty($_REQUEST['search'])) {
+			$criteria->addSearchCondition("username",$_REQUEST['search'],true,'OR');
+			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
+			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
+		}
+		
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
 			'page' => $page,

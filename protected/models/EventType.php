@@ -91,7 +91,7 @@ class EventType extends BaseActiveRecord
 
 		$criteria = new CDbCriteria;
 		$criteria->condition = "class_name in ('".implode("','",array_keys(Yii::app()->getModules()))."') and event_group_id != $legacy_events->id";
-		$criteria->order = "class_name asc";
+		$criteria->order = "name asc";
 		return EventType::model()->findAll($criteria);
 	}
 	/**

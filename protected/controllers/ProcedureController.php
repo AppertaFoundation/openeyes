@@ -17,28 +17,21 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProcedureController extends Controller
+class ProcedureController extends BaseController
 {
 	public $layout='column2';
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
-	public function accessRules()
-	{
+	public function accessRules() {
 		return array(
+			// Level 2 or above can do anything
 			array('allow',
-				'users'=>array('@')
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
-			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
-
+	
 	protected function beforeAction($action)
 	{
 		// Sample code to be used when RBAC is fully implemented.

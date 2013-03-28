@@ -44,38 +44,13 @@ class SiteController extends BaseController
 		);
 	}
 
-	public function filters()
-	{
-		return array('accessControl');
-	}
-
 	public function accessRules()
 	{
 		return array(
-			// non-logged in can't view index or logout
-			array('deny',
-				'actions'=>array('index', 'logout'),
+			// Allow unauthenticated users to view certain pages
+			array('allow',
+				'actions'=>array('error', 'login', 'debuginfo'),
 				'users'=>array('?')
-			),
-			// everyone can view errors
-			array('allow',
-				'actions'=>array('error'),
-				'users'=>array('*')
-			),
-			// non-logged in can view login
-			array('allow',
-				'actions'=>array('login'),
-				'users'=>array('?')
-			),
-			// non-logged in can view debug info
-			array('allow',
-				'actions'=>array('debuginfo'),
-				'users'=>array('?')
-			),
-			// logged in can view logout
-			array('allow',
-				'actions'=>array('logout'),
-				'users'=>array('@')
 			),
 		);
 	}
@@ -167,14 +142,12 @@ class SiteController extends BaseController
 				echo $error['message'];
 			} else {
 				$error_code = (int) $error['code'];
+				/*
 				if ($error_code == 403) {
 					$this->redirect(Yii::app()->baseUrl.'/');
 					Yii::app()->exit();
 				}
-				if($error_code != 404) {
-					//error_log("URI: ".@$_SERVER['REQUEST_URI']);
-					//error_log("PHP Fatal error:  Uncaught exception '".@$error['type']."' with message '".@$error['message']."' in ".@$error['file'].":".@$error['line']."\nStack trace:\n".@$error['trace']);
-				}
+				*/
 				if(($view = $this->getViewFile('/error/error'.$error_code)) !== false) {
 					$this->render('/error/error'.$error_code, $error);
 				} else {
