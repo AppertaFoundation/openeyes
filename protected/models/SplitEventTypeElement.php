@@ -18,7 +18,11 @@
  */
 
 class SplitEventTypeElement extends BaseEventTypeElement {
-
+	
+	//used as data flags for indicating left and right in any models related to a SplitEventTypeElement
+	const LEFT = 0;
+	const RIGHT = 1;
+	
 	public function hasLeft() {
 		return $this->eye && $this->eye->name != 'Right';
 	}
