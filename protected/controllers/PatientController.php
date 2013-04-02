@@ -51,7 +51,7 @@ class PatientController extends BaseController
 		return array(
 			// Level 1 can view patient demographics
 			array('allow',
-				'actions' => array('search','view'),
+				'actions' => array('search','view','hideepisode','showepisode'),
 				'expression' => 'BaseController::checkUserLevel(1)',
 			),
 			// Level 2 can't change anything
