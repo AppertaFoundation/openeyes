@@ -24,7 +24,15 @@
 		
 	<?php foreach ($data as $id => $data_value) {?>
 		<span class="group">
-			<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
+			<?php 
+				$options = array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id);
+				
+				if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+					foreach ($htmlOptions['options'][$id] as $k => $v) {
+						$options[$k] = $v;
+					}
+				}	
+		 	echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options)?>
 			<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>
 		</span>
 		<?php
@@ -56,7 +64,17 @@
 			<?php }?>
 			<?php foreach ($data as $id => $data_value) {?>
 				<span class="group">
-					<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
+					<?php 
+						$options = array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id);
+						
+						if (@$htmlOptions['options'] && array_key_exists($id, @$htmlOptions['options'])) {
+							foreach ($htmlOptions['options'][$id] as $k => $v) {
+								$options[$k] = $v;
+							}
+						}
+							 
+						echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), $options);
+					?>
 					<label for="<?php echo get_class($element)?>_<?php echo $field?>_<?php echo $id?>"><?php echo $data_value?></label>
 				</span>
 				<?php
