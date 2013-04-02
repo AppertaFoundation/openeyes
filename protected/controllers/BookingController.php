@@ -378,23 +378,24 @@ class BookingController extends BaseController
 				return;
 			}
 
+			/*
+			 * currently not in use, but if we want to allow a checkbox for
+			 * booking into an observational ward, it would be handled here
+
 			if (!empty($_POST['wardType'])) {
-				/* currently not in use, but if we want to allow a checkbox for
-				 * booking into an observational ward, it would be handled here
-				 */
 				$observationWard = Ward::model()->findByAttributes(
 					array('site_id' => $session->theatre->site_id,
 						'restriction' => Ward::RESTRICTION_OBSERVATION));
 				if (!empty($observationWard)) {
 					$model->ward_id = $observationWard->id;
 				} else {
-					$wards = $operation->getWardOptions(
-						$session->theatre->site_id, $session->theatre_id);
+					$wards = $operation->getWardOptions($session);
 					$model->ward_id = key($wards);
 				}
-			} elseif (!empty($operation) && !empty($session)) {
-				$wards = $operation->getWardOptions(
-					$session->theatre->site_id, $session->theatre_id);
+			} elseif(!empty($operation) && !empty($session)) {
+			*/
+			if (!empty($operation) && !empty($session)) {
+				$wards = $operation->getWardOptions($session);
 				$model->ward_id = key($wards);
 			}
 
@@ -521,8 +522,7 @@ class BookingController extends BaseController
 
 					$new_session = Session::Model()->findByPk($model->session_id);
 
-					$wards = $operation->getWardOptions(
-						$new_session->theatre->site_id, $new_session->theatre_id);
+					$wards = $operation->getWardOptions($new_session);
 					$model->ward_id = key($wards);
 
 					if (!$model->save()) {

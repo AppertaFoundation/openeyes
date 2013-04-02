@@ -621,14 +621,25 @@ class ElementOperation extends BaseEventTypeElement
 		return $text;
 	}
 
-	public function getWardOptions($siteId, $theatreId = null)
+	public function getWardOptions($session)
 	{
-		if (empty($siteId)) {
-			throw new Exception('Site id is required.');
+		if (!$session || !$session->id) {
+			throw new Exception('Session is required.');
 		}
+		
+		$siteId = $session->theatre->site_id;
+		$theatreId = $session->theatre_id;
+		
 		$results = array();
-		// if we have a theatre id, see if it has an associated ward
-		if (!empty($theatreId)) {
+		
+		// TEMPORARY FIX FOR THEATRE 9 MAINTAINANCE (USING CL4 INSTEAD)
+		if($session->theatre->code == 'CR9'
+				&& strtotime($session->date) >= strtotime('2013-04-08')
+				&& strtotime($session->date) <= strtotime('2013-06-02')
+				&& $ward = Ward::model()->find('code = ?', array('CL4'))) {
+			$results[$ward->id] = $ward->name;
+		} else if (!empty($theatreId)) {
+			// if we have a theatre id, see if it has an associated ward
 			$ward = Yii::app()->db->createCommand()
 				->select('t.ward_id AS id, w.name')
 				->from('theatre_ward_assignment t')
