@@ -248,7 +248,7 @@ class BaseController extends Controller
 	public function processJsVars() {
 		foreach ($this->jsVars as $key => $value) {
 			$value = CJavaScript::encode($value);
-			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_READY);
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_HEAD);
 		}
 	}
 }
