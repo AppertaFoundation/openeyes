@@ -35,10 +35,12 @@ class ProcedureSelection extends BaseCWidget {
 	public $headertext;
 	public $read_only = false;
 	public $restrict = false;
+	public $callback = false;
+	public $layout = false;
 
 	public function run() {
 		if (empty($_POST)) {
-			if (!$this->selected_procedures) {
+			if (!$this->selected_procedures && $this->element) {
 				$this->selected_procedures = $this->element->{$this->relation};
 				if ($this->durations) {
 					$this->total_duration = $this->element->total_duration;
@@ -104,6 +106,13 @@ class ProcedureSelection extends BaseCWidget {
 		} else {
 			$this->render(get_class($this));
 		}
+	}
+
+	public function render($view, $data=null, $return=false) {
+		if ($this->layout) {
+			$view .= '_'.$this->layout;
+		}
+		parent::render($view, $data, $return);
 	}
 }
 ?>
