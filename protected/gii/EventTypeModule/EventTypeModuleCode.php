@@ -1408,7 +1408,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Checkbox':
 				return '		<tr>
 			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
 		</tr>';
 			case 'Radio buttons':
 				return '		<tr>
