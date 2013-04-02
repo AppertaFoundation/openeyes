@@ -18,6 +18,10 @@
  */
 ?>
 <?php if (@$htmlOptions['nowrapper']) {?>
+	<?php if (!$no_element) {?>
+		<input type="hidden" value="" name="<?php echo get_class($element)?>[<?php echo $field?>]">
+	<?php }?>
+		
 	<?php foreach ($data as $id => $data_value) {?>
 		<span class="group">
 			<?php echo CHtml::radioButton($name, (!is_null($value) && $value == $id) && (!is_string($value) || $value!=""), array('value' => $id, "id" => get_class($element). '_' . $field . '_' . $id))?>
