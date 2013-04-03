@@ -61,7 +61,7 @@
 										Side:
 									</div>
 									<div class="data">
-										<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+										<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;'))?>
 									</div>
 								</div>
 
