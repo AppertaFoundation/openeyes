@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -34,21 +34,38 @@ class PatientController extends BaseController
 	public $event_tabs = array();
 	public $event_actions = array();
 	
-	public function filters()
-	{
-		return array('accessControl');
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
 	}
-
-	public function accessRules()
-	{
+	
+	public function accessRules() {
 		return array(
+			// Level 1 can view patient demographics
 			array('allow',
-				'users'=>array('@')
+				'actions' => array('search','view','hideepisode','showepisode'),
+				'expression' => 'BaseController::checkUserLevel(1)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
+			// Level 2 can't change anything
+			array('allow',
+				'actions' => array('episode','event', 'episodes'),
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
 
@@ -345,7 +362,7 @@ class PatientController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->episode->editable
+		if (BaseController::checkUserLevel(3) && $this->episode->editable
 				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',

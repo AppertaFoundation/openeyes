@@ -1,4 +1,21 @@
 <?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
 
 return array(
 	'name' => 'OpenEyes',
@@ -34,7 +51,7 @@ return array(
 			'password' => 'openeyes',
 			'ipFilters'=> array('*')
 		),
-		'admin',
+		'oldadmin',
 	),
 
 	// Application components
@@ -50,6 +67,7 @@ return array(
 			'observers' => array(),
 		),
 		'user' => array(
+			'class' => 'WebUser',
 			// Enable cookie-based authentication
 			'allowAutoLogin' => true,
 		),
@@ -138,6 +156,8 @@ return array(
 		'ldap_dn' => '',
 		'ldap_method' => 'native', // use 'zend' for the Zend_Ldap vendor module
 		'ldap_native_timeout' => 3,
+		'ldap_info_retries' => 3,
+		'ldap_info_retry_delay' => 1,
 		'environment' => 'dev',
 		'audit_trail' => false,
 		'watermark' => '',
@@ -153,7 +173,10 @@ return array(
 		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'default_site_code' => '',
 		'erod_lead_time_weeks' => 3,
+		// specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
 		'specialty_codes' => array(),
+		// specifies the order in which different specialties are laid out (use specialty codes)
+		'specialty_sort' => array(),
 		'hos_num_regex' => '/^([0-9]{1,9})$/',
 		'pad_hos_num' => '%07s',
 		'menu_bar_items' => array(
@@ -167,6 +190,8 @@ return array(
 			'uri' => 'site/logout',
 			'position' => 9999,
 			),
+		),
+		'admin_menu' => array(
 		),
 	),
 );

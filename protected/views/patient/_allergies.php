@@ -1,3 +1,22 @@
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+?>
 <div class="whiteBox forClinicians" id="patient_allergies">
 	<div class="patient_actions">
 		<span class="aBtn"><a class="sprite showhide" href="#"><span
@@ -10,26 +29,31 @@
 			<thead>
 				<tr>
 					<th width="80%">Allergies</th>
-					<th>Edit</th>
+					<?php if(BaseController::checkUserLevel(3)) { ?><th>Edit</th><?php } ?>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach($this->patient->allergies as $allergy) { ?>
 				<tr data-allergy-id="<?php echo $allergy->id ?>">
 					<td><?php echo $allergy->name ?></td>
+					<?php if(BaseController::checkUserLevel(3)) { ?>
 					<td><a href="#" class="small removeAllergy"><strong>Remove</strong>
+					<?php } ?>
 					</a></td>
 				</tr>
 				<?php } ?>
 			</tbody>
 		</table>
+		<?php if(BaseController::checkUserLevel(3)) { ?>
 		<div id="add_new_allergy">
 			Add Allergy:
 			<?php echo CHtml::dropDownList('allergy_id', null, CHtml::listData($this->allergyList(), 'id', 'name'), array('empty' => '-- Select --'));?>
 			<button id="btn_add_allergy" class="classy green mini" type="button"><span class="button-span button-span-green">Add</span></button>
 		</div>
+		<?php } ?>
 	</div>
 </div>
+<?php if(BaseController::checkUserLevel(3)) { ?>
 <div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
 	<div>
 		<div id="delete_allergy">
@@ -109,3 +133,4 @@
 		return false;
 	});
 </script>
+<?php } ?>

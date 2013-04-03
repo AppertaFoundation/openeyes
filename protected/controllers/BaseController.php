@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -29,34 +29,88 @@ class BaseController extends Controller
 	public $showForm = false;
 	public $patientId;
 	public $patientName;
+	public $jsVars = array();
+	protected $css = array();
 
 	/**
-	 * Default all access rule filters to a deny-basis to prevent accidental
-	 * allowing of actions that don't have access rules defined yet
-	 *
-	 * @param $filterChain
-	 * @return type
+	 * Check to see if user's level is high enough
+	 * @param integer $level
+	 * @return boolean
 	 */
-	public function filterAccessControl($filterChain)
-	{
-		$rules = $this->accessRules();
-
-		if (Yii::app()->params['ab_testing']) {
-			$rules = array(
-				array('allow',
-					'users'=>array('@','?')
-				)
-			);
+	public static function checkUserLevel($level) {
+		if($user = Yii::app()->user) {
+			return ($user->access_level >= $level);
 		} else {
-			// default deny
-			$rules[] = array('deny', 'users'=>array('?'));
+			return false;
 		}
-
+	}
+	
+	/**
+	 * Set default rules to block everyone apart from admin
+	 * These should be overridden in child classes
+	 * @return array
+	 */
+	public function filters() {
+		return array('accessControl');
+	}
+	public function accessRules() {
+		return array(
+			array('allow',
+				'roles'=>array('admin'),
+			),
+			// Deny everyone else (this is important to add when overriding as otherwise
+			// any authenticated user may fall through and be allowed)
+			array('deny'),
+		);
+	}
+	
+	public function filterAccessControl($filterChain) {
 		$filter = new CAccessControlFilter;
-		$filter->setRules($rules);
+		$filter->setRules($this->compileAccessRules());
 		$filter->filter($filterChain);
 	}
+	
+	protected function compileAccessRules() {
+		// Always allow admin
+		$admin_rule = array('allow', 'roles' => array('admin'));
+		
+		// Always deny unauthenticated users in case rules fall through
+		// Maybe we should change this to deny everyone for safety
+		$default_rule = array('deny', 'users' => array('?'));
+		
+		// Merge rules defined by controller
+		return array_merge(array($admin_rule), $this->accessRules(), array($default_rule));
+	}
 
+	/**
+	 * (Pre)register a CSS file with a priority to allow ordering
+	 * @param string $name
+	 * @param string $path
+	 * @param integer $priority
+	 */
+	public function registerCssFile($name, $path, $priority = 100) {
+		$this->css[$name] = array(
+				'path' => $path,
+				'priority' => $priority,
+		);
+	}
+	
+	/**
+	 * Registers all CSS file that were preregistered by priority
+	 */
+	protected function registerCssFiles() {
+		$css_array = array();
+		foreach($this->css as $css_item) {
+			$css_array[$css_item['path']] = $css_item['priority'];
+		}
+		arsort($css_array);
+		Yii::log(var_export($css_array,true), 'trace');
+		$clientscript = Yii::app()->clientScript;
+		foreach($css_array as $path => $priority) {
+			$clientscript->registerCssFile($path);
+		}
+	} 
+	
 	/**
 	 * List of actions for which the style.css file should _not_ be included
 	 * @return array:
@@ -69,7 +123,7 @@ class BaseController extends Controller
 		
 		// Register base style.css unless it's a print action
 		if(!in_array($action->id,$this->printActions())) {
-			Yii::app()->getClientScript()->registerCssFile(Yii::app()->createUrl('/css/style.css'));
+			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 		}
 		
 		$app = Yii::app();
@@ -96,6 +150,8 @@ class BaseController extends Controller
 			$this->patientName = $app->session['patient_name'];
 		}
 
+		$this->registerCssFiles();
+		
 		return parent::beforeAction($action);
 	}
 
@@ -183,5 +239,16 @@ class BaseController extends Controller
 
 		Yii::log($message . ' from ' . $addr, "user", "userActivity");
 	}
-	
+
+	protected function beforeRender($view) {
+		$this->processJsVars();
+		return parent::beforeRender($view);
+	}
+
+	public function processJsVars() {
+		foreach ($this->jsVars as $key => $value) {
+			$value = CJavaScript::encode($value);
+			Yii::app()->getClientScript()->registerScript('scr_'.$key, "$key = $value;",CClientScript::POS_HEAD);
+		}
+	}
 }

@@ -803,15 +803,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		switch ($field['type']) {
 			case 'Textbox':
 				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
-				return "varchar($size) DEFAULT \'\'";
+				return "varchar($size) COLLATE utf8_bin DEFAULT \'\'";
 			case 'Textarea':
-				return "text DEFAULT \'\'";
+				return "text COLLATE utf8_bin DEFAULT \'\'";
 			case 'Date picker':
 				return "date DEFAULT NULL";
 			case 'Dropdown list':
 				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
 			case 'Textarea with dropdown':
-				return "text NOT NULL";
+				return "text COLLATE utf8_bin NOT NULL";
 			case 'Checkbox':
 				return "tinyint(1) unsigned NOT NULL";
 			case 'Radio buttons':

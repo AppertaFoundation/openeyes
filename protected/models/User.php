@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -65,6 +65,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -72,14 +73,13 @@ class User extends BaseActiveRecord
 				$commonRules,
 				array(
 					array('username', 'match', 'pattern' => '/^[\w|_]+$/', 'message' => 'Only letters, numbers and underscores are allowed for usernames.'),
-					array('username, password, password_repeat, email, first_name, last_name, active, global_firm_rights', 'required'),
+					array('username, email, first_name, last_name, active, global_firm_rights', 'required'),
 					array('username, password, first_name, last_name', 'length', 'max' => 40),
-					array('password', 'length', 'min' => 6, 'message' => 'Passwords must be at least 6 characters long.'),
+					array('password', 'length', 'min' => 5, 'message' => 'Passwords must be at least 6 characters long.'),
 					array('email', 'length', 'max' => 80),
 					array('email', 'email'),
 					array('salt', 'length', 'max' => 10),
 					// Added for password comparison functionality
-					array('password', 'compare'),
 					array('password_repeat', 'safe'),
 				)
 			);
@@ -88,7 +88,8 @@ class User extends BaseActiveRecord
 				$commonRules,
 				array(
 					array('username, active, global_firm_rights', 'required'),
-					array('username', 'length', 'max' => 40)
+					array('username', 'length', 'max' => 40),
+					array('password_repeat', 'safe'),
 				)
 			);
 		} else {
@@ -168,7 +169,7 @@ class User extends BaseActiveRecord
 			/**
 			 * AUTH_BASIC requires creation of a salt. AUTH_LDAP doesn't.
 			 */
-			if ($this->getIsNewRecord()) {
+			if ($this->getIsNewRecord() && !$this->salt) {
 				$salt = '';
 				$possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
@@ -189,7 +190,10 @@ class User extends BaseActiveRecord
 	protected function afterValidate()
 	{
 		parent::afterValidate();
-		$this->password = $this->hashPassword($this->password, $this->salt);
+
+		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
+			$this->password = $this->hashPassword($this->password, $this->salt);
+		}
 	}
 
 	/**
@@ -309,5 +313,49 @@ class User extends BaseActiveRecord
 
 	public function getReportDisplay() {
 		return $this->fullName;
+	}
+
+	public function beforeValidate() {
+		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
+			if ($this->password != $this->password_repeat) {
+				$this->addError('password','Password confirmation must match exactly');
+			}
+			$this->salt = $this->randomSalt();
+		}
+
+		if ($this->getIsNewRecord() && !$this->password) {
+			$this->addError('password','Password is required');
+		}
+
+		return parent::beforeValidate();
+	}
+
+	public function randomSalt() {
+		$salt = '';
+		for ($i=0;$i<10;$i++) {
+			switch (rand(0,2)) {
+				case 0:
+					$salt .= chr(rand(48,57));
+					break;
+				case 1:
+					$salt .= chr(rand(65,90));
+					break;
+				case 2:
+					$salt .= chr(rand(97,122));
+					break;
+			}
+		}
+
+		return $salt;
+	}
+
+	public function getAccesslevelstring() {
+		switch ($this->access_level) {
+			case 0: return 'No access';
+			case 1: return 'Patient demographics';
+			case 2: return 'Read only';
+			case 3: return 'Edit but not prescribe';
+			case 4: return 'Full';
+		}
 	}
 }
