@@ -1025,7 +1025,7 @@ class ElementOperation extends BaseEventTypeElement
 				case 1: // City Road
 					switch ($serviceId) {
 						case 2: // Adnexal
-							$changeContact = 'Sarah Veerapatren on 020 7566 2206/2292';
+							$changeContact = 'Admission Coordinator on 020 7566 2206/2292';
 							break;
 						case 4: // Cataract
 							switch($firmCode)  {
