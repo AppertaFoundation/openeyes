@@ -843,6 +843,8 @@ class PatientController extends BaseController
 			}
 			$patient->addAllergy($allergy_id);
 		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
 	}
 
 	/**
@@ -852,26 +854,35 @@ class PatientController extends BaseController
 	 * @throws Exception
 	 */
 	public function actionRemoveAllergy() {
-		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+		if(!isset($_GET['patient_id']) || !$patient_id = $_GET['patient_id']) {
 			throw new Exception('Patient ID required');
 		}
 		if(!$patient = Patient::model()->findByPk($patient_id)) {
 			throw new Exception('Patient not found: '.$patient_id);
 		}
-		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+		if(!isset($_GET['allergy_id']) || !$allergy_id = $_GET['allergy_id']) {
 			throw new Exception('Allergy ID required');
 		}
 		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
 			throw new Exception('Allergy not found: '.$allergy_id);
 		}
 		$patient->removeAllergy($allergy_id);
+		
+		echo 'success';
 	}
 
 	/**
 	 * List of allergies
 	 */
 	public function allergyList() {
-		return Allergy::model()->findAll(array('order' => 'name'));
+		$allergy_ids = array();
+		foreach ($this->patient->allergies as $allergy) {
+			$allergy_ids[] = $allergy->id;
+		}
+		$criteria = new CDbCriteria;
+		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
+		$criteria->order = 'name asc';
+		return Allergy::model()->findAll($criteria);
 	}
 
 	public function actionHideepisode() {

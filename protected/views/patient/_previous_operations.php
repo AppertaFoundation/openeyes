@@ -160,4 +160,43 @@
 
 		e.preventDefault();
 	});
+
+	$('.removeOperation').live('click',function() {
+		$('#operation_id').val($(this).attr('rel'));
+
+		$('#confirm_remove_operation_dialog').dialog({
+			resizable: false,
+			modal: true,
+			width: 560
+		});
+
+		return false;
+	});
+
+	$('button.btn_remove_operation').click(function() {
+		$("#confirm_remove_operation_dialog").dialog("close");
+
+		$.ajax({
+			'type': 'GET',
+			'url': baseUrl+'/patient/removePreviousOperation?patient_id=<?php echo $this->patient->id?>&operation_id='+$('#operation_id').val(),
+			'success': function(html) {
+				if (html == 'success') {
+					$('a.removeOperation[rel="'+$('#operation_id').val()+'"]').parent().parent().remove();
+				} else {
+					alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+				}
+			},
+			'error': function() {
+				console.log('error with remove call');
+				alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+			}
+		});
+
+		return false;
+	});
+
+	$('button.btn_cancel_remove_operation').click(function() {
+		$("#confirm_remove_operation_dialog").dialog("close");
+		return false;
+	});
 </script>
