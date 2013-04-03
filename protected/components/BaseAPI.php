@@ -18,10 +18,29 @@
  */
 
 class BaseAPI {
-	public function getElementForLatestEventInEpisode($patient, $element) {
+	
+	/*
+	 * gets the event type for the api instance
+	 * 
+	 * @return EventType $event_type
+	 */
+	private function getEventType() {
 		if (!$event_type = EventType::model()->find('class_name=?',array(preg_replace('/_API$/','',get_class($this))))) {
 			throw new Exception("Unknown event type or incorrectly named API class: ".get_class($this));
 		}
+		return $event_type; 
+	}
+	
+	/*
+	 * gets the element of type $element for the given patient in the current session episode
+	 * 
+	 * @param Patient $patient - the patient
+	 * @param string $element - the element class
+	 * 
+	 * @return unknown - the element type requested, or null
+	 */
+	public function getElementForLatestEventInEpisode($patient, $element) {
+		$event_type = $this->getEventType();
 
 		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
 			if ($event = $episode->getMostRecentEventByType($event_type->id)) {
@@ -36,4 +55,20 @@ class BaseAPI {
 			}
 		}
 	}
+	
+	/*
+	 * gets all the events in the episode for the event type this API is for, for the given patient
+	 * 
+	 * @param Patient $patient - the patient
+	 * 
+	 * @return array - list of events of the type for this API instance
+	 */
+	public function getEventsInEpisode($patient) {
+		$event_type = $this->getEventType();
+		
+		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+			return $episode->getAllEventsByType($event_type->id);
+		}
+	}
+	
 }
