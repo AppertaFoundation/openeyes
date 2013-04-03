@@ -187,7 +187,6 @@
 				}
 			},
 			'error': function() {
-				console.log('error with remove call');
 				alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
 			}
 		});
