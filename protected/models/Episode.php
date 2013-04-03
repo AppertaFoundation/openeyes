@@ -179,7 +179,7 @@ class Episode extends BaseActiveRecord
 	}
 
 	public function getPrincipalDiagnosisDisorderTerm() {
-		if ($disorder = $this->getPrincipalD2isorder()) {
+		if ($disorder = $this->getPrincipalDisorder()) {
 			return $disorder->term;
 		} else {
 			return 'none';
@@ -228,6 +228,14 @@ class Episode extends BaseActiveRecord
 		return Event::model()->find($criteria);
 	}
 
+	public function getAllEventsByType($event_type_id) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('episode_id',$this->id);
+		$criteria->compare('event_type_id',$event_type_id);
+		$criteria->order = 'created_date desc';
+		return Event::model()->findAll($criteria);
+	}
+	
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
 	{
 		$previous = Episode::model()->findByPk($this->id);
