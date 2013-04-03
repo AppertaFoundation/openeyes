@@ -26,61 +26,63 @@
 									<?php }?>
 								</tbody>
 							</table>
-							
-							<div align="center" style="margin-top:10px;">
-								<form><button id="btn-add_previous_operation" class="classy green mini" type="button"><span class="button-span button-span-green">Add Previous operation</span></button></form>
-							</div>
-							<div id="add_previous_operation" style="display: none;">
-								<h5>Add Previous operation</h5>	
-								<?php
-								$form = $this->beginWidget('CActiveForm', array(
-										'id'=>'add-previous_operation',
-										'enableAjaxValidation'=>false,
-										'htmlOptions' => array('class'=>'sliding'),
-										'action'=>array('patient/addPreviousOperation'),
-								))?>
-	
-								<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
-								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-	
-								<div class="previousOperation">
-									<div class="label">
-										Common operations:
-									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-									</div>
-								</div>
 
-								<div class="previousOperation">
-									<div class="label">
-										Operation:
+							<?php if (BaseController::checkUserLevel(3)) {?>
+								<div align="center" style="margin-top:10px;">
+									<form><button id="btn-add_previous_operation" class="classy green mini" type="button"><span class="button-span button-span-green">Add Previous operation</span></button></form>
+								</div>
+								<div id="add_previous_operation" style="display: none;">
+									<h5>Add Previous operation</h5>	
+									<?php
+									$form = $this->beginWidget('CActiveForm', array(
+											'id'=>'add-previous_operation',
+											'enableAjaxValidation'=>false,
+											'htmlOptions' => array('class'=>'sliding'),
+											'action'=>array('patient/addPreviousOperation'),
+									))?>
+		
+									<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
+									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+		
+									<div class="previousOperation">
+										<div class="label">
+											Common operations:
+										</div>
+										<div class="data">
+											<?php echo CHtml::dropDownList('common_previous_operation','',CHtml::listData(CommonPreviousOperation::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+										</div>
 									</div>
-									<div class="data">
-										<?php echo CHtml::textField('previous_operation','')?>
+
+									<div class="previousOperation">
+										<div class="label">
+											Operation:
+										</div>
+										<div class="data">
+											<?php echo CHtml::textField('previous_operation','')?>
+										</div>
 									</div>
-								</div>
 
-								<div class="previousOperation">
-									<span class="label">
-										Side:
-									</span>
-									<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
-									<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
-										<input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
-									<?php }?>
-								</div>
+									<div class="previousOperation">
+										<span class="label">
+											Side:
+										</span>
+										<input type="radio" name="previous_operation_side" class="previous_operation_side" value="" checked="checked" /> None
+										<?php foreach (Eye::model()->findAll(array('order'=>'display_order')) as $eye) {?>
+											<input type="radio" name="previous_operation_side" class="previous_operation_side" value="<?php echo $eye->id?>" /> <?php echo $eye->name?>
+										<?php }?>
+									</div>
 
-								<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
-	
-								<div align="right">
-									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
-									<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
-									<button class="classy red mini btn_cancel_previous_operation" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-								</div>
-	
-								<?php $this->endWidget()?>
-							</div>	
+									<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
+		
+									<div align="right">
+										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
+										<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
+										<button class="classy red mini btn_cancel_previous_operation" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+									</div>
+		
+									<?php $this->endWidget()?>
+								</div>	
+							<?php }?>
 						</div>
 					</div>
 

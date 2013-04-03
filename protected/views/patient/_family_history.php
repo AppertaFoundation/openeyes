@@ -31,66 +31,68 @@
 								</tbody>
 							</table>
 							
-							<div align="center" style="margin-top:10px;">
-								<form><button id="btn-add_family_history" class="classy green mini" type="button"><span class="button-span button-span-green">Add family history</span></button></form>
-							</div>
-							<div id="add_family_history" style="display: none;">
-								<h5>Add family history</h5>	
-								<?php
-								$form = $this->beginWidget('CActiveForm', array(
-										'id'=>'add-family_history',
-										'enableAjaxValidation'=>false,
-										'htmlOptions' => array('class'=>'sliding'),
-										'action'=>array('patient/addFamilyHistory'),
-								))?>
-	
-								<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
-								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-	
-								<div class="familyHistory">
-									<div class="label">
-										Relative:
-									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-									</div>
+							<?php if(BaseController::checkUserLevel(3)) { ?>
+								<div align="center" style="margin-top:10px;">
+									<form><button id="btn-add_family_history" class="classy green mini" type="button"><span class="button-span button-span-green">Add family history</span></button></form>
 								</div>
+								<div id="add_family_history" style="display: none;">
+									<h5>Add family history</h5>	
+									<?php
+									$form = $this->beginWidget('CActiveForm', array(
+											'id'=>'add-family_history',
+											'enableAjaxValidation'=>false,
+											'htmlOptions' => array('class'=>'sliding'),
+											'action'=>array('patient/addFamilyHistory'),
+									))?>
+		
+									<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
+									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+		
+									<div class="familyHistory">
+										<div class="label">
+											Relative:
+										</div>
+										<div class="data">
+											<?php echo CHtml::dropDownList('relative_id','',CHtml::listData(FamilyHistoryRelative::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+										</div>
+									</div>
 
-								<div class="familyHistory">
-									<div class="label">
-										Side:
+									<div class="familyHistory">
+										<div class="label">
+											Side:
+										</div>
+										<div class="data">
+											<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;'))?>
+										</div>
 									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('side_id','',CHtml::listData(FamilyHistorySide::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;'))?>
-									</div>
-								</div>
 
-								<div class="familyHistory">
-									<div class="label">
-										Condition:
+									<div class="familyHistory">
+										<div class="label">
+											Condition:
+										</div>
+										<div class="data">
+											<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
+										</div>
 									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('condition_id','',CHtml::listData(FamilyHistoryCondition::model()->findAll(array('order'=>'display_order')),'id','name'),array('style'=>'width: 125px;','empty'=>'- Select -'))?>
-									</div>
-								</div>
 
-								<div class="familyHistory">
-									<div class="label">
-										Comments:
+									<div class="familyHistory">
+										<div class="label">
+											Comments:
+										</div>
+										<div class="data">
+											<?php echo CHtml::textField('comments','')?>
+										</div>
 									</div>
-									<div class="data">
-										<?php echo CHtml::textField('comments','')?>
-									</div>
-								</div>
 
-								<div align="right">
-									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
-									<button class="classy green mini btn_save_family_history" type="submit"><span class="button-span button-span-green">Save</span></button>
-									<button class="classy red mini btn_cancel_family_history" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-								</div>
-	
-								<?php $this->endWidget()?>
-							</div>	
+									<div align="right">
+										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_family_history_loader" style="display: none;" />
+										<button class="classy green mini btn_save_family_history" type="submit"><span class="button-span button-span-green">Save</span></button>
+										<button class="classy red mini btn_cancel_family_history" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+									</div>
+		
+									<?php $this->endWidget()?>
+								</div>	
+							<?php }?>
 						</div>
 					</div>
 

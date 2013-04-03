@@ -28,58 +28,60 @@
 									<?php }?>
 								</tbody>
 							</table>
-							
-							<div align="center" style="margin-top:10px;">
-								<form><button id="btn-add_medication" class="classy green mini" type="button"><span class="button-span button-span-green">Add medication</span></button></form>
-							</div>
-							<div id="add_medication" style="display: none;">
-								<h5>Add medication</h5>	
-								<?php
-								$form = $this->beginWidget('CActiveForm', array(
-										'id'=>'add-medication',
-										'enableAjaxValidation'=>false,
-										'htmlOptions' => array('class'=>'sliding'),
-										'action'=>array('patient/addMedication'),
-								))?>
-	
-								<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
-								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-	
-								<div class="patientMedication">
-									<div class="label">
-										Medication:
-									</div>
-									<div class="data">
-										<?php echo CHtml::textField('medication','')?>
-									</div>
-								</div>
 
-								<div class="patientMedication">
-									<div class="label">
-										Route:
-									</div>
-									<div class="data">
-										<?php echo CHtml::dropDownList('route','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
-									</div>
+							<?php if (BaseController::checkUserLevel(3)) {?>
+								<div align="center" style="margin-top:10px;">
+									<form><button id="btn-add_medication" class="classy green mini" type="button"><span class="button-span button-span-green">Add medication</span></button></form>
 								</div>
+								<div id="add_medication" style="display: none;">
+									<h5>Add medication</h5>	
+									<?php
+									$form = $this->beginWidget('CActiveForm', array(
+											'id'=>'add-medication',
+											'enableAjaxValidation'=>false,
+											'htmlOptions' => array('class'=>'sliding'),
+											'action'=>array('patient/addMedication'),
+									))?>
+		
+									<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
+									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+		
+									<div class="patientMedication">
+										<div class="label">
+											Medication:
+										</div>
+										<div class="data">
+											<?php echo CHtml::textField('medication','')?>
+										</div>
+									</div>
 
-								<div class="patientMedication">
-									<div class="label">
-										Comments:
+									<div class="patientMedication">
+										<div class="label">
+											Route:
+										</div>
+										<div class="data">
+											<?php echo CHtml::dropDownList('route','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
+										</div>
 									</div>
-									<div class="data">
-										<?php echo CHtml::textField('comments','')?>
-									</div>
-								</div>
 
-								<div align="right">
-									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
-									<button class="classy green mini btn_save_medication" type="submit"><span class="button-span button-span-green">Save</span></button>
-									<button class="classy red mini btn_cancel_medication" type="submit"><span class="button-span button-span-red">Cancel</span></button>
-								</div>
-	
-								<?php $this->endWidget()?>
-							</div>	
+									<div class="patientMedication">
+										<div class="label">
+											Comments:
+										</div>
+										<div class="data">
+											<?php echo CHtml::textField('comments','')?>
+										</div>
+									</div>
+
+									<div align="right">
+										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
+										<button class="classy green mini btn_save_medication" type="submit"><span class="button-span button-span-green">Save</span></button>
+										<button class="classy red mini btn_cancel_medication" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+									</div>
+		
+									<?php $this->endWidget()?>
+								</div>	
+							<?php }?>
 						</div>
 					</div>
 
