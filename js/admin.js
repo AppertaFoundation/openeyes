@@ -56,4 +56,21 @@ $(document).ready(function() {
 			}
 		}
 	});
+
+	handleButton($('#lookup_user'),function(e) {
+		e.preventDefault();
+
+		$.ajax({
+			'type': 'GET',
+			'url': baseUrl+'/admin/lookupUser?username='+$('#User_username').val(),
+			'success': function(resp) {
+				m = resp.match(/[0-9]+/);
+				if (m) {
+					window.location.href = baseUrl+'/admin/editUser/'+m[0];
+				} else {
+					alert("User not found");
+				}
+			}
+		});
+	});
 });
