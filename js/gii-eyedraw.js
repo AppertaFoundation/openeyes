@@ -1,27 +1,22 @@
 $(document).ready(function() {
-	$('.eyeDrawClassSelect').live('change',function() {
-		var selected = $(this).children('option:selected').val();
+	$('.eyeDrawDoodleSelect').live('change',function() {
+		var doodle = $(this).children('option:selected').val();
+		$('.selectedToolbarDoodles').append('<div><input type="hidden" name="eyedrawToolbarDoodle'+$(this).attr('data-attr-element')+'Field'+$(this).attr('data-attr-field')+'[]" value="'+doodle+'" />'+doodle+' <a href="#" class="removeDoodle">(remove)</a></div>');
+		$(this).children('option:selected').remove();
+	});
 
-		if (selected != '') {
-			$(this).ajaxCall('getEyedrawSize',{"class":selected},function(size, element, field) {
-				$('input[name="eyedrawSize'+element+'Field'+field+'"]').val(size).select().focus();
+	$('.removeDoodle').live('click',function(e) {
+		var value = $(this).parent().children('input').val();
+		var select = $(this).parent().parent().prev('div').prev('br').prev('select');
+		select.append('<option value="'+value+'">'+value+'</option>');
+		sort_selectbox(select);
+		$(this).parent().remove();
+		e.preventDefault();
+	});
 
-				switch(selected) {
-					case 'Buckle':
-					case 'Cataract':
-					case 'Vitrectomy':
-						if (!$('#eyeDrawExtraReportFieldDiv'+element+'Field'+field).html().match(/eyedrawExtraReport/)) {
-							$('#eyeDrawExtraReportFieldDiv'+element+'Field'+field).html('<input type="checkbox" name="eyedrawExtraReport'+element+'Field'+field+'" value="1" /> Store eyedraw report data in hidden input<br/>');
-						}
-						break;
-					default:
-						$('#eyeDrawExtraReportFieldDiv'+element+'Field'+field).html('');
-						break;
-				}
-			});
-		} else {
-			$('input[name="eyedrawSize'+$(this).getElement()+'Field'+$(this).getField()+'"]').val('');
-			$('#eyeDrawExtraReportFieldDiv'+$(this).getElement()+'Field'+$(this).getField()).html('');
-		}
+	$('.eyeDrawDefaultDoodleSelect').live('change',function() {
+		var doodle = $(this).children('option:selected').val();
+		$('.selectedDefaultDoodles').append('<div><input type="hidden" name="eyedrawDefaultDoodle'+$(this).attr('data-attr-element')+'Field'+$(this).attr('data-attr-field')+'[]" value="'+doodle+'" />'+doodle+' <a href="#" class="removeDoodle">(remove)</a></div>');
+		$(this).children('option:selected').remove();
 	});
 });
