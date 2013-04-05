@@ -1404,10 +1404,11 @@ class ElementOperation extends BaseEventTypeElement
 		}
 		OELog::log("Operation cancelled: $this->id");
 
-		$this->event->episode->episode_status_id = 5;
+		$episode = $this->event->episode;
+		$episode->episode_status_id = 5;
 
-		if (!$this->event->episode->save()) {
-			throw new Exception('Unable to change episode status for episode '.$this->event->episode->id);
+		if (!$episode->save()) {
+			throw new Exception('Unable to change episode status for episode '.$episode->id);
 		}
 
 		// Update event datestamp
