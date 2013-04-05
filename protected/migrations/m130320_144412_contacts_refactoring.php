@@ -237,7 +237,21 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->dropColumn('site','address3');
 		$this->dropColumn('site','postcode');
 
-		$this->delete('contact',"parent_class in ('Consultant','Specialist','Gp','Site_ReplyTo')");
+		/* Patients */
+
+		$this->addColumn('patient','contact_id','int(10) unsigned NOT NULL');
+
+		foreach (Yii::app()->db->createCommand()->select("*")->from("patient")->queryAll() as $patient) {
+			if ($contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Patient',':parent_id'=>$patient['id']))->queryRow()) {
+				$this->update('patient',array('contact_id'=>$contact['id']),"id={$patient['id']}");
+				$this->update('contact',array('parent_class'=>''),"id={$contact['id']}");
+			}
+		}
+
+		$this->createIndex('patient_contact_id_fk','patient','contact_id');
+		$this->addForeignKey('patient_contact_id_fk','patient','contact_id','contact','id');
+
+		$this->delete('contact',"parent_class in ('Consultant','Specialist','Gp','Site_ReplyTo','Patient')");
 		$this->dropColumn('contact','parent_class');
 		$this->dropColumn('contact','parent_id');
 
