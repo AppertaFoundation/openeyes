@@ -18,7 +18,9 @@
 
 var redirectHomeAfterChangingFirm = true;
 
-$('select[id=selected_firm_id]').die('change').live('change', function() {
+$('select[id=selected_firm_id]').die('change').live('change', function(e) {
+	e.preventDefault();
+
 	var firmId = $('select[id=selected_firm_id]').val();
 	$.ajax({
 		type: 'post',
@@ -33,7 +35,6 @@ $('select[id=selected_firm_id]').die('change').live('change', function() {
 					}
 					window.location.href = url;
 				}
-				return false;
 			} else {
 				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
 			}
