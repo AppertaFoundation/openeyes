@@ -203,7 +203,9 @@ if (isset($element)) {
 			}
 
 			if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-				return $api->getMostRecentBookingForCurrentEpisode($patient);
+				if ($booking = $api->getMostRecentBookingForCurrentEpisode($patient)) {
+					return $booking->operation->eye;
+				}
 			}
 		}
 
