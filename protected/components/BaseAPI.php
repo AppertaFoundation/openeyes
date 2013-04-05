@@ -70,5 +70,30 @@ class BaseAPI {
 			return $episode->getAllEventsByType($event_type->id);
 		}
 	}
-	
+
+	/*
+	 * gets the most recent instance of a specific element in the current episode
+	 *
+	 */
+	public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('event_type_id',$event_type_id);
+		$criteria->compare('episode_id',$episode_id);
+		$criteria->order = 'created_date desc';
+
+		foreach (Event::model()->findAll($criteria) as $event) {
+			if ($element = $model::model()->find('event_id=?',array($event->id))) {
+				return $element;
+			}
+		}
+
+		return false;
+	}
+
+	/*
+	 * Stub method to prevent crashes when getEpisodeHTML() is called for every installed module
+	 *
+	 */
+	public function getEpisodeHTML($episode_id) {
+	}
 }
