@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -34,21 +34,38 @@ class PatientController extends BaseController
 	public $event_tabs = array();
 	public $event_actions = array();
 	
-	public function filters()
-	{
-		return array('accessControl');
+	/**
+	 * Checks to see if current user can create an event type
+	 * @param EventType $event_type
+	 */
+	public function checkEventAccess($event_type) {
+		if(BaseController::checkUserLevel(4)) {
+			return true;
+		}
+		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+			return true;
+		}
+		return false;
 	}
-
-	public function accessRules()
-	{
+	
+	public function accessRules() {
 		return array(
+			// Level 1 can view patient demographics
 			array('allow',
-				'users'=>array('@')
+				'actions' => array('search','view','hideepisode','showepisode'),
+				'expression' => 'BaseController::checkUserLevel(1)',
 			),
-			// non-logged in can't view anything
-			array('deny',
-				'users'=>array('?')
+			// Level 2 can't change anything
+			array('allow',
+				'actions' => array('episode','event', 'episodes'),
+				'expression' => 'BaseController::checkUserLevel(2)',
 			),
+			// Level 3 or above can do anything
+			array('allow',
+				'expression' => 'BaseController::checkUserLevel(3)',
+			),
+			// Deny anything else (default rule allows authenticated users)
+			array('deny'),
 		);
 	}
 
@@ -345,7 +362,7 @@ class PatientController extends BaseController
 						'active' => true,
 				)
 		);
-		if ($this->episode->editable
+		if (BaseController::checkUserLevel(3) && $this->episode->editable
 				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
@@ -826,6 +843,8 @@ class PatientController extends BaseController
 			}
 			$patient->addAllergy($allergy_id);
 		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
 	}
 
 	/**
@@ -835,26 +854,35 @@ class PatientController extends BaseController
 	 * @throws Exception
 	 */
 	public function actionRemoveAllergy() {
-		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+		if(!isset($_GET['patient_id']) || !$patient_id = $_GET['patient_id']) {
 			throw new Exception('Patient ID required');
 		}
 		if(!$patient = Patient::model()->findByPk($patient_id)) {
 			throw new Exception('Patient not found: '.$patient_id);
 		}
-		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+		if(!isset($_GET['allergy_id']) || !$allergy_id = $_GET['allergy_id']) {
 			throw new Exception('Allergy ID required');
 		}
 		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
 			throw new Exception('Allergy not found: '.$allergy_id);
 		}
 		$patient->removeAllergy($allergy_id);
+		
+		echo 'success';
 	}
 
 	/**
 	 * List of allergies
 	 */
 	public function allergyList() {
-		return Allergy::model()->findAll(array('order' => 'name'));
+		$allergy_ids = array();
+		foreach ($this->patient->allergies as $allergy) {
+			$allergy_ids[] = $allergy->id;
+		}
+		$criteria = new CDbCriteria;
+		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
+		$criteria->order = 'name asc';
+		return Allergy::model()->findAll($criteria);
 	}
 
 	public function actionHideepisode() {
@@ -878,16 +906,16 @@ class PatientController extends BaseController
 	}
 	
 	private function processDiagnosisDate() {
-		$date = $_POST['diagnosis_year'];
+		$date = $_POST['fuzzy_year'];
 		
-		if ($_POST['diagnosis_month']) {
-			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		if ($_POST['fuzzy_month']) {
+			$date .= '-'.str_pad($_POST['fuzzy_month'],2,'0',STR_PAD_LEFT);
 		} else {
 			$date .= '-00';
 		}
 		
-		if ($_POST['diagnosis_day']) {
-			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		if ($_POST['fuzzy_day']) {
+			$date .= '-'.str_pad($_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
 		} else {
 			$date .= '-00';
 		}
@@ -1068,5 +1096,162 @@ class PatientController extends BaseController
 			'date' => date('j M Y',strtotime($dates[0])),
 			'timestamp' => strtotime($dates[0]),
 		);
+	}
+
+	public function actionAddPreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!isset($_POST['previous_operation'])) {
+			throw new Exception("Missing previous operation text");
+		}
+
+		if (@$_POST['edit_operation_id']) {
+			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
+				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
+			}
+			$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
+			$po->operation = @$_POST['previous_operation'];
+			$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
+			if (!$po->save()) {
+				throw new Exception("Unable to save previous operation: ".print_r($po->getErrors(),true));
+			}
+		} else {
+			$patient->addPreviousOperation(@$_POST['previous_operation'],@$_POST['previous_operation_side'],str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionAddMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!@$_POST['medication']) {
+			throw new Exception("Missing medication text");
+		}
+
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route'])) {
+			throw new Exception("Drug route not found: ".@$_POST['route']);
+		}
+
+		if (@$_POST['edit_medication_id']) {
+			if (!$m = Medication::model()->findByPk(@$_POST['edit_medication_id'])) {
+				throw new Exception("Medication not found: ".@$_POST['edit_medication_id']);
+			}
+			$m->medication = $_POST['medication'];
+			$m->route_id = $route->id;
+			$m->comments = @$_POST['comments'];
+
+			if (!$m->save()) {
+				throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+			}
+		} else {
+			$patient->addMedication(@$_POST['medication'],$route->id,@$_POST['comments']);
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionAddFamilyHistory() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
+			throw new Exception("Unknown relative: ".@$_POST['relative_id']);
+		}
+
+		if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
+			throw new Exception("Unknown side: ".@$_POST['side_id']);
+		}
+
+		if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
+			throw new Exception("Unknown condition: ".@$_POST['condition_id']);
+		}
+		
+		if (@$_POST['edit_family_history_id']) {
+			if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
+				throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
+			}
+			$fh->relative_id = $relative->id;
+			$fh->side_id = $side->id;
+			$fh->condition_id = $condition->id;
+			$fh->comments = @$_POST['comments'];
+
+			if (!$fh->save()) {
+				throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+			}
+		} else {
+			$patient->addFamilyHistory($relative->id,$side->id,$condition->id,@$_POST['comments']);
+		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
+	}
+
+	public function actionRemovePreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$po = PreviousOperation::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['operation_id']))) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		if (!$po->delete()) {
+			throw new Exception("Failed to remove previous operation: ".print_r($po->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionGetPreviousOperation() {
+		if (!$po = PreviousOperation::model()->findByPk(@$_GET['operation_id'])) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		$date = explode('-',$po->date);
+
+		echo json_encode(array(
+			'operation' => $po->operation,
+			'side_id' => $po->side_id,
+			'fuzzy_year' => $date[0],
+			'fuzzy_month' => preg_replace('/^0/','',$date[1]),
+			'fuzzy_day' => preg_replace('/^0/','',$date[2]),
+		));
+	}
+
+	public function actionRemoveMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$m = Medication::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['medication_id']))) {
+			throw new Exception("Medication not found: ".@$_GET['medication_id']);
+		}
+
+		if (!$m->delete()) {
+			throw new Exception("Failed to remove medication: ".print_r($m->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionRemoveFamilyHistory() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$m = FamilyHistory::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['family_history_id']))) {
+			throw new Exception("Family history not found: ".@$_GET['family_history_id']);
+		}
+
+		if (!$m->delete()) {
+			throw new Exception("Failed to remove family history: ".print_r($m->getErrors(),true));
+		}
+
+		echo 'success';
 	}
 }

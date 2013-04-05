@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -58,7 +58,7 @@ class UserIdentity extends CUserIdentity
 			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
-		} else if($user->active != 1) {
+		} else if($user->active != 1 || $user->access_level == 0) {
 			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
@@ -149,8 +149,18 @@ class UserIdentity extends CUserIdentity
 					return false;
 				}
 
-				$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
-				$info = ldap_get_entries($link, $sr);
+				$attempts = isset(Yii::app()->params['ldap_info_retries']) ? Yii::app()->params['ldap_info_retries'] : 1;
+
+				for ($i=0; $i<$attempts; $i++) {
+					if ($i >0 && isset(Yii::app()->params['ldap_info_retry_delay'])) {
+						sleep(Yii::app()->params['ldap_info_retry_delay']);
+					}
+					$sr = ldap_search($link, "cn=$this->username,".Yii::app()->params['ldap_dn'], "cn=$this->username");
+					$info = ldap_get_entries($link, $sr);
+
+					if (isset($info[0])) break;
+				}
+
 				if (!isset($info[0])) {
 					throw new Exception("Failed to retrieve ldap info for user $user->username: ".ldap_error($link)." [".print_r($info,true)."]");
 				}

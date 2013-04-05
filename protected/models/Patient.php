@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -138,6 +138,9 @@ class Patient extends BaseActiveRecord {
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
+			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
+			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date'),
+			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 		);
 	}
 
@@ -916,5 +919,73 @@ class Patient extends BaseActiveRecord {
 
 	public function getChildPrefix() {
 		return $this->isChild() ? "child's " : "";
+	}
+
+	public function getSdl() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('patient_id',$this->id);
+		$criteria->order = 'created_date asc';
+
+		$diagnoses = array();
+
+		foreach (SecondaryDiagnosis::model()->findAll('patient_id=?',array($this->id)) as $i => $sd) {
+			if ($sd->disorder->specialty->code == 'OPH') {
+				$diagnoses[] = strtolower(($sd->eye ? $sd->eye->adjective.' ' : '').$sd->disorder->term);
+			}
+		}
+
+		if (count($diagnoses) >1) {
+			$last = array_pop($diagnoses);
+			return implode(', ',$diagnoses).' and '.$last;
+		}
+
+		if (!empty($diagnoses)) {
+			return array_pop($diagnoses);
+		}
+	}
+
+	public function addPreviousOperation($operation, $side_id, $date) {
+		if (!$pa = PreviousOperation::model()->find('patient_id=? and operation=? and date=?',array($this->id,$operation,$date))) {
+			$pa = new PreviousOperation;
+			$pa->patient_id = $this->id;
+			$pa->operation = $operation;
+			$pa->date = $date;
+		}
+		$pa->side_id = $side_id ? $side_id : null;
+
+		if (!$pa->save()) {
+			throw new Exception("Unable to save previous operation: ".print_r($pa->getErrors(),true));
+		}
+	}
+
+	public function addMedication($medication,$route_id,$comments) {
+		if (!$m = Medication::model()->find('patient_id=? and medication=? and route_id=?',array($this->id,$medication,$route_id))) {
+			$m = new Medication;
+			$m->patient_id = $this->id;
+			$m->medication = $medication;
+			$m->route_id = $route_id;
+		}
+
+		$m->comments = $comments;
+
+		if (!$m->save()) {
+			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+		}
+	}
+
+	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments) {
+		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
+			$fh = new FamilyHistory;
+			$fh->patient_id = $this->id;
+			$fh->relative_id = $relative_id;
+			$fh->side_id = $side_id;
+			$fh->condition_id = $condition_id;
+		}
+
+		$fh->comments = $comments;
+
+		if (!$fh->save()) {
+			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+		}
 	}
 }

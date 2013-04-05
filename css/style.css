@@ -1,4 +1,22 @@
-	/* HTML5 ✰ Boilerplate
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+
+/* HTML5 ✰ Boilerplate
  * ==|== normalize ==========================================================
  */
 
@@ -129,8 +147,8 @@ body {}
 #content .wrap.twocolumns .rightcolumn	{ width:600px; float:right; }
 #content .wrap.twocolumns .leftcolumn.wide		{ width:820px; }
 #content .wrap.twocolumns .rightcolumn.narrow 	{ width:360px; }
-#content .wrap.twocolumns .leftcolumn.narrow	{ width:186px; }
-#content .wrap.twocolumns .rightcolumn.wide 	{ width:998px; }
+#content .wrap.twocolumns .leftcolumn.narrow	{ width:290px; }
+#content .wrap.twocolumns .rightcolumn.wide 	{ width:890px; }
 /* maxwidth uses the full available content width */
 #content .maxwidth	{ width:1230px; margin-top:20px; position: relative; min-height:400px; }
 #content .maxwidth .episodelist	{ float:left; width:175px; }
@@ -184,8 +202,8 @@ em { font-style: italic; color:#333; }
 #content .patientBox	{ position: relative; padding:10px; background: transparent url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; border: 2px solid #ffb212; }
 #content .eventBox { background: #fafafa; padding:10px; }
 /* watermarked width 1050px - 20px padding = 1030px */
-#content .watermarkBox { width:1030px; background-color:#fafafa; background-repeat: repeat-y; background-position: top left;
-	padding:5px 5px 10px; border-width: 0 5px 5px; border-style: solid; border-color: #a29d8a; }
+#content .watermarkBox { width:1030px; background-color:#fafafa; background-position: -5px 0; background-repeat: repeat-y;
+	background-image: url(../img/_elements/icons/event/watermark/_episode.png); padding:5px 5px 10px; border-width: 0 5px 5px; border-style: solid; border-color: #a29d8a; }
 /* icons for boxes */
 #content .withIcon { padding-left: 40px; }
 #content .boxIcon { position: absolute; top:5px; left:0; }
@@ -714,7 +732,7 @@ span.surname { font-weight: bold; }
 /* Clinicians only info */
 .whiteBox.forClinicians { border:1px solid #999; position:relative;}
 .whiteBox.forClinicians h4 { display:inline-block; padding:5px 10px 5px 45px; font-size:12px; color:#fff; background:#999; margin-bottom: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
-.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;	}
+.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient/clinician-hd_flag.png) top left no-repeat;	}
 .whiteBox.forClinicians .fuzzyDate { font-family:Georgia Times sans-serif; font-style: italic;	color:#666; }
 
 /* for fullWidth Episode Summary, need to control the vertical spacing in case of 2+ rows */
@@ -1041,6 +1059,19 @@ ul.ui-autocomplete li.ui-menu-item a:hover { background:#3665ff; color: #fff; bo
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#3665ff; }
 .action_options_alt .aBtn > a:hover { border:none; color:#fff; background:#2546b1; }
 
+/* aBtn SPRITES 11px */
+.aBtn a.sprite.showhide > span { display:inline-block; width:11px; height:11px; background:transparent url(../../../img/_elements/icons/_sprites/showhide_icon.png) no-repeat top left; }
+.aBtn a.sprite.showhide > .hide { background-position: top left; }
+.aBtn a:hover.sprite.showhide > .hide { background-position: top right; }
+.aBtn a.sprite.showhide > .show { background-position: bottom left; }
+.aBtn a:hover.sprite.showhide > .show { background-position: bottom right; }
+
+.aBtn a.sprite.showhide2 > span { display:inline-block; width:11px; height:11px; background:transparent url(../../../img/_elements/icons/_sprites/showhide_icon.png) no-repeat top left; }
+.aBtn a.sprite.showhide2 > .hide { background-position: top left; }
+.aBtn a:hover.sprite.showhide2 > .hide { background-position: top right; }
+.aBtn a.sprite.showhide2 > .show { background-position: bottom left; }
+.aBtn a:hover.sprite.showhide2 > .show { background-position: bottom right; }
+
 /* EVENT LIST showhide in Event List*/
 .episode_nav a.sprite { display:inline-block; padding:4px 5px 2px 5px; background: #fff; -webkit-border-bottom-left-radius: 3px; -webkit-border-bottom-right-radius: 3px; -moz-border-radius-bottomleft: 3px; -moz-border-radius-bottomright: 3px; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
 .episode_nav .aBtn { position:absolute; top:0; right:2px;}
@@ -1270,8 +1301,8 @@ div.patron { margin-left: 37em; font-size: 12pt; }
 
 #audit_filter_button { float: right; margin-top: -3px;}
 
-.diagnosis_date { margin-top: 10px; }
-.diagnosis_date_field { margin-right: 10px; }
+.fuzzy_date { margin-top: 10px; }
+.fuzzy_date_field { margin-right: 10px; }
 
 .diagnosis_eye { margin-top: 10px; }
 .diagnosis_eye_label { width: 35px; display: inline-block; }
@@ -1376,6 +1407,16 @@ table.grid td { text-align: left; padding:10px; border-right:1px solid #ccc; }
 table.grid th:last-child, table.grid td:last-child { border-right: none; }
 table.grid td.nowrap { white-space: nowrap; }
 table.grid td.icons > img {margin-right:4px; margin-bottom:4px; }
+
+ul.grid { width: 100%; list-style-type: none; padding: 0; }
+ul.grid li.header { text-align: left; vertical-align: middle; background:#ddd; color: #444; font-size: 11px; font-weight:bold; min-width:10px; padding:0px; border-right:1px solid #bbb; }
+ul.grid li.header span { text-align: left; vertical-align: middle; background:#ddd; color: #444; font-size: 11px; font-weight:bold; min-width:10px; padding:10px; border-right:1px solid #bbb; }
+ul.grid li.even { margin: 0; text-align: left; padding:0px; border-right:1px solid #ccc; }
+ul.grid li.even span { margin: 0; text-align: left; padding:10px; border-right:1px solid #ccc; }
+ul.grid li.odd { margin: 0; text-align: left; padding:0px; border-right:1px solid #ccc; }
+ul.grid li.odd span { margin: 0; text-align: left; padding:10px; border-right:1px solid #ccc; }
+ul.grid li:hover { cursor: pointer; }
+
 /* customise */
 table.grid.margintop { margin-top:10px; }
 table.grid.marginbottom { margin-bottom:10px; }
@@ -1423,3 +1464,71 @@ table.subtle.valignmiddle tr td { vertical-align:middle; }
 table.subtle.noradius { -webkit-border-radius:0; -moz-border-radius:0; border-radius:0; }
 table.subtle.noradiustop { -webkit-border-top-right-radius:0; -webkit-border-top-left-radius:0; -moz-border-radius-topright:0; -moz-border-radius-topleft:0; border-top-right-radius:0; border-top-left-radius:0;}
 table.subtle.noradiusbottom { -webkit-border-bottom-right-radius:0; -webkit-border-bottom-left-radius:0; -moz-border-radius-bottomright:0; -moz-border-radius-bottomleft:0; border-bottom-right-radius:0; border-bottom-left-radius:0;}
+
+/* admin menu */
+.admingroup { background: #fafafa url(../img/watermark-small.png) top right no-repeat; ; }
+.admingroup h4 { color:#333; }
+.admingroup ul { list-style-type:none; padding:4px 0 0 0; margin:0; border-top:1px dotted #ccc; }
+.admingroup ul li { padding-right:10px; }
+.admingroup ul li a { display:block; height:25px; line-height:25px; background:#fff url(../img/report-small.png) left center no-repeat; margin:0 2px 4px 0; padding-left:30px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+.admingroup ul li a:hover { border-bottom: none; background-color: #3665ff; background-image: url(../img/report-small-no-bg.png); color:#fff; }
+.admingroup ul li a:active  { border-bottom: none; background-color: #315be6; color:#fff; }
+
+/* admin item you are viewing in list */
+.admingroup ul li.active { background:transparent url(../img/active-arrow.png) right center no-repeat;}
+.admingroup ul li .viewing { display:block; height:25px; line-height:25px; color:#333; background:#ccc url(../img/report-small-no-bg.png) left center no-repeat; margin:0 2px 4px 0; padding-left:30px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+
+h2.admin { background:#666; color:#fff; border:1px solid #999; border-left:none; }
+
+.reportInputs .newdrug { width: 730px; }
+.reportInputs .editdrug { width: 730px; }
+
+div.admin .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px; margin-top: 6px; }
+div.admin .group { background: none !important; }
+
+div.admin input { margin: 2px; }
+div.admin select { margin-top: 4px; margin-left: 2px; margin-bottom: 4px; }
+div.admin #User_first_name { width: 250px; }
+div.admin #User_last_name { width: 250px; }
+div.admin #User_email { width: 300px; }
+div.admin #User_role { width: 300px; }
+div.admin #User_qualifications { width: 300px; }
+div.admin div.pagination .selected { background-color: #0b59da; color: #fff; padding-left: 2px; padding-right: 2px; }
+
+/* admin sections */
+#admin_users ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_users ul li .column_checkbox { width: 15px; display: inline-block; }
+#admin_users ul li .column_id { width: 15px; display: inline-block; }
+#admin_users ul li .column_username { width: 75px; display: inline-block; }
+#admin_users ul li .column_title { width: 25px; display: inline-block; }
+#admin_users ul li .column_firstname { width: 140px; display: inline-block; }
+#admin_users ul li .column_lastname { width: 140px; display: inline-block; }
+#admin_users ul li .column_role { width: 215px; display: inline-block; }
+#admin_users ul li .column_doctor { width: 35px; display: inline-block; }
+#admin_users ul li .column_active { width: 35px; display: inline-block; }
+
+#admin_firms ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_firms ul li .column_id { width: 15px; display: inline-block; }
+#admin_firms ul li .column_pas_code { width: 52px; display: inline-block; }
+#admin_firms ul li .column_name { width: 200px; display: inline-block; }
+#admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
+#admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
+#div_Firm_consultant_id { margin-top: 2px; }
+
+div.previousOperation .label { display: inline-block; width: 125px; }
+div.previousOperation .data { display: inline-block; }
+div.previousOperation { margin-bottom: 10px; }
+div.previousOperation #previous_operation { width: 439px; }
+input.previous_operation_eye { margin-left: 10px; }
+
+div.patientMedication .label { display: inline-block; width: 125px; }
+div.patientMedication .data { display: inline-block; }
+div.patientMedication { margin-bottom: 10px; }
+div.patientMedication #previous_operation { width: 439px; }
+
+div.familyHistory .label { display: inline-block; width: 125px; }
+div.familyHistory .data { display: inline-block; }
+div.familyHistory { margin-bottom: 10px; }
+div.familyHistory #comments { width: 439px; }
+
+div.episodeMetadata { margin-left: 10px; }

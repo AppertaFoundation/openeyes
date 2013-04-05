@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -159,7 +159,7 @@ if (!empty($address)) {
 										<th width="33%">Name</th>
 										<th>Location</th>
 										<th>Type</th>
-										<th colspan="2"></th>
+										<?php if(BaseController::checkUserLevel(3)) { ?><th colspan="2"></th><?php } ?>
 									</tr>
 								</thead>
 								<tbody id="patient_contacts">	
@@ -198,12 +198,15 @@ if (!empty($address)) {
 												}
 												?>
 											</td>
+											<?php if(BaseController::checkUserLevel(3)) { ?>
 											<td colspan="2" align="right"><?php /*<a href="#" class="small"><strong>Edit</strong></a>&nbsp;&nbsp;*/?><a id="removecontact<?php echo $pca->contact->id?>_<?php echo $pca->site_id?>_<?php echo $pca->institution_id?>" href="#" class="small"><strong>Remove</strong></a></td>
+											<?php } ?>
 										</tr>
 									<?php }?>
 								</tbody>
 							</table>	
 						</div>
+						<?php if(BaseController::checkUserLevel(3)) { ?>
 						<div class="data_tow">
 							<span>Add contact:</span>
 							<?php
@@ -295,9 +298,11 @@ if (!empty($address)) {
 							&nbsp;
 							<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
 						</div>
+						<?php } ?>
 					</div>
 				</div>
 
+				<?php if(BaseController::checkUserLevel(2)) { ?>
 				<div class="halfColumnRight">
 					<div class="blueBox">
 						<h5>All Episodes<span style="float:right;">&nbsp; open <?php echo $episodes_open?> &nbsp;|&nbsp;<span style="font-weight:normal;">closed <?php echo $episodes_closed?></span></span></h5>
@@ -332,7 +337,8 @@ if (!empty($address)) {
 							<?php }?>
 						</div> <!-- .grid-view -->
 					</div>	<!-- .blueBox -->
-					<p><?php echo CHtml::link('<span class="aPush">Create or View Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
+					<?php $episodes_link = (BaseController::checkUserLevel(3)) ? 'Create or View' : 'View';  ?>
+					<p><?php echo CHtml::link('<span class="aPush">'.$episodes_link.' Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 					<?php
 					try {
 						echo $this->renderPartial('custom/info');
@@ -346,6 +352,8 @@ if (!empty($address)) {
 							} catch (Exception $e) {}
 						}
 						$this->renderPartial('_systemic_diagnoses');
+						$this->renderPartial('_previous_operations');
+						$this->renderPartial('_medications');
 						// specialist extra data
 						foreach ($codes as $code) {
 							try {
@@ -353,9 +361,11 @@ if (!empty($address)) {
 							} catch (Exception $e) {}
 						}
 						$this->renderPartial('_allergies'); 
+						$this->renderPartial('_family_history');
 					}
 					?>
 				</div> <!-- .halfColumn -->
+				<?php } ?>
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
 				$(document).ready(function() {
@@ -385,7 +395,6 @@ if (!empty($address)) {
 								}
 							},
 							'error': function() {
-								console.log('error with remove call');
 								alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
 							}
 						});
