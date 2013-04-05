@@ -24,7 +24,7 @@ class ModuleAPI extends CApplicationComponent {
 
 			$APIClass = $moduleName.'_API';
 
-			if (file_exists(Yii::app()->basePath."modules/$moduleName/components/{$moduleName}_API.php")) {
+			if (file_exists(Yii::app()->basePath."/modules/$moduleName/components/{$moduleName}_API.php")) {
 				if (class_exists($APIClass)) {
 					return new $APIClass;
 				}
