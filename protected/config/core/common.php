@@ -140,6 +140,9 @@ return array(
 			'connectionID' => 'db',
 			'sessionTableName' => 'user_session',
 			'autoCreateSessionTable' => false
+			/*'cookieParams' => array(
+				'lifetime' => 300,
+			),*/
 		),
 	),
 	'params'=>array(
