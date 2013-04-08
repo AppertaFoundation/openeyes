@@ -17,21 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php if (!@$htmlOptions['nowrapper']) {?><div id="div_<?php echo get_class($element)?>_<?php echo $field?>_TextSelection" class="eventDetail">
-	<div class="label"><?php echo $element->getAttributeLabel($field)?>:</div>
+<?php
+	$no_wrapper = false;
+	if(@$htmlOptions['nowrapper']) {
+		$no_wrapper = true;
+		unset($htmlOptions['nowrapper']);
+	}
+	$htmlOptions['class'] = @$htmlOptions['class'];
+	$htmlOptions['class'] .= ' dropDownTextSelection';
+	if(@$htmlOptions['delimited']) {
+		$htmlOptions['class'] .= ' delimited';
+		unset($htmlOptions['delimited']);
+	}
+	$htmlOptions['id'] = 'dropDownTextSelection_'.get_class($element).'_'.$field;
+	if(!$htmlOptions['empty']) {
+		$htmlOptions['empty'] = '- Please select -';
+	}
+?>
+<?php if (!$no_wrapper) { ?>
+<div id="div_<?php echo get_class($element) ?>_<?php echo $field ?>_TextSelection" class="eventDetail">
+	<div class="label"><?php echo $element->getAttributeLabel($field) ?>:</div>
 	<div class="data">
-	<?php }?>
-		<select class="dropDownTextSelection<?php if(@$htmlOptions['delimited']) { echo ' delimited'; } ?><?php if (isset($htmlOptions['class'])) echo ' '.$htmlOptions['class']?>" id="dropDownTextSelection_<?php echo get_class($element) ?>_<?php echo $field ?>">
-			<?php if (isset($htmlOptions['empty'])) {?>
-				<option value=""><?php echo $htmlOptions['empty']?></option>
-			<?php }else{?>
-				<option value="">- Please select -</option>
-			<?php }?>
-			<?php foreach ($options as $id => $content) {?>
-				<option value="<?php echo $id?>"><?php echo $content?></option>
-			<?php }?>
-		</select>
-		<?php if (!@$htmlOptions['nowrapper']) {?>
+		<?php }?>
+		<?php echo CHtml::dropDownList('', null, $options, $htmlOptions); ?>
+		<?php if (!$no_wrapper) { ?>
 	</div>
 </div>
-<?php }?>
+<?php } ?>
