@@ -1514,3 +1514,4 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
 #div_Firm_consultant_id { margin-top: 2px; }
+div.episodeMetadata { margin-left: 10px; }
