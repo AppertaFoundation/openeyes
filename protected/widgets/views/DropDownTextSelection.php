@@ -30,7 +30,7 @@
 		unset($htmlOptions['delimited']);
 	}
 	$htmlOptions['id'] = 'dropDownTextSelection_'.get_class($element).'_'.$field;
-	if(!$htmlOptions['empty']) {
+	if(!@$htmlOptions['empty']) {
 		$htmlOptions['empty'] = '- Please select -';
 	}
 ?>
