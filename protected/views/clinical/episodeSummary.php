@@ -102,6 +102,19 @@ if (!empty($episode)) {
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
 </div>
+
+<div class="eventData">
+	<?php foreach (EventType::model()->getEventTypeModules() as $event_type) {
+		if ($api = $event_type->api) {
+			if ($eventData = $api->getEpisodeHTML($episode->id)) {?>
+				<div>
+					<?php echo $eventData?>
+				</div>
+			<?php }
+		}
+	}?>
+</div>
+
 <script type="text/javascript">
 	$('#closelink').click(function() {
 		$('#dialog-confirm').dialog({

@@ -1530,3 +1530,5 @@ div.familyHistory .label { display: inline-block; width: 125px; }
 div.familyHistory .data { display: inline-block; }
 div.familyHistory { margin-bottom: 10px; }
 div.familyHistory #comments { width: 439px; }
+
+div.episodeMetadata { margin-left: 10px; }

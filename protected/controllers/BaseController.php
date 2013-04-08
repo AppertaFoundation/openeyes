@@ -104,7 +104,6 @@ class BaseController extends Controller
 			$css_array[$css_item['path']] = $css_item['priority'];
 		}
 		arsort($css_array);
-		Yii::log(var_export($css_array,true), 'trace');
 		$clientscript = Yii::app()->clientScript;
 		foreach($css_array as $path => $priority) {
 			$clientscript->registerCssFile($path);
