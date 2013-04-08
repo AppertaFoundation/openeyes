@@ -297,12 +297,11 @@ class User extends BaseActiveRecord
 
 		return $users;
 	}
-	/*
-	 * returns the users that are eligible to be considered surgeons.
-	 * 
-	 * @return array(User) - list of surgeon users
+	/**
+	 * Returns the users that are eligible to be considered surgeons.
+	 * @return User[] List of surgeon users
 	 */
-	public function getSurgeons() {
+	public static function getSurgeons() {
 		$criteria = new CDbCriteria;
 		$criteria->compare('is_doctor',1);
 		$criteria->compare('active',1);
