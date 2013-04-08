@@ -89,17 +89,20 @@ class TreeBehavior extends CActiveRecordBehavior {
 	*/
 	protected function _descendentIds($db, $tree_table, $obj_id) {
 		$limits = $this->_treeLimits($db, $tree_table, $obj_id);
-		$sql_strs = array();
-		foreach ($limits as $l) {
-			$sql_strs[] = $this->leftAttribute . ' > ' . $l[0] . ' AND ' . $this->rightAttribute . ' <  ' . $l[1];
-		}
-	
-		$query = 'SELECT id FROM ' . $tree_table . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
-		$res = $db->createCommand($query)->query();
-	
 		$ids = array();
-		foreach ($res as $r) {
-			$ids[] = $r['id'];
+		if (count($limits)) {
+			$sql_strs = array();
+			foreach ($limits as $l) {
+				$sql_strs[] = $this->leftAttribute . ' > ' . $l[0] . ' AND ' . $this->rightAttribute . ' <  ' . $l[1];
+			}
+		
+			$query = 'SELECT id FROM ' . $tree_table . ' WHERE (' . implode(') OR (', $sql_strs ) . ') ORDER BY lft';
+			$res = $db->createCommand($query)->query();
+		
+			
+			foreach ($res as $r) {
+				$ids[] = $r['id'];
+			}
 		}
 	
 		return $ids;
