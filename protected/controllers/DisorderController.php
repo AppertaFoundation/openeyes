@@ -50,10 +50,7 @@ class DisorderController extends BaseController {
 				$criteria->join = 'join specialty on specialty_id = specialty.id AND specialty.code = :specode';
 				$params[':specode'] = $_GET['code'];
 			}
-			else {
-				$criteria->addCondition('specialty_id is null');
-			}
-			
+
 			$criteria->params = $params;
 			
 			$disorders = Disorder::model()->findAll($criteria);

@@ -154,7 +154,12 @@ $(document).ready(function() {
 			// Update waypoints to cope with change in page size
 			$.waypoints('refresh');
 			
+			// Update text macros (if defined)
+			if(typeof updateTextMacros == 'function') {
+				updateTextMacros();
+			}
 		});
+		
 	}
 
 	/**
@@ -258,6 +263,10 @@ $(document).ready(function() {
 		// Update waypoints to cope with change in page size
 		$.waypoints('refresh');
 		
+		// Update text macros (if defined)
+		if(typeof updateTextMacros == 'function') {
+			updateTextMacros();
+		}
 	}
 	
 	/**

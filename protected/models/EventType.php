@@ -171,4 +171,8 @@ class EventType extends BaseActiveRecord
 		}
 		return "The ".$this->name." module will be available in an upcoming release.";
 	}
+
+	public function getApi() {
+		return Yii::app()->moduleAPI->get($this->class_name);
+	}
 }

@@ -29,6 +29,11 @@
 				<?php echo CHtml::textField($name, $value, $htmlOptions)?>
 			<?php } ?>
 			<?php echo @$htmlOptions['append_text']?>
+			<?php if (!empty($links)) {
+				foreach ($links as $link) {
+					echo CHtml::link($link['title'],$link['href'],array('id'=>$link['id']));
+				}
+			}?>
 		</div>
 	</div>
 <?php }?>

@@ -51,11 +51,13 @@ class BaseEventTypeElement extends BaseElement {
 	 * @return array
 	 */
 	public function getChildren() {
-		$child_element_types = ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
 		$child_elements = array();
-		foreach($child_element_types as $child_element_type) {
-			if($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
-				$child_elements[] = $element;
+		if($this->event_id) {
+			$child_element_types = ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
+			foreach($child_element_types as $child_element_type) {
+				if($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
+					$child_elements[] = $element;
+				}
 			}
 		}
 		return $child_elements;

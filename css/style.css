@@ -745,7 +745,7 @@ span.surname { font-weight: bold; }
 /* Clinicians only info */
 .whiteBox.forClinicians { border:1px solid #999; position:relative;}
 .whiteBox.forClinicians h4 { display:inline-block; padding:5px 10px 5px 45px; font-size:12px; color:#fff; background:#999; margin-bottom: 0; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
-.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient-clinician-hd_flag.png) top left no-repeat;	}
+.whiteBox.forClinicians .icon_patientIssue { position:absolute; top:4px; left:10px; z-index:1; width:36px; height:35px; background:transparent url(../img/_elements/icons/patient/clinician-hd_flag.png) top left no-repeat;	}
 .whiteBox.forClinicians .fuzzyDate { font-family:Georgia Times sans-serif; font-style: italic;	color:#666; }
 
 /* for fullWidth Episode Summary, need to control the vertical spacing in case of 2+ rows */
@@ -1520,3 +1520,4 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
 #div_Firm_consultant_id { margin-top: 2px; }
+div.episodeMetadata { margin-left: 10px; }
