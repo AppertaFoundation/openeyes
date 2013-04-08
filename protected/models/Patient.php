@@ -1001,4 +1001,18 @@ class Patient extends BaseActiveRecord {
 			}
 		}
 	}
+
+	public function getEpc() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			if ($user = $episode->firm->getConsultantUser()) {
+				return $user->fullName;
+			}
+		}
+	}
+
+	public function getEpv() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			return $episode->firm->serviceSubspecialtyAssignment->service->name;
+		}
+	}
 }
