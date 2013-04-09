@@ -45,6 +45,7 @@ $(document).ready(function() {
 			$(this).val('');
 		}
 
+		$(this).trigger('MultiSelectChanged');
 		return false;
 	});
 
@@ -72,7 +73,9 @@ $(document).ready(function() {
 
 		$(this).parent().next().remove();
 		$(this).parent().remove();
-
+		
+		$(select).trigger('MultiSelectChanged');
+		
 		return false;
 	});
 });
