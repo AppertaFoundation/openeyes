@@ -101,6 +101,8 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/patientSummary.js'));
+
 		$this->patient = $this->loadModel($id);
 
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
@@ -128,6 +130,12 @@ class PatientController extends BaseController
 				$episodes_closed++;
 			}
 		}
+
+		$this->jsVars['currentContacts'] = $this->patient->currentContactLocationIDS();
+
+		$this->breadcrumbs=array(
+			$this->patient->first_name.' '.$this->patient->last_name. '('.$this->patient->hos_num.')',
+		);
 
 		$this->render('view', array(
 			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
@@ -543,146 +551,17 @@ class PatientController extends BaseController
 	}
 
 	public function actionPossiblecontacts() {
-		$contacts = array();
-
 		$term = strtolower(trim($_GET['term'])).'%';
 
-		if (@$_GET['filter'] == 'gp') {
-			$where = "parent_class = 'Gp'";
-		} else if (@$_GET['filter'] == 'consultant') {
-			$where = "parent_class = 'Consultant'";
-		} else if (@$_GET['filter'] == 'specialist') {
-			$where = "parent_class = 'Specialist'";
-		} else if (@$_GET['filter'] == 'moorfields') {
-			$where = "user_id is not null";
-		} else {
-			$where = "parent_class in ('Consultant','Specialist')";
-		}
-
-		foreach (Yii::app()->db->createCommand()
-			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
-			->from('contact')
-			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
-			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(contact.last_name) LIKE :term AND $where and (user_contact_assignment.id is null or active != 0)", array(':term' => $term))
-			->order('title asc, contact.first_name asc, contact.last_name asc')
-			->queryAll() as $contact) {
-
-			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
-
-			if ($contact['parent_class'] == 'Consultant') {
-				$institutions = array();
-
-				if ($contact['title']) {
-					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
-				}
-
-				$found_locations = false;
-
-				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
-					if (!in_array($sca->site->institution_id,$institutions)) {
-						$institutions[] = $sca->site->institution_id;
-					}
-
-					$contacts[] = array(
-						'line' => $line.', '.$sca->site->name.')',
-						'contact_id' => $contact['id'],
-						'site_id' => $sca->site_id,
-					);
-
-					$found_locations = true;
-				}
-
-				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->institution_id,$institutions)) {
-
-						$contacts[] = array(
-							'line' => $line.', '.$ica->institution->name.')',
-							'contact_id' => $contact['id'],
-							'institution_id' => $ica->institution_id,
-						);
-
-						$found_locations = true;
-					}
-				}
-
-				if ($contact['user_id'] && !$found_locations) {
-					$institution = Institution::model()->findByPk(1);
-
-					$contacts[] = array(
-						'line' => $line.', '.$institution->name.')',
-						'contact_id' => $contact['id'],
-						'institution_id' => $institution->id,
-					);
-				}
-
-			} else if ($contact['parent_class'] == 'Specialist') {
-				$sites = array();
-
-				foreach (SiteSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->site_id,$sites)) {
-						if ($contact['title']) {
-							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-						} else {
-							$contact_line = $contact['first_name'].' '.$contact['last_name'];
-						}
-
-						$specialist = Specialist::model()->findByPk($contact['parent_id']);
-
-						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->site->name.")";
-
-						$contacts[] = array(
-							'line' => $contact_line,
-							'contact_id' => $contact['id'],
-							'site_id' => $ica->site_id,
-						);
-					}
-				}
-
-				$institutions = array();
-
-				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->institution_id,$institutions)) {
-						if ($contact['title']) {
-							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-						} else {
-							$contact_line = $contact['first_name'].' '.$contact['last_name'];
-						}
-
-						$specialist = Specialist::model()->findByPk($contact['parent_id']);
-
-						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->institution->name.")";
-
-						$contacts[] = array(
-							'line' => $contact_line,
-							'contact_id' => $contact['id'],
-							'institution_id' => $ica->institution_id,
-						);
-					}
-				}
-			} else if ($contact['user_id']) {
-				$user = User::model()->findByPk($contact['user_id']);
-
-				if (!($role = $user->role)) {
-					$role = 'Staff';
-				}
-
-				$institution = Institution::model()->find('code=?',array('RP6'));
-
-				$contacts[] = array(
-					'line' => trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name']).' ('.$role.', '.$institution->name.')',
-					'contact_id' => $contact['id'],
-					'institution_id' => $institution->id,
-				);
-
-			} else {
-				$contact = Contact::model()->findByPk($contact['id']);
-
-				$contacts[] = array(
-					'line' => $line.($contact->address ? ', '.$contact->address->address1 : '').')',
-					'contact_id' => $contact['id'],
-				);
-			}
+		switch (@$_GET['filter']) {
+			case 'users':
+				$contacts = $this->usersAsContacts($term);
+				break;
+			case 'nonophthalmic':
+				$contacts = $this->contactsByLabel($term, 'Consultant Ophthalmologist', true);
+				break;
+			default:
+				$contacts = $this->contactsByLabel($term, @$_GET['filter']);
 		}
 
 		sort($contacts);
@@ -690,135 +569,94 @@ class PatientController extends BaseController
 		echo CJavaScript::jsonEncode($contacts);
 	}
 
+	public function usersAsContacts($term) {
+		$contacts = array();
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
+		$criteria->compare('active',1);
+		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+
+		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
+			foreach ($user->contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $user->contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
+	public function contactsByLabel($term, $label, $exclude=false) {
+		if (!$cl = ContactLabel::model()->find('name=?',array($label))) {
+			throw new Exception("Unknown contact label: $label");
+		}
+		
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition('lower(last_name)',$term,false);
+		if ($exclude) {
+			$criteria->compare('contact_label_id','<>'.$cl->id);
+		} else {
+			$criteria->compare('contact_label_id',$cl->id);
+		}
+		$criteria->order = 'title, first_name, last_name';
+
+		foreach (Contact::model()->findAll($criteria) as $contact) {
+			foreach ($contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
 	public function actionAssociatecontact() {
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception('Patient not found: '.@$_GET['patient_id']);
 		}
 
-		$params = $_GET;
-
-		if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
-			throw new Exception("Can't find contact: ".$params['contact_id']);
+		if (!$location = ContactLocation::model()->findByPk(@$_GET['contact_location_id'])) {
+			throw new Exception("Can't find contact location: ".@$_GET['contact_location_id']);
 		}
 
-		if ($contact->parent_class == 'Specialist') {
-			$specialist = Specialist::model()->findByPk($contact->parent_id);
-			$type = $specialist->specialist_type->name;
-		} else if ($contact->parent_class == 'Consultant') {
-			$type = 'Consultant Ophthalmologist';
-		} else if ($uca = UserContactAssignment::model()->find('contact_id=?',array($contact->id))) {
-			if (!($type = $uca->user->role)) {
-				$type = 'Staff';
-			}
-		} else {
-			$type = $contact->parent_class;
-		}
-
-		$data = array(
-			'id' => $contact->id,
-			'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
-			'qualifications' => $contact->qualifications,
-			'type' => $type,
-			'site_id' => '',
-			'institution_id' => '',
-		);
-
-		if (isset($params['site_id'])) {
-			$data['location'] = Site::model()->findByPk($params['site_id'])->name;
-			$data['site_id'] = $params['site_id'];
-		} else if (isset($params['institution_id'])) {
-			$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
-			$data['institution_id'] = $params['institution_id'];
-		} else if ($contact->address) {
-			$data['location'] = $contact->address->address1;
-		}
-
-		foreach ($data as $key => $value) {
-			if ($value == null) {
-				$data[$key] = '';
+		// Don't assign the patient's own GP
+		if ($location->contact->label == 'General Practitioner') {
+			if ($gp = Gp::model()->find('contact_id=?',array($location->contact_id))) {
+				if ($gp->id == $patient->gp_id) {
+					return;
+				}
 			}
 		}
 
-		if ($contact->parent_class == 'Gp') {
-			$gp = Gp::model()->findByPk($contact->parent_id);
-			if ($patient->gp->id == $gp->id) {
-				echo json_encode(array());
-				return;
-			}
-		}
-
-		$whereClause = 'patient_id=? and contact_id=?';
-		$whereParams = array($patient->id,$contact->id);
-
-		if (isset($params['site_id'])) {
-			$whereClause .= ' and site_id=?';
-			$whereParams[] = $params['site_id'];
-		}
-		if (isset($params['institution_id'])) {
-			$whereClause .= ' and institution_id=?';
-			$whereParams[] = $params['institution_id'];
-		}
-
-		if (!$pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
+		if (!$pca = PatientContactAssignment::model()->find('patient_id=? and location_id=?',array($patient->id,$location->id))) {
 			$pca = new PatientContactAssignment;
 			$pca->patient_id = $patient->id;
-			$pca->contact_id = $contact->id;
-			if (isset($params['site_id'])) {
-				$pca->site_id = $params['site_id'];
-			}
-			if (isset($params['institution_id'])) {
-				$pca->institution_id = $params['institution_id'];
-			}
-			$pca->save();
+			$pca->location_id = $location->id;
 
-			$patient->audit('patient','associate-contact',$pca->getAuditAttributes());
+			if (!$pca->save()) {
+				throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+			}
 		}
 
-		echo json_encode($data);
+		$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
 	}
 
 	public function actionUnassociatecontact() {
-		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
-			throw new Exception('Patient not found: '.@$_GET['patient_id']);
-		}
-		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
-			throw new Exception('Contact not found: '.@$_GET['contact_id']);
+		if (!$pca = PatientContactAssignment::model()->findByPk(@$_GET['pca_id'])) {
+			throw new Exception("Patient contact assignment not found: ".@$_GET['pca_id']);
 		}
 
-		if (@$_GET['site_id']) {
-			if (!$site = Site::model()->findByPk($_GET['site_id'])) {
-				throw new Exception('Site not found: '.$_GET['site_id']);
-			}
+		if (!$pca->delete()) {
+			echo "0";
+		} else {
+			$pca->patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
+			echo "1";
 		}
-
-		if (@$_GET['institution_id']) {
-			if (!$institution = Institution::model()->findByPk($_GET['institution_id'])) {
-				throw new Exception('Institution not found: '.$_GET['institution_id']);
-			}
-		}
-
-		$whereClause = 'patient_id=? and contact_id=?';
-		$whereParams = array($patient->id,$contact->id);
-
-		if (isset($site)) {
-			$whereClause .= ' and site_id=?';
-			$whereParams[] = $site->id;
-		}
-		if (isset($institution)) {
-			$whereClause .= ' and institution_id=?';
-			$whereParams[] = $institution->id;
-		}
-
-		if ($pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
-			if (!$pca->delete()) {
-				echo "0";
-				return;
-			}
-
-			$patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
-		}
-
-		echo "1";
 	}
 
 	/**
@@ -1003,7 +841,7 @@ class PatientController extends BaseController
 
 		$command = Yii::app()->db->createCommand()
 			->from("patient p")
-			->join("contact c","c.parent_class = 'Patient' and c.parent_id = p.id");
+			->join("contact c","p.contact_id = c.id");
 
 		if (!empty($params['principal'])) {
 			foreach ($params['principal'] as $i => $disorder_id) {
@@ -1253,5 +1091,12 @@ class PatientController extends BaseController
 		}
 
 		echo 'success';
+	}
+
+	public function processJsVars() {
+		if ($this->patient) {
+			$this->jsVars['OE_patient_id'] = $this->patient->id;
+		}
+		return parent::processJsVars();
 	}
 }

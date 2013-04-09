@@ -34,7 +34,6 @@
 class Firm extends BaseActiveRecord
 {
 	public $subspecialty_id;
-	public $consultant_id;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -84,6 +83,7 @@ class Firm extends BaseActiveRecord
 			'firmUserAssignments' => array(self::HAS_MANY, 'FirmUserAssignment', 'firm_id'),
 			'letterPhrases' => array(self::HAS_MANY, 'LetterPhrase', 'firm_id'),
 			'members' => array(self::MANY_MANY, 'User', 'firm_user_assignment(firm_id, user_id)'),
+			'consultant' => array(self::BELONGS_TO, 'User', 'consultant_id'),
 		);
 	}
 
@@ -244,58 +244,11 @@ class Firm extends BaseActiveRecord
 		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
 	}
 
-	/**
-	 * Returns the consultant for the firm
-	 *
-	 * @return object
-	 */
-	public function getConsultant() {
-		$result = Yii::app()->db->createCommand()
-			->select('cslt.id AS id')
-			->from('consultant cslt')
-			->join('contact c', "c.parent_id = cslt.id and c.parent_class = 'Consultant'")
-			->join('user_contact_assignment uca', 'uca.contact_id = c.id')
-			->join('user u', 'u.id = uca.user_id')
-			->join('firm_user_assignment fua', 'fua.user_id = u.id')
-			->join('firm f', 'f.id = fua.firm_id')
-			->where('f.id = :fid', array(
-				':fid' => $this->id
-			))
-			->queryRow();
-
-		if (empty($result)) {
-			return null;
-		} else {
-			return Consultant::model()->findByPk($result['id']);
-		}
-	}
-
 	public function getConsultantName() {
 		if ($consultant = $this->consultant) {
 			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
 		}
 		return 'NO CONSULTANT';
-	}
-
-	public function getConsultantUser() {
-		$result = Yii::app()->db->createCommand()
-			->select('u.id as id')
-			->from('consultant cslt')
-			->join('contact c', "c.parent_id = cslt.id and c.parent_class = 'Consultant'")
-			->join('user_contact_assignment uca', 'uca.contact_id = c.id')
-			->join('user u', 'u.id = uca.user_id')
-			->join('firm_user_assignment fua', 'fua.user_id = u.id')
-			->join('firm f', 'f.id = fua.firm_id')
-			->where('f.id = :fid', array(
-				':fid' => $this->id
-			))
-			->queryRow();
-
-		if (empty($result)) {
-			return null;
-		} else {
-			return User::model()->findByPk($result['id']);
-		}
 	}
 
 	public function getReportDisplay() {
@@ -326,62 +279,5 @@ class Firm extends BaseActiveRecord
 		}
 
 		return parent::beforeSave();
-	}
-
-	protected function afterSave() {
-		if ($this->consultant_id) {
-			if ($user = User::model()->findByPk($this->consultant_id)) {
-				if (!$this->getConsultantUser() || $this->getConsultantUser()->id != $user->id) {
-					if (!$fua = FirmUserAssignment::model()->find('firm_id=?',array($this->id))) {
-						$fua = new FirmUserAssignment;
-						$fua->firm_id = $this->id;
-					}
-					$fua->user_id = $user->id;
-					if (!$fua->save()) {
-						throw new Exception("Unable to save firm_user_assignment: ".print_r($fua->getErrors(),true));
-					}
-					if (!$uca = UserContactAssignment::model()->find('user_id=?',array($user->id))) {
-						$consultant = new Consultant;
-						if (!$consultant->save(false)) {
-							throw new Exception("Unable to create new consultant: ".print_r($consultant->getErrors(),true));
-						}
-
-						$contact = new Contact;
-						$contact->title = $user->title;
-						$contact->first_name = $user->first_name;
-						$contact->last_name = $user->last_name;
-						$contact->qualifications = $user->qualifications;
-						$contact->parent_class = 'Consultant';
-						$contact->parent_id = $consultant->id;
-						if (!$contact->save(false)) {
-							throw new Exception("Unable to create contact: ".print_r($contact->getErrors(),true));
-						}
-
-						$uca = new UserContactAssignment;
-						$uca->user_id = $user->id;
-						$uca->contact_id = $contact->id;
-						if (!$uca->save()) {
-							throw new Exception("Unable to create user_contact_assignment: ".print_r($uca->getErrors(),true));
-						}
-					}
-					if ($uca->contact->parent_class != 'Consultant') {
-						$consultant = new Consultant;
-						if (!$consultant->save(false)) {
-							throw new Exception("Unable to create new consultant: ".print_r($consultant->getErrors(),true));
-						}
-
-						$contact = $uca->contact;
-						$contact->parent_class = 'Consultant';
-						$contact->parent_id = $consultant->id;
-						if (!$contact->save()) {
-							throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
-						}
-					}
-				}
-				$this->consultant_id = null;
-			} else {
-				throw new Exception("User not found: $this->consultant_id");
-			}
-		}
 	}
 }

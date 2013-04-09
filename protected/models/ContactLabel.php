@@ -18,22 +18,18 @@
  */
 
 /**
- * This is the model class for table "patient_contact_assignment".
+ * This is the model class for table "contact_label".
  *
- * The followings are the available columns in table 'patient_contact_assignment':
- * @property integer $id
- * @property integer $patient_id
- * @property integer $contact_id
- *
- * The followings are the available model relations:
- * @property Patient $patient
- * @property Contact $contact
+ * The followings are the available columns in table 'contact_label':
+ * @property string $id
+ * @property string $name
+ * @property integer $letter_template_only
  */
-class PatientContactAssignment extends BaseActiveRecord
+class ContactLabel extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return FirmUserAssignment the static model class
+	 * @return ContactLabel the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,7 +41,7 @@ class PatientContactAssignment extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'patient_contact_assignment';
+		return 'contact_label';
 	}
 
 	/**
@@ -53,12 +49,12 @@ class PatientContactAssignment extends BaseActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
+			array('name', 'required'),
+			array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,8 +66,6 @@ class PatientContactAssignment extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-			'location' => array(self::BELONGS_TO, 'ContactLocation', 'location_id'),
 		);
 	}
 
@@ -82,8 +76,8 @@ class PatientContactAssignment extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'patient_id' => 'Patient',
-			'contact_id' => 'Contact',
+			'name' => 'Name',
+			'letter_template_only' => 'Letter Template Only',
 		);
 	}
 
@@ -99,22 +93,18 @@ class PatientContactAssignment extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('created_user_id',$this->created_user_id,true);
+		$criteria->compare('name',$this->name,true);
+		$criteria->compare('letter_template_only', 0);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public function getAddress() {
-		if ($this->site) {
-			return $this->site;
+	static public function staffType() {
+		if ($site = Site::model()->findByPk(Yii::app()->session['selected_site_id'])) {
+			return ($site->institution->short_name ? $site->institution->short_name : $site->institution->name) . ' staff';
 		}
-
-		if ($this->institution ) {
-			return $this->institution->address ? $this->institution->address : false;
-		}
-
-		return $this->contact->address;
+		return 'Staff';
 	}
 }

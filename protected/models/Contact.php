@@ -92,6 +92,8 @@ class Contact extends BaseActiveRecord {
 				'order' => "FIELD(type,'C') DESC, date_start DESC",
 				'on' => "parent_class = 'Contact'",
 			),
+			'label' => array(self::BELONGS_TO, 'ContactLabel', 'contact_label_id'),
+			'locations' => array(self::HAS_MANY, 'ContactLocation', 'contact_id'),
 		);
 	}
 
@@ -103,11 +105,11 @@ class Contact extends BaseActiveRecord {
 		return array(
 			'id' => 'ID',
 			'nick_name' => 'Nick Name',
- 			'primary_phone' => 'Primary Phone Number',
- 			'title' => 'Title',
- 			'first_name' => 'First Name',
- 			'last_name' => 'Last Name',
- 			'qualifications' => 'Qualifications',
+			'primary_phone' => 'Primary Phone Number',
+			'title' => 'Title',
+			'first_name' => 'First Name',
+			'last_name' => 'Last Name',
+			'qualifications' => 'Qualifications',
 		);
 	}
 
@@ -181,5 +183,9 @@ class Contact extends BaseActiveRecord {
 			return '';
 		}
 		return 'Consultant';
+	}
+
+	public function contactLine($location) {
+		return $this->fullName.' ('.$this->label->name.', '.$location.')';
 	}
 }

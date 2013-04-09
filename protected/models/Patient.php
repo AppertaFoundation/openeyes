@@ -130,9 +130,7 @@ class Patient extends BaseActiveRecord {
 				'on' => "parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
 			),
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Patient'",
-			),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
@@ -164,7 +162,7 @@ class Patient extends BaseActiveRecord {
 	public function search_nr($params)
 	{
 		$criteria=new CDbCriteria;
-		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
+		$criteria->join = "JOIN contact ON contact_id = contact.id";
 		$criteria->compare('LOWER(first_name)',strtolower($params['first_name']),false);
 		$criteria->compare('LOWER(last_name)',strtolower($params['last_name']),false);
 		$criteria->compare('dob',$this->dob,false);
@@ -190,7 +188,7 @@ class Patient extends BaseActiveRecord {
 		}
 
 		$criteria=new CDbCriteria;
-		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
+		$criteria->join = "JOIN contact ON contact_id = contact.id";
 		$criteria->compare('LOWER(contact.first_name)',strtolower($params['first_name']), false);
 		$criteria->compare('LOWER(contact.last_name)',strtolower($params['last_name']), false);
 		if (strlen($this->nhs_num) == 10) {
@@ -544,7 +542,11 @@ class Patient extends BaseActiveRecord {
 		
 		return $address; 
 	}
-	
+
+	public function getSummaryAddress() {
+		return $this->address ? $this->address->getLetterHtml() : 'Unknown';
+	}
+
 	public function getAllergiesString() {
 		$allergies = array();
 		foreach($this->allergies as $allergy) {
@@ -987,5 +989,13 @@ class Patient extends BaseActiveRecord {
 		if (!$fh->save()) {
 			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
 		}
+	}
+
+	public function currentContactLocationIDS() {
+		$ids = array();
+		foreach ($this->contactAssignments as $pca) {
+			$ids[] = $pca->location_id;
+		}
+		return $ids;
 	}
 }

@@ -18,18 +18,18 @@
  */
 
 /**
- * This is the model class for table "contact_type".
+ * This is the model class for table "contact_location".
  *
- * The followings are the available columns in table 'contact_type':
+ * The followings are the available columns in table 'contact_location':
  * @property string $id
  * @property string $name
  * @property integer $letter_template_only
  */
-class ContactType extends BaseActiveRecord
+class ContactLocation extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContactType the static model class
+	 * @return ContactLocation the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -41,7 +41,7 @@ class ContactType extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contact_type';
+		return 'contact_location';
 	}
 
 	/**
@@ -50,8 +50,6 @@ class ContactType extends BaseActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name', 'required'),
-			array('name', 'length', 'max'=>40),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, name', 'safe', 'on'=>'search'),
@@ -66,18 +64,20 @@ class ContactType extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+			'location' => array(self::BELONGS_TO, 'Location', 'location_id'),
 		);
 	}
 
 	/**
-	 * @return array customized attribute labels (name=>label)
+	 * @return array customized attribute locations (name=>location)
 	 */
-	public function attributeLabels()
+	public function attributeLocations()
 	{
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-			'letter_template_only' => 'Letter Template Only',
 		);
 	}
 
@@ -94,10 +94,13 @@ class ContactType extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('letter_template_only', 0);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+
+	public function __toString() {
+		return $this->site ? $this->site->name : $this->institution->name;
 	}
 }
