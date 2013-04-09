@@ -19,10 +19,10 @@
 ?>
 <?php 
 if (isset($htmlOptions['options'])) {
-	$options = $htmlOptions['options'];
+	$opts = $htmlOptions['options'];
 }
 else {
-	$options = array();
+	$opts = array();
 }
 
 if (isset($htmlOptions['div_id'])) {
@@ -31,7 +31,7 @@ if (isset($htmlOptions['div_id'])) {
 else {
 	// for legacy, this is the original definition of the div id that was created for the multiselect
 	// not recommended as it doesn't allow for sided uniqueness
-	$div_id = "div_" . $element . "_" . @$htmlOptions['label'];
+	$div_id = "div_" . get_class($element) . "_" . @$htmlOptions['label'];
 }
 ?>
 
@@ -43,8 +43,8 @@ else {
 			<option value=""><?php echo $htmlOptions['empty']?></option>
 			<?php foreach ($filtered_options as $value => $option) {
 				$attributes = array('value' => $value);
-				if (isset($options[$value])) {
-					$attributes = array_merge($attributes, $options[$value]);
+				if (isset($opts[$value])) {
+					$attributes = array_merge($attributes, $opts[$value]);
 				}
 				echo "<option";
 				foreach ($attributes as $att => $att_val) {
@@ -58,11 +58,11 @@ else {
 				<?php foreach ($selected_ids as $id) {
 					if (isset($options[$id])) {?>
 						<li>
-							<?php echo $options[$id]?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
+							<?php echo $options[$id] ?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
 						</li>
 						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>" 
-						<?php if (isset($options[$id])) {
-							foreach ($options[$id] as $key => $val) {
+						<?php if (isset($opts[$id])) {
+							foreach ($opts[$id] as $key => $val) {
 								echo " " . $key . "=\"" . $val . "\"";	
 							}
 						}?>
