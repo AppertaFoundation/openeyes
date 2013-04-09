@@ -110,8 +110,6 @@
 		$('#edit_operation_id').val('');
 		$('div.previousOperation input[name="previous_operation_side"][value=""]').attr('checked','checked');
 		var d = new Date;
-		$('div.previousOperation select[name="fuzzy_day"]').val(d.getDate());
-		$('div.previousOperation select[name="fuzzy_month"]').val(d.getMonth()+1);
 		$('div.previousOperation select[name="fuzzy_year"]').val(d.getFullYear());
 		$('#add_previous_operation').slideToggle('fast');
 		$('#btn-add_previous_operation').attr('disabled',true);
