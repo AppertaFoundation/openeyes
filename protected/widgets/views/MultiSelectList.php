@@ -17,15 +17,30 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
+<?php if (isset($htmlOptions['options'])) {
+	$options = $htmlOptions['options'];
+}
+else {
+	$options = array();
+}?>
+
 <input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" />
 <div id="div_<?php echo get_class($element)?>_<?php echo @$htmlOptions['label']?>" class="eventDetail"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="label"><?php echo @$htmlOptions['label']?>:</div>
 	<div class="data">
 		<select label="<?php echo $htmlOptions['label']?>" class="MultiSelectList" name="">
 			<option value=""><?php echo $htmlOptions['empty']?></option>
-			<?php foreach ($filtered_options as $value => $option) {?>
-				<option value="<?php echo $value?>"><?php echo $option?></option>
-			<?php }?>
+			<?php foreach ($filtered_options as $value => $option) {
+				$attributes = array('value' => $value);
+				if (isset($options[$value])) {
+					$attributes = array_merge($attributes, $options[$value]);
+				}
+				echo "<option";
+				foreach ($attributes as $att => $att_val) {
+					echo " " . $att . "=\"" . $att_val . "\"";
+				} 
+				echo ">" . $option . "</option>";
+			}?>
 		</select>
 		<div class="MultiSelectList">
 			<ul class="MultiSelectList">
@@ -34,7 +49,13 @@
 						<li>
 							<?php echo $options[$id]?> (<a href="#" class="MultiSelectRemove <?php echo $id?>">remove</a>)
 						</li>
-						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>" />
+						<input type="hidden" name="<?php echo $field?>[]" value="<?php echo $id?>" 
+						<?php if (isset($options[$id])) {
+							foreach ($options[$id] as $key => $val) {
+								echo " " . $key . "=\"" . $val . "\"";	
+							}
+						}?>
+						/>
 					<?php }?>
 				<?php }?>
 			</ul>
