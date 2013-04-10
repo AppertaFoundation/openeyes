@@ -926,7 +926,7 @@ class Patient extends BaseActiveRecord {
 		$diagnoses = array();
 
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=?',array($this->id)) as $i => $sd) {
-			if ($sd->disorder->specialty->code == 'OPH') {
+			if ($sd->disorder->specialty && $sd->disorder->specialty->code == 'OPH') {
 				$diagnoses[] = strtolower(($sd->eye ? $sd->eye->adjective.' ' : '').$sd->disorder->term);
 			}
 		}
