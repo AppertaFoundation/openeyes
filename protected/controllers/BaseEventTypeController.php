@@ -361,6 +361,14 @@ class BaseEventTypeController extends BaseController
 				),
 		);
 
+		$cancel_url = ($this->episode) ? '/patient/episode/'.$this->episode->id : '/patient/episodes/'.$this->patient->id;
+		$this->event_actions = array(
+				EventAction::link('Cancel',
+						Yii::app()->createUrl($cancel_url),
+						array('colour' => 'red', 'level' => 'secondary')
+				)
+		);
+
 		$this->processJsVars();
 		$this->renderPartial(
 			'create',
@@ -560,6 +568,13 @@ class BaseEventTypeController extends BaseController
 						'label' => 'Edit',
 						'active' => true,
 				),
+		);
+
+		$this->event_actions = array(
+				EventAction::link('Cancel',
+						Yii::app()->createUrl($this->event->eventType->class_name.'/default/view/'.$this->event->id),
+						array('colour' => 'red', 'level' => 'secondary')
+				)
 		);
 
 		$this->processJsVars();
