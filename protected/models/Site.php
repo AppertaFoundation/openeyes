@@ -55,6 +55,14 @@ class Site extends BaseActiveRecord
 		return 'site';
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -76,15 +84,16 @@ class Site extends BaseActiveRecord
 	 */
 	public function relations()
 	{
+		$replyto = AddressType::model()->find('name=?',array('Reply to'));
+
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
 			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
-			'replyto' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Site_ReplyTo'",
-			),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
 		);
 	}
 
@@ -193,92 +202,13 @@ class Site extends BaseActiveRecord
 		return $site;
 	}
 	
-	public function getLetterHtml() {
-		$address = array();
-		foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {
-			if (!empty($this->$field)) {
-				$address[] = CHtml::encode($this->$field);
+	public function getCorrespondenceName() {
+		if ($this->institution->short_name) {
+			if (!strstr($this->name,$this->institution->short_name)) {
+				return $this->institution->short_name.' at '.$this->name;
 			}
 		}
-		return implode('<br />', $address);
-	}
-
-	public function getLetterArray($include_name=false,$encode=true,$include_institution_name=false) {
-		$fields = $include_name ? array('name') : array();
-
-		$address = array();
-
-		if ($include_institution_name) {
-			if ($this->institution->short_name) {
-				$address[] = $this->institution->short_name.' at '.$this->name;
-				if ($include_name) {
-					array_shift($fields);
-				}
-			} else {
-				$address[] = $this->institution->name;
-			}
-		}
-
-		foreach (array_merge($fields,array('address1', 'address2', 'address3', 'postcode')) as $field) {
-			if (!empty($this->$field)) {
-				if ($field == 'address1') {
-					if ($encode) {
-						$address[] = CHtml::encode(str_replace(',','',$this->$field));
-					} else {
-						$address[] = str_replace(',','',$this->$field);
-					}
-				} else {
-					if ($encode) {
-						$address[] = CHtml::encode($this->$field);
-					} else {
-						$address[] = $this->$field;
-					}
-				}
-			}
-		}
-		return $address;
-	}
-
-	public function getLetterAddress($include_institution_name=false,$encode=true) {
-		if (!$include_institution_name) {
-			$address = "$this->name\n";
-		} else {
-			$address = '';
-		}
-
-		return $address . implode("\n",$this->getLetterArray(false,$encode,$include_institution_name));
-	}
-
-	public function getReplyToAddress() {
-		if (!$contact = $this->replyto) return '';
-
-		$fields = array();
-		if ($contact->first_name) {
-			$fields[] = $contact->first_name;
-		}
-		if ($contact->last_name) {
-			$fields[] = $contact->last_name;
-		}
-		if ($address = $contact->address) {
-			foreach (array('address1','address2','city','county','postcode') as $field) {
-				if ($address->{$field}) {
-					$fields[] = $address->{$field};
-				}
-			}
-		}
-		return implode(', ',$fields);
-	}
-
-	public function getCorrespondenceSiteName() {
-		if (!($contact = $this->replyto) || !$contact->nick_name) {
-			if ($this->institution->short_name) {
-				if (!strstr($this->name,$this->institution->short_name)) {
-					return $this->institution->short_name.' at '.$this->name;
-				}
-			}
-			return $this->name;
-		}
-		return $contact->nick_name;
+		return $this->name;
 	}
 
 	public static function getListByFirm($firmId) {

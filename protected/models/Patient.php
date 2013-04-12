@@ -67,6 +67,14 @@ class Patient extends BaseActiveRecord {
 		return parent::model($className);
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * Suppress PAS integration
 	 * @return Patient
@@ -116,19 +124,19 @@ class Patient extends BaseActiveRecord {
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,3,2) DESC, date_start DESC"
 			),
 			// Order: Current addresses; prefer H records for home address, but fall back to C and then others (T); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_end DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,3,2) DESC, date_end DESC, date_start DESC"
 			),
 			// Order: Current addresses; prefer C records for correspond address, but fall back to T and then others (H); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,4,3) DESC, date_end DESC, date_start DESC"
 			),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
@@ -527,24 +535,8 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getLetterAddress() {
-		$address = $this->addressName;
-
-		if (isset($this->qualifications)) {
-			$address .= ' '.$this->qualifications;
-		}
-
-		$address .= "\n";
-		
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray());
-		}
-		
-		return $address; 
-	}
-
 	public function getSummaryAddress() {
-		return $this->address ? $this->address->getLetterHtml() : 'Unknown';
+		return $this->contact->address ? $this->contact->address->getLetterHtml() : 'Unknown';
 	}
 
 	public function getAllergiesString() {
@@ -997,5 +989,9 @@ class Patient extends BaseActiveRecord {
 			$ids[] = $pca->location_id;
 		}
 		return $ids;
+	}
+
+	public function getPrefix() {
+		return 'Patient';
 	}
 }

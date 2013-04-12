@@ -55,6 +55,14 @@ class Gp extends BaseActiveRecord {
 		return $model;
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -141,5 +149,15 @@ class Gp extends BaseActiveRecord {
 		parent::afterFind();
 		Yii::app()->event->dispatch('gp_after_find', array('gp' => $this));
 	}
-	
+
+	public function getLetterAddress($params=array()) {
+		if (!isset($params['patient'])) {
+			throw new Exception("Patient must be passed for GP contacts.");
+		}
+		return $this->formatLetterAddress(($params['patient']->practice && $params['patient']->practice->address) ? $params['patient']->practice->address : null, $params);
+	}
+
+	public function getPrefix() {
+		return 'GP';
+	}
 }

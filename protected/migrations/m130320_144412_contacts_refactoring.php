@@ -88,8 +88,14 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		);
 
 		$this->insert('address_type',array('name'=>'Reply to'));
+		$this->insert('address_type',array('name'=>'Home'));
+		$this->insert('address_type',array('name'=>'Correspondence'));
+		$this->insert('address_type',array('name'=>'Transport'));
 
 		$at_replyto = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Reply to'))->queryRow();
+		$at_home = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Home'))->queryRow();
+		$at_correspondence = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Correspondence'))->queryRow();
+		$at_transport = Yii::app()->db->createCommand()->select("*")->from("address_type")->where("name=:name",array(':name'=>'Transport'))->queryRow();
 
 		$this->addColumn('address','address_type_id','int(10) unsigned NULL');
 		$this->createIndex('address_address_type_id_fk','address','address_type_id');
@@ -146,7 +152,7 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->addColumn('firm','consultant_id','int(10) unsigned NOT NULL');
 
 		foreach (Firm::model()->findAll() as $firm) {
-			$this->update('firm',array('consultant_id'=>$firm->getConsultantUser()->id),"id=$firm->id");
+			$this->update('firm',array('consultant_id'=>$this->getConsultantUserID($firm)),"id=$firm->id");
 		}
 
 		$this->createIndex('firm_consultant_id_fk','firm','consultant_id');
@@ -222,20 +228,54 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		/* Sites */
 
+		$this->addColumn('site','contact_id','int(10) unsigned NOT NULL');
+		$this->addColumn('site','replyto_contact_id','int(10) unsigned NULL');
+
 		foreach (Yii::app()->db->createCommand()->select("*")->from("site")->queryAll() as $site) {
+			$update = array();
+
 			if ($contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Site_ReplyTo',':parent_id'=>$site['id']))->queryRow()) {
-				if ($address = Yii::app()->db->createCommand()->select("*")->from("address")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Contact',':parent_id'=>$contact['id']))->queryRow()) {
-					$this->update('address',array('address_type_id'=>$at_replyto['id'],'parent_class'=>'Site','parent_id'=>$site['id']),"id={$address['id']}");
-				}
+				$this->update('contact',array('parent_class'=>''),"id={$contact['id']}");
+				$update['replyto_contact_id'] = $contact['id'];
 			}
 
-			$this->insert('address',array('address1'=>$site['address1'],'address2'=>$site['address2'],'city'=>$site['address3'],'postcode'=>$site['postcode'],'parent_class'=>'Site','parent_id'=>$site['id'],'country_id'=>1));
+			$this->insert('contact',array());
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+
+			$update['contact_id'] = $contact_id;
+
+			$this->update('site',$update,"id={$site['id']}");
+
+			$this->insert('address',array('address1'=>$site['address1'],'address2'=>$site['address2'],'city'=>$site['address3'],'postcode'=>$site['postcode'],'parent_class'=>'Contact','parent_id'=>$contact_id,'country_id'=>1));
 		}
+
+		$this->createIndex('site_contact_id_fk','site','contact_id');
+		$this->addForeignKey('site_contact_id_fk','site','contact_id','contact','id');
+		$this->createIndex('site_replyto_contact_id_fk','site','replyto_contact_id');
+		$this->addForeignKey('site_replyto_contact_id_fk','site','replyto_contact_id','contact','id');
 
 		$this->dropColumn('site','address1');
 		$this->dropColumn('site','address2');
 		$this->dropColumn('site','address3');
 		$this->dropColumn('site','postcode');
+
+		/* Institutions */
+
+		$this->addColumn('institution','contact_id','int(10) unsigned NOT NULL');
+
+		foreach (Yii::app()->db->createCommand()->select("*")->from("institution")->queryAll() as $institution) {
+			$this->insert('contact',array());
+			$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+
+			$this->update('institution',array('contact_id'=>$contact_id),"id={$institution['id']}");
+
+			if ($address = Yii::app()->db->createCommand()->select("*")->from("address")->where("parent_class = :parent_class and parent_id = :parent_id",array(':parent_class'=>'Institution',':parent_id'=>$institution['id']))->queryRow()) {
+				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact_id),"id={$address['id']}");
+			}
+		}
+
+		$this->createIndex('institution_contact_id_fk','institution','contact_id');
+		$this->addForeignKey('institution_contact_id_fk','institution','contact_id','contact','id');
 
 		/* Patients */
 
@@ -245,6 +285,8 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 			if ($contact = Yii::app()->db->createCommand()->select("*")->from("contact")->where("parent_class=:parent_class and parent_id=:parent_id",array(':parent_class'=>'Patient',':parent_id'=>$patient['id']))->queryRow()) {
 				$this->update('patient',array('contact_id'=>$contact['id']),"id={$patient['id']}");
 				$this->update('contact',array('parent_class'=>''),"id={$contact['id']}");
+
+				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact['id']),"parent_class = 'Patient' and parent_id = {$patient['id']}");
 			}
 		}
 
@@ -283,6 +325,33 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->dropIndex('patient_contact_assignment_institution_id_fk','patient_contact_assignment');
 		$this->dropColumn('patient_contact_assignment','site_id');
 		$this->dropColumn('patient_contact_assignment','institution_id');
+
+		/* Address types */
+
+		$this->update('address',array('address_type_id'=>$at_home['id']),"type = 'H'");
+		$this->update('address',array('address_type_id'=>$at_correspondence['id']),"type = 'C'");
+		$this->update('address',array('address_type_id'=>$at_transport['id']),"type = 'T'");
+
+		$this->dropColumn('address','type');
+
+		$this->delete('address',"parent_class = 'Patient'");
+	}
+
+	public function getConsultantUserID($firm) {
+		$result = Yii::app()->db->createCommand()
+			->select('u.id as id')
+			->from('consultant cslt')
+			->join('contact c', "c.parent_id = cslt.id and c.parent_class = 'Consultant'")
+			->join('user_contact_assignment uca', 'uca.contact_id = c.id')
+			->join('user u', 'u.id = uca.user_id')
+			->join('firm_user_assignment fua', 'fua.user_id = u.id')
+			->join('firm f', 'f.id = fua.firm_id')
+			->where('f.id = :fid', array(
+				':fid' => $firm->id
+			))
+			->queryRow();
+
+		return $result['id'];
 	}
 
 	public function getLabel($name) {

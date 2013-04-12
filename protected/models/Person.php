@@ -18,24 +18,18 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "person".
  *
- * The followings are the available columns in table 'firm':
+ * The followings are the available columns in table 'person':
  * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
  * @property string $name
- *
- * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property integer $letter_template_only
  */
-class Institution extends BaseActiveRecord
+class Person extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Person the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -47,15 +41,7 @@ class Institution extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'institution';
-	}
-
-	public function behaviors() {
-		return array(
-			'ContactBehavior' => array(
-				'class' => 'application.behaviors.ContactBehavior',
-			),
-		);
+		return 'person';
 	}
 
 	/**
@@ -63,13 +49,10 @@ class Institution extends BaseActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-			array('name, code', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, code', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,9 +65,6 @@ class Institution extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
-				'order' => 'name asc',
-			),
 		);
 	}
 
@@ -94,6 +74,7 @@ class Institution extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
 		);
 	}
 

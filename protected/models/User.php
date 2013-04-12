@@ -56,6 +56,14 @@ class User extends BaseActiveRecord
 		return 'user';
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */

@@ -127,8 +127,13 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return array Address as an array 
 	 */
-	public function getLetterArray($include_country=true) {
+	public function getLetterArray($include_country=true, $name=false) {
 		$address = array();
+
+		if ($name) {
+			$address[] = $name;
+		}
+
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
 			if (!empty($this->$field)) {
 				$line = $this->$field;
@@ -142,10 +147,13 @@ class Address extends BaseActiveRecord {
 				}
 			}
 		}
-		if ($include_country && !empty($this->country->name)) {
-			$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-			if ($site->institution->address->country_id != $this->country_id) {
-				$address[] = $this->country->name;
+
+		if ($include_country) {
+			if (!empty($this->country->name)) {
+				$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+				if ($site->institution->contact->address->country_id != $this->country_id) {
+					$address[] = $this->country->name;
+				}
 			}
 		}
 		return $address;
@@ -174,9 +182,5 @@ class Address extends BaseActiveRecord {
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	public function getLetterAddress() {
-		return implode("\n",$this->getLetterArray());
 	}
 }

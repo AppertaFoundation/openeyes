@@ -44,6 +44,14 @@ class ContactLocation extends BaseActiveRecord
 		return 'contact_location';
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -66,7 +74,7 @@ class ContactLocation extends BaseActiveRecord
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-			'location' => array(self::BELONGS_TO, 'Location', 'location_id'),
+			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 		);
 	}
 
@@ -102,5 +110,14 @@ class ContactLocation extends BaseActiveRecord
 
 	public function __toString() {
 		return $this->site ? $this->site->name : $this->institution->name;
+	}
+
+	public function getLetterAddress($params=array()) {
+		if ($this->owner->site) {
+			$params['correspondence_name'] = $this->owner->site->correspondenceName;
+			return $this->formatLetterAddress($this->owner->site->contact->address, $params);
+		}
+		$params['correspondence_name'] = $this->owner->institution->name;
+		return $this->formatLetterAddress($this->owner->institution->contact->address, $params);
 	}
 }
