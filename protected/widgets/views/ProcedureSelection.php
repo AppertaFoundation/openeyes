@@ -119,6 +119,9 @@
 								<?php } ?>
 							</div>
 						<?php	}
+						if (isset($_POST[$class]['total_duration_'.$identifier])) {
+							$total_duration = $_POST[$class]['total_duration_'.$identifier];
+						}
 					}
 					?>
 				</h4>
