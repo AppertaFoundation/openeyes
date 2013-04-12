@@ -71,6 +71,15 @@ class BaseAPI {
 		}
 	}
 
+	public function getMostRecentEventInEpisode($episode_id, $event_type_id) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('event_type_id',$event_type_id);
+		$criteria->compare('episode_id',$episode_id);
+		$criteria->order = 'created_date desc';
+
+		return Event::model()->find($criteria);
+	}
+
 	/*
 	 * gets the most recent instance of a specific element in the current episode
 	 *
