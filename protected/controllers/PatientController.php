@@ -314,8 +314,8 @@ class PatientController extends BaseController
 				$criteria->compare('episode_id',$legacyepisodes[0]->id);
 				$criteria->order = 'datetime desc';
 
-				if ($event = Event::model()->find($criteria)) {
-					if (!$event->eventType->disabled) {
+				foreach (Event::model()->findAll($criteria) as $event) {
+					if (in_array($event->eventType->class_name,Yii::app()->modules) && (!$event->eventType->disabled)) {
 						$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
 						Yii::app()->end();
 					}
