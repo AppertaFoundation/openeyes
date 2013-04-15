@@ -983,7 +983,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 .extraDetails-margin { margin-left: 310px; }
 
 /* ON-DEMAND - wrapper for elements that appear 'on-demand' */
-#event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/extra-element_view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
+#event_content .ondemand { position:relative; border:7px solid #c8d3dd; padding:2px 8px 5px 8px; margin-top:5px; margin-bottom:3px; background: transparent url(../img/_elements/icons/event-optional/element-view.png) top right no-repeat; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; }
 #event_content .ondemand h4 { border-top: none; }
 #event_content .missing { border:7px solid #da3232 !important; }
 #event_content .missingtext { color: #da3232 !important; }
@@ -1009,7 +1009,7 @@ background:	linear-gradient(#c8d3dd, #dae6f1);
 .optionalElements > .optionalsAll .allButton > a { position:relative; top:2px; }
 
 /* viewing (not added) */
-.optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/extra-element_view.png) center right no-repeat; padding:8px 10px; margin:0; border-bottom:1px dotted #fafafa; }
+.optionalElements > .elementMeta { font-size:12px; font-weight:bold; color:#fff; background:#8c949c url(../img/_elements/icons/event-optional/element-view.png) center right no-repeat; padding:8px 10px; margin:0; border-bottom:1px dotted #fafafa; }
 .optionalElements > .elementMeta:hover	{ background-color: #3665ff; cursor: pointer; }
 .optionalElements > .elementMeta:active { background-color: #55a256; }
 /* element added .. 2 Options. Listed at the bottom or display inplace */
