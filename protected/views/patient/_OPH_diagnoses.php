@@ -87,6 +87,8 @@
 									<?php }?>
 								</div>
 	
+								<div class="ophthalmic_diagnoses_form_errors"></div>
+
 								<?php $this->renderPartial('_diagnosis_date')?>
 	
 								<div align="right">
@@ -136,12 +138,25 @@
 		return false;
 	});
 	$('button.btn_save_ophthalmic_diagnosis').click(function() {
-		if (!$('#DiagnosisSelection_ophthalmic_disorder_id_savedDiagnosis').val()) {
-			alert('Please select a diagnosis.');
-			return false;
-		}
-		$('img.add_ophthalmic_diagnosis_loader').show();
-		return true;
+		$.ajax({
+			'type': 'POST',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/validateadddiagnosis',
+			'data': $('#add-ophthalmic-diagnosis').serialize(),
+			'success': function(data) {
+				$('div.ophthalmic_diagnoses_form_errors').html('');
+				if (data.length == 0) {
+					$('img.add_ophthalmic_diagnosis_loader').show();
+					$('#add-ophthalmic-diagnosis').submit();
+					return true;
+				} else {
+					for (var i in data) {
+						$('div.ophthalmic_diagnoses_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+					}
+				}
+			}
+		});
+		return false;
 	});
 
 	</script>

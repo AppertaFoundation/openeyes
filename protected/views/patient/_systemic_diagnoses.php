@@ -87,6 +87,8 @@
 									<?php }?>
 								</div>
 	
+								<div class="systemic_diagnoses_form_errors"></div>
+
 								<?php $this->renderPartial('_diagnosis_date')?>
 	
 								<div align="right">
@@ -117,12 +119,25 @@
 		return false;
 	});
 	$('button.btn_save_systemic_diagnosis').click(function() {
-		if (!$('#DiagnosisSelection_systemic_disorder_id_savedDiagnosis').val()) {
-			alert("Please select a diagnosis.");
-			return false;
-		}
-		$('img.add_systemic_diagnosis_loader').show();
-		return true;
+		$.ajax({
+			'type': 'POST',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/validateadddiagnosis',
+			'data': $('#add-systemic-diagnosis').serialize(),
+			'success': function(data) {
+				$('div.systemic_diagnoses_form_errors').html('');
+				if (data.length == 0) {
+					$('img.add_systemic_diagnosis_loader').show();
+					$('#add-systemic-diagnosis').submit();
+					return true;
+				} else {
+					for (var i in data) {
+						$('div.systemic_diagnoses_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+					}
+				}
+			}
+		});
+		return false;
 	});
 </script>
 <?php } ?>
