@@ -62,6 +62,7 @@ class SecondaryDiagnosis extends BaseActiveRecord
 		return array(
 			array('disorder_id, patient_id', 'required'),
 			array('disorder_id, eye_id, patient_id', 'safe'),
+			array('date', 'OEFuzzyDateValidator'),
 		);
 	}
 
@@ -86,6 +87,7 @@ class SecondaryDiagnosis extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'disorder_id' => 'Disorder',
 		);
 	}
 

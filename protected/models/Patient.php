@@ -488,20 +488,23 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getOpl() {
-		if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-			return $api->getLetterProcedures($this);
+		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) && 
+				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
+			return $api->getLetterProcedures($this, $episode);
 		}
 	}
 
 	public function getOpr() {
-		if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-			return $api->getLetterProcedures($this);
+		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) &&
+				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
+			return $api->getLetterProcedures($this, $episode);
 		}
 	}
 
 	public function getOps() {
-		if ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) {
-			return $api->getLetterProcedures($this,true);
+		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) &&
+				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
+			return $api->getLetterProcedures($this, $episode, true);
 		}
 	}
 
@@ -530,8 +533,9 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getPre() {
-		if ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) {
-			return $api->getLetterPrescription($this);
+		if ( ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) &&
+				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
+			return $api->getLetterPrescription($this, $episode);
 		}
 	}
 
@@ -603,8 +607,10 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getAdm() {
-		if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-			if ($booking = $api->getMostRecentBookingForCurrentEpisode($this)) {
+		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
+			
+			if ($booking = $api->getMostRecentBookingForEpisode($this, $episode)) {
 				return $booking->session->NHSDate('date');
 			}
 		}
@@ -751,32 +757,37 @@ class Patient extends BaseActiveRecord {
 	}
 	
 	public function getHpc() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterHistory($this);
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterHistory($this, $episode);
 		}
 	}
 
 	public function getIpb() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterIOPReading($this,'both');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterIOPReading($this,$episode, 'both');
 		}
 	}
 
 	public function getIpl() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterIOPReading($this,'left');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterIOPReading($this, $episode, 'left');
 		}
 	}
 
 	public function getIpp() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
 			return $api->getLetterIOPReading($this,'episode');
 		}
 	}
 
 	public function getIpr() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterIOPReading($this,'right');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterIOPReading($this, $episode, 'right');
 		}
 	}
 
@@ -785,20 +796,23 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getAsl() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterAnteriorSegment($this, 'left');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterAnteriorSegment($this, $episode, 'left');
 		}
 	}
 
 	public function getAsp() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterAnteriorSegment($this, 'episode');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterAnteriorSegment($this, $episode, 'episode');
 		}
 	}
 
 	public function getAsr() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterAnteriorSegment($this, 'right');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterAnteriorSegment($this, $episode, 'right');
 		}
 	}
 
@@ -807,56 +821,65 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getPsl() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorPole($this,'left');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterPosteriorPole($this, $episode, 'left');
 		}
 	}
 
 	public function getPsp() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorPole($this,'episode');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterPosteriorPole($this, $episode, 'episode');
 		}
 	}
 
 	public function getPsr() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterPosteriorPole($this,'right');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterPosteriorPole($this, $episode, 'right');
 		}
 	}
 
 	public function getVbb() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterVisualAcuity($this,'both');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterVisualAcuity($this, $episode, 'both');
 		}
 	}
 
 	public function getVbl() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterVisualAcuity($this,'left');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterVisualAcuity($this, $episode, 'left');
 		}
 	}
 
 	public function getVbp() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterVisualAcuity($this,'episode');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterVisualAcuity($this, $episode, 'episode');
 		}
 	}
 
 	public function getVbr() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterVisualAcuity($this,'right');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterVisualAcuity($this, $episode, 'right');
 		}
 	}
 
 	public function getCon() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterConclusion($this);
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterConclusion($this, $episode);
 		}
 	}
 
 	public function getMan() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterManagement($this);
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterManagement($this, $episode);
 		}
 	}
 
@@ -886,26 +909,19 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getAdd() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterAdnexalComorbidity($this,'right');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterAdnexalComorbidity($this, $episode, 'right');
 		}
 	}
 
 	public function getAdl() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterAdnexalComorbidity($this,'left');
+		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
+			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
+			return $api->getLetterAdnexalComorbidity($this, $episode, 'left');
 		}
 	}
 	
-	/*
-	 * Follow up period
-	*/
-	public function getFup() {
-		if ($api = Yii::app()->moduleAPI->get('OphCiExamination')) {
-			return $api->getLetterOutcomeFollowUpPeriod($this);
-		}
-	}
-
 	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
 		$properties['patient_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
@@ -923,7 +939,7 @@ class Patient extends BaseActiveRecord {
 		$diagnoses = array();
 
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=?',array($this->id)) as $i => $sd) {
-			if ($sd->disorder->specialty->code == 'OPH') {
+			if ($sd->disorder->specialty && $sd->disorder->specialty->code == 'OPH') {
 				$diagnoses[] = strtolower(($sd->eye ? $sd->eye->adjective.' ' : '').$sd->disorder->term);
 			}
 		}
@@ -993,5 +1009,19 @@ class Patient extends BaseActiveRecord {
 
 	public function getPrefix() {
 		return 'Patient';
+	}
+
+	public function getEpc() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			if ($user = $episode->firm->getConsultantUser()) {
+				return $user->fullName;
+			}
+		}
+	}
+
+	public function getEpv() {
+		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
+			return $episode->firm->serviceSubspecialtyAssignment->service->name;
+		}
 	}
 }
