@@ -17,19 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-$depth = 1;
-
-while (1) {
-	$yii=dirname(__FILE__).'/'.str_repeat('../',$depth).'yii/framework/yii.php';
-
-	if (file_exists($yii)) break;
-
-	$depth++;
-
-	if ($depth >= 100) {
-		die("yii directory not found. please install yii below the docroot.");
-	}
-}
+$yii=dirname(__FILE__).'/yii/framework/yii.php';
 
 // change the following paths if necessary
 $config=dirname(__FILE__).'/protected/config/main.php';
