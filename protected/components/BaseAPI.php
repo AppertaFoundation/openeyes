@@ -24,7 +24,7 @@ class BaseAPI {
 	 * 
 	 * @return EventType $event_type
 	 */
-	private function getEventType() {
+	protected function getEventType() {
 		if (!$event_type = EventType::model()->find('class_name=?',array(preg_replace('/_API$/','',get_class($this))))) {
 			throw new Exception("Unknown event type or incorrectly named API class: ".get_class($this));
 		}
@@ -56,18 +56,20 @@ class BaseAPI {
 	}
 	
 	/*
-	 * gets all the events in the episode for the event type this API is for, for the given patient
+	 * gets all the events in the episode for the event type this API is for, for the given patient, most recent first.
 	 * 
 	 * @param Patient $patient - the patient
+	 * @param Episode $episode - the episode
 	 * 
 	 * @return array - list of events of the type for this API instance
 	 */
-	public function getEventsInEpisode($patient) {
+	public function getEventsInEpisode($patient, $episode) {
 		$event_type = $this->getEventType();
 		
-		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
+		if ($episode) {
 			return $episode->getAllEventsByType($event_type->id);
 		}
+		return array();
 	}
 
 	public function getMostRecentEventInEpisode($episode_id, $event_type_id) {

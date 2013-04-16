@@ -1018,7 +1018,7 @@ class Patient extends BaseActiveRecord {
 	public function getNlm() {
 		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
 			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRMaculopathy($this, $episode 'left');
+			return $api->getLetterDRMaculopathy($this, $episode, 'left');
 		}
 	}
 	
@@ -1026,7 +1026,7 @@ class Patient extends BaseActiveRecord {
 	public function getCrd() {
 		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
 			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRClinical($this,'right');
+			return $api->getLetterDRClinical($this, $episode, 'right');
 		}
 	}
 	
@@ -1034,7 +1034,7 @@ class Patient extends BaseActiveRecord {
 	public function getCld() {
 		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
 			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRClinical($this,'left');
+			return $api->getLetterDRClinical($this, $episode, 'left');
 		}
 	}
 	
