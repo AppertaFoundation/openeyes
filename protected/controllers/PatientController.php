@@ -281,7 +281,7 @@ class PatientController extends BaseController
 			'criteria'=>$criteria));
 
 		$this->renderPartial('_summary',
-			array('model'=>$patient, 'address'=>$patient->address, 'episodes'=>$dataProvider));
+			array('model'=>$patient, 'address'=>$patient->contact->address, 'episodes'=>$dataProvider));
 	}
 
 	public function actionContacts()
