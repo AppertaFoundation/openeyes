@@ -951,6 +951,27 @@ class PatientController extends BaseController
 		$this->redirect(array('patient/view/'.$patient->id));
 	}
 
+	public function actionValidateAddDiagnosis() {
+		$errors = array();
+
+		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
+			$disorder_id = $_POST['DiagnosisSelection']['ophthalmic_disorder_id'];
+		} else if (isset($_POST['DiagnosisSelection']['systemic_disorder_id'])) {
+			$disorder_id = $_POST['DiagnosisSelection']['systemic_disorder_id'];
+		}
+
+		$sd = new SecondaryDiagnosis;
+		$sd->patient_id = @$_POST['patient_id'];
+		$sd->date = @$_POST['diagnosis_year'].'-'.str_pad(@$_POST['diagnosis_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		$sd->disorder_id = @$disorder_id;
+
+		if (!$sd->validate()) {
+			echo json_encode($sd->getErrors());
+		} else {
+			echo json_encode(array());
+		}
+	}
+
 	public function actionRemovediagnosis() {
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception('Unable to find patient: '.@$_GET['patient_id']);

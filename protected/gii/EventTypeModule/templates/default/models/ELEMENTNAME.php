@@ -202,8 +202,9 @@ if (isset($element)) {
 				throw new SystemException('Patient not found: '.@$_GET['patient_id']);
 			}
 
-			if ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) {
-				if ($booking = $api->getMostRecentBookingForCurrentEpisode($patient)) {
+			if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) && 
+				($episode = $patient->getEpisodeForCurrentSubspecialty()) ) {
+				if ($booking = $api->getMostRecentBookingForEpisode($patient, $episode)) {
 					return $booking->operation->eye;
 				}
 			}

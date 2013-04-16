@@ -32,27 +32,26 @@ class BaseAPI {
 	}
 	
 	/*
-	 * gets the element of type $element for the given patient in the current session episode
+	 * gets the element of type $element for the given patient in the given episode
 	 * 
 	 * @param Patient $patient - the patient
+	 * @param Episode $episode - the episode
 	 * @param string $element - the element class
 	 * 
 	 * @return unknown - the element type requested, or null
 	 */
-	public function getElementForLatestEventInEpisode($patient, $element) {
+	public function getElementForLatestEventInEpisode($patient, $episode, $element) {
 		$event_type = $this->getEventType();
 
-		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
-			if ($event = $episode->getMostRecentEventByType($event_type->id)) {
-				$criteria = new CDbCriteria;
-				$criteria->compare('episode_id',$episode->id);
-				$criteria->compare('event_id',$event->id);
-				$criteria->order = 'datetime desc';
+		if ($event = $episode->getMostRecentEventByType($event_type->id)) {
+			$criteria = new CDbCriteria;
+			$criteria->compare('episode_id',$episode->id);
+			$criteria->compare('event_id',$event->id);
+			$criteria->order = 'datetime desc';
 
-				return $element::model()
-					->with('event')
-					->find($criteria);
-			}
+			return $element::model()
+				->with('event')
+				->find($criteria);
 		}
 	}
 	
@@ -69,6 +68,15 @@ class BaseAPI {
 		if ($episode = $patient->getEpisodeForCurrentSubspecialty()) {
 			return $episode->getAllEventsByType($event_type->id);
 		}
+	}
+
+	public function getMostRecentEventInEpisode($episode_id, $event_type_id) {
+		$criteria = new CDbCriteria;
+		$criteria->compare('event_type_id',$event_type_id);
+		$criteria->compare('episode_id',$episode_id);
+		$criteria->order = 'created_date desc';
+
+		return Event::model()->find($criteria);
 	}
 
 	/*
