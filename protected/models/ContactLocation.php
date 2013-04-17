@@ -113,11 +113,13 @@ class ContactLocation extends BaseActiveRecord
 	}
 
 	public function getLetterAddress($params=array()) {
-		if ($this->owner->site) {
-			$params['correspondence_name'] = $this->owner->site->correspondenceName;
-			return $this->formatLetterAddress($this->owner->site->contact->address, $params);
-		}
-		$params['correspondence_name'] = $this->owner->institution->name;
-		return $this->formatLetterAddress($this->owner->institution->contact->address, $params);
+		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
+		return $this->formatLetterAddress($address, $params);
+	}
+
+	public function getLetterArray($include_country) {
+		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
+		$name = $this->owner->site ? $this->owner->site->correspondenceName : $this->owner->institution->name;
+		return array_merge(array($name),$address->getLetterArray($include_country));
 	}
 }

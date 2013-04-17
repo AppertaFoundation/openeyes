@@ -24,10 +24,10 @@ class ContactBehavior extends CActiveRecordBehavior {
 
 	public function formatLetterAddress($address, $params=array()) {
 		if ($address) {
-			$address = $address->getLetterArray(@$params['include_country']);
-
-			if (@$params['correspondence_name']) {
-				array_unshift($address, $params['correspondence_name']);
+			if (method_exists($this->owner,'getLetterArray')) {
+				$address = $this->owner->getLetterArray(@$params['include_country']);
+			} else {
+				$address = $address->getLetterArray(@$params['include_country']);
 			}
 
 			if (@$params['include_label'] && $this->owner->contact->label) {
@@ -35,7 +35,11 @@ class ContactBehavior extends CActiveRecordBehavior {
 			}
 
 			if (@$params['include_name']) {
-				$address = array_merge(array($this->owner->contact->fullName),$address);
+				if (method_exists($this->owner,'getCorrespondenceName')) {
+					$address = array_merge(array($this->owner->correspondenceName),$address);
+				} else {
+					$address = array_merge(array($this->owner->contact->fullName),$address);
+				}
 			}
 
 			if (@$params['include_telephone'] && isset($this->owner->telephone) && $this->owner->telephone) {

@@ -38,7 +38,7 @@
 	<?php } ?>
 	<div class="data_row">
 		<div class="data_label">Practice Address:</div>
-		<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->address) ? $this->patient->practice->address->letterLine : 'Unknown'; ?></div>
+		<div class="data_value"><?php echo ($this->patient->practice && $this->patient->practice->contact->address) ? $this->patient->practice->contact->address->letterLine : 'Unknown'; ?></div>
 	</div>
 	<div class="data_row">
 		<div class="data_label">Practice Telephone:</div>

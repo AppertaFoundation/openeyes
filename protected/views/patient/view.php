@@ -21,7 +21,7 @@
 <h2>Patient Summary</h2>
 <div class="wrapTwo clearfix">
 	<?php $this->renderPartial('//base/_messages'); ?>
-	<?php if ($this->patient->address && !$this->patient->address->isCurrent()) {?>
+	<?php if ($this->patient->contact->address && !$this->patient->contact->address->isCurrent()) {?>
 		<div id="no-current-address-error" class="alertBox">
 			<h3>Warning: The patient has no current address. The address shown is their last known address.</h3>
 		</div>
@@ -31,7 +31,7 @@
 			This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 		</div>
 	<?php }?>
-	<?php if (!$this->patient->practice || !$this->patient->practice->address) {?>
+	<?php if (!$this->patient->practice || !$this->patient->practice->contact->address) {?>
 	<div id="no-practice-address" class="alertBox">
 		Patient has no GP practice address, please correct in PAS before printing GP letter.
 	</div>

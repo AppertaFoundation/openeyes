@@ -64,7 +64,7 @@ class Practice extends BaseActiveRecord {
 	public function rules() {
 		return array(
 			array('code', 'required'),
-			array('phone', 'safe'),
+			array('phone, contact_id', 'safe'),
 			array('id, code', 'safe', 'on'=>'search'),
 		);
 	}
@@ -74,9 +74,7 @@ class Practice extends BaseActiveRecord {
 	 */
 	public function relations() {
 		return array(
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Practice'",
-			),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 
@@ -139,5 +137,4 @@ class Practice extends BaseActiveRecord {
 			return $return . implode("\n",$this->address->getLetterArray());
 		}
 	}
-
 }

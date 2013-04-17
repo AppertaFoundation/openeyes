@@ -80,16 +80,16 @@ class Contact extends BaseActiveRecord {
 			// Prefer H records for primary address, but fall back to others
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Contact'",
-				'order' => "FIELD(address_type_id,2) DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,2) DESC, date_start DESC"
 			),
 			// Prefer H records for home address, but fall back to others
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Contact'",
-				'order' => "FIELD(address_type_id,2) DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,2) DESC, date_start DESC"
 			),
 			// Prefer C records for correspond address, but fall back to others
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(address_type_id,3) DESC, date_start DESC",
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,3) DESC, date_start DESC",
 				'on' => "parent_class = 'Contact'",
 			),
 			'label' => array(self::BELONGS_TO, 'ContactLabel', 'contact_label_id'),

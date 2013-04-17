@@ -43,7 +43,7 @@ class LetterOutService
 	{
 		$re = $this->patient->first_name . ' ' . $this->patient->last_name . ', ';
 
-		$re .= $this->generateAddress($this->patient->address) . ', ';
+		$re .= $this->generateAddress($this->patient->contact->address) . ', ';
 
 		$re .= 'DofB: ' . $this->patient->dob . ', ';
 		$re .= 'HosNum: ' . $this->patient->hos_num;
@@ -312,7 +312,7 @@ class LetterOutService
 	{
 		$contactData = array(
 			'p_' . $this->patient->id => array(
-				'address' => $this->stripNewlines($this->generateAddress($this->patient->address)),
+				'address' => $this->stripNewlines($this->generateAddress($this->patient->contact->address)),
 				'full_name' => $this->stripNewlines($this->patient->title . ' ' . $this->patient->first_name . ' ' . $this->patient->last_name),
 				'dear_name' => $this->stripNewlines($this->patient->title . ' ' . $this->patient->last_name),
 				'nickname' => $this->stripNewlines($this->patient->first_name . ' ' . $this->patient->last_name),

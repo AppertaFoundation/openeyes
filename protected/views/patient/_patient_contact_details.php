@@ -28,7 +28,7 @@
 	</div>
 	<div class="data_row">
 		<div class="data_label">Email:</div>
-		<div class="data_value"><?php echo !empty($this->patient->address->email) ? $this->patient->address->email : 'Unknown'?></div>
+		<div class="data_value"><?php echo !empty($this->patient->contact->address->email) ? $this->patient->contact->address->email : 'Unknown'?></div>
 	</div>
 	<div class="data_row">
 		<div class="data_label">Next of Kin:</div>
