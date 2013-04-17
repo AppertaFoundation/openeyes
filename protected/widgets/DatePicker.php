@@ -38,11 +38,29 @@ class DatePicker extends BaseCWidget {
 				}
 			}
 		} else {
-			$this->value = $_POST[get_class($this->element)][$this->field];
+			if ($this->name) {
+				$this->value = $this->getPOSTValue($this->name);
+			}
+			else {
+				$this->value = $_POST[get_class($this->element)][$this->field];
+			}
 		}
 
 		parent::run();
 	}
+	
+	public function getPOSTValue($name) {
+		$data = $_POST;
+		foreach (explode('[',$name) as $i => $key) {
+			$lkup = $key;
+			if ($i > 0) {
+				$lkup = substr($key,0, -1);
+			}
+			$data = @$data[$lkup];
+		}
+		return $data;
+	}
+	
 }
 
 ?>
