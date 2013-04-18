@@ -943,6 +943,10 @@ class PatientController extends BaseController
 	public function actionValidateAddDiagnosis() {
 		$errors = array();
 
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
 		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
 			$disorder_id = $_POST['DiagnosisSelection']['ophthalmic_disorder_id'];
 		} else if (isset($_POST['DiagnosisSelection']['systemic_disorder_id'])) {
@@ -950,15 +954,27 @@ class PatientController extends BaseController
 		}
 
 		$sd = new SecondaryDiagnosis;
-		$sd->patient_id = @$_POST['patient_id'];
+		$sd->patient_id = $patient->id;
 		$sd->date = @$_POST['diagnosis_year'].'-'.str_pad(@$_POST['diagnosis_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
 		$sd->disorder_id = @$disorder_id;
+		$sd->eye_id = @$_POST['diagnosis_eye'];
+
+		$errors = array();
 
 		if (!$sd->validate()) {
-			echo json_encode($sd->getErrors());
-		} else {
-			echo json_encode(array());
+			foreach ($sd->getErrors() as $field => $_errors) {
+				$errors[$field] = $_errors[0];
+			}
 		}
+
+		// Check the diagnosis isn't currently set at the episode level for this patient
+		foreach ($patient->episodes as $episode) {
+			if ($episode->disorder_id == $sd->disorder_id && ($episode->eye_id == $sd->eye_id || $episode->eye_id == 3 || $sd->eye_id == 3)) {
+				$errors['disorder_id'] = "The disorder is already set at the episode level for this patient";
+			}
+		}
+
+		echo json_encode($errors);
 	}
 
 	public function actionRemovediagnosis() {
