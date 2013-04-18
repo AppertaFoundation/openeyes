@@ -75,7 +75,7 @@ class Practice extends BaseActiveRecord {
 	public function relations() {
 		return array(
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Practice'",
+				'on' => "address.parent_class = 'Practice'",
 			),
 		);
 	}

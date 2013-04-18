@@ -110,28 +110,28 @@ class Patient extends BaseActiveRecord {
 				'condition' => "legacy=0 or legacy is null",
 			),
 			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'"
+				'on' => "addresses.parent_class = 'Patient'"
 			),
 			// Order: Current addresses; prefer H records for primary address, but fall back to C and then others (T); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'",
+				'on' => "address.parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_start DESC"
 			),
 			// Order: Current addresses; prefer H records for home address, but fall back to C and then others (T); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'",
+				'on' => "homeAddress.parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_end DESC, date_start DESC"
 			),
 			// Order: Current addresses; prefer C records for correspond address, but fall back to T and then others (H); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'",
+				'on' => "correspondAddress.parent_class = 'Patient'",
 				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
 			),
 			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Patient'",
+				'on' => "contact.parent_class = 'Patient'",
 			),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),

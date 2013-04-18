@@ -83,7 +83,7 @@ class Site extends BaseActiveRecord
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 			'replyto' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Site_ReplyTo'",
+				'on' => "replyto.parent_class = 'Site_ReplyTo'",
 			),
 		);
 	}

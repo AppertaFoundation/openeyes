@@ -57,8 +57,9 @@ class Event extends BaseActiveRecord
 	 */
 	
 	public function defaultScope() {
+		$table_alias = $this->getTableAlias(false,false);
 		return array(
-			'condition' => 'deleted=0',
+			'condition' => $table_alias.'.deleted = 0',
 		);
 	}
 
