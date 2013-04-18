@@ -23,7 +23,7 @@ class OEPDFPrint {
 	protected $pdf;
 
 	public function __construct($author, $title, $subject) {
-		$this->pdf = new OETCPDF();
+		$this->pdf = new OETCPDF('P', true);
 		$this->pdf->SetAuthor($author);
 		$this->pdf->SetTitle($title);
 		$this->pdf->SetSubject($subject);

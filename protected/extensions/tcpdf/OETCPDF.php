@@ -39,7 +39,7 @@ class OETCPDF extends TCPDF {
 	/**
 	 * @param string $orientation Orientaion of page (Default: P)
 	 */
-	public function __construct($orientation = 'P') {
+	public function __construct($orientation = 'P', $print = false) {
 		parent::__construct($orientation, $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false);
 		$this->setMargins(15, 15);
 		$this->SetAutoPageBreak(true, 25);
@@ -51,7 +51,9 @@ class OETCPDF extends TCPDF {
 				'PrintScaling' => 'None',
 		);
 		$this->setViewerPreferences($preferences);
-		$this->IncludeJS('print(true);');
+		if ($print) {
+			$this->IncludeJS('print(true);');
+		}
 		
 	}
 
