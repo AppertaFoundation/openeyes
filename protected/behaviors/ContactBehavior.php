@@ -36,7 +36,11 @@ class ContactBehavior extends CActiveRecordBehavior {
 
 			if (@$params['include_name']) {
 				if (method_exists($this->owner,'getCorrespondenceName')) {
-					$address = array_merge(array($this->owner->correspondenceName),$address);
+					$correspondenceName = $this->owner->correspondenceName;
+					if (!is_array($correspondenceName)) {
+						$correspondenceName = array($correspondenceName);
+					}
+					$address = array_merge($correspondenceName,$address);
 				} else {
 					$address = array_merge(array($this->owner->contact->fullName),$address);
 				}

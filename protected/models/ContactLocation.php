@@ -120,6 +120,9 @@ class ContactLocation extends BaseActiveRecord
 	public function getLetterArray($include_country) {
 		$address = $this->owner->site ? $this->owner->site->contact->address : $this->owner->institution->contact->address;
 		$name = $this->owner->site ? $this->owner->site->correspondenceName : $this->owner->institution->name;
-		return array_merge(array($name),$address->getLetterArray($include_country));
+		if (!is_array($name)) {
+			$name = array($name);
+		}
+		return array_merge($name,$address->getLetterArray($include_country));
 	}
 }

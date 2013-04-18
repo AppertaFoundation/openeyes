@@ -208,7 +208,11 @@ class Site extends BaseActiveRecord
 				return $this->institution->short_name.' at '.$this->name;
 			}
 		}
-		return $this->name;
+		// this avoids duplicating lines on the addresses
+		if ($this->institution->name == $this->name) {
+			return $this->name;
+		}
+		return array($this->institution->name,$this->name);
 	}
 
 	public static function getListByFirm($firmId) {
