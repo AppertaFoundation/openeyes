@@ -116,7 +116,10 @@ class Patient extends BaseActiveRecord {
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "address.parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_start DESC"
+				'order' => "((address.date_end is NULL OR address.date_end > NOW())
+					AND (address.date_start is NULL OR address.date_start < NOW())) DESC,
+					FIELD(address.type,'C','H') DESC,
+					address.date_start DESC"
 			),
 			// Order: Current addresses; prefer H records for home address, but fall back to C and then others (T); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
