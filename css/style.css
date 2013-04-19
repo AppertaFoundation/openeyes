@@ -1484,6 +1484,7 @@ h2.admin { background:#666; color:#fff; border:1px solid #999; border-left:none;
 .reportInputs .editdrug { width: 730px; }
 
 div.admin .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px; margin-top: 6px; }
+div.admin .label-nofloat { display:inline-block; width:170px; font-size:15px; padding-bottom: 4px; margin-top: 6px; }
 div.admin .group { background: none !important; }
 
 div.admin input { margin: 2px; }
@@ -1513,6 +1514,26 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_firms ul li .column_name { width: 200px; display: inline-block; }
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
+
+#admin_contacts ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contacts ul li .column_id { width: 35px; display: inline-block; }
+#admin_contacts ul li .column_title { width: 52px; display: inline-block; }
+#admin_contacts ul li .column_first_name { width: 120px; display: inline-block; }
+#admin_contacts ul li .column_last_name { width: 120px; display: inline-block; }
+#admin_contacts ul li .column_qualifications { width: 200px; display: inline-block; }
+#admin_contacts ul li .column_label { width: 181px; display: inline-block; }
+
+#admin_contact_locations ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contact_locations ul li .column_type { width: 100px; display: inline-block; }
+#admin_contact_locations ul li .column_name { width: 400px; display: inline-block; }
+#admin_contact_locations ul li .column_action { width: 100px; display: inline-block; }
+
+#admin_contact_patients ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contact_patients ul li .column_hos_num { width: 80px; display: inline-block; }
+#admin_contact_patients ul li .column_title { width: 50px; display: inline-block; }
+#admin_contact_patients ul li .column_first_name { width: 250px; display: inline-block; }
+#admin_contact_patients ul li .column_last_name { width: 250px; display: inline-block; }
+
 #div_Firm_consultant_id { margin-top: 2px; }
 
 div.previousOperation .label { display: inline-block; width: 125px; }
@@ -1532,3 +1553,4 @@ div.familyHistory { margin-bottom: 10px; }
 div.familyHistory #comments { width: 439px; }
 
 div.episodeMetadata { margin-left: 10px; }
+div.contactLocations { margin-top: 2em; }

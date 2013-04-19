@@ -4,6 +4,7 @@
 		<?php foreach (array(
 			'Users' => '/admin/users',
 			'Firms' => '/admin/firms',
+			'Contacts' => '/admin/contacts',
 			/*
 			'Global phrases' => '/admin/globalPhrases',
 			'Phrases by subspecialty' => '/admin/phrasesBySubspecialty',

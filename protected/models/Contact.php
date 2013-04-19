@@ -104,11 +104,11 @@ class Contact extends BaseActiveRecord {
 	{
 		return array(
 			'id' => 'ID',
-			'nick_name' => 'Nick Name',
-			'primary_phone' => 'Primary Phone Number',
+			'nick_name' => 'Nickname',
+			'primary_phone' => 'Phone number',
 			'title' => 'Title',
-			'first_name' => 'First Name',
-			'last_name' => 'Last Name',
+			'first_name' => 'First name',
+			'last_name' => 'Last name',
 			'qualifications' => 'Qualifications',
 		);
 	}
@@ -187,5 +187,69 @@ class Contact extends BaseActiveRecord {
 
 	public function contactLine($location) {
 		return $this->fullName.' ('.$this->label->name.', '.$location.')';
+	}
+
+	static public function contactsByLabel($term, $label=false, $exclude=false) {
+		if ($label) {
+			if (!is_object($label)) {
+				if (!$label = ContactLabel::model()->find('name=?',array($label))) {
+					throw new Exception("Label not found");
+				}
+			}
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition('lower(last_name)',$term,false);
+		if ($label) {
+			if ($exclude) {
+				$criteria->compare('contact_label_id','<>'.$label->id);
+			} else {
+				$criteria->compare('contact_label_id',$label->id);
+			}
+		}
+		$criteria->order = 'title, first_name, last_name';
+
+		foreach (Contact::model()->findAll($criteria) as $contact) {
+			foreach ($contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
+	static public function contactsByModel($term, $model) {
+		$contacts = array();
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition("lower(`contact`.last_name)",$term,false);
+		if ($model == 'User') {
+			$criteria->compare('active',1);
+		}
+		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+
+		foreach ($model::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $object) {
+			foreach ($object->contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $object->contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
+	public function getType() {
+		foreach (array('User','Gp','Patient','Person') as $model) {
+			if ($model::model()->find('contact_id=?',array($this->id))) {
+				return $model;
+			}
+		}
+
+		return false;
 	}
 }

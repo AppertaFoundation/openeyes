@@ -44,6 +44,11 @@ $(document).ready(function() {
 		}
 	});
 
+	handleButton($('#et_contact_cancel'),function(e) {
+		e.preventDefault();
+		history.back();
+	});
+
 	handleButton($('#et_add'),function(e) {
 		e.preventDefault();
 

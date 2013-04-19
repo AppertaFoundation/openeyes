@@ -103,3 +103,6 @@ ul.yiiPager > li { display:inline-block; margin-right: 5px; }
 .form .row .field {
 	float: left;
 }
+
+#admin_contacts #contactname { width: 300px; }
+#admin_contacts div { height: 30px; }

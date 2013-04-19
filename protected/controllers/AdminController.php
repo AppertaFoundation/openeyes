@@ -150,7 +150,8 @@ class AdminController extends BaseController
 	}
 
 	public function getItems($params) {
-		$pages = ceil(count($params['model']::model()->findAll()) / $this->items_per_page);
+		$model = $params['model']::model();
+		$pages = ceil(Yii::app()->db->createCommand()->select("count(*)")->from($model->tableName())->queryScalar() / $this->items_per_page);
 
 		if ($params['page'] <1) {
 			$page = 1;
@@ -174,7 +175,7 @@ class AdminController extends BaseController
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
 			'page' => $page,
-			'pages' => ceil(count($params['model']::model()->findAll()) / $this->items_per_page),
+			'pages' => $pages,
 		);
 	}
 
@@ -186,5 +187,153 @@ class AdminController extends BaseController
 		} else {
 			echo "NOTFOUND";
 		}
+	}
+
+	public function actionContacts($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		if (!empty($_GET)) {
+			$contacts = $this->searchContacts();
+		}
+
+		$this->render('/admin/contacts',array('contacts'=>@$contacts));
+	}
+
+	public function searchContacts() {
+		$criteria = new CDbCriteria;
+
+		if (@$_GET['title']) {
+			$criteria->addSearchCondition("lower(`t`.title)",@$_GET['title'],false);
+		}
+
+		if (@$_GET['first_name']) {
+			$criteria->addSearchCondition("lower(`t`.first_name)",@$_GET['first_name'],false);
+		}
+
+		if (@$_GET['last_name']) {
+			$criteria->addSearchCondition("lower(`t`.last_name)",@$_GET['last_name'],false);
+		}
+
+		if (@$_GET['label']) {
+			$criteria->compare('contact_label_id',@$_GET['label']);
+		}
+
+		$criteria->order = 'title, first_name, last_name';
+
+		$contacts = Contact::model()->findAll($criteria);
+
+		$pages = ceil(count($contacts) / $this->items_per_page);
+
+		$page = (integer)@$_GET['page'];
+
+		if ($page <1) {
+			$page = 1;
+		} else if ($page > $pages) {
+			$page = $pages;
+		}
+
+		$_contacts = array();
+
+		foreach ($contacts as $i => $contact) {
+			if ($i >= (($page-1) * $this->items_per_page)) {
+				$_contacts[] = $contact;
+			}
+
+			if (count($_contacts) >= $this->items_per_page) {
+				break;
+			}
+		}
+
+		return array(
+			'page' => $page,
+			'pages' => $pages,
+			'contacts' => $_contacts,
+		);
+	}
+
+	public function actionEditContact() {
+		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
+			throw new Exception("Contact not found: ".@$_GET['contact_id']);
+		}
+
+		if (!empty($_POST)) {
+			$contact->attributes = $_POST['Contact'];
+
+			if (!$contact->validate()) {
+				$errors = $contact->getErrors();
+			} else {
+				if (!$contact->save()) {
+					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+				}
+				$this->redirect('/admin/contacts?title='.$contact->title.'&first_name='.$contact->first_name.'&last_name='.$contact->last_name);
+			}
+		}
+
+		$this->render('/admin/editcontact',array(
+			'contact' => $contact,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionContactLocation() {
+		if (!$cl = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
+			throw new Exception("ContactLocation not found: ".@$_GET['location_id']);
+		}
+
+		$this->render('/admin/contactlocation',array(
+			'location' => $cl,
+		));
+	}
+
+	public function actionRemoveLocation() {
+		if (!$cl = ContactLocation::model()->findByPk(@$_POST['location_id'])) {
+			throw new Exception("ContactLocation not found: ".@$_POST['location_id']);
+		}
+
+		if (count($cl->patients) >0) {
+			echo "0";
+			return;
+		}
+
+		if (!$cl->delete()) {
+			echo "-1";
+			return;
+		}
+
+		return "1";
+	}
+
+	public function actionAddContactLocation() {
+		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
+			throw new Exception("Contact not found: ".@$_GET['contact_id']);
+		}
+
+		$errors = array();
+		$sites = array();
+
+		if (!empty($_POST)) {
+			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+				$errors['institution_id'] = "Please select an institution";
+			} else {
+				$criteria = new CDbCriteria;
+				$criteria->compare('institution_id',@$_POST['institution_id']);
+				$criteria->order = 'name asc';
+				$sites = CHtml::listData(Site::model()->findAll($criteria),'id','name');
+			}
+		}
+
+		$this->render('/admin/addcontactlocation',array(
+			'contact' => $contact,
+			'errors' => $errors,
+			'sites' => $sites,
+		));
+	}
+
+	public function actionGetInstitutionSites() {
+		if (!$
 	}
 }
