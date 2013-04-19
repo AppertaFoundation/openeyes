@@ -125,13 +125,19 @@ class Patient extends BaseActiveRecord {
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "homeAddress.parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_end DESC, date_start DESC"
+				'order' => "((homeAddress.date_end is NULL OR homeAddress.date_end > NOW())
+					AND (homeAddress.date_start is NULL OR homeAddress.date_start < NOW())) DESC,
+					FIELD(homeAddress.type,'C','H') DESC,
+					homeAddress.date_end DESC, homeAddress.date_start DESC"
 			),
 			// Order: Current addresses; prefer C records for correspond address, but fall back to T and then others (H); most recent start date
 			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "correspondAddress.parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
+				'order' => "((correspondAddress.date_end is NULL OR correspondAddress.date_end > NOW())
+					AND (correspondAddress.date_start is NULL OR correspondAddress.date_start < NOW())) DESC,
+					FIELD(correspondAddress.type,'T','C') DESC,
+					correspondAddress.date_end DESC, correspondAddress.date_start DESC"
 			),
 			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
 				'on' => "contact.parent_class = 'Patient'",
