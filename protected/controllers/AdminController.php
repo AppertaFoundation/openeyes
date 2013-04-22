@@ -317,12 +317,29 @@ class AdminController extends BaseController
 
 		if (!empty($_POST)) {
 			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
-				$errors['institution_id'] = "Please select an institution";
+				$errors['institution_id'] = array("Please select an institution");
 			} else {
 				$criteria = new CDbCriteria;
 				$criteria->compare('institution_id',@$_POST['institution_id']);
 				$criteria->order = 'name asc';
 				$sites = CHtml::listData(Site::model()->findAll($criteria),'id','name');
+			}
+
+			if (empty($errors)) {
+				$cl = new ContactLocation;
+				$cl->contact_id = $contact->id;
+
+				if ($site = Site::model()->findByPk(@$_POST['site_id'])) {
+					$cl->site_id = $site->id;
+				} else {
+					$cl->institution_id = $institution->id;
+				}
+
+				if (!$cl->save()) {
+					$errors = array_merge($errors,$cl->getErrors());
+				} else {
+					$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+				}
 			}
 		}
 
@@ -334,6 +351,14 @@ class AdminController extends BaseController
 	}
 
 	public function actionGetInstitutionSites() {
-		if (!$
+		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+			throw new Exception("Institution not found: ".@$_GET['institution_id']);
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->compare('institution_id',@$_GET['institution_id']);
+		$criteria->order = 'name asc';
+
+		echo json_encode(CHtml::listData(Site::model()->findAll($criteria),'id','name'));
 	}
 }

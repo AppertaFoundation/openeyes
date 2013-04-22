@@ -20,8 +20,8 @@
 ?>
 <div class="report curvybox white">
 	<div class="admin">
-		<h3 class="georgia">Add user</h3>
-		<?php //echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
+		<h3 class="georgia">Add location</h3>
+		<?php echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 		<div>
 			<div>
 				<span class="label-nofloat">Contact:</span>
@@ -34,6 +34,7 @@
 				'htmlOptions' => array('class'=>'sliding'),
 				'focus'=>'#username'
 			))?>
+			<input type="hidden" name="contact_id" value="<?php echo $contact->id?>" />
 			<div>
 				<span class="label-nofloat">Institution:</span>
 				<span><?php echo CHtml::dropDownList('institution_id',@$_POST['institution_id'],CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Please select -'))?></span>
@@ -46,7 +47,6 @@
 		</div>
 	</div>
 </div>
-<?php //echo $this->renderPartial('_form_errors',array('errors'=>$errors))?>
 <div>
 	<?php echo EventAction::button('Save', 'save', array('colour' => 'green'))->toHtml()?>
 	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
@@ -62,11 +62,46 @@
 			if (institution_id != '') {
 				$.ajax({
 					'type': 'GET',
+					'dataType': 'json',
 					'url': baseUrl+'/admin/getInstitutionSites?institution_id='+institution_id,
 					'success': function(sites) {
+						var options = '<option value="">- Optional -</option>';
+						for (var i in sites) {
+							options += '<option value="'+i+'">'+sites[i]+'</option>';
+						}
+						$('#site_id').html(options);
+						sort_selectbox($('#site_id'));
 					}
 				});
 			}
 		});
 	});
+
+	
+	handleButton($('#et_cancel'),function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/editContact?contact_id=<?php echo $contact->id?>';
+	});
+
+	handleButton($('#et_save'),function(e) {
+		e.preventDefault();
+		$('#adminform').submit();
+	});
+
+	function sort_selectbox(element) {
+		rootItem = element.children('option:first').text();
+		element.append(element.children('option').sort(selectSort));
+	}
+
+	function selectSort(a, b) {
+		if (a.innerHTML == rootItem) {
+			return -1;
+		}
+		else if (b.innerHTML == rootItem) {
+			return 1;
+		}
+		return (a.innerHTML > b.innerHTML) ? 1 : -1;
+	};
+
+	var rootItem = null;
 </script>

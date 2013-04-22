@@ -104,7 +104,7 @@
 		window.location.href = baseUrl+'/admin/contactLocation?location_id='+$(this).attr('data-attr-id');
 	});
 
-	$('#et_add_contact_location').click(function(e) {
+	handleButton($('#et_add_contact_location'),function(e) {
 		e.preventDefault();
 		window.location.href = baseUrl+'/admin/addContactLocation?contact_id=<?php echo $contact->id?>';
 	});
