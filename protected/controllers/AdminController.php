@@ -207,15 +207,15 @@ class AdminController extends BaseController
 		$criteria = new CDbCriteria;
 
 		if (@$_GET['title']) {
-			$criteria->addSearchCondition("lower(`t`.title)",@$_GET['title'],false);
+			$criteria->addSearchCondition("lower(`t`.title)",strtolower(@$_GET['title']),false);
 		}
 
 		if (@$_GET['first_name']) {
-			$criteria->addSearchCondition("lower(`t`.first_name)",@$_GET['first_name'],false);
+			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['first_name']),false);
 		}
 
 		if (@$_GET['last_name']) {
-			$criteria->addSearchCondition("lower(`t`.last_name)",@$_GET['last_name'],false);
+			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['last_name']),false);
 		}
 
 		if (@$_GET['label']) {
