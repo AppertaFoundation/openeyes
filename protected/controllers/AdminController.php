@@ -102,6 +102,19 @@ class AdminController extends BaseController
 				if (!$user->save()) {
 					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
 				}
+
+				if ($uca = UserContactAssignment::model()->find('user_id=?',array($user->id))) {
+					$contact = $uca->contact;
+					$contact->title = $user->title;
+					$contact->first_name = $user->first_name;
+					$contact->last_name = $user->last_name;
+					$contact->qualifications = $user->qualifications;
+
+					if (!$contact->save()) {
+						throw new Exception("Unable to save user contact: ".print_r($contact->getErrors(),true));
+					}
+				}
+
 				$this->redirect('/admin/users/'.ceil($user->id/$this->items_per_page));
 			}
 		}
