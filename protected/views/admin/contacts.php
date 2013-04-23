@@ -24,16 +24,8 @@
 		<div>
 			<form id="admin_contacts">
 				<div>
-					<span class="label">Title:</span>
-					<?php echo CHtml::textField('title',@$_GET['title'])?>
-				</div>
-				<div>
-					<span class="label">First name:</span>
-					<?php echo CHtml::textField('first_name',@$_GET['first_name'])?>
-				</div>
-				<div>
-					<span class="label">Last name:</span>
-					<?php echo CHtml::textField('last_name',@$_GET['last_name'])?>
+					<span class="label">Search:</span>
+					<?php echo CHtml::textField('q',@$_GET['q'])?>
 				</div>
 				<div>
 					<span class="label">Label:</span>
@@ -57,20 +49,16 @@
 	var resultCache = {};
 
 	$(document).ready(function() {
-		$('#title').select().focus();
+		$('#q').select().focus();
 
 		handleButton($('#et_search'),function(e) {
 			e.preventDefault();
-			if ($('#first_name').val().length <1 && $('#last_name').val().length <1) {
-				alert("Please enter at least a first name or a last name");
+			if ($('#q').length <1) {
+				alert("Please enter a search term");
 				enableButtons();
-				if ($('#title').length >0) {
-					$('#first_name').select().focus();
-				} else {
-					$('#title').select().focus();
-				}
+				$('#q').focus();
 			} else {
-				window.location.href = baseUrl+'/admin/contacts?title='+$('#title').val()+'&first_name='+$('#first_name').val()+'&last_name='+$('#last_name').val()+'&label='+$('#label').val();
+				window.location.href = baseUrl+'/admin/contacts?q='+$('#q').val()+'&label='+$('#label').val();
 			}
 		});
 

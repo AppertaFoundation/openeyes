@@ -210,16 +210,22 @@ class AdminController extends BaseController
 	public function searchContacts() {
 		$criteria = new CDbCriteria;
 
-		if (@$_GET['title']) {
-			$criteria->addSearchCondition("lower(`t`.title)",strtolower(@$_GET['title']),false);
+		$ex = explode(' ',@$_GET['q']);
+
+		if (empty($ex)) {
+			throw new Exception("Empty search query string, this shouldn't happen");
 		}
 
-		if (@$_GET['first_name']) {
-			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['first_name']),false);
-		}
-
-		if (@$_GET['last_name']) {
-			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['last_name']),false);
+		if (count($ex) == 1) {
+			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['q']),false);
+			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['q']),false,'OR');
+		} else if (count($ex) == 2) {
+			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[0]),false);
+			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[1]),false);
+		} else if (count($ex) >= 3) {
+			$criteria->addSearchCondition("lower(`t`.title)",strtolower(@$ex[0]),false);
+			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[1]),false);
+			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[2]),false);
 		}
 
 		if (@$_GET['label']) {

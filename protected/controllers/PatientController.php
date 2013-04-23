@@ -217,7 +217,7 @@ class PatientController extends BaseController
 		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 		$page_num = (integer)@$_GET['page_num'];
 		$page_size = 20;
-		
+
 		$model = new Patient();
 		$model->hos_num = $search_terms['hos_num'];
 		$model->nhs_num = $search_terms['nhs_num'];
