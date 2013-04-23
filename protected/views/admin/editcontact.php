@@ -108,4 +108,9 @@
 		e.preventDefault();
 		window.location.href = baseUrl+'/admin/addContactLocation?contact_id=<?php echo $contact->id?>';
 	});
+
+	handleButton($('#et_contact_cancel'),function(e) {
+		e.preventDefault();
+		window.location.href = baseUrl+'/admin/contacts';
+	});
 </script>

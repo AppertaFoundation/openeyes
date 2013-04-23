@@ -138,6 +138,7 @@ class SiteController extends BaseController
 	 */
 	public function actionError() {
 		if($error = Yii::app()->errorHandler->error) {
+			die("<pre>".print_r($error,true));
 			if(Yii::app()->request->isAjaxRequest) {
 				echo $error['message'];
 			} else {

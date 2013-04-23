@@ -105,6 +105,7 @@ class Site extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'institution_id' => 'Institution',
 		);
 	}
 

@@ -162,7 +162,11 @@ class AdminController extends BaseController
 		}
 
 		$criteria = new CDbCriteria;
-		$criteria->order = 'id asc';
+		if (isset($params['order'])) {
+			$criteria->order = $params['order'];
+		} else {
+			$criteria->order = 'id asc';
+		}
 		$criteria->offset = ($page-1) * $this->items_per_page;
 		$criteria->limit = $this->items_per_page;
 
@@ -360,5 +364,119 @@ class AdminController extends BaseController
 		$criteria->order = 'name asc';
 
 		echo json_encode(CHtml::listData(Site::model()->findAll($criteria),'id','name'));
+	}
+
+	public function actionInstitutions($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		$this->render('/admin/institutions',array(
+			'institutions' => $this->getItems(array(
+				'model' => 'Institution',
+				'order' => 'name asc',
+				'page' => $page,
+			)),
+		));
+	}
+
+	public function actionEditInstitution() {
+		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+			throw new Exception("Institution not found: ".@$_GET['institution_id']);
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			$institution->attributes = $_POST['Institution'];
+
+			if (!$institution->validate()) {
+				$errors = $institution->getErrors();
+			}
+
+			$address = $institution->contact->address;
+
+			$address->attributes = $_POST['Address'];
+
+			if (!$address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
+
+			if (empty($errors)) {
+				if (!$institution->save()) {
+					throw new Exception("Unable to save institution: ".print_r($institution->getErrors(),true));
+				}
+				if (!$address->save()) {
+					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
+				}
+
+				$this->redirect('/admin/institutions');
+			}
+		}
+
+		$this->render('/admin/editinstitution',array(
+			'institution' => $institution,
+			'address' => $institution->contact->address,
+			'errors' => $errors,
+		));
+	}
+
+	public function actionSites($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		$this->render('/admin/sites',array(
+			'sites' => $this->getItems(array(
+				'model' => 'Site',
+				'order' => 'name asc',
+				'page' => $page,
+			)),
+		));
+	}
+
+	public function actionEditsite() {
+		if (!$site = Site::model()->findByPk(@$_GET['site_id'])) {
+			throw new Exception("Site not found: ".@$_GET['site_id']);
+		}
+
+		$errors = array();
+
+		if (!empty($_POST)) {
+			$site->attributes = $_POST['Site'];
+
+			if (!$site->validate()) {
+				$errors = $site->getErrors();
+			}
+
+			$address = $site->contact->address;
+
+			$address->attributes = $_POST['Address'];
+
+			if (!$address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
+
+			if (empty($errors)) {
+				if (!$site->save()) {
+					throw new Exception("Unable to save site: ".print_r($site->getErrors(),true));
+				}
+				if (!$address->save()) {
+					throw new Exception("Unable to save site address: ".print_r($address->getErrors(),true));
+				}
+
+				$this->redirect('/admin/sites');
+			}
+		}
+
+		$this->render('/admin/editsite',array(
+			'site' => $site,
+			'address' => $site->contact->address,
+			'errors' => $errors,
+		));
 	}
 }
