@@ -26,7 +26,7 @@
 				'prefix' => '/admin/contacts/',
 				'page' => $contacts['page'],
 				'pages' => $contacts['pages'],
-				'url' => '/admin/contacts?title='.@$_GET['title'].'&first_name='.@$_GET['first_name'].'&last_name='.@$_GET['last_name'].'&page={{PAGE}}',
+				'url' => '/admin/contacts?q='.@$_GET['q'].'&page={{PAGE}}',
 			))?>
 		</div>
 		<div>

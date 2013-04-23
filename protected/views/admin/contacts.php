@@ -40,6 +40,9 @@
 		</form>
 	</div>
 </div>
+<div style="margin-bottom: 1em;">
+	<?php echo EventAction::button('Add', 'add', array('colour' => 'blue'))->toHtml()?>
+</div>
 <?php if (@$contacts) {?>
 	<div id="searchResults" class="curvybox white">
 		<?php echo $this->renderPartial('/admin/_contacts_list',array('contacts'=>$contacts))?>

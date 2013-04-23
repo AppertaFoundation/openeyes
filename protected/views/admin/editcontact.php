@@ -36,6 +36,7 @@
 			<?php echo $form->textField($contact,'nick_name')?>
 			<?php echo $form->textField($contact,'primary_phone')?>
 			<?php echo $form->textField($contact,'qualifications')?>
+			<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
 			<?php $this->endWidget()?>
 		</div>
 	</div>

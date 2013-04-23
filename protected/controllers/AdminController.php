@@ -236,6 +236,11 @@ class AdminController extends BaseController
 
 		$contacts = Contact::model()->findAll($criteria);
 
+		if (count($contacts) == 1) {
+			foreach ($contacts as $contact) {}
+			return $this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+		}
+
 		$pages = ceil(count($contacts) / $this->items_per_page);
 
 		$page = (integer)@$_GET['page'];
@@ -279,7 +284,7 @@ class AdminController extends BaseController
 				if (!$contact->save()) {
 					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
 				}
-				$this->redirect('/admin/contacts?title='.$contact->title.'&first_name='.$contact->first_name.'&last_name='.$contact->last_name);
+				$this->redirect('/admin/contacts?q='.$contact->fullName);
 			}
 		}
 
@@ -483,6 +488,28 @@ class AdminController extends BaseController
 			'site' => $site,
 			'address' => $site->contact->address,
 			'errors' => $errors,
+		));
+	}
+
+	public function actionAddContact() {
+		$contact = new Contact;
+
+		if (!empty($_POST)) {
+			$contact->attributes = $_POST['Contact'];
+
+			if (!$contact->validate()) {
+				$errors = $contact->getErrors();
+			} else {
+				if (!$contact->save()) {
+					throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+				}
+				$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+			}
+		}
+
+		$this->render('/admin/addcontact',array(
+			'contact' => $contact,
+			'errors' => @$errors,
 		));
 	}
 }
