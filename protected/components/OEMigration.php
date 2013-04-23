@@ -23,8 +23,11 @@ class OEMigration extends CDbMigration {
 	 * Initialise tables with default data
 	 * Filenames must to be in the format "nn_tablename.csv", where nn is the processing order
 	 */
-	protected function initialiseData($migrations_path, $update_pk = null) {
-		$data_path = $migrations_path.'/data/'.get_class($this).'/';
+	protected function initialiseData($migrations_path, $update_pk = null, $data_directory = null) {
+		if(!$data_directory) {
+			$data_directory = get_class($this);
+		}
+		$data_path = $migrations_path.'/data/'.$data_directory.'/';
 		foreach(glob($data_path."*.csv") as $file_path) {
 			$table = substr(substr(basename($file_path), 0, -4), 3);
 			echo "Importing $table data...\n";
