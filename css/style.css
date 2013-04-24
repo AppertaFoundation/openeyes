@@ -903,6 +903,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 /* event detail */
 /* GRADIENT background for eventDetail... left it out because it doesn't look right but may need it: url(../img/_elements/gradients/bg_event_detail_bottom.png) bottom left repeat-x; */
 #event_content .eventDetail { padding:10px; background:#dae6f1; position:relative; }
+
 #event_content .eventDetail.subGroup-start { border-top:1px solid #e7f3ff; margin-top:0; -webkit-border-top-left-radius: 6px; -webkit-border-top-right-radius: 6px; -moz-border-radius-topleft: 6px; -moz-border-radius-topright: 6px; border-top-left-radius: 6px; border-top-right-radius: 6px;}
 #event_content .eventDetail.subGroup-end { border-bottom: 2px solid #d2dde8; margin-bottom:1px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;}
 #event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;	}
@@ -944,6 +945,12 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content .splitElement { padding:10px 0; margin:10px 0; border-top:5px solid #dae6f1; border-bottom:5px solid #dae6f1; }
 #event_content .splitElement .left	{ clear: left; float: left; width: 50%; }
 #event_content .splitElement .right { clear: right; float: right; width: 50%; }
+
+/* clearfix stuff */
+.eventDetail:before, .eventDetail:after { content: ""; display: table; }
+.eventDetail:after { clear: both; }
+.eventDetail { zoom: 1; }
+/* end clearfix stuff */
 
 .eventDetail > .data { display:inline-block; position:relative;}
 .eventDetail > .data > .label { font-size:15px; margin-bottom: 10px;	}
