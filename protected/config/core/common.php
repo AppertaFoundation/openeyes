@@ -56,6 +56,10 @@ return array(
 
 	// Application components
 	'components' => array(
+		'mailer' => array(
+			'class' => 'Mailer',
+			'mode' => 'sendmail',
+		),
 		'moduleAPI' => array(
 			'class' => 'ModuleAPI',
 		),
