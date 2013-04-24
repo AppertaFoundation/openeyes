@@ -50,7 +50,7 @@ class Practice extends BaseActiveRecord {
 		$model->use_pas = FALSE;
 		return $model;
 	}
-	
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -125,16 +125,5 @@ class Practice extends BaseActiveRecord {
 	protected function afterFind() {
 		parent::afterFind();
 		Yii::app()->event->dispatch('practice_after_find', array('practice' => $this));
-	}
-
-	public function getLetterAddress($name = '') {
-		if($this->address) {
-			if($name) {
-				$return = trim($name) . "\n";
-			} else {
-				$return = '';
-			}
-			return $return . implode("\n",$this->address->getLetterArray());
-		}
 	}
 }
