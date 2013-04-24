@@ -158,6 +158,8 @@ class Procedure extends BaseActiveRecord
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked=1';
+		} else {
+			$where .= ' and unbooked=0';
 		}
 
 		$procedures = Yii::app()->db->createCommand()
@@ -191,7 +193,7 @@ class Procedure extends BaseActiveRecord
 			->select('proc.id, proc.term')
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.subspecialty_id = :id'.($unbooked ? ' and unbooked=1' : ''),
+			->where('psa.subspecialty_id = :id and unbooked='.(integer)$unbooked,
 				array(':id'=>$subspecialtyId))
 			->order('proc.term ASC')
 			->queryAll();
