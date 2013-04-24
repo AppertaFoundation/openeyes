@@ -152,41 +152,6 @@ class Contact extends BaseActiveRecord {
 		return $this->title . ' ' . $this->last_name;
 	}
 
-	public function getLetterAddress() {
-		$address = $this->fullName;
-
-		if (isset($this->qualifications)) {
-			$address .= ' '.$this->qualifications;
-		}
-
-		$address .= "\n";
-
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray());
-		}
-
-		return $address;
-	}
-
-	public function findAllByParentClass($parent_class) {
-		$criteria = new CDbCriteria;
-		$criteria->compare('parent_class',$parent_class);
-		$criteria->order = 'first_name, last_name';
-
-		return Contact::Model()->findAll($criteria);
-	}
-
-	public function getPrefix() {
-		if ($this->parent_class == 'Gp') {
-			return 'GP';
-		}
-
-		if (UserContactAssignment::model()->find('contact_id=?',array($this->id)) && $this->parent_class != 'Consultant') {
-			return '';
-		}
-		return 'Consultant';
-	}
-
 	public function contactLine($location) {
 		return $this->fullName.' ('.$this->label->name.', '.$location.')';
 	}
