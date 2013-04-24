@@ -519,7 +519,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getSummaryAddress() {
-		return $this->contact->address ? $this->contact->address->getLetterHtml() : 'Unknown';
+		return $this->contact->address ? $this->getLetterAddress(array('delimiter'=>'<br/>')) : 'Unknown';
 	}
 
 	public function getAllergiesString() {
