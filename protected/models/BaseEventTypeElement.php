@@ -26,6 +26,8 @@ class BaseEventTypeElement extends BaseElement {
 	public $userId;
 	public $patientId;
 
+	protected $element_type;
+
 	// Used to display the view number set in site_element_type for any particular
 	// instance of this element
 	public $viewNumber;
@@ -34,7 +36,10 @@ class BaseEventTypeElement extends BaseElement {
 	public $required = false;
 
 	function getElementType() {
-		return ElementType::model()->find('class_name=?', array(get_class($this)));
+		if(!$this->element_type) {
+			$this->element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
+		}
+		return $this->element_type;
 	}
 
 	/**

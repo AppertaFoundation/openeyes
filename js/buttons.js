@@ -39,7 +39,11 @@ function disableButtons() {
 		selection.removeClass(col).addClass('inactive');
 		selection.children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
 		selection.children('a').children('span').removeClass('button-span-'+col).addClass('button-span-inactive');
-		button_cache[col] = selection;
+		if(button_cache[col]) {
+			button_cache[col] = button_cache[col].add(selection);
+		} else {
+			button_cache[col] = selection;
+		}
 	}
 	$('.loader').show();
 }
@@ -50,8 +54,10 @@ function enableButtons() {
 		if (button_cache[col]) {
 			button_cache[col].removeClass('inactive').addClass(col);
 			button_cache[col].children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
+			button_cache[col].children('a').children('span').removeClass('button-span-inactive').addClass('button-span-'+col);
 		}
 	}
+	button_cache = {};
 	$('.loader').hide();
 }
 

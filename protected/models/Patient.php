@@ -728,35 +728,20 @@ class Patient extends BaseActiveRecord {
 			$type = 'sys';
 		}
 
-		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
+		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?',array($this->id,$disorder_id,$eye_id,$date))) {
 			$action = "add-diagnosis-$type";
 			$sd = new SecondaryDiagnosis;
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
 			$sd->eye_id = $eye_id;
 			$sd->date = $date;
-		} else {
-			if ($sd->date == $date && (($sd->eye_id == 1 and $eye_id == 2) || ($sd->eye_id == 2 && $eye_id == 1))) {
-				$action = "update-diagnosis-$type";
-				$sd->eye_id = 3;
-				$sd->date = $date;
-			} else {
-				if ($sd->eye_id == $eye_id) return;
 
-				$action = "add-diagnosis-$type";
-				$sd = new SecondaryDiagnosis;
-				$sd->patient_id = $this->id;
-				$sd->disorder_id = $disorder_id;
-				$sd->eye_id = $eye_id;
-				$sd->date = $date;
+			if (!$sd->save()) {
+				throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
 			}
-		}
 
-		if (!$sd->save()) {
-			throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
+			$this->audit('patient',$action,$sd->getAuditAttributes());
 		}
-
-		$this->audit('patient',$action,$sd->getAuditAttributes());
 	}
 
 	public function removeDiagnosis($diagnosis_id) {
