@@ -49,6 +49,8 @@
 			'value'=>'',
 			'source'=>"js:function(request, response) {
 
+				$('#btn-add-contact').hide();
+
 				var filter = $('#contactfilter').val();
 
 				$('img.loader').show();
@@ -75,6 +77,10 @@
 						response(result);
 
 						$('img.loader').hide();
+
+						if (filter != 'users') {
+							$('#btn-add-contact').show();
+						}
 					}
 				});
 			}",
@@ -94,6 +100,7 @@
 							if (html.length >0) {
 								$('#patient_contacts').append(html);
 								currentContacts.push(contactCache[value]['contact_location_id']);
+								$('#btn-add-contact').hide();
 							}
 						}
 					});
@@ -115,7 +122,299 @@
 			<option value="nonophthalmic">Non-ophthalmic specialist</option>
 		</select>
 		&nbsp;
-		<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
+		<div style="display: inline-block; width: 15px;">
+			<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
+		</div>
+		<?php if (BaseController::checkUserLevel(3)) {?>
+			&nbsp;
+			<button id="btn-add-contact" class="classy green mini" type="button" style="display: none;"><span class="button-span button-span-green">Add</span></button>
+			<div id="add_contact" style="display: none;">
+				<?php
+				$form = $this->beginWidget('CActiveForm', array(
+						'id'=>'add-contact',
+						'enableAjaxValidation'=>false,
+						'htmlOptions' => array('class'=>'sliding'),
+						'action'=>array('patient/addContact'),
+				))?>
+
+				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+				<input type="hidden" name="contact_label_id" id="contact_label_id" value="" />
+
+				<div>
+					<div class="label">Type:</div>
+					<div class="data contactType"></div>
+				</div>
+
+				<div> 
+					<div class="label">Institution:</div>
+					<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
+				</div>
+
+				<div class="siteID">
+					<div class="label">Site:</div>
+					<div class="data"><?php echo CHtml::dropDownList('site_id','',array(),array('- Select -'))?></div>
+				</div>
+
+				<div class="contactLabel">
+					<div class="label">Label:</div>
+					<div class="data"><?php echo CHtml::dropDownList('label_id','',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
+				</div>
+
+				<div>
+					<div class="label">Title:</div>
+					<div class="data"><?php echo CHtml::textField('title','')?></div>
+				</div>
+
+				<div>
+					<div class="label">First name:</div>
+					<div class="data"><?php echo CHtml::textField('first_name','')?></div>
+				</div>
+
+				<div>
+					<div class="label">Last name:</div>
+					<div class="data"><?php echo CHtml::textField('last_name','')?></div>
+				</div>
+
+				<div>
+					<div class="label">Nick name:</div>
+					<div class="data"><?php echo CHtml::textField('nick_name','')?></div>
+				</div>
+
+				<div>
+					<div class="label">Primary phone:</div>
+					<div class="data"><?php echo CHtml::textField('primary_phone','')?></div>
+				</div>
+
+				<div>
+					<div class="label">Qualifications:</div>
+					<div class="data"><?php echo CHtml::textField('qualifications','')?></div>
+				</div>
+
+				<div class="add_contact_form_errors" style="height: auto;"></div>
+
+				<div align="right">
+					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
+					<button class="classy green mini btn_save_contact" type="submit"><span class="button-span button-span-green">Save</span></button>
+					<button class="classy red mini btn_cancel_contact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+				</div>
+
+				<?php $this->endWidget()?>
+			</div>
+
+			<div id="edit_contact" style="display: none;">
+				<?php
+				$form = $this->beginWidget('CActiveForm', array(
+						'id'=>'edit-contact',
+						'enableAjaxValidation'=>false,
+						'htmlOptions' => array('class'=>'sliding'),
+						'action'=>array('patient/editContact'),
+				))?>
+
+				<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+				<input type="hidden" name="contact_id" id="contact_id" value="" />
+				<input type="hidden" name="pca_id" id="pca_id" value="" />
+
+				<div>
+					<div class="label">Contact:</div>
+					<div class="data editContactName"></div>
+				</div>
+
+				<div>
+					<div class="label">Institution:</div>
+					<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
+				</div>
+
+				<div class="siteID">
+					<div class="label">Site:</div>
+					<div class="data"><?php echo CHtml::dropDownList('site_id','',array(),array('- Select -'))?></div>
+				</div>
+
+				<div class="edit_contact_form_errors" style="height: auto;"></div>
+
+				<div align="right">
+					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
+					<button class="classy green mini btn_save_editcontact" type="submit"><span class="button-span button-span-green">Save</span></button>
+					<button class="classy red mini btn_cancel_editcontact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+				</div>
+
+				<?php $this->endWidget()?>
+			</div>
+		<?php }?>
 	</div>
 	<?php }?>
 </div>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#btn-add-contact').click(function() {
+		if ($('#add_contact').is(':hidden')) {
+			$('#add_contact').slideToggle('fast');
+			$('#contact_label_id').val($('#contactfilter').val());
+			if ($('#contactfilter').val() == 'nonophthalmic') {
+				$('div.contactLabel').show();
+			} else {
+				$('div.contactLabel').hide();
+			}
+
+			$('#add_contact .data.contactType').text($('#contactfilter option:selected').text());
+			$('#add_contact #site_id').html('<option value="">- Select -</option>');
+			$('#add_contact .siteID').hide();
+			$('#add_contact #institution_id').val('');
+			$('#add_contact #title').val('');
+			$('#add_contact #first_name').val('');
+			$('#add_contact #last_name').val('');
+			$('#add_contact #nick_name').val('');
+			$('#add_contact #primary_phone').val('');
+			$('#add_contact #qualifications').val('');
+			$('#btn-add-contact').hide();
+		}
+	});
+
+	$('#contactfilter').change(function() {
+		if (!$('#add_contact').is(':hidden')) {
+			$('#add_contact').slideToggle('fast');
+		}
+		$('#btn-add-contact').hide();
+	});
+
+	$('#add_contact #institution_id').change(function() {
+		var institution_id = $(this).val();
+
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
+			'success': function(data) {
+				var options = '<option value="">- Select -</option>';
+				for (var i in data) {
+					options += '<option value="'+i+'">'+data[i]+'</option>';
+				}
+				$('#add_contact #site_id').html(options);
+				sort_selectbox($('#add_contact #site_id'));
+				if (i >0) {
+					$('#add_contact .siteID').show();
+				} else {
+					$('#add_contact .siteID').hide();
+				}
+			}
+		});
+	});
+
+	handleButton($('button.btn_cancel_contact'),function(e) {
+		e.preventDefault();
+		$('#add_contact').slideToggle('fast');
+		$('#btn-add-contact').hide();
+	});
+
+	handleButton($('button.btn_save_contact'),function(e) {
+		e.preventDefault();
+
+		$.ajax({
+			'type': 'POST',
+			'dataType': 'json',
+			'data': $('#add-contact').serialize(),
+			'url': baseUrl+'/patient/validateSaveContact',
+			'success': function(data) {
+				$('div.add_contact_form_errors').html('');
+				if (data.length == 0) {
+					$('img.add_contact_loader').show();
+					$('#add-contact').submit();
+					return true;
+				} else {
+					for (var i in data) {
+						$('div.add_contact_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+					}
+					enableButtons();
+				}
+			}
+		});
+	});
+
+	$('a.editContact').die('click').live('click',function(e) {
+		e.preventDefault();
+
+		var location_id = $(this).parent().parent().attr('data-attr-location-id');
+		var pca_id = $(this).parent().parent().attr('data-attr-pca-id');
+
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/getContactLocation?location_id='+location_id,
+			'success': function(data) {
+				editContactSiteID = data['site_id'];
+				$('#edit_contact #institution_id').val(data['institution_id']);
+				$('#edit_contact #institution_id').change();
+				$('#edit_contact .editContactName').text(data['name']);
+				$('#edit_contact #contact_id').val(data['contact_id']);
+				$('#edit_contact #pca_id').val(pca_id);
+			}
+		});
+
+		if ($('#edit_contact').is(':hidden')) {
+			$('#edit_contact').slideToggle('fast');
+		}
+	});
+
+	$('#edit_contact #institution_id').change(function() {
+		var institution_id = $(this).val();
+
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
+			'success': function(data) {
+				var options = '<option value="">- Select -</option>';
+				for (var i in data) {
+					options += '<option value="'+i+'">'+data[i]+'</option>';
+				}
+				$('#edit_contact #site_id').html(options);
+				sort_selectbox($('#edit_contact #site_id'));
+				if (i >0) {
+					$('#edit_contact .siteID').show();
+				} else {
+					$('#edit_contact .siteID').hide();
+				}
+
+				if (editContactSiteID) {
+					$('#edit_contact #site_id').val(editContactSiteID);
+					editContactSiteID = null;
+				}
+			}
+		});
+	});
+
+	$('button.btn_save_editcontact').click(function(e) {
+		e.preventDefault();
+
+		$.ajax({
+			'type': 'POST',
+			'dataType': 'json',
+			'data': $('#edit-contact').serialize(),
+			'url': baseUrl+'/patient/validateEditContact',
+			'success': function(data) {
+				$('div.edit_contact_form_errors').html('');
+				if (data.length == 0) {
+					$('img.edit_contact_loader').show();
+					$('#edit-contact').submit();
+					return true;
+				} else {
+					for (var i in data) {
+						$('div.edit_contact_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+					}
+					enableButtons();
+				}
+			}
+		});
+	});
+
+	$('button.btn_cancel_editcontact').click(function(e) {
+		e.preventDefault();
+
+		if (!$('#edit_contact').is(':hidden')) {
+			$('#edit_contact').slideToggle('fast');
+		}
+	});
+});
+
+var editContactSiteID = null;
+
+</script>

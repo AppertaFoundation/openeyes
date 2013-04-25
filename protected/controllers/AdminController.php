@@ -370,11 +370,7 @@ class AdminController extends BaseController
 			throw new Exception("Institution not found: ".@$_GET['institution_id']);
 		}
 
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id',@$_GET['institution_id']);
-		$criteria->order = 'name asc';
-
-		echo json_encode(CHtml::listData(Site::model()->findAll($criteria),'id','name'));
+		echo json_encode(CHtml::listData($institution->sites,'id','name'));
 	}
 
 	public function actionInstitutions($id=false) {

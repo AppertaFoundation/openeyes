@@ -1120,4 +1120,228 @@ class PatientController extends BaseController
 		}
 		return parent::processJsVars();
 	}
+
+	public function actionInstitutionSites() {
+		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+			throw new Exception("Institution not found: ".@$_GET['institution_id']);
+		}
+
+		echo json_encode(CHtml::listData($institution->sites,'id','name'));
+	}
+
+	public function actionValidateSaveContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		$errors = array();
+
+		if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+			$errors['institution_id'] = 'Please select an institution';
+		}
+
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk($_POST['site_id'])) {
+				$errors['site_id'] = 'Invalid site';
+			}
+		}
+
+		if (@$_POST['contact_label_id'] == 'nonophthalmic' && !@$_POST['label_id']) {
+			$errors['label_id'] = 'Please select a label';
+		}
+
+		$contact = new Contact;
+
+		foreach (array('title','first_name','last_name') as $field) {
+			if (!@$_POST[$field]) {
+				$errors[$field] = $contact->getAttributeLabel($field).' is required';
+			}
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionAddContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (BaseController::checkUserLevel(3)) {
+			if (@$_POST['site_id']) {
+				if (!$site = Site::model()->findByPk($_POST['site_id'])) {
+					throw new Exception("Site not found: ".$_POST['site_id']);
+				}
+			} else {
+				if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+					throw new Exception("Institution not found: ".@$_POST['institution_id']);
+				}
+			}
+
+			// Attempt to de-dupe by looking for an existing record that matches the user's input
+			$criteria = new CDbCriteria;
+			$criteria->compare('lower(title)',strtolower($_POST['title']));
+			$criteria->compare('lower(first_name)',strtolower($_POST['first_name']));
+			$criteria->compare('lower(last_name)',strtolower($_POST['last_name']));
+
+			if (isset($site)) {
+				$criteria->compare('site_id',$site->id);
+			} else {
+				$criteria->compare('institution_id',$institution->id);
+			}
+
+			if ($contact = Contact::model()->with('locations')->find($criteria)) {
+				foreach ($contact->locations as $location) {
+					$pca = new PatientContactAssignment;
+					$pca->patient_id = $patient->id;
+					$pca->location_id = $location->id;
+					if (!$pca->save()) {
+						throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+					}
+
+					$this->redirect(array('/patient/view/'.$patient->id));
+				}
+			}
+
+			$contact = new Contact;
+			$contact->attributes = $_POST;
+
+			if (@$_POST['contact_label_id'] == 'nonophthalmic') {
+				if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
+					throw new Exception("Contact label not found: ".@$_POST['label_id']);
+				}
+			} else {
+				if (!$label = ContactLabel::model()->find('name=?',array(@$_POST['contact_label_id']))) {
+					throw new Exception("Contact label not found: ".@$_POST['contact_label_id']);
+				}
+			}
+
+			$contact->contact_label_id = $label->id;
+
+			if (!$contact->save()) {
+				throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+			}
+
+			$cl = new ContactLocation;
+			$cl->contact_id = $contact->id;
+			if (isset($site)) {
+				$cl->site_id = $site->id;
+			} else {
+				$cl->institution_id = $institution->id;
+			}
+
+			if (!$cl->save()) {
+				throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+			}
+
+			$pca = new PatientContactAssignment;
+			$pca->patient_id = $patient->id;
+			$pca->location_id = $cl->id;
+
+			if (!$pca->save()) {
+				throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+			}
+
+			$this->redirect(array('/patient/view/'.$patient->id));
+		}
+	}
+
+	public function actionGetContactLocation() {
+		if (!$location = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
+			throw new Exception("ContactLocation not found: ".@$_GET['location_id']);
+		}
+
+		$data = array();
+
+		if ($location->site) {
+			$data['institution_id'] = $location->site->institution_id;
+			$data['site_id'] = $location->site_id;
+		} else {
+			$data['institution_id'] = $location->institution_id;
+			$data['site_id'] = null;
+		}
+
+		$data['contact_id'] = $location->contact_id;
+		$data['name'] = $location->contact->fullName;
+
+		echo json_encode($data);
+	}
+
+	public function actionValidateEditContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!$contact = Contact::model()->findByPk(@$_POST['contact_id'])) {
+			throw new Exception("Contact not found: ".@$_POST['contact_id']);
+		}
+
+		$errors = array();
+
+		if (!@$_POST['institution_id']) {
+			$errors['institution_id'] = 'Please select an institution';
+		} else {
+			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+				throw new Exception("Institution not found: ".@$_POST['institution_id']);
+			}
+		}
+
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk(@$_POST['site_id'])) {
+				throw new Exception("Site not found: ".@$_POST['site_id']);
+			}
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionEditContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+		
+		if (!$contact = Contact::model()->findByPk(@$_POST['contact_id'])) {
+			throw new Exception("Contact not found: ".@$_POST['contact_id']);
+		}
+
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk(@$_POST['site_id'])) {
+				throw new Exception("Site not found: ".@$_POST['site_id']);
+			}
+			if (!$cl = ContactLocation::model()->find('contact_id=? and site_id=?',array($contact->id,$site->id))) {
+				$cl = new ContactLocation;
+				$cl->contact_id = $contact->id;
+				$cl->site_id = $site->id;
+
+				if (!$cl->save()) {
+					throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+				}
+			}
+		} else {
+			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+				throw new Exception("Institution not found: ".@$_POST['institution_id']);
+			}
+
+			if (!$cl = ContactLocation::model()->find('contact_id=? and institution_id=?',array($contact->id,$institution->id))) {
+				$cl = new ContactLocation;
+				$cl->contact_id = $contact->id;
+				$cl->institution_id = $institution->id;
+
+				if (!$cl->save()) {
+					throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+				}
+			}
+		}
+
+		if (!$pca = PatientContactAssignment::model()->findByPk(@$_POST['pca_id'])) {
+			throw new Exception("PCA not found: ".@$_POST['pca_id']);
+		}
+
+		$pca->location_id = $cl->id;
+
+		if (!$pca->save()) {
+			throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
 }

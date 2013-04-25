@@ -234,7 +234,7 @@ em { font-style: italic; color:#333; }
 
 
 /* ====== ERRORs ====== */
-#content .errorMessage {	text-align:center; background:#ffe6b2; border:#ff8921 1px solid; padding:5px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+#content .errorMessage {	text-align:center; background:#ffe6b2; border:#ff8921 1px solid; padding:5px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; height: auto; }
 
 /* ====== A HREF ====== */
 a:hover, .aPush { border-bottom: thin dotted #002ec4; }
@@ -1566,3 +1566,13 @@ div.familyHistory #comments { width: 439px; }
 
 div.episodeMetadata { margin-left: 10px; }
 div.contactLocations { margin-top: 2em; }
+
+#add_contact { margin-top: 1em; }
+#add_contact div { height: 28px; }
+#add_contact .label { display: inline-block; width: 8em; }
+#add_contact .data { display: inline-block; }
+
+#edit_contact { margin-top: 1em; }
+#edit_contact div { height: 28px; }
+#edit_contact .label { display: inline-block; width: 8em; }
+#edit_contact .data { display: inline-block; }

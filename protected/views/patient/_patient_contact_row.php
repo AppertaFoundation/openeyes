@@ -30,6 +30,9 @@
 	</td>
 	<td>
 		<?php if (BaseController::checkUserLevel(3)) {?>
+			<a class="editContact small" rel="<?php echo $pca->location?>" href="#">
+				<strong>Edit</strong>
+			</a>
 			<a class="removeContact small" rel="<?php echo $pca->location?>" href="#">
 				<strong>Remove</strong>
 			</a>
