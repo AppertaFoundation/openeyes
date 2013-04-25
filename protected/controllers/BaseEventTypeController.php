@@ -36,8 +36,9 @@ class BaseEventTypeController extends BaseController
 	public $successUri = 'default/view/';
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
-	public $js = array();
 	public $jsVars = array();
+	public $jsFiles = array();
+	public $cssFiles = array();
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -105,7 +106,19 @@ class BaseEventTypeController extends BaseController
 			} else {
 
 				// Register js
-				if(is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'))) {
+
+				$loadAllModuleJS = true;
+
+				foreach ($this->jsFiles as $js) {
+					if (preg_match('/^core\/(.*)$/',$js,$m)) {
+						Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl($m[1]));
+					} else if (preg_match('/^module\/(.*)$/',$js,$m)) {
+						$loadAllModuleJS = false;
+						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/'.$m[1]);
+					}
+				}
+
+				if ($loadAllModuleJS && is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'))) {
 					$js_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
 					while ($file = readdir($js_dh)) {
 						if (preg_match('/\.js$/',$file)) {
@@ -116,7 +129,19 @@ class BaseEventTypeController extends BaseController
 				}
 
 				// Register css
-				if(is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'))) {
+
+				$loadAllModuleCSS = true;
+
+				foreach ($this->cssFiles as $css) {
+					if (preg_match('/^core\/(.*)$/',$css,$m)) {
+						Yii::app()->clientScript->registerCssFile(Yii::app()->createUrl($m[1]));
+					} else if (preg_match('/^module\/(.*)$/',$css,$m)) {
+						$loadAllModuleCSS = false;
+						Yii::app()->clientScript->registerCssFile('module-'.$m[1],$this->assetPath.'/'.$m[1], 10);
+					}
+				}
+
+				if ($loadAllModuleCSS && is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'))) {
 					$css_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
 					while ($file = readdir($css_dh)) {
 						if (preg_match('/\.css$/',$file)) {
@@ -129,10 +154,6 @@ class BaseEventTypeController extends BaseController
 					closedir($css_dh);
 				}
 				
-			}
-			
-			foreach ($this->js as $js) {
-				Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl($js));
 			}
 		}
 		
