@@ -94,66 +94,30 @@ class BaseEventTypeController extends BaseController
 		}
 
 		// Automatic file inclusion unless it's an ajax call
-		if($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
+		if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
 		
 			if (in_array($action->id,$this->printActions())) {
-				
 				// Register print css
 				if(file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
 					$this->registerCssFile('module-print.css', $this->assetPath.'/css/print.css');
 				}
 
 			} else {
-
 				// Register js
-
-				$loadAllModuleJS = true;
-
-				foreach ($this->jsFiles as $js) {
-					if (preg_match('/^core\/(.*)$/',$js,$m)) {
-						Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl($m[1]));
-					} else if (preg_match('/^module\/(.*)$/',$js,$m)) {
-						$loadAllModuleJS = false;
-						Yii::app()->clientScript->registerScriptFile($this->assetPath.'/'.$m[1]);
-					}
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/module.js')) {
+					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
 				}
-
-				if ($loadAllModuleJS && is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'))) {
-					$js_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
-					while ($file = readdir($js_dh)) {
-						if (preg_match('/\.js$/',$file)) {
-							Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
-						}
-					}
-					closedir($js_dh);
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
+					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'.js');
 				}
 
 				// Register css
-
-				$loadAllModuleCSS = true;
-
-				foreach ($this->cssFiles as $css) {
-					if (preg_match('/^core\/(.*)$/',$css,$m)) {
-						Yii::app()->clientScript->registerCssFile(Yii::app()->createUrl($m[1]));
-					} else if (preg_match('/^module\/(.*)$/',$css,$m)) {
-						$loadAllModuleCSS = false;
-						Yii::app()->clientScript->registerCssFile('module-'.$m[1],$this->assetPath.'/'.$m[1], 10);
-					}
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
+					Yii::app()->clientScript->registerCssFile($this->assetPath.'/css/module.css');
 				}
-
-				if ($loadAllModuleCSS && is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'))) {
-					$css_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
-					while ($file = readdir($css_dh)) {
-						if (preg_match('/\.css$/',$file)) {
-							if ($file != 'print.css') {
-								// Skip print.css as it's /only/ for print layouts
-								$this->registerCssFile('module-'.$file, $this->assetPath.'/css/'.$file, 10);
-							}
-						}
-					}
-					closedir($css_dh);
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
+					Yii::app()->clientScript->registerCssFile($this->assetPath.'/css/'.get_class($this).'.css');
 				}
-				
 			}
 		}
 		
