@@ -37,8 +37,6 @@ class BaseEventTypeController extends BaseController
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
 	public $jsVars = array();
-	public $jsFiles = array();
-	public $cssFiles = array();
 
 	/**
 	 * Checks to see if current user can create an event type
@@ -113,10 +111,10 @@ class BaseEventTypeController extends BaseController
 
 				// Register css
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
-					Yii::app()->clientScript->registerCssFile($this->assetPath.'/css/module.css');
+					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
 				}
 				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
-					Yii::app()->clientScript->registerCssFile($this->assetPath.'/css/'.get_class($this).'.css');
+					$this->registerCssFile(get_class($this).'.css',$this->assetPath.'/css/'.get_class($this).'.css',10);
 				}
 			}
 		}
