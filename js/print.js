@@ -33,12 +33,10 @@ function printPDF(url, data) {
 	});
 }
 
-*/
 $(document).ready(function() {
 	$('body').append('<div class="printable" id="printable"></div>');
 });
 
-/*
 function clearPrintContent() {
 	$('#printable').empty();
 }
@@ -46,7 +44,6 @@ function clearPrintContent() {
 function appendPrintContent(content) {
 	$('#printable').append(content);
 }
-*/
 
 function printContent(csspath) {
 
@@ -66,6 +63,7 @@ function printContent(csspath) {
 		overrideElementCSS : css,
 	});
 }
+*/
 
 /*
  * creates an iframe in the current document, and populates with the given url and GET data
