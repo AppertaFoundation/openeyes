@@ -297,7 +297,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
@@ -353,7 +353,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$this->title = 'Episode summary';
 		$this->event_tabs = array(
@@ -427,7 +427,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$this->title = 'Episode summary';
 		$this->event_tabs = array(

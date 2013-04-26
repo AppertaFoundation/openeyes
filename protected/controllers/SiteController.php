@@ -162,7 +162,7 @@ class SiteController extends BaseController
 	 */
 	public function actionLogin()
 	{
-		if (Yii::app()->session['user']) {
+		if(!Yii::app()->user->isGuest) {
 			$this->redirect(Yii::app()->baseUrl.'/');
 			Yii::app()->end();
 		}
@@ -174,49 +174,64 @@ class SiteController extends BaseController
 			return $this->render('login_wrong_browser');
 		}
 
-		$model=new LoginForm;
-
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
+		$model = new LoginForm;
 
 		// collect user input data
 		if(isset($_POST['LoginForm'])) {
-			$model->attributes=$_POST['LoginForm'];
+			$model->attributes = $_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login()) {
-				// Set the site cookie
-				Yii::app()->request->cookies['site_id'] = new CHttpCookie('site_id', $model->siteId);
-
-				$this->redirect(Yii::app()->user->returnUrl);
+				
+				// Flag site for confirmation
+				Yii::app()->session['confirm_site_and_firm'] = true;
+				
+				$this->redirect(array('confirmsiteandfirm'));
 			}
-		} else {
-			// Get the site id currently stored in the cookie, or the default site id
-			$default_site = Site::model()->getDefaultSite();
-			$default_site_id = ($default_site) ? $default_site->id : null;
-			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : $default_site_id;
 		}
-
-		$institution = Institution::model()->find('code=?',array('RP6'));
-
-		$criteria = new CDbCriteria;
-		$criteria->compare('institution_id',$institution->id);
-		$criteria->order = 'short_name asc';
-
-		$sites = Site::model()->findAll($criteria);
 
 		// display the login form
 		$this->render('login',
 			array(
 				'model'=>$model,
-				'sites' => CHtml::listData($sites, 'id', 'short_name')
 			)
 		);
 	}
 
+	public function actionConfirmSiteAndFirm() {
+		Yii::app()->session['confirm_site_and_firm'] = false;
+		$model = new SiteAndFirmForm();
+		if(isset($_POST['SiteAndFirmForm'])) {
+			$model->attributes = $_POST['SiteAndFirmForm'];
+			if($model->validate()) {
+				$user = User::model()->findByPk(Yii::app()->user->id);
+				$user->last_firm_id = $model->firm_id;
+				$user->last_site_id = $model->site_id;
+				if(!$user->save(false)) {
+					throw new CException('Error saving user');
+				}
+				Yii::app()->session['selected_site_id'] = $model->site_id;
+				Yii::app()->session['selected_firm_id'] = $model->firm_id;
+				$this->redirect(Yii::app()->user->returnUrl);
+			}
+		} else {
+			$model->firm_id = Yii::app()->session['selected_firm_id'];
+			$model->site_id = Yii::app()->session['selected_site_id'];
+		}
+		
+		$sites = Site::model()->findAll(array(
+				'condition' => 'institution.code = :institution_code',
+				'join' => 'JOIN institution ON institution.id = t.institution_id',
+				'order' => 'short_name',
+				'params' => array(':institution_code' => 'RP6'),
+		));
+
+		$this->render('confirm_site_and_firm', array(
+				'model' => $model,
+				'firms' => $this->firms,
+				'sites' => CHtml::listData($sites, 'id', 'short_name'),
+				));
+	}
+	
 	/**
 	 * Logs out the current user and redirect to homepage.
 	 */
@@ -243,7 +258,6 @@ class SiteController extends BaseController
 	{
 		$action = $this->getAction();
 		if ($action->getId() == 'index' && !empty($_POST['selected_firm_id'])) {
-			$user = Yii::app()->session['user'];
 			$user = User::Model()->findByPk(Yii::app()->session['user']->id);
 			$user->last_firm_id = intval($_POST['selected_firm_id']);
 			$user->save(false);

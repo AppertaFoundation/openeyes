@@ -127,11 +127,11 @@ class BaseController extends Controller
 		
 		$app = Yii::app();
 
-		if (Yii::app()->params['ab_testing']) {
-			if (Yii::app()->user->isGuest) {
+		if ($app->params['ab_testing']) {
+			if ($app->user->isGuest) {
 				$identity=new UserIdentity('admin', 'admin');
 				$identity->authenticate();
-				Yii::app()->user->login($identity,0);
+				$app->user->login($identity,0);
 				$this->selectedFirmId = 1;
 				$app->session['patient_id'] = 1;
 				$app->session['patient_name'] = 'John Smith';

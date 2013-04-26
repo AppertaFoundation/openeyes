@@ -409,7 +409,6 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 		$this->logActivity('viewed event');
 
 		$this->event->audit('event','view',false);
@@ -906,7 +905,7 @@ class BaseEventTypeController extends BaseController
 		}
 		$this->patient = $this->event->episode->patient;
 		$this->event_type = $this->event->eventType;
-		$this->site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 		$this->title = $this->event_type->name;
 	}
 	
