@@ -33,6 +33,7 @@
 			<a class="editContact small" rel="<?php echo $pca->location?>" href="#">
 				<strong>Edit</strong>
 			</a>
+			<br/>
 			<a class="removeContact small" rel="<?php echo $pca->location?>" href="#">
 				<strong>Remove</strong>
 			</a>

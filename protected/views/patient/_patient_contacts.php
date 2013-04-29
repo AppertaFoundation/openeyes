@@ -235,10 +235,14 @@
 
 				<div class="edit_contact_form_errors" style="height: auto;"></div>
 
-				<div align="right">
+				<div align="right" style="margin-top: 10px;">
 					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="edit_contact_loader" style="display: none;" />
 					<button class="classy green mini btn_save_editcontact" type="submit"><span class="button-span button-span-green">Save</span></button>
 					<button class="classy red mini btn_cancel_editcontact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+				</div>
+
+				<div align="left" style="float: left; margin-top: -27px;">
+					<button class="classy blue mini btn_add_site" type="submit"><span class="button-span button-span-blue">Add site/institution</span></button>
 				</div>
 
 				<?php $this->endWidget()?>
@@ -320,27 +324,31 @@ $(document).ready(function() {
 	$('#add_contact #institution_id').change(function() {
 		var institution_id = $(this).val();
 
-		$.ajax({
-			'type': 'GET',
-			'dataType': 'json',
-			'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
-			'success': function(data) {
-				var options = '<option value="">- Select -</option>';
-				for (var i in data) {
-					options += '<option value="'+i+'">'+data[i]+'</option>';
+		if (institution_id != '') {
+			$.ajax({
+				'type': 'GET',
+				'dataType': 'json',
+				'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
+				'success': function(data) {
+					var options = '<option value="">- Select -</option>';
+					for (var i in data) {
+						options += '<option value="'+i+'">'+data[i]+'</option>';
+					}
+					$('#add_contact #site_id').html(options);
+					sort_selectbox($('#add_contact #site_id'));
+					if (i >0) {
+						$('#add_contact .siteID').show();
+					} else {
+						$('#add_contact .siteID').hide();
+					}
 				}
-				$('#add_contact #site_id').html(options);
-				sort_selectbox($('#add_contact #site_id'));
-				if (i >0) {
-					$('#add_contact .siteID').show();
-				} else {
-					$('#add_contact .siteID').hide();
-				}
-			}
-		});
+			});
+		} else {
+			$('#add_contact .siteID').hide();
+		}
 	});
 
-	handleButton($('button.btn_cancel_contact'),function(e) {
+	$('button.btn_cancel_contact').click(function(e) {
 		e.preventDefault();
 		$('#add_contact').slideToggle('fast');
 		$('#btn-add-contact').hide();
@@ -398,29 +406,33 @@ $(document).ready(function() {
 	$('#edit_contact #institution_id').change(function() {
 		var institution_id = $(this).val();
 
-		$.ajax({
-			'type': 'GET',
-			'dataType': 'json',
-			'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
-			'success': function(data) {
-				var options = '<option value="">- Select -</option>';
-				for (var i in data) {
-					options += '<option value="'+i+'">'+data[i]+'</option>';
-				}
-				$('#edit_contact #site_id').html(options);
-				sort_selectbox($('#edit_contact #site_id'));
-				if (i >0) {
-					$('#edit_contact .siteID').show();
-				} else {
-					$('#edit_contact .siteID').hide();
-				}
+		if (institution_id != '') {
+			$.ajax({
+				'type': 'GET',
+				'dataType': 'json',
+				'url': baseUrl+'/patient/institutionSites?institution_id='+institution_id,
+				'success': function(data) {
+					var options = '<option value="">- Select -</option>';
+					for (var i in data) {
+						options += '<option value="'+i+'">'+data[i]+'</option>';
+					}
+					$('#edit_contact #site_id').html(options);
+					sort_selectbox($('#edit_contact #site_id'));
+					if (i >0) {
+						$('#edit_contact .siteID').show();
+					} else {
+						$('#edit_contact .siteID').hide();
+					}
 
-				if (editContactSiteID) {
-					$('#edit_contact #site_id').val(editContactSiteID);
-					editContactSiteID = null;
+					if (editContactSiteID) {
+						$('#edit_contact #site_id').val(editContactSiteID);
+						editContactSiteID = null;
+					}
 				}
-			}
-		});
+			});
+		} else {
+			$('#edit_contact .siteID').hide();
+		}
 	});
 
 	$('button.btn_save_editcontact').click(function(e) {
@@ -487,8 +499,8 @@ $(document).ready(function() {
 			'url': baseUrl+'/patient/sendSiteMessage',
 			'success': function(html) {
 				if (html == "1") {
-					alert("Your request has been sent, we aim to process requests within 1 working day.");
 					$('#add_site_dialog').dialog('close');
+					alert("Your request has been sent, we aim to process requests within 1 working day.");
 				} else {
 					alert("There was an unexpected error sending your message, please try again or contact support for assistance.");
 				}
