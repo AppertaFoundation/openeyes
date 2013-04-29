@@ -192,10 +192,14 @@
 
 				<div class="add_contact_form_errors" style="height: auto;"></div>
 
-				<div align="right">
+				<div align="right" style="margin-top: 10px;">
 					<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_contact_loader" style="display: none;" />
 					<button class="classy green mini btn_save_contact" type="submit"><span class="button-span button-span-green">Save</span></button>
 					<button class="classy red mini btn_cancel_contact" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+				</div>
+
+				<div align="left" style="float: left; margin-top: -27px;">
+					<button class="classy blue mini btn_add_site" type="submit"><span class="button-span button-span-blue">Add site/institution</span></button>
 				</div>
 
 				<?php $this->endWidget()?>
@@ -238,6 +242,37 @@
 				</div>
 
 				<?php $this->endWidget()?>
+			</div>
+			<div id="add_site_dialog" title="Add site or institution" style="display: none;">
+				<div>
+					<p>
+						This form allows you to send a request to the OpenEyes support team to add a site or institution to the system for you.
+					</p>
+					<form id="add_site_or_institution">
+						<div>
+							<div class="label">From:</div>
+							<div class="data"><?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email)?></div>
+						</div>
+						<div>
+							<div class="label">Subject:</div>
+							<div class="data"><?php echo CHtml::textField('newsite_subject','Please add the following site/institution')?></div>
+						</div>
+						<div style="height: 10em;">
+							<div class="label">Message:</div>
+							<div class="data"><?php echo CHtml::textArea('newsite_message',"Please could you add the following site/institution to OpenEyes:\n\n",array('rows'=>7,'cols'=>55))?></div>
+						</div>
+					</form>
+					<p>
+						We will respond to your request via email as soon as it has been completed.
+					</p>
+					<div>
+						<div class="buttonwrapper" style="margin-top: 15px; margin-bottom: 5px;">
+							<button type="submit" class="classy green venti btn_add_site_ok"><span class="button-span button-span-green">Send</span></button>
+							<button type="submit" class="classy red venti btn_add_site_cancel"><span class="button-span button-span-red">Cancel</span></button>
+							<img class="loader" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
+						</div>
+					</div>
+				</div>
 			</div>
 		<?php }?>
 	</div>
@@ -413,7 +448,41 @@ $(document).ready(function() {
 			$('#edit_contact').slideToggle('fast');
 		}
 	});
+
+	$('button.btn_add_site').click(function(e) {
+		e.preventDefault();
+
+		$('#add_site_dialog').dialog({
+			resizable: false,
+			modal: true,
+			width: 560
+		});
+
+		$('#newsite_message').focus();
+		var length = $('#newsite_message').val().length;
+		$('#newsite_message').selectRange(length,length);
+	});
+
+	$('button.btn_add_site_cancel').click(function(e) {
+		e.preventDefault();
+		$('#add_site_dialog').dialog('close');
+	});
 });
+
+$.fn.selectRange = function(start, end) {
+	return this.each(function() {
+		if (this.setSelectionRange) {
+			this.focus();
+			this.setSelectionRange(start, end);
+		} else if (this.createTextRange) {
+			var range = this.createTextRange();
+			range.collapse(true);
+			range.moveEnd('character', end);
+			range.moveStart('character', start);
+			range.select();
+		}
+	});
+};
 
 var editContactSiteID = null;
 
