@@ -1577,9 +1577,9 @@ div.contactLocations { margin-top: 2em; }
 #edit_contact .label { display: inline-block; width: 8em; }
 #edit_contact .data { display: inline-block; }
 
-#add_site_or_institution { margin-top: 1em; }
-#add_site_or_institution div { height: 28px; margin-top: 2px; margin-bottom: 2px; }
-#add_site_or_institution .label { display: inline-block; width: 8em; }
-#add_site_or_institution .data { display: inline-block; }
+#add_site_form { margin-top: 1em; }
+#add_site_form div { height: 28px; margin-top: 2px; margin-bottom: 2px; }
+#add_site_form .label { display: inline-block; width: 8em; }
+#add_site_form .data { display: inline-block; }
 #newsite_from { width: 23em; }
 #newsite_subject { width: 23em; }

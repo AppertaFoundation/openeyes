@@ -248,7 +248,13 @@
 					<p>
 						This form allows you to send a request to the OpenEyes support team to add a site or institution to the system for you.
 					</p>
-					<form id="add_site_or_institution">
+					<?php
+					$form = $this->beginWidget('CActiveForm', array(
+						'id'=>'add_site_form',
+						'enableAjaxValidation'=>false,
+						'htmlOptions' => array('class'=>'sliding'),
+						'action'=>array('patient/sendSiteMessage'),
+					))?>
 						<div>
 							<div class="label">From:</div>
 							<div class="data"><?php echo CHtml::textField('newsite_from',User::model()->findByPk(Yii::app()->user->id)->email)?></div>
@@ -261,7 +267,7 @@
 							<div class="label">Message:</div>
 							<div class="data"><?php echo CHtml::textArea('newsite_message',"Please could you add the following site/institution to OpenEyes:\n\n",array('rows'=>7,'cols'=>55))?></div>
 						</div>
-					</form>
+					<?php $this->endWidget()?>
 					<p>
 						We will respond to your request via email as soon as it has been completed.
 					</p>
@@ -452,6 +458,10 @@ $(document).ready(function() {
 	$('button.btn_add_site').click(function(e) {
 		e.preventDefault();
 
+		$('#newsite_from').val('<?php echo User::model()->findByPk(Yii::app()->user->id)->email?>');
+		$('#newsite_subject').val('Please add the following site/institution');
+		$('#newsite_message').val("Please could you add the following site/institution to OpenEyes:\n\n");
+
 		$('#add_site_dialog').dialog({
 			resizable: false,
 			modal: true,
@@ -466,6 +476,24 @@ $(document).ready(function() {
 	$('button.btn_add_site_cancel').click(function(e) {
 		e.preventDefault();
 		$('#add_site_dialog').dialog('close');
+	});
+
+	$('button.btn_add_site_ok').click(function(e) {
+		e.preventDefault();
+
+		$.ajax({
+			'type': 'POST',
+			'data': $('#add_site_form').serialize(),
+			'url': baseUrl+'/patient/sendSiteMessage',
+			'success': function(html) {
+				if (html == "1") {
+					alert("Your request has been sent, we aim to process requests within 1 working day.");
+					$('#add_site_dialog').dialog('close');
+				} else {
+					alert("There was an unexpected error sending your message, please try again or contact support for assistance.");
+				}
+			}
+		});
 	});
 });
 
