@@ -23,7 +23,6 @@
  * The followings are the available columns in table 'site':
  * @property string $id
  * @property string $name
- * @property string $code
  * @property string $short_name
  * @property string $address1
  * @property string $address2
@@ -94,6 +93,7 @@ class Site extends BaseActiveRecord
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
+			'import' => array(self::HAS_ONE, 'ImportSite', 'site_id'),
 		);
 	}
 

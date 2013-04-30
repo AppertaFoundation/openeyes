@@ -66,10 +66,10 @@ class Institution extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, code', 'required'),
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, code', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,6 +85,7 @@ class Institution extends BaseActiveRecord
 			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
 				'order' => 'name asc',
 			),
+			'import' => array(self::HAS_ONE, 'ImportInstitution', 'institution_id'),
 		);
 	}
 
