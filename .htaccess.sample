@@ -5,7 +5,7 @@ RewriteEngine On
 #RewriteBase /
 
 # Always rewrite asset requests
-RewriteRule ^asset/.*$ index.php [L]
+RewriteRule ^file/.*$ index.php [L]
 
 # Things not to rewrite
 RewriteCond %{REQUEST_URI} !(\.gif$)|(\.jpg$)|(\.png$)|(\.css$)|(\.js$)|(\.ico$)

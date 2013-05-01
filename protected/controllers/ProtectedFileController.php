@@ -82,12 +82,12 @@ class ProtectedFileController extends BaseController {
 	
 	public function actionImport() {
 		echo "<h1>Importing files:</h1>";
-		foreach(glob(Yii::app()->basePath.'/data/test/*') as $file) {
-			$file = ProtectedFile::createFromFile($file);
+		foreach(glob(Yii::app()->basePath.'/data/test/*') as $src_file) {
+			$file = ProtectedFile::createFromFile($src_file);
 			if(!$file->save()) {
 				throw new CException('Cannot save file'.print_r($file->getErrors(), true));
 			}
-			unlink($file);
+			unlink($src_file);
 			echo("<p>Imported ".$file->uid . ' - '. $file->name."</p>");
 		}
 		echo "<p>Done!</p>";

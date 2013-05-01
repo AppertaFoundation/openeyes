@@ -212,19 +212,6 @@ class ProtectedFile extends BaseActiveRecord {
 		$src_height = $image_info[1];
 		$ratio = $src_width/$src_height;
 		$image_type = $image_info[2];
-		switch($image_type) {
-			case IMAGETYPE_JPEG:
-				$src_image = imagecreatefromjpeg($this->getPath());
-				break;
-			case IMAGETYPE_PNG:
-				$src_image = imagecreatefrompng($this->getPath());
-				break;
-			case IMAGETYPE_GIF:
-				$src_image = imagecreatefromgif($this->getPath());
-				break;
-			default:
-				return false;
-		}
 
 		// Work out thumbnail width/height
 		$dimensions_parts = explode('x', $dimensions);
@@ -239,8 +226,26 @@ class ProtectedFile extends BaseActiveRecord {
 			$height = floor($width / $ratio);
 		}
 
-		// Generate thumbnail
 		$thumbnail = imagecreatetruecolor($width, $height);
+		switch($image_type) {
+			case IMAGETYPE_JPEG:
+				$src_image = imagecreatefromjpeg($this->getPath());
+				break;
+			case IMAGETYPE_PNG:
+				imagealphablending($thumbnail, false);
+				imagesavealpha($thumbnail, true);
+				$src_image = imagecreatefrompng($this->getPath());
+				break;
+			case IMAGETYPE_GIF:
+				imagealphablending($thumbnail, false);
+				imagesavealpha($thumbnail, true);
+				$src_image = imagecreatefromgif($this->getPath());
+				break;
+			default:
+				return false;
+		}
+		
+		// Generate thumbnail
 		imagecopyresampled($thumbnail, $src_image, 0, 0, 0, 0, $width, $height, $src_width, $src_height);
 		$thumbnail_path = $this->getThumbnailPath($dimensions);
 		if(!file_exists(dirname($thumbnail_path))) {
@@ -251,7 +256,7 @@ class ProtectedFile extends BaseActiveRecord {
 				imagejpeg($thumbnail, $thumbnail_path, self::THUMBNAIL_QUALITY);
 				break;
 			case IMAGETYPE_PNG:
-				imagepng($thumbnail, $thumbnail_path, self::THUMBNAIL_QUALITY);
+				imagepng($thumbnail, $thumbnail_path, self::THUMBNAIL_QUALITY * 9 / 100);
 				break;
 			case IMAGETYPE_GIF:
 				imagegif($thumbnail, $thumbnail_path);
