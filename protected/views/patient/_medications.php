@@ -57,6 +57,40 @@
 										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id),array('empty'=>'- Select -'))?>
 									</div>
 								</div>
+								<div class="patientMedication">
+									<div class="label"></div>
+									<div class="data">
+										<?php
+										$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+												'name' => 'drug_id',
+												'id' => 'autocomplete_drug_id',
+												'source' => "js:function(request, response) {
+													$.getJSON('".$this->createUrl('DrugList')."', {
+														term : request.term,
+													}, response);
+												}",
+												'options' => array(
+													'select' => "js:function(event, ui) {
+														$('#selectedMedicationName').text(ui.item.value);
+														$('#selectedMedicationID').val(ui.item.id);
+														$(this).val('');
+														return false;
+													}",
+												),
+												'htmlOptions' => array(
+													'placeholder' => 'or search formulary',
+												),
+										))?>
+									</div>
+								</div>
+
+								<div class="patientMedication">
+									<div class="label"></div>
+									<div class="data">
+										<span id="selectedMedicationName" style="font-weight: bold;"></span>
+										<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
+									</div>
+								</div>
 
 								<div class="patientMedication">
 									<div class="label">
@@ -154,10 +188,33 @@
 		$('#btn-add_medication span').removeClass('button-span-disabled').addClass('button-span-green');
 		return false;
 	});
-	$('#common_medication').change(function() {
-		$('#medication').val($(this).children('option:selected').text());
-		$(this).val(0);
+	$('#drug_id').change(function() {
+		if ($(this).val() != '') {
+			selectMedication($(this).val(),$(this).children('option:selected').text());
+			$('#drug_id').val('');
+		}
 	});
+
+	function selectMedication(id, name) {
+		$('#selectedMedicationName').text(name);
+		$('#selectedMedicationID').val(id);
+
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/DrugDefaults?drug_id='+id,
+			'success': function(data) {
+				if (data['route_id']) {
+					$('#route_id').val(data['route_id']);
+					$('#route_id').change();
+				}
+				if (data['frequency_id']) {
+					$('#frequency_id').val(data['frequency_id']);
+				}
+			}
+		});
+	}
+
 	handleButton($('button.btn_save_medication'),function(e) {
 		e.preventDefault();
 
@@ -193,7 +250,8 @@
 			'url': baseUrl+'/patient/getMedication?medication_id='+medication_id,
 			'success': function(data) {
 				$('div.patientMedication #route_id').val(data['route_id']);
-				$('div.patientMedication #drug_id').val(data['drug_id']);
+				$('#selectedMedicationID').val(data['drug_id']);
+				$('#selectedMedicationName').text(data['drug_name']);
 				$('div.patientMedication #frequency_id').val(data['frequency_id']);
 				$('div.patientMedication #start_date').val(data['start_date']);
 				$('div.routeOption .data').html(data['route_options']);

@@ -1155,8 +1155,8 @@ class PatientController extends BaseController
 			throw new Exception("Patient not found:".@$_POST['patient_id']);
 		}
 
-		if (!$drug = Drug::model()->findByPk(@$_POST['drug_id'])) {
-			throw new Exception("Drug not found: ".@$_POST['drug_id']);
+		if (!$drug = Drug::model()->findByPk(@$_POST['selectedMedicationID'])) {
+			throw new Exception("Drug not found: ".@$_POST['selectedMedicationID']);
 		}
 
 		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
@@ -1266,8 +1266,8 @@ class PatientController extends BaseController
 			throw new Exception("Patient not found: ".@$_POST['patient_id']);
 		}
 
-		if (!Drug::model()->findByPk(@$_POST['drug_id'])) {
-			$errors['drug_id'] = "Please select a drug";
+		if (!Drug::model()->findByPk(@$_POST['selectedMedicationID'])) {
+			$errors['selectedMedicationID'] = "Please select a drug";
 		}
 		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
 			$errors['route_id'] = "Please select a route";
@@ -1294,11 +1294,42 @@ class PatientController extends BaseController
 
 		echo json_encode(array(
 			'drug_id' => $m->drug_id,
+			'drug_name' => $m->drug->name,
 			'route_id' => $m->route_id,
 			'option_id' => $m->option_id,
 			'frequency_id' => $m->frequency_id,
 			'start_date' => $m->start_date,
 			'route_options' => $this->renderPartial('_drug_route_options',array('route'=>$m->route),true),
 		));
+	}
+
+	public function actionDrugList() {
+		if (Yii::app()->request->isAjaxRequest) {
+			$criteria = new CDbCriteria();
+			if (isset($_GET['term']) && $term = $_GET['term']) {
+				$criteria->addCondition(array('LOWER(name) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
+				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
+			}
+			$criteria->order = 'name';
+			$criteria->params = $params;
+			$drugs = Drug::model()->findAll($criteria);
+			$return = array();
+			foreach($drugs as $drug) {
+				$return[] = array(
+						'label' => $drug->tallmanlabel,
+						'value' => $drug->tallman,
+						'id' => $drug->id,
+				);
+			}
+			echo CJSON::encode($return);
+		}
+	}
+
+	public function actionDrugDefaults() {
+		if (!$drug = Drug::model()->findByPk(@$_GET['drug_id'])) {
+			throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+		}
+
+		echo json_encode(array('route_id'=>$drug->default_route_id,'frequency_id'=>$drug->default_frequency_id));
 	}
 }
