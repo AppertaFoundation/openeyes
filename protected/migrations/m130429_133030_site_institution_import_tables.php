@@ -21,11 +21,11 @@ class m130429_133030_site_institution_import_tables extends CDbMigration
 		$this->insert('import_source',array('id'=>1,'name'=>'Connecting for Health'));
 		$this->insert('import_source',array('id'=>2,'name'=>'Dr Foster Health'));
 
-		$this->addColumn('site','source_id','int(10) unsigned NOT NULL');
-		$this->addColumn('institution','source_id','int(10) unsigned NOT NULL');
+		$this->addColumn('site','source_id','int(10) unsigned NULL');
+		$this->addColumn('institution','source_id','int(10) unsigned NULL');
 
-		$this->update('site',array('source_id'=>1));
-		$this->update('institution',array('source_id'=>1));
+		$this->update('site',array('source_id'=>1),"code != ''");
+		$this->update('institution',array('source_id'=>1),"code != ''");
 
 		$this->createIndex('site_source_id_fk','site','source_id');
 		$this->addForeignKey('site_source_id_fk','site','source_id','import_source','id');
@@ -37,6 +37,15 @@ class m130429_133030_site_institution_import_tables extends CDbMigration
 
 		$this->alterColumn('site','remote_id','varchar(10) COLLATE utf8_bin NOT NULL');
 		$this->alterColumn('institution','remote_id','varchar(10) COLLATE utf8_bin NOT NULL');
+
+		foreach (Yii::app()->db->createCommand()
+			->select("site.*, institution.code as inst_code")
+			->from("site")
+			->join("institution","site.institution_id = institution.id")
+			->queryAll() as $row) {
+
+			$this->update('site',array('code'=>$row['inst_code'].$row['code']),'id='.$row['id']);
+		}
 	}
 
 	public function down()
