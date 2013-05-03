@@ -233,6 +233,14 @@ class Event extends BaseActiveRecord
 		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
 	}
 	
+	public function delete() {
+		
+		// Delete related
+		EventIssue::model()->deleteAll('event_id = ?', array($this->id));
+		
+		parent::delete();
+	}
+	
 	/*
 	 * returns the latest event of this type in the event episode
 	 * 
