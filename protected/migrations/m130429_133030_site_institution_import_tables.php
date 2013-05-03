@@ -39,12 +39,12 @@ class m130429_133030_site_institution_import_tables extends CDbMigration
 		$this->alterColumn('institution','remote_id','varchar(10) COLLATE utf8_bin NOT NULL');
 
 		foreach (Yii::app()->db->createCommand()
-			->select("site.*, institution.code as inst_code")
+			->select("site.*, institution.remote_id as inst_code")
 			->from("site")
 			->join("institution","site.institution_id = institution.id")
 			->queryAll() as $row) {
 
-			$this->update('site',array('code'=>$row['inst_code'].$row['code']),'id='.$row['id']);
+			$this->update('site',array('remote_id'=>$row['inst_code'].$row['remote_id']),'id='.$row['id']);
 		}
 	}
 

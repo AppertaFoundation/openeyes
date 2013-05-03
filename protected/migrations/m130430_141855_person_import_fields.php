@@ -15,7 +15,7 @@ class m130430_141855_person_import_fields extends CDbMigration
 			->from("person")
 			->join("contact","person.contact_id = contact.id")
 			->join("contact_metadata","contact_metadata.contact_id = contact.id")
-			->where("key = :key",array(':key'=>'gmc_number'))
+			->where("`key` = :key",array(':key'=>'gmc_number'))
 			->queryAll() as $person) {
 			$person_ids[] = $person['id'];
 		}
