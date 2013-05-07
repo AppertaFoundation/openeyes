@@ -281,6 +281,9 @@ class Site extends BaseActiveRecord
 		return $contact->nick_name;
 	}
 
+	/**
+	 * FIXME: Move/remove now booking is modular?
+	 */
 	public static function getListByFirm($firmId) {
 		$sites = Yii::app()->db->createCommand()
 			->selectDistinct('site.id, site.short_name')

@@ -299,9 +299,13 @@ class Firm extends BaseActiveRecord
 	}
 
 	public function getReportDisplay() {
-		return $this->name.' ('.$this->serviceSubspecialtyAssignment->subspecialty->name.')';
+		return $this->getNameAndSubspecialty();
 	}
 
+	public function getNameAndSubspecialty() {
+		return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
+	}
+	
 	public function getSpecialty() {
 		$result = Yii::app()->db->createCommand()
 			->select('su.specialty_id as id')

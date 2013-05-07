@@ -208,6 +208,9 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
+	/**
+	 * FIXME: Move/remove now booking is modular?
+	 */
 	public function getBookingsForToday() {
 		return Yii::app()->db->createCommand()
 			->select('b.id')

@@ -20,6 +20,9 @@
 <?php
 $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
 if (!Yii::app()->user->isGuest) {
+	if(!empty(Yii::app()->session['confirm_site_and_firm'])) {
+		$this->widget('SiteAndFirmWidget');
+	}
 	if (empty(Yii::app()->session['user'])) {
 		Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
 	}
@@ -44,22 +47,29 @@ if (!Yii::app()->user->isGuest) {
 			<?php }?>
 		</ul>
 	</div>
-	<?php if ($this->showForm) { ?>
 	<div id="user_firm">
-		<?php
-		$form=$this->beginWidget('CActiveForm', array(
-			'id'=>'base-form',
-			'enableAjaxValidation'=>false,
-			'action' => Yii::app()->createUrl('site')
-		));
-		?>
-		<label>Selected firm: </label>
-		<?php
-		echo CHtml::dropDownList('selected_firm_id', $this->selectedFirmId, $this->firms);
-		$this->endWidget();
-		?>
+		<span>Site: </span>
+		<strong><?php echo Site::model()->findByPk($this->selectedSiteId)->short_name; ?></strong>,
+		<span>Firm: </span>
+		<strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
+		<span class="change-firm">(<a href="#">Change</a>)</span>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$('.change-firm a').click(function(e) {
+				$.ajax({
+					url: baseUrl + '/site/changesiteandfirm',
+					data: {
+						returnUrl: "<?php echo Yii::app()->request->url ?>"
+					},
+					success: function(data) {
+						$('#user_panel').before(data);
+					}
+				});
+				e.preventDefault();
+			});
+		});
+		</script>
 	</div>
-	<?php } ?>
 	<div id="user_id">
 		<span>You are logged in as:</span> <strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong>
 	</div>

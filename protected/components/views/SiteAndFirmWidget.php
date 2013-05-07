@@ -18,35 +18,44 @@
  */
 ?>
 <?php
-$this->pageTitle = Yii::app()->name . ' - Confirm Site and Firm';
-$this->layout = 'simple';
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+		'id' => 'site-and-firm-dialog',
+		'options' => array(
+			'title' => $this->title,
+			'dialogClass' => 'dialog',
+			'autoOpen' => true,
+			'modal' => true,
+			'draggable' => false,
+			'resizable' => false,
+			'width' => 450,
+		),
+	));
 ?>
-<h2 class="alert">Please confirm site and firm</h2>
 
-<div class="form_greyBox">
-	<?php $form = $this->beginWidget('CActiveForm', array(
-			'id' => 'site-and-firm-form',
-			)); ?>
+<?php 
+$form = $this->beginWidget('CActiveForm', array(
+	'id' => 'site-and-firm-form',
+));
+?>
 
-	<div>
-		<?php echo $form->errorSummary($model); ?>
-	</div>
-
-	<div>
-		<?php echo $form->labelEx($model, 'site_id'); ?>
-		<?php echo $form->dropDownList($model,'site_id', $sites); ?>
-	</div>
-
-	<div>
-		<?php echo $form->labelEx($model, 'firm_id'); ?>
-		<?php echo $form->dropDownList($model,'firm_id', $firms); ?>
-	</div>
-
-	<div>
-		<button type="submit" name="submit" class="classy blue tall">
-			<span class="button-span button-span-blue">Confirm</span>
-		</button>
-	</div>
-
-	<?php $this->endWidget(); ?>
+<div>
+	<?php echo $form->errorSummary($model); ?>
 </div>
+
+<div>
+	<?php echo $form->labelEx($model, 'site_id'); ?>:
+	<?php echo $form->dropDownList($model,'site_id', $sites); ?>
+</div>
+
+<div>
+	<?php echo $form->labelEx($model, 'firm_id'); ?>:
+	<?php echo $form->dropDownList($model,'firm_id', $firms); ?>
+</div>
+
+<div class="form-actions">
+	<?php echo CHtml::submitButton('Confirm'); ?>
+</div>
+
+<?php $this->endWidget(); ?>
+
+<?php $this->endWidget(); ?>

@@ -25,6 +25,7 @@
 class BaseController extends Controller
 {
 	public $selectedFirmId;
+	public $selectedSiteId;
 	public $firms;
 	public $showForm = false;
 	public $patientId;
@@ -145,6 +146,10 @@ class BaseController extends Controller
 			$this->selectedFirmId = $app->session['selected_firm_id'];
 		}
 
+		if (isset($app->session['selected_site_id'])) {
+			$this->selectedSiteId = $app->session['selected_site_id'];
+		}
+		
 		if (isset($app->session['patient_name'])) {
 			$this->patientName = $app->session['patient_name'];
 		}

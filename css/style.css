@@ -576,8 +576,9 @@ ul#user_nav > li .selected,
 #user_panel.inAdmin ul#user_nav > li a:active { background: #eaffff; border:none; }
 #user_panel.inAdmin ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 
-#user_firm { position: absolute; bottom: 8px; right: 10px; }
-#user_firm label { font-size: 12px; }
+#user_firm { position: absolute; bottom: 5px; right: 10px; }
+#user_firm span { font-size: 11px; }
+#user_firm .change-firm { font-size: 11px; }
 
 #user_id	{ position: absolute; bottom: 5px; left: 10px; }
 #user_id	span { display: block; font-size: 11px; }
@@ -1532,3 +1533,59 @@ div.familyHistory { margin-bottom: 10px; }
 div.familyHistory #comments { width: 439px; }
 
 div.episodeMetadata { margin-left: 10px; }
+
+body .ui-widget-overlay {
+	background: #000;
+	opacity: 0.5;
+}
+
+.ui-widget-content.dialog {
+	border-color: #999;
+}
+
+.ui-widget.dialog {
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.ui-widget.dialog form div {
+	margin: 10px 0;
+}
+
+.ui-widget.dialog label {
+	display: inline-block;
+	width: 80px;
+	text-align: right;
+}
+
+.ui-widget.dialog label .required {
+	color: #f00;
+	float: right;
+}
+
+.ui-widget.dialog select,
+.ui-widget.dialog input {
+	font-family: Helvetica, Arial, sans-serif;
+	display: inline-block;
+	font-size: 13px;
+}
+
+.ui-widget.dialog .form-actions {
+	margin-left: 85px;
+}
+
+.ui-widget.dialog .form-actions input {
+	box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+	font-size: 13px;
+	font-family: sans-serif;
+	padding: 4px 16px;
+	letter-spacing: 1px;
+	text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
+	background: linear-gradient(#43a844, #55a256);
+	border-bottom: 2px solid #3fa522;
+	color: #fff;
+}
+
+.ui-widget.dialog .form-actions input:hover {
+	background: linear-gradient(#48bd27, #3fa522);
+	border-bottom: 2px solid #569b42;
+}
