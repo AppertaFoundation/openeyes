@@ -18,18 +18,18 @@
  */
 
 /**
- * This is the model class for table "person".
+ * This is the model class for table "contact_metadata".
  *
- * The followings are the available columns in table 'person':
+ * The followings are the available columns in table 'contact_metadata':
  * @property string $id
  * @property string $name
  * @property integer $letter_template_only
  */
-class Person extends BaseActiveRecord
+class ContactMetadata extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Person the static model class
+	 * @return ContactMetadata the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -41,15 +41,7 @@ class Person extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'person';
-	}
-
-	public function behaviors() {
-		return array(
-			'ContactBehavior' => array(
-				'class' => 'application.behaviors.ContactBehavior',
-			),
-		);
+		return 'contact_metadata';
 	}
 
 	/**
@@ -58,9 +50,6 @@ class Person extends BaseActiveRecord
 	public function rules()
 	{
 		return array(
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name, source_id, remote_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,17 +61,15 @@ class Person extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 
 	/**
-	 * @return array customized attribute labels (name=>label)
+	 * @return array customized attribute metadatas (name=>metadata)
 	 */
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
 		);
 	}
 
@@ -98,7 +85,6 @@ class Person extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

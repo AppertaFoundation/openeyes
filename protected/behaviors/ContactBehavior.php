@@ -103,4 +103,25 @@ class ContactBehavior extends CActiveRecordBehavior {
 	/* this can be overridden by models that use this behavior */
 	public function getPrefix() {
 	}
+
+	public function getMetadata($key) {
+		if ($cm = ContactMetadata::model()->find('contact_id=? and `key`=?',array($this->owner->contact_id,$key))) {
+			return $cm->value;
+		}
+
+		return false;
+	}
+
+	public function setMetadata($key, $value) {
+		if (!$cm = ContactMetadata::model()->find('contact_id=? and `key`=?',array($this->owner->contact_id,$key))) {
+			$cm = new ContactMetadata;
+			$cm->contact_id = $this->owner->contact_id;
+			$cm->key = $key;
+		}
+		$cm->value = $value;
+
+		if (!$cm->save()) {
+			throw new Exception("Unable to save contact metadata: ".print_r($cm->getErrors(),true));
+		}
+	}
 }
