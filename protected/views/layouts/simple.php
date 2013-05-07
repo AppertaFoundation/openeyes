@@ -72,35 +72,17 @@
 	<?php echo $this->renderPartial('//base/_banner_watermark',array('description' => true))?> 
 	<?php echo $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
-	<div id="header" class="clearfix"> 
-		<?php echo $this->renderPartial('//base/_brand'); ?>
-	</div> <!-- #header --> 
-
-	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-		'links'=>$this->breadcrumbs,
-	)); ?><!-- breadcrumbs -->
-
-	<div id="content"> 
-		<?php echo $content; ?>
-	</div> <!-- #content --> 
-	<div id="help" class="clearfix"> 
-		<?php /*
-		<div class="hint">
-			<p><strong>Login Help</strong></p>
-			<p>User name and password are case sensitive: "A" is different to "a".</p>
-			<p>Ensure that CAPs LOCK is off.</p>
-		</div>
-
-		<?php if (Yii::app()->params['helpdesk_phone'] && Yii::app()->params['helpdesk_email']) {?>
-			<div class="hint">
-				<p><strong>Do you require a username and password?</strong></p>
-				<p>Contact the helpdesk:</p>
-				<p>Telephone: <?php echo Yii::app()->params['helpdesk_phone']?></p>
-				<p>Email: <a href="mailto:<?php echo Yii::app()->params['helpdesk_email']?>"><?php echo Yii::app()->params['helpdesk_email']?></a></p>
-			</div>
-		<?php }?>
-		*/?>
-	</div> <!-- #help --> 
+		<div id="header" class="clearfix"> 
+			<?php echo $this->renderPartial('//base/_brand'); ?>
+		</div> <!-- #header --> 
+	
+		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
+			'links'=>$this->breadcrumbs,
+		)); ?><!-- breadcrumbs -->
+	
+		<div id="content"> 
+			<?php echo $content; ?>
+		</div> <!-- #content --> 
 	</div> 
 	<!--#container --> 
 

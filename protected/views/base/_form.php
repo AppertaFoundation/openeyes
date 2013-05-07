@@ -53,22 +53,6 @@ if (!Yii::app()->user->isGuest) {
 		<span>Firm: </span>
 		<strong><?php echo Firm::model()->findByPk($this->selectedFirmId)->getNameAndSubspecialty(); ?></strong>
 		<span class="change-firm">(<a href="#">Change</a>)</span>
-		<script type="text/javascript">
-		$(document).ready(function(){
-			$('.change-firm a').click(function(e) {
-				$.ajax({
-					url: baseUrl + '/site/changesiteandfirm',
-					data: {
-						returnUrl: "<?php echo Yii::app()->request->url ?>"
-					},
-					success: function(data) {
-						$('#user_panel').before(data);
-					}
-				});
-				e.preventDefault();
-			});
-		});
-		</script>
 	</div>
 	<div id="user_id">
 		<span>You are logged in as:</span> <strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong>

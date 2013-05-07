@@ -16,32 +16,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-var redirectHomeAfterChangingFirm = true;
-
-$('select[id=selected_firm_id]').die('change').live('change', function(e) {
-	e.preventDefault();
-
-	var firmId = $('select[id=selected_firm_id]').val();
-	$.ajax({
-		type: 'post',
-		url: baseUrl+'/',
-		data: {'selected_firm_id': firmId },
-		success: function(data) {
-			if (data.match(/change-firm-succeeded/)) {
-				if (redirectHomeAfterChangingFirm) {
-					url = window.location.href
-					if (m = url.match(/firm_id=[0-9]+/)) {
-						url = url.replace(m[0],'firm_id='+firmId);
-					}
-					window.location.href = url;
-				}
-			} else {
-				alert("Sorry, changing the firm failed. Please try again or contact support for assistance.");
-			}
-		}
-	});
-});
-
 $(document).ready(function(){
 	$('.sprite.showhide').click( function(e){
 		e.preventDefault();
@@ -128,6 +102,22 @@ $(document).ready(function(){
 			}
 	);
 	
+	/**
+	 * Site / firm switcher
+	 */
+	$('.change-firm a').click(function(e) {
+		$.ajax({
+			url: baseUrl + '/site/changesiteandfirm',
+			data: {
+				returnUrl: window.location.href
+			},
+			success: function(data) {
+				$('#user_panel').before(data);
+			}
+		});
+		e.preventDefault();
+	});
+
 });
 
 function changeState(wb,sp) {

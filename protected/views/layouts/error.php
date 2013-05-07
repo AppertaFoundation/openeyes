@@ -41,7 +41,6 @@
 				<?php echo $content; ?>
 			</div>
 		</div><!-- #content -->
-		<div id="help" class="clearfix"></div><!-- #help -->
 	</div><!--#container -->
 	<div id="footer">
 		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?>&nbsp;&nbsp;|&nbsp;&nbsp;
