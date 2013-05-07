@@ -52,7 +52,7 @@ class Person extends BaseActiveRecord
 		return array(
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('id, name, source_id, remote_id', 'safe', 'on'=>'search'),
 		);
 	}
 

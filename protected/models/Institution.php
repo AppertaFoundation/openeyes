@@ -85,7 +85,6 @@ class Institution extends BaseActiveRecord
 			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
 				'order' => 'name asc',
 			),
-			'import' => array(self::HAS_ONE, 'ImportInstitution', 'institution_id'),
 		);
 	}
 

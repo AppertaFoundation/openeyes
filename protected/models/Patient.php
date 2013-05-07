@@ -609,7 +609,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('patient_id', $this->id);
 		
 		$criteria->join = 'join disorder on t.disorder_id = disorder.id join specialty on disorder.specialty_id = specialty.id';
-		$criteria->compare('specialty.code', 'OPH');
+		$criteria->compare('specialty.code', 130);
 		
 		$criteria->order = 'date asc';
 
@@ -918,7 +918,7 @@ class Patient extends BaseActiveRecord {
 		$diagnoses = array();
 
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=?',array($this->id)) as $i => $sd) {
-			if ($sd->disorder->specialty && $sd->disorder->specialty->code == 'OPH') {
+			if ($sd->disorder->specialty && $sd->disorder->specialty->code == 130) {
 				$diagnoses[] = strtolower(($sd->eye ? $sd->eye->adjective.' ' : '').$sd->disorder->term);
 			}
 		}

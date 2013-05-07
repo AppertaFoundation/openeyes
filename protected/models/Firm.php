@@ -233,7 +233,7 @@ class Firm extends BaseActiveRecord
 	}
 
 	public function getCataractList() {
-		$specialty = Specialty::model()->find('code=?',array('OPH'));
+		$specialty = Specialty::model()->find('code=?',array(130));
 		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
 		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty->id));
 
