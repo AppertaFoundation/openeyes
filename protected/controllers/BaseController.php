@@ -25,6 +25,7 @@
 class BaseController extends Controller
 {
 	public $selectedFirmId;
+	public $selectedSiteId;
 	public $firms;
 	public $showForm = false;
 	public $patientId;
@@ -127,11 +128,11 @@ class BaseController extends Controller
 		
 		$app = Yii::app();
 
-		if (Yii::app()->params['ab_testing']) {
-			if (Yii::app()->user->isGuest) {
+		if ($app->params['ab_testing']) {
+			if ($app->user->isGuest) {
 				$identity=new UserIdentity('admin', 'admin');
 				$identity->authenticate();
-				Yii::app()->user->login($identity,0);
+				$app->user->login($identity,0);
 				$this->selectedFirmId = 1;
 				$app->session['patient_id'] = 1;
 				$app->session['patient_name'] = 'John Smith';
@@ -145,6 +146,10 @@ class BaseController extends Controller
 			$this->selectedFirmId = $app->session['selected_firm_id'];
 		}
 
+		if (isset($app->session['selected_site_id'])) {
+			$this->selectedSiteId = $app->session['selected_site_id'];
+		}
+		
 		if (isset($app->session['patient_name'])) {
 			$this->patientName = $app->session['patient_name'];
 		}

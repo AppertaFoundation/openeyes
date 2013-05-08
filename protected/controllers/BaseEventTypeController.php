@@ -36,7 +36,6 @@ class BaseEventTypeController extends BaseController
 	public $successUri = 'default/view/';
 	public $eventIssueCreate = false;
 	public $extraViewProperties = array();
-	public $js = array();
 	public $jsVars = array();
 
 	/**
@@ -93,46 +92,30 @@ class BaseEventTypeController extends BaseController
 		}
 
 		// Automatic file inclusion unless it's an ajax call
-		if($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
+		if ($this->assetPath && !Yii::app()->getRequest()->getIsAjaxRequest()) {
 		
 			if (in_array($action->id,$this->printActions())) {
-				
 				// Register print css
 				if(file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/print.css')) {
 					$this->registerCssFile('module-print.css', $this->assetPath.'/css/print.css');
 				}
 
 			} else {
-
 				// Register js
-				if(is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'))) {
-					$js_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js'));
-					while ($file = readdir($js_dh)) {
-						if (preg_match('/\.js$/',$file)) {
-							Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.$file);
-						}
-					}
-					closedir($js_dh);
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/module.js')) {
+					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/module.js');
+				}
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.js').'/'.get_class($this).'.js')) {
+					Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/'.get_class($this).'.js');
 				}
 
 				// Register css
-				if(is_dir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'))) {
-					$css_dh = opendir(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css'));
-					while ($file = readdir($css_dh)) {
-						if (preg_match('/\.css$/',$file)) {
-							if ($file != 'print.css') {
-								// Skip print.css as it's /only/ for print layouts
-								$this->registerCssFile('module-'.$file, $this->assetPath.'/css/'.$file, 10);
-							}
-						}
-					}
-					closedir($css_dh);
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/module.css')) {
+					$this->registerCssFile('module.css',$this->assetPath.'/css/module.css',10);
 				}
-				
-			}
-			
-			foreach ($this->js as $js) {
-				Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl($js));
+				if (file_exists(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets.css').'/css/'.get_class($this).'.css')) {
+					$this->registerCssFile(get_class($this).'.css',$this->assetPath.'/css/'.get_class($this).'.css',10);
+				}
 			}
 		}
 		
@@ -180,9 +163,6 @@ class BaseEventTypeController extends BaseController
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type->id);
 		$criteria->order = 'display_order asc';
-		# TODO remove these when the core booking models are removed
-		$criteria->compare('id','<>29');
-		$criteria->compare('id','<>31');
 
 		$elements = array();
 
@@ -243,9 +223,6 @@ class BaseEventTypeController extends BaseController
 				$criteria->compare('event_type_id',$event_type->id);
 				$criteria->compare('`default`',1);
 				$criteria->order = 'display_order asc';
-				# TODO remove these when the core booking models are removed
-				$criteria->compare('id','<>29');
-				$criteria->compare('id','<>31');
 
 				$elements = array();
 				$element_classes = array();
@@ -409,7 +386,6 @@ class BaseEventTypeController extends BaseController
 			}
 		}
 
-		$currentSite = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
 		$this->logActivity('viewed event');
 
 		$this->event->audit('event','view',false);
@@ -906,7 +882,7 @@ class BaseEventTypeController extends BaseController
 		}
 		$this->patient = $this->event->episode->patient;
 		$this->event_type = $this->event->eventType;
-		$this->site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$this->site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 		$this->title = $this->event_type->name;
 	}
 	

@@ -17,26 +17,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<?php $this->beginContent('//layouts/main'); ?>
-<div class="container">
-	<div class="span-19">
-		<div id="content">
-			<?php echo $content; ?>
-		</div><!-- content -->
-	</div>
-	<div class="span-5 last">
-		<div id="sidebar">
-		<?php
-			$this->beginWidget('zii.widgets.CPortlet', array(
-				'title'=>'Operations',
-			));
-			$this->widget('zii.widgets.CMenu', array(
-				'items'=>$this->menu,
-				'htmlOptions'=>array('class'=>'operations'),
-			));
-			$this->endWidget();
-		?>
-		</div><!-- sidebar -->
-	</div>
+<?php
+$this->beginWidget('zii.widgets.jui.CJuiDialog', array(
+		'id' => 'site-and-firm-dialog',
+		'options' => array(
+			'title' => $this->title,
+			'dialogClass' => 'dialog',
+			'autoOpen' => true,
+			'modal' => true,
+			'draggable' => false,
+			'resizable' => false,
+			'width' => 450,
+		),
+	));
+?>
+
+<?php 
+$form = $this->beginWidget('CActiveForm', array(
+	'id' => 'site-and-firm-form',
+));
+?>
+
+<div>
+	<?php echo $form->errorSummary($model); ?>
 </div>
-<?php $this->endContent();
+
+<div>
+	<?php echo $form->labelEx($model, 'site_id'); ?>:
+	<?php echo $form->dropDownList($model,'site_id', $sites); ?>
+</div>
+
+<div>
+	<?php echo $form->labelEx($model, 'firm_id'); ?>:
+	<?php echo $form->dropDownList($model,'firm_id', $firms); ?>
+</div>
+
+<div class="form-actions">
+	<?php echo CHtml::submitButton('Confirm'); ?>
+</div>
+
+<?php $this->endWidget(); ?>
+
+<?php $this->endWidget(); ?>

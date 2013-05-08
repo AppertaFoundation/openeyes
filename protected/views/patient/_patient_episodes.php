@@ -66,7 +66,7 @@ try {
 	}
 	$this->renderPartial('_systemic_diagnoses');
 	$this->renderPartial('_previous_operations');
-	$this->renderPartial('_medications');
+	$this->renderPartial('_medications',array('firm'=>$firm));
 	// specialist extra data
 	foreach ($codes as $code) {
 		try {

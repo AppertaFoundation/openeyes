@@ -19,16 +19,6 @@
 
 class SiteController extends BaseController
 {
-	/**
-	 * Updates the selected firm if need be.
-	 * Calls the BaseController beforeAction method to set up displaying the firm form if need be.
-	 */
-	protected function beforeAction($action)
-	{
-		$this->storeData();
-
-		return parent::beforeAction($action);
-	}
 
 	/**
 	 * Declares class-based actions.
@@ -74,12 +64,7 @@ class SiteController extends BaseController
 				$event_id = $matches[2];
 				if($event = Event::model()->findByPk($event_id)) {
 					$event_class_name = $event->eventType->class_name;
-					if($event_class_name == 'OphTrOperation') {
-						// TODO: This can go away once we modularise Booking
-						$this->redirect(array('/patient/event/'.$event_id));
-					} else {
-						$this->redirect(array($event_class_name.'/default/view/'.$event_id));
-					}
+					$this->redirect(array($event_class_name.'/default/view/'.$event_id));
 				} else {
 					Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
 					$this->redirect('/');
@@ -159,11 +144,22 @@ class SiteController extends BaseController
 	}
 
 	/**
+	 * Display form to change site/firm
+	 * @throws CHttpException
+	 */
+	public function actionChangeSiteAndFirm() {
+		if(empty($_GET['returnUrl'])) {
+			throw new CHttpException(500, 'Return URL must be specified');
+		}
+		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $_GET['returnUrl']), false, true);
+	}
+	
+	/**
 	 * Displays the login page
 	 */
 	public function actionLogin()
 	{
-		if (Yii::app()->session['user']) {
+		if(!Yii::app()->user->isGuest) {
 			$this->redirect(Yii::app()->baseUrl.'/');
 			Yii::app()->end();
 		}
@@ -175,36 +171,26 @@ class SiteController extends BaseController
 			return $this->render('login_wrong_browser');
 		}
 
-		$model=new LoginForm;
-
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
-		}
+		$model = new LoginForm;
 
 		// collect user input data
 		if(isset($_POST['LoginForm'])) {
-			$model->attributes=$_POST['LoginForm'];
+			$model->attributes = $_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
 			if($model->validate() && $model->login()) {
-				// Set the site cookie
-				Yii::app()->request->cookies['site_id'] = new CHttpCookie('site_id', $model->siteId);
-
+				
+				// Flag site for confirmation
+				Yii::app()->session['confirm_site_and_firm'] = true;
+				
 				$this->redirect(Yii::app()->user->returnUrl);
 			}
-		} else {
-			// Get the site id currently stored in the cookie, or the default site id
-			$default_site = Site::model()->getDefaultSite();
-			$default_site_id = ($default_site) ? $default_site->id : null;
-			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : $default_site_id;
 		}
 
+		// FIXME this needs more thought
 		if (isset(Yii::app()->params['institution_code'])) {
-			$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']));
+			$institution = Institution::model()->find('source_id=? and remote_id=?',array(1,Yii::app()->params['institution_code']));
 		} else {
-			$institution = Institution::model()->find('remote_id=?',array('RP6'));
+			$institution = Institution::model()->find('source_id=? and remote_id=?',array(1,'RP6'));
 		}
 
 		$criteria = new CDbCriteria;
@@ -217,7 +203,6 @@ class SiteController extends BaseController
 		$this->render('login',
 			array(
 				'model'=>$model,
-				'sites' => CHtml::listData($sites, 'id', 'short_name')
 			)
 		);
 	}
@@ -241,44 +226,4 @@ class SiteController extends BaseController
 		$this->renderPartial('/site/debuginfo',array());
 	}
 
-	/*
-	 * Store session data based on what action we're performing
-	 */
-	public function storeData()
-	{
-		$action = $this->getAction();
-		if ($action->getId() == 'index' && !empty($_POST['selected_firm_id'])) {
-			$user = Yii::app()->session['user'];
-			$user = User::Model()->findByPk(Yii::app()->session['user']->id);
-			$user->last_firm_id = intval($_POST['selected_firm_id']);
-			$user->save(false);
-
-			$user->audit('user','change-firm',$user->last_firm_id);
-
-			$session = Yii::app()->session;
-
-			$firms = $session['firms'];
-			$firmId = intval($_POST['selected_firm_id']);
-
-			if ($firms[$firmId]) {
-				$session['selected_firm_id'] = $firmId;
-			}
-
-			$so = Yii::app()->session['theatre_searchoptions'];
-			if (isset($so['firm-id'])) unset($so['firm-id']);
-			if (isset($so['specialty-id'])) unset($so['specialty-id']);
-			if (isset($so['site-id'])) unset($so['site-id']);
-			if (isset($so['date-filter'])) unset($so['date-filter']);
-			if (isset($so['date-start'])) unset($so['date-start']);
-			if (isset($so['date-end'])) unset($so['date-end']);
-			Yii::app()->session['theatre_searchoptions'] = $so;
-
-			Yii::app()->session['waitinglist_searchoptions'] = null;
-
-			echo "change-firm-succeeded";
-			Yii::app()->end();
-		}
-
-		parent::storeData();
-	}
 }

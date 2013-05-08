@@ -576,8 +576,9 @@ ul#user_nav > li .selected,
 #user_panel.inAdmin ul#user_nav > li a:active { background: #eaffff; border:none; }
 #user_panel.inAdmin ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 
-#user_firm { position: absolute; bottom: 8px; right: 10px; }
-#user_firm label { font-size: 12px; }
+#user_firm { position: absolute; bottom: 5px; right: 10px; }
+#user_firm span { font-size: 11px; }
+#user_firm .change-firm { font-size: 11px; }
 
 #user_id	{ position: absolute; bottom: 5px; left: 10px; }
 #user_id	span { display: block; font-size: 11px; }
@@ -903,6 +904,7 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 /* event detail */
 /* GRADIENT background for eventDetail... left it out because it doesn't look right but may need it: url(../img/_elements/gradients/bg_event_detail_bottom.png) bottom left repeat-x; */
 #event_content .eventDetail { padding:10px; background:#dae6f1; position:relative; }
+
 #event_content .eventDetail.subGroup-start { border-top:1px solid #e7f3ff; margin-top:0; -webkit-border-top-left-radius: 6px; -webkit-border-top-right-radius: 6px; -moz-border-radius-topleft: 6px; -moz-border-radius-topright: 6px; border-top-left-radius: 6px; border-top-right-radius: 6px;}
 #event_content .eventDetail.subGroup-end { border-bottom: 2px solid #d2dde8; margin-bottom:1px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;}
 #event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px;	}
@@ -944,6 +946,12 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 #event_content .splitElement { padding:10px 0; margin:10px 0; border-top:5px solid #dae6f1; border-bottom:5px solid #dae6f1; }
 #event_content .splitElement .left	{ clear: left; float: left; width: 50%; }
 #event_content .splitElement .right { clear: right; float: right; width: 50%; }
+
+/* clearfix stuff */
+.eventDetail:before, .eventDetail:after { content: ""; display: table; }
+.eventDetail:after { clear: both; }
+.eventDetail { zoom: 1; }
+/* end clearfix stuff */
 
 .eventDetail > .data { display:inline-block; position:relative;}
 .eventDetail > .data > .label { font-size:15px; margin-bottom: 10px;	}
@@ -1583,3 +1591,61 @@ div.contactLocations { margin-top: 2em; }
 #add_site_form .data { display: inline-block; }
 #newsite_from { width: 23em; }
 #newsite_subject { width: 23em; }
+
+#Medication_start_date { width: 90px; }
+
+body .ui-widget-overlay {
+	background: #000;
+	opacity: 0.5;
+}
+
+.ui-widget-content.dialog {
+	border-color: #999;
+}
+
+.ui-widget.dialog {
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.ui-widget.dialog form div {
+	margin: 10px 0;
+}
+
+.ui-widget.dialog label {
+	display: inline-block;
+	width: 80px;
+	text-align: right;
+}
+
+.ui-widget.dialog label .required {
+	color: #f00;
+	float: right;
+}
+
+.ui-widget.dialog select,
+.ui-widget.dialog input {
+	font-family: Helvetica, Arial, sans-serif;
+	display: inline-block;
+	font-size: 13px;
+}
+
+.ui-widget.dialog .form-actions {
+	margin-left: 85px;
+}
+
+.ui-widget.dialog .form-actions input {
+	box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+	font-size: 13px;
+	font-family: sans-serif;
+	padding: 4px 16px;
+	letter-spacing: 1px;
+	text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
+	background: linear-gradient(#43a844, #55a256);
+	border-bottom: 2px solid #3fa522;
+	color: #fff;
+}
+
+.ui-widget.dialog .form-actions input:hover {
+	background: linear-gradient(#48bd27, #3fa522);
+	border-bottom: 2px solid #569b42;
+}

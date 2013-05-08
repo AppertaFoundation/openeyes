@@ -34,7 +34,7 @@
 <body>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<?php echo $this->renderPartial('//base/_brand'); ?>
+			<?php $this->renderPartial('//base/_brand'); ?>
 		</div><!-- #header -->
 		<div id="content">
 			<div id="down-form" class="form_greyBox">

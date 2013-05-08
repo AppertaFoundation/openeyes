@@ -51,6 +51,7 @@
 			'legacyepisodes' => $legacyepisodes,
 			'episodes_open' => $episodes_open,
 			'episodes_closed' => $episodes_closed,
+			'firm' => $firm,
 		))?>
 	<?php }?>
 </div>

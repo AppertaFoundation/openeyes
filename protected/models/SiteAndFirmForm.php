@@ -16,27 +16,23 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php $this->beginContent('//layouts/main'); ?>
-<div class="container">
-	<div class="span-19">
-		<div id="content">
-			<?php echo $content; ?>
-		</div><!-- content -->
-	</div>
-	<div class="span-5 last">
-		<div id="sidebar">
-		<?php
-			$this->beginWidget('zii.widgets.CPortlet', array(
-				'title'=>'Operations',
-			));
-			$this->widget('zii.widgets.CMenu', array(
-				'items'=>$this->menu,
-				'htmlOptions'=>array('class'=>'operations'),
-			));
-			$this->endWidget();
-		?>
-		</div><!-- sidebar -->
-	</div>
-</div>
-<?php $this->endContent();
+
+class SiteAndFirmForm extends CFormModel {
+	
+	public $site_id;
+	public $firm_id;
+
+	public function rules() {
+		return array(
+			array('firm_id, site_id', 'required'),
+		);
+	}
+
+	public function attributeLabels() {
+		return array(
+			'firm_id' => 'Firm',
+			'site_id' => 'Site',
+		);
+	}
+	
+}

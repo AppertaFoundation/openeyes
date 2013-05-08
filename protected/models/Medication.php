@@ -23,15 +23,18 @@
  * The followings are the available columns in table 'medication':
  * @property integer $id
  * @property integer $patient_id
- * @property string $medication
  * @property integer $route_id
- * @property string $comments
+ * @property integer $drug_id
+ * @property integer $option_id
+ * @property integer $frequency_id
+ * @property date $start_date
+ * @property date $end_date
  */
 class Medication extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return SectionType the static model class
+	 * @return Medication the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -69,7 +72,10 @@ class Medication extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
 			'route' => array(self::BELONGS_TO, 'DrugRoute', 'route_id'),
+			'option' => array(self::BELONGS_TO, 'DrugRouteOption', 'option_id'),
+			'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
 		);
 	}
 

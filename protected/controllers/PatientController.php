@@ -138,7 +138,7 @@ class PatientController extends BaseController
 		);
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
 		));
 	}
 
@@ -305,7 +305,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
@@ -361,7 +361,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$this->title = 'Episode summary';
 		$this->event_tabs = array(
@@ -435,7 +435,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$this->title = 'Episode summary';
 		$this->event_tabs = array(
@@ -779,10 +779,10 @@ class PatientController extends BaseController
 		$date = $this->processDiagnosisDate();
 
 		if (!$_POST['diagnosis_eye']) {
-			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($patient->id,$disorder->id))) {
+			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and date=?',array($patient->id,$disorder->id,$date))) {
 				$patient->addDiagnosis($disorder->id,null,$date);
 			}
-		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye']))) {
+		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye'],$date))) {
 			$patient->addDiagnosis($disorder->id, $_POST['diagnosis_eye'], $date);
 		}
 
@@ -792,6 +792,10 @@ class PatientController extends BaseController
 	public function actionValidateAddDiagnosis() {
 		$errors = array();
 
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
 		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
 			$disorder_id = $_POST['DiagnosisSelection']['ophthalmic_disorder_id'];
 		} else if (isset($_POST['DiagnosisSelection']['systemic_disorder_id'])) {
@@ -799,15 +803,27 @@ class PatientController extends BaseController
 		}
 
 		$sd = new SecondaryDiagnosis;
-		$sd->patient_id = @$_POST['patient_id'];
+		$sd->patient_id = $patient->id;
 		$sd->date = @$_POST['diagnosis_year'].'-'.str_pad(@$_POST['diagnosis_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
 		$sd->disorder_id = @$disorder_id;
+		$sd->eye_id = @$_POST['diagnosis_eye'];
+
+		$errors = array();
 
 		if (!$sd->validate()) {
-			echo json_encode($sd->getErrors());
-		} else {
-			echo json_encode(array());
+			foreach ($sd->getErrors() as $field => $_errors) {
+				$errors[$field] = $_errors[0];
+			}
 		}
+
+		// Check the diagnosis isn't currently set at the episode level for this patient
+		foreach ($patient->episodes as $episode) {
+			if ($episode->disorder_id == $sd->disorder_id && ($episode->eye_id == $sd->eye_id || $episode->eye_id == 3 || $sd->eye_id == 3)) {
+				$errors['disorder_id'] = "The disorder is already set at the episode level for this patient";
+			}
+		}
+
+		echo json_encode($errors);
 	}
 
 	public function actionRemovediagnosis() {
@@ -988,27 +1004,47 @@ class PatientController extends BaseController
 			throw new Exception("Patient not found:".@$_POST['patient_id']);
 		}
 
-		if (!@$_POST['medication']) {
-			throw new Exception("Missing medication text");
+		if (!$drug = Drug::model()->findByPk(@$_POST['selectedMedicationID'])) {
+			throw new Exception("Drug not found: ".@$_POST['selectedMedicationID']);
 		}
 
-		if (!$route = DrugRoute::model()->findByPk(@$_POST['route'])) {
-			throw new Exception("Drug route not found: ".@$_POST['route']);
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
+			throw new Exception("Route not found: ".@$_POST['route_id']);
+		}
+
+		if (!empty($route->options)) {
+			if (!$option = DrugRouteOption::model()->findByPk(@$_POST['option_id'])) {
+				throw new Exception("Route option not found: ".@$_POST['option_id']);
+			}
+		}
+
+		if (!$frequency = DrugFrequency::model()->findByPk(@$_POST['frequency_id'])) {
+			throw new Exception("Frequency not found: ".@$_POST['frequency_id']);
+		}
+
+		if (!strtotime(@$_POST['start_date'])) {
+			throw new Exception("Invalid date: ".@$_POST['start_date']);
 		}
 
 		if (@$_POST['edit_medication_id']) {
 			if (!$m = Medication::model()->findByPk(@$_POST['edit_medication_id'])) {
 				throw new Exception("Medication not found: ".@$_POST['edit_medication_id']);
 			}
-			$m->medication = $_POST['medication'];
-			$m->route_id = $route->id;
-			$m->comments = @$_POST['comments'];
-
-			if (!$m->save()) {
-				throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
-			}
+			$patient->updateMedication($m,array(
+				'drug_id' => $drug->id,
+				'route_id' => $route->id,
+				'option_id' => $option ? $option->id : null,
+				'frequency_id' => $frequency->id,
+				'start_date' => $_POST['start_date'],
+			));
 		} else {
-			$patient->addMedication(@$_POST['medication'],$route->id,@$_POST['comments']);
+			$patient->addMedication(array(
+				'drug_id' => $drug->id,
+				'route_id' => $route->id,
+				'option_id' => @$option ? $option->id : null,
+				'frequency_id' => $frequency->id,
+				'start_date' => $_POST['start_date'],
+			));
 		}
 
 		$this->redirect(array('/patient/view/'.$patient->id));
@@ -1049,7 +1085,7 @@ class PatientController extends BaseController
 
 		$this->redirect(array('patient/view/'.$patient->id));
 	}
-
+	
 	public function actionRemovePreviousOperation() {
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception("Patient not found: ".@$_GET['patient_id']);
@@ -1091,7 +1127,9 @@ class PatientController extends BaseController
 			throw new Exception("Medication not found: ".@$_GET['medication_id']);
 		}
 
-		if (!$m->delete()) {
+		$m->end_date = date('Y-m-d');
+
+		if (!$m->save()) {
 			throw new Exception("Failed to remove medication: ".print_r($m->getErrors(),true));
 		}
 
@@ -1161,11 +1199,43 @@ class PatientController extends BaseController
 		echo json_encode($errors);
 	}
 
-	public function actionAddContact() {
+	public function actionGetDrugRouteOptions() {
+		if (!$route = DrugRoute::model()->findByPk(@$_GET['route_id'])) {
+			throw new Exception("Drug route not found: ".@$_GET['route_id']);
+		}
+
+		$this->renderPartial('_drug_route_options',array('route'=>$route));
+	}
+
+	public function actionValidateAddMedication() {
+		$errors = array();
+
 		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
 			throw new Exception("Patient not found: ".@$_POST['patient_id']);
 		}
 
+		if (!Drug::model()->findByPk(@$_POST['selectedMedicationID'])) {
+			$errors['selectedMedicationID'] = "Please select a drug";
+		}
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
+			$errors['route_id'] = "Please select a route";
+		}
+		if (!empty($route->options) && !DrugRouteOption::model()->findByPk(@$_POST['option_id'])) {
+			$errors['option_id'] = "Please select a route option";
+		}
+		if (empty($_POST['frequency_id'])) {
+			$errors['frequency_id'] = 'Please select a frequency';
+		}
+		if (empty($_POST['start_date'])) {
+			$errors['start_date'] = 'Please select a date';
+		} else if (!strtotime($_POST['start_date'])) {
+			$errors['start_date'] = 'Invalid date entered';
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionAddContact() {
 		if (BaseController::checkUserLevel(3)) {
 			if (@$_POST['site_id']) {
 				if (!$site = Site::model()->findByPk($_POST['site_id'])) {
@@ -1353,5 +1423,51 @@ class PatientController extends BaseController
 		$message->setSubject($_POST['newsite_subject']);
 		$message->setBody($_POST['newsite_message']);
 		echo Yii::app()->mailer->sendMessage($message) ? '1' : '0';
+	}
+
+	public function actionGetMedication() {
+		if (!$m = Medication::model()->findByPk(@$_GET['medication_id'])) {
+			throw new Exception("Medication not found: ".@$_GET['medication_id']);
+		}
+
+		echo json_encode(array(
+			'drug_id' => $m->drug_id,
+			'drug_name' => $m->drug->name,
+			'route_id' => $m->route_id,
+			'option_id' => $m->option_id,
+			'frequency_id' => $m->frequency_id,
+			'start_date' => $m->start_date,
+			'route_options' => $this->renderPartial('_drug_route_options',array('route'=>$m->route),true),
+		));
+	}
+
+	public function actionDrugList() {
+		if (Yii::app()->request->isAjaxRequest) {
+			$criteria = new CDbCriteria();
+			if (isset($_GET['term']) && $term = $_GET['term']) {
+				$criteria->addCondition(array('LOWER(name) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
+				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
+			}
+			$criteria->order = 'name';
+			$criteria->params = $params;
+			$drugs = Drug::model()->findAll($criteria);
+			$return = array();
+			foreach($drugs as $drug) {
+				$return[] = array(
+						'label' => $drug->tallmanlabel,
+						'value' => $drug->tallman,
+						'id' => $drug->id,
+				);
+			}
+			echo CJSON::encode($return);
+		}
+	}
+
+	public function actionDrugDefaults() {
+		if (!$drug = Drug::model()->findByPk(@$_GET['drug_id'])) {
+			throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+		}
+
+		echo json_encode(array('route_id'=>$drug->default_route_id,'frequency_id'=>$drug->default_frequency_id));
 	}
 }

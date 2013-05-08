@@ -251,7 +251,6 @@ class User extends BaseActiveRecord
 		}
 	}
 
-	
 	public function getFullName() {
 		return implode(' ', array($this->first_name, $this->last_name));
 	}
