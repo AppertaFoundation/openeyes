@@ -71,10 +71,10 @@ class SiteAndFirmWidget extends CWidget {
 		}
 
 		$sites = Site::model()->findAll(array(
-				'condition' => 'institution.code = :institution_code',
+				'condition' => 'institution.source_id = :source_id and institution.remote_id = :institution_code',
 				'join' => 'JOIN institution ON institution.id = t.institution_id',
 				'order' => 'short_name',
-				'params' => array(':institution_code' => 'RP6'),
+				'params' => array(':source_id' => 1, ':institution_code' => 'RP6'),
 		));
 
 		$this->render('SiteAndFirmWidget', array(

@@ -34,7 +34,7 @@
 					<li class="header">
 						<span class="column_id">ID</span>
 						<span class="column_name">Name</span>
-						<span class="column_code">Code</span>
+						<span class="column_remote_id">Remote ID</span>
 						<span class="column_shortname">Short name</span>
 					</li>
 					<div class="sortable">
@@ -43,7 +43,7 @@
 							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $institution->id?>">
 								<span class="column_id"><?php echo $institution->id?></span>
 								<span class="column_name"><?php echo $institution->name?>&nbsp;</span>
-								<span class="column_code"><?php echo $institution->code?>&nbsp;</span>
+								<span class="column_remote_id"><?php echo $institution->remote_id?>&nbsp;</span>
 								<span class="column_shortname"><?php echo $institution->short_name?>&nbsp;</span>
 							</li>
 						<?php }?>
