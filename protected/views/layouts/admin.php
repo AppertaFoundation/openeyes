@@ -70,12 +70,12 @@
 </head> 
  
 <body>
-	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
-	<?php echo $this->renderPartial('//base/_debug',array())?> 
+	<?php $this->renderPartial('//base/_banner_watermark',array())?>
+	<?php $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix">
-			<?php echo $this->renderPartial('//base/_brand'); ?>
-			<?php echo $this->renderPartial('//base/_form', array()); ?>
+			<?php $this->renderPartial('//base/_brand'); ?>
+			<?php $this->renderPartial('//base/_form', array()); ?>
 		</div>
 		<div id="content"> 
 			<h2 class="admin">Admin</h2>
@@ -90,7 +90,8 @@
 				</div>
 			</div>
 		</div>
+		<div id="help" class="clearfix"></div>
 	</div>
-	<?php echo $this->renderPartial('//base/_footer',array())?>
+	<?php $this->renderPartial('//base/_footer',array())?>
 </body> 
 </html>

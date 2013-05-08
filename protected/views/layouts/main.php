@@ -80,6 +80,8 @@
 		<div id="content"> 
 			<?php echo $content; ?>
 		</div><!-- #content --> 
+		<div id="help" class="clearfix"> 
+		</div><!-- #help --> 
 	</div><!--#container --> 
 	<?php $this->renderPartial('//base/_footer',array())?>
 </body> 

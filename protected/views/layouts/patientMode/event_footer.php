@@ -18,9 +18,11 @@
  */
 ?>
 		</div><!-- #content -->
+		<div id="help" class="clearfix">
+		</div>
 	</div><!--#container -->
 
-	<?php echo $this->renderPartial('//base/_footer',array())?>
+	<?php $this->renderPartial('//base/_footer',array())?>
 
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/plugins.js'))?>
 	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/script.js'))?>

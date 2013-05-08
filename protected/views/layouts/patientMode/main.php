@@ -71,21 +71,23 @@
 </head>
 
 <body>
-	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
-	<?php echo $this->renderPartial('//base/_debug',array())?>
+	<?php $this->renderPartial('//base/_banner_watermark',array())?>
+	<?php $this->renderPartial('//base/_debug',array())?>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<?php echo $this->renderPartial('//base/_brand'); ?>
-			<?php echo $this->renderPartial('//base/_form', array()); ?>
-			<?php echo $this->renderPartial('//patient/_patient_id', array()); ?>
+			<?php $this->renderPartial('//base/_brand'); ?>
+			<?php $this->renderPartial('//base/_form', array()); ?>
+			<?php $this->renderPartial('//patient/_patient_id', array()); ?>
 		</div> <!-- #header -->
 
 		<div id="content">
 			<?php echo $content; ?>
 		</div><!-- #content -->
+		<div id="help" class="clearfix">
+		</div>
 	</div><!--#container -->
 
-	<?php echo $this->renderPartial('/base/_footer',array())?>
+	<?php $this->renderPartial('/base/_footer',array())?>
 
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/plugins.js'))?>
 

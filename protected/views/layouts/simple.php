@@ -69,11 +69,11 @@
 </head> 
  
 <body> 
-	<?php echo $this->renderPartial('//base/_banner_watermark',array('description' => true))?> 
-	<?php echo $this->renderPartial('//base/_debug',array())?> 
+	<?php $this->renderPartial('//base/_banner_watermark',array('description' => true))?> 
+	<?php $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 		<div id="header" class="clearfix"> 
-			<?php echo $this->renderPartial('//base/_brand'); ?>
+			<?php $this->renderPartial('//base/_brand'); ?>
 		</div> <!-- #header --> 
 	
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
@@ -83,10 +83,12 @@
 		<div id="content"> 
 			<?php echo $content; ?>
 		</div> <!-- #content --> 
+		<div id="help" class="clearfix"> 
+		</div><!-- #help --> 
 	</div> 
 	<!--#container --> 
 
-	<?php echo $this->renderPartial('//base/_footer',array())?>
+	<?php $this->renderPartial('//base/_footer',array())?>
 
 </body>
 </html>

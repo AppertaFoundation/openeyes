@@ -34,13 +34,14 @@
 <body>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<?php echo $this->renderPartial('//base/_brand'); ?>
+			<?php $this->renderPartial('//base/_brand'); ?>
 		</div><!-- #header -->
 		<div id="content">
 			<div id="down-form" class="form_greyBox">
 				<?php echo $content; ?>
 			</div>
 		</div><!-- #content -->
+		<div id="help" class="clearfix"></div><!-- #help -->
 	</div><!--#container -->
 	<div id="footer">
 		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?>&nbsp;&nbsp;|&nbsp;&nbsp;
