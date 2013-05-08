@@ -18,24 +18,17 @@
  */
 
 /**
- * This is the model class for table "subspecialty".
+ * This is the model class for table "specialty_type".
  *
- * The followings are the available columns in table 'subspecialty':
+ * The followings are the available columns in table 'specialty_type':
  * @property string $id
  * @property string $name
- * @property string $class_name
- *
- * The followings are the available model relations:
- * @property EventTypeElementTypeAssignmentSubspecialtyAssignment[] $eventTypeElementTypeAssignmentSubspecialtyAssignments
- * @property ExamPhrase[] $examPhrases
- * @property LetterTemplate[] $letterTemplates
- * @property ServiceSubspecialtyAssignment[] $serviceSubspecialtyAssignments
  */
-class Subspecialty extends BaseActiveRecord
+class SpecialtyType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Subspecialty the static model class
+	 * @return SpecialtyType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -47,7 +40,7 @@ class Subspecialty extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'subspecialty';
+		return 'specialty_type';
 	}
 
 	/**
@@ -58,11 +51,10 @@ class Subspecialty extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, class_name', 'required'),
-			array('name, class_name', 'length', 'max'=>40),
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, class_name', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,11 +66,6 @@ class Subspecialty extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-//			'eventTypeElementTypeAssignmentSubspecialtyAssignments' => array(self::HAS_MANY, 'EventTypeElementTypeAssignmentSubspecialtyAssignment', 'subspecialty_id'),
-			'examPhrases' => array(self::HAS_MANY, 'ExamPhrase', 'subspecialty_id'),
-			'letterTemplates' => array(self::HAS_MANY, 'LetterTemplate', 'subspecialty_id'),
-			'serviceSubspecialtyAssignments' => array(self::HAS_MANY, 'ServiceSubspecialtyAssignment', 'subspecialty_id'),
-			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
 
@@ -90,7 +77,6 @@ class Subspecialty extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
-			'class_name' => 'Class Name',
 		);
 	}
 
@@ -107,36 +93,9 @@ class Subspecialty extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('class_name',$this->class_name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	/**
-	 * Fetch an array of subspecialty IDs and names, by default does not return non medical subspecialties (as defined by parent specialty)
-	 * 
-	 * @param bool $nonmedical
-	 * 
-	 * @return array
-	 */
-	public function getList($nonmedical = false)
-	{
-		if (!$nonmedical) {
-			$sp_surgical = SpecialtyType::model()->find('name=?',array('Surgical'));
-			$sp_medical = SpecialtyType::model()->find('name=?',array('Medical'));
-			$list = Subspecialty::model()->with('specialty')->findAll("specialty_type_id in ($sp_surgical->id,$sp_medical->id)");
-		}
-		else {
-			$list = Subspecialty::model()->findAll();
-		}
-		$result = array();
-
-		foreach ($list as $subspecialty) {
-			$result[$subspecialty->id] = $subspecialty->name;
-		}
-
-		return $result;
 	}
 }

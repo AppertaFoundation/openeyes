@@ -88,7 +88,7 @@
 							</a>
 						</span>
 					</div>
-					<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name),array('/patient/episode/'.$episode->id),array('class'=>'title_summary'.((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : '')))?></h4>
+					<h4><?php echo CHtml::link(CHtml::encode($episode->getSubspecialtyName()),array('/patient/episode/'.$episode->id),array('class'=>'title_summary'.((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : '')))?></h4>
 					<ul	<?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php }?>>
 						<?php foreach ($episode->events as $event) {
 							$highlight = false;
@@ -135,8 +135,8 @@
 					<div class="row"><span class="label">End date:</span><?php echo ($episode->end_date ? $episode->NHSDate('end_date') : '-')?></div>
 					<div class="row"><span class="label">Principal eye:</span><?php echo ($episode->diagnosis) ? ($episode->eye ? $episode->eye->name : 'None') : 'No diagnosis' ?></div>
 					<div class="row"><span class="label">Principal diagnosis:</span><?php echo ($episode->diagnosis) ? ($episode->diagnosis ? $episode->diagnosis->term : 'none') : 'No diagnosis' ?></div>
-					<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name)?></div>
-					<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name)?></div>
+					<div class="row"><span class="label">Subspecialty:</span><?php echo CHtml::encode($episode->getSubspecialtyName())?></div>
+					<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm ? $episode->firm->name : 'None')?></div>
 					<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png')?>" alt="folder open" />
 				</div>
 			</div> <!-- .episode -->
