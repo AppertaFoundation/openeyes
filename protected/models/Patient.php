@@ -220,18 +220,12 @@ class Patient extends BaseActiveRecord {
 			
 			// group
 			foreach ($episodes as $ep) {
-				if ($ep->firm) {
-					$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
-					$by_specialty[$specialty->code]['episodes'][] = $ep;
-					$by_specialty[$specialty->code]['specialty'] = $specialty;
-				} else {
-					$ss = new stdClass;
-					$ss->name = 'Support services';
-					$by_specialty['SS']['episodes'][] = $ep;
-					$by_specialty['SS']['specialty'] = $ss;
-				}
+				$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
+				$by_specialty[$specialty->code]['episodes'][] = $ep;
+				$by_specialty[$specialty->code]['specialty'] = $specialty;
 			}
-
+			
+			
 			$res = array();
 			if (count(array_keys($by_specialty)) > 1) {
 				// get specialties that are configured

@@ -29,7 +29,7 @@ if (!empty($episode)) {
 	$episode->audit('episode summary','view',false);
 ?>
 	<h3>Summary</h3>
-	<h3 class="episodeTitle"><?php echo $episode->getSubspecialtyName()?></h3>
+	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
 	<h4>Principal diagnosis:</h4>
 
@@ -62,25 +62,23 @@ if (!empty($episode)) {
 		<div class="left">
 		<h4>Subspecialty:</h4>
 			<div class="eventHighlight">
-				<h4><?php echo $episode->getSubspecialtyName()?></h4>
+				<h4><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h4>
 			</div>
 		</div>
 
 		<div class="right">
 		<h4>Consultant firm:</h4>
 			<div class="eventHighlight">
-				<h4><?php echo $episode->firm ? $episode->firm->name : 'None'?></h4>
+				<h4><?php echo $episode->firm->name?></h4>
 			</div>
 		</div>
 	</div> <!-- end of cols2 (column split) -->
 
 	<?php
-	if ($episode->firm) {
-		try {
-			echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id, array('episode' => $episode));
-		} catch (Exception $e) {
-			// If there is no extra episode summary detail page for this subspecialty we don't care
-		}
+	try {
+		echo $this->renderPartial('/clinical/episodeSummaries/' . $episode->firm->serviceSubspecialtyAssignment->subspecialty_id, array('episode' => $episode));
+	} catch (Exception $e) {
+		// If there is no extra episode summary detail page for this subspecialty we don't care
 	}
 } else {
 	// hide the episode border ?>
@@ -90,7 +88,7 @@ if (!empty($episode)) {
 <?php }?>
 
 <div class="metaData">
-	<span class="info"><?php echo $episode->getSubspecialtyName()?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
+	<span class="info"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?>: created by <span class="user"><?php echo $episode->user->fullName?> on <?php echo $episode->NHSDate('created_date')?> at <?php echo substr($episode->created_date,11,5)?></span></span>
 </div>
 
 <!-- Booking -->

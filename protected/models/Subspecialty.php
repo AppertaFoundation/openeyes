@@ -124,9 +124,7 @@ class Subspecialty extends BaseActiveRecord
 	public function getList($nonmedical = false)
 	{
 		if (!$nonmedical) {
-			$sp_surgical = SpecialtyType::model()->find('name=?',array('Surgical'));
-			$sp_medical = SpecialtyType::model()->find('name=?',array('Medical'));
-			$list = Subspecialty::model()->with('specialty')->findAll("specialty_type_id in ($sp_surgical->id,$sp_medical->id)");
+			$list = Subspecialty::model()->with('specialty')->findAll('specialty.medical = :bool', array(':bool' => true));
 		}
 		else {
 			$list = Subspecialty::model()->findAll();

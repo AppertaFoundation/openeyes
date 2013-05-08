@@ -307,14 +307,4 @@ class Episode extends BaseActiveRecord
 		$properties['patient_id'] = $this->patient_id;
 		return parent::audit($target, $action, $data, $log, $properties);
 	}
-
-	public function getSubspecialtyName() {
-		if ($this->firm) {
-			return $this->firm->serviceSubspecialtyAssignment->subspecialty->name;
-		} else if ($this->legacy) {
-			return 'Legacy events';
-		} else if ($this->support_service) {
-			return 'Support services';
-		}
-	}
 }
