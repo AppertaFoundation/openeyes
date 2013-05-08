@@ -201,7 +201,11 @@ class SiteController extends BaseController
 			$model->siteId = (isset(Yii::app()->request->cookies['site_id']->value)) ? Yii::app()->request->cookies['site_id']->value : $default_site_id;
 		}
 
-		$institution = Institution::model()->find('code=?',array('RP6'));
+		if (isset(Yii::app()->params['institution_code'])) {
+			$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']));
+		} else {
+			$institution = Institution::model()->find('remote_id=?',array('RP6'));
+		}
 
 		$criteria = new CDbCriteria;
 		$criteria->compare('institution_id',$institution->id);

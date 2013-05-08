@@ -31,7 +31,7 @@
 				'focus'=>'#username'
 			))?>
 			<?php echo $form->textField($institution,'name',array('size'=>'50'))?>
-			<?php echo $form->textField($institution,'code',array('size'=>'10'))?>
+			<?php echo $form->textField($institution,'remote_id',array('size'=>'10'))?>
 			<?php echo $form->textField($address,'address1')?>
 			<?php echo $form->textField($address,'address2')?>
 			<?php echo $form->textField($address,'city')?>
@@ -55,7 +55,7 @@
 			<ul class="grid reduceheight">
 				<li class="header">
 					<span class="column_id">ID</span>
-					<span class="column_code">Code</span>
+					<span class="column_remote_id">Remote ID</span>
 					<span class="column_name">Name</span>
 					<span class="column_address">Address</span>
 				</li>
@@ -66,7 +66,7 @@
 				foreach (Site::model()->findAll($criteria) as $i => $site) {?>
 					<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
 						<span class="column_id"><?php echo $site->id?></span>
-						<span class="column_code"><?php echo $site->code?>&nbsp;</span>
+						<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
 						<span class="column_name"><?php echo $site->name?>&nbsp;</span>
 						<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
 					</li>
