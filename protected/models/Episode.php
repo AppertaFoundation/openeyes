@@ -208,21 +208,6 @@ class Episode extends BaseActiveRecord
 		return Episode::model()->findByPk($episode['eid']);
 	}
 
-	/**
-	 * FIXME: Move/remove now booking is modular?
-	 */
-	public function getBookingsForToday() {
-		return Yii::app()->db->createCommand()
-			->select('b.id')
-			->from('ophtroperationbooking_operation_booking b')
-			->join('et_ophtroperationbooking_operation eo','eo.id = b.element_id')
-			->join('event e','eo.event_id = e.id')
-			->join('ophtroperationbooking_operation_session s','b.session_id = s.id')
-			->where('e.episode_id = :episode_id and s.date = :todaysDate', array(':episode_id' => $this->id,':todaysDate' => date('Y-m-d')))
-			->order('b.last_modified_date desc')
-			->queryAll();
-	}
-
 	public function getMostRecentEventByType($event_type_id) {
 		$criteria = new CDbCriteria;
 		$criteria->compare('episode_id',$this->id);

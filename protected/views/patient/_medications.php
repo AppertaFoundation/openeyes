@@ -10,16 +10,20 @@
 									<tr>
 										<th width="85px">Medication</th>
 										<th>Route</th>
-										<th>Comments</th>
+										<th>Option</th>
+										<th>Frequency</th>
+										<th>Start date</th>
 										<th>Edit</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php foreach ($this->patient->medications as $medication) {?>
 										<tr>
-											<td><?php echo $medication->medication?></td>
+											<td><?php echo $medication->drug->name?></td>
 											<td><?php echo $medication->route->name?></td>
-											<td><?php echo $medication->comments?></td>
+											<td><?php echo $medication->option ? $medication->option->name : '-'?></td>
+											<td><?php echo $medication->frequency->name?></td>
+											<td><?php echo $medication->NHSDate('start_date')?></td>
 											<td>
 												<a href="#" class="small editMedication" rel="<?php echo $medication->id?>"><strong>Edit</strong></a>&nbsp;&nbsp;
 												<a href="#" class="small removeMedication" rel="<?php echo $medication->id?>"><strong>Remove</strong></a>
@@ -28,60 +32,120 @@
 									<?php }?>
 								</tbody>
 							</table>
-
-							<?php if (BaseController::checkUserLevel(3)) {?>
-								<div align="center" style="margin-top:10px;">
-									<form><button id="btn-add_medication" class="classy green mini" type="button"><span class="button-span button-span-green">Add medication</span></button></form>
+							
+							<div align="center" style="margin-top:10px;">
+								<form><button id="btn-add_medication" class="classy green mini" type="button"><span class="button-span button-span-green">Add medication</span></button></form>
+							</div>
+							<div id="add_medication" style="display: none;">
+								<h5>Add medication</h5>	
+								<?php
+								$form = $this->beginWidget('CActiveForm', array(
+										'id'=>'add-medication',
+										'enableAjaxValidation'=>false,
+										'htmlOptions' => array('class'=>'sliding'),
+										'action'=>array('patient/addMedication'),
+								))?>
+	
+								<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
+								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
+	
+								<div class="patientMedication">
+									<div class="label">
+										Medication:
+									</div>
+									<div class="data">
+										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id),array('empty'=>'- Select -'))?>
+									</div>
 								</div>
-								<div id="add_medication" style="display: none;">
-									<h5>Add medication</h5>	
-									<?php
-									$form = $this->beginWidget('CActiveForm', array(
-											'id'=>'add-medication',
-											'enableAjaxValidation'=>false,
-											'htmlOptions' => array('class'=>'sliding'),
-											'action'=>array('patient/addMedication'),
-									))?>
-		
-									<input type="hidden" name="edit_medication_id" id="edit_medication_id" value="" />
-									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-		
-									<div class="patientMedication">
-										<div class="label">
-											Medication:
-										</div>
-										<div class="data">
-											<?php echo CHtml::textField('medication','')?>
-										</div>
+								<div class="patientMedication">
+									<div class="label"></div>
+									<div class="data">
+										<?php
+										$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+												'name' => 'drug_id',
+												'id' => 'autocomplete_drug_id',
+												'source' => "js:function(request, response) {
+													$.getJSON('".$this->createUrl('DrugList')."', {
+														term : request.term,
+													}, response);
+												}",
+												'options' => array(
+													'select' => "js:function(event, ui) {
+														$('#selectedMedicationName').text(ui.item.value);
+														$('#selectedMedicationID').val(ui.item.id);
+														$(this).val('');
+														return false;
+													}",
+												),
+												'htmlOptions' => array(
+													'placeholder' => 'or search formulary',
+												),
+										))?>
 									</div>
+								</div>
 
-									<div class="patientMedication">
-										<div class="label">
-											Route:
-										</div>
-										<div class="data">
-											<?php echo CHtml::dropDownList('route','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
-										</div>
+								<div class="patientMedication">
+									<div class="label"></div>
+									<div class="data">
+										<span id="selectedMedicationName" style="font-weight: bold;"></span>
+										<input type="hidden" name="selectedMedicationID" id="selectedMedicationID" value="" />
 									</div>
+								</div>
 
-									<div class="patientMedication">
-										<div class="label">
-											Comments:
-										</div>
-										<div class="data">
-											<?php echo CHtml::textField('comments','')?>
-										</div>
+								<div class="patientMedication">
+									<div class="label">
+										Route:
 									</div>
+									<div class="data">
+										<?php echo CHtml::dropDownList('route_id','',CHtml::listData(DrugRoute::model()->findAll(),'id','name'),array('empty'=>'- Select -'))?>
+									</div>
+								</div>
 
-									<div align="right">
-										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
-										<button class="classy green mini btn_save_medication" type="submit"><span class="button-span button-span-green">Save</span></button>
-										<button class="classy red mini btn_cancel_medication" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+								<div class="patientMedication routeOption" style="display: none;">
+									<div class="label">
+										Option:
 									</div>
-		
-									<?php $this->endWidget()?>
-								</div>	
-							<?php }?>
+									<div class="data">
+									</div>
+								</div>
+
+								<div class="patientMedication">
+									<div class="label">
+										Frequency:
+									</div>
+									<div class="data">
+										<?php echo CHtml::dropDownList('frequency_id','',CHtml::listData(DrugFrequency::model()->findAll(array('order'=>'display_order')),'id','name'),array('empty'=>'- Select -'))?>
+									</div>
+								</div>
+
+								<div class="patientMedication">
+									<div class="label">
+										Date from:
+									</div>
+									<div class="data">
+										<?php $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+											'name'=>'start_date',
+											'id'=>'start_date',
+											'options'=>array(
+												'showAnim'=>'fold',
+												'dateFormat'=>Helper::NHS_DATE_FORMAT_JS
+											),
+											'value' => date('j M Y'),
+											'htmlOptions'=>array('style'=>'width: 90px;')
+										))?>
+									</div>
+								</div>
+
+								<div class="medication_form_errors"></div>
+
+								<div align="right">
+									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_medication_loader" style="display: none;" />
+									<button class="classy green mini btn_save_medication" type="submit"><span class="button-span button-span-green">Save</span></button>
+									<button class="classy red mini btn_cancel_medication" type="submit"><span class="button-span button-span-red">Cancel</span></button>
+								</div>
+	
+								<?php $this->endWidget()?>
+							</div>	
 						</div>
 					</div>
 
@@ -105,9 +169,13 @@
 				</div>
 <script type="text/javascript">
 	$('#btn-add_medication').click(function() {
-		$('#medication').val('');
-		$('#route').val('');
-		$('div.patientMedication #comments').val('');
+		$('div.patientMedication #route_id').val('');
+		$('div.patientMedication #drug_id').val('');
+		$('div.patientMedication #frequency_id').val('');
+		$('div.patientMedication #start_date').val('');
+		$('div.routeOption .date').html('');
+		$('div.routeOption').hide();
+
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
 		$('#btn-add_medication').removeClass('green').addClass('disabled');
@@ -120,34 +188,77 @@
 		$('#btn-add_medication span').removeClass('button-span-disabled').addClass('button-span-green');
 		return false;
 	});
-	$('#common_medication').change(function() {
-		$('#medication').val($(this).children('option:selected').text());
-		$(this).val(0);
+	$('#drug_id').change(function() {
+		if ($(this).val() != '') {
+			selectMedication($(this).val(),$(this).children('option:selected').text());
+			$('#drug_id').val('');
+		}
 	});
-	$('button.btn_save_medication').click(function() {
-		if ($('#medication').length <1) {
-			alert("Please enter an medication"); 
-			return false;
-		}
-		if ($('#route').val() == '') {
-			alert("Please select a route");
-			return false;
-		}
-		$('img.add_medication_loader').show();
-		return true;
+
+	function selectMedication(id, name) {
+		$('#selectedMedicationName').text(name);
+		$('#selectedMedicationID').val(id);
+
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/DrugDefaults?drug_id='+id,
+			'success': function(data) {
+				if (data['route_id']) {
+					$('#route_id').val(data['route_id']);
+					$('#route_id').change();
+				}
+				if (data['frequency_id']) {
+					$('#frequency_id').val(data['frequency_id']);
+				}
+			}
+		});
+	}
+
+	handleButton($('button.btn_save_medication'),function(e) {
+		e.preventDefault();
+
+		$.ajax({
+			'type': 'POST',
+			'data': $('#add-medication').serialize(),
+			'dataType': 'json',
+			'url': baseUrl+'/patient/validateAddMedication',
+			'success': function(data) {
+				$('div.medication_form_errors').html('');
+
+				if (data.length == 0) {
+					$('#add-medication').submit();
+					return;
+				}
+
+				enableButtons();
+
+				for (var i in data) {
+					$('div.medication_form_errors').append('<div class="errorMessage">'+data[i]+'</div>');
+				}
+			}
+		});
 	});
 	$('a.editMedication').click(function(e) {
 		var medication_id = $(this).attr('rel');
 
 		$('#edit_medication_id').val(medication_id);
-		$('#medication').val($(this).parent().parent().children('td:first').text());
-		var route = $(this).parent().prev('td').prev('td').text();
-		$('#route').children('option').map(function() {
-			if ($(this).text() == route) {
-				$(this).attr('selected','selected');
+
+		$.ajax({
+			'type': 'GET',
+			'dataType': 'json',
+			'url': baseUrl+'/patient/getMedication?medication_id='+medication_id,
+			'success': function(data) {
+				$('div.patientMedication #route_id').val(data['route_id']);
+				$('#selectedMedicationID').val(data['drug_id']);
+				$('#selectedMedicationName').text(data['drug_name']);
+				$('div.patientMedication #frequency_id').val(data['frequency_id']);
+				$('div.patientMedication #start_date').val(data['start_date']);
+				$('div.routeOption .data').html(data['route_options']);
+				$('div.routeOption').show();
+				$('div.patientMedication #option_id').val(data['option_id']);
 			}
 		});
-		$('div.patientMedication #comments').val($(this).parent().prev('td').text());
 
 		$('#add_medication').slideToggle('fast');
 		$('#btn-add_medication').attr('disabled',true);
@@ -156,42 +267,25 @@
 
 		e.preventDefault();
 	});
+	$('#route_id').change(function() {
+		var route_id = $(this).val();
 
-	$('.removeMedication').live('click',function() {
-		$('#medication_id').val($(this).attr('rel'));
-
-		$('#confirm_remove_medication_dialog').dialog({
-			resizable: false,
-			modal: true,
-			width: 560
-		});
-
-		return false;
-	});
-
-	$('button.btn_remove_medication').click(function() {
-		$("#confirm_remove_medication_dialog").dialog("close");
-
-		$.ajax({
-			'type': 'GET',
-			'url': baseUrl+'/patient/removeMedication?patient_id=<?php echo $this->patient->id?>&medication_id='+$('#medication_id').val(),
-			'success': function(html) {
-				if (html == 'success') {
-					$('a.removeMedication[rel="'+$('#medication_id').val()+'"]').parent().parent().remove();
-				} else {
-					alert("Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance.");
+		if (route_id == '') {
+			$('div.routeOption').hide();
+			$('div.routeOption .data').html('');
+		} else {
+			$.ajax({
+				'type': 'GET',
+				'url': baseUrl+'/patient/getDrugRouteOptions?route_id='+route_id,
+				'success': function(html) {
+					$('div.routeOption .data').html(html);
+					if (html.length >0) {
+						$('div.routeOption').show();
+					} else {
+						$('div.routeOption').hide();
+					}
 				}
-			},
-			'error': function() {
-				alert("Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance.");
-			}
-		});
-
-		return false;
-	});
-
-	$('button.btn_cancel_remove_medication').click(function() {
-		$("#confirm_remove_medication_dialog").dialog("close");
-		return false;
+			});
+		}
 	});
 </script>

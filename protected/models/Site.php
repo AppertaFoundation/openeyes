@@ -281,22 +281,4 @@ class Site extends BaseActiveRecord
 		return $contact->nick_name;
 	}
 
-	/**
-	 * FIXME: Move/remove now booking is modular?
-	 */
-	public static function getListByFirm($firmId) {
-		$sites = Yii::app()->db->createCommand()
-			->selectDistinct('site.id, site.short_name')
-			->from('site')
-			->join('ophtroperationbooking_operation_theatre t', 'site.id = t.site_id')
-			->join('ophtroperationbooking_operation_session s', 's.theatre_id = t.id')
-			->where('s.firm_id = :id', array(':id' => $firmId))
-			->order('site.name')
-			->queryAll();
-		$data = array();
-		foreach ($sites as $site) {
-			$data[$site['id']] = $site['short_name'];
-		}
-		return $data;
-	}
 }

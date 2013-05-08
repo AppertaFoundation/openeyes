@@ -17,17 +17,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * This is the bootstrap file for test application.
- * This file should be removed when the application is deployed for production.
- */
-
-// change the following paths if necessary
-$yii=dirname(__FILE__).'/../yii/framework/yii.php';
-$config=dirname(__FILE__).'/protected/config/test.php';
-
-// remove the following line when in production mode
-defined('YII_DEBUG') or define('YII_DEBUG',true);
-
-require_once($yii);
-Yii::createWebApplication($config)->run();
+if (!empty($route->options)) {
+	echo CHtml::dropDownList('option_id','',CHtml::listData($route->options,'id','name'),array('empty'=>'- Select -'));
+}

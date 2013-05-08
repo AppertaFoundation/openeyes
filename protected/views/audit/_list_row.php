@@ -26,12 +26,8 @@
 						<span class="action"><?php echo $log->action?></span>
 						<span class="target"><?php echo $log->target_type?></span>
 						<span class="event_type">
-							<?php if ($log->event) {
-								if ($log->event->event_type_id == 25) {?>
-									<a href="/patient/event/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
-								<?php }else{?>
-									<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
-								<?php }?>
+							<?php if ($log->event) { ?>
+								<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
 							<?php }else{?>
 								-
 							<?php }?>

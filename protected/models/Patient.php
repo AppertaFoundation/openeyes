@@ -148,8 +148,8 @@ class Patient extends BaseActiveRecord {
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
-			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date'),
 			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
+			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
 		);
 	}
 
@@ -685,35 +685,20 @@ class Patient extends BaseActiveRecord {
 			$type = 'sys';
 		}
 
-		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=?',array($this->id,$disorder_id))) {
+		if (!$sd = SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?',array($this->id,$disorder_id,$eye_id,$date))) {
 			$action = "add-diagnosis-$type";
 			$sd = new SecondaryDiagnosis;
 			$sd->patient_id = $this->id;
 			$sd->disorder_id = $disorder_id;
 			$sd->eye_id = $eye_id;
 			$sd->date = $date;
-		} else {
-			if ($sd->date == $date && (($sd->eye_id == 1 and $eye_id == 2) || ($sd->eye_id == 2 && $eye_id == 1))) {
-				$action = "update-diagnosis-$type";
-				$sd->eye_id = 3;
-				$sd->date = $date;
-			} else {
-				if ($sd->eye_id == $eye_id) return;
 
-				$action = "add-diagnosis-$type";
-				$sd = new SecondaryDiagnosis;
-				$sd->patient_id = $this->id;
-				$sd->disorder_id = $disorder_id;
-				$sd->eye_id = $eye_id;
-				$sd->date = $date;
+			if (!$sd->save()) {
+				throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
 			}
-		}
 
-		if (!$sd->save()) {
-			throw new Exception('Unable to save secondary diagnosis: '.print_r($sd->getErrors(),true));
+			$this->audit('patient',$action,$sd->getAuditAttributes());
 		}
-
-		$this->audit('patient',$action,$sd->getAuditAttributes());
 	}
 
 	public function removeDiagnosis($diagnosis_id) {
@@ -983,21 +968,6 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function addMedication($medication,$route_id,$comments) {
-		if (!$m = Medication::model()->find('patient_id=? and medication=? and route_id=?',array($this->id,$medication,$route_id))) {
-			$m = new Medication;
-			$m->patient_id = $this->id;
-			$m->medication = $medication;
-			$m->route_id = $route_id;
-		}
-
-		$m->comments = $comments;
-
-		if (!$m->save()) {
-			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
-		}
-	}
-
 	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments) {
 		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
 			$fh = new FamilyHistory;
@@ -1026,5 +996,22 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			return $episode->firm->serviceSubspecialtyAssignment->service->name;
 		}
+	}
+
+	public function updateMedication($m, $params) {
+		$m->patient_id = $this->id;
+		$m->drug_id = $params['drug_id'];
+		$m->route_id = $params['route_id'];
+		$m->option_id = $params['option_id'];
+		$m->frequency_id = $params['frequency_id'];
+		$m->start_date = date('Y-m-d',strtotime($params['start_date']));
+
+		if (!$m->save()) {
+			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+		}
+	}
+
+	public function addMedication($params) {
+		$this->updateMedication(new Medication, $params);
 	}
 }
