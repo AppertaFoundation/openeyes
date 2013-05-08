@@ -74,12 +74,7 @@ class SiteController extends BaseController
 				$event_id = $matches[2];
 				if($event = Event::model()->findByPk($event_id)) {
 					$event_class_name = $event->eventType->class_name;
-					if($event_class_name == 'OphTrOperation') {
-						// TODO: This can go away once we modularise Booking
-						$this->redirect(array('/patient/event/'.$event_id));
-					} else {
-						$this->redirect(array($event_class_name.'/default/view/'.$event_id));
-					}
+					$this->redirect(array($event_class_name.'/default/view/'.$event_id));
 				} else {
 					Yii::app()->user->setFlash('warning.search_error', 'Event ID not found');
 					$this->redirect('/');
