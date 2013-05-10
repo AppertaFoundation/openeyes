@@ -163,9 +163,6 @@ class BaseEventTypeController extends BaseController
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type->id);
 		$criteria->order = 'display_order asc';
-		# TODO remove these when the core booking models are removed
-		$criteria->compare('id','<>29');
-		$criteria->compare('id','<>31');
 
 		$elements = array();
 
@@ -226,9 +223,6 @@ class BaseEventTypeController extends BaseController
 				$criteria->compare('event_type_id',$event_type->id);
 				$criteria->compare('`default`',1);
 				$criteria->order = 'display_order asc';
-				# TODO remove these when the core booking models are removed
-				$criteria->compare('id','<>29');
-				$criteria->compare('id','<>31');
 
 				$elements = array();
 				$element_classes = array();
