@@ -48,18 +48,18 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 	public function sidedDefaults() {
 		return array();
 	}
+
 	protected function beforeSave() {
 
 		// Need to clear any "sided" fields if that side isn't active
 		if($this->eye->name != 'Both') {
 			foreach($this->sidedFields() as $field_suffix) {
 				if($this->eye->name == 'Left') {
-					$clear_field = 'right_'.$field_suffix;
-				} else { // Right
-					$clear_field = 'left_'.$field_suffix;
+					$this->{'right_'.$field_suffix} = null;
+				} else {
+					$this->{'left_'.$field_suffix} = null;
 				}
 			}
-			$this->$clear_field = null;
 		}
 
 		return parent::beforeSave();
