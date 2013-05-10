@@ -44,7 +44,9 @@ class m130429_133030_site_institution_import_tables extends CDbMigration
 			->join("institution","site.institution_id = institution.id")
 			->queryAll() as $row) {
 
-			$this->update('site',array('remote_id'=>$row['inst_code'].$row['remote_id']),'id='.$row['id']);
+			if (strlen($row['inst_code'].$row['remote_id']) == 5) {
+				$this->update('site',array('remote_id'=>$row['inst_code'].$row['remote_id']),'id='.$row['id']);
+			}
 		}
 	}
 
