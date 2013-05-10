@@ -52,12 +52,10 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 
 		// Need to clear any "sided" fields if that side isn't active to prevent
 		if($this->eye->name != 'Both') {
-			foreach($this->sidedFields() as $field_suffix) {
-				if ($this->eye->name == 'Left') {
-					$this->setSideDefaultOptions('right');
-				} else {
-					$this->setSideDefaultOptions('left');
-				}
+			if ($this->eye->name == 'Left') {
+				$this->setSideDefaultOptions('right');
+			} else {
+				$this->setSideDefaultOptions('left');
 			}
 		}
 
