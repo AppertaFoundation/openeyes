@@ -240,7 +240,7 @@ class Site extends BaseActiveRecord
 	}
 
 	public function getLetterAddress($include_institution_name=false,$encode=true) {
-		if (!$include_institution_name) {
+		if ($this->institution_id != 1 && $this->name != $this->institution->name) {
 			$address = "$this->name\n";
 		} else {
 			$address = '';
