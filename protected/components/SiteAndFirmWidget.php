@@ -20,7 +20,7 @@
 class SiteAndFirmWidget extends CWidget {
 
 	public $title = 'Please confirm Site and Firm';
-	
+
 	public $returnUrl;
 
 	public function init() {
@@ -31,23 +31,23 @@ class SiteAndFirmWidget extends CWidget {
 
 	public function run() {
 		$model = new SiteAndFirmForm();
+		$user = User::model()->findByPk(Yii::app()->user->id);
 		if(isset($_POST['SiteAndFirmForm'])) {
 			$model->attributes = $_POST['SiteAndFirmForm'];
 			if($model->validate()) {
-				$user = User::model()->findByPk(Yii::app()->user->id);
-				$user->last_firm_id = $model->firm_id;
+				$user->changeFirm($model->firm_id);
 				$user->last_site_id = $model->site_id;
 				if(!$user->save(false)) {
 					throw new CException('Error saving user');
 				}
 				$user->audit('user', 'change-firm', $user->last_firm_id);
-				
+
 				Yii::app()->session['selected_site_id'] = $model->site_id;
 				$this->controller->selectedSiteId = $model->site_id;
 				Yii::app()->session['selected_firm_id'] = $model->firm_id;
 				$this->controller->selectedFirmId = $model->firm_id;
 				Yii::app()->session['confirm_site_and_firm'] = false;
-				
+
 				// TODO: Reset theatre and waiting list search options via event
 				/*
 					$so = Yii::app()->session['theatre_searchoptions'];
@@ -77,9 +77,25 @@ class SiteAndFirmWidget extends CWidget {
 				'params' => array(':institution_code' => 'RP6'),
 		));
 
+		$firms = array();
+		if($preferred_firms = $user->preferred_firms) {
+			foreach($preferred_firms as $preferred_firm) {
+				$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
+			}
+		}
+		foreach($this->controller->firms as $firm_id => $firm_label) {
+			if(!isset($firms['Recent'][$firm_id])) {
+				if($preferred_firms) {
+					$firms['Other'][$firm_id] = $firm_label;
+				} else {
+					$firms[$firm_id] = $firm_label;
+				}
+			}
+		}
+
 		$this->render('SiteAndFirmWidget', array(
 				'model' => $model,
-				'firms' => $this->controller->firms,
+				'firms' => $firms,
 				'sites' => CHtml::listData($sites, 'id', 'short_name'),
 		));
 	}
