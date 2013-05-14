@@ -48,18 +48,7 @@ class SiteAndFirmWidget extends CWidget {
 				$this->controller->selectedFirmId = $model->firm_id;
 				Yii::app()->session['confirm_site_and_firm'] = false;
 
-				// TODO: Reset theatre and waiting list search options via event
-				/*
-					$so = Yii::app()->session['theatre_searchoptions'];
-					if (isset($so['firm-id'])) unset($so['firm-id']);
-					if (isset($so['specialty-id'])) unset($so['specialty-id']);
-					if (isset($so['site-id'])) unset($so['site-id']);
-					if (isset($so['date-filter'])) unset($so['date-filter']);
-					if (isset($so['date-start'])) unset($so['date-start']);
-					if (isset($so['date-end'])) unset($so['date-end']);
-					Yii::app()->session['theatre_searchoptions'] = $so;
-					Yii::app()->session['waitinglist_searchoptions'] = null;
-				*/
+				Yii::app()->event->dispatch('firm_changed', array('firm_id' => $model->firm_id));
 
 				// Redirect browser to clear POST
 				$this->controller->redirect($this->returnUrl);
