@@ -268,7 +268,7 @@ class UserIdentity extends CUserIdentity
 		} else {
 			throw new CException('Cannot find default site');
 		}
-		
+
 		$user->audit('login','login-successful',"User ".strtoupper($this->username)." logged in",true);
 
 		return true;
