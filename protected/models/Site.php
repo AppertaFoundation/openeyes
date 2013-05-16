@@ -281,4 +281,7 @@ class Site extends BaseActiveRecord
 		return $contact->nick_name;
 	}
 
+	public function getShortname() {
+		return $this->short_name ? $this->short_name : $this->name;
+	}
 }
