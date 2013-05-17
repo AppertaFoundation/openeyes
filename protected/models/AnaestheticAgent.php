@@ -66,7 +66,10 @@ class AnaestheticAgent extends BaseActiveRecord
 	 */
 	public function relations()
 	{
-		return array();
+		return array(
+			'siteSubspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyAnaestheticAgent', 'anaesthetic_agent_id'),
+			'siteSubspecialtyAssignmentDefaults' => array(self::HAS_MANY, 'SiteSubspecialtyAnaestheticAgentDefault', 'anaesthetic_agent_id'),
+		);
 	}
 }
 ?>

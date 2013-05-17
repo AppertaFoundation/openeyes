@@ -97,6 +97,7 @@ class Episode extends BaseActiveRecord
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
 			'diagnosis' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
 			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+			'referralAssignment' => array(self::HAS_ONE, 'ReferralEpisodeAssignment', 'episode_id'),
 		);
 	}
 	/**

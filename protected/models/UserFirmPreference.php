@@ -18,71 +18,62 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "user_firm_preference".
  *
- * The followings are the available columns in table 'firm':
+ * The followings are the available columns in table 'user_firm_preference':
  * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
- * @property string $name
+ * @property integer $position
  *
  * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property User $user
+ * @property Firm $firm
  */
-class OperativeDevice extends BaseActiveRecord
-{
+class UserFirmPreference extends BaseActiveRecord {
+
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return UserFirmPreference the static model class
 	 */
-	public static function model($className=__CLASS__)
-	{
+	public static function model($className=__CLASS__) {
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName()
-	{
-		return 'operative_device';
+	public function tableName() {
+		return 'user_firm_preference';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
+	public function rules() {
 		return array(
-			array('name', 'required'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
+			array('user_id, firm_id, position', 'required'),
+			array('id, user_id, firm_id, position', 'safe', 'on'=>'search'),
 		);
 	}
 
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
+	public function relations() {
 		return array(
-			'siteSubspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyOperativeDevice', 'operative_device_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 		);
 	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels()
-	{
+	public function attributeLabels() {
 		return array(
+			'id' => 'ID',
+			'user_id' => 'User',
+			'firm_id' => 'Firm',
+			'position' => 'Position'
 		);
 	}
 
@@ -90,18 +81,17 @@ class OperativeDevice extends BaseActiveRecord
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
+	public function search() {
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
+		$criteria->compare('user_id',$this->user_id,true);
+		$criteria->compare('firm_id',$this->firm_id,true);
+		$criteria->compare('position',$this->position,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
+
 }

@@ -118,7 +118,34 @@ class User extends BaseActiveRecord
 			'firmRights' => array(self::MANY_MANY, 'Firm', 'user_firm_rights(firm_id, user_id)'),
 			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
+			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id',
+				'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 5),
 		);
+	}
+
+	public function changeFirm($firm_id) {
+		$this->last_firm_id = $firm_id;
+		$criteria = new CDbCriteria();
+		$criteria->addCondition('user_id = :user_id');
+		$criteria->order = 'position DESC';
+		$criteria->params = array(':user_id' => $this->id);
+		$top_preference = UserFirmPreference::model()->find($criteria);
+		$preference = UserFirmPreference::model()->find('user_id = :user_id AND firm_id = :firm_id',
+				array(':user_id' => $this->id, ':firm_id' => $firm_id));
+		if(!$preference) {
+			$preference = new UserFirmPreference();
+			$preference->user_id = $this->id;
+			$preference->firm_id = $firm_id;
+		}
+		if(!$top_preference) {
+			$preference->position = 1;
+		} else if($top_preference->id != $preference->id) {
+			$preference->position = $top_preference->position + 1;
+		}
+		if(!$preference->save()) {
+			throw new CException('Error saving user firm preference');
+		}
 	}
 
 	/**
@@ -153,7 +180,7 @@ class User extends BaseActiveRecord
 		$criteria->compare('email',$this->email,true);
 		$criteria->compare('active',$this->active);
 		$criteria->compare('global_firm_rights',$this->global_firm_rights);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
@@ -254,15 +281,15 @@ class User extends BaseActiveRecord
 	public function getFullName() {
 		return implode(' ', array($this->first_name, $this->last_name));
 	}
-	
+
 	public function getReversedFullName() {
 		return implode(' ', array($this->last_name, $this->first_name));
 	}
-	
+
 	public function getFullNameAndTitle() {
 		return implode(' ', array($this->title, $this->first_name, $this->last_name));
 	}
-	
+
 	public function getFullNameAndTitleAndQualifications() {
 		return implode(' ', array($this->title, $this->first_name, $this->last_name)).($this->qualifications?' '.$this->qualifications:'');
 	}
@@ -307,7 +334,7 @@ class User extends BaseActiveRecord
 		$criteria->compare('is_doctor',1);
 		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
-		
+
 		return User::model()->findAll($criteria);
 	}
 

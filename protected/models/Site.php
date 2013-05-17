@@ -209,6 +209,7 @@ class Site extends BaseActiveRecord
 				return $this->institution->short_name.' at '.$this->name;
 			}
 		}
+
 		// this avoids duplicating lines on the addresses
 		if ($this->institution->name == $this->name) {
 			return $this->name;
@@ -216,4 +217,7 @@ class Site extends BaseActiveRecord
 		return array($this->institution->name,$this->name);
 	}
 
+	public function getShortname() {
+		return $this->short_name ? $this->short_name : $this->name;
+	}
 }
