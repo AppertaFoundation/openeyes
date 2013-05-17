@@ -60,7 +60,9 @@ class Eye extends BaseActiveRecord
 	 */
 	public function relations()
 	{
-		return array();
+		return array(
+			'elementTypes' => array(self::HAS_MANY, 'ElementTypeEye', 'eye_id'),
+		);
 	}
 	
 	public function getShortName() {

@@ -73,6 +73,7 @@ class OperativeDevice extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'siteSubspecialtyAssignments' => array(self::HAS_MANY, 'SiteSubspecialtyOperativeDevice', 'operative_device_id'),
 		);
 	}
 

@@ -90,6 +90,9 @@ class Gp extends BaseActiveRecord {
 			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
 				'on' => "parent_class = 'Gp'",
 			),
+			'pasAssignment' => array(self::HAS_ONE, 'PasAssignment', 'internal_id',
+				'on' => "internal_type = 'Gp'",
+			),
 		);
 	}
 
