@@ -55,10 +55,11 @@ class Event extends BaseActiveRecord
 	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
 	 * @return array of mandatory conditions
 	 */
-	
+
 	public function defaultScope() {
+		$table_alias = $this->getTableAlias(false,false);
 		return array(
-			'condition' => 'deleted=0',
+			'condition' => $table_alias.'.deleted = 0',
 		);
 	}
 
