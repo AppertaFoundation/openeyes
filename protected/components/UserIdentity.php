@@ -170,14 +170,18 @@ class UserIdentity extends CUserIdentity
 			/**
 			 * Update user db record with details from LDAP.
 			 */
-			if (isset($info['givenname'][0])) {
-				$user->first_name = $info['givenname'][0];
+			if (Yii::app()->params['ldap_update_name']) {
+				if (isset($info['givenname'][0])) {
+					$user->first_name = $info['givenname'][0];
+				}
+				if (isset($info['sn'][0])) {
+					$user->last_name = $info['sn'][0];
+				}
 			}
-			if (isset($info['sn'][0])) {
-				$user->last_name = $info['sn'][0];
-			}
-			if (isset($info['mail'][0])) {
-				$user->email = $info['mail'][0];
+			if (Yii::app()->params['ldap_update_email']) {
+				if (isset($info['mail'][0])) {
+					$user->email = $info['mail'][0];
+				}
 			}
 			if (!$user->save()) {
 				$user->audit('login','login-failed',"Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),true);

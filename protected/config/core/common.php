@@ -167,6 +167,8 @@ return array(
 		'ldap_native_timeout' => 3,
 		'ldap_info_retries' => 3,
 		'ldap_info_retry_delay' => 1,
+		'ldap_update_name' => false,
+		'ldap_update_email' => true,
 		'environment' => 'dev',
 		'audit_trail' => false,
 		'watermark' => '',
