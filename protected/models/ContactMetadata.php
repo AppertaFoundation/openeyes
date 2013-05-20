@@ -18,18 +18,18 @@
  */
 
 /**
- * This is the model class for table "contact_type".
+ * This is the model class for table "contact_metadata".
  *
- * The followings are the available columns in table 'contact_type':
+ * The followings are the available columns in table 'contact_metadata':
  * @property string $id
  * @property string $name
  * @property integer $letter_template_only
  */
-class ContactType extends BaseActiveRecord
+class ContactMetadata extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ContactType the static model class
+	 * @return ContactMetadata the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -41,7 +41,7 @@ class ContactType extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'contact_type';
+		return 'contact_metadata';
 	}
 
 	/**
@@ -50,11 +50,6 @@ class ContactType extends BaseActiveRecord
 	public function rules()
 	{
 		return array(
-			array('name', 'required'),
-			array('name', 'length', 'max'=>40),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,14 +65,11 @@ class ContactType extends BaseActiveRecord
 	}
 
 	/**
-	 * @return array customized attribute labels (name=>label)
+	 * @return array customized attribute metadatas (name=>metadata)
 	 */
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'name' => 'Name',
-			'letter_template_only' => 'Letter Template Only',
 		);
 	}
 
@@ -93,8 +85,6 @@ class ContactType extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('name',$this->name,true);
-		$criteria->compare('letter_template_only', 0);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,

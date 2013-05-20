@@ -101,6 +101,8 @@ class PatientController extends BaseController
 	 */
 	public function actionView($id)
 	{
+		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->createUrl('/js/patientSummary.js'));
+
 		$this->patient = $this->loadModel($id);
 
 		$tabId = !empty($_GET['tabId']) ? $_GET['tabId'] : 0;
@@ -129,8 +131,14 @@ class PatientController extends BaseController
 			}
 		}
 
+		$this->jsVars['currentContacts'] = $this->patient->currentContactLocationIDS();
+
+		$this->breadcrumbs=array(
+			$this->patient->first_name.' '.$this->patient->last_name. '('.$this->patient->hos_num.')',
+		);
+
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
 		));
 	}
 
@@ -209,7 +217,7 @@ class PatientController extends BaseController
 		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 		$page_num = (integer)@$_GET['page_num'];
 		$page_size = 20;
-		
+
 		$model = new Patient();
 		$model->hos_num = $search_terms['hos_num'];
 		$model->nhs_num = $search_terms['nhs_num'];
@@ -273,7 +281,7 @@ class PatientController extends BaseController
 			'criteria'=>$criteria));
 
 		$this->renderPartial('_summary',
-			array('model'=>$patient, 'address'=>$patient->address, 'episodes'=>$dataProvider));
+			array('model'=>$patient, 'address'=>$patient->contact->address, 'episodes'=>$dataProvider));
 	}
 
 	public function actionContacts()
@@ -297,7 +305,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
 			$current_episode = empty($episodes) ? false : $episodes[0];
@@ -306,8 +314,8 @@ class PatientController extends BaseController
 				$criteria->compare('episode_id',$legacyepisodes[0]->id);
 				$criteria->order = 'datetime desc';
 
-				if ($event = Event::model()->find($criteria)) {
-					if (!$event->eventType->disabled) {
+				foreach (Event::model()->findAll($criteria) as $event) {
+					if (in_array($event->eventType->class_name,Yii::app()->modules) && (!$event->eventType->disabled)) {
 						$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
 						Yii::app()->end();
 					}
@@ -353,7 +361,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$this->title = 'Episode summary';
 		$this->event_tabs = array(
@@ -427,7 +435,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
 
-		$site = Site::model()->findByPk(Yii::app()->request->cookies['site_id']->value);
+		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$this->title = 'Episode summary';
 		$this->event_tabs = array(
@@ -543,146 +551,17 @@ class PatientController extends BaseController
 	}
 
 	public function actionPossiblecontacts() {
-		$contacts = array();
-
 		$term = strtolower(trim($_GET['term'])).'%';
 
-		if (@$_GET['filter'] == 'gp') {
-			$where = "parent_class = 'Gp'";
-		} else if (@$_GET['filter'] == 'consultant') {
-			$where = "parent_class = 'Consultant'";
-		} else if (@$_GET['filter'] == 'specialist') {
-			$where = "parent_class = 'Specialist'";
-		} else if (@$_GET['filter'] == 'moorfields') {
-			$where = "user_id is not null";
-		} else {
-			$where = "parent_class in ('Consultant','Specialist')";
-		}
-
-		foreach (Yii::app()->db->createCommand()
-			->select('contact.*, user_contact_assignment.user_id as user_id, user.active')
-			->from('contact')
-			->leftJoin('user_contact_assignment','user_contact_assignment.contact_id = contact.id')
-			->leftJoin('user','user_contact_assignment.user_id = user.id')
-			->where("LOWER(contact.last_name) LIKE :term AND $where and (user_contact_assignment.id is null or active != 0)", array(':term' => $term))
-			->order('title asc, contact.first_name asc, contact.last_name asc')
-			->queryAll() as $contact) {
-
-			$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']);
-
-			if ($contact['parent_class'] == 'Consultant') {
-				$institutions = array();
-
-				if ($contact['title']) {
-					$line = trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name'].' ('.$contact['parent_class']." Ophthalmologist");
-				}
-
-				$found_locations = false;
-
-				foreach (SiteConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $sca) {
-					if (!in_array($sca->site->institution_id,$institutions)) {
-						$institutions[] = $sca->site->institution_id;
-					}
-
-					$contacts[] = array(
-						'line' => $line.', '.$sca->site->name.')',
-						'contact_id' => $contact['id'],
-						'site_id' => $sca->site_id,
-					);
-
-					$found_locations = true;
-				}
-
-				foreach (InstitutionConsultantAssignment::model()->findAll('consultant_id = :consultantId',array(':consultantId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->institution_id,$institutions)) {
-
-						$contacts[] = array(
-							'line' => $line.', '.$ica->institution->name.')',
-							'contact_id' => $contact['id'],
-							'institution_id' => $ica->institution_id,
-						);
-
-						$found_locations = true;
-					}
-				}
-
-				if ($contact['user_id'] && !$found_locations) {
-					$institution = Institution::model()->findByPk(1);
-
-					$contacts[] = array(
-						'line' => $line.', '.$institution->name.')',
-						'contact_id' => $contact['id'],
-						'institution_id' => $institution->id,
-					);
-				}
-
-			} else if ($contact['parent_class'] == 'Specialist') {
-				$sites = array();
-
-				foreach (SiteSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->site_id,$sites)) {
-						if ($contact['title']) {
-							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-						} else {
-							$contact_line = $contact['first_name'].' '.$contact['last_name'];
-						}
-
-						$specialist = Specialist::model()->findByPk($contact['parent_id']);
-
-						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->site->name.")";
-
-						$contacts[] = array(
-							'line' => $contact_line,
-							'contact_id' => $contact['id'],
-							'site_id' => $ica->site_id,
-						);
-					}
-				}
-
-				$institutions = array();
-
-				foreach (InstitutionSpecialistAssignment::model()->findAll('specialist_id = :specialistId',array(':specialistId'=>$contact['parent_id'])) as $ica) {
-					if (!in_array($ica->institution_id,$institutions)) {
-						if ($contact['title']) {
-							$contact_line = $contact['title'].' '.$contact['first_name'].' '.$contact['last_name'];
-						} else {
-							$contact_line = $contact['first_name'].' '.$contact['last_name'];
-						}
-
-						$specialist = Specialist::model()->findByPk($contact['parent_id']);
-
-						$contact_line .= " (".$specialist->specialist_type->name.", ".$ica->institution->name.")";
-
-						$contacts[] = array(
-							'line' => $contact_line,
-							'contact_id' => $contact['id'],
-							'institution_id' => $ica->institution_id,
-						);
-					}
-				}
-			} else if ($contact['user_id']) {
-				$user = User::model()->findByPk($contact['user_id']);
-
-				if (!($role = $user->role)) {
-					$role = 'Staff';
-				}
-
-				$institution = Institution::model()->find('code=?',array('RP6'));
-
-				$contacts[] = array(
-					'line' => trim($contact['title'].' '.$contact['first_name'].' '.$contact['last_name']).' ('.$role.', '.$institution->name.')',
-					'contact_id' => $contact['id'],
-					'institution_id' => $institution->id,
-				);
-
-			} else {
-				$contact = Contact::model()->findByPk($contact['id']);
-
-				$contacts[] = array(
-					'line' => $line.($contact->address ? ', '.$contact->address->address1 : '').')',
-					'contact_id' => $contact['id'],
-				);
-			}
+		switch (@$_GET['filter']) {
+			case 'users':
+				$contacts = $this->usersAsContacts($term);
+				break;
+			case 'nonophthalmic':
+				$contacts = $this->contactsByLabel($term, 'Consultant Ophthalmologist', true);
+				break;
+			default:
+				$contacts = $this->contactsByLabel($term, @$_GET['filter']);
 		}
 
 		sort($contacts);
@@ -690,135 +569,94 @@ class PatientController extends BaseController
 		echo CJavaScript::jsonEncode($contacts);
 	}
 
+	public function usersAsContacts($term) {
+		$contacts = array();
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
+		$criteria->compare('active',1);
+		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+
+		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
+			foreach ($user->contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $user->contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
+	public function contactsByLabel($term, $label, $exclude=false) {
+		if (!$cl = ContactLabel::model()->find('name=?',array($label))) {
+			throw new Exception("Unknown contact label: $label");
+		}
+		
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition('lower(last_name)',$term,false);
+		if ($exclude) {
+			$criteria->compare('contact_label_id','<>'.$cl->id);
+		} else {
+			$criteria->compare('contact_label_id',$cl->id);
+		}
+		$criteria->order = 'title, first_name, last_name';
+
+		foreach (Contact::model()->findAll($criteria) as $contact) {
+			foreach ($contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
 	public function actionAssociatecontact() {
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception('Patient not found: '.@$_GET['patient_id']);
 		}
 
-		$params = $_GET;
-
-		if (!$contact = Contact::model()->findByPk($params['contact_id'])) {
-			throw new Exception("Can't find contact: ".$params['contact_id']);
+		if (!$location = ContactLocation::model()->findByPk(@$_GET['contact_location_id'])) {
+			throw new Exception("Can't find contact location: ".@$_GET['contact_location_id']);
 		}
 
-		if ($contact->parent_class == 'Specialist') {
-			$specialist = Specialist::model()->findByPk($contact->parent_id);
-			$type = $specialist->specialist_type->name;
-		} else if ($contact->parent_class == 'Consultant') {
-			$type = 'Consultant Ophthalmologist';
-		} else if ($uca = UserContactAssignment::model()->find('contact_id=?',array($contact->id))) {
-			if (!($type = $uca->user->role)) {
-				$type = 'Staff';
-			}
-		} else {
-			$type = $contact->parent_class;
-		}
-
-		$data = array(
-			'id' => $contact->id,
-			'name' => trim($contact->title.' '.$contact->first_name.' '.$contact->last_name),
-			'qualifications' => $contact->qualifications,
-			'type' => $type,
-			'site_id' => '',
-			'institution_id' => '',
-		);
-
-		if (isset($params['site_id'])) {
-			$data['location'] = Site::model()->findByPk($params['site_id'])->name;
-			$data['site_id'] = $params['site_id'];
-		} else if (isset($params['institution_id'])) {
-			$data['location'] = Institution::model()->findByPk($params['institution_id'])->name;
-			$data['institution_id'] = $params['institution_id'];
-		} else if ($contact->address) {
-			$data['location'] = $contact->address->address1;
-		}
-
-		foreach ($data as $key => $value) {
-			if ($value == null) {
-				$data[$key] = '';
+		// Don't assign the patient's own GP
+		if ($location->contact->label == 'General Practitioner') {
+			if ($gp = Gp::model()->find('contact_id=?',array($location->contact_id))) {
+				if ($gp->id == $patient->gp_id) {
+					return;
+				}
 			}
 		}
 
-		if ($contact->parent_class == 'Gp') {
-			$gp = Gp::model()->findByPk($contact->parent_id);
-			if ($patient->gp->id == $gp->id) {
-				echo json_encode(array());
-				return;
-			}
-		}
-
-		$whereClause = 'patient_id=? and contact_id=?';
-		$whereParams = array($patient->id,$contact->id);
-
-		if (isset($params['site_id'])) {
-			$whereClause .= ' and site_id=?';
-			$whereParams[] = $params['site_id'];
-		}
-		if (isset($params['institution_id'])) {
-			$whereClause .= ' and institution_id=?';
-			$whereParams[] = $params['institution_id'];
-		}
-
-		if (!$pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
+		if (!$pca = PatientContactAssignment::model()->find('patient_id=? and location_id=?',array($patient->id,$location->id))) {
 			$pca = new PatientContactAssignment;
 			$pca->patient_id = $patient->id;
-			$pca->contact_id = $contact->id;
-			if (isset($params['site_id'])) {
-				$pca->site_id = $params['site_id'];
-			}
-			if (isset($params['institution_id'])) {
-				$pca->institution_id = $params['institution_id'];
-			}
-			$pca->save();
+			$pca->location_id = $location->id;
 
-			$patient->audit('patient','associate-contact',$pca->getAuditAttributes());
+			if (!$pca->save()) {
+				throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+			}
 		}
 
-		echo json_encode($data);
+		$this->renderPartial('_patient_contact_row',array('pca'=>$pca));
 	}
 
 	public function actionUnassociatecontact() {
-		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
-			throw new Exception('Patient not found: '.@$_GET['patient_id']);
-		}
-		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
-			throw new Exception('Contact not found: '.@$_GET['contact_id']);
+		if (!$pca = PatientContactAssignment::model()->findByPk(@$_GET['pca_id'])) {
+			throw new Exception("Patient contact assignment not found: ".@$_GET['pca_id']);
 		}
 
-		if (@$_GET['site_id']) {
-			if (!$site = Site::model()->findByPk($_GET['site_id'])) {
-				throw new Exception('Site not found: '.$_GET['site_id']);
-			}
+		if (!$pca->delete()) {
+			echo "0";
+		} else {
+			$pca->patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
+			echo "1";
 		}
-
-		if (@$_GET['institution_id']) {
-			if (!$institution = Institution::model()->findByPk($_GET['institution_id'])) {
-				throw new Exception('Institution not found: '.$_GET['institution_id']);
-			}
-		}
-
-		$whereClause = 'patient_id=? and contact_id=?';
-		$whereParams = array($patient->id,$contact->id);
-
-		if (isset($site)) {
-			$whereClause .= ' and site_id=?';
-			$whereParams[] = $site->id;
-		}
-		if (isset($institution)) {
-			$whereClause .= ' and institution_id=?';
-			$whereParams[] = $institution->id;
-		}
-
-		if ($pca = PatientContactAssignment::model()->find($whereClause,$whereParams)) {
-			if (!$pca->delete()) {
-				echo "0";
-				return;
-			}
-
-			$patient->audit('patient','unassociate-contact',$pca->getAuditAttributes());
-		}
-
-		echo "1";
 	}
 
 	/**
@@ -843,6 +681,8 @@ class PatientController extends BaseController
 			}
 			$patient->addAllergy($allergy_id);
 		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
 	}
 
 	/**
@@ -852,26 +692,35 @@ class PatientController extends BaseController
 	 * @throws Exception
 	 */
 	public function actionRemoveAllergy() {
-		if(!isset($_POST['patient_id']) || !$patient_id = $_POST['patient_id']) {
+		if(!isset($_GET['patient_id']) || !$patient_id = $_GET['patient_id']) {
 			throw new Exception('Patient ID required');
 		}
 		if(!$patient = Patient::model()->findByPk($patient_id)) {
 			throw new Exception('Patient not found: '.$patient_id);
 		}
-		if(!isset($_POST['allergy_id']) || !$allergy_id = $_POST['allergy_id']) {
+		if(!isset($_GET['allergy_id']) || !$allergy_id = $_GET['allergy_id']) {
 			throw new Exception('Allergy ID required');
 		}
 		if(!$allergy = Allergy::model()->findByPk($allergy_id)) {
 			throw new Exception('Allergy not found: '.$allergy_id);
 		}
 		$patient->removeAllergy($allergy_id);
+		
+		echo 'success';
 	}
 
 	/**
 	 * List of allergies
 	 */
 	public function allergyList() {
-		return Allergy::model()->findAll(array('order' => 'name'));
+		$allergy_ids = array();
+		foreach ($this->patient->allergies as $allergy) {
+			$allergy_ids[] = $allergy->id;
+		}
+		$criteria = new CDbCriteria;
+		!empty($allergy_ids) && $criteria->addNotInCondition('id',$allergy_ids);
+		$criteria->order = 'name asc';
+		return Allergy::model()->findAll($criteria);
 	}
 
 	public function actionHideepisode() {
@@ -895,16 +744,16 @@ class PatientController extends BaseController
 	}
 	
 	private function processDiagnosisDate() {
-		$date = $_POST['diagnosis_year'];
+		$date = $_POST['fuzzy_year'];
 		
-		if ($_POST['diagnosis_month']) {
-			$date .= '-'.str_pad($_POST['diagnosis_month'],2,'0',STR_PAD_LEFT);
+		if ($_POST['fuzzy_month']) {
+			$date .= '-'.str_pad($_POST['fuzzy_month'],2,'0',STR_PAD_LEFT);
 		} else {
 			$date .= '-00';
 		}
 		
-		if ($_POST['diagnosis_day']) {
-			$date .= '-'.str_pad($_POST['diagnosis_day'],2,'0',STR_PAD_LEFT);
+		if ($_POST['fuzzy_day']) {
+			$date .= '-'.str_pad($_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
 		} else {
 			$date .= '-00';
 		}
@@ -1029,7 +878,7 @@ class PatientController extends BaseController
 
 		$command = Yii::app()->db->createCommand()
 			->from("patient p")
-			->join("contact c","c.parent_class = 'Patient' and c.parent_id = p.id");
+			->join("contact c","p.contact_id = c.id");
 
 		if (!empty($params['principal'])) {
 			foreach ($params['principal'] as $i => $disorder_id) {
@@ -1122,5 +971,503 @@ class PatientController extends BaseController
 			'date' => date('j M Y',strtotime($dates[0])),
 			'timestamp' => strtotime($dates[0]),
 		);
+	}
+
+	public function actionAddPreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!isset($_POST['previous_operation'])) {
+			throw new Exception("Missing previous operation text");
+		}
+
+		if (@$_POST['edit_operation_id']) {
+			if (!$po = PreviousOperation::model()->findByPk(@$_POST['edit_operation_id'])) {
+				throw new Exception("Previous operation not found: ".@$_POST['edit_operation_id']);
+			}
+			$po->side_id = @$_POST['previous_operation_side'] ? @$_POST['previous_operation_side'] : null;
+			$po->operation = @$_POST['previous_operation'];
+			$po->date = str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT);
+			if (!$po->save()) {
+				throw new Exception("Unable to save previous operation: ".print_r($po->getErrors(),true));
+			}
+		} else {
+			$patient->addPreviousOperation(@$_POST['previous_operation'],@$_POST['previous_operation_side'],str_pad(@$_POST['fuzzy_year'],4,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_month'],2,'0',STR_PAD_LEFT).'-'.str_pad(@$_POST['fuzzy_day'],2,'0',STR_PAD_LEFT));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionAddMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!$drug = Drug::model()->findByPk(@$_POST['selectedMedicationID'])) {
+			throw new Exception("Drug not found: ".@$_POST['selectedMedicationID']);
+		}
+
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
+			throw new Exception("Route not found: ".@$_POST['route_id']);
+		}
+
+		if (!empty($route->options)) {
+			if (!$option = DrugRouteOption::model()->findByPk(@$_POST['option_id'])) {
+				throw new Exception("Route option not found: ".@$_POST['option_id']);
+			}
+		}
+
+		if (!$frequency = DrugFrequency::model()->findByPk(@$_POST['frequency_id'])) {
+			throw new Exception("Frequency not found: ".@$_POST['frequency_id']);
+		}
+
+		if (!strtotime(@$_POST['start_date'])) {
+			throw new Exception("Invalid date: ".@$_POST['start_date']);
+		}
+
+		if (@$_POST['edit_medication_id']) {
+			if (!$m = Medication::model()->findByPk(@$_POST['edit_medication_id'])) {
+				throw new Exception("Medication not found: ".@$_POST['edit_medication_id']);
+			}
+			$patient->updateMedication($m,array(
+				'drug_id' => $drug->id,
+				'route_id' => $route->id,
+				'option_id' => $option ? $option->id : null,
+				'frequency_id' => $frequency->id,
+				'start_date' => $_POST['start_date'],
+			));
+		} else {
+			$patient->addMedication(array(
+				'drug_id' => $drug->id,
+				'route_id' => $route->id,
+				'option_id' => @$option ? $option->id : null,
+				'frequency_id' => $frequency->id,
+				'start_date' => $_POST['start_date'],
+			));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionAddFamilyHistory() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found:".@$_POST['patient_id']);
+		}
+
+		if (!$relative = FamilyHistoryRelative::model()->findByPk(@$_POST['relative_id'])) {
+			throw new Exception("Unknown relative: ".@$_POST['relative_id']);
+		}
+
+		if (!$side = FamilyHistorySide::model()->findByPk(@$_POST['side_id'])) {
+			throw new Exception("Unknown side: ".@$_POST['side_id']);
+		}
+
+		if (!$condition = FamilyHistoryCondition::model()->findByPk(@$_POST['condition_id'])) {
+			throw new Exception("Unknown condition: ".@$_POST['condition_id']);
+		}
+		
+		if (@$_POST['edit_family_history_id']) {
+			if (!$fh = FamilyHistory::model()->findByPk(@$_POST['edit_family_history_id'])) {
+				throw new Exception("Family history not found: ".@$_POST['edit_family_history_id']);
+			}
+			$fh->relative_id = $relative->id;
+			$fh->side_id = $side->id;
+			$fh->condition_id = $condition->id;
+			$fh->comments = @$_POST['comments'];
+
+			if (!$fh->save()) {
+				throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+			}
+		} else {
+			$patient->addFamilyHistory($relative->id,$side->id,$condition->id,@$_POST['comments']);
+		}
+
+		$this->redirect(array('patient/view/'.$patient->id));
+	}
+	
+	public function actionRemovePreviousOperation() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$po = PreviousOperation::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['operation_id']))) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		if (!$po->delete()) {
+			throw new Exception("Failed to remove previous operation: ".print_r($po->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionGetPreviousOperation() {
+		if (!$po = PreviousOperation::model()->findByPk(@$_GET['operation_id'])) {
+			throw new Exception("Previous operation not found: ".@$_GET['operation_id']);
+		}
+
+		$date = explode('-',$po->date);
+
+		echo json_encode(array(
+			'operation' => $po->operation,
+			'side_id' => $po->side_id,
+			'fuzzy_year' => $date[0],
+			'fuzzy_month' => preg_replace('/^0/','',$date[1]),
+			'fuzzy_day' => preg_replace('/^0/','',$date[2]),
+		));
+	}
+
+	public function actionRemoveMedication() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$m = Medication::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['medication_id']))) {
+			throw new Exception("Medication not found: ".@$_GET['medication_id']);
+		}
+
+		$m->end_date = date('Y-m-d');
+
+		if (!$m->save()) {
+			throw new Exception("Failed to remove medication: ".print_r($m->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function actionRemoveFamilyHistory() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		if (!$m = FamilyHistory::model()->find('patient_id=? and id=?',array($patient->id,@$_GET['family_history_id']))) {
+			throw new Exception("Family history not found: ".@$_GET['family_history_id']);
+		}
+
+		if (!$m->delete()) {
+			throw new Exception("Failed to remove family history: ".print_r($m->getErrors(),true));
+		}
+
+		echo 'success';
+	}
+
+	public function processJsVars() {
+		if ($this->patient) {
+			$this->jsVars['OE_patient_id'] = $this->patient->id;
+		}
+		return parent::processJsVars();
+	}
+
+	public function actionInstitutionSites() {
+		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
+			throw new Exception("Institution not found: ".@$_GET['institution_id']);
+		}
+
+		echo json_encode(CHtml::listData($institution->sites,'id','name'));
+	}
+
+	public function actionValidateSaveContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		$errors = array();
+
+		if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+			$errors['institution_id'] = 'Please select an institution';
+		}
+
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk($_POST['site_id'])) {
+				$errors['site_id'] = 'Invalid site';
+			}
+		}
+
+		if (@$_POST['contact_label_id'] == 'nonophthalmic' && !@$_POST['label_id']) {
+			$errors['label_id'] = 'Please select a label';
+		}
+
+		$contact = new Contact;
+
+		foreach (array('title','first_name','last_name') as $field) {
+			if (!@$_POST[$field]) {
+				$errors[$field] = $contact->getAttributeLabel($field).' is required';
+			}
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionGetDrugRouteOptions() {
+		if (!$route = DrugRoute::model()->findByPk(@$_GET['route_id'])) {
+			throw new Exception("Drug route not found: ".@$_GET['route_id']);
+		}
+
+		$this->renderPartial('_drug_route_options',array('route'=>$route));
+	}
+
+	public function actionValidateAddMedication() {
+		$errors = array();
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!Drug::model()->findByPk(@$_POST['selectedMedicationID'])) {
+			$errors['selectedMedicationID'] = "Please select a drug";
+		}
+		if (!$route = DrugRoute::model()->findByPk(@$_POST['route_id'])) {
+			$errors['route_id'] = "Please select a route";
+		}
+		if (!empty($route->options) && !DrugRouteOption::model()->findByPk(@$_POST['option_id'])) {
+			$errors['option_id'] = "Please select a route option";
+		}
+		if (empty($_POST['frequency_id'])) {
+			$errors['frequency_id'] = 'Please select a frequency';
+		}
+		if (empty($_POST['start_date'])) {
+			$errors['start_date'] = 'Please select a date';
+		} else if (!strtotime($_POST['start_date'])) {
+			$errors['start_date'] = 'Invalid date entered';
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionAddContact() {
+		if (BaseController::checkUserLevel(3)) {
+			if (@$_POST['site_id']) {
+				if (!$site = Site::model()->findByPk($_POST['site_id'])) {
+					throw new Exception("Site not found: ".$_POST['site_id']);
+				}
+			} else {
+				if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+					throw new Exception("Institution not found: ".@$_POST['institution_id']);
+				}
+			}
+
+			// Attempt to de-dupe by looking for an existing record that matches the user's input
+			$criteria = new CDbCriteria;
+			$criteria->compare('lower(title)',strtolower($_POST['title']));
+			$criteria->compare('lower(first_name)',strtolower($_POST['first_name']));
+			$criteria->compare('lower(last_name)',strtolower($_POST['last_name']));
+
+			if (isset($site)) {
+				$criteria->compare('site_id',$site->id);
+			} else {
+				$criteria->compare('institution_id',$institution->id);
+			}
+
+			if ($contact = Contact::model()->with('locations')->find($criteria)) {
+				foreach ($contact->locations as $location) {
+					$pca = new PatientContactAssignment;
+					$pca->patient_id = $patient->id;
+					$pca->location_id = $location->id;
+					if (!$pca->save()) {
+						throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+					}
+
+					$this->redirect(array('/patient/view/'.$patient->id));
+				}
+			}
+
+			$contact = new Contact;
+			$contact->attributes = $_POST;
+
+			if (@$_POST['contact_label_id'] == 'nonophthalmic') {
+				if (!$label = ContactLabel::model()->findByPk(@$_POST['label_id'])) {
+					throw new Exception("Contact label not found: ".@$_POST['label_id']);
+				}
+			} else {
+				if (!$label = ContactLabel::model()->find('name=?',array(@$_POST['contact_label_id']))) {
+					throw new Exception("Contact label not found: ".@$_POST['contact_label_id']);
+				}
+			}
+
+			$contact->contact_label_id = $label->id;
+
+			if (!$contact->save()) {
+				throw new Exception("Unable to save contact: ".print_r($contact->getErrors(),true));
+			}
+
+			$cl = new ContactLocation;
+			$cl->contact_id = $contact->id;
+			if (isset($site)) {
+				$cl->site_id = $site->id;
+			} else {
+				$cl->institution_id = $institution->id;
+			}
+
+			if (!$cl->save()) {
+				throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+			}
+
+			$pca = new PatientContactAssignment;
+			$pca->patient_id = $patient->id;
+			$pca->location_id = $cl->id;
+
+			if (!$pca->save()) {
+				throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+			}
+
+			$this->redirect(array('/patient/view/'.$patient->id));
+		}
+	}
+
+	public function actionGetContactLocation() {
+		if (!$location = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
+			throw new Exception("ContactLocation not found: ".@$_GET['location_id']);
+		}
+
+		$data = array();
+
+		if ($location->site) {
+			$data['institution_id'] = $location->site->institution_id;
+			$data['site_id'] = $location->site_id;
+		} else {
+			$data['institution_id'] = $location->institution_id;
+			$data['site_id'] = null;
+		}
+
+		$data['contact_id'] = $location->contact_id;
+		$data['name'] = $location->contact->fullName;
+
+		echo json_encode($data);
+	}
+
+	public function actionValidateEditContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!$contact = Contact::model()->findByPk(@$_POST['contact_id'])) {
+			throw new Exception("Contact not found: ".@$_POST['contact_id']);
+		}
+
+		$errors = array();
+
+		if (!@$_POST['institution_id']) {
+			$errors['institution_id'] = 'Please select an institution';
+		} else {
+			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+				throw new Exception("Institution not found: ".@$_POST['institution_id']);
+			}
+		}
+
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk(@$_POST['site_id'])) {
+				throw new Exception("Site not found: ".@$_POST['site_id']);
+			}
+		}
+
+		echo json_encode($errors);
+	}
+
+	public function actionEditContact() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+		
+		if (!$contact = Contact::model()->findByPk(@$_POST['contact_id'])) {
+			throw new Exception("Contact not found: ".@$_POST['contact_id']);
+		}
+
+		if (@$_POST['site_id']) {
+			if (!$site = Site::model()->findByPk(@$_POST['site_id'])) {
+				throw new Exception("Site not found: ".@$_POST['site_id']);
+			}
+			if (!$cl = ContactLocation::model()->find('contact_id=? and site_id=?',array($contact->id,$site->id))) {
+				$cl = new ContactLocation;
+				$cl->contact_id = $contact->id;
+				$cl->site_id = $site->id;
+
+				if (!$cl->save()) {
+					throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+				}
+			}
+		} else {
+			if (!$institution = Institution::model()->findByPk(@$_POST['institution_id'])) {
+				throw new Exception("Institution not found: ".@$_POST['institution_id']);
+			}
+
+			if (!$cl = ContactLocation::model()->find('contact_id=? and institution_id=?',array($contact->id,$institution->id))) {
+				$cl = new ContactLocation;
+				$cl->contact_id = $contact->id;
+				$cl->institution_id = $institution->id;
+
+				if (!$cl->save()) {
+					throw new Exception("Unable to save contact location: ".print_r($cl->getErrors(),true));
+				}
+			}
+		}
+
+		if (!$pca = PatientContactAssignment::model()->findByPk(@$_POST['pca_id'])) {
+			throw new Exception("PCA not found: ".@$_POST['pca_id']);
+		}
+
+		$pca->location_id = $cl->id;
+
+		if (!$pca->save()) {
+			throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+		}
+
+		$this->redirect(array('/patient/view/'.$patient->id));
+	}
+
+	public function actionSendSiteMessage() {
+		$message = Yii::app()->mailer->newMessage();
+		$message->setFrom(array($_POST['newsite_from'] => User::model()->findByPk(Yii::app()->user->id)->fullName));
+		//$message->setTo(array(Yii::app()->params['helpdesk_email']));
+		$message->setTo(array('mark.wadham@openeyes.org.uk'));
+		$message->setSubject($_POST['newsite_subject']);
+		$message->setBody($_POST['newsite_message']);
+		echo Yii::app()->mailer->sendMessage($message) ? '1' : '0';
+	}
+
+	public function actionGetMedication() {
+		if (!$m = Medication::model()->findByPk(@$_GET['medication_id'])) {
+			throw new Exception("Medication not found: ".@$_GET['medication_id']);
+		}
+
+		echo json_encode(array(
+			'drug_id' => $m->drug_id,
+			'drug_name' => $m->drug->name,
+			'route_id' => $m->route_id,
+			'option_id' => $m->option_id,
+			'frequency_id' => $m->frequency_id,
+			'start_date' => $m->start_date,
+			'route_options' => $this->renderPartial('_drug_route_options',array('route'=>$m->route),true),
+		));
+	}
+
+	public function actionDrugList() {
+		if (Yii::app()->request->isAjaxRequest) {
+			$criteria = new CDbCriteria();
+			if (isset($_GET['term']) && $term = $_GET['term']) {
+				$criteria->addCondition(array('LOWER(name) LIKE :term', 'LOWER(aliases) LIKE :term'), 'OR');
+				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
+			}
+			$criteria->order = 'name';
+			$criteria->params = $params;
+			$drugs = Drug::model()->findAll($criteria);
+			$return = array();
+			foreach($drugs as $drug) {
+				$return[] = array(
+						'label' => $drug->tallmanlabel,
+						'value' => $drug->tallman,
+						'id' => $drug->id,
+				);
+			}
+			echo CJSON::encode($return);
+		}
+	}
+
+	public function actionDrugDefaults() {
+		if (!$drug = Drug::model()->findByPk(@$_GET['drug_id'])) {
+			throw new Exception("Unable to save drug: ".print_r($drug->getErrors(),true));
+		}
+
+		echo json_encode(array('route_id'=>$drug->default_route_id,'frequency_id'=>$drug->default_frequency_id));
 	}
 }

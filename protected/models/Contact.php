@@ -63,6 +63,7 @@ class Contact extends BaseActiveRecord {
 	public function rules() {
 		return array(
 			array('nick_name', 'length', 'max' => 80),
+			array('title, first_name, last_name, nick_name, primary_phone, qualifications, contact_label_id', 'safe'),
 			array('id, nick_name, primary_phone, title, first_name, last_name, qualifications', 'safe', 'on' => 'search'),
 		);
 	}
@@ -80,18 +81,20 @@ class Contact extends BaseActiveRecord {
 			// Prefer H records for primary address, but fall back to others
 			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Contact'",
-				'order' => "FIELD(type,'H') DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,2) DESC, date_start DESC"
 			),
 			// Prefer H records for home address, but fall back to others
 			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
 				'on' => "parent_class = 'Contact'",
-				'order' => "FIELD(type,'H') DESC, date_start DESC"
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,2) DESC, date_start DESC"
 			),
 			// Prefer C records for correspond address, but fall back to others
 			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'order' => "FIELD(type,'C') DESC, date_start DESC",
+				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(address_type_id,3) DESC, date_start DESC",
 				'on' => "parent_class = 'Contact'",
 			),
+			'label' => array(self::BELONGS_TO, 'ContactLabel', 'contact_label_id'),
+			'locations' => array(self::HAS_MANY, 'ContactLocation', 'contact_id'),
 		);
 	}
 
@@ -102,12 +105,13 @@ class Contact extends BaseActiveRecord {
 	{
 		return array(
 			'id' => 'ID',
-			'nick_name' => 'Nick Name',
- 			'primary_phone' => 'Primary Phone Number',
- 			'title' => 'Title',
- 			'first_name' => 'First Name',
- 			'last_name' => 'Last Name',
- 			'qualifications' => 'Qualifications',
+			'nick_name' => 'Nickname',
+			'primary_phone' => 'Phone number',
+			'title' => 'Title',
+			'first_name' => 'First name',
+			'last_name' => 'Last name',
+			'qualifications' => 'Qualifications',
+			'contact_label_id' => 'Label',
 		);
 	}
 
@@ -148,38 +152,71 @@ class Contact extends BaseActiveRecord {
 		return $this->title . ' ' . $this->last_name;
 	}
 
-	public function getLetterAddress() {
-		$address = $this->fullName;
-
-		if (isset($this->qualifications)) {
-			$address .= ' '.$this->qualifications;
-		}
-
-		$address .= "\n";
-
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray());
-		}
-
-		return $address;
+	public function contactLine($location) {
+		return $this->fullName.' ('.$this->label->name.', '.$location.')';
 	}
 
-	public function findAllByParentClass($parent_class) {
+	static public function contactsByLabel($term, $label=false, $exclude=false) {
+		if ($label) {
+			if (!is_object($label)) {
+				if (!$label = ContactLabel::model()->find('name=?',array($label))) {
+					throw new Exception("Label not found");
+				}
+			}
+		}
+
 		$criteria = new CDbCriteria;
-		$criteria->compare('parent_class',$parent_class);
-		$criteria->order = 'first_name, last_name';
+		$criteria->addSearchCondition('lower(last_name)',$term,false);
+		if ($label) {
+			if ($exclude) {
+				$criteria->compare('contact_label_id','<>'.$label->id);
+			} else {
+				$criteria->compare('contact_label_id',$label->id);
+			}
+		}
+		$criteria->order = 'title, first_name, last_name';
 
-		return Contact::Model()->findAll($criteria);
+		foreach (Contact::model()->findAll($criteria) as $contact) {
+			foreach ($contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
 	}
 
-	public function getPrefix() {
-		if ($this->parent_class == 'Gp') {
-			return 'GP';
+	static public function contactsByModel($term, $model) {
+		$contacts = array();
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition("lower(`contact`.last_name)",$term,false);
+		if ($model == 'User') {
+			$criteria->compare('active',1);
+		}
+		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+
+		foreach ($model::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $object) {
+			foreach ($object->contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $object->contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
 		}
 
-		if (UserContactAssignment::model()->find('contact_id=?',array($this->id)) && $this->parent_class != 'Consultant') {
-			return '';
+		return $contacts;
+	}
+
+	public function getType() {
+		foreach (array('User','Gp','Patient','Person') as $model) {
+			if ($model::model()->find('contact_id=?',array($this->id))) {
+				return $model;
+			}
 		}
-		return 'Consultant';
+
+		return false;
 	}
 }

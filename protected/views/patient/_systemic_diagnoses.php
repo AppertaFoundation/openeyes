@@ -87,10 +87,9 @@
 									<?php }?>
 								</div>
 	
+								<?php $this->renderPartial('_fuzzy_date')?>
 								<div class="systemic_diagnoses_form_errors"></div>
 
-								<?php $this->renderPartial('_diagnosis_date')?>
-	
 								<div align="right">
 									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_systemic_diagnosis_loader" style="display: none;" />
 									<button class="classy green mini btn_save_systemic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>

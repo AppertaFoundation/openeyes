@@ -18,7 +18,7 @@
  */
 
 class SplitEventTypeElement extends BaseEventTypeElement {
-	
+
 	//used as data flags for indicating left and right in any models related to a SplitEventTypeElement
 	const LEFT = 1;
 	const RIGHT = 2;
@@ -44,22 +44,22 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 	/**
 	 * An associative array of field suffixes and their default values.
 	 * Used for initialising sided fields
-	 * @return array 
+	 * @return array
 	 */
 	public function sidedDefaults() {
 		return array();
 	}
+
 	protected function beforeSave() {
 
-		// Need to clear any "sided" fields if that side isn't active to prevent
+		// Need to clear any "sided" fields if that side isn't active
 		if($this->eye->name != 'Both') {
 			foreach($this->sidedFields() as $field_suffix) {
 				if($this->eye->name == 'Left') {
-						$clear_field = 'right_'.$field_suffix;
-				} else { // Right
-						$clear_field = 'left_'.$field_suffix;
+					$this->{'right_'.$field_suffix} = null;
+				} else {
+					$this->{'left_'.$field_suffix} = null;
 				}
-				$this->$clear_field = null;
 			}
 		}
 
@@ -73,13 +73,13 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 		$this->setSideDefaultOptions('left');
 		$this->setSideDefaultOptions('right');
 	}
-	
+
 	protected function setSideDefaultOptions($side) {
 		foreach($this->sidedDefaults() as $field => $default) {
 			$this->{$side.'_'.$field} = $default;
 		}
 	}
-	
+
 	/**
 	 * Used to initialise the missing side in an update form.
 	 */
@@ -90,6 +90,6 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 			$this->setSideDefaultOptions('left');
 		}
 	}
-	
+
 }
 

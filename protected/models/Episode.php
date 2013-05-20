@@ -58,8 +58,9 @@ class Episode extends BaseActiveRecord
 	 */
 
 	public function defaultScope() {
+		$table_alias = $this->getTableAlias(false,false);
 		return array(
-			'condition' => 'deleted=0',
+			'condition' => $table_alias.'.deleted = 0',
 		);
 	}
 
@@ -96,6 +97,7 @@ class Episode extends BaseActiveRecord
 			'status' => array(self::BELONGS_TO, 'EpisodeStatus', 'episode_status_id'),
 			'diagnosis' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
 			'eye' => array(self::BELONGS_TO, 'Eye', 'eye_id'),
+			'referralAssignment' => array(self::HAS_ONE, 'ReferralEpisodeAssignment', 'episode_id'),
 		);
 	}
 	/**
@@ -205,18 +207,6 @@ class Episode extends BaseActiveRecord
 		}
 
 		return Episode::model()->findByPk($episode['eid']);
-	}
-
-	public function getBookingsForToday() {
-		return Yii::app()->db->createCommand()
-			->select('b.id')
-			->from('ophtroperationbooking_operation_booking b')
-			->join('et_ophtroperationbooking_operation eo','eo.id = b.element_id')
-			->join('event e','eo.event_id = e.id')
-			->join('ophtroperationbooking_operation_session s','b.session_id = s.id')
-			->where('e.episode_id = :episode_id and s.date = :todaysDate', array(':episode_id' => $this->id,':todaysDate' => date('Y-m-d')))
-			->order('b.last_modified_date desc')
-			->queryAll();
 	}
 
 	public function getMostRecentEventByType($event_type_id) {

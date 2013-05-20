@@ -233,7 +233,7 @@ em { font-style: italic; color:#333; }
 .curvybox.margintop { margin-top:15px; }
 
 /* ====== ERRORs ====== */
-#content .errorMessage {	text-align:center; background:#ffe6b2; border:#ff8921 1px solid; padding:5px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+#content .errorMessage {	text-align:center; background:#ffe6b2; border:#ff8921 1px solid; padding:5px; margin-bottom: 15px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; height: auto; }
 
 /* ====== A HREF ====== */
 a:hover, .aPush { border-bottom: thin dotted #002ec4; }
@@ -590,8 +590,9 @@ ul#user_nav > li .selected,
 #user_panel.inAdmin ul#user_nav > li a:active { background: #eaffff; border:none; }
 #user_panel.inAdmin ul#user_nav > li a.logout:hover  { background: #ff5652; color:#fff; }
 
-#user_firm { position: absolute; bottom: 8px; right: 10px; }
-#user_firm label { font-size: 12px; }
+#user_firm { position: absolute; bottom: 5px; right: 10px; }
+#user_firm span { font-size: 11px; }
+#user_firm .change-firm { font-size: 11px; }
 
 #user_id	{ position: absolute; bottom: 5px; left: 10px; }
 #user_id	span { display: block; font-size: 11px; }
@@ -1314,8 +1315,8 @@ div.patron { margin-left: 37em; font-size: 12pt; }
 
 #audit_filter_button { float: right; margin-top: -3px;}
 
-.diagnosis_date { margin-top: 10px; }
-.diagnosis_date_field { margin-right: 10px; }
+.fuzzy_date { margin-top: 10px; }
+.fuzzy_date_field { margin-right: 10px; }
 
 .diagnosis_eye { margin-top: 10px; }
 .diagnosis_eye_label { width: 35px; display: inline-block; }
@@ -1497,6 +1498,7 @@ h2.admin { background:#666; color:#fff; border:1px solid #999; border-left:none;
 .reportInputs .editdrug { width: 730px; }
 
 div.admin .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px; margin-top: 6px; }
+div.admin .label-nofloat { display:inline-block; width:170px; font-size:15px; padding-bottom: 4px; margin-top: 6px; }
 div.admin .group { background: none !important; }
 
 div.admin input { margin: 2px; }
@@ -1526,5 +1528,130 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_firms ul li .column_name { width: 200px; display: inline-block; }
 #admin_firms ul li .column_subspecialty { width: 200px; display: inline-block; }
 #admin_firms ul li .column_consultant { width: 200px; display: inline-block; }
+
+#admin_contacts ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contacts ul li .column_id { width: 35px; display: inline-block; }
+#admin_contacts ul li .column_title { width: 52px; display: inline-block; }
+#admin_contacts ul li .column_first_name { width: 120px; display: inline-block; }
+#admin_contacts ul li .column_last_name { width: 120px; display: inline-block; }
+#admin_contacts ul li .column_qualifications { width: 200px; display: inline-block; }
+#admin_contacts ul li .column_label { width: 181px; display: inline-block; }
+
+#admin_contact_locations ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contact_locations ul li .column_type { width: 100px; display: inline-block; }
+#admin_contact_locations ul li .column_name { width: 400px; display: inline-block; }
+#admin_contact_locations ul li .column_action { width: 100px; display: inline-block; }
+
+#admin_contact_patients ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contact_patients ul li .column_hos_num { width: 80px; display: inline-block; }
+#admin_contact_patients ul li .column_title { width: 50px; display: inline-block; }
+#admin_contact_patients ul li .column_first_name { width: 250px; display: inline-block; }
+#admin_contact_patients ul li .column_last_name { width: 250px; display: inline-block; }
+
+#admin_institutions ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_institutions ul li .column_id { width: 30px; display: inline-block; }
+#admin_institutions ul li .column_name { width: 596px; display: inline-block; }
+#admin_institutions ul li .column_code { width: 50px; display: inline-block; }
+#admin_institutions ul li .column_shortname { width: 100px; display: inline-block; }
+
+#admin_institution_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_institution_sites ul li .column_id { width: 40px; display: inline-block; }
+#admin_institution_sites ul li .column_code { width: 50px; display: inline-block; }
+#admin_institution_sites ul li .column_name { width: 250px; display: inline-block; }
+#admin_institution_sites ul li .column_address { width: 436px; display: inline-block; }
+
 #div_Firm_consultant_id { margin-top: 2px; }
+
+div.previousOperation .label { display: inline-block; width: 125px; }
+div.previousOperation .data { display: inline-block; }
+div.previousOperation { margin-bottom: 10px; }
+div.previousOperation #previous_operation { width: 439px; }
+input.previous_operation_eye { margin-left: 10px; }
+
+div.patientMedication .label { display: inline-block; width: 125px; }
+div.patientMedication .data { display: inline-block; }
+div.patientMedication { margin-bottom: 10px; }
+div.patientMedication #previous_operation { width: 439px; }
+
+div.familyHistory .label { display: inline-block; width: 125px; }
+div.familyHistory .data { display: inline-block; }
+div.familyHistory { margin-bottom: 10px; }
+div.familyHistory #comments { width: 439px; }
+
 div.episodeMetadata { margin-left: 10px; }
+div.contactLocations { margin-top: 2em; }
+
+#add_contact { margin-top: 1em; }
+#add_contact div { height: 28px; }
+#add_contact .label { display: inline-block; width: 8em; }
+#add_contact .data { display: inline-block; }
+
+#edit_contact { margin-top: 1em; }
+#edit_contact div { height: 28px; }
+#edit_contact .label { display: inline-block; width: 8em; }
+#edit_contact .data { display: inline-block; }
+
+#add_site_form { margin-top: 1em; }
+#add_site_form div { height: 28px; margin-top: 2px; margin-bottom: 2px; }
+#add_site_form .label { display: inline-block; width: 8em; }
+#add_site_form .data { display: inline-block; }
+#newsite_from { width: 23em; }
+#newsite_subject { width: 23em; }
+
+#Medication_start_date { width: 90px; }
+
+body .ui-widget-overlay {
+	background: #000;
+	opacity: 0.5;
+}
+
+.ui-widget-content.dialog {
+	border-color: #999;
+}
+
+.ui-widget.dialog {
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.ui-widget.dialog form div {
+	margin: 10px 0;
+}
+
+.ui-widget.dialog label {
+	display: inline-block;
+	width: 80px;
+	text-align: right;
+}
+
+.ui-widget.dialog label .required {
+	color: #f00;
+	float: right;
+}
+
+.ui-widget.dialog select,
+.ui-widget.dialog input {
+	font-family: Helvetica, Arial, sans-serif;
+	display: inline-block;
+	font-size: 13px;
+}
+
+.ui-widget.dialog .form-actions {
+	margin-left: 85px;
+}
+
+.ui-widget.dialog .form-actions input {
+	box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+	font-size: 13px;
+	font-family: sans-serif;
+	padding: 4px 16px;
+	letter-spacing: 1px;
+	text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
+	background: linear-gradient(#43a844, #55a256);
+	border-bottom: 2px solid #3fa522;
+	color: #fff;
+}
+
+.ui-widget.dialog .form-actions input:hover {
+	background: linear-gradient(#48bd27, #3fa522);
+	border-bottom: 2px solid #569b42;
+}

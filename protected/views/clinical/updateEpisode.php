@@ -56,7 +56,7 @@ if (!empty($episode)) {
 	$form->widget('application.widgets.DiagnosisSelection',array(
 			'field' => 'disorder_id',
 			'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-			'code' => 'OPH',
+			'code' => 130,
 			'layout' => 'episodeSummary',
 	));
 

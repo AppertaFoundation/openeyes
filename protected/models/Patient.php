@@ -67,6 +67,14 @@ class Patient extends BaseActiveRecord {
 		return parent::model($className);
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * Suppress PAS integration
 	 * @return Patient
@@ -109,36 +117,16 @@ class Patient extends BaseActiveRecord {
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
 				'condition' => "legacy=0 or legacy is null",
 			),
-			'addresses' => array(self::HAS_MANY, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'"
-			),
-			// Order: Current addresses; prefer H records for primary address, but fall back to C and then others (T); most recent start date
-			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_start DESC"
-			),
-			// Order: Current addresses; prefer H records for home address, but fall back to C and then others (T); most recent start date
-			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
-			'homeAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'C','H') DESC, date_end DESC, date_start DESC"
-			),
-			// Order: Current addresses; prefer C records for correspond address, but fall back to T and then others (H); most recent start date
-			// Unexpired addresses are preferred, but an expired address will be returned if necessary.
-			'correspondAddress' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Patient'",
-				'order' => "((date_end is NULL OR date_end > NOW()) AND (date_start is NULL OR date_start < NOW())) DESC, FIELD(type,'T','C') DESC, date_end DESC, date_start DESC"
-			),
-			'contact' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Patient'",
-			),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
 			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 			'contactAssignments' => array(self::HAS_MANY, 'PatientContactAssignment', 'patient_id'),
 			'allergies' => array(self::MANY_MANY, 'Allergy', 'patient_allergy_assignment(patient_id, allergy_id)', 'order' => 'name'),
 			'secondarydiagnoses' => array(self::HAS_MANY, 'SecondaryDiagnosis', 'patient_id'),
 			'ethnic_group' => array(self::BELONGS_TO, 'EthnicGroup', 'ethnic_group_id'),
+			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
+			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
+			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
 		);
 	}
 
@@ -162,7 +150,7 @@ class Patient extends BaseActiveRecord {
 	public function search_nr($params)
 	{
 		$criteria=new CDbCriteria;
-		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
+		$criteria->join = "JOIN contact ON contact_id = contact.id";
 		$criteria->compare('LOWER(first_name)',strtolower($params['first_name']),false);
 		$criteria->compare('LOWER(last_name)',strtolower($params['last_name']),false);
 		$criteria->compare('dob',$this->dob,false);
@@ -188,7 +176,7 @@ class Patient extends BaseActiveRecord {
 		}
 
 		$criteria=new CDbCriteria;
-		$criteria->join = "JOIN contact ON contact.parent_id = t.id AND contact.parent_class='Patient'";
+		$criteria->join = "JOIN contact ON contact_id = contact.id";
 		$criteria->compare('LOWER(contact.first_name)',strtolower($params['first_name']), false);
 		$criteria->compare('LOWER(contact.last_name)',strtolower($params['last_name']), false);
 		if (strlen($this->nhs_num) == 10) {
@@ -531,22 +519,10 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getLetterAddress() {
-		$address = $this->addressName;
-
-		if (isset($this->qualifications)) {
-			$address .= ' '.$this->qualifications;
-		}
-
-		$address .= "\n";
-		
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray());
-		}
-		
-		return $address; 
+	public function getSummaryAddress() {
+		return $this->contact->address ? $this->getLetterAddress(array('delimiter'=>'<br/>')) : 'Unknown';
 	}
-	
+
 	public function getAllergiesString() {
 		$allergies = array();
 		foreach($this->allergies as $allergy) {
@@ -688,7 +664,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('patient_id', $this->id);
 		
 		$criteria->join = 'join disorder on t.disorder_id = disorder.id join specialty on disorder.specialty_id = specialty.id';
-		$criteria->compare('specialty.code', 'OPH');
+		$criteria->compare('specialty.code', 130);
 		
 		$criteria->order = 'date asc';
 
@@ -1083,7 +1059,7 @@ class Patient extends BaseActiveRecord {
 		$diagnoses = array();
 
 		foreach (SecondaryDiagnosis::model()->findAll('patient_id=?',array($this->id)) as $i => $sd) {
-			if ($sd->disorder->specialty && $sd->disorder->specialty->code == 'OPH') {
+			if ($sd->disorder->specialty && $sd->disorder->specialty->code == 130) {
 				$diagnoses[] = strtolower(($sd->eye ? $sd->eye->adjective.' ' : '').$sd->disorder->term);
 			}
 		}
@@ -1098,9 +1074,51 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
+	public function addPreviousOperation($operation, $side_id, $date) {
+		if (!$pa = PreviousOperation::model()->find('patient_id=? and operation=? and date=?',array($this->id,$operation,$date))) {
+			$pa = new PreviousOperation;
+			$pa->patient_id = $this->id;
+			$pa->operation = $operation;
+			$pa->date = $date;
+		}
+		$pa->side_id = $side_id ? $side_id : null;
+
+		if (!$pa->save()) {
+			throw new Exception("Unable to save previous operation: ".print_r($pa->getErrors(),true));
+		}
+	}
+
+	public function addFamilyHistory($relative_id,$side_id,$condition_id,$comments) {
+		if (!$fh = FamilyHistory::model()->find('patient_id=? and relative_id=? and side_id=? and condition_id=?',array($this->id,$relative_id,$side_id,$condition_id))) {
+			$fh = new FamilyHistory;
+			$fh->patient_id = $this->id;
+			$fh->relative_id = $relative_id;
+			$fh->side_id = $side_id;
+			$fh->condition_id = $condition_id;
+		}
+
+		$fh->comments = $comments;
+
+		if (!$fh->save()) {
+			throw new Exception("Unable to save family history: ".print_r($fh->getErrors(),true));
+		}
+	}
+
+	public function currentContactLocationIDS() {
+		$ids = array();
+		foreach ($this->contactAssignments as $pca) {
+			$ids[] = $pca->location_id;
+		}
+		return $ids;
+	}
+
+	public function getPrefix() {
+		return 'Patient';
+	}
+
 	public function getEpc() {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
-			if ($user = $episode->firm->getConsultantUser()) {
+			if ($user = $episode->firm->consultant) {
 				return $user->fullName;
 			}
 		}
@@ -1110,5 +1128,22 @@ class Patient extends BaseActiveRecord {
 		if ($episode = $this->getEpisodeForCurrentSubspecialty()) {
 			return $episode->firm->serviceSubspecialtyAssignment->service->name;
 		}
+	}
+
+	public function updateMedication($m, $params) {
+		$m->patient_id = $this->id;
+		$m->drug_id = $params['drug_id'];
+		$m->route_id = $params['route_id'];
+		$m->option_id = $params['option_id'];
+		$m->frequency_id = $params['frequency_id'];
+		$m->start_date = date('Y-m-d',strtotime($params['start_date']));
+
+		if (!$m->save()) {
+			throw new Exception("Unable to save medication: ".print_r($m->getErrors(),true));
+		}
+	}
+
+	public function addMedication($params) {
+		$this->updateMedication(new Medication, $params);
 	}
 }

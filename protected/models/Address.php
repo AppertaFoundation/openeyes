@@ -103,16 +103,6 @@ class Address extends BaseActiveRecord {
 		return (!$this->date_start || strtotime($this->date_start) <= time()) && (!$this->date_end || strtotime($this->date_end) >= time());
 	}
 	
-	/**
-	 * @return string Address as formatted HTML (<br/> separated)
-	 */
-	public function getLetterHtml($include_country=true) {
-		return implode('<br />', $this->getLetterArray($include_country));
-	}
-
-	/**
-	 * @return string Address as text (, separated) 
-	 */
 	public function getLetterLine($include_country=true) {
 		return implode(', ', $this->getLetterArray($include_country));
 	}
@@ -127,10 +117,15 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return array Address as an array 
 	 */
-	public function getLetterArray($include_country=true) {
+	public function getLetterArray($include_country=true, $name=false) {
 		$address = array();
+
+		if ($name) {
+			$address[] = $name;
+		}
+
 		foreach (array('address1', 'address2', 'city', 'county', 'postcode') as $field) {
-			if (!empty($this->$field)) {
+			if (!empty($this->$field) && trim($this->$field) != ',') {
 				$line = $this->$field;
 				if ($field == 'address1') {
 					$line = str_replace(',', '', $line);
@@ -142,10 +137,13 @@ class Address extends BaseActiveRecord {
 				}
 			}
 		}
-		if ($include_country && !empty($this->country->name)) {
-			$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
-			if ($site->institution->address->country_id != $this->country_id) {
-				$address[] = $this->country->name;
+
+		if ($include_country) {
+			if (!empty($this->country->name)) {
+				$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+				if ($site->institution->contact->address->country_id != $this->country_id) {
+					$address[] = $this->country->name;
+				}
 			}
 		}
 		return $address;
@@ -174,9 +172,5 @@ class Address extends BaseActiveRecord {
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	public function getLetterAddress() {
-		return implode("\n",$this->getLetterArray());
 	}
 }

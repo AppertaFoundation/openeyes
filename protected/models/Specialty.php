@@ -95,4 +95,8 @@ class Specialty extends BaseActiveRecord {
 			'criteria'=>$criteria,
 		));
 	}
+
+	public function getMedical() {
+		return in_array($this->specialty_type_id,array(1,2));
+	}
 }

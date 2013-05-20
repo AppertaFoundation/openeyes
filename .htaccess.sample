@@ -4,6 +4,9 @@ IndexIgnore */*
 RewriteEngine On
 #RewriteBase /
 
+# Always rewrite asset requests
+RewriteRule ^file/.*$ index.php [L]
+
 # Things not to rewrite
 RewriteCond %{REQUEST_URI} !(\.gif$)|(\.jpg$)|(\.png$)|(\.css$)|(\.js$)|(\.ico$)
 

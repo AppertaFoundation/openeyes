@@ -57,8 +57,9 @@ class Event extends BaseActiveRecord
 	 */
 	
 	public function defaultScope() {
+		$table_alias = $this->getTableAlias(false,false);
 		return array(
-			'condition' => 'deleted=0',
+			'condition' => $table_alias.'.deleted = 0',
 		);
 	}
 
@@ -226,11 +227,21 @@ class Event extends BaseActiveRecord
 
 	// Only the event creator can delete the event, and only 24 hours after its initial creation
 	public function canDelete() {
+		if (!BaseController::checkUserLevel(3)) return false;
+
 		if ($this->episode->patient->date_of_death) return false;
 
 		$admin = User::model()->find('username=?',array('admin'));	 // these two lines should be replaced once we have rbac
 		if ($admin->id == Yii::app()->session['user']->id) {return true;}
 		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
+	}
+	
+	public function delete() {
+		
+		// Delete related
+		EventIssue::model()->deleteAll('event_id = ?', array($this->id));
+		
+		parent::delete();
 	}
 	
 	/*

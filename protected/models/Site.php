@@ -23,7 +23,6 @@
  * The followings are the available columns in table 'site':
  * @property string $id
  * @property string $name
- * @property string $code
  * @property string $short_name
  * @property string $address1
  * @property string $address2
@@ -55,6 +54,14 @@ class Site extends BaseActiveRecord
 		return 'site';
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -76,15 +83,17 @@ class Site extends BaseActiveRecord
 	 */
 	public function relations()
 	{
+		$replyto = AddressType::model()->find('name=?',array('Reply to'));
+
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
 			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
 			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
-			'replyto' => array(self::HAS_ONE, 'Contact', 'parent_id',
-				'on' => "parent_class = 'Site_ReplyTo'",
-			),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
+			'import' => array(self::HAS_ONE, 'ImportSite', 'site_id'),
 		);
 	}
 
@@ -96,6 +105,7 @@ class Site extends BaseActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => 'Name',
+			'institution_id' => 'Institution',
 		);
 	}
 
@@ -193,107 +203,21 @@ class Site extends BaseActiveRecord
 		return $site;
 	}
 	
-	public function getLetterHtml() {
-		$address = array();
-		foreach (array('name', 'address1', 'address2', 'address3', 'postcode') as $field) {
-			if (!empty($this->$field)) {
-				$address[] = CHtml::encode($this->$field);
-			}
-		}
-		return implode('<br />', $address);
-	}
-
-	public function getLetterArray($include_name=false,$encode=true,$include_institution_name=false) {
-		$fields = $include_name ? array('name') : array();
-
-		$address = array();
-
-		if ($include_institution_name) {
-			if ($this->institution->short_name) {
-				$address[] = $this->institution->short_name.' at '.$this->name;
-				if ($include_name) {
-					array_shift($fields);
-				}
-			} else {
-				$address[] = $this->institution->name;
+	public function getCorrespondenceName() {
+		if ($this->institution->short_name) {
+			if (!strstr($this->name,$this->institution->short_name)) {
+				return $this->institution->short_name.' at '.$this->name;
 			}
 		}
 
-		foreach (array_merge($fields,array('address1', 'address2', 'address3', 'postcode')) as $field) {
-			if (!empty($this->$field)) {
-				if ($field == 'address1') {
-					if ($encode) {
-						$address[] = CHtml::encode(str_replace(',','',$this->$field));
-					} else {
-						$address[] = str_replace(',','',$this->$field);
-					}
-				} else {
-					if ($encode) {
-						$address[] = CHtml::encode($this->$field);
-					} else {
-						$address[] = $this->$field;
-					}
-				}
-			}
-		}
-		return $address;
-	}
-
-	public function getLetterAddress($include_institution_name=false,$encode=true) {
-		if (!$include_institution_name) {
-			$address = "$this->name\n";
-		} else {
-			$address = '';
-		}
-
-		return $address . implode("\n",$this->getLetterArray(false,$encode,$include_institution_name));
-	}
-
-	public function getReplyToAddress() {
-		if (!$contact = $this->replyto) return '';
-
-		$fields = array();
-		if ($contact->first_name) {
-			$fields[] = $contact->first_name;
-		}
-		if ($contact->last_name) {
-			$fields[] = $contact->last_name;
-		}
-		if ($address = $contact->address) {
-			foreach (array('address1','address2','city','county','postcode') as $field) {
-				if ($address->{$field}) {
-					$fields[] = $address->{$field};
-				}
-			}
-		}
-		return implode(', ',$fields);
-	}
-
-	public function getCorrespondenceSiteName() {
-		if (!($contact = $this->replyto) || !$contact->nick_name) {
-			if ($this->institution->short_name) {
-				if (!strstr($this->name,$this->institution->short_name)) {
-					return $this->institution->short_name.' at '.$this->name;
-				}
-			}
+		// this avoids duplicating lines on the addresses
+		if ($this->institution->name == $this->name) {
 			return $this->name;
 		}
-		return $contact->nick_name;
+		return array($this->institution->name,$this->name);
 	}
 
-	public static function getListByFirm($firmId) {
-		$sites = Yii::app()->db->createCommand()
-			->selectDistinct('site.id, site.short_name')
-			->from('site')
-			->join('ophtroperationbooking_operation_theatre t', 'site.id = t.site_id')
-			->join('ophtroperationbooking_operation_session s', 's.theatre_id = t.id')
-			->where('s.firm_id = :id', array(':id' => $firmId))
-			->order('site.name')
-			->queryAll();
-		$data = array();
-		foreach ($sites as $site) {
-			$data[$site['id']] = $site['short_name'];
-		}
-		return $data;
+	public function getShortname() {
+		return $this->short_name ? $this->short_name : $this->name;
 	}
 }

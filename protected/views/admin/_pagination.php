@@ -17,24 +17,55 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$pagination_max_links = 22;
+
+$_pages = array();
+
+if ($pages >$pagination_max_links) {
+	for ($i=$page;$i<$page+($pagination_max_links/2);$i++) {
+		$_pages[] = $i;
+	}
+	for ($i=$pages-($pagination_max_links/2);$i<=$pages;$i++) {
+		$_pages[] = $i;
+	}
+} else {
+	for ($i=0;$i<$pages;$i++) {
+		$_pages[] = $i+1;
+	}
+}
 ?>
 <?php if ($page > 1) {?>
-	<a href="<?php echo Yii::app()->createUrl($prefix.($page-1))?>">&laquo; back</a>
+	<?php if (isset($url)) {
+		$uri = str_replace('{{PAGE}}',$page-1,$url);
+	} else {
+		$uri = $prefix.($page-1);
+	}?>
+	<a href="<?php echo Yii::app()->createUrl($uri)?>">&laquo; back</a>
 	&nbsp;
 <?php }else{?>
 	&laquo; back
 	&nbsp;
 <?php }?>
-<?php for ($i=1;$i<=$pages;$i++) {?>
+<?php foreach ($_pages as $i) {?>
 	<?php if ($i == $page) {?>
 		<span class="selected"><?php echo $i?></span>
-	<?php }else{?>
-		<a href="<?php echo Yii::app()->createUrl($prefix.$i)?>"><?php echo $i?></a>
+	<?php }else{
+		if (isset($url)) {
+			$uri = str_replace('{{PAGE}}',$i,$url);
+		} else {
+			$uri = $prefix.$i;
+		}?>
+		<a href="<?php echo Yii::app()->createUrl($uri)?>"><?php echo $i?></a>
 	<?php }?>
 	&nbsp;
 <?php }?>
-<?php if ($page < $pages) {?>
-	<a href="<?php echo Yii::app()->createUrl($prefix.($page+1))?>">next &raquo;</a>
+<?php if ($page < $pages) {
+	if (isset($url)) {
+		$uri = str_replace('{{PAGE}}',$page+1,$url);
+	} else {
+		$uri = $prefix.($page+1);
+	}?>
+	<a href="<?php echo Yii::app()->createUrl($uri)?>">next &raquo;</a>
 	&nbsp;
 <?php }else{?>
 	next &raquo;

@@ -50,6 +50,14 @@ class Institution extends BaseActiveRecord
 		return 'institution';
 	}
 
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
+	}
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -58,10 +66,10 @@ class Institution extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('name, code', 'required'),
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, code', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,9 +81,7 @@ class Institution extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'address' => array(self::HAS_ONE, 'Address', 'parent_id',
-				'on' => "parent_class = 'Institution'",
-			),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'sites' => array(self::HAS_MANY, 'Site', 'institution_id',
 				'order' => 'name asc',
 			),
@@ -108,31 +114,5 @@ class Institution extends BaseActiveRecord
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	public function getLetterAddress() {
-		$address = "$this->name\n";
-
-		if ($this->address) {
-			$address .= implode("\n",$this->address->getLetterArray());
-		}
-
-		return $address;
-	}
-
-	public function getLetterArray() {
-		return array_merge(array($this->name),$this->address->getLetterArray());
-
-		$address = array();
-		foreach (array('address1', 'address2', 'address3', 'postcode') as $field) {
-			if (!empty($this->$field)) {
-				if ($field == 'address1') {
-					$address[] = CHtml::encode(str_replace(',','',$this->$field));
-				} else {
-					$address[] = CHtml::encode($this->$field);
-				}
-			}
-		}
-		return $address;
 	}
 }

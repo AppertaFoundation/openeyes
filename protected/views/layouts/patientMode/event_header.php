@@ -42,6 +42,7 @@
 	<?php $cs->registerCSSFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen')?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/jquery.watermark.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/uri-1.10.2.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/waypoints-sticky.min.js'))?>
 	<?php $cs->registerScriptFile(Yii::app()->createUrl('js/libs/modernizr-2.0.6.min.js'))?>
@@ -73,13 +74,13 @@
 </head>
 
 <body>
-	<?php echo $this->renderPartial('//base/_banner_watermark',array())?>
-	<?php echo $this->renderPartial('//base/_debug',array())?>
+	<?php $this->renderPartial('//base/_banner_watermark',array())?>
+	<?php $this->renderPartial('//base/_debug',array())?>
 	<div id="container">
 		<div id="header" class="clearfix">
-			<?php echo $this->renderPartial('//base/_brand'); ?>
-			<?php echo $this->renderPartial('//base/_form', array()); ?>
-			<?php echo $this->renderPartial('//patient/_patient_id', array()); ?>
+			<?php $this->renderPartial('//base/_brand'); ?>
+			<?php $this->renderPartial('//base/_form', array()); ?>
+			<?php $this->renderPartial('//patient/_patient_id', array()); ?>
 		</div> <!-- #header -->
 
 		<div id="content">

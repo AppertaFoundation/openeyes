@@ -16,9 +16,10 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-$this->pageTitle=Yii::app()->name . ' - Login';
-$this->layout = 'simple';
+?>
+<?php
+	$this->pageTitle=Yii::app()->name . ' - Login';
+	$this->layout = 'simple';
 ?>
 		<h2 class="alert">Please login</h2>
 
@@ -44,12 +45,6 @@ $this->layout = 'simple';
 				<?php if (Yii::app()->params['auth_source'] == 'BASIC') {?>
 					<a href="#" tabindex="6"><span class="small">Forgotten your password?</span></a>
 				<?php }?>
-			</div>
-
-			<div class="loginRow bigInput">
-				<?php echo CHtml::activeLabel($model,'siteId', array('label'=>'Site:')); ?>
-				<?php echo $form->dropDownList($model, 'siteId', $sites, array('tabindex' => 3)); ?>
-				<?php echo $form->error($model,'siteId'); ?>
 			</div>
 
 			<div class="row">

@@ -247,6 +247,7 @@ class UserIdentity extends CUserIdentity
 
 		reset($firms);
 
+		// Select firm
 		if ($user->last_firm_id) {
 			$app->session['selected_firm_id'] = $user->last_firm_id;
 		} else if (count($user->firms)) {
@@ -255,12 +256,17 @@ class UserIdentity extends CUserIdentity
 			$app->session['selected_firm_id'] = $userFirms[0]->id;
 		} else {
 			// The user doesn't have firms of their own to select from so we select
-			//	one arbitrarily
+			// one arbitrarily
 			$app->session['selected_firm_id'] = key($firms);
 		}
 
-		if ($site = Site::model()->findByPk(@$_POST['LoginForm']['siteId'])) {
-			$app->session['selected_site_id'] = $site->id;
+		// Select site
+		if ($user->last_site_id) {
+			$app->session['selected_site_id'] = $user->last_site_id;
+		} else if($default_site = Site::model()->getDefaultSite()) {
+			$app->session['selected_site_id'] = $default_site->id;
+		} else {
+			throw new CException('Cannot find default site');
 		}
 
 		$user->audit('login','login-successful',"User ".strtoupper($this->username)." logged in",true);

@@ -46,7 +46,7 @@
 								<span class="column_pas_code"><?php echo $firm->pas_code?>&nbsp;</span>
 								<span class="column_name"><?php echo $firm->name?>&nbsp;</span>
 								<span class="column_subspecialty"><?php echo $firm->serviceSubspecialtyAssignment->subspecialty->name?>&nbsp;</span>
-								<span class="column_consultant"><?php echo $firm->getConsultantUser() ? $firm->getConsultantUser()->fullName : 'None'?></span>
+								<span class="column_consultant"><?php echo $firm->consultant ? $firm->consultant->fullName : 'None'?></span>
 							</li>
 						<?php }?>
 					</div>

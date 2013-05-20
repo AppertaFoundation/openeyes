@@ -63,7 +63,7 @@
 								<?php $form->widget('application.widgets.DiagnosisSelection',array(
 										'field' => 'ophthalmic_disorder_id',
 										'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
-										'code' => 'OPH',
+										'code' => 130,
 										'default' => false,
 										'layout' => 'patientSummary',
 										'loader' => 'add_ophthalmic_diagnosis_loader',
@@ -87,10 +87,9 @@
 									<?php }?>
 								</div>
 	
+								<?php $this->renderPartial('_fuzzy_date')?>
 								<div class="ophthalmic_diagnoses_form_errors"></div>
 
-								<?php $this->renderPartial('_diagnosis_date')?>
-	
 								<div align="right">
 									<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_ophthalmic_diagnosis_loader" style="display: none;" />
 									<button class="classy green mini btn_save_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>

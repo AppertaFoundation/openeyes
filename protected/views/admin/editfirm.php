@@ -41,7 +41,7 @@
 			<div id="div_Firm_consultant_id" class="eventDetail">
 				<div class="label">Consultant:</div>
 				<div class="data">
-					<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->getConsultantUser() ? $firm->getConsultantUser()->id : null,CHtml::listData(User::model()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
+					<?php echo CHtml::dropDownList('Firm[consultant_id]',$firm->consultant_id,CHtml::listData(User::model()->findAll(array('order'=>'first_name,last_name')),'id','fullName'),array('empty'=>'- None -'))?>
 				</div>
 			</div>
 			<?php $this->endWidget()?>
