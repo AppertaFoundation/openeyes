@@ -331,7 +331,7 @@ class User extends BaseActiveRecord
 	 */
 	public static function getSurgeons() {
 		$criteria = new CDbCriteria;
-		$criteria->compare('is_doctor',1);
+		$criteria->compare('is_surgeon',1);
 		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
 
