@@ -24,10 +24,23 @@ class ModuleAdmin {
 	static public function getAll() {
 		$module_admin = array();
 
+		$module_classes = array();
+
 		foreach (EventType::model()->findAll(array('order'=>'name')) as $event_type) {
 			foreach (Yii::app()->params['admin_menu'] as $item => $uri) {
 				if (preg_match('/^\/'.$event_type->class_name.'\//',$uri)) {
 					$module_admin[$event_type->name][$item] = $uri;
+				}
+			}
+			$module_classes[] = $event_type->class_name;
+		}
+
+		foreach (Yii::app()->modules as $module => $stuff) {
+			if (!in_array($module,$module_classes)) {
+				foreach (Yii::app()->params['admin_menu'] as $item => $uri) {
+					if (preg_match('/^\/'.$module.'\//',$uri)) {
+						$module_admin[$module][$item] = $uri;
+					}
 				}
 			}
 		}
