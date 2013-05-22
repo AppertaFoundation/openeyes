@@ -73,7 +73,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password, is_clinical, is_consultant, is_surgeon', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -333,7 +333,7 @@ class User extends BaseActiveRecord
 	 */
 	public static function getSurgeons() {
 		$criteria = new CDbCriteria;
-		$criteria->compare('is_doctor',1);
+		$criteria->compare('is_surgeon',1);
 		$criteria->compare('active',1);
 		$criteria->order = 'last_name,first_name asc';
 
