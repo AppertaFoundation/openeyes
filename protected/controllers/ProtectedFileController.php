@@ -24,7 +24,7 @@ class ProtectedFileController extends BaseController {
 				// Level 3 or above can do anything
 				array('allow',
 						'actions' => array('download'),
-						'expression' => 'BaseController::checkUserLevel(3)',
+						'expression' => 'BaseController::checkUserLevel(4)',
 				),
 				array('deny'),
 		);

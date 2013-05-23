@@ -50,7 +50,7 @@
 		<?php }?>
 	</div>
 </div>
-<?php $episodes_link = (BaseController::checkUserLevel(3)) ? 'Create or View' : 'View';  ?>
+<?php $episodes_link = (BaseController::checkUserLevel(4)) ? 'Create or View' : 'View';  ?>
 <p><?php echo CHtml::link('<span class="aPush">'.$episodes_link.' Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
 <?php
 try {

@@ -227,7 +227,7 @@ class Event extends BaseActiveRecord
 
 	// Only the event creator can delete the event, and only 24 hours after its initial creation
 	public function canDelete() {
-		if (!BaseController::checkUserLevel(3)) return false;
+		if (!BaseController::checkUserLevel(4)) return false;
 
 		if ($this->episode->patient->date_of_death) return false;
 

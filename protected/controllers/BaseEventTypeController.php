@@ -43,10 +43,10 @@ class BaseEventTypeController extends BaseController
 	 * @param EventType $event_type
 	 */
 	public function checkEventAccess($event_type) {
-		if(BaseController::checkUserLevel(4)) {
+		if(BaseController::checkUserLevel(5)) {
 			return true;
 		}
-		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+		if(BaseController::checkUserLevel(4) && $event_type->class_name != 'OphDrPrescription') {
 			return true;
 		}
 		return false;
@@ -61,7 +61,7 @@ class BaseEventTypeController extends BaseController
 			),
 			// Level 3 or above can do anything
 			array('allow',
-				'expression' => 'BaseController::checkUserLevel(3)',
+				'expression' => 'BaseController::checkUserLevel(4)',
 			),
 			array('deny'),
 		);
@@ -72,7 +72,7 @@ class BaseEventTypeController extends BaseController
 	 * @return boolean
 	 */
 	public function canPrint() {
-		return BaseController::checkUserLevel(3);
+		return BaseController::checkUserLevel(4);
 	}
 	
 	public function actionIndex()
@@ -368,7 +368,7 @@ class BaseEventTypeController extends BaseController
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
-			if (!BaseController::checkUserLevel(3) || !$this->event->episode->firm) {
+			if (!BaseController::checkUserLevel(4) || !$this->event->episode->firm) {
 				$this->editable = false;
 			} else {	
 				if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
