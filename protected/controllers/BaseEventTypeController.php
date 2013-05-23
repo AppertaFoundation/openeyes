@@ -72,7 +72,7 @@ class BaseEventTypeController extends BaseController
 	 * @return boolean
 	 */
 	public function canPrint() {
-		return BaseController::checkUserLevel(4);
+		return BaseController::checkUserLevel(3);
 	}
 	
 	public function actionIndex()
