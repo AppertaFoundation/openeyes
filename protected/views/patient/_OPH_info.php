@@ -42,7 +42,7 @@
 								</tbody>
 							</table>
 							
-							<?php if (BaseController::checkUserLevel(3)) {?>
+							<?php if (BaseController::checkUserLevel(4)) {?>
 								<div align="center" style="margin-top:10px;">
 									<form><button id="btn-edit_oph_info" class="classy green mini" type="button"><span class="button-span button-span-green">Edit</span></button></form>
 								</div>

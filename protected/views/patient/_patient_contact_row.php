@@ -29,7 +29,7 @@
 		<?php echo $pca->location->contact->label->name?>
 	</td>
 	<td>
-		<?php if (BaseController::checkUserLevel(3)) {?>
+		<?php if (BaseController::checkUserLevel(4)) {?>
 			<a class="editContact small" rel="<?php echo $pca->location?>" href="#">
 				<strong>Edit</strong>
 			</a>

@@ -51,7 +51,7 @@
 					<?php echo CHtml::passwordField('User[password_repeat]','')?>
 				</div>
 			</div>
-			<?php echo $form->dropDownList($user,'access_level',array(0=>'No access',1=>'Patient demographics',2=>'Read only',3=>'Edit but not prescribe',4=>'Full'))?>
+			<?php echo $form->dropDownList($user,'access_level',array(0=>'No access',1=>'Patient demographics',2=>'Read only',3=>'Read only and print',4=>'Edit but not prescribe',5=>'Full'))?>
 			<?php $this->endWidget()?>
 		</div>
 	</div>
