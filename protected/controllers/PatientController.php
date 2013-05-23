@@ -1418,8 +1418,7 @@ class PatientController extends BaseController
 	public function actionSendSiteMessage() {
 		$message = Yii::app()->mailer->newMessage();
 		$message->setFrom(array($_POST['newsite_from'] => User::model()->findByPk(Yii::app()->user->id)->fullName));
-		//$message->setTo(array(Yii::app()->params['helpdesk_email']));
-		$message->setTo(array('mark.wadham@openeyes.org.uk'));
+		$message->setTo(array(Yii::app()->params['helpdesk_email']));
 		$message->setSubject($_POST['newsite_subject']);
 		$message->setBody($_POST['newsite_message']);
 		echo Yii::app()->mailer->sendMessage($message) ? '1' : '0';
