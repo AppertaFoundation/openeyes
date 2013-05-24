@@ -179,7 +179,7 @@ class PatientController extends BaseController
 			$this->redirect('/');
 		}
 		
-		$search_terms = CHtml::encodeArray($search_terms);
+		 $search_terms = CHtml::encodeArray($search_terms);
 		
 		switch (@$_GET['sort_by']) {
 			case 0:
@@ -206,6 +206,7 @@ class PatientController extends BaseController
 			default:
 				$sort_by = 'hos_num*1';
 		}
+                
 		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 		$page_num = (integer)@$_GET['page_num'];
 		$page_size = 20;
@@ -218,12 +219,12 @@ class PatientController extends BaseController
 			'pageSize' => $page_size,
 			'sortBy' => $sort_by,
 			'sortDir'=> $sort_dir,
-			'first_name' => $search_terms['first_name'],
-			'last_name' => $search_terms['last_name'],
+			'first_name' => CHtml::decode($search_terms['first_name']),
+			'last_name' => CHtml::decode($search_terms['last_name']),
 		));
 		$nr = $model->search_nr(array(
-			'first_name' => $search_terms['first_name'],
-			'last_name' => $search_terms['last_name'],
+			'first_name' => CHtml::decode($search_terms['first_name']),
+			'last_name' => CHtml::decode($search_terms['last_name']),
 		));
 
 		if ($nr == 0) {
