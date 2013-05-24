@@ -49,6 +49,7 @@ $(document).ready(function(){
 			wb.children('.events').slideUp('fast');
 			sp.removeClass('hide');
 			sp.addClass('show');
+                        $('.minievents').show();
 			$.ajax({
 				'type': 'GET',
 				'url': '/patient/hideepisode?episode_id='+episode_id,
@@ -59,6 +60,7 @@ $(document).ready(function(){
 			wb.children('.events').slideDown('fast');
 			sp.removeClass('show');
 			sp.addClass('hide');
+                        $('.minievents').hide();
 			$.ajax({
 				'type': 'GET',
 				'url': '/patient/showepisode?episode_id='+episode_id,

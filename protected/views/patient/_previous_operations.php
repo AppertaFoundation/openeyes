@@ -27,7 +27,7 @@
 								</tbody>
 							</table>
 
-							<?php if (BaseController::checkUserLevel(3)) {?>
+							<?php if (BaseController::checkUserLevel(4)) {?>
 								<div align="center" style="margin-top:10px;">
 									<form><button id="btn-add_previous_operation" class="classy green mini" type="button"><span class="button-span button-span-green">Add Previous operation</span></button></form>
 								</div>
