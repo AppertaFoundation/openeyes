@@ -98,9 +98,9 @@
 
                         <!-- shows miniicons for the events --> 
                             <div class = "minievents" style = "display : none"> 
-                                <?php foreach ($episode->events as $event) { 
-                                	$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
-                                	?>
+                                 <span	<?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
+                                <?php foreach ($episode->events as $event) {
+                                	$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                                     <a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">                                   
                                             <?php
                                             if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
@@ -112,6 +112,7 @@
                                             <img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" /> 
                                     </a>
                                 <?php } ?>
+                                 </span>
                             </div> 
                         <!-- end shows miniicons for the events -->
 
