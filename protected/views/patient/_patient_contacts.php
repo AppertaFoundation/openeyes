@@ -29,7 +29,7 @@
 					<th width="33%">Name</th>
 					<th>Location</th>
 					<th>Type</th>
-					<?php if (BaseController::checkUserLevel(3)) {?><th colspan="2"></th><?php }?>
+					<?php if (BaseController::checkUserLevel(4)) {?><th colspan="2"></th><?php }?>
 				</tr>
 			</thead>
 			<tbody id="patient_contacts">
@@ -39,7 +39,7 @@
 			</tbody>
 		</table>
 	</div>
-	<?php if (BaseController::checkUserLevel(3)) {?>
+	<?php if (BaseController::checkUserLevel(4)) {?>
 	<div class="data_tow">
 		<span>Add contact:</span>
 		<?php
@@ -125,7 +125,7 @@
 		<div style="display: inline-block; width: 15px;">
 			<img src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" class="loader" alt="loading..." style="display: none;" />
 		</div>
-		<?php if (BaseController::checkUserLevel(3)) {?>
+		<?php if (BaseController::checkUserLevel(4)) {?>
 			&nbsp;
 			<button id="btn-add-contact" class="classy green mini" type="button" style="display: none;"><span class="button-span button-span-green">Add</span></button>
 			<div id="add_contact" style="display: none;">

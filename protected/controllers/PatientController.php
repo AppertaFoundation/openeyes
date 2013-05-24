@@ -39,10 +39,10 @@ class PatientController extends BaseController
 	 * @param EventType $event_type
 	 */
 	public function checkEventAccess($event_type) {
-		if(BaseController::checkUserLevel(4)) {
+		if(BaseController::checkUserLevel(5)) {
 			return true;
 		}
-		if(BaseController::checkUserLevel(3) && $event_type->class_name != 'OphDrPrescription') {
+		if(BaseController::checkUserLevel(4) && $event_type->class_name != 'OphDrPrescription') {
 			return true;
 		}
 		return false;
@@ -62,7 +62,7 @@ class PatientController extends BaseController
 			),
 			// Level 3 or above can do anything
 			array('allow',
-				'expression' => 'BaseController::checkUserLevel(3)',
+				'expression' => 'BaseController::checkUserLevel(4)',
 			),
 			// Deny anything else (default rule allows authenticated users)
 			array('deny'),
@@ -370,7 +370,7 @@ class PatientController extends BaseController
 						'active' => true,
 				)
 		);
-		if (BaseController::checkUserLevel(3) && $this->episode->editable
+		if (BaseController::checkUserLevel(4) && $this->episode->editable
 				&& $this->firm->serviceSubspecialtyAssignment->subspecialty_id == $this->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			$this->event_tabs[] = array(
 					'label' => 'Edit',
@@ -1236,7 +1236,7 @@ class PatientController extends BaseController
 	}
 
 	public function actionAddContact() {
-		if (BaseController::checkUserLevel(3)) {
+		if (BaseController::checkUserLevel(4)) {
 			if (@$_POST['site_id']) {
 				if (!$site = Site::model()->findByPk($_POST['site_id'])) {
 					throw new Exception("Site not found: ".$_POST['site_id']);
@@ -1418,8 +1418,7 @@ class PatientController extends BaseController
 	public function actionSendSiteMessage() {
 		$message = Yii::app()->mailer->newMessage();
 		$message->setFrom(array($_POST['newsite_from'] => User::model()->findByPk(Yii::app()->user->id)->fullName));
-		//$message->setTo(array(Yii::app()->params['helpdesk_email']));
-		$message->setTo(array('mark.wadham@openeyes.org.uk'));
+		$message->setTo(array(Yii::app()->params['helpdesk_email']));
 		$message->setSubject($_POST['newsite_subject']);
 		$message->setBody($_POST['newsite_message']);
 		echo Yii::app()->mailer->sendMessage($message) ? '1' : '0';

@@ -76,13 +76,8 @@ class OEConfig {
 							),
 					);
 				}
-				
-				if(file_exists($modules_path . $module_name . "/config/common.php")) {
-					$configs['modules'][] = include $modules_path . $module_name . "/config/common.php";
-				}
-				if(file_exists($modules_path . $module_name . "/config/$environment.php")) {
-					$configs['modules'][] = include $modules_path . $module_name . "/config/$environment.php";
-				}
+
+				$configs = OEConfig::importModuleConfig($modules_path,$module_name,$environment,$configs);
 			}
 		}
 
@@ -100,5 +95,21 @@ class OEConfig {
 
 		return $merged_config;
 	}
-	
+
+	static function importModuleConfig($modules_path,$module_name,$environment,$configs) {
+		foreach (array($modules_path.$module_name."/config/common.php",$modules_path.$module_name."/config/$environment.php") as $config_file) {
+			if (file_exists($config_file)) {
+				$config = include $config_file;
+				$configs['modules'][] = $config;
+
+				if (!empty($config['modules'])) {
+					foreach ($config['modules'] as $module_name2) {
+						$configs = OEConfig::importModuleConfig($modules_path,$module_name2,$environment,$configs);
+					}
+				}
+			}
+		}
+
+		return $configs;
+	}
 }

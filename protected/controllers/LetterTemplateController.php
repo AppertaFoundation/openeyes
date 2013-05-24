@@ -31,7 +31,7 @@ class LetterTemplateController extends BaseController
 			),
 			// Level 3 or above can do anything
 			array('allow',
-				'expression' => 'BaseController::checkUserLevel(3)',
+				'expression' => 'BaseController::checkUserLevel(4)',
 			),
 			// Deny anything else (default rule allows authenticated users)
 			array('deny'),
