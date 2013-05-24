@@ -41,7 +41,7 @@ class Helper {
 		}
 		$list = ($fields) ? $fields : array_keys($data);
 		foreach($list as $key) {
-			if(isset($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
+			if(isset($data[$key]) && is_string($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
 				$data[$key] = date('Y-m-d',strtotime($data[$key]));
 			}
 		}

@@ -138,7 +138,7 @@ class Sequence extends BaseActiveRecord {
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('theatre_id',$this->theatre_id,true);
+		$criteria->compare('theatre_id',$this->theatre_id);
 		$criteria->compare('start_date',$this->start_date,true);
 		$criteria->compare('start_time',$this->start_time,true);
 		$criteria->compare('end_time',$this->end_time,true);
@@ -233,17 +233,6 @@ class Sequence extends BaseActiveRecord {
 			$this->end_date = date('Y-m-d', strtotime($this->end_date));
 		}
 
-		if (!empty($_POST['Sequence']['week_selection'])) {
-			$selection = 0;
-			foreach ($_POST['Sequence']['week_selection'] as $value) {
-				$selection += $value;
-			}
-			$this->week_selection = $selection;
-			$this->repeat_interval = self::FREQUENCY_MONTHLY;
-		} else {
-			$this->week_selection = 0;
-		}
-
 		return parent::beforeSave();
 	}
 
@@ -278,6 +267,17 @@ class Sequence extends BaseActiveRecord {
 
 		$weekday = date('N', $startTimestamp);
 		$endTimeLimit = strtotime('+12 weeks', $startTimestamp);
+
+		if (!empty($_POST['Sequence']['week_selection'])) {
+			$selection = 0;
+			foreach ($_POST['Sequence']['week_selection'] as $value) {
+				$selection += $value;
+			}
+			$this->week_selection = $selection;
+			$this->repeat_interval = self::FREQUENCY_MONTHLY;
+		} else {
+			$this->week_selection = 0;
+		}
 
 		if (empty($this->week_selection)) {
 			$interval = $this->getFrequencyInteger($this->repeat_interval, $endTimestamp);
