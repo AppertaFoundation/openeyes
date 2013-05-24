@@ -98,7 +98,9 @@
 
                         <!-- shows miniicons for the events --> 
                             <div class = "minievents" style = "display : none"> 
-                                <?php foreach ($episode->events as $event) { ?> 
+                                <?php foreach ($episode->events as $event) { 
+                                	$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
+                                	?>
                                     <a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">                                   
                                             <?php
                                             if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
