@@ -97,7 +97,7 @@
 
 
                         <!-- shows miniicons for the events --> 
-                            <div class = "minievents" style = "display : none"> 
+                            <div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>> 
                                 <?php foreach ($episode->events as $event) {
                                 	$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
                                     <a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">                                   
