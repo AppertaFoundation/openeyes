@@ -34,6 +34,7 @@ $(document).ready(function(){
 	});
 
 	// show hide
+        
 	$('.sprite.showhide2').click(function(e){
 		var episode_id = $(this).parent().parent().prev('input').val();
 		if (episode_id == undefined) {
