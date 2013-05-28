@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -31,9 +31,9 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.DropDownListNoPost',array('id' => $id, 'options' => $options, 'selected_value' => $selected_value, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function radioButtons($element,$field,$table,$selected_item=null, $maxwidth=false, $hidden=false, $no_element=false) {
+	public function radioButtons($element,$field,$table,$selected_item=null, $maxwidth=false, $hidden=false, $no_element=false, $label_above=false, $htmlOptions=array()) {
 		$data = $element->getFormOptions($table);
-		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden, 'no_element' => $no_element));
+		$this->widget('application.widgets.RadioButtonList',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'data' => $data, 'selected_item' => $selected_item, 'maxwidth' => $maxwidth, 'hidden' => $hidden, 'no_element' => $no_element, 'label_above' => $label_above, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function radioBoolean($element,$field,$htmlOptions=array()) {
@@ -64,8 +64,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.TextField',array('element' => $element, 'name' => get_class($element)."[$field]", 'field' => $field, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function checkBox($element, $field, $options=false) {
-		$this->widget('application.widgets.CheckBox',array('element' => $element, 'field' => $field, 'options' => $options));
+	public function checkBox($element, $field, $options=false, $htmlOptions=array()) {
+		$this->widget('application.widgets.CheckBox',array('element' => $element, 'field' => $field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function checkBoxArray($element,$labeltext,$fields, $options=false) {
@@ -84,8 +84,8 @@ class BaseEventTypeCActiveForm extends CActiveForm
 		$this->widget('application.widgets.MultiDropDownTextSelection', array('element' => $element, 'field' => $text_field, 'options' => $options, 'htmlOptions' => $htmlOptions));
 	}
 
-	public function hiddenInput($element, $field, $value=false) {
-		$this->widget('application.widgets.HiddenField', array('element' => $element, 'field' => $field, 'value' => $value));
+	public function hiddenInput($element, $field, $value=false, $htmlOptions=array()) {
+		$this->widget('application.widgets.HiddenField', array('element' => $element, 'field' => $field, 'value' => $value, 'htmlOptions' => $htmlOptions));
 	}
 
 	public function slider($element, $field, $options) {

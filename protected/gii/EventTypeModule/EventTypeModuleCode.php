@@ -540,13 +540,10 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	}
 
 	public function extraElementFieldWrangling_EyeDraw($elements, $number, $field_number, $fields_value) {
-		$elements[$number]['fields'][$field_number]['eyedraw_class'] = @$_POST['eyedrawClass'.$number.'Field'.$field_number];
 		$elements[$number]['fields'][$field_number]['eyedraw_size'] = @$_POST['eyedrawSize'.$number.'Field'.$field_number];
+		$elements[$number]['fields'][$field_number]['eyedraw_toolbar_doodles'] = @$_POST['eyedrawToolbarDoodle'.$number.'Field'.$field_number];
+		$elements[$number]['fields'][$field_number]['eyedraw_default_doodles'] = @$_POST['eyedrawDefaultDoodle'.$number.'Field'.$field_number];
 		$elements[$number]['add_selected_eye'] = true;
-
-		if (@$_POST['eyedrawExtraReport'.$number.'Field'.$field_number]) {
-			$elements[$number]['fields'][$field_number]['extra_report'] = true;
-		}
 
 		return $elements;
 	}
@@ -787,15 +784,15 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 		switch ($field['type']) {
 			case 'Textbox':
 				$size = $field['textbox_max_length'] ? $field['textbox_max_length'] : '255';
-				return "varchar($size) DEFAULT \'\'";
+				return "varchar($size) COLLATE utf8_bin DEFAULT \'\'";
 			case 'Textarea':
-				return "text DEFAULT \'\'";
+				return "text COLLATE utf8_bin DEFAULT \'\'";
 			case 'Date picker':
 				return "date DEFAULT NULL";
 			case 'Dropdown list':
 				return isset($field['default_value']) ? "int(10) unsigned NOT NULL DEFAULT {$field['default_value']}" : "int(10) unsigned NOT NULL";
 			case 'Textarea with dropdown':
-				return "text NOT NULL";
+				return "text COLLATE utf8_bin NOT NULL";
 			case 'Checkbox':
 				return "tinyint(1) unsigned NOT NULL";
 			case 'Radio buttons':
@@ -806,7 +803,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				$default = strlen($field['integer_default_value'])>0 ? " DEFAULT {$field['integer_default_value']}" : '';
 				return "int(10) unsigned NOT NULL$default";
 			case 'EyeDraw':
-				return "varchar(4096) COLLATE utf8_bin NOT NULL";
+				return "text COLLATE utf8_bin NOT NULL";
 			case 'Multi select':
 				return false;
 			case 'Slider':
@@ -849,7 +846,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 	public function init() {
 		$this->mode = @$_POST['EventTypeModuleMode'] ? 'update' : 'create';
 
-		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z_]+$/',$_GET['ajax'])) {
+		if (isset($_GET['ajax']) && preg_match('/^[a-zA-Z0-9_]+$/',$_GET['ajax'])) {
 			if ($_GET['ajax'] == 'table_fields') {
 				EventTypeModuleCode::dump_table_fields($_GET['table']);
 			} else if ($_GET['ajax'] == 'field_unique_values') {
@@ -894,7 +891,6 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			$el = ElementType::model()->findall('event_type_id=:eventTypeId', array(':eventTypeId' => $event_type->id));
 			
 			if (count($el)) {
-				$test = ModuleAPI::getmodel($event_type->class_name, $el[0]->getAttribute('class_name')); 
 				$code = strtolower(substr($event_type->class_name, 0, 5));
 				if (!preg_match('/^et_'.$code.'([a-z0-9]+)_/', $test->tableName(), $m) ) {
 					die ("ERROR: cannot determine short name for event type " . $event_type->class_name);
@@ -1074,7 +1070,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				}
 				
 				if ($rule['type'] == 'required') {
-					if (strlen($value) <1) {
+					if ((is_array($value) && empty($value)) || (!is_array($value) && strlen($value) <1)) {
 						$errors[$key] = isset($rule['message']) ? $rule['message'] : 'This field is required';
 						$errors[$key] .= ' ('.$value.') ['.$key.']';
 						continue;
@@ -1191,16 +1187,30 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Boolean':
 				return '<?php echo $form->radioBoolean($element, \''.$field['name'].'\')?'.'>';
 			case 'EyeDraw':
+				$commandArray = '';
+				if (!empty($field['eyedraw_default_doodles'])) {
+					foreach ($field['eyedraw_default_doodles'] as $doodle) {
+						$commandArray .= "\t\t\t\tarray('addDoodle',array('$doodle')),\n";
+					}
+				}
 				return '<div class="clearfix" style="background-color: #DAE6F1;">
 		<?php
-			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\', array(
+			$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
+				\'doodleToolBarArray\' => array('.(!empty($fields['eyedraw_toolbar_doodles']) ? '\''.implode("','",$field['eyedraw_toolbar_doodles']).'\'' : '').'),
+				\'onReadyCommandArray\' => array(
+'.$commandArray.'			),
+				\'bindingArray\' => array(
+				),
+				\'listenerArray\' => array(
+				),
+				\'idSuffix\'=>\''.$field['name'].'\',
 				\'side\'=>$element->getSelectedEye()->getShortName(),
 				\'mode\'=>\'edit\',
-				\'size\'=>'.$field['eyedraw_size'].',
+				\'width\'=>'.$field['eyedraw_size'].',
+				\'height\'=>'.$field['eyedraw_size'].',
 				\'model\'=>$element,
 				\'attribute\'=>\''.$field['name'].'\',
 			));
-			'.(@$field['extra_report'] ? 'echo $form->hiddenInput($element, \''.$field['name'].'2\');' : '').'
 		?>
 	</div>';
 			case 'Multi select':
@@ -1242,7 +1252,7 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 			case 'Checkbox':
 				return '		<tr>
 			<td width="30%"><?php echo CHtml::encode($element->getAttributeLabel(\''.$field['name'].'\'))?'.'></td>
-			<td><span class="big"><?php $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
+			<td><span class="big"><?php echo $element->'.$field['name'].' ? \'Yes\' : \'No\'?'.'></span></td>
 		</tr>';
 			case 'Radio buttons':
 				return '		<tr>
@@ -1258,10 +1268,11 @@ class EventTypeModuleCode extends BaseModuleCode // CCodeModel
 				return '		<tr>
 			<td colspan="2">
 				<?php
-					$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget'.$field['eyedraw_class'].'\', array(
+					$this->widget(\'application.modules.eyedraw.OEEyeDrawWidget\', array(
 						\'side\'=>$element->eye->getShortName(),
 						\'mode\'=>\'view\',
-						\'size\'=>'.$field['eyedraw_size'].',
+						\'width\'=>'.$field['eyedraw_size'].',
+						\'height\'=>'.$field['eyedraw_size'].',
 						\'model\'=>$element,
 						\'attribute\'=>\''.$field['name'].'\',
 					));

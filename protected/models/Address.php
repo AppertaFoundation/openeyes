@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -63,7 +63,8 @@ class Address extends BaseActiveRecord {
 			array('address1, address2, city, county', 'length', 'max' => 255),
 			array('postcode', 'length', 'max' => 10),
 			array('email', 'length', 'max' => 255),
-			array('id, address1, address2, city, postcode, county, email', 'safe', 'on' => 'search'),
+			array('country_id, parent_class, parent_id, type, date_start, date_end', 'safe'),
+			array('id, address1, address2, city, postcode, county, email, country_id, parent_class, parent_id, type, date_start, date_end', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -105,15 +106,15 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return string Address as formatted HTML (<br/> separated)
 	 */
-	public function getLetterHtml() {
-		return implode('<br />', $this->getLetterArray());
+	public function getLetterHtml($include_country=true) {
+		return implode('<br />', $this->getLetterArray($include_country));
 	}
 
 	/**
 	 * @return string Address as text (, separated) 
 	 */
-	public function getLetterLine() {
-		return implode(', ', $this->getLetterArray());
+	public function getLetterLine($include_country=true) {
+		return implode(', ', $this->getLetterArray($include_country));
 	}
 
 	/**
@@ -176,6 +177,6 @@ class Address extends BaseActiveRecord {
 	}
 
 	public function getLetterAddress() {
-		return implode("\n",$this->getLetterArray(false));
+		return implode("\n",$this->getLetterArray());
 	}
 }

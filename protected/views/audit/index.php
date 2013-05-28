@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,12 +13,11 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
 <h2>Audit log</h2>
-<?php $userid = Yii::app()->session['user']->id; if (($userid != 2103)and($userid != 122)and($userid != 613)and($userid != 1330)and($userid != 1)) {exit;} ?>
 <div class="fullWidth fullBox clearfix">
 	<div id="whiteBox">
 		<p><strong></strong></p>
@@ -143,38 +142,35 @@
 			</div>
 		</div> <!-- .fullWidth -->
 <script type="text/javascript">
-	$('#auditList-filter button[type="submit"]').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
+	handleButton($('#auditList-filter button[type="submit"]'),function(e) {
+		$('#searchResults').html('<div id="auditList" class="grid-view"><ul id="auditList"><li class="header"><span>Searching...</span></li></ul></div>');
 
-			$('#page').val(1);
+		$('#page').val(1);
 
-			$.ajax({
-				'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
-				'type': 'POST',
-				'data': $('#auditList-filter').serialize(),
-				'success': function(data) {
-					$('#previous_site_id').val($('#site_id').val());
-					$('#previous_firm_id').val($('#firm_id').val());
-					$('#previous_user').val($('#user').val());
-					$('#previous_action').val($('#action').val());
-					$('#previous_target_type').val($('#target_type').val());
-					$('#previous_event_type_id').val($('#event_type_id').val());
-					$('#previous_date_from').val($('#date_from').val());
-					$('#previous_date_to').val($('#date_to').val());
+		$.ajax({
+			'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
+			'type': 'POST',
+			'data': $('#auditList-filter').serialize(),
+			'success': function(data) {
+				$('#previous_site_id').val($('#site_id').val());
+				$('#previous_firm_id').val($('#firm_id').val());
+				$('#previous_user').val($('#user').val());
+				$('#previous_action').val($('#action').val());
+				$('#previous_target_type').val($('#target_type').val());
+				$('#previous_event_type_id').val($('#event_type_id').val());
+				$('#previous_date_from').val($('#date_from').val());
+				$('#previous_date_to').val($('#date_to').val());
 
-					var s = data.split('<!-------------------------->');
+				var s = data.split('<!-------------------------->');
 
-					$('#searchResults').html(s[0]);
-					$('div.pagination').html(s[1]).show();
+				$('#searchResults').html(s[0]);
+				$('div.pagination').html(s[1]).show();
 
-					enableButtons();
-					return false;
-				}
-			});
-		}
-		return false;
+				enableButtons();
+			}
+		});
+
+		e.preventDefault();
 	});
 
 	$(document).ready(function() {

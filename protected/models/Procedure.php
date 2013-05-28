@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -80,7 +80,30 @@ class Procedure extends BaseActiveRecord
 			'specialties' => array(self::MANY_MANY, 'Subspecialty', 'proc_subspecialty_assignment(proc_id, subspecialty_id)'),
 			'subspecialtySubsections' => array(self::MANY_MANY, 'SubspecialtySubsection', 'proc_subspecialty_subsection_assignment(proc_id, subspecialty_subsection_id)'),
 			'opcsCodes' => array(self::MANY_MANY, 'OpcsCode', 'procedure_opcs_assignment(proc_id, opcs_code_id)'),
+			'additional' => array(self::MANY_MANY, 'Procedure', 'procedure_additional(proc_id, additional_proc_id)'),
 		);
+	}
+
+	public function getComplications() {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		$complications = array();
+		foreach (ProcedureComplication::model()->findAll('proc_id=? and subspecialty_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->subspecialty_id)) as $pc) {
+			$complications[] = $pc->complication;
+		}
+
+		return $complications;
+	}
+
+	public function getBenefits() {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		$benefits = array();
+		foreach (ProcedureBenefit::model()->findAll('proc_id=? and subspecialty_id=?',array($this->id,$firm->serviceSubspecialtyAssignment->subspecialty_id)) as $pc) {
+			$benefits[] = $pc->benefit;
+		}
+
+		return $benefits;
 	}
 
 	/**
@@ -125,16 +148,24 @@ class Procedure extends BaseActiveRecord
 	 *
 	 * @return array
 	 */
-	public static function getList($term)
+	public static function getList($term, $restrict=false)
 	{
 		$search = "%{$term}%";
 
 		$select = 'term, short_format, id, default_duration';
 
+		$where = 'term LIKE :term';
+
+		if ($restrict == 'unbooked') {
+			$where .= ' and unbooked=1';
+		} else {
+			$where .= ' and unbooked=0';
+		}
+
 		$procedures = Yii::app()->db->createCommand()
 			->select($select)
 			->from('proc')
-			->where('term LIKE :term', array(':term'=>$search))
+			->where($where, array(':term'=>$search))
 			->order('term')
 			->queryAll();
 
@@ -156,13 +187,13 @@ class Procedure extends BaseActiveRecord
 		return $data;
 	}
 
-	public function getListBySubspecialty($subspecialtyId)
+	public function getListBySubspecialty($subspecialtyId, $unbooked=false)
 	{
 		$procedures = Yii::app()->db->createCommand()
 			->select('proc.id, proc.term')
 			->from('proc')
 			->join('proc_subspecialty_assignment psa', 'psa.proc_id = proc.id')
-			->where('psa.subspecialty_id = :id',
+			->where('psa.subspecialty_id = :id and unbooked='.(integer)$unbooked,
 				array(':id'=>$subspecialtyId))
 			->order('proc.term ASC')
 			->queryAll();

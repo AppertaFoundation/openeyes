@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -29,19 +29,25 @@ class ProcedureSelection extends BaseCWidget {
 	public $total_duration = 0;
 	public $last;
 	public $short_version = true;
+	public $identifier = 'procs';
+	public $relation = 'procedures';
+	public $label = 'Procedures';
+	public $headertext;
+	public $read_only = false;
+	public $restrict = false;
 
 	public function run() {
 		if (empty($_POST)) {
 			if (!$this->selected_procedures) {
-				$this->selected_procedures = $this->element->procedures;
+				$this->selected_procedures = $this->element->{$this->relation};
 				if ($this->durations) {
 					$this->total_duration = $this->element->total_duration;
 				}
 			}
 		} else {
 			$this->selected_procedures = array();
-			if (isset($_POST['Procedures']) && is_array($_POST['Procedures'])) {
-				foreach ($_POST['Procedures'] as $proc_id) {
+			if (isset($_POST['Procedures_'.$this->identifier]) && is_array($_POST['Procedures_'.$this->identifier])) {
+				foreach ($_POST['Procedures_'.$this->identifier] as $proc_id) {
 					$proc = Procedure::model()->findByPk($proc_id);
 					$this->selected_procedures[] = $proc;
 					if ($this->durations) {
@@ -53,11 +59,15 @@ class ProcedureSelection extends BaseCWidget {
 		
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
-		$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+		if ($this->restrict == 'unbooked') {
+			$this->subsections = array();
+		} else {
+			$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+		}
 		$this->procedures = array();
 		$this->removed_stack = array();
 		if (empty($this->subsections)) {
-			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id) as $proc_id => $name) {
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id,($this->restrict=='unbooked')) as $proc_id => $name) {
 				if (empty($_POST)) {
 					$found = false;
 					if ($this->selected_procedures) {
@@ -73,7 +83,7 @@ class ProcedureSelection extends BaseCWidget {
 						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
 					}
 				} else {
-					if (!@$_POST['Procedures'] || !in_array($proc_id,$_POST['Procedures'])) {
+					if (!@$_POST['Procedures_'.$this->identifier] || !in_array($proc_id,$_POST['Procedures_'.$this->identifier])) {
 						$this->procedures[$proc_id] = $name;
 					} else {
 						$this->removed_stack[] = "{id: $proc_id, name: '$name'}";
@@ -88,7 +98,12 @@ class ProcedureSelection extends BaseCWidget {
 		}
 
 		$this->class = get_class($this->element);
-		parent::run();
+
+		if ($this->read_only) {
+			$this->render(get_class($this)."_readonly");
+		} else {
+			$this->render(get_class($this));
+		}
 	}
 }
 ?>

@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -26,13 +26,7 @@ if (!empty($episode)) {
 		$diagnosis = 'No diagnosis';
 	}
 
-	$audit = new Audit;
-	$audit->action = "view";
-	$audit->target_type = "episode summary";
-	$audit->patient_id = $this->patient->id;
-	$audit->episode_id = $episode->id;
-	$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-	$audit->save();
+	$episode->audit('episode summary','view',false);
 ?>
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
@@ -108,6 +102,19 @@ if (!empty($episode)) {
 <div class="metaData">
 	<span class="info">Status last changed by <span class="user"><?php echo $episode->usermodified->fullName?> on <?php echo $episode->NHSDate('last_modified_date')?> at <?php echo substr($episode->last_modified_date,11,5)?></span></span>
 </div>
+
+<div class="eventData">
+	<?php foreach (EventType::model()->getEventTypeModules() as $event_type) {
+		if ($api = $event_type->api) {
+			if ($eventData = $api->getEpisodeHTML($episode->id)) {?>
+				<div>
+					<?php echo $eventData?>
+				</div>
+			<?php }
+		}
+	}?>
+</div>
+
 <script type="text/javascript">
 	$('#closelink').click(function() {
 		$('#dialog-confirm').dialog({

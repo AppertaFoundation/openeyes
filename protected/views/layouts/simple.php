@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -36,13 +36,19 @@
 
 	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" /> 
 	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/> 
-	<?php Yii::app()->clientScript->registerCoreScript('jquery'); ?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jui/js/jquery-ui.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('js/mustache.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize-min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
-	<?php Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl('/js/buttons.js'))?>
+	<?php $cs = Yii::app()->clientScript; ?>
+	<?php $cs->registerCoreScript('jquery')?>
+	<?php $cs->registerCoreScript('jquery.ui')?>
+	<?php $cs->registerCSSFile($cs->getCoreScriptUrl().'/jui/css/base/jquery-ui.css', 'screen')?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.watermark.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/mustache.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/libs/uri-1.10.2.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/waypoints.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/waypoints-sticky.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.autosize.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/jquery.hoverIntent.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/libs/modernizr-2.0.6.min.js'))?>
+	<?php $cs->registerScriptFile(Yii::app()->createUrl('/js/buttons.js'))?>
 	<?php if (Yii::app()->params['google_analytics_account']) {?>
 		<script type="text/javascript">
 
@@ -64,16 +70,11 @@
 </head> 
  
 <body> 
-	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
-	<?php if (Yii::app()->params['watermark_description']) {?>
-		<div class="h1-watermark-description"><p><?php echo Yii::app()->params['watermark_description']?></p></div>
-	<?php }?>
+	<?php echo $this->renderPartial('//base/_banner_watermark',array('description' => true))?> 
 	<?php echo $this->renderPartial('//base/_debug',array())?> 
 	<div id="container"> 
 	<div id="header" class="clearfix"> 
-		<div id="brand" class="ir"><h1><?php echo CHtml::link('OpenEyes',array('site/'))?></h1></div>
+		<?php echo $this->renderPartial('//base/_brand'); ?>
 	</div> <!-- #header --> 
 
 	<?php $this->widget('zii.widgets.CBreadcrumbs', array(
@@ -106,8 +107,5 @@
 
 	<?php echo $this->renderPartial('//base/_footer',array())?>
 
-	<?php if (Yii::app()->params['watermark']) {?>
-		<div class="h1-watermark"><?php echo Yii::app()->params['watermark']?></div>
-	<?php }?>
 </body>
 </html>

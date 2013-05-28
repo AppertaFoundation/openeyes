@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -296,6 +296,18 @@ class User extends BaseActiveRecord
 		}
 
 		return $users;
+	}
+	/**
+	 * Returns the users that are eligible to be considered surgeons.
+	 * @return User[] List of surgeon users
+	 */
+	public static function getSurgeons() {
+		$criteria = new CDbCriteria;
+		$criteria->compare('is_doctor',1);
+		$criteria->compare('active',1);
+		$criteria->order = 'last_name,first_name asc';
+		
+		return User::model()->findAll($criteria);
 	}
 
 	public function audit($target, $action, $data=null, $log=false, $properties=array()) {

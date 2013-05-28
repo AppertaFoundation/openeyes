@@ -1,27 +1,49 @@
+<?php
+/**
+ * OpenEyes
+ *
+ * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
+ * (C) OpenEyes Foundation, 2011-2013
+ * This file is part of OpenEyes.
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file titled COPYING. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package OpenEyes
+ * @link http://www.openeyes.org.uk
+ * @author OpenEyes <info@openeyes.org.uk>
+ * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
+ * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ */
+?>
 <div class="eventDetail<?php if ($last) {?> eventDetailLast<?php }?>" id="typeProcedure"<?php if ($hidden) {?> style="display: none;"<?php }?>>
-	<div class="label">Procedures:</div>
+	<div class="label"><?php echo $label?>:</div>
 	<div class="data split limitWidth">
 		<div class="left">
+			<?php if ($headertext) {?>
+				<h5 class="normal"><em><?php echo $headertext?></em></h5>
+			<?php }?>
 			<h5 class="normal"><em>Add a procedure:</em></h5>
 
 			<?php
 			if (!empty($subsections) || !empty($procedures)) {
 				if (!empty($subsections)) {
-					echo CHtml::dropDownList('subsection_id', '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 90%; margin-bottom:10px;'));
-					echo CHtml::dropDownList('select_procedure_id', '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 90%; margin-bottom:10px;'));
+					echo CHtml::dropDownList('subsection_id_'.$identifier, '', $subsections, array('empty' => 'Select a subsection', 'style' => 'width: 90%; margin-bottom:10px;'));
+					echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', array(), array('empty' => 'Select a commonly used procedure', 'style' => 'display: none; width: 90%; margin-bottom:10px;'));
 				} else {
-					echo CHtml::dropDownList('select_procedure_id', '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 90%; margin-bottom:10px;'));
+					echo CHtml::dropDownList('select_procedure_id_'.$identifier, '', $procedures, array('empty' => 'Select a commonly used procedure', 'style' => 'width: 90%; margin-bottom:10px;'));
 				}
 			}
 			?>
 
 			<?php
 				$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-					'name'=>'procedure_id',
-					'id'=>'autocomplete_procedure_id',
+					'name'=>'procedure_id_'.$identifier,
+					'id'=>'autocomplete_procedure_id_'.$identifier,
 					'source'=>"js:function(request, response) {
 						var existingProcedures = [];
-						$('div.procedureItem').map(function() {
+						$('#procedureList_$identifier').children('h4').children('div.procedureItem').map(function() {
 							var text = $.trim($(this).children('span:nth-child(2)').text());
 							existingProcedures.push(text.replace(/ - .*?$/,''));
 						});
@@ -29,7 +51,7 @@
 						$.ajax({
 							'url': '" . Yii::app()->createUrl('procedure/autocomplete') . "',
 							'type':'GET',
-							'data':{'term': request.term},
+							'data':{'term': request.term, 'restrict': '$restrict'},
 							'success':function(data) {
 								data = $.parseJSON(data);
 
@@ -52,13 +74,13 @@
 							if (typeof(window.callbackVerifyAddProcedure) == 'function') {
 								window.callbackVerifyAddProcedure(ui.item.value,".($durations?'1':'0').",".($short_version?'1':'0').",function(result) {
 									if (result != true) {
-										$('#autocomplete_procedure_id').val('');
+										$('#autocomplete_procedure_id_$identifier').val('');
 										return;
 									}
-									ProcedureSelectionSelectByName(ui.item.value,true);
+									ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
 								});
 							} else {
-								ProcedureSelectionSelectByName(ui.item.value,true);
+								ProcedureSelectionSelectByName(ui.item.value,true,'$identifier');
 							}
 						}",
 					),
@@ -70,7 +92,7 @@
 			<?php
 			$totalDuration = 0;
 			?>
-			<div id="procedureList" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
+			<div id="procedureList_<?php echo $identifier?>" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
 				<h4>
 					<?php
 					if (!empty($selected_procedures)) {
@@ -82,7 +104,7 @@
 								<span class="middle<?php echo (!$durations) ? " noDuration" : ""; ?>">
 									<?php
 										$totalDuration += $procedure['default_duration'];
-										echo CHtml::hiddenField('Procedures[]', $procedure['id']);
+										echo CHtml::hiddenField('Procedures_'.$identifier.'[]', $procedure['id']);
 										echo "<span>".$procedure['term'];
 										if ($short_version) {
 											echo '</span> - <span>'.$procedure['short_format'];
@@ -97,6 +119,9 @@
 								<?php } ?>
 							</div>
 						<?php	}
+						if (isset($_POST[$class]['total_duration_'.$identifier])) {
+							$total_duration = $_POST[$class]['total_duration_'.$identifier];
+						}
 					}
 					?>
 				</h4>
@@ -106,9 +131,9 @@
 					<tfoot>
 						<tr>
 							<th>Calculated Total Duration:</th>
-							<th id="projected_duration"><?php echo $totalDuration?> mins</th>
+							<th id="projected_duration_<?php echo $identifier?>"><?php echo $totalDuration?> mins</th>
 							<th>Estimated Total Duration:</th>
-							<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration" name="<?php echo $class?>[total_duration]" style="width: 60px;"></th>
+							<th><input type="text" value="<?php echo $total_duration?>" id="<?php echo $class?>_total_duration_<?php echo $identifier?>" name="<?php echo $class?>[total_duration_<?php echo $identifier?>]" style="width: 60px;"></th>
 							</tr>
 						</tfoot>
 					</table>
@@ -120,70 +145,75 @@
 <script type="text/javascript">
 	// Note: Removed_stack is probably not the best name for this. Selected procedures is more accurate.
 	// It is used to suppress procedures from the add a procedure inputs
-	var removed_stack = [<?php echo implode(',', $removed_stack); ?>];
+	var removed_stack_<?php echo $identifier?> = [<?php echo implode(',', $removed_stack); ?>];
 
-	function updateTotalDuration() {
+	function updateTotalDuration(identifier) {
 		// update total duration
 		var totalDuration = 0;
-		$('div.procedureItem').map(function() {
+		$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
 			$(this).children('span:last').map(function() {
 				totalDuration += parseInt($(this).html().match(/[0-9]+/));
 			});
 		});
 		if ($('input[name=\"<?php echo $class?>[eye_id]\"]:checked').val() == 3) {
-			$('#projected_duration').text(totalDuration + ' * 2');
+			$('#projected_duration_'+identifier).text(totalDuration + ' * 2');
 			totalDuration *= 2;
 		}
-		$('#projected_duration').text(totalDuration+" mins");
-		$('#<?php echo $class?>_total_duration').val(totalDuration);
+		$('#projected_duration_'+identifier).text(totalDuration+" mins");
+		$('#<?php echo $class?>_total_duration_'+identifier).val(totalDuration);
 	}
 
-	$(this).undelegate('a.removeProcedure','click').delegate('a.removeProcedure','click',function() {
-		var len = $(this).parent().parent().parent().children('div').length;
+	$('a.removeProcedure').die('click').live('click',function() {
+		var m = $(this).parent().parent().parent().parent().attr('id').match(/^procedureList_(.*?)$/);
+		removeProcedure($(this),m[1]);
+		return false;
+	});
 
-		var procedure_id = $(this).parent().parent().find('input[type="hidden"]:first').val();
+	function removeProcedure(element, identifier) {
+		var len = element.parent().parent().parent().children('div').length;
+		var procedure_id = element.parent().parent().find('input[type="hidden"]:first').val();
 		
-		$(this).parent().parent().remove();
+		element.parent().parent().remove();
 
 		<?php if ($durations) {?>
-			updateTotalDuration();
+			updateTotalDuration(identifier);
 		<?php }?>
 
 		if (len <= 1) {
-			$('#procedureList').hide();
+			$('#procedureList_'+identifier).hide();
 			<?php if ($durations) {?>
 				$('div.extraDetails').hide();
 			<?php }?>
 		}
 
-		if (typeof(window.callbackAddProcedure) == 'function') {
+		if (typeof(window.callbackRemoveProcedure) == 'function') {
 			callbackRemoveProcedure(procedure_id);
 		}
 
 		// Remove removed procedure from the removed_stack
 		var stack = [];
 		var popped = null;
-		$.each(removed_stack, function(key, value) {
+		$.each(window["removed_stack_"+identifier], function(key, value) {
 			if (value["id"] != procedure_id) {
 				stack.push(value);
 			} else {
 				popped = value;
 			}
 		});
-		removed_stack = stack;
+		window["removed_stack_"+identifier] = stack;
 
 		// Refresh the current procedure select box in case the removed procedure came from there
-		if($('#subsection_id').length) {
+		if ($('#subsection_id_'+identifier).length) {
 			// Procedures are in subsections, so fetch a clean list via ajax (easier than trying to work out if it's the right list) 
-			updateProcedureSelect();
+			updateProcedureSelect(identifier);
 		} else if(popped) {
 			// No subsections, so we should be safe to just push it back into the list
-			$('#select_procedure_id').append('<option value="'+popped["id"]+'">'+popped["name"]+'</option>').removeAttr('disabled');
-			sort_selectbox($('#select_procedure_id'));
+			$('#select_procedure_id_'+identifier).append('<option value="'+popped["id"]+'">'+popped["name"]+'</option>').removeAttr('disabled');
+			sort_selectbox($('#select_procedure_id_'+identifier));
 		}
 
 		return false;
-	});
+	}
 
 	function selectSort(a, b) {		 
 			if (a.innerHTML == rootItem) {
@@ -195,16 +225,17 @@
 			return (a.innerHTML > b.innerHTML) ? 1 : -1;
 	};
 
-	$('select[id=subsection_id]').change(function() {
-		updateProcedureSelect();
+	$('select[id^=subsection_id]').unbind('change').change(function() {
+		var m = $(this).attr('id').match(/^subsection_id_(.*)$/);
+		updateProcedureSelect(m[1]);
 	});
 
-	function updateProcedureSelect() {
-		var subsection_field = $('select[id=subsection_id]');
+	function updateProcedureSelect(identifier) {
+		var subsection_field = $('select[id=subsection_id_'+identifier+']');
 		var subsection = subsection_field.val();
 		if (subsection != '') {
 			var existingProcedures = [];
-			$('div.procedureItem').map(function() {
+			$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
 				var text = $.trim($(subsection_field).children('span:nth-child(2)').text());
 				existingProcedures.push(text.replace(/ - .*?$/,''));
 			});
@@ -214,31 +245,33 @@
 				'type': 'POST',
 				'data': {'subsection': subsection, 'existing': existingProcedures},
 				'success': function(data) {
-					$('select[name=select_procedure_id]').attr('disabled', false);
-					$('select[name=select_procedure_id]').html(data);
+					$('select[name=select_procedure_id_'+identifier+']').attr('disabled', false);
+					$('select[name=select_procedure_id_'+identifier+']').html(data);
 
 					// remove any items in the removed_stack
-					$('select[name=select_procedure_id] option').map(function() {
+					$('select[name=select_procedure_id_'+identifier+'] option').map(function() {
 						var obj = $(this);
 
-						$.each(removed_stack, function(key, value) {
+						$.each(window["removed_stack_"+identifier], function(key, value) {
 							if (value["id"] == obj.val()) {
 								obj.remove();
 							}
 						});
 					});
 
-					$('select[name=select_procedure_id]').show();
+					$('select[name=select_procedure_id_'+identifier+']').show();
 				}
 			});
 		} else {
-			$('select[name=select_procedure_id]').hide();
+			$('select[name=select_procedure_id_'+identifier+']').hide();
 		}
 	}
 	
-	$('#select_procedure_id').change(function() {
+	$('select[id^="select_procedure_id"]').unbind('change').change(function() {
+		var m = $(this).attr('id').match(/^select_procedure_id_(.*)$/);
+		var identifier = m[1];
 		var select = $(this);
-		var procedure = $('select[name=select_procedure_id] option:selected').text();
+		var procedure = $('select[name=select_procedure_id_'+m[1]+'] option:selected').text();
 		if (procedure != 'Select a commonly used procedure') {
 
 			if (typeof(window.callbackVerifyAddProcedure) == 'function') {
@@ -249,33 +282,36 @@
 					}
 
 					if (typeof(window.callbackAddProcedure) == 'function') {
-						var procedure_id = $('select[name=select_procedure_id] option:selected').val();
+						var procedure_id = $('select[name=select_procedure_id_'+identifier+'] option:selected').val();
 						callbackAddProcedure(procedure_id);
 					}
 
-					ProcedureSelectionSelectByName(procedure,false);
+					ProcedureSelectionSelectByName(procedure,false,m[1]);
 				});
 			} else {
 				if (typeof(window.callbackAddProcedure) == 'function') {
-					var procedure_id = $('select[name=select_procedure_id] option:selected').val();
+					var procedure_id = $('select[name=select_procedure_id_'+identifier+'] option:selected').val();
 					callbackAddProcedure(procedure_id);
 				}
 
-				ProcedureSelectionSelectByName(procedure,false);
+				ProcedureSelectionSelectByName(procedure,false,m[1]);
 			}
 		}
 		return false;
 	});
 
 	$(document).ready(function() {
-		if ($('input[name=\"<?php echo $class?>[eye_id]\"]:checked').val() == 3) {
-			$('#projected_duration').html((parseInt($('#projected_duration').html().match(/[0-9]+/)) * 2) + " mins");
+		if ($('input[name="<?php echo $class?>[eye_id]"]:checked').val() == 3) {
+			$('#projected_duration_<?php echo $identifier?>').html((parseInt($('#projected_duration_<?php echo $identifier?>').html().match(/[0-9]+/)) * 2) + " mins");
 		}
+		$('input[name="<?php echo $class?>[eye_id]"]').click(function() {
+			updateTotalDuration('<?php echo $identifier?>');
+		});
 	});
 
-	function ProcedureSelectionSelectByName(name, callback) {
+	function ProcedureSelectionSelectByName(name, callback, identifier) {
 		$.ajax({
-			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&short_version=<?php echo $short_version?'1':'0'?>',
+			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&short_version=<?php echo $short_version?'1':'0'?>&identifier='+identifier,
 			'type': 'GET',
 			'data': {'name': name},
 			'success': function(data) {
@@ -283,27 +319,27 @@
 				var shortVersion = <?php echo $short_version?'true':'false'?>;
 
 				// append selection onto procedure list
-				$('#procedureList').children('h4').append(data);
-				$('#procedureList').show();
+				$('#procedureList_'+identifier).children('h4').append(data);
+				$('#procedureList_'+identifier).show();
 
 				if (enableDurations) {
-					updateTotalDuration();
+					updateTotalDuration(identifier);
 					$('div.extraDetails').show();
 				}
 
 				// clear out text field
-				$('#autocomplete_procedure_id').val('');
+				$('#autocomplete_procedure_id_'+identifier).val('');
 
 				// remove selection from the filter box
-				if ($('#select_procedure_id').children().length > 0) {
+				if ($('#select_procedure_id_'+identifier).children().length > 0) {
 					m = data.match(/<span>(.*?)<\/span>/);
 
-					$('#select_procedure_id').children().each(function () {
+					$('#select_procedure_id_'+identifier).children().each(function () {
 						if ($(this).text() == m[1]) {
 							var id = $(this).val();
 							var name = $(this).text();
 
-							removed_stack.push({name: name, id: id});
+							window["removed_stack_"+identifier].push({name: name, id: id});
 
 							$(this).remove();
 						}

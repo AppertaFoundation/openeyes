@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -55,10 +55,11 @@ class Event extends BaseActiveRecord
 	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
 	 * @return array of mandatory conditions
 	 */
-	
+
 	public function defaultScope() {
+		$table_alias = $this->getTableAlias(false,false);
 		return array(
-			'condition' => 'deleted=0',
+			'condition' => $table_alias.'.deleted = 0',
 		);
 	}
 
@@ -91,12 +92,10 @@ class Event extends BaseActiveRecord
 			'usermodified' => array(self::BELONGS_TO, 'User', 'last_modified_user_id'),
 			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 			'issues' => array(self::HAS_MANY, 'EventIssue', 'event_id'),
-			'element_operation' => array(self::HAS_ONE, 'ElementOperation', 'event_id'),
 		);
 	}
 	
 	public function getEditable(){
-
 		if (!$this->episode->editable) {
 			return FALSE;
 		}
@@ -105,17 +104,9 @@ class Event extends BaseActiveRecord
 			return FALSE;
 		}
 
-		// Should not be able to edit cancelled operations
-		if ($this->event_type_id == 25) {
-			$operation = ElementOperation::model()->find('event_id = ?',array($this->id));
-			if ($operation->status == ElementOperation::STATUS_CANCELLED) {
-				return FALSE;
-			}
-		}
-
 		return TRUE;
 	}
-
+	
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
@@ -236,10 +227,56 @@ class Event extends BaseActiveRecord
 
 	// Only the event creator can delete the event, and only 24 hours after its initial creation
 	public function canDelete() {
+		if (!BaseController::checkUserLevel(3)) return false;
+
 		if ($this->episode->patient->date_of_death) return false;
 
-		$admin = User::model()->find('username=?',array('admin'));   // these two lines should be replaced once we have rbac
+		if (!$this->episode->editable) return false;
+
+		$admin = User::model()->find('username=?',array('admin'));	 // these two lines should be replaced once we have rbac
 		if ($admin->id == Yii::app()->session['user']->id) {return true;}
 		return ($this->created_user_id == Yii::app()->session['user']->id && (time() - strtotime($this->created_date)) <= 86400);
 	}
+	
+	public function delete() {
+		
+		// Delete related
+		EventIssue::model()->deleteAll('event_id = ?', array($this->id));
+		
+		parent::delete();
+	}
+	
+	/*
+	 * returns the latest event of this type in the event episode
+	 * 
+	 * @returns Event
+	 */
+	public function getLatestOfTypeInEpisode() {
+		$criteria = new CDbCriteria;
+		$criteria->condition = 'episode_id = :e_id AND event_type_id = :et_id';
+		$criteria->limit = 1;
+		$criteria->order = 'created_date DESC';
+		$criteria->params = array(':e_id'=>$this->episode_id, ':et_id'=>$this->event_type_id);
+		
+		return Event::model()->find($criteria);
+	}
+	
+	/*
+	 * if this event is the most recent of its type in its episode, returns true. false otherwise
+	 * 
+	 * @returns boolean
+	 */
+	public function isLatestOfTypeInEpisode() {
+		$latest = $this->getLatestOfTypeInEpisode();
+		return ($latest->id == $this->id) ? true : false;
+	}
+
+	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+		$properties['event_id'] = $this->id;
+		$properties['episode_id'] = $this->episode_id;
+		$properties['patient_id'] = $this->episode->patient_id;
+
+		return parent::audit($target, $action, $data, $log, $properties);
+	}
+	
 }

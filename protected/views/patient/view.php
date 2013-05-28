@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -22,39 +22,14 @@ $this->breadcrumbs=array(
 	"{$patientName} ({$this->patient->hos_num})",
 );
 
-$address_str = '';
-
 $address = $this->patient->address;
 
 if (!empty($address)) {
-	$fields = array(
-		'address1' => str_replace(',','',$address->address1),
-		'address2' => $address->address2,
-		'city' => $address->city,
-		'county' => $address->county,
-		'postcode' => $address->postcode);
-	$addressList = array_filter($fields, 'filter_nulls');
-
-	$numLines = 1;
-	foreach ($addressList as $name => $string) {
-		if ($name === 'postcode') {
-			$string = strtoupper($string);
-		}
-		if ($name != 'email') {
-			$address_str .= $string;
-		}
-		if (!empty($string) && $string != end($addressList)) {
-			$address_str .= '<br />';
-		}
-		$numLines++;
-	}
-	// display extra blank lines if needed for padding
-	for ($numLines; $numLines <= 5; $numLines++) {
-		$address_str .= '<br />';
-	}
+	$address_str = $address->getLetterHtml();
 } else {
-	$address_str .= 'Unknown';
-} ?>
+	$address_str = 'Unknown';
+}
+?>
 		<h2>Patient Summary</h2>
 			<div class="wrapTwo clearfix">
 				<?php $this->renderPartial('//base/_messages'); ?>
@@ -103,7 +78,7 @@ if (!empty($address)) {
 						<div class="data_row">
 							<div class="data_label">Date of Birth:</div>
 							<div class="data_value">
-								<?php echo $this->patient->NHSDate('dob') ?>
+								<?php echo ($this->patient->dob) ? $this->patient->NHSDate('dob') : 'Unknown' ?>
 							</div>
 						</div>
 						<div class="data_row">
@@ -117,7 +92,11 @@ if (!empty($address)) {
 						</div>
 						<div class="data_row">
 							<div class="data_label">Gender:</div>
-							<div class="data_value"><?php echo $this->patient->gender == 'F' ? 'Female' : 'Male'?></div>
+							<div class="data_value"><?php echo $this->patient->getGenderString() ?></div>
+						</div>
+						<div class="data_row">
+							<div class="data_label">Ethnic Group:</div>
+							<div class="data_value"><?php echo $this->patient->getEthnicGroupString() ?></div>
 						</div>
 					</div> <!-- #personal_details -->
 					<div class="whiteBox patientDetails" id="contact_details">
@@ -360,13 +339,148 @@ if (!empty($address)) {
 					</div>	<!-- .blueBox -->
 					<?php $episodes_link = (BaseController::checkUserLevel(3)) ? 'Create or View' : 'View';  ?>
 					<p><?php echo CHtml::link('<span class="aPush">'.$episodes_link.' Episodes and Events</span>',Yii::app()->createUrl('patient/episodes/'.$this->patient->id))?></p>
-					<?php $this->renderPartial('_ophthalmic_diagnoses')?>
-					<?php $this->renderPartial('_systemic_diagnoses')?>
-					<?php $this->renderPartial('_allergies'); ?>
+					<?php
+					try {
+						echo $this->renderPartial('custom/info');
+					} catch (Exception $e) {
+						// This is our default layout
+						$codes = $this->patient->getSpecialtyCodes();
+						// specialist diagnoses
+						foreach ($codes as $code) {
+							try {
+								echo $this->renderPartial('_' . $code . '_diagnoses');
+							} catch (Exception $e) {}
+						}
+						$this->renderPartial('_systemic_diagnoses');
+						// specialist extra data
+						foreach ($codes as $code) {
+							try {
+								echo $this->renderPartial('_' . $code . '_info');
+							} catch (Exception $e) {}
+						}
+						$this->renderPartial('_medications',array('firm'=>$firm));
+						$this->renderPartial('_allergies'); 
+					}
+					?>
 				</div> <!-- .halfColumn -->
 				<?php } ?>
 			</div><!-- .wrapTwo -->
 			<script type="text/javascript">
+				$(document).ready(function() {
+					$('.removeDiagnosis').live('click',function() {
+						$('#diagnosis_id').val($(this).attr('rel'));
+				
+						$('#confirm_remove_diagnosis_dialog').dialog({
+							resizable: false,
+							modal: true,
+							width: 560
+						});
+				
+						return false;
+					});
+				
+					$('button.btn_remove_diagnosis').click(function() {
+						$("#confirm_remove_diagnosis_dialog").dialog("close");
+				
+						$.ajax({
+							'type': 'GET',
+							'url': baseUrl+'/patient/removediagnosis?patient_id=<?php echo $this->patient->id?>&diagnosis_id='+$('#diagnosis_id').val(),
+							'success': function(html) {
+								if (html == 'success') {
+									$('a.removeDiagnosis[rel="'+$('#diagnosis_id').val()+'"]').parent().parent().remove();
+								} else {
+									alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+								}
+							},
+							'error': function() {
+								alert("Sorry, an internal error occurred and we were unable to remove the diagnosis.\n\nPlease contact support for assistance.");
+							}
+						});
+				
+						return false;
+					});
+				
+					$('button.btn_cancel_remove_diagnosis').click(function() {
+						$("#confirm_remove_diagnosis_dialog").dialog("close");
+						return false;
+					});
+
+					$('.removeOperation').live('click',function() {
+						$('#operation_id').val($(this).attr('rel'));
+				
+						$('#confirm_remove_operation_dialog').dialog({
+							resizable: false,
+							modal: true,
+							width: 560
+						});
+				
+						return false;
+					});
+
+					$('button.btn_remove_operation').click(function() {
+						$("#confirm_remove_operation_dialog").dialog("close");
+				
+						$.ajax({
+							'type': 'GET',
+							'url': baseUrl+'/patient/removePreviousOperation?patient_id=<?php echo $this->patient->id?>&operation_id='+$('#operation_id').val(),
+							'success': function(html) {
+								if (html == 'success') {
+									$('a.removeOperation[rel="'+$('#operation_id').val()+'"]').parent().parent().remove();
+								} else {
+									alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+								}
+							},
+							'error': function() {
+								alert("Sorry, an internal error occurred and we were unable to remove the operation.\n\nPlease contact support for assistance.");
+							}
+						});
+				
+						return false;
+					});
+				
+					$('button.btn_cancel_remove_operation').click(function() {
+						$("#confirm_remove_operation_dialog").dialog("close");
+						return false;
+					});
+
+					$('.removeMedication').live('click',function() {
+						$('#medication_id').val($(this).attr('rel'));
+				
+						$('#confirm_remove_medication_dialog').dialog({
+							resizable: false,
+							modal: true,
+							width: 560
+						});
+				
+						return false;
+					});
+
+					$('button.btn_remove_medication').click(function() {
+						$("#confirm_remove_medication_dialog").dialog("close");
+				
+						$.ajax({
+							'type': 'GET',
+							'url': baseUrl+'/patient/removeMedication?patient_id=<?php echo $this->patient->id?>&medication_id='+$('#medication_id').val(),
+							'success': function(html) {
+								if (html == 'success') {
+									$('a.removeMedication[rel="'+$('#medication_id').val()+'"]').parent().parent().remove();
+								} else {
+									alert("Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance.");
+								}
+							},
+							'error': function() {
+								alert("Sorry, an internal error occurred and we were unable to remove the medication.\n\nPlease contact support for assistance.");
+							}
+						});
+				
+						return false;
+					});
+				
+					$('button.btn_cancel_remove_medication').click(function() {
+						$("#confirm_remove_medication_dialog").dialog("close");
+						return false;
+					});
+				});
 				$('tr.all-episode').unbind('click').click(function() {
 					window.location.href = '<?php echo Yii::app()->createUrl('patient/episode')?>/'+$(this).attr('id');
 					return false;

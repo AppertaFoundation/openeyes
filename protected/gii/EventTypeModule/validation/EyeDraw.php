@@ -1,10 +1,16 @@
 <?php
 return array(
 	'EyeDraw' => array(
-		'eyedrawClass{$element_num}Field{$field_num}' => array(
+		'eyedrawToolbarDoodle{$element_num}Field{$field_num}' => array(
 			array(
 				'type' => 'required',
-				'message' => 'Please select an eyedraw type',
+				'message' => 'Please select at least one toolbar doodle',
+			),
+		),
+		'eyedrawDefaultDoodle{$element_num}Field{$field_num}' => array(
+			array(
+				'type' => 'required',
+				'message' => 'Please select at least one default doodle',
 			),
 		),
 		'eyedrawSize{$element_num}Field{$field_num}' => array(

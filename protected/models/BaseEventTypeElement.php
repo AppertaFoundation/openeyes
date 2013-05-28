@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -26,6 +26,8 @@ class BaseEventTypeElement extends BaseElement {
 	public $userId;
 	public $patientId;
 
+	protected $element_type;
+
 	// Used to display the view number set in site_element_type for any particular
 	// instance of this element
 	public $viewNumber;
@@ -34,9 +36,77 @@ class BaseEventTypeElement extends BaseElement {
 	public $required = false;
 
 	function getElementType() {
-		return ElementType::model()->find('class_name=?', array(get_class($this)));
+		if(!$this->element_type) {
+			$this->element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
+		}
+		return $this->element_type;
 	}
 
+	/**
+	 * Can this element be copied (cloned/duplicated)
+	 * Override to return true if you want an element to be copyable
+	 * @return boolean
+	 */
+	public function canCopy() {
+		return false;
+	}
+
+	/**
+	 * Return this elements children
+	 * @return array
+	 */
+	public function getChildren() {
+		$child_elements = array();
+		if($this->event_id) {
+			$child_element_types = ElementType::model()->findAll('parent_element_type_id = :element_type_id', array(':element_type_id' => $this->getElementType()->id));
+			foreach($child_element_types as $child_element_type) {
+				if($element = self::model($child_element_type->class_name)->find('event_id = ?', array($this->event_id))) {
+					$child_elements[] = $element;
+				}
+			}
+		}
+		return $child_elements;
+	}
+	
+	/**
+	 * Fields which are copied by the loadFromExisting() method
+	 * By default these are taken from the "safe" scenario of the model rules, but
+	 * should be overridden for more complex requirements  
+	 * @return array:
+	 */
+	protected function copiedFields() {
+		$rules = $this->rules();
+		$fields = null;
+		foreach($rules as $rule) {
+			if($rule[1] == 'safe') {
+				$fields = $rule[0];
+				break;
+			}
+		}
+		$fields = explode(',', $fields);
+		$no_copy = array('event_id','id');
+		foreach($fields as $index => $field) {
+			if(in_array($field,$no_copy)) {
+				unset($fields[$index]);
+			} else {
+				$fields[$index] = trim($field);
+			}
+		}
+		return $fields;
+	}
+	
+	/**
+	 * Load an existing element's data into this one
+	 * The base implementation simply uses copiedFields(), but it may be
+	 * overridden to allow for more complex relationships
+	 * @param BaseEventTypeElement $element
+	 */
+	public function loadFromExisting($element) {
+		foreach($this->copiedFields() as $attribute) {
+			$this->$attribute = $element->$attribute;
+		}
+	}
+	
 	function render($action) {
 		$this->Controller->renderPartial();
 	}
@@ -165,26 +235,36 @@ class BaseEventTypeElement extends BaseElement {
 	 * Used by child objects to set defaults for forms on create
 	 */
 	public function setDefaultOptions() {
-		return null;
+	}
+
+	/**
+	 * Stubbed method to set update options
+	 * Used by child objects to override null values for forms on update
+	 */
+	public function setUpdateOptions() {
 	}
 
 	public function getInfoText() {
 	}
 
-	public function getCreate_view() {
+	public function getDefaultView() {
 		return get_class($this);
+	}
+
+	public function getCreate_view() {
+		return $this->getDefaultView();
 	}
 
 	public function getUpdate_view() {
-		return get_class($this);
+		return $this->getDefaultView();
 	}
 
 	public function getView_view() {
-		return get_class($this);
+		return $this->getDefaultView();
 	}
 
 	public function getPrint_view() {
-		return get_class($this);
+		return $this->getDefaultView();
 	}
 
 	public function isEditable() {

@@ -2,11 +2,9 @@
 /* Module-specific javascript can be placed here */
 
 $(document).ready(function() {
-	$('#et_save').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-
-			<?php if (isset($elements)) { foreach ($elements as $element) {
+	<?php if (isset($elements) && !empty($elements)) {?>
+		handleButton($('#et_save'),function() {
+			<?php foreach ($elements as $element) {
 				foreach ($element['fields'] as $field) {
 					if ($field['type'] == 'EyeDraw' && @$field['extra_report']) {?>
 			if ($('#<?php echo $element['class_name']?>_<?php echo $field['name']?>2').length >0) {
@@ -14,45 +12,30 @@ $(document).ready(function() {
 			}
 					<?php }
 				}
-			} }?>
+			}?>
+		});
+	<?php }else{?>
+		handleButton($('#et_save'));
+	<?php }?>
 
-			return true;
+	handleButton($('#et_cancel'),function(e) {
+		if (m = window.location.href.match(/\/update\/[0-9]+/)) {
+			window.location.href = window.location.href.replace('/update/','/view/');
+		} else {
+			window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
 		}
-		return false;
+		e.preventDefault();
 	});
 
-	$('#et_cancel').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
+	handleButton($('#et_deleteevent'));
 
-			if (m = window.location.href.match(/\/update\/[0-9]+/)) {
-				window.location.href = window.location.href.replace('/update/','/view/');
-			} else {
-				window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
-			}
+	handleButton($('#et_canceldelete'),function(e) {
+		if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
+			window.location.href = window.location.href.replace('/delete/','/view/');
+		} else {
+			window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
 		}
-		return false;
-	});
-
-	$('#et_deleteevent').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-			return true;
-		}
-		return false;
-	});
-
-	$('#et_canceldelete').unbind('click').click(function() {
-		if (!$(this).hasClass('inactive')) {
-			disableButtons();
-
-			if (m = window.location.href.match(/\/delete\/[0-9]+/)) {
-				window.location.href = window.location.href.replace('/delete/','/view/');
-			} else {
-				window.location.href = baseUrl+'/patient/episodes/'+et_patient_id;
-			}
-		} 
-		return false;
+		e.preventDefault();
 	});
 
 	$('select.populate_textarea').unbind('change').change(function() {

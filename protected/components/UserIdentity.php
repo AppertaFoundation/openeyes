@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -55,22 +55,11 @@ class UserIdentity extends CUserIdentity
 		 */
 		$user = User::model()->find('username = ?', array($this->username));
 		if($user === null) {
-			$audit = new Audit;
-			$audit->action = "login-failed";
-			$audit->target_type = "login";
-			$audit->data = "User not found in local database: $this->username";
-			$audit->save();
-			OELog::log("User not found in local database: $this->username");
+			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
 		} else if($user->active != 1 || $user->access_level == 0) {
-			$audit = new Audit;
-			$audit->action = "login-failed";
-			$audit->target_type = "login";
-			$audit->user_id = $user->id;
-			$audit->data = "User not active and so cannot login: $this->username";
-			$audit->save();
-			OELog::log("User not active and so cannot login: $this->username");
+			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
 		}
@@ -110,6 +99,7 @@ class UserIdentity extends CUserIdentity
 				 * Try and bind to the login details provided. This indicates if
 				 * the user is in LDAP.
 				 */
+
 				try {
 					$ldap->bind(
 						"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
@@ -190,38 +180,20 @@ class UserIdentity extends CUserIdentity
 				$user->email = $info['mail'][0];
 			}
 			if (!$user->save()) {
-				$audit = new Audit;
-				$audit->action = "login-failed";
-				$audit->target_type = "login";
-				$audit->user_id = $user->id;
-				$audit->data = "Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true).": ".$this->username;
-				$audit->save();
-				OELog::log("Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),$this->username);
+				$user->audit('login','login-failed',"Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),true);
 				throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(),true));
 			}
 		} else if (Yii::app()->params['auth_source'] == 'BASIC') {
 			if(!$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;
-				$audit = new Audit;
-				$audit->action = "login-failed";
-				$audit->target_type = "login";
-				$audit->user_id = $user->id;
-				$audit->data = "Login failed for user {$this->username}: invalid password";
-				$audit->save();
-				OELog::log("Login failed for user {$this->username}: invalid password",$this->username);
+				$user->audit('login','login-failed',"Login failed for user {$this->username}: invalid password",true);
 				return false;
 			}
 		} else {
 			/**
 			 * Unknown auth_source, error
 			 */
-			$audit = new Audit;
-			$audit->action = "login-failed";
-			$audit->target_type = "login";
-			$audit->user_id = $user->id;
-			$audit->data = "Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source'];
-			$audit->save();
-			OELog::log("Login failed for user {$this->username}: unknown auth source: ".Yii::app()->params['auth_source'],$this->username);
+			$user->audit('login','login-failed',"Login failed for user {$this->username}: unknown auth source: " . Yii::app()->params['auth_source'],true);
 			throw new SystemException('Unknown auth_source: ' . Yii::app()->params['auth_source']);
 		}
 
@@ -264,13 +236,7 @@ class UserIdentity extends CUserIdentity
 		}
 
 		if (!count($firms)) {
-			$audit = new Audit;
-			$audit->action = "login-failed";
-			$audit->target_type = "login";
-			$audit->user_id = $user->id;
-			$audit->data = "Login failed for user {$this->username}: user has no firm rights and cannot use the system";
-			$audit->save();
-			OELog::log("Login failed for user {$this->username}: user has no firm rights and cannot use the system",$this->username);
+			$user->audit('login','login-failed',"Login failed for user {$this->username}: user has no firm rights and cannot use the system",true);
 			throw new Exception('User has no firm rights and cannot use the system.');
 		}
 
@@ -297,13 +263,7 @@ class UserIdentity extends CUserIdentity
 			$app->session['selected_site_id'] = $site->id;
 		}
 
-		$audit = new Audit;
-		$audit->action = "login-successful";
-		$audit->target_type = "login";
-		$audit->user_id = $user->id;
-		$audit->data = "User ".strtoupper($this->username)." logged in";
-		$audit->save();
-		OELog::log("User {$this->username} logged in",$this->username);
+		$user->audit('login','login-successful',"User ".strtoupper($this->username)." logged in",true);
 
 		return true;
 	}

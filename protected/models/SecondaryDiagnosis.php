@@ -3,7 +3,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -13,7 +13,7 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
@@ -62,6 +62,7 @@ class SecondaryDiagnosis extends BaseActiveRecord
 		return array(
 			array('disorder_id, patient_id', 'required'),
 			array('disorder_id, eye_id, patient_id', 'safe'),
+			array('date', 'OEFuzzyDateValidator'),
 		);
 	}
 
@@ -86,6 +87,7 @@ class SecondaryDiagnosis extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'disorder_id' => 'Disorder',
 		);
 	}
 
@@ -108,22 +110,6 @@ class SecondaryDiagnosis extends BaseActiveRecord
 	}
 
 	public function getDateText() {
-		$year = (integer)substr($this->date,0,4);
-		$mon = (integer)substr($this->date,5,2);
-		$day = (integer)substr($this->date,8,2);
-
-		if ($year && $mon && $day) {
-			return $this->NHSDate('date');
-		}
-
-		if ($year && $mon) {
-			return date('M Y',strtotime($year.'-'.$mon.'-01 00:00:00'));
-		}
-
-		if ($year) {
-			return $year;
-		}
-
-		return 'Unknown';
+		return Helper::formatFuzzyDate($this->date);
 	}
 }

@@ -29,12 +29,8 @@ class AdminController extends BaseController
 	}
 
 	protected function beforeAction($action) {
-		$scriptMap = Yii::app()->clientScript->scriptMap;
-		$scriptMap['style.css'] = false;
-		Yii::app()->clientScript->scriptMap = $scriptMap;
-		Yii::app()->clientScript->registerCssFile("/css/admin-style.css");
-		Yii::app()->clientScript->registerCssFile("/css/admin.css");
-		Yii::app()->clientScript->registerScriptFile("/js/admin.js");
+		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
+		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
 
 		$this->jsVars['items_per_page'] = $this->items_per_page;
 

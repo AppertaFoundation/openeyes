@@ -2,7 +2,7 @@
  * OpenEyes
  *
  * (C) Moorfields Eye Hospital NHS Foundation Trust, 2008-2011
- * (C) OpenEyes Foundation, 2011-2012
+ * (C) OpenEyes Foundation, 2011-2013
  * This file is part of OpenEyes.
  * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
@@ -12,13 +12,11 @@
  * @link http://www.openeyes.org.uk
  * @author OpenEyes <info@openeyes.org.uk>
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
- * @copyright Copyright (c) 2011-2012, OpenEyes Foundation
+ * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-/**
- * Load a PDF into an iframe to print it (print js is embedded in the pdf)
- */
+/*
 function printPDF(url, data) {
 	$('#print_pdf_iframe').remove();
 	var iframe = $('<iframe></iframe>');
@@ -28,6 +26,11 @@ function printPDF(url, data) {
 		style: 'display: none;'
 	});
 	$('body').append(iframe);
+	
+	// re-enable the buttons
+	$('#print_pdf_iframe').load(function() {
+		enableButtons();
+	});
 }
 
 $(document).ready(function() {
@@ -60,7 +63,43 @@ function printContent(csspath) {
 		overrideElementCSS : css,
 	});
 }
+*/
 
+/*
+ * creates an iframe in the current document, and populates with the given url and GET data
+ * 
+ * NOTE: the call to print the iFrame must be part of the document returned by the server. By having
+ * this in the $(document).ready() function, we can ensure that all the requisite objects (specifically
+ * eyedraw) are loaded before the print is attempted.
+ * 
+ * @param url - url of page to load
+ * @param data - associative array of GET values to append to URL
+ */
+function printIFrameUrl(url, data) {
+	if (data) {
+		url += '?' + $.param(data);
+	}
+	
+	$('#print_content_iframe').remove();
+	var iframe = $('<iframe></iframe>');
+	iframe.attr({
+		id: 'print_content_iframe',
+		name: 'print_content_iframe',
+		src: url,
+		style: 'display: none;',
+	});
+	$('body').append(iframe);
+	
+	// re-enable the buttons
+	$('#print_content_iframe').load(function() {
+		enableButtons();
+	});
+
+}
+
+/*
+ * DEPRECATED - should migrate to using printIFrameUrl
+ */
 function printUrl(url, data, csspath) {
 	$.post(url, data, function(content) {
 		$('#printable').html(content);

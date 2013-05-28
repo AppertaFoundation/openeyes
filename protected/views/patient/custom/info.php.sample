@@ -1,0 +1,8 @@
+<?php
+/*
+ * This view file allows the patient summary to be customised outside of core code. It will override the layout
+ * below the Episode & event list on the patient summary
+ * 
+ */
+$this->renderPartial('_allergies');
+?>
