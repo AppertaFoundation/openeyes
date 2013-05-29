@@ -79,6 +79,7 @@
     if (is_array($ordered_episodes))
         foreach ($ordered_episodes as $specialty_episodes) {
             ?>
+
             <div class="specialty small"><?php echo $specialty_episodes['specialty']->name ?></div>
 
             <?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
