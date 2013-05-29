@@ -79,7 +79,7 @@
     if (is_array($ordered_episodes))
         foreach ($ordered_episodes as $specialty_episodes) {
             ?>
-            <div class="specialty"><?php echo $specialty_episodes['specialty']->name ?></div>
+            <div class="specialty small"><?php echo $specialty_episodes['specialty']->name ?></div>
 
             <?php foreach ($specialty_episodes['episodes'] as $i => $episode) { ?>
                 <div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix">
