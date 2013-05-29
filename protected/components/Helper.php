@@ -46,7 +46,7 @@ class Helper {
 				if (is_array($data[$key])) {
 					$data[$key] = Helper::convertNHS2MySQL($data[$key], $fields);
 				}
-				else if (preg_match(self::NHS_DATE_REGEX, $data[$key])) {
+				else if (is_string($data[$key]) && preg_match(self::NHS_DATE_REGEX, $data[$key])) {
 					$data[$key] = date('Y-m-d',strtotime($data[$key]));
 				}
 			}
