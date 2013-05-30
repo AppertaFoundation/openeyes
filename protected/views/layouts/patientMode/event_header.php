@@ -73,7 +73,7 @@
 	</script>
 </head>
 
-<body>
+<body<?php if (isset(Yii::app()->getController()->module)) {?> class="<?php echo Yii::app()->getController()->module->id?>"<?php }?>>
 	<?php $this->renderPartial('//base/_banner_watermark',array())?>
 	<?php $this->renderPartial('//base/_debug',array())?>
 	<div id="container">

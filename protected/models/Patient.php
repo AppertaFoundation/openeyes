@@ -156,8 +156,10 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
-
+ 
+                
 		return $this->count($criteria);
+                	
 	}
 
 	/**
@@ -187,7 +189,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
 		Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
-		
+	
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
