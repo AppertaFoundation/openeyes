@@ -58,7 +58,7 @@ class DiagnosisSelection extends BaseCWidget {
 			}
 		} else {
 			if (preg_match('/[^\d]/', $_POST[$this->class][$this->field])) {
-				if ($disorder = Disorder::model()->find('term=? and systemic=0',array($_POST[$this->class][$this->field]))) {
+				if ($disorder = Disorder::model()->find('term=? and specialty_id is not null',array($_POST[$this->class][$this->field]))) {
 					$this->value = $disorder->id;
 					$this->label = $disorder->term;
 				}
