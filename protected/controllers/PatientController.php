@@ -131,7 +131,7 @@ class PatientController extends BaseController
 			}
 		}
 
-		$this->jsVars['currentContacts'] = $this->patient->currentContactLocationIDS();
+		$this->jsVars['currentContacts'] = $this->patient->currentContactIDS();
 
 		$this->breadcrumbs=array(
 			$this->patient->first_name.' '.$this->patient->last_name. '('.$this->patient->hos_num.')',
@@ -554,14 +554,17 @@ class PatientController extends BaseController
 		$term = strtolower(trim($_GET['term'])).'%';
 
 		switch (@$_GET['filter']) {
-			case 'users':
-				$contacts = $this->usersAsContacts($term);
+			case 'staff':
+				$contacts = User::model()->findAsContacts($term);
 				break;
-			case 'nonophthalmic':
-				$contacts = $this->contactsByLabel($term, 'Consultant Ophthalmologist', true);
+			case 'nonspecialty':
+				if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
+					throw new Exception("Unable to find specialty: ".Yii::app()->params['institution_specialty']);
+				}
+				$contacts = Contact::model()->findByLabel($term, $specialty->default_title, true);
 				break;
 			default:
-				$contacts = $this->contactsByLabel($term, @$_GET['filter']);
+				$contacts = Contact::model()->findByLabel($term, @$_GET['filter']);
 		}
 
 		sort($contacts);
@@ -569,77 +572,50 @@ class PatientController extends BaseController
 		echo CJavaScript::jsonEncode($contacts);
 	}
 
-	public function usersAsContacts($term) {
-		$contacts = array();
-
-		$criteria = new CDbCriteria;
-		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
-		$criteria->compare('active',1);
-		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
-
-		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
-			foreach ($user->contact->locations as $location) {
-				$contacts[] = array(
-					'line' => $user->contact->contactLine($location),
-					'contact_location_id' => $location->id,
-				);
-			}
-		}
-
-		return $contacts;
-	}
-
-	public function contactsByLabel($term, $label, $exclude=false) {
-		if (!$cl = ContactLabel::model()->find('name=?',array($label))) {
-			throw new Exception("Unknown contact label: $label");
-		}
-		
-		$criteria = new CDbCriteria;
-		$criteria->addSearchCondition('lower(last_name)',$term,false);
-		if ($exclude) {
-			$criteria->compare('contact_label_id','<>'.$cl->id);
-		} else {
-			$criteria->compare('contact_label_id',$cl->id);
-		}
-		$criteria->order = 'title, first_name, last_name';
-
-		foreach (Contact::model()->findAll($criteria) as $contact) {
-			foreach ($contact->locations as $location) {
-				$contacts[] = array(
-					'line' => $contact->contactLine($location),
-					'contact_location_id' => $location->id,
-				);
-			}
-		}
-
-		return $contacts;
-	}
-
 	public function actionAssociatecontact() {
 		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
 			throw new Exception('Patient not found: '.@$_GET['patient_id']);
 		}
 
-		if (!$location = ContactLocation::model()->findByPk(@$_GET['contact_location_id'])) {
-			throw new Exception("Can't find contact location: ".@$_GET['contact_location_id']);
+		if (@$_GET['contact_location_id']) {
+			if (!$location = ContactLocation::model()->findByPk(@$_GET['contact_location_id'])) {
+				throw new Exception("Can't find contact location: ".@$_GET['contact_location_id']);
+			}
+			$contact = $location->contact;
+		} else {
+			if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
+				throw new Exception("Can't find contact: ".@$_GET['contact_id']);
+			}
 		}
 
 		// Don't assign the patient's own GP
-		if ($location->contact->label == 'General Practitioner') {
-			if ($gp = Gp::model()->find('contact_id=?',array($location->contact_id))) {
+		if ($contact->label == 'General Practitioner') {
+			if ($gp = Gp::model()->find('contact_id=?',array($contact->id))) {
 				if ($gp->id == $patient->gp_id) {
 					return;
 				}
 			}
 		}
 
-		if (!$pca = PatientContactAssignment::model()->find('patient_id=? and location_id=?',array($patient->id,$location->id))) {
-			$pca = new PatientContactAssignment;
-			$pca->patient_id = $patient->id;
-			$pca->location_id = $location->id;
+		if (isset($location)) {
+			if (!$pca = PatientContactAssignment::model()->find('patient_id=? and location_id=?',array($patient->id,$location->id))) {
+				$pca = new PatientContactAssignment;
+				$pca->patient_id = $patient->id;
+				$pca->location_id = $location->id;
 
-			if (!$pca->save()) {
-				throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+				if (!$pca->save()) {
+					throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+				}
+			}
+		} else {
+			if (!$pca = PatientContactAssignment::model()->find('patient_id=? and contact_id=?',array($patient->id,$contact->id))) {
+				$pca = new PatientContactAssignment;
+				$pca->patient_id = $patient->id;
+				$pca->contact_id = $contact->id;
+
+				if (!$pca->save()) {
+					throw new Exception("Unable to save patient contact assignment: ".print_r($pca->getErrors(),true));
+				}
 			}
 		}
 

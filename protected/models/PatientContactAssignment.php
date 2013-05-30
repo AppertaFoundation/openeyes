@@ -72,6 +72,7 @@ class PatientContactAssignment extends BaseActiveRecord
 		return array(
 			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
 			'location' => array(self::BELONGS_TO, 'ContactLocation', 'location_id'),
+			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 
@@ -116,5 +117,12 @@ class PatientContactAssignment extends BaseActiveRecord
 		}
 
 		return $this->contact->address;
+	}
+
+	public function getLocationText() {
+		if ($this->location) {
+			return $this->location;
+		}
+		return $this->contact->address->address1;
 	}
 }

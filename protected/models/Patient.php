@@ -948,10 +948,18 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function currentContactLocationIDS() {
-		$ids = array();
+	public function currentContactIDS() {
+		$ids = array(
+			'locations' => array(),
+			'contacts' => array(),
+		);
+
 		foreach ($this->contactAssignments as $pca) {
-			$ids[] = $pca->location_id;
+			if ($pca->location_id) {
+				$ids['locations'] = $pca->location_id;
+			} else {
+				$ids['contacts'] = $pca->contact_id;
+			}
 		}
 		return $ids;
 	}
