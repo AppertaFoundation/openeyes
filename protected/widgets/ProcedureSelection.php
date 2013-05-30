@@ -67,7 +67,7 @@ class ProcedureSelection extends BaseCWidget {
 		$this->procedures = array();
 		$this->removed_stack = array();
 		if (empty($this->subsections)) {
-			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id,($this->restrict=='unbooked')) as $proc_id => $name) {
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id, $this->restrict) as $proc_id => $name) {
 				if (empty($_POST)) {
 					$found = false;
 					if ($this->selected_procedures) {
