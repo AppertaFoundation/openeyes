@@ -24,12 +24,12 @@ class PhraseTest extends CDbTestCase
 		'sectionTypes' => 'SectionType',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
+		//'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'firms' => 'Firm',
 		'eventTypes' => 'EventType',
 		'elementTypes' => 'ElementType',
-		'possibleElementTypes' => 'PossibleElementType',
-		'siteElementTypes' => 'SiteElementType',
+		//'possibleElementTypes' => 'PossibleElementType',
+		'siteElementTypes' => 'ElementType',
 		'phrases'	=> 'Phrase',
 		'phraseNames'	=> 'PhraseName'
 	);
@@ -39,7 +39,7 @@ class PhraseTest extends CDbTestCase
 	{
 		$fakeId = 9999;
 		$result = Phrase::model()->findByPk($fakeId);
-		$this->assertNull($result);
+		$this->assertNull($result,'failed to assert null');
 	}
 
 	public function testGet_ValidParameters_ReturnsCorrectData()

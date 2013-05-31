@@ -28,7 +28,7 @@ return 	array(
 				),
 				'db'=>array(
 						'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
-						'username' => 'oe',
+						'username' => 'root',
 						'password' => '_OE_TESTDB_PASSWORD_',
 				),
 		),

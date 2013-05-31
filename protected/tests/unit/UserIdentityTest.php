@@ -60,6 +60,7 @@ class UserIdentityTest extends CDbTestCase
 			$userIdentity->errorCode,
 			UserIdentity::ERROR_USERNAME_INVALID
 		);
+               
 	}
 
 	public function testInvalidPassword()
@@ -70,12 +71,14 @@ class UserIdentityTest extends CDbTestCase
 			'JoeBloggs',
 			'wrongpassword'
 		);
-
 		$this->assertFalse($userIdentity->authenticate());
 		$this->assertEquals(
 			$userIdentity->errorCode,
 			UserIdentity::ERROR_PASSWORD_INVALID
 		);
+                
+                
+                 
 	}
 
 	public function testUserInactive()
@@ -99,8 +102,8 @@ class UserIdentityTest extends CDbTestCase
 		Yii::app()->params['auth_source'] = 'BASIC';
 
 		$userIdentity = new UserIdentity(
-			'JoeBloggs',
-			'secret'
+			'demo',
+			'demo'
 		);
 		
 		$this->assertTrue((bool)$this->users['user1']['global_firm_rights']);
@@ -121,6 +124,7 @@ class UserIdentityTest extends CDbTestCase
 			'secret'
 		);
 		
+                
 		$this->assertFalse((bool)$user->global_firm_rights);
 
 		$this->assertTrue($userIdentity->authenticate());

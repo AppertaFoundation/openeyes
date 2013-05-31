@@ -42,6 +42,7 @@ return array(
 		'application.helpers.*',
 		'application.gii.*',
 		'system.gii.generators.module.*',
+            
 	),
 
 	'modules' => array(

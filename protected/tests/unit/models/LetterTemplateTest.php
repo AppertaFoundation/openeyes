@@ -21,8 +21,7 @@
 class LetterTemplateTest extends CDbTestCase
 {
 	public $fixtures = array(
-		'specialties' => 'Specialty',
-		'contactTypes' => 'ContactType',
+		'specialties' => 'Specialty', 
 		'letterTemplates' => 'LetterTemplate'
 	);
 
@@ -47,32 +46,15 @@ class LetterTemplateTest extends CDbTestCase
 	public function testGetSpecialtyOptions()
 	{
 		$expected = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
-		$result = $this->model->getSpecialtyOptions();
+		$result = $this->model->getSubspecialtyOptions();
 		
 		$this->assertEquals($expected, $result, 'Returned options should match.');
 		$this->assertEquals(count($this->specialties), count($result), 'Should have found all the options.');
-	}
-
-	public function testGetContactTypeOptions()
-	{
-		$expected = CHtml::listData(ContactType::model()->findAll(), 'id', 'name');
-		$result = $this->model->getContactTypeOptions();
-		
-		$this->assertEquals($expected, $result, 'Returned options should match.');
-		$this->assertEquals(count($this->contactTypes), count($result), 'Should have found all the options.');
-	}
-
-	public function testGetSpecialtyText()
-	{
-		$letterTemplate = LetterTemplate::model()->findByPk(1);
-
-		$this->assertEquals($letterTemplate->getSpecialtyText(), 'Accident & Emergency');
-	}
-
+	} 
+ 
 	public function testGetCCText()
 	{
-		$letterTemplate = LetterTemplate::model()->findByPk(1);
-
+		$letterTemplate = LetterTemplate::model()->findByPk(1); 
 		$this->assertEquals($letterTemplate->getCcText(), 'Optometrist');
 	}
 
@@ -89,32 +71,12 @@ class LetterTemplateTest extends CDbTestCase
 			'id' => 'ID',
 			'name' => 'Name',
 			'phrase' => 'Phrase',
-			'specialty_id' => 'Specialty',
+			'subspecialty_id' => 'Subspecialty',
 			'send_to' => 'To',
 			'cc' => 'Cc',
 		);
 		
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
-
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-	{
-		$letter = new LetterTemplate;
-		$letter->setAttributes($searchTerms);
-		$results = $letter->search();
-		$data = $results->getData();
-
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->letterTemplates($key);
-			}
-		}
-
-		$this->assertEquals($numResults, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);
-	}
+ 
 }

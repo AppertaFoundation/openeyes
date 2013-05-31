@@ -41,10 +41,10 @@ return array(
 		'name' => 'Glaucoma'
 	),
 	'specialty8' => array(
-		'name' => 'Medical Retina'
+		'name' => 'Medical Retinal'
 	),
 	'specialty9' => array(
-		'name' => 'Neuroophthalmology'
+		'name' => 'Neuro-ophthalmology'
 	),
 	'specialty10' => array(
 		'name' => 'Oncology'
@@ -53,7 +53,7 @@ return array(
 		'name' => 'Paediatrics'
 	),
 	'specialty12' => array(
-		'name' => 'Primary Care'
+		'name' => 'General Ophthalmology'
 	),
 	'specialty13' => array(
 		'name' => 'Refractive'
@@ -66,5 +66,8 @@ return array(
 	),
 	'specialty16' => array(
 		'name' => 'Vitreoretinal'
+	),
+        'specialty17' => array(
+		'name' => 'Orthoptics'
 	),
 );

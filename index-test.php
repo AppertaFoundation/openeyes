@@ -17,36 +17,25 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$yii=dirname(__FILE__).'/protected/yii/framework/yii.php';
+$config=dirname(__FILE__).'/protected/config/main.php';
+$common_config=dirname(__FILE__).'/protected/config/core/common.php';
+$local_common_config=dirname(__FILE__).'/protected/config/local/common.php';
 
-$operations = $this->getRows('operations');
-
-$sessions = $this->getRows('sessions');
-
-$monthStart = date('Y-m-01');
-
-$bookings = array();
-
-if (!empty($operations)) {
-	$sessionId = -1;
-	foreach ($operations as $operation) {
-		if ($operation['event_id'] == 1 || $operation['event_id'] == 2) {
-			if (!empty($sessions)) {
-				foreach ($sessions as $session) {
-					if ($session['id'] > $sessionId && $session['date'] >= $monthStart) {
-						$sessionId = $session['id'];
-						break;
-					}
-				}
-				$bookings[] = array(
-				'element_operation_id' => $operation['id'],
-						'session_id' => $sessionId,
-					'display_order' => 1,
-					'ward_id' => 1
-				);
-			}
-			$sessionId++;
+foreach (array($common_config,$local_common_config) as $configfile) {
+	foreach (@file($configfile) as $line) {
+		if (preg_match('/^[\s\t]+\'environment\'[\s\t]*=>[\s\t]*\'([a-z]+)\'/',$line,$m)) {
+			$environment = $m[1];
 		}
 	}
 }
 
-return $bookings;
+if ($environment == 'dev') {
+	define('YII_DEBUG',true);
+}
+
+// specify how many levels of call stack should be shown in each log message
+defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL',3);
+
+require_once($yii);
+Yii::createWebApplication($config)->run();

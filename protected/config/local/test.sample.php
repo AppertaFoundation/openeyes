@@ -22,7 +22,7 @@ return array(
 		'db' => array(
 			'connectionString' => 'mysql:host=localhost;dbname=openeyestest',
 			'username' => 'root',
-			'password' => '',
+			'password' => 'root ',
 		),
 	),
 );

@@ -22,39 +22,40 @@ class FirmTest extends CDbTestCase
 	public $fixtures = array(
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
+		'serviceSpecialtyAssignment' => 'ServiceSubspecialtyAssignment',
 		'firms' => 'Firm',
 		'FirmUserAssignments' => 'FirmUserAssignment',
 		'users' => 'User',
-		'userContactAssignment' => 'UserContactAssignment',
+		//'userContactAssignment' => 'UserContactAssignment',
 		'contacts' => 'Contact',
 		'consultants' => 'Consultant'
 	);
 
 	public function testGetServicespecialtyOptions()
 	{
-		$serviceSpecialties = Firm::model()->getServiceSpecialtyOptions();
+		$serviceSpecialties = Firm::model()->getServiceSubspecialtyOptions();
 		$this->assertTrue(is_array($serviceSpecialties));
-		$this->assertEquals(count($this->serviceSpecialtyAssignment), count($serviceSpecialties));
+		$this->assertEquals(count($this->serviceSubspecialtyAssignment), count($serviceSpecialties));
 	}
 
 	public function testGetServiceText()
 	{
-		$firm = $this->firms('firm1');
+		$firm = $this->firms('firm1'); 
 		$this->assertEquals($firm->getServiceText(), 'Accident and Emergency Service');
+             
 	}
 
 	public function testGetSpecialtyText()
 	{
 		$firm = $this->firms('firm1');
-		$this->assertEquals($firm->getSpecialtyText(), 'Accident & Emergency');
+		$this->assertEquals($firm->getSubspecialtyText(), 'Accident & Emergency');
 	}
 
 	public function testGetConsultant()
 	{
 		$firm = $this->firms('firm1');
 
-		$consultant = $firm->getConsultant();
+		$consultant = $firm->getConsultantName();
 
 		$this->assertEquals($consultant->contact->nick_name, 'Aylward');
 	}

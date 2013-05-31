@@ -24,12 +24,12 @@ class PhraseNameTest extends CDbTestCase
 		'sectionTypes' => 'SectionType',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
+		//'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'firms' => 'Firm',
 		'eventTypes' => 'EventType',
 		'elementTypes' => 'ElementType',
-		'possibleElementTypes' => 'PossibleElementType',
-		'siteElementTypes' => 'SiteElementType',
+		//'possibleElementTypes' => 'PossibleElementType',
+		'siteElementTypes' => 'ElementType',
 		'phraseNames'	=> 'PhraseName',
 	);
 
@@ -63,10 +63,9 @@ class PhraseNameTest extends CDbTestCase
 
 	public function testUpdate()
 	{
-		$expected = 'Testing again';
+		$expected   = 'Testing again';
 		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
-		$phraseName->name = $expected;
-		$phraseName->save();
+		$phraseName = PhraseName::model()->updateByPk($this->phraseNames['phraseName1']['id'],array('name' => $expected));
 		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
 		$this->assertEquals($expected, $phraseName->name);
 	}
