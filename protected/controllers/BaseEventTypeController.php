@@ -43,6 +43,13 @@ class BaseEventTypeController extends BaseController
 	 * @param EventType $event_type
 	 */
 	public function checkEventAccess($event_type) {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		if (!$firm->service_subspecialty_assignment_id) {
+			if (!$event_type->support_services) {
+				return false;
+			}
+		}
+
 		if(BaseController::checkUserLevel(5)) {
 			return true;
 		}
@@ -803,8 +810,11 @@ class BaseEventTypeController extends BaseController
 	}
 	
 	public function getEpisode($firm, $patientId) {
-		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
-		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+		if ($firm->service_subspecialty_assignment_id) {
+			$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
+			return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+		}
+		return Episode::model()->find('patient_id=? and support_services=?',array($patientId,1));
 	}
 	
 	public function getOrCreateEpisode($firm, $patientId) {
