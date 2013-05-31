@@ -123,7 +123,7 @@ class LetterTemplate extends BaseActiveRecord
 	}
 
 	public function getSubspecialtyText()
-	{
+	{ 
 		return $this->subspecialty->name;
 	}
 

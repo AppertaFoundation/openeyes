@@ -104,7 +104,7 @@ class CommonSystemicDisorder extends BaseActiveRecord
 		));
 	}
 
-	public static function getList($firm) {
+	public static function getList($firm = 0) {
 		return CHtml::listData(Disorder::model()->findAll(array(
 				'condition' => 'specialty_id is null',
 				'join' => 'JOIN common_systemic_disorder cad ON cad.disorder_id = t.id',
