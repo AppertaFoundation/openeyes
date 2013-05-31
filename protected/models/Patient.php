@@ -156,8 +156,10 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
-
+ 
+                
 		return $this->count($criteria);
+                	
 	}
 
 	/**
@@ -187,7 +189,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
 		Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
-		
+	
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
@@ -948,10 +950,18 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function currentContactLocationIDS() {
-		$ids = array();
+	public function currentContactIDS() {
+		$ids = array(
+			'locations' => array(),
+			'contacts' => array(),
+		);
+
 		foreach ($this->contactAssignments as $pca) {
-			$ids[] = $pca->location_id;
+			if ($pca->location_id) {
+				$ids['locations'] = $pca->location_id;
+			} else {
+				$ids['contacts'] = $pca->contact_id;
+			}
 		}
 		return $ids;
 	}

@@ -398,4 +398,24 @@ class User extends BaseActiveRecord
 			case 4: return 'Full';
 		}
 	}
+
+	public function findAsContacts($term) {
+		$contacts = array();
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
+		$criteria->compare('active',1);
+		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+
+		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
+			foreach ($user->contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $user->contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
 }

@@ -753,6 +753,7 @@ td.eventIcons > img { margin-bottom:10px; }
 /* Specialty group header */
 #episodes_sidebar > .specialty { color:#504c3c; background: #eaddaf; padding:5px 2px 5px 5px; -webkit-border-top-right-radius: 3px;  -moz-border-radius-topright: 3px; ; border-top-right-radius: 3px; }
 /* container */
+
 #episodes_sidebar > .episode.open		{ background: #eaddaf; margin-bottom:5px;}
 #episodes_sidebar > .episode.closed { background: #dad3ba; margin-bottom:5px; }
 /* nav */
@@ -781,13 +782,17 @@ td.eventIcons > img { margin-bottom:10px; }
 .episode ul.events li a { display:block; height:inherit; margin-left:-5px; padding-left:8px; padding-right: 10px; -webkit-border-top-right-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-topright: 6px; -moz-border-radius-bottomright: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px;}
 .episode ul.events li a:hover		{ border-bottom: none; background: #3665ff url(../img/_elements/icons/event/event_open_arrow.png) right center no-repeat; color:#fff; }
 .episode ul.events li a:active	{ border-bottom: none; background: #315be6; color:#fff; }
-
+ 
 /* Quicklook ... meta overview of Event */
 .episode ul.events li .quicklook { display:none; position:absolute; width:200px; left:140px; top:-5px; z-index:1; padding:5px; border:1px solid #3665ff; background:#fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; -moz-box-shadow: 2px 2px 2px 0 #999;  -webkit-box-shadow: 2px 2px 2px 0 #999;	box-shadow: 2px 2px 2px 0 #999;  }
 .episode ul.events li .quicklook .event { display:block; font-weight: bold; padding-left:5px; padding-bottom:3px; }
 .episode ul.events li .quicklook .info	{ display:block; font-size:11px; padding-left:5px}
 .episode ul.events li .quicklook .issue	{ display:block; font-size:11px; color:#600; padding:5px 5px 5px 20px; margin-top:7px; background:#fdf2e5 url(../img/_elements/icons/event/status/alert.png) top left no-repeat;}
 
+/* mini icons for collapsed state */
+.episode .episode_nav .minievents { display:none; padding:2px 5px 2px 5px; }
+.episode .episode_nav .minievents a { border:none; }
+.episode .episode_nav .minievents img { width:12px; height:12px; margin-right:3px; }
 
 /* Viewing...  */
 .episode ul.events li .viewing { display:block; height:inherit; background: #aaa url(../img/_elements/icons/event/event_open_arrow.png) right center no-repeat; color:#fff; margin-left:-5px; padding-left:8px; padding-right: 10px; -webkit-border-top-right-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-topright: 6px; -moz-border-radius-bottomright: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px; }

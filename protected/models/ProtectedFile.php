@@ -49,6 +49,27 @@ class ProtectedFile extends BaseActiveRecord {
 	}
 
 	/**
+	 * create a new protected file object which has properties that can be used for writing an actual file to
+	 * 
+	 * @param string $name
+	 * @return ProtectedFile
+	 */
+	public static function createForWriting($name) {
+		$file = new ProtectedFile();
+		$file->name = $name;
+		
+		$file->generateUID();
+		
+		$path = $file->getFilePath();
+		if (!file_exists($path)) {
+			error_log($path);
+			mkdir($path, 0755, true);
+		}
+		
+		return $file;
+	}
+	
+	/**
 	 * Returns the static model of the specified AR class.
 	 * @return ProtectedFile the static model class
 	 */
@@ -89,28 +110,81 @@ class ProtectedFile extends BaseActiveRecord {
 	}
 
 	/**
+	 * Path to file without filename
+	 * 
+	 * @return string
+	 */
+	public function getFilePath() {
+		return self::getBasePath() . '/' . substr($this->uid, 0, 1)
+		. '/' . substr($this->uid, 1, 1) . '/' . substr($this->uid, 2, 1);
+	}
+	/**
 	 * Path to file
 	 * @return string
 	 */
 	public function getPath() {
-		return self::getBasePath() . '/' . substr($this->uid, 0, 1)
-		. '/' . substr($this->uid, 1, 1) . '/' . substr($this->uid, 2, 1)
+		return $this->getFilePath()
 		. '/' . $this->uid;
 	}
 
 	/**
+	 * ensures that mimetype and size are set based on the file that's been stored (unless the file
+	 * is being copied from elsewhere, in which case this should have been taken care of)
+	 * 
 	 * (non-PHPdoc)
 	 * @see BaseActiveRecord::beforeSave()
 	 */
-	protected function beforeSave() {
+	public function beforeValidate() {
+		
+		if (!$this->_source_path) {
+			// the file should be in place
+			$path = $this->getPath();
+			
+			if (!$this->mimetype) {
+				$this->mimetype = $this->lookupMimetype($path);
+			}
+			if (!$this->size) {
+				$this->size = filesize($path);
+			}
+		}
+		
+		return parent::beforeValidate();
+	}
+	
+	/**
+	 * (non-PHPdoc)
+	 * @see BaseActiveRecord::beforeSave()
+	 */
+	public function beforeSave() {
 		if($this->_source_path) {
 			mkdir(dirname($this->getPath()), 0777, true);
 			copy($this->_source_path, $this->getPath());
 			$this->_source_path = null;
 		}
+		elseif (!file_exists($this->getPath())) {
+			throw new Exception('There has been an error with file storage');
+		}
+		
 		return true;
 	}
+	
+	/**
+	 * generate the UID for the file from the file name
+	 * 
+	 * @throws Exception
+	 */
+	public function generateUID() {
+		if (!$this->name) {
+			throw new Exception('ProtectedFile requires name attribute to generate storage parameters');
+		}
 
+		// Set UID
+		$this->uid = sha1(microtime().$this->name);
+		while(file_exists($this->getPath())) {
+			$this->uid = sha1(microtime().$this->name);
+		}
+	}
+	
 	/**
 	 * Initialise protected file from a source file
 	 * @param string $path
@@ -132,14 +206,12 @@ class ProtectedFile extends BaseActiveRecord {
 		// Set size
 		$this->size = filesize($path);
 
-		// Set UID
-		$this->uid = sha1(microtime().$this->name);
-		while(file_exists($this->getPath())) {
-			$this->uid = sha1(microtime().$this->name);
-		}
+		// UID
+		$this->generateUID();
 
 	}
-
+	
+	
 	/**
 	 * Get the mime type of the file
 	 * @param string $path

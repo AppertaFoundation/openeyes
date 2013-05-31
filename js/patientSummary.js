@@ -52,7 +52,11 @@ $(document).ready(function() {
 			'url': baseUrl+'/patient/unassociateContact?pca_id='+row.attr('data-attr-pca-id'),
 			'success': function(resp) {
 				if (resp == "1") {
-					currentContacts.splice(currentContacts.indexOf(row.attr('data-attr-location-id')),1);
+					if (row.attr('data-attr-location-id')) {
+						currentContacts['locations'].splice(currentContacts['locations'].indexOf(row.attr('data-attr-location-id')),1);
+					} else {
+						currentContacts['contacts'].splice(currentContacts['contacts'].indexOf(row.attr('data-attr-contact-id')),1);
+					}
 					row.remove();
 				} else {
 					alert("There was an error removing the contact association, please try again or contact support for assistance.");

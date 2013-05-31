@@ -55,7 +55,7 @@ class Event extends BaseActiveRecord
 	 * Sets default scope for events such that we never pull back any rows that have deleted set to 1
 	 * @return array of mandatory conditions
 	 */
-	
+
 	public function defaultScope() {
 		$table_alias = $this->getTableAlias(false,false);
 		return array(
@@ -230,6 +230,8 @@ class Event extends BaseActiveRecord
 		if (!BaseController::checkUserLevel(4)) return false;
 
 		if ($this->episode->patient->date_of_death) return false;
+
+		if (!$this->episode->editable) return false;
 
 		$admin = User::model()->find('username=?',array('admin'));	 // these two lines should be replaced once we have rbac
 		if ($admin->id == Yii::app()->session['user']->id) {return true;}

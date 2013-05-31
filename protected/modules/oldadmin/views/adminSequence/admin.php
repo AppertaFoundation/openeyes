@@ -68,8 +68,9 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		),
 		array(
 			'header'=>'Theatre (Site)',
-			'value'=>'$data->TheatreName',
-			'filter'=>CHtml::dropDownList('Site[id]', $model->site_id, Site::model()->getList(), array('empty' => '')),
+			'value'=>'$data->getTheatreName()',
+			'name' => 'theatre_id',
+			'filter'=>CHtml::dropDownList('Sequence[theatre_id]', $model->theatre_id, Theatre::model()->getListWithSites(), array('empty' => '')),
 		),
 		array(
 			'header' => 'Day',

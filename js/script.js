@@ -34,6 +34,7 @@ $(document).ready(function(){
 	});
 
 	// show hide
+        
 	$('.sprite.showhide2').click(function(e){
 		var episode_id = $(this).parent().parent().prev('input').val();
 		if (episode_id == undefined) {
@@ -49,6 +50,7 @@ $(document).ready(function(){
 			wb.children('.events').slideUp('fast');
 			sp.removeClass('hide');
 			sp.addClass('show');
+                        wb.children('.minievents').slideDown('fast');
 			$.ajax({
 				'type': 'GET',
 				'url': '/patient/hideepisode?episode_id='+episode_id,
@@ -59,6 +61,7 @@ $(document).ready(function(){
 			wb.children('.events').slideDown('fast');
 			sp.removeClass('show');
 			sp.addClass('hide');
+                        wb.children('.minievents').slideUp('fast');
 			$.ajax({
 				'type': 'GET',
 				'url': '/patient/showepisode?episode_id='+episode_id,
