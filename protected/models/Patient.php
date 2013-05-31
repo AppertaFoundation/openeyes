@@ -114,8 +114,11 @@ class Patient extends BaseActiveRecord {
 			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
 				'condition' => "legacy=1",
 			),
+			'supportserviceepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+				'condition' => 'support_services=1',
+			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "legacy=0 or legacy is null",
+				'condition' => "(legacy=0 or legacy is null) and (support_services=0 or support_services is null)",
 			),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
@@ -222,9 +225,11 @@ class Patient extends BaseActiveRecord {
 			
 			// group
 			foreach ($episodes as $ep) {
-				$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
-				$by_specialty[$specialty->code]['episodes'][] = $ep;
-				$by_specialty[$specialty->code]['specialty'] = $specialty;
+				if ($ep->firm) {
+					$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
+					$by_specialty[$specialty->code]['episodes'][] = $ep;
+					$by_specialty[$specialty->code]['specialty'] = $specialty;
+				}
 			}
 			
 			

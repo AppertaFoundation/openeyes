@@ -1559,6 +1559,10 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_institution_sites ul li .column_name { width: 250px; display: inline-block; }
 #admin_institution_sites ul li .column_address { width: 436px; display: inline-block; }
 
+#admin_contactlabels ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contactlabels ul li .column_id { width: 30px; display: inline-block; }
+#admin_contactlabels ul li .column_name { width: 794px; display: inline-block; }
+
 #div_Firm_consultant_id { margin-top: 2px; }
 
 div.previousOperation .label { display: inline-block; width: 125px; }

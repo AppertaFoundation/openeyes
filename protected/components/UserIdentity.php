@@ -280,7 +280,10 @@ class UserIdentity extends CUserIdentity
 
 	public function firmString($firm)
 	{
-		return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+		if ($firm->serviceSubspecialtyAssignment) {
+			return "{$firm->name} ({$firm->serviceSubspecialtyAssignment->subspecialty->name})";
+		}
+		return $firm->name;
 	}
 
 	public function getId()

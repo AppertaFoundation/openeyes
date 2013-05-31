@@ -636,6 +636,7 @@ class BaseEventTypeController extends BaseController
 		}
 		*/
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		if($editable === null){
 			if(isset($this->event)){
@@ -648,6 +649,7 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial('//patient/event_header',array(
 			'ordered_episodes'=>$ordered_episodes,
 			'legacyepisodes'=>$legacyepisodes,
+			'supportserviceepisodes'=>$supportserviceepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
 			'editable'=>$editable,
@@ -657,10 +659,12 @@ class BaseEventTypeController extends BaseController
 	public function footer() {
 		$episodes = $this->patient->episodes;
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
 			'legacyepisodes'=>$legacyepisodes,
+			'supportserviceepisodes'=>$supportserviceepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules()
 		));
 	}
