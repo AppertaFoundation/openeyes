@@ -67,10 +67,16 @@
 						contactCache = {};
 
 						for (var i = 0; i < data.length; i++) {
-							var index = $.inArray(data[i]['contact_location_id'], currentContacts);
-							if (index == -1) {
-								result.push(data[i]['line']);
-								contactCache[data[i]['line']] = data[i];
+							if (data[i]['contact_location_id']) {
+								if ($.inArray(data[i]['contact_location_id'], currentContacts['locations']) == -1) {
+									result.push(data[i]['line']);
+									contactCache[data[i]['line']] = data[i];
+								}
+							} else {
+								if ($.inArray(data[i]['contact_id'], currentContacts['contacts']) == -1) {
+									result.push(data[i]['line']);
+									contactCache[data[i]['line']] = data[i];
+								}
 							}
 						}
 
@@ -91,7 +97,11 @@
 
 					$('#contactname').val('');
 
-					var querystr = 'patient_id=".$this->patient->id."&contact_location_id='+contactCache[value]['contact_location_id'];
+					if (contactCache[value]['contact_location_id']) {
+						var querystr = 'patient_id=".$this->patient->id."&contact_location_id='+contactCache[value]['contact_location_id'];
+					} else {
+						var querystr = 'patient_id=".$this->patient->id."&contact_id='+contactCache[value]['contact_id'];
+					}
 
 					$.ajax({
 						'type': 'GET',
@@ -99,7 +109,12 @@
 						'success': function(html) {
 							if (html.length >0) {
 								$('#patient_contacts').append(html);
-								currentContacts.push(contactCache[value]['contact_location_id']);
+								if (contactCache[value]['contact_location_id']) {
+									currentContacts['locations'].push(contactCache[value]['contact_location_id']);
+								} else {
+									currentContacts['contacts'].push(contactCache[value]['contact_id']);
+								}
+
 								$('#btn-add-contact').hide();
 							}
 						}
@@ -116,10 +131,9 @@
 		&nbsp;
 		&nbsp;&nbsp;
 		<select id="contactfilter" name="contactfilter">
-			<option value="">- Filter -</option>
-			<option value="users" selected="selected"><?php echo ContactLabel::staffType()?></option>
-			<option value="Consultant Ophthalmologist">Consultant ophthalmologist</option>
-			<option value="nonophthalmic">Non-ophthalmic specialist</option>
+			<?php foreach (ContactLabel::getList() as $key => $name) {?>
+				<option value="<?php echo $key?>"><?php echo $name?>
+			<?php }?>
 		</select>
 		&nbsp;
 		<div style="display: inline-block; width: 15px;">

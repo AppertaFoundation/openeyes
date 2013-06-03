@@ -155,6 +155,8 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 			$this->update('firm',array('consultant_id'=>$this->getConsultantUserID($firm)),"id=$firm->id");
 		}
 
+		$this->update('firm',array('consultant_id'=>1),'consultant_id=0');
+
 		$this->createIndex('firm_consultant_id_fk','firm','consultant_id');
 		$this->addForeignKey('firm_consultant_id_fk','firm','consultant_id','user','id');
 

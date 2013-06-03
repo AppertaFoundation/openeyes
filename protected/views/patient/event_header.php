@@ -38,7 +38,7 @@ $this->renderPartial('//layouts/patientMode/event_header');
 				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
 				<p style="margin-bottom: 0px;">&nbsp;</p>
 			</div>
-			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes))?>
+			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('//patient/event_tabs')?>
 				<!-- EVENT CONTENT HERE -->

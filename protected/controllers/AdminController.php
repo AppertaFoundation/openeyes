@@ -229,6 +229,22 @@ class AdminController extends BaseController
 		$this->render('/admin/contacts',array('contacts'=>@$contacts));
 	}
 
+	public function actionContactlabels($id=false) {
+		if ((integer)$id) {
+			$page = $id;
+		} else {
+			$page = 1;
+		}
+
+		$this->render('/admin/contactlabels',array(
+			'contactlabels' => $this->getItems(array(
+				'model' => 'ContactLabel',
+				'order' => 'name asc',
+				'page' => $page,
+			)),
+		));
+	}
+
 	public function searchContacts() {
 		$criteria = new CDbCriteria;
 
