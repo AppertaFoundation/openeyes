@@ -32,9 +32,10 @@
 class ProtectedFile extends BaseActiveRecord {
 	
 	const THUMBNAIL_QUALITY = 85;
-
+	// used in model creation
 	protected $_source_path;
-
+	// used in model delete
+	protected $_stored_path;
 	protected $_thumbnail = array();
 
 	/**
@@ -118,6 +119,7 @@ class ProtectedFile extends BaseActiveRecord {
 		return self::getBasePath() . '/' . substr($this->uid, 0, 1)
 		. '/' . substr($this->uid, 1, 1) . '/' . substr($this->uid, 2, 1);
 	}
+	
 	/**
 	 * Path to file
 	 * @return string
@@ -125,6 +127,17 @@ class ProtectedFile extends BaseActiveRecord {
 	public function getPath() {
 		return $this->getFilePath()
 		. '/' . $this->uid;
+	}
+	
+	/**
+	 * get URL for downloading this file
+	 * 
+	 * @see ProtectedFileController::actionDownload
+	 * 
+	 * @return string
+	 */
+	public function getDownloadURL() {
+		return Yii::app()->createURL('ProtectedFile/Download', array('id' => $this->id));
 	}
 
 	/**
@@ -166,6 +179,22 @@ class ProtectedFile extends BaseActiveRecord {
 		}
 		
 		return true;
+	}
+	
+	public function beforeDelete() {
+		$this->_stored_path = $this->getPath();
+		
+		return parent::beforeDelete();
+	}
+	
+	/**
+	 * ensures file is removed from filesystem when deleting
+	 * 
+	 */
+	public function afterDelete() {
+		unlink($this->_stored_path);
+		
+		return parent::beforeDelete();
 	}
 	
 	/**
