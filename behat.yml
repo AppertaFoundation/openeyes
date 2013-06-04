@@ -1,13 +1,20 @@
 default:
-  extensions:
-    Behat\MinkExtension\Extension:
-      base_url: 'http://localhost'
-      default_session: selenium2
-      javascript_session: selenium2
-      browser_name: 'chrome'
-      selenium2:
-        capabilities:
-          browser: chrome
-          browserVersion: 23
-          version: "23"
-          platform: MAC
+    context:
+        parameters: []
+
+    extensions:
+        Behat\YiiExtension\Extension:
+            framework_script: protected/yii/framework/yii.php
+            config_script:    protected/config/main.php
+
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost:8888
+            javascript_session: selenium2
+            goutte:             ~
+            selenium2:          ~
+
+selenium:
+    extensions:
+        Behat\MinkExtension\Extension:
+            default_session:    selenium2
+            javascript_session: selenium2
