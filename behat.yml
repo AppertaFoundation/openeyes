@@ -32,3 +32,10 @@ sauce:
         Behat\MinkExtension\Extension:
             default_session:    saucelabs
             javascript_session: saucelabs
+
+ci:
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:           http://localhost
+            default_session:    saucelabs
+            javascript_session: saucelabs
