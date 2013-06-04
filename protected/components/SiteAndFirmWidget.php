@@ -69,7 +69,11 @@ class SiteAndFirmWidget extends CWidget {
 		$firms = array();
 		if($preferred_firms = $user->preferred_firms) {
 			foreach($preferred_firms as $preferred_firm) {
-				$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
+				if ($preferred_firm->serviceSubspecialtyAssignment) {
+					$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
+				} else {
+					$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name";
+				}
 			}
 		}
 		foreach($this->controller->firms as $firm_id => $firm_label) {
