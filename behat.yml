@@ -3,6 +3,8 @@ default:
         parameters: []
 
     extensions:
+        features/bootstrap/extension.php: ~
+
         Behat\YiiExtension\Extension:
             framework_script: protected/yii/framework/yii.php
             config_script:    protected/config/main.php
