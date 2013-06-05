@@ -69,6 +69,7 @@ class EventGroup extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'event_types' => array(self::HAS_MANY, 'EventType', 'event_group_id'),
 		);
 	}
 

@@ -113,6 +113,7 @@ class PatientController extends BaseController
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$this->layout = '//layouts/patientMode/main';
 
@@ -138,7 +139,7 @@ class PatientController extends BaseController
 		);
 
 		$this->render('view', array(
-			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
+			'tab' => $tabId, 'event' => $eventId, 'episodes' => $episodes, 'ordered_episodes' => $ordered_episodes, 'legacyepisodes' => $legacyepisodes, 'episodes_open' => $episodes_open, 'episodes_closed' => $episodes_closed, 'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']), 'supportserviceepisodes' => $supportserviceepisodes,
 		));
 	}
 
@@ -306,6 +307,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		if (!$current_episode = $this->patient->getEpisodeForCurrentSubspecialty()) {
@@ -341,6 +343,7 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
+			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $current_episode,
@@ -361,6 +364,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -388,6 +392,7 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
+			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $this->episode
