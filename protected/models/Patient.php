@@ -772,22 +772,6 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-<<<<<<< HEAD
-	public function getAdd() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAdnexalComorbidity($this, $episode, 'right');
-		}
-	}
-
-	public function getAdl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAdnexalComorbidity($this, $episode, 'left');
-		}
-	}
-	
-
 	// DR function additions
 	/*
 	 * NSC right Retinopathy
@@ -888,8 +872,6 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-=======
->>>>>>> develop
 	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
 		$properties['patient_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
