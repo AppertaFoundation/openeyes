@@ -151,6 +151,17 @@ class ExceptionLogRoute extends CLogRoute
 			$timestamp = time();
 			$timestamp = substr($timestamp,0,5).'-'.substr($timestamp,5,strlen($timestamp));
 
+			$logfilePrefix = $logfile = $timestamp.'.log';
+
+			$n = 1;
+
+			while (file_exists($this->getLogPath().DIRECTORY_SEPARATOR.$logfile)) {
+				$logfile = $logfilePrefix.'.'.$n;
+				$n++;
+			}
+
+			file_put_contents($this->getLogPath().DIRECTORY_SEPARATOR.$logfile,"SERVER:\n\n".print_r($_SERVER,true)."\n\nPOST:\n\n".print_r($_POST,true));
+
 			$msg = "User: $user\n";
 			$msg .= "User agent: $useragent\n";
 			isset($_SERVER['REQUEST_URI']) && $msg .= "Request: http".(@$_SERVER['HTTPS']?'s':'').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\n";
@@ -158,6 +169,7 @@ class ExceptionLogRoute extends CLogRoute
 			isset($_SERVER['REMOTE_ADDR']) && $msg .= "Remote IP: ".$_SERVER['REMOTE_ADDR']."\n";
 			isset($_SERVER['HTTP_VIA']) && $msg .= "Via: ".$_SERVER['HTTP_VIA']."\n";
 			isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $msg .= "Forwarded IP: ".$_SERVER['HTTP_X_FORWARDED_FOR']."\n";
+			$msg .= "Logfile: $logfile\n";
 			$msg .= "\n".$log[0];
 			mail($this->adminEmail,$this->emailSubject." [$timestamp]",$msg);
 		}
