@@ -130,7 +130,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 				'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
 				'order' => 'term',
 				'params' => array(':subspecialty_id' => $ss_id, ':ophcode' => 130),
-		));
+		)); 
 		return CHtml::listData($disorders, 'id', 'term');
 	}
 	

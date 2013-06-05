@@ -191,15 +191,14 @@ class Patient extends BaseActiveRecord {
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
-		));
-		
+		)); 
 		return $dataProvider;
 	}
 
 	public function beforeSave()
 	{
 		foreach (array('first_name', 'last_name', 'dob', 'title', 'primary_phone') as $property) {
-			if ($randomised = $this->randomData($property)) {
+			if ($randomised = $this->randomData($property)) { 
 				$this->$property = $randomised;
 			}
 		}
@@ -361,7 +360,7 @@ class Patient extends BaseActiveRecord {
 
 		$randomSource = file(Yii::app()->basePath . '/data/randomdata.csv');
 		$randomEntryArray = explode(",", trim($randomSource[array_rand($randomSource)]));
-
+ 
 		return $randomEntryArray[array_search($keyInDatafile, $randomSourceFieldOrder)];
 	}
 

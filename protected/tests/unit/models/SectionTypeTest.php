@@ -24,12 +24,12 @@ class SectionTypeTest extends CDbTestCase
 		'sectionTypes' => 'SectionType',
 		'services' => 'Service',
 		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
+		//'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
 		'firms' => 'Firm',
 		'eventTypes' => 'EventType',
 		'elementTypes' => 'ElementType',
-		'possibleElementTypes' => 'PossibleElementType',
-		'siteElementTypes' => 'SiteElementType',
+		//'possibleElementTypes' => 'PossibleElementType',
+		//'siteElementTypes' => 'SiteElementType',
 		'phraseNames'	=> 'PhraseName',
 	);
 

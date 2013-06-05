@@ -157,7 +157,7 @@ class Firm extends BaseActiveRecord
 	}
 
 	public function getServiceText()
-	{
+	{ 
 		return $this->serviceSubspecialtyAssignment->service->name;
 	}
 
@@ -244,7 +244,7 @@ class Firm extends BaseActiveRecord
 		return CHtml::listData(Firm::model()->findAll($criteria),'id','name');
 	}
 
-	public function getConsultantName() {
+	public function getConsultantName() { 
 		if ($consultant = $this->consultant) {
 			return $consultant->contact->title . ' ' . $consultant->contact->first_name . ' ' . $consultant->contact->last_name;
 		}

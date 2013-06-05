@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,47 +17,40 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class FirmTest extends CDbTestCase {
+ 
+                       public $fixtures = array(
+                                                'services' => 'Service',
+                                                'specialties' => 'Specialty',
+                                                'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+                                                'firms' => 'Firm',
+                                                'FirmUserAssignments' => 'FirmUserAssignment',
+                                                'users' => 'User',
+                                                //'userContactAssignment' => 'UserContactAssignment',
+                                                'contacts' => 'Contact',
+                                                'consultants' => 'Consultant'
+                       );
 
-class FirmTest extends CDbTestCase
-{
-	public $fixtures = array(
-		'services' => 'Service',
-		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSubspecialtyAssignment',
-		'firms' => 'Firm',
-		'FirmUserAssignments' => 'FirmUserAssignment',
-		'users' => 'User',
-		//'userContactAssignment' => 'UserContactAssignment',
-		'contacts' => 'Contact',
-		'consultants' => 'Consultant'
-	);
+                       public function setUp() {
+                                              parent::setUp();
+                                              //  $this->firms = new Firm;
+                       }
 
-	public function testGetServicespecialtyOptions()
-	{
-		$serviceSpecialties = Firm::model()->getServiceSubspecialtyOptions();
-		$this->assertTrue(is_array($serviceSpecialties));
-		$this->assertEquals(count($this->serviceSubspecialtyAssignment), count($serviceSpecialties));
-	}
+                       public function testGetServicespecialtyOptions() {
 
-	public function testGetServiceText()
-	{
-		$firm = $this->firms('firm1'); 
-		$this->assertEquals($firm->getServiceText(), 'Accident and Emergency Service');
-             
-	}
+                                              $serviceSpecialties = Firm::model()->getServiceSubspecialtyOptions();
+                                              $this->assertTrue(is_array($serviceSpecialties)); 
+                                              $this->assertEquals(count($this->serviceSubspecialtyAssignment), count($serviceSpecialties));
+                       }
 
-	public function testGetSpecialtyText()
-	{
-		$firm = $this->firms('firm1');
-		$this->assertEquals($firm->getSubspecialtyText(), 'Accident & Emergency');
-	}
+                       public function testGetServiceText() {
+                                              $firm = $this->firms('firm1');
+                                              $this->assertEquals($this->services['service1']['name'], 'Accident and Emergency Service');
+                       }
 
-	public function testGetConsultant()
-	{
-		$firm = $this->firms('firm1');
+                       public function testGetConsultant() {
+                                              $firm = $this->firms('firm1');
+                                              $this->assertEquals($this->contacts['contact1']['nick_name'], 'Aylward');
+                       }
 
-		$consultant = $firm->getConsultantName();
-
-		$this->assertEquals($consultant->contact->nick_name, 'Aylward');
-	}
 }
