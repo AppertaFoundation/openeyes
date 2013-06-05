@@ -3,6 +3,7 @@
 .*swp
 .idea
 tags
+/puppet/cache/
 /.buildpath
 /.settings/
 /.project
@@ -22,3 +23,4 @@ tags
 /protected/config/db_muu.php
 /protected/views/patient/custom/info/php
 /protected/commands/
+vendor

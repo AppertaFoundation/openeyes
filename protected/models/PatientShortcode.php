@@ -18,22 +18,21 @@
  */
 
 /**
- * This is the model class for table "common_ophthalmic_disorder".
+ * This is the model class for table "patient_shortcode".
  *
- * The followings are the available columns in table 'common_ophthalmic_disorder':
+ * The followings are the available columns in table 'patient_shortcode':
  * @property string $id
- * @property string $disorder_id
- * @property string $subspecialty_id
+ * @property string $name
  *
  * The followings are the available model relations:
- * @property Disorder $disorder
- * @property Subspecialty $subspecialty
+ * @property Event[] $events
+ * @property PatientShortcodeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
-class CommonOphthalmicDisorder extends BaseActiveRecord
+class PatientShortcode extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return CommonOphthalmicDisorder the static model class
+	 * @return PatientShortcode the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,7 +44,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'common_ophthalmic_disorder';
+		return 'patient_shortcode';
 	}
 
 	/**
@@ -56,11 +55,10 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('disorder_id, subspecialty_id', 'required'),
-			array('disorder_id, subspecialty_id', 'length', 'max'=>10),
+			array('code, default_code, method, description, event_type_id', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, disorder_id, subspecialty_id', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -72,8 +70,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'disorder' => array(self::BELONGS_TO, 'Disorder', 'disorder_id'),
-			'subspecialty' => array(self::BELONGS_TO, 'Subspecialty', 'subspecialty_id'),
+			'eventType' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
 		);
 	}
 
@@ -84,8 +81,7 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'disorder_id' => 'Disorder',
-			'subspecialty_id' => 'Subspecialty',
+			'name' => 'Name',
 		);
 	}
 
@@ -101,40 +97,31 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('disorder_id',$this->disorder_id,true);
-		$criteria->compare('subspecialty_id',$this->subspecialty_id,true);
+		$criteria->compare('name',$this->name,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
 
-	public function getSubspecialtyOptions()
-	{
-		$specialties = Yii::app()->db->createCommand()
-			->select('s.id, s.name')
-			->from('subspecialty s')
-			->order('name ASC')
-			->queryAll();
+	public function replaceText($text,$patient, $ucfirst=false) {
+		if ($this->eventType) {
+			if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
+				if (method_exists($api,$this->method)) {
+					return str_replace('['.$this->code.']',$api->{$this->method}($patient),$text);
+				}
+				throw new Exception("Unknown API method in {$this->eventType->class_name}: $this->method");
+			}
+		} else {
+			if (property_exists($patient, $this->code) || method_exists($patient, 'get'.ucfirst($this->code))) {
+				if ($ucfirst) {
+					return str_replace('['.$this->code.']',ucfirst($patient->{$this->code}),$text);
+				}
 
-		return CHtml::listData($specialties, 'id', 'name');
-	}
+				return str_replace('['.$this->code.']',$patient->{$this->code},$text);
+			}
+		}
 
-	public static function getList($firm) {
-		if (empty($firm)) {
-			throw new CException('Firm is required.');
-		}
-		if ($firm->serviceSubspecialtyAssignment) {
-			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-			$disorders = Disorder::model()->findAll(array(
-					'condition' => 'cad.subspecialty_id = :subspecialty_id',
-					'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
-					'order' => 'term',
-					'params' => array(':subspecialty_id' => $ss_id, ':ophcode' => 130),
-			));
-			return CHtml::listData($disorders, 'id', 'term');
-		}
-		return array();
+		return $text;
 	}
-	
 }

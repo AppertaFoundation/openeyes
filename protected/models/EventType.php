@@ -175,4 +175,33 @@ class EventType extends BaseActiveRecord
 	public function getApi() {
 		return Yii::app()->moduleAPI->get($this->class_name);
 	}
+
+	public function registerShortCode($code,$method,$description=false) {
+		if (!preg_match('/^[a-zA-Z]{3}$/',$code)) {
+			throw new Exception("Invalid shortcode: $code");
+		}
+
+		$default_code = $code;
+
+		if (PatientShortcode::model()->find('code=?',array(strtolower($code)))) {
+			$n = '00';
+			while (PatientShortcode::model()->find('z'.$n)) {
+				$n = str_pad($n+1,2,'0',STR_PAD_LEFT);
+			}
+			$code = "z$n";
+
+			echo "Warning: attempt to register duplicate shortcode '$default_code', replaced with 'z$n'\n";
+		}
+
+		$ps = new PatientShortcode;
+		$ps->event_type_id = $this->id;
+		$ps->code = $code;
+		$ps->default_code = $default_code;
+		$ps->method = $method;
+		$ps->description = $description;
+
+		if (!$ps->save()) {
+			throw new Exception("Unable to save PatientShortcode: ".print_r($ps->getErrors(),true));
+		}
+	}
 }
