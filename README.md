@@ -23,7 +23,7 @@ You can also send general enquiries to our main email address: <info@openeyes.or
 
 You can find us on twitter at: http://twitter.com/openeyes_oef
 
-A demo version of OpenEyes featuring fictional patient data for testing purposes is available at: <http://staging.openeyes.org.uk> and you can access the original prototype for OpenEyes at <http://aylwards.co.uk/demo/login.php> with username: johnsaunders and password: secret
+A demo version of OpenEyes featuring fictional patient data for testing purposes is available at: <http://staging.openeyes.org.uk> (u: username p: password).
 
 Developers, developers, developers!
 -----------------------------------
@@ -32,7 +32,7 @@ Developers can request to join our discussion list for third party developers by
 
 If you need to share repositories with members of the core development team, you can find them listed as _organizational members_ at: <https://github.com/openeyes>
 
-We will be moving shortly to the 'development' branch becoming a stable basis for development to pivot around and will make clear when our recommendation changes to this branch.  Meanwhile we currently recommend that developers checkout the [release/0.10.0-moorfields](https://github.com/openeyes/OpenEyes/tree/release/0.10.0-moorfields) branch if they plan to work on the code.  You can find a test dataset compatible with the 0.10.0-moorfields branch at the [dumps directory of the sample repository](https://github.com/openeyes/Sample/tree/master/dump) (It may be easiest to cat this into an empty database, then run the yiic migrations afterwards).
+OpenEyes follows the [gitflow](http://nvie.com/posts/a-successful-git-branching-model/) model for git branches. As such, the stable release branch is always on master. For bleeding edge development, use the develop branch.
 
 Setup and installation documentation is available from the [documentation section of the website](http://www.openeyes.org.uk/documentation.html)
 
@@ -40,9 +40,5 @@ We are beginning to evolve some documentation for developers on [our github wiki
 
 Issues in the core should be logged through the [github issues system](https://github.com/openeyes/OpenEyes/issues) for the moment.  Though we will be making our internal JIRA system available in due course, and will transition logged issues across to this so that we can keep everything in one place  Links for this will follow when this becomes available.
 
-News
-----
-
-After a successful launch of the OpenEyes core and the Booking module in January 2012, as of May 2012 we are completing work on three ophthalmic modules for initial deployment at Moorfields: Prescription, Operation Note, and Correspondence.  These will be followed rapidly by an Examination module after which the core team should have more time to help facilitate third party development.  We will shortly be launching a more up to date and revised version of our website.  
 
 
