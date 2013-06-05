@@ -805,6 +805,17 @@ class PatientController extends BaseController
 			}
 		}
 
+		// Check that the date isn't in the future
+		if (@$_POST['fuzzy_year'] == date('Y')) {
+			if (@$_POST['fuzzy_month'] > date('n')) {
+				$errors['date'] = "The date cannot be in the future.";
+			} else if (@$_POST['fuzzy_month'] == date('n')) {
+				if (@$_POST['fuzzy_day'] > date('j')) {
+					$errors['date'] = "The date cannot be in the future.";
+				}
+			}
+		}
+
 		echo json_encode($errors);
 	}
 
