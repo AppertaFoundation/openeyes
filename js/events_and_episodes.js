@@ -19,22 +19,51 @@
 $(document).ready(function(){
 	$collapsed = true;
 
-// Add new event menu
-	$(document).click(function() {
-	  $("#add_event_wrapper .addEvent").hide(); //click came from somewhere else
-		$('#addNewEvent').removeClass('inactive').addClass('green');
-		$('#addNewEvent span.button-span-inactive').removeClass('button-span-inactive').addClass('button-span-green');
-		$('#addNewEvent span.button-icon-inactive').removeClass('button-icon-inactive').addClass('button-icon-green');
-	  $collapsed = true;
-	});
-	$('#addNewEvent').click(function(e) {
-		$('#add_event_wrapper .addEvent').slideDown(100,function() {
-			$('#addNewEvent').removeClass('green').addClass('inactive');
-			$('#addNewEvent span.button-span-green').removeClass('button-span-green').addClass('button-span-inactive');
-			$('#addNewEvent span.button-icon-green').removeClass('button-icon-green').addClass('button-icon-inactive');
-			$collapsed = false;
+	$('button.addEvent').click(function(e) {
+		var subspecialty_id = $(this).attr('data-attr-subspecialty-id');
+		var returnUrl = window.location.href.replace(/#$/,'')+'#addEvent';
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/patient/addNewEvent',
+			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl,
+			'success': function(html) {
+				$('#user_panel').before(html);
+			}
 		});
-		e.stopPropagation();
+	});
+
+	$('button.cancelAddEvent').die('click').live('click',function(e) {
+		$('#add-new-event-dialog').dialog('close');
+		$('#add-new-event-dialog').parent().remove();
+		e.preventDefault();
+	});
+
+	if (window.location.href.match(/#addEvent$/)) {
+		$('button.addEvent[data-attr-subspecialty-id="'+OE_subspecialty_id+'"]').click();
+	}
+
+	$('button.addEpisode').click(function(e) {
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
+			'success': function(response) {
+				if (response != '1') {
+					alert("There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want.");
+				} else {
+					$.ajax({
+						'type': 'POST',
+						'url': baseUrl+'/patient/addNewEpisode',
+						'data': 'patient_id='+OE_patient_id,
+						'success': function(html) {
+							$('#user_panel').before(html);
+						}
+					});
+				}
+			}
+		});
+
+		e.preventDefault();
 	});
 
 	$('label').die('click').live('click',function() {

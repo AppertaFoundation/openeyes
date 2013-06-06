@@ -18,6 +18,11 @@
  */
 ?>
 <div id="episodes_sidebar">
+	<?php if (BaseController::checkUserLevel(4)) {?>
+		<div align="center" style="margin-top:5px; margin-bottom: 5px;">
+			<button class="classy blue mini addEpisode" type="button"><span class="button-span button-span-blue">Add episode</span></button>
+		</div>
+	<?php }?>
 	<?php $this->renderPartial('//patient/_legacy_events',array('legacyepisodes'=>$legacyepisodes))?>
 	<?php $this->renderPartial('//patient/_support_service_events',array('supportserviceepisodes'=>$supportserviceepisodes))?>
 	<?php
@@ -36,9 +41,14 @@
 								</a>
 							</span>
 						</div>
+						<?php if (BaseController::checkUserLevel(4)) {?>
+							<?php if ($episode->status->name != 'Discharged') {?>
+								<div align="center" style="margin-top:5px;">
+									<button class="classy blue mini addEvent" type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>"><span class="button-span button-span-blue">Add event</span></button>
+								</div>
+							<?php }?>
+						<?php }?>
 						<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name), array('/patient/episode/' . $episode->id), array('class' => 'title_summary' . ((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : ''))) ?></h4>
-
-
 						<!-- shows miniicons for the events --> 
 							<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>> 
 								<?php foreach ($episode->events as $event) {
@@ -56,13 +66,6 @@
 								<?php } ?> 
 							</div> 
 						<!-- end shows miniicons for the events -->
-
-
-
-
-
-
-
 						<ul	<?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
 							<?php
 							foreach ($episode->events as $event) {
@@ -116,13 +119,11 @@
 						<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name) ?></div>
 						<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
 					</div>
-				</div> <!-- .episode -->
+				</div>
 			<?php } ?>
 		<?php } ?>
-</div> <!-- #episodes_sidebar -->
+</div>
 <script type="text/javascript">
-// basic quicklook animation... 
-
 	$(document).ready(function() {
 		$('.quicklook').each(function() {
 			var quick = $(this);
@@ -133,7 +134,5 @@
 				quick.fadeOut('fast');
 			});
 		});
-
-	}); // ready
-
+	});
 </script>

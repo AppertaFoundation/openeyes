@@ -24,10 +24,6 @@
 					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 				</div>
 			<?php }?>
-			<div id="episodesBanner">
-				<?php $this->renderPartial('add_new_event',array('eventTypes'=>$eventTypes))?>
-				<p style="margin-bottom: 0px;"><strong>&nbsp;<?php if (count($episodes) <1) {?>No Episodes for this patient<?php }?></strong></p>
-			</div>
 			<?php $this->renderPartial('episodes_sidebar',array('ordered_episodes' => $ordered_episodes, 'current_episode'=>@$current_episode, 'legacyepisodes'=>$legacyepisodes,'supportserviceepisodes'=>$supportserviceepisodes))?>
 			<div id="event_display">
 				<?php

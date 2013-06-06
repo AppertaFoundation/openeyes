@@ -34,10 +34,6 @@ $this->renderPartial('//layouts/patientMode/event_header');
 					This patient is deceased (<?php echo $this->patient->NHSDate('date_of_death'); ?>)
 				</div>
 			<?php }?>
-			<div id="episodesBanner">
-				<?php $this->renderPartial('//patient/add_new_event',array('eventTypes'=>$eventTypes))?>
-				<p style="margin-bottom: 0px;">&nbsp;</p>
-			</div>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
 			<div id="event_display">
 				<?php $this->renderPartial('//patient/event_tabs')?>

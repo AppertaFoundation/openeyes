@@ -819,21 +819,7 @@ class BaseEventTypeController extends BaseController
 	
 	public function getOrCreateEpisode($firm, $patientId) {
 		if (!$episode = $this->getEpisode($firm, $patientId)) {
-			$episode = new Episode();
-			$episode->patient_id = $patientId;
-			$episode->firm_id = $firm->id;
-			$episode->start_date = date("Y-m-d H:i:s");
-
-			if (!$episode->save()) {
-				OELog::log("Unable to create new episode for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
-				throw new Exception('Unable to create create episode.');
-			}
-
-			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
-
-			$episode->audit('episode','create');
-
-			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
+			$episode = Patient::model()->findByPk($patientId)->addEpisode($firm);
 		}
 
 		return $episode;
@@ -1012,6 +998,7 @@ class BaseEventTypeController extends BaseController
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
+		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 
 		return parent::processJsVars();
 	}

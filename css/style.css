@@ -825,7 +825,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
 #add_event_wrapper { position: relative; }
-#add_event_wrapper .addEvent { border:5px solid #69bd51; position: absolute; right: 0; top: 35px; z-index: 10; width:300px; }
+#add_event_wrapper .addEvent { border:5px solid #69bd51; margin: auto; z-index: 10; width:300px; height: 400px; }
 #add_event_wrapper .addEvent > h3 { padding:0; }
 #add_event_wrapper .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px;
 	-moz-border-radius: 3px; border-radius: 3px; }
@@ -1658,3 +1658,16 @@ body .ui-widget-overlay {
 	background: linear-gradient(#48bd27, #3fa522);
 	border-bottom: 2px solid #569b42;
 }
+
+#add-new-event-dialog { background: #fafafa; }
+#add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; }
+#add-new-event-dialog a { color: #0b59da; font-weight: normal; display: block; padding: 4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; border-radius: 3px; }
+#add-new-event-dialog div.title { margin-top: 10px; margin-bottom: 15px; }
+#add-new-event-dialog p > a:hover { border:none; color:#fff; background:#69bd51; }
+#add-new-event-dialog p > a:active { border:none; color:#fff; background:#5da748; }
+
+#add-new-episode-dialog .details { margin-top: 1em; }
+#add-new-episode-dialog .details p { margin-bottom: 5px; font-size: 16px; color: #0b59da; }
+#add-new-episode-dialog .details span { width: 130px; display: inline-block; color: #000; }
+#add-new-episode-dialog .question { margin-top: 1em; }
+#add-new-episode-dialog .buttons { margin-top: 1em; margin-bottom: 10px; }

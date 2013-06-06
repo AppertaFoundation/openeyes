@@ -215,7 +215,7 @@ class PatientController extends BaseController
 			default:
 				$sort_by = 'hos_num*1';
 		}
-                
+								
 		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 		$page_num = (integer)@$_GET['page_num'];
 		$page_size = 20;
@@ -1461,5 +1461,62 @@ class PatientController extends BaseController
 		}
 
 		echo json_encode(array('route_id'=>$drug->default_route_id,'frequency_id'=>$drug->default_frequency_id));
+	}
+
+	public function actionAddNewEvent() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!$subspecialty = Subspecialty::model()->findByPk(@$_POST['subspecialty_id'])) {
+			throw new Exception("Subspecialty not found: ".@$_POST['subspecialty_id']);
+		}
+
+		if ($subspecialty->id == Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id) {
+			return $this->renderPartial('//patient/add_new_event',array(
+				'subspecialty' => $subspecialty,
+				'patient' => $patient,
+				'eventTypes' => EventType::model()->getEventTypeModules(),
+			),false, true);
+		}
+
+		$this->renderPartial('/site/change_site_and_firm', array(
+			'returnUrl' => @$_POST['returnUrl'],
+			'subspecialty' => $subspecialty,
+			'patient' => $patient,
+		), false, true);
+	}
+
+	public function actionVerifyAddNewEpisode() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		if ($patient->hasOpenEpisodeOfSubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id)) {
+			echo "0";
+			return;
+		}
+
+		echo "1";
+	}
+
+	public function actionAddNewEpisode() {
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!empty($_POST['firm_id'])) {
+			$firm = Firm::model()->findByPk($_POST['firm_id']);
+			$episode = $patient->addEpisode($firm);
+
+			$this->redirect(array('/patient/episode/'.$episode->id));
+		}
+
+		return $this->renderPartial('//patient/add_new_episode',array(
+			'patient' => $patient,
+			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
+		),false, true);
 	}
 }

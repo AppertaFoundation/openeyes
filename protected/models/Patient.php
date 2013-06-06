@@ -829,4 +829,41 @@ class Patient extends BaseActiveRecord {
 	public function addMedication($params) {
 		$this->updateMedication(new Medication, $params);
 	}
+
+	public function hasOpenEpisodeOfSubspecialty($subspecialty_id) {
+		$firm_ids = array();
+
+		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty_id));
+
+		foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
+			$firm_ids[] = $firm->id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('patient_id=:patient_id');
+		$criteria->addInCondition('firm_id',$firm_ids);
+		$criteria->params[':patient_id'] = $this->id;
+
+		return (boolean)Episode::model()->find($criteria);
+	}
+
+	public function addEpisode($firm) {
+		$episode = new Episode;
+		$episode->patient_id = $this->id;
+		$episode->firm_id = $firm->id;
+		$episode->start_date = date("Y-m-d H:i:s");
+
+		if (!$episode->save()) {
+			OELog::log("Unable to create new episode for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
+			throw new Exception('Unable to create create episode: '.print_r($episode->getErrors(),true));
+		}
+
+		OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
+
+		$episode->audit('episode','create');
+
+		Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
+
+		return $episode;
+	}
 }

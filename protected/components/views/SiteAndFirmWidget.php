@@ -38,6 +38,21 @@ $form = $this->beginWidget('CActiveForm', array(
 ));
 ?>
 
+<?php echo CHtml::hiddenField('returnUrl',$this->returnUrl)?>
+
+<?php if ($this->subspecialty) {?>
+	<?php echo CHtml::hiddenField('subspecialty_id',$this->subspecialty->id)?>
+	<div>
+		<p>
+			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
+		</p>
+	</div>
+<?php }?>
+
+<?php if ($this->patient) {?>
+	<?php echo CHtml::hiddenField('patient_id',$this->patient->id)?>
+<?php }?>
+
 <div>
 	<?php echo $form->errorSummary($model); ?>
 </div>
