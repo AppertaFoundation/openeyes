@@ -1663,7 +1663,7 @@ body .ui-widget-overlay {
 #add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; }
 #add-new-event-dialog a { color: #0b59da; font-weight: normal; display: block; padding: 4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; border-radius: 3px; }
 #add-new-event-dialog div.title { margin-top: 10px; margin-bottom: 15px; }
-#add-new-event-dialog p > a:hover { border:none; color:#fff; background:#69bd51; }
+#add-new-event-dialog p > a:hover { border:none; color:#fff; background:#0b59da; }
 #add-new-event-dialog p > a:active { border:none; color:#fff; background:#5da748; }
 
 #add-new-episode-dialog .details { margin-top: 1em; }

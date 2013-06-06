@@ -1149,6 +1149,8 @@ class PatientController extends BaseController
 		if ($this->patient) {
 			$this->jsVars['OE_patient_id'] = $this->patient->id;
 		}
+		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+
 		return parent::processJsVars();
 	}
 
@@ -1464,6 +1466,10 @@ class PatientController extends BaseController
 	}
 
 	public function actionAddNewEvent() {
+		if (!BaseController::checkUserLevel(4)) {
+			return;
+		}
+
 		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
 			throw new Exception("Patient not found: ".@$_POST['patient_id']);
 		}
@@ -1503,6 +1509,10 @@ class PatientController extends BaseController
 	}
 
 	public function actionAddNewEpisode() {
+		if (!BaseController::checkUserLevel(4)) {
+			return;
+		}
+
 		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
 			throw new Exception("Patient not found: ".@$_POST['patient_id']);
 		}
