@@ -844,7 +844,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->addInCondition('firm_id',$firm_ids);
 		$criteria->params[':patient_id'] = $this->id;
 
-		return (boolean)Episode::model()->find($criteria);
+		return Episode::model()->find($criteria);
 	}
 
 	public function addEpisode($firm) {

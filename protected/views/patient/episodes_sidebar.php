@@ -67,7 +67,7 @@
 									</div>
 								<?php }?>
 							<?php }?>
-							<ul	<?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
+							<ul class="events">
 								<?php
 								foreach ($episode->events as $event) {
 									$highlight = false;

@@ -50,6 +50,12 @@ class SiteAndFirmWidget extends CWidget {
 
 				Yii::app()->event->dispatch('firm_changed', array('firm_id' => $model->firm_id));
 
+				if ($this->patient && $episode = $this->patient->hasOpenEpisodeOfSubspecialty(Firm::model()->findByPk($model->firm_id)->serviceSubspecialtyAssignment->subspecialty_id)) {
+					Yii::app()->session['episode_hide_status'] = array(
+						$episode->id => 1,
+					);
+				}
+
 				// Redirect browser to clear POST
 				$this->controller->redirect($this->returnUrl);
 				Yii::app()->end();
