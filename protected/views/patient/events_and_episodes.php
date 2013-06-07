@@ -28,7 +28,7 @@
 			<div id="event_display">
 				<?php
 				if (count($episodes) <1) {?>
-					<div class="alertBox fullWidthEvent">
+					<div class="alertBox fullWidthEvent" style="margin-top: 10px;">
 						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
 				<?php }else if (!@$current_episode) {?>
@@ -36,7 +36,7 @@
 						There is no open episode for the current firm's subspecialty.
 					</div>
 				<?php }?>
-				<?php $this->renderPartial('event_tabs')?>
+				<?php $this->renderPartial('event_tabs',array('hidden'=>(boolean)(count($episodes)<1)))?>
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || (count($episodes) >0 && @$current_episode)) {?>

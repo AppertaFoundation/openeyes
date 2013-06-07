@@ -18,7 +18,7 @@
  */
 ?>
 <div id="episodes_sidebar">
-	<?php if (BaseController::checkUserLevel(4)) {?>
+	<?php if (!empty($ordered_episodes) && BaseController::checkUserLevel(4)) {?>
 		<div align="center" style="margin-top:5px; margin-bottom: 5px;">
 			<button class="classy blue mini addEpisode" type="button"><span class="button-span button-span-blue">Add episode</span></button>
 		</div>
