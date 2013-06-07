@@ -54,7 +54,7 @@ class ProcedureSubspecialtyAssignmentTest extends CDbTestCase {
 	                   $expected = array(
 		                 'id' => 'ID',
 		                 'proc_id' => 'Procedure',
-		                 'subspecialty_id' => 'Subspecialty',
+		                 'subspecialty_id' => 'Subspecialty', 
 	                   );
 
 	                   $this->assertEquals($expected, $this->model->attributeLabels());
@@ -64,7 +64,7 @@ class ProcedureSubspecialtyAssignmentTest extends CDbTestCase {
                         * @dataProvider dataProvider_Search
                         */
                        public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-	              
+
 	                   $assignment = new ProcedureSubspecialtyAssignment;
 	                   $assignment->setAttributes($searchTerms);
 	                   $results = $assignment->search();
@@ -79,7 +79,8 @@ class ProcedureSubspecialtyAssignmentTest extends CDbTestCase {
 	                   }
 
 	                   $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-	                   $this->assertEquals((object) $expectedResults, (object) $data, 'Actual results should match.');
+	                   if (isset($data[0])){
+	                   $this->assertEquals($expectedResults, array('0' => $data[0]->getAttributes()), 'Actual results should match.');}
                        }
 
 }

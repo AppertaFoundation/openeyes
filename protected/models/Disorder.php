@@ -142,5 +142,26 @@ class Disorder extends BaseActiveRecord
 
 		return $data;
 	}
+	
+	/**
+	 * Fetch an array of disorders IDs and terms
+	 * 
+	 * 
+	 * @return array
+	 */
+	
+	/*public function getList()
+	{ 
+		 
+		$list = $this->findAll();
+		 
+		$result = array();
+
+		foreach ($list as $disorder) {
+			$result[$disorder->id] = $disorder->term;
+		}
+
+		return $result;
+	}*/
 
 }

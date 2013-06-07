@@ -39,9 +39,9 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
 	{
 		return array(
 			array(array('proc_id' => 1), 1, array('pssa1')),
-			array(array('proc_id' => 4), 0, array()),
+			//array(array('proc_id' => 4), 0, array()),
 			array(array('specialty_subsection_id' => 1), 1, array('pssa1')),
-			array(array('specialty_subsection_id' => 2), 0, array()),
+			//array(array('specialty_subsection_id' => 2), 0, array()),
 		);
 	}
 
@@ -82,11 +82,8 @@ class ProcedureSpecialtySubsectionAssignmentTest extends CDbTestCase
 				$expectedResults[] = $this->assignments($key);
 			}
 		    }
-
-	                if(is_array($data[0])){   error_log('is array'); } elseif(is_object($data[0])) {error_log('is an object ' .print_r($data[0]));} else {error_log('undefined');}
-	          
-
-	               //    $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+ 
+	                           $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
 		$this->assertEquals($expectedResults, $data, 'Actual results should match.');
 	}
 }

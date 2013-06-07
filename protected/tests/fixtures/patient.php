@@ -18,37 +18,40 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 return array(
-    'patient1' => array(
-        'pas_key' => '123',
-        'title' => 'Mr.',
-        'dob' => '1970-01-01',
-        'gender' => 'M',
-        'hos_num' => 12345,
-        'nhs_num' => 54321,  
-        'date_of_death' => 0,
-        'practice_id' => 1,
-        'ethnic_group_id' => 1 
-    ),
-    'patient2' => array(
-        'pas_key' => '456',
-        'title' => 'Mr.',
-        'dob' => '1972-01-01',
-        'gender' => 'M',
-        'hos_num' => 23456,
-        'nhs_num' => 65432,  
-        'date_of_death' => 0,
-        'practice_id' => 2,
-        'ethnic_group_id' => 2 
-    ),
-    'patient3' => array(
-        'pas_key' => '789',
-        'title' => 'Mrs.',
-        'dob' => '1960-01-01',
-        'gender' => 'F',
-        'hos_num' => 34567,
-        'nhs_num' => 76543,  
-        'date_of_death' => 0,
-        'practice_id' => 3,
-        'ethnic_group_id' => 3 
-    ),
+                         'patient1' => array(
+	                       'pas_key' => '123',
+	                       'title' => 'Mr.',
+	                       'first_name' => 'John',
+	                       'last_name' => 'Jones',
+	                       'dob' => '1970-01-01',
+	                       'gender' => 'M',
+	                       'hos_num' => 12345,
+	                       'nhs_num' => 54321, 
+	                       'practice_id' => 1, 
+	                       'address_id' => 1
+                         ),
+                         'patient2' => array(
+	                       'pas_key' => '456',
+	                       'title' => 'Mr.',
+	                       'dob' => '1972-01-01',
+	                       'gender' => 'M',
+	                       'first_name' => 'John',
+	                       'last_name' => 'Jones',
+	                       'hos_num' => 23456,
+	                       'nhs_num' => 65432, 
+	                       'practice_id' => 2, 
+	                       'address_id' => 2
+                         ),
+                         'patient3' => array(
+	                       'pas_key' => '789',
+	                       'title' => 'Mrs.',
+	                       'first_name' => 'Katherine',
+	                       'last_name' => 'Smith',
+	                       'dob' => '1960-01-01',
+	                       'gender' => 'F',
+	                       'hos_num' => 34567,
+	                       'nhs_num' => 76543, 
+	                       'practice_id' => 3, 
+	                       'address_id' => 3
+                         ),
 );

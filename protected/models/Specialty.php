@@ -99,4 +99,25 @@ class Specialty extends BaseActiveRecord {
 	public function getMedical() {
 		return in_array($this->specialty_type_id,array(1,2));
 	}
+	
+	
+	/**
+	 * Fetch an array of specialty IDs and names
+	 * 
+	 * 
+	 * @return array
+	 */
+	public function getSpecialtyOptions()
+	{ 
+		 
+		$list = Subspecialty::model()->findAll();
+		 
+		$result = array();
+
+		foreach ($list as $subspecialty) {
+			$result[$subspecialty->id] = $subspecialty->name;
+		}
+
+		return $result;
+	}
 }

@@ -11,20 +11,22 @@
 			<directory suffix=".php">../../../yii/</directory>
 		</blacklist>
 		<whitelist>
+			
+			<directory suffix=".php">../models</directory>
+			<!-- <directory suffix=".php">../models/elements</directory>
+			<directory suffix=".php">../services</directory>
 			<directory suffix=".php">../components</directory>
 			<directory suffix=".php">../controllers</directory>
 			<directory suffix=".php">../modules/admin/controllers</directory>
-			<directory suffix=".php">../models</directory>
-			<directory suffix=".php">../models/elements</directory>
-			<directory suffix=".php">../services</directory>
+			-->
 			<exclude>
 				<directory suffix=".php">../components/summaryWidgets/views</directory>
 			</exclude>
 		</whitelist>
 	</filter>
 
-	<selenium>
+	<!-- <selenium>
 		<browser name="Internet Explorer" browser="*iexplore" />
 		<browser name="Chrome" browser="Chrome" />
-	</selenium>
+	</selenium> -->
 </phpunit>
