@@ -545,4 +545,66 @@ class AdminController extends BaseController
 			'errors' => @$errors,
 		));
 	}
+
+	public function actionAddContactLabel() {
+		$contactlabel = new ContactLabel;
+
+		if (!empty($_POST)) {
+			$contactlabel->attributes = $_POST['ContactLabel'];
+
+			if (!$contactlabel->validate()) {
+				$errors = $contactlabel->getErrors();
+			} else {
+				if (!$contactlabel->save()) {
+					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
+				}
+				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/addcontactlabel',array(
+			'contactlabel' => $contactlabel,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionEditContactLabel($id) {
+		if (!$contactlabel = ContactLabel::model()->findByPk($id)) {
+			throw new Exception("ContactLabel not found: $id");
+		}
+
+		if (!empty($_POST)) {
+			$contactlabel->attributes = $_POST['ContactLabel'];
+
+			if (!$contactlabel->validate()) {
+				$errors = $contactlabel->getErrors();
+			} else {
+				if (!$contactlabel->save()) {
+					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
+				}
+				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editcontactlabel',array(
+			'contactlabel' => $contactlabel,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionDeleteContactLabel() {
+		if (!$contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id'])) {
+			throw new Exception("ContactLabel not found: ".@$_POST['contact_label_id']);
+		}
+
+		$count = Contact::model()->count('contact_label_id=?',array($contactlabel->id));
+
+		if ($count == 0) {
+			if (!$contactlabel->delete()) {
+				throw new Exception("Unable to delete ContactLabel: ".print_r($contactlabel->getErrors(),true));
+			}
+		}
+
+		echo $count;
+	}
 }
