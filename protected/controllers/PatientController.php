@@ -411,7 +411,7 @@ class PatientController extends BaseController
 			return $this->redirect(array('patient/episode/'.$this->episode->id));
 		}
 
-		if (isset($_POST['episode_save'])) {
+		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
 				$error = "Please select a disorder for the principal diagnosis";
 			} else if (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
@@ -440,6 +440,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -466,6 +467,7 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
+			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $this->episode,

@@ -47,11 +47,15 @@ if (!empty($episode)) {
 
 	<?php
 	$form = $this->beginWidget('BaseEventTypeCActiveForm', array(
-			'id'=>'add-systemic-diagnosis',
+			'id'=>'update-episode',
 			'enableAjaxValidation'=>false,
 			'htmlOptions' => array('class'=>'sliding'),
 			'action'=>array('patient/updateepisode/'.$episode->id),
 	));
+
+	// Event actions
+	$this->event_actions[] = EventAction::button('Save', 'save', array('id' => 'episode_save', 'colour' => 'green'));
+	$this->renderPartial('//patient/event_actions');
 
 	$form->widget('application.widgets.DiagnosisSelection',array(
 			'field' => 'disorder_id',
@@ -152,12 +156,6 @@ if (!empty($episode)) {
 	</div>
 <?php }?>
 
-<div class="form_button">
-	<img class="loader" style="display: none;" src="<?php echo Yii::app()->createUrl('img/ajax-loader.gif')?>" alt="loading..." />&nbsp;
-	<button type="submit" class="classy green venti" id="episode_save" name="episode_save"><span class="button-span button-span-green">Save</span></button>
-	<button type="submit" class="classy red venti" id="episode_cancel" name="episode_cancel"><span class="button-span button-span-red">Cancel</span></button>
-</div>
-
 <?php $this->endWidget()?>
 
 <script type="text/javascript">
@@ -231,25 +229,14 @@ if (!empty($episode)) {
 			return false;
 		});
 
-		handleButton($('#save_episode_status'),function(e) {
-			$.ajax({
-				type: 'POST',
-				url: '<?php echo Yii::app()->createUrl('patient/setepisodestatus/'.$episode->id)?>',
-				data: 'episode_status_id='+$('#episode_status_id').val(),
-				success: function(html) {
-					window.location.href = '<?php echo Yii::app()->createUrl('patient/episodes/'.$this->patient->id)?>';
-				}
-			});
-
-			e.preventDefault();
-		});
-
 		handleButton($('#episode_cancel'),function(e) {
 			window.location.href = window.location.href.replace(/updateepisode/,'episode');
 			e.preventDefault();
 		});
 
-		handleButton($('#episode_save'));
+		handleButton($('#et_save'),function(e) {
+			$('#update-episode').submit();
+		});
 	</script>
 <?php }?>
 </div>
