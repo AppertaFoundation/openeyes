@@ -20,7 +20,10 @@
 <?php
 $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
 if (!Yii::app()->user->isGuest) {
-	if(!empty(Yii::app()->session['confirm_site_and_firm'])) {
+	$user = User::model()->findByPk(Yii::app()->user->id);
+	if (!$user->has_selected_firms) {
+		$this->widget('SiteAndFirmPreferenceWidget');
+	} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
 		$this->widget('SiteAndFirmWidget');
 	}
 	if (empty(Yii::app()->session['user'])) {
@@ -39,9 +42,9 @@ if (!Yii::app()->user->isGuest) {
 			<?php foreach($menu as $item) {?>
 				<li>
 					<?php if ($uri == $item['uri']) {?>
-					<span class="selected"><?php echo $item['title']?></span>
+						<span class="selected"><?php echo $item['title']?></span>
 					<?php } else { ?>
-					<span><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?></span>
+						<span><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.$item['uri'])?></span>
 					<?php }?>
 				</li>
 			<?php }?>
@@ -55,7 +58,7 @@ if (!Yii::app()->user->isGuest) {
 		<span class="change-firm">(<a href="#">Change</a>)</span>
 	</div>
 	<div id="user_id">
-		<span>You are logged in as:</span> <strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong>
+		<span>You are logged in as:</span> <a href="<?php echo Yii::app()->createUrl('/profile')?>"><img src="<?php echo Yii::app()->createUrl('/img/cog.png')?>" style="margin-top: -4px;" /><strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong></a>
 	</div>
 </div>
 <?php } ?>
