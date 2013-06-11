@@ -1480,6 +1480,19 @@ class PatientController extends BaseController
 			throw new Exception("Subspecialty not found: ".@$_POST['subspecialty_id']);
 		}
 
+		$has = false;
+		foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
+			if ($uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
+				$has = true;
+				break;
+			}
+		}
+
+		if (!$has) {
+			echo "0";
+			return;
+		}
+
 		if ($subspecialty->id == Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id) {
 			return $this->renderPartial('//patient/add_new_event',array(
 				'subspecialty' => $subspecialty,

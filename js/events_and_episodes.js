@@ -28,7 +28,11 @@ $(document).ready(function(){
 			'url': baseUrl+'/patient/addNewEvent',
 			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl,
 			'success': function(html) {
-				$('#user_panel').before(html);
+				if (html == "0") {
+					alert("Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.");
+				} else {
+					$('#user_panel').before(html);
+				}
 			}
 		});
 	});
