@@ -20,22 +20,22 @@
 ?>
 <div class="report curvybox white">
 	<div class="admin">
-		<h3 class="georgia">Sites you work at</h3>
+		<h3 class="georgia">Firms you work in</h3>
 		<div>
-			<form id="profile_sites" method="post" action="/profile/sites">
+			<form id="profile_firms" method="post" action="/profile/firms">
 				<ul class="grid reduceheight">
 					<li class="header">
 						<span class="column_checkbox"><input type="checkbox" id="checkall" /></span>
 						<span class="column_name">Name</span>
-						<span class="column_address">Address</span>
+						<span class="column_subspecialty">Subspecialty</span>
 					</li>
 					<div class="sortable">
 						<?php
-						foreach ($user->siteSelections as $i => $site) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
-								<span class="column_checkbox"><input type="checkbox" name="sites[]" value="<?php echo $site->id?>" /></span>
-								<span class="column_name"><?php echo $site->name?>&nbsp;</span>
-								<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
+						foreach ($user->firmSelections as $i => $firm) {?>
+							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $firm->id?>">
+								<span class="column_checkbox"><input type="checkbox" name="firms[]" value="<?php echo $firm->id?>" /></span>
+								<span class="column_name"><?php echo $firm->name?></span>
+								<span class="column_subspecialty"><?php echo $firm->subspecialtyText?></span>
 							</li>
 						<?php }?>
 					</div>
@@ -44,30 +44,28 @@
 		</div>
 	</div>
 	<div>
-		Add site: <?php echo CHtml::dropDownList('profile_site_id','',CHtml::listData($user->getNotSelectedSiteList(),'id','name'),array('empty'=>'- Select -'))?>
+		Add firm: <?php echo CHtml::dropDownList('profile_firm_id','',$user->getNotSelectedFirmList(),array('empty'=>'- Select -'))?>
 		<?php echo CHtml::link('Add all','#',array('id'=>'add_all'))?>
 	</div>
 </div>
 <div style="margin-bottom:1em;">
-	Note: you can also set the firms you work at, <?php echo CHtml::link('click here',Yii::app()->createUrl('/profile/firms'))?> to do so.
+	Note: you can also set the sites you work at, <?php echo CHtml::link('click here',Yii::app()->createUrl('/profile/sites'))?> to do so.
 </div>
 <div>
 	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
 </div>
 <script type="text/javascript">
-	$('#profile_site_id').change(function(e) {
-		var site_id = $(this).val();
+	$('#profile_firm_id').change(function(e) {
+		var firm_id = $(this).val();
 
-		if (site_id != '') {
+		if (firm_id != '') {
 			$.ajax({
 				'type': 'POST',
-				'url': baseUrl+'/profile/addsite',
-				'data': 'site_id='+site_id,
+				'url': baseUrl+'/profile/addfirm',
+				'data': 'firm_id='+firm_id,
 				'success': function(html) {
 					if (html == "1") {
 						window.location.reload();
-					} else {
-						alert("Something went wrong trying to add the site.  Please try again or contact support for assistance.");
 					}
 				}
 			});
@@ -77,23 +75,23 @@
 	});
 
 	$('#checkall').click(function() {
-		$('input[name="sites[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
+		$('input[name="firms[]"]').attr('checked',$(this).is(':checked') ? 'checked' : false);
 	});
 
 	$('#et_delete').click(function() {
-		$('#profile_sites').submit();
+		$('#profile_firms').submit();
 	});
 
 	$('#add_all').click(function() {
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/profile/addsite',
-			'data': 'site_id=all',
+			'url': baseUrl+'/profile/addfirm',
+			'data': 'firm_id=all',
 			'success': function(html) {
 				if (html == "1") {
 					window.location.reload();
 				} else {
-					alert("Something went wrong trying to add the sites.  Please try again or contact support for assistance.");
+					alert("Something went wrong trying to add the firms.	Please try again or contact support for assistance.");
 				}
 			}
 		});

@@ -21,10 +21,13 @@
 $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']));
 if (!Yii::app()->user->isGuest) {
 	$user = User::model()->findByPk(Yii::app()->user->id);
-	if (!$user->has_selected_firms) {
-		$this->widget('SiteAndFirmPreferenceWidget');
-	} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
-		$this->widget('SiteAndFirmWidget');
+	if (!preg_match('/^profile\//',$uri)) {
+		if (!$user->has_selected_firms && empty(Yii::app()->session['shown_reminder'])) {
+			Yii::app()->session['shown_reminder'] = true;
+			$this->widget('SiteAndFirmWidgetReminder');
+		} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
+			$this->widget('SiteAndFirmWidget');
+		}
 	}
 	if (empty(Yii::app()->session['user'])) {
 		Yii::app()->session['user'] = User::model()->findByPk(Yii::app()->user->id);
@@ -58,7 +61,7 @@ if (!Yii::app()->user->isGuest) {
 		<span class="change-firm">(<a href="#">Change</a>)</span>
 	</div>
 	<div id="user_id">
-		<span>You are logged in as:</span> <a href="<?php echo Yii::app()->createUrl('/profile')?>"><img src="<?php echo Yii::app()->createUrl('/img/cog.png')?>" style="margin-top: -4px;" /><strong><?php echo $user->first_name ?> <?php echo $user->last_name; ?></strong></a>
+		<span>You are logged in as:</span> <a class="profileLink" href="<?php echo Yii::app()->createUrl('/profile')?>"><strong><?php echo $user->first_name?> <?php echo $user->last_name?></strong></a>
 	</div>
 </div>
 <?php } ?>

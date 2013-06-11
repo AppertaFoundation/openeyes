@@ -65,32 +65,44 @@ class SiteAndFirmWidget extends CWidget {
 			$model->site_id = Yii::app()->session['selected_site_id'];
 		}
 
-		$sites = Site::model()->findAll(array(
-				'condition' => 'institution.source_id = :source_id and institution.remote_id = :institution_code',
-				'join' => 'JOIN institution ON institution.id = t.institution_id',
-				'order' => 'short_name',
-				'params' => array(':source_id' => 1, ':institution_code' => 'RP6'),
-		));
+		if (!$sites = $user->siteSelections) {
+			$sites = Site::model()->findAll(array(
+					'condition' => 'institution.source_id = :source_id and institution.remote_id = :institution_code',
+					'join' => 'JOIN institution ON institution.id = t.institution_id',
+					'order' => 'short_name',
+					'params' => array(':source_id' => 1, ':institution_code' => 'RP6'),
+			));
+		}
+
+		$user_firm_ids = array();
+		foreach ($user->firmSelections as $firm) {
+			$user_firm_ids[] = $firm->id;
+		}
 
 		$firms = array();
-		if($preferred_firms = $user->preferred_firms) {
-			foreach($preferred_firms as $preferred_firm) {
-				if (!$this->subspecialty || $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id) {
-					if ($preferred_firm->serviceSubspecialtyAssignment) {
-						$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
-					} else {
-						$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name";
+		if ($preferred_firms = $user->preferred_firms) {
+			foreach ($preferred_firms as $preferred_firm) {
+				if (empty($user_firm_ids) || in_array($preferred_firm->id,$user_firm_ids)) {
+					if (!$this->subspecialty || $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id) {
+						if ($preferred_firm->serviceSubspecialtyAssignment) {
+							$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
+						} else {
+							$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name";
+						}
 					}
 				}
 			}
 		}
+
 		foreach ($this->controller->firms as $firm_id => $firm_label) {
-			if(!isset($firms['Recent'][$firm_id])) {
-				if (!$this->subspecialty || Firm::model()->findByPk($firm_id)->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id) {
-					if ($preferred_firms) {
-						$firms['Other'][$firm_id] = $firm_label;
-					} else {
-						$firms[$firm_id] = $firm_label;
+			if (empty($user_firm_ids) || in_array($firm_id,$user_firm_ids)) {
+				if (!isset($firms['Recent'][$firm_id])) {
+					if (!$this->subspecialty || Firm::model()->findByPk($firm_id)->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id) {
+						if ($preferred_firms) {
+							$firms['Other'][$firm_id] = $firm_label;
+						} else {
+							$firms[$firm_id] = $firm_label;
+						}
 					}
 				}
 			}
@@ -102,5 +114,4 @@ class SiteAndFirmWidget extends CWidget {
 				'sites' => CHtml::listData($sites, 'id', 'short_name'),
 		));
 	}
-
 }

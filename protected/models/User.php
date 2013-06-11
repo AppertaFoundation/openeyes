@@ -120,8 +120,8 @@ class User extends BaseActiveRecord
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
 			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 5),
-			'firmSelections' => array(self::HAS_MANY, 'UserFirm', 'user_id'),
-			'siteSelections' => array(self::HAS_MANY, 'UserSite', 'user_id'),
+			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'order' => 'name asc'),
+			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
 		);
 	}
 
@@ -425,5 +425,46 @@ class User extends BaseActiveRecord
 		}
 
 		return $contacts;
+	}
+
+	public function getNotSelectedSiteList() {
+		if (empty(Yii::app()->params['institution_code'])) {
+			throw new Exception("Institution code is not set");
+		}
+
+		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
+			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
+		}
+
+		$site_ids = array();
+		foreach ($this->siteSelections as $site) {
+			$site_ids[] = $site->id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('institution_id=:institution_id');
+		$criteria->addNotInCondition('id',$site_ids);
+		$criteria->params[':institution_id'] = $institution->id;
+		$criteria->order = 'name asc';
+
+		return Site::model()->findAll($criteria);
+	}
+
+	public function getNotSelectedFirmList() {
+		$firms = Yii::app()->db->createCommand()
+			->select('f.id, f.name, s.name AS subspecialty')
+			->from('firm f')
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->join('subspecialty s','ssa.subspecialty_id = s.id')
+			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
+			->where("uf.id is null",array(':userId'=>Yii::app()->user->id))
+			->order('f.name, s.name')
+			->queryAll();
+		$data = array();
+		foreach ($firms as $firm) {
+			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+		}
+		natcasesort($data);
+		return $data;
 	}
 }

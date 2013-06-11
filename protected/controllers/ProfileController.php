@@ -42,6 +42,10 @@ class ProfileController extends BaseController
 	}
 
 	public function actionInfo() {
+		if (!Yii::app()->params['profile_user_can_edit']) {
+			$this->redirect(array('/profile/password'));
+		}
+
 		$errors = array();
 
 		$user = User::model()->findByPk(Yii::app()->user->id);
@@ -68,6 +72,10 @@ class ProfileController extends BaseController
 	}
 
 	public function actionPassword() {
+		if (!Yii::app()->params['profile_user_can_change_password']) {
+			$this->redirect(array('/profile/sites'));
+		}
+
 		$errors = array();
 
 		$user = User::model()->findByPk(Yii::app()->user->id);
@@ -116,8 +124,98 @@ class ProfileController extends BaseController
 	public function actionSites() {
 		$user = User::model()->findByPk(Yii::app()->user->id);
 
+		if (!empty($_POST['sites'])) {
+			foreach ($_POST['sites'] as $site_id) {
+				if ($us = UserSite::model()->find('user_id=? and site_id=?',array($user->id,$site_id))) {
+					if (!$us->delete()) {
+						throw new Exception("Unable to delete UserSite: ".print_r($us->getErrors(),true));
+					}
+				}
+			}
+		}
+
 		$this->render('/profile/sites',array(
-			'sites' => $user->siteSelections,
+			'user' => $user,
 		));
+	}
+
+	public function actionAddSite() {
+		if (@$_POST['site_id'] == 'all') {
+			if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
+				throw new Exception("Can't find institution: ".Yii::app()->params['institution_code']);
+			}
+			$sites = Site::model()->findAll('institution_id=?',array($institution->id));
+		} else {
+			$sites = Site::model()->findAllByPk(@$_POST['site_id']);
+		}
+
+		foreach ($sites as $site) {
+			if (!$us = UserSite::model()->find('site_id=? and user_id=?',array($site->id,Yii::app()->user->id))) {
+				$us = new UserSite;
+				$us->site_id = $site->id;
+				$us->user_id = Yii::app()->user->id;
+				if (!$us->save()) {
+					throw new Exception("Unable to save UserSite: ".print_r($us->getErrors(),true));
+				}
+			}
+		}
+
+		echo "1";
+	}
+
+	public function actionFirms() {
+		$user = User::model()->findByPk(Yii::app()->user->id);
+
+		if (!empty($_POST['firms'])) {
+			foreach ($_POST['firms'] as $firm_id) {
+				if ($uf = UserFirm::model()->find('user_id=? and firm_id=?',array($user->id,$firm_id))) {
+					if (!$uf->delete()) {
+						throw new Exception("Unable to delete UserFirm: ".print_r($uf->getErrors(),true));
+					}
+				}
+			}
+
+			if (!UserFirm::model()->find('user_id=?',array(Yii::app()->user->id))) {
+				$user = User::model()->findByPk(Yii::app()->user->id);
+				if ($user->has_selected_firms) {
+					$user->has_selected_firms = 0;
+					if (!$user->save()) {
+						throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+					}
+				}
+			}
+		}
+
+		$this->render('/profile/firms',array(
+			'user' => $user,
+		));
+	}
+
+	public function actionAddFirm() {
+		if (@$_POST['firm_id'] == 'all') {
+			$firms = Firm::model()->findAll();
+		} else {
+			$firms = Firm::model()->findAllByPk(@$_POST['firm_id']);
+		}
+
+		foreach ($firms as $firm) {
+			if (!$us = UserFirm::model()->find('firm_id=? and user_id=?',array($firm->id,Yii::app()->user->id))) {
+				$us = new UserFirm;
+				$us->firm_id = $firm->id;
+				$us->user_id = Yii::app()->user->id;
+				if (!$us->save()) {
+					throw new Exception("Unable to save UserFirm: ".print_r($us->getErrors(),true));
+				}
+
+				$user = User::model()->findByPk(Yii::app()->user->id);
+
+				$user->has_selected_firms = 1;
+				if (!$user->save()) {
+					throw new Exception("Unable to save user: ".print_r($user->getErrors(),true));
+				}
+			}
+		}
+
+		echo "1";
 	}
 }

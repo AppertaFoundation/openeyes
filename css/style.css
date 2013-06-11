@@ -1565,6 +1565,16 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 
 #div_Firm_consultant_id { margin-top: 2px; }
 
+#profile_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#profile_sites ul li .column_checkbox { width: 15px; display: inline-block; }
+#profile_sites ul li .column_name { width: 250px; display: inline-block; }
+#profile_sites ul li .column_address { width: 535px; display: inline-block; }
+
+#profile_firms ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#profile_firms ul li .column_checkbox { width: 15px; display: inline-block; }
+#profile_firms ul li .column_name { width: 535px; display: inline-block; }
+#profile_firms ul li .column_subspecialty { width: 250px; display: inline-block; }
+
 div.previousOperation .label { display: inline-block; width: 125px; }
 div.previousOperation .data { display: inline-block; }
 div.previousOperation { margin-bottom: 10px; }
@@ -1671,3 +1681,7 @@ body .ui-widget-overlay {
 #add-new-episode-dialog .details span { width: 130px; display: inline-block; color: #000; }
 #add-new-episode-dialog .question { margin-top: 1em; }
 #add-new-episode-dialog .buttons { margin-top: 1em; margin-bottom: 10px; }
+
+a.profileLink { float: left; font-size: 13px; padding-bottom: 2px; margin-left: -4px; border: 0; background: url('../img/cog.png') left top no-repeat; }
+a:hover.profileLink { background: url('../img/cog-highlight.png') left top no-repeat; }
+a.profileLink strong { float: left; margin-left: 20px; margin-top: 3px; }
