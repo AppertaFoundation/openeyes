@@ -163,7 +163,7 @@ class Firm extends BaseActiveRecord
 
 	public function getSubspecialtyText()
 	{
-		return $this->serviceSubspecialtyAssignment->subspecialty->name;
+		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty->name : 'Support services';
 	}
 
 	/**

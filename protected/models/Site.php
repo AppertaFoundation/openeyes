@@ -220,4 +220,21 @@ class Site extends BaseActiveRecord
 	public function getShortname() {
 		return $this->short_name ? $this->short_name : $this->name;
 	}
+
+	public function getListForInstitution() {
+		if (empty(Yii::app()->params['institution_code'])) {
+			throw new Exception("Institution code is not set");
+		}
+
+		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
+			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('institution_id=:institution_id');
+		$criteria->params[':institution_id'] = $institution->id;
+		$criteria->order = 'name asc';
+
+		return Site::model()->findAll($criteria);
+	}
 }
