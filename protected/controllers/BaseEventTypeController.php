@@ -75,6 +75,10 @@ class BaseEventTypeController extends BaseController
 		return BaseController::checkUserLevel(3);
 	}
 	
+	public function renderEventMetadata() {
+		$this->renderPartial('//patient/event_metadata');
+	}
+	
 	public function actionIndex()
 	{
 		$this->render('index');
