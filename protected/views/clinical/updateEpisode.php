@@ -92,7 +92,7 @@ if (!empty($episode)) {
 		<div class="right">
 			<h4>End date:</h4>
 			<div class="eventHighlight">
-				<h4><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'?></h4>
+				<h4><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></h4>
 			</div>
 		</div>
 

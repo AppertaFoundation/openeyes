@@ -188,15 +188,17 @@ class Episode extends BaseActiveRecord
 		}
 	}
 
-	public static function getCurrentEpisodeByFirm($patientId, $firm)
+	public static function getCurrentEpisodeByFirm($patientId, $firm, $include_closed = false)
 	{
+		$where = $include_closed ? '' : ' AND e.end_date IS NULL';
+
 		// Check for an open episode for this patient and firm's service with a referral
 		$episode = Yii::app()->db->createCommand()
 			->select('e.id AS eid')
 			->from('episode e')
 			->join('firm f', 'e.firm_id = f.id')
 			->join('service_subspecialty_assignment s_s_a', 'f.service_subspecialty_assignment_id = s_s_a.id')
-			->where('e.deleted = False AND e.end_date IS NULL AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
+			->where('e.deleted = False'.$where.' AND e.patient_id = :patient_id AND s_s_a.subspecialty_id = :subspecialty_id', array(
 				':patient_id' => $patientId, ':subspecialty_id' => $firm->serviceSubspecialtyAssignment->subspecialty_id
 			))
 			->queryRow();
