@@ -122,7 +122,7 @@
 			'type': 'POST',
 			'dataType': 'json',
 			'url': baseUrl+'/patient/validateadddiagnosis',
-			'data': $('#add-systemic-diagnosis').serialize(),
+			'data': $('#add-systemic-diagnosis').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(data) {
 				$('div.systemic_diagnoses_form_errors').html('');
 				if (data.length == 0) {

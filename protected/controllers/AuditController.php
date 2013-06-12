@@ -219,5 +219,10 @@ class AuditController extends BaseController
 
 		echo json_encode($users);
 	}
+
+	public function processJsVars() {
+		$this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
+		return parent::processJsVars();
+	}
 }
 ?>

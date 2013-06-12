@@ -220,7 +220,7 @@
 
 		$.ajax({
 			'type': 'POST',
-			'data': $('#add-medication').serialize(),
+			'data': $('#add-medication').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'dataType': 'json',
 			'url': baseUrl+'/patient/validateAddMedication',
 			'success': function(data) {

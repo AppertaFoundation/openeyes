@@ -58,7 +58,7 @@
 		$.ajax({
 			'type': 'POST',
 			'url': baseUrl+'/admin/deleteContactLabel',
-			'data': 'contact_label_id=<?php echo $contactlabel->id?>',
+			'data': 'contact_label_id=<?php echo $contactlabel->id?>&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
 			'success': function(response) {
 				if (response == 0) {
 					window.location.href = baseUrl+'/admin/contactLabels';

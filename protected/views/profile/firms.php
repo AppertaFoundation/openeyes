@@ -62,7 +62,7 @@
 			$.ajax({
 				'type': 'POST',
 				'url': baseUrl+'/profile/addfirm',
-				'data': 'firm_id='+firm_id,
+				'data': 'firm_id='+firm_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(html) {
 					if (html == "1") {
 						window.location.reload();
@@ -86,7 +86,7 @@
 		$.ajax({
 			'type': 'POST',
 			'url': baseUrl+'/profile/addfirm',
-			'data': 'firm_id=all',
+			'data': 'firm_id=all&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == "1") {
 					window.location.reload();

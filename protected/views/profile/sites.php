@@ -62,7 +62,7 @@
 			$.ajax({
 				'type': 'POST',
 				'url': baseUrl+'/profile/addsite',
-				'data': 'site_id='+site_id,
+				'data': 'site_id='+site_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 				'success': function(html) {
 					if (html == "1") {
 						window.location.reload();
@@ -88,7 +88,7 @@
 		$.ajax({
 			'type': 'POST',
 			'url': baseUrl+'/profile/addsite',
-			'data': 'site_id=all',
+			'data': 'site_id=all&YII_CSRF_TOKEN='+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == "1") {
 					window.location.reload();
