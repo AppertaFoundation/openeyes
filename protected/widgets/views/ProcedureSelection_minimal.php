@@ -173,7 +173,7 @@
 			$.ajax({
 				'url': '<?php echo Yii::app()->createUrl('procedure/list')?>',
 				'type': 'POST',
-				'data': {'subsection': subsection, 'existing': existingProcedures},
+				'data': {'subsection': subsection, 'existing': existingProcedures, 'YII_CSRF_TOKEN': YII_CSRF_TOKEN},
 				'success': function(data) {
 					$('select[name=select_procedure_id_'+identifier+']').attr('disabled', false);
 					$('select[name=select_procedure_id_'+identifier+']').html(data);
