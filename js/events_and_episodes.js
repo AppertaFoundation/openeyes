@@ -26,7 +26,7 @@ $(document).ready(function(){
 		$.ajax({
 			'type': 'POST',
 			'url': baseUrl+'/patient/addNewEvent',
-			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl,
+			'data': 'subspecialty_id='+subspecialty_id+'&patient_id='+OE_patient_id+'&returnUrl='+returnUrl+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(html) {
 				if (html == "0") {
 					alert("Sorry, you cannot add an event to this episode because you are not in any firms with the same subspecialty.");
@@ -50,7 +50,7 @@ $(document).ready(function(){
 	$('button.addEpisode').click(function(e) {
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
+			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(response) {
 				if (response != '1') {
 					alert("There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want.");
@@ -58,7 +58,7 @@ $(document).ready(function(){
 					$.ajax({
 						'type': 'POST',
 						'url': baseUrl+'/patient/addNewEpisode',
-						'data': 'patient_id='+OE_patient_id,
+						'data': 'patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 						'success': function(html) {
 							$('#user_panel').before(html);
 						}
