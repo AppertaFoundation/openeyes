@@ -64,7 +64,7 @@ return array(
 			'class' => 'ModuleAPI',
 		),
 		'request' => array(
-			'enableCsrfValidation' => false,
+			'enableCsrfValidation' => true,
 		),
 		'event' => array(
 			'class' => 'OEEventManager',
