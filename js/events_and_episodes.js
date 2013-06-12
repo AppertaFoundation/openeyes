@@ -50,7 +50,8 @@ $(document).ready(function(){
 	$('button.addEpisode').click(function(e) {
 		$.ajax({
 			'type': 'POST',
-			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'data': "YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'url': baseUrl+'/patient/verifyAddNewEpisode?patient_id='+OE_patient_id,
 			'success': function(response) {
 				if (response != '1') {
 					alert("There is already an open episode for your firm's subspecialty.\n\nIf you wish to create a new episode in a different subspecialty please switch to a firm that has the subspecialty you want.");
