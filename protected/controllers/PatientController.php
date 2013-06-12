@@ -1152,7 +1152,6 @@ class PatientController extends BaseController
 			$this->jsVars['OE_patient_id'] = $this->patient->id;
 		}
 		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
-		$this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
 
 		return parent::processJsVars();
 	}
