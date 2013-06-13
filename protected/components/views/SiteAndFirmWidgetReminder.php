@@ -32,45 +32,30 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	));
 ?>
 
-<?php 
-$form = $this->beginWidget('CActiveForm', array(
-	'id' => 'site-and-firm-form',
-));
-?>
-
-<?php echo CHtml::hiddenField('returnUrl',$this->returnUrl)?>
-
-<?php if ($this->subspecialty) {?>
-	<?php echo CHtml::hiddenField('subspecialty_id',$this->subspecialty->id)?>
-	<div>
-		<p>
-			To add an event to this episode you must switch to a <?php echo $this->subspecialty->name?> firm.
-		</p>
-	</div>
-<?php }?>
-
-<?php if ($this->patient) {?>
-	<?php echo CHtml::hiddenField('patient_id',$this->patient->id)?>
-<?php }?>
-
 <div>
-	<?php echo $form->errorSummary($model); ?>
+	<p>
+		You haven't set your site and firm selections yet.	Doing so will restrict the site and firm dropdowns to the sites and firms that you work in.
+	</p>
 </div>
 
-<div>
-	<?php echo $form->labelEx($model, 'site_id'); ?>:
-	<?php echo $form->dropDownList($model,'site_id', $sites); ?>
+<div style="margin-top: 1em; margin-bottom: 1.5em;">
+	<p>
+		Do this now?
+	</p>
 </div>
 
-<div>
-	<?php echo $form->labelEx($model, 'firm_id'); ?>:
-	<?php echo $form->dropDownList($model,'firm_id', $firms); ?>
+<div style="margin-left: 8em;">
+	<button class="classy green mini cancel" type="button" id="yes" style="margin-right: 3em;"><span class="button-span button-span-green">Yes</span></button>
+	<button class="classy red mini cancel" type="button" id="later"><span class="button-span button-span-red">Later</span></button>
 </div>
 
-<div class="form-actions">
-	<?php echo CHtml::submitButton('Confirm'); ?>
-</div>
-
-<?php $this->endWidget(); ?>
-
-<?php $this->endWidget(); ?>
+<?php $this->endWidget()?>
+<script type="text/javascript">
+	$('#yes').click(function() {
+		$('#site-and-firm-dialog').dialog('close');
+		window.location.href = baseUrl+'/profile/firms';
+	});
+	$('#later').click(function() {
+		$('#site-and-firm-dialog').dialog('close');
+	});
+</script>

@@ -16,12 +16,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-?>
-<?php 
-	$this->widget('SiteAndFirmWidget', array(
-		'returnUrl' => $returnUrl,
-		'subspecialty' => @$subspecialty,
-		'patient' => @$patient,
-		'title' => 'Select a new Site and/or Firm',
-	));
-?>
+
+class SiteAndFirmWidgetReminder extends CWidget {
+	public $title = 'You need to set your sites and firms';
+	public $subspecialty;
+	public $patient;
+	public $returnUrl;
+
+	public function init() {
+		if(!$this->returnUrl) {
+			$this->returnUrl = Yii::app()->request->url;
+		}
+	}
+
+	public function run() {
+		$this->render('SiteAndFirmWidgetReminder');
+	}
+}

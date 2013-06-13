@@ -82,7 +82,7 @@
 
 		$.ajax({
 			'type': 'POST',
-			'data': 'location_id='+location_id,
+			'data': 'location_id='+location_id+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'url': baseUrl+'/admin/removeLocation',
 			'success': function(resp) {
 				if (resp == "0") {

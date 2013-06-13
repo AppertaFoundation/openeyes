@@ -18,6 +18,15 @@ $(document).ready(function() {
 			window.location.href = baseUrl+'/admin/editFirm/'+$(this).parent().attr('data-attr-id');
 		}
 	});
+
+	$('#admin_contactlabels li .column_id, #admin_contactlabels li .column_name').click(function(e) {
+		e.preventDefault();
+
+		if ($(this).parent().attr('data-attr-id')) {
+			window.location.href = baseUrl+'/admin/editContactLabel/'+$(this).parent().attr('data-attr-id');
+		}
+	});
+
 	handleButton($('#et_save'),function(e) {
 		e.preventDefault();
 
