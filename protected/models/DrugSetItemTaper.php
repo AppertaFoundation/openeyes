@@ -18,21 +18,20 @@
  */
 
 /**
- * This is the model class for table "drug_set_item".
+ * This is the model class for table "drug_set_item_taper".
  *
- * The followings are the available columns in table 'drug_set_item':
+ * The followings are the available columns in table 'drug_set_item_taper':
  * @property integer $id
- * @property DrugSet $drug_set
- * @property Drug $drug
- * @property DrugSetItemTaper[] $tapers
+ * @property DrugSetItem $item
  * @property string $dose
- * @property DrugFrequency $frequency
  * @property DrugDuration $duration
+ * @property DrugFrequency $frequency
  */
-class DrugSetItem extends BaseActiveRecord {
+class DrugSetItemTaper extends BaseActiveRecord {
+
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return DrugSetItem the static model class
+	 * @return DrugSetItemTaper the static model class
 	 */
 	public static function model($className=__CLASS__) {
 		return parent::model($className);
@@ -42,21 +41,17 @@ class DrugSetItem extends BaseActiveRecord {
 	 * @return string the associated database table name
 	 */
 	public function tableName() {
-		return 'drug_set_item';
+		return 'drug_set_item_taper';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules() {
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
-				array('drug_set_id, drug_id', 'required'),
+				array('item_id', 'required'),
 				array('dose, frequency_id, duration_id', 'safe'),
-				// The following rule is used by search().
-				// Please remove those attributes that should not be searched.
-				array('id, drug_set_id, drug_id, dose, frequency_id, duration_id', 'safe', 'on'=>'search'),
+				array('id, dose, item_id, frequency_id, duration_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,14 +59,10 @@ class DrugSetItem extends BaseActiveRecord {
 	 * @return array relational rules.
 	 */
 	public function relations() {
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
-				'drug' => array(self::BELONGS_TO, 'Drug', 'drug_id'),
-				'drug_set' => array(self::BELONGS_TO, 'DrugSet', 'drug_set_id'),
+				'item' => array(self::BELONGS_TO, 'DrugSetItem', 'item_id'),
 				'frequency' => array(self::BELONGS_TO, 'DrugFrequency', 'frequency_id'),
 				'duration' => array(self::BELONGS_TO, 'DrugDuration', 'duration_id'),
-				'tapers' => array(self::HAS_MANY, 'DrugSetItemTaper', 'item_id'),
 		);
 	}
 
@@ -88,18 +79,12 @@ class DrugSetItem extends BaseActiveRecord {
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
 	public function search() {
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
-
 		$criteria=new CDbCriteria;
-
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('drug_set_id',$this->drug_set_id,true);
-		$criteria->compare('drug_id',$this->drug_id,true);
+		$criteria->compare('item_id',$this->item_id,true);
 		$criteria->compare('dose',$this->dose,true);
 		$criteria->compare('frequency_id',$this->frequency_id,true);
 		$criteria->compare('duration_id',$this->duration_id,true);
-
 		return new CActiveDataProvider(get_class($this), array(
 				'criteria'=>$criteria,
 		));
