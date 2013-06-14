@@ -958,6 +958,8 @@ class BaseEventTypeController extends BaseController
 				return true;
 			}
 
+			Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
+
 			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
 			return true;
 		}
