@@ -27,6 +27,8 @@ class ClientScript extends CClientScript {
 	 */
 	protected function unifyScripts() {
 
+		parent::unifyScripts();
+		
 		if($this->cache_buster) {
 			
 			// JS
@@ -49,7 +51,6 @@ class ClientScript extends CClientScript {
 
 		}
 
-		parent::unifyScripts();
 	}
 	
 	protected function getJoiner($file) {

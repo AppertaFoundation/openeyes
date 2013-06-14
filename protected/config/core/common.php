@@ -72,7 +72,6 @@ return array(
 		),
 		'clientScript' => array(
 			'class' => 'ClientScript',
-			'cache_buster' => date('Ymd'),
 		),
 		'user' => array(
 			'class' => 'WebUser',
