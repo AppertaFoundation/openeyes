@@ -122,6 +122,7 @@ class ProcedureTest extends CDbTestCase
 	public function testGetList_InvalidTerm_ReturnsEmptyResults_SessionDataUnchanged()
 	{
 		Yii::app()->session['Procedures'] = null;
+                                                      
 		$this->assertNull(Yii::app()->session['Procedures']);
 
 		$expected = array(

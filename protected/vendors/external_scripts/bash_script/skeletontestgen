@@ -29,7 +29,7 @@ exit 1
 fi
 
 #cd  $BOOTSTRAPPATH/new_units
-#sudo mkdir $FOLDERNAME 
+sudo mkdir $FOLDERNAME 
 
 
 #go into the directory
@@ -50,9 +50,9 @@ echo "********************************"
 echo "*** Moving to Tests folder ****"
 echo "********************************"
 
-echo $FOLDERNAME
+echo "Moving to $BOOTSTRAPPATH/new_units/$FOLDERNAME"
 
-sudo mv $(basename ${file%.*})Test.php $BOOTSTRAPPATH/new_units
+#sudo mv $(basename ${file%.*})Test.php "$BOOTSTRAPPATH/new_units/$FOLDERNAME"
 
 done
 

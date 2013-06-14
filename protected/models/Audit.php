@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -44,153 +45,149 @@
  * @property Site[] $site
  * @property Firm[] $firm
  */
-class Audit extends BaseActiveRecord
-{
-	public $count;
+class Audit extends BaseActiveRecord {
 
-	/**
-	 * Returns the static model of the specified AR class.
-	 * @return Theatre the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+                       public $count;
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'audit';
-	}
+                       /**
+                        * Returns the static model of the specified AR class.
+                        * @return Theatre the static model class
+                        */
+                       public static function model($className = __CLASS__) {
+                                              return parent::model($className);
+                       }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('action,target_type', 'required'),
-			// array('name', 'length', 'max'=>255),
-			array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on'=>'search'),
-			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-		);
-	}
+                       /**
+                        * @return string the associated database table name
+                        */
+                       public function tableName() {
+                                              return 'audit';
+                       }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		# patient, episode, event, user
-		return array(
-			'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
-			'episode' => array(self::BELONGS_TO, 'Episode', 'episode_id'),
-			'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
-			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
-			'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
-		);
-	}
+                       /**
+                        * @return array validation rules for model attributes.
+                        */
+                       public function rules() {
+                                              // NOTE: you should only define rules for those attributes that
+                                              // will receive user inputs.
+                                              return array(
+                                                                       array('action,target_type', 'required'),
+                                                                       // array('name', 'length', 'max'=>255),
+                                                                       array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on' => 'search'),
+                                                        // The following rule is used by search().
+                                                        // Please remove those attributes that should not be searched.
+                                              );
+                       }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'action' => 'Action',
-			'target_type' => 'Target type',
-			'patient_id' => 'Patient',
-			'episode_id' => 'Episode',
-			'event_id' => 'Event',
-			'user_id' => 'User',
-			'data' => 'Data',
-			'remote_addr' => 'Remote address',
-			'http_user_agent' => 'HTTP User Agent',
-			'server_name' => 'Server name',
-			'request_uri' => 'Request URI',
-			'site_id' => 'Site',
-			'firm_id' => 'Firm',
-		);
-	}
+                       /**
+                        * @return array relational rules.
+                        */
+                       public function relations() {
+                                              // NOTE: you may need to adjust the relation name and the related
+                                              // class name for the relations automatically generated below.
+                                              # patient, episode, event, user
+                                              return array(
+                                                                       'patient' => array(self::BELONGS_TO, 'Patient', 'patient_id'),
+                                                                       'episode' => array(self::BELONGS_TO, 'Episode', 'episode_id'),
+                                                                       'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
+                                                                       'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+                                                                       'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
+                                                                       'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
+                                                                       'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+                                              );
+                       }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+                       /**
+                        * @return array customized attribute labels (name=>label)
+                        */
+                       public function attributeLabels() {
+                                              return array(
+                                                                       'id' => 'ID',
+                                                                       'action' => 'Action',
+                                                                       'target_type' => 'Target type',
+                                                                       'patient_id' => 'Patient',
+                                                                       'episode_id' => 'Episode',
+                                                                       'event_id' => 'Event',
+                                                                       'user_id' => 'User',
+                                                                       'data' => 'Data',
+                                                                       'remote_addr' => 'Remote address',
+                                                                       'http_user_agent' => 'HTTP User Agent',
+                                                                       'server_name' => 'Server name',
+                                                                       'request_uri' => 'Request URI',
+                                                                       'site_id' => 'Site',
+                                                                       'firm_id' => 'Firm',
+                                              );
+                       }
 
-		$criteria=new CDbCriteria;
+                       /**
+                        * Retrieves a list of models based on the current search/filter conditions.
+                        * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+                        */
+                       public function search() {
+                                              // Warning: Please modify the following code to remove attributes that
+                                              // should not be searched.
 
-		$criteria->compare('id',$this->id,true);
+                                              $criteria = new CDbCriteria;
 
-		return new CActiveDataProvider(get_class($this), array(
-			'criteria'=>$criteria,
-		));
-	}
+                                              $criteria->compare('id', $this->id, true);
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
-		if(isset($_SERVER['REMOTE_ADDR'])) {
-			$this->remote_addr = $_SERVER['REMOTE_ADDR'];
-			$this->http_user_agent = @$_SERVER['HTTP_USER_AGENT'];
-			$this->server_name = $_SERVER['SERVER_NAME'];
-			$this->request_uri = $_SERVER['REQUEST_URI'];
-			if ($this->user) {
-				$this->site_id = Yii::app()->session['selected_site_id'];
-				$this->firm_id = Yii::app()->session['selected_firm_id'];
-			}
-		}
-		parent::save($runValidation, $attributes, $allow_overriding);
-	}
+                                              return new CActiveDataProvider(get_class($this), array(
+                                                                       'criteria' => $criteria,
+                                              ));
+                       }
 
-	public function getColour() {
-		switch ($this->action) {
-			case 'login-successful':
-				return 'Green';
-				break;
-			case 'login-failed':
-			case 'search-error':
-				return 'Red';
-				break;
-		}
-	}
+                       public function save($runValidation = true, $attributes = null, $allow_overriding = false) { 
+                                              if (isset($_SERVER['REMOTE_ADDR'])) {
+                                                                     $this->remote_addr = $_SERVER['REMOTE_ADDR'];
+                                                                     $this->http_user_agent = @$_SERVER['HTTP_USER_AGENT'];
+                                                                     $this->server_name = $_SERVER['SERVER_NAME'];
+                                                                     $this->request_uri = $_SERVER['REQUEST_URI'];
+                                                                     if ($this->user) {
+                                                                                            $this->site_id = Yii::app()->session['selected_site_id'];
+                                                                                            $this->firm_id = Yii::app()->session['selected_firm_id'];
+                                                                     }
+                                              }
+                                              parent::save($runValidation, $attributes, $allow_overriding);
+                       }
 
-	public static function add($target, $action, $data=null, $log=false, $properties=array()) {
-		$audit = new Audit;
-		$audit->target_type = $target;
-		$audit->action = $action;
-		$audit->data = $data;
+                       public function getColour() {
+                                              switch ($this->action) {
+                                                                     case 'login-successful':
+                                                                                            return 'Green';
+                                                                                            break;
+                                                                     case 'login-failed':
+                                                                     case 'search-error':
+                                                                                            return 'Red';
+                                                                                            break;
+                                              }
+                       }
 
-		if (!isset($properties['user_id'])) {
-			if (Yii::app()->session['user']) {
-				$properties['user_id'] = Yii::app()->session['user']->id;
-			}
-		}
+                       public static function add($target, $action, $data = null, $log = false, $properties = array()) {
 
-		foreach ($properties as $key => $value) {
-			$audit->{$key} = $value;
-		}
+                                              $audit = new Audit;
+                                              $audit->target_type = $target;
+                                              $audit->action = $action;
+                                              $audit->data = $data;
 
-		$audit->save();
+                                            
+                                              if (!isset($properties['user_id'])) {
+                                                                     if (Yii::app()->session['user']) {
+                                                                                            $properties['user_id'] = Yii::app()->session['user']->id;
+                                                                     }
+                                              }
 
-		if (isset($properties['user_id'])) {
-			$username = User::model()->findByPk($properties['user_id'])->username;
-		}
+                                              foreach ($properties as $key => $value) { 
+                                                                     $audit->{$key} = $value;
+                                              }
 
-		$log && OELog::log($data,@$username);
+                                              $audit->save();
 
-		return $audit;
-	}
+                                              if (isset($properties['user_id'])) {
+                                                                     $username = User::model()->findByPk($properties['user_id'])->username;
+                                              }
+
+                                              $log && OELog::log($data, @$username); 
+                                              return $audit; 
+                       }
+
 }

@@ -34,11 +34,7 @@ class PhraseBySubspecialtyTest extends CDbTestCase
 		'phraseNames'	=> 'PhraseName'
 	);
  
-                 
-                 private function phrasesBySubspecialty($param) {
-                                        
-                 }
-                 
+                
                  
 	public function testGet_InvalidParameters_ReturnsFalse()
 	{

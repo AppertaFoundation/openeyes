@@ -26,7 +26,7 @@ class FirmTest extends CDbTestCase {
                                                 'firms' => 'Firm',
                                                 'FirmUserAssignments' => 'FirmUserAssignment',
                                                 'users' => 'User',
-                                                //'userContactAssignment' => 'UserContactAssignment',
+                                                'userContactAssignment' => 'UserContactAssignment',
                                                 'contacts' => 'Contact',
                                                 'consultants' => 'Consultant'
                        );

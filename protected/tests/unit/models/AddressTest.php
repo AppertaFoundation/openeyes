@@ -63,23 +63,4 @@ class AddressTest extends CDbTestCase {
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-		$address = new Address;
-		$address->setAttributes($searchTerms);
-		$results = $address->search();
-		$data = $results->getData();
-
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->addresses($key);
-			}
-		}
-
-		$this->assertEquals($numResults, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);
-	}
 }

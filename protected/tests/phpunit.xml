@@ -12,12 +12,14 @@
 		</blacklist>
 		<whitelist>
 			
-			<directory suffix=".php">../models</directory>
+			
+                                                                                 <directory suffix=".php">../new_models</directory>
 			<!-- <directory suffix=".php">../models/elements</directory>
 			<directory suffix=".php">../services</directory>
 			<directory suffix=".php">../components</directory>
 			<directory suffix=".php">../controllers</directory>
 			<directory suffix=".php">../modules/admin/controllers</directory>
+                                                                                 <directory suffix=".php">../models</directory>
 			-->
 			<exclude>
 				<directory suffix=".php">../components/summaryWidgets/views</directory>
