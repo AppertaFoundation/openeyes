@@ -10,10 +10,8 @@ branches:
 
 env: 
   global: 
-  - secure: |-
-      f2qD0VH2Xr6jjJwg8q9LquwLd89zTyenicLbpV7MKaSH97plH1PD704po6x6\neomF9UBnJUu4pINWIz7xJIUjfq/48YavuJgM6GAAR/PNQB+q7EiNTE8zvG52\nw39JswbGXv6W41VyDD0c2620WSpiS1CViBNvw6hYIdKhlFDwpD0=
-  - secure: |-
-      J0uZU6mhN6QpkrFT3brW5JL0s63lQWu0MCEH+SALanh6WwJYyXZCgVzh8kgS\ndd4n//CZmN1OXBvgMaxtx7MoWm4xIszNpJ2YByY7t217KqvnqVV0oIbDMi/x\nijk4smzraXjBMfhUdlDaGkcrIj6smrtOXCTJezGArgN2N/+Rmxo=
+  - secure: "MCX85EGrZYLSawAT3WtgafCRXy4Ua40hwEX++ZeKJUQmqJcEvPWrLOCUL08f\nXed6a4kMmFvBeXOOLsbphnkXV5N1BW1jIg1ZjIwcFWG42g+3g5XdZjnXCv8i\ntFzF345KayVCaLChLwsr4FSOsEdRONG1657bY/JS9Fyso/VmU0Y="
+  - secure: "jEOUcoYgGUQ+6qNlO7cY7a60G2J7VFOHt3mbelaSUBs+JL3kjXPxxlbGZNFB\njDE1wc84MIaDu6KEnadK5WJT5esiEvOHbPn7sDdruxpYzSrxtxxGV1RFeHSE\nr/VjPguQlKnpWbj8ykPk83Ojxg5W8tCAc9Gg0uQv656ZMtzi8KM="
 
 before_script:
 
