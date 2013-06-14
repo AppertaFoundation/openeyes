@@ -37,10 +37,10 @@ class openeyes {
   exec { 'create openeyes user': 
     unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyes',
     command => '/usr/bin/mysql -uroot -e "\
+      create user \'openeyes\'@\'127.0.0.1\' identified by \'oe_test\';\
       create user \'openeyes\'@\'%\' identified by \'oe_test\';\
-      create user \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+      grant all privileges on openeyes.* to \'openeyes\'@\'127.0.0.1\' identified by \'oe_test\';\
       grant all privileges on openeyes.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
-      grant all privileges on openeyes.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
       flush privileges;"',
     require => Exec['create openeyes db']
   }
