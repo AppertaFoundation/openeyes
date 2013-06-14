@@ -1,0 +1,53 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+branch:
+    only:
+        - develop
+
+env: 
+  global: 
+  - secure: |-
+      vFa/kA3Xhy6VVmQTMT6+uuT10ggdfX6wJrAlZjHsyXPkB89rV5fudL11yN69
+      CPb9DvbESgq7+cteAA8ArvUBWNvod51Rsb8JDcEWqJoS/qc7ygXUtUfpFQts
+      UURwbK/4V1WtMWIduniFWjQ8xE+zq0PzgfOY4gKiQOX5CA/DGno=
+  - secure: |-
+      iuFJkjM/awM3SzPFKJDsSvpON6Ngj2T//KGBNetqqacquNrOTAgwoxtXkkye
+      1AOzPru9eQ+pS7trHLtJlRzfcjgVThJFlDofR/7nLYX0KWmsbbWQI9QwJTH3
+      np0t9tkK+0BWezKIxTVjZwnr5XGBB952BYEDIlzrt2tICjkl6/M=
+
+before_script:
+
+  # SauceLabs Connect
+  - curl https://gist.github.com/everzet/5698159/raw/sauce_connect_setup.sh | bash
+
+  # Apache + PHP
+  - sudo apt-get update
+  - sudo apt-get install -y --force-yes apache2 libapache2-mod-php5 php5-mysql
+  - sudo a2enmod rewrite
+  - sudo sed -i -e "s,/var/www,$(pwd),g" /etc/apache2/sites-available/default
+  - sudo sed -i -e "s,AllowOverride None,AllowOverride All,g" /etc/apache2/sites-available/default
+  - sudo /etc/init.d/apache2 restart
+
+  # MySQL
+  - echo -e "[mysqld]\nlower_case_table_names = 1" > lowercase_tables.cnf
+  - sudo mv lowercase_tables.cnf /etc/mysql/conf.d/
+  - sudo /etc/init.d/mysql restart
+
+  # Composer
+  - curl http://getcomposer.org/installer | php
+  - php composer.phar install --dev --prefer-source
+
+  # Application
+  - mkdir -p protected/runtime
+  - chmod -R 0777 protected/runtime assets
+  - cp protected/config/local/common.sample.php protected/config/local/common.php
+  - cp index.example.php index.php
+  - cp .htaccess.sample .htaccess
+  - mysql -e 'create database openeyes;'
+  - php protected/yiic.php migrate --interactive=0
+ 
+script: vendor/bin/behat -p ci
