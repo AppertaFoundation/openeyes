@@ -8,8 +8,13 @@ branches:
     only:
         - develop
 
+notifications:
+  email:
+    - tests@openeyes.org.uk
+
 env: 
-  global: 
+  global:
+  # SauceLabs credentials
   - secure: "MCX85EGrZYLSawAT3WtgafCRXy4Ua40hwEX++ZeKJUQmqJcEvPWrLOCUL08f\nXed6a4kMmFvBeXOOLsbphnkXV5N1BW1jIg1ZjIwcFWG42g+3g5XdZjnXCv8i\ntFzF345KayVCaLChLwsr4FSOsEdRONG1657bY/JS9Fyso/VmU0Y="
   - secure: "jEOUcoYgGUQ+6qNlO7cY7a60G2J7VFOHt3mbelaSUBs+JL3kjXPxxlbGZNFB\njDE1wc84MIaDu6KEnadK5WJT5esiEvOHbPn7sDdruxpYzSrxtxxGV1RFeHSE\nr/VjPguQlKnpWbj8ykPk83Ojxg5W8tCAc9Gg0uQv656ZMtzi8KM="
 
