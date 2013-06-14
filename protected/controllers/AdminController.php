@@ -453,9 +453,6 @@ class AdminController extends BaseController
 					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
 				}
 				$institution->addAddress($address);
-				if (!$institution->contact->save()) {
-					throw new Exception("Institution contact could not be saved: " . print_r($institution->contact->getErrors(), true));
-				}
 								
 				$this->redirect(array('/admin/editInstitution?institution_id='.$institution->id));
 			}
