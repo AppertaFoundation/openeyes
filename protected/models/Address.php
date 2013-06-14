@@ -173,4 +173,16 @@ class Address extends BaseActiveRecord {
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function beforeSave()
+	{
+		if (parent::beforeSave()) {
+			if ($this->isNewRecord && !$this->address_type_id) {
+				// make correspondence the default address type
+				$this->address_type_id = AddressType::CORRESPOND;
+			}
+			return true;
+		}
+		return false;
+	}
 }
