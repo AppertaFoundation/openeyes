@@ -426,14 +426,59 @@ class AdminController extends BaseController
 			)),
 		));
 	}
+	
+	public function actionAddInstitution() {
+		$institution = new Institution();
+		$address = new Address();
+		
+		$errors = array();
+		
+		if (!empty($_POST)) {
+			$institution->attributes = $_POST['Institution'];
+		
+			if (!$institution->validate()) {
+				$errors = $institution->getErrors();
+			}
+			
+			$address->attributes = $_POST['Address'];
+			
+			if ($address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
 
+			if (empty($errors)) {
+				if (!$institution->save()) {
+					throw new Exception("Unable to save institution: ".print_r($institution->getErrors(),true));
+				}
+				if (!$address->save()) {
+					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
+				}
+				$institution->addAddress($address);
+				if (!$institution->contact->save()) {
+					throw new Exception("Institution contact could not be saved: " . print_r($institution->contact->getErrors(), true));
+				}
+								
+				$this->redirect(array('/admin/editInstitution?institution_id='.$institution->id));
+			}
+		}
+		
+		$this->render('/admin/addinstitution',array(
+				'institution' => $institution,
+				'address' => $address,
+				'errors' => @$errors,
+		));
+	}
+	
 	public function actionEditInstitution() {
 		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
 			throw new Exception("Institution not found: ".@$_GET['institution_id']);
 		}
 
 		$errors = array();
-
+		$address = $institution->contact->address;
+		if (!$address) {
+			$address = new Address();
+		}
 		if (!empty($_POST)) {
 			$institution->attributes = $_POST['Institution'];
 
@@ -446,7 +491,7 @@ class AdminController extends BaseController
 			$address->attributes = $_POST['Address'];
 
 			if (!$address->validate()) {
-				$errors = array_merge($errors, $address->getErrors());
+				$errors = array_merge(@$errors, $address->getErrors());
 			}
 
 			if (empty($errors)) {
@@ -463,7 +508,7 @@ class AdminController extends BaseController
 
 		$this->render('/admin/editinstitution',array(
 			'institution' => $institution,
-			'address' => $institution->contact->address,
+			'address' => $address,
 			'errors' => $errors,
 		));
 	}

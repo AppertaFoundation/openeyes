@@ -124,4 +124,27 @@ class ContactBehavior extends CActiveRecordBehavior {
 			throw new Exception("Unable to save contact metadata: ".print_r($cm->getErrors(),true));
 		}
 	}
+
+	public function addAddress($address) {
+		if ($this->owner->isNewRecord) {
+			throw new Exception("Cannot add address to unsaved contact object");
+		}
+		$address->parent_class = 'Contact';
+		$address->parent_id = $this->owner->contact->id;
+		$address->save();
+	}
+	
+	public function beforeSave()
+	{
+		if ($this->owner->isNewRecord) {
+			// create a base contact object
+			if (!$this->owner->contact_id) {
+				$contact = new Contact();
+				if (!$contact->save()) {
+					throw new Exception("cannot save institution contact: " . print_r($contact->getErrors(), true));
+				}
+				$this->owner->contact_id = $contact->id;
+			}
+		}
+	}
 }
