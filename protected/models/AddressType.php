@@ -28,6 +28,12 @@ class AddressType extends BaseActiveRecord
 {
 	public $default_scope = true;
 
+	// Database ids for the different address types that are hard mapped
+	const REPLYTO = 1;
+	const HOME = 2;
+	const CORRESPOND = 3;
+	const TRANSPORT = 4;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return AddressType the static model class

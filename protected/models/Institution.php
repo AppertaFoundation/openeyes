@@ -115,4 +115,5 @@ class Institution extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
 }

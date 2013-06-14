@@ -83,8 +83,6 @@ class Site extends BaseActiveRecord
 	 */
 	public function relations()
 	{
-		$replyto = AddressType::model()->find('name=?',array('Reply to'));
-
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
