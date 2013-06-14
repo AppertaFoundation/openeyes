@@ -17,7 +17,7 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
-return array(
+$config = array(
 	'components' => array(
 		'db' => array(
 			'connectionString' => 'mysql:host=localhost;dbname=openeyes',
@@ -107,3 +107,5 @@ return array(
 		'specialty_sort' => array(130, 'SUP')
 	),
 );
+
+return $config;
