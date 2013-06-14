@@ -20,7 +20,7 @@
 $isVagrant = 'vagrant' === get_current_user();
 
 $host = $isVagrant ? 'localhost' : '127.0.0.1';
-$port = $isVagrant ? '3306'      : '3333'
+$port = $isVagrant ? '3306'      : '3333';
 
 $config = array(
 	'components' => array(
