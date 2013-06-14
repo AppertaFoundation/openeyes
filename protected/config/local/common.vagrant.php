@@ -17,15 +17,11 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
-$isVagrant = 'vagrant' === get_current_user();
-
-$host = $isVagrant ? 'localhost' : '127.0.0.1';
-$port = $isVagrant ? '3306'      : '3333';
-
+$port = 'vagrant' === get_current_user() ? '3306' : '3333';
 $config = array(
 	'components' => array(
 		'db' => array(
-			'connectionString' => "mysql:host=$host;port=$port;dbname=openeyes",
+			'connectionString' => "mysql:host=127.0.0.1;port=$port;dbname=openeyes",
 			'username' => 'openeyes',
 			'password' => 'oe_test',
 		),
