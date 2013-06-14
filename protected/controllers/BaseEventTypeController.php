@@ -949,13 +949,17 @@ class BaseEventTypeController extends BaseController
 
 		if (!empty($_POST)) {
 			$this->event->deleted = 1;
-			$this->event->save();
+			if (!$this->event->save()) {
+				throw new Exception("Unable to mark event deleted: ".print_r($this->event->getErrors(),true));
+			}
 
 			$this->event->audit('event','delete',false);
 
 			if (Event::model()->count('episode_id=?',array($this->event->episode_id)) == 0) {
 				$this->event->episode->deleted = 1;
-				$this->event->episode->save();
+				if (!$this->event->episode->save()) {
+					throw new Exception("Unable to save episode: ".print_r($this->event->episode->getErrors(),true));
+				}
 
 				$this->event->episode->audit('episode','delete',false);
 
