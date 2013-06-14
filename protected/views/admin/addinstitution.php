@@ -32,7 +32,6 @@
 			))?>
 			<?php echo $form->textField($institution,'name',array('size'=>'50'))?>
 			<?php echo $form->textField($institution,'remote_id',array('size'=>'10'))?>
-			<?php echo get_class($address)?>
 			<?php echo $form->textField($address,'address1')?>
 			<?php echo $form->textField($address,'address2')?>
 			<?php echo $form->textField($address,'city')?>
@@ -49,40 +48,10 @@
 	<?php echo EventAction::button('Cancel', 'cancel', array('colour' => 'red'))->toHtml()?>
 	<img class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" alt="loading..." style="display: none;" />
 </div>
-<div class="curvybox white contactLocations">
-	<div class="admin">
-		<h3 class="georgia">Sites</h3>
-		<form id="admin_institution_sites">
-			<ul class="grid reduceheight">
-				<li class="header">
-					<span class="column_id">ID</span>
-					<span class="column_remote_id">Remote ID</span>
-					<span class="column_name">Name</span>
-					<span class="column_address">Address</span>
-				</li>
-				<?php
-				$criteria = new CDbCriteria;
-				$criteria->compare('institution_id',$institution->id);
-				$criteria->order = 'name asc';
-				foreach (Site::model()->findAll($criteria) as $i => $site) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
-						<span class="column_id"><?php echo $site->id?></span>
-						<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
-						<span class="column_name"><?php echo $site->name?>&nbsp;</span>
-						<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
-					</li>
-				<?php }?>
-			</ul>
-		</form>
-	</div>
-</div>
+
 <script type="text/javascript">
 	handleButton($('#et_cancel'),function(e) {
 		e.preventDefault();
 		window.location.href = baseUrl+'/admin/institutions';
-	});
-	$('li.even,li.odd').click(function(e) {
-		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editsite?site_id='+$(this).attr('data-attr-id');
 	});
 </script>

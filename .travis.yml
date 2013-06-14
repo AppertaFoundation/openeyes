@@ -4,16 +4,16 @@ php:
   - 5.3
   - 5.4
 
+branches:
+    only:
+        - develop
+
 env: 
   global: 
   - secure: |-
-      vFa/kA3Xhy6VVmQTMT6+uuT10ggdfX6wJrAlZjHsyXPkB89rV5fudL11yN69
-      CPb9DvbESgq7+cteAA8ArvUBWNvod51Rsb8JDcEWqJoS/qc7ygXUtUfpFQts
-      UURwbK/4V1WtMWIduniFWjQ8xE+zq0PzgfOY4gKiQOX5CA/DGno=
+      f2qD0VH2Xr6jjJwg8q9LquwLd89zTyenicLbpV7MKaSH97plH1PD704po6x6\neomF9UBnJUu4pINWIz7xJIUjfq/48YavuJgM6GAAR/PNQB+q7EiNTE8zvG52\nw39JswbGXv6W41VyDD0c2620WSpiS1CViBNvw6hYIdKhlFDwpD0=
   - secure: |-
-      iuFJkjM/awM3SzPFKJDsSvpON6Ngj2T//KGBNetqqacquNrOTAgwoxtXkkye
-      1AOzPru9eQ+pS7trHLtJlRzfcjgVThJFlDofR/7nLYX0KWmsbbWQI9QwJTH3
-      np0t9tkK+0BWezKIxTVjZwnr5XGBB952BYEDIlzrt2tICjkl6/M=
+      J0uZU6mhN6QpkrFT3brW5JL0s63lQWu0MCEH+SALanh6WwJYyXZCgVzh8kgS\ndd4n//CZmN1OXBvgMaxtx7MoWm4xIszNpJ2YByY7t217KqvnqVV0oIbDMi/x\nijk4smzraXjBMfhUdlDaGkcrIj6smrtOXCTJezGArgN2N/+Rmxo=
 
 before_script:
 

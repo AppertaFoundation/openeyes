@@ -70,6 +70,9 @@ return array(
 			'class' => 'OEEventManager',
 			'observers' => array(),
 		),
+		'clientScript' => array(
+			'class' => 'ClientScript',
+		),
 		'user' => array(
 			'class' => 'WebUser',
 			// Enable cookie-based authentication

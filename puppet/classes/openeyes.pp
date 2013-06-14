@@ -37,10 +37,10 @@ class openeyes {
   exec { 'create openeyes user': 
     unless  => '/usr/bin/mysql -uopeneyes -poe_test openeyes',
     command => '/usr/bin/mysql -uroot -e "\
-      create user \'openeyes\'@\'%\' identified by \'oe_test\';\
       create user \'openeyes\'@\'localhost\' identified by \'oe_test\';\
-      grant all privileges on openeyes.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
+      create user \'openeyes\'@\'%\' identified by \'oe_test\';\
       grant all privileges on openeyes.* to \'openeyes\'@\'localhost\' identified by \'oe_test\';\
+      grant all privileges on openeyes.* to \'openeyes\'@\'%\' identified by \'oe_test\';\
       flush privileges;"',
     require => Exec['create openeyes db']
   }
@@ -49,6 +49,7 @@ class openeyes {
     command => '/usr/bin/php /var/www/protected/yiic.php migrate --interactive=0',
     require => [
       Exec['create openeyes db'],
+      Exec['create openeyes user'],
       File['/var/www/protected/config/local/common.php'],
       File['/var/www/protected/runtime'],
     ]
