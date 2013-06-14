@@ -134,7 +134,7 @@ class ContactBehavior extends CActiveRecordBehavior {
 		$address->save();
 	}
 	
-	public function beforeSave()
+	public function beforeSave($event)
 	{
 		if ($this->owner->isNewRecord) {
 			// create a base contact object
