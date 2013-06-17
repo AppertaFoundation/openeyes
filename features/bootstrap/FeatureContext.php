@@ -60,12 +60,17 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAmLoggedInIntoTheSystem()
     {
-        $con = $this->yii->db;
-
         $this->visit('/');
         $this->fillField('Username', 'admin');
         $this->fillField('Password', 'admin');
         $this->pressButton('Login');
+    }
+
+    /**
+     * @Given /^I am a cataract specialist$/
+     */
+    public function iAmACataractSpecialist()
+    {
         $this->pressButton('Yes');
         $this->getSession()->wait(5000, "$('#profile_firm_id').length");
         $this->selectOption('profile_firm_id', 'Allan Bruce (Cataract)');
@@ -75,19 +80,32 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
-     * @Given /^there is an adult patient with operation$/
+     * @Given /^I am a strabismus specialist$/
      */
-    public function thereIsAnAdultPatientWithOperation()
+    public function iAmAStrabismusSpecialist()
+    {
+        $this->pressButton('Yes');
+        $this->getSession()->wait(5000, "$('#profile_firm_id').length");
+        $this->selectOption('profile_firm_id', 'Adams Gill (Strabismus)');
+        $this->clickLink('Home');
+        $this->getSession()->wait(5000, "$('.ui-dialog').length");
+        $this->pressButton('Confirm');
+    }
+
+    /**
+     * @Given /^there is an adult patient with operation that does not need a consultant or an anaesthetist$/
+     */
+    public function thereIsAnAdultPatientWithOperationThatDoesNotNeedAConsultantAndNoAnaesthetist()
     {
         $this->patient = 'TIBBETTS, Josephine';
     }
 
     /**
-     * @Given /^this operation does not need a consultant or an anaesthetist$/
+     * @Given /^there is an adult patient with operation that does need a consultant but no anaesthetist$/
      */
-    public function thisOperationDoesNotNeedAConsultantOrAnAnaesthetist()
+    public function thereIsAnAdultPatientWithOperationThatDoesNeedAConsultantButNoAnaesthetist()
     {
-        // Prebuilt DATA
+        $this->patient = 'JOSEPHSON, Ottilie';
     }
 
     /**
@@ -95,8 +113,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAwaitingPatientFromTheWaitingList()
     {
-        $this->getSession()->wait(5000, "$('table.waiting-list > tbody > tr').length > 20");
+        $this->getSession()->wait(5000, "$('table.waiting-list > tbody > tr').length > 2");
         $this->clickLink($this->patient);
+        $this->getSession()->wait(5000, "$('#btn_schedule-now').length");
     }
 
     /**
@@ -116,6 +135,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     {
         $this->getSession()->wait(5000, "$('#theatre-times').length");
         $this->clickLink('08:30 - 13:00');
+        $this->getSession()->wait(5000, "$('#confirm_slot').length");
     }
 
     /**
