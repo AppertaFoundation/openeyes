@@ -16,6 +16,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     private $yii;
     private $parameters;
 
+    private $patient;
+
     public function __construct(array $parameters)
     {
         $this->parameters = $parameters;
@@ -46,21 +48,28 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
+     * @BeforeScenario @javascript
+     */
+    public function maximizeBrowserWindow()
+    {
+        $this->getSession()->resizeWindow(1280, 800);
+    }
+
+    /**
      * @Given /^I am logged in into the system$/
      */
     public function iAmLoggedInIntoTheSystem()
     {
         $con = $this->yii->db;
 
-        $con->createCommand(sprintf('INSERT INTO user_firm VALUES(%s)', implode(', ', array(
-            '1', '1', '18', '1', 'NOW()', '1', 'NOW()'
-        ))))->execute();
-        $con->createCommand('UPDATE user SET last_firm_id = 18 WHERE id = 1')->execute();
-
         $this->visit('/');
         $this->fillField('Username', 'admin');
         $this->fillField('Password', 'admin');
         $this->pressButton('Login');
+        $this->pressButton('Yes');
+        $this->selectOption('profile_firm_id', 'Allan Bruce (Cataract)');
+        $this->clickLink('Home');
+        $this->pressButton('Confirm');
     }
 
     /**
@@ -68,6 +77,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function thereIsAnAdultPatientWithOperation()
     {
+        $this->patient = 'TIBBETTS, Josephine';
     }
 
     /**
@@ -75,7 +85,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function thisOperationDoesNotNeedAConsultantOrAnAnaesthetist()
     {
-        throw new PendingException();
+        // Prebuilt DATA
     }
 
     /**
@@ -83,15 +93,16 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAwaitingPatientFromTheWaitingList()
     {
-        throw new PendingException();
+        $this->getSession()->wait(5000, "$('table.waiting-list > tbody > tr').length > 20");
+        $this->clickLink($this->patient);
     }
 
     /**
-     * @Given /^I select a date from the calendar$/
+     * @Given /^I click on available date in the calendar$/
      */
     public function iSelectADateFromTheCalendar()
     {
-        throw new PendingException();
+        $this->getSession()->getPage()->find('css', '#calendar td.available')->click();
     }
 
     /**
@@ -99,7 +110,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAvailableTheatreSessionFromTheList()
     {
-        throw new PendingException();
+        $this->getSession()->wait(5000, "$('#theatre-times').length");
+        $this->clickLink('08:30 - 13:00');
     }
 
     /**
@@ -107,6 +119,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function operationShouldBeAssignedToTheTheatreSession()
     {
-        throw new PendingException();
+
     }
 }

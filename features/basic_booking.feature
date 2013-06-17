@@ -1,3 +1,4 @@
+@javascript
 Feature: Basic booking
   In order to book visits of my patients
   As a system user
@@ -9,10 +10,10 @@ Feature: Basic booking
     But this operation does not need a consultant or an anaesthetist
     When I follow "Partial bookings waiting list"
     And I select awaiting patient from the waiting list
-    And I press "Schedule now"
-    And I select a date from the calendar
+    And I follow "Schedule now"
+    And I click on available date in the calendar
     And I select available theatre session from the list
     And I press "Confirm slot"
-    Then operation should be assigned to the theatre session
+    Then I should see "Operation booking (Scheduled)"
 
   Scenario: Seeing list of existing sessions when choosing date from the calendar
