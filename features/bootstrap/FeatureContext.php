@@ -101,7 +101,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     {
         if ($this->getSession()->getDriver() instanceof Selenium2Driver) {
             try {
-                $this->getSession()->wait(2000, "$.active == 0");
+                $this->getSession()->wait(5000, "$.active == 0");
             } catch (\Exception $e) {}
         }
     }
