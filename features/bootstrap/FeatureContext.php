@@ -27,13 +27,31 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
+     * @BeforeScenario
+     */
+    public function loadDatabaseSample($event)
+    {
+        if (!$event->getScenario()->hasSteps()) {
+            return;
+        }
+
+        chdir(__DIR__.'/../../');
+        if (!is_file($this->parameters['sample_db'])) {
+            throw new \RuntimeException(
+                'Sample database not found. Have you forgot to clone it?'
+            );
+        }
+
+        exec(sprintf($this->parameters['load_db_cmd'], $this->parameters['sample_db']));
+    }
+
+    /**
      * @Given /^I am logged in into the system$/
      */
     public function iAmLoggedInIntoTheSystem()
     {
         $con = $this->yii->db;
 
-        $con->createCommand('TRUNCATE TABLE user_firm')->execute();
         $con->createCommand(sprintf('INSERT INTO user_firm VALUES(%s)', implode(', ', array(
             '1', '1', '18', '1', 'NOW()', '1', 'NOW()'
         ))))->execute();
