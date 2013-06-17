@@ -10,6 +10,7 @@ use Behat\Gherkin\Node\PyStringNode,
 use Behat\MinkExtension\Context\MinkContext;
 
 use Behat\YiiExtension\Context\YiiAwareContextInterface;
+use Behat\Mink\Driver\Selenium2Driver;
 
 class FeatureContext extends MinkContext implements YiiAwareContextInterface
 {
@@ -93,6 +94,19 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
+     * @BeforeStep
+     * @AfterStep
+     */
+    public function waitForActionToFinish()
+    {
+        if ($this->getSession()->getDriver() instanceof Selenium2Driver) {
+            try {
+                $this->getSession()->wait(2000, "$.active == 0");
+            } catch (\Exception $e) {}
+        }
+    }
+
+    /**
      * @Given /^there is an adult patient with operation that does not need a consultant or an anaesthetist$/
      */
     public function thereIsAnAdultPatientWithOperationThatDoesNotNeedAConsultantAndNoAnaesthetist()
@@ -113,9 +127,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAwaitingPatientFromTheWaitingList()
     {
-        $this->getSession()->wait(5000, "$('table.waiting-list > tbody > tr').length > 2");
         $this->clickLink($this->patient);
-        $this->getSession()->wait(5000, "$('#btn_schedule-now').length");
     }
 
     /**
@@ -123,7 +135,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectADateFromTheCalendar()
     {
-        $this->getSession()->wait(5000, "$('#calendar').length");
         $this->assertSession()->elementExists('css', '#calendar td.available');
         $this->getSession()->getPage()->find('css', '#calendar td.available')->click();
     }
@@ -133,8 +144,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAvailableTheatreSessionFromTheList()
     {
-        $this->getSession()->wait(5000, "$('#theatre-times').length");
         $this->clickLink('08:30 - 13:00');
-        $this->getSession()->wait(5000, "$('#confirm_slot').length");
     }
 }
