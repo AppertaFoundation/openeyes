@@ -67,8 +67,10 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         $this->fillField('Password', 'admin');
         $this->pressButton('Login');
         $this->pressButton('Yes');
+        $this->getSession()->wait(5000, "$('#profile_firm_id').length");
         $this->selectOption('profile_firm_id', 'Allan Bruce (Cataract)');
         $this->clickLink('Home');
+        $this->getSession()->wait(5000, "$('.ui-dialog').length");
         $this->pressButton('Confirm');
     }
 
@@ -102,6 +104,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectADateFromTheCalendar()
     {
+        $this->getSession()->wait(5000, "$('#calendar').length");
+        $this->assertSession()->elementExists('css', '#calendar td.available');
         $this->getSession()->getPage()->find('css', '#calendar td.available')->click();
     }
 
