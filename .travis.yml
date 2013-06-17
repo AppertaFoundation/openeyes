@@ -47,7 +47,7 @@ before_script:
   - cp index.example.php index.php
   - cp .htaccess.sample .htaccess
   - mysql -e 'create database openeyes;'
-  - php protected/yiic.php migrate --interactive=0
+  - bin/clone-sample-db.sh
   - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
   - bin/install-modules.sh
  
