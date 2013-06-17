@@ -137,12 +137,4 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         $this->clickLink('08:30 - 13:00');
         $this->getSession()->wait(5000, "$('#confirm_slot').length");
     }
-
-    /**
-     * @Then /^operation should be assigned to the theatre session$/
-     */
-    public function operationShouldBeAssignedToTheTheatreSession()
-    {
-
-    }
 }
