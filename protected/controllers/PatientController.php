@@ -1185,7 +1185,7 @@ class PatientController extends BaseController
 			$patient->updateMedication($m,array(
 				'drug_id' => $drug->id,
 				'route_id' => $route->id,
-				'option_id' => $option ? $option->id : null,
+				'option_id' => @$option ? $option->id : null,
 				'frequency_id' => $frequency->id,
 				'start_date' => $_POST['start_date'],
 			));
