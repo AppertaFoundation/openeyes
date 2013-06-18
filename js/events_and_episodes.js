@@ -107,23 +107,6 @@ $(document).ready(function(){
 	
 });
 
-function selectSort(a, b) {		 
-		if (a.innerHTML == rootItem) {
-				return -1;		
-		}
-		else if (b.innerHTML == rootItem) {
-				return 1;  
-		}				
-		return (a.innerHTML > b.innerHTML) ? 1 : -1;
-};
-
-var rootItem = null;
-
-function sort_selectbox(element) {
-	rootItem = element.children('option:first').text();
-	element.append(element.children('option').sort(selectSort));
-}
-
 function WidgetSlider() {if (this.init) this.init.apply(this, arguments); }
 
 WidgetSlider.prototype = {
