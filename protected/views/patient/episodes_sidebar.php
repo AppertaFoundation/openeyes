@@ -18,6 +18,11 @@
  */
 ?>
 <div id="episodes_sidebar">
+	<?php if (!empty($ordered_episodes) && BaseController::checkUserLevel(4)) {?>
+		<div align="center" style="margin-top:5px; margin-bottom: 5px;">
+			<button class="classy blue mini addEpisode" type="button"><span class="button-span button-span-blue">Add episode</span></button>
+		</div>
+	<?php }?>
 	<?php $this->renderPartial('//patient/_legacy_events',array('legacyepisodes'=>$legacyepisodes))?>
 	<?php $this->renderPartial('//patient/_support_service_events',array('supportserviceepisodes'=>$supportserviceepisodes))?>
 	<?php
@@ -37,8 +42,6 @@
 							</span>
 						</div>
 						<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name), array('/patient/episode/' . $episode->id), array('class' => 'title_summary' . ((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : ''))) ?></h4>
-
-
 						<!-- shows miniicons for the events --> 
 							<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>> 
 								<?php foreach ($episode->events as $event) {
@@ -56,56 +59,58 @@
 								<?php } ?> 
 							</div> 
 						<!-- end shows miniicons for the events -->
-
-
-
-
-
-
-
-						<ul	<?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
-							<?php
-							foreach ($episode->events as $event) {
-								$highlight = false;
-
-								if (isset($this->event) && $this->event->id == $event->id) {
-									$highlight = TRUE;
-								}
-
-								$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
-								?>
-								<li id="eventLi<?php echo $event->id ?>">
-									<div class="quicklook" style="display: none; ">
-										<span class="event"><?php echo $event->eventType->name ?></span>
-										<span class="info"><?php echo str_replace("\n", "<br/>", $event->info) ?></span>
-										<?php if ($event->hasIssue()) { ?>
-											<span class="issue"><?php echo $event->getIssueText() ?></span>
-										<?php } ?>
+						<div <?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
+							<?php if (BaseController::checkUserLevel(4)) {?>
+								<?php if ($episode->status->name != 'Discharged') {?>
+									<div align="center" style="margin-top:5px; margin-bottom: 5px;">
+										<button class="classy blue mini addEvent" type="button" data-attr-subspecialty-id="<?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty_id?>"><span class="button-span button-span-blue">Add event</span></button>
 									</div>
-									<?php if ($highlight) { ?>
-										<div class="viewing">
-										<?php } else { ?>
-											<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">
+								<?php }?>
+							<?php }?>
+							<ul class="events">
+								<?php
+								foreach ($episode->events as $event) {
+									$highlight = false;
+
+									if (isset($this->event) && $this->event->id == $event->id) {
+										$highlight = TRUE;
+									}
+
+									$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/';
+									?>
+									<li id="eventLi<?php echo $event->id ?>">
+										<div class="quicklook" style="display: none; ">
+											<span class="event"><?php echo $event->eventType->name ?></span>
+											<span class="info"><?php echo str_replace("\n", "<br/>", $event->info) ?></span>
+											<?php if ($event->hasIssue()) { ?>
+												<span class="issue"><?php echo $event->getIssueText() ?></span>
 											<?php } ?>
-											<span class="type<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
-												<?php
-												if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
-													$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
-												} else {
-													$assetpath = '/assets/';
-												}
-												?>
-												<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
-											</span>
-											<span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
-											<?php if (!$highlight) { ?>
-											</a>
-										<?php } else { ?>
 										</div>
-									<?php } ?>
-								</li>
-							<?php } ?>
-						</ul>
+										<?php if ($highlight) { ?>
+											<div class="viewing">
+											<?php } else { ?>
+												<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">
+												<?php } ?>
+												<span class="type<?php if ($event->hasIssue()) { ?> statusflag<?php } ?>">
+													<?php
+													if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
+														$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
+													} else {
+														$assetpath = '/assets/';
+													}
+													?>
+													<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
+												</span>
+												<span class="date"> <?php echo $event->NHSDateAsHTML('created_date'); ?></span>
+												<?php if (!$highlight) { ?>
+												</a>
+											<?php } else { ?>
+											</div>
+										<?php } ?>
+									</li>
+								<?php } ?>
+							</ul>
+						</div>
 					</div>
 					<div class="episode_details hidden" id="episode-details-<?php echo $episode->id ?>">
 						<div class="row"><span class="label">Start date:</span><?php echo $episode->NHSDate('start_date'); ?></div>
@@ -116,13 +121,11 @@
 						<div class="row"><span class="label">Consultant firm:</span><?php echo CHtml::encode($episode->firm->name) ?></div>
 						<img class="folderIcon" src="<?php echo Yii::app()->createUrl('img/_elements/icons/folder_open.png') ?>" alt="folder open" />
 					</div>
-				</div> <!-- .episode -->
+				</div>
 			<?php } ?>
 		<?php } ?>
-</div> <!-- #episodes_sidebar -->
+</div>
 <script type="text/javascript">
-// basic quicklook animation... 
-
 	$(document).ready(function() {
 		$('.quicklook').each(function() {
 			var quick = $(this);
@@ -133,7 +136,5 @@
 				quick.fadeOut('fast');
 			});
 		});
-
-	}); // ready
-
+	});
 </script>

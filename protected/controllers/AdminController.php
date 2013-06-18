@@ -425,14 +425,56 @@ class AdminController extends BaseController
 			)),
 		));
 	}
+	
+	public function actionAddInstitution() {
+		$institution = new Institution();
+		$address = new Address();
+		
+		$errors = array();
+		
+		if (!empty($_POST)) {
+			$institution->attributes = $_POST['Institution'];
+		
+			if (!$institution->validate()) {
+				$errors = $institution->getErrors();
+			}
+			
+			$address->attributes = $_POST['Address'];
+			
+			if ($address->validate()) {
+				$errors = array_merge($errors, $address->getErrors());
+			}
 
+			if (empty($errors)) {
+				if (!$institution->save()) {
+					throw new Exception("Unable to save institution: ".print_r($institution->getErrors(),true));
+				}
+				if (!$address->save()) {
+					throw new Exception("Unable to save institution address: ".print_r($address->getErrors(),true));
+				}
+				$institution->addAddress($address);
+								
+				$this->redirect(array('/admin/editInstitution?institution_id='.$institution->id));
+			}
+		}
+		
+		$this->render('/admin/addinstitution',array(
+				'institution' => $institution,
+				'address' => $address,
+				'errors' => @$errors,
+		));
+	}
+	
 	public function actionEditInstitution() {
 		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
 			throw new Exception("Institution not found: ".@$_GET['institution_id']);
 		}
 
 		$errors = array();
-
+		$address = $institution->contact->address;
+		if (!$address) {
+			$address = new Address();
+		}
 		if (!empty($_POST)) {
 			$institution->attributes = $_POST['Institution'];
 
@@ -445,7 +487,7 @@ class AdminController extends BaseController
 			$address->attributes = $_POST['Address'];
 
 			if (!$address->validate()) {
-				$errors = array_merge($errors, $address->getErrors());
+				$errors = array_merge(@$errors, $address->getErrors());
 			}
 
 			if (empty($errors)) {
@@ -462,7 +504,7 @@ class AdminController extends BaseController
 
 		$this->render('/admin/editinstitution',array(
 			'institution' => $institution,
-			'address' => $institution->contact->address,
+			'address' => $address,
 			'errors' => $errors,
 		));
 	}
@@ -544,5 +586,67 @@ class AdminController extends BaseController
 			'contact' => $contact,
 			'errors' => @$errors,
 		));
+	}
+
+	public function actionAddContactLabel() {
+		$contactlabel = new ContactLabel;
+
+		if (!empty($_POST)) {
+			$contactlabel->attributes = $_POST['ContactLabel'];
+
+			if (!$contactlabel->validate()) {
+				$errors = $contactlabel->getErrors();
+			} else {
+				if (!$contactlabel->save()) {
+					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
+				}
+				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/addcontactlabel',array(
+			'contactlabel' => $contactlabel,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionEditContactLabel($id) {
+		if (!$contactlabel = ContactLabel::model()->findByPk($id)) {
+			throw new Exception("ContactLabel not found: $id");
+		}
+
+		if (!empty($_POST)) {
+			$contactlabel->attributes = $_POST['ContactLabel'];
+
+			if (!$contactlabel->validate()) {
+				$errors = $contactlabel->getErrors();
+			} else {
+				if (!$contactlabel->save()) {
+					throw new Exception("Unable to save contactlabel: ".print_r($contactlabel->getErrors(),true));
+				}
+				$this->redirect('/admin/contactlabels/'.ceil($contactlabel->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editcontactlabel',array(
+			'contactlabel' => $contactlabel,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionDeleteContactLabel() {
+		if (!$contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id'])) {
+			throw new Exception("ContactLabel not found: ".@$_POST['contact_label_id']);
+		}
+
+		$count = Contact::model()->count('contact_label_id=?',array($contactlabel->id));
+
+		if ($count == 0) {
+			if (!$contactlabel->delete()) {
+				throw new Exception("Unable to delete ContactLabel: ".print_r($contactlabel->getErrors(),true));
+			}
+		}
+
+		echo $count;
 	}
 }

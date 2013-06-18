@@ -19,7 +19,9 @@
 ?>
 <?php 
 	$this->widget('SiteAndFirmWidget', array(
-			'returnUrl' => $returnUrl,
-			'title' => 'Select a new Site and/or Firm',
+		'returnUrl' => $returnUrl,
+		'subspecialty' => @$subspecialty,
+		'patient' => @$patient,
+		'title' => 'Select a new Site and/or Firm',
 	));
 ?>

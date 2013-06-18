@@ -8,6 +8,7 @@ tags
 /.settings/
 /.project
 /.htaccess
+/.enabled-modules
 /index.php
 /nbproject/
 /protected/data/*

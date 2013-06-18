@@ -150,7 +150,7 @@
 		$.ajax({
 			'url': '<?php echo Yii::app()->createUrl('audit/search'); ?>',
 			'type': 'POST',
-			'data': $('#auditList-filter').serialize(),
+			'data': $('#auditList-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(data) {
 				$('#previous_site_id').val($('#site_id').val());
 				$('#previous_firm_id').val($('#firm_id').val());

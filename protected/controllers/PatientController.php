@@ -215,7 +215,7 @@ class PatientController extends BaseController
 			default:
 				$sort_by = 'hos_num*1';
 		}
-                
+								
 		$sort_dir = (@$_GET['sort_dir'] == 0 ? 'asc' : 'desc');
 		$page_num = (integer)@$_GET['page_num'];
 		$page_size = 20;
@@ -411,7 +411,7 @@ class PatientController extends BaseController
 			return $this->redirect(array('patient/episode/'.$this->episode->id));
 		}
 
-		if (isset($_POST['episode_save'])) {
+		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
 				$error = "Please select a disorder for the principal diagnosis";
 			} else if (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
@@ -425,6 +425,15 @@ class PatientController extends BaseController
 
 				if ($_POST['episode_status_id'] != $this->episode->episode_status_id) {
 					$this->episode->episode_status_id = $_POST['episode_status_id'];
+
+					if (EpisodeStatus::model()->findByPk($_POST['episode_status_id'])->name == 'Discharged') {
+						if ($this->episode->end_date === null) {
+							$this->episode->end_date = date('Y-m-d H:i:s');
+						}
+					} else if ($this->episode->end_date !== null) {
+						$this->episode->end_date = null;
+					}
+
 					if (!$this->episode->save()) {
 						throw new Exception('Unable to update status for episode '.$this->episode->id.' '.print_r($this->episode->getErrors(),true));
 					}
@@ -440,6 +449,7 @@ class PatientController extends BaseController
 		// TODO: verify if ordered_episodes complete supercedes need for unordered $episodes
 		$ordered_episodes = $this->patient->getOrderedEpisodes();
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
@@ -466,6 +476,7 @@ class PatientController extends BaseController
 			'episodes' => $episodes,
 			'ordered_episodes' => $ordered_episodes,
 			'legacyepisodes' => $legacyepisodes,
+			'supportserviceepisodes' => $supportserviceepisodes,
 			'eventTypes' => EventType::model()->getEventTypeModules(),
 			'site' => $site,
 			'current_episode' => $this->episode,
@@ -1149,6 +1160,8 @@ class PatientController extends BaseController
 		if ($this->patient) {
 			$this->jsVars['OE_patient_id'] = $this->patient->id;
 		}
+		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+
 		return parent::processJsVars();
 	}
 
@@ -1461,5 +1474,86 @@ class PatientController extends BaseController
 		}
 
 		echo json_encode(array('route_id'=>$drug->default_route_id,'frequency_id'=>$drug->default_frequency_id));
+	}
+
+	public function actionAddNewEvent() {
+		if (!BaseController::checkUserLevel(4)) {
+			return;
+		}
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!$subspecialty = Subspecialty::model()->findByPk(@$_POST['subspecialty_id'])) {
+			throw new Exception("Subspecialty not found: ".@$_POST['subspecialty_id']);
+		}
+
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		if ($firm->serviceSubspecialtyAssignment->subspecialty_id != $subspecialty->id) {
+			$has = false;
+			foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
+				if ($uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
+					$has = true;
+					break;
+				}
+			}
+
+			if (!$has) {
+				echo "0";
+				return;
+			}
+		}
+
+		if ($subspecialty->id == Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id) {
+			return $this->renderPartial('//patient/add_new_event',array(
+				'subspecialty' => $subspecialty,
+				'patient' => $patient,
+				'eventTypes' => EventType::model()->getEventTypeModules(),
+			),false, true);
+		}
+
+		$this->renderPartial('/site/change_site_and_firm', array(
+			'returnUrl' => @$_POST['returnUrl'],
+			'subspecialty' => $subspecialty,
+			'patient' => $patient,
+		), false, true);
+	}
+
+	public function actionVerifyAddNewEpisode() {
+		if (!$patient = Patient::model()->findByPk(@$_GET['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_GET['patient_id']);
+		}
+
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+
+		if ($patient->hasOpenEpisodeOfSubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id)) {
+			echo "0";
+			return;
+		}
+
+		echo "1";
+	}
+
+	public function actionAddNewEpisode() {
+		if (!BaseController::checkUserLevel(4)) {
+			return;
+		}
+
+		if (!$patient = Patient::model()->findByPk(@$_POST['patient_id'])) {
+			throw new Exception("Patient not found: ".@$_POST['patient_id']);
+		}
+
+		if (!empty($_POST['firm_id'])) {
+			$firm = Firm::model()->findByPk($_POST['firm_id']);
+			$episode = $patient->addEpisode($firm);
+
+			$this->redirect(array('/patient/episode/'.$episode->id));
+		}
+
+		return $this->renderPartial('//patient/add_new_episode',array(
+			'patient' => $patient,
+			'firm' => Firm::model()->findByPk(Yii::app()->session['selected_firm_id']),
+		),false, true);
 	}
 }

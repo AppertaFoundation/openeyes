@@ -5,6 +5,7 @@
 			'Users' => '/admin/users',
 			'Firms' => '/admin/firms',
 			'Contacts' => '/admin/contacts',
+			'Contact labels' => '/admin/contactlabels',
 			'Institutions' => '/admin/institutions',
 			'Sites' => '/admin/sites',
 			/*

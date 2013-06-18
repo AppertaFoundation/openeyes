@@ -374,7 +374,7 @@ $(document).ready(function() {
 		$.ajax({
 			'type': 'POST',
 			'dataType': 'json',
-			'data': $('#add-contact').serialize(),
+			'data': $('#add-contact').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'url': baseUrl+'/patient/validateSaveContact',
 			'success': function(data) {
 				$('div.add_contact_form_errors').html('');
@@ -455,7 +455,7 @@ $(document).ready(function() {
 		$.ajax({
 			'type': 'POST',
 			'dataType': 'json',
-			'data': $('#edit-contact').serialize(),
+			'data': $('#edit-contact').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'url': baseUrl+'/patient/validateEditContact',
 			'success': function(data) {
 				$('div.edit_contact_form_errors').html('');
@@ -509,7 +509,7 @@ $(document).ready(function() {
 
 		$.ajax({
 			'type': 'POST',
-			'data': $('#add_site_form').serialize(),
+			'data': $('#add_site_form').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'url': baseUrl+'/patient/sendSiteMessage',
 			'success': function(html) {
 				if (html == "1") {

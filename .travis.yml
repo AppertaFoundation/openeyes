@@ -4,16 +4,19 @@ php:
   - 5.3
   - 5.4
 
+branches:
+    only:
+        - develop
+
+notifications:
+  email:
+    - tests@openeyes.org.uk
+
 env: 
-  global: 
-  - secure: |-
-      vFa/kA3Xhy6VVmQTMT6+uuT10ggdfX6wJrAlZjHsyXPkB89rV5fudL11yN69
-      CPb9DvbESgq7+cteAA8ArvUBWNvod51Rsb8JDcEWqJoS/qc7ygXUtUfpFQts
-      UURwbK/4V1WtMWIduniFWjQ8xE+zq0PzgfOY4gKiQOX5CA/DGno=
-  - secure: |-
-      iuFJkjM/awM3SzPFKJDsSvpON6Ngj2T//KGBNetqqacquNrOTAgwoxtXkkye
-      1AOzPru9eQ+pS7trHLtJlRzfcjgVThJFlDofR/7nLYX0KWmsbbWQI9QwJTH3
-      np0t9tkK+0BWezKIxTVjZwnr5XGBB952BYEDIlzrt2tICjkl6/M=
+  global:
+  # SauceLabs credentials
+  - secure: "MCX85EGrZYLSawAT3WtgafCRXy4Ua40hwEX++ZeKJUQmqJcEvPWrLOCUL08f\nXed6a4kMmFvBeXOOLsbphnkXV5N1BW1jIg1ZjIwcFWG42g+3g5XdZjnXCv8i\ntFzF345KayVCaLChLwsr4FSOsEdRONG1657bY/JS9Fyso/VmU0Y="
+  - secure: "jEOUcoYgGUQ+6qNlO7cY7a60G2J7VFOHt3mbelaSUBs+JL3kjXPxxlbGZNFB\njDE1wc84MIaDu6KEnadK5WJT5esiEvOHbPn7sDdruxpYzSrxtxxGV1RFeHSE\nr/VjPguQlKnpWbj8ykPk83Ojxg5W8tCAc9Gg0uQv656ZMtzi8KM="
 
 before_script:
 
@@ -45,5 +48,7 @@ before_script:
   - cp .htaccess.sample .htaccess
   - mysql -e 'create database openeyes;'
   - php protected/yiic.php migrate --interactive=0
+  - echo -e "OphCiExamination\nOphDrPrescription\nOphTrOperationbooking\nOphTrOperationnote\nOphTrConsent\nOphCiPhasing\nOphLeEpatientletter\nOphCoCorrespondence\neyedraw" > .enabled-modules
+  - bin/install-modules.sh
  
 script: vendor/bin/behat -p ci

@@ -34,7 +34,7 @@ class DiagnosisSelection extends BaseCWidget {
 
 	public function run() {
 		$this->class = get_class($this->element);
-		if (empty($_POST)) {
+		if (empty($_POST) || !array_key_exists($this->class, $_POST)) {
 			if (empty($this->element->event_id)) {
 				if ($this->default) {
 					// It's a new event so fetch the most recent element_diagnosis
@@ -42,7 +42,7 @@ class DiagnosisSelection extends BaseCWidget {
 					$firm = Firm::model()->findByPk($firmId);
 					if (isset(Yii::app()->getController()->patient)) {
 						$patientId = Yii::app()->getController()->patient->id;
-						$episode = Episode::getCurrentEpisodeByFirm($patientId, $firm);
+						$episode = Episode::getCurrentEpisodeByFirm($patientId, $firm, true);
 						if ($episode && $disorder = $episode->diagnosis) {
 							// There is a diagnosis for this episode
 							$this->value = $disorder->id;
