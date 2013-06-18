@@ -43,6 +43,13 @@ class BaseEventTypeController extends BaseController
 	 * @param EventType $event_type
 	 */
 	public function checkEventAccess($event_type) {
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		if (!$firm->service_subspecialty_assignment_id) {
+			if (!$event_type->support_services) {
+				return false;
+			}
+		}
+
 		if(BaseController::checkUserLevel(5)) {
 			return true;
 		}
@@ -636,6 +643,7 @@ class BaseEventTypeController extends BaseController
 		}
 		*/
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		if($editable === null){
 			if(isset($this->event)){
@@ -648,6 +656,7 @@ class BaseEventTypeController extends BaseController
 		$this->renderPartial('//patient/event_header',array(
 			'ordered_episodes'=>$ordered_episodes,
 			'legacyepisodes'=>$legacyepisodes,
+			'supportserviceepisodes'=>$supportserviceepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules(),
 			'model'=>$this->patient,
 			'editable'=>$editable,
@@ -657,10 +666,12 @@ class BaseEventTypeController extends BaseController
 	public function footer() {
 		$episodes = $this->patient->episodes;
 		$legacyepisodes = $this->patient->legacyepisodes;
+		$supportserviceepisodes = $this->patient->supportserviceepisodes;
 
 		$this->renderPartial('//patient/event_footer',array(
 			'episodes'=>$episodes,
 			'legacyepisodes'=>$legacyepisodes,
+			'supportserviceepisodes'=>$supportserviceepisodes,
 			'eventTypes'=>EventType::model()->getEventTypeModules()
 		));
 	}
@@ -799,27 +810,16 @@ class BaseEventTypeController extends BaseController
 	}
 	
 	public function getEpisode($firm, $patientId) {
-		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
-		return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+		if ($firm->service_subspecialty_assignment_id) {
+			$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty->id;
+			return Episode::model()->getBySubspecialtyAndPatient($subspecialtyId, $patientId);
+		}
+		return Episode::model()->find('patient_id=? and support_services=?',array($patientId,1));
 	}
 	
 	public function getOrCreateEpisode($firm, $patientId) {
 		if (!$episode = $this->getEpisode($firm, $patientId)) {
-			$episode = new Episode();
-			$episode->patient_id = $patientId;
-			$episode->firm_id = $firm->id;
-			$episode->start_date = date("Y-m-d H:i:s");
-
-			if (!$episode->save()) {
-				OELog::log("Unable to create new episode for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
-				throw new Exception('Unable to create create episode.');
-			}
-
-			OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
-
-			$episode->audit('episode','create');
-
-			Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
+			$episode = Patient::model()->findByPk($patientId)->addEpisode($firm);
 		}
 
 		return $episode;
@@ -958,6 +958,8 @@ class BaseEventTypeController extends BaseController
 				return true;
 			}
 
+			Yii::app()->user->setFlash('success', "An event was deleted, please ensure the episode status is still correct.");
+
 			header('Location: '.Yii::app()->createUrl('/patient/episode/'.$this->event->episode_id));
 			return true;
 		}
@@ -998,6 +1000,7 @@ class BaseEventTypeController extends BaseController
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
+		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
 
 		return parent::processJsVars();
 	}

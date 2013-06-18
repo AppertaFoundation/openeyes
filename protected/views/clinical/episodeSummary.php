@@ -31,6 +31,8 @@ if (!empty($episode)) {
 	<h3>Summary</h3>
 	<h3 class="episodeTitle"><?php echo $episode->firm->serviceSubspecialtyAssignment->subspecialty->name?></h3>
 
+	<?php $this->renderPartial('//base/_messages'); ?>
+
 	<h4>Principal diagnosis:</h4>
 
 	<div class="eventHighlight big">
@@ -55,7 +57,7 @@ if (!empty($episode)) {
 		<div class="right">
 			<h4>End date:</h4>
 			<div class="eventHighlight">
-				<h4><?php echo !empty($episode->end_date) ? $episode->end_date : '(still open)'?></h4>
+				<h4><?php echo !empty($episode->end_date) ? $episode->NHSDate('end_date') : '(still open)'?></h4>
 			</div>
 		</div>
 

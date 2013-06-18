@@ -32,6 +32,7 @@
 			))?>
 			<?php echo $form->textField($institution,'name',array('size'=>'50'))?>
 			<?php echo $form->textField($institution,'remote_id',array('size'=>'10'))?>
+			<?php echo get_class($address)?>
 			<?php echo $form->textField($address,'address1')?>
 			<?php echo $form->textField($address,'address2')?>
 			<?php echo $form->textField($address,'city')?>

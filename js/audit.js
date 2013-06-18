@@ -122,7 +122,7 @@ AuditLog.prototype = {
 		$.ajax({
 			'url': baseUrl+'/audit/search',
 			'type': 'POST',
-			'data': $('#auditList-filter').serialize(),
+			'data': $('#auditList-filter').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(data) {
 				var s = data.split('<!-------------------------->');
 

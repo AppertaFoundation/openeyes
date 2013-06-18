@@ -163,7 +163,7 @@ class Firm extends BaseActiveRecord
 
 	public function getSubspecialtyText()
 	{
-		return $this->serviceSubspecialtyAssignment->subspecialty->name;
+		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty->name : 'Support services';
 	}
 
 	/**
@@ -256,7 +256,11 @@ class Firm extends BaseActiveRecord
 	}
 
 	public function getNameAndSubspecialty() {
-		return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
+		if ($this->serviceSubspecialtyAssignment) {
+			return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->name . ')';
+		} else {
+			return $this->name;
+		}
 	}
 	
 	public function getSpecialty() {

@@ -114,8 +114,11 @@ class Patient extends BaseActiveRecord {
 			'legacyepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
 				'condition' => "legacy=1",
 			),
+			'supportserviceepisodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
+				'condition' => 'support_services=1',
+			),
 			'episodes' => array(self::HAS_MANY, 'Episode', 'patient_id',
-				'condition' => "legacy=0 or legacy is null",
+				'condition' => "(legacy=0 or legacy is null) and (support_services=0 or support_services is null)",
 			),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'gp' => array(self::BELONGS_TO, 'Gp', 'gp_id'),
@@ -156,8 +159,10 @@ class Patient extends BaseActiveRecord {
 		$criteria->compare('gender',$this->gender,false);
 		$criteria->compare('hos_num',$this->hos_num,false);
 		$criteria->compare('nhs_num',$this->nhs_num,false);
-
+ 
+                
 		return $this->count($criteria);
+                	
 	}
 
 	/**
@@ -187,7 +192,7 @@ class Patient extends BaseActiveRecord {
 		$criteria->order = $params['sortBy'] . ' ' . $params['sortDir'];
 
 		Yii::app()->event->dispatch('patient_search_criteria', array('patient' => $this, 'criteria' => $criteria, 'params' => $params));
-		
+	
 		$dataProvider = new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 			'pagination' => array('pageSize' => $params['pageSize'], 'currentPage' => $params['currentPage'])
@@ -219,9 +224,11 @@ class Patient extends BaseActiveRecord {
 			
 			// group
 			foreach ($episodes as $ep) {
-				$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
-				$by_specialty[$specialty->code]['episodes'][] = $ep;
-				$by_specialty[$specialty->code]['specialty'] = $specialty;
+				if ($ep->firm) {
+					$specialty = $ep->firm->serviceSubspecialtyAssignment->subspecialty->specialty;
+					$by_specialty[$specialty->code]['episodes'][] = $ep;
+					$by_specialty[$specialty->code]['specialty'] = $specialty;
+				}
 			}
 			
 			
@@ -391,15 +398,19 @@ class Patient extends BaseActiveRecord {
 	public function getEpisodeForCurrentSubspecialty() {
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-		$ssa = $firm->serviceSubspecialtyAssignment;
+		if ($firm->service_subspecialty_assignment_id) {
+			$ssa = $firm->serviceSubspecialtyAssignment;
 
-		// Get all firms for the subspecialty
-		$firm_ids = array();
-		foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
-			$firm_ids[] = $firm->id;
+			// Get all firms for the subspecialty
+			$firm_ids = array();
+			foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
+				$firm_ids[] = $firm->id;
+			}
+
+			return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
 		}
 
-		return Episode::model()->find('patient_id=? and firm_id in ('.implode(',',$firm_ids).')',array($this->id));
+		return Episode::model()->find('patient_id=? and support_services=?',array($this->id,1));
 	}
 	
 	/**
@@ -454,7 +465,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function getEthnicGroupString() {
-		if($this->ethnic_group) {
+		if ($this->ethnic_group) {
 			return $this->ethnic_group->name;
 		} else {
 			return 'Unknown';
@@ -463,27 +474,6 @@ class Patient extends BaseActiveRecord {
 
 	public function getObj() {
 		return ($this->gender == 'F' ? 'her' : 'him');
-	}
-
-	public function getOpl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) && 
-				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
-			return $api->getLetterProcedures($this, $episode);
-		}
-	}
-
-	public function getOpr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) &&
-				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
-			return $api->getLetterProcedures($this, $episode);
-		}
-	}
-
-	public function getOps() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationnote')) &&
-				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
-			return $api->getLetterProcedures($this, $episode, true);
-		}
 	}
 
 	public function getPos() {
@@ -508,13 +498,6 @@ class Patient extends BaseActiveRecord {
 
 	public function getPrimary_phone() {
 		return $this->contact->primary_phone;
-	}
-
-	public function getPre() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphDrPrescription')) &&
-				($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
-			return $api->getLetterPrescription($this, $episode);
-		}
 	}
 
 	public function getSummaryAddress() {
@@ -582,16 +565,6 @@ class Patient extends BaseActiveRecord {
 		$command->bindValue('patient_id', $this->id);
 		$command->bindValue('allergy_ids', implode(',',$remove_allergy_ids));
 		$command->execute();
-	}
-
-	public function getAdm() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphTrOperationbooking')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) )  {
-			
-			if ($booking = $api->getMostRecentBookingForEpisode($this, $episode)) {
-				return $booking->session->NHSDate('date');
-			}
-		}
 	}
 
 	public function getSystemicDiagnoses() {
@@ -716,134 +689,6 @@ class Patient extends BaseActiveRecord {
 		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
 		$audit->data = $oph_info->getAuditAttributes();
 		$audit->save();
-		
-	}
-	
-	public function getHpc() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterHistory($this, $episode);
-		}
-	}
-
-	public function getIpb() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterIOPReading($this,$episode, 'both');
-		}
-	}
-
-	public function getIpl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterIOPReading($this, $episode, 'left');
-		}
-	}
-
-	public function getIpp() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterIOPReading($this,'episode');
-		}
-	}
-
-	public function getIpr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterIOPReading($this, $episode, 'right');
-		}
-	}
-
-	# Bill: not for 1.1 [OE-2207]
-	public function getAsb() {
-	}
-
-	public function getAsl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAnteriorSegment($this, $episode, 'left');
-		}
-	}
-
-	public function getAsp() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAnteriorSegment($this, $episode, 'episode');
-		}
-	}
-
-	public function getAsr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAnteriorSegment($this, $episode, 'right');
-		}
-	}
-
-	# Bill: not for 1.1 [OE-2207]
-	public function getPsb() {
-	}
-
-	public function getPsl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterPosteriorPole($this, $episode, 'left');
-		}
-	}
-
-	public function getPsp() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterPosteriorPole($this, $episode, 'episode');
-		}
-	}
-
-	public function getPsr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterPosteriorPole($this, $episode, 'right');
-		}
-	}
-
-	public function getVbb() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterVisualAcuity($this, $episode, 'both');
-		}
-	}
-
-	public function getVbl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterVisualAcuity($this, $episode, 'left');
-		}
-	}
-
-	public function getVbp() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterVisualAcuity($this, $episode, 'episode');
-		}
-	}
-
-	public function getVbr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterVisualAcuity($this, $episode, 'right');
-		}
-	}
-
-	public function getCon() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterConclusion($this, $episode);
-		}
-	}
-
-	public function getMan() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterManagement($this, $episode);
-		}
 	}
 
 	public function getContactAddress($contact_id, $location_type=false, $location_id=false) {
@@ -871,20 +716,6 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function getAdd() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAdnexalComorbidity($this, $episode, 'right');
-		}
-	}
-
-	public function getAdl() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterAdnexalComorbidity($this, $episode, 'left');
-		}
-	}
-	
 	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
 		$properties['patient_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
@@ -947,10 +778,18 @@ class Patient extends BaseActiveRecord {
 		}
 	}
 
-	public function currentContactLocationIDS() {
-		$ids = array();
+	public function currentContactIDS() {
+		$ids = array(
+			'locations' => array(),
+			'contacts' => array(),
+		);
+
 		foreach ($this->contactAssignments as $pca) {
-			$ids[] = $pca->location_id;
+			if ($pca->location_id) {
+				$ids['locations'] = $pca->location_id;
+			} else {
+				$ids['contacts'] = $pca->contact_id;
+			}
 		}
 		return $ids;
 	}
@@ -988,5 +827,42 @@ class Patient extends BaseActiveRecord {
 
 	public function addMedication($params) {
 		$this->updateMedication(new Medication, $params);
+	}
+
+	public function hasOpenEpisodeOfSubspecialty($subspecialty_id) {
+		$firm_ids = array();
+
+		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty_id));
+
+		foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
+			$firm_ids[] = $firm->id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('patient_id=:patient_id');
+		$criteria->addInCondition('firm_id',$firm_ids);
+		$criteria->params[':patient_id'] = $this->id;
+
+		return Episode::model()->find($criteria);
+	}
+
+	public function addEpisode($firm) {
+		$episode = new Episode;
+		$episode->patient_id = $this->id;
+		$episode->firm_id = $firm->id;
+		$episode->start_date = date("Y-m-d H:i:s");
+
+		if (!$episode->save()) {
+			OELog::log("Unable to create new episode for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
+			throw new Exception('Unable to create create episode: '.print_r($episode->getErrors(),true));
+		}
+
+		OELog::log("New episode created for patient_id=$episode->patient_id, firm_id=$episode->firm_id, start_date='$episode->start_date'");
+
+		$episode->audit('episode','create');
+
+		Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
+
+		return $episode;
 	}
 }

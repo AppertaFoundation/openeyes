@@ -53,7 +53,7 @@ $(document).ready(function(){
                         wb.children('.minievents').slideDown('fast');
 			$.ajax({
 				'type': 'GET',
-				'url': '/patient/hideepisode?episode_id='+episode_id,
+				'url': baseUrl+'/patient/hideepisode?episode_id='+episode_id,
 				'success': function(html) {
 				}
 			});
@@ -64,7 +64,7 @@ $(document).ready(function(){
                         wb.children('.minievents').slideUp('fast');
 			$.ajax({
 				'type': 'GET',
-				'url': '/patient/showepisode?episode_id='+episode_id,
+				'url': baseUrl+'/patient/showepisode?episode_id='+episode_id,
 				'success': function(html) {
 				} 
 			});
@@ -109,10 +109,17 @@ $(document).ready(function(){
 	 * Site / firm switcher
 	 */
 	$('.change-firm a').click(function(e) {
+		if (typeof(OE_patient_id) != 'undefined') {
+			var patient_id = OE_patient_id;
+		} else {
+			var patient_id = null;
+		}
+
 		$.ajax({
 			url: baseUrl + '/site/changesiteandfirm',
 			data: {
-				returnUrl: window.location.href
+				returnUrl: window.location.href,
+				patient_id: patient_id
 			},
 			success: function(data) {
 				$('#user_panel').before(data);

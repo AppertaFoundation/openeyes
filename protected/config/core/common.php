@@ -65,11 +65,14 @@ return array(
 			'class' => 'ModuleAPI',
 		),
 		'request' => array(
-			'enableCsrfValidation' => false,
+			'enableCsrfValidation' => true,
 		),
 		'event' => array(
 			'class' => 'OEEventManager',
 			'observers' => array(),
+		),
+		'clientScript' => array(
+			'class' => 'ClientScript',
 		),
 		'user' => array(
 			'class' => 'WebUser',
@@ -184,6 +187,7 @@ return array(
 		'urgent_booking_notify_email' => array(),
 		'urgent_booking_notify_email_from' => 'OpenEyes <helpdesk@example.com>',
 		'default_site_code' => '',
+		'institution_code' => 'RP6',
 		'erod_lead_time_weeks' => 3,
 		// specifies which specialties are available in patient summary for diagnoses etc (use specialty codes)
 		'specialty_codes' => array(),
@@ -191,6 +195,8 @@ return array(
 		'specialty_sort' => array(),
 		'hos_num_regex' => '/^([0-9]{1,9})$/',
 		'pad_hos_num' => '%07s',
+		'profile_user_can_edit' => true,
+		'profile_user_can_change_password' => true,
 		'menu_bar_items' => array(
 			'home' => array(
 			'title' => 'Home',

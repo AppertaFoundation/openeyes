@@ -141,7 +141,7 @@
 			'type': 'POST',
 			'dataType': 'json',
 			'url': baseUrl+'/patient/validateadddiagnosis',
-			'data': $('#add-ophthalmic-diagnosis').serialize(),
+			'data': $('#add-ophthalmic-diagnosis').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
 			'success': function(data) {
 				$('div.ophthalmic_diagnoses_form_errors').html('');
 				if (data.length == 0) {

@@ -73,7 +73,7 @@ class User extends BaseActiveRecord
 			// Added for uniqueness of username
 			array('username', 'unique', 'className' => 'User', 'attributeName' => 'username'),
 			array('id, username, first_name, last_name, email, active, global_firm_rights', 'safe', 'on'=>'search'),
-			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password, is_clinical, is_consultant, is_surgeon', 'safe'),
+			array('username, first_name, last_name, email, active, global_firm_rights, is_doctor, title, qualifications, role, salt, access_level, password, is_clinical, is_consultant, is_surgeon, has_selected_firms', 'safe'),
 		);
 
 		if (Yii::app()->params['auth_source'] == 'BASIC') {
@@ -119,8 +119,9 @@ class User extends BaseActiveRecord
 			'serviceRights' => array(self::MANY_MANY, 'Service', 'user_service_rights(service_id, user_id)'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'firm_preferences' => array(self::HAS_MANY, 'UserFirmPreference', 'user_id'),
-			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id',
-				'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 5),
+			'preferred_firms' => array(self::HAS_MANY, 'Firm', 'firm_id', 'through' => 'firm_preferences', 'order' => 'firm_preferences.position DESC', 'limit' => 5),
+			'firmSelections' => array(self::MANY_MANY, 'Firm', 'user_firm(firm_id, user_id)', 'order' => 'name asc'),
+			'siteSelections' => array(self::MANY_MANY, 'Site', 'user_site(site_id, user_id)', 'order' => 'name asc'),
 		);
 	}
 
@@ -161,7 +162,14 @@ class User extends BaseActiveRecord
 			'email' => 'Email',
 			'active' => 'Active',
 			'password' => 'Password',
-			'global_firm_rights' => 'Global firm rights'
+			'password_old' => 'Current password',
+			'password_new' => 'New password',
+			'password_confirm' => 'Confirm password',
+			'global_firm_rights' => 'Global firm rights',
+			'is_doctor' => 'Doctor',
+			'is_consultant' => 'Consultant',
+			'is_clinical' => 'Clinically trained',
+			'is_surgeon' => 'Surgeon',
 		);
 	}
 
@@ -397,5 +405,66 @@ class User extends BaseActiveRecord
 			case 3: return 'Edit but not prescribe';
 			case 4: return 'Full';
 		}
+	}
+
+	public function findAsContacts($term) {
+		$contacts = array();
+
+		$criteria = new CDbCriteria;
+		$criteria->addSearchCondition("lower(`t`.last_name)",$term,false);
+		$criteria->compare('active',1);
+		$criteria->order = 'contact.title, contact.first_name, contact.last_name';
+
+		foreach (User::model()->with(array('contact' => array('with' => 'locations')))->findAll($criteria) as $user) {
+			foreach ($user->contact->locations as $location) {
+				$contacts[] = array(
+					'line' => $user->contact->contactLine($location),
+					'contact_location_id' => $location->id,
+				);
+			}
+		}
+
+		return $contacts;
+	}
+
+	public function getNotSelectedSiteList() {
+		if (empty(Yii::app()->params['institution_code'])) {
+			throw new Exception("Institution code is not set");
+		}
+
+		if (!$institution = Institution::model()->find('remote_id=?',array(Yii::app()->params['institution_code']))) {
+			throw new Exception("Institution not found: ".Yii::app()->params['institution_code']);
+		}
+
+		$site_ids = array();
+		foreach ($this->siteSelections as $site) {
+			$site_ids[] = $site->id;
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('institution_id=:institution_id');
+		$criteria->addNotInCondition('id',$site_ids);
+		$criteria->params[':institution_id'] = $institution->id;
+		$criteria->order = 'name asc';
+
+		return Site::model()->findAll($criteria);
+	}
+
+	public function getNotSelectedFirmList() {
+		$firms = Yii::app()->db->createCommand()
+			->select('f.id, f.name, s.name AS subspecialty')
+			->from('firm f')
+			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->join('subspecialty s','ssa.subspecialty_id = s.id')
+			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
+			->where("uf.id is null",array(':userId'=>Yii::app()->user->id))
+			->order('f.name, s.name')
+			->queryAll();
+		$data = array();
+		foreach ($firms as $firm) {
+			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+		}
+		natcasesort($data);
+		return $data;
 	}
 }

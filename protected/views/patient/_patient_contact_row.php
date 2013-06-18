@@ -17,24 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
+$contact = $pca->location ? $pca->location->contact : $pca->contact;
 ?>
-<tr data-attr-pca-id="<?php echo $pca->id?>" data-attr-location-id="<?php echo $pca->location_id?>">
+<tr data-attr-pca-id="<?php echo $pca->id?>"<?php if ($pca->location) {?> data-attr-location-id="<?php echo $pca->location_id?>"<?php } if ($pca->contact) {?> data-attr-contact-id="<?php echo $pca->contact_id?>"<?php }?>>
 	<td>
-		<span class="large"><?php echo $pca->location->contact->fullName?><br/><?php echo $pca->location->contact->qualifications?></span>
+		<span class="large"><?php echo $contact->fullName?><br/><?php echo $contact->qualifications?></span>
 	</td>
 	<td>
-		<?php echo $pca->location?>
+		<?php echo $pca->locationText?>
 	</td>
 	<td>
-		<?php echo $pca->location->contact->label->name?>
+		<?php echo $contact->label->name?>
 	</td>
 	<td>
 		<?php if (BaseController::checkUserLevel(4)) {?>
-			<a class="editContact small" rel="<?php echo $pca->location?>" href="#">
-				<strong>Edit</strong>
-			</a>
-			<br/>
-			<a class="removeContact small" rel="<?php echo $pca->location?>" href="#">
+			<?php if ($pca->location) {?>
+				<a class="editContact small" rel="<?php echo $pca->id?>" href="#">
+					<strong>Edit</strong>
+				</a>
+				<br/>
+			<?php }?>
+			<a class="removeContact small" rel="<?php echo $pca->id?>" href="#">
 				<strong>Remove</strong>
 			</a>
 		<?php }?>

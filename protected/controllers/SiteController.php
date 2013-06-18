@@ -150,7 +150,10 @@ class SiteController extends BaseController
 		if(empty($_GET['returnUrl'])) {
 			throw new CHttpException(500, 'Return URL must be specified');
 		}
-		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $_GET['returnUrl']), false, true);
+		if (@$_GET['patient_id']) {
+			$patient = Patient::model()->findByPk(@$_GET['patient_id']);
+		}
+		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $_GET['returnUrl'], 'patient'=>@$patient), false, true);
 	}
 	
 	/**

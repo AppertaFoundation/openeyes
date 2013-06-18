@@ -825,7 +825,7 @@ td.eventIcons > img { margin-bottom:10px; }
 #event_display.narrowEventContent { padding-right:4px; }
 /* add Event box - User clicks on "Add New Event" - this is the list of Events & Icons */
 #add_event_wrapper { position: relative; }
-#add_event_wrapper .addEvent { border:5px solid #69bd51; position: absolute; right: 0; top: 35px; z-index: 10; width:300px; }
+#add_event_wrapper .addEvent { border:5px solid #69bd51; margin: auto; z-index: 10; width:300px; height: 400px; }
 #add_event_wrapper .addEvent > h3 { padding:0; }
 #add_event_wrapper .addEvent p > a { display:block; padding:4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px;
 	-moz-border-radius: 3px; border-radius: 3px; }
@@ -1559,7 +1559,21 @@ div.admin div.pagination .selected { background-color: #0b59da; color: #fff; pad
 #admin_institution_sites ul li .column_name { width: 250px; display: inline-block; }
 #admin_institution_sites ul li .column_address { width: 436px; display: inline-block; }
 
+#admin_contactlabels ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_contactlabels ul li .column_id { width: 30px; display: inline-block; }
+#admin_contactlabels ul li .column_name { width: 794px; display: inline-block; }
+
 #div_Firm_consultant_id { margin-top: 2px; }
+
+#profile_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#profile_sites ul li .column_checkbox { width: 15px; display: inline-block; }
+#profile_sites ul li .column_name { width: 250px; display: inline-block; }
+#profile_sites ul li .column_address { width: 535px; display: inline-block; }
+
+#profile_firms ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#profile_firms ul li .column_checkbox { width: 15px; display: inline-block; }
+#profile_firms ul li .column_name { width: 535px; display: inline-block; }
+#profile_firms ul li .column_subspecialty { width: 250px; display: inline-block; }
 
 div.previousOperation .label { display: inline-block; width: 125px; }
 div.previousOperation .data { display: inline-block; }
@@ -1654,3 +1668,20 @@ body .ui-widget-overlay {
 	background: linear-gradient(#48bd27, #3fa522);
 	border-bottom: 2px solid #569b42;
 }
+
+#add-new-event-dialog { background: #fafafa; }
+#add-new-event-dialog p { margin-bottom: 8px; -webkit-border-radius: 5px; border-radius: 5px; display: block; -webkit-margin-before: 5px; -webkit-margin-after: 5px; line-height: 1.231; }
+#add-new-event-dialog a { color: #0b59da; font-weight: normal; display: block; padding: 4px 10px 3px 10px; background: #fff; -webkit-border-radius: 3px; border-radius: 3px; }
+#add-new-event-dialog div.title { margin-top: 10px; margin-bottom: 15px; }
+#add-new-event-dialog p > a:hover { border:none; color:#fff; background:#0b59da; }
+#add-new-event-dialog p > a:active { border:none; color:#fff; background:#5da748; }
+
+#add-new-episode-dialog .details { margin-top: 1em; }
+#add-new-episode-dialog .details p { margin-bottom: 5px; font-size: 16px; color: #0b59da; }
+#add-new-episode-dialog .details span { width: 130px; display: inline-block; color: #000; }
+#add-new-episode-dialog .question { margin-top: 1em; }
+#add-new-episode-dialog .buttons { margin-top: 1em; margin-bottom: 10px; }
+
+a.profileLink { float: left; font-size: 13px; padding-bottom: 2px; margin-left: -4px; border: 0; background: url('../img/cog.png') left top no-repeat; }
+a:hover.profileLink { background: url('../img/cog-highlight.png') left top no-repeat; }
+a.profileLink strong { float: left; margin-left: 20px; margin-top: 3px; }

@@ -3,10 +3,12 @@
 .*swp
 .idea
 tags
+/puppet/cache/
 /.buildpath
 /.settings/
 /.project
 /.htaccess
+/.enabled-modules
 /index.php
 /nbproject/
 /protected/data/*
@@ -22,3 +24,4 @@ tags
 /protected/config/db_muu.php
 /protected/views/patient/custom/info/php
 /protected/commands/
+vendor

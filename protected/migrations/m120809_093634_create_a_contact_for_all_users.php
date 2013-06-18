@@ -4,19 +4,21 @@ class m120809_093634_create_a_contact_for_all_users extends CDbMigration
 {
 	public function up()
 	{
-		foreach (User::model()->findAll() as $user) {
-			if (!$user->contact) {
-				$contact = new Contact;
-				$contact->title = $user->title;
-				$contact->first_name = $user->first_name;
-				$contact->last_name = $user->last_name;
-				$contact->qualifications = $user->qualifications;
-				$contact->save();
+		foreach (Yii::app()->db->createCommand()->select("*")->from("user")->queryAll() as $user) {
+			if (!$uca = Yii::app()->db->createCommand()->select("*")->from("user_contact_assignment")->where("user_id=:user_id",array(':user_id'=>$user['id']))->queryRow()) {
+				$this->insert('contact',array(
+					'title' => $user['title'],
+					'first_name' => $user['first_name'],
+					'title' => $user['last_name'],
+					'qualifications' => $user['qualifications'],
+				));
 
-				$uca = new UserContactAssignment;
-				$uca->user_id = $user->id;
-				$uca->contact_id = $contact->id;
-				$uca->save();
+				$contact_id = Yii::app()->db->createCommand()->select("max(id)")->from("contact")->queryScalar();
+
+				$this->insert('user_contact_assignment',array(
+					'user_id' => $user['id'],
+					'contact_id' => $contact_id,
+				));
 			}
 		}
 	}
