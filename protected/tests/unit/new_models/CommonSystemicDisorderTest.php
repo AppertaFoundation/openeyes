@@ -21,7 +21,7 @@ class CommonSystemicDisorderTest extends CDbTestCase {
 
                        public $fixtures = array(
                                                 'specialties' => 'Specialty',
-                                                'disorders' => 'CommonSystemicDisorder'
+                                                'commonsystemicdisorder' => 'CommonSystemicDisorder'
                        );
 
                        public function dataProvider_Search() {
@@ -38,6 +38,7 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         * This method is called before a test is executed.
                         */
                        protected function setUp() {
+
                                               parent::setUp();
                                               $this->model = new CommonSystemicDisorder;
                        }
@@ -63,10 +64,7 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         * @todo   Implement testTableName().
                         */
                        public function testTableName() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+                                              $this->assertEquals('common_systemic_disorder', $this->model->tableName());
                        }
 
                        /**
@@ -74,10 +72,9 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         * @todo   Implement testRules().
                         */
                        public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $this->assertTrue($this->commonsystemicdisorder('commonSystemicDisorder1')->validate());
+                                              $this->assertEmpty($this->commonsystemicdisorder('commonSystemicDisorder1')->errors);
                        }
 
                        /**
@@ -85,6 +82,7 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         * @todo   Implement testRelations().
                         */
                        public function testRelations() {
+
                                               // Remove the following lines when you implement this test.
                                               $this->markTestIncomplete(
                                                         'This test has not been implemented yet.'
@@ -109,9 +107,8 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         * @todo   Implement testSearch().
                         */
                        public function testSearch() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
+                                              $this->markTestSkipped(
+                                                        'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
                                               );
                        }
 
@@ -121,7 +118,7 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         */
                        public function testGetList() {
                                               $expected = array();
-                                              foreach ($this->disorders as $data) {
+                                              foreach ($this->commonsystemicdisorder as $data) {
                                                                      $disorder = Disorder::model()->findByPk($data['disorder_id']);
                                                                      $expected[$disorder->id] = $disorder->term;
                                               }
@@ -133,20 +130,21 @@ class CommonSystemicDisorderTest extends CDbTestCase {
                         * @dataProvider dataProvider_Search
                         */
                        public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-                                              $disorder = new CommonSystemicDisorder;
-                                              $disorder->setAttributes($searchTerms);
-                                              $results = $disorder->search();
+
+                                              $commonsystemicdisorder = new CommonSystemicDisorder;
+                                              $commonsystemicdisorder->setAttributes($searchTerms);
+                                              $results = $commonsystemicdisorder->search();
                                               $data = $results->getData();
 
                                               $expectedResults = array();
                                               if (!empty($expectedKeys)) {
                                                                      foreach ($expectedKeys as $key) {
-                                                                                            $expectedResults[] = $this->disorders($key);
+                                                                                            $expectedResults[] = $this->commonsystemicdisorder($key);
                                                                      }
                                               }
 
-                                              $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-                                              $this->assertEquals($expectedResults, $data, 'Results list should match.');
+                                                  $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+                                                   $this->assertEquals($expectedResults, $data, 'Results list should match.');
                        }
 
 }

@@ -17,12 +17,12 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-class ContactFormTest extends PHPUnit_Framework_TestCase {
+class ContactFormTest extends CDbTestCase {
 
                        /**
                         * @var ContactForm
                         */
-                      public $model;
+                       public $model;
 
                        /**
                         * Sets up the fixture, for example, opens a network connection.
@@ -46,10 +46,13 @@ class ContactFormTest extends PHPUnit_Framework_TestCase {
                         * @todo   Implement testRules().
                         */
                        public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $attributes = array('name' => 'test', 'email' => 'email@email.com', 'subject' => 'test', 'body' => 'test');
+                                              $this->model->setAttributes($attributes);
+
+
+                                              $this->assertTrue($this->model->validate());
+                                              $this->assertEmpty($this->model->errors);
                        }
 
                        /**
@@ -57,6 +60,7 @@ class ContactFormTest extends PHPUnit_Framework_TestCase {
                         * @todo   Implement testAttributeLabels().
                         */
                        public function testAttributeLabels() {
+
                                               $expected = array(
                                                                        'verifyCode' => 'Verification Code',
                                               );

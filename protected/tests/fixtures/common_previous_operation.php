@@ -17,18 +17,20 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/**
- * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
- * @property string $contact_id
- */
 return array(
-                         'consultant1' => array(
-                                                  'id' => 1,
-                                                  'gmc_number' => 1,
-                                                  'practitioner_code' => 1,
-                                                  'gender' => 1,
-                         )
+                         'commonpreviousop1' => array(
+                                                  'id'=> 1,
+                                                  'name' => 'commonpreviousop 1',
+                                                  'last_modified_date' => '1900-01-01 00:00:00'
+                         ),
+                         'commonpreviousop2' => array(
+                                                  'id'=> 2,
+                                                  'name' => 'commonpreviousop 2' ,
+                                                  'last_modified_date' => '1900-01-01 00:00:00'
+                         ),
+                         'commonpreviousop3' => array(
+                                                  'id'=> 3,
+                                                  'name' => 'commonpreviousop 3',
+                                                  'last_modified_date' => '1900-01-01 00:00:00'
+                         ),
 );
-

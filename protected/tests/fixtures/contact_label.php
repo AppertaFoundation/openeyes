@@ -17,18 +17,19 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-/**
- * @property string $id
- * @property string $obj_prof
- * @property string $nat_id
- * @property string $contact_id
- */
 return array(
-                         'consultant1' => array(
-                                                  'id' => 1,
-                                                  'gmc_number' => 1,
-                                                  'practitioner_code' => 1,
-                                                  'gender' => 1,
-                         )
+                         'contactlabel1' => array(
+                                                  'id'=> 1,
+                                                  'name' => 'contactlabel 1',  
+                         ),
+                         'contactlabel2' => array(
+                                                  'id'=> 2,
+                                                  'name' => 'contactlabel 2' , 
+                         ),
+                         'contactlabel3' => array(
+                                                  'id'=> 3,
+                                                  'name' => 'contactlabel 3', 
+                                                  
+                                                 
+                         ),
 );
-

@@ -70,14 +70,13 @@ class AddressTypeTest extends CDbTestCase {
                        }
 
                        /**
-                        * @covers AddressType::rules
+                        * @covers AuditTrail::rules
                         * @todo   Implement testRules().
                         */
                        public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $this->assertTrue($this->addresstype('addresstype1')->validate());
+                                              $this->assertEmpty($this->addresstype('addresstype1')->errors);
                        }
 
                        /**

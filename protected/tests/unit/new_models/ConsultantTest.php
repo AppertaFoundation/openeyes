@@ -36,7 +36,7 @@ class ConsultantTest extends CDbTestCase {
                         * This method is called before a test is executed.
                         */
                        protected function setUp() {
-                                                 parent::setUp();
+                                              parent::setUp();
                                               $this->model = new Consultant;
                        }
 
@@ -61,10 +61,8 @@ class ConsultantTest extends CDbTestCase {
                         * @todo   Implement testTableName().
                         */
                        public function testTableName() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $this->assertEquals('consultant', $this->model->tableName());
                        }
 
                        /**
@@ -72,11 +70,9 @@ class ConsultantTest extends CDbTestCase {
                         * @todo   Implement testRules().
                         */
                        public function testRules() {
-
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+ 
+                                             $this->assertTrue($this->consultants('consultant1')->validate());
+                                              $this->assertEmpty($this->consultants('consultant1')->errors);
                        }
 
                        /**
@@ -113,9 +109,8 @@ class ConsultantTest extends CDbTestCase {
                         */
                        public function testSearch() {
 
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
+                                              $this->markTestSkipped(
+                                                        'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
                                               );
                        }
 

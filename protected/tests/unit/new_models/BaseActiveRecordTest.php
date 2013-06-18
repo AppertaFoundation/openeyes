@@ -23,23 +23,12 @@ class BaseActiveRecordTest extends CDbTestCase {
                         * @var AddressType
                         */
                        public $model;
-                    //   public $fixtures = array(
-                    //                            'audit' => 'Audit',
-                   //    );
-                       public $testattributes = array( 
-                                                'action' => 'actiontest',
-                                                'target_type' => 'targettypetest',
-                                                'patient_id' => 1,
-                                                'episode_id' => 1,
-                                                'event_id' => 1,
-                                                'user_id' => 1,
-                                                'data' => 'Data test',
-                                                'remote_addr' => 'test',
-                                                'http_user_agent' => 'HTTP User Agent test',
-                                                'server_name' => 'servernametest',
-                                                'request_uri' => 'request/uritest',
-                                                'site_id' => 1,
-                                                'firm_id' => 1);
+                       /*   public $fixtures = array(
+                         'alllergies' => 'Allergy',
+                         ); */
+                       public $testattributes = array(
+                                                'name' => 'allergy test'
+                       );
 
                        /**
                         * Sets up the fixture, for example, opens a network connection.
@@ -48,8 +37,8 @@ class BaseActiveRecordTest extends CDbTestCase {
                        protected function setUp() {
                                               parent::setUp();
 
-                                              //using audit model to test
-                                              $this->model = new Audit;
+                                              //using allergy model to test the active record
+                                              $this->model = new Allergy;
                        }
 
                        /**
@@ -79,15 +68,17 @@ class BaseActiveRecordTest extends CDbTestCase {
                         */
                        public function testSave() {
 
-                                              $testmodel = new Audit;
+                                              //using allergy model to test the active record
+
+                                              $testmodel = new Allergy;
                                               $testmodel->setAttributes($this->testattributes);
 
+                                              $testmodel->save();
 
-                                              $testmodel->save(false, $testmodel->getAttributes(), false);
+                                              $result = Allergy::model()->findByAttributes(array('name' => 'allergy test'))->getAttributes();
+                                              $expected = $this->testattributes;
 
-                                              print_r('get attributes');
-                                              print_r($testmodel->getAttributes());
-                                  //            $result = Audit::model()->findByPk(111);
+                                              $this->assertEquals($expected['name'], $result['name'], 'attribute match');
                        }
 
                        /**
@@ -95,10 +86,13 @@ class BaseActiveRecordTest extends CDbTestCase {
                         * @todo   Implement testNHSDate().
                         */
                        public function testNHSDate() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              //last_modified_date = 1900-01-01 00:00:00 = 1 Jan 1900
+                                              $result = $this->model->NHSDate('last_modified_date', $empty_string = '-');
+
+                                              $expected = '1 Jan 1900';
+
+                                              $this->assertEquals($expected, $result);
                        }
 
                        /**
@@ -107,10 +101,12 @@ class BaseActiveRecordTest extends CDbTestCase {
                         */
                        public function testNHSDateAsHTML() {
 
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+                                              //last_modified_date = 1900-01-01 00:00:00 = <span class="day">1</span><span class="mth">Jan</span><span class="yr">1900</span>
+                                              $result = $this->model->NHSDateAsHTML('last_modified_date', $empty_string = '-');
+
+                                              $expected = '<span class="day">1</span><span class="mth">Jan</span><span class="yr">1900</span>';
+
+                                              $this->assertEquals($expected, $result);
                        }
 
                        /**
@@ -118,10 +114,13 @@ class BaseActiveRecordTest extends CDbTestCase {
                         * @todo   Implement testGetAuditAttributes().
                         */
                        public function testGetAuditAttributes() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $auditmodel = new Audit;
+
+                                              $expected = 'a:18:{s:6:"action";s:0:"";s:11:"target_type";s:0:"";s:11:"remote_addr";s:0:"";s:15:"http_user_agent";s:0:"";s:11:"server_name";s:0:"";s:11:"request_uri";s:0:"";s:21:"last_modified_user_id";s:1:"1";s:18:"last_modified_date";s:19:"1900-01-01 00:00:00";s:15:"created_user_id";s:1:"1";s:12:"created_date";s:19:"1900-01-01 00:00:00";s:2:"id";N;s:10:"patient_id";N;s:10:"episode_id";N;s:8:"event_id";N;s:7:"user_id";N;s:4:"data";N;s:7:"site_id";N;s:7:"firm_id";N;}';
+                                              $result = $auditmodel->getAuditAttributes();
+
+                                              $this->assertEquals($expected, $result, 'result match expected');
                        }
 
                        /**
@@ -129,10 +128,7 @@ class BaseActiveRecordTest extends CDbTestCase {
                         * @todo   Implement testAudit().
                         */
                        public function testAudit() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+                                              $this->markTestSkipped('this has been already implemented in the audittest model');
                        }
 
 }

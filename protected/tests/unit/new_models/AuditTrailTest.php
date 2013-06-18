@@ -73,10 +73,9 @@ class AuditTrailTest extends CDbTestCase {
                         * @todo   Implement testRules().
                         */
                        public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $this->assertTrue($this->audittrail('audittrail1')->validate());
+                                              $this->assertEmpty($this->audittrail('audittrail1')->errors);
                        }
 
                        /**
@@ -84,6 +83,7 @@ class AuditTrailTest extends CDbTestCase {
                         * @todo   Implement testRelations().
                         */
                        public function testRelations() {
+
                                               // Remove the following lines when you implement this test.
                                               $this->markTestIncomplete(
                                                         'This test has not been implemented yet.'
@@ -130,15 +130,15 @@ class AuditTrailTest extends CDbTestCase {
                                               $audit->setAttributes($searchTerms);
                                               $results = $audit->search();
                                               $data = $results->getData();
- 
+
                                               $expectedResults = array();
                                               if (!empty($expectedKeys)) {
                                                                      foreach ($expectedKeys as $key) {
                                                                                             $expectedResults[] = $this->audittrail($key);
                                                                      }
-                                              } 
+                                              }
                                               $this->assertEquals($numResults, $results->getItemCount());
-                                              $this->assertEquals($expectedResults,array('0' => $data[0])); 
+                                              $this->assertEquals($expectedResults, array('0' => $data[0]));
                        }
 
 }

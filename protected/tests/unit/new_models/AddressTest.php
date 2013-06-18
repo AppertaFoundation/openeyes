@@ -47,6 +47,7 @@ class AddressTest extends CDbTestCase {
                         * This method is called before a test is executed.
                         */
                        public function setUp() {
+
                                               parent::setUp();
                                               $this->model = new Address;
                        }
@@ -93,6 +94,16 @@ class AddressTest extends CDbTestCase {
                                               );
 
                                               $this->assertEquals($expected, $this->model->attributeLabels());
+                       }
+
+                       /**
+                        * @covers AuditTrail::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
+
+                                              $this->assertTrue($this->addresses('address3')->validate());
+                                              $this->assertEmpty($this->addresses('address3')->errors);
                        }
 
                        /**

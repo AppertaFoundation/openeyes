@@ -17,7 +17,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 class CommonOphthalmicDisorderTest extends CDbTestCase {
 
                        public $fixtures = array(
@@ -33,7 +32,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                                                                        array(array('disorder_id' => 2), 1, array('commonOphthalmicDisorder2')),
                                                                        array(array('disorder_id' => 3), 1, array('commonOphthalmicDisorder3')),
                                                                        array(array('disorder_id' => 4), 0, array()),
-                                                                       array(array('specialty_id' => 1), 2, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2')),
+                                                                       array(array('subspecialty_id' => 1), 2, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2')),
                                               );
                        }
 
@@ -65,6 +64,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                         * @todo   Implement testModel().
                         */
                        public function testModel() {
+                                              
                                               $this->assertEquals('CommonOphthalmicDisorder', get_class(CommonOphthalmicDisorder::model()), 'Class name should match model.');
                        }
 
@@ -73,10 +73,8 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                         * @todo   Implement testTableName().
                         */
                        public function testTableName() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+                                           
+                                                $this->assertEquals('common_ophthalmic_disorder', $this->model->tableName());
                        }
 
                        /**
@@ -84,10 +82,9 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                         * @todo   Implement testRules().
                         */
                        public function testRules() {
-                                              // Remove the following lines when you implement this test.
-                                              $this->markTestIncomplete(
-                                                        'This test has not been implemented yet.'
-                                              );
+
+                                              $this->assertTrue($this->disorders('commonOphthalmicDisorder1')->validate());
+                                              $this->assertEmpty($this->disorders('commonOphthalmicDisorder1')->errors);
                        }
 
                        /**
@@ -120,7 +117,7 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                         * @todo   Implement testSearch().
                         */
                        public function testSearch() {
-                                        // Remove the following lines when you implement this test.
+                                              // Remove the following lines when you implement this test.
                                               $this->markTestIncomplete(
                                                         'This test has not been implemented yet.'
                                               );
@@ -131,9 +128,9 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                         * @todo   Implement testGetSubspecialtyOptions().
                         */
                        public function testGetSubspecialtyOptions() {
-                                             $specialties = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
-		$this->assertEquals($specialties, $this->model->getSubspecialtyOptions(), 'Correct specialties found.');
-		$this->assertEquals(count($this->specialties), count($this->model->getSubspecialtyOptions()), 'Correct number of specialties found.');
+                                              $specialties = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
+                                              $this->assertEquals($specialties, $this->model->getSubspecialtyOptions(), 'Correct specialties found.');
+                                              $this->assertEquals(count($this->specialties), count($this->model->getSubspecialtyOptions()), 'Correct number of specialties found.');
                        }
 
                        public function testGetList_MissingFirm_ThrowsException() {
@@ -151,25 +148,25 @@ class CommonOphthalmicDisorderTest extends CDbTestCase {
                                                         'This test has not been implemented yet.'
                                               );
                        }
+
                        /**
-	 * @dataProvider dataProvider_Search
-	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-	{
-		$disorder = new CommonOphthalmicDisorder;
-		$disorder->setAttributes($searchTerms);
-		$results = $disorder->search();
-		$data = $results->getData();
+                        * @dataProvider dataProvider_Search
+                        */
+                       public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+                                              $disorder = new CommonOphthalmicDisorder;
+                                              $disorder->setAttributes($searchTerms);
+                                              $results = $disorder->search();
+                                              $data = $results->getData();
 
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->disorders($key);
-			}
-		}
+                                              $expectedResults = array();
+                                              if (!empty($expectedKeys)) {
+                                                                     foreach ($expectedKeys as $key) {
+                                                                                            $expectedResults[] = $this->disorders($key);
+                                                                     }
+                                              }
 
-	/*	$this->assertEquals($numResults, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);*/
-	}
+                                              /* 	$this->assertEquals($numResults, $results->getItemCount());
+                                                $this->assertEquals($expectedResults, $data); */
+                       }
 
 }
