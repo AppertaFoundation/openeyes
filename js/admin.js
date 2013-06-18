@@ -78,4 +78,9 @@ $(document).ready(function() {
 			}
 		});
 	});
+
+	handleButton($('#et_add_label'),function(e) {
+		e.preventDefault();
+
+	});
 });

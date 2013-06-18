@@ -19,7 +19,7 @@
 ?>
 <div class="eventDetail" id="editDiagnosis">
 	<div class="data">
-		<?php echo CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis', 'style' => 'width: 525px; margin-bottom:10px;'))?>
+		<?php echo !empty($options) && CHtml::dropDownList("{$class}[$field]", '', $options, array('empty' => 'Select a commonly used diagnosis', 'style' => 'width: 525px; margin-bottom:10px;'))?>
 		<br />
 		<?php
 		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(

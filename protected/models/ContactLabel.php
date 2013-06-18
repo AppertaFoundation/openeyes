@@ -107,4 +107,25 @@ class ContactLabel extends BaseActiveRecord
 		}
 		return 'Staff';
 	}
+
+	static public function getList() {
+		$list = array();
+
+		if (!empty(Yii::app()->params['contact_labels'])) {
+			foreach (Yii::app()->params['contact_labels'] as $label) {
+				if ($label == 'Staff') {
+					$list['staff'] = 'Staff';
+				} else if (preg_match('/{SPECIALTY}/',$label)) {
+					if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
+						throw new Exception("Institution specialty not configured");
+					}
+					$list['nonspecialty'] = preg_replace('/{SPECIALTY}/',$specialty->adjective,$label);
+				} else {
+					$list[$label] = $label;
+				}
+			}
+		}
+
+		return $list;
+	}
 }

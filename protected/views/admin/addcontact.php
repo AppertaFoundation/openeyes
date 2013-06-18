@@ -37,6 +37,9 @@
 			<?php echo $form->textField($contact,'primary_phone')?>
 			<?php echo $form->textField($contact,'qualifications')?>
 			<?php echo $form->dropDownList($contact,'contact_label_id',CHtml::listData(ContactLabel::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- None -'))?>
+			<div style="margin-left: 170px;">
+				<?php echo EventAction::button('Add label','add_label',array('colour'=>'blue'))->toHtml()?>
+			</div>
 			<?php $this->endWidget()?>
 		</div>
 	</div>
