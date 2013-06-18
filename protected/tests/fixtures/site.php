@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,55 +17,65 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
-
 return array(
-	'site1' => array(
-		'name' => 'Moorfields City Road',
-		'short_name' => 'City Road'
-	),
-	'site2' => array(
-		'name' => 'Northwick Park',
-		'short_name' => 'Northwick Park'
-	),
-	'site3' => array(
-		'name' => 'Potters Bar',
-		'short_name' => 'Potters Bar'
-	),
-	'site4' => array(
-		'name' => 'Watford',
-		'short_name' => 'Watford'
-	),
-	'site5' => array(
-		'name' => 'Bedford',
-		'short_name' => 'Bedford'
-	),
-	'site6' => array(
-		'name' => 'Ealing',
-		'short_name' => 'Ealing'
-	),
-	'site7' => array(
-		'name' => 'St Georges\'',
-		'short_name' => 'St Georges\''
-	),
-	'site8' => array(
-		'name' => 'Bridge Lane',
-		'short_name' => 'Bridge Lane'
-	),
-	'site9' => array(
-		'name' => 'QMHR',
-		'short_name' => 'QMHR'
-	),
-	'site10' => array(
-		'name' => 'Teddington',
-		'short_name' => 'Teddington'
-	),
-	'site11' => array(
-		'name' => 'Moorfields East',
-		'short_name' => 'East'
-	),
-	'site12' => array(
-		'name' => 'St Ann\'s',
-		'short_name' => 'St Ann\'s'
-	),
+                         'site1' => array(
+                                                  'name' => 'Moorfields City Road',
+                                                  'short_name' => 'City Road',
+                                                  'contact_id' => 1
+                         ),
+                         'site2' => array(
+                                                  'name' => 'Northwick Park',
+                                                  'short_name' => 'Northwick Park',
+                                                  'contact_id' => 1
+                         ),
+                         'site3' => array(
+                                                  'name' => 'Potters Bar',
+                                                  'short_name' => 'Potters Bar',
+                                                  'contact_id' => 1
+                         ),
+                         'site4' => array(
+                                                  'name' => 'Watford',
+                                                  'short_name' => 'Watford',
+                                                  'contact_id' => 1
+                         ),
+                         'site5' => array(
+                                                  'name' => 'Bedford',
+                                                  'short_name' => 'Bedford',
+                                                  'contact_id' => 1
+                         ),
+                         'site6' => array(
+                                                  'name' => 'Ealing',
+                                                  'short_name' => 'Ealing',
+                                                  'contact_id' => 1
+                         ),
+                         'site7' => array(
+                                                  'name' => 'St Georges\'',
+                                                  'short_name' => 'St Georges\'',
+                                                  'contact_id' => 1
+                         ),
+                         'site8' => array(
+                                                  'name' => 'Bridge Lane',
+                                                  'short_name' => 'Bridge Lane',
+                                                  'contact_id' => 1
+                         ),
+                         'site9' => array(
+                                                  'name' => 'QMHR',
+                                                  'short_name' => 'QMHR',
+                                                  'contact_id' => 1
+                         ),
+                         'site10' => array(
+                                                  'name' => 'Teddington',
+                                                  'short_name' => 'Teddington',
+                                                  'contact_id' => 1
+                         ),
+                         'site11' => array(
+                                                  'name' => 'Moorfields East',
+                                                  'short_name' => 'East',
+                                                  'contact_id' => 1
+                         ),
+                         'site12' => array(
+                                                  'name' => 'St Ann\'s',
+                                                  'short_name' => 'St Ann\'s',
+                                                  'contact_id' => 1
+                         ),
 );

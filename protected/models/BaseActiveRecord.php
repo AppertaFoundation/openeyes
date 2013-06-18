@@ -113,8 +113,8 @@ class BaseActiveRecord extends CActiveRecord
 	 * @param string $attribute
 	 * @return string
 	 */
-	public function NHSDate($attribute, $empty_string = '-') {
-		if($value = $this->getAttribute($attribute)) {
+	public function NHSDate($attribute, $empty_string = '-') { 
+		if($value = $this->getAttribute($attribute)) { 
 			return Helper::convertMySQL2NHS($value, $empty_string);
 		}
 	}

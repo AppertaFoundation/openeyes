@@ -36,7 +36,8 @@ class BaseEventTypeElement extends BaseElement {
 	public $required = false;
 
 	function getElementType() {
-		if(!$this->element_type) {
+                                                 
+		if(!$this->element_type) { 
 			$this->element_type = ElementType::model()->find('class_name=?', array(get_class($this)));
 		}
 		return $this->element_type;

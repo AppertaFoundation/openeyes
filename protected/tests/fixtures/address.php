@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,7 +17,6 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 // | id | address1 | address2       | city      | postcode | county | country_id | email                   |
 // +----+----------+----------------+-----------+----------+--------+------------+-------------------------+
 // |  1 | flat 1   | bleakley creek | flitchley | ec1v 0dx | london |          1 | bleakley1@bleakley1.com |
@@ -24,31 +24,37 @@
 // |  3 | flat 3   | bleakley creek | flitchley | ec1v 0dx | london |          1 | bleakley3@bleakley3.com |
 
 return array(
-	'address1' => array(
-		'address1' => 'flat 1',
-		'address2' => 'bleakley creek',
-		'city' => 'flitchley',
-		'postcode' => 'ec1v 0dx',
-		'county' => 'london',
-		'country_id' => 1,
-		'email' => 'bleakley1@bleakley1.com'
-	),
-	'address2' => array(
-		'address1' => 'flat 2',
-		'address2' => 'bleakley creek',
-		'city' => 'flitchley',
-		'postcode' => 'ec1v 0dx',
-		'county' => 'london',
-		'country_id' => 1,
-		'email' => 'bleakley2@bleakley2.com'
-	),
-	'address3' => array(
-		'address1' => 'flat 3',
-		'address2' => 'bleakley creek',
-		'city' => 'flitchley',
-		'postcode' => 'ec1v 0dx',
-		'county' => 'london',
-		'country_id' => 1,
-		'email' => 'bleakley3@bleakley3.com'
-	),
+                         'address1' => array(
+                                                  'address1' => 'flat 1',
+                                                  'address2' => 'bleakley creek',
+                                                  'city' => 'flitchley',
+                                                  'postcode' => 'ec1v 0dx',
+                                                  'county' => 'london',
+                                                  'country_id' => 1,
+                                                  'email' => 'bleakley1@bleakley1.com',
+                                                  'parent_id' => 1,
+                                                  'parent_class' => 'Contact'
+                         ),
+                         'address2' => array(
+                                                  'address1' => 'flat 2',
+                                                  'address2' => 'bleakley creek',
+                                                  'city' => 'flitchley',
+                                                  'postcode' => 'ec1v 0dx',
+                                                  'county' => 'london',
+                                                  'country_id' => 1,
+                                                  'email' => 'bleakley2@bleakley2.com',
+                                                  'parent_id' => 2,
+                                                  'parent_class' => 'Contact'
+                         ),
+                         'address3' => array(
+                                                  'address1' => 'flat 3',
+                                                  'address2' => 'bleakley creek',
+                                                  'city' => 'flitchley',
+                                                  'postcode' => 'ec1v 0dx',
+                                                  'county' => 'london',
+                                                  'country_id' => 1,
+                                                  'email' => 'bleakley3@bleakley3.com',
+                                                  'parent_id' => 3,
+                                                  'parent_class' => 0
+                         ),
 );

@@ -138,11 +138,14 @@ class Address extends BaseActiveRecord {
 			}
 		}
 
-		if ($include_country) {
+		if ($include_country) { 
 			if (!empty($this->country->name)) {
 				$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
+                                                                                                            
+                                                                                                            error_log(print_r($site->institution->contact->address->country_id));
 				if ($site->institution->contact->address->country_id != $this->country_id) {
 					$address[] = $this->country->name;
+                                                                                                                                       error_log(' country name is :'.$this->country->name);
 				}
 			}
 		}
