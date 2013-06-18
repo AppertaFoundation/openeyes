@@ -43,13 +43,21 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 	/*
 	 * abstraction of element initialisation to allow custom extension in overrides of controller
 	 */
-	protected function getElementForElementForm($element_type, $previous_id = 0) {
+	protected function getElementForElementForm($element_type, $previous_id = 0, $additional) {
 		$element_class = $element_type->class_name;
 		$element = new $element_class;
 		$element->setDefaultOptions();
+		
 		if($previous_id && $element->canCopy()) {
 			$previous_element = $element_class::model()->findByPk($previous_id);
 			$element->loadFromExisting($previous_element);
+		}
+		if($additional) {
+			foreach (array_keys($additional) as $add) {
+				if ($element->isAttributeSafe($add)) {
+					$element->$add = $additional[$add];
+				}
+			}
 		}
 		return $element;
 	}
@@ -159,7 +167,13 @@ class NestedElementsEventTypeController extends BaseEventTypeController {
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
 		// retrieve the element
-		$element = $this->getElementForElementForm($element_type, $previous_id);
+		$additional = array();
+		foreach (array_keys($_GET) as $key) {
+			if (!in_array($key, array('id', 'patient_id', 'previous_id'))) {
+				$additional[$key] = $_GET[$key];
+			}
+		}
+		$element = $this->getElementForElementForm($element_type, $previous_id, $additional);
 
 		$form = Yii::app()->getWidgetFactory()->createWidget($this,'BaseEventTypeCActiveForm',array(
 				'id' => 'clinical-create',
