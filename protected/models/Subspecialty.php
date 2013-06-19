@@ -150,4 +150,8 @@ class Subspecialty extends BaseActiveRecord
 
 		return Subspecialty::model()->findAll($criteria);
 	}
+
+	public function getTreeName() {
+		return $this->ref_spec;
+	}
 }
