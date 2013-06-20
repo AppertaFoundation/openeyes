@@ -262,7 +262,15 @@ class Firm extends BaseActiveRecord
 			return $this->name;
 		}
 	}
-	
+
+	public function getNameAndSubspecialtyCode() {
+		if ($this->serviceSubspecialtyAssignment) {
+			return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec. ')';
+		} else {
+			return $this->name;
+		}
+	}
+
 	public function getSpecialty() {
 		$result = Yii::app()->db->createCommand()
 			->select('su.specialty_id as id')

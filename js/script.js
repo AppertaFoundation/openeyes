@@ -199,3 +199,11 @@ function sort_selectbox(element) {
 	rootItem = element.children('option:first').text();
 	element.append(element.children('option').sort(selectSort));
 }
+
+function inArray(needle, haystack) {
+	var length = haystack.length;
+	for(var i = 0; i < length; i++) {
+		if(haystack[i] == needle) return true;
+	}
+	return false;
+}

@@ -1507,7 +1507,7 @@ div.admin #User_last_name { width: 250px; }
 div.admin #User_email { width: 300px; }
 div.admin #User_role { width: 300px; }
 div.admin #User_qualifications { width: 300px; }
-div.admin div.pagination .selected { background-color: #0b59da; color: #fff; padding-left: 2px; padding-right: 2px; }
+div.pagination .selected { background-color: #0b59da; color: #fff; padding-left: 2px; padding-right: 2px; }
 
 /* admin sections */
 #admin_users ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
