@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -15,76 +16,147 @@
  * @copyright Copyright (c) 2008-2011, Moorfields Eye Hospital NHS Foundation Trust
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
+ * +----+---------------------------+--------------------------------+-----------------------+---------------------+-----------------+---------------------+---------------+---------------+---------+------------------------+----------+
+  | id | name                      | class_name                     | last_modified_user_id | last_modified_date  | created_user_id | created_date        | event_type_id | display_order | default | parent_element_type_id | required |
+  +----+---------------------------+--------------------------------+-----------------------+---------------------+-----------------+---------------------+---------------+---------------+---------+------------------------+----------+
+  |  1 | History                   | ElementHistory                 |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  2 | Past History              | ElementPastHistory             |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  3 | Visual function           | ElementVisualFunction          |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  4 | Visual acuity             | ElementVisualAcuity            |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  5 | Mini-refraction           | ElementMiniRefraction          |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  6 | Visual fields             | ElementVisualFields            |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  7 | Extraocular movements     | ElementExtraocularMovements    |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  8 | Cranial nervers           | ElementCranialNervers          |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  |  9 | Orbital examination       | ElementOrbitalExamination      |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 10 | Anterior segment          | ElementAnteriorSegment         |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 11 | Anterior segment drawing  | ElementAnteriorSegmentDrawing  |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 12 | Gonioscopy                | ElementGonioscopy              |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 13 | intraocular pressure      | ElementIntraocularPressure     |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 14 | Posterior segment         | ElementPosteriorSegment        |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 15 | Posterior segment drawing | ElementPosteriorSegmentDrawing |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 16 | Conclusion                | ElementConclusion              |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  | 17 | POH                       | ElementPOH                     |                     1 | 1900-01-01 00:00:00 |               1 | 1900-01-01 00:00:00 |             1 |             1 |       1 |                   NULL |     NULL |
+  +----+---------------------------+--------------------------------+-----------------------+---------------------+-----------------+---------------------+---------------+---------------+---------+------------------------+----------+
+
  */
-
-
 return array(
-	'elementType1' => array(
-		'name' => 'History',
-		'class_name' => 'ElementHistory'
-	),
-	'elementType2' => array(
-		'name' => 'Past History',
-		'class_name' => 'ElementPastHistory'
-	),
-	'elementType3' => array(
-		'name' => 'Visual function',
-		'class_name' => 'ElementVisualFunction'
-	),
-	'elementType4' => array(
-		'name' => 'Visual acuity',
-		'class_name' => 'ElementVisualAcuity'
-	),
-	'elementType5' => array(
-		'name' => 'Mini-refraction',
-		'class_name' => 'ElementMiniRefraction'
-	),
-	'elementType6' => array(
-		'name' => 'Visual fields',
-		'class_name' => 'ElementVisualFields'
-	),
-	'elementType7' => array(
-		'name' => 'Extraocular movements',
-		'class_name' => 'ElementExtraocularMovements'
-	),
-	'elementType8' => array(
-		'name' => 'Cranial nervers',
-		'class_name' => 'ElementCranialNervers'
-	),
-	'elementType9' => array(
-		'name' => 'Orbital examination',
-		'class_name' => 'ElementOrbitalExamination'
-	),
-	'elementType10' => array(
-		'name' => 'Anterior segment',
-		'class_name' => 'ElementAnteriorSegment'
-	),
-	'elementType11' => array(
-		'name' => 'Anterior segment drawing',
-		'class_name' => 'ElementAnteriorSegmentDrawing'
-	),
-	'elementType12' => array(
-		'name' => 'Gonioscopy',
-		'class_name' => 'ElementGonioscopy'
-	),
-	'elementType13' => array(
-		'name' => 'intraocular pressure',
-		'class_name' => 'ElementIntraocularPressure'
-	),
-	'elementType14' => array(
-		'name' => 'Posterior segment',
-		'class_name' => 'ElementPosteriorSegment'
-	),
-	'elementType15' => array(
-		'name' => 'Posterior segment drawing',
-		'class_name' => 'ElementPosteriorSegmentDrawing'
-	),
-	'elementType16' => array(
-		'name' => 'Conclusion',
-		'class_name' => 'ElementConclusion'
-	),
-	'elementType17' => array(
-		'name' => 'POH',
-		'class_name' => 'ElementPOH'
-	)
+	 'elementType1' => array(
+		  'name' => 'History',
+		  'class_name' => 'ElementHistory',
+		  'event_type_id' => 25,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType2' => array(
+		  'name' => 'Past History',
+		  'class_name' => 'ElementPastHistory',
+		  'event_type_id' => 25,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType3' => array(
+		  'name' => 'Visual function',
+		  'class_name' => 'ElementVisualFunction',
+		  'event_type_id' => 25,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType4' => array(
+		  'name' => 'Visual acuity',
+		  'class_name' => 'ElementVisualAcuity',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType5' => array(
+		  'name' => 'Mini-refraction',
+		  'class_name' => 'ElementMiniRefraction',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType6' => array(
+		  'name' => 'Visual fields',
+		  'class_name' => 'ElementVisualFields',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType7' => array(
+		  'name' => 'Extraocular movements',
+		  'class_name' => 'ElementExtraocularMovements',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType8' => array(
+		  'name' => 'Cranial nervers',
+		  'class_name' => 'ElementCranialNervers',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType9' => array(
+		  'name' => 'Orbital examination',
+		  'class_name' => 'ElementOrbitalExamination',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType10' => array(
+		  'name' => 'Anterior segment',
+		  'class_name' => 'ElementAnteriorSegment',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType11' => array(
+		  'name' => 'Anterior segment drawing',
+		  'class_name' => 'ElementAnteriorSegmentDrawing',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType12' => array(
+		  'name' => 'Gonioscopy',
+		  'class_name' => 'ElementGonioscopy',
+		  'event_type_id' => 1,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType13' => array(
+		  'name' => 'intraocular pressure',
+		  'class_name' => 'ElementIntraocularPressure',
+		  'event_type_id' => 1,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType14' => array(
+		  'name' => 'Posterior segment',
+		  'class_name' => 'ElementPosteriorSegment',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType15' => array(
+		  'name' => 'Posterior segment drawing',
+		  'class_name' => 'ElementPosteriorSegmentDrawing',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType16' => array(
+		  'name' => 'Conclusion',
+		  'class_name' => 'ElementConclusion',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 ),
+	 'elementType17' => array(
+		  'name' => 'POH',
+		  'class_name' => 'ElementPOH',
+		  'event_type_id' => 4,
+		  'display_order' => 1,
+		  'parent_element_type_id' => 1,
+	 )
 );

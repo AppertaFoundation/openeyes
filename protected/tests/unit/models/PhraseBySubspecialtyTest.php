@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,93 +17,162 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class PhraseBySubspecialtyTest extends CDbTestCase {
 
-class PhraseBySubspecialtyTest extends CDbTestCase
-{
-	public $fixtures = array(
-		'sections' => 'Section',
-		'sectionTypes' => 'SectionType',
-		'services' => 'Service',
-		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSubspecialtyAssignment',
-		'firms' => 'Firm',
-		'eventTypes' => 'EventType',
-		'elementTypes' => 'ElementType',
-		//'possibleElementTypes' => 'PossibleElementType',
-		'siteElementTypes' => 'ElementType',
-		'phrasesBySubspecialty' => 'PhraseBySubspecialty',
-		'phraseNames'	=> 'PhraseName'
-	);
- 
-                
-                 
-	public function testGet_InvalidParameters_ReturnsFalse()
-	{
-		$fakeId = 9999;
-		$result = PhraseBySubspecialty::model()->findByPk($fakeId);
-		$this->assertNull($result);
-	}
+                       public $fixtures = array(
+                                                'sections' => 'Section',
+                                                'sectionTypes' => 'SectionType',
+                                                'services' => 'Service',
+                                                'specialties' => 'Specialty',
+                                                'serviceSpecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+                                                'firms' => 'Firm',
+                                                'eventTypes' => 'EventType',
+                                                'elementTypes' => 'ElementType',
+                                                //'possibleElementTypes' => 'PossibleElementType',
+                                                'siteElementTypes' => 'ElementType',
+                                                'phrasesBySubspecialty' => 'PhraseBySubspecialty',
+                                                'phraseNames' => 'PhraseName'
+                       );
 
-/*	public function testGet_ValidParameters_ReturnsCorrectData()
-	{   	
-                                  $expected = $this->phrasesBySubspecialty('phraseBySpecialty1');
-		$result = PhrasesBySubSpecialty::model()->findByPk($expected['id']);
+                       /**
+                        * Sets up the fixture, for example, opens a network connection.
+                        * This method is called before a test is executed.
+                        */
+                       protected function setUp() {
+                                               parent::setUp(); 
+                                              $this->object = new PhraseBySubspecialty;
+                       }
 
-		$this->assertEquals(get_class($result), 'PhraseBySubspecialty');
-		$this->assertEquals('phraseBySpecialty1', $result);
-	}
-*/
-                
-	public function testCreate()
-	{
-		$phrase = new PhraseBySubspecialty;
-		$phrase->setAttributes(array(
-			'phrase' => 'Testing phrase',
-			'section_id' => $this->sections['section1']['id'],
-			'subspecialty_id' => $this->specialties['specialty1']['id'],
-			'display_order' => 1,
-			'phrase_name_id' => $this->phraseNames['phraseName1']['id'],
-		));
-		$this->assertTrue($phrase->save(true));
-	}
+                       /**
+                        * Tears down the fixture, for example, closes a network connection.
+                        * This method is called after a test is executed.
+                        */
+                       protected function tearDown() {
+                                              
+                       }
 
-/*	public function testUpdate()
-	{
-		$expected = 'Testing again';
-		$phrase = PhraseBySubspecialty::model()->findByPk($this->phrasesBySubspecialty['phraseBySpecialty1']['id']);
-		$phrase->phrase = $expected;
-		$phrase->save();
-		$phrase = PhraseBySubspecialty::model()->findByPk($this->phrasesBySubspecialty['phraseBySpecialty1']['id']);
-		$this->assertEquals($expected, $phrase->phrase);
-	}
+                       /**
+                        * @covers PhraseBySubspecialty::model
+                        * @todo   Implement testModel().
+                        */
+                       public function testModel() {
 
-	public function testDelete()
-	{
-		$phrase = PhraseBySubspecialty::model()->findByPk($this->phrasesBySubspecialty['phraseBySpecialty1']['id']);
-		$phrase->delete();
-		$result = PhraseBySubspecialty::model()->findByPk($this->phrasesBySubspecialty['phraseBySpecialty1']['id']);
-		$this->assertNull($result);
-	}
-*/
-	public function testRelevantSectionTypesReturnsValidSectionTypeNames()
-	{
-		$relevantSectionTypes = PhraseBySubspecialty::model()->relevantSectionTypes();
-		$this->assertTrue(is_array($relevantSectionTypes));
-		foreach ($relevantSectionTypes as $relevantSectionType) {
-			$sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSectionType));
-			$this->assertInstanceOf('SectionType', $sectionType);
-		}
-	}
-	public function testGetOverrideableNames()
-	{
-		$overrideable = PhraseBySubspecialty::model()->getOverrideableNames($this->sections['section1']['id'], $this->firms['firm1']['id']);
-		$this->assertTrue(is_array($overrideable));
+                                              $this->assertEquals('PhraseBySubspecialty', get_class(PhraseBySubspecialty::model()), 'Class name should match model.');
+                       }
 
-		$expected = array('Congenital Cataract', 'unnatural cataract');
-		$count = 0;
-		foreach ($overrideable as $o) {
-			$this->assertEquals($expected[$count], $o->name);
-			$count++;
-		}
-	}
+                       /**
+                        * @covers PhraseBySubspecialty::tableName
+                        * @todo   Implement testTableName().
+                        */
+                       public function testTableName() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::relevantSectionTypes
+                        * @todo   Implement testRelevantSectionTypes().
+                        */
+                       public function testRelevantSectionTypes() {
+
+                                              $relevantSectionTypes = PhraseBySubspecialty::model()->relevantSectionTypes();
+                                              $this->assertTrue(is_array($relevantSectionTypes));
+                                              foreach ($relevantSectionTypes as $relevantSectionType) {
+                                                                     $sectionType = SectionType::model()->findByAttributes(array('name' => $relevantSectionType));
+                                                                     $this->assertInstanceOf('SectionType', $sectionType);
+                                              }
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::relations
+                        * @todo   Implement testRelations().
+                        */
+                       public function testRelations() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::ValidatorPhraseNameId
+                        * @todo   Implement testValidatorPhraseNameId().
+                        */
+                       public function testValidatorPhraseNameId() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::search
+                        * @todo   Implement testSearch().
+                        */
+                       public function testSearch() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseBySubspecialty::getOverrideableNames
+                        * @todo   Implement testGetOverrideableNames().
+                        */
+                       public function testGetOverrideableNames() {
+
+                                              $overrideable = PhraseBySubspecialty::model()->getOverrideableNames($this->sections['section1']['id'], $this->firms['firm1']['id']);
+                                              $this->assertTrue(is_array($overrideable));
+
+                                              $expected = array('Congenital Cataract', 'unnatural cataract');
+                                              $count = 0;
+                                              foreach ($overrideable as $o) {
+                                                                     $this->assertEquals($expected[$count], $o->name);
+                                                                     $count++;
+                                              }
+                       }
+
+                       public function testGet_InvalidParameters_ReturnsFalse() {
+                                              $fakeId = 9999;
+                                              $result = PhraseBySubspecialty::model()->findByPk($fakeId);
+                                              $this->assertNull($result);
+                       }
+
+                       public function testCreate() {
+                                              $phrase = new PhraseBySubspecialty;
+                                              $phrase->setAttributes(array(
+                                                                       'phrase' => 'Testing phrase',
+                                                                       'section_id' => $this->sections['section1']['id'],
+                                                                       'subspecialty_id' => $this->specialties['specialty1']['id'],
+                                                                       'display_order' => 1,
+                                                                       'phrase_name_id' => $this->phraseNames['phraseName1']['id'],
+                                              ));
+                                              $this->assertTrue($phrase->save(true));
+                       }
+
 }

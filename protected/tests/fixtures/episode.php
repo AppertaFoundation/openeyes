@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,30 +17,29 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
-
 return array(
-	'episode1' => array(
-		'id' => 1,
-		'patient_id' => 1,
-		'firm_id' => 1,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
-	),
-	'episode2' => array(
-		'id' => 2,
-		'patient_id' => 1,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-	),
-	'episode3' => array(
-		'id' => 3,
-		'patient_id' => 2,
-		'firm_id' => 2,
-		'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-	),
-        'episode4' => array(
-		'id' => 4,
-                'patient_id' => 3,
-                'firm_id' => 2,
-                'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
-        ),
+	 'episode1' => array(
+		  'id' => 1,
+		  'patient_id' => 1,
+		  'firm_id' => 1,
+		  'start_date' => date('Y-m-d H:i:s', strtotime('-30 days')),
+	 ),
+	 'episode2' => array(
+		  'id' => 2,
+		  'patient_id' => 1,
+		  'firm_id' => 2,
+		  'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+	 ),
+	 'episode3' => array(
+		  'id' => 3,
+		  'patient_id' => 2,
+		  'firm_id' => 2,
+		  'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+	 ),
+	 'episode4' => array(
+		  'id' => 4,
+		  'patient_id' => 3,
+		  'firm_id' => 2,
+		  'start_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+	 ),
 );

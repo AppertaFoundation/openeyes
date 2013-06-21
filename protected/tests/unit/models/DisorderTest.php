@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,18 +17,139 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class DisorderTest extends CDbTestCase {
+
+	   public $fixtures = array(
+		    'disorders' => 'Disorder'
+	   );
+
+	   /**
+	    * @var Disorder
+	    */
+	   protected $model;
+
+	   public function dataProvider_Search() {
+
+		      return array(
+			       array(array('term' => 'Myopia'), 1, array('disorder1')),
+			       array(array('term' => 'foobar'), 0, array()),
+		      );
+	   }
+
+	   /**
+	    * Sets up the fixture, for example, opens a network connection.
+	    * This method is called before a test is executed.
+	    */
+	   protected function setUp() {
+
+		      parent::setUp();
+		      $this->model = new Disorder;
+	   }
+
+	   /**
+	    * Tears down the fixture, for example, closes a network connection.
+	    * This method is called after a test is executed.
+	    */
+	   protected function tearDown() {
+
+	   }
+
+	   /**
+	    * @covers Disorder::model
+	    * @todo   Implement testModel().
+	    */
+	   public function testModel() {
+		      $this->assertEquals('Disorder', get_class(Disorder::model()), 'Class name should match model.');
+	   }
+
+	   /**
+	    * @covers Disorder::tableName
+	    * @todo   Implement testTableName().
+	    */
+	   public function testTableName() {
+
+		      $this->assertEquals('disorder', $this->model->tableName());
+	   }
+
+	   /**
+	    * @covers Disorder::rules
+	    * @todo   Implement testRules().
+	    */
+	   public function testRules() {
+
+		      //         $this->assertTrue($this->disorders('disorder1')->validate());
+		      //       $this->assertEmpty($this->disorders('disorder1')->errors);
+	   }
+
+	   /**
+	    * @covers Disorder::relations
+	    * @todo   Implement testRelations().
+	    */
+	   public function testRelations() {
+
+		      // Remove the following lines when you implement this test.
+		      $this->markTestIncomplete(
+		                'This test has not been implemented yet.'
+		      );
+	   }
+
+	   /**
+	    * @covers Disorder::attributeLabels
+	    * @todo   Implement testAttributeLabels().
+	    */
+	   public function testAttributeLabels() {
+
+		      $expected = array(
+			       'id' => 'ID',
+			       'fully_specified_name' => 'Fully Specified Name',
+			       'term' => 'Term',
+		                //       'systemic' => 'Systemic',
+		      );
+
+		      $this->assertEquals($expected, $this->model->attributeLabels());
+	   }
+
+	   /**
+	    * @covers Disorder::search
+	    * @todo   Implement testSearch().
+	    */
+	   public function testSearch() {
+		      $this->markTestSkipped(
+		                'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
+		      );
+	   }
+
+	   /**
+	    * @covers Disorder::getDisorderOptions
+	    * @todo   Implement testGetDisorderOptions().
+	    */
+	   public function testGetDisorderOptions() {
+
+		      $result = $this->disorders('disorder1')->GetDisorderOptions('Myopia');
+		      $expected = $this->model->getDisorderOptions('Myopia');
 
 
-class DisorderTest extends CDbTestCase
-{
-	public $fixtures = array(
-		'disorders' => 'Disorder'
-	);
+		      $this->assertEquals($expected, $result);
+	   }
 
-	public function testGetDisorderOptions()
-	{
-		$disorders = Disorder::getDisorderOptions('mellitus');
-		$this->assertTrue(is_array($disorders));
-		$this->assertEquals(2, count($disorders));
-	}
+	   /**
+	    * @dataProvider dataProvider_Search
+	    */
+	   public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+
+		      $this->model->setAttributes($searchTerms);
+		      $results = $this->model->search();
+		      $data = $results->getData();
+
+		      $expectedResults = array();
+		      if (!empty($expectedKeys)) {
+			         foreach ($expectedKeys as $key) {
+				            $expectedResults[] = $this->disorders($key);
+			         }
+		      }
+
+		      $this->assertEquals($numResults, $results->getItemCount());
+		      $this->assertEquals($expectedResults, $data);
+	   }
+
 }

@@ -68,7 +68,9 @@ class Disorder extends BaseActiveRecord
 			array('fully_specified_name, term', 'length', 'max' => 255),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, fully_specified_name, term, systemic', 'safe', 'on' => 'search'),
+			// REDA :  column not found in the table
+			//array('id, fully_specified_name, term, systemic', 'safe', 'on' => 'search'),
+			 array('id, fully_specified_name, term,', 'safe', 'on' => 'search'),
 		);
 	}
 
@@ -96,7 +98,7 @@ class Disorder extends BaseActiveRecord
 			'id' => 'ID',
 			'fully_specified_name' => 'Fully Specified Name',
 			'term' => 'Term',
-			'systemic' => 'Systemic',
+			//'systemic' => 'Systemic',// REDA :  column not found in the table
 		);
 	}
 
@@ -114,7 +116,7 @@ class Disorder extends BaseActiveRecord
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('fully_specified_name', $this->fully_specified_name, true);
 		$criteria->compare('term', $this->term, true);
-		$criteria->compare('systemic', $this->systemic);
+		//$criteria->compare('systemic', $this->systemic);
 		return new CActiveDataProvider(get_class($this), array( 'criteria' => $criteria));
 	}
 

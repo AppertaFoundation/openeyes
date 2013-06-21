@@ -21,56 +21,119 @@ class ConsultantTest extends CDbTestCase {
 
                        public $model;
                        public $fixtures = array(
-	                     'consultants' => 'Consultant',
-	                     'contacts' => 'Contact'
+                                                'consultants' => 'Consultant',
+                                                'contacts' => 'Contact'
                        );
 
                        public function dataProvider_Search() {
-	                   return array(
-		                 array(array('contact_id' => 1), 1, array('consultant1')), 
-	                   );
+                                              return array(
+                                                                       array(array('contact_id' => 1), 1, array('consultant1')),
+                                              );
                        }
 
-                       public function setUp() {
-	                   parent::setUp();
-	                   $this->model = new Consultant;
+                       /**
+                        * Sets up the fixture, for example, opens a network connection.
+                        * This method is called before a test is executed.
+                        */
+                       protected function setUp() {
+                                              parent::setUp();
+                                              $this->model = new Consultant;
                        }
 
+                       /**
+                        * Tears down the fixture, for example, closes a network connection.
+                        * This method is called after a test is executed.
+                        */
+                       protected function tearDown() {
+                                              
+                       }
+
+                       /**
+                        * @covers Consultant::model
+                        * @todo   Implement testModel().
+                        */
                        public function testModel() {
-	                   $this->assertEquals('Consultant', get_class(Consultant::model()), 'Class name should match model.');
+                                              $this->assertEquals('Consultant', get_class(Consultant::model()), 'Class name should match model.');
                        }
 
-                       public function testAttributeLabels() {
-	                   $expected = array(
-		                 'id' => 'ID',
-		                 'obj_prof' => 'Obj Prof',
-		                 'nat_id' => 'Nat',
-		                 'contact_id' => 'Contact',
-	                   );
+                       /**
+                        * @covers Consultant::tableName
+                        * @todo   Implement testTableName().
+                        */
+                       public function testTableName() {
 
-	                   $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+                                              $this->assertEquals('consultant', $this->model->tableName());
+                       }
+
+                       /**
+                        * @covers Consultant::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
+ 
+                                             $this->assertTrue($this->consultants('consultant1')->validate());
+                                              $this->assertEmpty($this->consultants('consultant1')->errors);
+                       }
+
+                       /**
+                        * @covers Consultant::relations
+                        * @todo   Implement testRelations().
+                        */
+                       public function testRelations() {
+
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers Consultant::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+
+                                              $expected = array(
+                                                                       'id' => 'ID',
+                                                                       'obj_prof' => 'Obj Prof',
+                                                                       'nat_id' => 'Nat',
+                                                                       'contact_id' => 'Contact',
+                                              );
+
+                                              $this->assertEquals($expected, $this->model->attributeLabels(), 'Attribute labels should match.');
+                       }
+
+                       /**
+                        * @covers Consultant::search
+                        * @todo   Implement testSearch().
+                        */
+                       public function testSearch() {
+
+                                              $this->markTestSkipped(
+                                                        'already implemented as "testSearch_WithValidTerms_ReturnsExpectedResults" '
+                                              );
                        }
 
                        /**
                         * @dataProvider dataProvider_Search
                         */
                        public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
-	                   
-	                   $consultant = new Consultant;
-	                   $consultant->setAttributes($searchTerms);
-	                   $results = $consultant->search();
-	                   $data = $results->getData();
 
-	                   $expectedResults = array();
-	                   if (!empty($expectedKeys)) {
-		foreach ($expectedKeys as $key) {
-		                $expectedResults[] = $this->consultants($key);
-		               }
-	                   }
+                                              $consultant = new Consultant;
+                                              $consultant->setAttributes($searchTerms);
+                                              $results = $consultant->search();
+                                              $data = $results->getData();
 
-	 
-	                  $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
-	                   $this->assertEquals($expectedResults, $data, 'Actual results should match.');
+                                              $expectedResults = array();
+                                              if (!empty($expectedKeys)) {
+                                                                     foreach ($expectedKeys as $key) {
+                                                                                            $expectedResults[] = $this->consultants($key);
+                                                                     }
+                                              }
+
+
+                                              $this->assertEquals($numResults, $results->getItemCount(), 'Number of results should match.');
+                                              $this->assertEquals($expectedResults, $data, 'Actual results should match.');
                        }
 
 }

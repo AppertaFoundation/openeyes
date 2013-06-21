@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,67 +17,160 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class SectionTest extends CDbTestCase {
 
-class SectionTest extends CDbTestCase
-{
-	public $fixtures = array(
-		'sections' => 'Section',
-		'sectionTypes' => 'SectionType',
-		'services' => 'Service',
-		'specialties' => 'Specialty',
-		'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
-		'firms' => 'Firm',
-		'eventTypes' => 'EventType',
-		'elementTypes' => 'ElementType',
-		//'possibleElementTypes' => 'PossibleElementType',
-		//'siteElementTypes' => 'SiteElementType',
-		'phraseNames'	=> 'PhraseName',
-	);
+                       public $fixtures = array(
+                                                'sections' => 'Section',
+                                                'sectionTypes' => 'SectionType',
+                                                'services' => 'Service',
+                                                'specialties' => 'Specialty',
+                                                'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+                                                'firms' => 'Firm',
+                                                'eventTypes' => 'EventType',
+                                                'elementTypes' => 'ElementType',
+                                                //'possibleElementTypes' => 'PossibleElementType',
+                                                //'siteElementTypes' => 'SiteElementType',
+                                                'phraseNames' => 'PhraseName',
+                       );
 
+                       /**
+                        * Sets up the fixture, for example, opens a network connection.
+                        * This method is called before a test is executed.
+                        */
+                       protected function setUp() {
+                                              parent::setUp();
+                                              $this->model = new Section;
+                       }
 
-	public function testGet_InvalidParameters_ReturnsFalse()
-	{
-		$fakeId = 9999;
-		$result = Section::model()->findByPk($fakeId);
-		$this->assertNull($result);
-	}
+                       /**
+                        * Tears down the fixture, for example, closes a network connection.
+                        * This method is called after a test is executed.
+                        */
+                       protected function tearDown() {
+                                              
+                       }
 
-	public function testGet_ValidParameters_ReturnsCorrectData()
-	{
-		$fakeId = 9999;
+                       /**
+                        * @covers Section::model
+                        * @todo   Implement testModel().
+                        */
+                       public function testModel() {
+                                              $this->assertEquals('Section', get_class(Section::model()), 'Class name should match model.');
+                       }
 
-		$expected = $this->sections('section1');
-		$result = Section::model()->findByPk($expected['id']);
+                       /**
+                        * @covers Section::tableName
+                        * @todo   Implement testTableName().
+                        */
+                       public function testTableName() {
+                                              $this->assertEquals('section', $this->model->tableName());
+                       }
 
-		$this->assertEquals(get_class($result), 'Section');
-		$this->assertEquals($expected, $result);
-	}
+                       /**
+                        * @covers Section::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testCreate()
-	{
-		$section = new Section;
-		$section->setAttributes(array(
-			'name' => 'Testing phrasename',
-			'section_type_id' => $this->sectionTypes['sectionType1']['id']
-		));
-		$this->assertTrue($section->save(true));
-	}
+                       /**
+                        * @covers Section::relations
+                        * @todo   Implement testRelations().
+                        */
+                       public function testRelations() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testUpdate()
-	{
-		$expected = 'Testing again';
-		$section = Section::model()->findByPk($this->sections['section1']['id']);
-		$section->name = $expected;
-		$section->save();
-		$section = Section::model()->findByPk($this->sections['section1']['id']);
-		$this->assertEquals($expected, $section->name);
-	}
+                       /**
+                        * @covers Section::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testDelete()
-	{
-		$section = Section::model()->findByPk($this->sections['section22']['id']);
-		$section->delete();
-		$result = Section::model()->findByPk($this->sections['section22']['id']);
-		$this->assertNull($result);
-	}
+                       /**
+                        * @covers Section::search
+                        * @todo   Implement testSearch().
+                        */
+                       public function testSearch() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers Section::getAllByType
+                        * @todo   Implement testGetAllByType().
+                        */
+                       public function testGetAllByType() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers Section::getByType
+                        * @todo   Implement testGetByType().
+                        */
+                       public function testGetByType() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       public function testGet_InvalidParameters_ReturnsFalse() {
+                                              $fakeId = 9999;
+                                              $result = Section::model()->findByPk($fakeId);
+                                              $this->assertNull($result);
+                       }
+
+                       public function testGet_ValidParameters_ReturnsCorrectData() {
+                                              $fakeId = 9999;
+
+                                              $expected = $this->sections('section1');
+                                              $result = Section::model()->findByPk($expected['id']);
+
+                                              $this->assertEquals(get_class($result), 'Section');
+                                              $this->assertEquals($expected, $result);
+                       }
+
+                       public function testCreate() {
+                                              $section = new Section;
+                                              $section->setAttributes(array(
+                                                                       'name' => 'Testing phrasename',
+                                                                       'section_type_id' => $this->sectionTypes['sectionType1']['id']
+                                              ));
+                                              $this->assertTrue($section->save(true));
+                       }
+
+                       public function testUpdate() {
+                                              $expected = 'Testing again';
+                                              $section = Section::model()->findByPk($this->sections['section1']['id']);
+                                              $section->name = $expected;
+                                              $section->save();
+                                              $section = Section::model()->findByPk($this->sections['section1']['id']);
+                                              $this->assertEquals($expected, $section->name);
+                       }
+
+                       public function testDelete() {
+                                              $section = Section::model()->findByPk($this->sections['section22']['id']);
+                                              $section->delete();
+                                              $result = Section::model()->findByPk($this->sections['section22']['id']);
+                                              $this->assertNull($result);
+                       }
+
 }

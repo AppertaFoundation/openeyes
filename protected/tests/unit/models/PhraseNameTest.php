@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,65 +17,140 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class PhraseNameTest extends CDbTestCase {
 
-class PhraseNameTest extends CDbTestCase
-{
-	public $fixtures = array(
-		'sections' => 'Section',
-		'sectionTypes' => 'SectionType',
-		'services' => 'Service',
-		'specialties' => 'Specialty',
-		'serviceSpecialtyAssignment' => 'ServiceSpecialtyAssignment',
-		'firms' => 'Firm',
-		'eventTypes' => 'EventType',
-		'elementTypes' => 'ElementType',
-		//'possibleElementTypes' => 'PossibleElementType',
-		'siteElementTypes' => 'ElementType',
-		'phraseNames'	=> 'PhraseName',
-	);
+                       public $fixtures = array(
+                                                'sections' => 'Section',
+                                                'sectionTypes' => 'SectionType',
+                                                'services' => 'Service',
+                                                'specialties' => 'Specialty',
+                                                'serviceSubspecialtyAssignment' => 'ServiceSubspecialtyAssignment',
+                                                'firms' => 'Firm',
+                                                'eventTypes' => 'EventType',
+                                                'elementTypes' => 'ElementType',
+                                                //'possibleElementTypes' => 'PossibleElementType',
+                                                'siteElementTypes' => 'ElementType',
+                                                'phraseNames' => 'PhraseName',
+                       );
 
+                       /**
+                        * Sets up the fixture, for example, opens a network connection.
+                        * This method is called before a test is executed.
+                        */
+                       protected function setUp() {
+                                              parent::setUp();
+                                              $this->object = new PhraseName;
+                       }
 
-	public function testGet_InvalidParameters_ReturnsFalse()
-	{
-		$fakeId = 9999;
-		$result = PhraseName::model()->findByPk($fakeId);
-		$this->assertNull($result);
-	}
+                       /**
+                        * Tears down the fixture, for example, closes a network connection.
+                        * This method is called after a test is executed.
+                        */
+                       protected function tearDown() {
+                                              
+                       }
 
-	public function testGet_ValidParameters_ReturnsCorrectData()
-	{
-		$fakeId = 9999;
+                       /**
+                        * @covers PhraseName::model
+                        * @todo   Implement testModel().
+                        */
+                       public function testModel() {
 
-		$expected = $this->phraseNames('phraseName1');
-		$result = PhraseName::model()->findByPk($expected['id']);
+                                              $this->assertEquals('PhraseName', get_class(PhraseName::model()), 'Class name should match model.');
+                       }
 
-		$this->assertEquals(get_class($result), 'PhraseName');
-		$this->assertEquals($expected, $result);
-	}
+                       /**
+                        * @covers PhraseName::tableName
+                        * @todo   Implement testTableName().
+                        */
+                       public function testTableName() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testCreate()
-	{
-		$phraseName = new PhraseName;
-		$phraseName->setAttributes(array(
-			'name' => 'Testing phrasename',
-		));
-		$this->assertTrue($phraseName->save(true));
-	}
+                       /**
+                        * @covers PhraseName::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testUpdate()
-	{
-		$expected   = 'Testing again';
-		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
-		$phraseName = PhraseName::model()->updateByPk($this->phraseNames['phraseName1']['id'],array('name' => $expected));
-		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
-		$this->assertEquals($expected, $phraseName->name);
-	}
+                       /**
+                        * @covers PhraseName::relations
+                        * @todo   Implement testRelations().
+                        */
+                       public function testRelations() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testDelete()
-	{
-		$phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName37']['id']);
-		$phraseName->delete();
-		$result = PhraseName::model()->findByPk($this->phraseNames['phraseName37']['id']);
-		$this->assertNull($result);
-	}
+                       /**
+                        * @covers PhraseName::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @covers PhraseName::search
+                        * @todo   Implement testSearch().
+                        */
+                       public function testSearch() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       public function testGet_InvalidParameters_ReturnsFalse() {
+                                              $fakeId = 9999;
+                                              $result = PhraseName::model()->findByPk($fakeId);
+                                              $this->assertNull($result);
+                       }
+
+                       public function testGet_ValidParameters_ReturnsCorrectData() {
+                                              $fakeId = 9999;
+
+                                              $expected = $this->phraseNames('phraseName1');
+                                              $result = PhraseName::model()->findByPk($expected['id']);
+
+                                              $this->assertEquals(get_class($result), 'PhraseName');
+                                              $this->assertEquals($expected, $result);
+                       }
+
+                       public function testCreate() {
+                                              $phraseName = new PhraseName;
+                                              $phraseName->setAttributes(array(
+                                                                       'name' => 'Testing phrasename',
+                                              ));
+                                              $this->assertTrue($phraseName->save(true));
+                       }
+
+                       public function testUpdate() {
+                                              $expected = 'Testing again';
+                                              $phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
+                                              $phraseName = PhraseName::model()->updateByPk($this->phraseNames['phraseName1']['id'], array('name' => $expected));
+                                              $phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName1']['id']);
+                                              $this->assertEquals($expected, $phraseName->name);
+                       }
+
+                       public function testDelete() {
+                                              $phraseName = PhraseName::model()->findByPk($this->phraseNames['phraseName37']['id']);
+                                              $phraseName->delete();
+                                              $result = PhraseName::model()->findByPk($this->phraseNames['phraseName37']['id']);
+                                              $this->assertNull($result);
+                       }
+
 }

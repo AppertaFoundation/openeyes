@@ -1,4 +1,5 @@
 <?php
+
 /**
  * OpenEyes
  *
@@ -16,104 +17,156 @@
  * @copyright Copyright (c) 2011-2013, OpenEyes Foundation
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
+class CommonOphthalmicDisorderTest extends CDbTestCase {
 
-class CommonOphthalmicDisorderTest extends CDbTestCase
-{
-	public $fixtures = array(
-		'firms' => 'Firm',
-		'serviceSubspecialtyAssignments' => 'ServiceSubspecialtyAssignment',
-		'specialties' => 'Specialty',
-		'disorders' => 'CommonOphthalmicDisorder'
-	);
+                       public $fixtures = array(
+                                                'firms' => 'Firm',
+                                                'serviceSubspecialtyAssignments' => 'ServiceSubspecialtyAssignment',
+                                                'specialties' => 'Specialty',
+                                                'disorders' => 'CommonOphthalmicDisorder'
+                       );
 
-	public function dataProvider_Search()
-	{
-		return array(  
-			array(array('disorder_id' => 1), 1, array('commonOphthalmicDisorder1')),
-			array(array('disorder_id' => 2), 1, array('commonOphthalmicDisorder2')),
-			array(array('disorder_id' => 3), 1, array('commonOphthalmicDisorder3')),
-			array(array('disorder_id' => 4), 0, array()),
-			array(array('specialty_id' => 1), 2, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2')),
-		);
-	}
+                       public function dataProvider_Search() {
+                                              return array(
+                                                                       array(array('disorder_id' => 1), 1, array('commonOphthalmicDisorder1')),
+                                                                       array(array('disorder_id' => 2), 1, array('commonOphthalmicDisorder2')),
+                                                                       array(array('disorder_id' => 3), 1, array('commonOphthalmicDisorder3')),
+                                                                       array(array('disorder_id' => 4), 0, array()),
+                                                                       array(array('subspecialty_id' => 1), 2, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2')),
+                                              );
+                       }
 
-	public function dataProvider_List()
-	{
-		return array(
-			array(1, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2'))
-		);
-	}
+                       public function dataProvider_List() {
+                                              return array(
+                                                                       array(1, array('commonOphthalmicDisorder1', 'commonOphthalmicDisorder2'))
+                                              );
+                       }
 
-	public function setUp()
-	{
-		parent::setUp();
-		$this->model = new CommonOphthalmicDisorder;
-	}
+                       /**
+                        * Sets up the fixture, for example, opens a network connection.
+                        * This method is called before a test is executed.
+                        */
+                       protected function setUp() {
+                                              parent::setUp();
+                                              $this->model = new CommonOphthalmicDisorder;
+                       }
 
-	public function testModel()
-	{
-		$this->assertEquals('CommonOphthalmicDisorder', get_class(CommonOphthalmicDisorder::model()), 'Class name should match model.');
-	}
+                       /**
+                        * Tears down the fixture, for example, closes a network connection.
+                        * This method is called after a test is executed.
+                        */
+                       protected function tearDown() {
+                                              
+                       }
 
-	public function testAttributeLabels()
-	{
-		$expected = array(
-			'id' => 'ID',
-			'disorder_id' => 'Disorder',
-			'subspecialty_id' => 'Subspecialty',
-		);
+                       /**
+                        * @covers CommonOphthalmicDisorder::model
+                        * @todo   Implement testModel().
+                        */
+                       public function testModel() {
+                                              
+                                              $this->assertEquals('CommonOphthalmicDisorder', get_class(CommonOphthalmicDisorder::model()), 'Class name should match model.');
+                       }
 
-		$this->assertEquals($expected, $this->model->attributeLabels());
-	}
+                       /**
+                        * @covers CommonOphthalmicDisorder::tableName
+                        * @todo   Implement testTableName().
+                        */
+                       public function testTableName() {
+                                           
+                                                $this->assertEquals('common_ophthalmic_disorder', $this->model->tableName());
+                       }
 
-	/**
-	 * @dataProvider dataProvider_Search
-	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
-	{
-		$disorder = new CommonOphthalmicDisorder;
-		$disorder->setAttributes($searchTerms);
-		$results = $disorder->search();
-		$data = $results->getData();
+                       /**
+                        * @covers CommonOphthalmicDisorder::rules
+                        * @todo   Implement testRules().
+                        */
+                       public function testRules() {
 
-		$expectedResults = array();
-		if (!empty($expectedKeys)) {
-			foreach ($expectedKeys as $key) {
-				$expectedResults[] = $this->disorders($key);
-			}
-		}
+                                              $this->assertTrue($this->disorders('commonOphthalmicDisorder1')->validate());
+                                              $this->assertEmpty($this->disorders('commonOphthalmicDisorder1')->errors);
+                       }
 
-	/*	$this->assertEquals($numResults, $results->getItemCount());
-		$this->assertEquals($expectedResults, $data);*/
-	}
+                       /**
+                        * @covers CommonOphthalmicDisorder::relations
+                        * @todo   Implement testRelations().
+                        */
+                       public function testRelations() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-	public function testGetSpecialtyOptions()
-	{
-		$specialties = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
-		$this->assertEquals($specialties, $this->model->getSubspecialtyOptions(), 'Correct specialties found.');
-		$this->assertEquals(count($this->specialties), count($this->model->getSubspecialtyOptions()), 'Correct number of specialties found.');
-	}
+                       /**
+                        * @covers CommonOphthalmicDisorder::attributeLabels
+                        * @todo   Implement testAttributeLabels().
+                        */
+                       public function testAttributeLabels() {
+                                              $expected = array(
+                                                                       'id' => 'ID',
+                                                                       'disorder_id' => 'Disorder',
+                                                                       'subspecialty_id' => 'Subspecialty',
+                                              );
 
-	public function testGetList_MissingFirm_ThrowsException()
-	{
-		$this->setExpectedException('CException', 'Firm is required.');
-		$this->model->getList(null);
-	}
+                                              $this->assertEquals($expected, $this->model->attributeLabels());
+                       }
 
-	/*/**
-	 * @dataProvider dataProvider_List
-	 */
-	/*public function testGetList_ValidInput_ReturnsCorrectResults($firmId, $disorderKeys)
-	{
-		$expected = array();
-		foreach ($disorderKeys as $key) {
-			$oph = $this->disorders($key);
-			$disorder = Disorder::model()->findByPk($oph->disorder_id);
-			$expected[$disorder->id] = $disorder->term;
-		}
+                       /**
+                        * @covers CommonOphthalmicDisorder::search
+                        * @todo   Implement testSearch().
+                        */
+                       public function testSearch() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
 
-		$firm = Firm::model()->findByPk($firmId);
+                       /**
+                        * @covers CommonOphthalmicDisorder::getSubspecialtyOptions
+                        * @todo   Implement testGetSubspecialtyOptions().
+                        */
+                       public function testGetSubspecialtyOptions() {
+                                              $specialties = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
+                                              $this->assertEquals($specialties, $this->model->getSubspecialtyOptions(), 'Correct specialties found.');
+                                              $this->assertEquals(count($this->specialties), count($this->model->getSubspecialtyOptions()), 'Correct number of specialties found.');
+                       }
 
-		$this->assertEquals($expected, $this->model->getList($firm), 'List results should match.');
-	}*/
+                       public function testGetList_MissingFirm_ThrowsException() {
+                                              $this->setExpectedException('CException', 'Firm is required.');
+                                              $this->model->getList(null);
+                       }
+
+                       /**
+                        * @covers CommonOphthalmicDisorder::getList
+                        * @todo   Implement testGetList().
+                        */
+                       public function testGetList() {
+                                              // Remove the following lines when you implement this test.
+                                              $this->markTestIncomplete(
+                                                        'This test has not been implemented yet.'
+                                              );
+                       }
+
+                       /**
+                        * @dataProvider dataProvider_Search
+                        */
+                       public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+                                              $disorder = new CommonOphthalmicDisorder;
+                                              $disorder->setAttributes($searchTerms);
+                                              $results = $disorder->search();
+                                              $data = $results->getData();
+
+                                              $expectedResults = array();
+                                              if (!empty($expectedKeys)) {
+                                                                     foreach ($expectedKeys as $key) {
+                                                                                            $expectedResults[] = $this->disorders($key);
+                                                                     }
+                                              }
+
+                                              /* 	$this->assertEquals($numResults, $results->getItemCount());
+                                                $this->assertEquals($expectedResults, $data); */
+                       }
+
 }

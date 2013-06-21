@@ -124,19 +124,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		if (empty($firm)) {
 			throw new CException('Firm is required.');
 		}
-<<<<<<< HEAD
-<<<<<<< HEAD
-		$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-		$disorders = Disorder::model()->findAll(array(
-				'condition' => 'cad.subspecialty_id = :subspecialty_id',
-				'join' => 'JOIN common_ophthalmic_disorder cad ON cad.disorder_id = t.id JOIN specialty ON specialty_id = specialty.id AND specialty.code = :ophcode',
-				'order' => 'term',
-				'params' => array(':subspecialty_id' => $ss_id, ':ophcode' => 130),
-		)); 
-		return CHtml::listData($disorders, 'id', 'term');
-=======
-=======
->>>>>>> fd9261d915c7565f0d33881a3297893eb6aa87cb
 		if ($firm->serviceSubspecialtyAssignment) {
 			$ss_id = $firm->serviceSubspecialtyAssignment->subspecialty_id;
 			$disorders = Disorder::model()->findAll(array(
@@ -148,10 +135,6 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 			return CHtml::listData($disorders, 'id', 'term');
 		}
 		return array();
-<<<<<<< HEAD
->>>>>>> develop
-=======
->>>>>>> fd9261d915c7565f0d33881a3297893eb6aa87cb
 	}
 	
 }
