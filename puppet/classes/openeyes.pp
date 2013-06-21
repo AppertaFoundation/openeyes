@@ -9,11 +9,6 @@ class openeyes {
     mode   => '0777',
   }
 
-  file { '/var/www/protected/config/local/common.php':
-    ensure => file,
-    source => '/var/www/protected/config/local/common.vagrant.php',
-  }
-
   file { '/var/www/index.php':
     ensure => file,
     source => '/var/www/index.example.php'
@@ -26,6 +21,12 @@ class openeyes {
   file { '/var/www/.htaccess':
     ensure => file,
     source => '/var/www/.htaccess.sample'
+  }
+
+  exec { 'create application config':
+    unless  => '/usr/bin/test -e /var/www/protected/config/local/common.php',
+    command => '/bin/cp /var/www/protected/config/local/common.vagrant.php /var/www/protected/config/local/common.php',
+    require => Service['mysql'],
   }
 
   exec { 'create openeyes db':
@@ -50,7 +51,7 @@ class openeyes {
     require => [
       Exec['create openeyes db'],
       Exec['create openeyes user'],
-      File['/var/www/protected/config/local/common.php'],
+      Exec['create application config'],
       File['/var/www/protected/runtime'],
     ]
   }

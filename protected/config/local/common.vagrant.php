@@ -17,7 +17,7 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
-$isLocal = ('vagrant' === get_current_user() || 'cli' !== php_sapi_name());
+$isLocal = is_file('/etc/vagrant_box_build_time');
 $host    = $isLocal ? 'localhost' : '127.0.0.1';
 $port    = $isLocal ? '3306' : '3333';
 

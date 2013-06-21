@@ -58,8 +58,12 @@ class UserIdentity extends CUserIdentity
 			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
-		} else if($user->active != 1 || $user->access_level == 0) {
+		} else if ($user->active != 1) {
 			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
+			$this->errorCode = self::ERROR_USER_INACTIVE;
+			return false;
+		} else if ($user->access_level == 0) {
+			$user->audit('login','login-failed',"User has 0 access level and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
 		}

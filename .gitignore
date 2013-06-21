@@ -4,10 +4,12 @@
 .idea
 tags
 /puppet/cache/
+/.vagrant
 /.buildpath
 /.settings/
 /.project
 /.htaccess
+/.enabled-modules
 /index.php
 /nbproject/
 /protected/data/*
