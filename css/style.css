@@ -587,7 +587,8 @@ ul#user_nav > li .selected,
 #patientID { background: #fff2d7 url(../img/_elements/gradients/bg_patientID.jpg) bottom left repeat-x; padding: 5px;
 	border-right:2px solid #ffb212; border-bottom:2px solid #ffb212; border-left:2px solid #ffb212; }
 .patientReminder { padding:4px 5px 0; font-size: 12px; background: url(../img/_elements/icons/patient/patient-id_small.png) top right no-repeat; }
-.patientReminder .patientName { font-size: 16px; }
+.patientReminder .patientName { font-size: 14px; line-height: 19px; }
+.patientReminder .patientName .surname { font-size: 16px; }
 .patientReminder .patientName a { color: #000; }
 .patientReminder .patientName a:hover,
 .patientReminder .patientName a:active { color: #000; border-color: #000; }
