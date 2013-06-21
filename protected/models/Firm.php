@@ -232,6 +232,10 @@ class Firm extends BaseActiveRecord
 		return $data;
 	}
 
+	public function getListWithSpecialtiesAndEmergency() {
+		return array_merge(array('NULL'=>'Emergency'),$this->getListWithSpecialties());
+	}
+
 	public function getCataractList() {
 		$specialty = Specialty::model()->find('code=?',array(130));
 		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
