@@ -72,6 +72,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAmACataractSpecialist()
     {
+        $this->
         $this->pressButton('Yes');
         $this->getSession()->wait(5000, "$('#profile_firm_id').length");
         $this->selectOption('profile_firm_id', 'Allan Bruce (Cataract)');
