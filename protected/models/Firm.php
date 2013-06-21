@@ -233,7 +233,11 @@ class Firm extends BaseActiveRecord
 	}
 
 	public function getListWithSpecialtiesAndEmergency() {
-		return array_merge(array('NULL'=>'Emergency'),$this->getListWithSpecialties());
+		$list = array('NULL'=>'Emergency');
+		foreach ($this->getListWithSpecialties() as $firm_id => $name) {
+			$list[$firm_id] = $name;
+		}
+		return $list;
 	}
 
 	public function getCataractList() {
