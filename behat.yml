@@ -1,6 +1,8 @@
 default:
     context:
-        parameters: []
+        parameters:
+            sample_db:   "protected/modules/sample/sql/openeyes+ophtroperationbooking.sql"
+            load_db_cmd: "vagrant ssh -c 'mysql -uroot openeyes < /var/www/%s'"
 
     extensions:
         features/bootstrap/extension.php: ~
@@ -34,6 +36,9 @@ sauce:
             javascript_session: saucelabs
 
 ci:
+    context:
+        parameters:
+            load_db_cmd: "mysql -uroot openeyes < %s"
     extensions:
         Behat\MinkExtension\Extension:
             base_url:           http://localhost
