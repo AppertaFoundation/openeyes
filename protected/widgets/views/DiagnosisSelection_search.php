@@ -17,11 +17,11 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-		<?php echo !empty($options) ? CHtml::dropDownList("{$class}[$field]", '', $options, empty($dropdownOptions) ? array('empty' => '- Please Select -', 'style' => 'margin-bottom:10px;') : $dropdownOptions) : ""?> <a href="#" id="<?php echo $class . "_" . $field . "_search"?>">search</a>
+		<?php echo (!empty($options) || !empty($dropdownOptions)) ? CHtml::dropDownList("{$class}[$field]", $element->$field, $options, empty($dropdownOptions) ? array('empty' => '- Please Select -', 'style' => 'margin-bottom:10px;') : $dropdownOptions) : ""?> <a href="#" id="<?php echo $class . "_" . $field . "_search"?>">search</a>
 		<br />
 		<?php
 		$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-				'name' => "{$class}[$field]",
+				'name' => "ignore_{$class}[$field]",
 				'id' => "{$class}_{$field}_searchbox",
 				'value'=>'',
 				'source'=>"js:function(request, response) {
