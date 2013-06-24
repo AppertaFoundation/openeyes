@@ -33,7 +33,9 @@ class DiagnosisSelection extends BaseCWidget {
 	public $selected = array();
 	public $loader = false;
 	public $nowrapper = false;
-
+	// text in diagnosis search box
+	public $placeholder = 'or type the first few characters of a diagnosis';
+	
 	public function run() {
 		$this->class = get_class($this->element);
 		if (empty($_POST) || !array_key_exists($this->class, $_POST)) {

@@ -69,7 +69,7 @@
 				),
 				'htmlOptions' => array(
 						'style'=>'width: 520px;',
-						'placeholder' => 'or type the first few characters of a diagnosis',
+						'placeholder' => $placeholder,
 				),
 		));
 		?>
