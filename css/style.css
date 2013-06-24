@@ -1556,7 +1556,7 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 
 #admin_institution_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
 #admin_institution_sites ul li .column_id { width: 40px; display: inline-block; }
-#admin_institution_sites ul li .column_code { width: 50px; display: inline-block; }
+#admin_institution_sites ul li .column_remote_id { width: 50px; display: inline-block; }
 #admin_institution_sites ul li .column_name { width: 250px; display: inline-block; }
 #admin_institution_sites ul li .column_address { width: 436px; display: inline-block; }
 
