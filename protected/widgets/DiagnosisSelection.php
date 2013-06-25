@@ -60,7 +60,7 @@ class DiagnosisSelection extends BaseCWidget {
 					$this->label = $this->element->disorder->term;
 				}
 			}
-		} else {
+		} elseif (array_key_exists($this->field, $_POST[$this->class])) {
 			if (preg_match('/[^\d]/', $_POST[$this->class][$this->field])) {
 				if ($disorder = Disorder::model()->find('term=? and specialty_id is not null',array($_POST[$this->class][$this->field]))) {
 					$this->value = $disorder->id;
