@@ -4,6 +4,7 @@
 .idea
 tags
 /puppet/cache/
+/.vagrant
 /.buildpath
 /.settings/
 /.project

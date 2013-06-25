@@ -232,6 +232,14 @@ class Firm extends BaseActiveRecord
 		return $data;
 	}
 
+	public function getListWithSpecialtiesAndEmergency() {
+		$list = array('NULL'=>'Emergency');
+		foreach ($this->getListWithSpecialties() as $firm_id => $name) {
+			$list[$firm_id] = $name;
+		}
+		return $list;
+	}
+
 	public function getCataractList() {
 		$specialty = Specialty::model()->find('code=?',array(130));
 		$subspecialty = Subspecialty::model()->find('specialty_id=? and name=?',array($specialty->id,'Cataract'));
@@ -262,7 +270,15 @@ class Firm extends BaseActiveRecord
 			return $this->name;
 		}
 	}
-	
+
+	public function getNameAndSubspecialtyCode() {
+		if ($this->serviceSubspecialtyAssignment) {
+			return $this->name . ' (' . $this->serviceSubspecialtyAssignment->subspecialty->ref_spec. ')';
+		} else {
+			return $this->name;
+		}
+	}
+
 	public function getSpecialty() {
 		$result = Yii::app()->db->createCommand()
 			->select('su.specialty_id as id')

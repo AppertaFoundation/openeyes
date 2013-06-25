@@ -137,4 +137,25 @@ class Subspecialty extends BaseActiveRecord
 
 		return $result;
 	}
+
+	public function findAllByCurrentSpecialty() {
+		if (!isset(Yii::app()->params['institution_specialty'])) {
+			throw new Exception("institution_specialty code is not set in params");
+		}
+
+		if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
+			throw new Exception("Specialty not found: ".Yii::app()->params['institution_specialty']);
+		}
+
+		$criteria = new CDbCriteria;
+		$criteria->addCondition('specialty_id = :specialty_id');
+		$criteria->params[':specialty_id'] = $specialty->id;
+		$criteria->order = 'name asc';
+
+		return Subspecialty::model()->findAll($criteria);
+	}
+
+	public function getTreeName() {
+		return $this->ref_spec;
+	}
 }
