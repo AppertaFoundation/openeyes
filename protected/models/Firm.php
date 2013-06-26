@@ -304,4 +304,8 @@ class Firm extends BaseActiveRecord
 
 		return parent::beforeSave();
 	}
+
+	public function getTreeName() {
+		return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
+	}
 }
