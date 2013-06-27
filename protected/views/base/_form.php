@@ -38,7 +38,7 @@ if (!Yii::app()->user->isGuest) {
 					<?php if ($uri == $item['uri']) {?>
 					<span class="selected"><?php echo $item['title']?></span>
 					<?php } else { ?>
-					<span><?php echo CHtml::link($item['title'],'/'.Yii::app()->baseUrl.'/'.$item['uri'])?></span>
+					<span><?php echo CHtml::link($item['title'], $this->createUrl($item['uri'])) ?></span>
 					<?php }?>
 				</li>
 			<?php }?>
