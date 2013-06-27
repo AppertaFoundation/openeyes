@@ -27,6 +27,10 @@
  */
 class Eye extends BaseActiveRecord
 {
+	const LEFT = 1;
+	const RIGHT = 2;
+	const BOTH = 3;
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Firm the static model class
@@ -70,7 +74,7 @@ class Eye extends BaseActiveRecord
 	}
 
 	public function getAdjective() {
-		if ($this->name == 'Both') {
+		if ($this->id == Eye::BOTH) {
 			return 'Bilateral';
 		}
 		return $this->name;
