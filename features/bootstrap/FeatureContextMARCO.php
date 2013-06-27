@@ -147,4 +147,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     {
         $this->clickLink('08:30 - 13:00');
     }
+
+
+
+
 }

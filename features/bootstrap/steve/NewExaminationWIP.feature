@@ -46,7 +46,7 @@ Feature: Create New Examination
     Then I enter right Axis degrees of "34"
     And I enter a right type of "1"
 
-    #These Optional sections are to be coded in-line with Firm choice - WIP
+    #WIP - These Optional sections are to be coded (Dependant on changing firms)
     Then I choose to expand the Gonioscopy section
     Then I choose to expand the Adnexal Comorbidity section
     Then I choose to expand the Anterior Segment section
