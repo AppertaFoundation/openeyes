@@ -649,4 +649,83 @@ class AdminController extends BaseController
 
 		echo $count;
 	}
+
+	public function actionDataSources() {
+		$this->render('/admin/datasources');
+	}
+
+	public function actionEditDataSource($id) {
+		if (!$source = ImportSource::model()->findByPk($id)) {
+			throw new Exception("Source not found: $id");
+		}
+
+		if (!empty($_POST)) {
+			$source->attributes = $_POST['ImportSource'];
+
+			if (!$source->validate()) {
+				$errors = $source->getErrors();
+			} else {
+				if (!$source->save()) {
+					throw new Exception("Unable to save source: ".print_r($source->getErrors(),true));
+				}
+				$this->redirect('/admin/datasources/'.ceil($source->id/$this->items_per_page));
+			}
+		}
+
+		$this->render('/admin/editdatasource',array(
+			'source' => $source,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionAddDataSource() {
+		$source = new ImportSource;
+
+		if (!empty($_POST)) {
+			$source->attributes = $_POST['ImportSource'];
+
+			if (!$source->validate()) {
+				$errors = $source->getErrors();
+			} else {
+				if (!$source->save()) {
+					throw new Exception("Unable to save data source: ".print_r($source->getErrors(),true));
+				}
+				$this->redirect('/admin/datasources');
+			}
+		}
+
+		$this->render('/admin/editdatasource',array(
+			'source' => $source,
+			'errors' => @$errors,
+		));
+	}
+
+	public function actionDeleteDataSources() {
+		if (!empty($_POST['source'])) {
+			foreach ($_POST['source'] as $source_id) {
+				if (Institution::model()->find('source_id=?',array($source_id))) {
+					echo "0";
+					return;
+				}
+				if (Site::model()->find('source_id=?',array($source_id))) {
+					echo "0";
+					return;
+				}
+				if (Person::model()->find('source_id=?',array($source_id))) {
+					echo "0";
+					return;
+				}
+			}
+
+			foreach ($_POST['source'] as $source_id) {
+				if ($source = ImportSource::model()->findByPk($source_id)) {
+					if (!$source->delete()) {
+						throw new Exception("Unable to delete import source: ".print_r($source->getErrors(),true));
+					}
+				}
+			}
+		}
+
+		echo "1";
+	}
 }

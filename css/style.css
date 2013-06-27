@@ -1550,8 +1550,8 @@ div.pagination .selected { background-color: #0b59da; color: #fff; padding-left:
 
 #admin_institutions ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
 #admin_institutions ul li .column_id { width: 30px; display: inline-block; }
-#admin_institutions ul li .column_name { width: 596px; display: inline-block; }
-#admin_institutions ul li .column_code { width: 50px; display: inline-block; }
+#admin_institutions ul li .column_name { width: 586px; display: inline-block; }
+#admin_institutions ul li .column_remote_id { width: 60px; display: inline-block; }
 #admin_institutions ul li .column_shortname { width: 100px; display: inline-block; }
 
 #admin_institution_sites ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
@@ -1686,3 +1686,7 @@ body .ui-widget-overlay {
 a.profileLink { float: left; font-size: 13px; padding-bottom: 2px; margin-left: -4px; border: 0; background: url('../img/cog.png') left top no-repeat; }
 a:hover.profileLink { background: url('../img/cog-highlight.png') left top no-repeat; }
 a.profileLink strong { float: left; margin-left: 20px; margin-top: 3px; }
+
+#admin_data_sources ul li { padding: 0; margin: 0; line-height: 15px; font-size: 11px; }
+#admin_data_sources ul li .column_checkbox { width: 16px; display: inline-block; }
+#admin_data_sources ul li .column_name { width: 808px; display: inline-block; }
