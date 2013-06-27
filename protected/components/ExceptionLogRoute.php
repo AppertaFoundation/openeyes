@@ -162,9 +162,11 @@ class ExceptionLogRoute extends CLogRoute
 
 			file_put_contents($this->getLogPath().DIRECTORY_SEPARATOR.$logfile,"SERVER:\n\n".print_r($_SERVER,true)."\n\nPOST:\n\n".print_r($_POST,true));
 
+			$request_type = !empty($_POST) ? 'POST' : 'GET';
+
 			$msg = "User: $user\n";
 			$msg .= "User agent: $useragent\n";
-			isset($_SERVER['REQUEST_URI']) && $msg .= "Request: http".(@$_SERVER['HTTPS']?'s':'').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\n";
+			isset($_SERVER['REQUEST_URI']) && $msg .= "Request: $request_type http".(@$_SERVER['HTTPS']?'s':'').'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']."\n";
 			isset($_SERVER['HTTP_REFERER']) && $msg .= "Referer: ".$_SERVER['HTTP_REFERER']."\n";
 			isset($_SERVER['REMOTE_ADDR']) && $msg .= "Remote IP: ".$_SERVER['REMOTE_ADDR']."\n";
 			isset($_SERVER['HTTP_VIA']) && $msg .= "Via: ".$_SERVER['HTTP_VIA']."\n";
