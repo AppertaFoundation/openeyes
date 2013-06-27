@@ -33,7 +33,7 @@
 				<ul class="grid reduceheight">
 					<li class="header">
 						<span class="column_id">ID</span>
-						<span class="column_remote_id">Code</span>
+						<span class="column_remote_id">Remote ID</span>
 						<span class="column_name">Name</span>
 						<span class="column_address">Address</span>
 					</li>
