@@ -48,7 +48,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
      */
     public function iSelectSite($siteAddress)
     {
-        $this->selectOption(OpenEyesPageObjects::$siteid,$siteAddress);
+        $this->selectOption(OpenEyesPageObjects::$siteId,$siteAddress);
     }
 
     /**
@@ -130,7 +130,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
         $this->selectOption(OpenEyesPageObjects::$opthDay, $day);
         $this->selectOption(OpenEyesPageObjects::$opthMonth, $month);
         $this->selectOption(OpenEyesPageObjects::$opthYear, $year);
-    }
+     }
 
     /**
      * @Then /^I save the new Opthalmic Diagnosis$/
