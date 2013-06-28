@@ -13,7 +13,7 @@ use Behat\YiiExtension\Context\YiiAwareContextInterface;
 use Behat\Mink\Driver\Selenium2Driver;
 
 
-class FeatureContextSteve extends MinkContext implements YiiAwareContextInterface
+class FeatureContext extends MinkContext implements YiiAwareContextInterface
 {
     private    $yii;
     protected  $loop = 0;
@@ -21,6 +21,10 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     protected  $removeMedication = 0;
     protected  $removeAllergy = 0;
 
+    protected $environment = array(
+        'master' => 'http://admin:openeyesdevel@master.test.openeyes.org.uk',
+        'develop' => 'http://admin:openeyesdevel@develop.test.openeyes.org.uk'
+    );
 
     public function setYiiWebApplication(\CWebApplication $yii)
     {
@@ -28,19 +32,39 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     }
 
     /**
+     * @BeforeScenario @javascript
+     */
+    public function maximizeBrowserWindow()
+    {
+        $this->getSession()->resizeWindow(1280, 800);
+    }
+
+    /**
+     * @BeforeStep
+     * @AfterStep
+     */
+    public function waitForActionToFinish()
+    {
+        if ($this->getSession()->getDriver() instanceof Selenium2Driver) {
+            try {
+                $this->getSession()->wait(5000, "$.active == 0");
+            } catch (\Exception $e) {}
+        }
+    }
+    
+    /**
      * @Given /^I am on the OpenEyes "([^"]*)" homepage$/
      */
     public function iAmOnTheOpeneyesHomepage($environment)
     {
-        if ($environment=("develop")) {
-        $environment = "http://admin:openeyesdevel@develop.test.openeyes.org.uk";
-        $this->visit($environment);
+        if (isset($this->environment[$environment])) {
+            $this->visit($this->environment[$environment]);
+        } else {
+            throw new \Exception("Environment $environment doesn't exists");
+        }
+
         //Clear cookies function required here
-        }
-        if ($environment =("master")) {
-        $environment = "http://admin:openeyesdevel@master.test.openeyes.org.uk";
-        $this->visit($environment);
-        }
+
     }
 
     /**
@@ -49,6 +73,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     public function iSelectSite($siteAddress)
     {
         $this->selectOption(OpenEyesPageObjects::$siteId,$siteAddress);
+
     }
 
     /**
@@ -56,6 +81,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
      */
     public function iEnterLoginCredentialsAnd($user, $password)
     {
+       DiagnosisPatient::$opthDiagnosis;
        $this->fillField(OpenEyesPageObjects::$login, $user );
        $this->fillField(OpenEyesPageObjects::$pass, $password);
     }
@@ -138,7 +164,6 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     public function iSaveTheNewOpthalmicDiagnosis()
     {
         $this->pressButton(OpenEyesPageObjects::$opthSaveButton);
-        $this->getSession()->wait(5000);
     }
 
     /**
@@ -186,7 +211,6 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     public function iSaveTheNewSystemicDiagnosis()
     {
         $this->pressButton(OpenEyesPageObjects::$sysSaveButton);
-        $this->getSession()->wait(5000);
     }
 
     /**
@@ -200,7 +224,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
         $this->selectOption(OpenEyesPageObjects::$cviMonth, $month);
         $this->selectOption(OpenEyesPageObjects::$cviYear, $year);
         $this->clickLink(OpenEyesPageObjects::$cviSave);
-        $this->getSession()->wait(5000);
+
     }
 
     /**
@@ -211,13 +235,13 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
 
         $this->clickLink(OpenEyesPageObjects::$addMedication);
         $this->selectOption(OpenEyesPageObjects::$medicationSelect, $medication);
-        $this->getSession()->wait(5000);
+        $this->waitForActionToFinish();
         $this->selectOption(OpenEyesPageObjects::$medicationRoute, $route);
         $this->selectOption(OpenEyesPageObjects::$medicationFrequency, $frequency);
         $this->clickLink(OpenEyesPageObjects::$medicationCalendar);
         $this->clickLink(OpenEyesPageObjects::passDateFromTable($datefrom));
         $this->clickLink(OpenEyesPageObjects::$medicationsave);
-        $this->getSession()->wait(5000);
+        $this->waitForActionToFinish();
         $this->removeMedication++;
     }
 
@@ -228,7 +252,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     {
         $this->selectOption(OpenEyesPageObjects::$selectAllergy, $allergy);
         $this->clickLink(OpenEyesPageObjects::$addAllergy);
-        $this->getSession()->wait(5000);
+        $this->waitForActionToFinish();
         $this->removeAllergy++;
     }
 
@@ -242,9 +266,9 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
 
         while ($this->removeDiagnosis) {
         $this->clickLink(OpenEyesPageObjects::$removediagnosislink);
-        $this->getSession()->wait(5000);
+        $this->waitForActionToFinish();
         $this->clickLink(OpenEyesPageObjects::$removediagnosis);
-        $this->getSession()->wait(5000);
+        $this->waitForActionToFinish();
         $this->removeDiagnosis--;
         }
      }
@@ -259,9 +283,9 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
 
         while ($this->removeMedication) {
             $this->clickLink(OpenEyesPageObjects::$removemedicationlink);
-            $this->getSession()->wait(5000);
+            $this->waitForActionToFinish();
             $this->clickLink(OpenEyesPageObjects::$removemedication);
-            $this->getSession()->wait(5000);
+            $this->waitForActionToFinish();
             $this->removeMedication--;
         }
     }
@@ -276,9 +300,9 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
 
         while ($this->removeAllergy) {
             $this->clickLink(OpenEyesPageObjects::$removeallergylink);
-            $this->getSession()->wait(5000);
+            $this->waitForActionToFinish();
             $this->clickLink(OpenEyesPageObjects::$removeallergy);
-            $this->getSession()->wait(5000);
+            $this->waitForActionToFinish();
             $this->removeAllergy--;
         }
     }
@@ -543,6 +567,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     }
 
     /**
+     * @Given /^I tick the Vomited checkbox$/
      * @And /^I tick the Vomited checkbox$/
      */
     public function iTickTheVomitedCheckbox()
@@ -551,7 +576,7 @@ class FeatureContextSteve extends MinkContext implements YiiAwareContextInterfac
     }
 
     /**
-     * @And /^I tick the Vomited checkbox$/
+     * @And /^I untick the Vomited checkbox$/
      */
     public function iUntickTheVomitedCheckbox()
     {
