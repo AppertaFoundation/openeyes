@@ -1,5 +1,4 @@
 @NewDiagnosis
-
 Feature: Open Eyes Login and Patient Diagnosis Screen
 
   Scenario Outline: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies

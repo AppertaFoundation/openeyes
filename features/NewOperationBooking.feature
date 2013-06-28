@@ -1,5 +1,4 @@
 @NewOpearation
-
 Feature: Create New Operation Booking Event
 
   Scenario Outline: Login and create a Operation Booking

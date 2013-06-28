@@ -1,5 +1,4 @@
 @NewExamWIP
-
 Feature: Create New Examination
 
   Scenario Outline: Login and create a new Examination Event

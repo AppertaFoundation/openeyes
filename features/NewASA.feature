@@ -1,5 +1,4 @@
-#@NewASA
-
+@NewASA
 Feature: Create New Anaesthetic Satisfaction Audit
 
   Scenario Outline: Login and create a Anaesthetic Satisfaction Audit

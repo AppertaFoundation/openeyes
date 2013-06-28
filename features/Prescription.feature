@@ -1,5 +1,4 @@
 @Prescription
-
 Feature: Create New Prescription
 
   Scenario Outline: Login and create a new Prescription

@@ -51,7 +51,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
             } catch (\Exception $e) {}
         }
     }
-    
+
     /**
      * @Given /^I am on the OpenEyes "([^"]*)" homepage$/
      */
@@ -96,9 +96,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
-     * @Then /^I search for patient name last name "([^"]*)" and first name"([^"]*)"$/
+     * @Then /^I search for patient name last name "([^"]*)" and first name "([^"]*)"$/
      */
-    public function iSearchPatientName ($first, $last)
+    public function iSearchForPatientNameLastNameAndFirstName ($first, $last)
     {
         $this->fillField(OpenEyesPageObjects::$mainSearch, $first );
         $this->fillField(OpenEyesPageObjects::$mainSearch, $last);
@@ -557,6 +557,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
+     * @Given /^I select Satisfaction levels of Pain "([^"]*)" Nausea "([^"]*)"$/
      * @And /^I select Satisfaction levels of Pain "([^"]*)" Nausea "([^"]*)"$/
      */
     public function iSelectSatisfactionLevelsOfPainNausea($pain, $nausea)
@@ -620,6 +621,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
+     * @Given /^I select the No option for Read to Discharge$/
      * @And /^I select the No option for Read to Discharge$/
      */
     public function iSelectTheNoOptionForReadToDischarge()
@@ -1179,9 +1181,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToCloseTheBrowser()
     {
-        
+
     }
-
 }
-
-

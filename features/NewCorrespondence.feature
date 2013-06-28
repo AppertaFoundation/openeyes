@@ -1,5 +1,4 @@
 @NewCorresp
-
 Feature: Create New Correspondence
 
   Scenario Outline: Login and fill in a Correspondence

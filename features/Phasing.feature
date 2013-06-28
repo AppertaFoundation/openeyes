@@ -1,5 +1,4 @@
 @Phasing
-
 Feature: Create New Phasing Event
 
   Scenario Outline: Login and create a Phasing Event
