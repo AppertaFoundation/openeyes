@@ -397,13 +397,21 @@ class User extends BaseActiveRecord
 		return $salt;
 	}
 
+	public function getAccessLevelOptions() {
+		return array(
+			0 => 'No access',
+			1 => 'Patient demographics',
+			2 => 'Read only',
+			3 => 'Read only and print',
+			4 => 'Edit but not prescribe',
+			5 => 'Full',
+		);
+	}
+	
 	public function getAccesslevelstring() {
-		switch ($this->access_level) {
-			case 0: return 'No access';
-			case 1: return 'Patient demographics';
-			case 2: return 'Read only';
-			case 3: return 'Edit but not prescribe';
-			case 4: return 'Full';
+		$access_levels = $this->getAccessLevelOptions();
+		if(isset($access_levels[$this->access_level])) {
+			return $access_levels[$this->access_level];
 		}
 	}
 
