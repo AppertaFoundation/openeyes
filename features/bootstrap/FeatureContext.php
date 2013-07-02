@@ -12,8 +12,10 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\YiiExtension\Context\YiiAwareContextInterface;
 use Behat\Mink\Driver\Selenium2Driver;
 
+use SensioLabs\Behat\PageObjectExtension\Context\PageObjectContext;
 
 class FeatureContext extends MinkContext implements YiiAwareContextInterface
+
 {
     private    $yii;
     protected  $loop = 0;
@@ -64,7 +66,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         }
 
         //Clear cookies function required here
-
     }
 
     /**
@@ -72,8 +73,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectSite($siteAddress)
     {
-        $this->selectOption(OpenEyesPageObjects::$siteId,$siteAddress);
-
+        $this->selectOption(Login::$siteId,$siteAddress);
     }
 
     /**
@@ -81,9 +81,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterLoginCredentialsAnd($user, $password)
     {
-       DiagnosisPatient::$opthDiagnosis;
-       $this->fillField(OpenEyesPageObjects::$login, $user );
-       $this->fillField(OpenEyesPageObjects::$pass, $password);
+       PatientViewPage::$opthDiagnosis;
+       $this->fillField(Login::$login, $user );
+       $this->fillField(Login::$pass, $password);
     }
 
     /**
@@ -91,8 +91,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSearchForHospitalNumber($hospital)
     {
-        $this->fillField(OpenEyesPageObjects::$mainSearch, $hospital);
-        $this->clickLink(OpenEyesPageObjects::$searchSubmit);
+        $this->fillField(Login::$mainSearch, $hospital);
+        $this->clickLink(Login::$searchSubmit);
     }
 
     /**
@@ -100,9 +100,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSearchPatientName ($first, $last)
     {
-        $this->fillField(OpenEyesPageObjects::$mainSearch, $first );
-        $this->fillField(OpenEyesPageObjects::$mainSearch, $last);
-        $this->clickLink(OpenEyesPageObjects::$searchSubmit);
+        $this->fillField(Login::$mainSearch, $first );
+        $this->fillField(Login::$mainSearch, $last);
+        $this->clickLink(Login::$searchSubmit);
     }
 
     /**
@@ -110,8 +110,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSearchForNhsNumber($nhs)
     {
-       $this->fillField(OpenEyesPageObjects::$mainSearch, $nhs);
-       $this->clickLink(OpenEyesPageObjects::$searchSubmit);
+       $this->fillField(Login::$mainSearch, $nhs);
+       $this->clickLink(Login::$searchSubmit);
     }
 
     /**
@@ -119,7 +119,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iselectAFirm($firm)
     {
-        $this->clickLink(OpenEyesPageObjects::$firmDropdown,$firm);
+        $this->clickLink(Login::$firmDropdown,$firm);
     }
 
         /**
@@ -127,8 +127,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function OphthalmicDiagnosisSelection($diagnosis)
     {
-        $this->pressButton(OpenEyesPageObjects::$opthDiagnosis);
-        $this->selectOption(OpenEyesPageObjects::$opthDisorder, $diagnosis);
+        $this->pressButton(PatientViewPage::$opthDiagnosis);
+        $this->selectOption(PatientViewPage::$opthDisorder, $diagnosis);
         $this->removeDiagnosis++; //
     }
 
@@ -138,13 +138,13 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iSelectThatItAffectsEye($eye)
     {
         if ($eye=="Right") {
-            $this->clickLink(OpenEyesPageObjects::$opthRighteye);
+            $this->clickLink(PatientViewPage::$opthRighteye);
         }
         if ($eye=="Both") {
-            $this->clickLink(OpenEyesPageObjects::$opthBotheyes);
+            $this->clickLink(PatientViewPage::$opthBotheyes);
         }
         if ($eye=="Left") {
-            $this->clickLink(OpenEyesPageObjects::$opthLefteye);
+            $this->clickLink(PatientViewPage::$opthLefteye);
         }
     }
 
@@ -153,9 +153,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function OpthalmicDiagnosis($day, $month, $year)
     {
-        $this->selectOption(OpenEyesPageObjects::$opthDay, $day);
-        $this->selectOption(OpenEyesPageObjects::$opthMonth, $month);
-        $this->selectOption(OpenEyesPageObjects::$opthYear, $year);
+        $this->selectOption(PatientViewPage::$opthDay, $day);
+        $this->selectOption(PatientViewPage::$opthMonth, $month);
+        $this->selectOption(PatientViewPage::$opthYear, $year);
      }
 
     /**
@@ -163,7 +163,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSaveTheNewOpthalmicDiagnosis()
     {
-        $this->pressButton(OpenEyesPageObjects::$opthSaveButton);
+        $this->pressButton(PatientViewPage::$opthSaveButton);
     }
 
     /**
@@ -171,8 +171,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function SystemicDiagnosisSelection($systemic)
     {
-        $this->pressButton(OpenEyesPageObjects::$sysDiagnosis);
-        $this->selectOption(OpenEyesPageObjects::$sysDisorder, $systemic);
+        $this->pressButton(PatientViewPage::$sysDiagnosis);
+        $this->selectOption(PatientViewPage::$sysDisorder, $systemic);
         $this->removeDiagnosis++;
     }
 
@@ -182,16 +182,16 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function AffectsSide($side)
     {
         if ($side=("None")) {
-            $this->clickLink(OpenEyesPageObjects::$sysNoneSide);
+            $this->clickLink(PatientViewPage::$sysNoneSide);
         }
         if ($side=("Right")) {
-            $this->clickLink(OpenEyesPageObjects::$sysRightSide);
+            $this->clickLink(PatientViewPage::$sysRightSide);
         }
         if ($side=("Both")) {
-            $this->clickLink(OpenEyesPageObjects::$sysBothSide);
+            $this->clickLink(PatientViewPage::$sysBothSide);
         }
         if ($side=("Left")) {
-            $this->clickLink(OpenEyesPageObjects::$sysLeftSide);
+            $this->clickLink(PatientViewPage::$sysLeftSide);
         }
     }
 
@@ -200,9 +200,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectASystemicDiagnosis($day, $month, $year)
     {
-        $this->selectOption(OpenEyesPageObjects::$sysDay, $day);
-        $this->selectOption(OpenEyesPageObjects::$sysMonth, $month);
-        $this->selectOption(OpenEyesPageObjects::$sysYear, $year);
+        $this->selectOption(PatientViewPage::$sysDay, $day);
+        $this->selectOption(PatientViewPage::$sysMonth, $month);
+        $this->selectOption(PatientViewPage::$sysYear, $year);
     }
 
     /**
@@ -210,7 +210,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSaveTheNewSystemicDiagnosis()
     {
-        $this->pressButton(OpenEyesPageObjects::$sysSaveButton);
+        $this->pressButton(PatientViewPage::$sysSaveButton);
     }
 
     /**
@@ -218,13 +218,12 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function CviStatus($status, $day, $month, $year)
     {
-        $this->clickLink(OpenEyesPageObjects::$cviEdit);
-        $this->selectOption(OpenEyesPageObjects::$cviStatus, $status);
-        $this->selectOption(OpenEyesPageObjects::$cviDay, $day);
-        $this->selectOption(OpenEyesPageObjects::$cviMonth, $month);
-        $this->selectOption(OpenEyesPageObjects::$cviYear, $year);
-        $this->clickLink(OpenEyesPageObjects::$cviSave);
-
+        $this->clickLink(PatientViewPage::$cviEdit);
+        $this->selectOption(PatientViewPage::$cviStatus, $status);
+        $this->selectOption(PatientViewPage::$cviDay, $day);
+        $this->selectOption(PatientViewPage::$cviMonth, $month);
+        $this->selectOption(PatientViewPage::$cviYear, $year);
+        $this->clickLink(PatientViewPage::$cviSave);
     }
 
     /**
@@ -232,15 +231,14 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddMedicationDetails($medication, $route, $frequency, $datefrom)
     {
-
-        $this->clickLink(OpenEyesPageObjects::$addMedication);
-        $this->selectOption(OpenEyesPageObjects::$medicationSelect, $medication);
+        $this->clickLink(PatientViewPage::$addMedication);
+        $this->selectOption(PatientViewPage::$medicationSelect, $medication);
         $this->waitForActionToFinish();
-        $this->selectOption(OpenEyesPageObjects::$medicationRoute, $route);
-        $this->selectOption(OpenEyesPageObjects::$medicationFrequency, $frequency);
-        $this->clickLink(OpenEyesPageObjects::$medicationCalendar);
-        $this->clickLink(OpenEyesPageObjects::passDateFromTable($datefrom));
-        $this->clickLink(OpenEyesPageObjects::$medicationsave);
+        $this->selectOption(PatientViewPage::$medicationRoute, $route);
+        $this->selectOption(PatientViewPage::$medicationFrequency, $frequency);
+        $this->clickLink(PatientViewPage::$medicationCalendar);
+        $this->clickLink(PatientViewPage::passDateFromTable($datefrom));
+        $this->clickLink(PatientViewPage::$medicationSave);
         $this->waitForActionToFinish();
         $this->removeMedication++;
     }
@@ -250,8 +248,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddAllergy($allergy)
     {
-        $this->selectOption(OpenEyesPageObjects::$selectAllergy, $allergy);
-        $this->clickLink(OpenEyesPageObjects::$addAllergy);
+        $this->selectOption(PatientViewPage::$selectAllergy, $allergy);
+        $this->clickLink(PatientViewPage::$addAllergy);
         $this->waitForActionToFinish();
         $this->removeAllergy++;
     }
@@ -261,13 +259,11 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
      public function I_remove_diagnosis_test_data ()
      {
-
         echo "". $this->removeDiagnosis ." number of Diagnosis test data items to be removed";
-
         while ($this->removeDiagnosis) {
-        $this->clickLink(OpenEyesPageObjects::$removediagnosislink);
+        $this->clickLink(PatientViewPage::$removeDiagnosisLink);
         $this->waitForActionToFinish();
-        $this->clickLink(OpenEyesPageObjects::$removediagnosis);
+        $this->clickLink(PatientViewPage::$removeDiagnosis);
         $this->waitForActionToFinish();
         $this->removeDiagnosis--;
         }
@@ -278,13 +274,11 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function I_remove_medication_test_data ()
     {
-
         echo "". $this->removeMedication ." number of Medication test data items to be removed";
-
         while ($this->removeMedication) {
-            $this->clickLink(OpenEyesPageObjects::$removemedicationlink);
+            $this->clickLink(PatientViewPage::$removeMedicationLink);
             $this->waitForActionToFinish();
-            $this->clickLink(OpenEyesPageObjects::$removemedication);
+            $this->clickLink(PatientViewPage::$removeMedication);
             $this->waitForActionToFinish();
             $this->removeMedication--;
         }
@@ -295,13 +289,11 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function I_remove_allergy_test_data ()
     {
-
         echo "". $this->removeAllergy ." number of Allergy test data items to be removed";
-
         while ($this->removeAllergy) {
-            $this->clickLink(OpenEyesPageObjects::$removeallergylink);
+            $this->clickLink(PatientViewPage::$removeAllergyLink);
             $this->waitForActionToFinish();
-            $this->clickLink(OpenEyesPageObjects::$removeallergy);
+            $this->clickLink(PatientViewPage::$removeAllergy);
             $this->waitForActionToFinish();
             $this->removeAllergy--;
         }
@@ -312,7 +304,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectCreateOrViewEpisodesAndEvents()
     {
-        $this->clickLink(OpenEyesPageObjects::$createviewepisodeevent);
+        $this->clickLink(AddingNewEvent::$createViewEpisodeEvent);
     }
 
     /**
@@ -320,31 +312,31 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddANewEvent($event)
     {
-       $this->clickLink(OpenEyesPageObjects::$addnewevent);
+       $this->clickLink(AddingNewEvent::$addNewEvent);
 
        if ($event=="Satisfaction") {
-          $this->clickLink(OpenEyesPageObjects::$anaestheticsatisfaction);
+          $this->clickLink(AddingNewEvent::$anaestheticSatisfaction);
        }
        if ($event=="Consent") {
-          $this->clickLink(OpenEyesPageObjects::$consentform);
+          $this->clickLink(AddingNewEvent::$consentForm);
        }
        if ($event=="Correspondence") {
-          $this->clickLink(OpenEyesPageObjects::$correspondence);
+          $this->clickLink(AddingNewEvent::$correspondence);
        }
        if ($event=="Examination") {
-          $this->clickLink(OpenEyesPageObjects::$examination);
+          $this->clickLink(AddingNewEvent::$examination);
        }
        if ($event=="OpBooking") {
-          $this->clickLink(OpenEyesPageObjects::$operationbooking);
+          $this->clickLink(AddingNewEvent::$operationBooking);
        }
        if ($event=="OpNote") {
-          $this->clickLink(OpenEyesPageObjects::$operationnote);
+          $this->clickLink(AddingNewEvent::$operationNote);
        }
        if ($event=="Phasing") {
-          $this->clickLink(OpenEyesPageObjects::$phasing);
+          $this->clickLink(AddingNewEvent::$phasing);
        }
        if ($event=="Prescription") {
-          $this->clickLink(OpenEyesPageObjects::$prescription);
+          $this->clickLink(AddingNewEvent::$prescription);
        }
     }
 
@@ -369,7 +361,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectADiagnosisOf($diagnosis)
     {
-          $this->selectOption(OpenEyesPageObjects::$operationdiagnosis, $diagnosis);
+          $this->selectOption(OperationBooking::$operationDiagnosis, $diagnosis);
     }
 
     /**
@@ -378,13 +370,13 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iSelectOperationEyesOf($opEyes)
     {
         if ($opEyes=="Right") {
-            $this->clickLink(OpenEyesPageObjects::$operationRightEye);
+            $this->clickLink(OperationBooking::$operationRightEye);
         }
         if ($opEyes=="Both") {
-            $this->clickLink(OpenEyesPageObjects::$operationBothEyes);
+            $this->clickLink(OperationBooking::$operationBothEyes);
         }
         if ($opEyes=="Left") {
-            $this->clickLink(OpenEyesPageObjects::$operationLeftEye);
+            $this->clickLink(OperationBooking::$operationLeftEye);
         }
     }
 
@@ -393,7 +385,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAProcedureOf($procedure)
     {
-        $this->selectOption(OpenEyesPageObjects::$operationprocedure, $procedure);
+        $this->selectOption(OperationBooking::$operationProcedure, $procedure);
     }
 
     /**
@@ -401,7 +393,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectYesToConsultantRequired()
     {
-        $this->clickLink(OpenEyesPageObjects::$consultantyes);
+        $this->clickLink(OperationBooking::$consultantYes);
     }
 
     /**
@@ -409,7 +401,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectNoToConsultantRequired()
     {
-        $this->clickLink(OpenEyesPageObjects::$consultantno);
+        $this->clickLink(OperationBooking::$consultantNo);
     }
 
     /**
@@ -418,19 +410,19 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iSelectAAnaestheticType($type)
     {
         if ($type=="Topical") {
-            $this->clickLink(OpenEyesPageObjects::$anaesthetictopical);
+            $this->clickLink(OperationBooking::$anaestheticTopical);
         }
         if ($type=="LA") {
-            $this->clickLink(OpenEyesPageObjects::$anaestheticla);
+            $this->clickLink(OperationBooking::$anaestheticLa);
         }
         if ($type=="LAC") {
-            $this->clickLink(OpenEyesPageObjects::$anaestheticlac);
+            $this->clickLink(OperationBooking::$anaestheticLac);
         }
         if ($type=="LAS") {
-            $this->clickLink(OpenEyesPageObjects::$anaestheticlas);
+            $this->clickLink(OperationBooking::$anaestheticLas);
         }
         if ($type=="GA") {
-            $this->clickLink(OpenEyesPageObjects::$anaestheticga);
+            $this->clickLink(OperationBooking::$anaestheticGa);
         }
     }
 
@@ -439,7 +431,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectYesToAPostOperativeStay()
     {
-        $this->clickLink(OpenEyesPageObjects::$postopstayyes);
+        $this->clickLink(OperationBooking::$postOpStayYes);
     }
 
     /**
@@ -447,7 +439,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectNoToAPostOperativeStay()
     {
-        $this->clickLink(OpenEyesPageObjects::$postopstayno);
+        $this->clickLink(OperationBooking::$postOpStayNo);
     }
 
     /**
@@ -455,7 +447,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAOperationSiteOf($site)
     {
-        $this->selectOption(OpenEyesPageObjects::$operationsite, $site);
+        $this->selectOption(OperationBooking::$operationSite, $site);
     }
 
     /**
@@ -463,7 +455,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAPriorityOfRoutine()
     {
-        $this->clickLink(OpenEyesPageObjects::$routineoperation);
+        $this->clickLink(OperationBooking::$routineOperation);
     }
 
     /**
@@ -471,7 +463,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAPriorityOfUrgent()
     {
-        $this->clickLink(OpenEyesPageObjects::$urgentoperation);
+        $this->clickLink(OperationBooking::$urgentOperation);
     }
 
     /**
@@ -479,8 +471,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectADecisionDateOf($datefrom)
     {
-        $this->clickLink(OpenEyesPageObjects::$decisionopen);
-        $this->clickLink(OpenEyesPageObjects::passDateFromTable($datefrom));
+        $this->clickLink(OperationBooking::$decisionOpen);
+        $this->clickLink(PatientViewPage::passDateFromTable($datefrom));
     }
 
     /**
@@ -488,7 +480,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddCommentsOf($comments)
     {
-        $this->fillField(OpenEyesPageObjects::$addcomments, $comments);
+        $this->fillField(OperationBooking::$addComments, $comments);
     }
 
     /**
@@ -496,7 +488,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectSaveAndScheduleLater()
     {
-        $this->clickLink(OpenEyesPageObjects::$schedulelater);
+        $this->clickLink(OperationBooking::$scheduleLater);
     }
 
     /**
@@ -504,7 +496,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectSaveAndScheduleNow()
     {
-        $this->clickLink(OpenEyesPageObjects::$scheduleandsavenow);
+        $this->clickLink(OperationBooking::$scheduleAndSaveNow);
     }
 
     /**
@@ -512,7 +504,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAnAvailableTheatreSlotDate()
     {
-        $this->clickLink(OpenEyesPageObjects::$theatresessiondate);
+        $this->clickLink(OperationBooking::$theatreSessionDate);
     }
 
     /**
@@ -520,7 +512,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAnAvailableSessionTime()
     {
-        $this->clickLink(OpenEyesPageObjects::$theatresessiontime);
+        $this->clickLink(OperationBooking::$theatreSessionTime);
     }
 
     /**
@@ -529,7 +521,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iAddSessionCommentsOf($sessionComments)
     {
         //As this field has existing text we need a function to Clear Field
-        $this->fillField(OpenEyesPageObjects::$sessioncomments, $sessionComments);
+        $this->fillField(OperationBooking::$sessionComments, $sessionComments);
     }
 
     /**
@@ -537,7 +529,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddOperationCommentsOf($opComments)
     {
-        $this->fillField(OpenEyesPageObjects::$operationcomments, $opComments);
+        $this->fillField(OperationBooking::$operationComments, $opComments);
     }
 
     /**
@@ -545,7 +537,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iConfirmTheOperationSlot()
     {
-        $this->clickLink(OpenEyesPageObjects::$confirmslot);
+        $this->clickLink(OperationBooking::$confirmSlot);
     }
 
     /**
@@ -553,7 +545,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAnAnaesthetist($select)
     {
-        $this->selectOption(OpenEyesPageObjects::$anaesthetist,$select);
+        $this->selectOption(AnaestheticAudit::$anaesthetist,$select);
     }
 
     /**
@@ -562,8 +554,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iSelectSatisfactionLevelsOfPainNausea($pain, $nausea)
     {
         //Need to clear these two text fields
-        $this->fillField(OpenEyesPageObjects::$nausea,$nausea);
-        $this->fillField(OpenEyesPageObjects::$pain, $pain);
+        $this->fillField(AnaestheticAudit::$nausea,$nausea);
+        $this->fillField(AnaestheticAudit::$pain, $pain);
     }
 
     /**
@@ -572,7 +564,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iTickTheVomitedCheckbox()
     {
-        $this->checkOption(OpenEyesPageObjects::$vomitcheckbox);
+        $this->checkOption(AnaestheticAudit::$vomitCheckbox);
     }
 
     /**
@@ -580,7 +572,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iUntickTheVomitedCheckbox()
     {
-        $this->uncheckOption(OpenEyesPageObjects::$vomitcheckbox);
+        $this->uncheckOption(AnaestheticAudit::$vomitCheckbox);
     }
 
     /**
@@ -588,9 +580,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectVitalSigns($rate, $oxygen, $pressure)
     {
-        $this->selectOption(OpenEyesPageObjects::$respirotaryrate, $rate);
-        $this->selectOption(OpenEyesPageObjects::$oxygensaturation, $oxygen);
-        $this->selectOption(OpenEyesPageObjects::$systolicbloodpressure, $pressure);
+        $this->selectOption(AnaestheticAudit::$respirotaryRate, $rate);
+        $this->selectOption(AnaestheticAudit::$oxygenSaturation, $oxygen);
+        $this->selectOption(AnaestheticAudit::$systolicBloodPressure, $pressure);
     }
 
     /**
@@ -598,9 +590,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectVitalSignsTemp($temp, $rate, $avpu)
     {
-        $this->selectOption(OpenEyesPageObjects::$bodytemp, $temp);
-        $this->selectOption(OpenEyesPageObjects::$heartrate, $rate);
-        $this->selectOption(OpenEyesPageObjects::$consciouslevelavpu, $avpu);
+        $this->selectOption(AnaestheticAudit::$bodyTemp, $temp);
+        $this->selectOption(AnaestheticAudit::$heartRate, $rate);
+        $this->selectOption(AnaestheticAudit::$consciousLevelAvpu, $avpu);
     }
 
     /**
@@ -608,7 +600,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterComments($comments)
     {
-        $this->fillField(OpenEyesPageObjects::$comments, comments);
+        $this->fillField(AnaestheticAudit::$comments, $comments);
     }
 
     /**
@@ -616,7 +608,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectTheYesOptionForReadyToDischarge()
     {
-        $this->clickLink(OpenEyesPageObjects::$dischargeyes);
+        $this->clickLink(AnaestheticAudit::$dischargeYes);
     }
 
     /**
@@ -624,7 +616,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectTheNoOptionForReadToDischarge()
     {
-       $this->clickLink(OpenEyesPageObjects::$dischargeno);
+       $this->clickLink(AnaestheticAudit::$dischargeNo);
     }
 
     /**
@@ -632,7 +624,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSaveTheEvent()
     {
-       $this->clickLink(OpenEyesPageObjects::$saveexamination);
+       $this->clickLink(Examination::$saveExamination);
     }
 
     /**
@@ -640,7 +632,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iCancelTheEvent()
     {
-       $this->clickLink(OpenEyesPageObjects::$cancelevent);
+       $this->clickLink(AnaestheticAudit::$cancelEvent);
     }
 
     /**
@@ -648,7 +640,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectACommonDrug($drug)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptiondropdown, $drug);
+       $this->selectOption(Prescription::$prescriptionDropDown, $drug);
     }
 
     /**
@@ -656,7 +648,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAStandardSetOf($set)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptionstandardset, $set);
+       $this->selectOption(Prescription::$prescriptionStandardSet, $set);
     }
 
     /**
@@ -665,7 +657,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iEnterADoseOfDrops($drops)
     {
        //Clear field required here
-       $this->fillField(OpenEyesPageObjects::$prescriptiondose, $drops);
+       $this->fillField(Prescription::$prescriptionDose, $drops);
     }
 
     /**
@@ -673,7 +665,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterARouteOf($route)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptionroute, $route);
+       $this->selectOption(Prescription::$prescriptionRoute, $route);
     }
 
     /**
@@ -681,7 +673,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterAEyesOption($eyes)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptionoptions, $eyes);
+       $this->selectOption(Prescription::$prescriptionOptions, $eyes);
     }
 
     /**
@@ -689,7 +681,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterAFrequencyOf($frequency)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptionfrequency, $frequency);
+       $this->selectOption(Prescription::$prescriptionFrequency, $frequency);
     }
 
     /**
@@ -697,7 +689,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterADurationOf($duration)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptionduration, $duration);
+       $this->selectOption(Prescription::$prescriptionDuration, $duration);
     }
 
     /**
@@ -705,7 +697,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddPrescriptionCommentsOf($comments)
     {
-       $this->selectOption(OpenEyesPageObjects::$prescriptioncomments, $comments);
+       $this->selectOption(Prescription::$prescriptionComments, $comments);
     }
 
     /**
@@ -713,7 +705,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function RightEyeIntraocular($righteye)
     {
-       $this->selectOption(OpenEyesPageObjects::$phasinginstrumentright, $righteye);
+       $this->selectOption(Phasing::$phasingInstrumentRight, $righteye);
     }
 
     /**
@@ -721,7 +713,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseRightEyeDilationOf($dilation)
     {
-        $this->clickLink(OpenEyesPageObjects::$phasingdilationright);
+        $this->clickLink(Phasing::$phasingDilationRight);
     }
 
     /**
@@ -729,7 +721,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseARightEyeIntraocularPressureReadingOf($righteye)
     {
-        $this->fillField(OpenEyesPageObjects::$phasingpressureleft, $righteye);
+        $this->fillField(Phasing::$phasingPressureLeft, $righteye);
     }
 
     /**
@@ -737,7 +729,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddRightEyeCommentsOf($comments)
     {
-        $this->fillField(OpenEyesPageObjects::$phasingcommentsright, $comments);
+        $this->fillField(Phasing::$phasingCommentsRight, $comments);
     }
 
     /**
@@ -745,7 +737,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseALeftEyeIntraocularPressureInstrumentOf($lefteye)
     {
-        $this->selectOption(OpenEyesPageObjects::$phasinginstrumentleft,$lefteye);
+        $this->selectOption(Phasing::$phasingInstrumentLeft,$lefteye);
     }
 
     /**
@@ -753,7 +745,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseLeftEyeDilationOf($dilation)
     {
-        $this->clickLink(OpenEyesPageObjects::$dilationleft);
+        $this->clickLink(Phasing::$phasingDilationLeft);
     }
 
     /**
@@ -761,7 +753,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseALeftEyeIntraocularPressureReadingOf($lefteye)
     {
-       $this->fillField(OpenEyesPageObjects::$phasingpressureright, $lefteye);
+       $this->fillField(Phasing::$phasingPressureRight, $lefteye);
     }
 
     /**
@@ -769,7 +761,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddLeftEyeCommentsOf($comments)
     {
-        $this->fillField(OpenEyesPageObjects::$phasingcommentsleft, $comments);
+        $this->fillField(Phasing::$phasingCommentsLeft, $comments);
     }
 
     /**
@@ -777,7 +769,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSaveThePhasingEvent()
     {
-        $this->clickLink(OpenEyesPageObjects::$saveexamination);
+        $this->clickLink(Examination::$saveExamination);
     }
 
     /**
@@ -785,11 +777,11 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAHistoryOfBlurredVision($notused, $orthisone)
     {
-        $this->clickLink(OpenEyesPageObjects::$history);
-        $this->clickLink(OpenEyesPageObjects::$severity);
-        $this->clickLink(OpenEyesPageObjects::$onset);
-        $this->clickLink(OpenEyesPageObjects::$eye);
-        $this->clickLink(OpenEyesPageObjects::$duration);
+        $this->clickLink(Examination::$history);
+        $this->clickLink(Examination::$severity);
+        $this->clickLink(Examination::$onset);
+        $this->clickLink(Examination::$eye);
+        $this->clickLink(Examination::$duration);
     }
 
     /**
@@ -797,7 +789,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheComorbiditiesSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$opencomorbidities);
+        $this->clickLink(Examination::$openComorbidities);
     }
 
     /**
@@ -805,7 +797,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddAComorbiditiyOf($com)
     {
-        $this->selectOption(OpenEyesPageObjects::$addcomorbidities, $com);
+        $this->selectOption(Examination::$addComorbidities, $com);
     }
 
     /**
@@ -813,7 +805,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheVisualAcuitySection()
     {
-        $this->clickLink(OpenEyesPageObjects::$openVisualAcuity);
+        $this->clickLink(Examination::$openVisualAcuity);
     }
 
     /**
@@ -821,9 +813,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function SnellenMetreAndAReading($metre, $method)
     {
-        $this->clickLink(OpenEyesPageObjects::$openleftva);
-        $this->selectOption(OpenEyesPageObjects::$snellenleft, $metre);
-        $this->selectOption(OpenEyesPageObjects::$readingleft, $method);
+        $this->clickLink(Examination::$openLeftVa);
+        $this->selectOption(Examination::$snellenLeft, $metre);
+        $this->selectOption(Examination::$readingLeft, $method);
     }
 
     /**
@@ -831,9 +823,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function RightVisualAcuitySnellenMetre($metre, $method)
     {
-        $this->clickLink(OpenEyesPageObjects::$openrightva);
-        $this->selectOption(OpenEyesPageObjects::$snellenright, $metre);
-        $this->selectOption(OpenEyesPageObjects::$readingright, $method);
+        $this->clickLink(Examination::$openRightVa);
+        $this->selectOption(Examination::$snellenRight, $metre);
+        $this->selectOption(Examination::$readingRight, $method);
     }
 
     /**
@@ -841,7 +833,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheIntraocularPressureSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$openIntraocularPressure);
+        $this->clickLink(Examination::$openIntraocularPressure);
     }
 
     /**
@@ -849,8 +841,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseALeftIntraocularPressureOfAndInstrument($pressure, $instrument)
     {
-        $this->selectOption(OpenEyesPageObjects::$intraocularright, $pressure);
-        $this->selectOption(OpenEyesPageObjects::$instrumentright, $instrument);
+        $this->selectOption(Examination::$intraocularRight, $pressure);
+        $this->selectOption(Examination::$instrumentRight, $instrument);
     }
 
     /**
@@ -858,8 +850,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseARightIntraocularPressureOfAndInstrument($pressure, $instrument)
     {
-        $this->selectOption(OpenEyesPageObjects::$intraocularleft, $pressure);
-        $this->selectOption(OpenEyesPageObjects::$instrumentleft, $instrument);
+        $this->selectOption(Examination::$intraocularLeft, $pressure);
+        $this->selectOption(Examination::$instrumentLeft, $instrument);
     }
 
     /**
@@ -867,7 +859,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheDilationSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$openDilation);
+        $this->clickLink(Examination::$openDilation);
     }
 
     /**
@@ -875,8 +867,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseLeftDilationOfAndDropsOf($dilation, $drops)
     {
-        $this->selectOption(OpenEyesPageObjects::$dilationleft, $dilation);
-        $this->selectOption(OpenEyesPageObjects::$dropsleft, $drops);
+        $this->selectOption(Examination::$dilationLeft, $dilation);
+        $this->selectOption(Examination::$dropsLeft, $drops);
     }
 
     /**
@@ -884,8 +876,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseRightDilationOfAndDropsOf($dilation, $drops)
     {
-        $this->selectOption(OpenEyesPageObjects::$dilationright, $dilation);
-        $this->selectOption(OpenEyesPageObjects::$dropsright, $drops);
+        $this->selectOption(Examination::$dilationRight, $dilation);
+        $this->selectOption(Examination::$dropsRight, $drops);
     }
 
     /**
@@ -893,7 +885,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheRefractionSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandrefraction);
+        $this->clickLink(Examination::$expandRefraction);
     }
 
     /**
@@ -901,9 +893,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function LeftRefractionDetails($sphere, $integer, $fraction)
     {
-        $this->selectOption(OpenEyesPageObjects::$sphereright, $sphere);
-        $this->selectOption(OpenEyesPageObjects::$sphererightint, $integer);
-        $this->selectOption(OpenEyesPageObjects::$sphererightfraction, $fraction);
+        $this->selectOption(Examination::$sphereRight, $sphere);
+        $this->selectOption(Examination::$sphereRightInt, $integer);
+        $this->selectOption(Examination::$sphereRightFraction, $fraction);
     }
 
     /**
@@ -911,9 +903,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterLeftCylinderDetails($cylinder, $integer, $fraction)
     {
-        $this->selectOption(OpenEyesPageObjects::$cylinderleft, $cylinder);
-        $this->selectOption(OpenEyesPageObjects::$cylinderleftint, $integer);
-        $this->selectOption(OpenEyesPageObjects::$cylinderleftfraction, $fraction);
+        $this->selectOption(Examination::$cylinderLeft, $cylinder);
+        $this->selectOption(Examination::$cylinderLeftInt, $integer);
+        $this->selectOption(Examination::$cylinderLeftFraction, $fraction);
     }
 
     /**
@@ -922,7 +914,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iEnterLeftAxisDegreesOf($axis)
     {
         //We need a Clear Field function here
-        $this->fillField(OpenEyesPageObjects::$sphereleftaxis, $axis);
+        $this->fillField(Examination::$sphereLeftAxis, $axis);
         //We need to Press the tab key here
     }
 
@@ -931,7 +923,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterALeftTypeOf($type)
     {
-        $this->selectOption(OpenEyesPageObjects::$spherelefttype, $type);
+        $this->selectOption(Examination::$sphereLeftType, $type);
     }
 
     /**
@@ -939,9 +931,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterRightRefractionDetailsOfSphereIntegerFraction($sphere, $integer, $fraction)
     {
-        $this->selectOption(OpenEyesPageObjects::$sphereright, $sphere);
-        $this->selectOption(OpenEyesPageObjects::$sphererightint, $integer);
-        $this->selectOption(OpenEyesPageObjects::$sphererightfraction, $fraction);
+        $this->selectOption(Examination::$sphereRight, $sphere);
+        $this->selectOption(Examination::$sphereRightInt, $integer);
+        $this->selectOption(Examination::$sphereRightFraction, $fraction);
     }
 
     /**
@@ -949,9 +941,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterRightCylinderDetailsOfOfCylinderIntegerFraction($cylinder, $integer, $fraction)
     {
-        $this->selectOption(OpenEyesPageObjects::$cylinderright, $cylinder);
-        $this->selectOption(OpenEyesPageObjects::$cylinderrightint, $integer);
-        $this->selectOption(OpenEyesPageObjects::$cylinderrightfraction, $fraction);
+        $this->selectOption(Examination::$cylinderRight, $cylinder);
+        $this->selectOption(Examination::$cylinderRightInt, $integer);
+        $this->selectOption(Examination::$cylinderRightFraction, $fraction);
     }
 
     /**
@@ -960,7 +952,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iEnterRightAxisDegreesOf($axis)
     {
         //We need a Clear Field function here
-        $this->fillField(OpenEyesPageObjects::$sphererightaxis, $axis);
+        $this->fillField(Examination::$sphereRightAxis, $axis);
         //We need to Press the tab key here
     }
 
@@ -969,7 +961,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iEnterARightTypeOf($type)
     {
-        $this->selectOption(OpenEyesPageObjects::$sphererighttype, $type);
+        $this->selectOption(Examination::$sphereRightType, $type);
     }
 
     /**
@@ -977,7 +969,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheGonioscopySection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandgonioscopy);
+        $this->clickLink(Examination::$expandGonioscopy);
     }
 
     /**
@@ -985,7 +977,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheAdnexalComorbiditySection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandadnexalcomorbidity);
+        $this->clickLink(Examination::$expandaAdnexalComorbidity);
     }
 
     /**
@@ -993,7 +985,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheAnteriorSegmentSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandanteriorsegment);
+        $this->clickLink(Examination::$expandAnteriorSegment);
     }
 
     /**
@@ -1001,7 +993,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandThePupillaryAbnormalitiesSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandpupillaryabnormalities);
+        $this->clickLink(Examination::$expandPupillaryAbnormalities);
     }
 
     /**
@@ -1009,7 +1001,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheOpticDiscSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandopticdisc);
+        $this->clickLink(Examination::$expandOpticDisc);
     }
 
     /**
@@ -1017,7 +1009,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandThePosteriorPoleSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandposteriorpole);
+        $this->clickLink(Examination::$expandPosteriorPole);
     }
 
     /**
@@ -1025,7 +1017,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheDiagnosesSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expanddiagnoses);
+        $this->clickLink(Examination::$expandDiagnoses);
     }
 
     /**
@@ -1033,7 +1025,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheInvestigationSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandinvestigation);
+        $this->clickLink(Examination::$expandInvestigation);
     }
 
     /**
@@ -1041,7 +1033,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheClinicalManagementSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandclinicalmanagement);
+        $this->clickLink(Examination::$expandClinicalManagement);
     }
 
     /**
@@ -1049,7 +1041,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheRisksSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandrisks);
+        $this->clickLink(Examination::$expandRisks);
     }
 
     /**
@@ -1057,7 +1049,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheClinicOutcomeSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandclinicoutcome);
+        $this->clickLink(Examination::$expandClinicOutcome);
     }
 
     /**
@@ -1065,7 +1057,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseToExpandTheConclusionSection()
     {
-        $this->clickLink(OpenEyesPageObjects::$expandconclusion);
+        $this->clickLink(Examination::$expandConclusion);
     }
 
     /**
@@ -1073,7 +1065,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSaveTheExamination()
     {
-        $this->clickLink(OpenEyesPageObjects::$saveexamination);
+        $this->clickLink(Examination::$saveExamination);
     }
 
     /**
@@ -1081,7 +1073,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iCancelTheExamination()
     {
-        $this->clickLink(OpenEyesPageObjects::$cancelexam);
+        $this->clickLink(AnaestheticAudit::$cancelExam);
     }
 
     /**
@@ -1089,7 +1081,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectSiteId($site)
     {
-        $this->selectOption(OpenEyesPageObjects::$sitedropdown, $site);
+        $this->selectOption(Correspondence::$siteDropdown, $site);
     }
 
     /**
@@ -1097,7 +1089,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectAddressTarget($address)
     {
-       $this->selectOption(OpenEyesPageObjects::$addresstarget, address);
+       $this->selectOption(Correspondence::$addressTarget, $address);
     }
 
     /**
@@ -1105,7 +1097,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseAMacroOf($macro)
     {
-       $this->selectOption(OpenEyesPageObjects::$macro, macro);
+       $this->selectOption(Correspondence::$macro, $macro);
     }
 
     /**
@@ -1113,8 +1105,8 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectClinicDate($date)
     {
-        $this->clickLink(OpenEyesPageObjects::$letterdate);
-        $this->clickLink(OpenEyesPageObjects::passDateFromTable(datefrom));
+        $this->clickLink(Correspondence::$letterDate);
+        $this->clickLink(PatientViewPage::passDateFromTable($datefrom));
     }
 
     /**
@@ -1122,7 +1114,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseAnIntroductionOf($intro)
     {
-        $this->selectOption(OpenEyesPageObjects::$introduction, $intro);
+        $this->selectOption(Correspondence::$introduction, $intro);
     }
 
     /**
@@ -1130,7 +1122,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseADiagnosisOf($diagnosis)
     {
-        $this->selectOption(OpenEyesPageObjects::$diagnosis, $diagnosis);
+        $this->selectOption(Correspondence::$diagnosis, $diagnosis);
     }
 
     /**
@@ -1138,7 +1130,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseAManagementOf($management)
     {
-        $this->selectOption(OpenEyesPageObjects::$management, $management);
+        $this->selectOption(Correspondence::$management, $management);
     }
 
     /**
@@ -1146,7 +1138,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseDrugs($drugs)
     {
-        $this->selectOption(OpenEyesPageObjects::$drugs, drugs);
+        $this->selectOption(Correspondence::$drugs, $drugs);
     }
 
     /**
@@ -1154,7 +1146,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseOutcome($outcome)
     {
-        $this->selectOption(OpenEyesPageObjects::$outcome, $outcome);
+        $this->selectOption(Correspondence::$outcome, $outcome);
     }
 
     /**
@@ -1162,7 +1154,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iChooseCcTarget($cc)
     {
-        $this->selectOption(OpenEyesPageObjects::$lettercc, cc);
+        $this->selectOption(Correspondence::$letterCc, $cc);
     }
 
     /**
@@ -1170,16 +1162,15 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddANewEnclosure()
     {
-        $this->clickLink(OpenEyesPageObjects::$addenclosure);
+        $this->clickLink(Correspondence::$addEnclosure);
     }
-
 
     /**
      * @Then /^I choose to close the browser$/
      */
     public function iChooseToCloseTheBrowser()
     {
-        
+       //To be coded - need Mink function
     }
 
 }

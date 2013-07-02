@@ -6,9 +6,13 @@
         "behat/yii-extension":          "~1.0.0",
         "behat/mink-extension":         "~1.1.4",
         "behat/mink-goutte-driver":     "~1.0.8",
-        "behat/mink-selenium2-driver":  "~1.1.1"
+        "behat/mink-selenium2-driver":  "~1.1.1",
+
+        "sensiolabs/behat-page-object-extension": "*"
+
     },
     "config": {
         "bin-dir": "bin"
     }
+
 }
