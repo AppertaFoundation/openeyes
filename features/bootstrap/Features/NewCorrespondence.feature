@@ -1,18 +1,16 @@
 @NewCorresp
-
 Feature: Create New Correspondence
 
   Scenario Outline: Login and fill in a Correspondence
 
     Given I am on the OpenEyes "<environment>" homepage
-    And I select Site "1"
     And I enter login credentials "<username>" and "<password>"
-
+    And I select Site "<site>"
+    Then I select a firm of "1"
+    # check below
     Then I select a firm of "18"
 
-    #Then I search for hospital number "<hospnumber>"
     Then I search for patient name last name "<last>" and first name "<first>"
-    #Then I search for NHS number "<nhs>"
 
     Then I select Create or View Episodes and Events
     And I add a New Event "<EventType>"

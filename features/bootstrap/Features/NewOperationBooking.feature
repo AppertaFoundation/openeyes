@@ -1,18 +1,14 @@
 @NewOpearation
-
 Feature: Create New Operation Booking Event
 
   Scenario Outline: Login and create a Operation Booking
 
     Given I am on the OpenEyes "<environment>" homepage
-    And I select Site "<site>"
     And I enter login credentials "<username>" and "<password>"
+    And I select Site "<site>"
+    Then I select a firm of "1"
 
-    Then I select a firm of "18"
-
-    #Then I search for hospital number "<hospnumber>"
     Then I search for patient name last name "<last>" and first name "<first>"
-    #Then I search for NHS number "<nhs>"
 
     Then I select Create or View Episodes and Events
     And I add a New Event "<EventType>"

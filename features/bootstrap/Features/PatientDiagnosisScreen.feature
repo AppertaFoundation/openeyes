@@ -1,18 +1,14 @@
 @NewDiagnosis
-
 Feature: Open Eyes Login and Patient Diagnosis Screen
 
   Scenario Outline: Login and add Opthamlmic Diagnosis, Systemic Diagnosis, CVI, Medication and other Allergies
 
     Given I am on the OpenEyes "<environment>" homepage
-    And I select Site "<site>"
     And I enter login credentials "<username>" and "<password>"
+    And I select Site "<site>"
+    Then I select a firm of "1"
 
-    #Then I search for hospital number "<hospnumber>"
     Then I search for patient name last name "<last>" and first name "<first>"
-    #Then I search for NHS number "<nhs>"
-
-    Then I select a firm of "18"
 
     Then I Add an Ophthalmic Diagnosis selection of "<OphtDiagnosis>"
     And I select that it affects eye "<eye>"
@@ -42,9 +38,9 @@ Feature: Open Eyes Login and Patient Diagnosis Screen
 
 
   # Site ID's:
-  # City Road - 1
+  # Queens - 1
 
-  # Firm 18 = Allan Bruce (Cataract)
+  # Firm 1 = Abderson Firm (Cataract)
 
   # Last name to include a comma after to match search criteria i.e Coffin,
 

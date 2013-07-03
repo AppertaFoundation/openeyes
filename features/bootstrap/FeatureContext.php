@@ -64,8 +64,17 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         } else {
             throw new \Exception("Environment $environment doesn't exists");
         }
-
         //Clear cookies function required here
+    }
+
+    /**
+     * @Given /^I enter login credentials "([^"]*)" and "([^"]*)"$/
+     */
+    public function iEnterLoginCredentialsAnd($user, $password)
+    {
+        PatientViewPage::$opthDiagnosis;
+        $this->fillField(Login::$login, $user );
+        $this->fillField(Login::$pass, $password);
     }
 
     /**
@@ -77,22 +86,12 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
-     * @Given /^I enter login credentials "([^"]*)" and "([^"]*)"$/
+     * @Then /^I search a firm of "([^"]*)"$/
      */
-    public function iEnterLoginCredentialsAnd($user, $password)
+    public function iselectAFirm($firm)
     {
-       PatientViewPage::$opthDiagnosis;
-       $this->fillField(Login::$login, $user );
-       $this->fillField(Login::$pass, $password);
-    }
-
-    /**
-     * @Then /^I search for hospital number "([^"]*)"$/
-     */
-    public function iSearchForHospitalNumber($hospital)
-    {
-        $this->fillField(Login::$mainSearch, $hospital);
-        $this->clickLink(Login::$searchSubmit);
+        $this->clickLink(Login::$firmDropdown,$firm);
+        $this->pressButton(Login::$confirmSiteAndFirmButton);
     }
 
     /**
@@ -103,23 +102,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         $this->fillField(Login::$mainSearch, $first );
         $this->fillField(Login::$mainSearch, $last);
         $this->clickLink(Login::$searchSubmit);
-    }
-
-    /**
-     * @Then /^I search for NHS number "([^"]*)"$/
-     */
-    public function iSearchForNhsNumber($nhs)
-    {
-       $this->fillField(Login::$mainSearch, $nhs);
-       $this->clickLink(Login::$searchSubmit);
-    }
-
-    /**
-     * @Then /^I search a firm of "([^"]*)"$/
-     */
-    public function iselectAFirm($firm)
-    {
-        $this->clickLink(Login::$firmDropdown,$firm);
     }
 
         /**
@@ -229,7 +211,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     /**
      * @Given /^I Add Medication details medication "([^"]*)" route "([^"]*)" frequency "([^"]*)" date from "([^"]*)"$/
      */
-    public function iAddMedicationDetails($medication, $route, $frequency, $datefrom)
+    public function iAddMedicationDetails($medication, $route, $frequency, $dateFrom)
     {
         $this->clickLink(PatientViewPage::$addMedication);
         $this->selectOption(PatientViewPage::$medicationSelect, $medication);
@@ -237,7 +219,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         $this->selectOption(PatientViewPage::$medicationRoute, $route);
         $this->selectOption(PatientViewPage::$medicationFrequency, $frequency);
         $this->clickLink(PatientViewPage::$medicationCalendar);
-        $this->clickLink(PatientViewPage::passDateFromTable($datefrom));
+        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
         $this->clickLink(PatientViewPage::$medicationSave);
         $this->waitForActionToFinish();
         $this->removeMedication++;
@@ -346,13 +328,13 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iSelectDiagnosisEyesOf($eye)
     {
         if ($eye=="Right") {
-            $this->clickLink(OpenEyesPageObjects::$diagnosisrighteye);
+            $this->clickLink(OperationBooking::$diagnosisRightEye);
         }
         if ($eye=="Both") {
-            $this->clickLink(OpenEyesPageObjects::$diagnosisbotheyes);
+            $this->clickLink(OperationBooking::$diagnosisBothEyes);
         }
         if ($eye=="Left") {
-            $this->clickLink(OpenEyesPageObjects::$diagnosislefteye);
+            $this->clickLink(OperationBooking::$diagnosisLeftEye);
         }
     }
 
@@ -469,10 +451,10 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     /**
      * @Given /^I select a decision date of "([^"]*)"$/
      */
-    public function iSelectADecisionDateOf($datefrom)
+    public function iSelectADecisionDateOf($dateFrom)
     {
         $this->clickLink(OperationBooking::$decisionOpen);
-        $this->clickLink(PatientViewPage::passDateFromTable($datefrom));
+        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
     }
 
     /**
@@ -553,7 +535,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iSelectSatisfactionLevelsOfPainNausea($pain, $nausea)
     {
-        //Need to clear these two text fields
         $this->fillField(AnaestheticAudit::$nausea,$nausea);
         $this->fillField(AnaestheticAudit::$pain, $pain);
     }
@@ -775,7 +756,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     /**
      * @Then /^I select a History of Blurred Vision, Mild Severity, Onset (\d+) Week, Left Eye, (\d+) Week$/
      */
-    public function iSelectAHistoryOfBlurredVision($notused, $orthisone)
+    public function iSelectAHistoryOfBlurredVision()
     {
         $this->clickLink(Examination::$history);
         $this->clickLink(Examination::$severity);
@@ -1103,10 +1084,10 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     /**
      * @Given /^I select Clinic Date "([^"]*)"$/
      */
-    public function iSelectClinicDate($date)
+    public function iSelectClinicDate($dateFrom)
     {
         $this->clickLink(Correspondence::$letterDate);
-        $this->clickLink(PatientViewPage::passDateFromTable($datefrom));
+        $this->clickLink(PatientViewPage::passDateFromTable($dateFrom));
     }
 
     /**

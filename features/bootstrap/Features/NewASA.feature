@@ -4,12 +4,11 @@ Feature: Create New Anaesthetic Satisfaction Audit
   Scenario Outline: Login and create a Anaesthetic Satisfaction Audit
 
     Given I am on the OpenEyes "<environment>" homepage
-    And I select Site "<site>"
     And I enter login credentials "<username>" and "<password>"
+    And I select Site "<site>"
+    Then I select a firm of "1"
 
-    #Then I search for hospital number "<hospnumber>"
     Then I search for patient name last name "<last>" and first name "<first>"
-    #Then I search for NHS number "<nhs>"
 
     Then I select Create or View Episodes and Events
     And I add a New Event "<EventType>"
