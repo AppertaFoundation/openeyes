@@ -20,31 +20,20 @@
 ?>
 <div class="report curvybox white">
 	<div class="admin">
-		<h3 class="georgia">Site</h3>
-		<div class="pagination">
-			<?php echo $this->renderPartial('_pagination',array(
-				'prefix' => '/admin/sites/',
-				'page' => $sites['page'],
-				'pages' => $sites['pages'],
-			))?>
-		</div>
+		<h3 class="georgia">Data sources</h3>
 		<div>
-			<form id="admin_institution_sites">
+			<form id="admin_data_sources">
 				<ul class="grid reduceheight">
 					<li class="header">
-						<span class="column_id">ID</span>
-						<span class="column_remote_id">Remote ID</span>
+						<span class="column_checkbox"><input type="checkbox" id="checkall" class="sources" /></span>
 						<span class="column_name">Name</span>
-						<span class="column_address">Address</span>
 					</li>
 					<div class="sortable">
 						<?php
-						foreach ($sites['items'] as $i => $site) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
-								<span class="column_id"><?php echo $site->id?></span>
-								<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
-								<span class="column_name"><?php echo $site->name?>&nbsp;</span>
-								<span class="column_address"><?php echo $site->getLetterAddress(array('delimiter'=>', '))?>&nbsp;</span>
+						foreach (ImportSource::model()->findAll(array('order'=>'name')) as $i => $source) {?>
+							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $source->id?>">
+								<span class="column_checkbox"><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></span>
+								<span class="column_name"><?php echo $source->name?>&nbsp;</span>
 							</li>
 						<?php }?>
 					</div>
@@ -58,8 +47,33 @@
 	<?php echo EventAction::button('Delete', 'delete', array('colour' => 'blue'))->toHtml()?>
 </div>
 <script type="text/javascript">
-	$('li.even,li.odd').click(function(e) {
+	$('li.even .column_name,li.odd .column_name').click(function(e) {
 		e.preventDefault();
-		window.location.href = baseUrl+'/admin/editsite?site_id='+$(this).attr('data-attr-id');
+		window.location.href = baseUrl+'/admin/editdatasource/'+$(this).parent().attr('data-attr-id');
+	});
+	$('#et_delete').click(function(e) {
+		e.preventDefault();
+
+		if ($('input[type="checkbox"][name="source[]"]:checked').length == 0) {
+			alert("Please select the source(s) you wish to delete.");
+			return;
+		}
+
+		$.ajax({
+			'type': 'POST',
+			'url': baseUrl+'/admin/deleteDataSources',
+			'data': $('#admin_data_sources').serialize()+"&YII_CSRF_TOKEN="+YII_CSRF_TOKEN,
+			'success': function(resp) {
+				if (resp == "1") {
+					window.location.reload();
+				} else {
+					if ($('input[type="checkbox"][name="source[]"]:checked').length == 1) {
+						alert("The source you selected is in use and cannot be deleted.");
+					} else {
+						alert("The sources you selected are in use and cannot be deleted.");
+					}
+				}
+			}
+		});
 	});
 </script>

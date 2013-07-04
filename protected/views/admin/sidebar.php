@@ -6,6 +6,7 @@
 			'Firms' => '/admin/firms',
 			'Contacts' => '/admin/contacts',
 			'Contact labels' => '/admin/contactlabels',
+			'Data sources' => '/admin/datasources',
 			'Institutions' => '/admin/institutions',
 			'Sites' => '/admin/sites',
 			/*

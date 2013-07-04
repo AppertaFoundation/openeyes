@@ -73,7 +73,7 @@ class Audit extends BaseActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('action,target_type', 'required'),
+			array('action_id,type_id', 'required'),
 			// array('name', 'length', 'max'=>255),
 			array('id,action,target_type,patient_id,episode_id,event_id,user_id,data,remote_addr,http_user_agent,server_name,request_uri,site_id,firm_id', 'safe', 'on'=>'search'),
 			// The following rule is used by search().
@@ -142,17 +142,42 @@ class Audit extends BaseActiveRecord
 	}
 
 	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
-		if(isset($_SERVER['REMOTE_ADDR'])) {
-			$this->remote_addr = $_SERVER['REMOTE_ADDR'];
-			$this->http_user_agent = @$_SERVER['HTTP_USER_AGENT'];
-			$this->server_name = $_SERVER['SERVER_NAME'];
+		if (isset($_SERVER['REMOTE_ADDR'])) {
+			if (!$ipaddr = AuditIPAddr::model()->find('name=?',array($_SERVER['REMOTE_ADDR']))) {
+				$ipaddr = new AuditIPAddr;
+				$ipaddr->name = $_SERVER['REMOTE_ADDR'];
+				if (!$ipaddr->save()) {
+					throw new Exception("Unable to save audit IP address: ".print_r($ipaddr->getErrors(),true));
+				}
+			}
+
+			if (!$useragent = AuditUseragent::model()->find('name=?',array($_SERVER['HTTP_USER_AGENT']))) {
+				$useragent = new AuditUseragent;
+				$useragent->name = $_SERVER['HTTP_USER_AGENT'];
+				if (!$useragent->save()) {
+					throw new Exception("Unable to save user agent: ".print_r($useragent->getErrors(),true));
+				}
+			}
+
+			if (!$server = AuditServer::model()->find('name=?',array($_SERVER['SERVER_NAME']))) {
+				$server = new AuditServer;
+				$server->name = $_SERVER['SERVER_NAME'];
+				if (!$server->save()) {
+					throw new Exception("Unable to save server: ".print_r($server->getErrors(),true));
+				}
+			}
+
+			$this->ipaddr_id = $ipaddr->id;
+			$this->useragent_id = $useragent->id;
+			$this->server_id = $server->id;
 			$this->request_uri = $_SERVER['REQUEST_URI'];
+
 			if ($this->user) {
 				$this->site_id = Yii::app()->session['selected_site_id'];
 				$this->firm_id = Yii::app()->session['selected_firm_id'];
 			}
 		}
-		parent::save($runValidation, $attributes, $allow_overriding);
+		return parent::save($runValidation, $attributes, $allow_overriding);
 	}
 
 	public function getColour() {
@@ -168,9 +193,25 @@ class Audit extends BaseActiveRecord
 	}
 
 	public static function add($target, $action, $data=null, $log=false, $properties=array()) {
+		if (!$_target = AuditType::model()->find('name=?',array($target))) {
+			$_target = new AuditType;
+			$_target->name = $target;
+			if (!$_target->save()) {
+				throw new Exception("Unable to save audit target: ".print_r($_target->getErrors(),true));
+			}
+		}
+
+		if (!$_action = AuditAction::model()->find('name=?',array($action))) {
+			$_action = new AuditAction;
+			$_action->name = $action;
+			if (!$_action->save()) {
+				throw new Exception("Unable to save audit action: ".print_r($_action->getErrors(),true));
+			}
+		}
+
 		$audit = new Audit;
-		$audit->target_type = $target;
-		$audit->action = $action;
+		$audit->type_id = $_target->id;
+		$audit->action_id = $_action->id;
 		$audit->data = $data;
 
 		if (!isset($properties['user_id'])) {
@@ -183,7 +224,9 @@ class Audit extends BaseActiveRecord
 			$audit->{$key} = $value;
 		}
 
-		$audit->save();
+		if (!$audit->save()) {
+			throw new Exception("Failed to save audit entry: ".print_r($audit->getErrors(),true));
+		}
 
 		if (isset($properties['user_id'])) {
 			$username = User::model()->findByPk($properties['user_id'])->username;

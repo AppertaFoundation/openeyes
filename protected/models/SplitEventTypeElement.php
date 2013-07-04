@@ -19,7 +19,6 @@
 
 class SplitEventTypeElement extends BaseEventTypeElement {
 
-	//used as data flags for indicating left and right in any models related to a SplitEventTypeElement
 	// these are legacy and should be removed one switch to using the costants on the Eye model
 	const LEFT = Eye::LEFT;
 	const RIGHT = Eye::RIGHT;
