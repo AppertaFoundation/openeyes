@@ -122,6 +122,15 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
        $this->clickLink(Login::$searchSubmit);
     }
 
+    /**
+     * @Then /^I Select Add Episode
+     */
+    public function addEpisode ()
+    {
+        $this->pressButton(AddingNewEvent::$addFirstNewEpisode);
+
+    }
+
      /**
      * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
      */
@@ -131,6 +140,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         $this->selectOption(PatientViewPage::$opthDisorder, $diagnosis);
         $this->removeDiagnosis++; //
     }
+
 
     /**
      * @Given /^I select that it affects eye "([^"]*)"$/

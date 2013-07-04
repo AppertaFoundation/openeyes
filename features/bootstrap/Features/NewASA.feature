@@ -10,6 +10,7 @@ Feature: Create New Anaesthetic Satisfaction Audit
 
     Then I search for patient name last name "<last>" and first name "<first>"
 
+    Then I select Add Episode
     Then I select Create or View Episodes and Events
     And I add a New Event "<EventType>"
 
