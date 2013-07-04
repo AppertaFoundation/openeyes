@@ -21,7 +21,7 @@
 	<?php if (!$no_element) {?>
 		<input type="hidden" value="" name="<?php echo get_class($element)?>[<?php echo $field?>]">
 	<?php }?>
-		
+	<?php $i=0; ?>	
 	<?php foreach ($data as $id => $data_value) {?>
 		<span class="group">
 			<?php 
