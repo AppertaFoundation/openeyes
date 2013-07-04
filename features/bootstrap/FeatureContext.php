@@ -95,6 +95,15 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
+     * @Then /^I search for hospital number "([^"]*)"$/
+     */
+    public function iSearchForHospitalNumber($hospital)
+    {
+        $this->fillField(Login::$mainSearch, $hospital);
+        $this->clickLink(Login::$searchSubmit);
+    }
+
+    /**
      * @Then /^I search for patient name last name "([^"]*)" and first name"([^"]*)"$/
      */
     public function iSearchPatientName ($first, $last)
@@ -105,6 +114,15 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
         /**
+     * @Then /^I search for NHS number "([^"]*)"$/
+     */
+    public function iSearchForNhsNumber($nhs)
+    {
+       $this->fillField(Login::$mainSearch, $nhs);
+       $this->clickLink(Login::$searchSubmit);
+    }
+
+     /**
      * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
      */
     public function OphthalmicDiagnosisSelection($diagnosis)
@@ -287,6 +305,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     public function iSelectCreateOrViewEpisodesAndEvents()
     {
         $this->clickLink(AddingNewEvent::$createViewEpisodeEvent);
+        $this->clickLink(AddingNewEvent::$addNewEpiosdeConfirmButton);
     }
 
     /**
@@ -294,7 +313,9 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
      */
     public function iAddANewEvent($event)
     {
-       $this->clickLink(AddingNewEvent::$addNewEvent);
+       //Need to select an Episode to reveal Add Event button
+
+       $this->clickLink(AddingNewEvent::$addNewEventSideBar);
 
        if ($event=="Satisfaction") {
           $this->clickLink(AddingNewEvent::$anaestheticSatisfaction);

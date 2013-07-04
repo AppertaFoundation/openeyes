@@ -11,6 +11,7 @@ Feature: Create New Operation Booking Event
     Then I search for patient name last name "<last>" and first name "<first>"
 
     Then I select Create or View Episodes and Events
+    And I select an existing "<Episode>" Episode
     And I add a New Event "<EventType>"
 
     Then I select Diagnosis Eyes of "<DiagEyes>"
@@ -51,7 +52,7 @@ Feature: Create New Operation Booking Event
     | environment   | site      | username | password     | hospnumber   | nhs        | last    | first  | EventType | DiagEyes  | Diagnosis | OpEyes |Procedure | AnaType    |
     | master        | 1         | admin    | admin        | 1009465      | 8821388753 | Coffin, | Violet | Phasing   | Both      | 193570009 | Both   | 41       | Topical    |
 
-  # Firm 18 = Allan Bruce (Cataract)
+  # Firm 1 = Anderson (Cataract)
 
   # Site ID's:
   #1  =City Road
