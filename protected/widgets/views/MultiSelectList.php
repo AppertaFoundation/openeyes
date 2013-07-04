@@ -33,10 +33,17 @@ else {
 	// not recommended as it doesn't allow for sided uniqueness
 	$div_id = "div_" . get_class($element) . "_" . @$htmlOptions['label'];
 }
+
+if (isset($htmlOptions['div_class'])) {
+	$div_class = $htmlOptions['div_class'];
+} else {
+	$div_class = "eventDetail";
+}
+	
 ?>
 
 <input type="hidden" name="<?php echo get_class($element)?>[MultiSelectList_<?php echo $field?>]" />
-<div id="<?php echo $div_id ?>" class="eventDetail"<?php if ($hidden) {?> style="display: none;"<?php }?>>
+<div id="<?php echo $div_id ?>" class="<?php echo $div_class ?>"<?php if ($hidden) {?> style="display: none;"<?php }?>>
 	<div class="label"><?php echo @$htmlOptions['label']?>:</div>
 	<div class="data">
 		<select label="<?php echo $htmlOptions['label']?>" class="MultiSelectList" name="">
