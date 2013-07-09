@@ -773,61 +773,7 @@ class Patient extends BaseActiveRecord {
 	}
 
 	// DR function additions
-	/*
-	 * NSC right Retinopathy
-	 */
-	public function getNrr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRRetinopathy($this, $episode, 'right');
-		}
-	}
 	
-	/*
-	 * NSC left Retinopathy
-	*/
-	public function getNlr() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRRetinopathy($this, $episode, 'left');
-		}
-	}
-	
-	/*
-	 * NSC right Maculopathy
-	*/
-	public function getNrm() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRMaculopathy($this, $episode, 'right');
-		}
-	}
-	
-	/*
-	 * NSC left Maculopathy
-	*/
-	public function getNlm() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRMaculopathy($this, $episode, 'left');
-		}
-	}
-	
-	// Clinical right DR Grade
-	public function getCrd() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRClinical($this, $episode, 'right');
-		}
-	}
-	
-	// Clinical left DR Grade
-	public function getCld() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterDRClinical($this, $episode, 'left');
-		}
-	}
 	
 	/*
 	* Type of diabetes mellitus
@@ -842,36 +788,6 @@ class Patient extends BaseActiveRecord {
 		return 'not diabetic';
 	}
 	
-	/*
-	 * Laser management plan
-	*/
-	public function getLmp() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterLaserManagementPlan($this, $episode);
-		}
-	}
-	
-	/*
-	 * Laser management comments
-	*/
-	public function getLmc() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterLaserManagementComments($this, $episode);
-		}
-	}
-	
-	/*
-	 * Follow up period
-	*/
-	public function getFup() {
-		if ( ($api = Yii::app()->moduleAPI->get('OphCiExamination')) &&
-			($episode = $this->getEpisodeForCurrentSubspecialty()) ) {
-			return $api->getLetterOutcomeFollowUpPeriod($this, $episode);
-		}
-	}
-
 	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
 		$properties['patient_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
