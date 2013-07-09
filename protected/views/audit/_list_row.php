@@ -23,8 +23,8 @@
 						<span class="site"><?php echo $log->site ? ($log->site->short_name ? $log->site->short_name : $log->site->name) : '-'?></span>
 						<span class="firm"><?php echo $log->firm ? $log->firm->name : '-'?></span>
 						<span class="user"><?php echo $log->user ? $log->user->first_name.' '.$log->user->last_name : '-'?></span>
-						<span class="action"><?php echo $log->action?></span>
-						<span class="target"><?php echo $log->target_type?></span>
+						<span class="action"><?php echo $log->action->name?></span>
+						<span class="target"><?php echo $log->target_type ? $log->target_type->name : ''?></span>
 						<span class="event_type">
 							<?php if ($log->event) { ?>
 								<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
@@ -51,11 +51,11 @@
 						<div class="auditDetail<?php echo ($i % 2 == 0) ? 'Even' : 'Odd'; echo $log->colour;?> whiteBox">
 							<div>
 								<span class="auditDetailLabel">IP address:</span>
-								<span><?php echo $log->remote_addr?></span>
+								<span><?php echo $log->ip_addr ? $log->ip_addr->name : '-'?></span>
 							</div>
 							<div>
 								<span class="auditDetailLabel">Server name:</span>
-								<span><?php echo $log->server_name?></span>
+								<span><?php echo $log->server ? $log->server->name : '-' ?></span>
 							</div>
 							<div>
 								<span class="auditDetailLabel">Request URI:</span>
@@ -63,7 +63,7 @@
 							</div>
 							<div>
 								<span class="auditDetailLabel">User agent:</span>
-								<span><?php echo $log->http_user_agent?></span>
+								<span><?php echo $log->user_agent ? $log->user_agent->name : '-' ?></span>
 							</div>
 							<div>
 								<span class="auditDetailLabel">Data:</span>

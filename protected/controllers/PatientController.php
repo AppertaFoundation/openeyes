@@ -840,7 +840,8 @@ class PatientController extends BaseController
 		echo "success";
 	}
 	
-	public function actionEditOphInfo() {
+	public function actionEditOphInfo() 
+	{
 		$cvi_status = PatientOphInfoCviStatus::model()->findByPk(@$_POST['PatientOphInfo']['cvi_status_id']);
 		
 		if (!$cvi_status) {
