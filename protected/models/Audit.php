@@ -97,6 +97,11 @@ class Audit extends BaseActiveRecord
 			'site' => array(self::BELONGS_TO, 'Site', 'site_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
 			'event_type' => array(self::BELONGS_TO, 'EventType', 'event_type_id'),
+			'action' => array(self::BELONGS_TO, 'AuditAction', 'action_id'),
+			'target_type' => array(self::BELONGS_TO, 'AuditType', 'type_id'),
+			'ip_addr' => array(self::BELONGS_TO, 'AuditIPAddr', 'ipaddr_id'),
+			'server' => array(self::BELONGS_TO, 'AuditServer', 'server_id'),
+			'user_agent' => array(self::BELONGS_TO, 'AuditUseragent', 'useragent_id'),
 		);
 	}
 
@@ -181,14 +186,16 @@ class Audit extends BaseActiveRecord
 	}
 
 	public function getColour() {
-		switch ($this->action) {
-			case 'login-successful':
-				return 'Green';
-				break;
-			case 'login-failed':
-			case 'search-error':
-				return 'Red';
-				break;
+		if ($this->action) {
+			switch ($this->action->name) {
+				case 'login-successful':
+					return 'Green';
+					break;
+				case 'login-failed':
+				case 'search-error':
+					return 'Red';
+					break;
+			}
 		}
 	}
 
