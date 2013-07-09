@@ -724,7 +724,8 @@ class Patient extends BaseActiveRecord {
 	 * @param PatientOphInfoCviStatus $cvi_status
 	 * @param string $cvi_status_date - fuzzy date string of the format yyyy-mm-dd
 	 */
-	public function editOphInfo($cvi_status, $cvi_status_date) {
+	public function editOphInfo($cvi_status, $cvi_status_date) 
+	{
 		$oph_info = $this->getOphInfo();
 		if ($oph_info->id) {
 			$action = 'update-ophinfo';
@@ -738,13 +739,9 @@ class Patient extends BaseActiveRecord {
 		
 		$oph_info->save();
 		
-		$audit = new Audit;
-		$audit->action = $action;
-		$audit->target_type = "patient";
-		$audit->patient_id = $this->id;
-		$audit->user_id = (Yii::app()->session['user'] ? Yii::app()->session['user']->id : null);
-		$audit->data = $oph_info->getAuditAttributes();
-		$audit->save();
+		$audit_attributes = $oph_info->getAuditAttributes();
+		
+		$this->audit('patient', $action, $audit_attributes);
 	}
 
 	public function getContactAddress($contact_id, $location_type=false, $location_id=false) {
