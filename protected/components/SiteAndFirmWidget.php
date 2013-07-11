@@ -87,7 +87,7 @@ class SiteAndFirmWidget extends CWidget {
 		if ($preferred_firms = $user->preferred_firms) {
 			foreach ($preferred_firms as $preferred_firm) {
 				if (empty($user_firm_ids) || in_array($preferred_firm->id,$user_firm_ids)) {
-					if (!$this->subspecialty || $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id) {
+					if (!$this->subspecialty || ($preferred_firm->serviceSubspecialtyAssignment && $this->subspecialty->id == $preferred_firm->serviceSubspecialtyAssignment->subspecialty_id)) {
 						if ($preferred_firm->serviceSubspecialtyAssignment) {
 							$firms['Recent'][$preferred_firm->id] = "$preferred_firm->name ({$preferred_firm->serviceSubspecialtyAssignment->subspecialty->name})";
 						} else {
@@ -101,7 +101,8 @@ class SiteAndFirmWidget extends CWidget {
 		foreach ($this->controller->firms as $firm_id => $firm_label) {
 			if (empty($user_firm_ids) || in_array($firm_id,$user_firm_ids)) {
 				if (!isset($firms['Recent'][$firm_id])) {
-					if (!$this->subspecialty || Firm::model()->findByPk($firm_id)->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id) {
+					$firm = Firm::model()->findByPk($firm_id);
+					if (!$this->subspecialty || ($firm->serviceSubspecialtyAssignment && $firm->serviceSubspecialtyAssignment->subspecialty_id == $this->subspecialty->id)) {
 						if ($preferred_firms) {
 							$firms['Other'][$firm_id] = $firm_label;
 						} else {

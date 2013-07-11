@@ -263,6 +263,10 @@ class BaseEventTypeController extends BaseController
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
+		if (!$this->event_type->support_services && !$firm->serviceSubspecialtyAssignment) {
+			throw new Exception("Can't create a non-support service event for a support-service firm");
+		}
+
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed

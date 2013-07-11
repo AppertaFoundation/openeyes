@@ -61,16 +61,16 @@ class ProcedureSelection extends BaseCWidget {
 		}
 		
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-		$subspecialty = $firm->serviceSubspecialtyAssignment->subspecialty;
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty : null;
 		if ($this->restrict_common == 'unbooked') {
 			$this->subsections = array();
 		} else {
-			$this->subsections = SubspecialtySubsection::model()->getList($subspecialty->id);
+			$this->subsections = SubspecialtySubsection::model()->getList($subspecialty_id);
 		}
 		$this->procedures = array();
 		$this->removed_stack = array();
 		if (empty($this->subsections)) {
-			foreach (Procedure::model()->getListBySubspecialty($subspecialty->id, $this->restrict_common) as $proc_id => $name) {
+			foreach (Procedure::model()->getListBySubspecialty($subspecialty_id, $this->restrict_common) as $proc_id => $name) {
 				if (empty($_POST)) {
 					$found = false;
 					if ($this->selected_procedures) {
