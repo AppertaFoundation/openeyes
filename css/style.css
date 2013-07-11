@@ -94,7 +94,8 @@ body {}
 #header.stuck #brand { height: 25px; margin: 8px 0 0 10px; background: url(../img/_structure/openeyes_small.png) 0 0 no-repeat; }
 #header.stuck #brand a { height: 25px; }
 #header.stuck #patientID { border-bottom: 0; border-radius: 0; margin: 0; height: 29px; padding: 5px 10px; width: 330px; }
-#header.stuck .patientName { font-size: 12px; }
+#header.stuck .patientName,
+#header.stuck .patientName .surname { font-size: 12px; line-height: 1.231;}
 #header.stuck .patientReminder { padding: 0; }
 #header.stuck .hospitalNumber,
 #header.stuck .nhsNumber { float: left; margin-right: 5px; padding-top: 1px; padding-bottom: 1px; }
@@ -594,7 +595,7 @@ ul#user_nav > li .selected,
 #user_firm span { font-size: 11px; }
 #user_firm .change-firm { font-size: 11px; }
 
-#user_id	{ position: absolute; bottom: 5px; left: 10px; }
+#user_id	{ position: absolute; bottom: 2px; left: 10px; }
 #user_id	span { display: block; font-size: 11px; }
 
 /* ====== PATIENT ID ====== */
