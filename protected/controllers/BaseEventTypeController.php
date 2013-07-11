@@ -383,7 +383,7 @@ class BaseEventTypeController extends BaseController
 				$this->editable = false;
 			} else {	
 				if ($this->firm->serviceSubspecialtyAssignment) {
-					if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+					if ($this->event->episode->firm && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 						$this->editable = false;
 					}
 				} else {
