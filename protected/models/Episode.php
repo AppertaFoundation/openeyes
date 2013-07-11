@@ -263,7 +263,10 @@ class Episode extends BaseActiveRecord
 
 	public function getEditable(){
 		if (!$this->firm) {
-			return FALSE;
+			if (!$this->support_services) {
+				return FALSE;
+			}
+			return (Yii::app()->getController()->firm->serviceSubspecialtyAssignment == null);
 		}
 		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != Yii::app()->getController()->firm->serviceSubspecialtyAssignment->subspecialty_id){
 			return FALSE;

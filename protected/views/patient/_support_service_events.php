@@ -18,19 +18,42 @@
  */
 
 if (!empty($supportserviceepisodes)) foreach ($supportserviceepisodes as $episode) {?>
-	<div class="episode open clearfix" style="display:block;">
-		<div class="episode_nav legacy">
+	<div class="specialty small">Support services</div>
+	<div class="episode <?php echo empty($episode->end_date) ? 'closed' : 'open' ?> clearfix" style="display:block;">
+		<div class="episode_nav">
+			<input type="hidden" name="episode-id" value="<?php echo $episode->id ?>" />
 			<div class="start_date small">
 				<?php echo $episode->NHSDate('start_date') ?>
 				<span class="aBtn">
-					<a class="sprite showhide2 legacy" href="#">
-						<span class="<?php if (!$this->event) {?>show<?php }else{?>hide<?php }?>"></span>
+					<a class="sprite showhide2" href="#">
+						<span class="<?php if ($episode->hidden) {?>show<?php }else{?>hide<?php }?>"></span>
 					</a>
 				</span>
 			</div>
-			<h4 class="legacy" style="margin-left: 8px;">Support services</h4>
-
-			<ul class="events"<?php if (!$this->event) {?> style="display: none;"<?php }?>>
+			<h4><?php echo CHtml::link('Support services',array('/patient/episode/'.$episode->id),array('class'=>'title_summary' . ((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : ''))) ?></h4>
+			<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>>
+				<?php foreach ($episode->events as $event) {
+					$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
+					<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">									
+							<?php
+							if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
+								$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
+							} else {
+								$assetpath = '/assets/';
+							}
+							?>
+							<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" /> 
+					</a>
+				<?php } ?>
+			</div>
+			<?php if (BaseController::checkUserLevel(4)) {?>
+				<?php if ($episode->status->name != 'Discharged') {?>
+					<div align="center" style="margin-top:5px; margin-bottom: 5px;">
+						<button class="classy blue mini addEvent" type="button" data-attr-subspecialty-id="<?php echo $episode->firm ? $episode->firm->getSubspecialtyID() : null?>"><span class="button-span button-span-blue">Add event</span></button>
+					</div>
+				<?php }?>
+			<?php }?>
+			<ul class="events"<?php if ($episode->hidden) {?> style="display: none;"<?php }?>>
 				<?php
 				foreach ($episode->events as $event) {
 					$highlight = false;

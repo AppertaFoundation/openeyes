@@ -1161,7 +1161,10 @@ class PatientController extends BaseController
 		if ($this->patient) {
 			$this->jsVars['OE_patient_id'] = $this->patient->id;
 		}
-		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		return parent::processJsVars();
 	}
@@ -1486,29 +1489,34 @@ class PatientController extends BaseController
 			throw new Exception("Patient not found: ".@$_POST['patient_id']);
 		}
 
-		if (!$subspecialty = Subspecialty::model()->findByPk(@$_POST['subspecialty_id'])) {
-			throw new Exception("Subspecialty not found: ".@$_POST['subspecialty_id']);
+		if (@$_POST['subspecialty_id']) {
+			if (!$subspecialty = Subspecialty::model()->findByPk(@$_POST['subspecialty_id'])) {
+				throw new Exception("Subspecialty not found: ".@$_POST['subspecialty_id']);
+			}
 		}
 
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-		if ($firm->serviceSubspecialtyAssignment->subspecialty_id != $subspecialty->id) {
-			$has = false;
-			foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
-				if ($uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
-					$has = true;
-					break;
-				}
-			}
 
-			if (!$has) {
-				echo "0";
-				return;
+		if (isset($subspecialty)) {
+			if (!$firm->serviceSubspecialtyAssignment || $firm->serviceSubspecialtyAssignment->subspecialty_id != $subspecialty->id) {
+				$has = false;
+				foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
+					if ($uf->firm->serviceSubspecialtyAssignment && $uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
+						$has = true;
+						break;
+					}
+				}
+
+				if (!$has) {
+					echo "0";
+					return;
+				}
 			}
 		}
 
-		if ($subspecialty->id == Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ((isset($subspecialty) && $firm->serviceSubspecialtyAssignment && $subspecialty->id == $firm->serviceSubspecialtyAssignment->subspecialty_id) || (!isset($subspecialty) && $firm->serviceSubspecialtyAssignment == null)) {
 			return $this->renderPartial('//patient/add_new_event',array(
-				'subspecialty' => $subspecialty,
+				'subspecialty' => @$subspecialty,
 				'patient' => $patient,
 				'eventTypes' => EventType::model()->getEventTypeModules(),
 			),false, true);
@@ -1516,7 +1524,8 @@ class PatientController extends BaseController
 
 		$this->renderPartial('/site/change_site_and_firm', array(
 			'returnUrl' => @$_POST['returnUrl'],
-			'subspecialty' => $subspecialty,
+			'subspecialty' => @$subspecialty,
+			'support_services' => (boolean)!@$subspecialty,
 			'patient' => $patient,
 		), false, true);
 	}

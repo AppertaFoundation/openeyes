@@ -40,17 +40,15 @@
 $(document).ready(function() {
 	$('#support-info-link').live('click',function() {
 		var debug = $('<div></div>')
-		.html('<iframe style="border: 0px; " src="<?php echo Yii::app()->createUrl('site/debuginfo')?>" width="100%" height="100%"></iframe>')
+		.html('<iframe style="border: 0px; " src="<?php echo Yii::app()->createUrl('site/debuginfo')?>" width="360px" height="300px"></iframe>')
 		.dialog({
-			'autoOpen': false,
+			'autoOpen': true,
 			'modal': true,
-			'height': 400,
-			'width': 350,
+			'height': 360,
+			'width': 400,
+			'resizable': false,
 			'title': 'Support Information',
 		});
-
-		debug.dialog('open');
-
 		return false;
 	});
 });

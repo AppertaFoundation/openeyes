@@ -24,6 +24,7 @@ class ProfileController extends BaseController
 
 	public function accessRules() {
 		return array(
+			array('allow','users'=>array('@')),
 			array('deny'),
 		);
 	}

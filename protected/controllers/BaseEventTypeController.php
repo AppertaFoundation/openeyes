@@ -263,6 +263,10 @@ class BaseEventTypeController extends BaseController
 		$firm = Firm::model()->findByPk($session['selected_firm_id']);
 		$this->episode = $this->getEpisode($firm, $this->patient->id);
 
+		if (!$this->event_type->support_services && !$firm->serviceSubspecialtyAssignment) {
+			throw new Exception("Can't create a non-support service event for a support-service firm");
+		}
+
 		// firm changing sanity
 		if (!empty($_POST) && !empty($_POST['firm_id']) && $_POST['firm_id'] != $this->firm->id) {
 			// The firm id in the firm is not the same as the session firm id, e.g. they've changed
@@ -379,11 +383,17 @@ class BaseEventTypeController extends BaseController
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
-			if (!BaseController::checkUserLevel(4) || !$this->event->episode->firm) {
+			if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 				$this->editable = false;
 			} else {	
-				if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-					$this->editable = false;
+				if ($this->firm->serviceSubspecialtyAssignment) {
+					if ($this->event->episode->firm && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+						$this->editable = false;
+					}
+				} else {
+					if ($this->event->episode->firm !== null) {
+						$this->editable = false;
+					}
 				}
 			}
 		}
@@ -439,9 +449,10 @@ class BaseEventTypeController extends BaseController
 
 		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
+		} else if (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
+			throw new CHttpException(403, 'The firm you are using is not a support services firm.');
 		}
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
@@ -1011,7 +1022,9 @@ class BaseEventTypeController extends BaseController
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
-		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		return parent::processJsVars();
 	}
