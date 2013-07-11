@@ -61,7 +61,7 @@ class ProcedureSelection extends BaseCWidget {
 		}
 		
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
-		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty : null;
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
 		if ($this->restrict_common == 'unbooked') {
 			$this->subsections = array();
 		} else {
