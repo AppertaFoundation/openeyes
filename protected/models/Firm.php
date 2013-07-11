@@ -308,4 +308,8 @@ class Firm extends BaseActiveRecord
 	public function getTreeName() {
 		return $this->name.' '.$this->serviceSubspecialtyAssignment->subspecialty->ref_spec;
 	}
+
+	public function getSubspecialtyID() {
+		return $this->serviceSubspecialtyAssignment ? $this->serviceSubspecialtyAssignment->subspecialty_id : null;
+	}
 }

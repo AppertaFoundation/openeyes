@@ -20,6 +20,7 @@
 class SiteAndFirmWidget extends CWidget {
 	public $title = 'Please confirm Site and Firm';
 	public $subspecialty;
+	public $support_services;
 	public $patient;
 	public $returnUrl;
 
@@ -50,7 +51,10 @@ class SiteAndFirmWidget extends CWidget {
 
 				Yii::app()->event->dispatch('firm_changed', array('firm_id' => $model->firm_id));
 
-				if ($this->patient && $episode = $this->patient->hasOpenEpisodeOfSubspecialty(Firm::model()->findByPk($model->firm_id)->serviceSubspecialtyAssignment->subspecialty_id)) {
+				$firm = Firm::model()->findByPk($model->firm_id);
+				$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+
+				if ($this->patient && $episode = $this->patient->hasOpenEpisodeOfSubspecialty($subspecialty_id)) {
 					Yii::app()->session['episode_hide_status'] = array(
 						$episode->id => 1,
 					);

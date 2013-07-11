@@ -379,11 +379,17 @@ class BaseEventTypeController extends BaseController
 
 		// Decide whether to display the 'edit' button in the template
 		if ($this->editable) {
-			if (!BaseController::checkUserLevel(4) || !$this->event->episode->firm) {
+			if (!BaseController::checkUserLevel(4) || (!$this->event->episode->firm && !$this->event->episode->support_services)) {
 				$this->editable = false;
 			} else {	
-				if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
-					$this->editable = false;
+				if ($this->firm->serviceSubspecialtyAssignment) {
+					if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+						$this->editable = false;
+					}
+				} else {
+					if ($this->event->episode->firm !== null) {
+						$this->editable = false;
+					}
 				}
 			}
 		}
@@ -439,9 +445,10 @@ class BaseEventTypeController extends BaseController
 
 		// Check the user's firm is of the correct subspecialty to have the
 		// rights to update this event
-		if ($this->firm->serviceSubspecialtyAssignment->subspecialty_id !=
-			$this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
+		if ($this->firm->serviceSubspecialtyAssignment && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
+		} else if (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
+			throw new CHttpException(403, 'The firm you are using is not a support services firm.');
 		}
 
 		$this->event_type = EventType::model()->findByPk($this->event->event_type_id);
@@ -1011,7 +1018,9 @@ class BaseEventTypeController extends BaseController
 			$this->jsVars['OE_print_url'] = Yii::app()->createUrl($this->getModule()->name."/default/print/".$this->event->id);
 		}
 		$this->jsVars['OE_asset_path'] = $this->assetPath;
-		$this->jsVars['OE_subspecialty_id'] = Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id;
+		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
+		$subspecialty_id = $firm->serviceSubspecialtyAssignment ? $firm->serviceSubspecialtyAssignment->subspecialty_id : null;
+		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
 		return parent::processJsVars();
 	}

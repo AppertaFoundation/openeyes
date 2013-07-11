@@ -49,6 +49,15 @@ $form = $this->beginWidget('CActiveForm', array(
 	</div>
 <?php }?>
 
+<?php if ($this->support_services) {?>
+	<?php echo CHtml::hiddenField('support_services',1)?>
+	<div>
+		<p>
+			To add an event to this episode you must switch to a support services firm.
+		</p>
+	</div>
+<?php }?>
+
 <?php if ($this->patient) {?>
 	<?php echo CHtml::hiddenField('patient_id',$this->patient->id)?>
 <?php }?>

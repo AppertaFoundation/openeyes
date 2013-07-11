@@ -54,7 +54,7 @@
 										Medication:
 									</div>
 									<div class="data">
-										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->serviceSubspecialtyAssignment->subspecialty_id),array('empty'=>'- Select -'))?>
+										<?php echo CHtml::dropDownList('drug_id','',Drug::model()->listBySubspecialty($firm->getSubspecialtyID()),array('empty'=>'- Select -'))?>
 									</div>
 								</div>
 								<div class="patientMedication">

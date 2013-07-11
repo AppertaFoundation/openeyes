@@ -899,20 +899,23 @@ class Patient extends BaseActiveRecord {
 	}
 
 	public function hasOpenEpisodeOfSubspecialty($subspecialty_id) {
-		$firm_ids = array();
+		if ($subspecialty_id) {
+			$firm_ids = array();
 
-		$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty_id));
+			$ssa = ServiceSubspecialtyAssignment::model()->find('subspecialty_id=?',array($subspecialty_id));
 
-		foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
-			$firm_ids[] = $firm->id;
+			foreach (Firm::model()->findAll('service_subspecialty_assignment_id=?',array($ssa->id)) as $firm) {
+				$firm_ids[] = $firm->id;
+			}
+
+			$criteria = new CDbCriteria;
+			$criteria->addCondition('patient_id=:patient_id');
+			$criteria->addInCondition('firm_id',$firm_ids);
+			$criteria->params[':patient_id'] = $this->id;
+			return Episode::model()->find($criteria);
+		} else {
+			return Episode::model()->find('patient_id=? and support_services=?',array($this->id,1));
 		}
-
-		$criteria = new CDbCriteria;
-		$criteria->addCondition('patient_id=:patient_id');
-		$criteria->addInCondition('firm_id',$firm_ids);
-		$criteria->params[':patient_id'] = $this->id;
-
-		return Episode::model()->find($criteria);
 	}
 
 	public function addEpisode($firm) {
