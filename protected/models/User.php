@@ -464,15 +464,19 @@ class User extends BaseActiveRecord
 		$firms = Yii::app()->db->createCommand()
 			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')
-			->join('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
-			->join('subspecialty s','ssa.subspecialty_id = s.id')
+			->leftJoin('service_subspecialty_assignment ssa', 'f.service_subspecialty_assignment_id = ssa.id')
+			->leftJoin('subspecialty s','ssa.subspecialty_id = s.id')
 			->leftJoin('user_firm uf','uf.firm_id = f.id and uf.user_id = '.Yii::app()->user->id)
 			->where("uf.id is null",array(':userId'=>Yii::app()->user->id))
 			->order('f.name, s.name')
 			->queryAll();
 		$data = array();
 		foreach ($firms as $firm) {
-			$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+			if ($firm['subspecialty']) {
+				$data[$firm['id']] = $firm['name'] . ' (' . $firm['subspecialty'] . ')';
+			} else {
+				$data[$firm['id']] = $firm['name'];
+			}
 		}
 		natcasesort($data);
 		return $data;
