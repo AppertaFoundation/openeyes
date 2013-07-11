@@ -1497,23 +1497,24 @@ class PatientController extends BaseController
 
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
-		if (isset($subspecialty) && $firm->serviceSubspecialtyAssignment->subspecialty_id != $subspecialty->id) {
-			$has = false;
-			foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
-				if ($uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
-					$has = true;
-					break;
+		if (isset($subspecialty)) {
+			if (!$firm->serviceSubspecialtyAssignment || $firm->serviceSubspecialtyAssignment->subspecialty_id != $subspecialty->id) {
+				$has = false;
+				foreach (UserFirm::model()->findAll('user_id=?',array(Yii::app()->user->id)) as $uf) {
+					if ($uf->firm->serviceSubspecialtyAssignment && $uf->firm->serviceSubspecialtyAssignment->subspecialty_id == $subspecialty->id) {
+						$has = true;
+						break;
+					}
 				}
-			}
 
-			if (!$has) {
-				echo "0";
-				return;
+				if (!$has) {
+					echo "0";
+					return;
+				}
 			}
 		}
 
-		if ((isset($subspecialty) && $subspecialty->id == Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment->subspecialty_id) || 
-		 (!isset($subspecialty) && Firm::model()->findByPk(Yii::app()->session['selected_firm_id'])->serviceSubspecialtyAssignment == null)) {
+		if ((isset($subspecialty) && $firm->serviceSubspecialtyAssignment && $subspecialty->id == $firm->serviceSubspecialtyAssignment->subspecialty_id) || (!isset($subspecialty) && $firm->serviceSubspecialtyAssignment == null)) {
 			return $this->renderPartial('//patient/add_new_event',array(
 				'subspecialty' => @$subspecialty,
 				'patient' => $patient,
