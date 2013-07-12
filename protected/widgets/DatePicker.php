@@ -64,4 +64,3 @@ class DatePicker extends BaseCWidget
 	}
 
 }
-

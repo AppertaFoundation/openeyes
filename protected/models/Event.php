@@ -173,7 +173,7 @@ class Event extends BaseActiveRecord
 					$dateformat = $n[3];
 
 					$text = str_replace($match,date($dateformat,strtotime($this->{$field}) + 3600 * $hours),$text);
-				} else if ($this->hasProperty($m[1][$i])) {
+				} elseif ($this->hasProperty($m[1][$i])) {
 					$text = str_replace($match,$this->{$m[1][$i]},$text);
 				}
 			}

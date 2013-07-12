@@ -478,7 +478,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 	{
 		if ($action == 'create') {
 			$element->setDefaultOptions();
-		} else if ($action == 'update') {
+		} elseif ($action == 'update') {
 			$element->setUpdateOptions();
 		}
 	}
@@ -491,7 +491,7 @@ class NestedElementsEventTypeController extends BaseEventTypeController
 		foreach ($this->getChildDefaultElements(get_class($parent), $action) as $child ) {
 			if ($action == 'create' && empty($_POST)) {
 				$child->setDefaultOptions();
-			} else if ($action == 'ElementForm') {
+			} elseif ($action == 'ElementForm') {
 				// ensure we use a property that the child element can recognise
 				$action = 'create';
 			}

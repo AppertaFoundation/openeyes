@@ -171,7 +171,7 @@ class BaseEventTypeController extends BaseController
 
 		if (isset($event->event_type_id)) {
 			$event_type = EventType::model()->find('id = ?',array($event->event_type_id));
-		} else if ($event_type_id) {
+		} elseif ($event_type_id) {
 			$event_type = EventType::model()->find('id = ?',array($event_type_id));
 		} else {
 			$event_type = EventType::model()->find('class_name = ?',array($this->getModule()->name));
@@ -301,9 +301,9 @@ class BaseEventTypeController extends BaseController
 		if (!empty($_POST) && isset($_POST['cancel'])) {
 			$this->redirect(array('/patient/view/'.$this->patient->id));
 			return;
-		} else if (!empty($_POST) && !count($elements)) {
+		} elseif (!empty($_POST) && !count($elements)) {
 			$errors['Event'][] = 'No elements selected';
-		} else if (!empty($_POST)) {
+		} elseif (!empty($_POST)) {
 
 			$elements = array();
 			$element_names = array();
@@ -461,7 +461,7 @@ class BaseEventTypeController extends BaseController
 		// rights to update this event
 		if ($this->firm->serviceSubspecialtyAssignment && $this->firm->serviceSubspecialtyAssignment->subspecialty_id != $this->event->episode->firm->serviceSubspecialtyAssignment->subspecialty_id) {
 			throw new CHttpException(403, 'The firm you are using is not associated with the subspecialty for this event.');
-		} else if (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
+		} elseif (!$this->firm->serviceSubspecialtyAssignment && $this->event->episode->firm !== null) {
 			throw new CHttpException(403, 'The firm you are using is not a support services firm.');
 		}
 
@@ -497,9 +497,9 @@ class BaseEventTypeController extends BaseController
 			// Cancel button pressed, so just bounce to view
 			$this->redirect(array('default/view/'.$this->event->id));
 			return;
-		} else if (!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
+		} elseif (!empty($_POST) && !count($this->getDefaultElements($this->action->id))) {
 			$errors['Event'][] = 'No elements selected';
-		} else if (!empty($_POST)) {
+		} elseif (!empty($_POST)) {
 
 			$elements = array();
 			$to_delete = array();
@@ -513,7 +513,7 @@ class BaseEventTypeController extends BaseController
 						// Add new element to array
 						$elements[] = new $class_name;
 					}
-				} else if ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
+				} elseif ($element = $class_name::model()->find('event_id=?',array($this->event->id))) {
 					// Existing element is not posted, so we need to delete it
 					$to_delete[] = $element;
 				}

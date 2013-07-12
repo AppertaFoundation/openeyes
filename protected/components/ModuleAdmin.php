@@ -22,7 +22,7 @@
  */
 class ModuleAdmin
 {
-	static public function getAll()
+	public static function getAll()
 	{
 		$module_admin = array();
 

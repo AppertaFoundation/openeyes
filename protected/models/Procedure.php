@@ -162,7 +162,7 @@ class Procedure extends BaseActiveRecord
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked = 1';
-		} else if ($restrict == 'booked') {
+		} elseif ($restrict == 'booked') {
 			$where .= ' and unbooked = 0';
 		}
 
@@ -196,7 +196,7 @@ class Procedure extends BaseActiveRecord
 		$where = '';
 		if ($restrict == 'unbooked') {
 			$where = ' and unbooked = 1';
-		} else if ($restrict == 'booked') {
+		} elseif ($restrict == 'booked') {
 			$where = ' and unbooked = 0';
 		}
 		$procedures = Yii::app()->db->createCommand()

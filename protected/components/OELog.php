@@ -19,7 +19,7 @@
 
 class OELog
 {
-	static public function log($msg, $username=false)
+	public static function log($msg, $username=false)
 	{
 		if (Yii::app()->params['log_events']) {
 			if (!$username) {
@@ -38,4 +38,3 @@ class OELog
 		}
 	}
 }
-?>

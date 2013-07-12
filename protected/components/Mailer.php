@@ -57,7 +57,7 @@ class Mailer extends CComponent
 		if (!$this->_transport) {
 			if ($this->mode == 'sendmail') {
 				$this->_transport = Swift_SendmailTransport::newInstance($this->sendmail_command);
-			} else if ($this->mode == 'smtp') {
+			} elseif ($this->mode == 'smtp') {
 				$this->_transport = Swift_SmtpTransport::newInstance($this->host, $this->port);
 				if ($this->security) {
 					$this->setEncryption($this->security);
@@ -68,7 +68,7 @@ class Mailer extends CComponent
 				if ($this->password) {
 					$this->setPassword($this->password);
 				}
-			} else if ($this->mode == 'mail') {
+			} elseif ($this->mode == 'mail') {
 				$this->_transport = Swift_MailTransport::newInstance();
 			} else {
 				throw new Exception('unrecognised email mode ' . $this->mode);

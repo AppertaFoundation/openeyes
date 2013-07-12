@@ -92,7 +92,7 @@ class User extends BaseActiveRecord
 					array('password_repeat', 'safe'),
 				)
 			);
-		} else if (Yii::app()->params['auth_source'] == 'LDAP') {
+		} elseif (Yii::app()->params['auth_source'] == 'LDAP') {
 			return array_merge(
 				$commonRules,
 				array(
@@ -143,7 +143,7 @@ class User extends BaseActiveRecord
 		}
 		if (!$top_preference) {
 			$preference->position = 1;
-		} else if ($top_preference->id != $preference->id) {
+		} elseif ($top_preference->id != $preference->id) {
 			$preference->position = $top_preference->position + 1;
 		}
 		if (!$preference->save()) {

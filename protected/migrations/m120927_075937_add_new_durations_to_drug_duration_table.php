@@ -36,11 +36,11 @@ class m120927_075937_add_new_durations_to_drug_duration_table extends CDbMigrati
 		foreach (DrugDuration::model()->findAll() as $drug_duration) {
 			if (preg_match('/^([0-9]+) hour/',$drug_duration->name,$m)) {
 				$ids['hours'][$m[1]] = $drug_duration->id;
-			} else if (preg_match('/^([0-9]+) day/',$drug_duration->name,$m)) {
+			} elseif (preg_match('/^([0-9]+) day/',$drug_duration->name,$m)) {
 				$ids['days'][$m[1]] = $drug_duration->id;
-			} else if (preg_match('/^([0-9]+) week/',$drug_duration->name,$m)) {
+			} elseif (preg_match('/^([0-9]+) week/',$drug_duration->name,$m)) {
 				$ids['weeks'][$m[1]] = $drug_duration->id;
-			} else if (preg_match('/^([0-9]+) month/',$drug_duration->name,$m)) {
+			} elseif (preg_match('/^([0-9]+) month/',$drug_duration->name,$m)) {
 				$ids['months'][$m[1]] = $drug_duration->id;
 			} else {
 				$ids['other'][] = $drug_duration->id;

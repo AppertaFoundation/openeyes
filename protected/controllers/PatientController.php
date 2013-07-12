@@ -246,16 +246,16 @@ class PatientController extends BaseController
 			$message = 'Sorry, no results ';
 			if ($search_terms['hos_num']) {
 				$message .= 'for Hospital Number <strong>"'.$search_terms['hos_num'].'"</strong>';
-			} else if ($search_terms['nhs_num']) {
+			} elseif ($search_terms['nhs_num']) {
 				$message .= 'for NHS Number <strong>"'.$search_terms['nhs_num'].'"</strong>';
-			} else if ($search_terms['first_name'] && $search_terms['last_name']) {
+			} elseif ($search_terms['first_name'] && $search_terms['last_name']) {
 				$message .= 'for Patient Name <strong>"'.$search_terms['first_name'] . ' ' . $search_terms['last_name'].'"</strong>';
 			} else {
 				$message .= 'found for your search.';
 			}
 			Yii::app()->user->setFlash('warning.no-results', $message);
 			$this->redirect('/');
-		} else if ($nr == 1) {
+		} elseif ($nr == 1) {
 			foreach ($dataProvider->getData() as $item) {
 				$this->redirect(array('patient/view/' . $item->id));
 			}
@@ -328,7 +328,7 @@ class PatientController extends BaseController
 					}
 				}
 			}
-		} else if ($current_episode->end_date == null) {
+		} elseif ($current_episode->end_date == null) {
 			$criteria = new CDbCriteria;
 			$criteria->compare('episode_id',$current_episode->id);
 			$criteria->order = 'datetime desc';
@@ -418,7 +418,7 @@ class PatientController extends BaseController
 		if (!empty($_POST)) {
 			if ((@$_POST['eye_id'] && !@$_POST['DiagnosisSelection']['disorder_id'])) {
 				$error = "Please select a disorder for the principal diagnosis";
-			} else if (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
+			} elseif (!@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
 				$error = "Please select an eye for the principal diagnosis";
 			} else {
 				if (@$_POST['eye_id'] && @$_POST['DiagnosisSelection']['disorder_id']) {
@@ -434,7 +434,7 @@ class PatientController extends BaseController
 						if ($this->episode->end_date === null) {
 							$this->episode->end_date = date('Y-m-d H:i:s');
 						}
-					} else if ($this->episode->end_date !== null) {
+					} elseif ($this->episode->end_date !== null) {
 						$this->episode->end_date = null;
 					}
 
@@ -791,7 +791,7 @@ class PatientController extends BaseController
 			if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and date=?',array($patient->id,$disorder->id,$date))) {
 				$patient->addDiagnosis($disorder->id,null,$date);
 			}
-		} else if (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye'],$date))) {
+		} elseif (!SecondaryDiagnosis::model()->find('patient_id=? and disorder_id=? and eye_id=? and date=?',array($patient->id,$disorder->id,$_POST['diagnosis_eye'],$date))) {
 			$patient->addDiagnosis($disorder->id, $_POST['diagnosis_eye'], $date);
 		}
 
@@ -808,7 +808,7 @@ class PatientController extends BaseController
 
 		if (isset($_POST['DiagnosisSelection']['ophthalmic_disorder_id'])) {
 			$disorder_id = $_POST['DiagnosisSelection']['ophthalmic_disorder_id'];
-		} else if (isset($_POST['DiagnosisSelection']['systemic_disorder_id'])) {
+		} elseif (isset($_POST['DiagnosisSelection']['systemic_disorder_id'])) {
 			$disorder_id = $_POST['DiagnosisSelection']['systemic_disorder_id'];
 		}
 
@@ -837,7 +837,7 @@ class PatientController extends BaseController
 		if (@$_POST['fuzzy_year'] == date('Y')) {
 			if (@$_POST['fuzzy_month'] > date('n')) {
 				$errors['date'] = "The date cannot be in the future.";
-			} else if (@$_POST['fuzzy_month'] == date('n')) {
+			} elseif (@$_POST['fuzzy_month'] == date('n')) {
 				if (@$_POST['fuzzy_day'] > date('j')) {
 					$errors['date'] = "The date cannot be in the future.";
 				}
@@ -983,7 +983,7 @@ class PatientController extends BaseController
 				'date' => substr($dates[0],0,4),
 				'timestamp' => strtotime(substr($dates[0],0,4).'-01-01'),
 			);
-		} else if (preg_match('/-00$/',$dates[0])) {
+		} elseif (preg_match('/-00$/',$dates[0])) {
 			$date = Helper::getMonthText(substr($dates[0],5,2)).' '.substr($dates[0],0,4);
 			return array(
 				'date' => $date,
@@ -1269,7 +1269,7 @@ class PatientController extends BaseController
 		}
 		if (empty($_POST['start_date'])) {
 			$errors['start_date'] = 'Please select a date';
-		} else if (!strtotime($_POST['start_date'])) {
+		} elseif (!strtotime($_POST['start_date'])) {
 			$errors['start_date'] = 'Invalid date entered';
 		}
 

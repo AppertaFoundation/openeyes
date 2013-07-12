@@ -93,7 +93,7 @@ class SplitEventTypeElement extends BaseEventTypeElement
 	{
 		if ($this->eye->id == Eye::LEFT) {
 			$this->setSideDefaultOptions('right');
-		} else if ($this->eye->id == Eye::RIGHT) {
+		} elseif ($this->eye->id == Eye::RIGHT) {
 			$this->setSideDefaultOptions('left');
 		}
 	}

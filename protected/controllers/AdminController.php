@@ -185,7 +185,7 @@ class AdminController extends BaseController
 
 		if ($params['page'] <1) {
 			$page = 1;
-		} else if ($params['page'] > $pages) {
+		} elseif ($params['page'] > $pages) {
 			$page = $pages;
 		} else {
 			$page = $params['page'];
@@ -270,10 +270,10 @@ class AdminController extends BaseController
 		if (count($ex) == 1) {
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['q']),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['q']),false,'OR');
-		} else if (count($ex) == 2) {
+		} elseif (count($ex) == 2) {
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[0]),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[1]),false);
-		} else if (count($ex) >= 3) {
+		} elseif (count($ex) >= 3) {
 			$criteria->addSearchCondition("lower(`t`.title)",strtolower(@$ex[0]),false);
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[1]),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[2]),false);
@@ -298,7 +298,7 @@ class AdminController extends BaseController
 
 		if ($page <1) {
 			$page = 1;
-		} else if ($page > $pages) {
+		} elseif ($page > $pages) {
 			$page = $pages;
 		}
 
