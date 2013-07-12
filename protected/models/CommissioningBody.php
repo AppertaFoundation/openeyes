@@ -18,23 +18,24 @@
  */
 
 /**
- * This is the model class for table "Practice".
+ * This is the model class for table "commissioningbody".
  *
- * The followings are the available columns in table 'Practice':
+ * The followings are the available columns in table 'commissioningbody':
  * @property string $id
- * @property string $code
- * @property string $phone
+ * @property string $service_subspecialty_assignment_id
+ * @property string $pas_code
+ * @property string $name
  *
  * The followings are the available model relations:
- * @property Address $address
+ * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
+ * @property FirmUserAssignment[] $firmUserAssignments
+ * @property LetterPhrase[] $letterPhrases
  */
-class Practice extends BaseActiveRecord
+class CommissioningBody extends BaseActiveRecord
 {
-	public $use_pas = TRUE;
-
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Practice the static model class
+	 * @return Firm the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -42,23 +43,19 @@ class Practice extends BaseActiveRecord
 	}
 
 	/**
-	 * Suppress PAS integration
-	 * @return Practice
-	 */
-	public function noPas()
-	{
-		// Clone to avoid singleton problems with use_pas flag
-		$model = clone $this;
-		$model->use_pas = FALSE;
-		return $model;
-	}
-
-	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'practice';
+		return 'commissioningbody';
+	}
+
+	public function behaviors() {
+		return array(
+			'ContactBehavior' => array(
+				'class' => 'application.behaviors.ContactBehavior',
+			),
+		);
 	}
 
 	/**
@@ -66,10 +63,13 @@ class Practice extends BaseActiveRecord
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
-			array('code', 'required'),
-			array('phone, contact_id', 'safe'),
-			array('id, code', 'safe', 'on'=>'search'),
+			array('name', 'required'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -78,9 +78,12 @@ class Practice extends BaseActiveRecord
 	 */
 	public function relations()
 	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_practice_assignment(practice_id, commissioningbody_id)'),
+			'type' => array(self::BELONGS_TO, 'CommissioningBodyType', 'commissioningbody_type_id'),
+			'practices' => array(self::MANY_MANY, 'Practice', 'commissioningbody_practice_assignment(commissioningbody_id, practice_id)'),
 		);
 	}
 
@@ -90,9 +93,6 @@ class Practice extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'code' => 'Code',
-			'phone' => 'Phone',
 		);
 	}
 
@@ -108,32 +108,17 @@ class Practice extends BaseActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);
+		$criteria->compare('name',$this->name,true);
 		$criteria->compare('code',$this->code,true);
-		$criteria->compare('phone',$this->phone,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
-
-	/**
-	* Pass through use_pas flag to allow pas supression
-	* @see CActiveRecord::instantiate()
-	*/
-	protected function instantiate($attributes)
+	
+	public function getTypeShortName()
 	{
-			$model = parent::instantiate($attributes);
-			$model->use_pas = $this->use_pas;
-			return $model;
+		return $this->type ? $this->type->shortname : 'CB';
 	}
-
-	/**
-	 * Raise event to allow external data sources to update practice
-	 * @see CActiveRecord::afterFind()
-	 */
-	protected function afterFind()
-	{
-		parent::afterFind();
-		Yii::app()->event->dispatch('practice_after_find', array('practice' => $this));
-	}
+	
 }

@@ -18,23 +18,19 @@
  */
 
 /**
- * This is the model class for table "Practice".
+ * This is the model class for table "commissioningbody_practice_assignment".
  *
- * The followings are the available columns in table 'Practice':
+ * The followings are the available columns in table 'firm':
  * @property string $id
- * @property string $code
- * @property string $phone
+ * @property string $commissioningbody_id
+ * @property string $practice_id
  *
- * The followings are the available model relations:
- * @property Address $address
  */
-class Practice extends BaseActiveRecord
+class CommissioningBodyPracticeAssignment extends BaseActiveRecord
 {
-	public $use_pas = TRUE;
-
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Practice the static model class
+	 * @return Firm the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -42,23 +38,11 @@ class Practice extends BaseActiveRecord
 	}
 
 	/**
-	 * Suppress PAS integration
-	 * @return Practice
-	 */
-	public function noPas()
-	{
-		// Clone to avoid singleton problems with use_pas flag
-		$model = clone $this;
-		$model->use_pas = FALSE;
-		return $model;
-	}
-
-	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'practice';
+		return 'commissioningbody_practice_assignment';
 	}
 
 	/**
@@ -66,10 +50,13 @@ class Practice extends BaseActiveRecord
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
-			array('code', 'required'),
-			array('phone, contact_id', 'safe'),
-			array('id, code', 'safe', 'on'=>'search'),
+			array('commissioningbody_id, practice_id', 'required'),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -78,9 +65,11 @@ class Practice extends BaseActiveRecord
 	 */
 	public function relations()
 	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_practice_assignment(practice_id, commissioningbody_id)'),
+			'commissioningbody' => array(self::BELONGS_TO, 'CommissioningBody', 'commissioningbody_id'),
+			'practice' => array(self::BELONGS_TO, 'Practice', 'practice_id'),
 		);
 	}
 
@@ -90,9 +79,6 @@ class Practice extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
-			'code' => 'Code',
-			'phone' => 'Phone',
 		);
 	}
 
@@ -106,34 +92,10 @@ class Practice extends BaseActiveRecord
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
-
 		$criteria->compare('id',$this->id,true);
-		$criteria->compare('code',$this->code,true);
-		$criteria->compare('phone',$this->phone,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
-	}
-
-	/**
-	* Pass through use_pas flag to allow pas supression
-	* @see CActiveRecord::instantiate()
-	*/
-	protected function instantiate($attributes)
-	{
-			$model = parent::instantiate($attributes);
-			$model->use_pas = $this->use_pas;
-			return $model;
-	}
-
-	/**
-	 * Raise event to allow external data sources to update practice
-	 * @see CActiveRecord::afterFind()
-	 */
-	protected function afterFind()
-	{
-		parent::afterFind();
-		Yii::app()->event->dispatch('practice_after_find', array('practice' => $this));
 	}
 }

@@ -136,6 +136,7 @@ class Patient extends BaseActiveRecord
 			'previousOperations' => array(self::HAS_MANY, 'PreviousOperation', 'patient_id', 'order' => 'date'),
 			'familyHistory' => array(self::HAS_MANY, 'FamilyHistory', 'patient_id', 'order' => 'created_date'),
 			'medications' => array(self::HAS_MANY, 'Medication', 'patient_id', 'order' => 'created_date', 'condition' => 'end_date is null'),
+			'commissioningbodies' => array(self::MANY_MANY, 'CommissioningBody', 'commissioningbody_patient_assignment(patient_id, commissioningbody_id)'),
 		);
 	}
 
@@ -994,5 +995,46 @@ class Patient extends BaseActiveRecord
 		Yii::app()->event->dispatch('episode_after_create', array('episode' => $episode));
 
 		return $episode;
+	}
+	
+	/**
+	 * get an associative array of CommissioningBody for this patient, indexed by CommissioningBodyType id.
+	 * 
+	 * @return array[string][CommissioningBody]
+	 */
+	public function getDistinctCommissioningBodiesByType()
+	{
+		$res = array();
+		$seen_bodies = array();
+		
+		foreach ($this->commissioningbodies as $body) {
+			if (in_array($body->id, $seen_bodies)) {
+				continue;
+			}
+			if (array_key_exists($body->type->id, $res)) {
+				$res[$body->type->id][] = $body;
+			}
+			else {
+				$res[$body->type->id] = array($body);
+			}
+			$seen_bodies[] = $body->id;
+		}
+		
+		if ($this->practice) {
+			foreach ($this->practice->commissioningbodies as $body) {
+				if (in_array($body->id, $seen_bodies)) {
+					continue;
+				}
+				if (array_key_exists($body->type->id, $res)) {
+					$res[$body->type->id][] = $body;
+				}
+				else {
+					$res[$body->type->id] = array($body);
+				}
+			}
+			$seen_bodies[] = $body->id;
+		}
+		
+		return $res;
 	}
 }
