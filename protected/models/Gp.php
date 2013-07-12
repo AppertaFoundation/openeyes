@@ -154,7 +154,21 @@ class Gp extends BaseActiveRecord {
 		if (!isset($params['patient'])) {
 			throw new Exception("Patient must be passed for GP contacts.");
 		}
-		return $this->formatLetterAddress(($params['patient']->practice && $params['patient']->practice->contact->address) ? $params['patient']->practice->contact->address : null, $params);
+
+		$contact = $address = null;
+
+		if ($params['patient']->practice) {
+			if (@$params['contact']) {
+				$contactRelation = $params['contact'];
+				$contact = $params['patient']->practice->$contactRelation;
+			} else {
+				$contact = $params['patient']->practice->contact;
+			}
+
+			$address = $contact->address;
+		}
+
+		return $this->formatLetterAddress($contact, $address, $params);
 	}
 
 	public function getPrefix() {
