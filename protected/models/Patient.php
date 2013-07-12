@@ -906,9 +906,9 @@ class Patient extends BaseActiveRecord
 
 		foreach ($this->contactAssignments as $pca) {
 			if ($pca->location_id) {
-				$ids['locations'] = $pca->location_id;
+				$ids['locations'][] = $pca->location_id;
 			} else {
-				$ids['contacts'] = $pca->contact_id;
+				$ids['contacts'][] = $pca->contact_id;
 			}
 		}
 		return $ids;
