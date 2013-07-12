@@ -1,35 +1,12 @@
 <?php
 
-class m130320_144412_contacts_refactoring extends CDbMigration
+class m130320_144412_contacts_refactoring extends ParallelMigration
 {
-	public $fork = false;
-	public $threads = 8;
 	public $fp;
 
 	public function up()
 	{
-		/* see if we can parallelise (yeah, really) */
-		$db = Yii::app()->db;
-
-		if (function_exists("pcntl_fork")) {
-			$db->setActive(false);
-			$pid = pcntl_fork();
-			if ($pid == 0) {
-				exit;
-			}
-			$db->setActive(true);
-
-			if ($pid != -1) {
-				$this->fork = true;
-				echo "********************************************************************************************\n";
-				echo "* Looks like pcntl_fork() is available, so we will parallelise this migration to save time *\n";
-				echo "********************************************************************************************\n";
-			} else {
-				echo "********************************************************************************************\n";
-				echo "* Looks like pcntl_fork() is available but a test fork failed so we won't be parallelising *\n";
-				echo "********************************************************************************************\n";
-			}
-		}
+		$this->checkForkPossible();
 
 		$this->createTable('person',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -281,46 +258,23 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 
 		/* Address types */
 
-		if ($this->fork) {
-			$db->setActive(false);
-
-			$pids = array();
-
-			$pid = pcntl_fork();
-
-			if ($pid == 0) {
-				$db->setActive(true);
+		if ($this->canFork) {
+			if ($this->fork() == 0) {
 				$this->update('address',array('address_type_id'=>$at_home['id']),"type = 'H'");
 				exit;
-			} else {
-				$pids[] = $pid;
 			}
 
-			$pid = pcntl_fork();
-
-			if ($pid == 0) {
-				$db->setActive(true);
+			if ($this->fork() == 0) {
 				$this->update('address',array('address_type_id'=>$at_correspondence['id']),"type = 'C'");
 				exit;
-			} else {
-				$pids[] = $pid;
 			}
 
-			$pid = pcntl_fork();
-
-			if ($pid == 0) {
-				$db->setActive(true);
+			if ($this->fork() == 0) {
 				$this->update('address',array('address_type_id'=>$at_transport['id']),"type = 'T'");
 				exit;
-			} else {
-				$pids[] = $pid;
 			}
 
-			foreach ($pids as $pid) {
-				pcntl_waitpid($pid,$status);
-			}
-
-			$db->setActive(true);
+			$this->waitForThreads();
 		} else {
 			$this->update('address',array('address_type_id'=>$at_home['id']),"type = 'H'");
 			$this->update('address',array('address_type_id'=>$at_correspondence['id']),"type = 'C'");
@@ -378,54 +332,6 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 		$this->insert('contact_label',array('name'=>$name));
 
 		return $this->getLabel($name);
-	}
-
-	public function parallelise($method, $data) {
-		if (!$this->fork) {
-			$this->$method($data);
-		} else {
-			$workload = array();
-			for ($i=0;$i<$this->threads;$i++) {
-				$workload[$i] = array();
-			}
-
-			$n=0;
-			foreach ($data as $item) {
-				$workload[$n++][] = $item;
-				if ($n >= $this->threads) {
-					$n = 0;
-				}
-			}
-
-			$db = Yii::app()->db;
-			$db->setActive(false);
-
-			$pids = array();
-			$ok = true;
-			foreach ($workload as $i => $data) {
-				$pid = pcntl_fork();
-				if ($pid == 0) {
-					$db->setActive(true);
-					$this->$method($data);
-					exit;
-				} else if ($pid == -1) {
-					$ok = false;
-				} else {
-					$pids[] = $pid;
-				}
-			}
-
-			foreach ($pids as $pid) {
-				pcntl_waitpid($pid,$status);
-			}
-
-			$db->setActive(true);
-
-			if (!$ok) {
-				echo "\nOne or more fork() calls failed, migration aborted.\n";
-				exit;
-			}
-		}
 	}
 
 	public function migrateSpecialists($specialists) {
@@ -609,15 +515,6 @@ class m130320_144412_contacts_refactoring extends CDbMigration
 				$this->update('address',array('parent_class'=>'Contact','parent_id'=>$contact_id),"id={$practice['address_id']}");
 			}
 		}
-	}
-
-	public function obtainLock() {
-		$this->fp = fopen("/tmp/.m130320_144412_contacts_refactoring.lock","a+");
-		flock($this->fp,LOCK_EX);
-	}
-
-	public function releaseLock() {
-		fclose($this->fp);
 	}
 
 	public function down()
