@@ -4,6 +4,15 @@ use SensioLabs\Behat\PageObjectExtension\PageObject\Page;
 
 class PatientViewPage extends Page
 {
+
+    public static $homeButton = "//*[@id='user_nav']//*[contains(text(), 'Home')]";
+    public static $theatreDiaries = "//*[@id='user_nav']//*[contains(text(), 'Theatre Diaries')]";
+    public static $partialBookingsWaitingList = "//*[@id='user_nav']//*[contains(text(), 'Partial bookings waiting list')]";
+    public static $logOut = "//*[@id='user_nav']//*[contains(text(), 'Logout')]";
+    public static $patientSummary = "//*[@id='patientID']//*[contains(text(), 'Patient Summary')]";
+    public static $changeFirmHeaderLink = "//*[@id='user_firm']//*[contains(text(), 'Change')]";
+    public static $userProfile = "//*[@id='user_id']/a";
+
     public static $opthDiagnosis = "//button[@id='btn-add_new_ophthalmic_diagnosis']";
     public static $opthDisorder = "//select[@id='diagnosisselection_ophthalmic_disorder_id']";
     public static $opthRighteye = "//input[@name='diagnosis_eye']";

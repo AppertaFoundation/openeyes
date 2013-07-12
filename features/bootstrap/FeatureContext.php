@@ -86,13 +86,22 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
-     * @Then /^I search a firm of "([^"]*)"$/
+     * @Then /^I select a firm of "([^"]*)"$/
      */
     public function iselectAFirm($firm)
     {
         $this->clickLink(Login::$firmDropdown,$firm);
         $this->pressButton(Login::$confirmSiteAndFirmButton);
     }
+
+    /**
+     * @Then /^I select Change Firm$/
+     */
+    public function ChangeFirm ($firm)
+    {
+        $this->clickLink(PatientViewPage::$changeFirmHeaderLink);
+    }
+
 
     /**
      * @Then /^I search for hospital number "([^"]*)"$/
@@ -123,13 +132,67 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
     }
 
     /**
-     * @Then /^I Select Add Episode
+     * @Then /^I select Create or View Episodes and Events$/
      */
-    public function addEpisode ()
+    public function iSelectCreateOrViewEpisodesAndEvents()
+    {
+        $this->clickLink(AddingNewEvent::$createViewEpisodeEvent);
+    }
+
+    /**
+     * @Then /^I Select Add First New Episode and Confirm
+     */
+    public function addFirstNewEpisode ()
     {
         $this->pressButton(AddingNewEvent::$addFirstNewEpisode);
-
+        $this->pressButton(AddingNewEvent::$addEpisodeConfirm);
     }
+
+    /**
+     * @And /^I Select Add a New Episode and Confirm
+     */
+    public function addNewEpisode ()
+    {
+        $this->pressButton(AddingNewEvent::$addNewEpisodeButton);
+        $this->pressButton(AddingNewEvent::$addEpisodeConfirm);
+    }
+
+    /**
+     * @Given /^I add a New Event "([^"]*)"$/
+     */
+    public function iAddANewEvent($event)
+    {
+        //Need to select an Episode to reveal Add Event button
+
+        $this->clickLink(AddingNewEvent::$addNewEventSideBar);
+
+        if ($event=="Satisfaction") {
+            $this->clickLink(AddingNewEvent::$anaestheticSatisfaction);
+        }
+        if ($event=="Consent") {
+            $this->clickLink(AddingNewEvent::$consentForm);
+        }
+        if ($event=="Correspondence") {
+            $this->clickLink(AddingNewEvent::$correspondence);
+        }
+        if ($event=="Examination") {
+            $this->clickLink(AddingNewEvent::$examination);
+        }
+        if ($event=="OpBooking") {
+            $this->clickLink(AddingNewEvent::$operationBooking);
+        }
+        if ($event=="OpNote") {
+            $this->clickLink(AddingNewEvent::$operationNote);
+        }
+        if ($event=="Phasing") {
+            $this->clickLink(AddingNewEvent::$phasing);
+        }
+        if ($event=="Prescription") {
+            $this->clickLink(AddingNewEvent::$prescription);
+        }
+    }
+
+
 
      /**
      * @Then /^I Add an Ophthalmic Diagnosis selection of "([^"]*)"$/
@@ -140,7 +203,6 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         $this->selectOption(PatientViewPage::$opthDisorder, $diagnosis);
         $this->removeDiagnosis++; //
     }
-
 
     /**
      * @Given /^I select that it affects eye "([^"]*)"$/
@@ -309,49 +371,7 @@ class FeatureContext extends MinkContext implements YiiAwareContextInterface
         }
     }
 
-    /**
-     * @Then /^I select Create or View Episodes and Events$/
-     */
-    public function iSelectCreateOrViewEpisodesAndEvents()
-    {
-        $this->clickLink(AddingNewEvent::$createViewEpisodeEvent);
-        $this->clickLink(AddingNewEvent::$addNewEpiosdeConfirmButton);
-    }
 
-    /**
-     * @Given /^I add a New Event "([^"]*)"$/
-     */
-    public function iAddANewEvent($event)
-    {
-       //Need to select an Episode to reveal Add Event button
-
-       $this->clickLink(AddingNewEvent::$addNewEventSideBar);
-
-       if ($event=="Satisfaction") {
-          $this->clickLink(AddingNewEvent::$anaestheticSatisfaction);
-       }
-       if ($event=="Consent") {
-          $this->clickLink(AddingNewEvent::$consentForm);
-       }
-       if ($event=="Correspondence") {
-          $this->clickLink(AddingNewEvent::$correspondence);
-       }
-       if ($event=="Examination") {
-          $this->clickLink(AddingNewEvent::$examination);
-       }
-       if ($event=="OpBooking") {
-          $this->clickLink(AddingNewEvent::$operationBooking);
-       }
-       if ($event=="OpNote") {
-          $this->clickLink(AddingNewEvent::$operationNote);
-       }
-       if ($event=="Phasing") {
-          $this->clickLink(AddingNewEvent::$phasing);
-       }
-       if ($event=="Prescription") {
-          $this->clickLink(AddingNewEvent::$prescription);
-       }
-    }
 
     /**
      * @Then /^I select Diagnosis Eyes of "([^"]*)"$/

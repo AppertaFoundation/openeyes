@@ -11,6 +11,7 @@ Feature: Create New Examination
     Then I search for patient name last name "<last>" and first name "<first>"
 
     Then I select Create or View Episodes and Events
+    Then I select Add First New Episode and Confirm
     And I add a New Event "<EventType>"
 
     Then I select a History of Blurred Vision, Mild Severity, Onset 1 Week, Left Eye, 1 Week
