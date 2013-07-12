@@ -123,6 +123,8 @@ class PatientContactAssignment extends BaseActiveRecord
 		if ($this->location) {
 			return $this->location;
 		}
-		return $this->contact->address->address1;
+		if ($this->contact->address) {
+		 	return $this->contact->address->address1;
+		}
 	}
 }
