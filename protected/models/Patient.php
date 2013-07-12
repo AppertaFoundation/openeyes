@@ -172,10 +172,11 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* Retrieves a list of models based on the current search/filter conditions.
-		* @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-		*/
-	public function search($params = false)
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @param array $params
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search($params = null)
 	{
 		if (!is_array($params)) {
 			$params = array(
@@ -575,7 +576,7 @@ class Patient extends BaseActiveRecord
 
 	public function assignAllergies($allergy_ids)
 	{
-		$add_allergy_ids = $allergy_ids;
+		$insert_allergy_ids = $allergy_ids;
 		$remove_allergy_ids = array();
 
 		// Check existing allergies

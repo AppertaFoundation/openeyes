@@ -22,7 +22,6 @@
  *
  * The following are the available columns in table 'audit':
  * @property integer $id
- * @property string $action
  * @property string $target_type
  * @property integer $patient_id
  * @property integer $episode_id
@@ -37,6 +36,7 @@
  * @property integer $firm_id
  *
  * The following are the available model relations:
+ * @property AuditAction $action
  * @property Patient $patient
  * @property Episode $episode
  * @property Event $event

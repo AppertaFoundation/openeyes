@@ -140,6 +140,9 @@ class Episode extends BaseActiveRecord
 
 	/**
 	 * Returns true if an event of the given type exists within this episode
+	 * @param integer $eventTypeId
+	 * @param Event $currentEvent
+	 * @return boolean
 	 */
 	public function hasEventOfType($eventTypeId, $currentEvent = null)
 	{

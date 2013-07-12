@@ -24,6 +24,9 @@
  * @property integer $id
  * @property string $name
  * @property integer $letter_template_only
+ * @property Institution $institution
+ * @property Contact $contact
+ * @property Site $site
  */
 class ContactLocation extends BaseActiveRecord
 {
@@ -109,6 +112,9 @@ class ContactLocation extends BaseActiveRecord
 		));
 	}
 
+	/**
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return $this->site ? $this->site->name : $this->institution->name;

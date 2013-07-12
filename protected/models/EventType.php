@@ -194,7 +194,7 @@ class EventType extends BaseActiveRecord
 		if (PatientShortcode::model()->find('code=?',array(strtolower($code)))) {
 			$n = '00';
 			while (PatientShortcode::model()->find('z'.$n)) {
-				$n = str_pad($n+1,2,'0',STR_PAD_LEFT);
+				$n = str_pad((int) $n + 1, 2, '0', STR_PAD_LEFT);
 			}
 			$code = "z$n";
 

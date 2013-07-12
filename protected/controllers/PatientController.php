@@ -412,7 +412,8 @@ class PatientController extends BaseController
 		}
 
 		if (!$this->episode->editable || isset($_POST['episode_cancel'])) {
-			return $this->redirect(array('patient/episode/'.$this->episode->id));
+			$this->redirect(array('patient/episode/'.$this->episode->id));
+			return;
 		}
 
 		if (!empty($_POST)) {
@@ -491,7 +492,7 @@ class PatientController extends BaseController
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
+	 * @param integer $id the ID of the model to be loaded
 	 */
 	public function loadModel($id)
 	{
@@ -503,7 +504,7 @@ class PatientController extends BaseController
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param CModel the model to be validated
+	 * @param CModel $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
@@ -527,8 +528,8 @@ class PatientController extends BaseController
 	 * Perform a search on a model and return the results
 	 * (separate function for unit testing)
 	 *
-	 * @param array $data		form data of search terms
-	 * @return dataProvider
+	 * @param array $data form data of search terms
+	 * @return CDataProvider
 	 */
 	public function getSearch($data)
 	{
@@ -1193,7 +1194,7 @@ class PatientController extends BaseController
 
 		$this->jsVars['OE_subspecialty_id'] = $subspecialty_id;
 
-		return parent::processJsVars();
+		parent::processJsVars();
 	}
 
 	public function actionInstitutionSites()

@@ -172,9 +172,8 @@ class Disorder extends BaseActiveRecord
 
 	/*
 	 * returns boolean to indicate if the disorder is systemic (true)
-	 *
 	 */
-	public static function getSystemic()
+	public function getSystemic()
 	{
 		if ($this->specialty_id) {
 			return false;

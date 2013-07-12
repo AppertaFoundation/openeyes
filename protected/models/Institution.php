@@ -22,6 +22,7 @@
  *
  * The followings are the available columns in table 'institution':
  * @property integer $id
+ * @property string $name
  * @property integer $remote_id
  * @property string $short_name
  * @property integer $contact_id

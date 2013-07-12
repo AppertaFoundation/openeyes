@@ -35,7 +35,7 @@
  * @property Institution $institution
  * @property Contact $contact
  * @property Contact $replyTo
- * @property ImportSite $import
+ * @property ImportSource $import
  */
 class Site extends BaseActiveRecord
 {
@@ -95,7 +95,7 @@ class Site extends BaseActiveRecord
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
-			'import' => array(self::HAS_ONE, 'ImportSite', 'site_id'),
+			'import' => array(self::HAS_ONE, 'ImportSource', 'site_id'),
 		);
 	}
 

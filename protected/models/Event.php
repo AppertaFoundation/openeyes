@@ -36,6 +36,7 @@ class Event extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
+	 * @param string $className
 	 * @return Event the static model class
 	 */
 	public static function model($className=__CLASS__)

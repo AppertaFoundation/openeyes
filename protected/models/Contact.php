@@ -36,10 +36,11 @@
  * @property Address $address Primary address
  * @property Address $homeAddress Home address
  * @property Address $correspondAddress Correspondence address
+ * @property ContactLabel $label
  *
  * The following are pseudo (calculated) fields
- * @property string $SalutationName
- * @property string $FullName
+ * @property string $salutationName
+ * @property string $fullName
  */
 class Contact extends BaseActiveRecord
 {
