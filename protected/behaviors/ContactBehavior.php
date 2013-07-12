@@ -21,10 +21,19 @@ class ContactBehavior extends CActiveRecordBehavior
 {
 	public function getLetterAddress($params=array())
 	{
-		return $this->formatLetterAddress(isset($this->owner->contact->correspondAddress) ? $this->owner->contact->correspondAddress : $this->owner->contact->address, $params);
+		if (@$params['contact']) {
+			$contactRelation = @$params['contact'];
+			$contact = $this->owner->$contactRelation;
+		} else {
+			$contact = $this->owner->contact;
+		}
+
+		$address = isset($contact->correspondAddress) ? $contact->correspondAddress : $contact->address;
+
+		return $this->formatLetterAddress($contact, $address, $params);
 	}
 
-	public function formatLetterAddress($address, $params=array())
+	public function formatLetterAddress($contact, $address, $params=array())
 	{
 		if ($address) {
 			if (method_exists($this->owner,'getLetterArray')) {
@@ -33,8 +42,8 @@ class ContactBehavior extends CActiveRecordBehavior
 				$address = $address->getLetterArray(@$params['include_country']);
 			}
 
-			if (@$params['include_label'] && $this->owner->contact->label) {
-				$address = array_merge(array($this->owner->contact->label->name),$address);
+			if (@$params['include_label'] && $contact->label) {
+				$address = array_merge(array($contact->label->name),$address);
 			}
 
 			if (@$params['include_name']) {
@@ -45,7 +54,7 @@ class ContactBehavior extends CActiveRecordBehavior
 					}
 					$address = array_merge($correspondenceName,$address);
 				} else {
-					$address = array_merge(array($this->owner->contact->fullName),$address);
+					$address = array_merge(array($contact->fullName),$address);
 				}
 			}
 
