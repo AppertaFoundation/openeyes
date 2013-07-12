@@ -36,6 +36,6 @@ $this->renderPartial('//layouts/patientMode/event_header');
 			<?php }?>
 			<?php $this->renderPartial('//patient/episodes_sidebar',array('ordered_episodes'=>$ordered_episodes, 'legacyepisodes'=>@$legacyepisodes, 'supportserviceepisodes'=>$supportserviceepisodes))?>
 			<div id="event_display">
-				<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean)(count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
+				<?php $this->renderPartial('//patient/event_tabs',array('hidden'=>(boolean) (count($ordered_episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 				<!-- EVENT CONTENT HERE -->
 				<div id="event_content" class="watermarkBox clearfix">

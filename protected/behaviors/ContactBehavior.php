@@ -17,12 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ContactBehavior extends CActiveRecordBehavior {
-	public function getLetterAddress($params=array()) {
+class ContactBehavior extends CActiveRecordBehavior
+{
+	public function getLetterAddress($params=array())
+	{
 		return $this->formatLetterAddress(isset($this->owner->contact->correspondAddress) ? $this->owner->contact->correspondAddress : $this->owner->contact->address, $params);
 	}
 
-	public function formatLetterAddress($address, $params=array()) {
+	public function formatLetterAddress($address, $params=array())
+	{
 		if ($address) {
 			if (method_exists($this->owner,'getLetterArray')) {
 				$address = $this->owner->getLetterArray(@$params['include_country']);
@@ -70,7 +73,8 @@ class ContactBehavior extends CActiveRecordBehavior {
 		return false;
 	}
 
-	public function getLetterIntroduction($params) {
+	public function getLetterIntroduction($params)
+	{
 		if (@$params['nickname'] && $this->owner->contact->nick_name) {
 			return 'Dear '.$this->owner->contact->nick_name.',';
 		}
@@ -82,29 +86,35 @@ class ContactBehavior extends CActiveRecordBehavior {
 		return 'Dear Sir/Madam,';
 	}
 
-	public function getFullName() {
+	public function getFullName()
+	{
 		return $this->owner->contact->getFullName();
 	}
 
-	public function getReversedFullName() {
+	public function getReversedFullName()
+	{
 		return $this->owner->contact->getReversedFullName();
 	}
 
-	public function getSalutationName() {
+	public function getSalutationName()
+	{
 		return $this->owner->contact->getSalutationName();
 	}
 
-	public function isDeceased() {
+	public function isDeceased()
+	{
 		if (isset($this->date_of_death) && $this->date_of_death) {
 			return true;
 		}
 	}
 
 	/* this can be overridden by models that use this behavior */
-	public function getPrefix() {
+	public function getPrefix()
+	{
 	}
 
-	public function getMetadata($key) {
+	public function getMetadata($key)
+	{
 		if ($cm = ContactMetadata::model()->find('contact_id=? and `key`=?',array($this->owner->contact_id,$key))) {
 			return $cm->value;
 		}
@@ -112,7 +122,8 @@ class ContactBehavior extends CActiveRecordBehavior {
 		return false;
 	}
 
-	public function setMetadata($key, $value) {
+	public function setMetadata($key, $value)
+	{
 		if (!$cm = ContactMetadata::model()->find('contact_id=? and `key`=?',array($this->owner->contact_id,$key))) {
 			$cm = new ContactMetadata;
 			$cm->contact_id = $this->owner->contact_id;
@@ -125,7 +136,8 @@ class ContactBehavior extends CActiveRecordBehavior {
 		}
 	}
 
-	public function addAddress($address) {
+	public function addAddress($address)
+	{
 		if ($this->owner->isNewRecord) {
 			throw new Exception("Cannot add address to unsaved contact object");
 		}
@@ -133,7 +145,7 @@ class ContactBehavior extends CActiveRecordBehavior {
 		$address->parent_id = $this->owner->contact->id;
 		$address->save();
 	}
-	
+
 	public function beforeSave($event)
 	{
 		if ($this->owner->isNewRecord) {

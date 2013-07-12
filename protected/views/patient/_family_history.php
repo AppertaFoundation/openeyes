@@ -30,13 +30,13 @@
 									<?php }?>
 								</tbody>
 							</table>
-							
-							<?php if(BaseController::checkUserLevel(4)) { ?>
+
+							<?php if (BaseController::checkUserLevel(4)) { ?>
 								<div align="center" style="margin-top:10px;">
 									<form><button id="btn-add_family_history" class="classy green mini" type="button"><span class="button-span button-span-green">Add family history</span></button></form>
 								</div>
 								<div id="add_family_history" style="display: none;">
-									<h5>Add family history</h5>	
+									<h5>Add family history</h5>
 									<?php
 									$form = $this->beginWidget('CActiveForm', array(
 											'id'=>'add-family_history',
@@ -44,10 +44,10 @@
 											'htmlOptions' => array('class'=>'sliding'),
 											'action'=>array('patient/addFamilyHistory'),
 									))?>
-		
+
 									<input type="hidden" name="edit_family_history_id" id="edit_family_history_id" value="" />
 									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-		
+
 									<div class="familyHistory">
 										<div class="label">
 											Relative:
@@ -89,9 +89,9 @@
 										<button class="classy green mini btn_save_family_history" type="submit"><span class="button-span button-span-green">Save</span></button>
 										<button class="classy red mini btn_cancel_family_history" type="submit"><span class="button-span button-span-red">Cancel</span></button>
 									</div>
-		
+
 									<?php $this->endWidget()?>
-								</div>	
+								</div>
 							<?php }?>
 						</div>
 					</div>

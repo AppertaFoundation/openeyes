@@ -94,21 +94,15 @@ class CDbHttpSession extends CHttpSession
 
 		$sql="SELECT * FROM {$this->sessionTableName} WHERE id=:id";
 		$row=$db->createCommand($sql)->bindValue(':id',$oldID)->queryRow();
-		if($row!==false)
-		{
-			if($deleteOldSession)
-			{
+		if ($row!==false) {
+			if ($deleteOldSession) {
 				$sql="UPDATE {$this->sessionTableName} SET id=:newID WHERE id=:oldID";
 				$db->createCommand($sql)->bindValue(':newID',$newID)->bindValue(':oldID',$oldID)->execute();
-			}
-			else
-			{
+			} else {
 				$row['id']=$newID;
 				$db->createCommand()->insert($this->sessionTableName, $row);
 			}
-		}
-		else
-		{
+		} else {
 			// shouldn't reach here normally
 			$db->createCommand()->insert($this->sessionTableName, array(
 				'id'=>$newID,
@@ -142,16 +136,13 @@ CREATE TABLE $tableName
 	{
 		if($this->_db!==null)
 			return $this->_db;
-		else if(($id=$this->connectionID)!==null)
-		{
+		else if (($id=$this->connectionID)!==null) {
 			if(($this->_db=Yii::app()->getComponent($id)) instanceof CDbConnection)
 				return $this->_db;
 			else
 				throw new CException(Yii::t('yii','CDbHttpSession.connectionID "{id}" is invalid. Please make sure it refers to the ID of a CDbConnection application component.',
 					array('{id}'=>$id)));
-		}
-		else
-		{
+		} else {
 			$dbFile=Yii::app()->getRuntimePath().DIRECTORY_SEPARATOR.'session-'.Yii::getVersion().'.db';
 			return $this->_db=new CDbConnection('sqlite:'.$dbFile);
 		}
@@ -166,17 +157,13 @@ CREATE TABLE $tableName
 	 */
 	public function openSession($savePath,$sessionName)
 	{
-		if($this->autoCreateSessionTable)
-		{
+		if ($this->autoCreateSessionTable) {
 			$db=$this->getDbConnection();
 			$db->setActive(true);
 			$sql="DELETE FROM {$this->sessionTableName} WHERE expire<".time();
-			try
-			{
+			try {
 				$db->createCommand($sql)->execute();
-			}
-			catch(Exception $e)
-			{
+			} catch (Exception $e) {
 				$this->createSessionTable($db,$this->sessionTableName);
 			}
 		}
@@ -211,8 +198,7 @@ WHERE expire>$now AND id=:id
 	{
 		// exception must be caught in session write handler
 		// http://us.php.net/manual/en/function.session-set-save-handler.php
-		try
-		{
+		try {
 			$expire=time()+$this->getTimeout();
 			$db=$this->getDbConnection();
 			$sql="SELECT id FROM {$this->sessionTableName} WHERE id=:id";
@@ -221,9 +207,7 @@ WHERE expire>$now AND id=:id
 			else
 				$sql="UPDATE {$this->sessionTableName} SET expire=$expire, data=:data WHERE id=:id";
 			$db->createCommand($sql)->bindValue(':id',$id)->bindValue(':data',$data)->execute();
-		}
-		catch(Exception $e)
-		{
+		} catch (Exception $e) {
 			if(YII_DEBUG)
 				echo $e->getMessage();
 			// it is too late to log an error message here

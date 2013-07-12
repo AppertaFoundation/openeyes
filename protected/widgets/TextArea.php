@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class TextArea extends BaseCWidget {
+class TextArea extends BaseCWidget
+{
 	public $rows;
 	public $cols;
 	public $button;
@@ -26,4 +27,3 @@ class TextArea extends BaseCWidget {
 	public $class;
 	public $no_label;
 }
-?>

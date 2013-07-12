@@ -22,7 +22,7 @@
 			<li<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?> class="active"<?php }?>>
 				<?php if (Yii::app()->getController()->action->id == preg_replace('/^\/admin\//','',$uri)) {?>
 					<span class="viewing"><?php echo $title?></span>
-				<?php }else{?>
+				<?php } else {?>
 					<?php echo CHtml::link($title,array($uri))?>
 				<?php }?>
 			</li>
@@ -36,10 +36,10 @@
 			<?php foreach ($items as $item => $uri) {
 				$e = explode('/',$uri);
 				$action = array_pop($e)?>
-				<li<?php if (Yii::app()->getController()->action->id == $action){?> class="active"<?php }?>>
-					<?php if (Yii::app()->getController()->action->id == $action){?>
+				<li<?php if (Yii::app()->getController()->action->id == $action) {?> class="active"<?php }?>>
+					<?php if (Yii::app()->getController()->action->id == $action) {?>
 						<span class="viewing"><?php echo $item?></span>
-					<?php }else{?>
+					<?php } else {?>
 						<?php echo CHtml::link($item,array($uri))?>
 					<?php }?>
 				</li>

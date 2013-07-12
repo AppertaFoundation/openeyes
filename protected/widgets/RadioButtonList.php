@@ -17,7 +17,8 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class RadioButtonList extends BaseCWidget {
+class RadioButtonList extends BaseCWidget
+{
 	public $name;
 	public $data;
 	public $selected_item;
@@ -26,11 +27,12 @@ class RadioButtonList extends BaseCWidget {
 	public $no_element = false;
 	public $label_above = false;
 
-	public function init() {
+	public function init()
+	{
 		if (empty($_POST)) {
 			if ($this->selected_item) {
 				$this->value = $this->selected_item;
-			} else if(isset($this->element->{$this->field})) {
+			} else if (isset($this->element->{$this->field})) {
 				$this->value = $this->element->{$this->field};
 			}
 		} else {
@@ -42,4 +44,3 @@ class RadioButtonList extends BaseCWidget {
 		}
 	}
 }
-?>

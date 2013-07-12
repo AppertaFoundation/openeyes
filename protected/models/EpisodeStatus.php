@@ -103,7 +103,8 @@ class EpisodeStatus extends BaseActiveRecord
 		));
 	}
 
-	public function getList() {
+	public function getList()
+	{
 		$episode_statuses = array();
 
 		foreach ($this->findAll(array('order'=>'`order` ASC')) as $episode_status) {

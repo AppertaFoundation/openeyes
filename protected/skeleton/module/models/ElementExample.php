@@ -59,7 +59,7 @@ class ElementExample extends BaseEventTypeElement
 			array('id, event_id', 'safe', 'on' => 'search'),
 		);
 	}
-	
+
 	/**
 	 * @return array relational rules.
 	 */
@@ -98,7 +98,7 @@ class ElementExample extends BaseEventTypeElement
 
 		$criteria->compare('id', $this->id, true);
 		$criteria->compare('event_id', $this->event_id, true);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria' => $criteria,
 		));

@@ -54,15 +54,14 @@ class AdminCommonOphthalmicDisorderController extends Controller
 	{
 		$model=new CommonOphthalmicDisorder;
 
-		if(isset($_POST['CommonOphthalmicDisorder']))
-		{
+		if (isset($_POST['CommonOphthalmicDisorder'])) {
 			if (isset($_POST['term'])) {
 				$disorder = Disorder::Model()->find('term = ?', array($_POST['term']));
 				if (isset($disorder)) {
 					$model->disorder_id = $disorder->id;
 					$model->subspecialty_id = $_POST['CommonOphthalmicDisorder']['subspecialty_id'];
 
-					if($model->save()) {
+					if ($model->save()) {
 						$this->redirect(array('view','id'=>$model->id));
 					}
 				} else {
@@ -85,8 +84,7 @@ class AdminCommonOphthalmicDisorderController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		if(isset($_POST['CommonOphthalmicDisorder']))
-		{
+		if (isset($_POST['CommonOphthalmicDisorder'])) {
 			$model->disorder_id = '';
 
 			if (isset($_POST['term'])) {
@@ -96,7 +94,7 @@ class AdminCommonOphthalmicDisorderController extends Controller
 					$model->disorder_id = $disorder->id;
 					$model->subspecialty_id = $_POST['CommonOphthalmicDisorder']['subspecialty_id'];
 
-					if($model->save()) {
+					if ($model->save()) {
 						$this->redirect(array('view','id'=>$model->id));
 					}
 				} else {
@@ -117,16 +115,14 @@ class AdminCommonOphthalmicDisorderController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
+		} else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
@@ -163,7 +159,7 @@ class AdminCommonOphthalmicDisorderController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=CommonOphthalmicDisorder::model()->findByPk((int)$id);
+		$model=CommonOphthalmicDisorder::model()->findByPk((int) $id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -175,8 +171,7 @@ class AdminCommonOphthalmicDisorderController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='common-ophthalmic-disorder-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='common-ophthalmic-disorder-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

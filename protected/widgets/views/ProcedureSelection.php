@@ -92,7 +92,7 @@
 			<?php
 			$totalDuration = 0;
 			?>
-			<div id="procedureList_<?php echo $identifier?>" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
+			<div id="procedureList_<?php echo $identifier?>" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 				<h4>
 					<?php
 					if (!empty($selected_procedures)) {
@@ -125,8 +125,8 @@
 					}
 					?>
 				</h4>
-			
-			<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
+
+			<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
 				<table class="grid">
 					<tfoot>
 						<tr>
@@ -147,7 +147,8 @@
 	// It is used to suppress procedures from the add a procedure inputs
 	var removed_stack_<?php echo $identifier?> = [<?php echo implode(',', $removed_stack); ?>];
 
-	function updateTotalDuration(identifier) {
+	function updateTotalDuration(identifier)
+	{
 		// update total duration
 		var totalDuration = 0;
 		$('#procedureList_'+identifier).children('h4').children('div.procedureItem').map(function() {
@@ -169,10 +170,11 @@
 		return false;
 	});
 
-	function removeProcedure(element, identifier) {
+	function removeProcedure(element, identifier)
+	{
 		var len = element.parent().parent().parent().children('div').length;
 		var procedure_id = element.parent().parent().find('input[type="hidden"]:first').val();
-		
+
 		element.parent().parent().remove();
 
 		<?php if ($durations) {?>
@@ -204,9 +206,9 @@
 
 		// Refresh the current procedure select box in case the removed procedure came from there
 		if ($('#subsection_id_'+identifier).length) {
-			// Procedures are in subsections, so fetch a clean list via ajax (easier than trying to work out if it's the right list) 
+			// Procedures are in subsections, so fetch a clean list via ajax (easier than trying to work out if it's the right list)
 			updateProcedureSelect(identifier);
-		} else if(popped) {
+		} else if (popped) {
 			// No subsections, so we should be safe to just push it back into the list
 			$('#select_procedure_id_'+identifier).append('<option value="'+popped["id"]+'">'+popped["name"]+'</option>').removeAttr('disabled');
 			sort_selectbox($('#select_procedure_id_'+identifier));
@@ -215,13 +217,13 @@
 		return false;
 	}
 
-	function selectSort(a, b) {		 
+	function selectSort(a, b)
+	{
 			if (a.innerHTML == rootItem) {
-					return -1;		
+					return -1;
+			} else if (b.innerHTML == rootItem) {
+					return 1;
 			}
-			else if (b.innerHTML == rootItem) {
-					return 1;	 
-			}				
 			return (a.innerHTML > b.innerHTML) ? 1 : -1;
 	};
 
@@ -230,7 +232,8 @@
 		updateProcedureSelect(m[1]);
 	});
 
-	function updateProcedureSelect(identifier) {
+	function updateProcedureSelect(identifier)
+	{
 		var subsection_field = $('select[id=subsection_id_'+identifier+']');
 		var subsection = subsection_field.val();
 		if (subsection != '') {
@@ -266,7 +269,7 @@
 			$('select[name=select_procedure_id_'+identifier+']').hide();
 		}
 	}
-	
+
 	$('select[id^="select_procedure_id"]').unbind('change').change(function() {
 		var m = $(this).attr('id').match(/^select_procedure_id_(.*)$/);
 		var identifier = m[1];
@@ -309,7 +312,8 @@
 		});
 	});
 
-	function ProcedureSelectionSelectByName(name, callback, identifier) {
+	function ProcedureSelectionSelectByName(name, callback, identifier)
+	{
 		$.ajax({
 			'url': baseUrl + '/procedure/details?durations=<?php echo $durations?'1':'0'?>&short_version=<?php echo $short_version?'1':'0'?>&identifier='+identifier,
 			'type': 'GET',

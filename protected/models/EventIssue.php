@@ -65,7 +65,8 @@ class EventIssue extends BaseActiveRecord
 		);
 	}
 
-	public function getText() {
+	public function getText()
+	{
 		return $this->issue->name;
 	}
 }

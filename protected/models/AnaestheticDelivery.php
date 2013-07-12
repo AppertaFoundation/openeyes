@@ -64,4 +64,3 @@ class AnaestheticDelivery extends BaseActiveRecord
 		return array();
 	}
 }
-?>

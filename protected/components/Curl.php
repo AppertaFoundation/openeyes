@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class Curl {
-	public function __construct() {
+class Curl
+{
+	public function __construct()
+	{
 		$this->curl = curl_init();
 		curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, 10);
@@ -27,7 +29,8 @@ class Curl {
 		curl_setopt($this->curl, CURLOPT_TIMEOUT, 60);
 	}
 
-	public function get($url,$referer=false) {
+	public function get($url,$referer=false)
+	{
 		curl_setopt($this->curl, CURLOPT_URL, $url);
 		curl_setopt($this->curl, CURLOPT_POST, false);
 		if ($referer) {
@@ -38,7 +41,8 @@ class Curl {
 		return curl_exec($this->curl);
 	}
 
-	public function post($url, $post, $referer=false) {
+	public function post($url, $post, $referer=false)
+	{
 		curl_setopt($this->curl, CURLOPT_URL, $url);
 		curl_setopt($this->curl, CURLOPT_POST, true);
 		if ($referer) {

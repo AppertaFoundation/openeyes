@@ -101,14 +101,16 @@ class ContactLabel extends BaseActiveRecord
 		));
 	}
 
-	static public function staffType() {
+	static public function staffType()
+	{
 		if ($site = Site::model()->findByPk(Yii::app()->session['selected_site_id'])) {
 			return ($site->institution->short_name ? $site->institution->short_name : $site->institution->name) . ' staff';
 		}
 		return 'Staff';
 	}
 
-	static public function getList() {
+	static public function getList()
+	{
 		$list = array();
 
 		if (!empty(Yii::app()->params['contact_labels'])) {

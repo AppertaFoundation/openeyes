@@ -17,7 +17,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<div class="whiteBox patientDetails"> 
+<div class="whiteBox patientDetails">
 	<div class="patient_actions">
 		<span class="aBtn"><a class="sprite showhide" href="#"><span class="hide"></span></a></span>
 	</div>
@@ -159,7 +159,7 @@
 					<div class="data contactType"></div>
 				</div>
 
-				<div> 
+				<div>
 					<div class="label">Institution:</div>
 					<div class="data"><?php echo CHtml::dropDownList('institution_id','',CHtml::listData(Institution::model()->findAll(array('order'=>'name')),'id','name'),array('empty'=>'- Select -'))?></div>
 				</div>

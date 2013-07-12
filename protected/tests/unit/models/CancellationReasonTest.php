@@ -20,7 +20,7 @@
 class CancellationReasonTest extends CDbTestCase
 {
 	public $model;
-	
+
 	public $fixtures = array(
 		'reasons' => 'CancellationReason'
 	);
@@ -35,18 +35,18 @@ class CancellationReasonTest extends CDbTestCase
 			array(array('text' => 'random'), 0, array()),
 		);
 	}
-	
+
 	public function setUp()
 	{
 		parent::setUp();
 		$this->model = new CancellationReason;
 	}
-	
+
 	public function testModel()
 	{
 		$this->assertEquals('CancellationReason', get_class(CancellationReason::model()), 'Class name should match model.');
 	}
-	
+
 	public function testAttributeLabels()
 	{
 		$expected = array(
@@ -55,7 +55,7 @@ class CancellationReasonTest extends CDbTestCase
 			'parent_id' => 'Parent',
 			'list_no' => 'List No',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
@@ -79,24 +79,24 @@ class CancellationReasonTest extends CDbTestCase
 		$this->assertEquals($numResults, $results->getItemCount());
 		$this->assertEquals($expectedResults, $data);
 	}
-	
+
 	public function testGetReasonsByListNumber_NoListNumber_ReturnsCorrectData()
 	{
 		$reason = $this->reasons['reason1'];
 		$expected = array($reason['id'] => $reason['text']);
-		
+
 		$this->assertEquals($expected, $this->model->getReasonsByListNumber(), 'Data returned should match.');
 	}
-	
+
 	public function dataProvider_ReasonLists()
-	{	
+	{
 		return array(
 			array(1, array('reason2', 'reason3')),
 			array(2, array('reason1')),
 			array(3, array()),
 		);
 	}
-	
+
 	/**
 	 * @dataProvider dataProvider_ReasonLists
 	 */
@@ -107,9 +107,9 @@ class CancellationReasonTest extends CDbTestCase
 			$reason = $this->reasons[$reasonKey];
 			$expected[$reason['id']] = $reason['text'];
 		}
-		
+
 		$result = $this->model->getReasonsByListNumber($listNo);
-		
+
 		$this->assertEquals($expected, $result, 'Data returned should match.');
 	}
 }

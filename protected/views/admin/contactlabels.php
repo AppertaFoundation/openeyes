@@ -38,7 +38,7 @@
 					<div class="sortable">
 						<?php
 						foreach ($contactlabels['items'] as $i => $contactlabel) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $contactlabel->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $contactlabel->id?>">
 								<span class="column_id"><?php echo $contactlabel->id?></span>
 								<span class="column_name"><?php echo $contactlabel->name?>&nbsp;</span>
 							</li>

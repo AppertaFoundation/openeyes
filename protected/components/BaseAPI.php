@@ -17,30 +17,32 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class BaseAPI {
-	
+class BaseAPI
+{
 	/*
 	 * gets the event type for the api instance
-	 * 
+	 *
 	 * @return EventType $event_type
 	 */
-	protected function getEventType() {
+	protected function getEventType()
+	{
 		if (!$event_type = EventType::model()->find('class_name=?',array(preg_replace('/_API$/','',get_class($this))))) {
 			throw new Exception("Unknown event type or incorrectly named API class: ".get_class($this));
 		}
-		return $event_type; 
+		return $event_type;
 	}
-	
+
 	/*
 	 * gets the element of type $element for the given patient in the given episode
-	 * 
+	 *
 	 * @param Patient $patient - the patient
 	 * @param Episode $episode - the episode
 	 * @param string $element - the element class
-	 * 
+	 *
 	 * @return unknown - the element type requested, or null
 	 */
-	public function getElementForLatestEventInEpisode($patient, $episode, $element) {
+	public function getElementForLatestEventInEpisode($patient, $episode, $element)
+	{
 		$event_type = $this->getEventType();
 
 		if ($event = $episode->getMostRecentEventByType($event_type->id)) {
@@ -54,25 +56,27 @@ class BaseAPI {
 				->find($criteria);
 		}
 	}
-	
+
 	/*
 	 * gets all the events in the episode for the event type this API is for, for the given patient, most recent first.
-	 * 
+	 *
 	 * @param Patient $patient - the patient
 	 * @param Episode $episode - the episode
-	 * 
+	 *
 	 * @return array - list of events of the type for this API instance
 	 */
-	public function getEventsInEpisode($patient, $episode) {
+	public function getEventsInEpisode($patient, $episode)
+	{
 		$event_type = $this->getEventType();
-		
+
 		if ($episode) {
 			return $episode->getAllEventsByType($event_type->id);
 		}
 		return array();
 	}
 
-	public function getMostRecentEventInEpisode($episode_id, $event_type_id) {
+	public function getMostRecentEventInEpisode($episode_id, $event_type_id)
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->compare('episode_id',$episode_id);
@@ -85,7 +89,8 @@ class BaseAPI {
 	 * gets the most recent instance of a specific element in the current episode
 	 *
 	 */
-	public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model) {
+	public function getMostRecentElementInEpisode($episode_id, $event_type_id, $model)
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('event_type_id',$event_type_id);
 		$criteria->compare('episode_id',$episode_id);
@@ -104,6 +109,7 @@ class BaseAPI {
 	 * Stub method to prevent crashes when getEpisodeHTML() is called for every installed module
 	 *
 	 */
-	public function getEpisodeHTML($episode_id) {
+	public function getEpisodeHTML($episode_id)
+	{
 	}
 }

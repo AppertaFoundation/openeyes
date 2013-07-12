@@ -17,10 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DisorderController extends BaseController {
+class DisorderController extends BaseController
+{
 	public $layout='column2';
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			// Level 2 or above can do anything
 			array('allow',
@@ -30,20 +32,21 @@ class DisorderController extends BaseController {
 			array('deny'),
 		);
 	}
-	
+
 	/**
 	 * Lists all disorders for a given search term.
 	 */
-	public function actionAutocomplete() {
-		if(Yii::app()->request->isAjaxRequest) {
+	public function actionAutocomplete()
+	{
+		if (Yii::app()->request->isAjaxRequest) {
 			$criteria = new CDbCriteria();
 			$params = array();
-			if(isset($_GET['term']) && $term = $_GET['term']) {
+			if (isset($_GET['term']) && $term = $_GET['term']) {
 				$criteria->addCondition('LOWER(term) LIKE :term');
 				$params[':term'] = '%' . strtolower(strtr($term, array('%' => '\%'))) . '%';
 			}
 			$criteria->order = 'term';
-			
+
 			// Limit results
 			$criteria->limit = '200';
 			if (@$_GET['code']) {
@@ -52,10 +55,10 @@ class DisorderController extends BaseController {
 			}
 
 			$criteria->params = $params;
-			
+
 			$disorders = Disorder::model()->findAll($criteria);
 			$return = array();
-			foreach($disorders as $disorder) {
+			foreach ($disorders as $disorder) {
 				$return[] = array(
 						'label' => $disorder->term,
 						'value' => $disorder->term,
@@ -66,12 +69,13 @@ class DisorderController extends BaseController {
 		}
 	}
 
-	public function actionDetails() {
+	public function actionDetails()
+	{
 		if (!isset($_REQUEST['name'])) {
 			echo CJavaScript::jsonEncode(false);
 		} else {
 			$disorder = Disorder::model()->find('fully_specified_name = ? OR term = ?', array($_REQUEST['name'], $_REQUEST['name']));
-			if($disorder) {
+			if ($disorder) {
 				echo $disorder->id;
 			} else {
 				echo CJavaScript::jsonEncode(false);
@@ -79,7 +83,8 @@ class DisorderController extends BaseController {
 		}
 	}
 
-	public function actionIsCommonOphthalmic($id) {
+	public function actionIsCommonOphthalmic($id)
+	{
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		if ($cd = CommonOphthalmicDisorder::model()->find('disorder_id=? and subspecialty_id=?',array($id,$firm->serviceSubspecialtyAssignment->subspecialty_id))) {

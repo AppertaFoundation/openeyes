@@ -34,7 +34,7 @@ class LetterOutService
 		}
 	}
 
-	/** 
+	/**
 	 * Get the default text for the 'Re:' field when they are creating a new letterout.
 	 *
 	 * @return string
@@ -213,7 +213,7 @@ class LetterOutService
 
 		// Add this user
 		$users[$user->title . ' ' . $user->first_name . ' ' . $user->last_name . ' ' . $user->qualifications . ', ' . $user->role] =
-					$user->title . ' ' . $user->first_name . ' ' . $user->last_name;	
+					$user->title . ' ' . $user->first_name . ' ' . $user->last_name;
 
 		// If the user has global firm rights they can see all firms and all users
 		if ($user->global_firm_rights) {
@@ -274,7 +274,7 @@ class LetterOutService
 					->queryAll();
 
 				foreach ($results2 as $result2) {
-					$user[$results2['title'] . ' ' . $results2['first_name'] . ' ' . $results['last_name'] . ' ' . $result2['qualifications'] . ', ' . $result2['role']] = 
+					$user[$results2['title'] . ' ' . $results2['first_name'] . ' ' . $results['last_name'] . ' ' . $result2['qualifications'] . ', ' . $result2['role']] =
 						$result2['title'] . ' ' . $result2['first_name'] . ' ' . $result2['last_name'];
 				}
 			}
@@ -322,7 +322,7 @@ class LetterOutService
 
 		$contacts = $this->patient->contacts;
 
-		foreach($contacts as $contact) {
+		foreach ($contacts as $contact) {
 			$identifier = $this->stripNewlines($contact->first_name . ' ' . $contact->last_name);
 
 			if (isset($contact->gp)) {
@@ -398,7 +398,7 @@ FIELDS WE MIGHT BE ABLE TO DO:
 opl - operations listed for - source unknown
 */
 
-		foreach($this->substitutions as $key => $sub) {
+		foreach ($this->substitutions as $key => $sub) {
 			$phrase = preg_replace('/\[' . $key . '\]/', $sub, $phrase);
 
 			$sub = ucfirst($sub);
@@ -408,7 +408,7 @@ opl - operations listed for - source unknown
 
 		return $phrase;
 	}
-	
+
 	public function getFirmId()
 	{
 		return Yii::app()->session['selected_firm_id'];

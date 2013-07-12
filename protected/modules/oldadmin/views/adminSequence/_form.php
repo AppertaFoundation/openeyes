@@ -91,29 +91,29 @@
 			<?php echo $form->error($model,'end_date'); ?>
 		</div>
 	</div>
-	
+
 	<div class="row nolabel">
 		<div class="field">
-			<input id="Sequence_consultant" value="1" type="checkbox" name="Sequence[consultant]" 
-			<?php if($model->consultant) { ?>checked="checked"<?php } ?> />
+			<input id="Sequence_consultant" value="1" type="checkbox" name="Sequence[consultant]"
+			<?php if ($model->consultant) { ?>checked="checked"<?php } ?> />
 			<?php echo $form->labelEx($model,'consultant'); ?>
 			<?php echo $form->error($model,'consultant'); ?>
 		</div>
 	</div>
-	
+
 	<div class="row nolabel">
 		<div class="field">
-			<input id="Sequence_paediatric" value="1" type="checkbox" name="Sequence[paediatric]" 
-			<?php if($model->paediatric) { ?>checked="checked"<?php } ?> />
+			<input id="Sequence_paediatric" value="1" type="checkbox" name="Sequence[paediatric]"
+			<?php if ($model->paediatric) { ?>checked="checked"<?php } ?> />
 			<?php echo $form->labelEx($model,'paediatric'); ?>
 			<?php echo $form->error($model,'paediatric'); ?>
 		</div>
 	</div>
-	
+
 	<div class="row nolabel">
 		<div class="field">
-			<input id="Sequence_anaesthetist" value="1" type="checkbox" name="Sequence[anaesthetist]" 
-			<?php if($model->anaesthetist) { ?>checked="checked"<?php } ?> />
+			<input id="Sequence_anaesthetist" value="1" type="checkbox" name="Sequence[anaesthetist]"
+			<?php if ($model->anaesthetist) { ?>checked="checked"<?php } ?> />
 			<?php echo $form->labelEx($model,'anaesthetist'); ?>
 			<?php echo $form->error($model,'anaesthetist'); ?>
 		</div>
@@ -121,8 +121,8 @@
 
 	<div class="row nolabel">
 		<div class="field">
-			<input id="Sequence_general_anaesthetic" value="1" type="checkbox" name="Sequence[general_anaesthetic]" 
-			<?php if($model->general_anaesthetic) { ?>checked="checked"<?php } ?> />
+			<input id="Sequence_general_anaesthetic" value="1" type="checkbox" name="Sequence[general_anaesthetic]"
+			<?php if ($model->general_anaesthetic) { ?>checked="checked"<?php } ?> />
 			<?php echo $form->labelEx($model,'general_anaesthetic'); ?>
 			<?php echo $form->error($model,'general_anaesthetic'); ?>
 		</div>
@@ -139,7 +139,7 @@
 	<div id="week_selection" class="row">
 		<?php echo $form->labelEx($model,'week_selection'); ?>
 		<div class="field">
-			<?php 
+			<?php
 			$i = 0;
 			foreach ($model->getWeekSelectionOptions() as $value => $name) { ?>
 			<input id="Sequence_week_selection_<?php echo $i; ?>" value="<?php echo $value; ?>" type="checkbox" name="Sequence[week_selection][]"<?php
@@ -158,15 +158,16 @@
 				toggleWeekSelection()
 			});
 		});
-		function toggleWeekSelection() {
-			if($('#Sequence_repeat_interval').val() == 5) {
+		function toggleWeekSelection()
+		{
+			if ($('#Sequence_repeat_interval').val() == 5) {
 				$('#week_selection').show();
 			} else {
 				$('#week_selection').hide();
 			}
 		}
 	</script>
-	
+
 	<div class="row buttons">
 		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
 	</div>

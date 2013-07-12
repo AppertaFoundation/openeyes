@@ -79,6 +79,6 @@
 		$('#<?php echo $class . "_" . $field . "_search"?>').live('click', function(e) {
 			$('#<?php echo $class . "_" . $field . "_searchbox"?>').removeClass('hidden').focus();
 			e.preventDefault();
-		}); 
+		});
 	});
 </script>

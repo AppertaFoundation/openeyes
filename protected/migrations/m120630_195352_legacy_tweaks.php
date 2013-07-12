@@ -2,7 +2,8 @@
 
 class m120630_195352_legacy_tweaks extends CDbMigration
 {
-	public function up() {
+	public function up()
+	{
 		$this->addColumn('episode','legacy',"tinyint(1) unsigned DEFAULT '0'");
 		$this->alterColumn('event','episode_id','int(10) unsigned DEFAULT NULL');
 		$this->createIndex('idx_event_episode_id', 'event', 'episode_id');
@@ -10,7 +11,8 @@ class m120630_195352_legacy_tweaks extends CDbMigration
 		return true;
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropColumn('episode','legacy');
 		$this->alterColumn('event','episode_id','int(10) unsigned NOT NULL');
 		$this->dropIndex('idx_event_episode_id', 'event');

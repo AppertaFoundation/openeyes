@@ -157,7 +157,7 @@ class PhraseBySubspecialty extends BaseActiveRecord
 				-- set of phrase names associated with phrases by subspecialty defined for the given section and subspecialty; in short we are subtracting this set from the previous since you cant override that which is already overridden
 				select phrase_name.id, phrase_name.name from phrase_name
 				join phrase_by_subspecialty on phrase_name.id=phrase_by_subspecialty.phrase_name_id and phrase_by_subspecialty.subspecialty_id=:subspecialtyid and phrase_by_subspecialty.section_id=:sectionid
-			) as t2	
+			) as t2
 			on t1.id=t2.id where t2.id is null';
 
 		$results = PhraseName::model()->findAllBySql($sql, $params);

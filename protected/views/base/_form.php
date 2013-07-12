@@ -34,7 +34,7 @@ if (!Yii::app()->user->isGuest) {
 	}
 	$user = Yii::app()->session['user'];
 	$menu = array();
-	foreach(Yii::app()->params['menu_bar_items'] as $menu_item) {
+	foreach (Yii::app()->params['menu_bar_items'] as $menu_item) {
 		$menu[$menu_item['position']] = $menu_item;
 	}
 	ksort($menu);
@@ -42,7 +42,7 @@ if (!Yii::app()->user->isGuest) {
 <div id="user_panel">
 	<div id="user_nav" class="clearfix">
 		<ul>
-			<?php foreach($menu as $item) {?>
+			<?php foreach ($menu as $item) {?>
 				<li>
 					<?php if ($uri == $item['uri']) {?>
 						<span class="selected"><?php echo $item['title']?></span>

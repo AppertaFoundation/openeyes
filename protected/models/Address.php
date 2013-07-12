@@ -34,31 +34,35 @@
  * @property string $county
  * @property integer $country_id
  * @property string $email
- * 
+ *
  * The following are the available model relations:
  * @property Parent $parent
  * @property Country $country
  */
-class Address extends BaseActiveRecord {
+class Address extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Address the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'address';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('address1, address2, city, county', 'length', 'max' => 255),
 			array('postcode', 'length', 'max' => 10),
@@ -71,7 +75,8 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array(
 			// TODO: Make this work
 			//'parent' => array(self::BELONGS_TO, $this->parent_class, 'parent_id'),
@@ -82,7 +87,8 @@ class Address extends BaseActiveRecord {
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
 			'id' => 'ID',
 			'address1' => 'Address1',
@@ -99,25 +105,29 @@ class Address extends BaseActiveRecord {
 	 * Is this a current address (not expired or in the future)?
 	 * @return boolean
 	 */
-	public function isCurrent() {
+	public function isCurrent()
+	{
 		return (!$this->date_start || strtotime($this->date_start) <= time()) && (!$this->date_end || strtotime($this->date_end) >= time());
 	}
-	
-	public function getLetterLine($include_country=true) {
+
+	public function getLetterLine($include_country=true)
+	{
 		return implode(', ', $this->getLetterArray($include_country));
 	}
 
 	/**
 	 * @return string First line of address in a dropdown friendly form
 	 */
-	public function getSummary() {
+	public function getSummary()
+	{
 		return str_replace("\n", ', ', $this->address1);
 	}
-	
+
 	/**
-	 * @return array Address as an array 
+	 * @return array Address as an array
 	 */
-	public function getLetterArray($include_country=true, $name=false) {
+	public function getLetterArray($include_country=true, $name=false)
+	{
 		$address = array();
 
 		if ($name) {
@@ -129,9 +139,9 @@ class Address extends BaseActiveRecord {
 				$line = $this->$field;
 				if ($field == 'address1') {
 					$line = str_replace(',', '', $line);
-					foreach(explode("\n",$line) as $part) {
+					foreach (explode("\n",$line) as $part) {
 						$address[] = $part;
-					} 
+					}
 				} else {
 					$address[] = $line;
 				}
@@ -173,7 +183,7 @@ class Address extends BaseActiveRecord {
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 	public function beforeSave()
 	{
 		if (parent::beforeSave()) {

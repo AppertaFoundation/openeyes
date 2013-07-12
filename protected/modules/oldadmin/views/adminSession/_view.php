@@ -30,11 +30,11 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('FirmName')); ?>:</b>
 	<?php echo CHtml::encode($data->FirmName); ?>
 	<br/>
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('TheatreName')); ?>:</b>
 	<?php echo CHtml::encode($data->TheatreName); ?>
 	<br/>
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('date')); ?>:</b>
 	<?php echo CHtml::encode($data->NHSDate('date')); ?>
 	<br />
@@ -54,22 +54,22 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('anaesthetist')); ?>:</b>
 	<?php echo ($data->anaesthetist) ? 'Yes' : 'No'; ?>
 	<br />
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('general_anaesthetic')); ?>:</b>
 	<?php echo ($data->general_anaesthetic) ? 'Yes' : 'No'; ?>
 	<br />
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('comments')); ?>:</b>
 	<?php echo CHtml::encode($data->comments); ?>
 	<br/>
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('status')); ?>:</b>
 	<?php echo $data->statusText;
 	?>
 	<br/>
-	
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('bookingCount')); ?>:</b>
 	<?php echo CHtml::encode($data->bookingCount); ?>
 	<br/>
-	
+
 </div>

@@ -44,7 +44,7 @@
 				</li>
 				<?php
 				foreach ($location->patients as $i => $patient) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $patient->id?>">
+					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $patient->id?>">
 						<span class="column_hos_num"><?php echo $patient->hos_num?>&nbsp;</span>
 						<span class="column_title"><?php echo $patient->title?>&nbsp;</span>
 						<span class="column_first_name"><?php echo $patient->first_name?>&nbsp;</span>

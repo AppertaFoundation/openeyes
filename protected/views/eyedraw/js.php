@@ -155,12 +155,9 @@
 		var ua = window.navigator.userAgent;
 		index = ua.indexOf("Firefox");
 
-		if (index > 0)
-		{
+		if (index > 0) {
 			return true;
-		}
-			else
-		{
+		} else {
 			return false;
 		}
 	}

@@ -18,7 +18,7 @@
  */
 
 $this->breadcrumbs=array(
-	'Global phrases' => array('/admin/phrase/index'), 
+	'Global phrases' => array('/admin/phrase/index'),
 	$sectionName
 );
 $this->menu=array(

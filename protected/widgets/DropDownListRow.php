@@ -17,13 +17,15 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DropDownListRow extends BaseCWidget {
+class DropDownListRow extends BaseCWidget
+{
 	public $fields;
 	public $datas;
 	public $htmlOptions;
 	public $values = array();
 
-	public function init() {
+	public function init()
+	{
 		foreach ($this->fields as $i => $field) {
 			if (empty($_POST)) {
 				if (isset($this->element->$field)) {
@@ -39,4 +41,3 @@ class DropDownListRow extends BaseCWidget {
 		}
 	}
 }
-?>

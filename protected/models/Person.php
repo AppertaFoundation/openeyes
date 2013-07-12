@@ -44,7 +44,8 @@ class Person extends BaseActiveRecord
 		return 'person';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',

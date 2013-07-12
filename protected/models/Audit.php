@@ -146,7 +146,8 @@ class Audit extends BaseActiveRecord
 		));
 	}
 
-	public function save($runValidation=true, $attributes=null, $allow_overriding=false) {
+	public function save($runValidation=true, $attributes=null, $allow_overriding=false)
+	{
 		if (isset($_SERVER['REMOTE_ADDR'])) {
 			if (!$ipaddr = AuditIPAddr::model()->find('name=?',array($_SERVER['REMOTE_ADDR']))) {
 				$ipaddr = new AuditIPAddr;
@@ -185,7 +186,8 @@ class Audit extends BaseActiveRecord
 		return parent::save($runValidation, $attributes, $allow_overriding);
 	}
 
-	public function getColour() {
+	public function getColour()
+	{
 		if ($this->action) {
 			switch ($this->action->name) {
 				case 'login-successful':
@@ -199,7 +201,8 @@ class Audit extends BaseActiveRecord
 		}
 	}
 
-	public static function add($target, $action, $data=null, $log=false, $properties=array()) {
+	public static function add($target, $action, $data=null, $log=false, $properties=array())
+	{
 		if (!$_target = AuditType::model()->find('name=?',array($target))) {
 			$_target = new AuditType;
 			$_target->name = $target;

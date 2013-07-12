@@ -50,7 +50,8 @@ class Institution extends BaseActiveRecord
 		return 'institution';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -115,5 +116,5 @@ class Institution extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 }

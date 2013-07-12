@@ -1313,7 +1313,7 @@ class ElementOperationTest extends CDbTestCase
 
 	protected function getWeekday($index)
 	{
-		switch($index) {
+		switch ($index) {
 			case 1:
 				$weekday = 'Monday';
 				break;

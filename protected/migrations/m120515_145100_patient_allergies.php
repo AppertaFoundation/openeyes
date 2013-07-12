@@ -1,9 +1,9 @@
 <?php
 
-class m120515_145100_patient_allergies extends CDbMigration {
-
-	public function up() {
-
+class m120515_145100_patient_allergies extends CDbMigration
+{
+	public function up()
+	{
 		// Create drug set tables
 		$this->createTable('patient_allergy_assignment',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -16,17 +16,20 @@ class m120515_145100_patient_allergies extends CDbMigration {
 
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('patient_allergy_assignment_patient_id_fk', 'patient_allergy_assignment');
 		$this->dropForeignKey('patient_allergy_assignment_allergy_id_fk', 'patient_allergy_assignment');
 		$this->dropTable('patient_allergy_assignment');
 	}
 
-	public function safeUp() {
+	public function safeUp()
+	{
 		$this->up();
 	}
 
-	public function safeDown() {
+	public function safeDown()
+	{
 		$this->down();
 	}
 
