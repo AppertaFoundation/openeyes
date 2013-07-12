@@ -6,8 +6,6 @@ class m130320_144412_contacts_refactoring extends ParallelMigration
 
 	public function up()
 	{
-		$this->checkForkPossible();
-
 		$this->createTable('person',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'contact_id' => 'int(10) unsigned NOT NULL',

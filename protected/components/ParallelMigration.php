@@ -18,7 +18,7 @@
  */
 
 class ParallelMigration extends CDbMigration {
-	public $canFork = false;
+	public $canFork = null;
 	public $threads = 8;
 	public $pids = array();
 	public $lockFP;
@@ -63,6 +63,10 @@ class ParallelMigration extends CDbMigration {
 	}
 
 	public function parallelise($method, $data) {
+		if ($this->canFork === null) {
+			$this->checkForkPossible();
+		}
+
 		if (!$this->canFork) {
 			$this->$method($data);
 		} else {
