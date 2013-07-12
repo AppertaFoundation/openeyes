@@ -22,7 +22,7 @@ $uri = preg_replace('/^\//','',preg_replace('/\/$/','',$_SERVER['REQUEST_URI']))
 if (!Yii::app()->user->isGuest) {
 	$user = User::model()->findByPk(Yii::app()->user->id);
 	if (!preg_match('/^profile\//',$uri)) {
-		if (!$user->has_selected_firms && empty(Yii::app()->session['shown_reminder'])) {
+		if (!$user->has_selected_firms && !$user->global_firm_rights && empty(Yii::app()->session['shown_reminder'])) {
 			Yii::app()->session['shown_reminder'] = true;
 			$this->widget('SiteAndFirmWidgetReminder');
 		} else if (!empty(Yii::app()->session['confirm_site_and_firm'])) {
