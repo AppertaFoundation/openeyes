@@ -17,12 +17,14 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class DatePicker extends BaseCWidget {
+class DatePicker extends BaseCWidget
+{
 	public $name;
 	public $options;
 	public $htmlOptions;
 
-	public function run() {
+	public function run()
+	{
 		if (empty($_POST)) {
 			if ($this->element->{$this->field}) {
 				if (preg_match('/^[0-9]+ [a-zA-Z]+ [0-9]+$/',$this->element->{$this->field})) {
@@ -40,16 +42,16 @@ class DatePicker extends BaseCWidget {
 		} else {
 			if ($this->name) {
 				$this->value = $this->getPOSTValue($this->name);
-			}
-			else {
+			} else {
 				$this->value = $_POST[get_class($this->element)][$this->field];
 			}
 		}
 
 		parent::run();
 	}
-	
-	public function getPOSTValue($name) {
+
+	public function getPOSTValue($name)
+	{
 		$data = $_POST;
 		foreach (explode('[',$name) as $i => $key) {
 			$lkup = $key;
@@ -60,7 +62,5 @@ class DatePicker extends BaseCWidget {
 		}
 		return $data;
 	}
-	
-}
 
-?>
+}

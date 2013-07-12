@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ReportsCommand extends CConsoleCommand {
-	public function run($args) {
+class ReportsCommand extends CConsoleCommand
+{
+	public function run($args)
+	{
 		Yii::import('application.modules.Reports.models.*');
 
 		if (!$query_type_events = ReportQueryType::model()->find('name=?',array('Events'))) {
@@ -278,7 +280,7 @@ class ReportsCommand extends CConsoleCommand {
 				'display_order' => 3,
 				'show_scale' => 0,
 			));
-			
+
 			$graph->addItem(array(
 				'report_item_id' => $avg_complications->id,
 				'name' => 'Average rate',
@@ -409,7 +411,7 @@ class ReportsCommand extends CConsoleCommand {
 				'display_order' => 2,
 				'link' => '/patient/episodes/{patient_id}',
 			));
-	
+
 			$operations->addListItem(array(
 				'data_type_id' => $rimt_string->id,
 				'name' => 'First name',
@@ -417,7 +419,7 @@ class ReportsCommand extends CConsoleCommand {
 				'subtitle' => 'Patient first name',
 				'display_order' => 3,
 			));
-	
+
 			$operations->addListItem(array(
 				'data_type_id' => $rimt_string->id,
 				'name' => 'Last name',
@@ -425,7 +427,7 @@ class ReportsCommand extends CConsoleCommand {
 				'subtitle' => 'Patient last name',
 				'display_order' => 4,
 			));
-	
+
 			$procedures = $operations->addListItem(array(
 				'data_type_id' => $rimt_list_from_element_relation->id,
 				'name' => 'Procedures',
@@ -435,7 +437,7 @@ class ReportsCommand extends CConsoleCommand {
 				'element_id' => $el_proclist->id,
 				'element_relation' => 'procedures',
 			));
-	
+
 				$procedures->addListItem(array(
 					'data_type_id' => $rimt_element_relation->id,
 					'name' => 'procedure',

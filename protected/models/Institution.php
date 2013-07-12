@@ -18,18 +18,18 @@
  */
 
 /**
- * This is the model class for table "firm".
+ * This is the model class for table "institution".
  *
- * The followings are the available columns in table 'firm':
+ * The followings are the available columns in table 'institution':
  * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
- * @property string $name
+ * @property string $remote_id
+ * @property string $short_name
+ * @property string $contact_id
+ * @property string $source_id
  *
  * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property Contact $contact
+ * @property Site[] $sites
  */
 class Institution extends BaseActiveRecord
 {
@@ -50,7 +50,8 @@ class Institution extends BaseActiveRecord
 		return 'institution';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -115,5 +116,5 @@ class Institution extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-	
+
 }

@@ -20,11 +20,11 @@
 ?>
 <div class="form">
 
-<?php 
+<?php
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'phrase-by-firm-form',
 	'enableAjaxValidation'=>false,
-)); 
+));
 
 if (isset($_GET['section_id'])) {
 	$model->section_id = $_GET['section_id'];
@@ -48,7 +48,7 @@ if (isset($_GET['section_id'])) {
 		<?php
 			echo CHtml::label('New phrase name', 'name');
 			echo CHtml::textField('PhraseName','');
-		?>	
+		?>
 
         </div>
         <?php } else { ?>

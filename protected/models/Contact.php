@@ -28,7 +28,7 @@
  * @property string $first_name
  * @property string $last_name
  * @property string $qualifications
- * 
+ *
  * The following are the available model relations:
  * @property Gp $gp
  * @property Consultant $consultant
@@ -36,31 +36,35 @@
  * @property Address $address Primary address
  * @property HomeAddress $homeAddress Home address
  * @property CorrespondAddress $correspondAddress Correspondence address
- * 
+ *
  * The following are pseudo (calculated) fields
  * @property string $SalutationName
  * @property string $FullName
  */
-class Contact extends BaseActiveRecord {
+class Contact extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Contact the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'contact';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('nick_name', 'length', 'max' => 80),
 			array('title, first_name, last_name, nick_name, primary_phone, qualifications, contact_label_id', 'safe'),
@@ -71,7 +75,8 @@ class Contact extends BaseActiveRecord {
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array(
 			'consultant' => array(self::HAS_ONE, 'Consultant', 'contact_id'),
 			'gp' => array(self::HAS_ONE, 'Gp', 'contact_id'),
@@ -137,28 +142,33 @@ class Contact extends BaseActiveRecord {
 	/**
 	 * @return string Full name
 	 */
-	public function getFullName() {
+	public function getFullName()
+	{
 		return trim(implode(' ',array($this->title, $this->first_name, $this->last_name)));
 	}
-	
-	public function getReversedFullName() {
+
+	public function getReversedFullName()
+	{
 		return trim(implode(' ',array($this->title, $this->last_name, $this->first_name)));
 	}
 
 	/**
 	 * @return string Salutaion name
 	 */
-	public function getSalutationName() {
+	public function getSalutationName()
+	{
 		return $this->title . ' ' . $this->last_name;
 	}
 
-	public function contactLine($location=false) {
+	public function contactLine($location=false)
+	{
 		$line = $this->fullName.' ('.$this->label->name;
 		if ($location) $line .= ', '.$location;
 		return $line.')';
 	}
 
-	public function findByLabel($term, $label, $exclude=false) {
+	public function findByLabel($term, $label, $exclude=false)
+	{
 		if (!$cl = ContactLabel::model()->find('name=?',array($label))) {
 			throw new Exception("Unknown contact label: $label");
 		}
@@ -193,7 +203,8 @@ class Contact extends BaseActiveRecord {
 		return $contacts;
 	}
 
-	public function getType() {
+	public function getType()
+	{
 		foreach (array('User','Gp','Patient','Person') as $model) {
 			if ($model::model()->find('contact_id=?',array($this->id))) {
 				return $model;

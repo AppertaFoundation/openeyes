@@ -17,31 +17,34 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class WebUser extends CWebUser {
-
+class WebUser extends CWebUser
+{
 	private $_model;
 
-	public function getAccess_Level(){
-		if($user = $this->loadUser()) {
+	public function getAccess_Level()
+	{
+		if ($user = $this->loadUser()) {
 			return $user->access_level;
 		} else {
 			return 0;
 		}
 	}
 
-	public function isAdmin(){
-		if($user = $this->loadUser()) {
+	public function isAdmin()
+	{
+		if ($user = $this->loadUser()) {
 			return intval($user->role) == 1;
 		} else {
 			return false;
 		}
 	}
 
-	protected function loadUser() {
-		if($this->_model === null) {
+	protected function loadUser()
+	{
+		if ($this->_model === null) {
 			$this->_model = User::model()->findByPk(Yii::app()->user->id);
 		}
 		return $this->_model;
 	}
-	
+
 }

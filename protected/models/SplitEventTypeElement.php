@@ -17,18 +17,20 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class SplitEventTypeElement extends BaseEventTypeElement {
-
+class SplitEventTypeElement extends BaseEventTypeElement
+{
 	// these are legacy and should be removed one switch to using the costants on the Eye model
 	const LEFT = Eye::LEFT;
 	const RIGHT = Eye::RIGHT;
 	const BOTH = Eye::BOTH;
-	
-	public function hasLeft() {
+
+	public function hasLeft()
+	{
 		return $this->eye && $this->eye->id != Eye::RIGHT;
 	}
 
-	public function hasRight() {
+	public function hasRight()
+	{
 		return $this->eye && $this->eye->id != Eye::LEFT;
 	}
 
@@ -37,7 +39,8 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 	 * e.g. 'example' would indicate 'left_example' and 'right_example'
 	 * @return array:
 	 */
-	public function sidedFields() {
+	public function sidedFields()
+	{
 		return array();
 	}
 
@@ -46,16 +49,17 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 	 * Used for initialising sided fields
 	 * @return array
 	 */
-	public function sidedDefaults() {
+	public function sidedDefaults()
+	{
 		return array();
 	}
 
-	protected function beforeSave() {
-
+	protected function beforeSave()
+	{
 		// Need to clear any "sided" fields if that side isn't active
-		if($this->eye->id != Eye::BOTH) {
-			foreach($this->sidedFields() as $field_suffix) {
-				if($this->eye->id == Eye::LEFT) {
+		if ($this->eye->id != Eye::BOTH) {
+			foreach ($this->sidedFields() as $field_suffix) {
+				if ($this->eye->id == Eye::LEFT) {
 					$this->{'right_'.$field_suffix} = null;
 				} else {
 					$this->{'left_'.$field_suffix} = null;
@@ -69,13 +73,15 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 	/**
 	 * Sided fields have the same defaults on left and right
 	 */
-	public function setDefaultOptions() {
+	public function setDefaultOptions()
+	{
 		$this->setSideDefaultOptions('left');
 		$this->setSideDefaultOptions('right');
 	}
 
-	protected function setSideDefaultOptions($side) {
-		foreach($this->sidedDefaults() as $field => $default) {
+	protected function setSideDefaultOptions($side)
+	{
+		foreach ($this->sidedDefaults() as $field => $default) {
 			$this->{$side.'_'.$field} = $default;
 		}
 	}
@@ -83,13 +89,13 @@ class SplitEventTypeElement extends BaseEventTypeElement {
 	/**
 	 * Used to initialise the missing side in an update form.
 	 */
-	public function setUpdateOptions() {
-		if($this->eye->id == Eye::LEFT) {
+	public function setUpdateOptions()
+	{
+		if ($this->eye->id == Eye::LEFT) {
 			$this->setSideDefaultOptions('right');
-		} else if($this->eye->id == Eye::RIGHT) {
+		} elseif ($this->eye->id == Eye::RIGHT) {
 			$this->setSideDefaultOptions('left');
 		}
 	}
 
 }
-

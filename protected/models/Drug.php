@@ -58,7 +58,8 @@ class Drug extends BaseActiveRecord
 		return 'drug';
 	}
 
-	public function defaultScope() {
+	public function defaultScope()
+	{
 		if ($this->default_scope) {
 			return array(
 				'condition' => 'discontinued = 0',
@@ -68,7 +69,8 @@ class Drug extends BaseActiveRecord
 		}
 	}
 
-	public function scopes() {
+	public function scopes()
+	{
 		return array(
 			'discontinued' => array(
 				'condition' => 'discontinued in (0,1)',
@@ -76,7 +78,8 @@ class Drug extends BaseActiveRecord
 		);
 	}
 
-	public function discontinued() {
+	public function discontinued()
+	{
 		$this->default_scope = false;
 		return $this;
 	}
@@ -124,22 +127,24 @@ class Drug extends BaseActiveRecord
 		);
 	}
 
-	public function getLabel() {
-		if($this->preservative_free) {
+	public function getLabel()
+	{
+		if ($this->preservative_free) {
 			return $this->name . ' (No Preservative)';
 		} else {
 			return $this->name;
 		}
 	}
-	
-	public function getTallmanLabel() {
-		if($this->preservative_free) {
+
+	public function getTallmanLabel()
+	{
+		if ($this->preservative_free) {
 			return $this->tallman . ' (No Preservative)';
 		} else {
 			return $this->tallman;
 		}
 	}
-	
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
@@ -159,7 +164,8 @@ class Drug extends BaseActiveRecord
 		));
 	}
 
-	public function listBySubspecialty($subspecialty_id) {
+	public function listBySubspecialty($subspecialty_id)
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('subspecialty_id',$subspecialty_id);
 		$criteria->order = 'name asc';

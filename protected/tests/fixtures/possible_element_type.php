@@ -34,4 +34,3 @@ return array(
 		'display_order' => 2
 	)
 );
-

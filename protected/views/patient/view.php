@@ -36,11 +36,12 @@
 		Patient has no GP practice address, please correct in PAS before printing GP letter.
 	</div>
 	<?php }?>
-	
+
 	<div class="halfColumnLeft">
 		<?php $this->renderPartial('_patient_details')?>
 		<?php $this->renderPartial('_patient_contact_details')?>
 		<?php $this->renderPartial('_patient_gp')?>
+		<?php $this->renderPartial('_patient_commissioningbodies')?>
 		<?php $this->renderPartial('_patient_contacts')?>
 	</div>
 

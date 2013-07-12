@@ -21,7 +21,8 @@ class AdminSequenceController extends BaseController
 {
 	public $layout='column2';
 
-	protected function beforeAction($action) {
+	protected function beforeAction($action)
+	{
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {
 			throw new CHttpException(403, 'You are not authorised to perform this action.');
@@ -34,7 +35,8 @@ class AdminSequenceController extends BaseController
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
-	public function actionView($id) {
+	public function actionView($id)
+	{
 		$this->render('view',array(
 			'model'=>$this->loadModel($id),
 		));
@@ -44,24 +46,25 @@ class AdminSequenceController extends BaseController
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate() {
+	public function actionCreate()
+	{
 		$model = new Sequence;
 
-		if(!$model->firmAssignment) {
+		if (!$model->firmAssignment) {
 			$model->firmAssignment = new SequenceFirmAssignment();
 		}
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Sequence'])) {
+		if (isset($_POST['Sequence'])) {
 			$model->attributes = Helper::convertNHS2MySQL($_POST['Sequence']);
 			$model->firmAssignment->attributes = $_POST['SequenceFirmAssignment'];
 			$modelValid = $model->validate();
 			$firmValid = $model->firmAssignment->validate();
 			if ($modelValid && $firmValid) {
 				if ($model->save()) {
-					if(!empty($firmAssociation->firm_id)) {
+					if (!empty($firmAssociation->firm_id)) {
 						$model->firmAssignment->sequence_id = $model->id;
 						if ($model->firmAssignment->save()) {
 							$this->redirect(array('view','id' => $model->id));
@@ -83,10 +86,11 @@ class AdminSequenceController extends BaseController
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->loadModel($id);
-		
-		if(!$model->firmAssignment) {
+
+		if (!$model->firmAssignment) {
 			$model->firmAssignment = new SequenceFirmAssignment();
 			$model->firmAssignment->sequence_id = $model->id;
 		}
@@ -94,14 +98,14 @@ class AdminSequenceController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Sequence'])) {
+		if (isset($_POST['Sequence'])) {
 			// TODO: Add validation to check collisions etc.
 			$model->attributes = $_POST['Sequence'];
 			if (!empty($_POST['SequenceFirmAssignment']['firm_id'])) {
 				$model->firmAssignment->attributes = $_POST['SequenceFirmAssignment'];
 				$firmValid = $model->firmAssignment->save();
 			} else {
-				if($model->firmAssignment->id) {
+				if ($model->firmAssignment->id) {
 					$model->firmAssignment->delete();
 				}
 				$firmValid = true;
@@ -121,14 +125,14 @@ class AdminSequenceController extends BaseController
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id) {
-		
+	public function actionDelete($id)
+	{
 		// We only allow deletion via POST request
-		if(Yii::app()->request->isPostRequest) {
+		if (Yii::app()->request->isPostRequest) {
 
 			// Make really sure this thing has no bookings associated with it before we delete
 			$sequence = $this->loadModel($id);
-			if($sequence->getBookingCount() > 0) {
+			if ($sequence->getBookingCount() > 0) {
 				throw new CHttpException(400, 'This sequence has bookings associated with it and cannot be deleted.');
 			}
 
@@ -142,7 +146,7 @@ class AdminSequenceController extends BaseController
 			$sequence->delete();
 
 			// If AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-			if(!isset($_GET['ajax'])) {
+			if (!isset($_GET['ajax'])) {
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
 			}
 		} else {
@@ -153,7 +157,8 @@ class AdminSequenceController extends BaseController
 	/**
 	 * Lists all models.
 	 */
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$dataProvider=new CActiveDataProvider('Sequence', array(
 			'criteria' => array('with' => array('firmAssignment'))
 		));
@@ -165,19 +170,20 @@ class AdminSequenceController extends BaseController
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin() {
+	public function actionAdmin()
+	{
 		$model = new Sequence('search');
 		$model->unsetAttributes();
-		if(isset($_GET['Sequence'])) {
+		if (isset($_GET['Sequence'])) {
 			$model->attributes = $_GET['Sequence'];
 		}
-		if(isset($_GET['Firm'])) {
+		if (isset($_GET['Firm'])) {
 			$model->firm_id = $_GET['Firm']['id'];
 		}
-		if(isset($_GET['Site'])) {
+		if (isset($_GET['Site'])) {
 			$model->site_id = $_GET['Site']['id'];
 		}
-		if(isset($_GET['Sequence']['repeat']) && $_GET['Sequence']['repeat'] != '') {
+		if (isset($_GET['Sequence']['repeat']) && $_GET['Sequence']['repeat'] != '') {
 			if ($_GET['Sequence']['repeat'] <= Sequence::FREQUENCY_4WEEKS) {
 				$model->repeat_interval = $_GET['Sequence']['repeat'];
 			} elseif ($_GET['Sequence']['repeat'] > Sequence::FREQUENCY_MONTHLY) {
@@ -194,9 +200,10 @@ class AdminSequenceController extends BaseController
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer the ID of the model to be loaded
 	 */
-	public function loadModel($id) {
-		$model=Sequence::model()->findByPk((int)$id);
-		if($model===null) {
+	public function loadModel($id)
+	{
+		$model=Sequence::model()->findByPk((int) $id);
+		if ($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		}
 		return $model;
@@ -206,8 +213,9 @@ class AdminSequenceController extends BaseController
 	 * Performs the AJAX validation.
 	 * @param CModel the model to be validated
 	 */
-	protected function performAjaxValidation($model) {
-		if(isset($_POST['ajax']) && $_POST['ajax']==='sequence-form') {
+	protected function performAjaxValidation($model)
+	{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='sequence-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

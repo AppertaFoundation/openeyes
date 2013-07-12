@@ -69,4 +69,3 @@ class Priority extends BaseActiveRecord
 		return array();
 	}
 }
-?>

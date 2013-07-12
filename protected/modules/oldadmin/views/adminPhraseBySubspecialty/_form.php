@@ -39,8 +39,8 @@ if (isset($_GET['section_id'])) {
 	<div class="row">
 		<?php
 			if ($overrideableNames = PhraseBySubspecialty::Model()->getOverrideableNames($_GET['section_id'], $_GET['subspecialty_id'])) {
-				echo $form->labelEx($model,'phrase_name_id'); 
-				echo $form->dropDownList($model,'phrase_name_id',CHtml::listData($overrideableNames, 'id', 'name'), array('prompt' => 'Override a global phrase name')); 
+				echo $form->labelEx($model,'phrase_name_id');
+				echo $form->dropDownList($model,'phrase_name_id',CHtml::listData($overrideableNames, 'id', 'name'), array('prompt' => 'Override a global phrase name'));
 				echo $form->error($model,'phrase_name_id');
 			}
 		?>
@@ -101,4 +101,3 @@ if (isset($_GET['section_id'])) {
 <?php $this->endWidget(); ?>
 
 </div><!-- form -->
-

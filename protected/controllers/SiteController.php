@@ -48,7 +48,8 @@ class SiteController extends BaseController
 	/**
 	 * Omnibox search form
 	 */
-	public function actionIndex()	{
+	public function actionIndex()
+	{
 		$this->layout = 'main';
 		$this->render('index');
 	}
@@ -56,13 +57,14 @@ class SiteController extends BaseController
 	/**
 	 * Omnibox search handler
 	 */
-	public function actionSearch() {
-		if(isset($_POST['query']) && $query = trim($_POST['query'])) {
-				
+	public function actionSearch()
+	{
+		if (isset($_POST['query']) && $query = trim($_POST['query'])) {
+
 			// Event ID
-			if(preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i',$query,$matches)) {
+			if (preg_match('/^(E|Event)\s*[:;]\s*([0-9]+)$/i',$query,$matches)) {
 				$event_id = $matches[2];
-				if($event = Event::model()->findByPk($event_id)) {
+				if ($event = Event::model()->findByPk($event_id)) {
 					$event_class_name = $event->eventType->class_name;
 					$this->redirect(array($event_class_name.'/default/view/'.$event_id));
 				} else {
@@ -71,7 +73,7 @@ class SiteController extends BaseController
 				}
 				return;
 			}
-	
+
 			// NHS number (assume 10 digit number is an NHS number)
 			if(preg_match('/^(N|NHS)\s*[:;]\s*([0-9\- ]+)$/i',$query,$matches)
 					|| preg_match('/^([0-9]{3}[- ]?[0-9]{3}[- ]?[0-9]{4})$/i',$query,$matches)) {
@@ -80,7 +82,7 @@ class SiteController extends BaseController
 				$this->redirect(array('patient/search', 'nhs_num' => $nhs));
 				return;
 			}
-	
+
 			// Hospital number (assume a < 10 digit number is a hosnum)
 			if(preg_match('/^(H|Hosnum)\s*[:;]\s*([0-9a-zA-Z\-]+)$/i',$query,$matches)
 					|| preg_match(Yii::app()->params['hos_num_regex'],$query,$matches)) {
@@ -88,12 +90,12 @@ class SiteController extends BaseController
 				$this->redirect(array('patient/search', 'hos_num' => $hosnum));
 				return;
 			}
-			
+
 			// Patient name (assume two strings separated by space and/or comma is a name)
 			if(preg_match('/^(P|Patient)\s*[:;]\s*([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)
 					|| preg_match('/^([^\s,]+)(\s*[\s,]+\s*)([^\s,]+)$/i',$query,$matches)) {
 				$delimiter = (isset($matches[4])) ? trim($matches[3]) : trim($matches[2]);
-				if($delimiter) {
+				if ($delimiter) {
 					$firstname = (isset($matches[4])) ? $matches[4] : $matches[3];
 					$surname = (isset($matches[4])) ? $matches[2] : $matches[1];
 				} else {
@@ -121,9 +123,10 @@ class SiteController extends BaseController
 	/**
 	 * This is the action to handle external exceptions.
 	 */
-	public function actionError() {
-		if($error = Yii::app()->errorHandler->error) {
-			if(Yii::app()->request->isAjaxRequest) {
+	public function actionError()
+	{
+		if ($error = Yii::app()->errorHandler->error) {
+			if (Yii::app()->request->isAjaxRequest) {
 				echo $error['message'];
 			} else {
 				$error_code = (int) $error['code'];
@@ -133,7 +136,7 @@ class SiteController extends BaseController
 					Yii::app()->exit();
 				}
 				*/
-				if(($view = $this->getViewFile('/error/error'.$error_code)) !== false) {
+				if (($view = $this->getViewFile('/error/error'.$error_code)) !== false) {
 					$this->render('/error/error'.$error_code, $error);
 				} else {
 					$this->render('/error/error', $error);
@@ -146,8 +149,9 @@ class SiteController extends BaseController
 	 * Display form to change site/firm
 	 * @throws CHttpException
 	 */
-	public function actionChangeSiteAndFirm() {
-		if(empty($_GET['returnUrl'])) {
+	public function actionChangeSiteAndFirm()
+	{
+		if (empty($_GET['returnUrl'])) {
 			throw new CHttpException(500, 'Return URL must be specified');
 		}
 		if (@$_GET['patient_id']) {
@@ -155,13 +159,13 @@ class SiteController extends BaseController
 		}
 		$this->renderPartial('/site/change_site_and_firm', array('returnUrl' => $_GET['returnUrl'], 'patient'=>@$patient), false, true);
 	}
-	
+
 	/**
 	 * Displays the login page
 	 */
 	public function actionLogin()
-	{  
-		if(!Yii::app()->user->isGuest) {
+	{
+		if (!Yii::app()->user->isGuest) {
 			$this->redirect(array('/'));
 			Yii::app()->end();
 		}
@@ -176,14 +180,14 @@ class SiteController extends BaseController
 		$model = new LoginForm;
 
 		// collect user input data
-		if(isset($_POST['LoginForm'])) {
+		if (isset($_POST['LoginForm'])) {
 			$model->attributes = $_POST['LoginForm'];
 			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login()) {
-				
+			if ($model->validate() && $model->login()) {
+
 				// Flag site for confirmation
 				Yii::app()->session['confirm_site_and_firm'] = true;
-				
+
 				$this->redirect(Yii::app()->user->returnUrl);
 			}
 		}
@@ -224,7 +228,8 @@ class SiteController extends BaseController
 		$this->redirect(Yii::app()->homeUrl);
 	}
 
-	public function actionDebuginfo() {
+	public function actionDebuginfo()
+	{
 		$this->renderPartial('/site/debuginfo',array());
 	}
 

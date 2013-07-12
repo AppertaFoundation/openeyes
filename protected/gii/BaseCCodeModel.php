@@ -99,11 +99,9 @@ abstract class BaseCCodeModel extends CFormModel
 		$templates=$this->templates;
 		if(!isset($templates[$this->template]))
 			$this->addError('template', 'Invalid template selection.');
-		else
-		{
+		else {
 			$templatePath=$this->templatePath;
-			foreach($this->requiredTemplates() as $template)
-			{
+			foreach ($this->requiredTemplates() as $template) {
 				if(!is_file($templatePath.'/'.$template))
 					$this->addError('template', "Unable to find the required code template file '$template'.");
 			}
@@ -154,8 +152,7 @@ abstract class BaseCCodeModel extends CFormModel
 	public function save()
 	{
 		$result=true;
-		foreach($this->files as $file)
-		{
+		foreach ($this->files as $file) {
 			if($this->confirmed($file))
 				$result=$file->save() && $result;
 		}
@@ -248,8 +245,7 @@ abstract class BaseCCodeModel extends CFormModel
 	public function renderResults()
 	{
 		$output='Generating code using template "'.$this->templatePath."\"...\n";
-		foreach($this->files as $file)
-		{
+		foreach ($this->files as $file) {
 			if($file->error!==null)
 				$output.="<span class=\"error\">generating {$file->relativePath}<br/>           {$file->error}</span>\n";
 			else if($file->operation===CCodeFile::OP_NEW && $this->confirmed($file))
@@ -283,14 +279,11 @@ abstract class BaseCCodeModel extends CFormModel
 	{
 		$this->_stickyAttributes=array();
 		$path=$this->getStickyFile();
-		if(is_file($path))
-		{
+		if (is_file($path)) {
 			$result=@include($path);
-			if(is_array($result))
-			{
+			if (is_array($result)) {
 				$this->_stickyAttributes=$result;
-				foreach($this->_stickyAttributes as $name=>$value)
-				{
+				foreach ($this->_stickyAttributes as $name=>$value) {
 					if(property_exists($this,$name) || $this->canSetProperty($name))
 						$this->$name=$value;
 				}
@@ -333,8 +326,7 @@ abstract class BaseCCodeModel extends CFormModel
 			'/(r|t)y$/i' => '\1ies',
 			'/s$/' => 's',
 		);
-		foreach($rules as $rule=>$replacement)
-		{
+		foreach ($rules as $rule=>$replacement) {
 			if(preg_match($rule,$name))
 				return preg_replace($rule,$replacement,$name);
 		}

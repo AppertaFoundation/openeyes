@@ -54,15 +54,15 @@ class UserIdentity extends CUserIdentity
 		 * Usernames are case sensitive
 		 */
 		$user = User::model()->find('username = ?', array($this->username));
-		if($user === null) {
+		if ($user === null) {
 			Audit::add('login','login-failed',"User not found in local database: $this->username",true);
 			$this->errorCode = self::ERROR_USERNAME_INVALID;
 			return false;
-		} else if ($user->active != 1) {
+		} elseif ($user->active != 1) {
 			$user->audit('login','login-failed',"User not active and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
-		} else if ($user->access_level == 0) {
+		} elseif ($user->access_level == 0) {
 			$user->audit('login','login-failed',"User has 0 access level and so cannot login: $this->username",true);
 			$this->errorCode = self::ERROR_USER_INACTIVE;
 			return false;
@@ -109,7 +109,7 @@ class UserIdentity extends CUserIdentity
 						"cn=" . $this->username . "," . Yii::app()->params['ldap_dn'],
 						$this->password
 					);
-				} catch (Exception $e){
+				} catch (Exception $e) {
 					/**
 					 * User not authenticated via LDAP
 					 */
@@ -191,8 +191,8 @@ class UserIdentity extends CUserIdentity
 				$user->audit('login','login-failed',"Login failed for user {$this->username}: unable to update user with details from LDAP: ".print_r($user->getErrors(),true),true);
 				throw new SystemException('Unable to update user with details from LDAP: '.print_r($user->getErrors(),true));
 			}
-		} else if (Yii::app()->params['auth_source'] == 'BASIC') {
-			if(!$user->validatePassword($this->password)) {
+		} elseif (Yii::app()->params['auth_source'] == 'BASIC') {
+			if (!$user->validatePassword($this->password)) {
 				$this->errorCode = self::ERROR_PASSWORD_INVALID;
 				$user->audit('login','login-failed',"Login failed for user {$this->username}: invalid password",true);
 				return false;
@@ -215,7 +215,7 @@ class UserIdentity extends CUserIdentity
 		$firms = array();
 
 		if ($user->global_firm_rights) {
-			foreach(Firm::model()->findAll() as $firm) {
+			foreach (Firm::model()->findAll() as $firm) {
 				$firms[$firm->id] = $this->firmString($firm);
 			}
 		} else {
@@ -258,7 +258,7 @@ class UserIdentity extends CUserIdentity
 		// Select firm
 		if ($user->last_firm_id) {
 			$app->session['selected_firm_id'] = $user->last_firm_id;
-		} else if (count($user->firms)) {
+		} elseif (count($user->firms)) {
 			// Set the firm to one the user is associated with
 			$userFirms = $user->firms;
 			$app->session['selected_firm_id'] = $userFirms[0]->id;
@@ -271,7 +271,7 @@ class UserIdentity extends CUserIdentity
 		// Select site
 		if ($user->last_site_id) {
 			$app->session['selected_site_id'] = $user->last_site_id;
-		} else if($default_site = Site::model()->getDefaultSite()) {
+		} elseif ($default_site = Site::model()->getDefaultSite()) {
 			$app->session['selected_site_id'] = $default_site->id;
 		} else {
 			throw new CException('Cannot find default site');

@@ -38,23 +38,26 @@ class BaseController extends Controller
 	 * @param integer $level
 	 * @return boolean
 	 */
-	public static function checkUserLevel($level) {
-		if($user = Yii::app()->user) {
+	public static function checkUserLevel($level)
+	{
+		if ($user = Yii::app()->user) {
 			return ($user->access_level >= $level);
 		} else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Set default rules to block everyone apart from admin
 	 * These should be overridden in child classes
 	 * @return array
 	 */
-	public function filters() {
+	public function filters()
+	{
 		return array('accessControl');
 	}
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			array('allow',
 				'roles'=>array('admin'),
@@ -64,21 +67,23 @@ class BaseController extends Controller
 			array('deny'),
 		);
 	}
-	
-	public function filterAccessControl($filterChain) {
+
+	public function filterAccessControl($filterChain)
+	{
 		$filter = new CAccessControlFilter;
 		$filter->setRules($this->compileAccessRules());
 		$filter->filter($filterChain);
 	}
-	
-	protected function compileAccessRules() {
+
+	protected function compileAccessRules()
+	{
 		// Always allow admin
 		$admin_rule = array('allow', 'roles' => array('admin'));
-		
+
 		// Always deny unauthenticated users in case rules fall through
 		// Maybe we should change this to deny everyone for safety
 		$default_rule = array('deny', 'users' => array('?'));
-		
+
 		// Merge rules defined by controller
 		return array_merge(array($admin_rule), $this->accessRules(), array($default_rule));
 	}
@@ -89,43 +94,46 @@ class BaseController extends Controller
 	 * @param string $path
 	 * @param integer $priority
 	 */
-	public function registerCssFile($name, $path, $priority = 100) {
+	public function registerCssFile($name, $path, $priority = 100)
+	{
 		$this->css[$name] = array(
 				'path' => $path,
 				'priority' => $priority,
 		);
 	}
-	
+
 	/**
 	 * Registers all CSS file that were preregistered by priority
 	 */
-	protected function registerCssFiles() {
+	protected function registerCssFiles()
+	{
 		$css_array = array();
-		foreach($this->css as $css_item) {
+		foreach ($this->css as $css_item) {
 			$css_array[$css_item['path']] = $css_item['priority'];
 		}
 		arsort($css_array);
 		$clientscript = Yii::app()->clientScript;
-		foreach($css_array as $path => $priority) {
+		foreach ($css_array as $path => $priority) {
 			$clientscript->registerCssFile($path);
 		}
-	} 
-	
+	}
+
 	/**
 	 * List of actions for which the style.css file should _not_ be included
 	 * @return array:
 	 */
-	public function printActions() {
+	public function printActions()
+	{
 		return array();
 	}
-	
-	protected function beforeAction($action) {
-		
+
+	protected function beforeAction($action)
+	{
 		// Register base style.css unless it's a print action
-		if(!in_array($action->id,$this->printActions())) {
+		if (!in_array($action->id,$this->printActions())) {
 			$this->registerCssFile('style.css', Yii::app()->createUrl('/css/style.css'), 200);
 		}
-		
+
 		$app = Yii::app();
 
 		if ($app->params['ab_testing']) {
@@ -149,13 +157,13 @@ class BaseController extends Controller
 		if (isset($app->session['selected_site_id'])) {
 			$this->selectedSiteId = $app->session['selected_site_id'];
 		}
-		
+
 		if (isset($app->session['patient_name'])) {
 			$this->patientName = $app->session['patient_name'];
 		}
 
 		$this->registerCssFiles();
-		
+
 		return parent::beforeAction($action);
 	}
 
@@ -244,12 +252,14 @@ class BaseController extends Controller
 		Yii::log($message . ' from ' . $addr, "user", "userActivity");
 	}
 
-	protected function beforeRender($view) {
+	protected function beforeRender($view)
+	{
 		$this->processJsVars();
 		return parent::beforeRender($view);
 	}
 
-	public function processJsVars() {
+	public function processJsVars()
+	{
 		$this->jsVars['YII_CSRF_TOKEN'] = Yii::app()->request->csrfToken;
 
 		foreach ($this->jsVars as $key => $value) {

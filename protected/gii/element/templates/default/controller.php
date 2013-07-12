@@ -11,20 +11,20 @@
  *
  * This file is part of OpenEyes.
  *
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU 
- * General Public License as published by the Free Software Foundation, either version 3 of the 
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License as published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file 
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file
  * titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * _____________________________________________________________________________
  * http://www.openeyes.org.uk   info@openeyes.org.uk
- * 
+ *
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
@@ -100,8 +100,7 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['<?php echo $this->modelClass; ?>']))
-		{
+		if (isset($_POST['<?php echo $this->modelClass; ?>'])) {
 			$model->attributes=$_POST['<?php echo $this->modelClass; ?>'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model-><?php echo $this->tableSchema->primaryKey; ?>));
@@ -124,8 +123,7 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['<?php echo $this->modelClass; ?>']))
-		{
+		if (isset($_POST['<?php echo $this->modelClass; ?>'])) {
 			$model->attributes=$_POST['<?php echo $this->modelClass; ?>'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model-><?php echo $this->tableSchema->primaryKey; ?>));
@@ -143,16 +141,14 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else
+		} else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
@@ -201,8 +197,7 @@ class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseContro
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='<?php echo $this->class2id($this->modelClass); ?>-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='<?php echo $this->class2id($this->modelClass); ?>-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

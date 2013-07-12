@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ModuleAPI extends CApplicationComponent {
-	public function get($moduleName) {
+class ModuleAPI extends CApplicationComponent
+{
+	public function get($moduleName)
+	{
 		if ($module = Yii::app()->getModule($moduleName)) {
 			Yii::import("application.modules.$moduleName.components.*");
 

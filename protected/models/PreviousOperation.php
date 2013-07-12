@@ -111,7 +111,8 @@ class PreviousOperation extends BaseActiveRecord
 		));
 	}
 
-	public function getDateText() {
+	public function getDateText()
+	{
 		return Helper::formatFuzzyDate($this->date);
 	}
 }

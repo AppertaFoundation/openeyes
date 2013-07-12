@@ -59,7 +59,7 @@
 				</li>
 				<?php
 				foreach ($contact->locations as $i => $location) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $location->id?>">
+					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $location->id?>">
 						<span class="column_type"><?php echo $location->site_id ? 'Site' : 'Institution'?></span>
 						<span class="column_name"><?php echo $location->site_id ? $location->site->name : $location->institution->name?>&nbsp;</span>
 						<span class="column_action"><a href="#" class="removeLocation" rel="<?php echo $location->id?>">Remove</a></span>

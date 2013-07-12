@@ -101,21 +101,23 @@ class ContactLabel extends BaseActiveRecord
 		));
 	}
 
-	static public function staffType() {
+	public static function staffType()
+	{
 		if ($site = Site::model()->findByPk(Yii::app()->session['selected_site_id'])) {
 			return ($site->institution->short_name ? $site->institution->short_name : $site->institution->name) . ' staff';
 		}
 		return 'Staff';
 	}
 
-	static public function getList() {
+	public static function getList()
+	{
 		$list = array();
 
 		if (!empty(Yii::app()->params['contact_labels'])) {
 			foreach (Yii::app()->params['contact_labels'] as $label) {
 				if ($label == 'Staff') {
 					$list['staff'] = 'Staff';
-				} else if (preg_match('/{SPECIALTY}/',$label)) {
+				} elseif (preg_match('/{SPECIALTY}/',$label)) {
 					if (!$specialty = Specialty::model()->find('code=?',array(Yii::app()->params['institution_specialty']))) {
 						throw new Exception("Institution specialty not configured");
 					}

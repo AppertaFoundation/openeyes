@@ -54,7 +54,7 @@ class ElementNSCGradeTest extends CDbTestCase
 			array(array('retinopathy_grade_id' => 3), 0, array()),
 		);
 	}
-	
+
 	public function dataProvider_SelectOptions()
 	{
 		return array(
@@ -129,7 +129,7 @@ class ElementNSCGradeTest extends CDbTestCase
 	{
 		$element = $this->nscGrades($typeName);
 		$expected[$element->id] = $element->name;
-		
+
 		$this->assertEquals($expected, $this->element->getSelectOptions($typeId));
 	}
 }

@@ -19,7 +19,7 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 			), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 
-		$this->createTable('site_subspecialty_operative_device',array(	
+		$this->createTable('site_subspecialty_operative_device',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'site_id' => 'int(10) unsigned NOT NULL',
 				'subspecialty_id' => 'int(10) unsigned NOT NULL',
@@ -94,7 +94,7 @@ class m120413_125641_new_drugs_and_devices extends CDbMigration
 	public function down()
 	{
 		$this->delete('site_subspecialty_drug');
-		
+
 		$this->dropColumn('site_subspecialty_drug','default');
 		$this->dropColumn('site_subspecialty_drug','display_order');
 

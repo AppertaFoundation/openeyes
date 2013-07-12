@@ -29,8 +29,9 @@ class BaseActiveRecord extends CActiveRecord
 	/**
 	 * Audit log
 	 */
-	public function behaviors() {
-		if(Yii::app()->params['audit_trail']) {
+	public function behaviors()
+	{
+		if (Yii::app()->params['audit_trail']) {
 			return array(
 				'LoggableBehavior' => array(
 					'class' => 'application.behaviors.LoggableBehavior',
@@ -40,12 +41,13 @@ class BaseActiveRecord extends CActiveRecord
 			return array();
 		}
 	}
-	
+
 	/**
 	 * Strips all html tags out of attributes to be saved.
 	 * @return boolean
 	 */
-	protected function beforeSave() {
+	protected function beforeSave()
+	{
 		// Detect nullable foreign keys and replace "" with null (to fix html dropdowns breaking contraints)
 		foreach ($this->tableSchema->foreignKeys as $field => $stuff) {
 			if ($this->tableSchema->columns[$field]->allowNull && !$this->{$field}) {
@@ -113,19 +115,22 @@ class BaseActiveRecord extends CActiveRecord
 	 * @param string $attribute
 	 * @return string
 	 */
-	public function NHSDate($attribute, $empty_string = '-') {
-		if($value = $this->getAttribute($attribute)) {
+	public function NHSDate($attribute, $empty_string = '-')
+	{
+		if ($value = $this->getAttribute($attribute)) {
 			return Helper::convertMySQL2NHS($value, $empty_string);
 		}
 	}
 
-	public function NHSDateAsHTML($attribute, $empty_string = '-') {
-		if($value = $this->getAttribute($attribute)) {
+	public function NHSDateAsHTML($attribute, $empty_string = '-')
+	{
+		if ($value = $this->getAttribute($attribute)) {
 			return Helper::convertMySQL2HTML($value, $empty_string);
 		}
 	}
 
-	public function getAuditAttributes() {
+	public function getAuditAttributes()
+	{
 		$attributes = array();
 
 		foreach ($this->getAttributes() as $key => $value) {
@@ -135,7 +140,8 @@ class BaseActiveRecord extends CActiveRecord
 		return serialize($attributes);
 	}
 
-	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+	public function audit($target, $action, $data=null, $log=false, $properties=array())
+	{
 		foreach (array('patient_id','episode_id','event_id','user_id','site_id','firm_id') as $field) {
 			if (isset($this->{$field}) && !isset($properties[$field])) {
 				$properties[$field] = $this->{$field};

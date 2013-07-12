@@ -107,22 +107,26 @@ class PatientContactAssignment extends BaseActiveRecord
 		));
 	}
 
-	public function getAddress() {
+	public function getAddress()
+	{
 		if ($this->site) {
 			return $this->site;
 		}
 
-		if ($this->institution ) {
+		if ($this->institution) {
 			return $this->institution->address ? $this->institution->address : false;
 		}
 
 		return $this->contact->address;
 	}
 
-	public function getLocationText() {
+	public function getLocationText()
+	{
 		if ($this->location) {
 			return $this->location;
 		}
-		return $this->contact->address->address1;
+		if ($this->contact->address) {
+		 	return $this->contact->address->address1;
+		}
 	}
 }

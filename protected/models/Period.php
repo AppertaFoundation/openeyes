@@ -44,10 +44,11 @@ class Period extends BaseActiveRecord
 		return 'period';
 	}
 
-	public function __toString() {
+	public function __toString()
+	{
 		return $this->name;
 	}
-	
+
 	/**
 	 * @return array validation rules for model attributes.
 	 */
@@ -66,5 +67,5 @@ class Period extends BaseActiveRecord
 	{
 		return array();
 	}
-	
+
 }

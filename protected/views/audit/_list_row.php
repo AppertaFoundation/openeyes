@@ -28,21 +28,21 @@
 						<span class="event_type">
 							<?php if ($log->event) { ?>
 								<a href="/<?php echo $log->event->eventType->class_name?>/default/view/<?php echo $log->event_id?>"><?php echo $log->event->eventType->name?></a>
-							<?php }else{?>
+							<?php } else {?>
 								-
 							<?php }?>
 						</span>
 						<span class="patient">
 							<?php if ($log->patient) {?>
 								<?php echo CHtml::link($log->patient->displayName,array('patient/view/'.$log->patient_id))?>
-							<?php }else{?>
+							<?php } else {?>
 								-
 							<?php }?>
 						</span>
 						<span class="episode">
 							<?php if ($log->episode) {?>
 								<?php echo CHtml::link('view',array('patient/episode/'.$log->episode_id))?>
-							<?php }else{?>
+							<?php } else {?>
 								-
 							<?php }?>
 						</span>
@@ -72,7 +72,7 @@
 									if (@unserialize($log->data)) {?>
 										<a href="#" id="showData<?php echo $log->id?>" class="showData">show data</a>
 										<input type="hidden" name="data<?php echo $log->id?>" value="<?php echo htmlentities($log->data)?>" />
-									<?php }else{
+									<?php } else {
 										echo $log->data ? $log->data : 'None';
 									}?>
 								</span>

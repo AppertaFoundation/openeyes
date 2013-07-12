@@ -61,7 +61,7 @@ class RightsServiceTest extends CDbTestCase
 	public function testSaveRights()
 	{
 		$_POST['Rights']['firm'][1] = 1;
-		
+
 		$_POST['Rights']['service'][1] = 1;
 
 		$result = $this->service->saveRights();
@@ -111,7 +111,7 @@ class RightsServiceTest extends CDbTestCase
                                 'checked' => false
                         );
                 }
-	
+
 		return $rights;
 	}
 }

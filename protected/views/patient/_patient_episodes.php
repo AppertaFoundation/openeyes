@@ -23,7 +23,7 @@
 	<div id="yw0" class="grid-view">
 		<?php if (empty($episodes)) {?>
 			<div class="summary">No episodes</div>
-		<?php }else{?>
+		<?php } else {?>
 			<table class="items">
 				<thead>
 					<tr><th id="yw0_c0">Start  Date</th><th id="yw0_c1">End  Date</th><th id="yw0_c2">Firm</th><th id="yw0_c3">Subspecialty</th><th id="yw0_c4">Eye</th><th id="yw0_c5">Diagnosis</th></tr>
@@ -34,7 +34,7 @@
 						<td colspan="6" class="all-episode"><b><?php echo $specialty_episodes['specialty']->name ?></b></td>
 						</tr>
 						<?php foreach ($specialty_episodes['episodes'] as $i => $episode) {?>
-							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0){?>even<?php }else{?>odd<?php }?><?php if ($episode->end_date !== null){?> closed<?php }?>">
+							<tr id="<?php echo $episode->id?>" class="clickable all-episode <?php if ($i %2 == 0) {?>even<?php } else {?>odd<?php }?><?php if ($episode->end_date !== null) {?> closed<?php }?>">
 								<td><?php echo $episode->NHSDate('start_date'); ?></td>
 								<td><?php echo $episode->NHSDate('end_date'); ?></td>
 								<td><?php echo CHtml::encode($episode->firm->name)?></td>

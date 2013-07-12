@@ -44,4 +44,3 @@
 	<?php echo CHtml::encode($data->firm_id); ?>
 	<br />
 </div>
-

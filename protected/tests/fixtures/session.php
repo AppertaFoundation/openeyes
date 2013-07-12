@@ -59,7 +59,7 @@ if (!empty($sequences)) {
 			while (date('N', $time) != date('N', strtotime($sequence['start_date']))) {
 				$date = date('Y-m-d', mktime(0,0,0, date('m', $time), date('d', $time) + 1, date('Y', $time)));
 				$time = strtotime($date);
-			}				
+			}
 
 			$dateList = Sequence::model()->getWeekOccurrences($sequence['weekday'], $sequence['week_selection'], $time, $endDate, $date, date('Y-m-d', $endDate));
 		}

@@ -20,11 +20,13 @@
 /**
  * Base class for all elements
  */
-class BaseTree extends BaseActiveRecord {
+class BaseTree extends BaseActiveRecord
+{
 	public $textFields = array();
 	public $textFieldsDropdown = array();
 
-	public function findAllAsTree($parent=null, $first=true, $text='text') {
+	public function findAllAsTree($parent=null, $first=true, $text='text')
+	{
 		$tree = array();
 		$criteria = new CDbCriteria;
 		$criteria->addCondition('parent_rule_id <=> :parent_rule_id');
@@ -57,7 +59,8 @@ class BaseTree extends BaseActiveRecord {
 		return $tree;
 	}
 
-	public function expandTextFields($fields) {
+	public function expandTextFields($fields)
+	{
 		$text = '';
 
 		foreach ($fields as $key => $value) {
@@ -81,11 +84,13 @@ class BaseTree extends BaseActiveRecord {
 		return $text;
 	}
 
-	public function getTextPlain() {
+	public function getTextPlain()
+	{
 		return $this->expandTextFields($this->textFields);
 	}
 
-	public function getTreeName() {
+	public function getTreeName()
+	{
 		$text = $this->rule_order.': '.$this->expandTextFields($this->textFieldsDropdown);
 
 		$parents = 0;
@@ -99,11 +104,13 @@ class BaseTree extends BaseActiveRecord {
 		return str_repeat('+ ',$parents).$text;
 	}
 
-	public function getText() {
+	public function getText()
+	{
 		return $this->rule_order.': '.CHtml::openTag('a',array('href'=>'#','id'=>'item'.$this->id,'class'=>'treenode')).$this->textPlain.CHtml::closeTag('a')." <a href=\"#\" rel=\"$this->id\" class=\"addTreeItemHere\" ><img width=\"46px\" height=\"23px\" src=\"".Yii::app()->createUrl('/img/_elements/btns/plus-sign.png')."\" /></a>\n";
 	}
 
-	public function getListAsTree($parent=null) {
+	public function getListAsTree($parent=null)
+	{
 		$list = array();
 
 		$criteria = new CDbCriteria;
@@ -123,7 +130,8 @@ class BaseTree extends BaseActiveRecord {
 		return $list;
 	}
 
-	public function delete() {
+	public function delete()
+	{
 		if ($this->children) {
 			foreach ($this->children as $child) {
 				if (!$child->delete()) {

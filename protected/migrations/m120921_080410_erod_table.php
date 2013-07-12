@@ -7,7 +7,7 @@ class m120921_080410_erod_table extends CDbMigration
 		$this->createTable('element_operation_erod',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'element_operation_id' => 'int(10) unsigned NOT NULL DEFAULT \'1\'',
-				'session_id' => 'int(10) unsigned NOT NULL', 
+				'session_id' => 'int(10) unsigned NOT NULL',
 				'session_date' => 'date NOT NULL',
 				'session_start_time' => 'time NOT NULL',
 				'session_end_time' => 'time NOT NULL',
