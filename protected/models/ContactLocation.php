@@ -21,7 +21,7 @@
  * This is the model class for table "contact_location".
  *
  * The followings are the available columns in table 'contact_location':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property integer $letter_template_only
  */

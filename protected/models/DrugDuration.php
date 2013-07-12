@@ -21,7 +21,7 @@
  * This is the model class for table "drug_duration".
  *
  * The followings are the available columns in table 'drug_duration':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class DrugDuration extends BaseActiveRecord

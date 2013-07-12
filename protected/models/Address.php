@@ -36,7 +36,6 @@
  * @property string $email
  *
  * The following are the available model relations:
- * @property Parent $parent
  * @property Country $country
  */
 class Address extends BaseActiveRecord

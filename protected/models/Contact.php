@@ -18,10 +18,10 @@
  */
 
 /**
- * This is the model class for table "Contact".
+ * This is the model class for table "contact".
  *
- * The following are the available columns in table 'Contact':
- * @property string $id
+ * The following are the available columns in table 'contact':
+ * @property integer $id
  * @property string $nick_name
  * @property string $primary_phone
  * @property string $title
@@ -34,8 +34,8 @@
  * @property Consultant $consultant
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $homeAddress Home address
- * @property CorrespondAddress $correspondAddress Correspondence address
+ * @property Address $homeAddress Home address
+ * @property Address $correspondAddress Correspondence address
  *
  * The following are pseudo (calculated) fields
  * @property string $SalutationName

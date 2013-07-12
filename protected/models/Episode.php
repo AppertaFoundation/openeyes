@@ -21,9 +21,9 @@
  * This is the model class for table "episode".
  *
  * The followings are the available columns in table 'episode':
- * @property string $id
- * @property string $patient_id
- * @property string $firm_id
+ * @property integer $id
+ * @property integer $patient_id
+ * @property integer $firm_id
  * @property string $start_date
  * @property string $end_date
  *
@@ -309,6 +309,6 @@ class Episode extends BaseActiveRecord
 	{
 		$properties['episode_id'] = $this->id;
 		$properties['patient_id'] = $this->patient_id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 }

@@ -21,12 +21,11 @@
  * This is the model class for table "event_type".
  *
  * The followings are the available columns in table 'event_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
  * @property Event[] $events
- * @property EventTypeElementTypeAssignment[] $eventTypeElementTypeAssignments
  */
 class EventType extends BaseActiveRecord
 {

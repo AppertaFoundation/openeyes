@@ -21,10 +21,10 @@
  * This is the model class for table "event".
  *
  * The followings are the available columns in table 'event':
- * @property string $id
- * @property string $episode_id
- * @property string $user_id
- * @property string $event_type_id
+ * @property integer $id
+ * @property integer $episode_id
+ * @property integer $user_id
+ * @property integer $event_type_id
  * @property string $datetime
  *
  * The followings are the available model relations:
@@ -289,7 +289,7 @@ class Event extends BaseActiveRecord
 		$properties['episode_id'] = $this->episode_id;
 		$properties['patient_id'] = $this->episode->patient_id;
 
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 }

@@ -43,9 +43,7 @@
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $homeAddress Home address
- * @property CorrespondAddress $correspondAddress Correspondence address
- * @property Contact[] $contacts
+ * @property Contact[] $contactAssignments
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
@@ -834,7 +832,7 @@ class Patient extends BaseActiveRecord
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
 	{
 		$properties['patient_id'] = $this->id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 	public function getChildPrefix()

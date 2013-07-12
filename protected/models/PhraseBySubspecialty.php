@@ -102,10 +102,9 @@ class PhraseBySubspecialty extends BaseActiveRecord
 	}
 
 	/**
-	* @param string the name of the attribute to be validated
-	* @param array options specified in the validation rule
+	* @param string $attribute the name of the attribute to be validated
+	* @param array $params options specified in the validation rule
 	*/
-
 	public function ValidatorPhraseNameId($attribute,$params)
 	{
 		// this phrase name id must not exist at this level (not select * from phrase_by_firm where section_id=x and firm_id=y)

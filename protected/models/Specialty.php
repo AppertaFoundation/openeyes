@@ -20,8 +20,8 @@
 /**
  * This is the model class for table "specialty".
  *
- * The followings are the available columns in table 'sequence':
- * @property string $id
+ * The followings are the available columns in table 'specialty':
+ * @property integer $id
  * @property string $name
  * @property string $code
  *
@@ -30,7 +30,7 @@ class Specialty extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Sequence the static model class
+	 * @return Specialty the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
