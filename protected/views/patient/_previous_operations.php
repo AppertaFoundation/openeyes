@@ -32,7 +32,7 @@
 									<form><button id="btn-add_previous_operation" class="classy green mini" type="button"><span class="button-span button-span-green">Add Previous operation</span></button></form>
 								</div>
 								<div id="add_previous_operation" style="display: none;">
-									<h5>Add Previous operation</h5>	
+									<h5>Add Previous operation</h5>
 									<?php
 									$form = $this->beginWidget('CActiveForm', array(
 											'id'=>'add-previous_operation',
@@ -40,10 +40,10 @@
 											'htmlOptions' => array('class'=>'sliding'),
 											'action'=>array('patient/addPreviousOperation'),
 									))?>
-		
+
 									<input type="hidden" name="edit_operation_id" id="edit_operation_id" value="" />
 									<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-		
+
 									<div class="previousOperation">
 										<div class="label">
 											Common operations:
@@ -73,15 +73,15 @@
 									</div>
 
 									<?php $this->renderPartial('_fuzzy_date',array('class'=>'previousOperation'))?>
-		
+
 									<div align="right">
 										<img src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" class="add_previous_operation_loader" style="display: none;" />
 										<button class="classy green mini btn_save_previous_operation" type="submit"><span class="button-span button-span-green">Save</span></button>
 										<button class="classy red mini btn_cancel_previous_operation" type="submit"><span class="button-span button-span-red">Cancel</span></button>
 									</div>
-		
+
 									<?php $this->endWidget()?>
-								</div>	
+								</div>
 							<?php }?>
 						</div>
 					</div>
@@ -129,7 +129,7 @@
 	});
 	$('button.btn_save_previous_operation').click(function() {
 		if ($('#previous_operation').length <1) {
-			alert("Please enter an operation"); 
+			alert("Please enter an operation");
 			return false;
 		}
 		$('img.add_previous_operation_loader').show();

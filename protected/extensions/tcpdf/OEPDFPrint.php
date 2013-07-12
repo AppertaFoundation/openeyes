@@ -17,24 +17,27 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OEPDFPrint {
-
+class OEPDFPrint
+{
 	protected $letters = array();
 	protected $pdf;
 
-	public function __construct($author, $title, $subject) {
+	public function __construct($author, $title, $subject)
+	{
 		$this->pdf = new OETCPDF('P', true);
 		$this->pdf->SetAuthor($author);
 		$this->pdf->SetTitle($title);
 		$this->pdf->SetSubject($subject);
 	}
 
-	public function addLetter($letter) {
+	public function addLetter($letter)
+	{
 		$this->letters[] = $letter;
 	}
 
-	public function output() {
-		foreach($this->letters as $letter) {
+	public function output()
+	{
+		foreach ($this->letters as $letter) {
 			$letter->render($this->pdf);
 		}
 		$this->pdf->Output($this->pdf->getDocref().".pdf", "I");

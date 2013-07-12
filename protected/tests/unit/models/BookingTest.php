@@ -20,7 +20,7 @@
 class BookingTest extends CDbTestCase
 {
 	public $model;
-	
+
 	public $fixtures = array(
 		'users' => 'User',
 		'firms' => 'Firm',
@@ -48,18 +48,18 @@ class BookingTest extends CDbTestCase
 			array(array('element_operation_id' => 1), 1, array('0')),
 		);
 	}
-	
+
 	public function setUp()
 	{
 		parent::setUp();
 		$this->model = new Booking;
 	}
-	
+
 	public function testModel()
 	{
 		$this->assertEquals('Booking', get_class(Booking::model()), 'Class name should match model.');
 	}
-	
+
 	public function testAttributeLabels()
 	{
 		$expected = array(
@@ -74,7 +74,7 @@ class BookingTest extends CDbTestCase
 			'display_order' => 'Display Order',
 			'ward_id' => 'Ward',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 

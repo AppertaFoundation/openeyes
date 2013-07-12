@@ -38,7 +38,7 @@
 			<?php echo $form->error($model, 'sequence_id'); ?>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<?php echo $form->labelEx($model, 'date'); ?>
 		<div class="field">
@@ -99,7 +99,7 @@
 			<?php echo $form->error($model,'consultant'); ?>
 		</div>
 	</div>
-	
+
 	<div class="row nolabel">
 		<div class="field">
 			<?php echo $form->checkBox($model, 'paediatric'); ?>
@@ -107,7 +107,7 @@
 			<?php echo $form->error($model,'paediatric'); ?>
 		</div>
 	</div>
-	
+
 	<div class="row nolabel">
 		<div class="field">
 			<?php echo $form->checkBox($model, 'anaesthetist'); ?>

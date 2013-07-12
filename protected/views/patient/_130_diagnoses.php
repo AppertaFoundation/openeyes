@@ -29,7 +29,7 @@
 									<tr>
 										<th width="85px">Date</th>
 										<th>Diagnosis</th>
-										<?php if(BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+										<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
 									</tr>
 								</thead>
 								<tbody>
@@ -37,21 +37,21 @@
 										<tr>
 											<td><?php echo $diagnosis->dateText?></td>
 											<td><?php echo $diagnosis->eye->adjective?> <?php echo $diagnosis->disorder->term?></td>
-											<?php if(BaseController::checkUserLevel(4)) { ?>
+											<?php if (BaseController::checkUserLevel(4)) { ?>
 											<td><a href="#" class="small removeDiagnosis" rel="<?php echo $diagnosis->id?>"><strong>Remove</strong></a></td>
 											<?php } ?>
 										</tr>
 									<?php }?>
 								</tbody>
 							</table>
-							
-							<?php if(BaseController::checkUserLevel(4)) { ?>
+
+							<?php if (BaseController::checkUserLevel(4)) { ?>
 							<div align="center" style="margin-top:10px;">
 								<form><button id="btn-add_new_ophthalmic_diagnosis" class="classy green mini" type="button"><span class="button-span button-span-green">Add Ophthalmic Diagnosis</span></button></form>
 							</div>
-							
+
 							<div id="add_new_ophthalmic_diagnosis" style="display: none;">
-								<h5>Add ophthalmic diagnosis</h5>	
+								<h5>Add ophthalmic diagnosis</h5>
 								<?php
 								$form = $this->beginWidget('CActiveForm', array(
 										'id'=>'add-ophthalmic-diagnosis',
@@ -59,7 +59,7 @@
 										'htmlOptions' => array('class'=>'sliding'),
 										'action'=>array('patient/adddiagnosis'),
 								))?>
-	
+
 								<?php $form->widget('application.widgets.DiagnosisSelection',array(
 										'field' => 'ophthalmic_disorder_id',
 										'options' => CommonOphthalmicDisorder::getList(Firm::model()->findByPk($this->selectedFirmId)),
@@ -68,16 +68,16 @@
 										'layout' => 'patientSummary',
 										'loader' => 'add_ophthalmic_diagnosis_loader',
 								))?>
-	
+
 								<div id="add_ophthalmic_diagnosis_loader" style="display: none;">
 									<img align="left" class="loader" src="<?php echo Yii::app()->createUrl('/img/ajax-loader.gif')?>" />
 									<div>
 										searching...
 									</div>
 								</div>
-	
+
 								<input type="hidden" name="patient_id" value="<?php echo $this->patient->id?>" />
-	
+
 								<div class="diagnosis_eye">
 									<span class="diagnosis_eye_label">
 											Eye:
@@ -86,7 +86,7 @@
 										<input type="radio" name="diagnosis_eye" class="diagnosis_eye" value="<?php echo $eye->id?>"<?php if ($i==0) {?> checked="checked"<?php }?> /> <?php echo $eye->name?>
 									<?php }?>
 								</div>
-	
+
 								<?php $this->renderPartial('_fuzzy_date')?>
 								<div class="ophthalmic_diagnoses_form_errors"></div>
 
@@ -95,14 +95,14 @@
 									<button class="classy green mini btn_save_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-green">Save</span></button>
 									<button class="classy red mini btn_cancel_ophthalmic_diagnosis" type="submit"><span class="button-span button-span-red">Cancel</span></button>
 								</div>
-	
+
 								<?php $this->endWidget()?>
 							</div>
 							<?php } ?>
 						</div>
-						
+
 					</div>
-				<?php if(BaseController::checkUserLevel(4)) { ?>
+				<?php if (BaseController::checkUserLevel(4)) { ?>
 				<div id="confirm_remove_diagnosis_dialog" title="Confirm remove diagnosis" style="display: none;">
 					<div>
 						<div id="delete_diagnosis">
@@ -122,7 +122,7 @@
 					</div>
 				</div>
 <script type="text/javascript">
-	
+
 	$('#btn-add_new_ophthalmic_diagnosis').click(function() {
 		$('#add_new_ophthalmic_diagnosis').slideToggle('fast');
 		$('#btn-add_new_ophthalmic_diagnosis').attr('disabled',true);

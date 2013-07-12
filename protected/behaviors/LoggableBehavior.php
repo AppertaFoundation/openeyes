@@ -17,24 +17,26 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class LoggableBehavior extends CActiveRecordBehavior {
+class LoggableBehavior extends CActiveRecordBehavior
+{
 	private $_oldattributes = array();
 
-	public function afterSave($event) {
+	public function afterSave($event)
+	{
 		try {
 			$username = Yii::app()->user->Name;
 			$userid = Yii::app()->user->id;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			// If we have no user object, this must be a command line program
 			$username = "NO_USER";
 			$userid = null;
 		}
 
-		if(empty($username)) {
+		if (empty($username)) {
 			$username = "NO_USER";
 		}
 
-		if(empty($userid)) {
+		if (empty($userid)) {
 			$userid = null;
 		}
 
@@ -93,20 +95,21 @@ class LoggableBehavior extends CActiveRecordBehavior {
 		}
 	}
 
-	public function afterDelete($event) {
+	public function afterDelete($event)
+	{
 		try {
 			$username = Yii::app()->user->Name;
 			$userid = Yii::app()->user->id;
-		} catch(Exception $e) {
+		} catch (Exception $e) {
 			$username = "NO_USER";
 			$userid = null;
 		}
 
-		if(empty($username)) {
+		if (empty($username)) {
 			$username = "NO_USER";
 		}
 
-		if(empty($userid)) {
+		if (empty($userid)) {
 			$userid = null;
 		}
 
@@ -122,16 +125,19 @@ class LoggableBehavior extends CActiveRecordBehavior {
 		$log->save();
 	}
 
-	public function afterFind($event) {
+	public function afterFind($event)
+	{
 		// Save old values
 		$this->setOldAttributes($this->Owner->getAttributes());
 	}
 
-	public function getOldAttributes() {
+	public function getOldAttributes()
+	{
 		return $this->_oldattributes;
 	}
 
-	public function setOldAttributes($value) {
+	public function setOldAttributes($value)
+	{
 		$this->_oldattributes=$value;
 	}
 }

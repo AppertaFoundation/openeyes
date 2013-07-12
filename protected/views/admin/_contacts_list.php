@@ -42,7 +42,7 @@
 					</li>
 					<?php
 					foreach ($contacts['contacts'] as $i => $contact) {?>
-						<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $contact->id?>">
+						<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $contact->id?>">
 							<span class="column_id"><?php echo $contact->id?></span>
 							<span class="column_title"><?php echo $contact->title?>&nbsp;</span>
 							<span class="column_first_name"><?php echo $contact->first_name?>&nbsp;</span>

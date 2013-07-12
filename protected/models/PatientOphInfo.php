@@ -18,7 +18,7 @@
  */
 
 /**
- * This is the model class for table "patient_oph_info" It is designed to store ophthamological specific information against a patient, and is a model for any other specialty specific information (hence named 
+ * This is the model class for table "patient_oph_info" It is designed to store ophthamological specific information against a patient, and is a model for any other specialty specific information (hence named
  * after the specialty code).
  *
  * The followings are the available columns in table 'patient_oph_info':
@@ -35,7 +35,7 @@
  * @property Patient $patient
  * @property PatientOphInfoCviStatus $cvi_status
  */
- 
+
 class PatientOphInfo extends BaseActiveRecord
 {
 
@@ -99,7 +99,7 @@ class PatientOphInfo extends BaseActiveRecord
 				'cvi_status_date' => 'CVI Status Date',
 		);
 	}
-	
+
 	// TODO: Finish the model, and then get the form into the patient summary.
 
 	/**
@@ -120,5 +120,5 @@ class PatientOphInfo extends BaseActiveRecord
 				'criteria' => $criteria,
 		));
 	}
-	
+
 }

@@ -20,7 +20,7 @@
 class CancelledBookingTest extends CDbTestCase
 {
 	public $model;
-	
+
 	public $fixtures = array(
 		'users' => 'User',
 		'bookings' => 'CancelledBooking',
@@ -37,18 +37,18 @@ class CancelledBookingTest extends CDbTestCase
 			array(array('theatre_id' => 3), 0, array()),
 		);
 	}
-	
+
 	public function setUp()
 	{
 		parent::setUp();
 		$this->model = new CancelledBooking;
 	}
-	
+
 	public function testModel()
 	{
 		$this->assertEquals('CancelledBooking', get_class(CancelledBooking::model()), 'Class name should match model.');
 	}
-	
+
 	public function testAttributeLabels()
 	{
 		$expected = array(
@@ -63,7 +63,7 @@ class CancelledBookingTest extends CDbTestCase
 			'cancelled_reason_id' => 'Cancelled Reason',
 			'cancellation_comment' => 'Cancellation comment'
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 

@@ -1,8 +1,9 @@
 <?php
 
-class m130429_150500_asset_table extends CDbMigration {
-
-	public function up() {
+class m130429_150500_asset_table extends CDbMigration
+{
+	public function up()
+	{
 		$this->createTable('asset',array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'uid' => 'varchar(64) COLLATE utf8_bin NOT NULL',
@@ -25,8 +26,9 @@ class m130429_150500_asset_table extends CDbMigration {
 				'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
 	}
-	
-	public function down() {
+
+	public function down()
+	{
 		$this->dropTable('asset');
 	}
 

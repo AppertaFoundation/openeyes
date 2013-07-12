@@ -17,9 +17,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class TextField extends BaseCWidget {
+class TextField extends BaseCWidget
+{
 	public $name;
 	public $htmlOptions;
 	public $links=array();
 }
-?>

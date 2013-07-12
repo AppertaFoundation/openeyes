@@ -20,7 +20,7 @@ closedir($dh);
 	<div class="row" id="EventTypeModuleGenerateDiv">
 		<?php if (@$_POST['EventTypeModuleMode'] == 1) {?>
 			<?php echo $this->renderPartial('EventTypeModuleGenerate_ModifyExisting')?>
-		<?php }else{?>
+		<?php } else {?>
 			<?php echo $this->renderPartial('EventTypeModuleGenerate_GenerateNew')?>
 		<?php }?>
 	</div>

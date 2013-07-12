@@ -17,42 +17,45 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class TreeCrawlerCommand extends CConsoleCommand {
-
-	public function getName() {
+class TreeCrawlerCommand extends CConsoleCommand
+{
+	public function getName()
+	{
 		return 'Tree Crawler Command.';
 	}
 
-	public function getHelp() {
+	public function getHelp()
+	{
 		return "treecrawler <model_class> <snomeds>\n\nfor a comma separated list of snomed codes in the provided model_class, will display child and parent disorders\n";
 	}
 
-	public function run($args) {
+	public function run($args)
+	{
 		$kls = $args[0];
 		$snomeds = explode(",", $args[1]);
-		
+
 		$test_class = new $kls();
-				
+
 		try {
 			$behaviour = $test_class->treeStart();
 		} catch (Exception $e) {
 			echo "class '$kls' does not implement 'treeBehaviour', exiting ...\n";
 			exit();
 		}
-		
+
 		// Initialise db
 		$db = Yii::app()->db;
-		
-		foreach($snomeds as $snomed) {
+
+		foreach ($snomeds as $snomed) {
 			if ($d = $kls::model()->findByPk($snomed)) {
-			
+
 				print "Tree of " . $snomed . " - " . $d->term . ":\n\n";
 				$children = $d->childIds();
 				print "children (" . count($children) . "):\n";
 				foreach ($children as $child) {
 					print $child . ": " . $kls::model()->findByPk($child)->term . "\n";
 				}
-				
+
 				$parents = $d->parentIds();
 				print "------\n\nparents (" . count($parents) . "):\n";
 				foreach ($parents as $parent) {

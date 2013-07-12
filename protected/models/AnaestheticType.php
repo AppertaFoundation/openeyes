@@ -63,4 +63,3 @@ class AnaestheticType extends BaseActiveRecord
 		return array();
 	}
 }
-?>

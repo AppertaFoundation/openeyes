@@ -86,7 +86,8 @@ class EventType extends BaseActiveRecord
 		);
 	}
 
-	public function getEventTypeModules() {
+	public function getEventTypeModules()
+	{
 		$legacy_events = EventGroup::model()->find('code=?',array('Le'));
 
 		$criteria = new CDbCriteria;
@@ -113,17 +114,20 @@ class EventType extends BaseActiveRecord
 		));
 	}
 
-	public function getSpecialty() {
+	public function getSpecialty()
+	{
 		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
 		return Specialty::model()->find('code=?',array(strtoupper($m[1])));
 	}
 
-	public function getEvent_group() {
+	public function getEvent_group()
+	{
 		preg_match('/^([A-Z][a-z]+)([A-Z][a-z]+)([A-Z][a-z]+)$/',$this->class_name,$m);
 		return EventGroup::model()->find('code=?',array($m[2]));
 	}
 
-	public function getActiveList() {
+	public function getActiveList()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->distinct = true;
 		$criteria->select = 'event_type_id';
@@ -140,7 +144,8 @@ class EventType extends BaseActiveRecord
 		return CHtml::listData(EventType::model()->findAll($criteria), 'id', 'name');
 	}
 
-	public function getDisabled() {
+	public function getDisabled()
+	{
 		if (is_array(Yii::app()->params['modules_disabled'])) {
 			foreach (Yii::app()->params['modules_disabled'] as $module => $params) {
 				if (is_array($params)) {
@@ -158,25 +163,29 @@ class EventType extends BaseActiveRecord
 		return false;
 	}
 
-	public function getDisabled_title() {
+	public function getDisabled_title()
+	{
 		if (isset(Yii::app()->params['modules_disabled'][$this->class_name]['title'])) {
 			return Yii::app()->params['modules_disabled'][$this->class_name]['title'];
 		}
 		return "This module is disabled";
 	}
 
-	public function getDisabled_detail() {
+	public function getDisabled_detail()
+	{
 		if (isset(Yii::app()->params['modules_disabled'][$this->class_name]['detail'])) {
 			return Yii::app()->params['modules_disabled'][$this->class_name]['detail'];
 		}
 		return "The ".$this->name." module will be available in an upcoming release.";
 	}
 
-	public function getApi() {
+	public function getApi()
+	{
 		return Yii::app()->moduleAPI->get($this->class_name);
 	}
 
-	public function registerShortCode($code,$method,$description=false) {
+	public function registerShortCode($code,$method,$description=false)
+	{
 		if (!preg_match('/^[a-zA-Z]{3}$/',$code)) {
 			throw new Exception("Invalid shortcode: $code");
 		}

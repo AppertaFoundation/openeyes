@@ -69,4 +69,3 @@ class Anaesthetist extends BaseActiveRecord
 		return array();
 	}
 }
-?>

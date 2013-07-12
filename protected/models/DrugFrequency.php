@@ -93,7 +93,7 @@ class DrugFrequency extends BaseActiveRecord
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
 		$criteria->compare('long_name',$this->long_name,true);
-		
+
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));

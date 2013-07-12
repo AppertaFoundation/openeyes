@@ -54,7 +54,8 @@ class Site extends BaseActiveRecord
 		return 'site';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -145,7 +146,8 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getListForCurrentInstitution($field=false) {
+	public function getListForCurrentInstitution($field=false)
+	{
 		if (!$field) $field = 'short_name';
 
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
@@ -164,7 +166,8 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getLongListForCurrentInstitution() {
+	public function getLongListForCurrentInstitution()
+	{
 		$site = Site::model()->findByPk(Yii::app()->session['selected_site_id']);
 
 		$criteria = new CDbCriteria;
@@ -192,18 +195,20 @@ class Site extends BaseActiveRecord
 		return $result;
 	}
 
-	public function getDefaultSite() {
+	public function getDefaultSite()
+	{
 		$site = null;
-		if(Yii::app()->params['default_site_code']) {
+		if (Yii::app()->params['default_site_code']) {
 			$site = $this->findByAttributes(array('code' => Yii::app()->params['default_site_code']));
 		}
-		if(!$site) {
+		if (!$site) {
 			$site = $this->find();
 		}
 		return $site;
 	}
-	
-	public function getCorrespondenceName() {
+
+	public function getCorrespondenceName()
+	{
 		if ($this->institution->short_name) {
 			if (!strstr($this->name,$this->institution->short_name)) {
 				return $this->institution->short_name.' at '.$this->name;
@@ -217,11 +222,13 @@ class Site extends BaseActiveRecord
 		return array($this->institution->name,$this->name);
 	}
 
-	public function getShortname() {
+	public function getShortname()
+	{
 		return $this->short_name ? $this->short_name : $this->name;
 	}
 
-	public function getListForInstitution() {
+	public function getListForInstitution()
+	{
 		if (empty(Yii::app()->params['institution_code'])) {
 			throw new Exception("Institution code is not set");
 		}

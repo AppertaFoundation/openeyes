@@ -70,16 +70,17 @@
 		});
 	});
 
-	function sort_selectbox(element) {
+	function sort_selectbox(element)
+	{
 		rootItem = element.children('option:first').text();
 		element.append(element.children('option').sort(selectSort));
 	}
 
-	function selectSort(a, b) {
+	function selectSort(a, b)
+	{
 		if (a.innerHTML == rootItem) {
 			return -1;
-		}
-		else if (b.innerHTML == rootItem) {
+		} else if (b.innerHTML == rootItem) {
 			return 1;
 		}
 		return (a.innerHTML > b.innerHTML) ? 1 : -1;

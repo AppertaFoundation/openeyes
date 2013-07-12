@@ -1,8 +1,9 @@
 <?php
 
-class m130613_124300_drug_set_tapering extends CDbMigration {
-
-	public function up() {
+class m130613_124300_drug_set_tapering extends CDbMigration
+{
+	public function up()
+	{
 		$this->addColumn('drug_set_item', 'dose', 'varchar(40)');
 
 		$this->alterColumn('drug_set_item', 'default_frequency_id', 'int(10) unsigned');
@@ -37,7 +38,8 @@ class m130613_124300_drug_set_tapering extends CDbMigration {
 			), 'ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropTable('drug_set_item_taper');
 
 		$this->dropForeignKey('drug_set_item_frequency_id_fk', 'drug_set_item');

@@ -60,7 +60,7 @@
 					<div class="sortable">
 						<?php
 						foreach ($users['items'] as $i => $user) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $user->id?>">
 								<?php /*
 								<span class="column_checkbox"><input type="checkbox" name="users[]" value="<?php echo $user->id?>" /></span>
 								*/?>

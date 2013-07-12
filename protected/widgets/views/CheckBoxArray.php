@@ -23,7 +23,7 @@
 						<?php }?>
 						<?php if (!empty($columns)) {
 							foreach ($columns as $i => $data) {?>
-								<div class="datacol<?php echo $i+1?>">		
+								<div class="datacol<?php echo $i+1?>">
 									<?php foreach ($data as $n => $field) {?>
 										<?php echo CHtml::checkBox(get_class($element)."[$field]",$checked[$field],array('style' => 'margin-bottom: 20px;'))?> <?php echo CHtml::encode($element->getAttributeLabel($field))?>
 										<?php if (($n+1) < count($data)) {?><br/><?php }?>

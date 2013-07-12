@@ -19,18 +19,18 @@
 ?>
 <?php
 	$no_wrapper = false;
-	if(@$htmlOptions['nowrapper']) {
+	if (@$htmlOptions['nowrapper']) {
 		$no_wrapper = true;
 		unset($htmlOptions['nowrapper']);
 	}
 	$htmlOptions['class'] = @$htmlOptions['class'];
 	$htmlOptions['class'] .= ' dropDownTextSelection';
-	if(@$htmlOptions['delimited']) {
+	if (@$htmlOptions['delimited']) {
 		$htmlOptions['class'] .= ' delimited';
 		unset($htmlOptions['delimited']);
 	}
 	$htmlOptions['id'] = 'dropDownTextSelection_'.get_class($element).'_'.$field;
-	if(!@$htmlOptions['empty']) {
+	if (!@$htmlOptions['empty']) {
 		$htmlOptions['empty'] = '- Please select -';
 	}
 ?>

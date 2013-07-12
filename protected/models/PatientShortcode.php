@@ -104,7 +104,8 @@ class PatientShortcode extends BaseActiveRecord
 		));
 	}
 
-	public function replaceText($text,$patient, $ucfirst=false) {
+	public function replaceText($text,$patient, $ucfirst=false)
+	{
 		if ($this->eventType) {
 			if ($api = Yii::app()->moduleAPI->get($this->eventType->class_name)) {
 				if (method_exists($api,$this->method)) {

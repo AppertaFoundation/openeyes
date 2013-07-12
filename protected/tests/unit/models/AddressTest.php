@@ -17,16 +17,17 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class AddressTest extends CDbTestCase {
-	
+class AddressTest extends CDbTestCase
+{
 	public $model;
-	
+
 	public $fixtures = array(
 		'patients' => 'Patient',
 		'addresses' => 'Address'
 	);
 
-	public function dataProvider_Search() {
+	public function dataProvider_Search()
+	{
 		return array(
 			array(array('address1' => 'flat 1'), 1, array('address1')),
 			array(array('address1' => 'FLAT 1'), 1, array('address1')), /* case insensitivity test */
@@ -38,17 +39,20 @@ class AddressTest extends CDbTestCase {
 			array(array('email' => 'foobar'), 0, array()),
 		);
 	}
-	
-	public function setUp() {
+
+	public function setUp()
+	{
 		parent::setUp();
 		$this->model = new Address;
 	}
-	
-	public function testModel() {
+
+	public function testModel()
+	{
 		$this->assertEquals('Address', get_class(Address::model()), 'Class name should match model.');
 	}
-	
-	public function testAttributeLabels() {
+
+	public function testAttributeLabels()
+	{
 		$expected = array(
 			'id' => 'ID',
 			'address1' => 'Address1',
@@ -59,14 +63,15 @@ class AddressTest extends CDbTestCase {
 			'country_id' => 'Country',
 			'email' => 'Email',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 
 	/**
 	 * @dataProvider dataProvider_Search
 	 */
-	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys) {
+	public function testSearch_WithValidTerms_ReturnsExpectedResults($searchTerms, $numResults, $expectedKeys)
+	{
 		$address = new Address;
 		$address->setAttributes($searchTerms);
 		$results = $address->search();

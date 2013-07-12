@@ -18,7 +18,7 @@
  */
 
 ?><script language="JavaScript">
-	function eyedraw_init() 
+	function eyedraw_init()
 	{
         	<?php echo $init?>
 	}
@@ -27,4 +27,3 @@
 		<?php echo $submit?>
 	}
 </script>
-

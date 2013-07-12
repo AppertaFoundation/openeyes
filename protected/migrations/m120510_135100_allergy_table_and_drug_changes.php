@@ -1,9 +1,9 @@
 <?php
 
-class m120510_135100_allergy_table_and_drug_changes extends CDbMigration {
-	
-	public function up() {
-		
+class m120510_135100_allergy_table_and_drug_changes extends CDbMigration
+{
+	public function up()
+	{
 		// Create allergy table and drug associations
 		$this->createTable('allergy',array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -24,7 +24,7 @@ class m120510_135100_allergy_table_and_drug_changes extends CDbMigration {
 			'CONSTRAINT `drug_allergy_assignment_drug_id_fk` FOREIGN KEY (`drug_id`) REFERENCES `drug` (`id`)',
 			'CONSTRAINT `drug_allergy_assignment_allergy_id_fk` FOREIGN KEY (`allergy_id`) REFERENCES `allergy` (`id`)',
 		), 'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
-		
+
 		// Add metadata to drug table
 		$this->createTable('drug_type',array(
 			'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
@@ -72,10 +72,11 @@ class m120510_135100_allergy_table_and_drug_changes extends CDbMigration {
 		$this->addColumn('drug', 'default_duration_id', 'int(10) unsigned NOT NULL DEFAULT 1');
 		$this->addForeignKey('drug_default_duration_id_fk', 'drug', 'default_duration_id', 'drug_duration', 'id');
 		$this->addColumn('drug', 'preservative_free', 'tinyint(1) unsigned NOT NULL DEFAULT \'0\'');
-		
+
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('drug_type_id_fk', 'drug');
 		$this->dropForeignKey('drug_form_id_fk', 'drug');
 		$this->dropForeignKey('drug_default_route_id_fk', 'drug');
@@ -101,11 +102,13 @@ class m120510_135100_allergy_table_and_drug_changes extends CDbMigration {
 		$this->dropTable('allergy');
 	}
 
-	public function safeUp() {
+	public function safeUp()
+	{
 		$this->up();
 	}
 
-	public function safeDown() {
+	public function safeDown()
+	{
 		$this->down();
 	}
 

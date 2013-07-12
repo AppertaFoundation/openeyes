@@ -40,7 +40,7 @@
 					<div class="sortable">
 						<?php
 						foreach ($institutions['items'] as $i => $institution) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $institution->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $institution->id?>">
 								<span class="column_id"><?php echo $institution->id?></span>
 								<span class="column_name"><?php echo $institution->name?>&nbsp;</span>
 								<span class="column_remote_id"><?php echo $institution->remote_id?>&nbsp;</span>

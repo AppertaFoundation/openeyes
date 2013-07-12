@@ -18,7 +18,7 @@
  */
 
 $this->breadcrumbs=array(
-	'Phrase By Specialties' => array('/admin/adminPhraseBySubspecialty/index'), 
+	'Phrase By Specialties' => array('/admin/adminPhraseBySubspecialty/index'),
 	$sectionName
 );
 $this->menu=array(

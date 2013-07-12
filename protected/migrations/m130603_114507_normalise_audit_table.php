@@ -127,7 +127,8 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 		$this->addForeignKey('audit_server_id_fk','audit','server_id','audit_server','id');
 	}
 
-	public function findObject($type,$name) {
+	public function findObject($type,$name)
+	{
 		if (isset($this->lookup[$type][$name])) {
 			return $this->lookup[$type][$name];
 		}
@@ -201,7 +202,8 @@ class m130603_114507_normalise_audit_table extends CDbMigration
 		$this->dropTable('audit_action');
 	}
 
-	public function findObjectName($type,$id) {
+	public function findObjectName($type,$id)
+	{
 		if (isset($this->lookup[$type][$id])) {
 			return $this->lookup[$type][$id];
 		}

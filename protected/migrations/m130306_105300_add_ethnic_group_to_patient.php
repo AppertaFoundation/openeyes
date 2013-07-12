@@ -1,7 +1,9 @@
 <?php
 
-class m130306_105300_add_ethnic_group_to_patient extends OEMigration {
-	public function up() {
+class m130306_105300_add_ethnic_group_to_patient extends OEMigration
+{
+	public function up()
+	{
 		$this->createTable('ethnic_group', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(64) NOT NULL',
@@ -25,10 +27,11 @@ class m130306_105300_add_ethnic_group_to_patient extends OEMigration {
 		$this->addForeignKey('patient_ethnic_group_id_fk', 'patient', 'ethnic_group_id', 'ethnic_group', 'id');
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->dropForeignKey('patient_ethnic_group_id_fk', 'patient');
 		$this->dropColumn('patient','ethnic_group_id');
 		$this->dropTable('ethnic_group');
 	}
-	
+
 }

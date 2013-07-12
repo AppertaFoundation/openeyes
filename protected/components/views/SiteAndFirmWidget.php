@@ -32,7 +32,7 @@ $this->beginWidget('zii.widgets.jui.CJuiDialog', array(
 	));
 ?>
 
-<?php 
+<?php
 $form = $this->beginWidget('CActiveForm', array(
 	'id' => 'site-and-firm-form',
 ));

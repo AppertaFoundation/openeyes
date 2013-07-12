@@ -26,7 +26,8 @@ class AuditController extends BaseController
 	public $layout='//layouts/main';
 	public $items_per_page = 100;
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			// Level 2 or above can do anything
 			array('allow',
@@ -37,7 +38,8 @@ class AuditController extends BaseController
 		);
 	}
 
-	public function beforeAction($action) {
+	public function beforeAction($action)
+	{
 		$userid = Yii::app()->session['user']->id;
 		if (($userid != 2103)and($userid != 122)and($userid != 613)and($userid != 1330)and($userid != 1)) return false;
 		return parent::beforeAction($action);
@@ -60,7 +62,8 @@ class AuditController extends BaseController
 		$this->render('index',array('actions'=>$actions,'targets'=>$targets));
 	}
 
-	public function actionSearch() {
+	public function actionSearch()
+	{
 		if (isset($_POST['page'])) {
 			$data = $this->getData($_POST['page']);
 		} else {
@@ -73,7 +76,8 @@ class AuditController extends BaseController
 		$this->renderPartial('_pagination', array('data' => $data), false, true);
 	}
 
-	public function criteria($count=false) {
+	public function criteria($count=false)
+	{
 		$criteria = new CDbCriteria;
 
 		if ($count) {
@@ -157,7 +161,8 @@ class AuditController extends BaseController
 		return $criteria;
 	}
 
-	public function getData($page=1, $id=false) {
+	public function getData($page=1, $id=false)
+	{
 		$data = array();
 
 		$data['total_items'] = Audit::model()->find($this->criteria(true))->count;
@@ -167,7 +172,7 @@ class AuditController extends BaseController
 		$criteria->order = 't.id desc';
 		$criteria->limit = $this->items_per_page;
 		if ($id) {
-			$criteria->addCondition('t.id > '.(integer)$id);
+			$criteria->addCondition('t.id > '.(integer) $id);
 		} else {
 			$criteria->offset = (($page-1) * $this->items_per_page);
 		}
@@ -187,7 +192,8 @@ class AuditController extends BaseController
 		return $data;
 	}
 
-	public function actionUpdateList() {
+	public function actionUpdateList()
+	{
 		if (!$audit = Audit::model()->findByPk(@$_GET['last_id'])) {
 			throw new Exception('Log entry not found: '.@$_GET['last_id']);
 		}
@@ -195,7 +201,8 @@ class AuditController extends BaseController
 		$this->renderPartial('_list_update', array('data' => $this->getData(null,$audit->id)), false, true);
 	}
 
-	public function actionUsers() {
+	public function actionUsers()
+	{
 		$users = array();
 
 		$criteria = new CDbCriteria;
@@ -220,4 +227,3 @@ class AuditController extends BaseController
 		echo json_encode($users);
 	}
 }
-?>

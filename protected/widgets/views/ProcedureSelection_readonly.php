@@ -24,7 +24,7 @@
 			<?php
 			$totalDuration = 0;
 			?>
-			<div id="procedureList_<?php echo $identifier?>" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)){?> display: none;<?php }?>">
+			<div id="procedureList_<?php echo $identifier?>" class="eventHighlight big" style="width:auto; line-height:1.6;<?php if (empty($selected_procedures)) {?> display: none;<?php }?>">
 				<h4>
 					<?php
 					if (!empty($selected_procedures)) {
@@ -51,7 +51,7 @@
 					}
 					?>
 				</h4>
-				<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations){?> style="display: none;"<?php }?>>
+				<div class="extraDetails grid-view"<?php if (empty($selected_procedures) || !$durations) {?> style="display: none;"<?php }?>>
 					<table class="grid">
 						<tfoot>
 							<tr>

@@ -25,7 +25,8 @@ class PhraseByFirmController extends BaseController
 	 */
 	public $layout='column2';
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			// Level 2 can't change anything
 			array('allow',
@@ -40,7 +41,7 @@ class PhraseByFirmController extends BaseController
 			array('deny'),
 		);
 	}
-		
+
 	/**
 	 * List all models for the given section
 	 *
@@ -87,8 +88,7 @@ class PhraseByFirmController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseByFirm']))
-		{
+		if (isset($_POST['PhraseByFirm'])) {
 			$model->attributes=$_POST['PhraseByFirm'];
 			if ($model->attributes['phrase_name_id']) {
 				// We are overriding an existing phrase name - so as long as it hasn't been overridden already we should just save it
@@ -126,8 +126,7 @@ class PhraseByFirmController extends BaseController
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseByFirm']))
-		{
+		if (isset($_POST['PhraseByFirm'])) {
 			$model->attributes=$_POST['PhraseByFirm'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
@@ -145,8 +144,7 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$model = $this->loadModel($id);
 			$this->loadModel($id)->delete();
@@ -154,8 +152,7 @@ class PhraseByFirmController extends BaseController
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('phraseIndex', 'section_id'=>$model->section_id, 'firm_id'=>Firm::Model()->findByPk($this->selectedFirmId)->id));
-		}
-		else
+		} else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
@@ -197,7 +194,7 @@ class PhraseByFirmController extends BaseController
 	 */
 	public function loadModel($id)
 	{
-		$model=PhraseByFirm::model()->findByPk((int)$id);
+		$model=PhraseByFirm::model()->findByPk((int) $id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -209,8 +206,7 @@ class PhraseByFirmController extends BaseController
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='phrase-by-firm-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='phrase-by-firm-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

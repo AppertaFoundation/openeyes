@@ -4,20 +4,20 @@
  *
  * This file is part of OpenEyes.
  *
- * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU 
- * General Public License as published by the Free Software Foundation, either version 3 of the 
+ * OpenEyes is free software: you can redistribute it and/or modify it under the terms of the GNU
+ * General Public License as published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
  *
- * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
- * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU  
+ * OpenEyes is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+ * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with OpenEyes in a file 
+ * You should have received a copy of the GNU General Public License along with OpenEyes in a file
  * titled COPYING. If not, see <http://www.gnu.org/licenses/>.
  *
  * _____________________________________________________________________________
  * http://www.openeyes.org.uk   info@openeyes.org.uk
- * 
+ *
  * @author Bill Aylward <bill.aylward@openeyes.org.uk>
  * @license http://www.gnu.org/licenses/gpl.html GPLv3.0
  * @license http://www.openeyes.org.uk/licenses/oepl-1.0.html OEPLv1.0
@@ -37,14 +37,13 @@ $('#{$class}_tableName').change(function(){
 $('#{$class}_elementName').bind('keyup change', function(){
 	var model=$('#{$class}_tableName');
 	var elementName=$(this).val();
-	if(elementName.substring(elementName.length-1)!='*') {
+	if (elementName.substring(elementName.length-1)!='*') {
 		$('.form .row.model-class').show();
-	}
-	else {
+	} else {
 		$('#{$class}_tableName').val('');
 		$('.form .row.model-class').hide();
 	}
-	if(!model.data('changed')) {
+	if (!model.data('changed')) {
 		var i=elementName.lastIndexOf('.');
 		if(i>=0)
 			elementName=elementName.substring(i+1);
@@ -67,8 +66,7 @@ $('.form .row.model-class').toggle($('#{$class}_elementName').val().substring($(
 <?php $form=$this->beginWidget('CCodeForm', array('model'=>$model));
 
 // Migration script generation
-if ($model->level == $model::CREATE_MIGRATION)
-{
+if ($model->level == $model::CREATE_MIGRATION) {
 	// Element name
 	echo '
 	<div class="row">
@@ -99,7 +97,7 @@ if ($model->level == $model::CREATE_MIGRATION)
 	echo '
 	</div>
 	';
-	
+
 	// Element table fields
 	echo '
 	<div class="row">
@@ -111,7 +109,7 @@ if ($model->level == $model::CREATE_MIGRATION)
 		A text block describing the fields required for the element.
 		In order to ensure RDMS independence, use the following datatypes</br></br>
 		<table cellspacing="0" width="220">
-			<thead>		
+			<thead>
 				<tr>
 					<th align="left" width="30%">type</th>
 					<th align="left" width="60%">Description</th>
@@ -220,17 +218,16 @@ if ($model->level == $model::CREATE_MIGRATION)
 }
 
 // Model and view files creation
-if ($model->level == $model::CREATE_FILES)
-{
+if ($model->level == $model::CREATE_FILES) {
 	// Reset button
 	echo '
 	<div class="buttons">
 		<input name="reset" type="submit" title="Click in case of error to start again" value="Reset" />
 	</div>
 	';
-	
+
 	// Class name
-	echo '	
+	echo '
 	<div class="row model-class">
 	';
 	echo "\t".$form->label($model,'modelClass',array('required'=>true));
@@ -243,7 +240,7 @@ if ($model->level == $model::CREATE_FILES)
 	echo '
 	</div>
 	';
-	
+
 	// Base class
 	echo '
 	<div class="row">
@@ -259,7 +256,7 @@ if ($model->level == $model::CREATE_FILES)
 	echo '
 	</div>
 	';
-	
+
 	// Model path
 	echo '
 	<div class="row">
@@ -313,8 +310,7 @@ if ($model->level == $model::CREATE_FILES)
 
 <!-- Script to put initial focus on element name -->
 <script type="text/javascript">
-	if ($('#ElementCode_elementName').val() == '')
-	{
+	if ($('#ElementCode_elementName').val() == '') {
 		$('#ElementCode_elementName').focus();
 	}
 </script>

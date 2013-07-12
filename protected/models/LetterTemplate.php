@@ -144,7 +144,7 @@ class LetterTemplate extends BaseActiveRecord
 			->from('subspecialty s')
 			->order('name ASC')
 			->queryAll();
-		
+
 		return CHtml::listData($specialties, 'id', 'name');
 	}
 
@@ -154,8 +154,8 @@ class LetterTemplate extends BaseActiveRecord
 			->select('c.id, c.name')
 			->from('contact_type c')
 			->order('name ASC')
-			->queryAll();	
-		
+			->queryAll();
+
 		return CHtml::listData($contactTypes, 'id', 'name');
 	}
 }

@@ -31,7 +31,7 @@
 					<div class="sortable">
 						<?php
 						foreach (ImportSource::model()->findAll(array('order'=>'name')) as $i => $source) {?>
-							<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $source->id?>">
+							<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $source->id?>">
 								<span class="column_checkbox"><input type="checkbox" name="source[]" value="<?php echo $source->id?>" class="sources" /></span>
 								<span class="column_name"><?php echo $source->name?>&nbsp;</span>
 							</li>

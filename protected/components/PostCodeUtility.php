@@ -5672,10 +5672,10 @@ class PostCodeUtility
 			"ZE3" => "Shetland"
 		);
 	}
-	
+
 	/**
 	 * Cleans string, tests that is is postcode, return associative array with components, or false if not valid
-	 * 
+	 *
 	 * @param string $_string Possible postcode string
 	 * @return array|false
 	 */
@@ -5683,10 +5683,10 @@ class PostCodeUtility
 	{
 		// Clean string and make it upper case
 		$string = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $_string));
-		
+
 		// Regular expression to identify and split postcode into parts
 		$regex = '/^([A-Z]{1,2})([0-9][0-9A-Z]?)\s*([0-9])([A-Z]{2})$/';
-		
+
 		if (preg_match($regex, $string, $part)) {
 			return array(
 				'full' => $part[1].$part[2].' '.$part[3].$part[4],
@@ -5696,18 +5696,18 @@ class PostCodeUtility
 				'sector' => $part[3],
 				'walk' => $part[4],
 				'inner' => $part[3] . $part[4]
-			);	
+			);
 		} else {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Returns town for an outer post code
-	 * 
+	 *
 	 * @param string $_code Outer postcode
 	 * @return string Town name
-	 */ 
+	 */
 	public function townForOuterPostCode($_code)
 	{
 		return isset($this->towns[$_code])?$this->towns[$_code]:null;
@@ -5715,32 +5715,32 @@ class PostCodeUtility
 
 	/**
 	 * Returns county for an outer post code
-	 * 
+	 *
 	 * @param string $_code Outer postcode
 	 * @return string County name
-	 */ 
+	 */
 	public function countyForOuterPostCode($_code)
 	{
 		return isset($this->counties[$_code])?$this->counties[$_code]:null;
 	}
-	
+
 	/**
 	 * Returns county for an outer post code
-	 * 
+	 *
 	 * @param string $_code Outer postcode
 	 * @return string County name
-	 */ 
+	 */
 	public function isTown($_string)
 	{
 		return in_array(strtolower($_string), array_map('strtolower', $this->towns));
 	}
-	
+
 	/**
 	 * Is the passed string a county?
-	 * 
+	 *
 	 * @param string $_string Possible County
 	 * @return boolean
-	 */ 
+	 */
 	public function isCounty($_string)
 	{
 		return in_array(strtolower($_string), array_map('strtolower', $this->counties));

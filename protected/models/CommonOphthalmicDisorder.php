@@ -120,7 +120,8 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		return CHtml::listData($specialties, 'id', 'name');
 	}
 
-	public static function getList($firm) {
+	public static function getList($firm)
+	{
 		if (empty($firm)) {
 			throw new CException('Firm is required.');
 		}
@@ -136,5 +137,5 @@ class CommonOphthalmicDisorder extends BaseActiveRecord
 		}
 		return array();
 	}
-	
+
 }
