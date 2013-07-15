@@ -27,3 +27,4 @@ tags
 /protected/commands/
 vendor
 .sass-cache
+node_modules
