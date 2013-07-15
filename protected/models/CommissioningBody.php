@@ -121,4 +121,10 @@ class CommissioningBody extends BaseActiveRecord
 		return $this->type ? $this->type->shortname : 'CB';
 	}
 	
+	public function getAddress()
+	{
+		if ($this->contact && $this->contact->address) {
+			return $this->contact->address;
+		}
+	}
 }

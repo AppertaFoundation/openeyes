@@ -4,6 +4,7 @@ class m130711_133446_commissioning_bodies extends CDbMigration
 {
 	public function up()
 	{
+		/*
 		$this->createTable('commissioningbody_type', array(
 				'id' => 'int(10) unsigned NOT NULL AUTO_INCREMENT',
 				'name' => 'varchar(64) COLLATE utf8_bin NOT NULL',
@@ -87,16 +88,21 @@ class m130711_133446_commissioning_bodies extends CDbMigration
 		),
 				'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin'
 		);
-		
-		// A couple of test records
-		/*
-		$this->insert('contact', array('first_name' => '', 'last_name' => ''));
-		$cid = $this->dbConnection->lastInsertID;
-		$this->insert('commissioningbody', array('name' => 'SURREY PCT', 'code' => '06L', 'contact_id' => $cid, 'commissioningbody_type_id' => 1));
-		$this->insert('contact', array('first_name' => '', 'last_name' => ''));
-		$cid = $this->dbConnection->lastInsertID;
-		$this->insert('commissioningbody', array('name' => 'NORTHAMPTONSHIRE PCT', 'code' => '06L', 'contact_id' => $cid, 'commissioningbody_type_id' => 1));
 		*/
+		// A couple of test records
+		
+		$this->insert('contact', array('first_name' => '', 'last_name' => ''));
+		$cid = $this->dbConnection->lastInsertID;
+		$this->insert('commissioningbody', array('name' => 'Surrey Health PCT', 'code' => '06L', 'contact_id' => $cid, 'commissioningbody_type_id' => 1));
+		$this->insert('address', array('address1' => 'Surrey Heath House', 'address2' => 'Knoll Road', 
+				'city' => 'Camberley', 'county' => 'Surrey', 'postcode' => 'GU15 3HD', 'country_id' => 1, 'email' => 'SHCCG.ContactUs@nhs.net', 
+				'parent_class' => 'Contact', 'parent_id' => $cid, 'address_type_id' => 3));
+		$this->insert('contact', array('first_name' => '', 'last_name' => ''));
+		$cid = $this->dbConnection->lastInsertID;
+		$this->insert('commissioningbody', array('name' => 'NHS Nene CCG', 'code' => 'SPD', 'contact_id' => $cid, 'commissioningbody_type_id' => 1));
+		$this->insert('address', array('address1' => 'Francis Crick House', 'address2' => 'Summerhouse Road, Moulton Park',
+				'city' => 'Northampton', 'county' => 'Northamptionshire', 'postcode' => 'NN3 6BF', 'country_id' => 1, 'email' => 'involvement.nene@nhs.net',
+				'parent_class' => 'Contact', 'parent_id' => $cid, 'address_type_id' => 3));
 	}
 
 	public function down()

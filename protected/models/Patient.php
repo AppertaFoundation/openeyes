@@ -1031,9 +1031,11 @@ class Patient extends BaseActiveRecord
 				else {
 					$res[$body->type->id] = array($body);
 				}
+				$seen_bodies[] = $body->id;
 			}
-			$seen_bodies[] = $body->id;
+			
 		}
+		error_log(print_r($seen_bodies, true));
 		
 		return $res;
 	}
