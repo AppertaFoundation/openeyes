@@ -80,9 +80,10 @@ class CommissioningBody extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'type' => array(self::BELONGS_TO, 'CommissioningBodyType', 'commissioningbody_type_id'),
-			'practices' => array(self::MANY_MANY, 'Practice', 'commissioningbody_practice_assignment(commissioningbody_id, practice_id)'),
-			'services' => array(self::HAS_MANY, 'CommissioningBodyService', 'commissioningbody_id')
+			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioningbody_type_id'),
+			// At this stage, there is a one to many relationship for bodies to services, but at some point in the future
+			// it may be necessary to update this to a many to many to relationship 
+			'commissioningbody' => array(self::BELONGS_TO, 'ComissioningBody', 'commissioningbody_id'),
 		);
 	}
 
@@ -117,7 +118,7 @@ class CommissioningBody extends BaseActiveRecord
 	
 	public function getTypeShortName()
 	{
-		return $this->type ? $this->type->shortname : 'CB';
+		return $this->type ? $this->type->shortname : 'CBS';
 	}
 	
 	public function getAddress()

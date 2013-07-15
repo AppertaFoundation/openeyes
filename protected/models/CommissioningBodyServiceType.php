@@ -18,22 +18,19 @@
  */
 
 /**
- * This is the model class for table "commissioningbody".
+ * This is the model class for table "commissioningbodyservice_type".
  *
- * The followings are the available columns in table 'commissioningbody':
+ * The followings are the available columns in table 'commissioningbodyservice_type':
  * @property integer $id
  * @property string $name
- *
- * The followings are the available model relations:
- * @property Contact $contact
- * @property CommissioningBodyType $type
- * @property Practice[] $practices
+ * @property string $shortname
+ * 
  */
-class CommissioningBody extends BaseActiveRecord
+class CommissioningBodyServiceType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return CommissioningBody the static model class
+	 * @return CommissioningBodyType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -45,15 +42,7 @@ class CommissioningBody extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'commissioningbody';
-	}
-
-	public function behaviors() {
-		return array(
-			'ContactBehavior' => array(
-				'class' => 'application.behaviors.ContactBehavior',
-			),
-		);
+		return 'commissioningbodyservice_type';
 	}
 
 	/**
@@ -61,8 +50,6 @@ class CommissioningBody extends BaseActiveRecord
 	 */
 	public function rules()
 	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
 		return array(
 			array('name', 'required'),
 			// The following rule is used by search().
@@ -79,10 +66,6 @@ class CommissioningBody extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'type' => array(self::BELONGS_TO, 'CommissioningBodyType', 'commissioningbody_type_id'),
-			'practices' => array(self::MANY_MANY, 'Practice', 'commissioningbody_practice_assignment(commissioningbody_id, practice_id)'),
-			'services' => array(self::HAS_MANY, 'CommissioningBodyService', 'commissioningbody_id')
 		);
 	}
 
@@ -92,6 +75,8 @@ class CommissioningBody extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
+			'id' => 'ID',
+			'name' => 'Name',
 		);
 	}
 
@@ -108,27 +93,10 @@ class CommissioningBody extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
-		$criteria->compare('code',$this->code,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
 	}
-	
-	public function getTypeShortName()
-	{
-		return $this->type ? $this->type->shortname : 'CB';
-	}
-	
-	public function getAddress()
-	{
-		if ($this->contact && $this->contact->address) {
-			return $this->contact->address;
-		}
-	}
-	
-	public function getCorrespondenceName()
-	{
-		return $this->name;
-	}
+
 }
