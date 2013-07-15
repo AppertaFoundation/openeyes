@@ -1,0 +1,12 @@
+$experimental-support-for-svg: true;
+$support-for-original-webkit-gradients: false;
+
+@import "comments";
+@import "compass/css3";
+@import "compass/css3/user-interface";
+@import "mixins";
+@import "variables";
+
+body {
+	background: #FFF;
+}
