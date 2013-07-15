@@ -26,3 +26,4 @@ tags
 /protected/views/patient/custom/info/php
 /protected/commands/
 vendor
+.sass-cache
