@@ -289,7 +289,8 @@ class AdminController extends BaseController
 
 		if (count($contacts) == 1) {
 			foreach ($contacts as $contact) {}
-			return $this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+			$this->redirect(array('/admin/editContact?contact_id='.$contact->id));
+			return;
 		}
 
 		$pages = ceil(count($contacts) / $this->items_per_page);

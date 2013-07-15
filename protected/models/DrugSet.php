@@ -23,7 +23,7 @@
  * The followings are the available columns in table 'drug_set':
  * @property integer $id
  * @property string $name
- * @property int $subspecialty_id
+ * @property integer $subspecialty_id
  * @property Subspecialty $subspecialty
  * @property DrugSetItem[] $items
  */

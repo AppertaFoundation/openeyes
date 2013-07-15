@@ -21,7 +21,7 @@
  * This is the model class for table "site".
  *
  * The followings are the available columns in table 'site':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $short_name
  * @property string $address1
@@ -32,8 +32,10 @@
  * @property string $telephone
  *
  * The followings are the available model relations:
- * @property Theatre[] $theatres
- * @property Ward[] $wards
+ * @property Institution $institution
+ * @property Contact $contact
+ * @property Contact $replyTo
+ * @property ImportSource $import
  */
 class Site extends BaseActiveRecord
 {
@@ -88,12 +90,12 @@ class Site extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
-			'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
+			//'theatres' => array(self::HAS_MANY, 'Theatre', 'site_id'),
+			//'wards' => array(self::HAS_MANY, 'Ward', 'site_id'),
 			'institution' => array(self::BELONGS_TO, 'Institution', 'institution_id'),
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'replyTo' => array(self::BELONGS_TO, 'Contact', 'replyto_contact_id'),
-			'import' => array(self::HAS_ONE, 'ImportSite', 'site_id'),
+			'import' => array(self::HAS_ONE, 'ImportSource', 'site_id'),
 		);
 	}
 

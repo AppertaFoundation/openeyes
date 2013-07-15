@@ -21,9 +21,9 @@
  * This is the model class for table "common_ophthalmic_disorder".
  *
  * The followings are the available columns in table 'common_ophthalmic_disorder':
- * @property string $id
- * @property string $disorder_id
- * @property string $subspecialty_id
+ * @property integer $id
+ * @property integer $disorder_id
+ * @property integer $subspecialty_id
  *
  * The followings are the available model relations:
  * @property Disorder $disorder

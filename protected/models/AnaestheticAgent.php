@@ -20,8 +20,8 @@
 /**
  * This is the model class for table "anaesthetic_agent".
  *
- * The followings are the available columns in table 'firm':
- * @property string $id
+ * The followings are the available columns in table 'anaesthetic_agent':
+ * @property integer $id
  * @property string $name
  * @property integer $display_order
  *
@@ -30,7 +30,7 @@ class AnaestheticAgent extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return AnaestheticAgent the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

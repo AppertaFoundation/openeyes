@@ -41,7 +41,7 @@ class PatientOphInfo extends BaseActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return the static model class
+	 * @return PatientOphInfo the static model class
 	 */
 	public static function model($className = __CLASS__)
 	{

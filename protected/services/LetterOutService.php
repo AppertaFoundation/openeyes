@@ -63,7 +63,7 @@ class LetterOutService
 			$sendTo = Contact::model()->findByPk($letterTemplate['send_to']);
 			$cc = Contact::model()->findByPk($letterTemplate['cc']);
 
-			if (isset($sentTo->gp)) {
+			if (isset($sendTo->gp)) {
 				$sendToKey = 'gp_' . $sendTo->id;
 			} elseif (isset($cc->consultant)) {
 				$sendToKey = 'c_' . $sendTo->id;

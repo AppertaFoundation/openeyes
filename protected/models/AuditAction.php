@@ -21,7 +21,7 @@
  * This is the model class for table "audit_action".
  *
  * The followings are the available columns in table 'audit_action':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class AuditAction extends BaseActiveRecord
