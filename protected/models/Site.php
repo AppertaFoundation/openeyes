@@ -246,4 +246,11 @@ class Site extends BaseActiveRecord
 
 		return Site::model()->findAll($criteria);
 	}
+	
+	public function getReplyToAddress()
+	{
+		if ($contact = $this->replyTo) {
+			return $contact->getLetterAddres();
+		}
+	}
 }
