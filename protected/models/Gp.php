@@ -180,4 +180,9 @@ class Gp extends BaseActiveRecord
 	{
 		return 'GP';
 	}
+
+	public function getCorrespondenceName()
+	{
+		return $this->contact->fullName;
+	}
 }
