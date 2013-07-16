@@ -923,12 +923,11 @@ canvas.viewing {	border:7px solid #fff; margin-bottom: 10px; -webkit-border-radi
 
 #event_content .eventDetail.subGroup-start { border-top:1px solid #e7f3ff; margin-top:0; -webkit-border-top-left-radius: 6px; -webkit-border-top-right-radius: 6px; -moz-border-radius-topleft: 6px; -moz-border-radius-topright: 6px; border-top-left-radius: 6px; border-top-right-radius: 6px;}
 #event_content .eventDetail.subGroup-end { border-bottom: 2px solid #d2dde8; margin-bottom:1px; -webkit-border-bottom-left-radius: 6px; -webkit-border-bottom-right-radius: 6px; -moz-border-radius-bottomleft: 6px; -moz-border-radius-bottomright: 6px; border-bottom-left-radius: 6px; border-bottom-right-radius: 6px;}
-#event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px; padding-right: 8px;	}
+#event_content .eventDetail > .label { display:inline-block; width:170px; float:left; font-size:15px; padding-bottom: 4px; }
 #event_content .eventDetail > .label.preview { font-size:13px; color:#666; font-style: italic;	}
 #event_content .eventDetail > .label-horizontal { display:inline-block; width:145px; float: left; font-size:15px; }
 #event_content .eventDetail > .labelrow-first { display: inline; float: left; width: 170px; }
 #event_content .eventDetail > .labelrow { margin-left: 20px; display: inline; float: left; }
-#event_content .eventDetail > .eventDetail { padding-left: 0; padding-right: 0; }
 
 #event_content .eventDetailLast { margin-bottom: 2px; }
 #event_content .halfHeight .eventDetail { padding: 5px; }
