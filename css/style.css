@@ -1667,13 +1667,14 @@ body .ui-widget-overlay {
 	padding: 4px 16px;
 	letter-spacing: 1px;
 	text-shadow: 1px 1px 0 #427d42, 2px 2px 0 #43727f;
+	background: -webkit-linear-gradient(#43a844, #55a256);
 	background: linear-gradient(#43a844, #55a256);
 	border-bottom: 2px solid #3fa522;
 	color: #fff;
 }
 
 .ui-widget.dialog .form-actions input:hover {
-	background: linear-gradient(#48bd27, #3fa522);
+	background: -webkit-linear-gradient(#48bd27, #3fa522);
 	border-bottom: 2px solid #569b42;
 }
 
