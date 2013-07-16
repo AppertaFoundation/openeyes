@@ -319,7 +319,7 @@ class PatientController extends BaseController
 			if (!empty($legacyepisodes)) {
 				$criteria = new CDbCriteria;
 				$criteria->compare('episode_id',$legacyepisodes[0]->id);
-				$criteria->order = 'datetime desc';
+				$criteria->order = 'created_date desc';
 
 				foreach (Event::model()->findAll($criteria) as $event) {
 					if (in_array($event->eventType->class_name,Yii::app()->modules) && (!$event->eventType->disabled)) {
@@ -331,7 +331,7 @@ class PatientController extends BaseController
 		} elseif ($current_episode->end_date == null) {
 			$criteria = new CDbCriteria;
 			$criteria->compare('episode_id',$current_episode->id);
-			$criteria->order = 'datetime desc';
+			$criteria->order = 'created_date desc';
 
 			if ($event = Event::model()->find($criteria)) {
 				$this->redirect(array($event->eventType->class_name.'/default/view/'.$event->id));
