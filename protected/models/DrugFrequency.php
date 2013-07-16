@@ -21,7 +21,7 @@
  * This is the model class for table "drug_frequency".
  *
  * The followings are the available columns in table 'drug_frequency':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $long_name
  */

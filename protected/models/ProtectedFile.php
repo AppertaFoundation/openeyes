@@ -21,7 +21,7 @@
  * This is the model class for table "protected_file".
  *
  * The followings are the available columns in table 'protected_file':
- * @property string $id
+ * @property integer $id
  * @property string $uid
  * @property string $name
  * @property string $title
@@ -257,6 +257,7 @@ class ProtectedFile extends BaseActiveRecord
 	/**
 	 * Get the mime type of the file
 	 * @param string $path
+	 * @return string
 	 */
 	protected function lookupMimetype($path)
 	{

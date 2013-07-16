@@ -21,7 +21,7 @@
  * This is the model class for table "Gp".
  *
  * The followings are the available columns in table 'Gp':
- * @property string $id
+ * @property integer $id
  * @property string $obj_prof
  * @property string $nat_id
  *
@@ -179,5 +179,10 @@ class Gp extends BaseActiveRecord
 	public function getPrefix()
 	{
 		return 'GP';
+	}
+
+	public function getCorrespondenceName()
+	{
+		return $this->contact->fullName;
 	}
 }

@@ -27,7 +27,7 @@
  *
  * The followings are the available model relations:
  * @property SubspecialtySubsection $subspecialtySubsection
- * @property Proc $proc
+ * @property Procedure $proc
  */
 class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecord
 {
@@ -73,7 +73,7 @@ class ProcedureSubspecialtySubsectionAssignment extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'subspecialtySubsection' => array(self::BELONGS_TO, 'SubspecialtySubsection', 'subspecialty_subsection_id'),
-			'proc' => array(self::BELONGS_TO, 'Proc', 'proc_id'),
+			'proc' => array(self::BELONGS_TO, 'Procedure', 'proc_id'),
 		);
 	}
 

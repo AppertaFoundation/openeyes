@@ -21,14 +21,14 @@
  * This is the model class for table "drug_form".
  *
  * The followings are the available columns in table 'drug_form':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class DrugForm extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return DrugDuration the static model class
+	 * @return DrugForm the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

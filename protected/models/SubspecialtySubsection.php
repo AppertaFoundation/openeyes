@@ -21,8 +21,8 @@
  * This is the model class for table "subspecialty_subsection".
  *
  * The followings are the available columns in table 'subspecialty_subsection':
- * @property string $id
- * @property string $subspecialty_id
+ * @property integer $id
+ * @property integer $subspecialty_id
  * @property string $name
  *
  * The followings are the available model relations:
@@ -33,7 +33,7 @@ class SubspecialtySubsection extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return ServiceSubsection the static model class
+	 * @return SubspecialtySubsection the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

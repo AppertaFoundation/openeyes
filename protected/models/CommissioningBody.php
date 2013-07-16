@@ -21,21 +21,19 @@
  * This is the model class for table "commissioningbody".
  *
  * The followings are the available columns in table 'commissioningbody':
- * @property string $id
- * @property string $service_subspecialty_assignment_id
- * @property string $pas_code
+ * @property integer $id
  * @property string $name
  *
  * The followings are the available model relations:
- * @property ServiceSubspecialtyAssignment $serviceSubspecialtyAssignment
- * @property FirmUserAssignment[] $firmUserAssignments
- * @property LetterPhrase[] $letterPhrases
+ * @property Contact $contact
+ * @property CommissioningBodyType $type
+ * @property Practice[] $practices
  */
 class CommissioningBody extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return CommissioningBody the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -84,6 +82,7 @@ class CommissioningBody extends BaseActiveRecord
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 			'type' => array(self::BELONGS_TO, 'CommissioningBodyType', 'commissioningbody_type_id'),
 			'practices' => array(self::MANY_MANY, 'Practice', 'commissioningbody_practice_assignment(commissioningbody_id, practice_id)'),
+			'services' => array(self::HAS_MANY, 'CommissioningBodyService', 'commissioningbody_id')
 		);
 	}
 
@@ -121,4 +120,15 @@ class CommissioningBody extends BaseActiveRecord
 		return $this->type ? $this->type->shortname : 'CB';
 	}
 	
+	public function getAddress()
+	{
+		if ($this->contact && $this->contact->address) {
+			return $this->contact->address;
+		}
+	}
+	
+	public function getCorrespondenceName()
+	{
+		return $this->name;
+	}
 }

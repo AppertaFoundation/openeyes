@@ -18,18 +18,19 @@
  */
 
 /**
- * This is the model class for table "person".
+ * This is the model class for table "commissioningbodyservice_type".
  *
- * The followings are the available columns in table 'person':
+ * The followings are the available columns in table 'commissioningbodyservice_type':
  * @property integer $id
  * @property string $name
- * @property integer $letter_template_only
+ * @property string $shortname
+ * 
  */
-class Person extends BaseActiveRecord
+class CommissioningBodyServiceType extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Person the static model class
+	 * @return CommissioningBodyType the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -41,16 +42,7 @@ class Person extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'person';
-	}
-
-	public function behaviors()
-	{
-		return array(
-			'ContactBehavior' => array(
-				'class' => 'application.behaviors.ContactBehavior',
-			),
-		);
+		return 'commissioningbodyservice_type';
 	}
 
 	/**
@@ -59,9 +51,10 @@ class Person extends BaseActiveRecord
 	public function rules()
 	{
 		return array(
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, source_id, remote_id', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -73,7 +66,6 @@ class Person extends BaseActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
 		);
 	}
 
@@ -84,6 +76,7 @@ class Person extends BaseActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'name' => 'Name',
 		);
 	}
 
@@ -105,4 +98,5 @@ class Person extends BaseActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+
 }

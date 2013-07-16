@@ -18,18 +18,22 @@
  */
 
 /**
- * This is the model class for table "person".
+ * This is the model class for table "commissioningbody".
  *
- * The followings are the available columns in table 'person':
+ * The followings are the available columns in table 'commissioningbody':
  * @property integer $id
  * @property string $name
- * @property integer $letter_template_only
+ *
+ * The followings are the available model relations:
+ * @property Contact $contact
+ * @property CommissioningBodyType $type
+ * @property Practice[] $practices
  */
-class Person extends BaseActiveRecord
+class CommissioningBodyService extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Person the static model class
+	 * @return CommissioningBody the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -41,11 +45,10 @@ class Person extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'person';
+		return 'commissioningbodyservice';
 	}
 
-	public function behaviors()
-	{
+	public function behaviors() {
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -58,10 +61,13 @@ class Person extends BaseActiveRecord
 	 */
 	public function rules()
 	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
 		return array(
+			array('name', 'required'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, name, source_id, remote_id', 'safe', 'on'=>'search'),
+			array('id, name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -74,6 +80,10 @@ class Person extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
+			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioningbodyservice_type_id'),
+			// At this stage, there is a one to many relationship for bodies to services, but at some point in the future
+			// it may be necessary to update this to a many to many to relationship 
+			'commissioningbody' => array(self::BELONGS_TO, 'ComissioningBody', 'commissioningbody_id'),
 		);
 	}
 
@@ -83,7 +93,6 @@ class Person extends BaseActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => 'ID',
 		);
 	}
 
@@ -100,9 +109,27 @@ class Person extends BaseActiveRecord
 
 		$criteria->compare('id',$this->id,true);
 		$criteria->compare('name',$this->name,true);
+		$criteria->compare('code',$this->code,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
 		));
+	}
+	
+	public function getTypeShortName()
+	{
+		return $this->type ? $this->type->shortname : 'CBS';
+	}
+	
+	public function getAddress()
+	{
+		if ($this->contact && $this->contact->address) {
+			return $this->contact->address;
+		}
+	}
+	
+	public function getCorrespondenceName()
+	{
+		return $this->name;
 	}
 }

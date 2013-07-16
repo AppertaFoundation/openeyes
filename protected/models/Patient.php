@@ -43,9 +43,7 @@
  * @property Episode[] $episodes
  * @property Address[] $addresses
  * @property Address $address Primary address
- * @property HomeAddress $homeAddress Home address
- * @property CorrespondAddress $correspondAddress Correspondence address
- * @property Contact[] $contacts
+ * @property Contact[] $contactAssignments
  * @property Gp $gp
  * @property Practice $practice
  * @property Allergy[] $allergies
@@ -174,10 +172,11 @@ class Patient extends BaseActiveRecord
 	}
 
 	/**
-		* Retrieves a list of models based on the current search/filter conditions.
-		* @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-		*/
-	public function search($params = false)
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @param array $params
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search($params = null)
 	{
 		if (!is_array($params)) {
 			$params = array(
@@ -577,7 +576,7 @@ class Patient extends BaseActiveRecord
 
 	public function assignAllergies($allergy_ids)
 	{
-		$add_allergy_ids = $allergy_ids;
+		$insert_allergy_ids = $allergy_ids;
 		$remove_allergy_ids = array();
 
 		// Check existing allergies
@@ -834,7 +833,7 @@ class Patient extends BaseActiveRecord
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
 	{
 		$properties['patient_id'] = $this->id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 	public function getChildPrefix()
@@ -1031,8 +1030,8 @@ class Patient extends BaseActiveRecord
 				else {
 					$res[$body->type->id] = array($body);
 				}
+				$seen_bodies[] = $body->id;
 			}
-			$seen_bodies[] = $body->id;
 		}
 		
 		return $res;

@@ -360,7 +360,7 @@ class User extends BaseActiveRecord
 	public function audit($target, $action, $data=null, $log=false, $properties=array())
 	{
 		$properties['user_id'] = $this->id;
-		return parent::audit($target, $action, $data, $log, $properties);
+		parent::audit($target, $action, $data, $log, $properties);
 	}
 
 	public function getListSurgeons()

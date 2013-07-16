@@ -21,7 +21,7 @@
  * This is the model class for table "drug_type".
  *
  * The followings are the available columns in table 'drug_type':
- * @property string $id
+ * @property integer $id
  * @property string $name
  */
 class DrugType extends BaseActiveRecord

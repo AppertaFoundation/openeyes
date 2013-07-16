@@ -29,7 +29,7 @@
  * The followings are the available model relations:
  * @property CommonOphthalmicDisorder[] $commonOphthalmicDisorders
  * @property CommonSystemicDisorder[] $commonSystemicDisorders
- * @property Diagnosis[] $diagnosises
+ * @property Specialty $specialty
  */
 class Disorder extends BaseActiveRecord
 {
@@ -101,7 +101,7 @@ class Disorder extends BaseActiveRecord
 		return array(
 			'commonOphthalmicDisorders' => array(self::HAS_MANY, 'CommonOphthalmicDisorder', 'disorder_id'),
 			'commonSystemicDisorders' => array(self::HAS_MANY, 'CommonSystemicDisorder', 'disorder_id'),
-			'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
+			//'diagnoses' => array(self::HAS_MANY, 'Diagnosis', 'disorder_id'),
 			'specialty' => array(self::BELONGS_TO, 'Specialty', 'specialty_id'),
 		);
 	}
@@ -172,9 +172,8 @@ class Disorder extends BaseActiveRecord
 
 	/*
 	 * returns boolean to indicate if the disorder is systemic (true)
-	 *
 	 */
-	public static function getSystemic()
+	public function getSystemic()
 	{
 		if ($this->specialty_id) {
 			return false;

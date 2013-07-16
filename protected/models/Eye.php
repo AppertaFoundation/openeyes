@@ -21,7 +21,7 @@
  * This is the model class for table "eye".
  *
  * The followings are the available columns in table 'eye':
- * @property string $id
+ * @property integer $id
  * @property string $name
  * @property string $ShortName
  */
@@ -33,7 +33,7 @@ class Eye extends BaseActiveRecord
 
 	/**
 	 * Returns the static model of the specified AR class.
-	 * @return Firm the static model class
+	 * @return Eye the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

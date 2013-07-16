@@ -76,7 +76,7 @@
 	function debug($obj) {
 		if (window.console && window.console.log)
 		window.console.log('textarea count: ' + $obj.size());
-	};
+	}
 
 	function process_keypress (o,shft,options) {
 		var scrollTo = o.scrollTop;

@@ -19,7 +19,7 @@
 
 class SplitEventTypeElement extends BaseEventTypeElement
 {
-	// these are legacy and should be removed one switch to using the costants on the Eye model
+	// these are legacy and should be removed one switch to using the constants on the Eye model
 	const LEFT = Eye::LEFT;
 	const RIGHT = Eye::RIGHT;
 	const BOTH = Eye::BOTH;

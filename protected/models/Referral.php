@@ -21,12 +21,12 @@
  * This is the model class for table "referral".
  *
  * The followings are the available columns in table 'referral':
- * @property string $id
+ * @property integer $id
  * @property string $refno
- * @property string $patient_id
- * @property string $service_subspecialty_assignment_id
- * @property string $closed
- * @property string $firm_id
+ * @property integer $patient_id
+ * @property integer $service_subspecialty_assignment_id
+ * @property boolean $closed
+ * @property integer $firm_id
  * @fixme Why is there a firm_id _and_ a service_specialty_assignment_id in here? The ssa_id is infered from the firm.
  */
 class Referral extends BaseActiveRecord
