@@ -7,6 +7,16 @@ $support-for-original-webkit-gradients: false;
 @import "mixins";
 @import "variables";
 
-body {
-	background: #FFF;
-}
+// Core
+//
+// Base styles including resets
+//
+// Styleguide 1
+@import "core/core";
+
+// Components
+//
+// Reusable components that can be used across the site.
+//
+// Styleguide 2
+@import "components/buttons";

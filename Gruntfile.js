@@ -1,4 +1,3 @@
-/*global module:false*/
 module.exports = function(grunt) {
 
   /* Set the config */
@@ -8,10 +7,20 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-compass');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-styleguide');
 
   /* Register custom tasks */
 
-  /** Checks code for syntax errors. */
+  /* Spin up a connect server to display the documentation. */
+  grunt.registerMultiTask('viewdocs', require('./grunt/tasks/viewdocs')(grunt)); 
+
+  /* Generates the documentation. */
+  grunt.registerTask('docs', 
+    ['clean:docs', 'styleguide:dist']
+  );
+
+  /* Checks code for syntax errors. */
   grunt.registerTask('lint', 
     ['jshint']
   );

@@ -30,6 +30,7 @@ module.exports = function(grunt) {
     jshint: {
       files: [
         '*.js',
+        'grunt/**/*.js'
       ],
       options: {
         curly: true,
@@ -44,12 +45,41 @@ module.exports = function(grunt) {
         boss: true,
         eqnull: true,
         browser: true,
+        es3: true,
         globals: {
           jQuery: true,
           module: false,
-          require: false
+          require: false,
+          console: false
         }
       }
     },
+    styleguide: {
+      dist: {
+        options: {
+          framework: {
+            name: 'kss'
+          },
+          template: {
+            src: 'docs/templates/styleguide',
+            include: ''
+          }
+        },
+        files: {
+          'docs/styleguide': 'sass/new/**/*.scss'
+        }
+      }
+    },
+    clean: {
+      docs: ['docs/styleguide']
+    },
+    viewdocs: {
+      dev: {
+        options: {
+          port: 9002,
+          base: 'docs'
+        }
+      }
+    }
   };
 };
