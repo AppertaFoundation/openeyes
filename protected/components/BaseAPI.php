@@ -49,7 +49,7 @@ class BaseAPI
 			$criteria = new CDbCriteria;
 			$criteria->compare('episode_id',$episode->id);
 			$criteria->compare('event_id',$event->id);
-			$criteria->order = 'created_date desc';
+			$criteria->order = 'event.created_date desc';
 
 			return $element::model()
 				->with('event')

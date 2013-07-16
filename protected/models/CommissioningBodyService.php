@@ -29,7 +29,7 @@
  * @property CommissioningBodyType $type
  * @property Practice[] $practices
  */
-class CommissioningBody extends BaseActiveRecord
+class CommissioningBodyService extends BaseActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
@@ -45,7 +45,7 @@ class CommissioningBody extends BaseActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'commissioningbody';
+		return 'commissioningbodyservice';
 	}
 
 	public function behaviors() {
@@ -80,7 +80,7 @@ class CommissioningBody extends BaseActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'contact' => array(self::BELONGS_TO, 'Contact', 'contact_id'),
-			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioningbody_type_id'),
+			'type' => array(self::BELONGS_TO, 'CommissioningBodyServiceType', 'commissioningbodyservice_type_id'),
 			// At this stage, there is a one to many relationship for bodies to services, but at some point in the future
 			// it may be necessary to update this to a many to many to relationship 
 			'commissioningbody' => array(self::BELONGS_TO, 'ComissioningBody', 'commissioningbody_id'),
