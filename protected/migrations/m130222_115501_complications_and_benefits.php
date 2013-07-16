@@ -2099,7 +2099,8 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->addComplication('Vitreoretinal','Vitrectomy','loss of vision');
 	}
 
-	public function addComplication($subspecialty,$procedure,$complication) {
+	public function addComplication($subspecialty,$procedure,$complication)
+	{
 		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
 			return;
 		}
@@ -2119,15 +2120,16 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->insert('procedure_complication',array('proc_id'=>$_procedure->id,'subspecialty_id'=>$_subspecialty->id,'complication_id'=>$_complication->id));
 	}
 
-	public function addBenefit($subspecialty,$procedure,$benefit) {
+	public function addBenefit($subspecialty,$procedure,$benefit)
+	{
 		if (!$_subspecialty = Subspecialty::model()->find('name=?',array($subspecialty))) {
 			return;
 		}
-		
+
 		if (!$_procedure = Procedure::model()->find('term=?',array($procedure))) {
 			return;
 		}
-		
+
 		if (!$_benefit = Benefit::model()->find('name=?',array($benefit))) {
 			$_benefit = new Benefit;
 			$_benefit->name = $benefit;
@@ -2139,7 +2141,8 @@ class m130222_115501_complications_and_benefits extends CDbMigration
 		$this->insert('procedure_benefit',array('proc_id'=>$_procedure->id,'subspecialty_id'=>$_subspecialty->id,'benefit_id'=>$_benefit->id));
 	}
 
-	public function down() {
+	public function down()
+	{
 		$this->delete('procedure_complication');
 		$this->delete('procedure_benefit');
 		$this->delete('complication');

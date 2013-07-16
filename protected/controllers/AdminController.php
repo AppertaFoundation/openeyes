@@ -22,13 +22,15 @@ class AdminController extends BaseController
 	public $layout = 'admin';
 	public $items_per_page = 30;
 
-	public function accessRules() {
+	public function accessRules()
+	{
 		return array(
 			array('deny'),
 		);
 	}
 
-	protected function beforeAction($action) {
+	protected function beforeAction($action)
+	{
 		$this->registerCssFile('admin.css', Yii::app()->createUrl("css/admin.css"));
 		Yii::app()->clientScript->registerScriptFile(Yii::app()->createUrl("js/admin.js"));
 
@@ -37,12 +39,14 @@ class AdminController extends BaseController
 		return parent::beforeAction($action);
 	}
 
-	public function actionIndex() {
+	public function actionIndex()
+	{
 		$this->redirect(array('/admin/users'));
 	}
 
-	public function actionUsers($id=false) {
-		if ((integer)$id) {
+	public function actionUsers($id=false)
+	{
+		if ((integer) $id) {
 			$page = $id;
 		} else {
 			$page = 1;
@@ -56,7 +60,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionAddUser() {
+	public function actionAddUser()
+	{
 		$user = new User;
 
 		if (!empty($_POST)) {
@@ -80,7 +85,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionEditUser($id) {
+	public function actionEditUser($id)
+	{
 		if (!$user = User::model()->findByPk($id)) {
 			throw new Exception("User not found: $id");
 		}
@@ -131,8 +137,9 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionFirms($id=false) {
-		if ((integer)$id) {
+	public function actionFirms($id=false)
+	{
+		if ((integer) $id) {
 			$page = $id;
 		} else {
 			$page = 1;
@@ -146,7 +153,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionEditFirm($id) {
+	public function actionEditFirm($id)
+	{
 		if (!$firm= Firm::model()->findByPk($id)) {
 			throw new Exception("Firm not found: $id");
 		}
@@ -170,13 +178,14 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function getItems($params) {
+	public function getItems($params)
+	{
 		$model = $params['model']::model();
 		$pages = ceil(Yii::app()->db->createCommand()->select("count(*)")->from($model->tableName())->queryScalar() / $this->items_per_page);
 
 		if ($params['page'] <1) {
 			$page = 1;
-		} else if ($params['page'] > $pages) {
+		} elseif ($params['page'] > $pages) {
 			$page = $pages;
 		} else {
 			$page = $params['page'];
@@ -197,7 +206,7 @@ class AdminController extends BaseController
 			$criteria->addSearchCondition("first_name",$_REQUEST['search'],true,'OR');
 			$criteria->addSearchCondition("last_name",$_REQUEST['search'],true,'OR');
 		}
-		
+
 		return array(
 			'items' => $params['model']::model()->findAll($criteria),
 			'page' => $page,
@@ -205,7 +214,8 @@ class AdminController extends BaseController
 		);
 	}
 
-	public function actionLookupUser() {
+	public function actionLookupUser()
+	{
 		Yii::app()->event->dispatch('lookup_user', array('username' => $_GET['username']));
 
 		if ($user = User::model()->find('username=?',array($_GET['username']))) {
@@ -215,8 +225,9 @@ class AdminController extends BaseController
 		}
 	}
 
-	public function actionContacts($id=false) {
-		if ((integer)$id) {
+	public function actionContacts($id=false)
+	{
+		if ((integer) $id) {
 			$page = $id;
 		} else {
 			$page = 1;
@@ -229,8 +240,9 @@ class AdminController extends BaseController
 		$this->render('/admin/contacts',array('contacts'=>@$contacts));
 	}
 
-	public function actionContactlabels($id=false) {
-		if ((integer)$id) {
+	public function actionContactlabels($id=false)
+	{
+		if ((integer) $id) {
 			$page = $id;
 		} else {
 			$page = 1;
@@ -245,7 +257,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function searchContacts() {
+	public function searchContacts()
+	{
 		$criteria = new CDbCriteria;
 
 		$ex = explode(' ',@$_GET['q']);
@@ -257,10 +270,10 @@ class AdminController extends BaseController
 		if (count($ex) == 1) {
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$_GET['q']),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$_GET['q']),false,'OR');
-		} else if (count($ex) == 2) {
+		} elseif (count($ex) == 2) {
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[0]),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[1]),false);
-		} else if (count($ex) >= 3) {
+		} elseif (count($ex) >= 3) {
 			$criteria->addSearchCondition("lower(`t`.title)",strtolower(@$ex[0]),false);
 			$criteria->addSearchCondition("lower(`t`.first_name)",strtolower(@$ex[1]),false);
 			$criteria->addSearchCondition("lower(`t`.last_name)",strtolower(@$ex[2]),false);
@@ -281,11 +294,11 @@ class AdminController extends BaseController
 
 		$pages = ceil(count($contacts) / $this->items_per_page);
 
-		$page = (integer)@$_GET['page'];
+		$page = (integer) @$_GET['page'];
 
 		if ($page <1) {
 			$page = 1;
-		} else if ($page > $pages) {
+		} elseif ($page > $pages) {
 			$page = $pages;
 		}
 
@@ -308,7 +321,8 @@ class AdminController extends BaseController
 		);
 	}
 
-	public function actionEditContact() {
+	public function actionEditContact()
+	{
 		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
 			throw new Exception("Contact not found: ".@$_GET['contact_id']);
 		}
@@ -332,7 +346,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionContactLocation() {
+	public function actionContactLocation()
+	{
 		if (!$cl = ContactLocation::model()->findByPk(@$_GET['location_id'])) {
 			throw new Exception("ContactLocation not found: ".@$_GET['location_id']);
 		}
@@ -342,7 +357,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionRemoveLocation() {
+	public function actionRemoveLocation()
+	{
 		if (!$cl = ContactLocation::model()->findByPk(@$_POST['location_id'])) {
 			throw new Exception("ContactLocation not found: ".@$_POST['location_id']);
 		}
@@ -360,7 +376,8 @@ class AdminController extends BaseController
 		return "1";
 	}
 
-	public function actionAddContactLocation() {
+	public function actionAddContactLocation()
+	{
 		if (!$contact = Contact::model()->findByPk(@$_GET['contact_id'])) {
 			throw new Exception("Contact not found: ".@$_GET['contact_id']);
 		}
@@ -403,7 +420,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionGetInstitutionSites() {
+	public function actionGetInstitutionSites()
+	{
 		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
 			throw new Exception("Institution not found: ".@$_GET['institution_id']);
 		}
@@ -411,8 +429,9 @@ class AdminController extends BaseController
 		echo json_encode(CHtml::listData($institution->sites,'id','name'));
 	}
 
-	public function actionInstitutions($id=false) {
-		if ((integer)$id) {
+	public function actionInstitutions($id=false)
+	{
+		if ((integer) $id) {
 			$page = $id;
 		} else {
 			$page = 1;
@@ -426,22 +445,23 @@ class AdminController extends BaseController
 			)),
 		));
 	}
-	
-	public function actionAddInstitution() {
+
+	public function actionAddInstitution()
+	{
 		$institution = new Institution();
 		$address = new Address();
-		
+
 		$errors = array();
-		
+
 		if (!empty($_POST)) {
 			$institution->attributes = $_POST['Institution'];
-		
+
 			if (!$institution->validate()) {
 				$errors = $institution->getErrors();
 			}
-			
+
 			$address->attributes = $_POST['Address'];
-			
+
 			if ($address->validate()) {
 				$errors = array_merge($errors, $address->getErrors());
 			}
@@ -458,19 +478,20 @@ class AdminController extends BaseController
 				if (!$institution->contact->save()) {
 					throw new Exception("Institution contact could not be saved: " . print_r($institution->contact->getErrors(), true));
 				}
-								
+
 				$this->redirect(array('/admin/editInstitution?institution_id='.$institution->id));
 			}
 		}
-		
+
 		$this->render('/admin/addinstitution',array(
 				'institution' => $institution,
 				'address' => $address,
 				'errors' => @$errors,
 		));
 	}
-	
-	public function actionEditInstitution() {
+
+	public function actionEditInstitution()
+	{
 		if (!$institution = Institution::model()->findByPk(@$_GET['institution_id'])) {
 			throw new Exception("Institution not found: ".@$_GET['institution_id']);
 		}
@@ -514,8 +535,9 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionSites($id=false) {
-		if ((integer)$id) {
+	public function actionSites($id=false)
+	{
+		if ((integer) $id) {
 			$page = $id;
 		} else {
 			$page = 1;
@@ -530,7 +552,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionEditsite() {
+	public function actionEditsite()
+	{
 		if (!$site = Site::model()->findByPk(@$_GET['site_id'])) {
 			throw new Exception("Site not found: ".@$_GET['site_id']);
 		}
@@ -571,7 +594,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionAddContact() {
+	public function actionAddContact()
+	{
 		$contact = new Contact;
 
 		if (!empty($_POST)) {
@@ -593,7 +617,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionAddContactLabel() {
+	public function actionAddContactLabel()
+	{
 		$contactlabel = new ContactLabel;
 
 		if (!empty($_POST)) {
@@ -615,7 +640,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionEditContactLabel($id) {
+	public function actionEditContactLabel($id)
+	{
 		if (!$contactlabel = ContactLabel::model()->findByPk($id)) {
 			throw new Exception("ContactLabel not found: $id");
 		}
@@ -639,7 +665,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionDeleteContactLabel() {
+	public function actionDeleteContactLabel()
+	{
 		if (!$contactlabel = ContactLabel::model()->findByPk(@$_POST['contact_label_id'])) {
 			throw new Exception("ContactLabel not found: ".@$_POST['contact_label_id']);
 		}
@@ -655,11 +682,13 @@ class AdminController extends BaseController
 		echo $count;
 	}
 
-	public function actionDataSources() {
+	public function actionDataSources()
+	{
 		$this->render('/admin/datasources');
 	}
 
-	public function actionEditDataSource($id) {
+	public function actionEditDataSource($id)
+	{
 		if (!$source = ImportSource::model()->findByPk($id)) {
 			throw new Exception("Source not found: $id");
 		}
@@ -683,7 +712,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionAddDataSource() {
+	public function actionAddDataSource()
+	{
 		$source = new ImportSource;
 
 		if (!empty($_POST)) {
@@ -705,7 +735,8 @@ class AdminController extends BaseController
 		));
 	}
 
-	public function actionDeleteDataSources() {
+	public function actionDeleteDataSources()
+	{
 		if (!empty($_POST['source'])) {
 			foreach ($_POST['source'] as $source_id) {
 				if (Institution::model()->find('source_id=?',array($source_id))) {

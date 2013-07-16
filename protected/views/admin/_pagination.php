@@ -42,14 +42,14 @@ if ($pages >$pagination_max_links) {
 	}?>
 	<a href="<?php echo Yii::app()->createUrl($uri)?>">&laquo; back</a>
 	&nbsp;
-<?php }else{?>
+<?php } else {?>
 	&laquo; back
 	&nbsp;
 <?php }?>
 <?php foreach ($_pages as $i) {?>
 	<?php if ($i == $page) {?>
 		<span class="selected"><?php echo $i?></span>
-	<?php }else{
+	<?php } else {
 		if (isset($url)) {
 			$uri = str_replace('{{PAGE}}',$i,$url);
 		} else {
@@ -67,7 +67,7 @@ if ($pages >$pagination_max_links) {
 	}?>
 	<a href="<?php echo Yii::app()->createUrl($uri)?>">next &raquo;</a>
 	&nbsp;
-<?php }else{?>
+<?php } else {?>
 	next &raquo;
 	&nbsp;
 <?php }?>

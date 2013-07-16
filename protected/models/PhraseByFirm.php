@@ -78,7 +78,7 @@ class PhraseByFirm extends BaseActiveRecord
 	* @param array options specified in the validation rule
 	*/
 
-	public function ValidatorPhraseNameId($attribute,$params) 
+	public function ValidatorPhraseNameId($attribute,$params)
 	{
 		// this phrase name id must not exist at this level (not select * from phrase_by_firm where section_id=x and firm_id=y)
 		if (PhraseByFirm::model()->findByAttributes(array('section_id' => $this->section_id, 'firm_id' => $this->firm_id, 'phrase_name_id' => $this->phrase_name_id))) {
@@ -149,7 +149,7 @@ class PhraseByFirm extends BaseActiveRecord
 		// we want the overrideable global phrase names plus the overrideable by-subspecialty phrase names together but then you shouldnt be able to override something that is already overridden which is why we want to subtract them
 		$firm = Firm::model()->findByPk($firmId);
 		$subspecialtyId = $firm->serviceSubspecialtyAssignment->subspecialty_id;
-	
+
 		$params[':sectionid'] = $sectionId;
 		$params[':subspecialtyid'] = $subspecialtyId;
 		$params[':firmid'] = $firmId;

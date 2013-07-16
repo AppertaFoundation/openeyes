@@ -7,7 +7,7 @@
 				<input class="radioButtonFieldValueTextInput" type="text" name="radioButtonFieldValue<?php echo $element_num?>Field<?php echo $field_num?>_<?php echo $m[1]?>" value="<?php echo $value?>" /><?php if ($m[1] != '1') {?><input type="submit" class="radioButtonFieldValuesRemoveValue" value="remove"><?php }?><br/>
 			<?php }
 		};
-	}else{?>
+	} else {?>
 		<input type="radio" class="radioButtonFieldValueTextInputDefault" name="radioButtonFieldValueTextInputDefault<?php echo $element_num?>Field<?php echo $field_num?>" value="0" checked="checked"> No default value<br/>
 		<input type="radio" class="radioButtonFieldValueTextInputDefault" name="radioButtonFieldValueTextInputDefault<?php echo $element_num?>Field<?php echo $field_num?>" value="1" />
 		<input type="text" class="radioButtonFieldValueTextInput" name="radioButtonFieldValue<?php echo $element_num?>Field<?php echo $field_num?>_1" value="Enter value" /><br/>

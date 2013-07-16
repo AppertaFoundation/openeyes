@@ -17,31 +17,31 @@
 * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
 */
 
-class ClientScript extends CClientScript {
-
+class ClientScript extends CClientScript
+{
 	public $cache_buster;
 
 	/**
 	 * Extending unifyScripts in order to hook the cache buster in at the right
 	 * point in the render method
 	 */
-	protected function unifyScripts() {
-
+	protected function unifyScripts()
+	{
 		parent::unifyScripts();
-		
-		if($this->cache_buster) {
-			
+
+		if ($this->cache_buster) {
+
 			// JS
-			foreach($this->scriptFiles as $pos => $script_files) {
-				foreach($script_files as $key => $script_file) {
+			foreach ($this->scriptFiles as $pos => $script_files) {
+				foreach ($script_files as $key => $script_file) {
 					// Add cache buster string to url
 					$joiner = $this->getJoiner($script_file);
 					$this->scriptFiles[$pos][$key] = $script_file . $joiner . $this->cache_buster;
 				}
 			}
-			
+
 			// CSS
-			foreach($this->cssFiles as $css_file => $media) {
+			foreach ($this->cssFiles as $css_file => $media) {
 				// Add cache buster string to url
 				unset($this->cssFiles[$css_file]);
 				$joiner = $this->getJoiner($css_file);
@@ -52,9 +52,10 @@ class ClientScript extends CClientScript {
 		}
 
 	}
-	
-	protected function getJoiner($file) {
-		if(preg_match('/\?/',$file)) {
+
+	protected function getJoiner($file)
+	{
+		if (preg_match('/\?/',$file)) {
 			return '&';
 		} else {
 			return '?';

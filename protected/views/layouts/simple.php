@@ -17,16 +17,16 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-?><!doctype html> 
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]--> 
-<!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]--> 
-<!--[if IE 8]>		<html class="no-js ie8 oldie" lang="en"> <![endif]--> 
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]--> 
+?><!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>		<html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
-	<meta charset="utf-8"> 
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
- 
-	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
@@ -34,8 +34,8 @@
 		<meta http-equiv='pragma' content='no-cache'>
 	<?php }?>
 
-	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" /> 
-	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/> 
+	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/>
 	<?php $cs = Yii::app()->clientScript; ?>
 	<?php $cs->registerCoreScript('jquery')?>
 	<?php $cs->registerCoreScript('jquery.ui')?>
@@ -67,27 +67,27 @@
 	<script type="text/javascript">
 		var baseUrl = '<?php echo Yii::app()->baseUrl?>';
 	</script>
-</head> 
- 
-<body> 
-	<?php $this->renderPartial('//base/_banner_watermark',array('description' => true))?> 
-	<?php $this->renderPartial('//base/_debug',array())?> 
-	<div id="container"> 
-		<div id="header" class="clearfix"> 
+</head>
+
+<body>
+	<?php $this->renderPartial('//base/_banner_watermark',array('description' => true))?>
+	<?php $this->renderPartial('//base/_debug',array())?>
+	<div id="container">
+		<div id="header" class="clearfix">
 			<?php $this->renderPartial('//base/_brand'); ?>
-		</div> <!-- #header --> 
-	
+		</div> <!-- #header -->
+
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
 			'links'=>$this->breadcrumbs,
 		)); ?><!-- breadcrumbs -->
-	
-		<div id="content"> 
+
+		<div id="content">
 			<?php echo $content; ?>
-		</div> <!-- #content --> 
-		<div id="help" class="clearfix"> 
-		</div><!-- #help --> 
-	</div> 
-	<!--#container --> 
+		</div> <!-- #content -->
+		<div id="help" class="clearfix">
+		</div><!-- #help -->
+	</div>
+	<!--#container -->
 
 	<?php $this->renderPartial('//base/_footer',array())?>
 

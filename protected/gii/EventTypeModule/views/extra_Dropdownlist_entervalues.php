@@ -7,7 +7,7 @@
 				<input class="dropDownFieldValueTextInput" type="text" name="dropDownFieldValue<?php echo $element_num?>Field<?php echo $field_num?>_<?php echo $m[1]?>" value="<?php echo $value?>" /><?php if ($m[1] != '1') {?><input type="submit" class="dropDownFieldValuesRemoveValue" value="remove"><?php }?><br/>
 			<?php }
 		};
-	}else{?>
+	} else {?>
 		<input type="radio" class="dropDownFieldValueTextInputDefault" name="dropDownFieldValueTextInputDefault<?php echo $element_num?>Field<?php echo $field_num?>" value="0" checked="checked"> No default value<br/>
 		<input type="radio" class="dropDownFieldValueTextInputDefault" name="dropDownFieldValueTextInputDefault<?php echo $element_num?>Field<?php echo $field_num?>" value="1" />
 		<input type="text" class="dropDownFieldValueTextInput" name="dropDownFieldValue<?php echo $element_num?>Field<?php echo $field_num?>_1" value="Enter value" /><br/>

@@ -26,7 +26,7 @@ if (!empty($supportserviceepisodes)) foreach ($supportserviceepisodes as $episod
 				<?php echo $episode->NHSDate('start_date') ?>
 				<span class="aBtn">
 					<a class="sprite showhide2" href="#">
-						<span class="<?php if ($episode->hidden) {?>show<?php }else{?>hide<?php }?>"></span>
+						<span class="<?php if ($episode->hidden) {?>show<?php } else {?>hide<?php }?>"></span>
 					</a>
 				</span>
 			</div>
@@ -34,7 +34,7 @@ if (!empty($supportserviceepisodes)) foreach ($supportserviceepisodes as $episod
 			<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>>
 				<?php foreach ($episode->events as $event) {
 					$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
-					<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">									
+					<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">
 							<?php
 							if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
 								$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
@@ -42,7 +42,7 @@ if (!empty($supportserviceepisodes)) foreach ($supportserviceepisodes as $episod
 								$assetpath = '/assets/';
 							}
 							?>
-							<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" /> 
+							<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
 					</a>
 				<?php } ?>
 			</div>

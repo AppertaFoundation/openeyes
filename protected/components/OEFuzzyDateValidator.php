@@ -20,23 +20,23 @@
 /**
  * Validator for OpenEyes fuzzy dates
  */
-class OeFuzzyDateValidator extends CValidator {
+class OEFuzzyDateValidator extends CValidator
+{
 	/**
 	 * Validate a fuzzy date attribute
 	 *
 	 * Dates must be in the format (yyyy-mm-dd). mm and dd can be 00 to indicate the level of fuzziness of the date
-	 * 
+	 *
 	 * @param CModel $object the object being validated
 	 * @param string $attribute the attribute being validated
 	 */
-	protected function validateAttribute($object, $attribute) {
-		
-
+	protected function validateAttribute($object, $attribute)
+	{
 		$dt = $object->$attribute;
-		$_year = (integer)substr($dt,0,4);
-		$_month = (integer)substr($dt,5,2);
-		$_day = (integer)substr($dt,8,2);
-		
+		$_year = (integer) substr($dt,0,4);
+		$_month = (integer) substr($dt,5,2);
+		$_day = (integer) substr($dt,8,2);
+
 		if ($_day > 0) {
 			if ($_month > 0) {
 				if ($_year > 0) {
@@ -44,16 +44,13 @@ class OeFuzzyDateValidator extends CValidator {
 					if (!checkdate($_month, $_day, $_year)) {
 						$this->addError($object, $attribute, 'This is not a valid date');
 					}
-				}
-				else {
+				} else {
 					$this->addError($object, $attribute, 'Year is required');
 				}
-			}
-			else {
+			} else {
 				$this->addError($object, $attribute, 'Month is required if day is provided');
 			}
-		}
-		else if ($_month > 12) {
+		} elseif ($_month > 12) {
 			$this->addError($object, $attribute, 'Invalid month value');
 		}
 

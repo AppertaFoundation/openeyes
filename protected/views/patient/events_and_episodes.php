@@ -31,12 +31,12 @@
 					<div class="alertBox fullWidthEvent" style="margin-top: 10px;">
 						There are currently no episodes for this patient, please add a new event to open an episode.
 					</div>
-				<?php }else if (!@$current_episode) {?>
+				<?php } else if (!@$current_episode) {?>
 					<div class="alertBox fullWidthEvent">
 						There is no open episode for the current firm's subspecialty.
 					</div>
 				<?php }?>
-				<?php $this->renderPartial('event_tabs',array('hidden'=>(boolean)(count($episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
+				<?php $this->renderPartial('event_tabs',array('hidden'=>(boolean) (count($episodes)<1 && count($supportserviceepisodes) <1 && count($legacyepisodes) <1)))?>
 
 				<!-- EVENT CONTENT HERE -->
 				<?php if (is_object($this->event) || ((count($episodes) >0 || count($supportserviceepisodes) >0 || count($legacyepisodes) >0) && @$current_episode)) {?>

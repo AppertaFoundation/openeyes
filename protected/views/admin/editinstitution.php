@@ -65,7 +65,7 @@
 				$criteria->compare('institution_id',$institution->id);
 				$criteria->order = 'name asc';
 				foreach (Site::model()->findAll($criteria) as $i => $site) {?>
-					<li class="<?php if ($i%2 == 0) {?>even<?php }else{?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
+					<li class="<?php if ($i%2 == 0) {?>even<?php } else {?>odd<?php }?>" data-attr-id="<?php echo $site->id?>">
 						<span class="column_id"><?php echo $site->id?></span>
 						<span class="column_remote_id"><?php echo $site->remote_id?>&nbsp;</span>
 						<span class="column_name"><?php echo $site->name?>&nbsp;</span>

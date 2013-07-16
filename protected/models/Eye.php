@@ -30,7 +30,7 @@ class Eye extends BaseActiveRecord
 	const LEFT = 1;
 	const RIGHT = 2;
 	const BOTH = 3;
-	
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Firm the static model class
@@ -68,12 +68,14 @@ class Eye extends BaseActiveRecord
 			'elementTypes' => array(self::HAS_MANY, 'ElementTypeEye', 'eye_id'),
 		);
 	}
-	
-	public function getShortName() {
+
+	public function getShortName()
+	{
 		return substr($this->name, 0, 1);
 	}
 
-	public function getAdjective() {
+	public function getAdjective()
+	{
 		if ($this->id == Eye::BOTH) {
 			return 'Bilateral';
 		}

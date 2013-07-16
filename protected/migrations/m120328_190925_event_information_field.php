@@ -12,7 +12,7 @@ class m120328_190925_event_information_field extends CDbMigration
 			$info = '';
 
 			foreach ($this->dbConnection->createCommand()->select('proc_id')->from('operation_procedure_assignment')->where('operation_id='.$row['id'])->order('display_order asc')->queryAll() as $opa) {
-				
+
 				$proc = $this->dbConnection->createCommand()->select('term')->from('proc')->where('id='.$opa['proc_id'])->queryRow();
 
 				if ($info) {

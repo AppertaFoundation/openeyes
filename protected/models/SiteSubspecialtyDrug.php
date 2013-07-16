@@ -26,27 +26,30 @@
  * @property integer $subspecialty_id
  * @property integer $drug_id
  */
-class SiteSubspecialtyDrug extends BaseActiveRecord {
-	
+class SiteSubspecialtyDrug extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return SiteSubspecialtyDrug the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'site_subspecialty_drug';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
@@ -56,8 +59,9 @@ class SiteSubspecialtyDrug extends BaseActiveRecord {
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array();
 	}
-	
+
 }

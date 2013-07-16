@@ -22,8 +22,9 @@ class ModuleAdminController extends BaseController
 {
 	public $layout = '//layouts/admin';
 	public $assetPath;
-	
-	protected function beforeAction($action) {
+
+	protected function beforeAction($action)
+	{
 		$this->assetPath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.'.$this->getModule()->name.'.assets'), false, -1, YII_DEBUG);
 		if (file_exists("protected/modules/".$this->getModule()->name."/assets/js/admin.js")) {
 			Yii::app()->clientScript->registerScriptFile($this->assetPath.'/js/admin.js');
@@ -32,7 +33,7 @@ class ModuleAdminController extends BaseController
 			$this->registerCssFile('admin-module.css', $this->assetPath.'/css/admin.css');
 		}
 		$this->registerCssFile('module.css', $this->assetPath.'/css/module.css');
-	
+
 		return parent::beforeAction($action);
 	}
 }

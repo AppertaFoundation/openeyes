@@ -27,7 +27,7 @@ echo $data['page'].'&nbsp;&nbsp;';
 
 if ($data['page'] < $data['pages']) {?>
 	<a href="#" class="changePage" id="page<?php echo ($data['page']+1)?>">next &raquo;</a>&nbsp;&nbsp;
-<?php }else{?>
+<?php } else {?>
 next &raquo;&nbsp;&nbsp;
 <?php }
 ?>

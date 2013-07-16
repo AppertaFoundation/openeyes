@@ -29,14 +29,14 @@
 			<thead>
 				<tr>
 					<th width="80%">Allergies</th>
-					<?php if(BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
+					<?php if (BaseController::checkUserLevel(4)) { ?><th>Edit</th><?php } ?>
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach($this->patient->allergies as $allergy) { ?>
+				<?php foreach ($this->patient->allergies as $allergy) { ?>
 				<tr data-allergy-id="<?php echo $allergy->id ?>">
 					<td><?php echo $allergy->name ?></td>
-					<?php if(BaseController::checkUserLevel(4)) { ?>
+					<?php if (BaseController::checkUserLevel(4)) { ?>
 					<td><a href="#" rel="<?php echo $allergy->id?>" class="small removeAllergy"><strong>Remove</strong>
 					<?php } ?>
 					</a></td>
@@ -45,7 +45,7 @@
 			</tbody>
 		</table>
 
-		<?php if(BaseController::checkUserLevel(4)) { ?>
+		<?php if (BaseController::checkUserLevel(4)) { ?>
 			<div align="center" style="margin-top:10px;">
 				<form><button id="btn-add_allergy" class="classy green mini" type="button"><span class="button-span button-span-green">Add allergy</span></button></form>
 			</div>
@@ -82,7 +82,7 @@
 		<?php }?>
 	</div>
 </div>
-<?php if(BaseController::checkUserLevel(4)) { ?>
+<?php if (BaseController::checkUserLevel(4)) { ?>
 <div id="confirm_remove_allergy_dialog" title="Confirm remove allergy" style="display: none;">
 	<div>
 		<div id="delete_allergy">

@@ -17,24 +17,24 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 ?>
-<!doctype html> 
+<!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>		<html class="no-js ie7 oldie" lang="en"> <![endif]-->
 <!--[if IE 8]>		<html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
-<head> 
+<head>
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
- 
-	<title><?php echo CHtml::encode($this->pageTitle); ?></title> 
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+	<title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=0.62">
 	<?php if (Yii::app()->params['disable_browser_caching']) {?>
 		<meta http-equiv='cache-control' content='no-cache'>
 		<meta http-equiv='expires' content='0'>
 		<meta http-equiv='pragma' content='no-cache'>
 	<?php }?>
-	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" /> 
-	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/> 
+	<link rel="icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>" type="image/x-icon" />
+	<link rel="shortcut icon" href="<?php echo Yii::app()->createUrl('favicon.ico')?>"/>
 	<?php $cs = Yii::app()->clientScript; ?>
 	<?php $cs->registerCoreScript('jquery')?>
 	<?php $cs->registerCoreScript('jquery.ui')?>
@@ -68,17 +68,17 @@
 	<script type="text/javascript">
 		var baseUrl = '<?php echo Yii::app()->baseUrl?>';
 	</script>
-</head> 
- 
+</head>
+
 <body>
 	<?php $this->renderPartial('//base/_banner_watermark',array())?>
-	<?php $this->renderPartial('//base/_debug',array())?> 
-	<div id="container"> 
+	<?php $this->renderPartial('//base/_debug',array())?>
+	<div id="container">
 		<div id="header" class="clearfix">
 			<?php $this->renderPartial('//base/_brand'); ?>
 			<?php $this->renderPartial('//base/_form', array()); ?>
 		</div>
-		<div id="content"> 
+		<div id="content">
 			<h2 class="admin">Profile</h2>
 			<div class="maxwidth nopadding curvybox blue clearfix">
 				<div class="wrap twocolumns clearfix">
@@ -94,5 +94,5 @@
 		<div id="help" class="clearfix"></div>
 	</div>
 	<?php $this->renderPartial('//base/_footer',array())?>
-</body> 
+</body>
 </html>

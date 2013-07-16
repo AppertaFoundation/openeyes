@@ -63,18 +63,14 @@ EOD;
 			'exclude'=>array('.svn'),
 		));
 
-		foreach($files as $file)
-		{
-			if($file!==$moduleTemplateFile)
-			{
+		foreach ($files as $file) {
+			if ($file!==$moduleTemplateFile) {
 				if(CFileHelper::getExtension($file)==='php')
 					$content=$this->render($file);
-				else if(basename($file)==='.yii')  // an empty directory
-				{
+				else if (basename($file)==='.yii') {  // an empty directory
 					$file=dirname($file);
 					$content=null;
-				}
-				else
+				} else
 					$content=file_get_contents($file);
 				$this->files[]=new CCodeFile(
 					$modulePath.substr($file,strlen($templatePath)),

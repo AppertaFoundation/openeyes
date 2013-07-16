@@ -28,27 +28,30 @@
  * @property User $user
  * @property Firm $firm
  */
-class UserFirmPreference extends BaseActiveRecord {
-
+class UserFirmPreference extends BaseActiveRecord
+{
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return UserFirmPreference the static model class
 	 */
-	public static function model($className=__CLASS__) {
+	public static function model($className=__CLASS__)
+	{
 		return parent::model($className);
 	}
 
 	/**
 	 * @return string the associated database table name
 	 */
-	public function tableName() {
+	public function tableName()
+	{
 		return 'user_firm_preference';
 	}
 
 	/**
 	 * @return array validation rules for model attributes.
 	 */
-	public function rules() {
+	public function rules()
+	{
 		return array(
 			array('user_id, firm_id, position', 'required'),
 			array('id, user_id, firm_id, position', 'safe', 'on'=>'search'),
@@ -58,7 +61,8 @@ class UserFirmPreference extends BaseActiveRecord {
 	/**
 	 * @return array relational rules.
 	 */
-	public function relations() {
+	public function relations()
+	{
 		return array(
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'firm' => array(self::BELONGS_TO, 'Firm', 'firm_id'),
@@ -68,7 +72,8 @@ class UserFirmPreference extends BaseActiveRecord {
 	/**
 	 * @return array customized attribute labels (name=>label)
 	 */
-	public function attributeLabels() {
+	public function attributeLabels()
+	{
 		return array(
 			'id' => 'ID',
 			'user_id' => 'User',
@@ -81,7 +86,8 @@ class UserFirmPreference extends BaseActiveRecord {
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
 	 */
-	public function search() {
+	public function search()
+	{
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id,true);

@@ -17,21 +17,23 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class CheckBoxArray extends BaseCWidget {
+class CheckBoxArray extends BaseCWidget
+{
 	public $fields;
 	public $options;
 	public $columns = array();
 	public $checked = array();
 	public $labeltext;
 
-	public function init() {
+	public function init()
+	{
 		foreach ($this->fields as $field) {
 			if (empty($_POST)) {
 				if (isset($this->element->{$field})) {
-					$this->checked[$field] = (boolean)$this->element->{$field};
+					$this->checked[$field] = (boolean) $this->element->{$field};
 				}
 			} else {
-				$this->checked[$field] = (boolean)@$_POST[get_class($this->element)][$field];
+				$this->checked[$field] = (boolean) @$_POST[get_class($this->element)][$field];
 			}
 		}
 
@@ -48,4 +50,3 @@ class CheckBoxArray extends BaseCWidget {
 		}
 	}
 }
-?>

@@ -37,7 +37,7 @@ class LetterTemplateTest extends CDbTestCase
 			array(array('cc' => 3), 2, array('letterTemplate1', 'letterTemplate2')),
 		);
 	}
-	
+
 	public function setUp()
 	{
 		parent::setUp();
@@ -48,7 +48,7 @@ class LetterTemplateTest extends CDbTestCase
 	{
 		$expected = CHtml::listData(Specialty::model()->findAll(), 'id', 'name');
 		$result = $this->model->getSpecialtyOptions();
-		
+
 		$this->assertEquals($expected, $result, 'Returned options should match.');
 		$this->assertEquals(count($this->specialties), count($result), 'Should have found all the options.');
 	}
@@ -57,7 +57,7 @@ class LetterTemplateTest extends CDbTestCase
 	{
 		$expected = CHtml::listData(ContactType::model()->findAll(), 'id', 'name');
 		$result = $this->model->getContactTypeOptions();
-		
+
 		$this->assertEquals($expected, $result, 'Returned options should match.');
 		$this->assertEquals(count($this->contactTypes), count($result), 'Should have found all the options.');
 	}
@@ -82,7 +82,7 @@ class LetterTemplateTest extends CDbTestCase
 
 		$this->assertEquals('Ophthalmologist', $letterTemplate->getToText(), 'Returned text should be correct.');
 	}
-	
+
 	public function testAttributeLabels()
 	{
 		$expected = array(
@@ -93,7 +93,7 @@ class LetterTemplateTest extends CDbTestCase
 			'send_to' => 'To',
 			'cc' => 'Cc',
 		);
-		
+
 		$this->assertEquals($expected, $this->model->attributeLabels());
 	}
 

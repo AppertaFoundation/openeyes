@@ -17,13 +17,13 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class Mailer extends CComponent {
-	
+class Mailer extends CComponent
+{
 	// can be mail, smtp, or sendmail
 	public $mode = '';
-	
+
 	public $sendmail_command = '/usr/sbin/sendmail -bs';
-	
+
 	// configuration for smtp
 	public $host;
 	public $port = 25;
@@ -31,11 +31,11 @@ class Mailer extends CComponent {
 	public $security;
 	public $username;
 	public $password;
-	
+
 	protected $_transport;
-	
+
 	protected $_mailer;
-	
+
 	/**
 	 * initialise the component by pulling in the appropriate SwiftMailer classes
 	 */
@@ -45,19 +45,19 @@ class Mailer extends CComponent {
 		require_once(Yii::getPathOfAlias('application.vendors.SwiftMailer') . '/swift_required.php');
 		spl_autoload_register(array('YiiBase', 'autoload'));
 	}
-	
+
 	/**
 	 * return the transport object for the configured mail type
-	 * 
+	 *
 	 * @throws Exception
 	 * @return Transport object
 	 */
-	protected function getTransport() {
+	protected function getTransport()
+	{
 		if (!$this->_transport) {
 			if ($this->mode == 'sendmail') {
 				$this->_transport = Swift_SendmailTransport::newInstance($this->sendmail_command);
-			}
-			else if ($this->mode == 'smtp') {
+			} elseif ($this->mode == 'smtp') {
 				$this->_transport = Swift_SmtpTransport::newInstance($this->host, $this->port);
 				if ($this->security) {
 					$this->setEncryption($this->security);
@@ -68,43 +68,44 @@ class Mailer extends CComponent {
 				if ($this->password) {
 					$this->setPassword($this->password);
 				}
-			}
-			else if ($this->mode == 'mail') {
+			} elseif ($this->mode == 'mail') {
 				$this->_transport = Swift_MailTransport::newInstance();
-			}
-			else {
+			} else {
 				throw new Exception('unrecognised email mode ' . $this->mode);
 			}
 		}
-		
+
 		return $this->_transport;
 	}
-	
+
 	/**
 	 * get the SwiftMailer object with the configured transport
-	 * 
+	 *
 	 */
-	protected function getMailer() {
+	protected function getMailer()
+	{
 		if (!$this->_mailer) {
 			$this->_mailer = Swift_Mailer::newInstance($this->getTransport());
 		}
 		return $this->_mailer;
 	}
-	
+
 	/**
 	 * instantiate an appopriate SwiftMailer email message object
-	 * 
+	 *
 	 */
-	public function newMessage() {
+	public function newMessage()
+	{
 		return Swift_Message::newInstance();
 	}
-	
+
 	/**
 	 * Send an email
-	 * 
+	 *
 	 * @param Swift_Message $message
 	 */
-	public function sendMessage($message) {
+	public function sendMessage($message)
+	{
 		$mailer = $this->getMailer();
 
 		if ($this->recipientForbidden($message)) {
@@ -114,7 +115,8 @@ class Mailer extends CComponent {
 		return $mailer->send($message);
 	}
 
-	public function recipientForbidden($message) {
+	public function recipientForbidden($message)
+	{
 		if (!empty(Yii::app()->params['restrict_email_domains'])) {
 			foreach ($message->getTo() as $email => $name) {
 				$domain = preg_replace('/^.*?@/','',$email);

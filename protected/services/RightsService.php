@@ -103,7 +103,7 @@ class RightsService
 				array(':user_id' => $this->userId));
 
 		if (!empty($_POST['Rights']['firm'])) {
-			foreach($_POST['Rights']['firm'] as $id => $value) {
+			foreach ($_POST['Rights']['firm'] as $id => $value) {
 				$ufr = new UserFirmRights;
 				$ufr->user_id = $this->userId;
 				$ufr->firm_id = $id;
@@ -117,7 +117,7 @@ class RightsService
 			array(':user_id' => $this->userId));
 
 		if (!empty($_POST['Rights']['service'])) {
-			foreach($_POST['Rights']['service'] as $id => $value) {
+			foreach ($_POST['Rights']['service'] as $id => $value) {
 				$usr = new UserServiceRights;
 				$usr->user_id = $this->userId;
 				$usr->service_id = $id;

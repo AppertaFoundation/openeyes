@@ -34,7 +34,7 @@ if (file_exists("/etc/hostname")) {
 
 if (is_object($user)) {
 	$username = "$user->username ($user->id)";
-	if($firm) {
+	if ($firm) {
 		$firm = "$firm->name ($firm->id)";
 	} else {
 		$firm = 'Not found'; // selectedFirmId seems to not be getting initialised sometimes

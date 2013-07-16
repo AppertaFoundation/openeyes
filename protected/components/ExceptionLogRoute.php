@@ -107,7 +107,7 @@ class ExceptionLogRoute extends CLogRoute
 	 */
 	public function setMaxFileSize($value)
 	{
-		if(($this->_maxFileSize=(int)$value)<1)
+		if(($this->_maxFileSize=(int) $value)<1)
 			$this->_maxFileSize=1;
 	}
 
@@ -124,7 +124,7 @@ class ExceptionLogRoute extends CLogRoute
 	 */
 	public function setMaxLogFiles($value)
 	{
-		if(($this->_maxLogFiles=(int)$value)<1)
+		if(($this->_maxLogFiles=(int) $value)<1)
 			$this->_maxLogFiles=1;
 	}
 
@@ -177,7 +177,8 @@ class ExceptionLogRoute extends CLogRoute
 		}
 	}
 
-	public function isFiltered($msg) {
+	public function isFiltered($msg)
+	{
 		foreach ($this->exclude_regex as $regex) {
 			if (preg_match($regex,$msg)) {
 				return true;
@@ -193,11 +194,9 @@ class ExceptionLogRoute extends CLogRoute
 	{
 		$file=$this->getLogPath().DIRECTORY_SEPARATOR.$this->getLogFile();
 		$max=$this->getMaxLogFiles();
-		for($i=$max;$i>0;--$i)
-		{
+		for ($i=$max;$i>0;--$i) {
 			$rotateFile=$file.'.'.$i;
-			if(is_file($rotateFile))
-			{
+			if (is_file($rotateFile)) {
 				// suppress errors because it's possible multiple processes enter into this section
 				if($i===$max)
 					@unlink($rotateFile);

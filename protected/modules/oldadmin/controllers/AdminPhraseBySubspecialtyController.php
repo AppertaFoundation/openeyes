@@ -90,7 +90,7 @@ class AdminPhraseBySubspecialtyController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseBySubspecialty'])) {
+		if (isset($_POST['PhraseBySubspecialty'])) {
 			$model->attributes=$_POST['PhraseBySubspecialty'];
 			if ($model->attributes['phrase_name_id']) {
 				// We are overriding an existing phrase name - so as long as it hasn't been overridden already we should just save it
@@ -109,7 +109,7 @@ class AdminPhraseBySubspecialtyController extends Controller
 			}
 
 			if($model->save()) $this->redirect(array('view','id'=>$model->id));
-		} 
+		}
 
 		$this->render('create',array(
 			'model'=>$model,
@@ -132,8 +132,7 @@ class AdminPhraseBySubspecialtyController extends Controller
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['PhraseBySubspecialty']))
-		{
+		if (isset($_POST['PhraseBySubspecialty'])) {
 			$model->attributes=$_POST['PhraseBySubspecialty'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
@@ -151,16 +150,14 @@ class AdminPhraseBySubspecialtyController extends Controller
 	 */
 	public function actionDelete($id)
 	{
-		if(Yii::app()->request->isPostRequest)
-		{
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('phraseIndex', 'section_id'=>$_REQUEST['section_id'], 'subspecialty_id'=>$_REQUEST['subspecialty_id']));
-		}
-		else
+		} else
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 	}
 
@@ -196,8 +193,8 @@ class AdminPhraseBySubspecialtyController extends Controller
 		$criteria=new CDbCriteria;
 		$criteria->compare('section_id',$sectionId,false);
 		$criteria->compare('subspecialty_id',$subspecialtyId,false);
-	
-	
+
+
 		$dataProvider=new CActiveDataProvider('PhraseBySubspecialty', array(
 			'criteria'=>$criteria,
 		));
@@ -251,7 +248,7 @@ class AdminPhraseBySubspecialtyController extends Controller
 	 */
 	public function loadModel($id)
 	{
-		$model=PhraseBySubspecialty::model()->findByPk((int)$id);
+		$model=PhraseBySubspecialty::model()->findByPk((int) $id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -263,8 +260,7 @@ class AdminPhraseBySubspecialtyController extends Controller
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='phrase-by-subspecialty-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='phrase-by-subspecialty-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

@@ -53,15 +53,15 @@ class AdminPhraseByFirmControllerTest extends CDbTestCase
 		$this->setExpectedException('CHttpException', 'The requested page does not exist.');
 		$this->controller->actionView($fakeId);
 	}
-								
+
 	public function testActionView_ValidData_RendersViewView()
 	{
 		$itemId = $this->phrasesByFirm['phraseByFirm1']['id'];
 		$itemPhrase = $this->phrasesByFirm['phraseByFirm1']['phrase'];
-		
+
 		$mockController = $this->getMock('AdminPhraseByFirmController', array('render'), array('AdminPhraseByFirmController'));
 		$mockController->expects($this->any())->method('render')->with('view', array('model' => $this->phrasesByFirm('phraseByFirm1')));
-		
+
 		$mockController->actionView($itemId);
 	}
 
@@ -71,10 +71,10 @@ class AdminPhraseByFirmControllerTest extends CDbTestCase
 		$item->unsetAttributes();
 		$mockController = $this->getMock('AdminPhraseByFirmController', array('render'), array('AdminPhraseByFirmController'));
 		$mockController->expects($this->any())->method('render')->with('admin', array('model' => $item));
-		
+
 		$mockController->actionAdmin();
 	}
-								
+
 	public function testActionAdmin_ValidGetParameters_RendersAdminView()
 	{
 		$_GET['id'] = $this->phrasesByFirm['phraseByFirm1']['id'];
@@ -83,7 +83,7 @@ class AdminPhraseByFirmControllerTest extends CDbTestCase
 		$item->attributes = $_GET['id'];
 		$mockController = $this->getMock('AdminPhraseByFirmController', array('render'), array('AdminPhraseByFirmController'));
 		$mockController->expects($this->any())->method('render')->with('admin', array('model' => $item));
-		
+
 		$mockController->actionAdmin();
 	}
 }

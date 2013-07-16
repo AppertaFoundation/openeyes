@@ -20,7 +20,7 @@ class m120306_161357_event_group_table extends CDbMigration
 		$this->insert('event_group',array('name'=>'Miscellaneous','code'=>'Mi'));
 
 		$this->addColumn('event_type','event_group_id','int(10) unsigned NULL');
-		
+
 		$this->update('event_type',array('event_group_id'=>1),'id in (1,2,3,15,16,18)');
 		$this->update('event_type',array('event_group_id'=>2),'id in (17,21,22,23)');
 		$this->update('event_type',array('event_group_id'=>3),'id in (13)');

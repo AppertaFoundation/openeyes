@@ -56,6 +56,6 @@ $branch = array_pop($ex);
 		Client IP: <?php echo @$_SERVER['REMOTE_ADDR']?><br />
 		Username: <?php echo $username?><br />
 		Firm: <?php echo $firm?><br />
-		
+
 	</code>
 </div>

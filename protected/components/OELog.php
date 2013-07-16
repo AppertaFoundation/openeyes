@@ -17,8 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class OELog {
-	static public function log($msg, $username=false) {
+class OELog
+{
+	public static function log($msg, $username=false)
+	{
 		if (Yii::app()->params['log_events']) {
 			if (!$username) {
 				if (Yii::app()->session['user']) {
@@ -36,4 +38,3 @@ class OELog {
 		}
 	}
 }
-?>

@@ -56,7 +56,8 @@ class User extends BaseActiveRecord
 		return 'user';
 	}
 
-	public function behaviors() {
+	public function behaviors()
+	{
 		return array(
 			'ContactBehavior' => array(
 				'class' => 'application.behaviors.ContactBehavior',
@@ -91,7 +92,7 @@ class User extends BaseActiveRecord
 					array('password_repeat', 'safe'),
 				)
 			);
-		} else if (Yii::app()->params['auth_source'] == 'LDAP') {
+		} elseif (Yii::app()->params['auth_source'] == 'LDAP') {
 			return array_merge(
 				$commonRules,
 				array(
@@ -125,7 +126,8 @@ class User extends BaseActiveRecord
 		);
 	}
 
-	public function changeFirm($firm_id) {
+	public function changeFirm($firm_id)
+	{
 		$this->last_firm_id = $firm_id;
 		$criteria = new CDbCriteria();
 		$criteria->addCondition('user_id = :user_id');
@@ -134,17 +136,17 @@ class User extends BaseActiveRecord
 		$top_preference = UserFirmPreference::model()->find($criteria);
 		$preference = UserFirmPreference::model()->find('user_id = :user_id AND firm_id = :firm_id',
 				array(':user_id' => $this->id, ':firm_id' => $firm_id));
-		if(!$preference) {
+		if (!$preference) {
 			$preference = new UserFirmPreference();
 			$preference->user_id = $this->id;
 			$preference->firm_id = $firm_id;
 		}
-		if(!$top_preference) {
+		if (!$top_preference) {
 			$preference->position = 1;
-		} else if($top_preference->id != $preference->id) {
+		} elseif ($top_preference->id != $preference->id) {
 			$preference->position = $top_preference->position + 1;
 		}
-		if(!$preference->save()) {
+		if (!$preference->save()) {
 			throw new CException('Error saving user firm preference');
 		}
 	}
@@ -210,7 +212,7 @@ class User extends BaseActiveRecord
 				$salt = '';
 				$possible = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-				for($i=0; $i < 10; $i++) {
+				for ($i=0; $i < 10; $i++) {
 					$salt .= $possible[mt_rand(0, strlen($possible)-1)];
 				}
 
@@ -286,23 +288,28 @@ class User extends BaseActiveRecord
 		}
 	}
 
-	public function getFullName() {
+	public function getFullName()
+	{
 		return implode(' ', array($this->first_name, $this->last_name));
 	}
 
-	public function getReversedFullName() {
+	public function getReversedFullName()
+	{
 		return implode(' ', array($this->last_name, $this->first_name));
 	}
 
-	public function getFullNameAndTitle() {
+	public function getFullNameAndTitle()
+	{
 		return implode(' ', array($this->title, $this->first_name, $this->last_name));
 	}
 
-	public function getFullNameAndTitleAndQualifications() {
+	public function getFullNameAndTitleAndQualifications()
+	{
 		return implode(' ', array($this->title, $this->first_name, $this->last_name)).($this->qualifications?' '.$this->qualifications:'');
 	}
 
-	public function getReversedFullNameAndTitle() {
+	public function getReversedFullNameAndTitle()
+	{
 		return implode(' ', array($this->title, $this->last_name, $this->first_name));
 	}
 
@@ -324,7 +331,8 @@ class User extends BaseActiveRecord
 		return false;
 	}
 
-	public function getList() {
+	public function getList()
+	{
 		$users = array();
 
 		foreach (User::Model()->findAll(array('order'=>'first_name,last_name')) as $user) {
@@ -339,7 +347,8 @@ class User extends BaseActiveRecord
 	 *
 	 * @return User[] List of surgeon users
 	 */
-	public static function getSurgeons() {
+	public static function getSurgeons()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('is_surgeon',1);
 		$criteria->compare('active',1);
@@ -348,12 +357,14 @@ class User extends BaseActiveRecord
 		return User::model()->findAll($criteria);
 	}
 
-	public function audit($target, $action, $data=null, $log=false, $properties=array()) {
+	public function audit($target, $action, $data=null, $log=false, $properties=array())
+	{
 		$properties['user_id'] = $this->id;
 		return parent::audit($target, $action, $data, $log, $properties);
 	}
 
-	public function getListSurgeons() {
+	public function getListSurgeons()
+	{
 		$criteria = new CDbCriteria;
 		$criteria->compare('is_doctor',1);
 		$criteria->compare('active',1);
@@ -361,11 +372,13 @@ class User extends BaseActiveRecord
 		return CHtml::listData(User::model()->findAll($criteria),'id','reversedFullName');
 	}
 
-	public function getReportDisplay() {
+	public function getReportDisplay()
+	{
 		return $this->fullName;
 	}
 
-	public function beforeValidate() {
+	public function beforeValidate()
+	{
 		if (!preg_match('/^[0-9a-f]{32}$/',$this->password)) {
 			if ($this->password != $this->password_repeat) {
 				$this->addError('password','Password confirmation must match exactly');
@@ -380,7 +393,8 @@ class User extends BaseActiveRecord
 		return parent::beforeValidate();
 	}
 
-	public function randomSalt() {
+	public function randomSalt()
+	{
 		$salt = '';
 		for ($i=0;$i<10;$i++) {
 			switch (rand(0,2)) {
@@ -399,7 +413,8 @@ class User extends BaseActiveRecord
 		return $salt;
 	}
 
-	public function getAccessLevelOptions() {
+	public function getAccessLevelOptions()
+	{
 		return array(
 			0 => 'No access',
 			1 => 'Patient demographics',
@@ -409,15 +424,17 @@ class User extends BaseActiveRecord
 			5 => 'Full',
 		);
 	}
-	
-	public function getAccesslevelstring() {
+
+	public function getAccesslevelstring()
+	{
 		$access_levels = $this->getAccessLevelOptions();
-		if(isset($access_levels[$this->access_level])) {
+		if (isset($access_levels[$this->access_level])) {
 			return $access_levels[$this->access_level];
 		}
 	}
 
-	public function findAsContacts($term) {
+	public function findAsContacts($term)
+	{
 		$contacts = array();
 
 		$criteria = new CDbCriteria;
@@ -437,7 +454,8 @@ class User extends BaseActiveRecord
 		return $contacts;
 	}
 
-	public function getNotSelectedSiteList() {
+	public function getNotSelectedSiteList()
+	{
 		if (empty(Yii::app()->params['institution_code'])) {
 			throw new Exception("Institution code is not set");
 		}
@@ -460,7 +478,8 @@ class User extends BaseActiveRecord
 		return Site::model()->findAll($criteria);
 	}
 
-	public function getNotSelectedFirmList() {
+	public function getNotSelectedFirmList()
+	{
 		$firms = Yii::app()->db->createCommand()
 			->select('f.id, f.name, s.name AS subspecialty')
 			->from('firm f')

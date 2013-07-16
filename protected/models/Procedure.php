@@ -84,7 +84,8 @@ class Procedure extends BaseActiveRecord
 		);
 	}
 
-	public function getComplications() {
+	public function getComplications()
+	{
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		$complications = array();
@@ -96,7 +97,8 @@ class Procedure extends BaseActiveRecord
 		return $complications;
 	}
 
-	public function getBenefits() {
+	public function getBenefits()
+	{
 		$firm = Firm::model()->findByPk(Yii::app()->session['selected_firm_id']);
 
 		$benefits = array();
@@ -160,7 +162,7 @@ class Procedure extends BaseActiveRecord
 
 		if ($restrict == 'unbooked') {
 			$where .= ' and unbooked = 1';
-		} else if($restrict == 'booked') {
+		} elseif ($restrict == 'booked') {
 			$where .= ' and unbooked = 0';
 		}
 
@@ -194,7 +196,7 @@ class Procedure extends BaseActiveRecord
 		$where = '';
 		if ($restrict == 'unbooked') {
 			$where = ' and unbooked = 1';
-		} else if($restrict == 'booked') {
+		} elseif ($restrict == 'booked') {
 			$where = ' and unbooked = 0';
 		}
 		$procedures = Yii::app()->db->createCommand()

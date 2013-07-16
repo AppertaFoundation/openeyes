@@ -24,7 +24,7 @@
  * @property string $id
  * @property string $name
  * @property integer $display_order
- * 
+ *
  */
 class AnaestheticAgent extends BaseActiveRecord
 {
@@ -67,4 +67,3 @@ class AnaestheticAgent extends BaseActiveRecord
 		);
 	}
 }
-?>

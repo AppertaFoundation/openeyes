@@ -42,11 +42,11 @@
 							</span>
 						</div>
 						<h4><?php echo CHtml::link(CHtml::encode($episode->firm->serviceSubspecialtyAssignment->subspecialty->name), array('/patient/episode/' . $episode->id), array('class' => 'title_summary' . ((!$this->event && @$current_episode && $current_episode->id == $episode->id) ? ' viewing' : ''))) ?></h4>
-						<!-- shows miniicons for the events --> 
-							<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>> 
+						<!-- shows miniicons for the events -->
+							<div class = "minievents" <?php if ($episode->hidden) { ?>style = "display : inline" <?php } else { ?> style = "display : none"<?php } ?>>
 								<?php foreach ($episode->events as $event) {
 									$event_path = Yii::app()->createUrl($event->eventType->class_name . '/default/view') . '/'; ?>
-									<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">									
+									<a href="<?php echo $event_path . $event->id ?>" rel="<?php echo $event->id ?>" class="show-event-details">
 											<?php
 											if (file_exists(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets'))) {
 												$assetpath = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('application.modules.' . $event->eventType->class_name . '.assets')) . '/';
@@ -54,10 +54,10 @@
 												$assetpath = '/assets/';
 											}
 											?>
-											<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" /> 
+											<img src="<?php echo $assetpath . 'img/small.png' ?>" alt="op" width="19" height="19" />
 									</a>
-								<?php } ?> 
-							</div> 
+								<?php } ?>
+							</div>
 						<!-- end shows miniicons for the events -->
 						<div <?php if ($episode->hidden) { ?>class="events show" style="display: none;"<?php } else { ?>class="events hide"<?php } ?>>
 							<?php if (BaseController::checkUserLevel(4)) {?>

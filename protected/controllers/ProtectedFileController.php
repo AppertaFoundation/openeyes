@@ -17,9 +17,10 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class ProtectedFileController extends BaseController {
-
-	public function accessRules() {
+class ProtectedFileController extends BaseController
+{
+	public function accessRules()
+	{
 		return array(
 				// Level 3 or above can do anything
 				array('allow',
@@ -30,11 +31,12 @@ class ProtectedFileController extends BaseController {
 		);
 	}
 
-	public function actionDownload($id) {
-		if(!$file = ProtectedFile::model()->findByPk($id)) {
+	public function actionDownload($id)
+	{
+		if (!$file = ProtectedFile::model()->findByPk($id)) {
 			throw new CHttpException(404, "File not found");
 		}
-		if(!file_exists($file->getPath())) {
+		if (!file_exists($file->getPath())) {
 			throw new CException("File not found on filesystem: ".$file->getPath());
 		}
 		header('Content-Description: File Transfer');
@@ -47,12 +49,13 @@ class ProtectedFileController extends BaseController {
 		flush();
 		readfile($file->getPath());
 	}
-	
-	public function actionView($id, $name) {
-		if(!$file = ProtectedFile::model()->findByPk($id)) {
+
+	public function actionView($id, $name)
+	{
+		if (!$file = ProtectedFile::model()->findByPk($id)) {
 			throw new CHttpException(404, "File not found");
 		}
-		if(!file_exists($file->getPath())) {
+		if (!file_exists($file->getPath())) {
 			throw new CException("File not found on filesystem: ".$file->getPath());
 		}
 		header('Content-Type: ' . $file->mimetype);
@@ -63,12 +66,13 @@ class ProtectedFileController extends BaseController {
 		flush();
 		readfile($file->getPath());
 	}
-	
-	public function actionThumbnail($id, $dimensions, $name) {
-		if(!$file = ProtectedFile::model()->findByPk($id)) {
+
+	public function actionThumbnail($id, $dimensions, $name)
+	{
+		if (!$file = ProtectedFile::model()->findByPk($id)) {
 			throw new CHttpException(404, "File not found");
 		}
-		if(!$thumbnail = $file->getThumbnail($dimensions, true)) {
+		if (!$thumbnail = $file->getThumbnail($dimensions, true)) {
 			throw new CHttpException(404, "Thumbnail not available");
 		}
 		header('Content-Type: ' . $file->mimetype);
@@ -79,12 +83,13 @@ class ProtectedFileController extends BaseController {
 		flush();
 		readfile($thumbnail['path']);
 	}
-	
-	public function actionImport() {
+
+	public function actionImport()
+	{
 		echo "<h1>Importing files:</h1>";
-		foreach(glob(Yii::app()->basePath.'/data/test/*') as $src_file) {
+		foreach (glob(Yii::app()->basePath.'/data/test/*') as $src_file) {
 			$file = ProtectedFile::createFromFile($src_file);
-			if(!$file->save()) {
+			if (!$file->save()) {
 				throw new CException('Cannot save file'.print_r($file->getErrors(), true));
 			}
 			unlink($src_file);

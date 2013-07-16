@@ -17,28 +17,31 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class SiteAndFirmWidget extends CWidget {
+class SiteAndFirmWidget extends CWidget
+{
 	public $title = 'Please confirm Site and Firm';
 	public $subspecialty;
 	public $support_services;
 	public $patient;
 	public $returnUrl;
 
-	public function init() {
-		if(!$this->returnUrl) {
+	public function init()
+	{
+		if (!$this->returnUrl) {
 			$this->returnUrl = Yii::app()->request->url;
 		}
 	}
 
-	public function run() {
+	public function run()
+	{
 		$model = new SiteAndFirmForm();
 		$user = User::model()->findByPk(Yii::app()->user->id);
-		if(isset($_POST['SiteAndFirmForm'])) {
+		if (isset($_POST['SiteAndFirmForm'])) {
 			$model->attributes = $_POST['SiteAndFirmForm'];
-			if($model->validate()) {
+			if ($model->validate()) {
 				$user->changeFirm($model->firm_id);
 				$user->last_site_id = $model->site_id;
-				if(!$user->save(false)) {
+				if (!$user->save(false)) {
 					throw new CException('Error saving user');
 				}
 				$user->audit('user', 'change-firm', $user->last_firm_id);

@@ -116,17 +116,16 @@ class Subspecialty extends BaseActiveRecord
 
 	/**
 	 * Fetch an array of subspecialty IDs and names, by default does not return non medical subspecialties (as defined by parent specialty)
-	 * 
+	 *
 	 * @param bool $nonmedical
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getList($nonmedical = false)
 	{
 		if (!$nonmedical) {
 			$list = Subspecialty::model()->with('specialty')->findAll('specialty.specialty_type_id = :surgical or specialty.specialty_type_id = :medical',array(':surgical'=>1,':medical'=>2));
-		}
-		else {
+		} else {
 			$list = Subspecialty::model()->findAll();
 		}
 		$result = array();
@@ -138,7 +137,8 @@ class Subspecialty extends BaseActiveRecord
 		return $result;
 	}
 
-	public function findAllByCurrentSpecialty() {
+	public function findAllByCurrentSpecialty()
+	{
 		if (!isset(Yii::app()->params['institution_specialty'])) {
 			throw new Exception("institution_specialty code is not set in params");
 		}
@@ -155,7 +155,8 @@ class Subspecialty extends BaseActiveRecord
 		return Subspecialty::model()->findAll($criteria);
 	}
 
-	public function getTreeName() {
+	public function getTreeName()
+	{
 		return $this->ref_spec;
 	}
 }

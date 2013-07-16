@@ -102,8 +102,8 @@ class UserIdentityTest extends CDbTestCase
 			'JoeBloggs',
 			'secret'
 		);
-		
-		$this->assertTrue((bool)$this->users['user1']['global_firm_rights']);
+
+		$this->assertTrue((bool) $this->users['user1']['global_firm_rights']);
 
 		$this->assertTrue($userIdentity->authenticate());
 	}
@@ -115,13 +115,13 @@ class UserIdentityTest extends CDbTestCase
 		$user = $this->users('user1');
 		$user->global_firm_rights = false;
 		$user->save(false);
-		
+
 		$userIdentity = new UserIdentity(
 			'JoeBloggs',
 			'secret'
 		);
-		
-		$this->assertFalse((bool)$user->global_firm_rights);
+
+		$this->assertFalse((bool) $user->global_firm_rights);
 
 		$this->assertTrue($userIdentity->authenticate());
 	}

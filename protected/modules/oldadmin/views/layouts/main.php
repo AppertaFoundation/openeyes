@@ -44,13 +44,13 @@
 	<div id="header" class="clearfix">
 
 		<?php echo $this->renderPartial('//base/_brand'); ?>
-		
+
 		<div id="user_panel" class="inAdmin">
 			<div class="clearfix">
 				<div id="user_id">
 					Hi <strong>Bob Andrews</strong>&nbsp;<a href="#" class="small">(not you?)</a>
 				</div>
-				
+
 				<ul id="user_nav">
 
 					<li><a href="/">OpenEyes Home</a></li>
@@ -59,7 +59,7 @@
 			</div>
 		</div> <!-- #user_panel -->
 	</div> <!-- #header -->
-	
+
 	<div id="content" class="adminMode">
 
 		<h2 class="admin">ADMIN</h2>
@@ -86,7 +86,7 @@
 			),
 		)); ?>
 		</div>	<!-- #mainmenu -->
-		
+
 		<div class="whiteBox"> <!-- REPLACEs <div id="content"> in current HTML structure (already have a "content" id) -->
 
 		<div id="sidebar">
@@ -104,13 +104,13 @@
                         $this->endWidget();
                 ?>
 				</div> <!-- .portlet-content -->
-			</div>	<!-- .portlet -->	
+			</div>	<!-- .portlet -->
 		</div> <!-- #sidebar -->
 
 	<?php echo $content; ?>
 
 	</div> <!-- .whiteBox -->
-		
+
 	</div> <!-- #content -->
 
 	<div id="help" class="clearfix">
@@ -121,12 +121,12 @@
 			<p>Have you checked the <a href="#">Quick Reference Guide?</a></p>
 
 		</div>
-		
+
 		<div class="hint">
 			<p><strong>Searching by patient details.</strong></p>
 			<p>Although the Last Name is required it doesn't have to be complete. For example if you search for "Smi", the results will include all last names starting with "Smi...". Any other information you can add will help narrow the search results.</p>
 		</div>
-		
+
 		<div class="hint">
 			<p><strong>Still need help?</strong></p>
 
@@ -134,12 +134,12 @@
 			<p>Telephone: 01234 12343567 ext. 0000</p>
 			<p>Email: <a href="#">helpdesk@openeyes.org.uk</a></p>
 		</div>
-		
+
 	</div> <!-- #help -->
-  </div> 
+  </div>
   <!--#container -->
 
-  
+
   <div id="footer">
 		<h6>&copy; Copyright OpenEyes Foundation 2011&#x2013;<?php echo date('Y'); ?>&nbsp;&nbsp;|&nbsp;&nbsp;
 			<a href="<?php echo Yii::app()->createUrl('site/debuginfo')?>" id="support-info-link">served, with love, by <?php echo trim(`hostname`)?></a></h6>

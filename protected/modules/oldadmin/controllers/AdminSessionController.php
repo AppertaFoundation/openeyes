@@ -17,11 +17,12 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.html The GNU General Public License V3.0
  */
 
-class AdminSessionController extends Controller {
-	
+class AdminSessionController extends Controller
+{
 	public $layout='column2';
 
-	protected function beforeAction($action) {
+	protected function beforeAction($action)
+	{
 		// Sample code to be used when RBAC is fully implemented.
 		if (!Yii::app()->user->checkAccess('admin')) {
 			throw new CHttpException(403, 'You are not authorised to perform this action.');
@@ -44,8 +45,8 @@ class AdminSessionController extends Controller {
 	/**
 	 * Bulk creates sessions based on sequence template
 	 */
-	public function actionMassCreate() {
-		
+	public function actionMassCreate()
+	{
 		$runner = new CConsoleCommandRunner;
 		$command = new GenerateSessionsCommand('generateSessions',$runner);
 
@@ -64,30 +65,31 @@ class AdminSessionController extends Controller {
 	 * If update is successful, the browser will be redirected to the 'view' page.
 	 * @param integer $id the ID of the model to be updated
 	 */
-	public function actionUpdate($id) {
+	public function actionUpdate($id)
+	{
 		$model = $this->loadModel($id);
 
-		if(!$model->firmAssignment) {
+		if (!$model->firmAssignment) {
 			$model->firmAssignment = new SessionFirmAssignment();
 			$model->firmAssignment->session_id = $model->id;
 		}
-		
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Session'])) {
+		if (isset($_POST['Session'])) {
 			// TODO: Add validation to check collisions etc.
 			$model->attributes = $_POST['Session'];
 			if (!empty($_POST['SessionFirmAssignment']['firm_id'])) {
 				$model->firmAssignment->attributes = $_POST['SessionFirmAssignment'];
 				$firmValid = $model->firmAssignment->save();
 			} else {
-				if($model->firmAssignment->id) {
+				if ($model->firmAssignment->id) {
 					$model->firmAssignment->delete();
 				}
 				$firmValid = true;
 			}
-			if($firmValid && $model->save()) {
+			if ($firmValid && $model->save()) {
 				$this->redirect(array('view','id' => $model->id));
 			}
 		}
@@ -102,21 +104,20 @@ class AdminSessionController extends Controller {
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 * @param integer $id the ID of the model to be deleted
 	 */
-	public function actionDelete($id) {
-		
+	public function actionDelete($id)
+	{
 		// Deleting not allowed until RBAC properly implemented
 		throw new CHttpException(403, 'You are not authorised to perform this action.');
-		
+
 		/*
-		if(Yii::app()->request->isPostRequest) {
+		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
 
 			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
 			if(!isset($_GET['ajax']))
 				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-		}
-		else {
+		} else {
 			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
 		}
 		*/
@@ -139,10 +140,11 @@ class AdminSessionController extends Controller {
 	/**
 	 * Manages all models.
 	 */
-	public function actionAdmin() {
+	public function actionAdmin()
+	{
 		$model=new Session('search');
 		$model->unsetAttributes();
-		if(isset($_GET['Session'])) {
+		if (isset($_GET['Session'])) {
 			$model->attributes = $_GET['Session'];
 		}
 		if (isset($_GET['Firm'])) {
@@ -161,9 +163,10 @@ class AdminSessionController extends Controller {
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer the ID of the model to be loaded
 	 */
-	public function loadModel($id) {
-		$model=Session::model()->findByPk((int)$id);
-		if($model===null) {
+	public function loadModel($id)
+	{
+		$model=Session::model()->findByPk((int) $id);
+		if ($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		}
 		return $model;
@@ -173,8 +176,9 @@ class AdminSessionController extends Controller {
 	 * Performs the AJAX validation.
 	 * @param CModel the model to be validated
 	 */
-	protected function performAjaxValidation($model) {
-		if(isset($_POST['ajax']) && $_POST['ajax']==='session-form') {
+	protected function performAjaxValidation($model)
+	{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='session-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
