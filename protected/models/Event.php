@@ -25,7 +25,6 @@
  * @property string $episode_id
  * @property string $user_id
  * @property string $event_type_id
- * @property string $datetime
  *
  * The followings are the available model relations:
  * @property Episode $episode
@@ -76,7 +75,7 @@ class Event extends BaseActiveRecord
 			array('episode_id, event_type_id', 'length', 'max'=>10),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, episode_id, event_type_id, datetime, created_date', 'safe', 'on'=>'search'),
+			array('id, episode_id, event_type_id, created_date', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -119,7 +118,6 @@ class Event extends BaseActiveRecord
 			'episode_id' => 'Episode',
 			'created_user_id' => 'User',
 			'event_type_id' => 'Event Type',
-			'datetime' => 'Datetime',
 		);
 	}
 
@@ -138,7 +136,6 @@ class Event extends BaseActiveRecord
 		$criteria->compare('episode_id',$this->episode_id,true);
 		$criteria->compare('created_user_id',$this->created_user_id,true);
 		$criteria->compare('event_type_id',$this->event_type_id,true);
-		$criteria->compare('datetime',$this->datetime,true);
 
 		return new CActiveDataProvider(get_class($this), array(
 			'criteria'=>$criteria,
