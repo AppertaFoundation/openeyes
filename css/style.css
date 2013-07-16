@@ -1675,6 +1675,7 @@ body .ui-widget-overlay {
 
 .ui-widget.dialog .form-actions input:hover {
 	background: -webkit-linear-gradient(#48bd27, #3fa522);
+	background: linear-gradient(#48bd27, #3fa522);
 	border-bottom: 2px solid #569b42;
 }
 
